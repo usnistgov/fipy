@@ -53,7 +53,8 @@ class build_docs (Command):
 		    ('apis', None, "compile the programmer's reference"),
 		    ('manual', None, "compile the manual"),
 		    ('all', None, "compile both the LaTeX and HTML variants of the apis"),
-                    ('webpage', None, "compile the html for the web page")
+                    ('webpage', None, "compile the html for the web page"),
+                    ('upload', None, "upload webpages to lurch:/u/WWW/wd15/fipy")
 		   ]
 
 
@@ -65,6 +66,7 @@ class build_docs (Command):
 	self.manual = 0
 	self.all = 0
         self.webpage = 0
+        self.upload = 0
     # initialize_options()
 
 
@@ -269,6 +271,9 @@ class build_docs (Command):
             import shutil
             shutil.move(os.path.join(dir, 'readme.html'), os.path.join(dir, 'index.html'))
 
+        if self.upload:
+
+            os.system("rsync -C -rltD documentation/www/ lurch:/u/WWW/wd15/fipy/")
                 
     # run()
 
