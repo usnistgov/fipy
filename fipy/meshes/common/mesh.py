@@ -112,6 +112,9 @@ class Mesh:
     
     """get topology methods"""
 
+    def getFaceVertexIDs(self):
+        return self.faceVertexIDs
+
     def getCellFaceIDs(self):
         return self.cellFaceIDs
 
@@ -293,7 +296,7 @@ class Mesh:
 
     def getCellAreaProjections(self):
         return self.cellNormals * self.getCellAreas()[:, :, Numeric.NewAxis]
-	    
+
     """scaling"""
 
     def setScale(self, value = 1.):
