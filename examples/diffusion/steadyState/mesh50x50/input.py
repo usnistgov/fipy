@@ -88,9 +88,9 @@ var = CellVariable(name = "solution variable",
 viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
 
 eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
+                       transientCoeff = 0.,
                        diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
+                       solver = LinearPCGSolver(tolerance = 1.e-15,
                                                 steps = 1000
                                                 ),
                        boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),

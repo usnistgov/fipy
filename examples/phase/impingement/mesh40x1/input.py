@@ -133,6 +133,7 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.models.phase.theta.modularVariable import ModularVariable
 from fipy.models.phase.theta.thetaEquation import ThetaEquation
 
+
 nx = 40
 ny = 1
 steps = 10

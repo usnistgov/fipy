@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
@@ -41,13 +43,14 @@
  ##
 
 import unittest
+import fipy.tests.testProgram
+import doctest
+
+import nthOrderDiffusionTerm
 
 def suite():
-    import doctest
-    
     theSuite = unittest.TestSuite()
 
-    import nthOrderDiffusionTerm
     theSuite.addTest(doctest.DocTestSuite(nthOrderDiffusionTerm))
     
     return theSuite

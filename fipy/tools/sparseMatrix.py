@@ -68,8 +68,12 @@ class SparseMatrix:
     def copy(self):
 	return SparseMatrix(matrix = self.matrix.copy())
 	
-    def __getitem__(self, index): 
-	return self.matrix[index]
+    def __getitem__(self, index):
+        m = self.matrix[index]
+        if type(m) is type(0) or type(m) is type(0.):
+            return m
+        else:
+            return SparseMatrix(matrix = m)
 	
     def __str__(self):
         s = ""
@@ -143,6 +147,7 @@ class SparseMatrix:
             >>> print Numeric.array((1,2,3),'d') * L1
             [  7.5       , 16.28318531,  3.        ,]
         """
+
         if type(other) == type(self):
             return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other.getMatrix()))
         elif type(1) == type(other) or type(1.) == type(other):

@@ -54,14 +54,14 @@ from the advection equation given by:
 
 .. raw:: latex
 
-    $$ \\frac{\\partial \\phi}{\\partial t} + u | \\nabla \\phi | $$
+    $$ \\frac{\\partial \\phi}{\\partial t} + u | \\nabla \\phi | = 0$$
 
 The construction of the gradient magnitude term requires upwinding.
 The formula used here is given by:
 
 .. raw:: latex
 
-    $$ u | \\nabla \\phi |_P = \\sum_A \\min \\left( u \\frac{ \\phi_A - \\phi_P } { d_{AP}}, 0 \\right)^2 $$
+    $$ u_P | \\nabla \\phi |_P = \\max \\left( u_P , 0 \\right) \\left[  \\sum_A \\min \\left( \\frac{ \\phi_A - \\phi_P } { d_{AP}}, 0 \\right)^2 \\right]^{1/2} +  \\min \\left( u_P , 0 \\right) \\left[  \\sum_A \\max \\left( \\frac{ \\phi_A - \\phi_P } { d_{AP}}, 0 \\right)^2 \\right]^{1/2} $$
 
 Here are some simple test cases for this problem:
 

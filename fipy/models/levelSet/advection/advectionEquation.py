@@ -41,21 +41,40 @@
  # ###################################################################
  ##
 
+"""
 
-from fipy.equations.equation import MatrixEquation
+The `AdvectionEquation` object constructs the b vector and L matrix
+necessary for the solution of the advection equation. The advection
+equation is given by:
+
+.. raw:: latex
+
+    $$ \\frac{\\partial \\phi}{\\partial t} + u | \\nabla \\phi | $$
+
+This solution method for the `AdvectionTerm` is set up specifically to
+evolve `var` while preserving `var` as a distance function. This
+equation is used in conjunction with the `DistanceFunction`
+object. Further details of the numerical method can be found in "Level
+Set Methods and Fast Marching Methods" by J.A. Sethian, Cambridge
+University Press, 1999. Testing for the advection equation is in
+`examples.levelSet.advection`
+
+"""
+
+from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.advectionTerm import AdvectionTerm
+from advectionTerm import AdvectionTerm
 
 
 class AdvectionEquation(MatrixEquation):
 
-    def __init__(self, var = None, transientCoeff = None, advectionCoeff = None):
+    def __init__(self, var = None, transientCoeff = None, advectionCoeff = None, solver = None):
         
         mesh = var.getMesh()
 
         terms = (
             TransientTerm(transientCoeff, mesh),
-            AdvectionTerm(advectionCoeff, mesh
+            AdvectionTerm(advectionCoeff, mesh))
 	
 	MatrixEquation.__init__(
             self,

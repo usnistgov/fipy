@@ -51,6 +51,7 @@ import fipy.tests.testProgram
 import examples.diffusion.steadyState.test
 import examples.diffusion.explicit.test
 import examples.diffusion.variable.test
+import examples.diffusion.nthOrder.test
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -58,6 +59,7 @@ def suite():
     theSuite.addTest(examples.diffusion.steadyState.test.suite())
     theSuite.addTest(examples.diffusion.explicit.test.suite())
     theSuite.addTest(examples.diffusion.variable.test.suite())
+    theSuite.addTest(examples.diffusion.nthOrder.test.suite())
     
     return theSuite
 

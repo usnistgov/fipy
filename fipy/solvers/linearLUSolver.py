@@ -48,18 +48,29 @@ import itsolvers
 import superlu
 
 from fipy.solvers.solver import Solver
+from fipy.tools.sparseMatrix import SparseMatrix
+import Numeric
 
 class LinearLUSolver(Solver):
-    def __init__(self):
-	Solver.__init__(self, tolerance = 0., steps = 0)
-	
-    def solve(self, L, x, b):
-## 	print "L: ", L
-## 	print "b: ", b
-	
-        LU = superlu.factorize(L.getMatrix().to_csr(), diag_pivot_thresh = 0.)
-        LU.solve(b, x)
-        
-## 	print "x: ", x
-## 	raw_input()
+    def __init__(self, tolerance = 1e-10, steps = 10):
+	Solver.__init__(self, tolerance = tolerance, steps = steps)
 
+    def solve(self, L, x, b):
+
+        LU = superlu.factorize(L.getMatrix().to_csr(), diag_pivot_thresh = 1., relax = 1)
+        LU.solve(b, x)
+
+        
+        tol = self.tolerance + 1.
+        step = 0
+        while tol > self.tolerance and step < self.steps:
+
+            errorVector = L * x - b
+            xError = Numeric.zeros(len(b),'d')
+            LU = superlu.factorize(L.getMatrix().to_csr(), diag_pivot_thresh = 1., relax = 1)
+            LU.solve(errorVector, xError)
+            x[:] = x - xError
+
+            arg = Numeric.argmax(Numeric.absolute(xError))
+            tol = Numeric.absolute(xError)[arg]
+            step += 1
