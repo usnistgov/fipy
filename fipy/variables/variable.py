@@ -120,7 +120,7 @@ class Variable:
 	self.faceDifferences = {}
 	self.laplacian = {}
         self.mag = None
-	
+    
     def getMesh(self):
 	return self.mesh
 	
@@ -206,7 +206,10 @@ class Variable:
 
         """
 	return self.getValue()[index]
-	
+
+    def getName(self):
+        return self.name
+    
     def __str__(self):
 	return str(self.getValue())
 	    
