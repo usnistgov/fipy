@@ -42,9 +42,8 @@ from fivol.variables.faceGradVariable import FaceGradVariable
 from fivol.inline import inline
 
 class ModFaceGradVariable(FaceGradVariable):
-    def __init__(self, var, mod):
+    def __init__(self, var):
 	FaceGradVariable.__init__(self, var)
-        self.mod = mod
         
     def _calcValueInline(self):
 
