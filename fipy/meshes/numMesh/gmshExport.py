@@ -104,7 +104,7 @@ if __name__ == "__main__":
     c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 20)
     exportAsMesh(c, "temp3.msh")
     profile.stop()
-    os.system("gmsh temp3.msh &")
+    os.system("gmsh -v 0 temp3.msh &")
     
         
     
