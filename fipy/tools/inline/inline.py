@@ -4,20 +4,24 @@ from weave import converters
 
 doingInline = 0
 
+def doInline():
+    print 'in doInline'
+    doingInline = 1
+    
+def dontInline():
+    print 'in dontInline'
+    doingInline = 0
+
 def readInlineArgs(argList):
     if "inline" in argList:
 	doInline()
     else:
 	dontInline()
 
-def doInline():
-    doingInline = 1
-    
-def dontInline():
-    doingInline = 0
-
 def optionalInline(inlineFn, pythonFn, *args):
+    print 'doingInline: ',doingInline
     if doingInline:
+        print 'doingInline'
 	return inlineFn(*args)
     else:
 	return pythonFn(*args)
