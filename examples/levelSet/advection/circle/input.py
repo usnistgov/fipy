@@ -42,8 +42,22 @@
  ##
 
 """
+This example first imposes a circular distance function:
 
-This example solves the advection equation in one dimension.
+.. raw:: latex
+
+    $$ \\phi \\left( x, y \\right) = \\left[ \\left( x - \\frac{ L }{ 2 } \\right)^2 + \\left( y - \\frac{ L }{ 2 } \\right)^2 \\right]^{1/2} - \\frac{L}{4} $$ 
+
+then the variable is advected with,
+
+.. raw:: latex
+
+    $$ \\frac{ \\partial \\phi } { \\partial t } + \\vec{u} \\cdot \\nabla \\phi = 0 $$
+
+The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
+
+The result can be tested with the following code:
+
 
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
