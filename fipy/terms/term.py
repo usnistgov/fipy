@@ -156,7 +156,7 @@ class Term:
         """
         Subtract a `Term`, number or variable from a `Term`.
 
-           >>> 10 - Term(coeff = 1.)
+           >>> 10. - Term(coeff = 1.)
            (ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
 
         """        

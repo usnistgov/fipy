@@ -147,7 +147,7 @@ class AdvectionTerm(Term):
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
 
-        coeff = Numeric.array(self.getGeomCoeff(mesh))
+        coeff = Numeric.array(self._getGeomCoeff(mesh))
 
         coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
 
