@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 6/10/04 {2:37:40 PM} 
+ #                                last update: 7/23/04 {4:54:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,8 +75,14 @@ class MatrixEquation(Equation):
 	
 	residual = Lx - self.b
 	
-	denom = Numeric.where(Lx == 0, self.b, Lx)
-	denom = Numeric.where(denom == 0, 1, denom)
+	denom = max(abs(Lx))
+	if denom == 0:
+	    denom = max(abs(self.b))
+	if denom == 0:
+	    denom = 1.
+	    
+## 	denom = Numeric.where(Lx == 0, self.b, Lx)
+## 	denom = Numeric.where(denom == 0, 1, denom)
 	
 	residual /= denom
 		

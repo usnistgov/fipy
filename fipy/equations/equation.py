@@ -6,7 +6,7 @@
  # 
  #  FILE: "equation.py"
  #                                    created: 11/10/03 {2:45:34 PM} 
- #                                last update: 1/24/04 {12:40:02 PM} 
+ #                                last update: 7/26/04 {11:58:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,3 +75,14 @@ class Equation:
 	
     def getSolutionTolerance(self):
 	return self.solutionTolerance
+	
+    def getFigureOfMerit(self):
+	FOM = min(self.getSolutionTolerance() / self.getResidual())
+	for term in self.terms:
+	    termFOM = term.getFigureOfMerit()
+	    if termFOM:
+		FOM = min(FOM, termFOM)
+	    
+	print self, FOM
+	
+	return FOM

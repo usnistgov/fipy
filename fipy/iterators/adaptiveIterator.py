@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveIterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 4/2/04 {4:06:03 PM} 
+ #                                last update: 7/19/04 {5:08:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,34 +51,50 @@ from fipy.iterators.iterator import ConvergenceError
 class AdaptiveIterator(Iterator):
     """Adaptive time-stepping equation iterator
     """
-    
+    def __init__(self,equations,timeStepDuration = None,viewers = ()):
+	"""Arguments:
+	    
+	    'equations' -- list or tuple of equations to iterate over
+	"""
+	Iterator.__init__(self, equations, timeStepDuration)
+	self.viewers = viewers
+
     def resetTimeStep(self):
 	for equation in self.equations:
 	    var = equation.getVar()
 	    var.resetToOld()
 	    
-    def elapseTime(self, desiredTime, maxSweepsPerStep = 1):
-	elapsedTime = 0.
-	while elapsedTime < desiredTime:
-	    print "t:", elapsedTime, "dt:", self.timeStepDuration
+    def adjustTimeStep(self, dt):
+	factor = min([equation.getFigureOfMerit() for equation in self.equations])
+	if factor > 1.:
+	    factor = factor**0.5
+	dt *= factor
+	
+	return dt
+
+    def timestep(self, maxSweeps = 1, dt = 1.):
+	self.elapsedTime = 0.
+	self.desiredTime = dt
+	while self.elapsedTime < self.desiredTime:
+	    print "t:", self.elapsedTime, "dt:", dt
 	    try:
 		self.advanceTimeStep()
-		self.sweeps(maxSweepsPerStep)
-		elapsedTime += self.timeStepDuration.getValue()
+		self.sweeps(maxSweeps, dt)
+		self.elapsedTime += dt
 	    except ConvergenceError, e:
 		print "ConvergenceError"
 		self.resetTimeStep()
 	    except KeyboardInterrupt:
 		print "KeyboardInterrupt"
 		break
-	    except Exception, e:
-		print "Error:",e
-	    except:
-		print "what's the error?"
+## 	    except Exception, e:
+## 		raise e
+## 	    except:
+## 		print "what's the error?"
 		
 		
-	    # adjust timestep
-	    factors = [(equation.getSolutionTolerance()/equation.getResidual())**0.2 for equation in self.equations]
-	    self.timeStepDuration.setValue(self.timeStepDuration.getValue() * min(factors))
+	    dt = self.adjustTimeStep(dt)
 		
+	    for viewer in self.viewers:
+		viewer.plot()
 
