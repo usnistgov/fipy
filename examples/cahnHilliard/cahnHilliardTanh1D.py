@@ -74,11 +74,14 @@ Calculate the answer,
 
 Compare with the numerical solution,
 
+   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-2)
+   1
    >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-3)
    1
    >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-4)
    0
-
+   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-5)
+   0
 """
 __docformat__ = 'restructuredtext'
 
@@ -95,9 +98,9 @@ from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
 
 L = 100.
-nx = 400
+nx = 2000
 ny = 1
-steps = 25
+steps = 400
 dx = L / nx
 dy = 1.
 
@@ -119,7 +122,7 @@ var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 eqch= CahnHilliardEquation(
     var,
     parameters = parameters,
-    solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000),
+    solver = LinearPCGSolver(tolerance = 1e-10,steps = 1000),
     boundaryConditions=(
     FixedValue(mesh.getFacesRight(), 1),
     FixedValue(mesh.getFacesLeft(), 0),
@@ -130,11 +133,23 @@ it = Iterator((eqch,))
 
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var,minVal=0.0,maxVal=1.0)
-
     viewer.plot()
     for step in range(steps):
-        it.timestep(dt = 10)
+        dt=Numeric.exp(step/30)/1000
+        print 'in loop ',step,dt
+        it.timestep(dt = dt)
         viewer.plot()
+
+    a = Numeric.sqrt(parameters['asq'])
+    answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+    diff = answer - Numeric.array(var)
+    maxarg = Numeric.argmax(diff)
+    print diff[maxarg]
+    print maxarg
+    aa = Numeric.argsort(diff)
+    print diff[aa[nx-1]],diff[aa[nx-2]],aa[nx-1],aa[nx-2]
+    print diff[nx/2-30:nx/2+30]
+    
         
     raw_input('finished')
    
