@@ -62,7 +62,7 @@ efforts on this project. Please get involved.
 .. _tracking system:      http://sourceforge.net/tracker/?group_id=118428&atid=681142
 .. _discussion forum:     http://sourceforge.net/forum/?group_id=118428
 
-.. include:: documentation/tools/include.txt
+.. include:: utils/include.txt
 
 .. |FiPy| replace:: |latexFiPy| |htmlFiPy|
 .. |INSTALLATION.txt| replace:: |latexINSTALLATION.txt| |htmlINSTALLATION.txt|

@@ -22,6 +22,6 @@ they have been modified.
 .. _NIST:                 http://www.nist.gov/
 .. _title 17 Section 105: http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc+uscview+t17t20+9+0++
 
-.. include:: documentation/tools/include.txt
+.. include:: utils/include.txt
 
 .. |FiPy| replace:: |latexFiPy| |htmlFiPy|

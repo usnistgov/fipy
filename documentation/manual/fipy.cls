@@ -95,6 +95,8 @@
 
 \newcommand{\weave}{\href{http://www.scipy.org/documentation/weave/}{\textsf{weave}}}
 
+\newcommand{\blitz}{\href{http://www.scipy.org/documentation/weave/}{\textsf{blitz}}}
+
 \newcommand{\doctest}{\href{http://www.python.org/doc/current/lib/module-doctest.html}{\textsf{doctest}}}
 
 \newcommand{\unittest}{\href{http://www.python.org/doc/current/lib/module-unittest.html}{\textsf{unittest}}}

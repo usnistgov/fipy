@@ -1,0 +1,24 @@
+.. |latexFiPy| raw:: latex
+
+    \FiPy{}
+
+.. |htmlFiPy| raw:: html
+
+    <em>FiPy</em>
+
+.. |latexTeX| raw:: latex
+
+   \TeX{}
+
+.. |htmlTeX| raw:: html
+
+   TeX
+
+.. |latexINSTALLATION.txt| raw:: latex
+
+   Chapter~\ref{chap:Installation}
+
+.. |htmlINSTALLATION.txt| raw:: html
+
+   the <a href="installation.html">Installation Guide</a>
+

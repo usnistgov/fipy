@@ -248,7 +248,7 @@ epydoc_ by issuing the following commands in the base directory::
      python setup.py build_docs --latex --manual
 
 
-.. include:: documentation/tools/include.txt
+.. include:: utils/include.txt
 
 .. _sourceforge:     http://sourceforge.net/projects/fipy/
 .. _CVS:             http://cvs.sourceforge.net/viewcvs.py/fipy/
