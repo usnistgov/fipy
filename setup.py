@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/28/05 {3:53:39 PM} 
+ #                                last update: 3/29/05 {11:21:02 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,8 +39,6 @@ import string
 
 from distutils.core import setup
 from distutils.core import Command
-
-from utils.epydoc import driver
 
 class build_docs (Command):
 
@@ -109,6 +107,8 @@ class build_docs (Command):
 	dir = os.path.join('documentation', 'manual', 'api')
 	self._initializeDirectory(dir = dir, type = 'latex')
         dir = os.path.join(dir, 'latex')
+        
+        from utils.epydoc import driver
         driver.epylatex(module_names = ['fipy/'], options = {'target':dir})
 	
         savedir = os.getcwd()
@@ -226,6 +226,8 @@ class build_docs (Command):
 			       'examples/elphf/',
 			       'examples/cahnHilliard/'
 			       ]
+                               
+                from utils.epydoc import driver
                 driver.epylatex(module_names = modules, options = {'target':dir})
 
 	if self.html:
