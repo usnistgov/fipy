@@ -1,3 +1,4 @@
+"""
 #-----*-Pyth-*-
 ####################################################################
 # PFM - Python-based phase field solver
@@ -31,5 +32,15 @@
 # 
 ####################################################################
 #----
+"""
 
-
+class Equation:
+    def __init__(terms,vars,mesh):
+        self.terms=terms
+        self.vars=vars
+        self.var=variable.Variable(mesh)
+            
+    def update_coeffs():
+        for term in self.terms:
+            self.update_coeff(self.vars)
+    
