@@ -1,34 +1,41 @@
-\section{Equations of Mass, Momentum and Enthalpy}
+\section{General Conservation Equation}
 
-The general transport equation for a scalar variable $\phi$ can
-be written as,
+A general conservation equation solved using \FiPy{} can include any
+combination of the following terms,
 \begin{equation}
-\underbrace{
-\frac{\partial (\rho \phi)}{\partial t}
-}_{transient}
-+
-\underbrace{
-\nabla.(\rho \vec{u} \phi)
-}_{convection}
+  \underbrace{
+    \frac{\partial (\rho \phi)}{\partial t}
+  }_{\text{transient}}
 =
 \underbrace{
-\nabla.(\Gamma\nabla\phi) 
-}_{diffusion}
+  \nabla \cdot \left( \vec{u} \phi \right)
+}_{\text{convection}}
 +
 \underbrace{
-S_{\phi}
+  \nabla \cdot \left( \Gamma \nabla \phi \right) 
+}_{\text{diffusion}}
++
+\underbrace{
+  \nabla \cdot \left( \Gamma_2 \nabla 
+    \left( \nabla \cdot \left( \Gamma_1 \nabla \phi \right) \right) \right)
+}_{\text{4th order}}
++
+\underbrace{
+  L_n \phi
+}_{\text{nth order}}
++
+\underbrace{
+  S_{\phi}
 }_{source}
 \label{eqn:num:gen}
 \end{equation}
-where $\vec{u}$ is the convection coefficient, $\Gamma$ is the
-diffusion coefficient, $\rho$ is the transient coefficient, $t$ is
-time and $\phi$ is a scalar variable.  The variable $\phi$ can
-represent any dependent variable such as,
-\begin{itemize}
-\item
-$\phi=1$ for the  continuity equation
-\item
-$\phi=\vec{u}$ (velocity) for the  momentum equation
-\item
-$\phi=h$ (enthalpy) for the  enthalpy equation
-\end{itemize}
+where $\rho$, $\vec{u}$, $\Gamma_i$ represent coefficients in their
+respective terms. These coefficients can be arbitrary functions of any
+parameters or variables in the system. The variable $\phi$ represents
+the quantity that is being solved for by the equation. The operator
+$L_n$ is arbitrary where $n=2$ represents the diffusion term and $n=4$
+represents the fourth order term. Higher order diffusion type terms
+are possible using this operator.
+
+
+

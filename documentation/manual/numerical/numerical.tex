@@ -1,13 +1,13 @@
-%\chapter{Computational Techniques Employed in Modelling
-%Surface Tension Driven Phenomena}
-
 \chapter{Finite Volume Method}
 
-This chapter describes the discretisation and
-numerical schemes for solving a  scalar transport equation using
-the Finite Volume Method(FVM).
-The solution procedures for the conservation equations of mass,
-momentum, enthalpy with phase change and stress are presented.
+This chapter descvribes the way \FiPy{} solves equations.
+
+Essentially, the solution domain is divided into discrete finite
+volumes over which the state variables are approximated with linear or
+higher order interpolations. This process is known as discretization.
+A common discretization technique is the Finite Volume Method (FVM)
+where the variable interpolation is satisfied with simple
+approximations to the derivatives in each term of the equation.
 
 \input numerical/equation
 \input numerical/discret
