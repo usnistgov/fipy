@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 11/3/04 {11:09:52 AM} 
+ #                                last update: 2/27/05 {11:34:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,6 +49,19 @@ from fipy.viewers.gistViewer import GistViewer
 class Gist1DViewer(GistViewer):
     
     def __init__(self, vars = None, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
+        """
+        Displays a y vs. x plot of one or more 1D Variable objects
+        
+        :Parameters:
+          - `vars`: a tuple of variables to plot
+          - `title`: displayed at the top of the viewer window
+          - `limits`: a tuple of `(xmin, xmax, ymin, ymax)`. 
+                      Any element can be the string "e" to cause autoscaling 
+                      in that dimension.
+          - `xlog`: set `True` to give logarithmic scaling of the x axis
+          - `ylog`: set `True` to give logarithmic scaling of the y axis
+          - `style`: the Gist style file to use
+        """
         self.vars = list(vars)
 	self.xlog = xlog
 	self.ylog = ylog
