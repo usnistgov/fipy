@@ -6,7 +6,7 @@
  # 
  #  FILE: "spSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:29:49 AM} 
+ #                                last update: 1/28/04 {4:20:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

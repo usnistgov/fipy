@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/26/04 {4:48:42 PM} 
+ #                                last update: 1/28/04 {4:21:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -167,33 +167,41 @@ class PhysicalField:
  	return (self.__class__.__name__ + '(' + `self.value` + ',' + 
  		`self.unit.name()` + ')')
 
-    def _sum(self, other, sign1, sign2):
+    def _sum(self, other, sign1 = lambda a: a, sign2 = lambda b: b):
 	if _isVariable(other):
-	    return other * sign2 + self.__class__(value = sign1 * self.value, unit = self.unit)
+	    return sign2(other) + self.__class__(value = sign1(self.value), unit = self.unit)
 	if type(other) is type(''):
 	    other = PhysicalField(value = other)
 	if not isinstance(other,PhysicalField):
 	    if Numeric.alltrue(other == 0):
-		new_value = sign1 * self.value
+		new_value = sign1(self.value)
 	    elif self.unit.isDimensionlessOrAngle():
-		new_value = sign1*self.value + sign2*other
+		# stupid Numeric bug
+		# it's smart enough to negate a boolean, but not 
+		# smart enough to know that it's negative when it
+		# gets done.
+		if type(self.value) is type(Numeric.array((0))) and self.value.typecode() is 'b':
+		    self.value = 1. * other
+		if type(other) is type(Numeric.array((0))) and other.typecode() is 'b':
+		    other = 1. * other
+		new_value = sign1(self.value) + sign2(other)
 	    else:
 		raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
 	else:
-	    new_value = sign1*self.value + \
-			sign2*other.value*other.unit.conversionFactorTo(self.unit)
+	    new_value = sign1(self.value) + \
+			sign2(other.value)*other.unit.conversionFactorTo(self.unit)
 	return self.__class__(value = new_value, unit = self.unit)
 
     def __add__(self, other):
-	return self._sum(other, 1, 1)
+	return self._sum(other)
 
     __radd__ = __add__
 
     def __sub__(self, other):
-	return self._sum(other, 1, -1)
+	return self._sum(other, sign2 = lambda b: -b)
 
     def __rsub__(self, other):
-	return self._sum(other, -1, 1)
+	return self._sum(other, sign1 = lambda a: -a)
 
     def __mul__(self, other):
 	if _isVariable(other):

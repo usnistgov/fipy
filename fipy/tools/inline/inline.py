@@ -2,6 +2,20 @@ import Numeric
 import weave
 from weave import converters
 
+doingInline = 0
+
+def doInline():
+    doingInline = 1
+    
+def dontInline():
+    doingInline = 0
+
+def optionalInline(inlineFn, pythonFn, *args):
+    if doingInline:
+	return inlineFn(*args)
+    else:
+	return pythonFn(*args)
+    
 def runInline(code_in,**args):
     
     code="""

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:57:01 AM} { 2:26:30 PM}
+ #                                last update: 1/28/04 {2:53:59 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@
 """
 
 import unittest
+import sys
 
 import fivol.examples.diffusion.variable.test
 import fivol.examples.diffusion.steadyState.test
@@ -53,7 +54,14 @@ import fivol.examples.convection.test
 import fivol.examples.elphf.test
 import fivol.examples.phase.examples.test
 
+import fivol.inline.inline
+
 if __name__ == '__main__':
+    if "inline" in sys.argv:
+	fivol.inline.inline.doInline()
+    else:
+	fivol.inline.inline.dontInline()
+    
     theSuite = unittest.TestSuite()
     
     theSuite.addTest(fivol.examples.diffusion.steadyState.test.suite())
