@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/28/04 {2:41:27 PM}
+ #                                last update: 1/29/04 {11:58:50 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,7 @@ import Numeric
 
 from fivol.variables.vectorFaceVariable import VectorFaceVariable
 import fivol.tools.array as array
-from fivol.inline.inline import inl
+import fivol.inline.inline as inline
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var, mod = None):
@@ -74,15 +74,20 @@ class FaceGradVariable(VectorFaceVariable):
 	t2grad1 = Numeric.zeros(N.shape,'d')
 	t2grad2 = Numeric.zeros(N.shape,'d')
 
-	inl.runInline("""
-	t1grad1(i) += tangents1(i,j) * cellGrad(id1(i),j);
-	t1grad2(i) += tangents1(i,j) * cellGrad(id2(i),j);
-	t2grad1(i) += tangents2(i,j) * cellGrad(id1(i),j);
-	t2grad2(i) += tangents2(i,j) * cellGrad(id2(i),j);
+	inline.runInlineLoop1("""
+	int j;
+	for (j = 0; j < nj; j++) {
+	    t1grad1(i) += tangents1(i,j) * cellGrad(id1(i),j);
+	    t1grad2(i) += tangents1(i,j) * cellGrad(id2(i),j);
+	    t2grad1(i) += tangents2(i,j) * cellGrad(id1(i),j);
+	    t2grad2(i) += tangents2(i,j) * cellGrad(id2(i),j);
+	}
 	
-	val(i,j) = normals(i,j) * N(i);
-	val(i,j) += tangents1(i,j) * (t1grad1(i) + t1grad2(i)) / 2.;
-	val(i,j) += tangents2(i,j) * (t2grad1(i) + t2grad2(i)) / 2.;
+	for (j = 0; j < nj; j++) {
+	    val(i,j) = normals(i,j) * N(i);
+	    val(i,j) += tangents1(i,j) * (t1grad1(i) + t1grad2(i)) / 2.;
+	    val(i,j) += tangents2(i,j) * (t2grad1(i) + t2grad2(i)) / 2.;
+	}
 	""", 
 	t1grad1 = t1grad1, t1grad2 = t1grad2, 
 	t2grad1 = t2grad1,  t2grad2 = t2grad2, 
@@ -101,9 +106,9 @@ class FaceGradVariable(VectorFaceVariable):
 	
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.var.getGrad()[:]
+	cellGrad = self.var.getGrad().getNumericValue()
 	
-	inl.optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
+	inline.optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
 	
 ##    def calcValue(self):
 ##        id1, id2, N, normals = self.calcValue1()

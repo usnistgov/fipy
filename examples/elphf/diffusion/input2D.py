@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/28/04 {1:55:06 PM} 
+ #                                last update: 1/28/04 {4:41:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,12 +54,17 @@ nx = 40
 dx = 1.
 L = nx * dx
 
+fudge = calibrate_profiler(10000)
+profile = Profiler('profile', fudge=fudge)
+
 mesh = Grid2D(
     dx = dx,
     dy = 1.,
     nx = nx,
     ny = 40)
-    
+
+profile.stop()
+
 parameters = {
     'time step duration': 10000,
     'substitutional molar volume': 1,
@@ -116,8 +121,8 @@ if __name__ == '__main__':
 
     it.timestep(1)
     
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile', fudge=fudge)
+##     fudge = calibrate_profiler(10000)
+##     profile = Profiler('profile', fudge=fudge)
     
     for i in range(10):
 	it.timestep(1)
@@ -125,7 +130,7 @@ if __name__ == '__main__':
 ## 	for viewer in viewers:
 ## 	    viewer.plot()
 	
-    profile.stop()
+##     profile.stop()
 	    
     raw_input()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 01/21/04 {11:53:49 AM}
+ #                                last update: 1/29/04 {12:01:59 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -91,6 +91,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
+    fivol.inline.inline.readInlineArgs()    
     theSuite = suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 

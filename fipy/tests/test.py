@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/28/04 {2:53:59 PM} { 2:26:30 PM}
+ #                                last update: 1/29/04 {11:59:39 AM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,10 +58,6 @@ import fivol.inline.inline
 
 if __name__ == '__main__':
     fivol.inline.inline.readInlineArgs(sys.argv)
-##    if "inline" in sys.argv:
-##	fivol.inline.inline.doInline()
-##    else:
-##	fivol.inline.inline.dontInline()
     
     theSuite = unittest.TestSuite()
     

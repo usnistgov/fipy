@@ -6,7 +6,7 @@
  # 
  #  FILE: "input4ParticlesProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {4:18:25 PM}
+ #                                last update: 1/29/04 {10:10:03 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,7 +62,7 @@ class System4ParticlesProfile(System4Particles):
         print 'finished run'
     
 if __name__ == '__main__':
-    fivol.inline.inline.inl.readInlineArgs(sys.argv)
+    fivol.inline.inline.readInlineArgs(sys.argv)
     system = System4ParticlesProfile(nx = 40, ny = 40)
     system.run()
     raw_input()
