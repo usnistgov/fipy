@@ -64,6 +64,8 @@ class LevelSetEquation(Equation):
         self.zeroNeighbours = self.getZeroNeighbors()
         self.numberOfZeroNeighbors = self.getNumberOfZeroNeighbors()
         self.zeroCellIDs = self.getZeroCellIDs()
+        self.zeroValues = self.getZeroValues()
+        self.trialInitialCellIDs = self.getInitialTrialCellIDs()
 
     def getZeroNeighbors(self):
         values = self.var.getNumericValue()
@@ -86,3 +88,15 @@ class LevelSetEquation(Equation):
         sign = values / MA.absolute(values)
         return MA.where(d.mask(), values, sign * d)
         
+    def getInitialTrialCellIDs(self):
+        zeroCellToCellIDs = MA.take(self.mesh.getCellToCellIDs(), self.zeroCellIDs)
+        trialAndZeroCellFlag = Numeric.zeros(self.mesh.getNumberOfCells())
+        Numeric.put(trialAndZeroCellFlag, zeroCellToCellIDs, Numeric.ones(zeroCellToCellIDs.shape))
+        trialFlag = Numeric.logical_and(Numeric.logical_not(self.numberOfZeroNeighbors), trialAndZeroCellFlag)
+        return Numeric.nonzero(trialFlag)
+
+    def getTrialCellValues(self):
+        pass
+        
+    def getLowestTrialValue(self):
+        pass

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-"""
 ## 
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
@@ -41,7 +40,7 @@
  #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
-"""
+
  
 from __future__ import nested_scopes
 from fivol.examples.phase.examples.impingement.input import ImpingementSystem
