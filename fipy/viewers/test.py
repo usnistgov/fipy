@@ -47,10 +47,13 @@ import doctest
 import unittest
 import fipy.tests.testProgram
 
+import pyxviewer
+import grid2DGistViewer
+
 def suite():
     theSuite = unittest.TestSuite()
-    import pyxviewer
     theSuite.addTest(doctest.DocTestSuite(pyxviewer))
+    theSuite.addTest(doctest.DocTestSuite(grid2DGistViewer))
     return theSuite
     
 if __name__ == '__main__':
