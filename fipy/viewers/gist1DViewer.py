@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 9/3/04 {10:43:18 PM} 
+ #                                last update: 10/26/04 {11:12:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ from fipy.viewers.gistViewer import GistViewer
 
 class Gist1DViewer(GistViewer):
     
-    def __init__(self, vars = None, title = None, minVal=None, maxVal=None, xlog = 0, ylog = 0, style = "work.gs"):
+    def __init__(self, vars = None, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
         self.vars = list(vars)
 	self.xlog = xlog
 	self.ylog = ylog
@@ -61,7 +61,7 @@ class Gist1DViewer(GistViewer):
 	    title = self.vars[0].name
 	else:
 	    title = ''
-        GistViewer.__init__(self, minVal, maxVal, title = title)
+        GistViewer.__init__(self, limits = limits, title = title)
 
     def getArrays(self):
 	arrays = ()
@@ -84,6 +84,9 @@ class Gist1DViewer(GistViewer):
 	gist.pltitle(self.title)
 	gist.animate(1)
 
+	if self.limits != None:
+	    gist.limits(self.limits[0], self.limits[1], self.limits[2], self.limits[3])
+	    
 	self.plotArrays()
 	    
 	gist.fma()

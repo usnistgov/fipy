@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:14:14 PM} 
+ #                                last update: 10/26/04 {10:14:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,14 +40,111 @@
  # ###################################################################
  ##
 
-"""
+r"""
 A simple 1D three-component diffusion problem to test the
-`ConcentrationEquation` element of ElPhF. We iterate to equilibrium:
+`ConcentrationEquation` element of ElPhF. The diffusion equation for each
+species in single-phase multicomponent system can be expressed as
 
-    >>> for step in range(40):
-    ...     it.timestep(dt = parameters['time step duration'])
+.. raw:: latex
+
+   $$ \frac{\partial C_j}{\partial t} 
+   =  D_{jj} \nabla^2 C_j 
+   + D_{jj} \nabla \cdot \left[
+   \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k} 
+   \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+   \right] $$
+
+where 
+
+.. raw:: latex
+
+   $C_j$ is the concentration of the $j^\text{th}$ species,
+   $t$ is time,
+   $D_{jj}$ is the self-diffusion coefficient of the $j^\text{th}$ species,
+   and $\sum_{\substack{i=2\\ i \neq j}}^{n-1}$ represents the summation
+   over all substitutional species in the system, excluding the solvent and 
+   the component of interest.
+
+..
+
+We solve the problem on a 1D mesh
+
+    >>> nx = 40
+    >>> dx = 1.
+    >>> ny = 1
+    >>> dy = 1
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+The parameters for this problem are
+
+    >>> parameters = {
+    ...     'time step duration': 10000,
+    ...     'solvent': {
+    ...         'standard potential': 0.,
+    ...         'barrier height': 0.
+    ...     }
+    ... }
+
+The ElPhF module allows the modeling of an arbitrary number of components,
+specified simply by providing a `Tuple` of species parameters
+
+    >>> parameters['substitutionals'] = (
+    ...     {
+    ...         'name': "c1",
+    ...         'diffusivity': 1.,
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     },
+    ...     {
+    ...         'name': "c2",
+    ...         'diffusivity': 1.,
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     }
+    ... )
+
+We use ElPhF to create the variable fields
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
     
-Verify that the concentrations have become uniform
+and we separate the solution domain into two different concentration regimes
+    
+    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> fields['substitutionals'][0].setValue(0.3)
+    >>> fields['substitutionals'][0].setValue(0.6,setCells)
+    >>> fields['substitutionals'][1].setValue(0.6)
+    >>> fields['substitutionals'][1].setValue(0.3,setCells)
+
+We use ElPhF again to create the governing equations for the fields
+
+    >>> equations = elphf.makeEquations(mesh = mesh, 
+    ...                                 fields = fields, 
+    ...                                 parameters = parameters
+    ... )
+    
+If we are running interactively, we create a viewer to see the results 
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = fields['substitutionals'])
+    ...     viewer.plot()
+
+.. note:: the `Gist1DViewer` is capable of plotting multiple fields
+
+Now, we iterate the problem to equilibrium, plotting as we go
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator(equations = equations)
+    >>> for i in range(40):
+    ...     it.timestep(dt = parameters['time step duration'])
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
+
+Since there is nothing to maintain the concentration separation in this problem, 
+we verify that the concentrations have become uniform
 
     >>> fields['substitutionals'][0].allclose(0.45, rtol = 1e-7, atol = 1e-7)
     1
@@ -56,88 +153,16 @@ Verify that the concentrations have become uniform
 """
 __docformat__ = 'restructuredtext'
 
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.iterators.iterator import Iterator
-
-import fipy.models.elphf.elphf as elphf
-
-## from elphfIterator import ElPhFIterator
-
-nx = 40
-dx = 1.
-L = nx * dx
-mesh = Grid2D(
-    dx = dx,
-    dy = 1.,
-    nx = nx,
-    ny = 1)
-    
-parameters = {
-    'time step duration': 10000,
-    'solvent': {
-	'standard potential': 0.,
-	'barrier height': 0.
-    }
-}
-
-parameters['substitutionals'] = (
-    {
-	'name': "c1",
-	'diffusivity': 1.,
-	'standard potential': 1.,
-	'barrier height': 1.
-    },
-    {
-	'name': "c2",
-	'diffusivity': 1.,
-	'standard potential': 1.,
-	'barrier height': 1.
-    }
-)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-fields['substitutionals'][0].setValue(0.3)
-fields['substitutionals'][0].setValue(0.6,setCells)
-fields['substitutionals'][1].setValue(0.6)
-fields['substitutionals'][1].setValue(0.3,setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
-
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = fields['substitutionals'])
-
-    viewer.plot()
-	
-    raw_input("press <return> to start...")
+    ## from fipy.tools.profiler.profiler import Profiler
+    ## from fipy.tools.profiler.profiler import calibrate_profiler
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    # it.timestep(50)
-    # 
-    # for timestep in range(5):
-    #     it.sweep(50)
-    #     it.advanceTimeStep
-
-
-    for i in range(40):
-	it.timestep(dt = parameters['time step duration'])
-    #     raw_input()
-	
-	viewer.plot()
-	
+    import doctest
+    doctest.testmod()
+    
     # profile.stop()
 	    
     raw_input("finished")

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/15/04 {11:46:58 AM} 
+ #                                last update: 10/26/04 {8:23:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,8 +42,9 @@
 
 r"""
 
-In this example a phase equation is solved in one dimension with a
-missorientation present. The phase equation is given by:
+In this example, a phase equation is solved in one dimension with a
+missorientation between two solid domains. 
+The phase equation is given by:
 
 .. raw:: latex
 

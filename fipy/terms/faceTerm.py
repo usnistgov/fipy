@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:41:44 PM} 
+ #                                last update: 10/26/04 {1:15:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,8 +48,6 @@ import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
-## from fipy.viewers.gist1DViewer import Gist1DViewer
-
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
 	Term.__init__(self, mesh = mesh, weight = weight)
@@ -76,10 +74,10 @@ class FaceTerm(Term):
 	    
 ## 	import fipy.terms.convectionTerm
 ## 	if isinstance(self, fipy.terms.convectionTerm.ConvectionTerm):
-## 	    self.coeffViewer = Gist1DViewer(vars = (self.coeff,), title = "stupid", minVal = -1000, maxVal = 1000)
+## 	    from fipy.viewers.gist1DViewer import Gist1DViewer
+## 	    self.coeffViewer = Gist1DViewer(vars = (self.coeff,), title = "stupid")
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
-
 	L.addAt(array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
 	L.addAt(array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
 	L.addAt(array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/15/04 {9:25:07 AM} { 5:14:21 PM}
+ #                                last update: 10/25/04 {10:01:32 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,21 @@
 
 r"""
 
-In this example we solve a coupled phase and temperature equation to
-model solidification and eventually dendritic growth. Dendritic growth will
-not be observed with this small test system. If you wish to see dendritic growth
-reset the following parameters: ``numberOfCells = 200``, ``steps = 10000``, 
+In this example we solve a coupled phase and temperature equation to model 
+solidification, and eventually dendritic growth, from a circular seed in a 2D mesh:
+    
+>>> numberOfCells = 40
+>>> Length = numberOfCells * 2.5 / 100.
+>>> nx = numberOfCells
+>>> ny = numberOfCells
+>>> dx = Length / nx
+>>> dy = Length / ny
+>>> radius = Length / 4.
+>>> from fipy.meshes.grid2D import Grid2D
+>>> mesh = Grid2D(dx,dy,nx,ny)
+    
+Dendritic growth will not be observed with this small test system. If you wish to see 
+dendritic growth reset the following parameters: ``numberOfCells = 200``, ``steps = 10000``, 
 ``radius = Length / 80``.
 
 The governing equation for the phase field is given by:
@@ -73,51 +84,157 @@ and the governing equation for temperature is given by:
     "Extending Phase Field Models of Solidification to Polycrystalline
     Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
 
-Here the phase and temperature equations are solved with an explicit and implicit technique respectively.
+Here the phase and temperature equations are solved with an explicit and implicit technique, 
+respectively.
 
-The parameters for these equations are given in `phaseParameters` and
-`temperatureParameters`. The variable `theta` represents the
-orientation of the crystal. Here it is constant and thus does not
-affect the solution. The `phase` variable is 0 for a liquid and 1 for
-a solid.  Here we build an example `phaseVar`, initialized with a zero
-value,
+The parameters for these equations are 
 
-   >>> phaseVar = CellVariable(
-   ...     name = 'PhaseField',
-   ...     mesh = mesh,
-   ...     value = 0.,
-   ...     hasOld = 1)
+    >>> timeStepDuration = 5e-5
+    >>> phaseParameters = {
+    ...     'tau'                   : 3e-4,
+    ...     'epsilon'               : 0.008,
+    ...     's'                     : 0.01,
+    ...     'alpha'                 : 0.015,
+    ...     'anisotropy'            : 0.02,
+    ...     'symmetry'              : 4.,
+    ...     'kappa 1'               : 0.9,
+    ...     'kappa 2'               : 20.
+    ...     }
+    >>> temperatureParameters = {
+    ...     'timeStepDuration' : timeStepDuration,
+    ...     'temperature diffusion' : 2.25,
+    ...     'latent heat'           : 1.,
+    ...     'heat capacity'         : 1.
+    ...     }
 
-The `hasOld` flag keeps the old value of the variable. This is
-necessary for a transient solution. In this example we wish to set up
-an interior region that is solid. A value of 1 if given to the `phase`
-variable on a patch defined by the method `circleCells`. This method
-is passed to `mesh.getCells(filter = circleCells)` which filters out
+The variable `theta` represents the orientation of the crystal. In this example, 
+it is constant and thus does not affect the solution. 
+
+    >>> from fipy.models.phase.theta.modularVariable import ModularVariable
+    >>> theta = ModularVariable(
+    ...     name = 'Theta',
+    ...     mesh = mesh
+    ...     )
+
+The `phase` variable is `0` for a liquid and `1` for a solid.  Here we build an 
+example `phase` variable, initialized as a liquid,
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> phase = CellVariable(
+    ...     name = 'PhaseField',
+    ...     mesh = mesh,
+    ...     value = 0.,
+    ...     hasOld = 1)
+
+The `hasOld` flag keeps the old value of the variable. This is necessary for a 
+transient solution. In this example we wish to set up an interior region that 
+is solid. A value of `1` is assigned to the `phase` variable on a patch defined 
+by the method:
+
+    >>> def circleCells(cell,L = Length):
+    ...     x = cell.getCenter()
+    ...     r = radius
+    ...     c = (Length / 2., Length / 2.)
+    ...     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+    ...         return 1
+    ...     else:
+    ...         return 0
+   
+This method is passed to `mesh.getCells(filter = circleCells)` which filters out
 the required cells.
+   
+    >>> interiorCells = mesh.getCells(filter = circleCells)           
+    >>> phase.setValue(1.,interiorCells)
 
-   >>> def circleCells(cell,L = Length):
-   ...     x = cell.getCenter()
-   ...     r = radius
-   ...     c = (Length / 2., Length / 2.)
-   ...     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-   ...         return 1
-   ...     else:
-   ...         return 0
-   >>> interiorCells = mesh.getCells(filter = circleCells)           
-   >>> phaseVar.setValue(1.,interiorCells)
+The temperature field is initialized to a value of `-0.4` throughout:
 
-The `phaseEquation` requires a `mPhi` instantiator. Here we use
-`Type2MPhiVariable` as outlined in the above equations. To compare
-with the test result the problem is iterated for `steps = 10` time
-steps.
+    >>> temperature = CellVariable(
+    ...     name = 'Theta',
+    ...     mesh = mesh,
+    ...     value = -0.4,
+    ...     hasOld = 1
+    ...     )
+	
+..
 
-   >>> steps = 10
-   >>> for i in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+For both equations, zero flux boundary conditions apply to the exterior of the mesh
 
-The solution is compared with test data. The test data was created
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
+
+The `phase` equation requires a `mPhi` instantiator to represent
+
+.. raw:: latex
+
+   $m_2(\phi, T)$
+
+above
+
+    >>> from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable
+
+The `phase` equation is solved with an iterative conjugate gradient solver 
+
+    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+
+and requires access to the `theta` and `temperature` variables
+
+    >>> from fipy.models.phase.phase.phaseEquation import PhaseEquation
+    >>> phaseEq = PhaseEquation(
+    ...     phase,
+    ...     mPhi = Type2MPhiVariable,
+    ...         solver = LinearPCGSolver(
+    ...         tolerance = 1.e-15,
+    ...         steps = 1000
+    ...     ),
+    ...     boundaryConditions=(boundaryCondition,),
+    ...     parameters = phaseParameters,
+    ...     fields = {
+    ...         'theta' : theta,
+    ...         'temperature' : temperature
+    ...     }
+    ...     )
+	
+The `temperature` equation is also solved with an iterative conjugate gradient solver  
+and requires access to the `phase` variable
+
+    >>> from fipy.models.phase.temperature.temperatureEquation import TemperatureEquation
+    >>> temperatureEq = TemperatureEquation(
+    ...     temperature,
+    ...     solver = LinearPCGSolver(
+    ...         tolerance = 1.e-15, 
+    ...         steps = 1000
+    ...     ),
+    ...     boundaryConditions=(boundaryCondition,),
+    ...     parameters = temperatureParameters,
+    ...     fields = {
+    ...         'phase' : phase
+    ...     }
+    ...     )
+
+If we are running this example interactively, we create viewers for the phase 
+and temperature fields
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     phaseViewer = Grid2DGistViewer(var = phase)
+    ...     temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
+    ...     phaseViewer.plot()
+    ...     temperatureViewer.plot()
+
+we iterate the solution in time, plotting as we go if running interactively,
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((phaseEq, temperatureEq))
+    >>> steps = 10
+    >>> for i in range(steps):
+    ...     it.timestep(dt = timeStepDuration)
+    ...     if i%10 == 0 and __name__ == '__main__':
+    ...         phaseViewer.plot()
+    ...         temperatureViewer.plot()
+
+The solution is compared with test data. The test data was created for ``steps = 10``
 with a FORTRAN code written by Ryo Kobayshi for phase field
-modeling. The following code opens the file `test.gz` extracts the
+modeling. The following code opens the file ``test.gz`` extracts the
 data and compares it with the `phase` variable.
 
    >>> import os
@@ -138,129 +255,9 @@ data and compares it with the `phase` variable.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable
-from fipy.models.phase.phase.phaseEquation import PhaseEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.phase.theta.modularVariable import ModularVariable
-from fipy.models.phase.temperature.temperatureEquation import TemperatureEquation
-
-timeStepDuration = 5e-5
-steps = 10
-
-phaseParameters = {
-    'tau'                   : 3e-4,
-    'epsilon'               : 0.008,
-    's'                     : 0.01,
-    'alpha'                 : 0.015,
-    'anisotropy'            : 0.02,
-    'symmetry'              : 4.,
-    'kappa 1'               : 0.9,
-    'kappa 2'               : 20.
-    }
-
-temperatureParameters = {
-    'timeStepDuration' : timeStepDuration,
-    'temperature diffusion' : 2.25,
-    'latent heat'           : 1.,
-    'heat capacity'         : 1.
-    }
-
-
-numberOfCells = 40
-Length = numberOfCells * 2.5 / 100.
-nx = numberOfCells
-ny = numberOfCells
-dx = Length / nx
-dy = Length / ny
-radius = Length / 4.
-
-mesh = Grid2D(dx,dy,nx,ny)
-
-phase = CellVariable(
-    name = 'PhaseField',
-    mesh = mesh,
-    value = 0.,
-    hasOld = 1
-    )
-        
-theta = ModularVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = 0.,
-    hasOld = 0
-    )
-        
-temperature = CellVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = -0.4,
-    hasOld = 1
-    )
-        
-phaseFields = {
-    'theta' : theta,
-    'temperature' : temperature
-    }
-        
-temperatureFields = {
-    'phase' : phase
-    }
-        
-def circleCells(cell):
-    x = cell.getCenter()
-    r = radius
-    c = (Length / 2., Length / 2.)
-    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-        return 1
-    else:
-        return 0
-            
-interiorCells = mesh.getCells(filter = circleCells)
-            
-phase.setValue(1.,interiorCells)
-        
-phaseEq = PhaseEquation(
-    phase,
-    mPhi = Type2MPhiVariable,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15,
-    steps = 1000
-    ),
-    boundaryConditions=(FixedFlux(mesh.getExteriorFaces(), 0.),),
-    parameters = phaseParameters,
-    fields = phaseFields
-    )
-        
-temperatureEq = TemperatureEquation(
-    temperature,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(FixedFlux(mesh.getExteriorFaces(), 0.),),
-    parameters = temperatureParameters,
-    fields = temperatureFields
-    )
-
-it = Iterator((phaseEq, temperatureEq))
-
 if __name__ == '__main__':
-    phaseViewer = Grid2DGistViewer(var = phase)
-    temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
-    phaseViewer.plot()
-    temperatureViewer.plot()
-
-    for i in range(steps):
-        it.timestep(dt = timeStepDuration)
-        if i%10 == 0:
-            phaseViewer.plot()
-            temperatureViewer.plot()
+    import doctest
+    doctest.testmod()
 
     raw_input('finished')
 

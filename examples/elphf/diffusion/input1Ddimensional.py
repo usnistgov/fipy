@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:15:07 PM} 
+ #                                last update: 10/26/04 {10:15:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,114 +41,115 @@
  ##
 
 """ 
-The same three-component diffusion problem as introduced in::
+In this example, we present the same three-component diffusion problem 
+introduced in::
     
     $ examples/elphf/input1D.py
     
-but with dimensional quantities.
+but we demonstrate FiPy's facility to use dimensional quantities.
 
-We iterate to equilibrium
+    >>> from fipy.tools.dimensions.physicalField import PhysicalField
 
-    >>> for step in range(40):
-    ...     it.timestep(dt = 10000)
+We solve the problem on a 40 mm long 1D mesh
+
+    >>> nx = 40
+    >>> dx = PhysicalField(1.,"mm")
+    >>> ny = 1
+    >>> dy = 1
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+The dimensional parameters for this problem are
+
+    >>> parameters = {
+    ...     'time step duration': "1000 s",
+    ...     'solvent': {
+    ...         'standard potential': 0.,
+    ...         'barrier height': 0.
+    ...     }
+    ... }
+
+    >>> parameters['substitutionals'] = (
+    ...     {
+    ...         'name': "c1",
+    ...         'diffusivity': "1.e-9 m**2/s",
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     },
+    ...     {
+    ...         'name': "c2",
+    ...         'diffusivity': "1.e-9 m**2/s",
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     }
+    ... )
+
+We use ElPhF to create the variable fields
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
     
-and verify that the concentrations have become uniform
+and we separate the solution domain into two different concentration regimes
+    
+    >>> setCells = mesh.getCells(filter = lambda cell: 
+    ...                          cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2)
+    >>> fields['substitutionals'][0].setValue("0.3 mol/m**3")
+    >>> fields['substitutionals'][0].setValue("0.6 mol/m**3",setCells)
+    >>> fields['substitutionals'][1].setValue("0.6 mol/m**3")
+    >>> fields['substitutionals'][1].setValue("0.3 mol/m**3",setCells)
 
-    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3", \\
+We use ElPhF again to create the governing equations for the fields
+
+    >>> equations = elphf.makeEquations(mesh = mesh, 
+    ...                                 fields = fields, 
+    ...                                 parameters = parameters
+    ... )
+    
+If we are running interactively, we create a viewer to see the results 
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = fields['substitutionals'])
+    ...     viewer.plot()
+
+Now, we iterate the problem to equilibrium, plotting as we go
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator(equations = equations)
+    >>> for i in range(40):
+    ...     it.timestep(dt = 10000)
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
+
+Since there is nothing to maintain the concentration separation in this problem, 
+we verify that the concentrations have become uniform
+
+    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3", \\
+    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
+    
+.. note::
+    
+   The absolute tolerance `atol` must be in units compatible with the value to 
+   be checked, but the relative tolerance `rtol` is dimensionless.
 """
 __docformat__ = 'restructuredtext'
- 
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.iterators.iterator import Iterator
-
-from fipy.tools.dimensions.physicalField import PhysicalField
-
-import fipy.models.elphf.elphf as elphf
-
-
-## from elphfIterator import ElPhFIterator
-
-nx = 40
-dx = PhysicalField(1.,"mm")
-L = nx * dx
-
-mesh = Grid2D(
-    dx = dx,
-    dy = 1.,
-    nx = nx,
-    ny = 1)
-    
-parameters = {
-    'time step duration': "1e3 s",
-    'solvent': {
-	'standard potential': 0.,
-	'barrier height': 0.
-    }
-}
-
-parameters['substitutionals'] = (
-    {
-	'name': "c1",
-	'diffusivity': "1.e-9 m**2/s",
-	'standard potential': 1.,
-	'barrier height': 1.
-    },
-    {
-	'name': "c2",
-	'diffusivity': "1.e-9 m**2/s",
-	'standard potential': 1.,
-	'barrier height': 1.
-    }
-)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2)
-fields['substitutionals'][0].setValue(PhysicalField(0.3,"mol/m**3"))
-fields['substitutionals'][0].setValue(PhysicalField(0.6,"mol/m**3"),setCells)
-fields['substitutionals'][1].setValue(PhysicalField(0.6,"mol/m**3"))
-fields['substitutionals'][1].setValue(PhysicalField(0.3,"mol/m**3"),setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = fields['substitutionals'])
-
-    viewer.plot()
-	
-    raw_input("press <return> to start...")
+    ## from fipy.tools.profiler.profiler import Profiler
+    ## from fipy.tools.profiler.profiler import calibrate_profiler
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    # it.timestep(50)
-    # 
-    # for timestep in range(5):
-    #     it.sweep(50)
-    #     it.advanceTimeStep
-
-
-    for i in range(40):
-	it.timestep()
-    #     raw_input()
-	
-	viewer.plot()
-	
+    import doctest
+    doctest.testmod()
+    
     # profile.stop()
 	    
     raw_input("finished")

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:13:47 PM} 
+ #                                last update: 10/26/04 {8:45:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,10 +61,66 @@ where
    $\kappa_\xi$ is the phase field gradient energy coefficient, and
    $W$ is the phase field barrier energy.
    
-We iterate to equilibrium
+We solve the problem on a 1D mesh
 
-    >>> for i in range(40):
-    ...     it.timestep()
+    >>> nx = 400
+    >>> dx = 0.01
+    >>> ny = 1
+    >>> dy = dx
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+Rather than rewriting the same code in every electrochemistry example, 
+we use the ElPhF module
+
+    >>> import fipy.models.elphf.elphf as elphf
+
+to build the approriate variable fields from
+
+    >>> parameters = {
+    ...     'time step duration': 10000,
+    ...     'phase': {
+    ... 	    'name': "xi",
+    ... 	    'mobility': 1.,
+    ... 	    'gradient energy': 0.025,
+    ... 	    'value': 1.
+    ...     },
+    ...     'solvent': {
+    ... 	    'standard potential': 0.,
+    ... 	    'barrier height': 1.
+    ...     }
+    ... }
+    
+    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
+
+We separate the phase field into electrode and electrolyte regimes
+
+    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> fields['phase'].setValue(1.)
+    >>> fields['phase'].setValue(0.,setCells)
+
+We use the ElPhF module again to create governing equations from the fields
+
+    >>> equations = elphf.makeEquations(mesh = mesh, 
+    ...                                 fields = fields, 
+    ...                                 parameters = parameters)
+
+If we are running interactively, we will want to see the results
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = (fields['phase'],))
+    ...     viewer.plot()
+
+Now, we iterate to equilibrium, plotting as we go
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator(equations = equations)
+    >>> for i in range(50):
+    ...     it.timestep(1)
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
 
 The phase field has the expected analytical form
 
@@ -76,13 +132,13 @@ where the interfacial thickness is given by
 
 .. raw:: latex
 
-   $$ d = \sqrt{\frac{\kappa_{\xi}}{W}} $$
+   $ d = \sqrt{\kappa_{\xi}/W} $.
    
 We verify that the correct equilibrium solution is attained
 
-    >>> import Numeric
-    
     >>> x = mesh.getCellCenters()[:,0]
+    
+    >>> import Numeric
     >>> d = Numeric.sqrt(parameters['phase']['gradient energy']
     ...     / (parameters['solvent']['barrier height']))
     >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2.*d))) / 2.
@@ -92,68 +148,16 @@ We verify that the correct equilibrium solution is attained
 """
 __docformat__ = 'restructuredtext'
 
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.iterators.iterator import Iterator
-
-import fipy.models.elphf.elphf as elphf
-
-nx = 400
-dx = 0.01
-L = nx * dx
-
-parameters = {
-    'time step duration': 10000,
-    'phase': {
-	'name': "xi",
-	'mobility': 1.,
-	'gradient energy': 0.025,
-	'value': 1.
-    },
-    'solvent': {
-	'standard potential': 0.,
-	'barrier height': 1.
-    }
-}
-
-mesh = Grid2D(
-    dx = dx,
-    dy = dx,
-    nx = nx,
-    ny = 1)
-    
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-fields['phase'].setValue(1.)
-fields['phase'].setValue(0.,setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
-
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = (fields['phase'],))
+##     from fipy.tools.profiler.profiler import Profiler
+##     from fipy.tools.profiler.profiler import calibrate_profiler
 
-    viewer.plot()
-	
-    raw_input("press <return> to start...")
+    import doctest
+    doctest.testmod()
 
 ##     fudge = calibrate_profiler(10000)
 ##     profile = Profiler('profile', fudge=fudge)
 
-    for i in range(50):
-	it.timestep(1)
-	
-	viewer.plot()
-	
 ##     profile.stop()
 	    
     raw_input("finished")

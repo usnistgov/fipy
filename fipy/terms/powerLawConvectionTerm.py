@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:30:17 PM} 
+ #                                last update: 10/26/04 {11:45:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

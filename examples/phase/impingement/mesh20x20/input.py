@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {8:26:23 AM}
+ #                                last update: 10/26/04 {8:20:48 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,8 +46,18 @@ In this example we solve the same set of equations as in::
     
     $ examples/phase/impingement/mesh40x1/input.py
     
-with different initial conditions and mesh size.  The initial conditions
-are given by
+with different initial conditions and a 2D mesh:
+
+    >>> nx = 20
+    >>> ny = 20
+    >>> Lx = 2.5 * nx / 100.
+    >>> Ly = 2.5 * ny / 100.            
+    >>> dx = Lx / nx
+    >>> dy = Ly / ny
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx,dy,nx,ny)
+
+The initial conditions are given by
 
 .. raw:: latex
 
@@ -60,16 +70,164 @@ are given by
     \frac{2 \pi}{3} & \text{for $(x-L)^2 - (y-L)^2 < L / 2$.}
     \end{cases} $$
 
-
 This defines four solid regions with different
 orientations. Solidification occurs and then boundary wetting occurs
 where the orientation varies.
 
-   >>> for i in range(steps):        
-   ...     it.timestep(dt = timeStepDuration)
+The parameters for this example are
 
-The solution is compared with test data. The test data was created
-with a FORTRAN code written by Ryo Kobayshi for phase field
+    >>> timeStepDuration = 0.02
+    >>> phaseParameters = {
+    ...    'tau'                   : 0.1,
+    ...    'time step duration'    : timeStepDuration
+    ...     }
+    >>> thetaParameters = {
+    ...     'small value'           : 1e-6,
+    ...     'beta'                  : 1e5,
+    ...     'mu'                    : 1e3,
+    ...     'tau'                   : 0.01,
+    ...     'gamma'                 : 1e3 
+    ...     }
+
+with the shared parameters
+
+    >>> sharedPhaseThetaParameters = {
+    ...     'epsilon'               : 0.008,
+    ...     's'                     : 0.01,
+    ...     'anisotropy'            : 0.0,
+    ...     'alpha'                 : 0.015,
+    ...     'symmetry'              : 4.
+    ...     }
+    >>> for key in sharedPhaseThetaParameters.keys():
+    ...     phaseParameters[key] = sharedPhaseThetaParameters[key]
+    ...     thetaParameters[key] = sharedPhaseThetaParameters[key]
+
+This time, the system is held isothermal at
+
+    >>> temperature = 10.
+    
+and is initialized to liquid everywhere
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> phase = CellVariable(
+    ...     name = 'PhaseField',
+    ...     mesh = mesh,
+    ...     value = 0.
+    ...     )
+
+The orientation is initialized to a uniform value to denote the randomly 
+oriented liquid phase
+
+    >>> from Numeric import pi
+    >>> from fipy.models.phase.theta.modularVariable import ModularVariable
+    >>> theta = ModularVariable(
+    ...     name = 'Theta',
+    ...     mesh = mesh,
+    ...     value = -pi + 0.0001,
+    ...     hasOld = 1
+    ...     )
+
+Four different solid circular domains are created at each corner of the domain 
+with appropriate orientations
+
+    >>> def cornerCircle(cell):
+    ...     x = cell.getCenter()[0]
+    ...     y = cell.getCenter()[1]
+    ...     if ((x - a)**2 + (y - b)**2) < (Lx / 2.)**2:
+    ...         return 1
+    ...     else:
+    ...         return 0
+    
+    >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
+    ...                          (Lx, 0., -2. * pi / 3.), 
+    ...                          (0., Ly, -2. * pi / 3. + 0.3), 
+    ...                          (Lx, Ly,  2. * pi / 3.)):
+    ...     cells = mesh.getCells(filter = cornerCircle)
+    ...     phase.setValue(1., cells)
+    ...     theta.setValue(thetaValue, cells)
+
+For both equations, zero flux boundary conditions apply to the exterior of the mesh
+
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
+    
+The `phase` equation requires a `mPhi` instantiator to represent
+
+.. raw:: latex
+
+   $m_1(\phi, T)$
+
+above
+
+    >>> from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
+
+The `phase` equation is solved with an iterative conjugate gradient solver 
+
+    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+
+and requires access to the `theta` and `temperature` variables
+
+    >>> from fipy.models.phase.phase.phaseEquation import PhaseEquation
+    >>> phaseEq = PhaseEquation(
+    ...     phase,
+    ...     mPhi = Type1MPhiVariable,
+    ...     solver = LinearPCGSolver(
+    ...         tolerance = 1.e-15,
+    ...         steps = 1000
+    ...     ),
+    ...     boundaryConditions=(boundaryCondition,),
+    ...     parameters = phaseParameters,
+    ...     fields = {
+    ...         'theta' : theta,
+    ...         'temperature' : temperature
+    ...     }
+    ...     )
+
+The `theta` equation is also solved with an iterative conjugate gradient solver  
+and requires access to the `phase` variable
+
+    >>> from fipy.models.phase.theta.thetaEquation import ThetaEquation
+    >>> thetaEq = ThetaEquation(
+    ...     var = theta,
+    ...     solver = LinearPCGSolver(
+    ... 	    tolerance = 1.e-15, 
+    ... 	    steps = 2000
+    ...     ),
+    ...     boundaryConditions = (boundaryCondition,),
+    ...     parameters = thetaParameters,
+    ...     fields = {
+    ...         'phase' : phase
+    ...     }
+    ...     )
+
+If the example is run interactively, we create viewers for the phase and 
+orientation variables. Rather than viewing the raw orientation, which is not 
+meaningful in the liquid phase, we weight the orientation by the phase
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', 
+    ...                                    minVal = 0., maxVal = 1., grid = 0)
+    ...     from Numeric import pi
+    ...     thetaProd = -pi + phase * (theta + pi)
+    ...     thetaProductViewer = Grid2DGistViewer(var = thetaProd , palette = 'rainbow.gp', 
+    ...                                           minVal = -pi, maxVal = pi, grid = 0)
+    ...     phaseViewer.plot()
+    ...     thetaProductViewer.plot()
+
+we iterate the solution in time, plotting as we go if running interactively,
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((thetaEq, phaseEq))
+    >>> steps = 10
+    >>> for i in range(steps):
+    ...     it.timestep(dt = timeStepDuration)
+    ...     if __name__ == '__main__':
+    ...         phaseViewer.plot()
+    ... 	thetaProductViewer.plot()
+
+The solution is compared with test data. The test data was created with 
+``steps = 10`` with a FORTRAN code written by Ryo Kobayshi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 
@@ -87,151 +245,11 @@ data and compares it with the `theta` variable.
    >>> testData = Numeric.reshape(testData, theta.shape)
    >>> Numeric.allclose(theta, testData, rtol = 1e-10, atol = 1e-10)
    1
-
-
 """
 __docformat__ = 'restructuredtext'
-##from __future__ import nested_scopes
-
-import Numeric
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fipy.models.phase.phase.phaseEquation import PhaseEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.phase.theta.modularVariable import ModularVariable
-from fipy.models.phase.theta.thetaEquation import ThetaEquation
-
-nx = 20
-ny = 20
-steps = 10
-temperature = 10.
-
-timeStepDuration = 0.02
-
-sharedPhaseThetaParameters = {
-    'epsilon'               : 0.008,
-    's'                     : 0.01,
-    'anisotropy'            : 0.0,
-    'alpha'                 : 0.015,
-    'symmetry'              : 4.
-    }
-
-phaseParameters = {
-    'tau'                   : 0.1,
-    'time step duration'    : timeStepDuration
-    }
-
-thetaParameters = {
-    'small value'           : 1e-6,
-    'beta'                  : 1e5,
-    'mu'                    : 1e3,
-    'tau'                   : 0.01,
-    'gamma'                 : 1e3 
-    }
-
-for key in sharedPhaseThetaParameters.keys():
-    phaseParameters[key] = sharedPhaseThetaParameters[key]
-    thetaParameters[key] = sharedPhaseThetaParameters[key]
-            
-Lx = 2.5 * nx / 100.
-Ly = 2.5 * ny / 100.            
-dx = Lx / nx
-dy = Ly / ny
-
-mesh = Grid2D(dx,dy,nx,ny)
-
-pi = Numeric.pi
-        
-phase = CellVariable(
-    name = 'PhaseField',
-    mesh = mesh,
-    value = 0.
-    )
-
-theta = ModularVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = -pi + 0.0001,
-    hasOld = 1
-    )
-
-circleCenters = ((0., 0.), (Lx, 0.), (0., Ly), (Lx, Ly))
-thetaValues = (2. * pi / 3., -2. * pi / 3., -2. * pi / 3. + 0.3, 2. * pi / 3.)
-
-for i in range(len(thetaValues)):
-
-    (a, b) = circleCenters[i]
-    
-    def circle(cell):
-        x = cell.getCenter()[0]
-        y = cell.getCenter()[1]
-        if ((x - a)**2 + (y - b)**2) < (Lx / 2.)**2:
-            return 1
-        else:
-            return 0
-
-    cells = mesh.getCells(filter = circle)
-
-    phase.setValue(1., cells)
-    theta.setValue(thetaValues[i], cells)
-        
-
-
-thetaProd = -pi + phase * (theta + pi)
-        
-phaseFields = {
-    'theta' : theta,
-    'temperature' : temperature
-    }
-        
-thetaFields = {
-    'phase' : phase
-    }
-
-thetaEq = ThetaEquation(
-    var = theta,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 2000
-    ),
-    boundaryConditions = (
-    FixedFlux(mesh.getExteriorFaces(), 0.),
-    ),
-    parameters = thetaParameters,
-    fields = thetaFields
-    )
-        
-phaseEq = PhaseEquation(
-    var = phase,
-    mPhi = Type1MPhiVariable,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions = (
-    FixedFlux(mesh.getExteriorFaces(), 0.),
-    ),
-    parameters = phaseParameters,
-    fields = phaseFields
-    )
-        
-it = Iterator((thetaEq, phaseEq))
 
 if __name__ == '__main__':
-    phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
-    thetaProductViewer = Grid2DGistViewer(var = thetaProd , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)    
-    phaseViewer.plot()
-    thetaProductViewer.plot()
-
-    for i in range(steps):
-        it.timestep(dt = timeStepDuration)
-        phaseViewer.plot()
-        thetaProductViewer.plot()
+    import doctest
+    doctest.testmod()
 
     raw_input('finished')

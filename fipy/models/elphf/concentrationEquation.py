@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:29:48 PM} 
+ #                                last update: 10/26/04 {1:22:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ class ConcentrationEquation(RelaxationEquation):
 	    boundaryConditions = boundaryConditions)
         
 	convectionTerm = convectionScheme(
-	    convCoeff = self.getConvectionCoeff(Cj, fields, relaxation),
+	    convCoeff = self.getConvectionCoeff(Cj, fields),
 	    mesh = mesh, 
 	    boundaryConditions = boundaryConditions,
 	    diffusionTerm = diffusionTerm)

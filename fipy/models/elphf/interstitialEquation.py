@@ -6,7 +6,7 @@
  # 
  #  FILE: "interstitialEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:41:33 PM} 
+ #                                last update: 10/26/04 {1:13:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
