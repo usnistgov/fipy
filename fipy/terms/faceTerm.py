@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/7/04 {5:18:42 PM} 
+ #                                last update: 12/13/04 {2:59:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,7 +138,7 @@ class FaceTerm(Term):
     def getOldAdjacentValues(self, oldArray, id1, id2, dt):
 	return array.take(oldArray, id1), array.take(oldArray, id2)
 
-    def buildMatrix(self, var, boundaryConditions, dt):
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	"""Implicit portion considers
 	"""
 

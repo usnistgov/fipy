@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 10/19/04 {12:18:57 PM} 
+ #                                last update: 12/13/04 {4:52:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,14 +71,16 @@ Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(1., 1., 2, 1)
-   >>> term = NthOrderDiffusionTerm((1,), mesh, ())
-   >>> print term.getCoefficientMatrix()
-    1.000000  -1.000000  
+   >>> term = NthOrderDiffusionTerm(coeffs = (1,))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
-   >>> L,b = term.buildMatrix((0,0), 1., 1.)
+    1.000000  -1.000000  
+   >>> from fipy.variables.cellVariable import CellVariable
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh))
    >>> print L
-    1.000000  -1.000000  
    -1.000000   1.000000  
+    1.000000  -1.000000  
    >>> print b
    [ 0., 0.,]
 
@@ -88,16 +90,17 @@ Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> bcLeft = FixedFlux(mesh.getFacesLeft(), 3.)
    >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
-   >>> term = NthOrderDiffusionTerm((1.,), mesh, (bcLeft, bcRight))
-   >>> print term.getCoefficientMatrix()
-    1.000000  -1.000000  
+   >>> term = NthOrderDiffusionTerm(coeffs = (1.,))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
-   >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
-   >>> print L
     1.000000  -1.000000  
-   -1.000000   3.000000  
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), boundaryConditions = (bcLeft, bcRight))
+   >>> print L
+   -1.000000   1.000000  
+    1.000000  -3.000000  
    >>> print b
-   [ 3., 8.,]
+   [-3.,-8.,]
 
 Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
 x = 2, fixed value 1, fixed curvature 0
@@ -107,73 +110,78 @@ x = 2, fixed value 1, fixed curvature 0
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2)
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
-   >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print term.getCoefficientMatrix()
+   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
     1.000000  -1.000000  
-   >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
+   ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print L
-   -4.000000   6.000000  
-    4.000000  -10.000000 
+    4.000000  -6.000000  
+   -4.000000  10.000000  
    >>> print b
-   [ -1.,-21.,]
+   [  1., 21.,]
 
 Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
 x = 2, fixed value 4, fixed 3rd order -1
 
    >>> bcLeft1 = FixedFlux(mesh.getFacesLeft(), 3.)
-   >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 2., 2)
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
-   >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print term.getCoefficientMatrix()
+   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
     1.000000  -1.000000  
-   >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
+   ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print L
-   -4.000000   6.000000  
-    2.000000  -4.000000  
+    4.000000  -6.000000  
+   -2.000000   4.000000  
    >>> print b
-   [ 3.,-4.,]
+   [-3., 4.,]
 
 Test when dx = 0.5.
 
    >>> mesh = Grid2D(dx = .5, dy = 1., nx = 2, ny = 1)
    >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
-   >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
-   >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print term.getCoefficientMatrix()
+   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -2.000000   2.000000  
     2.000000  -2.000000  
-   >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
+   ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print L
-   -8.00e+01  32.000000  
-   32.000000  -16.000000 
+    8.00e+01  -32.000000 
+   -32.000000 16.000000  
    >>> print b
-   [ 8.,-4.,]
+   [-8., 4.,]
 
 Test when dx = 0.25.
 
    >>> mesh = Grid2D(dx = .25, dy = 1., nx = 2, ny = 1)
    >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
-   >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
-   >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print term.getCoefficientMatrix()
+   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> coeff = term.getCoeff(mesh)
+   >>> print term.getCoefficientMatrix(mesh, coeff)
    -4.000000   4.000000  
     4.000000  -4.000000  
-   >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
+   ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print L
-   -6.40e+02   2.56e+02  
-    2.56e+02  -1.28e+02  
+    6.40e+02  -2.56e+02  
+   -2.56e+02   1.28e+02  
    >>> print b
-   [ 24.,-16.,]
+   [-24., 16.,]
    
    
 """
@@ -190,46 +198,48 @@ import fipy.tools.array as array
 import fipy.tools.vector
 
 class NthOrderDiffusionTerm(Term):
-    def __init__(self, coeffs, mesh, boundaryConditions):
+    def __init__(self, coeffs):
 
 	self.order = len(coeffs) * 2
 
-##        if globalOrder is None:
-##            self.globalOrder = self.order
-##        else:
-##            self.globalOrder = globalOrder
-        
 	if len(coeffs) > 0:
-	    self.coeff = coeffs[0] * mesh.getFaceAreas() / mesh.getCellDistances()
+            self.nthCoeff = coeffs[0]
+	else:
+	    self.nthCoeff = None
+
+	Term.__init__(self)
+	
+	if self.order > 0:
+	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeffs = coeffs[1:])
+
+
+    def getBoundaryConditions(self, boundaryConditions):
+        higherOrderBCs = []
+        lowerOrderBCs = []
+        for bc in boundaryConditions:
+            bcDeriv = bc.getDerivative(self.order - 2)
+            if bcDeriv:
+                higherOrderBCs.append(bcDeriv)
+            else:
+                lowerOrderBCs.append(bc)
+                
+        return higherOrderBCs, lowerOrderBCs
+                
+    def calcCoeff(self, mesh):
+        if self.nthCoeff is not None:
+            self.coeff = -self.nthCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
             ## Added to change the sign so that all terms are added to
             ## the right hand side, without this the 4th order term is
             ## added to the left side of the equation.
-            if self.order % 4 == 0:
-                self.coeff = -self.coeff
-	else:
-	    self.coeff = None
-
-	self.boundaryConditions = []
-        lowerBoundaryConditions = []
-        for bc in boundaryConditions:
-            bcDeriv = bc.getDerivative(self.order - 2)
-	    if bcDeriv:
-		self.boundaryConditions.append(bcDeriv)
-	    else:
-		lowerBoundaryConditions.append(bc)
-            
-	Term.__init__(self, weight = None, mesh = mesh)
-	
-	N = mesh.getNumberOfCells()
-	if self.order > 0:
-	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeffs = coeffs[1:], mesh = mesh, boundaryConditions = lowerBoundaryConditions)
-
-    def getCoefficientMatrix(self):
-	mesh = self.getMesh()
-	
+##             if self.order % 4 == 0:
+##                 self.coeff = -self.coeff
+        else:
+            self.coeff = None
+        
+    def getCoefficientMatrix(self, mesh, coeff):
 	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh.getMaxFacesPerCell())
 
-	interiorCoeff = Numeric.array(self.coeff)
+	interiorCoeff = Numeric.array(coeff)
         
 	array.put(interiorCoeff, mesh.getExteriorFaceIDs(), 0)
         from fipy.variables.faceVariable import FaceVariable
@@ -239,44 +249,41 @@ class NthOrderDiffusionTerm(Term):
 
         ## divide through by the volume for each cell
 
-        interiorCoeff0 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
-        interiorCoeff1 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
+        interiorCoeff0 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
+        interiorCoeff1 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
         interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
-
-##        if self.globalOrder != self.order:
-##            vols = Numeric.array(mesh.getCellVolumes())
-##            contributions = contributions / vols[:,Numeric.NewAxis]
-##            interiorCoeff0 = interiorCoeff0 / Numeric.take(vols, interiorFaceCellIDs[:,0])
-##            interiorCoeff1 = interiorCoeff1 / Numeric.take(vols, interiorFaceCellIDs[:,1])
 
 	contributions = array.sum(contributions, 1)	
 	coefficientMatrix.addAtDiagonal(contributions)
         
-##	interiorCoeff1 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
-##	interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
-	
 	coefficientMatrix.addAt(interiorCoeff0, interiorFaceCellIDs[:,0], interiorFaceCellIDs[:,1])
 	coefficientMatrix.addAt(interiorCoeff1, interiorFaceCellIDs[:,1], interiorFaceCellIDs[:,0])
 	
 	return coefficientMatrix
 	
-    def buildMatrix(self, oldArray, coeffScale, varScale, dt = 1.):
-        N = self.getMesh().getNumberOfCells()
-        volumes = self.mesh.getCellVolumes()
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+        mesh = var.getMesh()
+        
+        N = mesh.getNumberOfCells()
+        volumes = mesh.getCellVolumes()
         if self.order > 0:
-           
-            coefficientMatrix = self.getCoefficientMatrix()
+            coeff = self.getCoeff(mesh)
+            
+            coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
 
             boundaryB = Numeric.zeros(N,'d')
                 
-            for boundaryCondition in self.boundaryConditions:
-                LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-                
-                coefficientMatrix.addAt(LL / coeffScale,ids,ids)
-                fipy.tools.vector.putAdd(boundaryB, ids, bb/(coeffScale * varScale))
-                
+            higherOrderBCs, lowerOrderBCs = self.getBoundaryConditions(boundaryConditions)
             
-            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(oldArray, coeffScale, varScale)
+            for boundaryCondition in higherOrderBCs:
+                LL,bb,ids = boundaryCondition.getContribution(coeff,-coeff)
+                
+                coefficientMatrix.addAt(LL, ids, ids)
+                fipy.tools.vector.putAdd(boundaryB, ids, bb)
+                
+            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(var = var, 
+                                                                                boundaryConditions = lowerOrderBCs, 
+                                                                                dt = dt)
 
             lowerOrderb = lowerOrderb / volumes
             volMatrix = SparseMatrix(size = N)
@@ -285,41 +292,25 @@ class NthOrderDiffusionTerm(Term):
     
             L = coefficientMatrix * lowerOrderL
 
-            iseven = not ((self.order / 2) % 2)
-            if iseven:
-                boundaryB = -boundaryB
+##             iseven = not ((self.order / 2) % 2)
+##             if iseven:
+##                 boundaryB = -boundaryB
 
-##            print "order",self.order
-##            print "coefficientMatrix",coefficientMatrix
-##            print "L",L
-##            print "lowerOrderL",lowerOrderL
-
+            print self
+            print coefficientMatrix
+            print "lowerOrderb:",lowerOrderb
+            print "boundaryB:",boundaryB
+            
             b = coefficientMatrix * lowerOrderb + boundaryB
-
-##            print "order",self.order
-##            print "coefficientMatrix",coefficientMatrix
-##            print "L",L
-##            print "lowerOrderL",lowerOrderL
-
-##            if self.globalOrder != self.order:
-##                volumes = self.mesh.getCellVolumes()
-##                b = b / volumes
-##                L = SparseMatrix(size = N).addAtDiagonal(1. / volumes ) * L
-    
+            
+            print "b:",b
         else:
-            N = self.getMesh().getNumberOfCells()
+            N = mesh.getNumberOfCells()
             L = SparseMatrix(size = N)
             L.addAtDiagonal(volumes)
         
-##            L = SparseIdentityMatrix(size = N)
             b = Numeric.zeros((N),'d')
             
-##        for boundaryCondition in self.boundaryConditions:
-##            LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-	    
-##            self.L.addAt(LL / coeffScale,ids,ids)
-##            fipy.tools.vector.putAdd(self.b, ids, bb/(coeffScale * varScale))
-
         return (L, b)
         
 def _test(): 

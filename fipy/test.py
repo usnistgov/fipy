@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:37:44 PM} 
+ #                                last update: 12/13/04 {2:35:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,7 @@ import fipy.tests.testProgram
 def suite():
     return LateImportTestSuite(testModuleNames = (
         'models.test',
+        'terms.test',
         'tools.test',
         'meshes.numMesh.test',
         'variables.test',

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 12/10/04 {5:02:02 PM} 
+ #                                last update: 12/13/04 {2:59:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,7 +95,7 @@ class CellTerm(Term):
 
 	L.addAtDiagonal(updatePyArray)
 
-    def buildMatrix(self, var, boundaryConditions, dt):
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	N = len(var)
 	b = Numeric.zeros((N),'d')
 	L = SparseMatrix(size = N)
