@@ -41,7 +41,7 @@ import os
 
 def write(data, fileName):
     fileStream = os.popen('gzip --fast -c > %s.gz' % (fileName), 'w')
-    cPickle.dump(data, fileStream, 1)
+    cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
 def read(fileName):

@@ -52,8 +52,8 @@ from fivol.meshes.grid2D import Grid2D
 from fivol.examples.phase.theta.modularVariable import ModularVariable
 
 class TestDump(unittest.TestCase):
-    def setUp(self):
-        mesh = Grid2D(1.23, 4.5, 5, 10)
+    def setUp(self, nx, ny):
+        mesh = Grid2D(1.23, 4.5, nx, ny)
         theta = ModularVariable(
             mesh = mesh,
             value = 100.0)
