@@ -235,6 +235,7 @@ class build_docs (Command):
 
 	    if self.guide:
 		os.system("pdflatex fipy")
+                os.system("bibtex fipy")
 		os.system("makeindex fipy")
 		os.system("pdflatex fipy")
 		
