@@ -9,6 +9,9 @@ Release goals 0.1
 
   * Manual and web site WERBed.
   * Review Process.
+  * Some of the pickled data for the test cases requires a
+    scipy installation and thus users without scipy have test failures.
+    This data should be independent of scipy???
 
 - Distribution:
 
