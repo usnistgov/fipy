@@ -501,9 +501,9 @@ to tell if something has changed or been broken.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.levelSet.electroChem
-   >>> gzfile = 'gunzip --fast -c < %s/%s'
-   >>> gzfile = gzfile%(examples.levelSet.electroChem.__path__[0], testFile)
-   >>> filestream=os.popen(gzfile,'r')
+   >>> import gzip
+   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], testFile)
+   >>> filestream = gzip.open(filepath,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
