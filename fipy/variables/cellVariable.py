@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/10/05 {3:20:10 PM} 
+ #                                last update: 3/17/05 {11:14:20 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -154,32 +154,6 @@ class CellVariable(Variable):
 
 	return self.faceGrad
 
-    def getLaplacian(self, order):
-	"""
-	order is even
-	"""
-	
-	if not self.laplacian.has_key(order):
-	    from fipy.variables.addOverFacesVariable import AddOverFacesVariable
-	    self.laplacian[order] = AddOverFacesVariable(self.getFaceDifference(order - 1))
-	    
-	return self.laplacian[order]
-
-	
-    def getFaceDifference(self, order):
-	"""
-	order is odd
-	"""
-	
-	if not self.faceDifferences.has_key(order):
-	    from fipy.variables.faceDifferenceVariable import FaceDifferenceVariable
-	    if order is 1:
-		self.faceDifferences[order] = FaceDifferenceVariable(self)
-	    else:
-		self.faceDifferences[order] = FaceDifferenceVariable(self.getLaplacian(order-1))
-	    
-	return self.faceDifferences[order]
-	
     def getOld(self):
 	if self.old is None:
 	    return self
