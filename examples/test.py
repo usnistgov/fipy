@@ -48,19 +48,19 @@ import unittest
 
 import fivol.tests.testProgram
 
-import fivol.examples.diffusion.test
-import fivol.examples.convection.test
-import fivol.examples.elphf.test
-import fivol.examples.phase.test
-import fivol.examples.levelSet.test
+import examples.diffusion.test
+import examples.convection.test
+import examples.elphf.test
+import examples.phase.test
+import examples.levelSet.test
 
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(fivol.examples.diffusion.test.suite())
-    theSuite.addTest(fivol.examples.convection.test.suite())
-    theSuite.addTest(fivol.examples.phase.test.suite())
-    theSuite.addTest(fivol.examples.elphf.test.suite())
+    theSuite.addTest(examples.diffusion.test.suite())
+    theSuite.addTest(examples.convection.test.suite())
+    theSuite.addTest(examples.phase.test.suite())
+    theSuite.addTest(examples.elphf.test.suite())
 ##    theSuite.addTest(fivol.examples.levelSet.test.suite())    
     
     return theSuite
