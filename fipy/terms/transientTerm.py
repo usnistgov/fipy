@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -52,6 +53,6 @@ class TransientTerm(cellTerm.CellTerm):
 	cells = self.equation.getMesh().getCells()
 	self.coeff = Numeric.zeros((len(cells)),'d')
 	for cell in cells:
-	    self.coeff[cell.id()] = self.tranCoeff * cell.volume() / dt
+	    self.coeff[cell.getId()] = self.tranCoeff * cell.volume() / dt
 	
 

@@ -41,6 +41,7 @@ they have been modified.
 """
 
 import faceTerm
+import Numeric
 
 class DiffusionTerm(faceTerm.FaceTerm):
     def __init__(self,equation,diffCoeff):
@@ -49,8 +50,9 @@ class DiffusionTerm(faceTerm.FaceTerm):
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):
-	faces = self.equation.mesh().faces()
-	self.coeff = Numeric.zeroes(len(faces),'d')
+        mesh=self.equation.getMesh()
+	faces = mesh.getFaces()
+	self.coeff = Numeric.zeros(len(faces),'d')
 	for face in faces:
 	    self.coeff[face.id()] = self.diffCoeff * face.area() / face.cellDistance()
 	

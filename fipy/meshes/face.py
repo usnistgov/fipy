@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -61,10 +62,29 @@ class Face:
 	return ctr
 	
     def area(self):
+        area=0.
+        crd0=self.vertices[0].getCoordinates()
+        crd1=self.vertices[1].getCoordinates()
+        for vertex in self.vertices[2:]:
+            crd2=self.vertices[1].getCoordinates()
+            t0=crd1-crd0
+            t1=crd2-crd1
+            area+=tools.crossProd(t1,t0)
+            crd0=crd1
+            crd1=crd2
+        return abs(area/2.)
+        
+        
 	
-	
-    def normal(self):
+    def normal(self):	
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
-	norm = tools.crossProd(t1,t2)
+	norm = tools.crossProd(t1,t2)	
 	
+
+    def cellDistance(self):
+        if(len(self.cells)==2):
+            vec=self.cells[1].center()-self.cells[0].center()
+        else:
+            vec=self.center()-self.cells[0].center()        
+        return tools.sqrtDot(vec,vec)

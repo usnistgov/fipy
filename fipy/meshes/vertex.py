@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -40,6 +41,8 @@ they have been modified.
 """
 
 class Vertex:
-	def __init__(self,coordinates):
-		self.coordinates = coordinates
-# 		faces = ()
+    def __init__(self,coordinates):
+        self.coordinates = coordinates
+
+    def getCoordinates(self):
+        return self.coordinates

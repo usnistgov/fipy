@@ -3,13 +3,11 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "cell.py"
-                                   created: 11/10/03 {3:23:11 PM} 
-                               last update: 11/17/03 {4:27:30 PM} 
+ FILE: "face2D.py"
+                                   created: 11/10/03 {3:23:47 PM}
+                               last update: 11/17/03 {5:15:54 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
- Author: Daniel Wheeler
- E-mail: daniel.wheeler@nist.gov
    mail: NIST
     www: http://ctcms.nist.gov
  
@@ -40,25 +38,19 @@ they have been modified.
 ###################################################################
 """
 
-class Cell:
-    def __init__(self, faces, id):
-        self.faces = faces
-        self.id = id
-        for face in self.faces:
-            face.addBoundingCell(self)
+import tools
+import face
+import Numeric
 
-    def getId(self):
-        return self.id
+class Face2D(face.Face):
+    def __init__(self, vertices, id):
+        face.Face.__init__(self,vertices,id)
 	
-    def volume(self):
-	vol = 0.
-	for face in self.faces:
-	    vol += face.center()[0] * face.area() * face.normal()[0]
-	return vol
+    def area(self):
+        tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
+        return tools.sqrtDot(tangent,tangent)
+	
+    def normal(self):	
+	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
+	return Numeric.array([-tangent[1],tangent[0]])
 
-    def center(self):
-        ctr = self.faces[0].center()
-        for face in self.faces[1:]:
-            ctr += face.center()
-        return ctr/float(len(self.faces))
-            

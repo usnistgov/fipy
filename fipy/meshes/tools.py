@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -39,8 +40,12 @@ they have been modified.
 ###################################################################
 """
 
+import Numeric
+
 def crossProd(v1,v2):
     return Numeric.array([v1[1] * v2[2] - v1[2] * v2[1],
 			    v1[2] * v2[0] - v1[0] * v2[2],
 			    v1[0] * v2[1] - v1[1] * v2[0]],'d')
 	
+def sqrtDot(v1,v2):
+    return Numeric.sqrt(Numeric.dot(v2,v1))

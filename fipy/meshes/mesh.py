@@ -47,7 +47,7 @@ class Mesh:
         return self.cells
 
     def getFaces(self):
-        return faces
+        return self.faces
 
     def getInteriorFaces(self):
         return self.interiorFaces

@@ -41,8 +41,9 @@ they have been modified.
 
 import mesh
 import vertex
-import face
+import face2D
 import cell
+import Numeric
 
 class Grid2D(mesh.Mesh):
     """
@@ -123,11 +124,11 @@ class Grid2D(mesh.Mesh):
 	id = 0
 	for j in range(ny+1):
 	    for i in range(nx):
-		faces += (face.Face((vertices[i + j * nx],vertices[i + 1 + j * nx]),id),)
+		faces += (face2D.Face2D((vertices[i + j * nx],vertices[i + 1 + j * nx]),id),)
 		id += 1
 	for j in range(ny):
 	    for i in range(nx+1):
-		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1]),id),)
+		faces += (face2D.Face2D((vertices[i * ny + j],vertices[i * ny + j + 1]),id),)
 		id += 1
 	return faces
 	
