@@ -47,18 +47,14 @@ import fipy.tests.testProgram
 
 import doctest
 
-import mesh1D.input
-import mesh20x20.input
-import mesh50x50.input
-
-
+import input2ndOrder1D
+import input4thOrder1D
 
 def suite():
     theSuite = unittest.TestSuite()
 
-    theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh50x50.input))
+    theSuite.addTest(doctest.DocTestSuite(input2ndOrder1D))
+    theSuite.addTest(doctest.DocTestSuite(input4thOrder1D))
     
     return theSuite
     
