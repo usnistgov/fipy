@@ -1,24 +1,35 @@
-=====================================
+==============
  Installation
-=====================================
+==============
+
+The |FiPy| finite volume PDE solver relies on several third-party
+packages. [*]_ It is best to obtain and install those first, before
+attempting to install |FiPy|.
+
+..  [*] Certain commercial firms and trade names are identified in this
+    document in order to specifiy the installation procedure adequately.
+    Such identification is not intended to imply recommendation or
+    endorsement by the National Institute of Standards and Technology, nor
+    is it intended to imply that related products are necessarily the best 
+    available for the purpose.
+
+-------------
+Prerequisites
+-------------
 
 Operating System
 ================
 
-The only elements of |FiPy| that may be platform-dependent are the viewers. 
-All other aspects should function on any platform that has a Python_
+The only elements of |FiPy| that may be platform-dependent are the viewers.
+All other aspects should function on any platform that has a recent Python_
 installation.
 
-|FiPy| has been developed and tested on `Mac OS X`_ 10.3 [*]_ and higher and
-on ???  runing RedHat Linux blah blah.  
+|FiPy| has been developed and tested on `Mac OS X`_ 10.3 and higher and
+on ???  runing Debian Linux blah blah. We welcome reports of compatibility 
+with other systems, along with any steps necessary to install. 
 
 .. _Mac OS X: http://www.apple.com/macosx/
-
-..  [*] Certain commercial products are identified here to foster
-    understanding.  Such identification does not imply recommendation or
-    endorsement by the National Institute of Standards and Technology, nor
-    does it imply that the products identified are necessarily the best
-    available for the purpose.
+.. _Debian:   ???
 
 Required Packages
 =================
@@ -26,9 +37,12 @@ Required Packages
 Python
 ------
 
-|FiPy| is built with the Python_ language and requires a Python_
-installation to run. Python_ comes pre-installed on many operating systems,
-which you can check by opening a terminal and typing ``python``, *e.g.*::
+http://www.python.org/
+
+|FiPy| is written in the Python_ language and requires a Python_
+installation to run.  Python_ comes pre-installed on many operating
+systems, which you can check by opening a terminal and typing ``python``,
+*e.g.*::
 
     [dogbert:~] guyer% python
     Python 2.3 (#1, Sep 13 2003, 00:49:11) 
@@ -37,14 +51,15 @@ which you can check by opening a terminal and typing ``python``, *e.g.*::
     >>> 
 
 If necessary, you can download_ and install it for your platform.  |FiPy|
-requires at least version 2.1 of Python_, but version 2.3 or newer is
-recommended.
+requires at least version 2.3 of Python_.
 
 .. _Python:   http://www.python.org/
 .. _download: http://www.python.org/download/
 
 Numeric
 -------
+
+http://www.numpy.org
 
 Obtain and install the Numeric_ package.  |FiPy| has been tested with
 version 23.1 of Numeric_.  The newer Numarray_ package is not supported at
@@ -55,6 +70,8 @@ this time.
 
 weave
 -----
+
+http://ww.scipy.org/documentation/weave/
 
 Significantly improved performance has been achieved with the judicious use
 of C language inlining, via the weave_ module of the SciPy_ package. 
@@ -70,6 +87,8 @@ One or more of the following packages is required to view results.
 Pygist
 ------
 
+http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
 The Pygist_ package can be used to display simulation results. We have not 
 succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
 recommend building the package with the ``--x11`` option described in the
@@ -80,16 +99,20 @@ documentation.
 PyX
 ---
 
+http://pyx.sourceforge.net/
+
 PyX_ allows the production of publication quality graphics with |TeX|
 labels.
 
 .. _PyX: http://pyx.sourceforge.net/
 
-
+----------------
 Obtaining |FiPy|
-================
+----------------
 
-The source for |FiPy| can be obtained via CVS::
+These instructions will need to be made more general for a public
+distribution but, for the moment, the source for |FiPy| can be obtained via
+CVS::
 
     ssh_agent
     ssh_add
@@ -99,7 +122,14 @@ The source for |FiPy| can be obtained via CVS::
     export CVS_RSH
     cvs checkout fipy
 
-|FiPy| uses a customized version of Roman Geus'_ spmatrix_ package.  Due to
+-----------------
+Installing |FiPy|
+-----------------
+
+Installing spmatrix
+===================
+
+|FiPy| uses a customized version of `Roman Geus`_' spmatrix_ package.  Due to
 a peculiar bug in its ``setup.py`` script, ``python setup.py install`` may
 not work correctly on the first execution, but will generate an error
 regarding ``/usr/bin/ld: undefined symbols``.  If you receive this error,
@@ -107,6 +137,16 @@ copy the preceding command beginning with ``gcc`` (it can be several lines)
 and paste it at the command-line to re-execute it.  Then execute ``python
 setup.py install`` again.  You will need to repeat this sequence four
 times.
+
+.. _Roman Geus:
+.. _spmatrix:
+
+Installing and testing |FiPy|
+=============================
+
+From the ``fipy/`` directory, execute ``python setup.py install``. Once the
+installation is complete, you can verify that it has installed properly by 
+executing ``./test.py`` and ``./test.py --inline``.
 
 .. |FiPy| raw:: latex
 

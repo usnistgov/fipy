@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/30/04 {11:22:09 AM} 
+ %                                last update: 7/2/04 {2:18:00 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -50,6 +50,8 @@
 \makeindex
 \usepackage[usenames]{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
+\definecolor{redish}{rgb}{0.894,0.122,0.122}
+\definecolor{bluish}{rgb}{0.216,0.188,0.533}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true]{hyperref}
 \usepackage{graphicx}
@@ -91,8 +93,8 @@
 \newcommand{\titlereference}[1]{\textsl{#1}}
 
 
-\newcommand{\logo}{\rotatebox{4}{\textcolor{red}{\( \varphi \)}}\kern-.74em\raisebox{-.15em}{\textcolor{blue}{\( \pi\)}}}
-\newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{blue}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{red}{\( \varphi \)}}}
+\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.74em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
+% \newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{bluish}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}}
 
 \newcommand{\FiPy}{\textsf{FiPy}}
 
@@ -142,7 +144,6 @@
 
 \title{
 \scalebox{5}{\logo} \\[2ex]
-\scalebox{5}{\logoToo} \\[2ex]
 FiPy\\
 {\large A Finite Volume PDE Solver Using Python} \\
 }
