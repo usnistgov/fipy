@@ -56,7 +56,7 @@ class Term:
 	return None
 
     def getResidual(self, matrix, var, RHSvector):
-	Lx = matrix * var[:]
+	Lx = matrix * Numeric.array(var[:])
 	
 	residual = Lx - RHSvector
 	
@@ -74,8 +74,8 @@ class Term:
 	return self.converged
 
     def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
-	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, dt = dt)
-	residual = self.getResidual(matrix, var, RHSvector)
+ 	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, dt = dt)
+        residual = self.getResidual(matrix, var, RHSvector)
 	if solver is None:
 	    from fipy.solvers.linearPCGSolver import LinearPCGSolver
 	    solver = LinearPCGSolver()

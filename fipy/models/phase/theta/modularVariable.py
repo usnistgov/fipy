@@ -54,7 +54,7 @@ class ModularVariable(CellVariable):
     # define pi 3.141592653589793
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
-	
+
     def _setValue(self, value, unit = None, array = None):
 	self.value = ModPhysicalField(value = value, unit = unit, array = array)
 	

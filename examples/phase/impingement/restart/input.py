@@ -53,7 +53,10 @@ We again initialize the system by running the base script
 but this time we only iterate for half as many time steps
 
     >>> for i in range(steps/2):
-    ...     it.timestep(dt = timeStepDuration)
+    ...     theta.updateOld()
+    ...     phase.updateOld()
+    ...     thetaEq.solve(theta, dt = timeStepDuration)
+    ...     phaseEq.solve(phase, dt = timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ...         thetaProductViewer.plot()
@@ -61,7 +64,7 @@ but this time we only iterate for half as many time steps
 We confirm that the solution has not yet converged to that given by 
 Ryo Kobayashi's FORTRAN code:
 
-    >>> theta.allclose(testData, rtol = 1e-10, atol = 1e-10)
+    >>> theta.allclose(testData)
     0
 
 We save the variables to disk
@@ -82,42 +85,20 @@ and then recall them to test the data pickling mechanism
    
 We rebuild the equations:
 
-    >>> newThetaEq = ThetaEquation(
-    ...     var = newTheta,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15, 
-    ...         steps = 2000
-    ...     ),
-    ...     boundaryConditions = (
-    ...         FixedFlux(newMesh.getExteriorFaces(), 0.),
-    ...     ),
-    ...     parameters = thetaParameters,
-    ...     fields = {
-    ...         'phase' : newPhase
-    ...     }
-    ... )
-     
-    >>> newPhaseEq = PhaseEquation(
-    ...     var = newPhase,
+    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+    >>> newPhaseEq = buildPhaseEquation(
     ...     mPhi = Type1MPhiVariable,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15, 
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions = (
-    ...         FixedFlux(newMesh.getExteriorFaces(), 0.),
-    ...      ),
-    ...      parameters = phaseParameters,
-    ...      fields = {
-    ...          'theta' : newTheta,
-    ...          'temperature' : temperature
-    ...      }
-    ... )
+    ...     phase = newPhase,
+    ...     theta = newTheta,
+    ...     temperature = temperature,
+    ...     parameters = phaseParameters)
 
-the iterator:
-
-    >>> newIt = Iterator((newThetaEq, newPhaseEq))
-   
+    >>> from fipy.models.phase.theta.thetaEquation import buildThetaEquation
+    >>> newThetaEq = buildThetaEquation(
+    ...     theta = newTheta,
+    ...     parameters = thetaParameters,
+    ...     phase = newPhase)
+    
 and, if the example is run interactively, we recreate the viewers:
 
     >>> if __name__ == '__main__':
@@ -135,7 +116,10 @@ and, if the example is run interactively, we recreate the viewers:
 and finish doing the iterations
 
     >>> for i in range(steps - steps/2):
-    ...     newIt.timestep(dt = timeStepDuration)
+    ...     newTheta.updateOld()
+    ...     newPhase.updateOld()
+    ...     newThetaEq.solve(newTheta, dt = timeStepDuration)
+    ...     newPhaseEq.solve(newPhase, dt = timeStepDuration)
     ...     if __name__ == '__main__':
     ...         newPhaseViewer.plot()
     ... 	newThetaProductViewer.plot()
@@ -143,7 +127,7 @@ and finish doing the iterations
 Finally, we check that the results have at last converged to Ryo Kobayashi's 
 FORTRAN code:
 
-    >>> newTheta.allclose(testData, rtol = 1e-10, atol = 1e-10)
+    >>> newTheta.allclose(testData)
     1
 """
 __docformat__ = 'restructuredtext'
