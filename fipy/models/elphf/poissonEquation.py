@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 7/30/04 {2:48:00 PM} 
+ #                                last update: 8/27/04 {4:25:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,7 +68,9 @@ class PoissonEquation(RelaxationEquation):
 		     
         mesh = potential.getMesh()
 	
-	permittivity = physicalField.Scale(parameters['permittivity'], "Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME)") 
+	from elphf import constant as k
+	
+	permittivity = physicalField.Scale(parameters['permittivity'], k['Faraday']**2 * k['LENGTH']**2 / (k['ENERGY'] * k['MOLARVOLUME'])) 
 	
 	diffusionTerm = ImplicitDiffusionTerm(
 	    diffCoeff = permittivity,

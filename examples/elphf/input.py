@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/30/04 {6:03:35 PM} 
+ #                                last update: 8/27/04 {4:17:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -275,9 +275,9 @@ fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
 setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2.)
 fields['phase'].setValue(0.,setCells)
-fields['interstitials'][0].setValue("0.000111111503177394 MOLARVOLUME*mol/l", setCells)
-fields['substitutionals'][0].setValue("0.249944439430068 MOLARVOLUME*mol/l", setCells)
-fields['substitutionals'][1].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
+fields['interstitials'][0].setValue("0.000111111503177394 mol/l", setCells)
+fields['substitutionals'][0].setValue("0.249944439430068 mol/l", setCells)
+fields['substitutionals'][1].setValue("0.249999982581341 mol/l", setCells)
 
 ## fields['substitutionals'][0][nx/2-5] = 0.6
 ## fields['phase'][nx/2-9] = 0.9

@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 4/2/04 {4:00:18 PM} 
+ #                                last update: 8/27/04 {4:21:13 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,10 @@ class SubstitutionalVariable(ComponentVariable):
 	ComponentVariable.__init__(self, mesh = mesh, parameters = parameters, value = value, hasOld = hasOld)
 ## 	self.standardPotential -= physicalField.PhysicalField(self.solventParameters['standard potential'])
 ## 	self.barrierHeight -= physicalField.PhysicalField(self.solventParameters['barrier height'])
-	self.standardPotential -= physicalField.Scale(self.solventParameters['standard potential'],"ENERGY")
-	self.barrierHeight -= physicalField.Scale(self.solventParameters['barrier height'],"ENERGY")
+	
+	from elphf import constant as k
+	self.standardPotential -= physicalField.Scale(self.solventParameters['standard potential'],k['ENERGY'])
+	self.barrierHeight -= physicalField.Scale(self.solventParameters['barrier height'], k['ENERGY'])
 	if self.solventParameters.has_key('valence'):
 	    self.valence -= self.solventParameters['valence']
 	    

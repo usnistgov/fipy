@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 7/30/04 {5:57:18 PM} 
+ #                                last update: 8/27/04 {4:49:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,27 +60,30 @@ from semiImplicitPoissonEquation import SemiImplicitPoissonEquation
 from substitutionalEquation import SubstitutionalEquation
 from interstitialEquation import InterstitialEquation
 
+constant = {}
+
 def addScales(mesh, parameters):
     
-    def addScale(scale, unit, parameter = None, value = None):
-	if parameters.has_key('scale') and parameters['scale'].has_key(scale):
-	    value = parameters['scale'][scale]
-	else:
-	    if parameter is not None and parameters.has_key(parameter):
-		value = parameters[parameter]
-	    elif value is None:
-		value = 1
-	physicalField.AddConstant(scale, physicalField.NonDimOrUnits(value, unit))
+    def getScale(unit, parameter = None, value = None):
+	if parameter is not None and parameters.has_key(parameter):
+	    value = parameters[parameter]
+	elif value is None:
+	    value = 1
+	value = physicalField.PhysicalField(value)
+	if not value.getUnit().isDimensionless():
+	    value.convertToUnit(unit)
+	return value
 	
-    addScale(scale = 'TIME', unit = 's', parameter = 'time step duration')
-    addScale(scale = 'LENGTH', unit = 'm', value = mesh.getScale())
+    constant['TIME'] = getScale(unit = 's', parameter = 'time step duration')
+    constant['LENGTH'] = getScale(unit = 'm', value = mesh.getScale())
     mesh.setScale(1)
-    addScale(scale = 'MOLARVOLUME', unit = 'm**3/mol', parameter = 'substitutional molar volume', value = '1 m**3/mol')
-    addScale(scale = 'TEMPERATURE', unit = 'K', parameter = 'temperature', value = '298 K')
-    physicalField.AddConstant('Rgas', 'Nav*kB')
-    addScale(scale = 'ENERGY', unit = 'J/mol', value = "Rgas * TEMPERATURE")
-    physicalField.AddConstant('Faraday', 'Nav*e')
-    addScale(scale = 'POTENTIAL', unit = 'V', value = "ENERGY / Faraday")
+    
+    constant['MOLARVOLUME'] = getScale(unit = 'm**3/mol', parameter = 'substitutional molar volume', value = '1 m**3/mol')
+    TEMPERATURE = getScale(unit = 'K', parameter = 'temperature', value = '298 K')
+    Rgas = physicalField.PhysicalField(value = '1 Nav*kB')
+    constant['ENERGY'] = getScale(unit = 'J/mol', value = Rgas * TEMPERATURE)
+    constant['Faraday'] = physicalField.PhysicalField(value = '1 Nav*e')
+    constant['POTENTIAL'] = getScale(unit = 'V', value = constant['ENERGY'] / constant['Faraday'])
     
 def makeFields(mesh, parameters):
     addScales(mesh, parameters)
@@ -229,8 +232,8 @@ def makeEquations(mesh, fields, parameters, phaseRelaxation = 1., solutionTolera
 	fields = fields,
 ## 	phaseMobility = mobility,
 ## 	phaseGradientEnergy = gradientEnergy,
- 	phaseMobility = physicalField.Scale(parameters['phase']['mobility'],"MOLARVOLUME/ENERGY/TIME"),
- 	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'],"LENGTH**2*ENERGY/MOLARVOLUME"),
+ 	phaseMobility = physicalField.Scale(parameters['phase']['mobility'], constant['MOLARVOLUME'] / (constant['ENERGY'] * constant['TIME'])),
+ 	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'], constant['LENGTH']**2 * constant['ENERGY'] / constant['MOLARVOLUME']),
 ## 	solver = LinearLUSolver(),
 	solver = LinearCGSSolver(
 	     tolerance = 1.e-15, 
