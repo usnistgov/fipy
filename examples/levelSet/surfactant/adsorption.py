@@ -99,7 +99,7 @@ Start time steping:
    >>> for i in range(totalTimeSteps):
    ...     surfactantVar.updateOld()
    ...     bulkVar.updateOld()
-   ...     surfEqn.solve(surfactantVar, dt)
+   ...     surfEqn.solve(surfactantVar, dt = dt)
    ...     bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
    ...     currentTime += dt
 
@@ -219,7 +219,7 @@ if __name__ == "__main__":
         ## do a time step
         surfactantVar.updateOld()
         bulkVar.updateOld()
-        surfEqn.solve(surfactantVar, dt)
+        surfEqn.solve(surfactantVar, dt = dt)
         bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
         currentTime += dt
 
