@@ -160,7 +160,8 @@ class Face:
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
 	norm = tools.crossProd(t1,t2)
 	norm /= tools.sqrtDot(norm,norm)
-	norm *= self.orientation
+## we calculate the orientation after we know the normal
+##	norm *= self.orientation
 	
 	return norm
 	
@@ -247,3 +248,5 @@ class Face:
         self.id = id
             
             
+    def getOrientation(self):
+        return self.orientation

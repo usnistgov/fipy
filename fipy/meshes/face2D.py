@@ -66,7 +66,8 @@ class Face2D(Face):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	norm = Numeric.array([-tangent[1],tangent[0]])
 	norm /= tools.sqrtDot(norm,norm)
-	norm *= self.orientation
+## we calculate the orientation after we know the normal
+##	norm *= self.orientation
 
 	return norm
 
@@ -76,3 +77,5 @@ class Face2D(Face):
 	tan1 = Numeric.array((-norm[1],norm[0]))
 	return tan1/mag
 	    
+    def calcTangent2(self):
+	return Numeric.array((0.,0.))

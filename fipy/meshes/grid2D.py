@@ -135,7 +135,8 @@ class Grid2D(Mesh):
 	cells = self.createCells(rowFaces,colFaces)
 	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
 	self.calcCellFaceIDs(cells)
-	
+	self.calcFaceTangents(faces)
+        
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
     def createVertices(self):
@@ -332,22 +333,13 @@ class Grid2D(Mesh):
 
     def getFaceNormals(self):
 	return self.faceNormals
-	
+
     def calcFaceNormals(self, faces):
 	N = len(faces)
 	dim = len(faces[0].getCenter())
 	self.faceNormals = Numeric.zeros((N,dim),'d')
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
-	    
-    def calcFaceTangents(self, faces):
-	N = len(faces)
-	dim = len(faces[0].getCenter())
-	self.faceTangents1 = Numeric.zeros((N,dim),'d')
-	self.faceTangents2 = Numeric.zeros((N,dim),'d')
-	for i in range(N):
-	    self.faceTangents1[i] = faces[i].calcTangent1()
-	    self.faceTangents2[i] = faces[i].calcTangent2()
 	    
     def getFaceAreas(self):
 	return self.faceAreas
@@ -368,3 +360,20 @@ class Grid2D(Mesh):
     def calcAreaProjections(self):
 	N = len(self.faceNormals)
 	self.areaProjections = self.faceNormals * Numeric.reshape(self.faceAreas,(N,1))
+
+    def calcFaceTangents(self, faces):
+	N = len(faces)
+	dim = len(faces[0].getCenter())
+	self.faceTangents1 = Numeric.zeros((N,dim),'d')
+	self.faceTangents2 = Numeric.zeros((N,dim),'d')
+	for i in range(N):
+	    self.faceTangents1[i] = faces[i].calcTangent1()
+	    self.faceTangents2[i] = faces[i].calcTangent2()
+
+    def getFaceTangents1(self):
+        return self.faceTangents1
+
+    def getFaceTangents2(self):
+        return self.faceTangents2
+
+

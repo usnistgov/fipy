@@ -126,3 +126,9 @@ class Mesh:
 	    self.cellId1[i] = self.faces[i].getCellId(0)
 	    self.cellId2[i] = self.faces[i].getCellId(1)
     
+    def getFaceOrientations(self):
+        N = len(self.faces)
+        orientations = Numeric.zeros((N),'d')
+        for i in range(N):
+            orientations = self.faces[i].getOrientation()
+        return orientations
