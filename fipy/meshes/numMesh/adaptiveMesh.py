@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/24/04 {8:36:11 PM} 
+ #                                last update: 3/29/05 {2:39:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ that is finer toward the upper right hand corner:
    >>> baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
    >>> var = CellVariable(mesh = baseMesh, 
    ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), 
-   ....    name = "characteristic lengths")
+   ...     name = "characteristic lengths")
 
 Since the value of `var` is smaller in the upper right hand corner, the mesh
 will be finer there.  To create the mesh, do this:
