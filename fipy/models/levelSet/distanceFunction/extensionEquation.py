@@ -96,8 +96,14 @@ class ExtensionEquation(DistanceEquation):
         cells.
         
         """
+        self.distanceVar = var
         self.extensionVar = extensionVar
-        DistanceEquation.__init__(self, var.copy())
+        DistanceEquation.__init__(self, var)
+
+    def solve(self, dt = None):
+        self.var = self.distanceVar.copy()
+        DistanceEquation.solve(self)
+
 
     def _calcInterfaceValues(self):
         """
