@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:39 PM} 
+ #                                last update: 11/16/04 {11:48:49 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,9 +56,12 @@ class TestDump(unittest.TestCase):
             value = 100.0)
 
         self.data = (theta, mesh)
-        tempFile = tempfile.mktemp()
+        f, tempFile = tempfile.mkstemp('.gz')
         dump.write(self.data, tempFile)
         self.dataUnpickled = dump.read(tempFile)
+	
+	import os
+	os.remove(tempFile)
 
     def assertEqual(self, first, second, msg = None):
         if first == second:

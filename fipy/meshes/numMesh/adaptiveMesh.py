@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/19/04 {11:35:26 AM} 
+ #                                last update: 11/16/04 {11:48:01 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,7 +67,6 @@ will be finer there.  To create the mesh, do this:
 """
 __docformat__ = 'restructuredtext'
 
-import os
 import Numeric
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
@@ -113,10 +112,10 @@ class AdaptiveMesh2D(Mesh2D):
         self.getExteriorVertexIDs()
         self.getGeometryPoints()
         self.getExteriorLines()
-        self.writeGeometryFile()
+        geomFile = self.writeGeometryFile()
         self.createBackgroundMesh()
-        self.writeBackgroundMesh()
-        self.finalInit()
+        bgMesh = self.writeBackgroundMesh()
+        self.finalInit(geomFile, bgMesh)
 
     def getExteriorVertexIDs(self):
         ## get the exterior vertex IDs
@@ -154,9 +153,8 @@ class AdaptiveMesh2D(Mesh2D):
     def writeGeometryFile(self):
         ## do the geometry file
         import tempfile
-        import os
-        tmp = tempfile.gettempdir()
-        fileName = os.path.join(tmp, 'temp.geo')
+	(f, fileName) = tempfile.mkstemp('.geo')
+	
         geomFile = open(fileName, mode = 'w')
         ## create the points
         pointList = ["Point(" + str(i + 1) + ") = " + bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
@@ -176,6 +174,8 @@ class AdaptiveMesh2D(Mesh2D):
         index = index + 1
         ## close the file
         geomFile.close()
+	
+	return fileName
     
     def createBackgroundMesh(self):
         ## create the background mesh (this works for Triangular Meshes ONLY)
@@ -195,27 +195,28 @@ class AdaptiveMesh2D(Mesh2D):
     def writeBackgroundMesh(self):
         ## write the mesh
         import tempfile
-        import os
-        tmp = tempfile.gettempdir()
-        bgFile = os.path.join(tmp, 'tempbgmesh.pos')
+	(f, bgFile) = tempfile.mkstemp('.pos')
+	
         bgmeshFile = open(bgFile, mode = 'w')
         bgmeshFile.write("View \"characteristic lengths\" {")
         for i in range(len(self.varMesh.getCellCenters())):
             bgmeshFile.write("ST" + parenList(self.cellOutputs[i]) + bracedList(self.cellVertexValues[i]) + ";\n")
         bgmeshFile.write("};")
         bgmeshFile.close()
+	
+	return bgFile
 
-    def finalInit(self):
-        import tempfile
+    def finalInit(self, geomFile, bgFile):
         import os
-        tmp = tempfile.gettempdir()
-        fileName = os.path.join(tmp, 'temp.geo')
-        bgFile = os.path.join(tmp, 'tempbgmesh.pos')
-        os.system("gmsh -v 0 " + fileName + " -bgm " + bgFile + " -format msh -2") ##  -v 0
+	import tempfile
+	(f, meshFile) = tempfile.mkstemp('.msh')
+        os.system("gmsh -v 0 %s -bgm %s -format msh -2 -o %s"%(geomFile, bgFile, meshFile))
         dg = DataGetter()
-        fileName = os.path.join(tmp, 'temp.msh')
-        args = dg.getData(fileName, dimensions = 2)
-        Mesh2D.__init__(self, args[0], args[1], args[2])
+	vertexCoords, faceVertexIDs, cellFaceIDs = dg.getData(meshFile, dimensions = 2)
+        Mesh2D.__init__(self, vertexCoords, faceVertexIDs, cellFaceIDs)
+	os.remove(geomFile)
+	os.remove(bgFile)
+	os.remove(meshFile)
 
 def _test():
     import doctest
