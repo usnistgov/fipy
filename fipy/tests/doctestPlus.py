@@ -6,7 +6,7 @@
  # 
  #  FILE: "doctestPlus.py"
  #                                    created: 10/27/04 {9:14:53 AM} 
- #                                last update: 12/9/04 {8:28:45 PM} 
+ #                                last update: 3/29/05 {3:53:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,18 @@ import doctest
 from lateImportTest import LateImportTestCase, LateImportTestSuite
 
 def getScript(name = '__main__'):
-    return doctest.testsource(sys.modules.get(name), "")
+    module = sys.modules.get(name)
+    # the syntax of doctest changed substantially between Python 2.3 and 2.4
+    # <http://sourceforge.net/tracker/index.php?func=detail&aid=1120348&group_id=118428&atid=681141>
+    if sys.version_info >= (2, 4):
+        # Python 2.4 returns comments, too, and doesn't always end in a \n,
+        # which chokes exec/compile. Arguably a bug in Python.
+        # <http://sourceforge.net/tracker/index.php?func=detail&aid=1172785&group_id=5470&atid=105470>
+        return doctest.testsource(module, module.__name__) + '\n'
+    else:
+        return doctest.testsource(module, "")
+        
+    
     
 class LateImportDocTestCase(LateImportTestCase):
     def getTestSuite(self, module):
