@@ -50,17 +50,28 @@ import fipy.variables.cellVariable
 class AddOverFacesVariable(CellVariable):
     def __init__(self,
                  faceGradient = None,
-                 faceVariable = None):
+                 faceVariable = None,
+                 xGrad = None,
+                 yGrad = None):
+                 
     
 
         CellVariable.__init__(self, faceVariable.getMesh(), hasOld = 0)
-    
+
+        self.xGrad = self.requires(xGrad)
+        self.yGrad = self.requires(yGrad)
         self.faceGradient = self.requires(faceGradient)
         self.faceVariable = self.requires(faceVariable)
 
     def _calcValuePy(self):
+        if self.faceGradient is None:
+            faceGradient = Numeric.zeros((len(self.xGrad),2), 'd')
+            faceGradient[:,0] = self.xGrad[:]
+            faceGradient[:,1] = self.yGrad[:]            
+        else:
+            faceGradient = self.faceGradient
 
-        contributions = fipy.tools.array.sum(self.mesh.getAreaProjections() * self.faceGradient[:],1)   
+        contributions = fipy.tools.array.sum(self.mesh.getAreaProjections() * faceGradient[:],1)
         contributions = contributions * self.faceVariable[:]
 ##        contributions[len(self.mesh.getInteriorFaces()):] = 0.
         extFaceIDs = self.mesh.getExteriorFaceIDs()
@@ -79,7 +90,6 @@ class AddOverFacesVariable(CellVariable):
         orientations = Numeric.array(orientations)
         
         self.value = fipy.tools.array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
-
         
     def _calcValueInline(self):
 
@@ -119,8 +129,8 @@ class AddOverFacesVariable(CellVariable):
               interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
               contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
               areaProjections = Numeric.array(self.mesh.getAreaProjections()),
-              faceGradient = self.faceGradient.getNumericValue()[:],
-              faceVariable = self.faceVariable.getNumericValue()[:],
+              faceGradient = faceGradient.getNumericValue()[:],
+              faceVariable = faceVariable.getNumericValue()[:],
               ids = Numeric.array(ids),
               value = self._getArray(),
               orientations = Numeric.array(self.mesh.getCellFaceOrientations()),

@@ -46,17 +46,29 @@ class VectorFaceVariable(Variable):
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
+        self.indexAsFaceVar = {}
+
     def getVariableClass(self):
 	return VectorFaceVariable
 
-##    def getMag(self):
-##	if self.mag is None:
-##	    from magVectorVariable import MagVectorVariable
-##	    self.mag = MagVectorVariable(self)
-	    
-##	return self.mag
+    def getIndexAsFaceVariable(self, index):
 
-	
+        if not self.indexAsFaceVar.has_key(index):
 
+            from faceVariable import FaceVariable
+        
+            class ItemAsVariable(FaceVariable):
+                def __init__(self, var, index):
+                    FaceVariable.__init__(self, mesh = var.getMesh())
+                    self.var = self.requires(var)
+
+                def _calcValue(self):
+                    self.value = Numeric.array(self.var[:, index])
+
+            return ItemAsVariable(self, index)
+
+        else:
+            
+            return self.indexAsFaceVar[index]
 
 	

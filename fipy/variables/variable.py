@@ -622,6 +622,9 @@ class Variable:
 		
     def cos(self):
 	return self.getUnaryOperatorVariable(lambda a: array.cos(a))
+
+    def arctan2(self, other):
+        return self.getBinaryOperatorVariable(lambda a,b: array.arctan2(a,b), other)
 		
     def dot(self, other):
 	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)

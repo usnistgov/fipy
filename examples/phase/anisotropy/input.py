@@ -64,19 +64,30 @@ The governing equation for the phase field is given by:
 .. raw:: latex
 
     $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
-    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_2 ( \phi , T) 
-    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
+    = \nabla \cdot \left[ D \nabla \phi + A \nabla \xi \right] +
+      \phi ( 1 - \phi ) m ( \phi , T) $$
 
 where
 
 .. raw:: latex
 
-    $$ m_2(\phi, T) 
-    = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right) $$
-    
-and the governing equation for temperature is given by:
+    $$ m(\phi, T) 
+    = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
 
-.. raw:: latex
+    The coefficients $D$ and $A$ are given by,
+
+    $$ D = \alpha^2 \left[ 1 + c \beta \right]^2 $$
+
+    and
+
+    $$ A = \alpha^2 c \left[ 1 + c \beta \right] \Phi_\psi $$
+
+    where $ \beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2} $,
+    $ \Phi = \tan \left( \frac{ \theta } { 2 } + \frac{ N } { 2 } \arctan \psi \right) $,
+    $ \psi = \frac{ \phi_y } { \phi_x } $ and
+    $ \xi_x = -\phi_y $ and $ \xi_y = \phi_x $.
+
+    The governing equation for temperature is given by:
 
     $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t} $$
 
@@ -90,38 +101,21 @@ and implicit technique, respectively.
 The parameters for these equations are 
 
     >>> timeStepDuration = 5e-5
-    >>> phaseParameters = {
-    ...     'tau'                   : 3e-4,
-    ...     'epsilon'               : 0.008,
-    ...     's'                     : 0.01,
-    ...     'alpha'                 : 0.015,
-    ...     'anisotropy'            : 0.02,
-    ...     'symmetry'              : 4.,
-    ...     'kappa 1'               : 0.9,
-    ...     'kappa 2'               : 20.
-    ...     }
-    >>> temperatureParameters = {
-    ...     'timeStepDuration' : timeStepDuration,
-    ...     'temperature diffusion' : 2.25,
-    ...     'latent heat'           : 1.,
-    ...     'heat capacity'         : 1.
-    ...     }
-
-The variable `theta` represents the orientation of the crystal. In
-this example, it is constant and thus does not affect the solution.
-
-    >>> from fipy.models.phase.theta.modularVariable import ModularVariable
-    >>> theta = ModularVariable(
-    ...     name = 'Theta',
-    ...     mesh = mesh
-    ...     )
+    >>> tau = 3e-4,
+    >>> alpha = 0.015
+    >>> c = 0.02
+    >>> N = 4.
+    >>> kappa1 = 0.9
+    >>> kappa2 = 20.    
+    >>> tempDiffusionCoeff = 2.25
+    >>> theta = 0
 
 The `phase` variable is `0` for a liquid and `1` for a solid.  Here we
 build an example `phase` variable, initialized as a liquid,
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
-    ...     name = 'PhaseField',
+    ...     name = 'phaseField',
     ...     mesh = mesh,
     ...     value = 0.,
     ...     hasOld = 1)
@@ -149,42 +143,78 @@ filters out the required cells.
 The temperature field is initialized to a value of `-0.4` throughout:
 
     >>> temperature = CellVariable(
-    ...     name = 'Theta',
+    ...     name = 'temperature',
     ...     mesh = mesh,
     ...     value = -0.4,
     ...     hasOld = 1
     ...     )
-	
-The `phase` equation requires a `mPhi` instantiator to represent
+
+.. raw:: latex
+  
+   The $m(\phi, T)$ is created from the `phase` and `temperature`
+variables.
+
+    >>> import Numeric
+    >>> import fipy.tools.array
+    >>> mVar = phase - 0.5 - kappa1 / Numeric.pi * fipy.tools.array.arctan(kappa2 * temperature)
 
 .. raw:: latex
 
-   $m_2(\phi, T)$
+    The following section of code builds up the $A$ and $D$
+coefficients.
 
-above
+    >>> dPhiy = phase.getFaceGrad().getIndexAsFaceVariable(1)
+    >>> dPhix = phase.getFaceGrad().getIndexAsFaceVariable(0)
+    >>> arc = N * fipy.tools.array.arctan2(dPhiy, dPhix) + theta
+    >>> Phi = fipy.tools.array.tan(arc / 2)
+    >>> PhiSq = Phi**2
+    >>> beta = (1. - PhiSq) / (1. + PhiSq)
+    >>> dbdpsi = -N * 2 * Phi / (1 + PhiSq)
+    >>> A = alpha**2 * c * (1.+ c * beta) * dbdpsi
+    >>> D = alpha**2 * (1.+ c * beta)**2
 
-    >>> from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable
+.. raw:: latex
 
-The `phase` equation is solved with an iterative conjugate gradient
-solver
+    The part of the equation represented by $\nabla \cdot \left[ D
+    \nabla \phi + A \nabla \xi \right]$ can now be constructed. This
+    particular term is evaluated explicitly in the phase field method
+    of Kobayashi. The part of this term represented by $ \nabla \cdot
+    \left[ D \nabla \phi \right]$ is represented by a straight forward
+    `ExplicitDiffusionTerm`. The other part $ \nabla \cdot \left[ A
+    \nabla \xi \right] $, can not be represented by a diffusion term
+    since the variable being solved for is not implicitly defined. A
+    specialized variable is built to construct this particular term. To
+    derive this variable first integrate over a CV,
 
-and requires access to the `theta` and `temperature` variables
+    $$ \frac{ 1 } { V } \int_{V} \nabla \cdot \left[ A \nabla \xi \right] dV, $$
 
-    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
-    >>> phaseEq = buildPhaseEquation(
-    ...     mPhi = Type2MPhiVariable,
-    ...     parameters = phaseParameters,
-    ...     theta = theta,
-    ...     temperature = temperature,
-    ...     phase = phase)
-	
-The `temperature` equation is also solved with an iterative conjugate
-gradient solver and requires access to the `phase` variable
+    and apply the divergence theorem gives,
 
-    >>> from fipy.models.phase.temperature.temperatureEquation import buildTemperatureEquation
-    >>> temperatureEq = buildTemperatureEquation(
-    ...     parameters = temperatureParameters,
-    ...     phase = phase)
+    $$ \frac{ 1 } { V } \int_{S} \vec{ n }  \cdot \left[ A \nabla \xi \right] dS. $$
+
+    Discretizing the above integral gives,
+
+    $$ \sum_f \vec{ n }_f  \cdot \left[ A \nabla \xi \right]_f \frac { S_f } { V_P } $$
+
+    where $S_f$ is the area of a face. The above quantity is
+    represented by the `AddOverFacesVariable` given
+below.
+    
+    >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
+    >>> anisotropySource = AddOverFacesVariable(faceVariable = A, xGrad = -dPhiy, yGrad = dPhix)
+    
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+    >>> phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
+    ...                                 ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
+    ...                                 ((mVar > 0.) * mVar * phase + anisotropySource)
+
+The temperature equation is built in the following way,
+
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> temperatureEq = TransientTerm() == ImplicitDiffusionTerm(tempDiffusionCoeff) + \
+    ...                                    (phase - phase.getOld()) / timeStepDuration
 
 If we are running this example interactively, we create viewers for
 the phase and temperature fields
@@ -223,7 +253,6 @@ the data and compares it with the `phase` variable.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-   >>> import Numeric
    >>> phase =  Numeric.array(phase)
    >>> testData = Numeric.reshape(testData, phase.shape)
    >>> Numeric.allclose(phase, testData, rtol = 1e-10, atol = 1e-10)
