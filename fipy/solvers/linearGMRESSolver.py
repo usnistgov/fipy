@@ -56,7 +56,7 @@ class LinearGMRESSolver(Solver):
 	
 	A = L.getMatrix().to_csr()
         
-        Assor=precon.jacobi(L)
+        Assor=precon.jacobi(L.getMatrix())
         
         info, iter, relres = itsolvers.gmres(A,b,x,self.tolerance,self.steps,Assor)
         
