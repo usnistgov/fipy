@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/30/03 {12:25:06 AM} 
+ #                                last update: 12/2/03 {2:29:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -142,12 +142,12 @@ class Mesh:
     def calcCellFaceOrientations(self,cells):
         N = len(cells)
         M = self.getMaxFacesPerCell()
-        self.cellFaceOrientations = Numeric.zeros((N,M))
+        self.cellFaceOrientations = Numeric.zeros((N,M,1))
         for i in range(N):
             orientations = cells[i].getFaceOrientations()
             orientations = Numeric.reshape(orientations,(len(cells[i].getFaces()),))
             for j in range(len(orientations)):
-                self.cellFaceOrientations[i,j] = orientations[j]
+                self.cellFaceOrientations[i,j,0] = orientations[j]
 
     def getCellFaceIDs(self):
         return (self.cellFaceIDs,self.cellFaceIDIndices)
@@ -164,5 +164,5 @@ class Mesh:
             for j in range(len(ids)):
                 self.cellFaceIDIndices += (i*self.getMaxFacesPerCell() + j,)
 
-        self.cellFaceIDIndices = Numeric.array(self.cellFaceIDIndices)
+#         self.cellFaceIDIndices = Numeric.array(self.cellFaceIDIndices)
         
