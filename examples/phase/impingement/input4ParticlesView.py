@@ -43,6 +43,7 @@
 
 from __future__ import nested_scopes
 from fivol.examples.phase.examples.impingement.input import ImpingementSystem
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 import Numeric
 
 class System4Particles(ImpingementSystem):
@@ -69,26 +70,23 @@ class System4Particles(ImpingementSystem):
             theta.setValue(thetaValue[i],cells)
 
     def run(self):
-        out = 0
+        
+        for j in range(100):
 
-        self.myPlot(out)
-
-        for out in range(10):
+            self.myPlot(j)
 
             for i in range(self.steps):
-                print i
                 self.it.timestep(1)
 
-            self.myPlot(out)
-
     def myPlot(self, val):
-        self.phaseViewer.plot(fileName = 'theta%i.ps' % val)
-        self.thetaViewer.plot(fileName = 'phase%i.ps' % val)
-
-
+        print 'writing results', val
+        self.phaseViewer.plot(fileName = 'phase%i.ps' % val)
+        self.thetaViewer.plot(fileName = 'theta%i.ps' % val)
+##        self.thetaProductViewer.plot(minVal = -Numeric.pi, maxVal = 2. * Numeric.pi, fileName = 'hello.ps')
+        
 if __name__ == '__main__':
 
-    system = System4Particles(nx = 100, ny = 100, steps = 50, drivingForce = 10.)
+    system = System4Particles(nx = 100, ny = 100, steps = 50, drivingForce = 1.)
     system.run()
 
     
