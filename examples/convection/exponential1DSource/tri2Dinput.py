@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:43:25 PM} 
+ #                                last update: 12/7/04 {4:37:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` but uses a constant source
+`./examples/diffusion/convection/exponential1D/input.py` but uses a constant source
 value such that,
 
 .. raw:: latex
@@ -56,76 +56,64 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     $$ \\vec{u} = (0, 10) $$
 
+.. 
+
+    >>> L = 10.
+    >>> ny = 1000
+    >>> from fipy.meshes.numMesh.tri2D import Tri2D
+    >>> mesh = Tri2D(dy = L / ny, ny = ny)
+    
+    >>> valueBottom = 0.
+    >>> valueTop = 1.
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "concentration",
+    ...                    mesh = mesh,
+    ...                    value = valueBottom)
+
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
+    ...     FixedValue(mesh.getFacesTop(), valueTop),
+    ... )
+
+    >>> diffCoeff = 1.
+    >>> convCoeff = (0., 10.)
+    >>> sourceCoeff = 1.
+
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+
+    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) + sourceCoeff
+
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> eq.solve(var = var,
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver = LinearLUSolver(tolerance = 1.e-15))
+
 The analytical solution test for this problem is given by:
 
-   >>> it.timestep()
    >>> axis = 1
-   >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
+   >>> y = mesh.getCellCenters()[:,axis]
+   >>> AA = -sourceCoeff * y / convCoeff[axis]
    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
    >>> import Numeric
-   >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
+   >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-6, atol = 1e-6) 
+   >>> var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
    1
    
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.pyxviewer import PyxViewer
+   ...     viewer = PyxViewer(var)
+   ...     viewer.plot(resolution = 0.05)
 """
 __docformat__ = 'restructuredtext'
 
-     
-from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.viewers.pyxviewer import PyxViewer
-from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-
-valueBottom = 0.
-valueTop = 1.
-L = 10.
-nx = 1
-ny = 100
-diffCoeff = 1.
-convCoeff = (0., 10.)
-sourceCoeff = 0.
-
-
-
-mesh = Tri2D(L / ny, L / ny, nx, ny)
-
-var = CellVariable(
-    name = "solution variable",
-    mesh = mesh,
-    value = valueBottom)
-
-boundaryConditions = (
-    FixedValue(mesh.getFacesTop(), valueTop),
-    FixedValue(mesh.getFacesBottom(), valueBottom),
-    FixedFlux(mesh.getFacesRight(), 0.),
-    FixedFlux(mesh.getFacesLeft(), 0.)
-    )
-
-        
-eq = SteadyConvectionDiffusionScEquation(
-    var = var,
-    diffusionCoeff = diffCoeff,
-    convectionCoeff = convCoeff,
-    sourceCoeff = sourceCoeff,
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExponentialConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-
-it = Iterator((eq,))
-
 if __name__ == '__main__':
-    it.timestep()
-    viewer = PyxViewer(var)
-    print var
-    viewer.plot()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    
     raw_input('finished')
