@@ -7,7 +7,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:00:26 PM} 
+ #                                last update: 7/14/04 {3:02:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,7 @@
 
 from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 
 class AdvectionEquation(MatrixEquation):
     def __init__(self,
@@ -52,13 +52,13 @@ class AdvectionEquation(MatrixEquation):
                  transientCoeff = 1.,
 		 convectionCoeff = 1.,
                  solver='default_solver',
-		 convectionScheme = PowerLawConvectionTerm,
+		 convectionScheme = UpwindConvectionTerm,
                  boundaryConditions=()):
 		     
 	mesh = var.getMesh()
 	
 	transientTerm = TransientTerm(transientCoeff,mesh)
-	convectionTerm = convectionScheme(convectionCoeff, mesh, boundaryConditions, diffusionTerm)
+	convectionTerm = convectionScheme(convectionCoeff, mesh, boundaryConditions)
 		     
 	terms = (
 	    transientTerm,
