@@ -53,9 +53,11 @@ from fivol.iterators.iterator import Iterator
 from fivol.examples.phase.theta.modularVariable import ModularVariable
 from fivol.variables.cellVariable import CellVariable
 from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+import fivol.tools.dump as dump
+import fivol.examples.phase.examples.missOrientation
 
 class PhaseSystem:
-   def __init__(self):
+   def __init__(self, fileName = None):
       self.steps = 100
       timeStepDuration = 0.02
    
@@ -75,9 +77,26 @@ class PhaseSystem:
       
       dx = self.L / self.nx
       dy = self.L / self.ny
-      
-      mesh = Grid2D(dx, dy, self.nx, self.ny)
-      
+
+      fileName = '%s/meshes'%(fivol.examples.phase.examples.missOrientation.__path__[0])
+
+      try:
+         meshDict = dump.read(fileName)
+      except:
+         meshDict = {}
+
+      key = 'dx%f' % dx + 'dy%f' % dy + 'nx%i' % self.nx + 'ny%i' % self.ny
+      print key
+      print meshDict.keys()
+      print 
+      if key in meshDict.keys():
+         mesh = meshDict[key]
+      else:
+         mesh = Grid2D(dx, dy, self.nx, self.ny)
+         meshDict[key] = mesh
+         print meshDict
+         dump.write(meshDict, fileName)
+         
       self.var = CellVariable(
          name = 'PhaseField',
          mesh = mesh,

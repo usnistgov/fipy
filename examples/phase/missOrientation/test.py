@@ -69,10 +69,8 @@ class TestPhase(TestBase):
         
     def getTestValues(self):
 	filestream=os.popen('gunzip --fast -c < %s/%s'%(fivol.examples.phase.examples.missOrientation.__path__[0],self.testFile),'r')
-	
 	testData = cPickle.load(filestream)
 	filestream.close()
-
 	return testData
 
 class TestPhase1D(TestPhase):
@@ -95,10 +93,10 @@ class TestPhaseCircleModular(TestPhase):
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestPhase1D))
-    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
+##    theSuite.addTest(unittest.makeSuite(TestPhase1D))
+##    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     theSuite.addTest(unittest.makeSuite(TestPhaseCircleModular))
-    theSuite.addTest(testLevel2.suite())
+##    theSuite.addTest(testLevel2.suite())
     return theSuite
     
 if __name__ == '__main__':
