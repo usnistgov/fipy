@@ -7,7 +7,7 @@
  # 
  #  FILE: "substitutionalEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:38:55 PM} 
+ #                                last update: 10/26/04 {2:06:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@
 from concentrationEquation import ConcentrationEquation
 
 class SubstitutionalEquation(ConcentrationEquation):
-    def getConvectionCoeff(self, Cj, fields, relaxation, diffusivity = None):
+    def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	Cj.substitutionalSum = Cj.copy()
         Cj.substitutionalSum.setValue(0)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/25/04 {6:29:23 PM} 
+ #                                last update: 10/27/04 {9:50:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -163,7 +163,7 @@ __docformat__ = 'restructuredtext'
 
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
 
     raw_input('finished')

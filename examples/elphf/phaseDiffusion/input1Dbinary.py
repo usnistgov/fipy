@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:17:08 PM} 
+ #                                last update: 10/27/04 {9:54:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,11 +41,60 @@
  ##
 
 r"""
-This example combines a 1D phase field problem, as given in::
+This example combines a phase field problem, as given in::
     
     $ examples/elphf/input1Dphase.py
     
-with a binary diffusion problem.
+with a binary diffusion problem, such as described in the ternary example
+
+    $ examples/elphf/input1D.py
+    
+on a 1D mesh
+
+    >>> nx = 400
+    >>> dx = 0.01
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = 1)
+
+The problem parameters are
+
+    >>> parameters = {
+    ...     'time step duration': 10000,
+    ...     'substitutional molar volume': 1,
+    ...     'phase': {
+    ...         'name': "xi",
+    ...         'mobility': 1.,
+    ...         'gradient energy': 0.1,
+    ...         'value': 1
+    ...     },
+    ... }
+
+The thermodynamic parameters are chosen to give a solid phase rich 
+in the solute and a liquid phase rich in the solvent
+
+    >>> import Numeric
+    >>> parameters['solvent'] = {
+    ...     'standard potential': Numeric.log(.7/.3),
+    ...     'barrier height': 1.
+    ... }
+
+    >>> parameters['substitutionals'] = (
+    ...     {
+    ...         'name': "c1",
+    ...         'diffusivity': 1.,
+    ...         'standard potential': Numeric.log(.3/.7),
+    ...         'barrier height': parameters['solvent']['barrier height'], 
+    ...     },
+    ... )
+
+We again let the ElPhF module create the appropriate fields and equations
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
+    >>> equations = elphf.makeEquations(mesh = mesh, 
+    ...                                 fields = fields, 
+    ...                                 parameters = parameters)
 
 We start with a sharp phase boundary
 
@@ -56,18 +105,44 @@ We start with a sharp phase boundary
        1& \text{for $x \le L/2$,} \\
        0& \text{for $x > L/2$,}
    \end{cases} $$
-   
+
+or
+
+    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> fields['phase'].setValue(1.)
+    >>> fields['phase'].setValue(0.,setCells)
+
 and with a uniform concentration field
 
 .. raw:: latex
 
    $C_1 = 0.5$.
+   
+or
+
+    >>> fields['substitutionals'][0].setValue(0.5)
+    
+If running interactively, we create viewers to display the results
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...
+    ...     phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+    ...     concViewer = Gist1DViewer(vars = (fields['solvent'],) + fields['substitutionals'],
+    ...                               limits = ('e', 'e', 0, 1))
+    ...     phaseViewer.plot()
+    ...     concViewer.plot()
 
 This problem does not have an analytical solution, so after iterating to
 equilibrium
 
-    >>> for i in range(40):
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator(equations = equations)
+    >>> for i in range(50):
     ...     it.timestep()
+    ...     if __name__ == '__main__':    
+    ...         phaseViewer.plot()
+    ...         concViewer.plot()
 
 we confirm that the far-field phases have remained separated
 
@@ -84,84 +159,16 @@ rich and solute poor phases.
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.iterators.iterator import Iterator
-
-import fipy.models.elphf.elphf as elphf
-
-nx = 400
-dx = 0.01
-L = nx * dx
-
-mesh = Grid2D(
-    dx = dx,
-    dy = dx,
-    nx = nx,
-    ny = 1)
-
-parameters = {
-    'time step duration': 10000,
-    'substitutional molar volume': 1,
-    'phase': {
-	'name': "xi",
-	'mobility': 1.,
-	'gradient energy': 0.1,
-	'value': 1.
-    },
-    'solvent': {
-	'standard potential': Numeric.log(.7/.3),
-	'barrier height': 1.
-    }
-}
-
-parameters['substitutionals'] = (
-    {
-	'name': "c1",
-	'diffusivity': 1.,
-	'standard potential': Numeric.log(.3/.7),
-	'barrier height': parameters['solvent']['barrier height'], 
-	'value': 0.5
-    },
-)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-fields['phase'].setValue(1.)
-fields['phase'].setValue(0.,setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
-
 if __name__ == '__main__':
-    phaseViewer = Gist1DViewer(vars = (fields['phase'],))
-    concViewer = Gist1DViewer(vars = (fields['substitutionals'][0],))
-
-    phaseViewer.plot()
-    concViewer.plot()
-	
-    raw_input("press <return> to start...")
+    ## from fipy.tools.profiler.profiler import Profiler
+    ## from fipy.tools.profiler.profiler import calibrate_profiler
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    for i in range(50):
-	it.timestep(1)
-	
-	phaseViewer.plot()
-	concViewer.plot()
-
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    
     # profile.stop()
 	    
     raw_input("finished")

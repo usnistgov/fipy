@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/25/04 {5:04:30 PM} 
+ #                                last update: 10/27/04 {9:50:16 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,7 +89,8 @@ or
     
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
+    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
+    ...     import NthOrderBoundaryCondition
     >>> boundaryConditions=(
     ...     FixedValue(mesh.getFacesLeft(), alpha1),
     ...     FixedFlux(mesh.getFacesRight(), alpha2),
@@ -148,7 +149,6 @@ __docformat__ = 'restructuredtext'
 ## from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
-    
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     raw_input('finished')

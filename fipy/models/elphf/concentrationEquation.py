@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/26/04 {1:22:36 PM} 
+ #                                last update: 10/26/04 {2:02:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/25/04 {10:01:32 PM} { 5:14:21 PM}
+ #                                last update: 10/27/04 {9:51:03 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -217,7 +217,8 @@ and temperature fields
     >>> if __name__ == '__main__':
     ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
     ...     phaseViewer = Grid2DGistViewer(var = phase)
-    ...     temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
+    ...     temperatureViewer = Grid2DGistViewer(var = temperature, 
+    ...                                          minVal = -0.5, maxVal =0.5)
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 
@@ -256,8 +257,8 @@ data and compares it with the `phase` variable.
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
 
     raw_input('finished')
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/26/04 {10:14:36 AM} 
+ #                                last update: 10/27/04 {9:53:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -129,7 +129,8 @@ If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = fields['substitutionals'])
+    ...     viewer = Gist1DViewer(vars = (fields['solvent'],) + fields['substitutionals'],
+    ...                           limits = ('e', 'e', 0, 1))
     ...     viewer.plot()
 
 .. note:: the `Gist1DViewer` is capable of plotting multiple fields
@@ -160,8 +161,8 @@ if __name__ == '__main__':
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    import doctest
-    doctest.testmod()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     
     # profile.stop()
 	    

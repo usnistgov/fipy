@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/25/04 {5:17:09 PM} 
+ #                                last update: 10/27/04 {9:50:06 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,17 +100,18 @@ right and Neumann boundary conditions to the top and bottom.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-    >>> eq = NthOrderDiffusionEquation(var,
-    ...                                transientCoeff = 0., 
-    ...                                diffusionCoeff = (1.,),
-    ...                                solver = LinearPCGSolver(tolerance = 1.e-15, 
-    ...                                                         steps = 1000
-    ...                                ),
-    ...                                boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...                                                      FixedValue(mesh.getFacesRight(),valueRight),
-    ...                                                      FixedFlux(mesh.getFacesTop(),0.),
-    ...                                                      FixedFlux(mesh.getFacesBottom(),0.)
-    ...                                                      )
+    >>> eq = NthOrderDiffusionEquation(
+    ...     var,
+    ...     transientCoeff = 0., 
+    ...     diffusionCoeff = (1.,),
+    ...     solver = LinearPCGSolver(tolerance = 1.e-15, 
+    ...                              steps = 1000
+    ...     ),
+    ...     boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                           FixedValue(mesh.getFacesRight(),valueRight),
+    ...                           FixedFlux(mesh.getFacesTop(),0.),
+    ...                           FixedFlux(mesh.getFacesBottom(),0.)
+    ...                           )
     ... )
 
 We iterate one timestep to equilibrium:
@@ -142,7 +143,6 @@ __docformat__ = 'restructuredtext'
  
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
-
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     raw_input("finished")

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/26/04 {8:45:59 AM} 
+ #                                last update: 10/27/04 {9:53:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -152,8 +152,8 @@ if __name__ == '__main__':
 ##     from fipy.tools.profiler.profiler import Profiler
 ##     from fipy.tools.profiler.profiler import calibrate_profiler
 
-    import doctest
-    doctest.testmod()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
 
 ##     fudge = calibrate_profiler(10000)
 ##     profile = Profiler('profile', fudge=fudge)

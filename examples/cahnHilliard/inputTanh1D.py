@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/13/04 {3:36:58 PM}
+ #                                last update: 10/27/04 {9:55:05 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -56,26 +56,124 @@ where the free energy functional is given by,
 
 .. raw:: latex
 
-    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2 $$
+    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2. $$
+    
+We solve the problem on a 1D mesh
 
-The solution to the 1D problem over an infinite domain is given by,
+    >>> L = 40.
+    >>> nx = 10000
+    >>> ny = 1
+    >>> dx = L / nx
+    >>> dy = 1.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx, dy, nx, ny)
+
+and create the solution variable
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(
+    ...     name = "phase field",
+    ...     mesh = mesh,
+    ...     value = 1)
+    >>> var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
+
+The boundary conditions for this problem are
 
 .. raw:: latex
 
-    $$ \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}} $$
+   $$
+   \left.
+       \begin{aligned}
+	   \phi &= \frac{1}{2} \\
+	   \frac{\partial^3 \phi}{\partial x^3} &= 0
+       \end{aligned}
+   \right\} \qquad \text{on $x = 0$}
+   $$
 
-Evolve the solution to equilibrium,
+   and
+   
+   $$
+   \left.
+       \begin{aligned}
+	   \phi &= 1 \\
+	   \frac{\partial^2 \phi}{\partial x^2} &= 0
+       \end{aligned}
+   \right\} \qquad \text{on $x = L$}
+   $$
 
-   >>> for step in range(steps):
-   ...     it.timestep(dt = 10)
+or
 
-Calculate the answer,
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
+    ...     import NthOrderBoundaryCondition
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesRight(), 1),
+    ...     FixedValue(mesh.getFacesLeft(), .5),
+    ...     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
+    ...     NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3))
 
-   >>> a = Numeric.sqrt(parameters['asq'])
-   >>> answer = 1 / (1 + 
-   ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+Using
 
-Compare with the numerical solution,
+    >>> parameters={
+    ...     'asq' : 1.0,
+    ...     'epsilon' : 1,
+    ...     'diffusionCoeff' : 1
+    ... }
+
+we create the Cahn-Hilliard equation object
+
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
+    >>> eqch= CahnHilliardEquation(
+    ...     var,
+    ...     parameters = parameters,
+    ...     solver = LinearLUSolver(
+    ...         tolerance = 1e-15,
+    ...         steps = 100),
+    ...     boundaryConditions = boundaryConditions
+    ... )
+
+The solution to this 1D problem over an infinite domain is given by,
+
+.. raw:: latex
+
+   $$ \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}} $$
+
+or
+
+    >>> import Numeric
+    >>> a = Numeric.sqrt(parameters['asq'])
+    >>> answer = 1 / (1 + 
+    ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+
+If we are running interactively, we create a viewer to see the results
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
+    ...     viewer.plot()
+
+We iterate the solution to equilibrium and, if we are running interactively, 
+we update the display and output data about the progression of the solution
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((eqch,))
+    >>> dexp=-5
+    >>> for step in range(100):      
+    ...     dt = Numeric.exp(dexp)
+    ...     dt = min(10,dt)
+    ...     dexp += 0.5
+    ...     it.timestep(dt = dt)
+    ...     if __name__ == '__main__':
+    ...         diff = abs(answer - Numeric.array(var))
+    ...         maxarg = Numeric.argmax(diff)
+    ...         print 'maximum error:',diff[maxarg]
+    ...         print 'element id:',maxarg
+    ...         print 'value at element ',maxarg,' is ',var[maxarg]
+    ... 
+    ...         viewer.plot()
+
+We compare the analytical solution with the numerical result,
 
    >>> Numeric.allclose(var, answer, atol = 1e-2)
    1
@@ -88,101 +186,9 @@ Compare with the numerical solution,
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-from fipy.iterators.iterator import Iterator
-from fipy.meshes.grid2D import Grid2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
-from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-
-L = 40.
-nx = 10000
-ny = 1
-steps = 100
-dx = L / nx
-dy = 1.
-
-parameters={
-    'asq' : 1.0,
-    'epsilon' : 1,
-    'diffusionCoeff' : 1}
-         
-
-mesh = Grid2D(dx, dy, nx, ny)
-
-##a = Numeric.sqrt(parameters['asq'])
-##answer = 1 / (1 + Numeric.exp(a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
-
-var = CellVariable(
-    name = "phase field",
-    mesh = mesh,
-    value = 1)
-
-var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
-
-eqch= CahnHilliardEquation(
-    var,
-    parameters = parameters,
-    solver = LinearLUSolver(tolerance = 1e-15,steps = 100),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesRight(), 1),
-    FixedValue(mesh.getFacesLeft(), .5),
-    NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
-    NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
-
-it = Iterator((eqch,))
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
-    viewer.plot()
-    dexp=-5
-
-    a = Numeric.sqrt(parameters['asq'])
-    answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0]) / parameters['epsilon']))
-    
-    for step in range(steps):      
-        dt=Numeric.exp(dexp)
-        dt = min(10,dt)
-        dexp=dexp+.5
-##        print 'in loop ',step,dt
-        print 'step:',step,dt
-        it.timestep(dt = dt)
-        diff = abs(answer - Numeric.array(var))
-        maxarg = Numeric.argmax(diff)
-        print 'maximum error:',diff[maxarg]
-        print 'element id:',maxarg
-        print 'value at element ',maxarg,' is ',var[maxarg]
-        
-        
-        viewer.plot()
-        
-        
-##    a = Numeric.sqrt(parameters['asq'])
-##    answer = 1 / (1 + Numeric.exp(a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
-
-##    from fipy.viewers.gist1DViewer import Gist1DViewer
-##    view1Dvar = Gist1DViewer(vars = (var,), minVal = 0., maxVal = 1.)
-##    view1Ddiff = Gist1DViewer(vars = (var - answer,), minVal = -1e-3, maxVal = 1e-3)
-
-##    view1Dvar.plot()
-##    view1Ddiff.plot()
-    
-##    diff = answer - Numeric.array(var)
-##    maxarg = Numeric.argmax(diff)
-##    print diff[maxarg]
-##    print maxarg
-##    aa = Numeric.argsort(diff)
-##    print diff[aa[nx-1]],diff[aa[nx-2]],aa[nx-1],aa[nx-2]
-##    print diff[800:840]
-##    print answer[800:840]
-
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     
     raw_input('finished')
 

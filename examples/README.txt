@@ -2,6 +2,12 @@
 Examples
 --------
 
+.. note::
+
+   Any given "Module example.something.input" can be found in the file::
+
+    $ examples/something/input.py
+
 These examples can be used in at least four ways:
 
 - Each example can be invoked individually to demonstrate an 
@@ -30,9 +36,24 @@ These examples can be used in at least four ways:
 - Finally, and most importantly, the examples can be used as a templates to
   design your own problem scripts.
 
+  .. note::
+
+     The examples shown in this manual have been written with particular
+     emphasis on serving as both documentation and as comprehensive tests
+     of the |FiPy| framework.  As explained at the end of
+     ``examples/diffusion/steadyState/mesh1D.py``, your own scripts can be
+     much more succint, if you wish, and include only the text that follows
+     the ``>>>`` and ``...`` prompts shown in these examples.
+
+
+In addition to those presented in this manual, there are dozens of other
+examples (all with "input" in their title), that demonstrate other uses of
+|FiPy|. If these examples do not help you construct your own problem scripts,
+please `contact us`_.
 
 .. include:: ../utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. _Python:         http://www.python.org/
 .. _doctest:        http://www.python.org/doc/current/lib/module-doctest.html
+.. _contact us:     mailto:fipy@nist.gov

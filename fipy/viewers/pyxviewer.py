@@ -7,7 +7,7 @@
  # 
  #  FILE: "pyxviewer.py"
  #                                    created: 6/25/04 {3:17:21 PM} 
- #                                last update: 10/22/04 {4:09:04 PM} 
+ #                                last update: 10/26/04 {10:56:28 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -277,7 +277,7 @@ class PyxViewer:
         maxval = float(maxval)
         vallist = vallist.astype(Numeric.Float)
 	if maxval == minval:
-	    vallist = vallist - minvalue
+	    vallist = vallist - minval
 	else:
 	    vallist = (vallist - minval) / (maxval - minval)
         minxlist = xlist - (0.5 * resolution)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/25/04 {5:09:29 PM} 
+ #                                last update: 10/27/04 {9:48:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,7 +41,6 @@
  ##
 
 """
-
 This input file again solves a steady 1D diffusion problem as in::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
@@ -114,7 +113,6 @@ __docformat__ = 'restructuredtext'
 ##from fipy.tools.profiler.profiler import calibrate_profiler
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
-    
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     raw_input("finished")

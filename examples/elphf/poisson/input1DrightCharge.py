@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/26/04 {1:38:01 PM} 
+ #                                last update: 10/27/04 {9:54:08 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -154,8 +154,8 @@ If we are running the example interactively, we view the result
 __docformat__ = 'restructuredtext'
  
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
 	    
     raw_input("finished")
 

@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:51:20 AM}
+ #                                    created: 10/26/04 {9:00:00 PM} 
+ #                                last update: 10/27/04 {9:44:49 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,80 +36,50 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
+ #  2004-10-26 JEG 1.0 original
  # ###################################################################
  ##
 
 r"""
 
-In this example we solve a coupled phase and orientation equation on a one 
-dimensional grid
+In the following examples, we solve the same set of equations as in::
+    
+    $ examples/phase/impingement/mesh40x1/input.py
+    
+with different initial conditions and a 2D mesh:
 
-    >>> nx = 40
-    >>> ny = 1
+    >>> nx = 20
+    >>> ny = 20
     >>> Lx = 2.5 * nx / 100.
     >>> Ly = 2.5 * ny / 100.            
     >>> dx = Lx / nx
     >>> dy = Ly / ny
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx,dy,nx,ny)
-	
-This problem simulates the wet boundary that forms between grains of different 
-orientations. The phase equation is given by
+
+The initial conditions are given by
 
 .. raw:: latex
 
-    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
-    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
-    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
+    $ \phi = 1 $ and
+    
+    $$ \theta = \begin{cases}
+    \frac{2 \pi}{3} & \text{for $x^2 - y^2 < L / 2$,} \\
+    \frac{-2 \pi}{3} & \text{for $(x-L)^2 - y^2 < L / 2$,} \\
+    \frac{-2 \pi}{3}+0.3 & \text{for $x^2 - (y-L)^2 < L / 2$,} \\
+    \frac{2 \pi}{3} & \text{for $(x-L)^2 - (y-L)^2 < L / 2$.}
+    \end{cases} $$
 
-where
+This defines four solid regions with different
+orientations. Solidification occurs and then boundary wetting occurs
+where the orientation varies.
 
-.. raw:: latex
-
-    $$ m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
-
-and the orientation equation is given by
-
-.. raw:: latex
-
-    $$ P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
-    \frac{\partial \theta}{\partial t} 
-    = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
-    + \epsilon^2 \right) \nabla \theta \right] $$
-
-where
-
-.. raw:: latex
-
-    $$ P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)} $$
-
-The initial conditions for this problem are set such that
-
-.. raw:: latex
-
-   $\phi = 1$ for $0 \le x \le L_x$ and 
-   
-   $$
-   \theta = \begin{cases}
-   1 & \text{for $0 \le x < L_x / 2$,} \\
-   0 & \text{for $L_x / 2 \le x \le L_x$.}
-   \end{cases}
-   $$
-
-.. Further details of the numerical method for this problem can be found in
-   "Extending Phase Field Models of Solidification to Polycrystalline
-   Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
-
-Here the phase and orientation equations are solved with an
-explicit and implicit technique respectively.
-
-The parameters for these equations are
+The parameters for this example are
 
     >>> timeStepDuration = 0.02
     >>> phaseParameters = {
     ...    'tau'                   : 0.1,
+    ...    'time step duration'    : timeStepDuration
     ...     }
     >>> thetaParameters = {
     ...     'small value'           : 1e-6,
@@ -132,35 +102,55 @@ with the shared parameters
     ...     phaseParameters[key] = sharedPhaseThetaParameters[key]
     ...     thetaParameters[key] = sharedPhaseThetaParameters[key]
 
-The system is held isothermal at
+This time, the system is held isothermal at
 
-    >>> temperature = 1.
-
-and is initially solid everywhere
+    >>> temperature = 10.
+    
+and is initialized to liquid everywhere
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
     ...     name = 'PhaseField',
     ...     mesh = mesh,
-    ...     value = 1.
+    ...     value = 0.
     ...     )
 
-The left and right halves of the domain are given different orientations
+The orientation is initialized to a uniform value to denote the randomly 
+oriented liquid phase
 
+    >>> from Numeric import pi
     >>> from fipy.models.phase.theta.modularVariable import ModularVariable
     >>> theta = ModularVariable(
     ...     name = 'Theta',
     ...     mesh = mesh,
-    ...     value = 1.,
+    ...     value = -pi + 0.0001,
     ...     hasOld = 1
     ...     )
-    >>> theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
+
+Four different solid circular domains are created at each corner of the domain 
+with appropriate orientations
+
+    >>> def cornerCircle(cell):
+    ...     x = cell.getCenter()[0]
+    ...     y = cell.getCenter()[1]
+    ...     if ((x - a)**2 + (y - b)**2) < (Lx / 2.)**2:
+    ...         return 1
+    ...     else:
+    ...         return 0
+    
+    >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
+    ...                          (Lx, 0., -2. * pi / 3.), 
+    ...                          (0., Ly, -2. * pi / 3. + 0.3), 
+    ...                          (Lx, Ly,  2. * pi / 3.)):
+    ...     cells = mesh.getCells(filter = cornerCircle)
+    ...     phase.setValue(1., cells)
+    ...     theta.setValue(thetaValue, cells)
 
 For both equations, zero flux boundary conditions apply to the exterior of the mesh
 
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
-
+    
 The `phase` equation requires a `mPhi` instantiator to represent
 
 .. raw:: latex
@@ -209,7 +199,7 @@ and requires access to the `phase` variable
     ...         'phase' : phase
     ...     }
     ...     )
-
+    
 If the example is run interactively, we create viewers for the phase and 
 orientation variables. Rather than viewing the raw orientation, which is not 
 meaningful in the liquid phase, we weight the orientation by the phase
@@ -225,41 +215,33 @@ meaningful in the liquid phase, we weight the orientation by the phase
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 
-we iterate the solution in time, plotting as we go if running interactively,
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((thetaEq, phaseEq))
-    >>> steps = 10
-    >>> for i in range(steps):
-    ...     it.timestep(dt = timeStepDuration)
-    ...     if __name__ == '__main__':
-    ...         phaseViewer.plot()
-    ... 	thetaProductViewer.plot()
-
-The solution is compared with test data. The test data was created with 
+The solution will be tested against data that was created with 
 ``steps = 10`` with a FORTRAN code written by Ryo Kobayshi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 
-   >>> import os
-   >>> testFile = 'test.gz'
-   >>> import examples.phase.impingement.mesh40x1
-   >>> gzfile = 'gunzip --fast -c < %s/%s'
-   >>> gzfile = gzfile%(examples.phase.impingement.mesh40x1.__path__[0], testFile)
-   >>> filestream=os.popen(gzfile,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> import Numeric
-   >>> theta =  Numeric.array(theta)
-   >>> testData = Numeric.reshape(testData, theta.shape)
-   >>> Numeric.allclose(theta, testData, rtol = 1e-10, atol = 1e-10)
-   1
+    >>> import os
+    >>> testFile = 'test.gz'
+    >>> import examples.phase.impingement.mesh20x20
+    >>> gzfile = 'gunzip --fast -c < %s/%s'
+    >>> gzfile = gzfile%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+    >>> filestream=os.popen(gzfile,'r')
+    >>> import cPickle
+    >>> testData = cPickle.load(filestream)
+    >>> filestream.close()
+    >>> import Numeric
+    >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
+
+Finally, we create an iterator
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((thetaEq, phaseEq))
+    >>> steps = 10
+    
+The preceding initialization steps are used in the next few examples.
 """
 __docformat__ = 'restructuredtext'
 
-if __name__ == '__main__':
+def script():
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
-
-    raw_input('finished')
+    return fipy.tests.doctestPlus.getScript(__name__)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputRand.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:33 PM}
+ #                                last update: 10/27/04 {11:01:59 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -137,7 +137,7 @@ eqch= CahnHilliardEquation(
     boundaryConditions=(
     FixedFlux(mesh.getFacesRight(), 0),
     FixedFlux(mesh.getFacesLeft(), 0),
-    NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),900
+    NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
     NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 2)))
 
 it = Iterator((eqch,))
