@@ -57,10 +57,11 @@ parameters = { 'material properties' : { 'Faradays constant' : 9.6e4,
                                          'trench spacing' : 0.6e-6,
                                          'boundary layer depth' : 0.3e-6},
 
-               'accelerator properties' : { 'rate constant' : { 'constant' : (1.76),
-                                                                'overpotential dependence' :
-                                                                (-245e-6)
-                                                                }
+               'accelerator properties' : { 'rate constant' : { 'constant' : 1.76,
+                                                                'overpotential dependence' : -245e-6
+                                                                },
+                                            'diffusion coefficient' : 1e-9,
+                                            'site density' : 9.8e-6
                                             },
 
                'metal ion properties' : { 'atomic volume' : 7.1e-6,
@@ -68,17 +69,19 @@ parameters = { 'material properties' : { 'Faradays constant' : 9.6e4,
                                           'diffusion coefficient' : 5.6e-10,},
 
                'experimental parameters' : { 'exchange current density' : { 'constant' : 0.26,
-                                                                            'accelerator dependence' : 45},
-                                             'transfer coefficient' : 0.5,
+                                                                            'accelerator dependence' : 45.},
+                                             'transfer coefficient' : { 'constant' : 0.477,
+                                                                        'accelerator dependence' : 0.299},
                                              'temperature' : 298.,
                                              'overpotential' : -0.3,
                                              'initial accelerator coverage' : 0.,
                                              'bulk metal ion concentration' : 250.,
                                              'bulk accelerator concentration' : 5e-3},
 
-               'control parameters' : { 'simulation end time' : 100,
+               'control parameters' : { 'simulation end time' : 10.,
                                         'cfl number' : 0.2,
                                         'cell size' : 0.1e-7,
                                         'number of cells in narrow band' : 10,
-                                        'cells below trench' : 10 }
+                                        'cells below trench' : 10,
+                                        'variable dump frequency' : 20}
                }
