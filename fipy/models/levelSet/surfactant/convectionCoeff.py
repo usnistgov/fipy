@@ -118,7 +118,7 @@ class ConvectionCoeff(VectorFaceVariable):
         M = self.mesh.getMaxFacesPerCell()
         dim = self.mesh.getDim()
         
-        faceNormalAreas = self.getFaceNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
+        faceNormalAreas = self.distanceVar.getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
 
         cellFaceNormalAreas = Numeric.take(faceNormalAreas, self.mesh.getCellFaceIDs())
         
@@ -139,26 +139,26 @@ class ConvectionCoeff(VectorFaceVariable):
 
         cellFaceIDs = (self.mesh.getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getCellFaceIDs().flat),dim))
 
-        vector.putAdd(self.value, cellFaceIDs.flat, alpha.flat)
+        vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat)
 
         self.value = Numeric.reshape(self.value, (Nfaces, dim))
 
         self.value = -self.value / self.mesh.getFaceAreas()[:,Numeric.NewAxis]
 
 
-    def getFaceNormals(self):    
-        faceGrad = self.distanceVar.getGrad().getArithmeticFaceValue()
-        faceGradMag = Numeric.where(faceGrad.getMag() > 1e-10,
-                                    faceGrad.getMag(),
-                                    1e-10)
-        faceGrad = Numeric.array(faceGrad)
+##    def getFaceNormals(self):    
+##        faceGrad = self.distanceVar.getGrad().getArithmeticFaceValue()
+##        faceGradMag = Numeric.where(faceGrad.getMag() > 1e-10,
+##                                    faceGrad.getMag(),
+##                                    1e-10)
+##        faceGrad = Numeric.array(faceGrad)
 
-        ## set faceGrad zero on exteriorFaces
-        dim = self.mesh.getDim()
-        exteriorFaces = (self.mesh.getExteriorFaceIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
-        Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
+##        ## set faceGrad zero on exteriorFaces
+##        dim = self.mesh.getDim()
+##        exteriorFaces = (self.mesh.getExteriorFaceIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
+##        Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
         
-        return faceGrad / faceGradMag[:,Numeric.NewAxis] 
+##        return faceGrad / faceGradMag[:,Numeric.NewAxis] 
 
 def _test(): 
     import doctest
