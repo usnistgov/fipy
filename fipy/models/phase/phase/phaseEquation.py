@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/05/04 { 5:42:51 PM}
+                               last update: 01/06/04 { 3:40:47 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -52,9 +52,7 @@ from phaseHalfAngleVariable import PhaseHalfAngleVariable
 import Numeric
 
 class PhaseEquation(MatrixEquation):
-    """
-    Diffusion equation is implicit.
-    """    
+
     def __init__(self,
                  var,
                  solver = 'default_solver',
@@ -73,17 +71,27 @@ class PhaseEquation(MatrixEquation):
         	
 	self.mPhi = mPhi
 
-        self.halfAngle = PhaseHalfAngleVariable(parameters = self.parameters, phase = self.var, theta = self.thetaOld)
+        self.halfAngle = PhaseHalfAngleVariable(
+            parameters = self.parameters,
+            phase = self.var,
+            theta = self.thetaOld
+            )
 
         self.diffTerm = ExplicitDiffusionTerm(
-	    diffCoeff = PhaseDiffusionVariable(parameters = self.parameters, halfAngle = self.halfAngle),
-##            diffCoeff = self.getPhaseDiffCoeff(),
+	    diffCoeff = PhaseDiffusionVariable(
+            parameters = self.parameters,
+            halfAngle = self.halfAngle
+            ),
 	    mesh = mesh,
-	    boundaryConditions = boundaryConditions)
+	    boundaryConditions = boundaryConditions
+            )
 	
         self.spTerm = SpSourceTerm(
-##	    sourceCoeff = self.getSpSourceCoeff(),
-            sourceCoeff = SpSourceVariable(theta = self.thetaOld, mPhi = self.mPhi, phase = self.var, parameters = self.parameters),
+            sourceCoeff = SpSourceVariable(
+            theta = self.thetaOld,
+            mPhi = self.mPhi,
+            phase = self.var,
+            parameters = self.parameters),
 	    mesh = mesh)
 
         anisotropy = AnisotropyVariable(parameters = parameters, phase = self.var, halfAngle = self.halfAngle)
@@ -106,24 +114,6 @@ class PhaseEquation(MatrixEquation):
             var,
             terms,
             solver)
-
-    
-	    
-##    def getPhaseDiffCoeff(self):
-##	alpha = self.parameters['alpha']
-##	N = self.parameters['symmetry']
-##	c2 = self.parameters['anisotropy']
-##	dphi = self.var.getFaceGrad()
-##	thetaFace = self.thetaOld.getFaceValue()
-
-##        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
-##	z = N * (z - thetaFace)
-##	z = Numeric.tan(z / 2.)
-##	z = z * z
-##	z = (1. - z) / (1. + z)
-##	z = (1.+ c2 * z)
-
-##	return alpha**2 * z * z
 
     def getSpSourceCoeff(self):
         s = self.parameters['s']
