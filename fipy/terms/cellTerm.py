@@ -5,7 +5,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 11/17/03 {11:33:32 AM} 
+                               last update: 11/20/03 {10:29:31 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -41,14 +41,14 @@ they have been modified.
 """
 
 import Numeric
-import term
+from term import Term
 
-class CellTerm(term.Term):
+class CellTerm(Term):
     def __init__(self,stencil,cells):
 	"""
 	stencil = [b, phi, phi_old]
 	"""
-	term.Term.__init__(self,stencil)
+	Term.__init__(self,stencil)
         self.cells = cells
 	
     def buildMatrix(self,L,array,b):

@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 11/17/03 {10:57:07 AM} 
+                               last update: 11/20/03 {10:31:13 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-import faceTerm
+from faceTerm import FaceTerm
 import Numeric
 
-class DiffusionTerm(faceTerm.FaceTerm):
+class DiffusionTerm(FaceTerm):
     def __init__(self,diffCoeff,faces,interiorFaces,boundaryConditions):
         stencil = (1,1)
-	faceTerm.FaceTerm.__init__(self,stencil,faces,interiorFaces,boundaryConditions)
+	FaceTerm.__init__(self,stencil,faces,interiorFaces,boundaryConditions)
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):
