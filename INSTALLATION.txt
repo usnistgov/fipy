@@ -163,12 +163,12 @@ http://www.geuz.org/gmsh/
 
 It is possible to create irregular meshes with this package.
 
-.. warning::
+.. note::
 
    The `Mac OS X`_ distribution of gmsh provides a nice graphical tool, but
-   unfortunately this tool cannot be used by |FiPy|.  Please download the
-   source distribution and build the ``gmsh`` command-line tool for your
-   platform.
+   is structured a bit differently than on other platforms.  To access the
+   underlying shell tool, create a shell alias called ``gmsh`` that
+   corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
 Viewers
 =======
