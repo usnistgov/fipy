@@ -102,7 +102,7 @@ Start time steping:
 
 Compare the analaytical and numerical results:
 
-   >>> theta = surfactantVar.getInterfaceValue()[1]
+   >>> theta = surfactantVar.getInterfaceVar()[1]
    >>> Numeric.allclose(currentTime, currentTimeFunc(theta), rtol = 1e-4)
    1
    >>> Numeric.allclose(Numeric.array(bulkVar)[1:], concentrationFunc(theta), rtol = 1e-4)
@@ -183,7 +183,7 @@ def currentTimeFunc(theta):
 analyticalTime = Numeric.zeros(totalTimeSteps,'d')
 numericalTime = Numeric.zeros(totalTimeSteps,'d')
 
-theta = surfactantVar.getInterfaceValue()[1]
+theta = surfactantVar.getInterfaceVar()[1]
     
 analyticalConcentration = concentrationFunc(theta)
 numericalConcentration = Numeric.array(bulkVar)[1:]
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
         ## evaluate the analytical and numerical solution and plot
 
-        theta = surfactantVar.getInterfaceValue()[1]
+        theta = surfactantVar.getInterfaceVar()[1]
         print "theta:",theta
         analyticalConcentration[:] = concentrationFunc(theta)
         numericalConcentration[:] = Numeric.array(bulkVar)[1:]

@@ -80,7 +80,7 @@ The following is a test case:
    >>> eqn = AdsorbingSurfactantEquation(var, distanceVar, bulkVar, k)
    >>> eqn.solve(dt = dt)
    >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-   >>> Numeric.allclose(var.getInterfaceValue(), Numeric.array((0, 0, answer, 0, 0)))
+   >>> Numeric.allclose(var.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
    1
 
 """

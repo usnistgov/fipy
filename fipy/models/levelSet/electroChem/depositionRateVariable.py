@@ -153,7 +153,7 @@ class DepositionRateVariable(CellVariable):
         m0 = self.parameters['experimental parameters']['transfer coefficient']['constant']
         m1 = self.parameters['experimental parameters']['transfer coefficient']['accelerator dependence']
 
-        acc = Numeric.minimum(Numeric.array(self.acceleratorVariable.getInterfaceValue()), 1)
+        acc = Numeric.minimum(Numeric.array(self.acceleratorVariable.getInterfaceVar()), 1)
 
         self.expoConstant = -(m0 + m1 * acc) * faradaysConstant / gasConstant / temperature
 

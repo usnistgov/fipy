@@ -97,7 +97,7 @@ class ScAdsorptionCoeff(AdsorptionCoeff):
         AdsorptionCoeff._calcValue(self)
         bulk = Numeric.array(self.bulkVar)
         val = Numeric.array(self.value)
-        self.value = val * bulk * self.surfactantVar.getInterfaceValue()
+        self.value = val * bulk * Numeric.array(self.surfactantVar.getInterfaceVar())
 
 class SurfactantBulkDiffusionEquation(LevelSetDiffusionEquation):
     

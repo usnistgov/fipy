@@ -187,7 +187,7 @@ if __name__ == '__main__':
         if step % 10 == 0:
             distanceEquation.solve()
 
-        velocity.setValue(surfactantVariable.getInterfaceValue())
+        velocity.setValue(surfactantVariable.getInterfaceVar())
 
         argmax = Numeric.argmax(velocity)
         timeStepDuration = cfl * dx / velocity[argmax]
