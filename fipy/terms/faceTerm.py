@@ -72,6 +72,7 @@ class FaceTerm(Term):
 		'cell 2 diag': self.coeff * weight['cell 2 diag'],
 		'cell 2 offdiag': self.coeff * weight['cell 2 offdiag']
 	    }
+            
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
         L.update_add_pyarray_at_indices(self.implicit['cell 1 diag'][:self.interiorN] / coeffScale,id1,id1)
         L.update_add_pyarray_at_indices(self.implicit['cell 1 offdiag'][:self.interiorN] / coeffScale,id1,id2)

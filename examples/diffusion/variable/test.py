@@ -90,6 +90,7 @@ class TestVariableDiffusion(TestBase):
 	    
 class TestVariableDiffusion2x1(TestVariableDiffusion):
     """Variable 1D diffusion on a 1x2 mesh
+    gobeldegook
     """
     def setUp(self):
 	self.nx = 2
