@@ -101,5 +101,6 @@ class GnuplotViewer:
             g('set terminal pdf')
             g('set output "' + fileName + '"')
             g.splot(Gnuplot.GridData(array, x, y))
-        elif '.ps' == fileName[-3:]: 
+        elif '.ps' == fileName[-3:]:
+            g.splot(Gnuplot.GridData(array, x, y))
             g.hardcopy(fileName, enhanced=1, color=1)
