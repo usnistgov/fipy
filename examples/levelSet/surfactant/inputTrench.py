@@ -79,40 +79,47 @@ from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.models.levelSet.distanceFunction.extensionEquation import ExtensionEquation
 
-L = 1.
-dx = 0.02
-velocity = 1.
-cfl = 0.1
-distanceToTravel = L / 2.
+Lx = .5
+Ly = 1.
 
-nx = int(L / dx)
-ny = int(L / dx)
-steps = int(distanceToTravel / dx / cfl)
+dx = 0.01
+cfl = 0.5
 
-timeStepDuration = cfl * dx / velocity
+nx = int(Lx / dx)
+ny = int(Ly / dx)
+steps = 5000
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-distanceVariable = DiatanceVariable(
+distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-surfactantVariable = SurfactantVariable(
-    name = 'surfactant variable',
-    mesh = mesh,
-    value = 1.
-    )
-
-positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > L / 2) or (cell.getCenter()[0] > L / 2 and cell.getCenter()[1] > L / 4))
+positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 3 * Ly / 4) or
+                              (cell.getCenter()[0] > Lx / 2 and cell.getCenter()[1] > Ly / 4) )
 
 distanceVariable.setValue(1., positiveCells)
 
-distanceEquation = DistanceFunctionEquation(distanceVariable)
+distanceEquation = DistanceEquation(distanceVariable)
 
-surfactantEquation = ConservativeSurfactantEquation(
+surfactantVariable = SurfactantVariable(
+    value = 1,
+    distanceVariable = distanceVariable
+    )
+
+velocity = CellVariable(
+    name = 'velocity',
+    mesh = mesh,
+    value = 1.,
+    )
+
+surfactantEquation = SurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(
@@ -127,32 +134,49 @@ advectionEquation = AdvectionEquation(
         steps = 1000),
     advectionTerm = HigherOrderAdvectionTerm)
 
-it = Iterator((surfactantEquation, advectionEquation))
+extensionEquation = ExtensionEquation(
+    distanceVariable,
+    velocity,
+    terminationValue = 8 * dx)
 
-def evaluateCoverage(phi, theta):
-    alpha = 1.5 * dx
-    delta = Numeric.where(phi > -alpha,
-                          Numeric.where(phi < alpha,
-                                        (1 - 0.5 * Numeric.cos(Numeric.pi * phi / alpha)) / (2 * alpha),
-                                        0.),
-                          0.)
-    return Numeric.sum(delta * phi.getGrad().getMag() * theta * mesh.getCellVolumes())
+it = Iterator((extensionEquation, advectionEquation, surfactantEquation))
 
 if __name__ == '__main__':
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.001, maxVal = .001)
-    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 2.)
+    levelSetViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.5, maxVal = .5)
+    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 200.)
+    velocityViewer = Grid2DGistViewer(var = velocity, palette = 'rainbow.gp', minVal = 0., maxVal = 2.)
+    levelSetGradMag = Grid2DGistViewer(var = distanceVariable.getGrad().getMag(), palette = 'rainbow.gp', minVal = .5, maxVal = 1.5)
 
+    
     distanceViewer.plot()
     surfactantViewer.plot()
-
+    velocityViewer.plot()
+    
     distanceEquation.solve()
 
+##    from fipy.tools.profiler.profiler import calibrate_profiler
+##    from fipy.tools.profiler.profiler import Profiler
+##    fudge = calibrate_profiler(10000)
+##    profile = Profiler('profile.txt', fudge=fudge)
+
     for step in range(steps):
-        print evaluateCoverage(distanceVariable, surfactantVariable)
+        print 'step',step
+
+        if step % 5 == 0:
+            distanceEquation.solve()
+        
+        
+        velocity.setValue(surfactantVariable.getInterfaceValue())
+        argmax = Numeric.argmax(velocity)
+        timeStepDuration = cfl * dx / velocity[argmax]
         it.timestep(dt = timeStepDuration)
-        print 'step:',step
+
+##    profile.stop()
 
         distanceViewer.plot()
         surfactantViewer.plot()
+        velocityViewer.plot()
+        levelSetViewer.plot()
 
     raw_input('finished')
