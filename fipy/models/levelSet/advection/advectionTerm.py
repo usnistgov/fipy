@@ -69,7 +69,6 @@ Here are some simple test cases for this problem:
    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1) 
    
 Trivial test:
-
    >>> L, b = AdvectionTerm(0., mesh = mesh).buildMatrix(Numeric.zeros(3, 'd'))
    >>> Numeric.allclose(b, Numeric.zeros(3, 'd'), atol = 1e-10)
    1
@@ -134,7 +133,7 @@ class AdvectionTerm(Term):
 
         adjacentValues = Numeric.take(oldArray, cellToCellIDs)
 
-        differences = (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
+        differences = self.getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs)
 
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
@@ -142,6 +141,9 @@ class AdvectionTerm(Term):
         coeffXdiffereneces = self.coeff * ((self.coeff > 0.) * minsq + (self.coeff < 0.) * maxsq)
         
         return (self.L, -coeffXdiffereneces * self.mesh.getCellVolumes())
+        
+    def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
+        return (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
 
 def _test(): 
     import doctest
