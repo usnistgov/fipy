@@ -83,7 +83,7 @@ class CellTerm(Term):
             oldCoeff = self.oldCoeff
             bCoeff = self.bCoeff
             newCoeff = self.newCoeff
-            diagCoeff = self.diagCOeff
+            diagCoeff = self.diagCoeff
         else:
             oldCoeff = self.oldCoeff.getNumericValue()
             bCoeff = self.bCoeff.getNumericValue()
