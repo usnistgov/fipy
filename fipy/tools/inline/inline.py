@@ -14,6 +14,8 @@ def runInline(code,**args):
 
 ##    from weave.blitz_tools import blitz_type_factories	
 
+##     print "in:", code
+    
     weave.inline(code,
 		 args.keys(),
 		 local_dict=args,
@@ -22,7 +24,10 @@ def runInline(code,**args):
 		 type_converters=weave.converters.blitz,
 ##		 type_converters=weave.weave_type_Factories
 		 compiler = 'gcc',
+		 verbose = 2,
 		 extra_compile_args =['-O3'])
+		 
+##     print "out"
 			 
 def runInlineLoop3(code_in,**args):
     
