@@ -6,7 +6,7 @@
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 4/2/04 {4:00:56 PM} 
+ #                                last update: 7/24/04 {8:59:49 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ class ArithmeticCellToFaceVariable(CellToFaceVariable):
 	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
 	""",
 	var = self.var.getNumericValue(),
-	val = self.value.value, 
+	val = self._getArray(), 
 	alpha = alpha,
 	id1 = id1, id2 = id2,
 	ni = self.mesh.getNumberOfFaces())

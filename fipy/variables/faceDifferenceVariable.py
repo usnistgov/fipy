@@ -4,7 +4,7 @@
  # 
  #  FILE: "finiteDifferenceAspectRatioGradient.py"
  #                                    created: 4/30/04 {2:01:50 PM} 
- #                                last update: 5/7/04 {9:54:51 AM} 
+ #                                last update: 7/23/04 {10:22:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -52,7 +52,7 @@ class FaceDifferenceVariable(FaceVariable):
 	FaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 	
-    def calcValue(self):
+    def _calcValue(self):
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	self.value = self.mesh.getFaceAspectRatios()[:] * (array.take(self.var,id2) - array.take(self.var,id1))
 

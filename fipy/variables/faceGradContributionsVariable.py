@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 5/7/04 {3:22:57 PM} 
+ #                                last update: 7/23/04 {10:20:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,7 @@ class FaceGradContributions(VectorCellVariable):
         VectorCellVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 
-    def calcValue(self):
+    def _calcValue(self):
         self.value = self.mesh.getAreaProjections()[:] * self.var.getArithmeticFaceValue().transpose().getNumericValue()[:]
     
 

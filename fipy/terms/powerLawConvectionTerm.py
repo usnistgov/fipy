@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/2/04 {4:00:49 PM} 
+ #                                last update: 7/24/04 {9:02:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -95,12 +95,12 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		    alpha(i) = -1. / P(i);
 		}
 	    """,
-	    alpha = self.value.value, eps = eps, P = P,
+	    alpha = self._getArray(), eps = eps, P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
 
 
-	def calcValue(self):	    
+	def _calcValue(self):	    
 	    eps = 1e-3
 	    P  = self.P.getNumericValue()
 	    

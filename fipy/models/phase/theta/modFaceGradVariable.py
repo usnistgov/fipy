@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 6/3/04 {4:04:55 PM}
+ #                                last update: 7/26/04 {11:24:56 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,9 @@ from fipy.variables.faceGradVariable import FaceGradVariable
 from fipy.tools.inline import inline
 
 class ModFaceGradVariable(FaceGradVariable):
-    def __init__(self, var, mod):
+    def __init__(self, var, modIn):
 	FaceGradVariable.__init__(self, var)
-        self.mod = mod
+        self.modIn = modIn
         
     def _calcValueInline(self):
 
@@ -53,7 +53,7 @@ class ModFaceGradVariable(FaceGradVariable):
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 
-	inline.runInline(self.mod + """
+	inline.runInline(self.modIn + """
         int i;
         for(i = 0; i < ni; i++)
         {
@@ -85,6 +85,6 @@ class ModFaceGradVariable(FaceGradVariable):
             id2 = Numeric.array(id2),
             dAP = Numeric.array(self.mesh.getCellDistances()),
             var = self.var.getNumericValue(),
-            val = self.value.value,
+            val = self._getArray(),
             ni = tangents1.shape[0],
             nj = tangents1.shape[1])

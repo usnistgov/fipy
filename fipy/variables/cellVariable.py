@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 6/2/04 {6:10:43 PM} 
+ #                                last update: 7/26/04 {11:53:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,10 +75,13 @@ class CellVariable(Variable):
     def getGridArray(self):
 	return self.mesh.makeGridData(self.value)
 	
-    def __call__(self, point, order = 0):
-	d = self.mesh.getPointToCellDistances(point)
-	i = Numeric.argsort(d)
-	return self[i[0]]
+    def __call__(self, point = None, order = 0):
+	if point:
+	    d = self.mesh.getPointToCellDistances(point)
+	    i = Numeric.argsort(d)
+	    return self[i[0]]
+	else:
+	    return Variable.__call__(self)
 ## 	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
 	
     def getValue(self, points = (), cells = ()):

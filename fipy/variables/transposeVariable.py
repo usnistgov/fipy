@@ -6,7 +6,7 @@
  # 
  #  FILE: "transposeVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 4/2/04 {4:00:47 PM} 
+ #                                last update: 7/23/04 {10:24:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,5 +45,5 @@ class TransposeVariable(VectorFaceVariable):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 
-    def calcValue(self):
+    def _calcValue(self):
 	self.value = self.var[:,Numeric.NewAxis]

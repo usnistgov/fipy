@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 6/3/04 {4:04:59 PM} 
+ #                                last update: 7/26/04 {10:47:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,7 +61,7 @@ class ModCellGradVariable(CellGradVariable):
 	    val(i, j) /= volumes(i);
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
 	""",
-	val = self.value.value,
+	val = self._getArray(),
         ids = Numeric.array(ids),
         orientations = Numeric.array(orientations),
         volumes = Numeric.array(volumes),
@@ -73,4 +73,5 @@ class ModCellGradVariable(CellGradVariable):
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh.getMeshSpacing()
-        self.value = self.modPy(self.value * gridSpacing) / gridSpacing 
+	self.value = self.modPy(self.value * gridSpacing) / gridSpacing
+

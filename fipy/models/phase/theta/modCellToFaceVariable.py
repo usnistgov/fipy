@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 2/20/04 {3:29:09 PM} 
+ #                                last update: 7/26/04 {11:25:09 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,13 +42,13 @@ from fipy.tools.inline import inline
 from fipy.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 
 class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
-    def __init__(self, var, mod):
+    def __init__(self, var, modIn):
 	ArithmeticCellToFaceVariable.__init__(self,var)
-        self.mod = mod
+        self.modIn = modIn
         
     def  _calcValueIn(self, alpha, id1, id2):
         
-	inline.runInline(self.mod + """
+	inline.runInline(self.modIn + """
         int i;
         for(i = 0; i < ni; i++)
         {
@@ -56,7 +56,7 @@ class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
 	    val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
         }
 	""",var = self.var.getNumericValue(),
-            val = self.value.value, 
+            val = self._getArray(), 
             alpha = alpha,
             id1 = id1, id2 = id2,
             ni = self.mesh.getNumberOfFaces())

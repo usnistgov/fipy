@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 4/2/04 {4:05:57 PM}
+ #                                last update: 7/24/04 {9:29:15 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,6 +48,6 @@ class MagVariable(Variable):
         self.var = self.requires(var)
         self.result = Numeric.zeros((len(var)),'d')
         
-    def calcValue(self):
-        self.value.value = array.sqrtDot(self.var.getNumericValue(), self.var.getNumericValue())
+    def _calcValue(self):
+	self.value = array.sqrtDot(self.var(), self.var())
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/15/04 {10:58:12 AM} 
+ #                                last update: 7/23/04 {4:40:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,7 +75,7 @@ and parameter values,
    $$ \\tau = 0 \;\; \\text{and} \;\; D = 1 $$
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
-object represents a cubic structured grid. The parameters `dx` and
+object represents a rectangular structured grid. The parameters `dx` and
 `dy` refer to the grid spacing (set to unity here).
 
     >>> nx = 50
@@ -85,7 +85,7 @@ object represents a cubic structured grid. The parameters `dx` and
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-The solution of all equations in FiPy requires a variable They store
+The solution of all equations in FiPy requires a variable. They store
 values on various parts of the mesh. In this case we need a
 `CellVariable` object as the solution is sought on the cell
 centers. The boundary conditions are given by `valueLeft = 0` and
@@ -95,14 +95,6 @@ centers. The boundary conditions are given by `valueLeft = 0` and
     >>> valueRight = 1
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
-
-A `Viewer` object allows a variable to be displayed. Here we are using  the Gist package
-to view the field. The Gist viewer is constructed in the following way:
-
-    >>> from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    >>> viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
-
-The viewer will plot the variable with the `viewer.plot()` command.
 
 Boundary conditions are given to the equation via a tuple. Boundary
 conditions are formed with a value and a set of faces over which they
@@ -149,7 +141,7 @@ Here the iterator does one time step to implicitly find the steady state
 solution.
     
     >>> iterator.timestep()
-
+    
 To test the solution, the analytical result is required. The x
 coordinates from the mesh are gathered and the length of the domain,
 `Lx`, is calculated.  An array, `analyticalArray`, is calculated to
@@ -171,37 +163,7 @@ for the comparison.
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.variables.cellVariable import CellVariable
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.iterators.iterator import Iterator
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-
-nx = 50
-ny = 1
-dx = 1.
-dy = 1.
-
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
-valueLeft = 0
-valueRight = 1
-var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
-
-viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
-
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight), FixedFlux(mesh.getFacesTop(),0.), FixedFlux(mesh.getFacesBottom(),0.))
-
-solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
-
-eq = DiffusionEquation(var, transientCoeff = 0., diffusionCoeff = 1., solver = solver, boundaryConditions = boundaryConditions)
-
-iterator = Iterator((eq,))
-
 if __name__ == '__main__':
-    iterator.timestep()
-    viewer.plot()
+    import doctest
+    doctest.testmod()
     raw_input("finished")

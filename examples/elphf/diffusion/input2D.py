@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/04 {6:42:32 PM} 
+ #                                last update: 7/26/04 {8:38:37 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -103,13 +103,13 @@ fields['substitutionals'][0].setValue(0.6,setCells)
 fields['substitutionals'][1].setValue(0.6)
 fields['substitutionals'][1].setValue(0.3,setCells)
 
-equations, timeStepDuration = elphf.makeEquations(
+equations = elphf.makeEquations(
     mesh = mesh, 
     fields = fields, 
     parameters = parameters
 )
 
-it = Iterator(equations = equations, timeStepDuration = timeStepDuration)
+it = Iterator(equations = equations)
 
 if __name__ == '__main__':
     viewers = [Grid2DGistViewer(var = field) for field in fields['all']]

@@ -6,7 +6,7 @@
  # 
  #  FILE: "type1MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:03:01 AM} 
+ #                                last update: 7/23/04 {10:20:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,7 @@ from phaseEquation import PhaseEquation
 from mPhiVariable import MPhiVariable
 
 class Type1MPhiVariable(MPhiVariable):
-    def calcValue(self):        
+    def _calcValue(self):        
         self.value = self.phase[:] - 0.5 + self.temperature[:] * self.phase[:] * (1 - self.phase[:])
 
         

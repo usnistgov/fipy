@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/04 {6:41:41 PM} 
+ #                                last update: 7/25/04 {6:38:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -99,9 +99,9 @@ The following code tests the results with a different algorithm:
    ...         x = dx * (i + 0.5)
    ...         y = dx * (j + 0.5)
    ...         testResult[i, j] = x * y
-   ...         bottomRight[i,j] = var((L - x, y)).getNumericValue()
-   ...         topLeft[i,j] = var((x, L - y)).getNumericValue()
-   ...         topRight[i,j] = var((L - x, L - y)).getNumericValue()
+   ...         bottomRight[i,j] = var((L - x, y))
+   ...         topLeft[i,j] = var((x, L - y))
+   ...         topRight[i,j] = var((L - x, L - y))
    >>> Numeric.allclose(testResult, bottomRight, atol = 1e-10)
    1
    >>> Numeric.allclose(testResult,topLeft, atol = 1e-10)

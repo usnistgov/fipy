@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseDiffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:21:52 AM} 
+ #                                last update: 7/23/04 {10:23:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,7 +51,7 @@ class PhaseDiffusionVariable(FaceVariable):
 	self.parameters = parameters
 	self.halfAngle = self.requires(halfAngle)
 
-    def calcValue(self):
+    def _calcValue(self):
 	alpha = self.parameters['alpha']
 	c2 = self.parameters['anisotropy']
 

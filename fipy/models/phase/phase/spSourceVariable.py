@@ -6,7 +6,7 @@
  # 
  #  FILE: "spSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/28/04 {4:20:21 PM} 
+ #                                last update: 7/24/04 {9:01:52 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,7 +53,7 @@ class SpSourceVariable(CellVariable):
         self.parameters = parameters
         self.mPhi = self.requires(mPhi)
 
-    def calcValue(self):
+    def _calcValue(self):
         inline.optionalInline(self._calcValueIn, self._calcValuePy)
     
     def  _calcValuePy(self):
@@ -76,8 +76,8 @@ class SpSourceVariable(CellVariable):
             value(i) += (2 * s + epsilonSq * thetaMag(i)) * thetaMag(i);
             """,mPhi = self.mPhi.getNumericValue(),
                 phase = self.phase.getNumericValue(),
-                value = self.value.value,
+                value = self._getArray(),
                 s = self.parameters['s'],
                 epsilonSq = self.parameters['epsilon']**2,
                 thetaMag = self.theta.getGrad().getMag().getNumericValue(),
-                ni = len(self.value.value))
+                ni = len(self._getArray()))

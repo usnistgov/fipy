@@ -6,7 +6,7 @@
  # 
  #  FILE: "harmonicCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:15:10 AM} 
- #                                last update: 4/2/04 {4:00:05 PM} 
+ #                                last update: 7/24/04 {9:01:59 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,7 +62,7 @@ class HarmonicCellToFaceVariable(CellToFaceVariable):
 	    }
 	""",
 	var = self.var.getNumericValue(),
-	val = self.value.value, 
+	val = self._getArray(), 
 	alpha = alpha,
 	id1 = id1, id2 = id2,
 	ni = len(self.mesh.getFaces())

@@ -6,7 +6,7 @@
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/20/04 {11:30:33 AM} { 2:35:45 PM}
+ #                                last update: 7/24/04 {9:01:31 AM} { 2:35:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ class FFVariable(FaceVariable):
         self.halfAngle = self.requires(halfAngle)
         self.parameters = parameters
 
-    def calcValue(self):
+    def _calcValue(self):
         inline.optionalInline(self._calcValueIn, self._calcValuePy)
 
     def _calcValueIn(self):
@@ -65,10 +65,10 @@ class FFVariable(FaceVariable):
             value(i) = alphasq * c2 * (1. + c2 * b) * db;
         """,halfAngle = self.halfAngle.getNumericValue(),
             N = self.parameters['symmetry'],
-            value = self.value.value,
+            value = self._getArray(),
             alphasq = self.parameters['alpha']**2,
             c2 = self.parameters['anisotropy'],
-            ni = len(self.value.value))
+            ni = len(self._getArray()))
             
     def _calcValuePy(self):
         alpha = self.parameters['alpha']
@@ -85,7 +85,7 @@ class DPhiReverse(VectorFaceVariable):
         VectorFaceVariable.__init__(self, phase.getMesh())
         self.phase = self.requires(phase)
 
-    def calcValue(self):
+    def _calcValue(self):
         dPhi = self.phase.getFaceGrad()[:,:]
 ##        self.value = dPhi[:,::-1] * Numeric.array((-1.,1.))
         self.value[:,0] = -dPhi[:,1]
@@ -101,5 +101,5 @@ class AnisotropyVariable(CellVariable):
         
         self.AOF = AddOverFacesVariable(faceVariable = ff, faceGradient = dPhiReverse)
         
-    def calcValue(self):
+    def _calcValue(self):
         self.value = self.AOF.getNumericValue()

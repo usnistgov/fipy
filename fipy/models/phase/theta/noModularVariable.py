@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 1/16/04 {9:20:28 PM} 
+ #                                last update: 7/23/04 {10:22:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,5 +43,5 @@ class NoModularVariable(CellVariable):
 	CellVariable.__init__(self, mesh = modVar.getMesh(), value = modVar.getNumericValue(), hasOld = 0)        
         self.modVar = self.requires(modVar)
         
-    def calcValue(self):
+    def _calcValue(self):
         self.value = self.modVar.getNumericValue()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 6/10/04 {4:51:36 PM}
+ #                                last update: 7/24/04 {9:01:28 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -94,12 +94,12 @@ class AddOverFacesVariable(CellVariable):
               numberOfCells = NCells,
               faceVariable = self.faceVariable.getNumericValue(),
               ids = Numeric.array(ids),
-              value = self.value.value,
+              value = self._getArray(),
               orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
               cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 	      
 
-    def calcValue(self):
+    def _calcValue(self):
 
         inline.optionalInline(self._calcValueIn, self._calcValuePy)
 

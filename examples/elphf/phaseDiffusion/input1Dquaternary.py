@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/04 {6:41:24 PM} 
+ #                                last update: 7/26/04 {8:34:14 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -107,13 +107,13 @@ setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
 fields['phase'].setValue(1.)
 fields['phase'].setValue(0.,setCells)
 
-equations, timeStepDuration = elphf.makeEquations(
+equations = elphf.makeEquations(
     mesh = mesh, 
     fields = fields, 
     parameters = parameters
 )
 
-it = Iterator(equations = equations, timeStepDuration = timeStepDuration)
+it = Iterator(equations = equations)
 
 if __name__ == '__main__':
     viewers = [Grid2DGistViewer(var = field) for field in fields['all']]

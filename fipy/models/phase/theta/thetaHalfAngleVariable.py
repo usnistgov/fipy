@@ -6,7 +6,7 @@
  # 
  #  FILE: "ThetaHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/26/04 {3:58:40 PM} { 4:14:24 PM}
+ #                                last update: 7/23/04 {10:21:29 PM} { 4:14:24 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ class ThetaHalfAngleVariable(CellVariable):
 	self.phase = self.requires(phase)
         self.theta = self.requires(theta)
 
-    def calcValue(self):
+    def _calcValue(self):
 	N = self.parameters['symmetry']
         dphi = self.phase.getGrad()[:,:]
 

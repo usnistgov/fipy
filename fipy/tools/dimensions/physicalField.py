@@ -6,11 +6,9 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 6/14/04 {1:59:05 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/26/04 {1:27:29 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -57,7 +55,7 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-12-28 JEG 1.0 original
+ #  2003-12-28 JEG 1.0 support for dimensional fields
  #  1998/09/29 GPW     now supports conversions with offset 
  #                     (for temperature units)
  #  1998/09/28 GPW     now removes __args__ from local dict after eval
@@ -204,7 +202,6 @@ class PhysicalField:
         if array is not None:
             array[:] = self.value
             self.value = array
-#       self.value = Numeric.array(self.value)
 
     _number = re.compile('[+-]?[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?')
 
@@ -400,7 +397,7 @@ class PhysicalField:
             1.0 m/s
         """
         if _isVariable(other):
-            return other.__mod__(self)
+            return other.__rmod__(self)
         if type(other) is type(''):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
@@ -532,6 +529,9 @@ class PhysicalField:
         else:
             raise TypeError, 'Numeric array value must be dimensionless'
         
+    def _getArray(self):
+	return self.value
+	
     def __float__(self):
         """
         Return a dimensionless PhysicalField quantity as a float.
@@ -713,7 +713,6 @@ class PhysicalField:
         Return the quantity with all units reduced to their base SI elements.
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
-            >>> e.convertToUnit('kcal/mol')
             >>> print e.inBaseUnits()
             7088849.77818 kg*m**2/s**2/mol
         """
@@ -1021,7 +1020,10 @@ class PhysicalUnit:
             TypeError: PhysicalUnits can only be compared with other PhysicalUnits
 	"""
         if not isinstance(other,PhysicalUnit):
-            raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
+	    if other == 1:
+		return self.isDimensionless()
+	    else:
+		raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
         if self.powers != other.powers:
             raise TypeError, 'Incompatible units'
         return cmp(self.factor, other.factor)
@@ -1498,10 +1500,10 @@ def AnyQuantity(quantity):
         # input is string, so construct a PhysicalQuantity
         quantity = PhysicalField(quantity)
         
-    if not isinstance(quantity,PhysicalField):
-        # Assume quantity is a dimensionless number and return it.
-        # Automatically throws an error if it's not a number.
-        quantity = float(quantity)
+##     if not isinstance(quantity,PhysicalField):
+##         # Assume quantity is a dimensionless number and return it.
+##         # Automatically throws an error if it's not a number.
+##         quantity = float(quantity)
         
     return quantity
 

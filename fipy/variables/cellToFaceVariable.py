@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 4/2/04 {4:00:53 PM} 
+ #                                last update: 7/23/04 {10:19:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ class CellToFaceVariable(FaceVariable):
 	FaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 
-    def calcValue(self):
+    def _calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	inline.optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)

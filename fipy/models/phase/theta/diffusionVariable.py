@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/20/04 {2:05:32 PM}
+ #                                last update: 7/24/04 {9:01:42 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,10 +56,10 @@ class DiffusionVariable(FaceVariable):
         self.phase = self.requires(phase)
         self.theta = self.requires(theta)
 
-    def calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValue)
-
     def _calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+
+    def _calcValuePy(self):
 
         gamma = self.parameters['gamma']
 
@@ -87,7 +87,7 @@ class DiffusionVariable(FaceVariable):
                               IGamma = 0.,
                               s = self.parameters['s'],
                               epsilon = self.parameters['epsilon'],
-                              value = self.value.value,
+                              value = self._getArray(),
                               ni = self.mesh.getNumberOfFaces())
                               
                               

@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:03:01 AM} 
+ #                                last update: 7/23/04 {10:21:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ import Numeric
 import fipy.tools.array as array
 
 class Type2MPhiVariable(MPhiVariable):
-    def calcValue(self):        
+    def _calcValue(self):        
         self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * array.arctan(self.parameters['kappa 2'] * self.temperature[:])
 
 

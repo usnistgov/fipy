@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:02:18 PM} { 2:26:30 PM}
+ #                                last update: 7/24/04 {10:05:07 AM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,22 +46,14 @@
 
 import unittest
 
-import examples.test
 import fipy.test
-##import fipy.meshes.pyMesh.test
-##import fipy.meshes.numMesh.test
-##import fipy.tools.test
+import examples.test
 import fipy.tests.testProgram
-##import fipy.variables.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(examples.test.suite())
     theSuite.addTest(fipy.test.suite())
-##    theSuite.addTest(fipy.tools.test.suite())
-##    theSuite.addTest(fipy.meshes.numMesh.test.suite())
-##    theSuite.addTest(fipy.meshes.pyMesh.test.suite())
-##    theSuite.addTest(fipy.variables.test.suite())
+    theSuite.addTest(examples.test.suite())
     return theSuite
 
 if __name__ == '__main__':

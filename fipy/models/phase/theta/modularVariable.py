@@ -6,11 +6,9 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 2/20/04 {2:11:23 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/26/04 {11:24:16 AM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -36,7 +34,8 @@
  # ###################################################################
  ##
 
-from Numeric import pi
+ 
+import Numeric
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.cellGradVariable import CellGradVariable
@@ -44,47 +43,43 @@ from fipy.models.phase.theta.modCellGradVariable import ModCellGradVariable
 from modCellToFaceVariable import ModCellToFaceVariable
 from fipy.models.phase.theta.modPhysicalField import ModPhysicalField
 
-
 class ModularVariable(CellVariable):
-    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
+    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self.arithmeticFaceValue = None
         self.grad = None
-        self.mod = """
-        # define pi 3.141592653589793
-        # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
-        """
         
-    def getPhysicalFieldClass(self):
-	return ModPhysicalField
-
-    def takeMod(self):
-        self.value.value = self.value.mod(self.value)
-        self.markFresh()
-        
+    _modIn = """
+    # define pi 3.141592653589793
+    # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
+    """
+	
+    def _setValue(self, value, unit = None, array = None):
+	self.value = ModPhysicalField(value = value, unit = unit, array = array)
+	
     def updateOld(self):
-        self.takeMod()
+	self.setValue(self.value.mod(self()))
         if self.old != None:
-	    self.old.setValue(self.value.value)
+	    self.old.setValue(self())
 
     def getGrad(self):
 	if self.grad is None:
 ##	    gridSpacing = self.mesh.getMeshSpacing()
 ##            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing
-            self.grad = ModCellGradVariable(self, self.mod, self.value.mod)
+            self.grad = ModCellGradVariable(self, self._modIn, self.value.mod)
 
 	return self.grad
 
     def getArithmeticFaceValue(self):
 	if self.arithmeticFaceValue is None:
 	    from modCellToFaceVariable import ModCellToFaceVariable
-	    self.arithmeticFaceValue = ModCellToFaceVariable(self, self.mod)
+	    self.arithmeticFaceValue = ModCellToFaceVariable(self, self._modIn)
 
  	return self.arithmeticFaceValue
 
     def getFaceGrad(self):
 	if self.faceGrad is None:
 	    from modFaceGradVariable import ModFaceGradVariable
-	    self.faceGrad = ModFaceGradVariable(self, self.mod)
+	    self.faceGrad = ModFaceGradVariable(self, self._modIn)
 
 	return self.faceGrad

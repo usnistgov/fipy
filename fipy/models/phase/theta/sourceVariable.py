@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:59:24 AM}
+ #                                last update: 7/24/04 {9:02:16 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,8 +68,8 @@ class SourceVariable(CellVariable):
         thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 
-    def calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValue)
+    def _calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValuePy)
 
     def _calcValueInline(self):
 
@@ -82,14 +82,14 @@ class SourceVariable(CellVariable):
                               beta = 0.,
                               dbeta = 0.,
                               symmetry = self.parameters['symmetry'],
-                              value = self.value.value,
+                              value = self._getArray(),
                               AOFVariable = self.AOFVariable.getNumericValue(),
                               alpha = self.parameters['alpha'],
                               c2 = self.parameters['anisotropy'],
                               phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
                               ni = len(self.phase.getNumericValue()))
                               
-    def _calcValue(self):
+    def _calcValuePy(self):
 
         mesh = self.theta.getMesh()
         c2 = self.parameters['anisotropy']

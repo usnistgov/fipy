@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputImpicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:02:23 PM} 
+ #                                last update: 7/15/04 {11:03:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,62 +41,9 @@
  # ###################################################################
  ##
 
-"""
-
-This example solves the steady-state convection-diffusion equation
-given by:
-
-.. raw:: latex
-
-     $$ \\nabla \\cdot \\left(D \\nabla \\phi + \\vec{u} \\phi \\right) + S_c = 0 $$
-
-with boundary conditions given by:
-
-.. raw:: latex
-
-     $$ \\phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; \\phi = 1 \;\; \\text{at} \;\; x = L $$
-
-and coefficients given by:
-
-.. raw:: latex
-
-     $$ D = 1, \;\; \\vec{u} = (10, 0) \;\; \\text{and} \;\; S_c = 0 $$     
-
-The coefficients are represented by `diffCoeff` and `convCoeff` in
-the python code. The `SteadyConvectionDiffusionScEquation` object is
-used to create the equation.  It needs to be passed a convection term
-instantiator as follows:
-
-   >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-   >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-   >>> eq = SteadyConvectionDiffusionScEquation(
-   ...      var = var,
-   ...      diffusionCoeff = diffCoeff,
-   ...      convectionCoeff = convCoeff,
-   ...      sourceCoeff = sourceCoeff,
-   ...      solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-   ...      convectionScheme = ExponentialConvectionTerm,
-   ...      boundaryConditions = boundaryConditions
-   ...      )
-
-More details of the benefits and drawbacks of each type of convection
-term can be found in the numerical section of the manual. Essentially
-the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will both
-handle most types of convection diffusion cases with the
-`PowerLawConvectionTerm` being more efficient.
-
-The analytical solution test for this problem is given by:
-
-   >>> axis = 0
-   >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
-   >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-   >>> import Numeric
-   >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-10, atol = 1e-10)
-   1
+""" 
+This example shows the failure of advecting a square pulse with a first
+order implicit upwind scheme.
 """
 
 import Numeric
@@ -104,9 +51,10 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.advectionEquation import AdvectionEquation
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
+from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -119,9 +67,9 @@ ny = 1
 dx = L / nx
 dy = L / ny
 cfl = 0.1
-velocity = 1.
-timeStepDuration = cfl * dx / velocity
-steps = 100
+velocity = -1.
+timeStepDuration = cfl * dx / abs(velocity)
+steps = 1000
 
 mesh = Grid2D(dx, dy, nx, ny)
 
@@ -143,8 +91,8 @@ boundaryConditions = (
 eq = AdvectionEquation(
     var = var,
     convectionCoeff = (velocity, 0.),
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = PowerLawConvectionTerm,
+##     solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
+    solver = LinearLUSolver(tolerance = 1.e-15),
     boundaryConditions = boundaryConditions
     )
 
@@ -152,7 +100,7 @@ it = Iterator((eq,))
 
 if __name__ == '__main__':
     
-    viewer = Grid2DGistViewer(var)
+    viewer = Gist1DViewer(vars=(var,))
     for step in range(steps):
         it.timestep(dt = timeStepDuration)
         viewer.plot()

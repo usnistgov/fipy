@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:42:55 AM}
+ #                                last update: 7/25/04 {10:30:31 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,10 +56,10 @@ class TransientVariable(CellVariable):
         self.phase = self.requires(phase)
         self.theta = self.requires(theta)
 
-    def calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValue)
-
     def _calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+
+    def _calcValuePy(self):
 
         smallValue = self.parameters['small value']
         epsilon = self.parameters['epsilon']
@@ -68,7 +68,7 @@ class TransientVariable(CellVariable):
         phaseSq = phaseMod * phaseMod
         expo = epsilon * self.parameters['beta'] * self.theta.getGrad().getMag()[:]
         expo = (expo < 100.) * (expo - 100.) + 100.
-        pFunc = 1. + Numeric.exp(-expo.getNumericValue()) * (self.parameters['mu'] / epsilon - 1.)
+        pFunc = 1. + Numeric.exp(-expo) * (self.parameters['mu'] / epsilon - 1.)
 
         
         self.value = self.parameters['tau'] * phaseSq * pFunc
@@ -95,7 +95,7 @@ class TransientVariable(CellVariable):
                               pFunc = 0.,
                               mu = self.parameters['mu'],
                               tau = self.parameters['tau'],
-                              value = self.value.value,
+                              value = self._getArray(),
                               ni = len(self.phase.getNumericValue())
                               )
                               
