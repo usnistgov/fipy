@@ -63,6 +63,12 @@ class TestBase(unittest.TestCase):
 	"""
         
 	if not MA.allclose(first, second, rtol, atol):
+            print first
+            print second
+            print first - second
+            print rtol,' ',atol
+            print MA.allclose(first, second, rtol, atol)
+            
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
         
     def getTestValue(self, cell):
