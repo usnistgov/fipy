@@ -158,6 +158,10 @@ def _sqrtDotPy(a1, a2):
 ##    return result
 
 def _sqrtDotIn(a1, a2):
+    if _isPhysical(a1):
+        a1 = a1.getNumericValue()
+    if _isPhysical(a2):
+        a2 = a2.getNumericValue()
     ni, nj = Numeric.shape(a1)
     result = Numeric.zeros((ni,),'d')
     inline.runInline("""
