@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {2:25:09 PM} 
+ #                                last update: 1/30/04 {11:12:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -104,16 +104,16 @@ if __name__ == '__main__':
 	
     raw_input()
 
-    # fudge = calibrate_profiler(10000)
-    # profile = Profiler('profile', fudge=fudge)
+    fudge = calibrate_profiler(10000)
+    profile = Profiler('profile', fudge=fudge)
 
     for i in range(50):
 	it.timestep(1)
 	
-	for viewer in viewers:
-	    viewer.plot()
+## 	for viewer in viewers:
+## 	    viewer.plot()
 	
-    # profile.stop()
+    profile.stop()
 	    
     raw_input()
 

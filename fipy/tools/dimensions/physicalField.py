@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/30/04 {5:05:07 PM} 
+ #                                last update: 1/31/04 {12:12:12 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -493,7 +493,7 @@ class PhysicalUnit:
 	    self.names = names
 	self.factor = factor
 	self.offset = offset
-	self.powers = powers
+	self.powers = Numeric.array(powers)
 
     def __repr__(self):
 	return '<PhysicalUnit ' + self.name() + '>'
@@ -511,8 +511,7 @@ class PhysicalUnit:
 	if isinstance(other,PhysicalUnit):
 	    return PhysicalUnit(self.names+other.names,
 				self.factor*other.factor,
-				map(lambda a,b: a+b,
-				    self.powers, other.powers))
+				self.powers + other.powers)
 	else:
 	    return PhysicalUnit(self.names+{str(other): 1},
 				self.factor*other,
@@ -527,8 +526,7 @@ class PhysicalUnit:
 	if isinstance(other,PhysicalUnit):
 	    return PhysicalUnit(self.names-other.names,
 				self.factor/other.factor,
-				map(lambda a,b: a-b,
-				    self.powers, other.powers))
+				self.powers - other.powers)
 	else:
 	    return PhysicalUnit(self.names+{str(other): -1},
 				self.factor/other, self.powers)
@@ -544,22 +542,21 @@ class PhysicalUnit:
 	else:
 	    return PhysicalUnit({str(other): 1}-self.names,
 				other/self.factor,
-				map(lambda x: -x, self.powers))
+				-self.powers)
 
     def __pow__(self, other):
         if self.offset != 0:
             raise TypeError, "cannot exponentiate units with non-zero offset"
 	if type(other) == type(0):
 	    return PhysicalUnit(other*self.names, pow(self.factor, other),
-				map(lambda x,p=other: x*p, self.powers))
+				self.powers*other)
 	if type(other) == type(0.):
 	    inv_exp = 1./other
 	    rounded = int(umath.floor(inv_exp+0.5))
 	    if abs(inv_exp-rounded) < 1.e-10:
-		if reduce(lambda a, b: a and b,
-			  map(lambda x, e=rounded: x%e == 0, self.powers)):
+		if Numeric.logical_and.reduce(self.powers % rounded == 0):
 		    f = pow(self.factor, other)
-		    p = map(lambda x,p=rounded: x/p, self.powers)
+		    p = self.powers / rounded
 		    if reduce(lambda a, b: a and b,
 			      map(lambda x, e=rounded: x%e == 0,
 				  self.names.values())):
@@ -615,11 +612,11 @@ class PhysicalUnit:
         return self.powers == other.powers
 
     def isDimensionless(self):
-	return not reduce(lambda a,b: a or b, self.powers)
+	return not Numeric.logical_or.reduce(self.powers)
 
     def isAngle(self):
 	return self.powers[7] == 1 and \
-	       reduce(lambda a,b: a + b, self.powers) == 1
+	       Numeric.add.reduce(self.powers) == 1
 	       
     def isDimensionlessOrAngle(self):
 	return self.isDimensionless() or self.isAngle()

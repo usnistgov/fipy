@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/29/04 {6:52:32 PM}
+ #                                last update: 1/30/04 {6:01:16 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -91,10 +91,7 @@ class FaceGradVariable(VectorFaceVariable):
 	cellGrad = cellGrad, normals = normals, N = N, 
 	id1 = id1, id2 = id2,
 	val = self.value.value,
-	ni = tangents1.shape[0], nj = tangents1.shape[1], nk = 0)
-
-## 	t1grad1 = self.t1grad1, t1grad2 = self.t1grad2, 
-## 	t2grad1 = self.t2grad1,  t2grad2 = self.t2grad2, 
+	ni = tangents1.shape[0], nj = tangents1.shape[1])
 	
     def calcValue(self):        
 	dAP = self.mesh.getCellDistances()
@@ -106,8 +103,8 @@ class FaceGradVariable(VectorFaceVariable):
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 	cellGrad = self.var.getGrad().getNumericValue()
-	
 	inline.optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
+	
 	
 ##    def calcValue(self):
 ##        id1, id2, N, normals = self.calcValue1()

@@ -2,7 +2,6 @@ import sys
 
 import Numeric 
 import weave
-from weave import converters
 
 def optionalInline(inlineFn, pythonFn, *args):
     if 'inline' in sys.argv:
@@ -15,7 +14,7 @@ def runInline(code,**args):
     weave.inline(code,
 		 args.keys(),
 		 local_dict=args,
-		 type_converters=converters.blitz,
+		 type_converters=weave.converters.blitz,
 		 compiler = 'gcc',
 		 extra_compile_args =['-O3'])
 			 
@@ -83,7 +82,7 @@ def runInlineLoop(code_in,**args):
     weave.inline(code,
 		 args.keys(),
 		 local_dict=args,
-		 type_converters=converters.blitz,
+		 type_converters=weave.converters.blitz,
 		 compiler = 'gcc',
 		 extra_compile_args =['-O3'])
 

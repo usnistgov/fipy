@@ -6,7 +6,7 @@
  # 
  #  FILE: "input4ParticlesProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/29/04 {6:47:56 PM}
+ #                                last update: 1/30/04 {6:15:35 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,7 +64,7 @@ class System4ParticlesProfile(System4Particles):
 	    
     
 if __name__ == '__main__':
-    system = System4ParticlesProfile(nx = 4, ny = 4)
+    system = System4ParticlesProfile(nx = 40, ny = 40)
     system.run()
     
     raw_input()
