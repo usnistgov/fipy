@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:02:27 PM}
+ #                                last update: 8/31/04 {1:21:05 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -123,6 +123,7 @@ and check the results:
 
 
 """
+__docformat__ = 'restructuredtext'
 
 ##from __future__ import nested_scopes
 

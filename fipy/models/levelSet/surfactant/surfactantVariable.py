@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/29/04 {11:03:01 AM} 
+ #                                last update: 8/31/04 {1:37:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,6 +40,8 @@
  #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 import Numeric

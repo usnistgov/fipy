@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:00:26 PM} 
+ #                                last update: 8/31/04 {1:31:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,8 @@
  #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 import MA
 import Numeric

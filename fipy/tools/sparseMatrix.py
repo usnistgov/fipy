@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+4#!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/9/04 {8:52:24 PM} 
+ #                                last update: 8/31/04 {1:38:07 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,7 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

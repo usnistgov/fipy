@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:06:11 PM} 
+ #                                last update: 8/31/04 {1:18:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -79,6 +79,7 @@ The result is again tested in the same way:
 
 """
 
+__docformat__ = 'restructuredtext'
 
 
 from fipy.meshes.grid2D import Grid2D
