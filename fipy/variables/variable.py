@@ -40,8 +40,8 @@ they have been modified.
 ###################################################################
 """
 
-from tools.dimensionalization import PhysicalField
-from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
+#from tools.dimensionalization import PhysicalField
+#from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
 # from binaryOperatorVariable import BinaryOperatorVariable
 import Numeric
 import gc

@@ -45,8 +45,6 @@ from terms.transientTerm import TransientTerm
 from substitutionalSumVariable import SubstitutionalSumVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
-from substitutionalConvectionCoeff import SubstitutionalConvectionCoeff
 import Numeric
 
 class ConcentrationEquation(MatrixEquation):
@@ -58,7 +56,7 @@ class ConcentrationEquation(MatrixEquation):
 		 timeStepDuration,
 		 fields = {},
                  diffusivity = 1.,
-		 convectionScheme =CentralDifferenceConvectionTerm, # PowerLawConvectionTerm,
+		 convectionScheme =PowerLawConvectionTerm,
                  solver='default_solver',
                  boundaryConditions=()):
 		     
