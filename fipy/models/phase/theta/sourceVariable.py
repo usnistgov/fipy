@@ -80,34 +80,34 @@ class SourceVariable(CellVariable):
 ##        print self.halfAngleVariable[:].shape
 ##        print self.phase.getGrad().getMag()[:].value[:].shape
 
-        fivol.inline.inline.runInline(
-            """
-            havSq = hav(i) * hav(i);
-            beta = (1. - havSq) / (1. + havSq);
-            dbeta = sym * 2. * hav(i) / (1. - havSq);
-            value(i) = corr(i) + alpha * alpha * c2 * dbeta * phaseGradMag(i) * (1. + c2 * beta);
-            """,
-            hav = self.halfAngleVariable[:],
-            havSq = 0.,
-            beta = 0.,
-            sym = self.parameters['symmetry'],
-            dbeta = 0.,
-            corr = correctionTerm[:],
-            alpha = self.parameters['alpha'],
-            c2 = c2,
-            phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
-            value = self.value.value,
-            ni = len(self.value.value),
-            nj = 0,
-            nk = 0)
+##        fivol.inline.inline.runInline(
+##            """
+##            havSq = hav(i) * hav(i);
+##            beta = (1. - havSq) / (1. + havSq);
+##            dbeta = sym * 2. * hav(i) / (1. - havSq);
+##            value(i) = corr(i) + alpha * alpha * c2 * dbeta * phaseGradMag(i) * (1. + c2 * beta);
+##            """,
+##            hav = self.halfAngleVariable[:],
+##            havSq = 0.,
+##            beta = 0.,
+##            sym = self.parameters['symmetry'],
+##            dbeta = 0.,
+##            corr = correctionTerm[:],
+##            alpha = self.parameters['alpha'],
+##            c2 = c2,
+##            phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
+##            value = self.value.value,
+##            ni = len(self.value.value),
+##            nj = 0,
+##            nk = 0)
             
             
 
-##        halfAngleSq = self.halfAngleVariable[:] * self.halfAngleVariable[:]
-##        beta = (1. - halfAngleSq) / (1. + halfAngleSq)
-##        dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
+        halfAngleSq = self.halfAngleVariable[:] * self.halfAngleVariable[:]
+        beta = (1. - halfAngleSq) / (1. + halfAngleSq)
+        dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
 
-##        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
+        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
         
     
 
