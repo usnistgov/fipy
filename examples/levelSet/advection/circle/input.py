@@ -67,10 +67,29 @@ The result can be tested with the following code:
    >>> answer = initialArray - distanceTravelled
    >>> answer = Numeric.where(answer < 0., -1001., answer)
    >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(distanceVariable))
-   >>> Numeric.allclose(answer, solution, atol = 2.5e-3)
+   >>> Numeric.allclose(answer, solution, atol = 4.7e-3)
    1
-   
+
+If the `AdvectionEquation` is build with the `HigherOrderAdvectionTerm` the result
+is more accurate,
+
+   >>> distanceVariable.setValue(initialArray)
+   >>> advectionEquation = AdvectionEquation(
+   ...     distanceVariable,
+   ...     advectionCoeff = velocity,
+   ...     solver = LinearPCGSolver(
+   ...         tolerance = 1.e-15, 
+   ...         steps = 1000),
+   ...     advectionTerm = HigherOrderAdvectionTerm)
+   >>> it = Iterator((advectionEquation,))
+   >>> for step in range(steps):
+   ...     it.timestep(dt = timeStepDuration)
+   >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(distanceVariable))
+   >>> Numeric.allclose(answer, solution, atol = 1.02e-3)
+   1
+
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
    
@@ -81,10 +100,10 @@ from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import Dista
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
+from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 
 L = 1.
-nx = 50
+nx = 25
 velocity = 1.
 cfl = 0.1
 velocity = 1.

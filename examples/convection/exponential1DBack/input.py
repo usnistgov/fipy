@@ -64,7 +64,7 @@ The analytical solution test for this problem is given by:
    1
    
 """
-
+__docformat__ = 'restructuredtext'
      
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation

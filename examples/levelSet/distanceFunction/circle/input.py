@@ -107,7 +107,7 @@ Do the tests:
    1
    
 """
-
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

@@ -91,7 +91,7 @@ Do the tests:
    1
 
 """
-
+__docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D

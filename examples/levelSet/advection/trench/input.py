@@ -85,6 +85,7 @@ Advect the interface and check the position.
 
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
    

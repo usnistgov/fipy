@@ -100,6 +100,7 @@ data and compares it with the `theta` variable.
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable

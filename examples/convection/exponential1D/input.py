@@ -98,7 +98,7 @@ The analytical solution test for this problem is given by:
    >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-10, atol = 1e-10)
    1
 """
-
+__docformat__ = 'restructuredtext'
      
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation

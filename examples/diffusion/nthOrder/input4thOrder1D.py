@@ -76,6 +76,7 @@ Test the solution:
    1
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

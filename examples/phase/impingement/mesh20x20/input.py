@@ -81,7 +81,7 @@ data and compares it with the `theta` variable.
 
 
 """
-
+__docformat__ = 'restructuredtext'
 ##from __future__ import nested_scopes
 
 import Numeric

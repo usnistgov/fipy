@@ -92,6 +92,7 @@ A simple analytical answer can be used to test the result:
    1
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

@@ -100,6 +100,7 @@ data and compares it with the `theta` variable.
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

@@ -135,6 +135,7 @@ data and compares it with the `phase` variable.
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable

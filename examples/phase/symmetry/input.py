@@ -110,6 +110,7 @@ The following code tests the results with a different algorithm:
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 
