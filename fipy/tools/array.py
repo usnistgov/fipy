@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 7/26/04 {2:34:53 PM} 
+ #                                last update: 7/28/04 {11:53:52 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -209,7 +209,7 @@ def allequal(first, second):
     else:
 	return MA.allequal(first, second)
 	    
-def allclose(first, second, atol, rtol):
+def allclose(first, second, atol = 1.e-5, rtol = 1.e-8):
     if _isPhysical(first):
 	return first.allclose(other = second, atol = atol, rtol = rtol)
     elif _isPhysical(second):

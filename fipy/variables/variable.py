@@ -6,11 +6,9 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/26/04 {11:58:10 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/29/04 {6:02:31 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -40,6 +38,8 @@
  #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 
 import Numeric
@@ -418,6 +418,8 @@ class Variable:
 		if isinstance(self.var[1], Variable):
 		    val1 = self.var[1].getValue()
 		else:
+		    if type(self.var[1]) is type(''):
+			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
 		    val1 = self.var[1]
 		    
 		self._setValue(value = self.op(self.var[0].getValue(), val1)) 
@@ -608,6 +610,9 @@ class Variable:
 	
     def take(self, ids):
 	return array.take(self.getValue(), ids)
+	
+    def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
+	return array.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
 
     def getMag(self):
         if self.mag is None:

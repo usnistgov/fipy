@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/26/04 {1:27:29 PM} 
+ #                                last update: 7/28/04 {9:18:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -946,7 +946,7 @@ class PhysicalField:
         """
         return self.__class__(value = Numeric.sum(self.value, index), unit = self.unit)
         
-    def allclose(self, other, atol, rtol):
+    def allclose(self, other, atol = None, rtol = 1.e-8):
         """
         This function tests whether or not `self` and `other` are equal 
         subject to the given relative and absolute tolerances. The formula used is
@@ -959,7 +959,12 @@ class PhysicalField:
         their difference divided by `other`'s value is small compared to `rtol`.        
         """
         other = self._inMyUnits(other)
-        return MA.allclose(self.value, other.value, atol = atol, rtol = rtol)
+	if atol is None:
+	    atol = PhysicalField(1.e-5, self.getUnit())
+	else:
+	    atol = self._inMyUnits(atol)
+	    
+        return MA.allclose(self.value, other.value, atol = atol.value, rtol = rtol)
 
 class PhysicalUnit:
     """
