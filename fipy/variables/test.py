@@ -45,13 +45,13 @@
 
 import unittest
 import fivol.tests.testProgram
-import fivol.meshes.testInterpolation
-import fivol.meshes.testPickle
+import fivol.variables.testInterpolation
+import fivol.variables.testPickle
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(fivol.variables.testInterpolation.suite())
-    theSuite.addTest(fivol.meshes.testPickle.suite())
+    theSuite.addTest(fivol.variables.testPickle.suite())
     return theSuite
     
 if __name__ == '__main__':
