@@ -96,6 +96,7 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
+from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
 
 L = 50.
 nx = 200
@@ -120,6 +121,17 @@ var = CellVariable(
 ##var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 #var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 
+eq= NthOrderDiffusionEquation(
+    var,
+    diffusionCoeff = (-1.0,1.0),
+    solver = LinearPCGSolver(tolerance = 1e-10,steps = 1000),
+    boundaryConditions=(
+    FixedValue(mesh.getFacesRight(), 1),
+    FixedValue(mesh.getFacesLeft(), 0.5),
+    NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
+    NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
+
+
 eqch= CahnHilliardEquation(
     var,
     parameters = parameters,
@@ -130,7 +142,7 @@ eqch= CahnHilliardEquation(
     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
     NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
 
-it = Iterator((eqch,))
+it = Iterator((eq,))
 
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var,minVal=-2.0,maxVal=2.0)
