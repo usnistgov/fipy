@@ -50,7 +50,7 @@ class SubstitutionalEquation(ConcentrationEquation):
         Cj.substitutionalSum.setValue(0)
 
 	for component in [component for component in fields['substitutionals'] if component is not Cj]:
-	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
+	    Cj.substitutionalSum = Cj.substitutionalSum + component.getOld()
 
 	denom = 1. - Cj.substitutionalSum.getHarmonicFaceValue()
 	if diffusivity is None:

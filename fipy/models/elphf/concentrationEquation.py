@@ -68,7 +68,7 @@ class ConcentrationEquation(RelaxationEquation):
 	    diffCoeff = Cj.getDiffusivity(),
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
-	    
+        
 	convectionTerm = convectionScheme(
 	    convCoeff = self.getConvectionCoeff(Cj, fields),
 	    mesh = mesh, 
@@ -94,10 +94,10 @@ class ConcentrationEquation(RelaxationEquation):
 	    diffusivity = Cj.getDiffusivity()
 	    
 ## 	diffusivity = diffusivity / "1 ENERGY"
-	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
-	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
+	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getOld().getFaceGrad() 
+	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getOld().getFaceGrad() 
 ## 	Cj.electromigrationCoeff = diffusivity * "1 Faraday" * Cj.getValence() * fields['potential'].getFaceGrad() 
-	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getFaceGrad() 
+	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getOld().getFaceGrad() 
 	
 	return Cj.pConvCoeff + Cj.gConvCoeff + Cj.electromigrationCoeff
 

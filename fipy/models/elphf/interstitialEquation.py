@@ -47,6 +47,6 @@ class InterstitialEquation(ConcentrationEquation):
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:
 	    diffusivity = Cj.getDiffusivity()
-	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getHarmonicFaceValue())).transpose()
+	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getOld().getHarmonicFaceValue())).transpose()
 	
 	return ConcentrationEquation.getConvectionCoeff(self, Cj, fields, Cj.weightedDiffusivity)
