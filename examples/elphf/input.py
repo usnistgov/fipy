@@ -60,15 +60,14 @@ from fipy.tools.profiler.profiler import calibrate_profiler
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.viewers.gist1DResidualViewer import Gist1DResidualViewer
+from fipy.iterators.iterator import Iterator
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-import elphf
+import fipy.models.elphf.elphf as elphf
 
-from elphfIterator import ElPhFIterator
 
-nx = 1200
+nx = 1150
 dx = "0.0025 nm"
 # L = nx * dx
 
@@ -150,7 +149,7 @@ chargeViewer = Gist1DViewer(vars = (fields['charge'],))
 
 viewers = (phaseViewer, potentialViewer, concViewer,chargeViewer)
 	
-it = ElPhFIterator(equations = equations, timeStepDuration = timeStepDuration, viewers = viewers)
+it = Iterator(equations = equations, timeStepDuration = timeStepDuration)
 
 desiredTime = timeStepDuration.getValue()
 
@@ -172,16 +171,24 @@ if __name__ == '__main__':
 
     for i in range(50):
 	try:
-	    it.elapseTime(desiredTime = desiredTime, maxSweepsPerStep = 100)
+	    it.timestep(1)
+
+            for viewer in viewers:
+                viewer.plot()
+
     ## 	it.timestep(steps = 1, maxSweeps = 5)
 	except KeyboardInterrupt:
 	    break
 	except Exception, e:
+            raise
 	    print "Error:", e
 	except:
 	    print "Not converged"
 	    
 	print "***** timestep", i, "******"
+
+        raw_input()
+
 	
     raw_input()
 	
