@@ -201,9 +201,6 @@ temperature = CellVariable(
     value = -0.4,
     hasOld = 1
     )
-
-phaseViewer = Grid2DGistViewer(var = phase)
-temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
         
 phaseFields = {
     'theta' : theta,
@@ -253,7 +250,8 @@ temperatureEq = TemperatureEquation(
 it = Iterator((phaseEq, temperatureEq))
 
 if __name__ == '__main__':
-    
+    phaseViewer = Grid2DGistViewer(var = phase)
+    temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
     phaseViewer.plot()
     temperatureViewer.plot()
 
