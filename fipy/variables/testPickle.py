@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariable.py"
  #                                    created: 2/20/04 {11:19:30 AM} 
- #                                last update: 9/3/04 {10:37:45 PM} 
+ #                                last update: 11/16/04 {11:50:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,10 +56,10 @@ class TestVariablePickle(TestBase):
 
         import tempfile
         import os
-        tmp = tempfile.gettempdir()
-        fileName = os.path.join(tmp, 'data')
-        pickledVar = dump.write(self.var, fileName)
-        self.unPickledVar = dump.read(fileName)
+	(f, fileName) = tempfile.mkstemp('.gz')
+	pickledVar = dump.write(self.var, fileName)
+	self.unPickledVar = dump.read(fileName)
+	os.remove(fileName)
         
     def testResult(self):
         pass

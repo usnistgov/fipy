@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:50:13 AM}
+ #                                last update: 11/16/04 {11:49:34 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,9 +68,7 @@ We save the variables to disk
 
     >>> import fipy.tools.dump as dump
     >>> import tempfile
-    >>> import os
-    >>> tmp = tempfile.gettempdir()
-    >>> fileName = os.path.join(tmp, 'data')
+    >>> (f, fileName) = tempfile.mkstemp('.gz')
     >>> dump.write({'phase' : phase, 'theta' : theta, 'mesh' : mesh}, fileName)
    
 and then recall them to test the data pickling mechanism
@@ -79,7 +77,12 @@ and then recall them to test the data pickling mechanism
     >>> newPhase = data['phase']
     >>> newTheta = data['theta']
     >>> newMesh = data['mesh']
-   
+
+We clean up the temporary dump file
+
+    >>> import os
+    >>> os.remove(fileName)
+
 We rebuild the equations:
 
     >>> newThetaEq = ThetaEquation(

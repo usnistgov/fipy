@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:43:21 PM} 
+ #                                last update: 11/16/04 {1:09:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -174,10 +174,10 @@ class TestMesh3DPickle(TestMesh3D):
         TestMesh3D.setUp(self)
         import tempfile
         import os
-        tmp = tempfile.gettempdir()
-        fileName = os.path.join(tmp, 'data')
-        pickledMesh = dump.write(self.mesh, fileName)
-        self.mesh = dump.read(fileName)
+	(f, fileName) = tempfile.mkstemp('.gz')
+	pickledMesh = dump.write(self.mesh, fileName)
+	self.mesh = dump.read(fileName)
+	os.remove(fileName)
 
 def suite():
     theSuite = unittest.TestSuite()
