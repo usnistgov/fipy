@@ -88,7 +88,7 @@ A 2D test case to test _calcTrialValue for a pathological case.
    >>> var.calcDistanceFunction()
    >>> vbl = -dx * dy / Numeric.sqrt(dx**2 + dy**2) / 2.
    >>> vbr = dx / 2
-   >>> vml = dy / (Numeric.sqrt(2) * 2.)
+   >>> vml = dy / 2.
    >>> crossProd = dx * dy
    >>> dsq = dx**2 + dy**2
    >>> top = vbr * dx**2 + vml * dy**2
@@ -141,6 +141,16 @@ function to march out the velocity from the interface.
    >>> Numeric.allclose(answer, extensionVar, atol = 1e-5)
    1
 
+Test case for a bug that occurs when initializing the distance
+variable at the interface. Currently it is assumed that adjacent cells
+that are opposite sign neighbors have perpendicular normal vectors. In
+fact the two closest cells could have opposite normals.
+
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
+   >>> var.calcDistanceFunction()
+   >>> var.allclose((-0.5, 0.5, -0.5))
+   1
 
 For future reference, the minimum distance for the interface cells can
 be calculated with the following functions. The trial cell values will
@@ -170,6 +180,7 @@ import MA
 
 from fipy.meshes.numMesh.mesh import MAtake
 from fipy.variables.cellVariable import CellVariable
+import fipy.tools.array
 
 class DistanceVariable(CellVariable):
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 1, narrowBandWidth = 1e+10):
@@ -204,16 +215,35 @@ class DistanceVariable(CellVariable):
         adjVals = MAtake(self.value, cellToCellIDs)
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
         dAP = self.mesh.getCellToCellDistances()
-        distances = MA.sort(abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues)), 1)
+        distances = abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues))
+        indices = MA.argsort(distances, 1)
+        ##distances = MA.sort(abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues)), 1)
         sign = (self.value > 0) * 2 - 1
-        s = distances[:,0]
-        t = distances[:,1]
-        
+        ##s = distances[:,0]
+        ##t = distances[:,1]
+
+        index = Numeric.arange(len(indices[:,0])) * len(indices[0])
+
+        s = MA.take(distances.flat, indices[:,0] + index)
+        t = MA.take(distances.flat, indices[:,1] + index)
+        u = MA.take(distances.flat, indices[:,2] + index)
+        ns = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
+        nt = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
+
         signedDistance = MA.where(s.mask(),
                                   self.value,
                                   MA.where(t.mask(),
                                            sign * s,
-                                           sign * s * t / MA.sqrt(s**2 + t**2)))
+                                           MA.where(abs(fipy.tools.array.dot(ns,nt)) < 0.9,
+                                                    sign * s * t / MA.sqrt(s**2 + t**2),
+                                                    MA.where(u.mask(),
+                                                             sign * s,
+                                                             sign * s * u / MA.sqrt(s**2 + u**2)
+                                                             )
+                                                    )
+                                           )
+                                  )
+
 
         self.value = signedDistance
 
