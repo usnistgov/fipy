@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/26/03 {10:30:38 AM} 
+ #                                last update: 11/30/03 {12:25:06 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,9 @@
 
     Meshes contain cells, faces, and vertices.
 """
+
+import Numeric
+
 class Mesh:
     def __init__(self, cells, faces, interiorFaces, vertices):
         self.cells = cells
@@ -48,7 +51,8 @@ class Mesh:
         self.vertices = vertices
         self.interiorFaces = interiorFaces
         self.dim = len(self.vertices[0].getCoordinates())
-        
+	
+	self.calcAdjacentCellIDs()
 
     def getCells(self,func = 'None'):
 	"""Return Cells of Mesh.
@@ -111,5 +115,14 @@ class Mesh:
     def getFaceAreas(self):
 	pass
 
-            
+    def getAdjacentCellIDs(self):
+	return (self.cellId1, self.cellId2)
+	
+    def calcAdjacentCellIDs(self):
+	N = len(self.faces)
+	self.cellId1 = Numeric.zeros(N)
+	self.cellId2 = Numeric.zeros(N)
+	for i in range(N):
+	    self.cellId1[i] = self.faces[i].getCellId(0)
+	    self.cellId2[i] = self.faces[i].getCellId(1)
     
