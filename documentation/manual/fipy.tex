@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 7/6/04 {12:13:53 PM} 
+ %                                last update: 7/9/04 {5:43:47 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -41,11 +41,11 @@
 \usepackage{crop}
 
 \usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
-\usepackage{multirow, longtable, makeidx, amssymb} 
+\usepackage{multirow, longtable, makeidx, tocbibind, amssymb} 
 \usepackage{amsmath} 
 
 \usepackage{minitoc}
-\setcounter{tocdepth}{1}
+% \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{1}
 
 \usepackage[ascii]{inputenc}
@@ -59,7 +59,7 @@
 \definecolor{redish}{rgb}{0.894,0.122,0.122}
 \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
+\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
 \usepackage{graphicx}
 % \usepackage{memhfixc}
 % \usepackage{nameref}
@@ -163,13 +163,16 @@
 
 \makeatother
 
-\usepackage{layout}
+% \usepackage{layout}
+
+
+\usepackage{tocvsec2}
 
 \begin{document}
 
 \doparttoc
 
-\crop[frame,axes]
+% \crop[frame,axes]
 
 \frontmatter
 
@@ -275,12 +278,15 @@
 % 
 % \maketitle
 
+\maxtocdepth{all} 
 \tableofcontents
+% \faketableofcontents
 
 \mainmatter
 
 \part{Introduction}
 
+\settocdepth{chapter} 
 \parttoc
 
 \chapter{Installation}
@@ -295,44 +301,80 @@
 
 \include{numerical/numerical}
 
+\settocdepth{all} 
+
 \part{Examples}
 
+\settocdepth{chapter} 
 \parttoc
 
 \chapter{Diffusion Examples}
 
 \input{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.explicit.mesh10.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.explicit.mesh50.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
+\newpage
 \input{examples/latex/examples.diffusion.nthOrder.input2ndOrder1D-module}
+\newpage
 \input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
+\newpage
 
 \chapter{Convection Examples}
 
-\include{examples/latex/examples.convection.exponential1D.input-module}
-\include{examples/latex/examples.convection.exponential1DBack.input-module}
-\include{examples/latex/examples.convection.exponential1DSource.input-module}
-\include{examples/latex/examples.convection.exponential2D.input-module}
-\include{examples/latex/examples.convection.powerLaw1D.input-module}
+\input{examples/latex/examples.convection.exponential1D.input-module}
+\newpage
+\input{examples/latex/examples.convection.exponential1DBack.input-module}
+\newpage
+\input{examples/latex/examples.convection.exponential1DSource.input-module}
+\newpage
+\input{examples/latex/examples.convection.exponential2D.input-module}
+\newpage
+\input{examples/latex/examples.convection.powerLaw1D.input-module}
+\newpage
 
 \chapter{Phase Field Examples}
 
-\include{examples/latex/examples.phase.anisotropy.input-module}
-\include{examples/latex/examples.phase.impingement.mesh40x1.input-module}
-\include{examples/latex/examples.phase.impingement.mesh20x20.input-module}
-\include{examples/latex/examples.phase.impingement.restart.input-module}
-\include{examples/latex/examples.phase.missOrientation.circle.input-module}
-\include{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
-\include{examples/latex/examples.phase.missOrientation.modCircle.input-module}
-\include{examples/latex/examples.phase.symmetry.input-module}
+\input{examples/latex/examples.phase.anisotropy.input-module}
+\newpage
+\input{examples/latex/examples.phase.impingement.mesh40x1.input-module}
+\newpage
+\input{examples/latex/examples.phase.impingement.mesh20x20.input-module}
+\newpage
+\input{examples/latex/examples.phase.impingement.restart.input-module}
+\newpage
+\input{examples/latex/examples.phase.missOrientation.circle.input-module}
+\newpage
+\input{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
+\newpage
+\input{examples/latex/examples.phase.missOrientation.modCircle.input-module}
+\newpage
+\input{examples/latex/examples.phase.symmetry.input-module}
+\newpage
 
 \chapter{Level Set Examples}
 
+<<<<<<< fipy.tex
+\input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
+\newpage
+=======
 \include{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
 \include{examples/latex/examples.levelSet.distanceFunction.square.input-module}
 \include{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
@@ -344,7 +386,9 @@
 
 
 
+>>>>>>> 1.23
 
+\settocdepth{all} 
 
 % \include{examples}
 % 
@@ -356,9 +400,13 @@
 
 \part{APIs}
 
+\settocdepth{chapter} 
+
 \parttoc
 
 \input api
+
+\settocdepth{all} 
 
 \backmatter
 
@@ -366,7 +414,7 @@
 %%                                 Index                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\pdfbookmark[-1]{Index}{index}
+% \pdfbookmark[-1]{Index}{index}
 \printindex
 
 
