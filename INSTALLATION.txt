@@ -146,7 +146,7 @@ Installing and testing |FiPy|
 
 From the ``fipy/`` directory, execute ``python setup.py install``. Once the
 installation is complete, you can verify that it has installed properly by 
-executing ``./test.py`` and ``./test.py --inline``.
+executing ``python setup.py test`` and ``python setup.py test --inline``.
 
 .. |FiPy| raw:: latex
 

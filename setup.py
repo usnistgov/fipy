@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 7/16/04 {3:16:03 PM} 
+ #                                last update: 7/27/04 {7:32:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -231,8 +231,61 @@ class build_docs (Command):
 
     # run()
 
-# class x
+class test(Command):
+    description = "test FiPy and its examples"
 
+    # List of option tuples: long name, short name (None if no short
+    # name), and help string.
+    user_options = [('inline', None, "run FiPy with inline compilation enabled"),
+		    ('all', None, "run all FiPy tests (default)"),
+		    ('examples', None, "test FiPy examples"),
+		    ('modules', None, "test FiPy code modules"),
+		    ('terse', None, "give limited output during tests"),
+		   ]
+
+
+    def initialize_options (self):
+	self.inline = False
+	self.verbosity = 0
+	self.terse = False
+	self.all = False
+	self.doExamples = True
+	self.doModules = True
+	self.examples = False
+	self.modules = False
+
+    def finalize_options (self):
+	if self.verbose:
+	    self.verbosity = 2
+	if self.terse:
+	    self.verbosity = 1
+	if self.all:
+	    self.examples = True
+	    self.modules = True
+	if self.examples and not self.modules:
+	    self.doModules = False
+	if self.modules and not self.examples:
+	    self.doExamples = False
+	
+    def run (self):
+	import unittest
+	theSuite = unittest.TestSuite()
+	
+	if self.doModules:
+	    import fipy.test
+	    theSuite.addTest(fipy.test.suite())
+	
+	if self.doExamples:
+	    import examples.test
+	    theSuite.addTest(examples.test.suite())
+	
+	testRunner = unittest.TextTestRunner(verbosity=self.verbosity)
+	result = testRunner.run(theSuite)
+	
+	import sys
+	sys.exit(not result.wasSuccessful())
+
+	    
 long_description = """
 A finite volume PDE solver in Python.
 
@@ -250,8 +303,10 @@ setup(	name = "FiPy",
 	url = "http://ctcms.nist.gov",
 	description = "A finite volume PDE solver in Python",
 	long_description = long_description,
-	
-	cmdclass = {'build_docs':build_docs},
+	cmdclass = {
+	    'build_docs':build_docs,
+	    'test':test
+	},
 	packages = ['fipy', 
 			'fipy.boundaryConditions',
 			'fipy.equations',
