@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/2/04 {4:42:29 PM}
+ #                                last update: 2/3/04 {12:12:12 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -67,7 +67,7 @@ class AddOverFacesVariable(CellVariable):
         
         ids = self.mesh.getCellFaceIDs()
         
-        contributions = array.take(contributions[:], ids)
+        contributions = array.take(contributions[:], ids.flat)
 
         NCells = len(self.mesh.getCells())
 
@@ -81,7 +81,7 @@ class AddOverFacesVariable(CellVariable):
 
         NCells = len(self.mesh.getCells())
 	ids = self.mesh.getCellFaceIDs()
-        ids = Numeric.reshape(ids,(NCells,self.mesh.getMaxFacesPerCell()))
+##         ids = Numeric.reshape(ids,(NCells,self.mesh.getMaxFacesPerCell()))
 
         inline.runInline("""
         int i;

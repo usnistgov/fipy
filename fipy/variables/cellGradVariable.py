@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/2/04 {4:41:39 PM} 
+ #                                last update: 2/3/04 {1:21:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,15 +55,14 @@ class CellGradVariable(VectorCellVariable):
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
 	inline.runInlineLoop2("""
-	double grad = 0.;
-	int k;
-	for (k = 0; k < nk; k++) {
-	    grad += orientations(i, k) * faceGradientContributions(ids(i * nk + k), j);
-	}
+	    val(i,j) = 0.;
 	    
-	grad /= volumes(i);
-	
-	val(i,j) = grad;
+	    int k;
+	    for (k = 0; k < nk; k++) {
+		val(i,j) += orientations(i, k) * faceGradientContributions(ids(i,k), j);
+	    }
+		
+	    val(i,j) /= volumes(i);
 	""",
 	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
 	faceGradientContributions = self.faceGradientContributions.getNumericValue(),
@@ -75,7 +74,7 @@ class CellGradVariable(VectorCellVariable):
 ## 	print 'getFaceValue:',self.var.getFaceValue()[:]
 ## 	raw_input()
 	
-	contributions = array.take(self.faceGradientContributions[:],ids)
+	contributions = array.take(self.faceGradientContributions[:],ids.flat)
 	contributions = contributions.reshape((N,M,self.mesh.getDim()))
 
 	grad = (orientations*contributions).sum(1)

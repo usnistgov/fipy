@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/28/04 {4:41:34 PM} 
+ #                                last update: 2/2/04 {11:09:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -121,8 +121,8 @@ if __name__ == '__main__':
 
     it.timestep(1)
     
-##     fudge = calibrate_profiler(10000)
-##     profile = Profiler('profile', fudge=fudge)
+    fudge = calibrate_profiler(10000)
+    profile = Profiler('profile', fudge=fudge)
     
     for i in range(10):
 	it.timestep(1)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 ## 	for viewer in viewers:
 ## 	    viewer.plot()
 	
-##     profile.stop()
+    profile.stop()
 	    
     raw_input()
 
