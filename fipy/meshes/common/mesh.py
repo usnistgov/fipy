@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 9/3/04 {10:30:53 PM} 
+ #                                last update: 10/19/04 {11:33:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
 Generic mesh class defining implementation-agnostic behavior.
 
 Make changes to mesh here first, then implement specific implementations in
-pyMesh and numMesh.
+`pyMesh` and `numMesh`.
 
 Meshes contain cells, faces, and vertices.
 """
@@ -150,7 +150,7 @@ class Mesh:
 	pass
 	    
     def getCells(self, filter = None, ids = None, **args):
-	"""Return Cells of Mesh."""
+	"""Return `Cell` objects of `Mesh`."""
 	cells = self.getCellsByID(ids)
 	
         if filter is None:
@@ -162,7 +162,7 @@ class Mesh:
         pass
     
     def getFacesWithFilter(self, filter, **args):
-	"""Return Faces of Mesh."""
+	"""Return `Face` objects of `Mesh`."""
 	faces = self.getFaces()
 	
         if filter is None:

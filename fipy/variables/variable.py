@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/15/04 {1:52:37 PM} 
+ #                                last update: 10/19/04 {4:23:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -180,7 +180,7 @@ class Variable:
 	
 	    >>> e = Variable(value = "2.7 Hartree*Nav")
 	    >>> print e.inBaseUnits()
-	    7088849.77818 kg*m**2/s**2/mol
+	    7088849.01085 kg*m**2/s**2/mol
 	"""
 	value = self.getValue()
 	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):

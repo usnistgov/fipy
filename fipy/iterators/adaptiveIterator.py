@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveIterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 9/3/04 {10:40:03 PM} 
+ #                                last update: 10/19/04 {2:52:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,6 @@
  # ###################################################################
  ##
 
-"""Generic equation iterator
-"""
-
 from fipy.iterators.iterator import Iterator
 from fipy.iterators.iterator import ConvergenceError
 
@@ -52,9 +49,10 @@ class AdaptiveIterator(Iterator):
     """Adaptive time-stepping equation iterator
     """
     def __init__(self,equations,timeStepDuration = None,viewers = ()):
-	"""Arguments:
+	"""
+	:Parameters:
 	    
-	    'equations' -- list or tuple of equations to iterate over
+	  - `equations`: `list` or `tuple` of `Equation` objects to iterate over
 	"""
 	Iterator.__init__(self, equations, timeStepDuration)
 	self.viewers = viewers

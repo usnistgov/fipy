@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 6/15/04 {11:52:53 AM} 
+ #                                last update: 10/19/04 {12:18:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,28 +44,27 @@
  ##
 
 
-
-"""
+r"""
 This term represents a higher order diffusion term. The order of the term is determined
-by the number of `coeffs`, such that
+by the number of `coeffs`, such that::
 
-##   >>> NthOrderDiffusionTerm(D1, mesh, bcs)
+    NthOrderDiffusionTerm(D1, mesh, bcs)
 	    
 represents a typical 2nd-order diffusion term of the form
 
 .. raw:: latex
         
-    $$ \\nabla\\cdot\\left(D_1 \\nabla \\phi\\right) $$
+    $$ \nabla\cdot\left(D_1 \nabla \phi\right) $$
               
-and
+and::
 
-##   >>> NthOrderDiffusionTerm((D1,D2), mesh, bcs)
+    NthOrderDiffusionTerm((D1,D2), mesh, bcs)
             
 represents a 4th-order Cahn-Hilliard term of the form
         
 .. raw:: latex
         
-    $$ \\nabla\\cdot\\left[ D_1 \\nabla\\cdot\\left(D_2 \\nabla \\phi\\right) \\right] $$
+    $$ \nabla\cdot\left[ D_1 \nabla\cdot\left(D_2 \nabla \phi\right) \right] $$
 
 and so on.
 

@@ -70,7 +70,7 @@ The discretization for the transient term is given by,
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
-\frac{\rho(\phi_{P} - \phi_P^O) V_P}{\Delta t}
+\frac{\rho_{P}(\phi_{P} - \phi_P^O) V_P}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
 where the subscript $P$ represents the average value in the CV and
@@ -148,7 +148,7 @@ Combining Equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
 discretization for equation~\eqref{eqn:num:gen} can now be written for
 each CV as
 \begin{eqnarray}
-\frac{\rho(\phi_{P} - \phi_P^O) V_P}{\Delta t}
+\frac{\rho_{P}(\phi_{P} - \phi_P^O) V_P}{\Delta t}
 &=&
 \sum_{f} (\vec{n} \cdot \vec{u})_f A_f 
 \left[\alpha_f \phi_P +\left(1-\alpha_f\right)\phi_A\right]
@@ -172,7 +172,7 @@ where
 a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
 F_f), \\
 a_{A} & = & ( 1 - \alpha_f ) F_f + D_f, \\
-b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t}.
+b_p & = & S_C + \frac{\rho_P V_P \phi_P^O}{\Delta t}.
 \end{eqnarray}
 The face coefficients, $F_f$ and $D_f$, represent the convective strength
 and diffusive conductance respectively, and are given by

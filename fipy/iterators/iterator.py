@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 9/3/04 {10:41:49 PM} 
+ #                                last update: 10/19/04 {2:52:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,10 +62,11 @@ class Iterator:
     """
     
     def __init__(self,equations,timeStepDuration = None):
-	"""Arguments:
+	"""
+	:Parameters:
 	    
-	    'equations' -- list or tuple of equations to iterate over
-	    'timeStepDuration' -- duration of each timestep (Variable)
+	      - `equations`: list or tuple of equations to iterate over
+	      - `timeStepDuration`: duration of each timestep (`Variable`)
 	"""
         self.equations = equations
 	self.timeStepDuration = timeStepDuration
@@ -73,7 +74,7 @@ class Iterator:
     def sweep(self, dt):
 	for equation in self.equations:
 	    equation.solve(dt)
-	converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
+	converged = True
 	for equation in self.equations:
 	    converged = converged and equation.isConverged()
 	return converged
@@ -117,9 +118,9 @@ class Iterator:
     def timestep(self, maxSweeps = 1, dt = 1.):
 	"""Iterate the solution.
 	
-	Arguments:
+	:Parameters:
 	    
-	    'maxSweeps' -- maximum number of sweeps to reach convergence
+	  - `maxSweeps`: maximum number of sweeps to reach convergence
 	"""
 	
 	self.advanceTimeStep()

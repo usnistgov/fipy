@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/3/04 {10:38:41 PM} 
+ #                                last update: 10/19/04 {4:26:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -76,11 +76,17 @@ the correct unit. A quantity can be raised to a non-integer
 power only if the result can be represented by integer powers
 of the base units.
 
-The values of physical constants are taken from the 1986
-recommended values from CODATA. Other conversion factors
-(e.g. for British units) come from various sources. I can't
-guarantee for the correctness of all entries in the unit
-table, so use this at your own risk!
+The values of physical constants are taken from the 2002
+recommended values from CODATA_. Other conversion factors
+(e.g. for British units) come from `Appendix B of NIST Special Publication 811`_. 
+
+.. warning::
+    
+   We can't guarantee for the correctness of all entries in the unit table, 
+   so use this at your own risk!
+
+.. _CODATA: http://physics.nist.gov/cuu/Constants/
+.. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
 __docformat__ = 'restructuredtext'
 
@@ -97,13 +103,13 @@ class PhysicalField:
     """
     Physical field or quantity with units
     
-    PhysicalField instances allow addition, subtraction, 
+    `PhysicalField` instances allow addition, subtraction, 
     multiplication, and division with each other as well as
     multiplication, division, and exponentiation with numbers.
     Addition and subtraction check that the units of the two operands
     are compatible and return the result in the units of the first
     operand. A limited set of mathematical functions (from module
-    Numeric) is applicable as well:
+    `Numeric`) is applicable as well:
 
     sqrt 
       equivalent to exponentiation with 0.5.
@@ -117,13 +123,13 @@ class PhysicalField:
         """
         Physical Fields can be constructed in one of two ways:
             
-          - PhysicalField(`value`, `unit`), where `value` is a number of
-            arbitrary type and `unit` is a string containing the unit name
+          - `PhysicalField(*value*, *unit*)`, where `*value*` is a number of
+            arbitrary type and `*unit*` is a string containing the unit name
             
                 >>> print PhysicalField(value = 10., unit = 'm')
                 10.0 m
                 
-          - PhysicalField(`string`), where `string` contains both the value
+          - `PhysicalField(*string*)`, where `*string*` contains both the value
             and the unit. This form is provided to make interactive use more
             convenient
             
@@ -303,7 +309,7 @@ class PhysicalField:
         
         As a special case, if the result is dimensionless, the value
         is returned without units, rather than with a dimensionless unit
-        of ``1``. This facilitates passing physical quantities to packages 
+        of `1`. This facilitates passing physical quantities to packages 
         such as Numeric that cannot use units, while ensuring the quantities
         have the desired units.
         
@@ -342,7 +348,7 @@ class PhysicalField:
         
         As a special case, if the result is dimensionless, the value
         is returned without units, rather than with a dimensionless unit
-        of "1". This facilitates passing physical quantities to packages 
+        of `1`. This facilitates passing physical quantities to packages 
         such as Numeric_ that cannot use units, while ensuring the quantities
         have the desired units
         
@@ -411,7 +417,7 @@ class PhysicalField:
             
     def __pow__(self, other):
         """
-        Raise a PhysicalField to a power. The unit is raised to the same power.
+        Raise a `PhysicalField` to a power. The unit is raised to the same power.
         
             >>> print PhysicalField(10., 'm')**2
             100.0 m**2
@@ -500,7 +506,7 @@ class PhysicalField:
             
     def __array__(self, t = None):
         """
-        Return a dimensionless PhysicalField as a Numeric_ ``array``.
+        Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
         
             >>> Numeric.array(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
             [[ 2., 3.,]
@@ -550,7 +556,7 @@ class PhysicalField:
                 ...
             TypeError: Not possible to convert a PhysicalField with dimensions to float
         
-        Just as a Numeric_ ``array`` cannot be cast to float, neither can PhysicalField arrays
+        Just as a Numeric_ `array` cannot be cast to float, neither can PhysicalField arrays
         
             >>> float(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
             Traceback (most recent call last):
@@ -637,7 +643,7 @@ class PhysicalField:
             >>> e = PhysicalField('2.7 Hartree*Nav')
             >>> e.convertToUnit('kcal/mol')
             >>> print e
-            1694.2757596 kcal/mol
+            1694.27557621 kcal/mol
         """
         unit = _findUnit(unit)
         self.value = _convertValue (self.value, self.unit, unit)
@@ -645,18 +651,18 @@ class PhysicalField:
 
     def inUnitsOf(self, *units):
         """
-        Returns one or more PhysicalField objects that express the same
+	Returns one or more `PhysicalField` objects that express the same
         physical quantity in different units.  The units are specified by
         strings containing their names.  The units must be compatible with
         the unit of the object.  If one unit is specified, the return value
-        is a single PhysicalObject.
+        is a single `PhysicalField`.
         
             >>> freeze = PhysicalField('0 degC')
             >>> print freeze.inUnitsOf('degF')
             32.0 degF
         
         If several units are specified, the return value is a tuple of
-        PhysicalObject instances with with one element per unit such that
+	`PhysicalField` instances with with one element per unit such that
         the sum of all quantities in the tuple equals the the original
         quantity and all the values except for the last one are integers.
         This is used to convert to irregular unit systems like
@@ -698,7 +704,7 @@ class PhysicalField:
         
     def getNumericValue(self):
         """
-        Return the PhyicalField without units, after conversion to base SI units.
+        Return the `PhysicalField` without units, after conversion to base SI units.
         
             >>> print round(PhysicalField("1 inch").getNumericValue(), 6)
             0.0254
@@ -712,7 +718,7 @@ class PhysicalField:
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
             >>> print e.inBaseUnits()
-            7088849.77818 kg*m**2/s**2/mol
+            7088849.01085 kg*m**2/s**2/mol
         """
         if self.unit.factor != 1:
             new_value = self.value * self.unit.factor
@@ -743,7 +749,7 @@ class PhysicalField:
 
     def sqrt(self):
         """
-        Return the square root of the PhysicalField
+        Return the square root of the `PhysicalField`
         
             >>> print PhysicalField("100. m**2").sqrt()
             10.0 m
@@ -759,7 +765,7 @@ class PhysicalField:
 
     def sin(self):
         """
-        Return the sinus of the PhysicalField
+        Return the sine of the `PhysicalField`
         
             >>> print PhysicalField(Numeric.pi/6,"rad").sin()
             0.5
@@ -781,14 +787,14 @@ class PhysicalField:
 
     def cos(self):
         """
-        Return the cosinus of the PhysicalField
+        Return the cosine of the `PhysicalField`
         
             >>> print round(PhysicalField(2*Numeric.pi/6,"rad").cos(), 6)
             0.5
             >>> print round(PhysicalField(60.,"deg").cos(), 6)
             0.5
         
-        The units of the PhysicalField must be an angle
+        The units of the `PhysicalField` must be an angle
         
             >>> PhysicalField(60.,"m").cos()
             Traceback (most recent call last):
@@ -803,14 +809,14 @@ class PhysicalField:
 
     def tan(self):
         """
-        Return the tangent of the PhysicalField
+        Return the tangent of the `PhysicalField`
         
             >>> round(PhysicalField(Numeric.pi/4,"rad").tan(), 6)
             1.0
             >>> round(PhysicalField(45,"deg").tan(), 6)
             1.0
         
-        The units of the PhysicalField must be an angle
+        The units of the `PhysicalField` must be an angle
         
             >>> PhysicalField(45.,"m").tan()
             Traceback (most recent call last):
@@ -830,7 +836,7 @@ class PhysicalField:
             >>> print round(PhysicalField(2.).arctan2(PhysicalField(5.)), 6)
             0.380506
         
-        The input PhysicalFields must be dimensionless
+        The input `PhysicalField` objects must be dimensionless
         
             >>> print round(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6)
             Traceback (most recent call last):
@@ -842,12 +848,12 @@ class PhysicalField:
             
     def arctan(self):
         """
-        Return the arctangent of the PhysicalField in radians
+        Return the arctangent of the `PhysicalField` in radians
         
             >>> print round(PhysicalField(1).arctan(), 6)
             0.785398
         
-        The input PhysicalField must be dimensionless
+        The input `PhysicalField` must be dimensionless
         
             >>> print round(PhysicalField("1 m").arctan(), 6)
             Traceback (most recent call last):
@@ -878,7 +884,7 @@ class PhysicalField:
     def take(self, indices, axis = 0):
         """
         Return the elements of `self` specified by the elements of `indices`.  
-        The resulting PhysicalField array has the same units as the original.
+        The resulting `PhysicalField` array has the same units as the original.
         
             >>> print PhysicalField((1.,2.,3.),"m").take((2,0))
             [ 3., 1.,] m
@@ -978,7 +984,7 @@ class PhysicalUnit:
 	  - `names`: the name of the unit
 	  - `factor`: the multiplier between the unit and the fundamental SI unit
 	  - `powers`: a nine-element `list`, `tuple`, or Numeric_ `array` representing
-	    the fundamental SI units of ['m', 'kg', 's', 'A', 'K', 'mol', 'cd', 'rad', 'sr']
+	    the fundamental SI units of ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
 	  - `offset`: the displacement between the zero-point of the unit and the zero-point
 	    of the corresponding fundamental SI unit.
 		      
@@ -1561,22 +1567,25 @@ _unit_table['pi'] = umath.pi
 _addUnit('c', '299792458.*m/s')      # speed of light
 _addUnit('mu0', '4.e-7*pi*N/A**2')   # permeability of vacuum
 _addUnit('eps0', '1/mu0/c**2')       # permittivity of vacuum
-_addUnit('Grav', '6.67259e-11*m**3/kg/s**2') # gravitational constant
-_addUnit('hplanck', '6.6260755e-34*J*s')     # Planck constant
+_addUnit('Grav', '6.6742e-11*m**3/kg/s**2') # gravitational constant
+_addUnit('hplanck', '6.6260693e-34*J*s')     # Planck constant
 _addUnit('hbar', 'hplanck/(2*pi)')   # Planck constant / 2pi
-_addUnit('e', '1.60217733e-19*C')    # elementary charge
-_addUnit('me', '9.1093897e-31*kg')   # electron mass
-_addUnit('mp', '1.6726231e-27*kg')   # proton mass
-_addUnit('Nav', '6.0221367e23/mol')  # Avogadro number
-_addUnit('kB', '1.380658e-23*J/K')    # Boltzmann constant
+_addUnit('e', '1.60217653e-19*C')    # elementary charge
+_addUnit('me', '9.1093826e-31*kg')   # electron mass
+_addUnit('mp', '1.67262171e-27*kg')  # proton mass
+_addUnit('Nav', '6.0221415e23/mol')  # Avogadro number
+_addUnit('kB', '1.3806505e-23*J/K')  # Boltzmann constant
 
+_addUnit('gn', '9.80665*m/s**2')     # standard gravitational acceleration
 # Time units
 
 _addUnit('min', '60*s')              # minute
 _addUnit('h', '60*min')              # hour
 _addUnit('d', '24*h')                # day
 _addUnit('wk', '7*d')                # week
-_addUnit('yr', '365.25*d')           # year
+_addUnit('yr', '365*d')              # year
+_addUnit('yrJul', '365.25*d')        # Julian year
+_addUnit('yrSid', '365.2564*d')      # sidereal year
 
 # Length units
 
@@ -1586,7 +1595,7 @@ _addUnit('yd', '3*ft')               # yard
 _addUnit('mi', '5280.*ft')           # (British) mile
 _addUnit('nmi', '1852.*m')           # Nautical mile
 _addUnit('Ang', '1.e-10*m')          # Angstrom
-_addUnit('lyr', 'c*yr')              # light year
+_addUnit('lyr', 'c*yrJul')           # light year
 _addUnit('Bohr', '4*pi*eps0*hbar**2/me/e**2')  # Bohr radius
 
 # Area units
@@ -1601,7 +1610,7 @@ _addUnit('l', 'dm**3')               # liter
 _addUnit('dl', '0.1*l')
 _addUnit('cl', '0.01*l')
 _addUnit('ml', '0.001*l')
-_addUnit('tsp', '4.92892159375*ml')  # teaspoon
+_addUnit('tsp', '4.928922*ml')  # teaspoon
 _addUnit('tbsp', '3*tsp')            # tablespoon
 _addUnit('floz', '2*tbsp')           # fluid ounce
 _addUnit('cup', '8*floz')            # cup
@@ -1613,8 +1622,8 @@ _addUnit('galUK', '4.54609*l')       # British gallon
 # Mass units
 
 _addUnit('amu', '1.6605402e-27*kg')  # atomic mass units
-_addUnit('oz', '28.349523125*g')     # ounce
-_addUnit('lb', '16*oz')              # pound
+_addUnit('lb', '4.5359237e-1*kg')    # pound
+_addUnit('oz', 'lb/16')              # ounce
 _addUnit('ton', '2000*lb')           # ton
 
 # Force units
@@ -1628,23 +1637,24 @@ _addUnit('eV', 'e*V')                # electron volt
 _addPrefixed('eV')
 _addUnit('Hartree', 'me*e**4/16/pi**2/eps0**2/hbar**2')
 _addUnit('invcm', 'hplanck*c/cm')    # Wavenumbers/inverse cm
-_addUnit('Ken', 'kB*K')               # Kelvin as energy unit
+_addUnit('Ken', 'kB*K')              # Kelvin as energy unit
 _addUnit('cal', '4.184*J')           # thermochemical calorie
 _addUnit('kcal', '1000*cal')         # thermochemical kilocalorie
 _addUnit('cali', '4.1868*J')         # international calorie
 _addUnit('kcali', '1000*cali')       # international kilocalorie
-_addUnit('Btu', '1055.05585262*J')   # British thermal unit
+_addUnit('Btui', '1055.05585262*J')  # international British thermal unit
 
 # Power units
 
-_addUnit('hp', '745.7*W')            # horsepower
+_addUnit('hpEl', '746*W')            # electric horsepower
+_addUnit('hpUK', '745.7*W')            # horsepower
 
 # Pressure units
 
 _addUnit('bar', '1.e5*Pa')           # bar (cgs unit)
 _addUnit('atm', '101325.*Pa')        # standard atmosphere
-_addUnit('torr', 'atm/760')          # torr = mm of mercury
-_addUnit('psi', '6894.75729317*Pa')  # pounds per square inch
+_addUnit('Torr', 'atm/760')          # torr = mm of mercury
+_addUnit('psi', 'lb*gn/inch**2')     # pounds per square inch
 
 # Angle units
 

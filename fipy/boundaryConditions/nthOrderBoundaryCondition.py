@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 7/28/04 {6:18:48 PM} 
+ #                                last update: 10/19/04 {2:53:02 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,6 +39,12 @@
  # ###################################################################
  ##
 
+"""Boundary condition to describe high-order derivatives. 
+
+This `BoundaryCondition` never has any direct effect on the solution
+matrices, but its derivatives do.
+"""
+
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -53,13 +59,12 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         BoundaryCondition.__init__(self,faces,value)
 
     def getContribution(self,cell1dia,cell1off):
-        """Leave L and b unchanged
+        """Leave `L` and `b` unchanged
         
-        Arguments:
+        :Parameters:
             
-            'cell1dia' -- *unused*
-
-            'cell1off' -- *unused*
+	  - `cell1dia`: *unused*
+	  - `cell1off`: *unused*
         """
         return (Numeric.array([]),Numeric.array([]),Numeric.array([]))
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 9/3/04 {10:40:10 PM} 
+ #                                last update: 10/19/04 {2:52:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,22 +50,22 @@ import Numeric
 class Cell:
     """Cell within a mesh
 
-	Cells are bounded by Faces.
+    `Cell` objects are bounded by `Face` objects.
     """
     
     def __init__(self, faces, faceOrientations, id):
-	"""Cell is initialized by Mesh with 
+	"""`Cell` is initialized by `Mesh` 
 	
-	Arguments:
+	:Parameters:
 	    
-	    'faces' -- 'list' or 'tuple' of bounding faces that define the cell
-	    
-	    'faceOrientations' -- 'list', 'tuple', or *numarray* of
+	  - `faces`: `list` or `tuple` of bounding faces that define the cell
+	
+	  - `faceOrientations`: `list`, `tuple`, or `Numeric.array` of
 	    orientations (+/-1) to indicate whether a face points into this
 	    face or out of it.  Can be calculated, but the mesh typically
 	    knows this information already.
-	    
-	    'id' -- unique identifier
+	
+	  - `id`: unique identifier
 	"""
         self.faces = faces
 	self.faceOrientations = Numeric.array(faceOrientations)
@@ -100,21 +100,23 @@ class Cell:
 	return vol
 
     def getVolume(self):
-	"""Return the volume of the Cell.
+	"""Return the volume of the `Cell`.
 	"""
         return self.volume
 
     def getCenter(self):
-	"""Return the coordinates of the Cell center.
+	"""Return the coordinates of the `Cell` center.
 	"""
         return self.center
 
     def calcCenter(self):
-	"""Calculate the coordinates of the Cell center.
+	"""Calculate the coordinates of the `Cell` center.
 	
 	Cell center is the average of the bounding Face centers.
 	
-	**Is this right? Seems to give too much weight to small faces.**
+	.. attention::
+	    
+	   Is this right? Seems to give too much weight to small faces.
 	"""
         ctr = self.faces[0].getCenter().copy()
         for face in self.faces[1:]:
@@ -122,7 +124,7 @@ class Cell:
         return ctr/float(len(self.faces))
             
     def __repr__(self):
-	"""Textual representation of Cell.
+	"""Textual representation of `Cell`.
 	"""
 	rep = "<id = " + str(self.id) + ", volume = " + str(self.getVolume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
 	
@@ -135,12 +137,12 @@ class Cell:
 	return rep
 
     def getFaces(self):
-	"""Return the faces bounding the Cell.
+	"""Return the faces bounding the `Cell`.
 	"""
         return self.faces
 
     def setID(self,id):
-	"""Set the id of the Cell.
+	"""Set the `id` of the `Cell`.
 	"""
         self.id = id
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 9/3/04 {10:37:50 PM} 
+ #                                last update: 10/19/04 {12:22:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -35,6 +35,8 @@
  #  
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

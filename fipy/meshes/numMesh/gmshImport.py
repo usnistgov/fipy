@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 10/6/04 {4:25:34 PM}
+ #                                last update: 10/19/04 {11:38:55 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,7 @@
 
 """
 
-This module takes a Gmsh output file (.msh) and converts it into a
+This module takes a Gmsh output file (`.msh`) and converts it into a
 FiPy mesh. This currently supports triangular and tetrahedral meshes
 only.
 

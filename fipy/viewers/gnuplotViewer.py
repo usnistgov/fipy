@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 9/14/04 {10:30:12 PM} { 2:45:36 PM}
+ #                                last update: 10/19/04 {2:58:28 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,7 +58,9 @@ Different style script demos_ are available at the Gnuplot_ site.
 .. _Gnuplot: http://gnuplot.sourceforge.net/
 .. _demos: http://gnuplot.sourceforge.net/demo/
 
-`GnuplotViewer` requires Gnuplot_ version 4.0.
+.. note::
+    
+   `GnuplotViewer` requires Gnuplot_ version 4.0.
 
 """
 __docformat__ = 'restructuredtext'
@@ -71,23 +73,15 @@ class GnuplotViewer:
     def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color', legend = True, title = ''):
         """
 
-        Argument list:
+        :Parameters:
 
-        `array` - A 2D Numeric array
-
-        `dx` - The unit size is the x-direction.
-
-        `dy` - The unit size in the y-direction.
-
-        `maxVal` - The maximum value to appear on the legend
-
-        `maxVal` - The minimum value to appear on the legend.
-
-        `palette` - The color scheme. Other choices might be `color
-        negative` or `gray`. This is completely configurable.
-
-        `legend` - Whether to display the legend.
-        
+	    - `array`: A 2D Numeric array
+	    - `dx`: The unit size is the x-direction.
+	    - `dy`: The unit size in the y-direction.
+	    - `maxVal`: The maximum value to appear on the legend
+	    - `palette`: The color scheme. Other choices might be `color
+	      negative` or `gray`. This is completely configurable.
+	    - `legend`: Whether to display the legend.        
         """
         
         self.array = array
@@ -118,12 +112,11 @@ class GnuplotViewer:
 
     def plot(self, fileName = None):
         """
+        :Parameters:
 
-        Argument list:
-
-        `fileName` - If no file name is passed a plot appears on the
-        screen.  If `*.ps` or `*.pdf` is passed, a postscript or PDF
-        file is produced and nothing appears on the screen.
+	  - `fileName`: If no file name is passed a plot appears on the
+	    screen.  If `*.ps` or `*.pdf` is passed, a postscript or PDF
+	    file is produced and nothing appears on the screen.
 
         """
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:42 PM} 
+ #                                last update: 10/19/04 {2:52:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""Face within a Mesh
+"""`Face` within a `Mesh`
 """
 __docformat__ = 'restructuredtext'
 
@@ -51,19 +51,19 @@ import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Face:
-    """Face within a Mesh
+    """`Face` within a `Mesh`
 
-    Faces are bounded by Vertices. Faces separate Cells.
+    `Face` objects are bounded by `Vertex` objects. 
+    `Face` objects separate `Cell` objects.
     """
     
     def __init__(self, vertices, id):
-	"""Face is initialized by Mesh
+	"""`Face` is initialized by `Mesh`
 	
-	Arguments:
+	:Parameters:
 	    
-	    'vertices' -- the 'Vertex' points that bound the 'Face'
-	    
-	    'id' -- a unique identifier
+	  - `vertices`: the `Vertex` points that bound the `Face`
+	  - `id`: a unique identifier
 	"""
         self.vertices = vertices
 ##        self.cells = ()
@@ -88,7 +88,8 @@ class Face:
 ##	self.setFaceToCellDistances()
 
     def addBoundingCell(self, cell, orientation):
-	"""Add cell to the list of Cells which lie on either side of this Face.
+	"""Add `cell` to the list of `Cell` objects which lie 
+	on either side of this Face.
 	"""
 ##        self.cells += (cell,)
         self.cellsID += (cell.getID(),)
@@ -101,17 +102,15 @@ class Face:
 	self.setFaceToCellDistances()
         
     def getCells(self):
-	"""Return the Cells which lie on either side of this Face.
+	"""Return the `Cell` objects which lie on either side of this `Face`.
 	"""
         return self.cells
 		
     def getID(self):
-	"""Return the id of this Face.
-	"""
 	return self.id
 
     def getCellID(self, index = 0):
-	"""Return the id of the specified Cell on one side of this Face.
+	"""Return the `id` of the specified `Cell` on one side of this `Face`.
 	"""
         if index == 1 and len(self.cellsID) == 1:
             index = 0
@@ -121,12 +120,12 @@ class Face:
 ##        return self.cells[index].getId()
 	
     def getCenter(self):
-	"""Return the coordinates of the Face center.
+	"""Return the coordinates of the `Face` center.
 	"""
 	return self.center
     
     def calcCenter(self):
-	"""Calculate the coordinates of the Face center.
+	"""Calculate the coordinates of the `Face` center.
 	
 	Cell center is the average of the bounding Vertex centers.
 	"""
@@ -136,12 +135,12 @@ class Face:
 	return ctr / float(len(self.vertices))
 
     def getArea(self):
-	"""Return the area of the Face.
+	"""Return the area of the `Face`.
 	"""
         return self.area
     
     def calcArea(self):
-	"""Calculate the area of the Face.
+	"""Calculate the area of the `Face`.
 	
 	Area is the signed sum of the area of the triangles bounded by
 	each polygon edge and the origin.
@@ -168,13 +167,14 @@ class Face:
         self.normal = self.calcNormal()
 	
     def calcNormal(self):
-	"""Calculate the unit normal vector, accounting for whether the Face
-	points toward or away from the specified Cell.	
+	"""Calculate the unit normal vector.	
 	
 	Unit normal vector is calculated from cross-product of two
 	tangent vectors.
     
-	**Doesn't work if t1 and t2 are colinear!**
+	.. warning::
+	   
+	   Doesn't work if t1 and t2 are colinear!
 	"""
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
@@ -200,7 +200,7 @@ class Face:
 	return tan2/mag
 	    
     def getCellDistance(self):
-	"""Return the distance between adjacent cell centers.
+	"""Return the distance between adjacent `Cell` centers.
 	"""
         return self.cellDistance
 
@@ -211,7 +211,7 @@ class Face:
 
     
     def setCellDistance(self):
-	"""Assign the cached distance between adjacent cell centers.
+	"""Assign the cached distance between adjacent `Cell` centers.
 	"""
         self.cellDistance = self.calcCellDistance()
 
@@ -229,7 +229,7 @@ class Face:
 ##        return vector.sqrtDot(vec,vec)
 
     def calcCellDistance(self):
-	"""Calculate the distance between adjacent Cell centers.
+	"""Calculate the distance between adjacent `Cell` centers.
 	
 	If the Face is on a boundary and has only one bordering Cell,
 	the distance is from the Cell center to the Face center.
@@ -284,12 +284,12 @@ class Face:
 # 	return "<id = " + str(self.id) + ">"
 # 	+ ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
     def __repr__(self):
-	"""Textual representation of Face.
+	"""Textual representation of `Face`.
 	"""
 	return "<id = " + str(self.id) + ", area = " + str(self.area) + ", normal = " + str(self.normal) + ", vertices = " + str(self.vertices) + ", center = " + str(self.center) + ">\n"
 
     def removeBoundingCell(self,cell):
-	"""Remove cell from the list of bounding Cells.
+	"""Remove `cell` from the list of bounding `Cell` objects.
 	
 	Called by the Mesh when a Cell is removed.
 	"""
@@ -304,7 +304,7 @@ class Face:
             
         
     def setID(self,id):
-	"""Set the id of the Face.
+	"""Set the `id` of the `Face`.
 	"""
         self.id = id
             

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/3/04 {10:30:58 PM} 
+ #                                last update: 10/19/04 {2:53:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -119,15 +119,12 @@ class Grid2D(Mesh):
     def __init__(self, dx, dy, nx, ny):
 	"""Grid2D is initialized by caller
 	
-	Arguments:
+	:Parameters:
 	    
-	    'dx' -- dimension of each cell in **x** direction
-
-	    'dy' -- dimension of each cell in **y** direction
-
-	    'nx' -- number of cells in **x** direction
-
-	    'ny' -- number of cells in **y** direction
+	  - `dx`: dimension of each cell in **x** direction
+	  - `dy`: dimension of each cell in **y** direction
+	  - `nx`: number of cells in **x** direction
+	  - `ny`: number of cells in **y** direction
 	"""
         self.nx=nx
         self.ny=ny
@@ -144,7 +141,7 @@ class Grid2D(Mesh):
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
     def createVertices(self):
-	"""Return list of Vertices
+	"""Return list of `Vertex` objects
 	"""
 	vertices = ()
         ny=self.ny
@@ -158,13 +155,13 @@ class Grid2D(Mesh):
         return vertices	
 		    
     def createFaces(self, vertices):
-	"""Return 'tuples' of 'Faces' bounded by 'vertices'. 
+	"""Return 2-`tuple` of `Face` objects bounded by `vertices`. 
 	
-	First 'tuple' are the 'Faces' that separate rows of 'Cells'.  Second
-	'tuple' are the 'Faces' that separate columns of 'Cells'.  These
-	initial lists are layed out for efficiency of composing and indexing
-	into the lists to compose 'Cells'.  They will subsequently be
-	reordered for efficiency of computations.
+	First `tuple` are the `Face` objects that separate rows of `Cell` objects.  
+	Second `tuple` are the `Face` objects that separate columns of `Cell 
+	objects.  These initial lists are layed out for efficiency of composing 
+	and indexing into the lists to compose `Cell` objects.  They will 
+	subsequently be reordered for efficiency of computations.
 	"""
         nx=self.nx
         ny=self.ny
@@ -187,9 +184,9 @@ class Grid2D(Mesh):
 	return (rowFaces,colFaces)
 	
     def reorderFaces(self,rowFaces,colFaces):
-	"""Return a 'tuple' of faces ordered for best efficiency.
+	"""Return a `tuple` of `Face` objects ordered for best efficiency.
 	
-	Composed from 'rowFaces' and 'colFaces' such that all interior faces
+	Composed from `rowFaces` and `colFaces` such that all interior faces
 	are listed contiguously, rows then columns, followed by all boundary
 	faces, rows then columns.
 	"""
@@ -215,7 +212,7 @@ class Grid2D(Mesh):
 	return (faces, interiorFaces)
 	
     def createCells(self,rowFaces,colFaces):
-	"""Return list of Cells.
+	"""Return list of `Cell` objects.
 	"""
 	nx=self.nx
 	ny=self.ny
@@ -276,12 +273,12 @@ class Grid2D(Mesh):
 	return self.faces[start:start + nx]
 	    
     def getShape(self):
-	"""Return cell dimensions 'Grid2D'.
+	"""Return cell dimensions `Grid2D`.
 	"""
         return (self.nx,self.ny)
         
     def makeGridData(self,array):
-	"""Return 'array' data mapped onto cell geometry of 'Grid2D'.
+	"""Return `array` data mapped onto cell geometry of `Grid2D`.
 	"""
         return Numeric.reshape(array,self.getShape())
 

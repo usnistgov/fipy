@@ -7,17 +7,8 @@ Release goals 0.1
 
 - Documentation:
 
-  * Check for errors.
-
-    - guide
-    - examples
-    - apis
-
   * Manual and web site WERBed.
   * Review Process.
-  * Class diagram and explanation
-
-- Refactoring:
 
 - Distribution:
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 9/3/04 {10:43:03 PM}
+ #                                last update: 10/19/04 {2:51:49 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,30 +51,17 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import array
 
 class FixedValue(BoundaryCondition):
-    """Fixed value (Dirichlet) boundary condition
-    """
-    
-    def update(self,face,cell1dia,cell1off):
-	"""???
-	
-	Arguments:
-	    
-	    'face' -- *unused*
-	    
-	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
-	    
-	    'cell1off' -- contribution to b-vector by this exterior face
-	"""
-        return (cell1dia,-cell1off*self.value)
-
     def getContribution(self,cell1dia,cell1off):
-	"""???
+	"""Set boundary equal to value.
 	
-	Arguments:
+	A `tuple` of (`LL`, `bb`, `ids`) is calculated, to be added to the 
+	equation's (**L**, **b**) matrices at the cells specified by `ids`.
+	
+	:Parameters:
 	    
-	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
-	    
-	    'cell1off' -- contribution to b-vector by this exterior face
+	  - `cell1dia`: contribution to adjacent cell diagonal by this 
+	    exterior face	    
+	  - `cell1off`: contribution to **b**-vector by this exterior face
 	"""
 	return (array.take(cell1dia[:],self.faceIds),
 		array.take(-cell1off[:],self.faceIds)*self.value,

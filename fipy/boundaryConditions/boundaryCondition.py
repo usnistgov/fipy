@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 9/3/04 {10:41:40 PM} 
+ #                                last update: 10/19/04 {2:51:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,11 +55,10 @@ class BoundaryCondition:
     def __init__(self,faces,value):
 	"""Generic boundary condition base class.
 	
-	Arguments:
+	:Parameters:
 	    
-	    'faces' -- 'list' or 'tuple' of 'Faces' to which this condition applies
-	    
-	    'value' -- the value to impose
+	    - `faces`: `list` or `tuple` of `Face` objects to which this condition applies
+	    - `value`: the value to impose
 	"""
         self.faces = faces
         self.value = PhysicalField(value)
@@ -71,16 +70,16 @@ class BoundaryCondition:
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
-	'getContribution()' is called by each 'Term' of each 'Equation'.
+	`getContribution()` is called by each `Term` of each `Equation`.
 	
-	Arguments:
+	:Parameters:
 	    
-	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
-	    
-	    'cell1off' -- contribution to b-vector by this exterior face
+	  - `cell1dia`: contribution to adjacent cell diagonal by this 
+	    exterior face       
+	  - `cell1off`: contribution to **b**-vector by this exterior face
 	
-	A 'tuple' of (LL,bb,ids) is calculated, to be added to the equation's (L,b)
-	matrices at the cells specified by 'ids'.
+	A `tuple` of (`LL`, `bb`, `ids`) is calculated, to be added to the 
+	equation's (**L**, **b**) matrices at the cells specified by `ids`.
 	""" 
 	pass
     

@@ -3,18 +3,19 @@ Installation
 ============
 
 The |FiPy| finite volume PDE solver relies on several third-party packages.
-It is best to obtain and install those first, before attempting to install
-|FiPy|.  Most of the installation steps will involve a variant on the
-command::
+It is *best to obtain and install those first*, before attempting to install
+|FiPy|.
 
-    $ python setup.py
+.. note::
 
-In addition to the specific commands given here, further information about
-each ``setup.py`` script is available by typing::
+   Most of the installation steps will involve a variant on the command::
 
-    $ python setup.py --help
+       $ python setup.py ...
 
+   In addition to the specific commands given here, further information
+   about each ``setup.py`` script is available by typing::
 
+       $ python setup.py --help
 
 ----------
 Privileges
@@ -65,6 +66,10 @@ recent Python_ installation.
 Required Packages
 =================
 
+.. warning::
+
+   |FiPy| will not run if the following items are not installed.
+
 Python
 ------
 
@@ -110,36 +115,23 @@ supported at this time.
 .. _Numarray: http://www.stsci.edu/resources/software_hardware/numarray
 .. _peculiarity: http://www.scipy.org/documentation/mailman?fn=scipy-dev/2002-December/thread.html#1443
 
-PySparse
---------
-
-The |FiPy| distribution includes a customized version of `Roman
-Geus`_' PySparse_ package.
-
-.. _Roman Geus: http://people.web.psi.ch/geus/
-.. _PySparse: http://people.web.psi.ch/geus/pyfemax/pysparse.html
-
-You can obtain the customized PySparse_ via anonymous CVS::
-
-    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
-
-and then::
-
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
-
-Follow the included instructions for building PySparse_ for your platform.
-
 Recommended Packages
 ====================
 
-weave
+.. note::
+
+   These packages are not required to run |FiPy|, but they can be helpful.
+
+SciPy
 -----
 
-http://www.scipy.org/documentation/weave/
+http://www.scipy.org/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
 SciPy_ package.
+
+In addition, a handful of test cases use functions from the SciPy_ library.
 
 .. _weave: http://www.scipy.org/documentation/weave/
 .. _SciPy: http://www.scipy.org/
@@ -151,14 +143,22 @@ http://www.geuz.org/gmsh/
 
 It is possible to create irregular meshes with this package.
 
-Viewers
--------
+.. warning::
 
-At least one of the following packages will be needed to allow viewing the
-results of |FiPy| calculations:
+   The `Mac OS X`_ distribution of gmsh provides a nice graphical tool, but
+   unfortunately this tool cannot be used by |FiPy|.  Please download the
+   source distribution and build the ``gmsh`` command-line tool for your
+   platform.
+
+Viewers
+=======
+
+|FiPy| will work perfectly well without them, but at least one of the
+following packages will be needed to allow viewing the results of |FiPy|
+calculations:
 
 Pygist
-~~~~~~
+------
 
 http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
@@ -167,14 +167,16 @@ not succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
 recommend building the package with the ``--x11`` option described in
 the documentation.
 
-If you choose not to install this package, you should create an
-environment variable ``FIPY_NOGIST`` to allow the test suite to run to
-completion.
+.. warning::
+
+   If you choose not to install this package, you should create an
+   environment variable ``FIPY_NOGIST`` to allow the test suite to run to
+   completion.
 
 .. _Pygist: http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 PyX
-~~~
+---
 
 http://pyx.sourceforge.net/
 
@@ -182,14 +184,16 @@ PyX_ allows the production of publication quality graphics with |TeX|
 labels. If available, |FiPy| can use this package to view or print
 results.
 
-If you choose not to install this package, you should create an
-environment variable ``FIPY_NOPYX`` to allow the test suite to run to
-completion.
+.. warning::
+
+   If you choose not to install this package, you should create an
+   environment variable ``FIPY_NOPYX`` to allow the test suite to run to
+   completion.
 
 .. _PyX: http://pyx.sourceforge.net/
 
-Gnulot-py
-~~~~~~~~~
+Gnuplot-py
+----------
 
 http://gnuplot-py.sourceforge.net
 
@@ -217,6 +221,27 @@ Further information about CVS_ can be found at
 http://sourceforge.net/cvs/?group_id=118428.
 
 .. _compressed archive:   http://sourceforge.net/project/showfiles.php?group_id=118428
+
+PySparse
+========
+
+The |FiPy| archive distribution includes a customized version of `Roman
+Geus`_' PySparse_ package.
+
+If you obtained |FiPy| via CVS, you will also need to obtain the customized
+PySparse_ via a separate anonymous CVS download::
+
+    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+
+and then::
+
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
+
+From within the ``pysparse`` base directory, follow its included
+instructions for building PySparse_ for your platform.
+
+.. _Roman Geus: http://people.web.psi.ch/geus/
+.. _PySparse: http://people.web.psi.ch/geus/pyfemax/pysparse.html
 
 Manual
 ======
@@ -275,9 +300,9 @@ at the command line.  Alternatively, you may choose not to formally install
 
 .. warning::
 
-   Keep in mind that you will then need take care to preserve your changes
-   when upgrades to |FiPy| become available (upgrades via CVS_ will handle
-   this issue automatically).
+   Keep in mind that you will then need to take care to preserve your
+   changes when upgrades to |FiPy| become available (upgrades via CVS_ will
+   handle this issue automatically).
 
 If you wish to develop |FiPy| scripts outside of the distribution
 directory, but choose not to formally install |FiPy|, you will need to

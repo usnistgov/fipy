@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:39 PM} 
+ #                                last update: 10/19/04 {11:37:47 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,24 +41,22 @@
  # ###################################################################
  ##
 
-"""Face within a Mesh
-"""
 __docformat__ = 'restructuredtext'
 
 class Face:
-    """Face within a Mesh
+    """`Face` within a`Mesh`
 
-    Faces are bounded by Vertices. Faces separate Cells.
+    `Face` objects are bounded by `Vertex` objects. 
+    `Face` objects separate `Cell` objects.
     """
     
     def __init__(self, mesh, id):
-	"""Face is initialized by Mesh
+	"""`Face` is initialized by `Mesh`
 	
-	Arguments:
+	:Parameters:
 	    
-	    'mesh' -- the 'Mesh' that contains this 'Face'
-	    
-	    'id' -- a unique identifier
+	  - `mesh`: the `Mesh` that contains this `Face`
+	  - `id`:   a unique identifier
 	"""
         self.mesh = mesh
 	self.id = id
@@ -69,17 +67,15 @@ class Face:
 ##         return self.cells
 		
     def getID(self):
-	""" If you can't figure out what the method does, then Daniel thinks you're an idiot.
-	"""
 	return self.id
 
     def getCellID(self, index = 0):
-	"""Return the id of the specified Cell on one side of this Face.
+	"""Return the `id` of the specified `Cell` on one side of this `Face`.
 	"""
 	return self.mesh.getFaceCellIDs()[self.id,index]
 
     def getCenter(self):
- 	"""Return the coordinates of the Face center.
+ 	"""Return the coordinates of the `Face` center.
  	"""
  	return self.mesh.getFaceCenters()[self.id]
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 10/7/04 {12:18:33 PM} 
+ #                                last update: 10/19/04 {1:14:04 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 The `AdsorbingSurfactantEquation` object solves the
 `SurfactantEquation` but with an adsorbing species from some bulk
@@ -51,15 +51,15 @@ by,
 
 .. raw:: latex
 
-    $$ \\dot{\\theta} = J v \\theta + k c (1 - \\theta) $$
+    $$ \dot{\theta} = J v \theta + k c (1 - \theta) $$
 
 This last term in this equation accounts for Langmuir type adsorption
 from the bulk. It assumes a vacant proportion of surface sites. The adsorption term
-is added to the source in teh follwoing way,
+is added to the source by setting
 
 .. raw:: latex
 
-    $$ S_c = k c \;\; \\text{and} \;\; S_p = k c $$
+    $ S_c = k c $ and $ S_p = k c $.
 
 The following is a test case:
 
@@ -73,8 +73,10 @@ The following is a test case:
    >>> initialValue = 0.1
    >>> c = 0.2
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
-   >>> distanceVar = DistanceVariable(mesh = mesh, value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
-   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), distanceVar = distanceVar)
+   >>> distanceVar = DistanceVariable(mesh = mesh, 
+   ...                                value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
+   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
+   ...                          distanceVar = distanceVar)
    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
    >>> eqn = AdsorbingSurfactantEquation(var, distanceVar, bulkVar, k)
    >>> eqn.solve(dt = dt)

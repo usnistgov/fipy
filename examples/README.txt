@@ -15,7 +15,7 @@ These examples can be used in at least four ways:
     $ python -i examples/something/input.py
 
   At this point, you can enter Python_ commands to manipulate the model or
-  to queries about the example's variable values.  For instance, the
+  to make queries about the example's variable values.  For instance, the
   interactive Python sessions in the example documentation can be typed in
   directly to see that the expected results are obtained.
 

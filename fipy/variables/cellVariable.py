@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 9/3/04 {10:37:45 PM} 
+ #                                last update: 10/19/04 {2:27:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -35,6 +35,8 @@
  #  
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

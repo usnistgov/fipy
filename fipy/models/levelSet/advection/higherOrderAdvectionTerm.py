@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:29:55 PM} 
+ #                                last update: 10/19/04 {2:54:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -184,14 +184,14 @@ Build the test case in the following way,
    >>> print error[Numeric.argmax(error)]
    0.123105625618
 
-The maximum error is large (about 12%) for the first order advection.
+The maximum error is large (about 12 %) for the first order advection.
 
    >>> L, b = HigherOrderAdvectionTerm(1., mesh = mesh).buildMatrix(coeff)
    >>> error = Numeric.reshape(Numeric.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
    >>> print error[Numeric.argmax(error)]
    0.0201715476597
 
-The maximum error is 2% when using a higher order contribution.
+The maximum error is 2 % when using a higher order contribution.
 
 """
 __docformat__ = 'restructuredtext'

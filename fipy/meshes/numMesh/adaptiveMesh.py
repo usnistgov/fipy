@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/7/04 {9:44:10 AM} 
+ #                                last update: 10/19/04 {11:35:26 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,9 +39,9 @@
 
 """
 
-The AdaptiveMesh classes allow meshes to be created \"on-the-fly\" using a
+The AdaptiveMesh classes allow meshes to be created "on-the-fly" using a
 variable specified by the user.  The AdaptiveMesh classes use Gmsh, a free
-open-source meshing utility (http://www.geuz.org/gmsh)To do this, pass in a
+open-source meshing utility (http://www.geuz.org/gmsh). To do this, pass in a
 variable to the initializer function that has a mesh with the same
 boundaries (though not necessarily the same interior geometry) as the mesh
 you want to create and values that are equal to the approximate mesh sizes
@@ -52,9 +52,11 @@ gradient and pass it to the initializer.  The following will create a mesh
 that is finer toward the upper right hand corner:
 
    >>> baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
-   >>> var = CellVariable(mesh = baseMesh, value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), name = \"characteristic lengths\")
+   >>> var = CellVariable(mesh = baseMesh, 
+   ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), 
+   ....    name = "characteristic lengths")
 
-Since the value of var is smaller in the upper right hand corner, the mesh
+Since the value of `var` is smaller in the upper right hand corner, the mesh
 will be finer there.  To create the mesh, do this:
 
    >>> newMesh = AdaptiveMesh2D(var)

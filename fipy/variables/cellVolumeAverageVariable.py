@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVolumeAverageVariable.py"
  #                                    created: 10/7/04 {2:28:00 PM} 
- #                                last update: 10/7/04 {10:35:40 PM} 
+ #                                last update: 10/19/04 {12:21:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,8 @@ Takes a `CellVariable` and evaluates its volume average over all the
 cells.
 
 """
- 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.variables.variable import Variable

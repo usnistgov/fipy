@@ -6,7 +6,7 @@
  # 
  #  FILE: "refinedMesh.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/3/04 {10:40:22 PM} 
+ #                                last update: 10/19/04 {11:43:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -40,15 +40,17 @@
  ##
 
 """
-The RefinedMesh class provides an alternative way to adapt a mesh without using the
-AdaptiveMesh class. The RefinedMesh contructor takes as input an old mesh (baseMesh) as well as
+The `RefinedMesh` class provides an alternative way to adapt a mesh without using the
+`AdaptiveMesh` class. The `RefinedMesh` contructor takes as input an old mesh (baseMesh) as well as
 a list of cells to refine (nodeList). The cells are refined by putting an additional vertex in the center of the cell
 and dividng up the cell by drawing lines from the center to each vertex. After creating the new mesh, you can
-convert variables to use the new mesh by creating a RefinedMeshCellVariable (defined in this module) with the
-old variable and the new RefinedMesh as arguments. Note that if the mesh of the variable passed to RefinedMeshCellVariable
-is not the same as the old mesh used to generate the RefinedMesh, the results will be erroneous.
+convert variables to use the new mesh by creating a `RefinedMeshCellVariable` (defined in this module) with the
+old variable and the new `RefinedMesh` as arguments. Note that if the mesh of the variable passed to `RefinedMeshCellVariable`
+is not the same as the old mesh used to generate the `RefinedMesh`, the results will be erroneous.
 
-NOTE: This currently only works with triangular meshes.
+.. note:: 
+    
+   This currently only works with triangular meshes.
 
 Test case:
 
@@ -92,6 +94,7 @@ Test case:
    [ 0., 2., 1., 1., 1., 3., 3., 3.,]
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 from fipy.variables.cellVariable import CellVariable

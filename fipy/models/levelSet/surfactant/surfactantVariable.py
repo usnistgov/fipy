@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:36:00 PM} 
+ #                                last update: 10/19/04 {4:41:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,8 +52,8 @@ class SurfactantVariable(CellVariable):
     `SurfactantVariable` initializes itself across the zero level set
     interface using the delta function. The `value` argument
     corresponds to the initial concentration of surfactant on the
-    interface (moles / area). The value held by the
-    `SurfactantVariable` is actually a volume density (moles /
+    interface (moles divided by area). The value held by the
+    `SurfactantVariable` is actually a volume density (moles divided by
     volume).
 
     """
@@ -65,28 +65,36 @@ class SurfactantVariable(CellVariable):
 
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 1)
-           >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-1.5, -0.5, 0.5, 941.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
+           >>> from fipy.models.levelSet.distanceFunction.distanceVariable \\
+           ...     import DistanceVariable
+           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           ...                                     value = (-1.5, -0.5, 0.5, 941.5))
+           >>> surfactantVariable = SurfactantVariable(value = 1, 
+           ...                                         distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, (0, 0., 1., 0))
            1
 
         A 2D test case:
 
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (1.5, 0.5, 1.5,
-           ...                                                          0.5,-0.5, 0.5,
-           ...                                                          1.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
+           ...                                     value = (1.5, 0.5, 1.5,
+           ...                                              0.5,-0.5, 0.5,
+           ...                                              1.5, 0.5, 1.5))
+           >>> surfactantVariable = SurfactantVariable(value = 1, 
+           ...                                         distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
            1
 
         Another 2D test case:
 
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
-           >>> Numeric.allclose(surfactantVariable, (0, Numeric.sqrt(2), Numeric.sqrt(2), 0))
+           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
+           >>> surfactantVariable = SurfactantVariable(value = 1, 
+           ...                                         distanceVar = distanceVariable)
+           >>> Numeric.allclose(surfactantVariable, 
+           ...                  (0, Numeric.sqrt(2), Numeric.sqrt(2), 0))
            1
            
         """
