@@ -83,7 +83,7 @@ class ModFaceGradVariable(FaceGradVariable):
             normals = self.mesh.getOrientedFaceNormals(),
             id1 = id1,
             id2 = id2,
-            dAP = self.mesh.getCellDistances().getNumericValue(),
+            dAP = self.mesh.getCellDistances(),
             var = self.var.getNumericValue(),
             val = self.value.value,
             ni = tangents1.shape[0],

@@ -42,7 +42,7 @@
  ##
 
 import Numeric
-
+from fivol.inline import inline
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.faceVariable import FaceVariable
 from fivol.variables.vectorFaceVariable import VectorFaceVariable
@@ -53,8 +53,24 @@ class FFVariable(FaceVariable):
         FaceVariable.__init__(self, halfAngle.getMesh())
         self.halfAngle = self.requires(halfAngle)
         self.parameters = parameters
-        
+
     def calcValue(self):
+        inline.optionalInline(self._calcValueIn, self._calcValuePy)
+
+    def _calcValueIn(self):
+        inline.runInlineLoop1("""
+            double zsq = halfAngle(i) * halfAngle(i);
+            double b = (1. - zsq) / (1. + zsq);
+            double db = -N * 2. * halfAngle(i) / (1 + zsq);
+            value(i) = alphasq * c2 * (1. + c2 * b) * db;
+        """,halfAngle = self.halfAngle.getNumericValue(),
+            N = self.parameters['symmetry'],
+            value = self.value.value,
+            alphasq = self.parameters['alpha']**2,
+            c2 = self.parameters['anisotropy'],
+            ni = len(self.value.value))
+            
+    def _calcValuePy(self):
         alpha = self.parameters['alpha']
 	N = self.parameters['symmetry']
 	c2 = self.parameters['anisotropy']
@@ -85,66 +101,3 @@ class AnisotropyVariable(CellVariable):
         
     def calcValue(self):
         self.value = self.AOF.getNumericValue()
-##	alpha = self.parameters['alpha']
-##	N = self.parameters['symmetry']
-##	c2 = self.parameters['anisotropy']
-##        dphi = self.phase.getFaceGrad()[:,:]
-        
-##        zsq = self.halfAngle[:] * self.halfAngle[:]
-##	b = (1. - zsq) / (1. + zsq)
-##	db = -N * 2 * self.halfAngle[:] / (1 + zsq)
-##        ff = alpha**2 * c2 * (1. + c2 * b) * db
-
-##        dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
-
-##        self.value = toolsTmp.addOverFaces(faceGradient = dphiReverse,
-##                                        faceVariable = ff,
-##                                        mesh = self.mesh,
-##                                        NCells = len(self.value[:]))
-        
-##        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
-
-##        contributions = contributions * ff
-        
-##        NIntFac = len(self.mesh.getInteriorFaces())
-##        NExtFac = len(self.mesh.getFaces()) - NIntFac
-        
-##        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
-##        ids = self.mesh.getCellFaceIDs()
-
-##        contributions = Numeric.take(contributions, ids)
-
-##        NCells = len(self.value[:])
-##	NMaxFac = self.mesh.getMaxFacesPerCell()
-
-##        contributions = Numeric.reshape(contributions,(NCells,-1))
-
-##        orientations = Numeric.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
-
-##        self.value = Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
-
-##    def addOverFaces(grad, diffusion, mesh, Ncells):
-
-##        contributions = Numeric.sum(mesh.getAreaProjections() * grad,1)
-
-##        contributions = contributions * ff
-        
-##        NIntFac = len(mesh.getInteriorFaces())
-##        NExtFac = len(mesh.getFaces()) - NIntFac
-        
-##        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
-##        ids = mesh.getCellFaceIDs()
-
-##        contributions = Numeric.take(contributions, ids)
-
-##	NMaxFac = mesh.getMaxFacesPerCell()
-
-##        contributions = Numeric.reshape(contributions,(NCells,-1))
-
-##        orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
-
-##        return Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
-        
-
-        
-

@@ -315,10 +315,16 @@ class Grid2D(Mesh):
             return Mesh.getCellCenters(self) * self.getScale()
 
     def getCellDistances(self):
-	return Mesh.getCellDistances(self) * self.getScale()
-	
+        if self.getScale() == 1:
+            return Mesh.getCellDistances(self)
+        else:
+            return Mesh.getCellDistances(self) * self.getScale()
+        
     def getFaceToCellDistances(self):
-	return Mesh.getFaceToCellDistances(self) * self.getScale()
+        if self.getScale() == 1:
+            return Mesh.getFaceToCellDistances(self)
+        else:
+            return Mesh.getFaceToCellDistances(self) * self.getScale()
 
     def getMeshSpacing(self):
 	return PhysicalField(value = (self.dx * self.getScale(),self.dy * self.getScale()))

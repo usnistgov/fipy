@@ -69,3 +69,5 @@ class CellTerm(Term):
 	b += Numeric.ones([N])*self.bCoeff[:]/(coeffScale)
 	L.update_add_pyarray(Numeric.ones([N])*self.newCoeff[:]/coeffScale)
 
+    def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale):
+        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale)
