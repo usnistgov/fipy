@@ -58,7 +58,7 @@ class SurfactantVariable(CellVariable):
 
     """
     
-    def __init__(self, value = 0., distanceVariable = None):
+    def __init__(self, value = 0., distanceVariable = None, name = 'surfactant variable'):
         """
 
         A simple 1D test:
@@ -91,7 +91,7 @@ class SurfactantVariable(CellVariable):
            
         """
         
-        CellVariable.__init__(self, mesh = distanceVariable.getMesh())
+        CellVariable.__init__(self, mesh = distanceVariable.getMesh(), name = name)
 
         
         self.value = distanceVariable.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
