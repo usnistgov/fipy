@@ -1,0 +1,84 @@
+The following examples exhibit various parts of a model to study
+electrochemical interfaces.  In a pair of papers, Guyer, Boettinger, Warren
+and McFadden \cite{ElPhFI,ElPhFII} have shown that an electrochemical
+interface can be modeled by an equation for the phase field \( \xi \)
+
+\[
+    \frac{\partial \xi}{\partial t}
+    = 
+    M_{\xi}\kappa_{\xi}\nabla^2 \xi
+    - 
+    M_{\xi}\sum_{j=1}^{n} C_j \left[
+	p'(\xi) \Delta\mu_j^\circ
+	+ g'(\xi) W_j
+    \right]
+    +
+    M_{\xi}\frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+\]
+
+a set of diffusion equations for the concentrations \( C_j \), for \(
+j = 2,\ldots, n-1 \), of the substitutional elements
+
+\begin{align*}
+    \frac{\partial C_j}{\partial t}
+    &= D_{j}\nabla^2 C_j \\
+    & \qquad + 
+	D_{j}\nabla\cdot 
+	\frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+	\left\{
+	    \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+	    + 
+	    C_n \left[
+		p'(\xi) \Delta\mu_{jn}^{\circ}
+		+ g'(\xi) W_{jn}
+	    \right] \nabla\xi
+	    +
+	    C_n z_{jn} \nabla \phi
+	\right\}
+\end{align*}
+
+a diffusion equation for the concentration \( C_{\text{e}^{-}} \) of
+electrons
+
+\[
+    \frac{\partial C_{\text{e}^{-}}}{\partial t}
+    = D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}} \\
+    + D_{\text{e}^{-}}\nabla\cdot 
+	C_{\text{e}^{-}}
+	\left\{
+	    \left[
+		p'(\xi) \Delta\mu_{\text{e}^{-}}^{\circ}
+		+ g'(\xi) W_{\text{e}^{-}}
+	    \right] \nabla\xi
+	    +
+	    z_{\text{e}^{-}} \nabla \phi
+	\right\}
+\]
+
+and Poisson's equation for the electrostatic potential \( \phi \)
+
+\[ 
+    \nabla\cdot\left(\epsilon\nabla\phi\right) 
+    +
+    \rho
+    = 0
+\]
+
+\( M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the phase
+field gradient energy coefficient, \( p'(\xi) =
+30\xi^2\left(1-\xi\right)^2 \), and \( g'(\xi) =
+2\xi\left(1-\xi\right)\left(1-2\xi\right) \).  For a given species \(
+j \), \( \Delta\mu_j^{\circ} \) is the standard chemical potential
+difference between the electrode and electrolyte for a pure material,
+\( W_j \) is the magnitude of the energy barrier in the double-well
+free energy function, \( z_j \) is the valence, and \( D_{j} \) is the
+self diffusivity.  \( \Delta\mu_{jn}^{\circ} \), \( W_{jn} \), and \(
+z_{jn} \) are the differences of the respective quantities \(
+\Delta\mu_{j}^{\circ} \), \( W_{j} \), and \( z_{j} \) between
+substitutional species \( j \) and the solvent species \( n \).  The
+total charge is denoted by \( \rho \equiv \sum_{j=1}^n z_j C_j \).
+
+The module \verb+fipy.models.elphf+ has been developed to solve this
+coupled set of equations.  Although unresolved stiffnesses make the
+full solution intractable in \FiPy{}, we can demonstrate the use of
+various parts of the \verb+elphf+ module.
