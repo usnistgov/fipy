@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  FiPy - Python-based phase field solver
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 5/10/04 {10:43:01 AM} 
+ #                                last update: 9/3/04 {10:43:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -19,7 +19,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
+ # protection and is in the public domain.  FiPy is an experimental
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would

@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "modPhysicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 2/2/04 {3:25:20 PM} 
+ #                                last update: 9/3/04 {10:35:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -19,7 +19,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
+ # protection and is in the public domain.  FiPy is an experimental
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -30,37 +30,16 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2004 by Konrad Hinsen, except as noted below.
- # 
- #  Permission to use, copy, modify, and distribute this software and its
- #  documentation for any purpose and without fee is hereby granted,
- #  provided that the above copyright notice appear in all copies and that
- #  both that copyright notice and this permission notice appear in
- #  supporting documentation.
- # 
- #  THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
- #  INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
- #  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- #  CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- #  USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- #  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- #  PERFORMANCE OF THIS SOFTWARE.
  #  
  #  Description: 
  # 
  # Physical fields or quantities with units
- #
- # Based on PhysicalQuantities of the Scientific package, written by Konrad
- # Hinsen <hinsen@cnrs-orleans.fr>
  #
  #  History
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
  #  2003-12-28 JEG 1.0 original
- #  1998/09/29 GPW     now supports conversions with offset 
- #                     (for temperature units)
- #  1998/09/28 GPW     now removes __args__ from local dict after eval
  # ###################################################################
  ##
 
