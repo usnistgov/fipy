@@ -114,7 +114,7 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.levelSetEquation import LevelSetEquation
+from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
 
 dx = 1.
 dy = 1.
@@ -125,26 +125,26 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-levelSetVariable = CellVariable(
+distanceFunctionVariable = CellVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-levelSetViewer = Grid2DGistViewer(var = levelSetVariable, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+distanceFunctionViewer = Grid2DGistViewer(var = distanceFunctionVariable, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
 
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] - Lx / 2.)**2 + (cell.getCenter()[1] - Ly / 2.)**2 < (Lx / 4.)**2)
-levelSetVariable.setValue(-1.)
-levelSetVariable.setValue(1.,positiveCells)
+distanceFunctionVariable.setValue(-1.)
+distanceFunctionVariable.setValue(1.,positiveCells)
 
-eqn = LevelSetEquation(levelSetVariable)
+eqn = DistanceFunctionEquation(distanceFunctionVariable)
 
 if __name__ == '__main__':
 
-    levelSetViewer.plot()
+    distanceFunctionViewer.plot()
 
     eqn.solve()
 
-    levelSetViewer.plot()
+    distanceFunctionViewer.plot()
 
     raw_input('finished')
