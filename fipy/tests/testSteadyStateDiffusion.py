@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/21/03 {11:09:02 AM} 
+ #                                last update: 11/26/03 {11:11:48 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

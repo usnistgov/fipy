@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/26/03 {10:42:11 AM} 
+ #                                last update: 11/26/03 {11:10:03 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -206,6 +206,7 @@ class Grid2D(Mesh):
 	    id += 1
 	
 	self.calcFaceAreas(faces)
+	self.calcCellDistances(faces)
 	
 	return (faces, interiorFaces)
 	
@@ -303,3 +304,13 @@ class Grid2D(Mesh):
 	self.cellVolumes = Numeric.zeros((N),'d')
 	for i in range(N):
 	    self.cellVolumes[i] = cells[i].getVolume()	    
+	    
+    def getCellDistances(self):
+	return self.cellDistances
+	
+    def calcCellDistances(self,faces):
+	N = len(faces)
+	self.cellDistances = Numeric.zeros((N),'d')
+	for i in range(N):
+	    self.cellDistances[i] = faces[i].getCellDistance()
+	
