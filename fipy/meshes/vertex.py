@@ -5,7 +5,7 @@
 
  FILE: "vertex.py"
                                    created: 11/10/03 {3:24:06 PM} 
-                               last update: 11/17/03 {11:15:04 AM} 
+                               last update: 11/18/03 {11:32:09 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -46,3 +46,6 @@ class Vertex:
 
     def getCoordinates(self):
         return self.coordinates
+	
+    def __repr__(self):
+	return str(self.coordinates)

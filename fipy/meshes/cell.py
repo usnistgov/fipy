@@ -5,7 +5,7 @@
 
  FILE: "cell.py"
                                    created: 11/10/03 {3:23:11 PM} 
-                               last update: 11/17/03 {4:27:30 PM} 
+                               last update: 11/18/03 {12:13:00 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -53,7 +53,7 @@ class Cell:
     def volume(self):
 	vol = 0.
 	for face in self.faces:
-	    vol += face.center()[0] * face.area() * face.normal()[0]
+	    vol += face.center()[0] * face.area() * face.normal(self)[0]
 	return vol
 
     def center(self):
@@ -62,3 +62,12 @@ class Cell:
             ctr += face.center()
         return ctr/float(len(self.faces))
             
+    def __repr__(self):
+	rep = "<id = " + str(self.id) + ", volume = " + str(self.volume()) + ", center = " + str(self.center()) + ", faces = \n" 
+	
+	for face in self.faces:
+	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.normal(self)) + "\n"
+	
+	rep += ">\n"
+	
+	return rep

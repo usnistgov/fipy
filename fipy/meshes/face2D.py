@@ -5,7 +5,7 @@
 
  FILE: "face2D.py"
                                    created: 11/10/03 {3:23:47 PM}
-                               last update: 11/17/03 {5:15:54 PM} 
+                               last update: 11/18/03 {12:04:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
    mail: NIST
@@ -50,7 +50,9 @@ class Face2D(face.Face):
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
         return tools.sqrtDot(tangent,tangent)
 	
-    def normal(self):	
+    def normal(self, cell = None):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
-	return Numeric.array([-tangent[1],tangent[0]])
-
+	norm = Numeric.array([-tangent[1],tangent[0]])
+	norm /= tools.sqrtDot(norm,norm)
+	    
+	return self.orientNormal(norm, cell)

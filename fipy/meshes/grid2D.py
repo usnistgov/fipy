@@ -4,7 +4,7 @@
 
  FILE: "grid2D.py"
                                    created: 11/10/03 {3:30:42 PM} 
-                               last update: 11/17/03 {4:55:22 PM} 
+                               last update: 11/18/03 {11:05:43 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -124,11 +124,11 @@ class Grid2D(mesh.Mesh):
 	id = 0
 	for j in range(ny+1):
 	    for i in range(nx):
-		faces += (face2D.Face2D((vertices[i + j * nx],vertices[i + 1 + j * nx]),id),)
+		faces += (face2D.Face2D((vertices[i + j * (nx + 1)],vertices[i + 1 + j * (nx + 1)]),id),)
 		id += 1
 	for j in range(ny):
 	    for i in range(nx+1):
-		faces += (face2D.Face2D((vertices[i * ny + j],vertices[i * ny + j + 1]),id),)
+		faces += (face2D.Face2D((vertices[i + j * (nx + 1)],vertices[i + (j + 1) * (nx + 1)]),id),)
 		id += 1
 	return faces
 	

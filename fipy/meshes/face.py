@@ -5,7 +5,7 @@
 
  FILE: "face.py"
                                    created: 11/10/03 {3:23:47 PM}
-                               last update: 11/17/03 {5:15:54 PM} 
+                               last update: 11/18/03 {12:05:49 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
    mail: NIST
@@ -39,6 +39,7 @@ they have been modified.
 """
 
 import tools
+import Numeric
 
 class Face:
     def __init__(self, vertices, id):
@@ -56,31 +57,47 @@ class Face:
 	return self.id
 	
     def center(self):
-	ctr = self.vertices[0].getCoordinates()
+	ctr = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[1:]:
 	    ctr += vertex.getCoordinates()
-	return ctr
+	return ctr / float(len(self.vertices))
 	
     def area(self):
-        area=0.
-        crd0=self.vertices[0].getCoordinates()
-        crd1=self.vertices[1].getCoordinates()
-        for vertex in self.vertices[2:]:
-            crd2=self.vertices[1].getCoordinates()
-            t0=crd1-crd0
-            t1=crd2-crd1
-            area+=tools.crossProd(t1,t0)
-            crd0=crd1
-            crd1=crd2
-        return abs(area/2.)
+	a=0.
+	p1 = self.vertices[0].getCoordinates()
+	for vertex in self.vertices[2:-1]:
+	    p2=vertex.getCoordinates()
+	    a += tools.crossProd(p1,p2)
+	    p1 = p2
+	return abs(a/2.)
         
-        
+    def orientNormal(self, norm, cell):
+	"""
+	Determine if normal points into or out of the cell in question
+	"""
+	if len(self.cells) == 1:
+	    """Boundary faces only have one cell
+	    
+	    center-to-center vector is from face center to cell center
+	    """
+	    cc = self.cells[0].center() - self.center()
+	else:
+	    cc = self.cells[0].center() - self.cells[1].center()
+	if cell == None or cell == self.cells[0]:
+	    cc *= -1
+	if Numeric.dot(cc,norm) < 0:
+	    norm *= -1
+	    
+	return norm
 	
-    def normal(self):	
+	
+    def normal(self, cell = None):	
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
-	norm = tools.crossProd(t1,t2)	
+	norm = tools.crossProd(t1,t2)
+	norm /= tools.sqrtDot(norm,norm)
 	
+	return self.orientNormal(norm, cell)
 
     def cellDistance(self):
         if(len(self.cells)==2):
@@ -88,3 +105,6 @@ class Face:
         else:
             vec=self.center()-self.cells[0].center()        
         return tools.sqrtDot(vec,vec)
+
+    def __repr__(self):
+	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal(self.cells[0])) + ", vertices = " + str(self.vertices) + ">\n"
