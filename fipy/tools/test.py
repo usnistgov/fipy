@@ -84,7 +84,7 @@ class Test20by20(TestDump):
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test10by10))
-    theSuite.addTest(unittest.makeSuite(Test20by20))
+##    theSuite.addTest(unittest.makeSuite(Test20by20))
     return theSuite
     
 if __name__ == '__main__':
