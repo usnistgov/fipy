@@ -210,7 +210,7 @@ class AdaptiveMesh2D(Mesh2D):
         tmp = tempfile.gettempdir()
         fileName = os.path.join(tmp, 'temp.geo')
         bgFile = os.path.join(tmp, 'tempbgmesh.pos')
-        os.system("gmsh " + fileName + " -bgm " + bgFile + " -format msh -2") ##  -v 0
+        os.system("gmsh -v 0 " + fileName + " -bgm " + bgFile + " -format msh -2") ##  -v 0
         dg = DataGetter()
         fileName = os.path.join(tmp, 'temp.msh')
         args = dg.getData(fileName, dimensions = 2)
