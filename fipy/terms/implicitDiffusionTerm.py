@@ -4,7 +4,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 12/4/03 {11:15:13 AM} 
+ #                                last update: 12/12/03 {10:27:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,7 +37,14 @@ from diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions):
-	weight = {'implicit':{'cell 1 diag':1, 'cell 1 offdiag': -1, 'cell 2 diag':1, 'cell 2 offdiag': -1}}
+	weight = {
+	    'implicit':{
+		'cell 1 diag':     1, 
+		'cell 1 offdiag': -1, 
+		'cell 2 diag':     1, 
+		'cell 2 offdiag': -1
+	    }
+	}
 	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions, weight)
 	 
 	 

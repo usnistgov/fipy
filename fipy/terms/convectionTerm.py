@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/10/03 {9:57:36 AM} 
+                               last update: 12/12/03 {10:25:38 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,9 +48,9 @@ class ConvectionTerm(FaceTerm):
     def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
 	weight = {
 	    'implicit':{
-		'cell 1 diag': -0.5, 
-		'cell 1 offdiag': 0.5, 
-		'cell 2 diag': 0.5, 
+		'cell 1 diag':    -0.5, 
+		'cell 1 offdiag':  0.5, 
+		'cell 2 diag':     0.5, 
 		'cell 2 offdiag': -0.5
 	    }
 	}
