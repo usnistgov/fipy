@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/6/04 {4:50:29 PM} 
+ #                                last update: 12/7/04 {11:27:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,7 +138,7 @@ class FaceTerm(Term):
     def getOldAdjacentValues(self, oldArray, id1, id2):
 	return array.take(oldArray, id1), array.take(oldArray, id2)
 
-    def buildMatrix(self, var, boundaryConditions, oldArray, dt):
+    def buildMatrix(self, var, boundaryConditions, dt):
 	"""Implicit portion considers
 	"""
 
@@ -148,17 +148,17 @@ class FaceTerm(Term):
 	id1 = array.take(id1, mesh.getInteriorFaceIDs())
 	id2 = array.take(id2, mesh.getInteriorFaceIDs())
 	
-        N = len(oldArray)
+        N = len(var)
         b = Numeric.zeros((N),'d')
         L = SparseMatrix(size = N)
 
-	weight = self.getWeight()
+	weight = self.getWeight(mesh)
 	
         if weight.has_key('implicit'):
 	    self.implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
 
         if weight.has_key('explicit'):
-            self.explicitBuildMatrix(oldArray, id1, id2, b, weight['explicit'], mesh, boundaryConditions)
+            self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions)
             
         return (L, b)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:50:37 AM} 
+ #                                last update: 12/7/04 {11:03:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,12 +82,9 @@ or
     >>> valueLeft = 0.
     >>> valueRight = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
-    ...     FixedFlux(mesh.getFacesTop(), 0.),
-    ...     FixedFlux(mesh.getFacesBottom(), 0.)
     ...     )
 
 The solution variable is initialized to `valueLeft`:
@@ -102,30 +99,25 @@ The `SteadyConvectionDiffusionScEquation` object is
 used to create the equation.  It needs to be passed a convection term
 instantiator as follows:
 
+   >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+   >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+   
    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-   >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
-   >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-   >>> eq = SteadyConvectionDiffusionScEquation(
-   ...      var = var,
-   ...      diffusionCoeff = diffCoeff,
-   ...      convectionCoeff = convCoeff,
-   ...      solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-   ...      convectionScheme = ExponentialConvectionTerm,
-   ...      boundaryConditions = boundaryConditions
-   ...      )
-
+   >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+   
 More details of the benefits and drawbacks of each type of convection
 term can be found in the numerical section of the manual. Essentially
 the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will both
 handle most types of convection diffusion cases with the
 `PowerLawConvectionTerm` being more efficient.
 
-We iterate to equilibrium
+We solve the equation
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
-
+   >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+   >>> eq.solve(var = var, 
+   ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000), 
+   ...          boundaryConditions = boundaryConditions)
+   
 and test the solution against the analytical result
 
 .. raw:: latex
@@ -140,7 +132,7 @@ or
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
    
 If the problem is run interactively, we can view the result:

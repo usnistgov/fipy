@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:54 PM} 
+ #                                last update: 12/7/04 {12:08:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,18 +46,18 @@ import fipy.tests.testProgram
 
 import doctest
 
-import mesh50.input
+## import mesh50.input
 import mesh10.input
-import mesh10.tri2Dinput
-import mesh10.mixedelement
+## import mesh10.tri2Dinput
+## import mesh10.mixedelement
 
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(doctest.DocTestSuite(mesh10.tri2Dinput))
+##     theSuite.addTest(doctest.DocTestSuite(mesh10.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(mesh10.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh50.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh10.mixedelement))
+##     theSuite.addTest(doctest.DocTestSuite(mesh50.input))
+##     theSuite.addTest(doctest.DocTestSuite(mesh10.mixedelement))
     
     return theSuite
     

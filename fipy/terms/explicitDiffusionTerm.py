@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitDiffusionTerm.py"
  #                                    created: 11/27/03 {11:39:03 AM} 
- #                                last update: 12/6/04 {3:44:28 PM} 
+ #                                last update: 12/7/04 {2:48:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,13 +43,13 @@
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ExplicitDiffusionTerm(DiffusionTerm):
-    def getWeight(self):
+    def getWeight(self, mesh):
 	return {
 	    'explicit':{
-		'cell 1 diag':     1, 
-		'cell 1 offdiag': -1, 
-		'cell 2 diag':     1, 
-		'cell 2 offdiag': -1
+		'cell 1 diag':    -1, 
+		'cell 1 offdiag':  1, 
+		'cell 2 diag':    -1, 
+		'cell 2 offdiag':  1
 	    }
 	}
 	

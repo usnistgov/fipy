@@ -6,7 +6,7 @@
  # 
  #  FILE: "independentSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 12/7/04 {2:57:30 PM} 
+ #                                last update: 12/7/04 {3:06:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,12 +48,13 @@ class IndependentSourceTerm(SourceTerm):
     Source term that does not depend on the solution variable. 
     Subtracted from the b vector.
     """
-    def __init__(self, sourceCoeff, mesh):
-        weight = {
+	
+    def getWeight(self, mesh):
+	return {
 	    'b vector': -1, 
 	    'new value': 0, 
 	    'old value': 0, 
 	    'diagonal' : 0
 	}
 	
-	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 
+

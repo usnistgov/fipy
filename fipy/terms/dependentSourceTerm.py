@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "spSourceTerm.py"
+ #  FILE: "dependentSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 9/3/04 {10:40:19 PM} 
+ #                                last update: 12/7/04 {3:10:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,11 +42,17 @@
 
 from fipy.terms.sourceTerm import SourceTerm
 
-class SpSourceTerm(SourceTerm):
+class DependentSourceTerm(SourceTerm):
     """
-    Sp source term. This term in general should be positive
-    for stability. Added to the matrix diagonal.
+    Source term that is linearly dependent on the solution variable. 
+    This term in general should be positive for stability. 
+    Added to the matrix diagonal.
     """
-    def __init__(self, sourceCoeff, mesh):
-        weight = {'diagonal' : 1, 'b vector': 0, 'new value': 0, 'old value': 0}
-	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 
+    def getWeight(self, mesh):
+	return {
+	    'diagonal' : 1, 
+	    'b vector':  0, 
+	    'new value': 0, 
+	    'old value': 0
+	}
+

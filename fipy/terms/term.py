@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 12/6/04 {4:47:46 PM} 
+ #                                last update: 12/7/04 {12:05:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ class Term:
 	return self.converged
 
     def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
-	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, oldArray = var.getOld(), dt = dt)
+	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, dt = dt)
 	residual = self.getResidual(matrix, var, RHSvector)
 	if solver is None:
 	    from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -109,6 +109,6 @@ class Term:
 	    self.calcCoeff(mesh)
 	return self.coeff
 	
-    def getWeight(self):
+    def getWeight(self, mesh):
 	pass
 	    

@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitUpwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:38:56 PM} 
+ #                                last update: 12/7/04 {10:49:02 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,12 +37,9 @@
 from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 
 class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
-    def getWeight(self, alpha):
-	return {
-	    'explicit':{
-		'cell 1 diag':    -alpha,
-		'cell 1 offdiag': -(1-alpha),
-		'cell 2 diag':     (1-alpha),
-		'cell 2 offdiag':  alpha
-	    }
-	}
+    def getWeight(self):
+	weight = UpwindConvectionterm.getWeight()
+	weight['explicit'] = weight['implicit']
+	del weight['implicit']
+
+	return weight

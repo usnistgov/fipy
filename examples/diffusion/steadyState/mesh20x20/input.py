@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:44:55 AM} 
+ #                                last update: 12/7/04 {10:26:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,40 +61,23 @@ We create a `CellVariable` and initialize it to `valueLeft`:
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-We create a diffusion equation, which is solved with an iterative conjugate
-gradient solver. We apply Dirichlet boundary conditions to the left and
-right and Neumann boundary conditions to the top and bottom.
+We create a diffusion equation.  This is solved by default with an
+iterative conjugate gradient solver.  We apply Dirichlet boundary
+conditions to the left and right.  Neumann boundary conditions are
+automatically applied to the top and bottom.
     
-    >>> from fipy.equations.diffusionEquation import DiffusionEquation
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> eq = DiffusionEquation(var,
-    ...                        transientCoeff = 0., 
-    ...                        diffusionCoeff = 1.,
-    ...                        solver = LinearPCGSolver(tolerance = 1.e-15, 
-    ...                                                 steps = 1000
-    ...                                                 ),
-    ...                        boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...                                              FixedValue(mesh.getFacesRight(),valueRight),
-    ...                                              FixedFlux(mesh.getFacesTop(),0.),
-    ...                                              FixedFlux(mesh.getFacesBottom(),0.)
-    ...                                              )
-    ...                        )
-    
-We iterate the diffusion equation to equilibrium:
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
+    >>> ImplicitDiffusionTerm().solve(var = var, 
+    ...                               boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                                                     FixedValue(mesh.getFacesRight(),valueRight)))
 
 The result is again tested against the expected linear composition profile:
 
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
     
 If the problem is run interactively, we can view the result:

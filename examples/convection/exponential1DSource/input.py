@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:48:22 AM} 
+ #                                last update: 12/7/04 {3:18:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,12 +88,9 @@ or
     >>> valueBottom = 0.
     >>> valueTop = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesTop(), valueTop),
     ...     FixedValue(mesh.getFacesBottom(), valueBottom),
-    ...     FixedFlux(mesh.getFacesRight(), 0.),
-    ...     FixedFlux(mesh.getFacesLeft(), 0.)
     ...     )
 
 The solution variable is initialized to `valueBottom`:
@@ -106,25 +103,16 @@ The solution variable is initialized to `valueBottom`:
 
 We define the convection-diffusion equation with source
 
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-    >>> eq = SteadyConvectionDiffusionScEquation(
-    ...      var = var,
-    ...      diffusionCoeff = diffCoeff,
-    ...      convectionCoeff = convCoeff,
-    ...      sourceCoeff = sourceCoeff,
-    ...      solver = LinearLUSolver(tolerance = 1.e-15),
-    ...      convectionScheme = ExponentialConvectionTerm,
-    ...      boundaryConditions = boundaryConditions
-    ...      )
+    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) + sourceCoeff
     
-iterate one implicit timestep to equilibrium
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
-
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> eq.solve(var = var, 
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver = LinearLUSolver(tolerance = 1.e-15))
+    
 and test the solution against the analytical result:
     
 .. raw:: latex
@@ -142,7 +130,7 @@ or
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
-    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-4, atol = 1e-4) 
+    >>> var.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4) 
     1
          
 If the problem is run interactively, we can view the result:

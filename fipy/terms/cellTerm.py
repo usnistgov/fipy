@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 9/3/04 {10:41:43 PM} 
+ #                                last update: 12/7/04 {12:05:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,69 +48,62 @@ from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class CellTerm(Term):
-    def __init__(self,weight,mesh):
-	Term.__init__(self, mesh = mesh, weight = weight)
+    def __init__(self):
+	self.coeffVectors = None
+	Term.__init__(self)
 
-	self.diagCoeff = self.coeff * weight['diagonal']
-	self.oldCoeff = self.coeff * weight['old value']
-	self.bCoeff = self.coeff * weight['b vector']
-	self.newCoeff = self.coeff * weight['new value']
+    def calcCoeffVectors(self, mesh):
+	coeff = self.getCoeff(mesh)
+	weight = self.getWeight(mesh)
 	
-    def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale, dt):
+	self.coeffVectors = {
+	    'diagonal': coeff * weight['diagonal'],
+	    'old value': coeff * weight['old value'],
+	    'b vector': coeff * weight['b vector'],
+	    'new value': coeff * weight['new value']
+	}
+
+    def getCoeffVectors(self, mesh):
+	if self.coeffVectors is None:
+	    self.calcCoeffVectors(mesh)
+	return self.coeffVectors
+	
+    def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
         
-	b += Numeric.array(oldArray) * self.oldCoeff[:] / (coeffScale * varScale) / dt
-	b += Numeric.ones([N]) * self.bCoeff[:] / (coeffScale)
-## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
-	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale/dt)
-        L.addAtDiagonal(Numeric.ones([N]) * self.diagCoeff[:]/coeffScale)
+	b += Numeric.array(oldArray) * coeffVectors['old value'][:] / dt
+	b += Numeric.ones([N]) * coeffVectors['b vector'][:]
+	L.addAtDiagonal(Numeric.ones([N]) * coeffVectors['new value'][:] / dt)
+        L.addAtDiagonal(Numeric.ones([N]) * coeffVectors['diagonal'][:])
 
-    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
-        coeffScale = coeffScale * varScale
-        
-        N = len(oldArray)
-        b = Numeric.zeros((N),'d')
-        L = SparseMatrix(size = N)
-
-        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale, dt)
-        
-        return (L, b)
-
-    def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale, dt):
-
-        if type(self.oldCoeff) is type(Numeric.zeros((2),'d')):
-            oldCoeff = self.oldCoeff
-            bCoeff = self.bCoeff
-            newCoeff = self.newCoeff
-            diagCoeff = self.diagCoeff
-        else:
-            oldCoeff = self.oldCoeff.getNumericValue()
-            bCoeff = self.bCoeff.getNumericValue()
-            newCoeff = self.newCoeff.getNumericValue()
-            diagCoeff = self.diagCoeff.getNumericValue()
-            
-        if type(coeffScale) in (type(Numeric.zeros((2),'d')),type(1)):
-            cScale = coeffScale
-        else:
-            cScale = coeffScale.getNumericValue()
+    def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
         updatePyArray = Numeric.zeros((self.mesh.getNumberOfCells()),'d')
         inline.runInlineLoop1("""
-            b(i) += oldArray(i) * oldCoeff(i) / coeffScale / varScale / dt;
-            b(i) += bCoeff(i) / coeffScale;
-            updatePyArray(i) += newCoeff(i) / coeffScale / dt;
-            updatePyArray(i) += diagCoeff(i) / coeffScale;
+            b(i) += oldArray(i) * oldCoeff(i) / dt;
+            b(i) += bCoeff(i);
+            updatePyArray(i) += newCoeff(i) / dt;
+            updatePyArray(i) += diagCoeff(i);
         """,b = b[:],
             oldArray = oldArray.getNumericValue(),
-            oldCoeff = oldCoeff,
-            coeffScale = cScale,
-            varScale = varScale.getNumericValue(),
-            bCoeff = bCoeff,
-            newCoeff = newCoeff,
-            diagCoeff = diagCoeff,
+            oldCoeff = coeffVectors['old value'][:],
+            bCoeff = coeffVectors['b vector'][:],
+            newCoeff = coeffVectors['new value'][:],
+            diagCoeff = coeffVectors['diagonal'][:],
             updatePyArray = updatePyArray[:],
             ni = len(updatePyArray[:]),
             dt = dt)
 
 	L.addAtDiagonal(updatePyArray)
 
-        
+    def buildMatrix(self, var, boundaryConditions, dt):
+	N = len(var)
+	b = Numeric.zeros((N),'d')
+	L = SparseMatrix(size = N)
+	
+	coeffVectors = self.getCoeffVectors(var.getMesh())
+
+	inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+	
+	return (L, b)
+
+
