@@ -39,7 +39,10 @@
 
 
 """
-This module takes a Gmsh output file (.msh) and converts it into a FiPy mesh. This currently supports triangular and tetrahedral meshes only.
+
+This module takes a Gmsh output file (.msh) and converts it into a
+FiPy mesh. This currently supports triangular and tetrahedral meshes
+only.
 
 Gmsh generates unstructured meshes, which may contain a significant
 amount of non-orthogonality and it is very difficult to directly
@@ -91,7 +94,7 @@ Test cases:
    [[0.0, 0.0, 0.0], [0.5, 0.5, 1.0], [1.0, 0.0, 0.0], [0.5, 1.0, 0.0], [0.5, 0.5, 0.5]]
 
    >>> print newmesh.faceVertexIDs.tolist()
-   [[0, 1, 2], [0, 1, 4], [0, 2, 4], [1, 2, 4], [0, 1, 3], [0, 3, 4], [1, 3, 4], [0, 2, 3], [2, 3, 4], [1, 2, 3]]
+   [[2, 1, 0], [4, 1, 0], [4, 2, 0], [4, 2, 1], [3, 1, 0], [4, 3, 0], [4, 3, 1], [3, 2, 0], [4, 3, 2], [3, 2, 1]]
 
    >>> print newmesh.cellFaceIDs.tolist()
    [[0, 1, 2, 3], [4, 1, 5, 6], [7, 2, 5, 8], [9, 3, 6, 8]]
@@ -101,7 +104,7 @@ Test cases:
    [[0.0, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [1.0, 1.0], [0.5, 1.5], [0.0, 2.0], [1.0, 2.0]]
    
    >>> print twomesh.faceVertexIDs.tolist()
-   [[0, 2], [0, 1], [1, 2], [0, 3], [2, 3], [1, 4], [2, 4], [3, 4], [3, 5], [4, 5], [3, 6], [5, 6], [5, 7], [4, 7], [6, 7]]
+   [[2, 0], [0, 1], [1, 2], [0, 3], [3, 2], [1, 4], [4, 2], [4, 3], [3, 5], [5, 4], [3, 6], [6, 5], [5, 7], [7, 4], [7, 6]]
    
    >>> print twomesh.cellFaceIDs.tolist()
    [[0, 1, 2], [0, 3, 4], [2, 5, 6], [7, 4, 6], [7, 8, 9], [8, 10, 11], [12, 13, 9], [14, 11, 12]]
@@ -197,6 +200,7 @@ class DataGetter:
     ## compute the face vertex IDs.
         cellFaceVertexIDs = Numeric.ones((self.numCells, dimensions + 1, dimensions))
         cellFaceVertexIDs = -1 * cellFaceVertexIDs
+
         if (dimensions == 3):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :3]
             cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :2], cellVertexIDs[:, 3:]), axis = 1)
@@ -204,9 +208,13 @@ class DataGetter:
             cellFaceVertexIDs[:, 3, :] = cellVertexIDs[:, 1:]
         if (dimensions == 2):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :2]
-            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
+##            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
+            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, 2:], cellVertexIDs[:, :1]), axis = 1)
             cellFaceVertexIDs[:, 2, :] = cellVertexIDs[:, 1:]
-                
+
+        cellFaceVertexIDs = cellFaceVertexIDs[:, :, ::-1]
+        self.unsortedBaseIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (dimensions + 1), dimensions))
+
         cellFaceVertexIDs = Numeric.sort(cellFaceVertexIDs, axis = 2)
         baseFaceVertexIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (dimensions + 1), dimensions))
 
@@ -217,15 +225,23 @@ class DataGetter:
 
         dimensions = self.dimensions
         faceStrToFaceIDs = {}
+        faceStrToFaceIDsUnsorted = {}
+
         currIndex = 0
-        for i in self.baseFaceVertexIDs:
-            if(not (faceStrToFaceIDs.has_key(listToString(i)))):
-                faceStrToFaceIDs[listToString(i)] = currIndex
+
+        for i in range(len(self.baseFaceVertexIDs)):
+            listI = self.baseFaceVertexIDs[i]
+            listJ = self.unsortedBaseIDs[i]
+##            for i in self.baseFaceVertexIDs:
+            if(not (faceStrToFaceIDs.has_key(listToString(listI)))):
+                faceStrToFaceIDs[listToString(listI)] = currIndex
+                faceStrToFaceIDsUnsorted[listToString(listJ)] = currIndex
+
                 currIndex = currIndex + 1
         numFaces = currIndex
         faceVertexIDs = Numeric.zeros((numFaces, dimensions))
-        for i in faceStrToFaceIDs.keys():
-            faceVertexIDs[faceStrToFaceIDs[i], :] = stringToList(i)
+        for i in faceStrToFaceIDsUnsorted.keys():
+            faceVertexIDs[faceStrToFaceIDsUnsorted[i], :] = stringToList(i)
 
         self.faceVertexIDs = faceVertexIDs
         self.faceStrToFaceIDs = faceStrToFaceIDs
