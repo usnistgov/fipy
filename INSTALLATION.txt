@@ -93,6 +93,11 @@ If necessary, you can download_ and install it for your platform.
 
    |FiPy| requires at least version 2.3 of Python_.
 
+.. warning::
+
+   |FiPy| is not presently compatible with version 2.4 of Python_, although 
+   we hope to correct this problem shortly.
+
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 
@@ -152,14 +157,14 @@ instructions for building PySparse_ for your platform.
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/projects/pysparse
 
 Viewers
--------
+=======
 
 |FiPy| will work perfectly well without them, but at least one of the
 following packages will be needed to allow viewing the results of |FiPy|
-calculations:
+calculations (Pygist_ is better supported than Gnuplot-py_):
 
 Pygist
-~~~~~~
+------
 
 http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
@@ -171,7 +176,7 @@ the documentation.
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 Gnuplot-py
-~~~~~~~~~~
+----------
 
 http://gnuplot-py.sourceforge.net
 

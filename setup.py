@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/11/05 {5:05:16 PM} 
+ #                                last update: 3/11/05 {6:52:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,6 @@ class build_docs (Command):
     def finalize_options (self):
 	if self.all:
 	    self.latex = 1
-	    self.html = 1
 	    self.manual = 1
 	    self.webpage = 1
 	    

@@ -28,7 +28,7 @@
 
 .. |htmlExamples/| raw:: html
 
-   the Examples portion of the <a href="../manual/fipy.pdf">Manual</a>
+   the Examples portion of the <a href="download/">Manual</a>
 
 .. |latexCVS.txt| raw:: latex
 
