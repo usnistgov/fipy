@@ -102,29 +102,19 @@ class FaceTerm(Term):
             fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, coeffScale, varScale):
-        try:
-            cell1Diag = self.explicit['cell 1 diag'].getNumericValue()
-            cell1OffDiag = self.explicit['cell 1 offdiag'].getNumericValue()
-            cell2Diag = self.explicit['cell 2 diag'].getNumericValue()
-            cell2OffDiag = self.explicit['cell 2 offdiag'].getNumericValue()
-        except:
-            cell1Diag = self.explicit['cell 1 diag'][:]
-            cell1OffDiag = self.explicit['cell 1 offdiag'][:]
-            cell2Diag = self.explicit['cell 2 diag'][:]
-            cell2OffDiag = self.explicit['cell 2 offdiag'][:]
 
         weight = self.weight['explicit']
-        try:
-            coeff = self.coeff.getNumericValue()
-        except:
-            coeff = self.coeff
-            
-        inline.runInlineLoop1("""
-            double oldArrayId1 = oldArray(id1(i));
-            double oldArrayId2 = oldArray(id2(i));
+        coeff = fivol.tools.array.convertNumeric(self.coeff)
 
-            b(id1(i)) += -coeff(i) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2) / coeffScale;
-            b(id2(i)) += -coeff(i) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1) / coeffScale;
+        inline.runInlineLoop1("""
+            long int faceID = faceIDs(i);
+            long int cellID1 = id1(i);
+            long int cellID2 = id2(i);
+            double oldArrayId1 = oldArray(cellID1);
+            double oldArrayId2 = oldArray(cellID2);
+         
+            b(cellID1) += -coeff(faceID) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2) / coeffScale;
+            b(cellID2) += -coeff(faceID) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1) / coeffScale;
         """,oldArray = oldArray.getNumericValue(),
             id1 = id1,
             id2 = id2,
@@ -135,8 +125,9 @@ class FaceTerm(Term):
             cell2Diag = weight['cell 2 diag'],
             cell2OffDiag = weight['cell 2 offdiag'],
             coeff = coeff,
-            ni = self.interiorN)
-    
+            faceIDs = self.mesh.getInteriorFaceIDs(),
+            ni = len(self.mesh.getInteriorFaceIDs()))
+        
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffScale, varScale):
 
         oldArrayId1 = array.take(oldArray, id1)

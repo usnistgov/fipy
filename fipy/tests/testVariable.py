@@ -42,9 +42,12 @@ from Numeric import array
 
 import fivol.tests.testProgram
 from fivol.tests.testBase import TestBase
-
+import Numeric
 from fivol.meshes.grid2D import Grid2D
-##from fivol.meshes.vertex import Vertex
+try:
+    from fivol.meshes.vertex import Vertex
+except:
+    pass
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 from fivol.variables.harmonicCellToFaceVariable import HarmonicCellToFaceVariable
@@ -53,21 +56,32 @@ class TestMesh(Grid2D):
     def __init__(self, dx, dy, nx, ny, factor):
 	self.factor = factor
 	Grid2D.__init__(self, dx, dy, nx, ny)
-	
-##    def createVertices(self):
-##	"""Return list of Vertices
-##	"""
-##	vertices = ()
-##	ny=self.ny
-##	nx=self.nx
-##	dx=self.dx
-##	dy=self.dy
-##	for j in range(ny+1):
-##	    dx = self.dx
-##	    for	i in range(nx+1):
-##		vertices += (Vertex(array([i * dx, j * dy],'d')),)
-##		dx = dx * self.factor
-##	return vertices	
+
+    def createVertices(self):
+        try:
+            dx = self.dx
+            x = ()
+            for i in range(self.nx + 1):
+                x += (i * dx,)
+                dx = dx * self.factor
+            x = Numeric.array(x)
+            y = Numeric.arange(self.ny + 1) * self.dy
+            x = Numeric.resize(x, (self.numberOfVertices,))
+            y = Numeric.repeat(y, self.nx + 1)
+            return Numeric.transpose(Numeric.array((x, y)))
+        except:
+            
+            vertices = ()
+            ny=self.ny
+            nx=self.nx
+            dx=self.dx
+            dy=self.dy
+            for j in range(ny+1):
+                dx = self.dx
+                for i in range(nx+1):
+                    vertices += (Vertex(array([i * dx, j * dy],'d')),)
+                    dx = dx * self.factor
+            return vertices	
 
 class TestMean(TestBase):
     def setUp(self, value, dx = 1., dy = 1., factor = 1):
@@ -78,7 +92,8 @@ class TestMean(TestBase):
 	self.alpha = 1. / (2. * factor)
 
     def testResult(self):
-	self.assertWithinTolerance(self.result[0], self.answer, 1e-10)
+        id = self.mesh.getInteriorFaceIDs()[0]
+	self.assertWithinTolerance(self.result[id], self.answer, 1e-10)
 	
 class TestArithmeticMean(TestMean):
     def setUp(self, value, dx = 1., dy = 1., factor = 1):

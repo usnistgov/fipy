@@ -40,6 +40,7 @@ import Numeric
 
 from fivol.variables.cellGradVariable import CellGradVariable
 from fivol.inline import inline
+import fivol.tools.array
 
 class ModCellGradVariable(CellGradVariable):
     def __init__(self, var, modIn, modPy):
@@ -61,11 +62,14 @@ class ModCellGradVariable(CellGradVariable):
 	    val(i, j) /= volumes(i);
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
 	""",
-	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
-        areaProj = self.mesh.getAreaProjections().getNumericValue(),
-        faceValues = self.var.getArithmeticFaceValue().getNumericValue(),
-	ni = N, nj = self.mesh.getDim(), nk = M, gridSpacing = self.mesh.getMeshSpacing().getNumericValue()
-	)
+	val = self.value.value,
+        ids = fivol.tools.array.convertNumeric(ids),
+        orientations = fivol.tools.array.convertNumeric(orientations),
+        volumes = fivol.tools.array.convertNumeric(volumes),
+        areaProj = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+        faceValues = fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
+	ni = N, nj = self.mesh.getDim(), nk = M,
+        gridSpacing = fivol.tools.array.convertNumeric(self.mesh.getMeshSpacing()))
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)

@@ -99,5 +99,6 @@ class SourceVariable(CellVariable):
         dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
 
         self.value = self.AOFVariable[:] + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
+        
 
 

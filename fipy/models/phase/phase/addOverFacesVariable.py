@@ -43,7 +43,7 @@
 
 import Numeric
 
-import fivol.tools.array as array
+import fivol.tools.array
 import fivol.inline.inline as inline
 from fivol.variables.cellVariable import CellVariable
 import fivol.variables.cellVariable 
@@ -61,29 +61,26 @@ class AddOverFacesVariable(CellVariable):
 
     def _calcValue(self):
 
-        contributions = array.sum(self.mesh.getAreaProjections() * self.faceGradient[:],1)   
+        contributions = fivol.tools.array.sum(self.mesh.getAreaProjections() * self.faceGradient[:],1)   
         contributions = contributions * self.faceVariable[:]
-        contributions[len(self.mesh.getInteriorFaces()):] = 0.
-        
+##        contributions[len(self.mesh.getInteriorFaces()):] = 0.
+        extFaceIDs = self.mesh.getExteriorFaceIDs()
+
+        fivol.tools.array.put(contributions, extFaceIDs, Numeric.zeros(Numeric.shape(extFaceIDs), 'd'))
         ids = self.mesh.getCellFaceIDs()
         
-        contributions = array.take(contributions[:], ids.flat)
+        contributions = fivol.tools.array.take(contributions[:], ids.flat)
 
         NCells = len(self.mesh.getCells())
 
-        contributions = array.reshape(contributions,(NCells,-1))
+        contributions = fivol.tools.array.reshape(contributions,(NCells,-1))
         
-        orientations = array.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
-        orientations = Numeric.array(orientations)
-##        print 'faceOrientations:',self.mesh.getCellFaceOrientations()
-##        print 'orientations.shape:',orientations.shape
-##        print 'contributions:',contributions
-##        print 'orientations',orientations
-##        print 'contributions',contributions
- ##       print array.sum(orientations * contributions,1)
-        
-        self.value = array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
+        orientations = fivol.tools.array.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
 
+        orientations = Numeric.array(orientations)
+        
+        self.value = fivol.tools.array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
+        
     def _calcValueInline(self):
 
         NCells = len(self.mesh.getCells())
@@ -96,11 +93,13 @@ class AddOverFacesVariable(CellVariable):
         for(i = 0; i < numberOfInteriorFaces; i++)
           {
             int j;
+            int faceID = interiorFaceIDs(i);
+            
             for(j = 0; j < numberOfDimensions; j++)
               {
-                contributions(i) += areaProjections(i,j) * faceGradient(i,j);
+                contributions(faceID) += areaProjections(faceID, j) * faceGradient(faceID, j);
               }
-            contributions(i) = contributions(i) * faceVariable(i);
+            contributions(faceID) = contributions(faceID) * faceVariable(faceID);
           }
         
         for(i = 0; i < numberOfCells; i++)
@@ -113,18 +112,19 @@ class AddOverFacesVariable(CellVariable):
             }
             value(i) = value(i) / cellVolume(i);
           }
-          """,numberOfInteriorFaces = len(self.mesh.getInteriorFaces()),
-                         numberOfDimensions = self.mesh.getDim(),
-                         numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
-                         numberOfCells = NCells,
-                         contributions =  Numeric.zeros((len(self.mesh.getFaces())),'d'),
-                         areaProjections = self.mesh.getAreaProjections().value[:],
-                         faceGradient = self.faceGradient.getNumericValue()[:],
-                         faceVariable = self.faceVariable.getNumericValue()[:],
-                         ids = ids,
-                         value = self.value.value,
-                         orientations = self.mesh.getCellFaceOrientations()[:],
-                         cellVolume = self.mesh.getCellVolumes()[:])
+          """,numberOfInteriorFaces = len(self.mesh.getInteriorFaceIDs()),
+              numberOfDimensions = self.mesh.getDim(),
+              numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
+              numberOfCells = NCells,
+              interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
+              contributions =  Numeric.zeros((len(self.mesh.getFaces())),'d'),
+              areaProjections = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+              faceGradient = self.faceGradient.getNumericValue()[:],
+              faceVariable = self.faceVariable.getNumericValue()[:],
+              ids = fivol.tools.array.convertNumeric(ids),
+              value = self.value.value,
+              orientations = fivol.tools.array.convertNumeric(self.mesh.getCellFaceOrientations()),
+              cellVolume = fivol.tools.array.convertNumeric(self.mesh.getCellVolumes()))
 
     def calcValue(self):
 

@@ -40,6 +40,7 @@ import Numeric
 
 from fivol.variables.faceGradVariable import FaceGradVariable
 from fivol.inline import inline
+import fivol.tools.array
 
 class ModFaceGradVariable(FaceGradVariable):
     def __init__(self, var, mod):
@@ -80,10 +81,10 @@ class ModFaceGradVariable(FaceGradVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
-            normals = self.mesh.getOrientedFaceNormals(),
-            id1 = id1,
-            id2 = id2,
-            dAP = self.mesh.getCellDistances().getNumericValue(),
+            normals = fivol.tools.array.convertNumeric(self.mesh.getOrientedFaceNormals()),
+            id1 = fivol.tools.array.convertNumeric(id1),
+            id2 = fivol.tools.array.convertNumeric(id2),
+            dAP = fivol.tools.array.convertNumeric(self.mesh.getCellDistances()),
             var = self.var.getNumericValue(),
             val = self.value.value,
             ni = tangents1.shape[0],

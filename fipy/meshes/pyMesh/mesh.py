@@ -86,7 +86,7 @@ class Mesh:
     def getInteriorFaceIDs(self):
 	"""Return Face IDs of Mesh that are not on a Mesh boundary.
 	"""
-	return range(len(self.interiorFaces))
+	return Numeric.arange(len(self.interiorFaces))
 	    
     def getInteriorFaces(self):
 	"""Return Faces of Mesh that are not on a Mesh boundary.
@@ -96,7 +96,7 @@ class Mesh:
     def getExteriorFaceIDs(self):
 	"""Return Face IDs of Mesh that are not on a Mesh boundary.
 	"""
-	return range(len(self.interiorFaces),len(self.faces))
+	return Numeric.arange(len(self.interiorFaces),len(self.faces))
 	
     def getExteriorFaces(self):
         """Return all exterior faces

@@ -84,7 +84,7 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
-    inline.optionalInline(_putAddPy, _putAddPy, vector, ids, additionVector)
+    inline.optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start = 0):
     """

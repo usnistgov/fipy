@@ -50,10 +50,9 @@ def _isPhysical(arr):
 
 def convertNumeric(arr):
     if _isPhysical(arr):
-        print 'inPhysical'
         return arr.getNumericValue()
     else:
-        return Numeric.array(arr[:],'d')
+        return Numeric.array(arr[:])
 
 def take(arr, ids):
     if _isPhysical(arr):

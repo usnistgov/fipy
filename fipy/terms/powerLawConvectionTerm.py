@@ -71,6 +71,9 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    self.value = PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
+##            print P.shape
+##            print len(self.mesh.getCells())
+##            raw_input()
 	    inline.runInlineLoop1("""
 		if (fabs(P(i)) < eps) {
 		    P(i) = eps;
@@ -93,7 +96,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = self.value.value, eps = eps, P = P,
-	    ni = len(self.mesh.getCells())
+	    ni = len(self.mesh.getFaces())
 	    )
 
 

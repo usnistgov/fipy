@@ -308,6 +308,9 @@ class Mesh:
     scaling
     """
 
+    def setScale(self, value = 1.):
+        self.scale = 1.
+    
 ##    def setScale(self):
 ##	self.scale = PhysicalField(value = 1.)
 ##        self.faceAreas = self.faceAreas * self.scale**2
@@ -318,6 +321,17 @@ class Mesh:
 ##        self.cellDistances = self.cellDistances * self.scale
 ##        self.areaProjections = self.areaProjections * self.scale**2
 
+    """
+    point to cell distances
+    """
     
-    
+    def getPointToCellDistances(self, point):
+	import fivol.tools.array
+	tmp = self.getCellCenters() - Numeric.array(point)
+	return fivol.tools.array.sqrtDot(tmp, tmp)
+
+    def getNearestCell(self, point):
+        d = self.getPointToCellDistances(point)
+        i = Numeric.argsort(d)
+        return Cell(self, i[0])
     

@@ -51,8 +51,6 @@ class CellGradVariable(VectorCellVariable):
         self.faceGradientContributions = FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
-        print fivol.tools.array.convertNumeric(self.mesh.getAreaProjections())
-        print fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue())
 	inline.runInlineLoop2("""
 	    val(i,j) = 0.;
 	    
@@ -63,12 +61,13 @@ class CellGradVariable(VectorCellVariable):
 	    }
 		
 	    val(i, j) /= volumes(i);
-	""",
-	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
-        areaProj = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
-        faceValues = fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
-	ni = N, nj = self.mesh.getDim(), nk = M
-	)
+	""",val = self.value.value,
+            ids = fivol.tools.array.convertNumeric(ids),
+            orientations = fivol.tools.array.convertNumeric(orientations),
+            volumes = fivol.tools.array.convertNumeric(volumes),
+            areaProj = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+            faceValues = fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
+	    ni = N, nj = self.mesh.getDim(), nk = M)
         
 ##    def _calcValueIn(self, N, M, ids, orientations, volumes):
 ##	inline.runInlineLoop2("""

@@ -72,7 +72,7 @@ class System4Particles(ImpingementSystem):
         
 
 if __name__ == '__main__':
-    system = System4Particles(nx = 100, ny = 100, steps = 100, drivingForce = 10.)
+    system = System4Particles(nx = 10, ny = 10, steps = 100, drivingForce = 10.)
     t1 = time.time()
     system.run()
     t2 = time.time()
