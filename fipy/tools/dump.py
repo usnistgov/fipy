@@ -50,3 +50,4 @@ def read(fileName):
     fileStream.close()
     return data
 
+    

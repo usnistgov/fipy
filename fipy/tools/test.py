@@ -46,7 +46,7 @@
  
 import unittest
 import fivol.tests.testProgram
-
+import tempfile
 import fivol.tools.dump as dump
 from fivol.meshes.grid2D import Grid2D
 from fivol.examples.phase.theta.modularVariable import ModularVariable
@@ -58,9 +58,10 @@ class TestDump(unittest.TestCase):
             mesh = mesh,
             value = 100.0)
 
-        self.data = (theta, mesh) 
-        dump.write(self.data, 'tmpFile')
-        self.dataUnpickled = dump.read('tmpFile')
+        self.data = (theta, mesh)
+        tempFile = tempfile.mktemp()
+        dump.write(self.data, tempFile)
+        self.dataUnpickled = dump.read(tempFile)
 
     def assertEqual(self, first, second, msg = None):
         if first == second:
@@ -72,9 +73,18 @@ class TestDump(unittest.TestCase):
         self.assertEqual(self.data[0], self.dataUnpickled[1])
         self.assertEqual(self.data[1].getCellCenters(), self.dataUnpickled[1].getCellCenters())
 
+class Test10by10(TestDump):
+    def setUp(self):
+        TestDump.setUp(self, 10, 10)
+
+class Test20by20(TestDump):
+    def setUp(self):
+        TestDump.setUp(self, 50, 50)
+
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestDump))
+    theSuite.addTest(unittest.makeSuite(Test10by10))
+    theSuite.addTest(unittest.makeSuite(Test20by20))
     return theSuite
     
 if __name__ == '__main__':
