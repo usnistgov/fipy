@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/3/04 {4:52:31 PM} 
+ #                                last update: 6/9/04 {8:52:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -71,17 +71,45 @@ class SparseMatrix:
     def __getitem__(self, index): 
 	return self.matrix[index]
 	
-##     def __str__(self):
-## 	return self.matrix.__str__()
+    def __str__(self):
+        s = ""
+        cellWidth = 11
+        shape = self.getShape()
+        for j in range(shape[1]):
+            for i in range(shape[0]):
+                v = self[j,i]
+                if v == 0:
+                    s += "---".center(cellWidth)
+                else:
+                    exp = Numeric.log(abs(v))
+                    if abs(exp) <= 4:
+                        if exp < 0:
+                            s += ("%9.6f" % v).ljust(cellWidth)
+                        else:
+                            s += ("%9.*f" % (6,v)).ljust(cellWidth)
+                    else:
+                        s += ("%9.2e" % v).ljust(cellWidth)
+            s += "\n"
+        return s[:-1]
 	    
     def __repr__(self):
-	return repr(self.getNumeric())
+	return repr(Numeric.array(self))
 ## 	return self.matrix.__repr__()
 	
     def __setitem__(self, index, value):
 	self.matrix[index] = value
 	
     def __add__(self, other):
+        """
+        Add two sparse matrices
+        
+            >>> L = SparseMatrix(size = 3)
+            >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> print L + SparseIdentityMatrix(3)
+             1.000000  10.000000   3.000000  
+                ---     4.141593      ---    
+             2.500000      ---     1.000000  
+        """
 	L = self.matrix.copy()
 	L.shift(1, other.getMatrix())
 	return SparseMatrix(matrix = L)
@@ -92,6 +120,29 @@ class SparseMatrix:
 	return SparseMatrix(matrix = L)
 
     def __mul__(self, other):
+        """
+        Multiply a sparse matrix by another sparse matrix
+        
+            >>> L1 = SparseMatrix(size = 3)
+            >>> L1.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L2 = SparseIdentityMatrix(size = 3)
+            >>> L2.put((4.38,12357.2,1.1), (2,1,0), (1,0,2))
+            
+            >>> print L1 * L2
+             1.24e+05  23.140000   3.000000  
+             3.88e+04   3.141593      ---    
+             2.500000      ---     2.750000  
+             
+        or a sparse matrix by a vector
+        
+            >>> print L1 * Numeric.array((1,2,3),'d') 
+            [ 29.        ,  6.28318531,  2.5       ,]
+            
+        or a vector by a sparse matrix
+        
+            >>> print Numeric.array((1,2,3),'d') * L1
+            [  7.5       , 16.28318531,  3.        ,]
+        """
         if type(other) == type(self):
             return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other.getMatrix()))
         elif type(1) == type(other) or type(1.) == type(other):
@@ -115,6 +166,14 @@ class SparseMatrix:
 	    return self * other
 	
     def __neg__(self):
+	"""
+        Negate a sparse matrix
+        
+            >>> print -SparseIdentityMatrix(size = 3)
+            -1.000000      ---        ---    
+                ---    -1.000000      ---    
+                ---        ---    -1.000000  
+        """
 	return self * -1
 	
     def __pos__(self):
@@ -130,9 +189,34 @@ class SparseMatrix:
         return self.matrix.fuckEverythingUp()
 
     def put(self, vector, id1, id2):
+	"""
+        Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
+        
+            >>> L = SparseMatrix(size = 3)
+            >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> print L
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
+	"""
 	self.matrix.put(vector, id1, id2)
 
     def putDiagonal(self, vector):
+        """
+        Put elements of `vector` along diagonal of matrix
+        
+            >>> L = SparseMatrix(size = 3)
+            >>> L.putDiagonal((3.,10.,Numeric.pi))
+            >>> print L
+             3.000000      ---        ---    
+                ---    10.000000      ---    
+                ---        ---     3.141593  
+            >>> L.putDiagonal((10.,3.))
+            >>> print L
+            10.000000      ---        ---    
+                ---     3.000000      ---    
+                ---        ---     3.141593  
+        """
 	ids = Numeric.arange(len(vector))
 	self.put(vector, ids, ids)
 
@@ -142,17 +226,28 @@ class SparseMatrix:
         return vector
 
     def takeDiagonal(self):
-	ids = Numeric.arange(len(vector))
+	ids = Numeric.arange(self.getShape()[0])
 	return self.take(ids, ids)
 
     def addAt(self, vector, id1, id2):
+	"""
+        Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
+        
+	    >>> L = SparseMatrix(size = 3)
+	    >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+	    >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
+            >>> print L
+            12.300000  10.000000   3.000000  
+                ---     3.141593   2.960000  
+             2.500000      ---     2.200000  
+	"""
 	self.matrix.update_add_at(vector, id1, id2)
 
     def addAtDiagonal(self, vector):
 	ids = Numeric.arange(len(vector))
 	self.addAt(vector, ids, ids)
-	
-    def getNumeric(self):
+
+    def __array__(self):
 	shape = self.getShape()
 	indices = Numeric.indices(shape)
 	numMatrix = self.take(indices[0].flat, indices[1].flat)
@@ -160,7 +255,25 @@ class SparseMatrix:
 	return Numeric.reshape(numMatrix, shape)
 
 class SparseIdentityMatrix(SparseMatrix):
+    """
+    Represents a sparse identity matrix.
+    """
     def __init__(self, size):
+	"""
+        Create a sparse matrix with '1' in the diagonal
+        
+            >>> print SparseIdentityMatrix(size = 3)
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
+	"""
 	SparseMatrix.__init__(self, size = size, bandwidth = 1)
-	self.put(Numeric.ones(size))
+	ids = Numeric.arange(size)
+	self.put(Numeric.ones(size), ids, ids)
+	
+def _test(): 
+    import doctest
+    return doctest.testmod()
     
+if __name__ == "__main__": 
+    _test() 
