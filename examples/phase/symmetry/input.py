@@ -43,54 +43,46 @@
 
 import Numeric
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
-
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
 
+N = 20
+L = 1.
 
-class SymmetrySystem:
-    def __init__(self, N = 20, L = 1.):
-        self.N = N
-        nx = self.N
-        dx = L / N
-        L = N * dx
+mesh = Grid2D(
+    dx = L / N,
+    dy = L / N,
+    nx = N,
+    ny = N)
 
-        mesh = Grid2D(
-            dx = dx,
-            dy = dx,
-            nx = N,
-            ny = N)
+var = CellVariable(
+    name = "test",
+    mesh = mesh)
 
-        self.var = CellVariable(
-            name = "test",
-            mesh = mesh)
+var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
 
-        self.var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+def func(cell, Length = None):
+    return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
 
-        def func(cell, Length = None):
-            return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
-
-        bottomLeftCells = mesh.getCells(filter = func,  Length = L)
-        bottomRightCells = ()
-        topLeftCells = ()
-        topRightCells = ()
+bottomLeftCells = mesh.getCells(filter = func,  Length = L)
+bottomRightCells = ()
+topLeftCells = ()
+topRightCells = ()
         
-        for cell in bottomLeftCells:
-            x, y = cell.getCenter()
-            bottomRightCells += (mesh.getNearestCell((L - x, y)),)            
-            topRightCells += (mesh.getNearestCell((L - x , L - y)),)
-            topLeftCells += (mesh.getNearestCell((x , L - y)),)
-
-        self.orderedCells = (bottomRightCells, topRightCells, topLeftCells)
-        self.symmetryCells = bottomLeftCells
+for cell in bottomLeftCells:
+    x, y = cell.getCenter()
+    bottomRightCells += (mesh.getNearestCell((L - x, y)),)            
+    topRightCells += (mesh.getNearestCell((L - x , L - y)),)
+    topLeftCells += (mesh.getNearestCell((x , L - y)),)
+    
+    self.orderedCells = (bottomRightCells, topRightCells, topLeftCells)
+    self.symmetryCells = bottomLeftCells
         
-        self.viewer = Grid2DGistViewer(var = self.var, minVal = 0, maxVal = L * L)
+viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L)
 
-    def plot(self):
-        self.viewer.plot()
+def plot(self):
+    self.viewer.plot()
         
     def run(self):
         for cellSet in self.orderedCells:
@@ -103,6 +95,10 @@ class SymmetrySystem:
         return self.var
 
 if __name__ == '__main__':
+
+    self.viewer.plot()
+    raw_input('finished')
+    
     system = SymmetrySystem(N = 100)
     system.plot()
     raw_input('press key to continue')

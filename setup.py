@@ -127,7 +127,9 @@ class build_docs (Command):
                    'examples/diffusion',
                    'examples/convection',
                    'examples/phase/anisotropy',
-                   'examples/phase/impingement']
+                   'examples/phase/impingement',
+                   'examples/phase/missOrientation']
+
 	if self.latex:
              
 	    self._buildTexFiles(modules = modules)

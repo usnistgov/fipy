@@ -47,17 +47,7 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools.inline import inline
 from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
 from noModularVariable import NoModularVariable
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
-class ThetaGradDiff(VectorFaceVariable):
-    def __init__(self, theta):
-        VectorFaceVariable.__init__(self, theta.getMesh(), length = len(theta.getMesh().getFaces()))
-        self.theta = self.requires(theta)
-        self.thetaNoMod = NoModularVariable(self.theta)
-
-    def calcValue(self):
-        self.value = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
-        
 class SourceVariable(CellVariable):
 
     def __init__(self,
@@ -74,7 +64,8 @@ class SourceVariable(CellVariable):
         self.theta = self.requires(theta)
         self.diffCoeff = self.requires(diffCoeff)
         self.halfAngleVariable = self.requires(halfAngleVariable)
-        thetaGradDiff = ThetaGradDiff(self.theta)
+        self.thetaNoMod = NoModularVariable(self.theta)        
+        thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 
     def calcValue(self):
@@ -108,5 +99,6 @@ class SourceVariable(CellVariable):
         dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
 
         self.value = self.AOFVariable[:] + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
-
         
+
+
