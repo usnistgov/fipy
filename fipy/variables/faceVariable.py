@@ -1,10 +1,11 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 12/26/03 {10:46:29 AM} 
+ #                                last update:  01/05/04 {11:19:31 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -31,6 +32,7 @@
  #  
  # ###################################################################
  ##
+"""
 
 from variable import Variable
 import Numeric
