@@ -45,9 +45,3 @@ class VectorCellVariable(Variable):
     def getVariableClass(self):
 	return VectorCellVariable
 
-    def getMag(self):
-	if self.mag is None:
-	    from magVectorCellVariable import MagVectorCellVariable
-	    self.mag = MagVectorCellVariable(self)
-	    
-	return self.mag

@@ -1,10 +1,11 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/19/03 {2:59:14 PM} 
+ #                                last update: 01/08/04 { 2:25:54 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -31,17 +32,17 @@
  #  
  # ###################################################################
  ##
+"""
 
 from variable import Variable
 import Numeric
 
 class VectorFaceVariable(Variable):
-    def __init__(self,mesh,name = '',value=0., scaling = None, unit = None):
-	array = Numeric.zeros([len(mesh.getFaces()),mesh.getDim()],'d')
-# 	array[:] = value	
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, len = 1):
+
+	array = Numeric.zeros([len, mesh.getDim()],'d')
+
 	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)
 
     def getVariableClass(self):
 	return VectorFaceVariable
-
-	

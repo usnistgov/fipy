@@ -89,6 +89,7 @@ class Variable:
         
 	self.transposeVar = None
 	self.sumVar = {}
+        self.mag = None
 	
     def __getitem__(self, index): 
 	return self.getValue()[index]
@@ -295,3 +296,12 @@ class Variable:
 	    self.sumVar[index] = SumVariable(self, index)
 	
 	return self.sumVar[index]
+
+    def getMag(self):
+        if self.mag is None:
+	    from magVariable import MagVariable
+	    self.mag = MagVariable(self)
+	    
+	return self.mag
+
+        
