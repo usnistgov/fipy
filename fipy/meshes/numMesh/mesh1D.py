@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/8/05 {4:44:55 PM} 
+ #                                last update: 3/9/05 {10:22:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,6 +65,8 @@ class Mesh1D(Mesh):
         
     def calcFaceNormals(self):
         self.faceNormals = Numeric.transpose(Numeric.array((Numeric.ones(self.numberOfFaces, 'd'),)))
+        # The left-most face has neighboring cells None and the left-most cell.
+        # We must reverse the normal to make fluxes work correctly.
         self.faceNormals[0] = -self.faceNormals[0]
 
     def calcFaceTangents(self):

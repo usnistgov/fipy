@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/7/05 {8:41:54 AM} 
+ #                                last update: 3/9/05 {10:40:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,6 +98,10 @@ class Grid2D(Mesh2D):
         v2 = v1 + self.nx + 1
         verticalFaces =  Numeric.transpose(Numeric.array((v1, v2)))
 
+        ## The cell normals must point out of the cell.
+        ## The left and bottom faces have only one neighboring cell,
+        ## in the 2nd neighbor position (there is nothing in the 1st).
+        ## 
         ## reverse some of the face orientations to obtain the correct normals
 
         tmp = horizontalFaces.copy()
