@@ -73,7 +73,8 @@ class SourceVariable(CellVariable):
         
         correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
                                       faceVariable = self.diffCoeff[:],
-                                      mesh = mesh,NCells = len(self.phase[:]))
+                                      mesh = mesh,
+                                      NCells = len(self.phase[:]))
 
 ##        print self.value.value.shape
 ##        print correctionTerm[:].shape
