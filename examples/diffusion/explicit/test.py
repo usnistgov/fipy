@@ -49,12 +49,12 @@ import doctest
 
 import mesh50.input
 import mesh10.input
-
+import mesh10.tri2Dinput
 
 
 def suite():
     theSuite = unittest.TestSuite()
-
+    theSuite.addTest(doctest.DocTestSuite(mesh10.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(mesh10.input))
     theSuite.addTest(doctest.DocTestSuite(mesh50.input))
     
