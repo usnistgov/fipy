@@ -52,6 +52,7 @@ def suite():
             'mesh50x50.input',
             'mesh50x50.tri2Dinput',
             'otherMeshes.grid3Dinput',
+            'otherMeshes.inputCircle',
             'mesh20x20.modifiedMeshInput'
         ), base = __name__)
     
