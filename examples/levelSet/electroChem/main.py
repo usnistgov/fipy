@@ -63,6 +63,7 @@ from fipy.models.levelSet.electroChem.metalIonDiffusionEquation import MetalIonD
 from fipy.iterators.iterator import Iterator
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from parameters import parameters
+from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import SurfactantBulkDiffusionEquation
 
 controlParameters = parameters['control parameters']
 geometryParameters = parameters['geometry parameters']
@@ -106,22 +107,28 @@ terminationValue = controlParameters["number of cells in narrow band"] / 2 * con
 distanceEquation = DistanceEquation(distanceVar, terminationValue = terminationValue)
 distanceEquation.solve(terminationValue = 1e+10)
         
-acceleratorVariable = SurfactantVariable(
+acceleratorVar = SurfactantVariable(
     name = "accelerator variable",
     value = experimentalParameters["initial accelerator coverage"],
     distanceVar = distanceVar
+    )
+
+bulkAcceleratorVar = CellVariable(
+    name = 'bulk accelerator variable',
+    mesh = mesh,
+    value = experimentalParameters['bulk accelerator concentration']
     )
         
 metalIonVariable = CellVariable(
     name = 'metal ion variable',
     mesh = mesh,
-    value = experimentalParameters["bulk metal ion concentration"]
+    value = experimentalParameters['bulk metal ion concentration']
     )
     
 depositionRateVariable = DepositionRateVariable(
     metalIonVariable,
     name = "deposition rate variable",
-    acceleratorVariable = acceleratorVariable,
+    acceleratorVariable = acceleratorVar,
     parameters = parameters
     )
 
@@ -138,7 +145,7 @@ overPotential = experimentalParameters['overpotential']
 rateConstant = constant + overPotentialDependence * overPotential**3
 
 surfactantEquation = AdsorbingSurfactantEquation(
-    acceleratorVariable,
+    acceleratorVar,
     distanceVar,
     experimentalParameters['bulk accelerator concentration'],
     rateConstant
@@ -167,7 +174,22 @@ metalIonEquation = MetalIonDiffusionEquation(
         )
     )
 
-iterator = Iterator((extensionEquation, advectionEquation, surfactantEquation, metalIonEquation))
+bulkAcceleratorEquation = SurfactantBulkDiffusionEquation(
+    bulkAcceleratorVar,
+    distanceVar = distanceVar,
+    surfactantVar = acceleratorVar,
+    diffusionCoeff = parameters['accelerator properties']['diffusion coefficient'],
+    rateConstant = rateConstant * parameters['accelerator properties']['site density'],
+    boundaryConditions = (
+        FixedValue(
+            mesh.getFacesTop(),
+            parameters['experimental parameters']['bulk accelerator concentration']
+            ),
+        ) 
+    )
+    
+
+iterator = Iterator((extensionEquation, advectionEquation, surfactantEquation, metalIonEquation, bulkAcceleratorEquation))
 
 class SurfactantPlotVariable(CellVariable):
     def __init__(self, var = None, name = 'surfactant'):
@@ -177,9 +199,11 @@ class SurfactantPlotVariable(CellVariable):
     def _calcValue(self):
         self.value = Numeric.array(self.var.getInterfaceValue())
 
-accMod = SurfactantPlotVariable(acceleratorVariable)
+accMod = SurfactantPlotVariable(acceleratorVar)
 
 metalIonPlotVar = (distanceVar < 0) *  experimentalParameters['bulk metal ion concentration'] + metalIonVariable * (distanceVar > 0 )
+
+bulkAcceleratorPlotVar = (distanceVar < 0) *  experimentalParameters['bulk accelerator concentration'] + bulkAcceleratorVar * (distanceVar > 0 )
 
 res = 3
 cells = yCells * 2**(res-1)
@@ -188,6 +212,14 @@ viewers = (
     Grid2DGistViewer(var = metalIonPlotVar,
                      palette = 'rainbow.gp',
                      maxVal = experimentalParameters['bulk metal ion concentration'],
+                     resolution = res,
+                     grid = 0,
+                     limits = (0, cells, 0, cells),
+                     dpi = 100),
+
+    Grid2DGistViewer(var = bulkAcceleratorPlotVar,
+                     palette = 'rainbow.gp',
+                     maxVal = experimentalParameters['bulk accelerator concentration'],
                      resolution = res,
                      grid = 0,
                      limits = (0, cells, 0, cells),
@@ -208,6 +240,7 @@ viewers = (
                      grid = 0,
                      limits = (0, cells, 0, cells),
                      dpi = 100)
+
             )
 
             
@@ -249,17 +282,20 @@ if __name__ == '__main__':
         iterator.timestep(dt = dt)
         
         plotVariables()
-        
+
+        if step % controlParameters['variable dump frequency'] == 0:
+
+            dumpVars = (
+                viewers[0].getArray(),
+                viewers[1].getArray(),
+                viewers[2].getArray(),
+                viewers[3].getArray()
+                )
+
+            filename = 'dump' + str(step)
+
+            dump.write(dumpVars, filename)
+
         step += 1
-
-        dumpVars = (
-            viewers[0].getArray(),
-            viewers[1].getArray(),
-            viewers[2].getArray()
-            )
-
-        filename = 'dump' + str(step)
-
-##        dump.write(dumpVars, filename)
-            
+                
     raw_input('finished')
