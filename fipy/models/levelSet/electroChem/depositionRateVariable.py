@@ -67,7 +67,11 @@ Here is a small test,
    >>> parameters = {
    ...     'experimental parameters' :
    ...         {
-   ...             'transfer coefficient'     : 0.5,
+   ...             'transfer coefficient' :
+   ...                 {
+   ...                     'constant'               : 0.5,
+   ...                     'accelerator dependence' : 0.
+   ...                 },
    ...             'temperature'              : 298.,
    ...             'overpotential'            : -0.3,
    ...             'bulk metal ion concentration' : 278.,
@@ -133,12 +137,14 @@ class DepositionRateVariable(CellVariable):
         self.parameters = parameters
 
         faradaysConstant = self.parameters['material properties']['Faradays constant']
-        transferCoefficient = self.parameters['experimental parameters']['transfer coefficient']
+##        transferCoefficient = self.parameters['experimental parameters']['transfer coefficient']
         temperature = self.parameters['experimental parameters']['temperature']
         overpotential = self.parameters['experimental parameters']['overpotential']
         gasConstant = self.parameters['material properties']['gas constant']
 
-        self.expo = Numeric.exp(- transferCoefficient * faradaysConstant * overpotential / gasConstant / temperature)
+##        self.expo = Numeric.exp(- transferCoefficient * faradaysConstant * overpotential / gasConstant / temperature)
+
+        self.expoConstant = faradaysConstant * overpotential / gasConstant / temperature
 
     def _calcValue(self):
 
@@ -148,8 +154,16 @@ class DepositionRateVariable(CellVariable):
         b0 = self.parameters['experimental parameters']['exchange current density']['constant']
         b1 = self.parameters['experimental parameters']['exchange current density']['accelerator dependence']
         faradaysConstant = self.parameters['material properties']['Faradays constant']
+        m0 = self.parameters['experimental parameters']['transfer coefficient']['constant']
+        m1 = self.parameters['experimental parameters']['transfer coefficient']['accelerator dependence']
 
-        exchangeCurrentDensity = b0 + b1 * Numeric.array(self.acceleratorVariable.getInterfaceValue())
+        acc = Numeric.minimum(Numeric.array(self.acceleratorVariable.getInterfaceValue()), 1)
+
+        transferCoefficient = m0 + m1 * acc
+
+        self.expo = Numeric.exp(- transferCoefficient * self.expoConstant)
+
+        exchangeCurrentDensity = b0 + b1 * acc
 
         currentDensity = exchangeCurrentDensity * (Numeric.array(self.metalIonVariable) / bulkConcentration) * self.expo
 
