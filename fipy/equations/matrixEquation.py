@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 11/17/03 {4:13:57 PM} 
+                               last update: 11/20/03 {11:06:44 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,12 +40,12 @@ they have been modified.
 ###################################################################
 """
 
-import equation
+from equation import Equation
 import Numeric
 import spmatrix
 
 
-class MatrixEquation(equation.Equation):
+class MatrixEquation(Equation):
     bandwidth = 5
     
     def __init__(self,
@@ -54,7 +54,7 @@ class MatrixEquation(equation.Equation):
         terms,
         solver):
 
-	equation.Equation.__init__(self,
+	Equation.__init__(self,
 	    name,
 	    var,
 	    terms,

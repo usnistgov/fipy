@@ -5,7 +5,7 @@
 
  FILE: "transientTerm.py"
                                    created: 11/12/03 {11:36:25 AM} 
-                               last update: 11/17/03 {4:15:03 PM} 
+                               last update: 11/20/03 {11:08:20 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-import cellTerm
+from cellTerm import CellTerm
 import Numeric
 
-class TransientTerm(cellTerm.CellTerm):
+class TransientTerm(CellTerm):
     def __init__(self,tranCoeff,cells):
         stencil = (0,1,1)
-	cellTerm.CellTerm.__init__(self,stencil,cells) 
+	CellTerm.__init__(self,stencil,cells) 
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):

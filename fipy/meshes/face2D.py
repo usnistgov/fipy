@@ -5,7 +5,7 @@
 
  FILE: "face2D.py"
                                    created: 11/10/03 {3:23:47 PM}
-                               last update: 11/18/03 {12:04:37 PM} 
+                               last update: 11/20/03 {10:37:12 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
    mail: NIST
@@ -39,12 +39,12 @@ they have been modified.
 """
 
 import tools
-import face
+from face import Face
 import Numeric
 
-class Face2D(face.Face):
+class Face2D(Face):
     def __init__(self, vertices, id):
-        face.Face.__init__(self,vertices,id)
+        Face.__init__(self,vertices,id)
 	
     def area(self):
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()

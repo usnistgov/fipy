@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 11/17/03 {11:05:32 AM} 
+                               last update: 11/20/03 {11:09:15 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -41,7 +41,6 @@ they have been modified.
 """
 
 import Numeric
-import equation
 
 class Variable:
     

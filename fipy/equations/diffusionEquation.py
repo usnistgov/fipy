@@ -5,7 +5,7 @@
 
  FILE: "diffusionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/20/03 {10:30:45 AM} 
+                               last update: 11/20/03 {11:11:09 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,7 +42,7 @@ they have been modified.
 
 from matrixEquation import MatrixEquation
 from transientTerm import TransientTerm
-from diffusionTerm import DiffusionEquation
+from diffusionTerm import DiffusionTerm
 
 
 class DiffusionEquation(MatrixEquation):

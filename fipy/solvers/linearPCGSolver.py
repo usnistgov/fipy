@@ -5,7 +5,7 @@
 
  FILE: "linearPCGSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 11/17/03 {11:05:14 AM} 
+                               last update: 11/20/03 {11:06:22 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-import solver
+from solver import Solver
 import precon
 import itsolvers
 
-class LinearPCGSolver(solver.Solver):
+class LinearPCGSolver(Solver):
     def __init__(self, tolerance, steps):
-	solver.Solver.__init__(self, tolerance, steps)
+	Solver.__init__(self, tolerance, steps)
 	
     def solve(self, L, x, b):
 

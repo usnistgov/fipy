@@ -5,7 +5,7 @@
 
  FILE: "grid2D.py"
                                    created: 11/10/03 {3:30:42 PM} 
-                               last update: 11/18/03 {11:05:43 AM} 
+                               last update: 11/20/03 {10:42:20 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-import mesh
-import vertex
-import face2D
-import cell
+from mesh import Mesh
+from vertex import Vertex
+from face2D import Face2D
+from cell import Cell
 import Numeric
 
-class Grid2D(mesh.Mesh):
+class Grid2D(Mesh):
     """
     NUMBERING SYSTEM
     ----------------
@@ -105,7 +105,7 @@ class Grid2D(mesh.Mesh):
 	cells = self.createCells(faces)
         interiorFaces = self.createInteriorFaces(faces)
 	
-	mesh.Mesh.__init__(self, cells, faces, interiorFaces, vertices)
+	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
     def createVertices(self):
 	vertices = ()
@@ -115,7 +115,7 @@ class Grid2D(mesh.Mesh):
         dy=self.dy
 	for j in range(ny+1):
 	    for	i in range(nx+1):
-		vertices += (vertex.Vertex(Numeric.array([i * dx, j * dy],'d')),)
+		vertices += (Vertex(Numeric.array([i * dx, j * dy],'d')),)
         return vertices	
 		    
     def createFaces(self, vertices):
@@ -125,11 +125,11 @@ class Grid2D(mesh.Mesh):
 	id = 0
 	for j in range(ny+1):
 	    for i in range(nx):
-		faces += (face2D.Face2D((vertices[i + j * (nx + 1)],vertices[i + 1 + j * (nx + 1)]),id),)
+		faces += (Face2D((vertices[i + j * (nx + 1)],vertices[i + 1 + j * (nx + 1)]),id),)
 		id += 1
 	for j in range(ny):
 	    for i in range(nx+1):
-		faces += (face2D.Face2D((vertices[i + j * (nx + 1)],vertices[i + (j + 1) * (nx + 1)]),id),)
+		faces += (Face2D((vertices[i + j * (nx + 1)],vertices[i + (j + 1) * (nx + 1)]),id),)
 		id += 1
 	return faces
 	
@@ -141,7 +141,7 @@ class Grid2D(mesh.Mesh):
 	    for i in range(nx):
                 id = j * nx + i
 		cells += (
-                    cell.Cell(
+                    Cell(
                     (faces[i + j * nx],
                     faces[i + (j+1) * nx],
                     faces[nx * (ny + 1) + i + j * (nx + 1)],

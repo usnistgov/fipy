@@ -5,7 +5,7 @@
 
  FILE: "faceTerm.py"
                                    created: 11/17/03 {10:29:10 AM} 
-                               last update: 11/17/03 {3:18:19 PM} 
+                               last update: 11/20/03 {10:37:39 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,14 +42,14 @@ they have been modified.
 ###################################################################
 """
 
-import term
+from term import Term
 
-class FaceTerm(term.Term):
+class FaceTerm(Term):
     def __init__(self,stencil,faces,interiorFaces,boundaryConditions):
 	"""
 	stencil = [phi_adj, phi]
 	"""
-	term.Term.__init__(self,stencil)
+	Term.__init__(self,stencil)
         self.faces = faces
         self.interiorFaces = interiorFaces
         self.boundaryConditions = boundaryConditions

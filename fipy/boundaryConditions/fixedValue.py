@@ -5,7 +5,7 @@
 
  FILE: "fixedValue.py"
                                    created: 11/15/03 {9:47:59 PM} 
-                               last update: 11/17/03 {11:05:24 AM} 
+                               last update: 11/20/03 {10:40:43 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,11 +40,11 @@ they have been modified.
 ###################################################################
 """
 
-import boundaryCondition
+from boundaryCondition import BoundaryCondition
 
-class FixedValue(boundaryCondition.BoundaryCondition):
+class FixedValue(BoundaryCondition):
     def __init__(self,faces,value):
-        boundaryCondition.BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self,faces,value)
 
     def getFaces(self):
         return self.faces

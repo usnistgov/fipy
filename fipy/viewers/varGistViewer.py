@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 11/17/03 {11:07:02 AM} 
+                               last update: 11/20/03 {11:08:50 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,13 +42,13 @@ they have been modified.
 ###################################################################
 """
 
-import gistViewer
+from gistViewer import GistViewer
 
-class VarGistViewer(gistViewer.GistViewer):
+class VarGistViewer(GistViewer):
     
     def __init__(self, var = 'None', minVal=0., maxVal=1.):
         self.var = var
-        gistViewer.GistViewer.__init__(self, minVal, maxVal)
+        GistViewer.__init__(self, minVal, maxVal)
 
     def setVar(self,var):
         self.var = var
