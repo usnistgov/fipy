@@ -5,7 +5,7 @@
 #
 # FILE: "diffusionEquation.py"
 #                                   created: 11/12/03 {10:35:33 AM} 
-#                               last update: 11/13/03 {12:09:24 PM} 
+#                               last update: 11/14/03 {4:32:06 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -39,6 +39,9 @@ import transientTerm
 import diffusionTerm
 
 class DiffusionEquation(matrixEquation.MatrixEquation):
-    def __init__(self,var,transientCoeff = 1.,diffusionCoeff = 1.):
-	terms = (transientTerm.TransientTerm(self,transientCoeff),diffusionTerm.DiffusionTerm(self,diffusionCoeff))
-	MatrixEquation.__init__(self,var,terms)
+    def __init__(self,name,mesh,transientCoeff = 1.,diffusionCoeff = 1.,solver):
+	terms = (
+	    transientTerm.TransientTerm(self,transientCoeff),
+	    diffusionTerm.DiffusionTerm(self,diffusionCoeff)
+	)
+	MatrixEquation.__init__(self,name,mesh,terms,solver)

@@ -2,9 +2,9 @@
 ###################################################################
  Alpha - Core code development for Alpha
 
- FILE: "diffusionTerm.py"
-                                   created: 11/13/03 {11:37:00 AM} 
-                               last update: 11/14/03 {5:07:34 PM} 
+ FILE: "solver.py"
+                                   created: 11/14/03 {3:46:56 PM} 
+                               last update: 11/14/03 {4:08:12 PM} 
  Author: Jonathan Guyer
  E-mail: jguyer@his.com
    mail: Alpha Cabal
@@ -20,15 +20,10 @@ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ###################################################################
 """
 
-import faceTerm
-
-class DiffusionTerm(faceTerm.FaceTerm):
-    def __init__(self,equation,diffCoeff):
-	faceTerm.FaceTerm.__init__(self, stencil = (1,1), equation)
-	self.diffCoeff = diffCoeff
+class Solver:
+    def __init__(self, tolerance, steps):
+	self.tolerance = tolerance
+	self.steps = steps
 	
-    def updateCoeff(self,dt):
-	faces = self.equation.mesh().faces()
-	self.coeff = Numeric.zeroes([len(faces),'d')
-	for face in faces:
-	    self.coeff[face.id()] = self.diffCoeff * face.area() / face.cellDistance()
+    def solve(self, L, x, b):
+	pass

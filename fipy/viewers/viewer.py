@@ -4,7 +4,7 @@
 #
 # FILE: "viewer.py"
 #                                   created: 11/10/03 {2:48:18 PM} 
-#                               last update: 11/10/03 {2:48:25 PM} 
+#                               last update: 11/14/03 {3:46:19 PM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -33,3 +33,6 @@
 #----
 
 
+class Viewer:
+    def __init__(self):
+	pass

@@ -5,7 +5,7 @@
 #
 # FILE: "transientTerm.py"
 #                                   created: 11/12/03 {11:35:45 AM} 
-#                               last update: 11/13/03 {11:50:36 AM} 
+#                               last update: 11/14/03 {5:04:34 PM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -37,8 +37,14 @@
 import cellTerm
 
 class TransientTerm(cellTerm.CellTerm):
-    def __init__(self,equation,coeff):
+    def __init__(self,equation,tranCoeff):
 	cellTerm.CellTerm.__init__(self, stencil = (0,1,1), equation) 
-	self.coeff = coeff
+	self.tranCoeff = tranCoeff
+	    
+    def updateCoeff(self,dt):
+	cells = self.equation.mesh().cells()
+	self.coeff = Numeric.zeroes([len(cells),'d')
+	for cell in cells:
+	    self.coeff[cell.id()] = self.tranCoeff * cell.volume() / dt
 	
 

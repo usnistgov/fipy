@@ -5,7 +5,7 @@
 #
 # FILE: "cellTerm.py"
 #                                   created: 11/12/03 {11:00:39 AM} 
-#                               last update: 11/12/03 {11:32:44 AM} 
+#                               last update: 11/14/03 {4:53:35 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -38,19 +38,19 @@
 import term
 
 class CellTerm(term.Term):
-	def __init__(self,stencil,equation):
-		"""
-		stencil = [b, phi, phi_old]
-		"""
-		term.Term.__init__(self,stencil,equation)
-		
-	def buildMatrix(self):
-		var = self.equation.var()
-		N = var.size()
-		self.equation.b() += var.old()*self.coeff*self.stencil[2]
-		self.equation.b() += Numeric.ones([N])*self.coeff*self.stencil[0]
-		self.equation.L().update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
-		
+    def __init__(self,stencil,equation):
+	"""
+	stencil = [b, phi, phi_old]
+	"""
+	term.Term.__init__(self,stencil,equation)
+	
+    def buildMatrix(self):
+	var = self.equation.var()
+	N = var.size()
+	self.equation.b() += var.old()*self.coeff*self.stencil[2]
+	self.equation.b() += Numeric.ones([N])*self.coeff*self.stencil[0]
+	self.equation.L().update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
+	
 		
 		
 		

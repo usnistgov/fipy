@@ -2,9 +2,9 @@
 ###################################################################
  Alpha - Core code development for Alpha
 
- FILE: "diffusionTerm.py"
-                                   created: 11/13/03 {11:37:00 AM} 
-                               last update: 11/14/03 {5:07:34 PM} 
+ FILE: "linearPCGSolver.py"
+                                   created: 11/14/03 {3:56:49 PM} 
+                               last update: 11/14/03 {4:08:41 PM} 
  Author: Jonathan Guyer
  E-mail: jguyer@his.com
    mail: Alpha Cabal
@@ -20,15 +20,21 @@ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ###################################################################
 """
 
-import faceTerm
+import solver
 
-class DiffusionTerm(faceTerm.FaceTerm):
-    def __init__(self,equation,diffCoeff):
-	faceTerm.FaceTerm.__init__(self, stencil = (1,1), equation)
-	self.diffCoeff = diffCoeff
+class linearPCGSolver(solver.Solver):
+    def __init__(self, tolerance, steps):
+	solver.Solver.__init__(self, tolerance, steps)
 	
-    def updateCoeff(self,dt):
-	faces = self.equation.mesh().faces()
-	self.coeff = Numeric.zeroes([len(faces),'d')
-	for face in faces:
-	    self.coeff[face.id()] = self.diffCoeff * face.area() / face.cellDistance()
+    def solve(self, L, x, b):
+	A = self.L.to_sss()
+	
+	Assor=precon.ssor(A)
+	
+	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
+	
+# 	print info, iter, relres
+	    
+	if (info != 0):
+	    print >> sys.stderr, 'cg not converged'
+	

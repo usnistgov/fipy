@@ -4,7 +4,7 @@
 #
 # FILE: "iterator.py"
 #                                   created: 11/10/03 {2:47:38 PM} 
-#                               last update: 11/10/03 {2:47:45 PM} 
+#                               last update: 11/14/03 {4:33:56 PM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -33,3 +33,15 @@
 #----
 
 
+class Iterator:
+    def __init__(self,equations):
+	self.equation = equations
+	
+    def iterate(self,n,dt):
+	for i in range(n):
+	    for equation in self.equations:
+		equation.preSolve()	
+	    for equation in self.equations:
+		equation.solve(dt)
+	    for equation in self.equations:
+		equation.postSolve()	    

@@ -5,7 +5,7 @@
 #
 # FILE: "equation.py"
 #                                   created: 11/10/03 {2:45:34 PM} 
-#                               last update: 11/13/03 {12:09:39 PM} 
+#                               last update: 11/14/03 {4:47:01 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -36,11 +36,21 @@
 """
 
 class Equation:
-    def __init__(self,var,terms):
+    def __init__(self,name,var,terms,solver):
+	self.name = name
 	self.var = var
         self.terms = terms
+	self.solver = solver
             
-    def updateCoeffs(self):
-        for term in self.terms:
-            term.updateCoeff(self.var)
-
+    def updateVar(self):
+	pass
+	
+    def preSolve(self):
+	pass
+	
+    def postSolve(self):
+	pass
+	
+    def solve(self):
+	pass
+    
