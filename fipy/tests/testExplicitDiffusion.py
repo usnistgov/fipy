@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 12/3/03 {4:01:51 PM} 
+ #                                last update: 12/5/03 {5:11:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -43,6 +43,7 @@
 """
  
 import unittest
+from testBase import TestBase
 from meshes.grid2D import Grid2D
 from equations.explicitDiffusionEquation import ExplicitDiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -51,13 +52,16 @@ from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.variable import Variable
 
-class TestExplicitDiffusion(unittest.TestCase):
+class TestExplicitDiffusion(TestBase):
     """Generic steady-state diffusion class
     Same as TestSteadyStateDiffusion biut for explcit case
     Constructs a mesh, variable, equation, and iterator based
     on the mesh dimensions specified by the child class
     """
     def setUp(self):
+	self.steps = 10000
+	self.timeStep = 0.2
+	self.tolerance = 1e-3
 
         self.valueLeft = 0.
         self.valueRight = 1.
@@ -88,25 +92,33 @@ class TestExplicitDiffusion(unittest.TestCase):
 
         self.it = Iterator((self.eq,))
 
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-        """Fail if the two objects are unequal by more than tol.
-        """
-        if abs(first - second) > tol:
-            raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-    def testResult(self):
-        self.it.iterate(10000,0.2)
-        array = self.var.getArray()
-        (lx,ly) = self.mesh.getPhysicalShape()
-        vl = self.valueLeft
-        vr = self.valueRight
-
-        for cell in self.mesh.getCells():
-            coords = cell.getCenter()
-            id = cell.getId()
-            val = vl + (vr - vl) * coords[0] / lx
-            norm = abs(array[id] - val)
-            self.assertWithinTolerance(norm, 0.0, 1e-3,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
+    def getTestValue(self, cell):
+	(lx,ly) = self.mesh.getPhysicalShape()
+	vl = self.valueLeft
+	vr = self.valueRight
+	val = vl + (vr - vl) * cell.getCenter()[0] / lx
+	
+	return val
+	
+#     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
+#         """Fail if the two objects are unequal by more than tol.
+#         """
+#         if abs(first - second) > tol:
+#             raise self.failureException, (msg or '%s !~ %s' % (first, second))
+#         
+#     def testResult(self):
+#         self.it.iterate(10000,0.2)
+#         array = self.var.getArray()
+#         (lx,ly) = self.mesh.getPhysicalShape()
+#         vl = self.valueLeft
+#         vr = self.valueRight
+# 
+#         for cell in self.mesh.getCells():
+#             coords = cell.getCenter()
+#             id = cell.getId()
+#             val = vl + (vr - vl) * coords[0] / lx
+#             norm = abs(array[id] - val)
+#             self.assertWithinTolerance(norm, 0.0, 1e-3,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
             
 	    
 class  TestExplicitDiffusion10(TestExplicitDiffusion):

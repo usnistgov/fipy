@@ -4,9 +4,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testStdyConvectionDiffusion.py"
+ #  FILE: "testAdvection.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {5:12:38 PM} 
+ #                                last update: 12/5/03 {4:53:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -41,11 +41,11 @@
 
 """Test steady convection diffusion solutions
 """
- 
+
 import unittest
 from testBase import TestBase
 from meshes.grid2D import Grid2D
-from equations.stdyConvDiffEquation import SteadyConvectionDiffusionEquation
+from equations.advectionEquation import AdvectionEquation
 from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
@@ -55,8 +55,8 @@ from terms.exponentialConvectionTerm import ExponentialConvectionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 import Numeric
 
-class TestSteadyConvectionDiffusion(TestBase):
-    """Generic steady-state diffusion class
+class TestAdvection(TestBase):
+    """Generic advection test class
     
     	Constructs a mesh, variable, equation, and iterator based
 	on the mesh dimensions specified by the child class
@@ -64,7 +64,7 @@ class TestSteadyConvectionDiffusion(TestBase):
     def setUp(self):
 	self.steps = 1
 	self.timeStep = 1.
-
+	
         self.valueLeft = 0.
         self.valueRight = 1.
 
@@ -76,9 +76,9 @@ class TestSteadyConvectionDiffusion(TestBase):
 	    value = self.valueLeft,
             viewer = 'None')
 
-	self.eq = SteadyConvectionDiffusionEquation(
+	self.eq = AdvectionEquation(
 	    var = self.var,
-	    diffusionCoeff = self.diffCoeff,
+	    transientCoeff = self.tranCoeff,
 	    convectionCoeff = self.convCoeff,
 	    solver = LinearCGSSolver(
 		tolerance = 1.e-15, 
@@ -95,33 +95,15 @@ class TestSteadyConvectionDiffusion(TestBase):
 
         self.it = Iterator((self.eq,))
 
-    def getTestValue(self, cell):
-	x = cell.getCenter()[0]
+    def getTestValue(self, coords):
+# 	(lx,ly) = self.mesh.getPhysicalShape()
+# 	vl = self.valueLeft
+# 	vr = self.valueRight
+	x = coords[0]
 	val = (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
 	
 	return val
 	
-	
-#     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-#         """Fail if the two objects are unequal by more than tol.
-#         """
-#         if abs(first - second) > tol:
-#             raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-#     def testResult(self):
-#         self.it.iterate(steps = 1, timeStep = 1.)
-#         array = self.var.getArray()
-#         (lx,ly) = self.mesh.getPhysicalShape()
-#         vl = self.valueLeft
-#         vr = self.valueRight
-# 
-#         for cell in self.mesh.getCells():
-#             coords = cell.getCenter()
-#             id = cell.getId()
-# 	    x = coords[0]
-# 	    val = (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
-#             norm = abs(array[id] - val)        
-#             self.assertWithinTolerance(norm, 0.0, self.tolerance,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
             
 	    
 class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusion):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/28/03 {6:12:19 PM} 
+ #                                last update: 12/5/03 {5:12:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -43,6 +43,7 @@
 """
  
 import unittest
+from testBase import TestBase
 from meshes.grid2D import Grid2D
 from equations.diffusionEquation import DiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -51,13 +52,16 @@ from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.variable import Variable
 
-class TestSteadyStateDiffusion(unittest.TestCase):
+class TestSteadyStateDiffusion(TestBase):
     """Generic steady-state diffusion class
     
     	Constructs a mesh, variable, equation, and iterator based
 	on the mesh dimensions specified by the child class
     """
     def setUp(self):
+	self.steps = 1
+	self.timeStep = 1.
+	self.tolerance = 1e-8
 
         self.valueLeft = 0.
         self.valueRight = 1.
@@ -88,26 +92,13 @@ class TestSteadyStateDiffusion(unittest.TestCase):
 
         self.it = Iterator((self.eq,))
 
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-        """Fail if the two objects are unequal by more than tol.
-        """
-        if abs(first - second) > tol:
-            raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-    def testResult(self):
-        self.it.iterate(1,1.)
-        array = self.var.getArray()
-        (lx,ly) = self.mesh.getPhysicalShape()
-        vl = self.valueLeft
-        vr = self.valueRight
-
-        for cell in self.mesh.getCells():
-            coords = cell.getCenter()
-            id = cell.getId()
-            val = vl + (vr - vl) * coords[0] / lx
-            norm = abs(array[id] - val)        
-            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
-            
+    def getTestValue(self, cell):
+	(lx,ly) = self.mesh.getPhysicalShape()
+	vl = self.valueLeft
+	vr = self.valueRight
+	val = vl + (vr - vl) * cell.getCenter()[0] / lx
+	
+	return val
 	    
 class TestSteadyStateDiffusion20x20(TestSteadyStateDiffusion):
     """Steady-state 1D diffusion on a 20x20 mesh

@@ -5,7 +5,7 @@
 
  FILE: "advectionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/5/03 {3:55:03 PM} 
+                               last update: 12/5/03 {4:32:23 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,16 +42,12 @@ they have been modified.
 
 from matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
-class SteadyConvectionDiffusionEquation(MatrixEquation):
-    """
-    Diffusion equation is implicit.
-    """    
+class AdvectionEquation(MatrixEquation):
     def __init__(self,
                  var,
-                 diffusionCoeff = 1.,
+                 transientCoeff = 1.,
 		 convectionCoeff = 1.,
                  solver='default_solver',
 		 convectionScheme = PowerLawConvectionTerm,
@@ -59,11 +55,11 @@ class SteadyConvectionDiffusionEquation(MatrixEquation):
 		     
 	mesh = var.getMesh()
 	
-	diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	transientTerm = TransientTerm(transientCoeff,mesh)
 	convectionTerm = convectionScheme(convectionCoeff, mesh, boundaryConditions, diffusionTerm)
 		     
 	terms = (
-	    diffusionTerm,
+	    transientTerm,
 	    convectionTerm
             )
 	    

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/28/03 {6:16:45 PM} 
+ #                                last update: 12/5/03 {5:13:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -43,6 +43,7 @@
 """
  
 import unittest
+from testBase import TestBase
 from meshes.grid2D import Grid2D
 from equations.diffusionEquation import DiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -52,7 +53,7 @@ from iterators.iterator import Iterator
 from variables.variable import Variable
 import Numeric
 
-class TestVariableDiffusion(unittest.TestCase):
+class TestVariableDiffusion(TestBase):
     """
     Variable diffusion test case. Diffusion
     varies in space. Test is for the steady state profile.
@@ -71,15 +72,18 @@ class TestVariableDiffusion(unittest.TestCase):
     """
     
     def setUp(self):
+	self.steps = 1
+	self.timeStep = 1.
+	self.tolerance = 1e-8
 
         self.valueLeft = 0.
         self.fluxRight = 1.
 
-        Lx = 1.2345
-        Ly = 2.3456
+        self.Lx = 1.2345
+        self.Ly = 2.3456
 
-        dx = Lx / self.nx
-        dy = Ly
+        dx = self.Lx / self.nx
+        dy = self.Ly
 
         self.mesh = Grid2D(dx,dy,self.nx,self.ny)
         
@@ -89,23 +93,14 @@ class TestVariableDiffusion(unittest.TestCase):
 	    value = self.valueLeft,
             viewer = 'None')
 
-        def diffFunc(x,L = Lx):
+        def diffFunc(x):
+	    L = self.Lx
             if x[0] < L / 4.:
                 return 1.
             elif x[0] < 3.* L / 4.:
                 return 0.1
             else:
                 return 1.
-
-        def ansFunc(x,L = Lx):
-            if x[0] < L / 4.:
-                return x[0]
-            elif x[0] < 3. * L / 4.:
-                return 10 * x[0] - 9. * L / 4.
-            else:
-                return x[0] + 18. * L / 4.
-            
-        self.ansFunc = ansFunc
 
         faces = self.mesh.getFaces()
         diffCoeff = Numeric.zeros((len(faces)),'d')
@@ -130,25 +125,15 @@ class TestVariableDiffusion(unittest.TestCase):
 
         self.it = Iterator((self.eq,))
 
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-        """Fail if the two objects are unequal by more than tol.
-        """
-        if abs(first - second) > tol:
-            raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-    def testResult(self):
-        self.it.iterate(1,1.)
-        array = self.var.getArray()
-
-        for cell in self.mesh.getCells():
-            coords = cell.getCenter()
-            id = cell.getId()
-            val = self.ansFunc(coords)
-            norm = abs(array[id] - val)        
-            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
-            
-
-
+    def getTestValue(self, cell):
+	x = cell.getCenter()[0]
+	L = self.Lx
+	if x < L / 4.:
+	    return x
+	elif x< 3. * L / 4.:
+	    return 10 * x - 9. * L / 4.
+	else:
+	    return x + 18. * L / 4.
 
 class TestVariableDiffusion2x1(TestVariableDiffusion):
     """Variable 1D diffusion on a 1x2 mesh

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/3/03 {3:47:33 PM} 
+ #                                last update: 12/5/03 {5:18:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -43,6 +43,7 @@
 """
  
 import unittest
+from testBase import TestBase
 import os
 import cPickle
 import tests
@@ -55,11 +56,14 @@ from iterators.iterator import Iterator
 from variables.variable import Variable
 import Numeric
 
-class TestPhase(unittest.TestCase):
+class TestPhase(TestBase):
     """
     Simple test case for the phase field equation.
     """
     def setUp(self):
+	self.steps = 100
+	self.timeStep = 0.02
+	self.tolerance = 1e-7
 
         phaseParameters={
             'tau' :        0.1,
@@ -115,27 +119,37 @@ class TestPhase(unittest.TestCase):
             )
         
         self.it = Iterator((eq,))
+	
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
+	
+	self.testData = cPickle.load(filestream)
+	filestream.close()
 
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-        """Fail if the two objects are unequal by more than tol.
-        """
-        if abs(first - second) > tol:
-            raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-    def testResult(self):
-        self.it.iterate(100,0.02)
-        array = self.phase.getArray()
+	self.testData = Numeric.reshape(self.testData,(len(self.phase.getArray()),))
 
-        filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
-        
-        testArray=cPickle.load(filestream)
-        filestream.close()
+    def getTestValue(self, cell):
+	return self.testData[cell.getId()]
 
-        testArray = Numeric.reshape(testArray,(len(array),))
-
-        for i in range(len(array)):
-            norm = abs(array[i] - testArray[i])        
-            self.assertWithinTolerance(norm, 0.0, 1e-7,("cell(%g)'s value of %g differs from %g by %g" % (i,array[i],testArray[i],norm)))
+#     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
+#         """Fail if the two objects are unequal by more than tol.
+#         """
+#         if abs(first - second) > tol:
+#             raise self.failureException, (msg or '%s !~ %s' % (first, second))
+#         
+#     def testResult(self):
+#         self.it.iterate(100,0.02)
+#         array = self.phase.getArray()
+# 
+#         filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
+#         
+#         testArray=cPickle.load(filestream)
+#         filestream.close()
+# 
+#         testArray = Numeric.reshape(testArray,(len(array),))
+# 
+#         for i in range(len(array)):
+#             norm = abs(array[i] - testArray[i])        
+#             self.assertWithinTolerance(norm, 0.0, 1e-7,("cell(%g)'s value of %g differs from %g by %g" % (i,array[i],testArray[i],norm)))
 
 class TestPhase1D(TestPhase):
     def setUp(self):
@@ -148,8 +162,8 @@ class TestPhase1D(TestPhase):
             else:
                 return 0
         self.func = func
+	self.testFile = 'testPhaseData.gz'
         TestPhase.setUp(self)
-        self.testFile = 'testPhaseData.gz'
 
 class TestPhaseCircle(TestPhase):
     def setUp(self):
@@ -164,13 +178,13 @@ class TestPhaseCircle(TestPhase):
             else:
                 return 0
         self.func = func
+	self.testFile = 'testCirclePhaseData.gz'
         TestPhase.setUp(self)
-        self.testFile = 'testCirclePhaseData.gz'
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestPhase1D))
-    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
+#     theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     return theSuite
     
 if __name__ == '__main__':
