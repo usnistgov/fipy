@@ -59,8 +59,8 @@ class CellTerm(Term):
 	
     def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale, dt):
         N = len(oldArray)
-
-	b += oldArray * self.oldCoeff[:] / (coeffScale * varScale) / dt
+        
+	b += Numeric.array(oldArray) * self.oldCoeff[:] / (coeffScale * varScale) / dt
 	b += Numeric.ones([N]) * self.bCoeff[:] / (coeffScale)
 ## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale/dt)
