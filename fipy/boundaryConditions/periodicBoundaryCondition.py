@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/25/04 {8:53:57 PM} 
+ #                                last update: 11/30/04 {7:05:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -53,8 +53,8 @@ from fipy.tools.sparseMatrix import SparseMatrix
 
 class PeriodicBoundaryCondition(BoundaryCondition):
     def __init__(self, faces1, faces2):
-	if len(faces1) is not len(faces2):
-	    raise "Incompatible numbers of faces"
+	if len(faces1) != len(faces2):
+	    raise "Incompatible numbers of faces: %d vs %d"%(len(faces1), len(faces2))
 
 	self.faces1 = faces1
 	self.faces2 = faces2
