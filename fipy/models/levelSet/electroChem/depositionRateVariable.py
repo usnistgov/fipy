@@ -98,9 +98,9 @@ Here is a small test,
    >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5))
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
    >>> acceleratorVariable = SurfactantVariable(distanceVar = distanceVariable, value = (0, 1))
-   >>> print DepositionRateVariable(metalIonVariable = 278., acceleratorVariable = acceleratorVariable, parameters = parameters)
+   >>> print DepositionRateVariable(metalIonVariable = 278., acceleratorVariable = acceleratorVariable, overpotential = parameters['experimental parameters']['overpotential'], parameters = parameters)
    [  3.21448659e-09,  5.59567934e-07,]
-   >>> print DepositionRateVariable(metalIonVariable = parameters['experimental parameters']['bulk metal ion concentration'] / 2, acceleratorVariable = acceleratorVariable, parameters = parameters)
+   >>> print DepositionRateVariable(metalIonVariable = parameters['experimental parameters']['bulk metal ion concentration'] / 2, acceleratorVariable = acceleratorVariable, overpotential = parameters['experimental parameters']['overpotential'], parameters = parameters)
    [  1.60724329e-09,  2.79783967e-07,]
    
 """
@@ -113,13 +113,15 @@ from fipy.variables.cellVariable import CellVariable
 
 class DepositionRateVariable(CellVariable):
 
-    def __init__(self, metalIonVariable, acceleratorVariable = None, parameters = None, name = 'deposition rate variable'):
+    def __init__(self, metalIonVariable, acceleratorVariable = None, overpotential = None, parameters = None, name = 'deposition rate variable'):
         """
 
         The following arguments are required to instatiate a
-        `MetalIonSourceVariable`,
+        `MetalIonSourceVariable`.
 
         `ionVar` - A `CellVariable`.
+
+        `overpotential` - An `Variable` or float object
 
         `parameters` - A dictionary with the correct form as given in
         the test.
@@ -134,20 +136,15 @@ class DepositionRateVariable(CellVariable):
         self.metalIonVariable = self.requires(metalIonVariable)
 
         self.acceleratorVariable = self.requires(acceleratorVariable)
+
         self.parameters = parameters
 
-        faradaysConstant = self.parameters['material properties']['Faradays constant']
-##        transferCoefficient = self.parameters['experimental parameters']['transfer coefficient']
-        temperature = self.parameters['experimental parameters']['temperature']
-        overpotential = self.parameters['experimental parameters']['overpotential']
-        gasConstant = self.parameters['material properties']['gas constant']
-
-##        self.expo = Numeric.exp(- transferCoefficient * faradaysConstant * overpotential / gasConstant / temperature)
-
-        self.expoConstant = faradaysConstant * overpotential / gasConstant / temperature
-
+        self.overpotential = overpotential
+                                               
     def _calcValue(self):
 
+        gasConstant = self.parameters['material properties']['gas constant']
+        temperature = self.parameters['experimental parameters']['temperature']
         bulkConcentration = self.parameters['experimental parameters']['bulk metal ion concentration']
         atomicVolume = self.parameters['metal ion properties']['atomic volume']
         charge = self.parameters['metal ion properties']['ion charge']
@@ -159,19 +156,28 @@ class DepositionRateVariable(CellVariable):
 
         acc = Numeric.minimum(Numeric.array(self.acceleratorVariable.getInterfaceValue()), 1)
 
-        transferCoefficient = m0 + m1 * acc
+        self.expoConstant = -(m0 + m1 * acc) * faradaysConstant / gasConstant / temperature
 
-        self.expo = Numeric.exp(- transferCoefficient * self.expoConstant)
+        expo = Numeric.exp(self.expoConstant * self.overpotential)
 
         exchangeCurrentDensity = b0 + b1 * acc
 
-        currentDensity = exchangeCurrentDensity * (Numeric.array(self.metalIonVariable) / bulkConcentration) * self.expo
+        self.currentDensity = exchangeCurrentDensity * (Numeric.array(self.metalIonVariable) / bulkConcentration) * expo
 
-        argmax = Numeric.argmax(currentDensity * atomicVolume / charge / faradaysConstant)
-##        print "max velocity",(currentDensity * atomicVolume / charge / faradaysConstant)[argmax]
-##        print "copper at max velocity",Numeric.array(self.metalIonVariable)[argmax]
-##        print "length of ion variable",len(Numeric.array(self.metalIonVariable))
-        self.value = currentDensity * atomicVolume / charge / faradaysConstant
+        self.value = self.currentDensity * atomicVolume / charge / faradaysConstant
+
+    def getTransferCoefficient(self):
+        return self.transferCoefficient
+
+    def getCurrentDensity(self):
+        return self.currentDensity
+
+    def getExpoConstant(self):
+        return self.expoConstant
+
+    def setOverpotential(self, overpotential):
+        self.markStale()
+        self.overpotential = overpotential
 
 def _test():
     import doctest
