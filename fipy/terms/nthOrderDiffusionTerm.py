@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 11/23/04 {1:50:16 PM} 
+ #                                last update: 11/30/04 {6:41:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -257,8 +257,16 @@ class NthOrderDiffusionTerm(Term):
 	    
 	    M = self.getMesh().getMaxFacesPerCell()
 	    
+	    coeffs = {
+		'cell 1 diag':     self.coeff,
+		'cell 1 offdiag': -self.coeff
+	    }
+	    
+	    coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
+	    coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+	    
             for boundaryCondition in self.boundaryConditions:
-		LL, bb = boundaryCondition.buildMatrix(N, M, self.coeff,-self.coeff, coeffScale)
+		LL, bb = boundaryCondition.buildMatrix(N, M, coeffs, coeffScale)
 		
 		coefficientMatrix += LL
 		boundaryB += bb / varScale
