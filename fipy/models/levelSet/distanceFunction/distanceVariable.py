@@ -53,84 +53,82 @@ class DistanceVariable(CellVariable):
 
         Ncells = self.mesh.getNumberOfCells()
         unevaluatedIDs = Set(range(NCells))
-        positiveIDs = Set([])
-
+        adjCellIDS = self.mesh.getAdjacentCellIDs()
+        
         ## obtain positive and negative IDs
 
-        for id in unevaluatedIDs:
-            if self.value[id] > 0:
-                positiveIDs.add(id)
-
+        positiveIDs = Set(Numeric.nonzero(self.value > 0))
         negativeIDs = unevaluatedIDs - positiveIDs
 
         ## obtain interface IDs
 
-        positiveNeighborIDs = Set([])
-        negativeNeighborIDs = Set([])
-
-        for id in positiveIDs:
-            positiveNeighborIDs.union_update(Set(self.mesh.getAdjacentCellIDs()[id]))
-
-        for id in negativeIDs:
-            negativeNeighborIDs.union_update(Set(self.mesh.getAdjacentCellIDs()[id]))
+        positiveNeighbourIDs = Set(Numeric.take(adjCellIDs, positiveIDs).flat)
+        negativeNeighbourIDs = Set(Numeric.take(adjCellIDs, negativeIDs).flat)
 
         interfaceIDs = positiveNeighborIDs & negativeNeighborIDs
-
+        positiveInterfaceIDs = interfaceIDs & positiveIDs
+        negativeInterfaceIDs = interfaceIDs & negativeIDs
+        
         ## calculate interface values
 
         tmpValue = self.value.copy()
+        
+        for id in positiveInterfaceIDs:
+            tmpValue[id] = self.calcInterfaceValue(id, Set(adjCellIDs[id]) & negativeInterfaceIDs, adjCellIDs[id])
 
-        for id in interfaceIDs:
-            tmpValue[id] = self.setInterfaceValue(id)
+        for id in negativeInterfaceIDs:
+            tmpValue[id] = self.calcInterfaceValue(id, Set(adjCellIDs[id]) & positiveInterfaceIDs, adjCellIDs[id])
 
         self.value = tmpValue
+        
 
         ## find trial IDs
 
         evaluatedIDs = interfaceIDs
-        unevaluatedIDs = unevaluatedIDs - interfaceIDs
-        trialIDs = Set[()]
-        
-        for id in evaluatedIDs:
-            adjIDs = Set(self.mesh.adjacentCellIDs()[id])
-            trialCellIDs.union_update(adjIDs & unevaluatedIDs)
+        unevaluatedIDs = unevaluatedIDs - evaluatedIDs
+        interfaceNeighborIDs = Set(Numeric.take(adjCellIDs, interfaceIDs).flat)
+        trialIDs = interfaceNeighbourIDs - interfaceIDs
 
         ## calculate trial cell IDs
 
         for id in trialCellIDs:
-            self.value[id] = self.setTrialValue(id)
-        
+            self.value[id] = self.calcTrialValue(id, Set(adjCellIDs[id]) & evaluatedIDs)
+
         unevaluatedIDs = unevaluatedIDs - trialIDs
 
         ## calculate remaining unevaluted IDs
-        
+
+        trialIDs = list(trialIDs)
+         
         while len(trialIDs) > 0:
 
-            id = self.getMinimumID(trialIDs)
-
+            id = Numeric.argmin(abs(Numeric.take(self.value, trialsIDs)))
+            
             evaluatedIds.add(id)
             trialIDs.remove(id)
 
-            adjIDs = Set(self.mesh.adjacentCellIDs()[id])
-            newTrialIDs = adjIDs & unevaluatedIDs
+            newTrialIDs = Set(adjCellIDs[id]) & unevaluatedIDs
 
             for trialID in newTrialIDs:
                 self.setTrialValue(trialID)
-
-            trialsIDs.union_update(newTrialsIDs)
+                trialIDs.add(trialID)
 
             if abs(self.value[id]) > self.narrowBandWidth / 2:
                 break
             
-
-    def getMinimumID(self, set):
-        IDs = Numeric.array(set)
-        vals = Numeric.take(self.value, IDs)
-        arg = Numeric.argsort(vals)
-        return = IDs[arg]
-
-    def setTrialValue(self):
+    def calcTrialValue(self):
+        
         pass
         
-    def setInterfaceValue(self):
-        pass
+    def calcInterfaceValue(self, id, adjIDs, allAdjIDs):
+        distances = ()
+        val = self.value[adjID]
+
+        for adjID in adjIDs:            
+            index = list(allAdjIDs).index(adjID)
+            dAP = self.mesh.getCellDistances()[id][index]
+            s += (val * dAP / abs(val - self.value[adjID]),)
+
+        for i in len(adjIDs):
+            for j in len(adjIDs - 1):
+                
