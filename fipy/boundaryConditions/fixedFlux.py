@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 4/2/04 {5:35:03 PM} 
+ #                                last update: 6/10/04 {10:08:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,6 +49,7 @@
 import Numeric
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.fixedValue import FixedValue
 
 class FixedFlux(BoundaryCondition):
     """Fixed flux (Neumann) boundary condition
@@ -72,4 +73,11 @@ class FixedFlux(BoundaryCondition):
 	    'cell1off' -- *unused*
 	"""
 	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
+        
+    def getDerivative(self, order = 1):
+        if order == 1:
+            return FixedValue(self.faces, self.value) 
+        else:
+            return None
+
 
