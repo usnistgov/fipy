@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 11/21/03 {3:35:27 PM} 
+ #                                last update: 12/3/03 {10:21:02 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,3 +59,13 @@ def sqrtDot(v1,v2):
 	Usually used with v1==v2 to return magnitude of v1.
     """
     return Numeric.sqrt(Numeric.dot(v2,v1))
+
+def arraySqrtDot(a1,a2):
+    """Return array of square roots of vector dot-products
+    for arrays a1 and a2 of vectors v1 and v2
+    
+    Usually used with v1==v2 to return magnitude of v1.
+    """
+    ## We can't use Numeric.dot on an array of vectors
+    return Numeric.sqrt(Numeric.sum(a1*a2,1))
+    
