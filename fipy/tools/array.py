@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/6/04 {11:42:08 AM} 
+ #                                last update: 6/7/04 {8:50:20 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,6 +64,8 @@ def put(arr, ids, values):
     
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.put(arr, ids, values)
+    elif type(arr) is type(MA.array((0))):
+	return MA.put(arr, ids, values)
     else:
 	raise TypeError, 'cannot put in object ' + str(arr)
     
