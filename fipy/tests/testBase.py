@@ -50,6 +50,7 @@ class TestBase(unittest.TestCase):
     def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
+        
 	if not Numeric.allclose(first, second, rtol, atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
         
@@ -63,7 +64,7 @@ class TestBase(unittest.TestCase):
 	pass
 	
     def getTestValues(self):
-	values = self.var.getValue().copy()
+	values = self.var.getNumericValue().copy()
 	for cell in self.mesh.getCells():
 	    id = cell.getId()
 	    values[id] = self.getTestValue(cell)
