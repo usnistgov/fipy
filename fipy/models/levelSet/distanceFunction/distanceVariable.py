@@ -193,34 +193,39 @@ class DistanceVariable(CellVariable):
         self.cellAreas = Numeric.array(MA.array(self.mesh.getCellAreas()).filled(0))
         self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
         
-    def extendVariable(self, extensionVariable):
+    def extendVariable(self, extensionVariable, deleteIslands = False):
         self.tmpValue = self.value.copy()
         numericExtensionVariable = Numeric.array(extensionVariable)
-        self._calcDistanceFunction(numericExtensionVariable)
+        self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
         extensionVariable[:] = numericExtensionVariable
         self.value = self.tmpValue
 
-    def calcDistanceFunction(self, narrowBandWidth = None):
-        self._calcDistanceFunction(narrowBandWidth = narrowBandWidth)
+    def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
+        self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
         self.markFresh()
     
-    def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None):
+    def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False):
 
         if narrowBandWidth == None:
             narrowBandWidth = self.narrowBandWidth
-        
+
         ## calculate interface values
 
         cellToCellIDs = self.mesh.getCellToCellIDs()
+
+        if deleteIslands:
+            adjVals = MAtake(self.value, cellToCellIDs)
+            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
+            masksum = Numeric.sum(Numeric.logical_not(adjInterfaceValues.mask()), 1)
+            tmp = MA.logical_and(masksum == 4, self.value > 0)
+            self.value = MA.where(tmp, -1, self.value)
+
         adjVals = MAtake(self.value, cellToCellIDs)
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
         dAP = self.mesh.getCellToCellDistances()
         distances = abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues))
         indices = MA.argsort(distances, 1)
-        ##distances = MA.sort(abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues)), 1)
         sign = (self.value > 0) * 2 - 1
-        ##s = distances[:,0]
-        ##t = distances[:,1]
 
         index = Numeric.arange(len(indices[:,0])) * len(indices[0])
 
@@ -248,7 +253,8 @@ class DistanceVariable(CellVariable):
         self.value = signedDistance
 
         ## calculate interface flag
-        interfaceFlag = Numeric.sum(Numeric.logical_not(distances.mask()), 1) > 0
+        masksum = Numeric.sum(Numeric.logical_not(distances.mask()), 1)
+        interfaceFlag = masksum > 0
 
         ## spread the extensionVariable to the whole interface
         flag = True
@@ -257,6 +263,7 @@ class DistanceVariable(CellVariable):
             flag = False
             
         ext = Numeric.zeros(self.mesh.getNumberOfCells(), 'd')
+
         positiveInterfaceFlag = Numeric.where(self.value > 0, interfaceFlag, 0)
         negativeInterfaceIDs = Numeric.nonzero(Numeric.where(self.value < 0, interfaceFlag, 0))
 
@@ -265,9 +272,6 @@ class DistanceVariable(CellVariable):
 
         if flag:
             self.value = self.tmpValue.copy()
-
-
-
 
         ## evaluate the trialIDs
         adjInterfaceFlag = MAtake(interfaceFlag, cellToCellIDs)
