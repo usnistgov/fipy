@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:00:11 PM}
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,73 +41,23 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
  
 import unittest
-import os
-import cPickle
-
-from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-import examples.phase.impingement
-from examples.phase.impingement.input1D import System1D
-from examples.phase.impingement.input4Particles import System4Particles
-import fipy.tools.dump as dump
+import doctest
 
-class TestImpingement(TestBase):
-    def setUp(self):
-
-        parameters = self.system.getParameters()
-
-	self.steps = parameters['steps']
-	self.tolerance = 1e-10
-
-        self.it = parameters['it']
-        self.var = parameters['theta']
-        
-    def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.impingement.__path__[0],self.testFile),'r')
-	
-	testData = cPickle.load(filestream)
-	filestream.close()
-
-	return testData
-
-class Test1D(TestImpingement):
-    def setUp(self):
-        self.system = System1D(nx = 40, ny = 1)
-        self.testFile = 'testImpingement.gz'
-        TestImpingement.setUp(self)
-
-class Test4Particles(TestImpingement):
-    def setUp(self):
-        self.system = System4Particles(nx = 20, ny = 20, drivingForce = 10.)
-        self.testFile = '4ParticleData.gz'
-        TestImpingement.setUp(self)
-
-class Test4ParticlesRestart(TestImpingement):
-    def setUp(self):
-        self.testFile = '4ParticleData.gz'
-        self.system = System4Particles(nx = 20, ny = 20, steps = 5, drivingForce = 10.)
-        TestImpingement.setUp(self)
-        for step in range(self.steps):
-	    self.it.timestep()
-
-        ## dump data
-        dump.write(self.system.getDumpData(), 'restartData')
-
-        ## run another bunch of steps
-        restartData = dump.read('restartData')
-        system = System4Particles(steps = 5, drivingForce = 10., restartData = restartData)
-        TestImpingement.setUp(self)
+import mesh40x1.input
+import mesh20x20.input
+import restart.input
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(Test1D))
-    theSuite.addTest(unittest.makeSuite(Test4Particles))
-    theSuite.addTest(unittest.makeSuite(Test4ParticlesRestart))
+
+    theSuite.addTest(doctest.DocTestSuite(mesh40x1.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
+    theSuite.addTest(doctest.DocTestSuite(restart.input))
+    
     return theSuite
     
 if __name__ == '__main__':
