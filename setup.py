@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/4/04 {2:36:17 PM} 
+ #                                last update: 6/7/04 {2:02:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -83,6 +83,7 @@ class build_docs (Command):
 	finally:
 	    pass
 	    
+	os.makedirs(os.path.join('documentation', 'manual', 'api'))
 	os.makedirs(dir)
 	os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext fipy/")
 	
