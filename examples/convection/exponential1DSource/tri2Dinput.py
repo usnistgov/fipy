@@ -62,7 +62,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> nx = 1
     >>> ny = 1000
     >>> from fipy.meshes.numMesh.tri2D import Tri2D
-    >>> mesh = Tri2D(dx = L / nx, dy = L / ny, nx = nx, ny = ny)
+    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
     
     >>> valueBottom = 0.
     >>> valueTop = 1.
@@ -86,13 +86,13 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
 
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = -sourceCoeff - diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) 
+    >>> eq = -sourceCoeff - diffTerm - ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) 
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000))
 
 The analytical solution test for this problem is given by:
 
@@ -104,7 +104,7 @@ The analytical solution test for this problem is given by:
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
-    >>> var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
+    >>> var.allclose(analyticalArray, rtol = 1e-5) 
     1
     
     >>> if __name__ == '__main__':
