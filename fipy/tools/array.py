@@ -63,7 +63,7 @@ Take the tangent of an array.
    >>> tan(Numeric.array((0,0,0)))
    [ 0., 0., 0.,]
    
-This module is building towards a `'Numericx'` module that will be the
+This module is building towards a `'Numerix'` module that will be the
 only place in the code where `Numeric` is imported.
 
 """
