@@ -54,10 +54,13 @@ _proc_status = '/proc/%d/status' % os.getpid()
 _scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,
           'KB': 1024.0, 'MB': 1024.0*1024.0}
 
-def _VmB(VmKey):
+def _VmB(VmKey, pid = None):
     '''Private.
     '''
     global _proc_status, _scale
+    if pid is not None:
+        _proc_status = '/proc/%d/status' % pid
+
      # get pseudo file  /proc/<pid>/status
     try:
         t = open(_proc_status)
@@ -74,10 +77,10 @@ def _VmB(VmKey):
     return float(v[1]) * _scale[v[2]]
 
 
-def memory(since=0.0):
+def memory(since=0.0, pid = None):
     '''Return memory usage in bytes.
     '''
-    return _VmB('VmSize:') - since
+    return _VmB('VmSize:', pid) - since
 
 
 def resident(since=0.0):
