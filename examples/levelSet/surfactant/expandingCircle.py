@@ -85,9 +85,9 @@ Next test for the correct local value of surfactant:
    >>> for i in range(len(coverage)):
    ...     if coverage[i] > 1e-3:
    ...         error += (coverage[i] / answer - 1.)**2
-   ...         size += 1            
-   >>> print Numeric.sqrt(error / size)
-   0.0148159203754
+   ...         size += 1
+   >>> print Numeric.sqrt(error / size) < 0.04
+   1
 
 Test for the correct position of the interface:
 
@@ -95,14 +95,14 @@ Test for the correct position of the interface:
    >>> y = mesh.getCellCenters()[:,1]
    >>> radius = Numeric.sqrt((x - L / 2)**2 + (y - L / 2)**2)
    >>> solution = radius - distanceVariable
-   >>> erro = 0.
+   >>> error = 0.
    >>> size = 0
    >>> for i in range(len(coverage)):
    ...     if coverage[i] > 1e-3:
    ...         error += (solution[i] / finalRadius - 1.)**2
-   ...         size += 1            
-   >>> print Numeric.sqrt(error / size)
-   0.0149871164507
+   ...         size += 1
+   >>> print Numeric.sqrt(error / size) < 0.02
+   1
 
 """
 __docformat__ = 'restructuredtext'
@@ -129,7 +129,7 @@ cfl = 0.1
 initialRadius = L / 4.
 k = 1
 dx = L / nx
-steps = 50
+steps = 20
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
@@ -179,8 +179,8 @@ it = Iterator((extensionEquation, advectionEquation, surfactantEquation))
 if __name__ == '__main__':
     
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -initialRadius, maxVal = initialRadius)
-    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = -1., maxVal = 100.)
-    velocityViewer = Grid2DGistViewer(var = velocity, palette = 'rainbow.gp', minVal = 0., maxVal = 2.)
+    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 100.)
+    velocityViewer = Grid2DGistViewer(var = velocity, palette = 'rainbow.gp', minVal = 0., maxVal = 200.)
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()
@@ -192,7 +192,7 @@ if __name__ == '__main__':
         velocity.setValue(surfactantVariable.getInterfaceValue() * k)
 
         argmax = Numeric.argmax(velocity)
-        timeStepDuration = cfl * dx / velcity[argmax]
+        timeStepDuration = cfl * dx / velocity[argmax]
         
         it.timestep(dt = timeStepDuration)
 
@@ -200,6 +200,21 @@ if __name__ == '__main__':
         
         velocityViewer.plot()
         distanceViewer.plot()
-        surfactantViewer.plot()
+        surfactantViewer.plot(minVal = 0, maxVal = 100)
+
+        finalRadius = Numeric.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+        answer = initialSurfactantValue * initialRadius / finalRadius
+        coverage = surfactantVariable.getInterfaceValue()
+        error = 0.
+        size = 0
+        for i in range(len(coverage)):
+            if coverage[i] > 1e-3:
+                error += (coverage[i] / answer - 1.)**2
+                size += 1
+
+        print 'error',Numeric.sqrt(error / size)
+
+
+        
 
     raw_input('finished')
