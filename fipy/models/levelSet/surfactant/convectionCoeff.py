@@ -119,12 +119,14 @@ class ConvectionCoeff(VectorFaceVariable):
         Nfaces = self.mesh.getNumberOfFaces()
         M = self.mesh.getMaxFacesPerCell()
         dim = self.mesh.getDim()
-        
+     
         faceNormalAreas = self.distanceVar.getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
 
-        cellFaceNormalAreas = Numeric.take(faceNormalAreas, self.mesh.getCellFaceIDs())
+        from fipy.meshes.numMesh.mesh import MAtake
+        cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh.getCellFaceIDs()).filled(fill_value = 0))
+        norms = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(fill_value = 0))
         
-        alpha = array.dot(cellFaceNormalAreas, self.mesh.getCellNormals(), axis = 2)
+        alpha = array.dot(cellFaceNormalAreas, norms, axis = 2)
         alpha = Numeric.where(alpha > 0, alpha, 0)
 
         alphasum = Numeric.sum(alpha, axis = 1)
@@ -135,13 +137,16 @@ class ConvectionCoeff(VectorFaceVariable):
         alpha = Numeric.where(phi > 0., 0, alpha)
 
         volumes = Numeric.array(self.mesh.getCellVolumes())
-        alpha = alpha[:,:,Numeric.NewAxis] * volumes[:,Numeric.NewAxis,Numeric.NewAxis] * self.mesh.getCellNormals()
+        alpha = alpha[:,:,Numeric.NewAxis] * volumes[:,Numeric.NewAxis,Numeric.NewAxis] * norms
 
         self.value = Numeric.zeros(Nfaces * dim,'d')
 
         cellFaceIDs = (self.mesh.getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getCellFaceIDs().flat),dim))
-
-        vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat)
+        
+##        print type(cellFaceIDs.flat)
+##        print type(alpha.flat)
+        
+        vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
 
         self.value = Numeric.reshape(self.value, (Nfaces, dim))
 
