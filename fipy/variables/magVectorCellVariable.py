@@ -4,7 +4,7 @@
  # 
  #  FILE: "magVectorCellVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 12/18/03 {2:44:44 PM} 
+ #                                last update: 12/19/03 {4:02:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,12 +33,13 @@
  ##
 
 from cellVariable import CellVariable
+import tools
 import Numeric
 
 class MagVectorCellVariable(CellVariable):
     def __init__(self, var):
 	CellVariable.__init__(self, var.getMesh())
-	self.var = self.requires(self.var)
+	self.var = self.requires(var)
 	
     def calcValue(self):
-	self.value =  meshes.tools.arraySqrtDot(self.var,self.var)
+	self.value =  tools.vector.arraySqrtDot(self.var,self.var)

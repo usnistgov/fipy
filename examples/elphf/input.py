@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/18/03 {5:04:28 PM} 
+ #                                last update: 12/19/03 {10:15:26 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,7 +68,7 @@ valueLeft=0.3
 valueRight=0.4
 valueOther=0.2
 
-nx = 40
+nx = 4
 dx = 1.
 L = nx * dx
 

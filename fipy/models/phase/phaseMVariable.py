@@ -5,7 +5,7 @@
  # 
  #  FILE: "phaseMVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/11/03 {12:01:40 AM} 
+ #                                last update: 12/19/03 {12:29:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -45,6 +45,6 @@ class PhaseMVariable(CellVariable):
     def calcValue(self):
 	phi = self.phi
 	t = self.temperature
-	self.value = phi - 0.5 + t * phi * (1 - phi)
+	self.value = (phi - 0.5 + t * phi * (1 - phi)).getValue()
 
 

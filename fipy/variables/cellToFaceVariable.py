@@ -4,7 +4,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 12/18/03 {3:23:02 PM} 
+ #                                last update: 12/19/03 {3:17:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -36,14 +36,18 @@ from faceVariable import FaceVariable
 import Numeric
 
 class CellToFaceVariable(FaceVariable):
-    def __init__(self, var):
+    def __init__(self, var, mod = None):
 	FaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
+	if mod is None:
+	    self.mod = lambda argument: argument
+	else:
+	    self.mod = mod
 
     def calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	cell1 = Numeric.take(self.var[:], id1)
 	cell2 = Numeric.take(self.var[:], id2)
-	self.value = (cell1 - cell2) * alpha + cell2
-	self.value = Numeric.reshape(self.value, (len(self.value),1))
+	self.value = self.mod(cell1 - cell2) * alpha + cell2
+

@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/10/03 {12:06:40 AM} 
+                               last update: 12/19/03 {3:00:32 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -63,28 +63,37 @@ class PhaseEquation(MatrixEquation):
         
         mesh = var.getMesh()
 	
-	parameters['mPhi'] = PhaseMVariable(
-	    mesh = mesh,
-	    phi = parameters['phi'],
-	    temperature = parameters['temperature'])
+	self.parameters = parameters
+	
+# 	parameters['mPhi']  = PhaseMVariable(
+# 	    mesh = mesh,
+# 	    phi = parameters['phi'],
+# 	    temperature = parameters['temperature'])
+
+
+	self.phi = self.parameters['phi']
+	self.t = self.parameters['temperature']
+	
+	self.mPhi = self.phi - 0.5 + self.t * self.phi * (1 - self.phi)
 	
         self.diffTerm = ExplicitDiffusionTerm(
-	    diffCoeff = PhaseDiffCoeffVariable(
-		mesh = mesh,
-		parameters = parameters),
+	    diffCoeff = self.getPhaseDiffCoeff(),
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
-	    
+	
+	
         self.spTerm = SpSourceTerm(
-	    sourceCoeff = PhaseSpSourceVariable(
-		mesh = mesh, 
-		parameters = parameters),
+	    sourceCoeff = self.getSpSourceCoeff(),
+# 	    sourceCoeff = PhaseSpSourceVariable(
+# 		mesh = mesh, 
+# 		parameters = parameters),
 	    mesh = mesh)
 	    
         self.scTerm = ScSourceTerm(
-	    sourceCoeff = PhaseScSourceVariable(
-		mesh = mesh, 
-		parameters = parameters),
+	    sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.phi,
+# 	    sourceCoeff = PhaseScSourceVariable(
+# 		mesh = mesh, 
+# 		parameters = parameters),
 	    mesh = mesh)
 	
 	transientCoeff = parameters['tau']
@@ -100,3 +109,31 @@ class PhaseEquation(MatrixEquation):
             var,
             terms,
             solver)
+	    
+    def getPhaseDiffCoeff(self):
+	alpha = self.parameters['alpha']
+	N = self.parameters['symmetry']
+	c2 = self.parameters['anisotropy']
+
+	dphi = self.phi.getFaceGrad()
+	
+	z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+	z = N * (z - self.parameters['theta'].getFaceValue())
+	z = Numeric.tan(z / 2.)
+	z = z * z
+	z = (1. - z) / (1. + z)
+	z = (1.+ c2 * z)
+
+	return alpha**2 * z * z
+
+
+    def getSpSourceCoeff(self):
+	spSourceCoeff = self.mPhi * (self.phi - (self.mPhi < 0.)) 
+
+	theta = self.parameters['theta'].getOld()
+	thetaMag = theta.getGrad().getMag()
+	s = self.parameters['s']
+	epsilon = self.parameters['epsilon']
+	spSourceCoeff += (2*s + epsilon**2 * thetaMag) * thetaMag
+
+	return spSourceCoeff

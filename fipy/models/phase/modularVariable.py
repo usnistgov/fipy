@@ -5,7 +5,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/9/03 {2:25:06 PM} 
+ #                                last update: 12/19/03 {3:06:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,52 +38,70 @@ from variables.cellVariable import CellVariable
 import Numeric
 
 class ModularVariable(CellVariable):
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, viewer = None, hasOld = 1):
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, scaling = scaling, unit = unit, viewer = viewer, hasOld = hasOld)
+	pi = Numeric.pi
+	self.mod = lambda array: (array + 3. * pi) % (2 * pi) - pi
+
 
     def getGrad(self):
-        gridSpacing = self.mesh.getMeshSpacing()
-##        print "CellVariable.getGrad(self)"
-##        print CellVariable.getGrad(self)
-##        print "self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing"
-##        print self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing
-##        raw_input()
-        return self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing 
+	if self.grad is None:
+	    from variables.cellGradVariable import CellGradVariable
+	    gridSpacing = self.mesh.getMeshSpacing()
+	    self.grad = self.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
+	
+	return self.grad
 
     def getFaceValue(self):
-        alpha = self.mesh.getFaceToCellDistanceRatio()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	cell1 = Numeric.take(self[:], id1)
-	cell2 = Numeric.take(self[:], id2)
-	return self.mod(cell1 - cell2) * alpha + cell2
+	if self.faceValue is None:
+	    from variables.cellToFaceVariable import CellToFaceVariable
+	    self.faceValue = CellToFaceVariable(self, self.mod)
+
+	return self.faceValue
+
+#     def getFaceValue(self):
+#         alpha = self.mesh.getFaceToCellDistanceRatio()
+# 	id1, id2 = self.mesh.getAdjacentCellIDs()
+# 	cell1 = Numeric.take(self[:], id1)
+# 	cell2 = Numeric.take(self[:], id2)
+# 	return self.mod(cell1 - cell2) * alpha + cell2
 
     def getFaceGrad(self):
-        dAP = self.mesh.getCellDistances()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	N = self.mod(Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
-        
-	normals = self.mesh.getFaceNormals().copy()
-	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.getGrad()
-	grad1 = Numeric.take(cellGrad, id1)
-	grad2 = Numeric.take(cellGrad, id2)
-	t1grad1 = Numeric.sum(tangents1*grad1,1)
-	t1grad2 = Numeric.sum(tangents1*grad2,1)
-	t2grad1 = Numeric.sum(tangents2*grad1,1)
-	t2grad2 = Numeric.sum(tangents2*grad2,1)
-	T1 = (t1grad1 + t1grad2) / 2.
-	T2 = (t2grad1 + t2grad2) / 2.
+	if self.faceGrad is None:
+	    from variables.faceGradVariable import FaceGradVariable
+	    self.faceGrad = FaceGradVariable(self, self.mod)
+
+	return self.faceGrad
 	
-	N = Numeric.reshape(N, (len(normals),1)) 
-	T1 = Numeric.reshape(T1, (len(normals),1)) 
-	T2 = Numeric.reshape(T2, (len(normals),1)) 
-
-	return normals * N + tangents1 * T1 + tangents2 * T2
+#     def getFaceGrad(self):
+#         dAP = self.mesh.getCellDistances()
+# 	id1, id2 = self.mesh.getAdjacentCellIDs()
+# 	N = self.mod(Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
+#         
+# 	normals = self.mesh.getFaceNormals().copy()
+# 	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
+# 	tangents1 = self.mesh.getFaceTangents1()
+# 	tangents2 = self.mesh.getFaceTangents2()
+# 	cellGrad = self.getGrad()
+# 	grad1 = Numeric.take(cellGrad, id1)
+# 	grad2 = Numeric.take(cellGrad, id2)
+# 	t1grad1 = Numeric.sum(tangents1*grad1,1)
+# 	t1grad2 = Numeric.sum(tangents1*grad2,1)
+# 	t2grad1 = Numeric.sum(tangents2*grad1,1)
+# 	t2grad2 = Numeric.sum(tangents2*grad2,1)
+# 	T1 = (t1grad1 + t1grad2) / 2.
+# 	T2 = (t2grad1 + t2grad2) / 2.
+# 	
+# 	N = Numeric.reshape(N, (len(normals),1)) 
+# 	T1 = Numeric.reshape(T1, (len(normals),1)) 
+# 	T2 = Numeric.reshape(T2, (len(normals),1)) 
+# 
+# 	return normals * N + tangents1 * T1 + tangents2 * T2
     
-    def mod(self, array):
-        pi=Numeric.pi
-        return (array + 3. * pi) % (2 * pi) - pi
-
+#     def mod(self, array):
+#         pi=Numeric.pi
+#         return (array + 3. * pi) % (2 * pi) - pi
+    
     def updateOld(self):
         if self.old != None:
             self.value = self.mod(self.value)

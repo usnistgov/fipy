@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/1/03 {3:54:52 PM} 
+ #                                last update: 12/19/03 {4:05:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,7 @@
 """1D (edge) Face in a 2D Mesh
 """
 
-import tools
+import tools.vector
 from face import Face
 import Numeric
 
@@ -58,14 +58,14 @@ class Face2D(Face):
 	"""Area is length of vector between vertices.
 	"""
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
-        return tools.sqrtDot(tangent,tangent)
+        return tools.vector.sqrtDot(tangent,tangent)
 	
     def calcNormal(self):
 	"""Normal is perpendicular to vector between vertices.
 	"""
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	norm = Numeric.array([-tangent[1],tangent[0]])
-	norm /= tools.sqrtDot(norm,norm)
+	norm /= tools.vector.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
 

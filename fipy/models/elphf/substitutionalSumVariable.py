@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 12/15/03 {3:15:47 PM} 
+ #                                last update: 12/18/03 {11:19:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

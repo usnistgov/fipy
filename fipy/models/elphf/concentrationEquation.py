@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/18/03 {4:47:04 PM} 
+                               last update: 12/19/03 {3:53:20 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -75,40 +75,12 @@ class ConcentrationEquation(MatrixEquation):
 	    Cj = Cj, 
 	    substitutionals = fields['substitutionals'])
 	    
-# 	weightedDiffusivity = WeightedDiffusivityVariable(
-# 	    mesh = mesh,
-# 	    diffusivity = diffusivity,
-# 	    Cj = Cj,
-# 	    Cn = fields['solvent'],
-# 	    substitutionalSum = substitutionalSum
-# 	)
-	
-	    
-	subsConvCoeff = diffusivity * substitutionalSum.getFaceGrad() /  (1. - substitutionalSum.getFaceValue())
-# 	subsConvCoeff = SubstitutionalConvectionCoeff(
-# 	    mesh = mesh,
-# 	    diffusivity = diffusivity,
-# 	    Cj = Cj,
-# 	    substitutionalSum = substitutionalSum)
-	    
-	weightedDiffusivity = diffusivity * fields['solvent'].getFaceValue() / (1. - substitutionalSum.getFaceValue())
-	
+	denom = 1. - substitutionalSum.getFaceValue()
+	subsConvCoeff = diffusivity * substitutionalSum.getFaceGrad() /  denom.transpose()
+	weightedDiffusivity = (diffusivity * fields['solvent'].getFaceValue() / denom).transpose()
 	pConvCoeff = weightedDiffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
 	gConvCoeff = weightedDiffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
-	
-# 	pConvCoeff = pConvectionCoeff(
-# 	    mesh = mesh,
-# 	    weightedDiffusivity = weightedDiffusivity,
-# 	    phase = fields['phase'],
-# 	    Cj = Cj)
-# 		
-# 	gConvCoeff = gConvectionCoeff(
-# 	    mesh = mesh,
-# 	    weightedDiffusivity = weightedDiffusivity,
-# 	    phase = fields['phase'],
-# 	    Cj = Cj)
 		
-	convCoeff = pConvCoeff * gConvCoeff
 	convectionTerm = convectionScheme(
 	    convCoeff = subsConvCoeff + pConvCoeff + gConvCoeff, 
 	    mesh = mesh, 

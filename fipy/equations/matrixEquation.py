@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 12/15/03 {1:38:37 PM} 
+                               last update: 12/19/03 {4:04:03 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -43,7 +43,7 @@ they have been modified.
 from equation import Equation
 import Numeric
 import spmatrix
-import meshes.tools
+import tools.vector
 
 
 class MatrixEquation(Equation):
@@ -73,7 +73,7 @@ class MatrixEquation(Equation):
 	residual = oldSweepArray.copy()
 	self.L.matvec(oldSweepArray,residual)
 	residual -= self.b 
-	residual = meshes.tools.sqrtDot(residual,residual)
+	residual = tools.vector.sqrtDot(residual,residual)
 #        print self,'residual: ',residual
 	self.converged = residual < self.solutionTolerance
 	

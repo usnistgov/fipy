@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 12/18/03 {3:28:02 PM} 
+ #                                last update: 12/19/03 {2:26:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -36,15 +36,19 @@ from vectorFaceVariable import VectorFaceVariable
 import Numeric
 
 class FaceGradVariable(VectorFaceVariable):
-    def __init__(self, var):
+    def __init__(self, var, mod = None):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
+	if mod is None:
+	    self.mod = lambda argument: argument
+	else:
+	    self.mod = mod
 	
     def calcValue(self):
 	dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	value = self.var[:]
-	N = (Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
+	N = self.mod(Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
 	normals = self.mesh.getOrientedFaceNormals()
 	
 	tangents1 = self.mesh.getFaceTangents1()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 12/3/03 {10:21:02 AM} 
+ #                                last update: 12/19/03 {4:08:07 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -67,5 +67,5 @@ def arraySqrtDot(a1,a2):
     Usually used with v1==v2 to return magnitude of v1.
     """
     ## We can't use Numeric.dot on an array of vectors
-    return Numeric.sqrt(Numeric.sum(a1*a2,1))
+    return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
     

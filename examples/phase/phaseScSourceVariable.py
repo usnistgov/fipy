@@ -5,7 +5,7 @@
  # 
  #  FILE: "phaseScSourceVariable.py"
  #                                    created: 12/8/03 {4:44:40 PM} 
- #                                last update: 12/11/03 {12:25:20 AM} 
+ #                                last update: 12/19/03 {12:30:42 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -64,4 +64,4 @@ class PhaseScSourceVariable(CellVariable):
 #         
 # ##        sc + = phaseTools.add_over_faces_inline(self.ff,-self.dphi[:,1],self.dphi[:,0],mesh)
 
-	self.value = sc
+	self.value = sc.getValue()

@@ -4,7 +4,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 12/18/03 {4:44:50 PM} 
+ #                                last update: 12/19/03 {3:50:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -42,7 +42,7 @@ class CellGradVariable(VectorCellVariable):
 	
     def calcValue(self):
 	areas = self.mesh.getAreaProjections()
-	faceGradientContributions = areas * self.var.getFaceValue()
+	faceGradientContributions = areas * self.var.getFaceValue().transpose()
 	
 	N = len(self.var[:])
 	M = self.mesh.getMaxFacesPerCell()

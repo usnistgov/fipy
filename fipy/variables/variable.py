@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/18/03 {4:42:23 PM} 
+                               last update: 12/19/03 {4:04:25 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,7 +40,6 @@ they have been modified.
 ###################################################################
 """
 
-import meshes.tools
 from tools.dimensionalization import PhysicalField
 from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
 # from binaryOperatorVariable import BinaryOperatorVariable
@@ -130,6 +129,10 @@ class Variable:
 	self.refresh()
         return self.value
 	
+    def __float__(self):
+	self.refresh()
+	return self.value
+	
     def refresh(self):
 	if self.stale:
 	    for required in self.requiredVariables:
@@ -172,7 +175,12 @@ class Variable:
 	    def __init__(self, op, var, mesh = None):
 		if mesh is None:
 		    mesh = var.getMesh()
-		parentClass.__init__(self, mesh = mesh)
+		# this horrendous hack is necessary because older Python's
+		# (2.1) don't know the value of 'parentClass' at this
+		# point.  Since we're good and dog-fearing people, we don't
+		# ever, ever, ever do multiple inheritance, so we know
+		# there is only one base class.
+		self.__class__.__bases__[0].__init__(self, mesh = mesh)
 		self.op = op
 		self.var = self.requires(var)
 		
@@ -190,7 +198,12 @@ class Variable:
 	    def __init__(self, op, var1, var2, mesh = None):
 		if mesh is None:
 		    mesh = var1.getMesh()
-		parentClass.__init__(self, mesh = mesh)
+		# this horrendous hack is necessary because older Python's
+		# (2.1) don't know the value of 'parentClass' at this
+		# point.  Since we're good and dog-fearing people, we don't
+		# ever, ever, ever do multiple inheritance, so we know
+		# there is only one base class.
+		self.__class__.__bases__[0].__init__(self, mesh = mesh)
 		self.op = op
 		self.var1 = self.requires(var1)
 		self.var2 = self.requires(var2)
@@ -209,62 +222,40 @@ class Variable:
 	return binOp(op, self, var2)
 	
     def __add__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.add, other)
 	
     def __radd__(self, other):
 	return self.__add__(other)
 
     def __sub__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.subtract, other)
 	
     def __rsub__(self, other):
-	return self.__sub__(other)
+	return -self + other
 	    
     def __mul__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.multiply, other)
 	
     def __rmul__(self, other):
 	return self.__mul__(other)
 	    
-#     def __floordiv__(self, other):
-# 	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
-# 	return BinaryOperatorVariable(Numeric.divide, self, other)
-	
     def __mod__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.fmod, other)
 	    
-    def __rmod__(self, other):
-	return self.__mod__(other)
-	    
-#     def __divmod__(self, other):
-# 	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
-# 	return BinaryOperatorVariable(self.value.__divmod__, self, other)
+#     def __rmod__(self, other):
+# 	return self.__mod__(other)
 	    
     def __pow__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.power, other)
 	    
     def __rpow__(self, other):
 	return self.__pow__(other)
 	    
     def __div__(self, other):
-	# avoid recursive imports by declaring the class directly
-# 	from binaryOperatorVariable import BinaryOperatorVariable
 	return self.getBinaryOperatorVariable(Numeric.divide, other)
 	
     def __rdiv__(self, other):
-	return self.__div__(other)
+	return self**-1 * other
 	    
     def __neg__(self):
 	return -1 * self
@@ -274,3 +265,11 @@ class Variable:
 	
     def __abs__(self):
 	return self.getUnaryOperatorVariable(Numeric.fabs)
+	
+    def tan(self):
+	return self.getUnaryOperatorVariable(Numeric.tan)
+	
+    def transpose(self):
+	from transposeVariable import TransposeVariable
+	return TransposeVariable(self)
+	

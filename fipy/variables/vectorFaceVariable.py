@@ -4,7 +4,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/18/03 {3:15:17 PM} 
+ #                                last update: 12/19/03 {2:59:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -40,3 +40,8 @@ class VectorFaceVariable(Variable):
 	array = Numeric.zeros([len(mesh.getFaces()),mesh.getDim()],'d')
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)
+
+    def getVariableClass(self):
+	return VectorFaceVariable
+
+	

@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/18/03 {4:49:37 PM} 
+                               last update: 12/19/03 {4:09:33 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -41,7 +41,6 @@ they have been modified.
 """
 
 from faceTerm import FaceTerm
-import meshes.tools
 import Numeric
 
 class ConvectionTerm(FaceTerm):
@@ -56,8 +55,7 @@ class ConvectionTerm(FaceTerm):
 	}
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
 	if type(convCoeff) in [type(1), type(1.), type(Numeric.array((1,)))]:
-	    self.convCoeff = Numeric.array(convCoeff)
-	    self.convCoeff = Numeric.reshape(self.convCoeff, (1,) + Numeric.shape(self.convCoeff))
+	    self.convCoeff = Numeric.array(convCoeff)[Numeric.NewAxis,:]
 	else:
 	    self.convCoeff = convCoeff
 	self.diffusionTerm = diffusionTerm

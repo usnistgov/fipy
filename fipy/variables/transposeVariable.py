@@ -2,9 +2,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "vectorCellVariable.py"
- #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/19/03 {2:58:57 PM} 
+ #  FILE: "transposeVariable.py"
+ #                                    created: 12/19/03 {3:48:05 PM} 
+ #                                last update: 12/19/03 {3:50:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -35,19 +35,10 @@
 from variable import Variable
 import Numeric
 
-class VectorCellVariable(Variable):
-    def __init__(self,mesh,name = '',value=0., scaling = None, unit = None):
-	array = Numeric.zeros([len(mesh.getCells()),mesh.getDim()],'d')
-# 	array[:] = value	
-	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)
-	self.mag = None
-	
-    def getVariableClass(self):
-	return VectorCellVariable
+class TransposeVariable(Variable):
+    def __init__(self, var):
+	Variable.__init__(self, var.getMesh())
+	self.var = self.requires(var)
 
-    def getMag(self):
-	if self.mag is None:
-	    from magVectorCellVariable import MagVectorCellVariable
-	    self.mag = MagVectorCellVariable(self)
-	    
-	return self.mag
+    def calcValue(self):
+	self.value = self.var[:,Numeric.NewAxis]

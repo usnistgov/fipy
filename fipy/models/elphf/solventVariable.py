@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 12/18/03 {12:24:15 AM} 
+ #                                last update: 12/18/03 {11:20:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
