@@ -140,3 +140,27 @@ class CellVariable(Variable):
     def resetToOld(self):
 	if self.old is not None:
 	    self.setValue(self.old.value)
+
+## pickling
+
+    def __getstate__(self):
+
+        dict = {
+            'mesh' : self.mesh,
+            'name' : self.name,
+            'value' : self.getValue(),
+            'unit' : self.getUnit(),
+            'old' : self.old
+            }
+        return dict
+
+    def __setstate__(self, dict):
+
+        hasOld = 0
+        if dict['old'] is not None:
+            hasOld = 1
+
+        self.__init__(mesh = dict['mesh'], name = dict['name'], value = dict['value'], unit = dict['unit'], hasOld = hasOld)
+        if self.old is not None:
+            self.old.setValue(dict['old'].getValue())
+
