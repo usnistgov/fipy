@@ -64,7 +64,7 @@ class TestPhase(TestBase):
     def setUp(self):
 	self.steps = 100
 	self.timeStep = 0.02
-	self.tolerance = 1e-7
+	self.tolerance = 1e-10
 
         phaseParameters={
             'tau' :        0.1,
@@ -97,7 +97,7 @@ class TestPhase(TestBase):
         theta = ModularVariable(
             name = 'Theta',
             mesh = self.mesh,
-            value = 1.,
+            value = self.value,
             hasOld = 0
             )
 	    
@@ -105,7 +105,7 @@ class TestPhase(TestBase):
 
         rightCells = self.mesh.getCells(func)
         
-        theta.setValue(0.,rightCells)
+        theta.setValue(self.funcValue,rightCells)
 
 	phaseParameters['theta'] = theta
 	
@@ -118,8 +118,8 @@ class TestPhase(TestBase):
 		steps = 1000
             ),
             boundaryConditions=(
-		FixedValue(self.mesh.getFacesLeft(),valueLeft),
-		FixedValue(self.mesh.getFacesRight(),valueRight)
+##		FixedValue(self.mesh.getFacesLeft(),valueLeft),
+##		FixedValue(self.mesh.getFacesRight(),valueRight)
 	    ),
             parameters = phaseParameters
 	)
@@ -139,6 +139,8 @@ class TestPhase1D(TestPhase):
         self.nx = 100
         self.ny = 1
         L = self.L = 1.5
+        self.value = 1.
+        self.funcValue = 0.
         def func(x,L=L):
             if x[0] > L / 2.:
                 return 1
@@ -153,6 +155,8 @@ class TestPhaseCircle(TestPhase):
         self.nx = 100
         self.ny = 100
         L = self.L = 1.5
+        self.value = 1.
+        self.funcValue = 0.
         def func(x,L=L):
             r = L / 4.
             c = (L / 2., L / 2.)
@@ -164,10 +168,29 @@ class TestPhaseCircle(TestPhase):
 	self.testFile = 'testCirclePhaseData.gz'
         TestPhase.setUp(self)
 
+class TestPhaseCircleModular(TestPhase):
+    def setUp(self):
+        self.nx = 100
+        self.ny = 100
+        L = self.L = 1.5
+        self.value = 2. * Numeric.pi / 3.
+        self.funcValue = -2. * Numeric.pi / 3.
+        def func(x,L=L):
+            r = L / 4.
+            c = (L / 2., L / 2.)
+            if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+                return 1
+            else:
+                return 0
+        self.func = func
+	self.testFile = 'testModularCircleData.gz'
+        TestPhase.setUp(self)
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestPhase1D))
     theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
+    theSuite.addTest(unittest.makeSuite(TestPhaseCircleModular))
     return theSuite
     
 if __name__ == '__main__':
