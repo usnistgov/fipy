@@ -51,6 +51,8 @@ class LinearLUSolver(Solver):
 	Solver.__init__(self, tolerance = 0., steps = 0)
 	
     def solve(self, L, x, b):
+        print L
+        print b
         
         LU = superlu.factorize(L.to_csr(), diag_pivot_thresh = 0.)
         LU.solve(b, x)

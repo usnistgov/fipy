@@ -1,3 +1,5 @@
+
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
@@ -31,6 +33,7 @@
  #  
  # ###################################################################
  ##
+"""
 
 from variables.cellVariable import CellVariable
 import Numeric
@@ -38,7 +41,7 @@ import Numeric
 class SubstitutionalSumVariable(CellVariable):
     def __init__(self,mesh,Cj,substitutionals):
 	array = Cj.getValue()
-	CellVariable.__init__(self,mesh = mesh, value = array, name = Cj.name + "_sum", hasOld = False)
+	CellVariable.__init__(self,mesh = mesh, value = array, name = Cj.name + "_sum", hasOld = 0)
 
 	self.substitutionals = [component for component in substitutionals if component != Cj]
 	for component in self.substitutionals:
@@ -47,5 +50,5 @@ class SubstitutionalSumVariable(CellVariable):
     def calcValue(self):
 	self.value[:] = 0.
 	for component in self.substitutionals:
-	    self.value = self.value + component #.getOld()
+	    self.value = self.value + component#.getOld()
 

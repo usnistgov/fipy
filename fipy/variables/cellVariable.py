@@ -1,3 +1,4 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
@@ -31,13 +32,14 @@
  #  
  # ###################################################################
  ##
+"""
 
 from variable import Variable
 import Numeric
 import meshes.tools
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = True):
+    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = 1):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
 	array[:] = value
 	
@@ -47,11 +49,12 @@ class CellVariable(Variable):
 	    self.viewer = None
 	    
 	Variable.__init__(self, mesh, name = name, value = array)
-	
+
 	if hasOld:
 	    self.old = self.copy()
 	else:
 	    self.old = None
+
 
     def copy(self):
 	if self.viewer is None:
@@ -64,7 +67,7 @@ class CellVariable(Variable):
 	    name = self.name + "_old", 
 	    value = self.getValue(),
 	    viewer = viewer,
-	    hasOld = False)
+	    hasOld = 0)
 
     def plot(self):
 	if self.viewer != None:

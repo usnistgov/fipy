@@ -50,7 +50,7 @@ class Term:
     def calculateCoeffGeom(self,dt):
 	pass
 	    
-    def buildMatrix(self,L,array,b):
+    def buildMatrix(self,L,oldArray,b):
 	pass
 	    
     

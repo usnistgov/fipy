@@ -51,7 +51,7 @@ class FaceTerm(Term):
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 	
-    def buildMatrix(self,L,array,b):
+    def buildMatrix(self,L,oldArray,b):
 	"""Implicit portion considers
 	"""
 	
@@ -86,14 +86,14 @@ class FaceTerm(Term):
 	    cell2dia = self.coeff*weight['cell 2 diag']
 
             for i in range(self.interiorN):
-                b[id1[i]] -= cell1dia[i] * array[id1[i]] + cell1off[i] * array[id2[i]]
-                b[id2[i]] -= cell2dia[i] * array[id2[i]] + cell2off[i] * array[id1[i]]
+                b[id1[i]] -= cell1dia[i] * oldArray[id1[i]] + cell1off[i] * oldArray[id2[i]]
+                b[id2[i]] -= cell2dia[i] * oldArray[id2[i]] + cell2off[i] * oldArray[id1[i]]
 	
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
                     LL,bb = boundaryCondition.update(face,cell1dia[faceId],cell1off[faceId])
-                    b[cellId] -= LL * array[cellId]
+                    b[cellId] -= LL * oldArray[cellId]
                     b[cellId] += bb
         

@@ -65,6 +65,16 @@ class ConcentrationEquation(MatrixEquation):
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
+#	convectionTerm = convectionScheme(
+#	    convCoeff = SubstitutionalConvectionCoeff(
+#	    	mesh = mesh,
+#		diffusivity = diffusivity,
+#		Cj = var,
+#		substitutionals = parameters['substitutionals']), 
+#	    mesh = mesh, 
+#	    boundaryConditions = boundaryConditions,
+#	    diffusionTerm = diffusionTerm)
+
 	convectionTerm = convectionScheme(
 	    convCoeff = SubstitutionalConvectionCoeff(
 	    	mesh = mesh,
@@ -86,5 +96,6 @@ class ConcentrationEquation(MatrixEquation):
             self,
             var,
             terms,
-            solver)
+            solver,
+            solutionTolerance = 1e-10)
 

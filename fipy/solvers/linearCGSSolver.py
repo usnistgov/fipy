@@ -51,15 +51,15 @@ class LinearCGSSolver(Solver):
 	
     def solve(self, L, x, b):
 
-# 	print "L: ", L
-# 	print "b: ", b
+ 	print "L: ", L
+ 	print "b: ", b
 # 	print "x: ", x
 	
 	A = L.to_csr()
 
         info, iter, relres = itsolvers.cgs(A,b,x,self.tolerance,self.steps)
         
-## 	print info, iter, relres
+ 	print info, iter, relres
 	
 ## 	y = x.copy()
 ## 	L.matvec(x,y)

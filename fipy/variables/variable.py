@@ -56,7 +56,7 @@ class Variable:
 	self.markFresh()
 	    
     def __coerce__(self,other):
-	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1),type(True)]:
+	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1)]:
 	    return (self.getValue(),other)
 	else:
 	    return None

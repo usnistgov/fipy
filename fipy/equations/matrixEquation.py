@@ -60,19 +60,20 @@ class MatrixEquation(Equation):
 
     def solve(self,dt):
         array = self.var.getValue().copy()
-	arrayOld = array.copy()
+	oldSweepArray = array.copy()
 	N = len(array)
 	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
 	for term in self.terms:
 	    term.calculateCoeffGeom(dt)
-	    term.buildMatrix(self.L,array,self.b)
+	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b)
 	self.solver.solve(self.L,array,self.b)
 	self.var[:] = array[:]
 	
-	residual = arrayOld.copy()
-	self.L.matvec(arrayOld,residual)
+	residual = oldSweepArray.copy()
+	self.L.matvec(oldSweepArray,residual)
 	residual -= self.b 
 	residual = meshes.tools.sqrtDot(residual,residual)
+        print self,'residual: ',residual
 	self.converged = residual < self.solutionTolerance
 	

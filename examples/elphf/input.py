@@ -60,6 +60,7 @@ from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
+from solvers.linearLUSolver import LinearLUSolver
 
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
@@ -67,7 +68,7 @@ from profiler.profiler import calibrate_profiler
 valueLeft=0.3
 valueRight=0.6
 
-nx = 100
+nx = 40
 dx = 1.
 L = nx * dx
 
@@ -75,7 +76,7 @@ mesh = Grid2D(
     dx = dx,
     dy = 1.,
     nx = nx,
-    ny = 1)
+    ny = 40)
 
 var1 = CellVariable(
     name = "c1",
@@ -107,13 +108,16 @@ parameters = {
     'substitutionals': (var1,var2)
 }
 
+diffusivity = 1.
+
 eq1 = ConcentrationEquation(
     var = var1,
-    diffusivity = 1.,
-    solver = LinearCGSSolver(
-	tolerance = 1.e-15, 
-	steps = 1000
-    ),
+    diffusivity = diffusivity,
+    solver = LinearLUSolver(),
+#    solver = LinearCGSSolver(
+#	tolerance = 1.e-15, 
+#	steps = 1000
+#    ),
     boundaryConditions=(
 # 	FixedValue(faces = mesh.getFacesLeft(),value = valueLeft),
 # 	FixedValue(faces = mesh.getFacesRight(),value = valueRight),
@@ -127,11 +131,12 @@ eq1 = ConcentrationEquation(
 
 eq2 = ConcentrationEquation(
     var = var2,
-    diffusivity = 1.,
-    solver = LinearCGSSolver(
-	tolerance = 1.e-15, 
-	steps = 1000
-    ),
+    diffusivity = diffusivity,
+    solver = LinearLUSolver(),
+#    solver = LinearCGSSolver(
+#	tolerance = 1.e-15, 
+#	steps = 1000
+#    ),
     boundaryConditions=(
 # 	FixedValue(faces = mesh.getFacesLeft(),value = valueRight),
 # 	FixedValue(faces = mesh.getFacesRight(),value = valueLeft),
@@ -143,15 +148,19 @@ eq2 = ConcentrationEquation(
     parameters = parameters
 )
 
-it = Iterator(equations = (eq1,eq2), maxSweeps = 100)
+it = Iterator(equations = (eq1,eq2), maxSweeps = 1)
 
-for i in range(1):
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile', fudge=fudge)
+var1.plot()
+var2.plot()
+
+for i in range(100):
+#    fudge = calibrate_profiler(10000)
+#    profile = Profiler('profile', fudge=fudge)
     it.iterate(1,10000.)
-    profile.stop()
+#    profile.stop()
 
-    print var1.getValue() + var2.getValue()
+    print var1.getValue()
+    print var2.getValue()
     
     var1.plot()
     var2.plot()

@@ -1,3 +1,4 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
@@ -31,13 +32,14 @@
  #  
  # ###################################################################
  ##
+"""
 
 from variables.cellVariable import CellVariable
 
 class PhaseScSourceVariable(CellVariable):
     def __init__(self,mesh,parameters):
 	self.parameters = parameters
-	CellVariable.__init__(self,name = "ScSource", mesh = mesh, hasOld = False)
+	CellVariable.__init__(self,name = "ScSource", mesh = mesh, hasOld = 0)
 	
     def getValue(self):
 	phi = self.parameters['phi']
