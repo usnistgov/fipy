@@ -1,7 +1,7 @@
 include *.txt
 # include MANIFEST MANIFEST.in *.txt
 
-recursive-include documentation/manual/ *.py *.txt
+recursive-include documentation/ *.txt
 recursive-include documentation/www/ *.html *.css *.gif *.png
 include documentation/manual/fipy.pdf
 include documentation/manual/reference.pdf
