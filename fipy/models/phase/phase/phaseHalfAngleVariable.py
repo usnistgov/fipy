@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "anisotropyVariable.py"
+ FILE: "phaseHalfAngleVariable.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/05/04 { 6:04:48 PM}
+                               last update: 01/05/04 { 5:40:18 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -29,7 +29,7 @@ provided that any derivative works bear some notice that they are
 derived from it, and any modified versions bear some notice that
 they have been modified.
 ========================================================================
-
+ 
  Description: 
 
  History
@@ -40,50 +40,22 @@ they have been modified.
 ###################################################################
 """
 
-from variables.cellVariable import CellVariable
+from variables.faceVariable import FaceVariable
 import Numeric
 
-class AnisotropyVariable(CellVariable):
-    def __init__(self, parameters = None, phase = None, halfAngle = None):
-        CellVariable.__init__(self, phase.getMesh())
+class PhaseHalfAngleVariable(FaceVariable):
+    def __init__(self, parameters = None, phase = None, theta = None):
+        FaceVariable.__init__(self, phase.getMesh())
 	self.parameters = parameters
 	self.phase = self.requires(phase)
-        self.halfAngle = self.requires(halfAngle)
+        self.theta = self.requires(theta)
 
     def calcValue(self):
-	alpha = self.parameters['alpha']
 	N = self.parameters['symmetry']
-	c2 = self.parameters['anisotropy']
         dphi = self.phase.getFaceGrad()[:,:]
-        
-        zsq = self.halfAngle[:] * self.halfAngle[:]
-	b = (1. - zsq) / (1. + zsq)
-	db = -N*2*self.halfAngle/(1+zsq)
-        ff = alpha**2 * c2 * (1. + c2 * b) * db
+        thetaFace = self.theta.getFaceValue()[:]
 
-        dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
-
-        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
-
-        contributions = contributions * ff
-        
-        NIntFac = len(self.mesh.getInteriorFaces())
-        NExtFac = len(self.mesh.getFaces()) - NIntFac
-        
-        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
-        ids = self.mesh.getCellFaceIDs()
-
-        contributions = Numeric.take(contributions, ids)
-
-        NCells = len(self.value[:])
-	NMaxFac = self.mesh.getMaxFacesPerCell()
-
-        contributions = Numeric.reshape(contributions,(NCells,-1))
-
-        orientations = Numeric.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
-
-        self.value = Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
-
-
-        
+        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+	z = N * (z - thetaFace)
+	self.value = Numeric.tan(z / 2.)
 

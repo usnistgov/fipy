@@ -5,7 +5,7 @@
 
  FILE: "phaseDiffusionVariable.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/22/03 {5:53:13 PM} 
+                               last update: 01/05/04 { 5:46:37 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,25 +44,18 @@ from variables.faceVariable import FaceVariable
 import Numeric
 
 class PhaseDiffusionVariable(FaceVariable):
-    def __init__(self, parameters, phase, theta):
-        FaceVariable.__init__(self, phase.getMesh())
+    def __init__(self, parameters = None, halfAngle = None):
+        FaceVariable.__init__(self, halfAngle.getMesh())
 	self.parameters = parameters
-	self.phase = self.requires(phase)
-        self.theta = self.requires(theta)
+	self.halfAngle = self.requires(halfAngle)
 
     def calcValue(self):
 	alpha = self.parameters['alpha']
-	N = self.parameters['symmetry']
 	c2 = self.parameters['anisotropy']
-        dphi = self.phase.getFaceGrad()[:,:]
-        thetaFace = self.theta.getFaceValue()[:]
 
-        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
-	z = N * (z - thetaFace)
-	z = Numeric.tan(z / 2.)
-	z = z * z
-	z = (1. - z) / (1. + z)
-	z = (1.+ c2 * z)
+        zsq = self.halfAngle[:] * self.halfAngle[:]
+	b = (1. - zsq) / (1. + zsq)
+	z = (1.+ c2 * b)
         
         self.value = alpha**2 * z * z
 

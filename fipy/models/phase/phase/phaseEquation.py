@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/22/03 {5:53:13 PM} 
+                               last update: 01/05/04 { 5:42:51 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,6 +48,7 @@ from terms.spSourceTerm import SpSourceTerm
 from phaseDiffusionVariable import PhaseDiffusionVariable
 from anisotropyVariable import AnisotropyVariable
 from spSourceVariable import SpSourceVariable
+from phaseHalfAngleVariable import PhaseHalfAngleVariable
 import Numeric
 
 class PhaseEquation(MatrixEquation):
@@ -72,8 +73,10 @@ class PhaseEquation(MatrixEquation):
         	
 	self.mPhi = mPhi
 
+        self.halfAngle = PhaseHalfAngleVariable(parameters = self.parameters, phase = self.var, theta = self.thetaOld)
+
         self.diffTerm = ExplicitDiffusionTerm(
-	    diffCoeff = PhaseDiffusionVariable(self.parameters, self.var, self.thetaOld),
+	    diffCoeff = PhaseDiffusionVariable(parameters = self.parameters, halfAngle = self.halfAngle),
 ##            diffCoeff = self.getPhaseDiffCoeff(),
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
@@ -83,7 +86,7 @@ class PhaseEquation(MatrixEquation):
             sourceCoeff = SpSourceVariable(theta = self.thetaOld, mPhi = self.mPhi, phase = self.var, parameters = self.parameters),
 	    mesh = mesh)
 
-        anisotropy = AnisotropyVariable(parameters, self.var, self.thetaOld)
+        anisotropy = AnisotropyVariable(parameters = parameters, phase = self.var, halfAngle = self.halfAngle)
 
         self.scTerm = ScSourceTerm(
             sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.var + anisotropy,
