@@ -117,4 +117,6 @@ class LevelSetEquation(Equation):
             minVal = min(minVal, var(cell.getId()))
 
         return minVal
-        
+
+
+
