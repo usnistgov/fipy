@@ -219,7 +219,7 @@ class CellVariable(Variable):
         hasOld = 0
         if dict['old'] is not None:
             hasOld = 1
-        print self.__class__
+
         self.__init__(dict['mesh'], name = dict['name'], value = dict['value'], unit = dict['unit'], hasOld = hasOld)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
