@@ -55,8 +55,12 @@ class TestVariablePickle(TestBase):
 
         self.var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
 
-        pickledVar = dump.write(self.var, 'pickledVar')
-        self.unPickledVar = dump.read('pickledVar')
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        fileName = os.path.join(tmp, 'data')
+        pickledVar = dump.write(self.var, fileName)
+        self.unPickledVar = dump.read(fileName)
         
     def testResult(self):
         pass
