@@ -44,9 +44,9 @@
 """
 3D rectangular-prism Mesh
 
-X axis runs from front to back.
-Y axis runs from left to right.
-Z axis runs from bottom to top.
+X axis runs from left to right.
+Y axis runs from bottom to top.
+Z axis runs from front to back.
 
 Numbering System:
 
@@ -184,33 +184,33 @@ class Grid3D(Mesh):
         
         return Numeric.transpose(Numeric.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces)))
 
-    def getFacesLeft(self):
-	"""Return list of faces on left boundary of Grid3D.
+    def getFacesBottom(self):
+	"""Return list of faces on bottom boundary of Grid3D.
 	"""
 	return [Face(self, id) for id in self.repeatWithOffset(Numeric.arange(self.numberOfXYFaces, self.numberOfXYFaces + self.nx), self.nx * (self.ny + 1), self.nz)]
-	
-    def getFacesRight(self):
-	"""Return list of faces on right boundary of Grid3D.
-	"""
-	return [Face(self, id) for id in self.repeatWithOffset(Numeric.arange(self.numberOfXYFaces + (self.nx * self.ny), self.numberOfXYFaces + (self.nx * self.ny) + self.nx), self.nx * (self.ny + 1), self.nz)]
 	
     def getFacesTop(self):
 	"""Return list of faces on top boundary of Grid3D.
 	"""
+	return [Face(self, id) for id in self.repeatWithOffset(Numeric.arange(self.numberOfXYFaces + (self.nx * self.ny), self.numberOfXYFaces + (self.nx * self.ny) + self.nx), self.nx * (self.ny + 1), self.nz)]
+	
+    def getFacesBack(self):
+	"""Return list of faces on back boundary of Grid3D.
+	"""
 	return [Face(self, id) for id in Numeric.arange(self.numberOfXYFaces - (self.nx * self.ny), self.numberOfXYFaces)]
 	
-    def getFacesBottom(self):
-	"""Return list of faces on bottom boundary of Grid3D.
+    def getFacesFront(self):
+	"""Return list of faces on front boundary of Grid3D.
 	"""
 	return [Face(self, id) for id in Numeric.arange(self.nx * self.ny)]
 
-    def getFacesFront(self):
-        """Return list of faces on front boundary of Grid3D.
+    def getFacesLeft(self):
+        """Return list of faces on left boundary of Grid3D.
         """
         return [Face(self, id) for id in Numeric.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.totalNumberOfFaces, self.nx + 1)]
 
-    def getFacesBack(self):
-        """Return list of faces on back boundary of Grid3D.
+    def getFacesRight(self):
+        """Return list of faces on right boundary of Grid3D.
         """
         return [Face(self, id) for id in Numeric.arange(self.numberOfXYFaces + self.numberOfXZFaces + self.nx, self.totalNumberOfFaces, self.nx + 1)]
     
