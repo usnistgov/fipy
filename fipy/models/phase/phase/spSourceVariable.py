@@ -42,7 +42,7 @@
  ##
 
 import Numeric
-
+from fivol.inline import inline
 from fivol.variables.cellVariable import CellVariable
 
 class SpSourceVariable(CellVariable):
@@ -52,8 +52,11 @@ class SpSourceVariable(CellVariable):
         self.phase = self.requires(phase)                                   
         self.parameters = parameters
         self.mPhi = self.requires(mPhi)
+
+    def calcValue(self):
+        inline.optionalInline(self._calcValueIn, self._calcValuePy)
     
-    def  calcValue(self):
+    def  _calcValuePy(self):
         s = self.parameters['s']
 	epsilon = self.parameters['epsilon']
 
@@ -63,3 +66,18 @@ class SpSourceVariable(CellVariable):
         spSourceCoeff += (2*s + epsilon**2 * thetaMag) * thetaMag
 
 	self.value = spSourceCoeff
+
+    def _calcValueIn(self):
+        inline.runInlineLoop1("""
+            double tmp = 0.;
+            if(mPhi(i) < 0.)
+              tmp = 1.;
+            value(i) = mPhi(i) * (phase(i) - tmp);
+            value(i) += (2 * s + epsilonSq * thetaMag(i)) * thetaMag(i);
+            """,mPhi = self.mPhi.getNumericValue(),
+                phase = self.phase.getNumericValue(),
+                value = self.value.value,
+                s = self.parameters['s'],
+                epsilonSq = self.parameters['epsilon']**2,
+                thetaMag = self.theta.getGrad().getMag().getNumericValue(),
+                ni = len(self.value.value))
