@@ -4,7 +4,7 @@
 
  FILE: "transientTerm.py"
                                    created: 11/12/03 {11:36:25 AM} 
-                               last update: 11/17/03 {10:57:29 AM} 
+                               last update: 11/17/03 {4:15:03 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,6 +40,7 @@ they have been modified.
 """
 
 import cellTerm
+import Numeric
 
 class TransientTerm(cellTerm.CellTerm):
     def __init__(self,equation,tranCoeff):
@@ -48,8 +49,8 @@ class TransientTerm(cellTerm.CellTerm):
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):
-	cells = self.equation.mesh().cells()
-	self.coeff = Numeric.zeroes((len(cells)),'d')
+	cells = self.equation.getMesh().getCells()
+	self.coeff = Numeric.zeros((len(cells)),'d')
 	for cell in cells:
 	    self.coeff[cell.id()] = self.tranCoeff * cell.volume() / dt
 	

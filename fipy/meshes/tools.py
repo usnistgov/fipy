@@ -2,9 +2,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "matrixEquation.py"
-                                   created: 11/12/03 {10:41:06 AM} 
-                               last update: 11/17/03 {4:13:57 PM} 
+ FILE: "tools.py"
+                                   created: 11/17/03 {5:05:47 PM} 
+                               last update: 11/17/03 {5:15:31 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -35,60 +35,12 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-12 JEG 1.0 original
+ 2003-11-17 JEG 1.0 original
 ###################################################################
 """
 
-import equation
-import Numeric
-import spmatrix
-
-
-class MatrixEquation(equation.Equation):
-    bandwidth = 5
-    
-    def __init__(
-        self,
-        name,
-        mesh,
-        terms,
-        solver,
-        boundaryConditions,
-        initialConditions
-        ):
-	self.mesh = mesh
-	print "mesh: ", self.mesh
-        var = Numeric.zeros([len(mesh.getCells())],'d')
-
-	equation.Equation.__init__(
-	    self,
-	    name,
-	    var,
-	    terms,
-	    solver)
-        print initialConditions
-
-        for initialCondition in initialConditions:
-            initialCondition.setInitialCondition(self.var)
-
-    def getVar(self):
-        return self.var    
-	
-    def getL(self):
-	return self.L
-	
-    def getB(self):
-	return self.b
-
-    def getMesh(self):
-        return self.mesh
-    
-    def solve(self,dt):
-	N = len(self.mesh.getCells())
-	self.L = spmatrix.ll_mat(N,self.bandwidth*N)
-	self.b = Numeric.zeros((N),'d')
-	for term in self.terms:
-	    term.updateCoeff(dt)
-	    term.buildMatrix()
-	self.solver.solve(self.L,self.var,self.b)
+def crossProd(v1,v2):
+    return Numeric.array([v1[1] * v2[2] - v1[2] * v2[1],
+			    v1[2] * v2[0] - v1[0] * v2[2],
+			    v1[0] * v2[1] - v1[1] * v2[0]],'d')
 	

@@ -4,7 +4,7 @@
 
  FILE: "grid2D.py"
                                    created: 11/10/03 {3:30:42 PM} 
-                               last update: 11/17/03 {11:08:37 AM} 
+                               last update: 11/17/03 {4:55:22 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -113,19 +113,22 @@ class Grid2D(mesh.Mesh):
         dy=self.dy
 	for j in range(ny+1):
 	    for	i in range(nx+1):
-		vertices += (vertex.Vertex((i * dx, j * dy)),)
+		vertices += (vertex.Vertex(Numeric.array([i * dx, j * dy],'d')),)
         return vertices	
 		    
     def createFaces(self, vertices):
         nx=self.nx
         ny=self.ny
 	faces = ()
+	id = 0
 	for j in range(ny+1):
 	    for i in range(nx):
-		faces += (face.Face((vertices[i + j * nx],vertices[i + 1 + j * nx])),)
+		faces += (face.Face((vertices[i + j * nx],vertices[i + 1 + j * nx]),id),)
+		id += 1
 	for j in range(ny):
 	    for i in range(nx+1):
-		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1])),)
+		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1]),id),)
+		id += 1
 	return faces
 	
     def createCells(self, faces):
@@ -148,7 +151,7 @@ class Grid2D(mesh.Mesh):
     def createInteriorFaces(self,faces):
         interiorFaces = ()
         for face in faces:
-            if len(face.getCells()) == 1:
+            if len(face.getCells()) == 2:
                 interiorFaces += (face,)
         return interiorFaces
 

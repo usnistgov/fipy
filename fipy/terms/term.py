@@ -4,7 +4,7 @@
 
  FILE: "term.py"
                                    created: 11/12/03 {10:54:37 AM} 
-                               last update: 11/17/03 {11:05:50 AM} 
+                               last update: 11/17/03 {4:11:27 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -38,6 +38,8 @@ they have been modified.
  2003-11-12 JEG 1.0 original
 ###################################################################
 """
+
+import Numeric
 
 class Term:
     def __init__(self,stencil,equation):

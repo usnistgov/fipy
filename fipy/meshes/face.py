@@ -4,11 +4,9 @@
 
  FILE: "face.py"
                                    created: 11/10/03 {3:23:47 PM}
-                               last update: 11/17/03 {11:13:36 AM} 
+                               last update: 11/17/03 {5:15:54 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
- Author: Daniel Wheeler
- E-mail: daniel.wheeler@nist.gov
    mail: NIST
     www: http://ctcms.nist.gov
  
@@ -39,6 +37,7 @@ they have been modified.
 ###################################################################
 """
 
+import tools
 
 class Face:
     def __init__(self, vertices, id):
@@ -54,3 +53,18 @@ class Face:
 		
     def getId(self):
 	return self.id
+	
+    def center(self):
+	ctr = self.vertices[0].getCoordinates()
+	for vertex in self.vertices[1:]:
+	    ctr += vertex.getCoordinates()
+	return ctr
+	
+    def area(self):
+	
+	
+    def normal(self):
+	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
+	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
+	norm = tools.crossProd(t1,t2)
+	

@@ -4,7 +4,7 @@
 
  FILE: "cell.py"
                                    created: 11/10/03 {3:23:11 PM} 
-                               last update: 11/17/03 {11:11:02 AM} 
+                               last update: 11/17/03 {4:27:30 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,4 +48,9 @@ class Cell:
 
     def getId(self):
         return self.id
+	
+    def volume(self):
+	vol = 0.
+	for face in self.faces:
+	    vol += face.center()[0] * face.area() * face.normal()[0]
 
