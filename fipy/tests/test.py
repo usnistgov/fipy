@@ -47,12 +47,15 @@
 import unittest
 
 import fivol.examples.test
+import fivol.tools.test
 import fivol.tests.testProgram
+
 
 def suite():
     theSuite = unittest.TestSuite()
     
     theSuite.addTest(fivol.examples.test.suite())
+    theSuite.addTest(fivol.tools.test.suite())
     
     return theSuite
 
