@@ -44,8 +44,7 @@
  # ###################################################################
  #
 
-
-"""
+r"""
 
 This module takes a Gmsh output file (`.msh`) and converts it into a
 FiPy mesh. This currently supports triangular and tetrahedral meshes
@@ -115,6 +114,61 @@ Test cases:
    
    >>> print twomesh.cellFaceIDs.tolist()
    [[0, 1, 2], [0, 3, 4], [2, 5, 6], [7, 4, 6], [7, 8, 9], [8, 10, 11], [12, 13, 9], [14, 11, 12]]
+
+The following test case is to test the handedness of the mesh to check
+it does not return negative volumes. Firstly we set up a list with
+tuples of strings to be read by gmsh. The list provide instuctions to
+gmsh to form a circular mesh.
+
+   >>> cellSize = 0.1
+   >>> radius = 1.
+   >>> lines = ['cellSize = ' + str(cellSize) + ';\n',
+   ...           'radius = ' + str(radius) + ';\n',
+   ...           'Point(1) = {0, 0, 0, cellSize};\n',
+   ...           'Point(2) = {-radius, 0, 0, cellSize};\n',
+   ...           'Point(3) = {0, radius, 0, cellSize};\n',
+   ...           'Point(4) = {radius, 0, 0, cellSize};\n',
+   ...           'Point(5) = {0, -radius, 0, cellSize};\n',
+   ...           'Circle(6) = {2, 1, 3};\n',
+   ...           'Circle(7) = {3, 1, 4};\n',
+   ...           'Circle(8) = {4, 1, 5};\n',
+   ...           'Circle(9) = {5, 1, 2};\n',
+   ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
+   ...           'Plane Surface(11) = {10};\n']
+
+   >>> def buildMesh(lines):
+   ...     import tempfile
+   ...     (f, geomName) = tempfile.mkstemp('.geo')
+   ...     file = open(geomName, 'w')
+   ...     file.writelines(lines)
+   ...     file.close()
+   ...     import os
+   ...     os.close(f)
+   ...     (f, meshName) = tempfile.mkstemp('.msh')
+   ...     os.system('gmsh ' + geomName + ' -2 -v 0 -o ' + meshName)
+   ...     os.close(f)
+   ...     os.remove(geomName)
+   ...     mesh = GmshImporter2D(meshName)
+   ...     os.remove(meshName)
+   ...     return mesh
+
+Check that the sign of the mesh volumes is correct
+
+   >>> mesh = buildMesh(lines)
+   >>> print mesh.getCellVolumes()[0] > 0
+   1
+
+Reverse the handedness of the mesh and check the sign
+
+   >>> lines[7:12] = ['Circle(6) = {3, 1, 2};\n',
+   ...                'Circle(7) = {4, 1, 3};\n',
+   ...                'Circle(8) = {5, 1, 4};\n',
+   ...                'Circle(9) = {2, 1, 5};\n',
+   ...                'Line Loop(10) = {9, 8, 7, 6};\n',]
+
+   >>> mesh = buildMesh(lines)
+   >>> print mesh.getCellVolumes()[0] > 0
+   1
    
 """
 
@@ -261,7 +315,7 @@ class DataGetter:
             for j in range(len(cell)):
                 cellFaceIDs[i, j] = self.faceStrToFaceIDs[listToString(self.cellFaceVertexIDs[i, j])]
         self.cellFaceIDs = cellFaceIDs
-            
+    
 class GmshImporter2D(mesh2D.Mesh2D):
 
     def __init__(self, filename):
@@ -269,6 +323,9 @@ class GmshImporter2D(mesh2D.Mesh2D):
         a = dg.getData(filename, dimensions = 2)
         mesh2D.Mesh2D.__init__(self, a[0], a[1], a[2])
 
+    def getCellVolumes(self):
+        return abs(mesh2D.Mesh2D.getCellVolumes(self))
+    
 class GmshImporter3D(mesh.Mesh):
 
     def __init__(self, filename):
@@ -276,6 +333,9 @@ class GmshImporter3D(mesh.Mesh):
         a = dg.getData(filename, dimensions = 3)
         mesh.Mesh.__init__(self, a[0], a[1], a[2])
 
+    def getCellVolumes(self):
+        return abs(mesh.Mesh.getCellVolumes(self))
+    
 def listToString(list):
     res = str(list[0])
     for i in list[1:]:
