@@ -41,8 +41,38 @@
  # ###################################################################
  ##
 
+"""
 
+A `DistanceEquation` object solves the equation,
 
+.. raw:: latex
+
+    $$ | \\nabla \\phi | = 1 $$
+
+using the fast marching method with an initial condition defined by
+the zero level set.
+
+Currently the solution is first order, This suffices for initial
+conditions with straight edges (e.g. trenches in
+electrodeposition). The method should work for unstructured 2D grids
+but testing on unstructured grids is untested thus far. This is a 2D
+implementation as it stands. Extending to 3D should be relatively
+simple.
+
+Here we will define a few test cases. Firstly a 1D test case
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
+   >>> from distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> eqn = DistanceEquation(var)
+   >>> eqn.solve()
+   >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75) 
+   >>> Numeric.allclose(answer, Numeric.array(var))
+   1
+
+"""
+__docformat__ = 'restructuredtext'
 
 import Numeric
 import MA
@@ -53,6 +83,12 @@ import fipy.tools.vector as vector
 class DistanceEquation(Equation):
 
     def __init__(self, var):
+        """
+
+        The `var` argument must contain both positive and negative to
+        define the zero level set.
+        
+        """
         
         self.mesh = var.getMesh()
 	
@@ -65,7 +101,7 @@ class DistanceEquation(Equation):
     def solve(self):
         setValueFlag = self._calcInterfaceValues()
         setValueFlag = self._calcInitialTrialValues(setValueFlag)
-##        self._calcRemainingValues(setValueFlag)
+        self._calcRemainingValues(setValueFlag)
 
     def _calcInterfaceValues(self):
         """
@@ -220,14 +256,13 @@ class DistanceEquation(Equation):
                                                    setValueFlag,
                                                    2))
 
-        
+        trialCellIDs = Numeric.nonzero(Numeric.where(setValueFlag == 2, 1, 0))
 
-        for cellID in range(N):
-            if setValueFlag[cellID] == 2:
-                self.var[cellID] = self._calcTrialValue(cellID, setValueFlag)
+        for cellID in trialCellIDs:
+            self.var[cellID] = self._calcTrialValue(cellID, setValueFlag)
 
         return setValueFlag
-     
+
     def _calcTrialValue(self, cellID, setValueFlag):
 
         cellToCellIDs = self.mesh.getCellToCellIDsFilled()[cellID]
@@ -252,13 +287,70 @@ class DistanceEquation(Equation):
             raise Error
         elif NSetValues == 1:
             return values[0] + sign * dAP[0]
-        elif NSetValues == 2:
+        elif NSetValues >= 2:
             quad = self._calcQuadratic(values[0], values[1], normals[0], normals[1], dAP[0], dAP[1])
             if sign > 0:
                 return quad[0]
             else:
                 return quad[1]
 
+    def _calcRemainingValues(self, setValueFlag):
+        """
+        
+        After the initial trial values have been evaluated this
+        routine marches out to evaluate all the remaining cells.
+        
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 1, ny = 4)
+        >>> from distanceVariable import DistanceVariable
+        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1))
+        >>> eqn = DistanceEquation(var)
+        >>> setValueFlag = eqn._calcInterfaceValues()
+        >>> setValueFlag = eqn._calcInitialTrialValues(setValueFlag)
+        >>> eqn._calcRemainingValues(setValueFlag)
+        >>> Numeric.allclose(Numeric.array((-.5, .5, 1.5, 2.5)), Numeric.array(var))
+        1
+
+        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, 1, 1, 1, 1, 1))
+        >>> eqn = DistanceEquation(var)
+        >>> setValueFlag = eqn._calcInterfaceValues()
+        >>> setValueFlag = eqn._calcInitialTrialValues(setValueFlag)
+        >>> eqn._calcRemainingValues(setValueFlag)
+        >>> x = mesh.getCellCenters()[:,0]
+        >>> y = mesh.getCellCenters()[:,1]
+        >>> answer = Numeric.sqrt((x - .5)**2 + (y - .5)**2) - 0.5
+        >>> Numeric.allclose(answer, Numeric.array(var), atol = 5e-1)
+        1
+        
+        """
+        trialCellIDs = list(Numeric.nonzero(Numeric.where(setValueFlag == 2, 1, 0)))
+
+        while len(trialCellIDs) > 0:
+
+            values = Numeric.take(self.var, trialCellIDs)
+            argmin = Numeric.argmin(abs(values))
+            cellID = trialCellIDs[argmin]
+            setValueFlag[cellID] = 1
+            trialCellIDs.remove(cellID)
+            cellToCellIDs = self.mesh.getCellToCellIDsFilled()[cellID]
+            for adjCellID in cellToCellIDs:
+                if setValueFlag[adjCellID] != 1:
+##                    print 'setValueFlag',setValueFlag
+##                    print 'cellID',cellID
+##                    print 'adjCellID',adjCellID
+##                    print 'setValueFlag[adjCellID]',setValueFlag[adjCellID]
+##                    print self._calcTrialValue(adjCellID, setValueFlag)
+##                    print 'self._calcTrialValue(adjCellID, setValueFlag)',self._calcTrialValue(adjCellID, setValueFlag)
+                    self.var[adjCellID] = self._calcTrialValue(adjCellID, setValueFlag)
+                    if setValueFlag[adjCellID] == 0:
+                        setValueFlag[adjCellID] = 2
+                        trialCellIDs.append(adjCellID)
+
+                        
+            
+
+            
 def _test(): 
     import doctest
     return doctest.testmod()
