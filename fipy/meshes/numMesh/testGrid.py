@@ -165,6 +165,12 @@ class TestGrid(TestMeshBase):
 
         self.exteriorCellIDs = Numeric.array((0, 1, 2, 3, 4, 5))
 
+        self.cellNormals = Numeric.array( ( (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) )  ) )
                                        
     def testVertices(self):
         self.assertArrayEqual(self.vertices, self.mesh.createVertices())
