@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/26/05 {9:02:18 AM}
+ #                                last update: 3/7/05 {2:59:56 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -138,8 +138,8 @@ BCs = (FixedFlux(mesh.getFacesRight(), 0),
 
 if __name__ == '__main__':
 
-    from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
+    import fipy.viewers
+    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
     viewer.plot()
     
 dexp=-5

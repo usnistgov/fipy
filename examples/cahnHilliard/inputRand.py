@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputRand.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {11:01:59 AM}
+ #                                last update: 3/7/05 {2:30:11 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -95,7 +95,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+import fipy.viewers
 from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
 from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
 import random
@@ -143,7 +143,7 @@ eqch= CahnHilliardEquation(
 it = Iterator((eqch,))
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
+    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
     viewer.plot()
 ##    dexp=-5
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:01:59 PM} 
+ #                                last update: 3/7/05 {2:03:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,10 @@ order explicit upwind scheme.
 
 import Numeric
      
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.gist1DViewer import Gist1DViewer
+import fipy.viewers
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
@@ -65,7 +65,7 @@ velocity = -1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 10000
 
-mesh = Grid2D(dx = dx, nx = nx)
+mesh = Grid1D(dx = dx, nx = nx)
 
 startingArray = Numeric.zeros(nx, 'd')
 startingArray[nx/4:nx/2] = 1. 
@@ -86,12 +86,12 @@ boundaryConditions = (
     )
 
 from fipy.terms.transientTerm import TransientTerm
-eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (velocity, 0.))
-eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity, 0.))
+eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (velocity,))
+eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = Gist1DViewer(vars=(var1,var2))
+    viewer = fipy.viewers.make(vars=(var1,var2))
     
     for step in range(steps):
 	eq1.solve(var = var1, 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 2/19/05 {9:04:20 AM} 
+ #                                last update: 3/7/05 {2:15:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -606,7 +606,8 @@ dist = setup(	name = "FiPy",
 			    'fipy.tools.dimensions',
 			    'fipy.tools.inline',
 			'fipy.variables',
-			'fipy.viewers'
+			'fipy.viewers',
+                            'fipy.viewers.gistViewer'
 	],
 	classifiers = [
 	    'Development Status :: 4 - Alpha',

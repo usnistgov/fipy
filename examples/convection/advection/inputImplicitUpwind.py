@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputImpicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:02:00 PM} 
+ #                                last update: 3/7/05 {1:58:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,7 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.gist1DViewer import Gist1DViewer
+import fipy.viewers
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -91,7 +91,7 @@ eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity, 0.))
 
 if __name__ == '__main__':
     
-    viewer = Gist1DViewer(vars=(var,))
+    viewer = fipy.viewers.make(vars=(var,))
     viewer.plot()
     raw_input("press key to continue")
     for step in range(steps):

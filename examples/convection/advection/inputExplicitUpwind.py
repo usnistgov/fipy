@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:02:08 PM} 
+ #                                last update: 3/7/05 {1:50:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,11 +47,11 @@ order explicit upwind scheme.
 
 import Numeric
      
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.gist1DViewer import Gist1DViewer
+import fipy.viewers
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -60,17 +60,15 @@ valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 400
-ny = 1
 dx = L / nx
-dy = L / ny
 cfl = 0.1
 velocity = -1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 1000
 
-mesh = Grid2D(dx, dy, nx, ny)
+mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = Numeric.zeros(nx * ny, 'd')
+startingArray = Numeric.zeros(nx, 'd')
 startingArray[50:90] = 1. 
 
 var = CellVariable(
@@ -80,19 +78,17 @@ var = CellVariable(
 
 boundaryConditions = (
     FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight),
-    FixedFlux(mesh.getFacesTop(), 0.),
-    FixedFlux(mesh.getFacesBottom(), 0.)
+    FixedValue(mesh.getFacesRight(), valueRight)
     )
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 
-eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity, 0.))
+eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = Gist1DViewer(vars=(var,))
+    viewer = fipy.viewers.make(vars=(var,))
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,

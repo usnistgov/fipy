@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/28/05 {4:31:46 PM}
+ #                                last update: 3/7/05 {3:00:36 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -148,8 +148,8 @@ or
 If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
     ...     viewer.plot()
 
 We iterate the solution to equilibrium and, if we are running interactively, 
