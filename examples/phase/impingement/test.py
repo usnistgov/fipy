@@ -76,13 +76,13 @@ class TestImpingement(TestBase):
 
 class Test1D(TestImpingement):
     def setUp(self):
-        self.system = System1D()
+        self.system = System1D(nx = 40, ny = 1)
         self.testFile = 'testImpingement.gz'
         TestImpingement.setUp(self)
 
 class Test4Particles(TestImpingement):
     def setUp(self):
-        self.system = System4Particles()
+        self.system = System4Particles(nx = 20, ny = 20, drivingForce = 10.)
         self.testFile = '4ParticleData.gz'
         TestImpingement.setUp(self)
         

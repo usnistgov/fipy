@@ -45,23 +45,21 @@ from __future__ import nested_scopes
 from fivol.examples.phase.examples.impingement.input import ImpingementSystem
 
 class System1D(ImpingementSystem):
-    def __init__(self):
-        def getRightCells(cell, Lx = 1., Ly = 1.):
+
+    def initialConditions(self, mesh = None, phase = None, theta = None, Lx = None, Ly = None):
+
+        cells = mesh.getCells()
+        phase.setValue(1., cells)
+        theta.setValue(1., cells)
+
+        def getRightCells(cell, Lx = None):
             if cell.getCenter()[0] > Lx / 2.:
                 return 1
-
-        def getAllCells(cell, Lx = 1., Ly = 1.):
-            return 1.
-    
-        initialConditions = (
-            { 'phase value' : 1., 'theta value' : 1., 'func' : getAllCells },
-            { 'phase value' : 1., 'theta value' : 0., 'func' : getRightCells }        
-            )
-
-        ImpingementSystem.__init__(self, nx = 40, ny = 1, initialConditions = initialConditions)
-    
+            
+        theta.setValue(0., mesh.getCells(getRightCells, Lx = Lx))
+        
 if __name__ == '__main__':
-    system = System1D()
+    system = System1D(nx = 40, ny = 1)
     system.run()
     raw_input()
 

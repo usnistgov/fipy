@@ -60,7 +60,7 @@ from fivol.examples.phase.theta.thetaEquation import ThetaEquation
 
 class ImpingementSystem:
 
-    def __init__(self, nx = 100, ny = 100, initialConditions = None, steps = 10, drivingForce = 1.):
+    def __init__(self, nx = 100, ny = 100, steps = 10, drivingForce = 1.):
         timeStepDuration = 0.02
         self.steps = steps
 
@@ -129,14 +129,16 @@ class ImpingementSystem:
             'phase' : phase
             }
 
-        for initialCondition in initialConditions:
-            func = initialCondition['func']
-            def funcIn(cell, Lx = Lx, Ly = Ly):
-                return func(cell, Lx = Lx, Ly = Ly)
-            cells = mesh.getCells(funcIn)
-            phase.setValue(initialCondition['phase value'],cells)
-            theta.setValue(initialCondition['theta value'],cells)
-            
+        
+##        for initialCondition in initialConditions:
+##            func = initialCondition['func']
+##            def funcIn(cell, Lx = Lx, Ly = Ly):
+##                return func(cell, Lx = Lx, Ly = Ly)
+##            cells = mesh.getCells(funcIn)
+##            phase.setValue(initialCondition['phase value'],cells)
+##            theta.setValue(initialCondition['theta value'],cells)
+        self.initialConditions(mesh = mesh, phase = phase, theta = theta, Lx = Lx, Ly = Ly)
+
         thetaEq = ThetaEquation(
             var = theta,
             solver = LinearPCGSolver(
@@ -175,6 +177,10 @@ class ImpingementSystem:
 
     def getParameters(self):
         return self.parameters
+
+    def initialConditions(self, phase = None, theta = None, mesh = None, Lx = None, Ly = None):
+        pass
+    
 
     def run(self):
 ##        self.phaseViewer.plot(fileName = 'phase.ps')

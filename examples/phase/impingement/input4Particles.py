@@ -47,52 +47,32 @@ import Numeric
 import time
 
 class System4Particles(ImpingementSystem):
-    def __init__(self, nx= 20, ny = 20, steps = 10):
-        def make_circle(a,b,r,val):
-            for i in range(n):
-                for j in range(n):
-                    ydis=(i+0.5)*dx
-                    xdis=(j+0.5)*dx
-                    if ((xdis-a)**2+(ydis-b)**2)<(r)**2:
-                        th.u[i,j]=val
-                        pf.u[i,j]=1.
 
-        
+    def initialConditions(self, mesh = None, phase = None, theta = None, Lx = None, Ly = None):
+        pi = Numeric.pi
         def circle(cell, a = 0., b = 0., r = 1.):
             x = cell.getCenter()[0]
             y = cell.getCenter()[1]
             if ((x - a)**2 + (y - b)**2) < r**2:
                 return 1.
+
+        cells = mesh.getCells()
+        phase.setValue(0., cells)
+        theta.setValue(-pi + 0.0001, cells)
+
+        circleCenters = ((0., 0.), (Lx, 0.), (0., Ly), (Lx, Ly))
+        thetaValue = (2. * pi / 3., -2. * pi / 3., -2. * pi / 3. + 0.3, 2. * pi / 3.)
+        for i in range(4):
+            aa = circleCenters[i][0]
+            bb = circleCenters[i][1]
+            cells = mesh.getCells(circle, a = aa, b = bb, r = Lx / 2)
+            phase.setValue(1., cells)
+            theta.setValue(thetaValue[i],cells)
+
         
-        def bottomRightCells(cell, Lx = 1., Ly = 1., circle = circle):
-            return circle(cell, a = Lx, b = 0., r = Lx / 2.)
-
-        def bottomLeftCells(cell, Lx = 1., Ly = 1., circle = circle):
-            return circle(cell, a = 0., b = 0., r = Lx / 2.)
-        
-        def topRightCells(cell, Lx = 1., Ly = 1., circle = circle):
-            return circle(cell, a = Lx, b = Ly, r = Lx / 2.)
-        
-        def topLeftCells(cell, Lx = 1., Ly = 1., circle = circle):
-            return circle(cell, a = 0., b = Ly, r = Lx / 2.)
-
-        def getAllCells(cell, Lx = 1., Ly = 1.):
-            return 1.
-
-        pi = Numeric.pi
-    
-        initialConditions = (
-            { 'phase value' : 0., 'theta value' : -pi + 0.0001,        'func' : getAllCells },
-            { 'phase value' : 1., 'theta value' : 2. * pi / 3.,        'func' : bottomLeftCells },
-            { 'phase value' : 1., 'theta value' : -2. * pi / 3.,       'func' : bottomRightCells },
-            { 'phase value' : 1., 'theta value' : -2. * pi / 3. + 0.3, 'func' : topLeftCells },
-            { 'phase value' : 1., 'theta value' : 2. * pi / 3.,        'func' : topRightCells }
-            )
-
-        ImpingementSystem.__init__(self, nx = nx, ny = ny, initialConditions = initialConditions, steps = steps, drivingForce = 10.)
 
 if __name__ == '__main__':
-    system = System4Particles(nx = 100, ny = 100, steps = 100)
+    system = System4Particles(nx = 100, ny = 100, steps = 100, drivingForce = 10.)
     t1 = time.time()
     system.run()
     t2 = time.time()

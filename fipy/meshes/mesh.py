@@ -62,7 +62,7 @@ class Mesh:
 	
 	self.calcAdjacentCellIDs()
 
-    def getCells(self,func = None):
+    def getCells(self,func = None, **args):
 	"""Return Cells of Mesh.
 	"""
         if func == None:
@@ -70,7 +70,7 @@ class Mesh:
         else:        
             returnCells = ()
             for cell in self.cells:
-                if func(cell):
+                if func(cell, **args):
                     returnCells += (cell,)
             return returnCells
 
