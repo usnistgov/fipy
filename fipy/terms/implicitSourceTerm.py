@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 2/18/05 {10:41:13 AM} 
+ #                                last update: 2/18/05 {12:20:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,9 +50,9 @@ class ImplicitSourceTerm(SourceTerm):
     """
     def getWeight(self, mesh):
 	return {
-	    'diagonal' : 1, 
-	    'b vector':  0, 
-	    'new value': 0, 
-	    'old value': 0
+	    'b vector':   0, 
+	    'new value':  0, 
+	    'old value':  0,
+            'diagonal' :  1 
 	}
 

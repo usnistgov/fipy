@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {11:37:27 AM} 
+ #                                last update: 2/18/05 {12:20:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -370,9 +370,9 @@ For our source,
 or
 
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
-    >>> S1 = -(dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase))
-    >>> S0 = mPhi * phase * (1 - phase) + S1 * phase * (S1 > 0)
-    >>> implicitSource = ImplicitSourceTerm(sourceCoeff = -S1 * (S1 > 0))
+    >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> implicitSource = ImplicitSourceTerm(sourceCoeff = S1 * (S1 < 0))
     >>> eq = diffusionTerm + S0 + implicitSource
     
 Using this scheme, where the coefficient of the implicit source term is
