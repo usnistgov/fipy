@@ -48,7 +48,7 @@ import os
 import cPickle
 import tests
 from meshes.grid2D import Grid2D
-from examples.phase.phaseEquation import PhaseEquation
+from examples.phase.type1PhaseEquation import Type1PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
@@ -67,7 +67,8 @@ class TestPhase(TestBase):
 	self.tolerance = 1e-10
 
         phaseParameters={
-            'tau' :        0.1 / self.timeStep,
+            'tau' :        0.1,
+            'time step duration' : self.timeStep,
             'epsilon' :    0.008,
             's' :          0.01,
             'alpha' :      0.015,
@@ -92,8 +93,6 @@ class TestPhase(TestBase):
             value = 1.
             )
 	    
-	phaseParameters['phi'] = self.var
-        
         theta = ModularVariable(
             name = 'Theta',
             mesh = self.mesh,
@@ -107,11 +106,12 @@ class TestPhase(TestBase):
         
         theta.setValue(self.funcValue,rightCells)
 
-	phaseParameters['theta'] = theta
+        fields = {
+            'temperature' : 1.,
+            'theta' : theta
+            }            
 	
-	phaseParameters['temperature'] = 1.
-	
-        eq = PhaseEquation(
+        eq = Type1PhaseEquation(
             self.var,
             solver = LinearPCGSolver(
 		tolerance = 1.e-15, 
@@ -121,6 +121,7 @@ class TestPhase(TestBase):
 ##		FixedValue(self.mesh.getFacesLeft(),valueLeft),
 ##		FixedValue(self.mesh.getFacesRight(),valueRight)
 	    ),
+            fields = fields,
             parameters = phaseParameters
 	)
         
