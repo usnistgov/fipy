@@ -112,6 +112,12 @@ class FaceTerm(Term):
 
         weight = self.weight['explicit']
         coeff = Numeric.array(self.coeff)
+        Nfac = self.mesh.getNumberOfFaces()
+
+        cell1Diag = Numeric.resize(Numeric.array(weight['cell 1 diag']), (Nfac,))
+        cell1OffDiag = Numeric.resize(Numeric.array(weight['cell 1 offdiag']), (Nfac,))
+        cell2Diag = Numeric.resize(Numeric.array(weight['cell 2 diag']), (Nfac,))
+        cell2OffDiag = Numeric.resize(Numeric.array(weight['cell 2 offdiag']), (Nfac,))
 
 	inline.runInlineLoop1("""
 	    long int faceID = faceIDs(i);
@@ -120,16 +126,16 @@ class FaceTerm(Term):
 	    double oldArrayId1 = oldArray(cellID1);
 	    double oldArrayId2 = oldArray(cellID2);
 	 
-	    b(cellID1) += -coeff(faceID) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2);
-	    b(cellID2) += -coeff(faceID) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1);
+	    b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1 + cell1OffDiag(faceID) * oldArrayId2);
+	    b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2 + cell2OffDiag(faceID) * oldArrayId1);
 	""",oldArray = Numeric.array(oldArray) / coeffScale,
 	    id1 = id1,
 	    id2 = id2,
 	    b = b,
-	    cell1Diag = weight['cell 1 diag'],
-	    cell1OffDiag = weight['cell 1 offdiag'],
-	    cell2Diag = weight['cell 2 diag'],
-	    cell2OffDiag = weight['cell 2 offdiag'],
+	    cell1Diag = cell1Diag,
+	    cell1OffDiag = cell1OffDiag,
+	    cell2Diag = cell2Diag,
+	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
 	    faceIDs = self.mesh.getInteriorFaceIDs(),
 	    ni = len(self.mesh.getInteriorFaceIDs()))
