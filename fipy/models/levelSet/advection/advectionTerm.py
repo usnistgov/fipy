@@ -136,7 +136,8 @@ class AdvectionTerm(Term):
         adjacentValues = Numeric.take(oldArray, cellToCellIDs)
 
         differences = self.getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs)
-
+        differences = differences.filled(fill_value = 0)
+        
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
 
