@@ -64,7 +64,19 @@ function equation to march out the velocity from the interface.
    1
    >>> Numeric.allclose((1.25, .5, 2, 1.25), Numeric.array(extensionVar))
    1
-   
+
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
+   ...                                               1, 1, 1,
+   ...                                               1, 1, 1))
+   >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, -1,
+   ...                                                    2, -1, -1,
+   ...                                                   -1, -1, -1))
+   >>> setValueFlag = ExtensionEquation(var, extensionVar).solve()
+   >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
+   >>> Numeric.allclose(answer, Numeric.array(extensionVar), atol = 1e-5)
+   1
+
 """
 __docformat__ = 'restructuredtext'
 
