@@ -44,11 +44,13 @@
 """
 
 import unittest
+import doctest
 import fipy.tests.testProgram
 import fipy.meshes.numMesh.testGrid
 import fipy.meshes.numMesh.testMesh
 import fipy.meshes.numMesh.testMesh3D
 import fipy.meshes.numMesh.testTri2D
+import fipy.meshes.numMesh.mesh
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -56,6 +58,7 @@ def suite():
     theSuite.addTest(fipy.meshes.numMesh.testMesh.suite())
     theSuite.addTest(fipy.meshes.numMesh.testMesh3D.suite())
     theSuite.addTest(fipy.meshes.numMesh.testTri2D.suite())
+    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.mesh))
     return theSuite
     
 if __name__ == '__main__':
