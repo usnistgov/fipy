@@ -1,13 +1,16 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 01/06/04 { 5:38:23 PM}
+ #                                last update: 1/13/04 {1:08:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,10 +35,11 @@
  #  
  # ###################################################################
  ##
-"""
+ 
+import Numeric
 
 from vectorCellVariable import VectorCellVariable
-import Numeric
+import tools.array
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -49,13 +53,13 @@ class CellGradVariable(VectorCellVariable):
 	
 	ids = self.mesh.getCellFaceIDs()
 
-	contributions = Numeric.take(self.faceGradientContributions[:], ids)
-	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
+	contributions = tools.array.take(self.faceGradientContributions[:],ids)
+	contributions = contributions.reshape((N,M,self.mesh.getDim()))
 
 	orientations = self.mesh.getCellFaceOrientations()
 
-	grad = Numeric.sum(orientations*contributions,1)
-
+	grad = (orientations*contributions).sum(1)
+	
 	volumes = self.mesh.getCellVolumes()
 
 	grad = grad/volumes[:,Numeric.NewAxis]

@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 12/19/03 {3:17:31 PM} 
+ #                                last update: 1/13/04 {11:46:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,8 +36,10 @@
  # ###################################################################
  ##
 
-from faceVariable import FaceVariable
 import Numeric
+
+from faceVariable import FaceVariable
+import tools.array
 
 class CellToFaceVariable(FaceVariable):
     def __init__(self, var, mod = None):
@@ -47,7 +53,8 @@ class CellToFaceVariable(FaceVariable):
     def calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	cell1 = Numeric.take(self.var[:], id1)
-	cell2 = Numeric.take(self.var[:], id2)
+	cell1 = tools.array.take(self.var,id1)
+	cell2 = tools.array.take(self.var,id2)
+	
 	self.value = self.mod(cell1 - cell2) * alpha + cell2
 

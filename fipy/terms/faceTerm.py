@@ -1,11 +1,12 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update:  01/05/04 { 2:33:46 PM}
+ #                                last update: 1/13/04 {10:19:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,7 +40,6 @@
  #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
-"""
  
 from term import Term
 import Numeric
@@ -70,7 +70,7 @@ class FaceTerm(Term):
 		'cell 2 offdiag': self.coeff*weight['cell 2 offdiag']
 	    }
 	    
-    def buildMatrix(self,L,oldArray,b):
+    def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
 	"""Implicit portion considers
 	"""
 	
@@ -81,20 +81,20 @@ class FaceTerm(Term):
         ## implicit
         if self.weight.has_key('implicit'):
 	    
-	    L.update_add_something(self.implicit['cell 1 diag'][:self.interiorN],id1,id1)
-	    L.update_add_something(self.implicit['cell 1 offdiag'][:self.interiorN],id1,id2)
-	    L.update_add_something(self.implicit['cell 2 offdiag'][:self.interiorN],id2,id1)
-	    L.update_add_something(self.implicit['cell 2 diag'][:self.interiorN],id2,id2)
+	    L.update_add_something(self.implicit['cell 1 diag'][:self.interiorN]/coeffScale,id1,id1)
+	    L.update_add_something(self.implicit['cell 1 offdiag'][:self.interiorN]/coeffScale,id1,id2)
+	    L.update_add_something(self.implicit['cell 2 offdiag'][:self.interiorN]/coeffScale,id2,id1)
+	    L.update_add_something(self.implicit['cell 2 diag'][:self.interiorN]/coeffScale,id2,id2)
 	    
 	    for boundaryCondition in self.boundaryConditions:
 		LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
                 
-		L.update_add_something(LL,ids,ids)
+		L.update_add_something(LL/coeffScale,ids,ids)
                 ## WARNING: the next line will not work if one cell has two faces on the same
                 ## boundary. Numeric.put will not add both values to the b array but over write
                 ## the first with the second. We really need a putAdd function rather than put.
 		## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
-                tools.vector.putAdd(b, ids, bb)
+                tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
 		
         ## explicit
@@ -103,8 +103,8 @@ class FaceTerm(Term):
             oldArrayId1 = Numeric.take(oldArray, id1)
             oldArrayId2 = Numeric.take(oldArray, id2)
             
-            tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:]))
-            tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:]))
+            tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
+            tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
 
 ##            for i in range(self.interiorN):
 
@@ -115,5 +115,6 @@ class FaceTerm(Term):
 
                 LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
                 oldArrayIds = Numeric.take(oldArray, ids)
-                tools.vector.putAdd(b, ids, -LL * oldArrayIds)
-                tools.vector.putAdd(b, ids, bb)
+                tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
+                tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+

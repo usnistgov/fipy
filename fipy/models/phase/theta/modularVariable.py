@@ -1,13 +1,16 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/19/03 {3:06:22 PM} 
+ #                                last update: 1/13/04 {12:01:33 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,14 +35,13 @@
  #  
  # ###################################################################
  ##
-"""
 
 from variables.cellVariable import CellVariable
 import Numeric
 
 class ModularVariable(CellVariable):
-    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, hasOld = 1):
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, scaling = scaling, unit = unit, hasOld = hasOld)
+    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
 
         self.mod = lambda array, pi=Numeric.pi: (array + 3. * pi) % (2 * pi) - pi
 

@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 12/12/03 {10:27:06 PM} 
+ #                                last update: 1/13/04 {11:42:28 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

@@ -6,9 +6,11 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 12/22/03 {3:53:19 PM} 
+ #                                last update: 1/13/04 {1:01:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

@@ -6,9 +6,11 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/29/03 {11:10:21 AM} 
+ #                                last update: 1/13/04 {1:00:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -39,6 +41,9 @@
  # ###################################################################
  ##
 
+from profiler.profiler import Profiler
+from profiler.profiler import calibrate_profiler
+ 
 from meshes.grid2D import Grid2D
 from equations.diffusionEquation import DiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -91,10 +96,17 @@ def getParameters(nx ,ny):
     return parameters
 
 if __name__ == '__main__':
-    parameters = getParameters(20,20)
+    parameters = getParameters(50,50)
     it = parameters['it']
     var = parameters['var']
     viewer = Grid2DGistViewer(var)
+    
+    fudge = calibrate_profiler(10000)
+    profile = Profiler('profile', fudge=fudge)
+    
     it.timestep(1)
+    
+    profile.stop()
+    
     viewer.plot()
     raw_input()

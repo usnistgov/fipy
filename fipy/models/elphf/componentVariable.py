@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 12/29/03 {11:49:48 AM} 
+ #                                last update: 1/13/04 {11:58:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -33,21 +37,31 @@
  ##
 
 from variables.cellVariable import CellVariable
+from tools.dimensions import physicalField
 
 class ComponentVariable(CellVariable):
-    def __init__(self, mesh, parameters, value=0., hasOld = 1):
+    def __init__(self, mesh, parameters, systemParameters, value=0., hasOld = 1):
 	if parameters.has_key('name'):
 	    name = parameters['name']
 	else:
 	    name = ''
+# 	value = physicalField.PhysicalField(value)
+	value = physicalField.Scale(value, "MOLARVOLUME**-1")
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 	self.parameters = parameters
-	self.standardPotential = self.parameters['standard potential']
-	self.barrierHeight = self.parameters['barrier height']
+## 	self.standardPotential = physicalField.PhysicalField(parameters['standard potential'])
+## 	self.barrierHeight = physicalField.PhysicalField(parameters['barrier height'])
+ 	self.standardPotential = physicalField.Scale(parameters['standard potential'], "ENERGY")
+ 	self.barrierHeight = physicalField.Scale(parameters['barrier height'], "ENERGY")
 	if self.parameters.has_key('valence'):
 	    self.valence = self.parameters['valence']
 	else:
 	    self.valence = 0
+	if self.parameters.has_key('diffusivity'):
+ 	    self.diffusivity = physicalField.Scale(parameters['diffusivity'], "LENGTH**2/TIME")
+## 	    self.diffusivity = physicalField.PhysicalField(parameters['diffusivity'])
+	else:
+	    self.diffusivity = 0
 	
     def getStandardPotential(self):
 	return self.standardPotential
@@ -57,3 +71,6 @@ class ComponentVariable(CellVariable):
 	
     def getValence(self):
 	return self.valence
+	
+    def getDiffusivity(self):
+	return self.diffusivity

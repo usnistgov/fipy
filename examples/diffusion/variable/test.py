@@ -6,9 +6,11 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/22/03 {3:56:32 PM} 
+ #                                last update: 1/13/04 {1:00:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

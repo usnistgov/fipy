@@ -1,13 +1,16 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 01/08/04 { 2:23:31 PM}
+ #                                last update: 1/13/04 {1:08:13 PM} { 2:23:31 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,7 +35,6 @@
  #  
  # ###################################################################
  ##
-"""
 
 from cellVariable import Variable
 import tools

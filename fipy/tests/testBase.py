@@ -1,14 +1,16 @@
+#!/usr/bin/env python
 
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/29/03 {2:40:25 PM} 
+ #                                last update: 1/13/04 {1:06:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -33,7 +35,6 @@
  #  
  # ###################################################################
  ##
-"""
 
 import unittest
 import Numeric
@@ -63,7 +64,7 @@ class TestBase(unittest.TestCase):
 	
     def testResult(self):
 	self.it.timestep(steps = self.steps)
-	array = self.var.getValue()
+	array = self.var.getNumericValue()
 	values = self.getTestValues()
 	values = Numeric.reshape(values, Numeric.shape(array))
 	self.assertArrayWithinTolerance(array, values, self.tolerance)

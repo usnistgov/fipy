@@ -6,9 +6,11 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/24/03 {10:18:38 AM} 
+ #                                last update: 1/13/04 {12:58:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

@@ -1,13 +1,16 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 01/06/04 { 5:38:26 PM}
+ #                                last update: 1/13/04 {1:08:23 PM} { 5:38:26 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,7 +35,7 @@
  #  
  # ###################################################################
  ##
-"""
+
 
 from vectorFaceVariable import VectorFaceVariable
 import Numeric

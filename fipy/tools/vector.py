@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 12/19/03 {4:08:07 PM} 
+ #                                last update: 1/13/04 {10:20:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,19 +46,26 @@
 
 import Numeric
 
+from tools.dimensions.physicalField import PhysicalField
+import tools.array
+
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.
     """
-    return Numeric.array([v1[1] * v2[2] - v1[2] * v2[1],
+    return PhysicalField(value = [v1[1] * v2[2] - v1[2] * v2[1],
 			    v1[2] * v2[0] - v1[0] * v2[2],
-			    v1[0] * v2[1] - v1[1] * v2[0]],'d')
+			    v1[0] * v2[1] - v1[1] * v2[0]])
 	
 def sqrtDot(v1,v2):
     """Return square root of vector dot-product of v1 and v2.
     
 	Usually used with v1==v2 to return magnitude of v1.
     """
-    return Numeric.sqrt(Numeric.dot(v2,v1))
+#     return Numeric.sqrt(Numeric.dot(v2,v1))
+##     return Numeric.sqrt(v1.dot(v2))
+    ## We can't use Numeric.dot on quantities with units
+##     return Numeric.sqrt(Numeric.sum(v1*v2))
+    return tools.array.sqrt(tools.array.sum(v1*v2))
 
 def arraySqrtDot(a1,a2):
     """Return array of square roots of vector dot-products
@@ -67,7 +74,8 @@ def arraySqrtDot(a1,a2):
     Usually used with v1==v2 to return magnitude of v1.
     """
     ## We can't use Numeric.dot on an array of vectors
-    return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
+##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
+    return tools.array.sqrt(tools.array.sum((a1*a2)[:],1))
 
 def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
@@ -76,3 +84,4 @@ def putAdd(vector, ids, additionVector):
 
     for i in range(len(ids)):
         vector[ids[i]] += additionVector[i]
+

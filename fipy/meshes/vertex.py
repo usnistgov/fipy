@@ -6,7 +6,7 @@
  # 
  #  FILE: "vertex.py"
  #                                    created: 11/10/03 {3:24:06 PM} 
- #                                last update: 11/21/03 {3:34:19 PM} 
+ #                                last update: 1/4/04 {10:45:33 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

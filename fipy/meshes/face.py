@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/19/03 {4:06:09 PM} 
+ #                                last update: 1/5/04 {8:45:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,8 +44,10 @@
 """Face within a Mesh
 """
 
-import tools.vector
 import Numeric
+
+import tools.vector
+from tools.dimensions.physicalField import PhysicalField
 
 class Face:
     """Face within a Mesh
@@ -171,13 +173,15 @@ class Face:
     def calcTangent1(self):
 	norm = self.normal
 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
-	tan1 = Numeric.array((-norm[1],norm[0],0))
+# 	tan1 = Numeric.array((-norm[1],norm[0],0))
+	tan1 = PhysicalField(value = (-norm[1],norm[0],0))
 	return tan1/mag
 
     def calcTangent2(self):
 	norm = self.normal
 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
-	tan2 = Numeric.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
+# 	tan2 = Numeric.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
+	tan2 = PhysicalField(value = (norm[0] * norm[2], norm[1] * norm[2], -mag**2))
 	return tan2/mag
 	    
     def getCellDistance(self):

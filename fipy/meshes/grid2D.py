@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 12/5/03 {9:46:25 PM} 
+ #                                last update: 1/12/04 {10:22:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,11 +44,13 @@
 """2D rectangular Mesh
 """
 
+import Numeric
+
 from mesh import Mesh
 from vertex import Vertex
 from face2D import Face2D
 from cell import Cell
-import Numeric
+from tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh):
     """2D rectangular Mesh
@@ -128,8 +130,12 @@ class Grid2D(Mesh):
 	"""
         self.nx=nx
         self.ny=ny
-        self.dx=dx
-        self.dy=dy
+        self.dx=PhysicalField(value = dx)
+        self.dy=PhysicalField(value = dy)
+	self.scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+	self.dx /= self.scale
+	self.dy /= self.scale
+	
 	vertices = self.createVertices()
 	rowFaces,colFaces = self.createFaces(vertices)
 	cells = self.createCells(rowFaces,colFaces)
@@ -148,6 +154,7 @@ class Grid2D(Mesh):
 	for j in range(ny+1):
 	    for	i in range(nx+1):
 		vertices += (Vertex(Numeric.array([i * dx, j * dy],'d')),)
+## 		vertices += (Vertex(PhysicalField(value = [i * dx, j * dy])),)
         return vertices	
 		    
     def createFaces(self, vertices):
@@ -288,13 +295,38 @@ class Grid2D(Mesh):
     def getPhysicalShape(self):
 	"""Return physical dimensions of Grid2D.
 	"""
-        return (self.nx*self.dx,self.ny*self.dy)
+        return PhysicalField(value = (self.nx*self.dx*self.scale,self.ny*self.dy*self.scale))
 
     def getMaxFacesPerCell(self):
         return 4
 
+    def getFaceAreas(self):
+	return Mesh.getFaceAreas(self) * self.scale
+	
+    def getCellVolumes(self):
+	return Mesh.getCellVolumes(self) * self.scale * self.scale
+	
+    def getCellCenters(self):
+	return Mesh.getCellCenters(self) * self.scale
+	
+    def getCellDistances(self):
+	return Mesh.getCellDistances(self) * self.scale
+	
+    def getFaceToCellDistances(self):
+	return Mesh.getFaceToCellDistances(self) * self.scale
+
+    def getFaceNormals(self):
+	return Mesh.getFaceNormals(self) * self.scale
+	    
+    def getFaceTangents1(self):
+	return Mesh.getFaceTangents1(self) * self.scale
+
+    def getFaceTangents2(self):
+	return Mesh.getFaceTangents2(self) * self.scale
+	    
     def getMeshSpacing(self):
-        return Numeric.array((self.dx,self.dy))
+# 	return Numeric.array((self.dx,self.dy))
+        return PhysicalField(value = (self.dx*self.scale,self.dy*self.scale))
                 
         
 

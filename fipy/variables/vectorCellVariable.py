@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/19/03 {2:58:57 PM} 
+ #                                last update: 1/13/04 {1:07:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -36,10 +40,10 @@ from variable import Variable
 import Numeric
 
 class VectorCellVariable(Variable):
-    def __init__(self,mesh,name = '',value=0., scaling = None, unit = None):
+    def __init__(self,mesh,name = '',value=0., unit = None):
 	array = Numeric.zeros([len(mesh.getCells()),mesh.getDim()],'d')
 # 	array[:] = value	
-	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)
+	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 	
     def getVariableClass(self):
 	return VectorCellVariable

@@ -1,89 +1,87 @@
-"""
--*-Pyth-*-
-###################################################################
- PFM - Python-based phase field solver
+#!/usr/bin/env python
 
- FILE: "variable.py"
-                                   created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/29/03 {11:26:34 AM} 
- Author: Jonathan Guyer
- E-mail: guyer@nist.gov
- Author: Daniel Wheeler
- E-mail: daniel.wheeler@nist.gov
-   mail: NIST
-    www: http://ctcms.nist.gov
- 
-========================================================================
-This software was developed at the National Institute of Standards
-and Technology by employees of the Federal Government in the course
-of their official duties.  Pursuant to title 17 Section 105 of the
-United States Code this software is not subject to copyright
-protection and is in the public domain.  PFM is an experimental
-system.  NIST assumes no responsibility whatsoever for its use by
-other parties, and makes no guarantees, expressed or implied, about
-its quality, reliability, or any other characteristic.  We would
-appreciate acknowledgement if the software is used.
+## -*-Pyth-*-
+ # ###################################################################
+ #  PFM - Python-based phase field solver
+ # 
+ #  FILE: "variable.py"
+ #                                    created: 11/10/03 {3:15:38 PM} 
+ #                                last update: 1/13/04 {10:24:44 AM} 
+ #  Author: Jonathan Guyer
+ #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
+ #    mail: NIST
+ #     www: http://ctcms.nist.gov
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  PFM is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-10 JEG 1.0 original
+ # ###################################################################
+ ##
 
-This software can be redistributed and/or modified freely
-provided that any derivative works bear some notice that they are
-derived from it, and any modified versions bear some notice that
-they have been modified.
-========================================================================
- 
- Description: 
 
- History
-
- modified   by  rev reason
- ---------- --- --- -----------
- 2003-11-10 JEG 1.0 original
-###################################################################
-"""
-
-#from tools.dimensionalization import PhysicalField
-#from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
-# from binaryOperatorVariable import BinaryOperatorVariable
 import Numeric
-import gc
+import tools.dimensions.physicalField
+import tools.array
 
 class Variable:
-# class Variable(PhysicalField):
     
-    def __init__(self, mesh, name = '', value=0., array = None, scaling = None, unit = None):
-	self.mesh = mesh
-	self.name = name
-	
+    """Lazily evaluated physical field or quantity with units
+
+    Constructor:
+
+    - Variable(|mesh|, |value|, |unit|), where |value| is a number of
+      arbitrary type and |unit| is a string containing the unit name.
+
+    - PhysicalField(|mesh|, |string|), where |string| contains both the value
+      and the unit. This form is provided to make interactive use more
+      convenient.
+
+    Variable instances allow addition, subtraction,
+    multiplication, and division with each other as well as
+    multiplication, division, and exponentiation with numbers.
+    Addition and subtraction check that the units of the two operands
+    are compatible and return the result in the units of the first
+    operand. A limited set of mathematical functions (from module
+    Numeric) is applicable as well:
+
+    sqrt -- equivalent to exponentiation with 0.5.
+
+    sin, cos, tan -- applicable only to objects whose unit is compatible
+		     with 'rad'.
+    """
+    
+    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
-# 	if type(value) not in [type(1),type(1.),type(Numeric.array((1)))] and not isPhysicalQuantity(value):
-# 	    value = PhysicalField(value)
-	    
-	self.scaling = scaling
-# 	if scaling is not None:
-# 	    self.scaling = PhysicalField(scaling)
-# 	    if unit is not None:
-# 		self.scaling = scaling.inUnitsOf(unit)
-# 	    else:
-# 		unit = self.scaling.unit
-# 	elif unit is not None:
-# 	    self.scaling = PhysicalField(1., unit)
-# 	else:
-# 	    self.scaling = 1
-# 	if isPhysicalQuantity(value):
-# 	    unit = value.unit
-# 	    value = value.value
-# 	else:
-# 	    unit = "m/m"
-	    
-	if array is None:
-	    array = Numeric.array(value)
-	else:
-	    array[:] = value
-
-	self.value = array
-# 	PhysicalField.__init__(self, array, unit)
-
+	self.value = tools.dimensions.physicalField.PhysicalField(value = value, unit = unit, array = array)
+		
+	self.mesh = mesh
+	self.name = name
+		
 	self.stale = 1
 	self.markFresh()
         
@@ -91,27 +89,37 @@ class Variable:
 	self.sumVar = {}
         self.mag = None
 	
+    def copy(self):
+	return Variable(self)
+	
+    def getMesh(self):
+	return self.mesh
+	
+    def getUnit(self):
+	return self.value.getUnit()
+	
+    def inBaseUnits(self):
+	return self.getValue().inBaseUnits()
+
     def __getitem__(self, index): 
 	return self.getValue()[index]
 	
+    def __str__(self):
+	return str(self.getValue())
+	    
     def __repr__(self):
-	return (self.__class__.__name__ + '("' + self.name + '",' + `self.value` + ')')
+	return (self.__class__.__name__ + '("' + self.name + '",' + `self.getValue()` + ')')
 	
-    def __setitem__(self, index, value): 
+    def __setitem__(self, index, value):
 	self.value[index] = value
-# 	PhysicalField.__setitem__(self, index, value)
 	self.markFresh()
 		
-    def getMesh(self):
-	return self.mesh
-
     def getValue(self):
 	self.refresh()
         return self.value
 	
-    def __float__(self):
-	self.refresh()
-	return self.value
+    def getNumericValue(self):
+	return self.getValue().value
 	
     def refresh(self):
 	if self.stale:           
@@ -125,14 +133,12 @@ class Variable:
 	
     def markFresh(self):
 	self.stale = 0
-# 	print self, "is fresh"
 	for subscriber in self.subscribedVariables:
 	    subscriber.markStale() 
 
     def markStale(self):
 	if not self.stale:
 	    self.stale = 1
-# 	print self, "is stale"
 	    for subscriber in self.subscribedVariables:
 		subscriber.markStale()
 	    
@@ -140,8 +146,6 @@ class Variable:
 	if isinstance(var, Variable):
 	    self.requiredVariables.append(var)
 	    var.requiredBy(self)
-# 	    print gc.get_referrers(self), "\n"
-# 	    print self, "requires", self.requiredVariables
 	    self.markStale()
 	return var
 	    
@@ -161,42 +165,40 @@ class Variable:
 		    mesh = var.getMesh()
 		self.op = op
 		self.var = var
-		# this horrendous hack is necessary because older Python's
+		# this horrendous hack is necessary because older Pythons
 		# (2.1) don't know the value of 'parentClass' at this
 		# point.  Since we're good and dog-fearing people, we don't
 		# ever, ever, ever do multiple inheritance, so we know
 		# there is only one base class.
 		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-# 		self.var = self.requires(var)
 		self.requires(self.var)
 		
 	    def calcValue(self):
-		self.value = self.op(self.var.getValue())
+		self.value = tools.dimensions.physicalField.PhysicalField(self.op(self.var.getValue()))
+# 		print "unOp value:", self.value.value
+# 		print "unOp unit:", self.value.unit
 		
 	    def __repr__(self):
-# 		return ("\n" + `self.op`)
 		return ("\n" + `self.op` + "(" + `self.var` + ") = " + `self.value`)
 		
 	return unOp(op, self)
 	    
     def getBinaryOperatorVariable(self, op, var2):
 	parentClass = self.getVariableClass()
-
+	
 	class binOp(parentClass):
-	    def __init__(self, op, var1, var2, mesh = None, parentClass = None):
+	    def __init__(self, op, var1, var2, mesh = None):
 		if mesh is None:
 		    mesh = var1.getMesh()
 		self.op = op
 		self.var1 = var1
 		self.var2 = var2
-		# this horrendous hack is necessary because older Python's
+		# this horrendous hack is necessary because older Pythons
 		# (2.1) don't know the value of 'parentClass' at this
 		# point.  Since we're good and dog-fearing people, we don't
 		# ever, ever, ever do multiple inheritance, so we know
 		# there is only one base class.
 		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-# 		self.var1 = self.requires(var1)
-# 		self.var2 = self.requires(var2)
 		self.requires(self.var1)
 		self.requires(self.var2)
 
@@ -206,83 +208,101 @@ class Variable:
 		else:
 		    val2 = self.var2
 		    
-		self.value = self.op(self.var1.getValue(), val2)
+		self.value = tools.dimensions.physicalField.PhysicalField(self.op(self.var1.getValue(), val2))
+# 		print "\nbinOp class: ", self.__class__.__bases__[0]
+# 		print "binOp op:", self.op
+# 		print "binOp var1:", self.var1
+# 		print "binOp var2:", self.var2
+# 		print "binOp value:", self.value.value
+# 		print "binOp unit:", self.value.unit
 		
 	    def __repr__(self):
-# 		return ("\n" + `self.op`)
-		return ("\n" + `self.op` + "(\n\t" + `self.var1` + ",\n\t" + `self.var2` + "\n) = " + `self.value`)
+		return ("\n" + `self.op` + "(\n\t" + `self.var1` + ",\n\t" + `self.var2` + "\n) = " + `self.getValue()`)
 		
-	return binOp(op, self, var2, parentClass = parentClass)
+	return binOp(op, self, var2)
 	
     def __add__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.add, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a+b, other)
 	
-    def __radd__(self, other):
-	return self.__add__(other)
+    __radd__ = __add__
 
     def __sub__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.subtract, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a-b, other)
 	
     def __rsub__(self, other):
-	return -self + other
+	return self.getBinaryOperatorVariable(lambda a,b: b-a, other)
 	    
     def __mul__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.multiply, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a*b, other)
 	
-    def __rmul__(self, other):
-	return self.__mul__(other)
+    __rmul__ = __mul__
 	    
     def __mod__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.fmod, other)
-	    
-#     def __rmod__(self, other):
-# 	return self.__mod__(other)
+	return self.getBinaryOperatorVariable(lambda a,b: a%b, other)
 	    
     def __pow__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.power, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a**b, other)
 	    
     def __rpow__(self, other):
-	return self.__pow__(other)
+	return self.getBinaryOperatorVariable(lambda a,b: b**a, other)
 	    
     def __div__(self, other):
-	return self.getBinaryOperatorVariable(Numeric.divide, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a/b, other)
 	
     def __rdiv__(self, other):
-	return self**-1 * other
+	return self.getBinaryOperatorVariable(lambda a,b: b/a, other)
 	    
     def __neg__(self):
-	return -1 * self
+	return self.getUnaryOperatorVariable(lambda a: -a)
 	
     def __pos__(self):
 	return self
 	
     def __abs__(self):
-	return self.getUnaryOperatorVariable(Numeric.fabs)
-	
+	return self.getUnaryOperatorVariable(lambda a: abs(a))
+
     def __lt__(self,other):
-	return self.getBinaryOperatorVariable(Numeric.less, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a<b, other)
 
     def __le__(self,other):
-        return self.getBinaryOperatorVariable(Numeric.less_equal, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a<=b, other)
 	
     def __eq__(self,other):
-        return self.getBinaryOperatorVariable(Numeric.equal, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a==b, other)
 	
     def __ne__(self,other):
-        return self.getBinaryOperatorVariable(Numeric.not_equal, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a!=b, other)
 	
     def __gt__(self,other):
-        return self.getBinaryOperatorVariable(Numeric.greater, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a>b, other)
 	
     def __ge__(self,other):
-        return self.getBinaryOperatorVariable(Numeric.greater_equal, other)
+	return self.getBinaryOperatorVariable(lambda a,b: a>=b, other)
 
+    def __len__(self):
+	return len(self.value)
+	
+    def __float__(self):
+	return float(self.value)
+	
+    def sqrt(self):
+	return self.getUnaryOperatorVariable(lambda a: tools.array.sqrt(a))
+	
     def tan(self):
-        return self.getUnaryOperatorVariable(Numeric.tan)
+	return self.getUnaryOperatorVariable(lambda a: tools.array.tan(a))
 
     def arctan(self):
-        return self.getUnaryOperatorVariable(Numeric.arctan)
+	return self.getUnaryOperatorVariable(lambda a: tools.array.arctan(a))
 
+    def sin(self):
+	return self.getUnaryOperatorVariable(lambda a: tools.array.sin(a))
+		
+    def cos(self):
+	return self.getUnaryOperatorVariable(lambda a: tools.array.cos(a))
+		
+    def dot(self, other):
+	return self.getBinaryOperatorVariable(lambda a,b: tools.array.dot(a,b))
+	    
     def transpose(self):
 	if self.transposeVar is None:
 	    from transposeVariable import TransposeVariable
@@ -290,12 +310,15 @@ class Variable:
 	
 	return self.transposeVar
 
-    def sum(self, index):
+    def sum(self, index = 0):
 	if not self.sumVar.has_key(index):
 	    from sumVariable import SumVariable
 	    self.sumVar[index] = SumVariable(self, index)
 	
 	return self.sumVar[index]
+	
+    def take(self, ids):
+	return tools.array.take(self.getValue(),ids)
 
     def getMag(self):
         if self.mag is None:
@@ -305,3 +328,4 @@ class Variable:
 	return self.mag
 
         
+

@@ -6,9 +6,11 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/22/03 {4:28:58 PM} 
+ #                                last update: 1/13/04 {11:59:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

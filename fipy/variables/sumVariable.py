@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 12/22/03 {11:27:05 AM} 
+ #                                last update: 1/13/04 {11:48:25 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -37,9 +41,10 @@ import Numeric
 
 class SumVariable(Variable):
     def __init__(self, var, index):
-	Variable.__init__(self, var.getMesh())
+	Variable.__init__(self, mesh = var.getMesh())
 	self.var = self.requires(var)
 	self.index = index
 
     def calcValue(self):
-	self.value = Numeric.sum(self.var[:],self.index)
+	self.value = self.var[:].sum(self.index)
+	

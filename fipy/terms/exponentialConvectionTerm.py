@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/22/03 {5:02:20 PM} 
+ #                                last update: 1/13/04 {11:47:12 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -44,10 +48,10 @@ class ExponentialConvectionTerm(ConvectionTerm):
 	    
 	def calcValue(self):
 	    eps = 1e-3
-	    P  = self.P[:]
+	    P  = self.P.getNumericValue()
 
-	    P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+	    P = Numeric.where(abs(P) < eps, eps, P)
 	    alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
-	    alpha = Numeric.where(Numeric.logical_and(Numeric.absolute(P) > eps, P <= 101.), ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
+	    alpha = Numeric.where(abs(P) > eps and P <= 101., ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
 
 	    self.value = alpha

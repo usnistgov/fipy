@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/19/03 {4:05:28 PM} 
+ #                                last update: 1/12/04 {10:10:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,9 +44,11 @@
 """1D (edge) Face in a 2D Mesh
 """
 
-import tools.vector
-from face import Face
 import Numeric
+
+from face import Face
+import tools.vector
+from tools.dimensions.physicalField import PhysicalField
 
 class Face2D(Face):
     """1D (edge) Face in a 2D Mesh
@@ -64,7 +66,8 @@ class Face2D(Face):
 	"""Normal is perpendicular to vector between vertices.
 	"""
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
-	norm = Numeric.array([-tangent[1],tangent[0]])
+ 	norm = Numeric.array([-tangent[1],tangent[0]])
+## 	norm = PhysicalField(value = [-tangent[1],tangent[0]])
 	norm /= tools.vector.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
@@ -73,9 +76,12 @@ class Face2D(Face):
 
     def calcTangent1(self):
 	norm = self.normal
-	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
+	mag = tools.vector.sqrtDot(norm,norm)
+## 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
 	tan1 = Numeric.array((-norm[1],norm[0]))
+## 	tan1 = PhysicalField(value = (-norm[1],norm[0]))
 	return tan1/mag
 	    
     def calcTangent2(self):
 	return Numeric.array((0.,0.))
+## 	return PhysicalField(value = (0.,0.))

@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 12/26/03 {4:59:34 PM} 
+ #                                last update: 1/13/04 {11:46:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,18 +36,20 @@
  # ###################################################################
  ##
 
-from componentVariable import ComponentVariable
 import Numeric
 
+from componentVariable import ComponentVariable
+
 class SolventVariable(ComponentVariable):
-    def __init__(self, mesh, parameters, substitutionals):
+    def __init__(self, mesh, parameters, systemParameters, substitutionals):
 	ComponentVariable.__init__(
 	    self, 
 	    mesh = mesh,
-	    parameters = parameters
+	    parameters = parameters,
+	    systemParameters = systemParameters
 	    )
 	    
-	self.concentration = Numeric.ones((len(mesh.getCells())),'d')
+	self.concentration = Numeric.array([1])
 	for component in substitutionals:
 	    self.concentration = self.concentration - component#.getOld()
 

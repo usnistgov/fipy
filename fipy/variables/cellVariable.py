@@ -1,13 +1,16 @@
-"""
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "CellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/22/03 {9:50:43 PM} 
+ #                                last update: 1/13/04 {1:08:39 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,16 +35,16 @@
  #  
  # ###################################################################
  ##
-"""
+
 from variable import Variable
 import Numeric
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, hasOld = 1):
+    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
 # 	array[:] = value
 	
-	Variable.__init__(self, mesh, name = name, value = value, array = array, scaling = scaling, unit = unit)
+	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
 	if hasOld:
 	    self.old = self.copy()
@@ -59,7 +62,6 @@ class CellVariable(Variable):
 	    mesh = self.mesh, 
 	    name = self.name + "_old", 
 	    value = self.getValue(),
-	    scaling = self.scaling,
 	    hasOld = 0)
 
     def getGridArray(self):
@@ -67,12 +69,13 @@ class CellVariable(Variable):
 	
     def setValue(self,value,cells = ()):
 	if cells == ():
-	    if type(value) == type(Numeric.array((1.))):
-		self[:] = value[:]
-	    elif type(value) in [type(1.),type(1)]:
-		self[:] = value
-	    else:
-		raise TypeError, str(value) + " is not numeric or a Numeric.array"
+	    self[:] = value
+# 	    if type(value) == type(Numeric.array((1.))):
+# 		self[:] = value[:]
+# 	    elif type(value) in [type(1.),type(1)]:
+# 		self[:] = value
+# 	    else:
+# 		raise TypeError, str(value) + " is not numeric or a Numeric.array"
 	else:
 	    for cell in cells:
 		self[cell.getId()] = value

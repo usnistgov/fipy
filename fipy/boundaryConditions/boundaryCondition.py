@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/8/03 {2:01:22 PM} 
+ #                                last update: 1/8/04 {10:58:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,6 +46,8 @@
 
 import Numeric
 
+from tools.dimensions.physicalField import PhysicalField
+
 class BoundaryCondition:
     def __init__(self,faces,value):
 	"""Generic boundary condition base class.
@@ -57,7 +59,7 @@ class BoundaryCondition:
 	    'value' -- the value to impose
 	"""
         self.faces = faces
-        self.value = value
+        self.value = PhysicalField(value)
 	
 	N = len(self.faces)
 	self.faceIds = Numeric.zeros((N,))
@@ -66,26 +68,6 @@ class BoundaryCondition:
 	    self.faceIds[i] = self.faces[i].getId()
 	    self.adjacentCellIds[i] = self.faces[i].getCellId()
 
-    def update(self,face,cell1dia,cell1off):
-	"""Return the effect of this boundary condition on the equation
-	solution matrices.
-    
-	'update()' is called by each 'Term' of each 'Equation' for each
-	'Face' that this boundary condition applies to.
-	
-	Arguments:
-	    
-	    'face' -- which 'Face' to update
-	    
-	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
-	    
-	    'cell1off' -- contribution to b-vector by this exterior face
-	
-	A 'tuple' of (LL,bb) is calculated, to be added to the equation's (L,b)
-	matrices at the cell bounding the specified face.
-	""" 
-	pass
-    
     def getContribution(self,cell1dia,cell1off):
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.

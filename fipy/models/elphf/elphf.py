@@ -6,9 +6,11 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/29/03 {2:36:26 PM} 
+ #                                last update: 1/13/04 {11:58:12 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -53,104 +55,166 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 
+import tools.vector
+from tools.dimensions import physicalField
+
+def addScales(mesh, parameters):
+    
+    def addScale(scale, unit, parameter = None, value = None):
+	if parameters.has_key('scale') and parameters['scale'].has_key(scale):
+	    value = parameters['scale'][scale]
+	else:
+	    if parameter is not None and parameters.has_key(parameter):
+		value = parameters[parameter]
+	    elif value is None:
+		value = 1
+	physicalField.AddConstant(scale, physicalField.NonDimOrUnits(value, unit))
+	
+    addScale(scale = 'TIME', unit = 's', parameter = 'time step duration')
+    Ls = mesh.getPhysicalShape()
+    addScale(scale = 'LENGTH', unit = 'm', value = tools.vector.sqrtDot(Ls,Ls))
+    addScale(scale = 'MOLARVOLUME', unit = 'm**3/mol', parameter = 'substitutional molar volume', value = '1 m**3/mol')
+    addScale(scale = 'TEMPERATURE', unit = 'K', parameter = 'temperature', value = '298 K')
+    physicalField.AddConstant('Rgas', 'Nav*kB')
+    addScale(scale = 'ENERGY', unit = 'J/mol', value = "Rgas * TEMPERATURE")
+    physicalField.AddConstant('Faraday', 'Nav*e')
+    addScale(scale = 'POTENTIAL', unit = 'V', value = "ENERGY / Faraday")
+    
 def makeFields(mesh, parameters):
+    addScales(mesh, parameters)
+
     fields = {}
     
     fields['all'] = []
     
+    addPhaseToAll = 1
+    if not parameters.has_key('phase'):
+	parameters['phase'] = {
+	    'name': "xi",
+	    'mobility': 1,
+	    'gradient energy': 1,
+	    'value': 1
+	}
+	addPhaseToAll = 0
+	
     parameters['phase']['var'] = PhaseVariable(
 	name = parameters['phase']['name'],
 	mesh = mesh,
-	value = parameters['phase']['initial'][0],
+## 	value = physicalField.PhysicalField(parameters['phase']['value']),
+ 	value = physicalField.Scale(parameters['phase']['value'], 1),
 	)
 	
     fields['phase'] = parameters['phase']['var']
+    fields['phase'].parameters = parameters['phase']
     
-    fields['all'] += [fields['phase']]
+    if addPhaseToAll:
+	fields['all'] += [fields['phase']]
     
-    parameterList = [parameters['phase']]
-    
+    addPotentialToAll = 1
     if not parameters.has_key('potential'):
 	parameters['potential'] = {
 	    'name': "psi",
-	    'permittivity': 1.
+	    'dielectric': 1.
 	}
+	addPotentialToAll = 0
 
     parameters['potential']['var'] = CellVariable(
 	mesh = mesh,
 	name = 'psi',
+	value = 0
+## 	value = "0 V"
 	)
     fields['potential'] = parameters['potential']['var']
+    fields['potential'].parameters = parameters['potential']
 	
-    fields['all'] += [fields['potential']]
+    if addPotentialToAll:
+	fields['all'] += [fields['potential']]
     
     fields['interstitials'] = ()
     
     if parameters.has_key('interstitials'):
 	for component in parameters['interstitials']:
+	    if component.has_key('value'):
+		value = component['value']
+	    else:
+		value = 0
 	    component['var'] = ComponentVariable(
 		mesh = mesh,
 		parameters = component,
-		value = component['initial'][0],
+		systemParameters = parameters,
+		value = value,
 		)
 	    
+	    component['var'].parameters = component
 	    fields['interstitials'] += (component['var'],)
 	    fields['all'] += [component['var']]
-	    
-	    parameterList += list(parameters['interstitials'])
     
     fields['substitutionals'] = ()
     
+    addSolventToAll = 0
     if parameters.has_key('substitutionals'):
 	for component in parameters['substitutionals']:
+	    if component.has_key('value'):
+		value = component['value']
+	    else:
+		value = 0
 	    component['var'] = SubstitutionalVariable(
 		mesh = mesh,
 		parameters = component,
-		solventParameters = parameters['solvent'],
-		value = component['initial'][0],
+		systemParameters = parameters,
+		value = value,
 		)
 	    
+	    component['var'].parameters = component
 	    fields['substitutionals'] += (component['var'],)
 	    fields['all'] += [component['var']]
+	addSolventToAll = 1
 
-	    parameterList += list(parameters['substitutionals'])
-	    
     parameters['solvent']['var'] = SolventVariable(
 	mesh = mesh,
 	parameters = parameters['solvent'],
+	systemParameters = parameters,
 	substitutionals = fields['substitutionals']
 	)
 	
     fields['solvent'] = parameters['solvent']['var']
-    fields['all'] += [fields['solvent']]
-	
-    # set initial conditions
-    for field in parameterList:
-	for init in field['initial'][1:]:
-	    setCells = mesh.getCells(init['func'])
-	    field['var'].setValue(init['value'],setCells)
+    fields['solvent'].parameters = parameters['solvent']
     
+    if addSolventToAll:
+	fields['all'] += [fields['solvent']]
+	
     return fields
 
 
 def makeIterator(mesh, fields, parameters):
+    timeStepDuration = physicalField.Scale(parameters['time step duration'], "TIME")
+##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
+    
+##     gradientEnergy = physicalField.PhysicalField(parameters['phase']['gradient energy'])
+##     mobility = physicalField.PhysicalField(parameters['phase']['mobility'])
+##     flux = 0 * (fields['phase'][0] / mesh.getPhysicalShape()[0] ) * gradientEnergy * mobility
+    flux = 0
     equations = (PhaseEquation(
 	phase = fields['phase'],
-	timeStepDuration = parameters['time step duration'],
+	timeStepDuration = timeStepDuration,
 	fields = fields,
-	phaseMobility = parameters['phase']['mobility'],
-	phaseGradientEnergy = parameters['phase']['gradient energy'],
+## 	phaseMobility = mobility,
+## 	phaseGradientEnergy = gradientEnergy,
+ 	phaseMobility = physicalField.Scale(parameters['phase']['mobility'],"MOLARVOLUME/ENERGY/TIME"),
+ 	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'],"LENGTH**2*ENERGY/MOLARVOLUME"),
 	solver = LinearLUSolver(),
 	boundaryConditions=(
 # 	    FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 	    FixedValue(faces = mesh.getFacesRight(),value = 0.),
-	    FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
-	    FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-	    FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-	    FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+	    FixedFlux(faces = mesh.getFacesLeft(),value = flux),
+	    FixedFlux(faces = mesh.getFacesRight(),value = flux),
+	    FixedFlux(faces = mesh.getFacesTop(),value = flux),
+	    FixedFlux(faces = mesh.getFacesBottom(),value = flux)
 	)
     ),)
     
+##     flux = 0 * (fields['potential'][0] / mesh.getPhysicalShape()[0] ) * "1 eps0"
+    flux = 0
     equations += (PoissonEquation(
 	    potential = fields['potential'],
 	    parameters = parameters['potential'],
@@ -159,20 +223,21 @@ def makeIterator(mesh, fields, parameters):
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
-		FixedValue(faces = mesh.getFacesLeft(),value = 0.),
-		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+		FixedValue(faces = mesh.getFacesLeft(),value = 0 * fields['potential'][0]),
+		FixedFlux(faces = mesh.getFacesRight(),value = flux), # "0 eps0*V/m"
+		FixedFlux(faces = mesh.getFacesTop(),value = flux),
+		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
 	    )
 	),
     )
     
     for component in fields['substitutionals']:
+## 	flux = 0 * (component[0] / mesh.getPhysicalShape()[0] ) * component.diffusivity
+	flux = 0
 	eq = SubstitutionalEquation(
 	    Cj = component,
-	    timeStepDuration = parameters['time step duration'],
+	    timeStepDuration = timeStepDuration,
 	    fields = fields,
-	    diffusivity = parameters['diffusivity'],
 	    solver = LinearLUSolver(),
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
@@ -185,20 +250,21 @@ def makeIterator(mesh, fields, parameters):
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
 # 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
-		FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
-		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+		FixedFlux(faces = mesh.getFacesLeft(),value = flux), # "0. m/s"
+		FixedFlux(faces = mesh.getFacesRight(),value = flux),
+		FixedFlux(faces = mesh.getFacesTop(),value = flux),
+		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
 	    )
 	)
 	equations += (eq,)
 	
     for component in fields['interstitials']:
+## 	flux = 0 * (component[0] / mesh.getPhysicalShape()[0] ) * component.diffusivity
+	flux = 0
 	eq = InterstitialEquation(
 	    Cj = component,
-	    timeStepDuration = parameters['time step duration'],
+	    timeStepDuration = timeStepDuration,
 	    fields = fields,
-	    diffusivity = parameters['diffusivity'],
 	    solver = LinearLUSolver(),
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
@@ -211,10 +277,10 @@ def makeIterator(mesh, fields, parameters):
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
 # 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
-		FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
-		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+		FixedFlux(faces = mesh.getFacesLeft(),value = flux), # "0. m/s"
+		FixedFlux(faces = mesh.getFacesRight(),value = flux),
+		FixedFlux(faces = mesh.getFacesTop(),value = flux),
+		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
 	    )
 	)
 	equations += (eq,)

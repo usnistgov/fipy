@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/8/03 {1:47:41 PM} 
+ #                                last update: 1/8/04 {10:59:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,22 +54,11 @@ class FixedFlux(BoundaryCondition):
 	BoundaryCondition.__init__(self,faces,value)
 	N = len(self.faces)
 	self.contribution = Numeric.zeros((N,),'d')
+	# get units right
+	self.contribution = self.contribution * self.value * self.faces[0].getArea()
 	for i in range(N):
 	    self.contribution[i] = self.value * self.faces[i].getArea()
 	
-    def update(self,face,cell1dia,cell1off):
-	"""Leave L unchanged and add gradient to b
-	
-	Arguments:
-	    
-	    'face' -- which 'Face' to update
-	    
-	    'cell1dia' -- *unused*
-
-	    'cell1off' -- *unused*
-	"""
-        return (0., self.value * face.getArea())
-
     def getContribution(self,cell1dia,cell1off):
 	"""Leave L unchanged and add gradient to b
 	

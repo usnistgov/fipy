@@ -6,9 +6,11 @@
  # 
  #  FILE: "__init__.py"
  #                                    created: 11/20/03 {4:50:42 PM} 
- #                                last update: 11/21/03 {11:10:26 AM} 
+ #                                last update: 1/13/04 {1:06:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

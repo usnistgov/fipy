@@ -1,14 +1,16 @@
+#!/usr/bin/env python
 
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 12/18/03 {11:19:44 PM} 
+ #                                last update: 1/13/04 {11:57:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -33,7 +35,6 @@
  #  
  # ###################################################################
  ##
-"""
 
 from variables.cellVariable import CellVariable
 import Numeric

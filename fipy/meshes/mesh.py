@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/24/03 {9:55:34 AM} 
+ #                                last update: 1/12/04 {9:45:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -121,9 +121,6 @@ class Mesh:
 	"""
         pass
 
-    def getFaceAreas(self):
-	pass
-
     def getAdjacentCellIDs(self):
 	return (self.cellId1, self.cellId2)
 	
@@ -180,6 +177,8 @@ class Mesh:
     def calcFaceAreas(self,faces):
 	N = len(faces)
 	self.faceAreas = Numeric.zeros((N),'d')
+	# get the units right
+	self.faceAreas = self.faceAreas * faces[0].getArea()
 	for i in range(N):
 	    self.faceAreas[i] = faces[i].getArea()
 	    
@@ -189,6 +188,8 @@ class Mesh:
     def calcCellVolumes(self,cells):
 	N = len(cells)
 	self.cellVolumes = Numeric.zeros((N),'d')
+	# get the units right
+	self.cellVolumes = self.cellVolumes * cells[0].getVolume()	    
 	for i in range(N):
 	    self.cellVolumes[i] = cells[i].getVolume()	    
 	    
@@ -198,6 +199,8 @@ class Mesh:
     def calcCellCenters(self,cells):
 	N = len(cells)
 	self.cellCenters = Numeric.zeros((N,self.dim),'d')
+	# get the units right
+	self.cellCenters = self.cellCenters * cells[0].getCenter()
 	for i in range(N):
 	    self.cellCenters[i] = cells[i].getCenter()	    
 	
@@ -207,6 +210,8 @@ class Mesh:
     def calcCellDistances(self,faces):
 	N = len(faces)
 	self.cellDistances = Numeric.zeros((N),'d')
+	# get the units right
+	self.cellDistances = self.cellDistances * faces[0].getCellDistance()
 	for i in range(N):
 	    self.cellDistances[i] = faces[i].getCellDistance()
 	
@@ -216,6 +221,8 @@ class Mesh:
     def calcFaceToCellDistances(self,faces):
 	N = len(faces)
 	self.faceToCellDistances = Numeric.zeros((N),'d')
+	# get the units right
+	self.faceToCellDistances = self.faceToCellDistances * faces[0].getFaceToCellDistance()
 	for i in range(N):
 	    self.faceToCellDistances[i] = faces[i].getFaceToCellDistance()
 
@@ -226,6 +233,8 @@ class Mesh:
 	N = len(faces)
 	dim = len(faces[0].getCenter())
 	self.faceNormals = Numeric.zeros((N,dim),'d')
+	# get the units right
+	self.faceNormals = self.faceNormals * faces[0].calcNormal()
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
 	    
@@ -234,46 +243,39 @@ class Mesh:
 	
     def calcOrientedFaceNormals(self):
 	self.orientedFaceNormals = self.getFaceNormals().copy()
-	self.orientedFaceNormals *= Numeric.reshape(self.getFaceOrientations(),(len(self.orientedFaceNormals),1))
-	    
-    def getFaceAreas(self):
-	return self.faceAreas
-	
-    def calcFaceAreas(self, faces):
-	N = len(faces)
-	self.faceAreas = Numeric.zeros(N,'d')
-	for i in range(N):
-	    self.faceAreas[i] = faces[i].getArea()
+	self.orientedFaceNormals *= self.getFaceOrientations()[:,Numeric.NewAxis]
 	    
     def getAreaProjections(self):
 	return self.areaProjections
 	
     def calcAreaProjections(self):
-	N = len(self.faceNormals)
-	self.areaProjections = self.faceNormals * Numeric.reshape(self.faceAreas,(N,1))
+	self.areaProjections = self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis]
 
     def getOrientedAreaProjections(self):
 	return self.orientedAreaProjections
 	
     def calcOrientedAreaProjections(self):
 	N = len(self.faceNormals)
-	self.orientedAreaProjections = self.areaProjections * Numeric.reshape(self.getFaceOrientations(),(N,1))
+	self.orientedAreaProjections = self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	
-    def calcFaceTangents(self, faces):
-	N = len(faces)
-	dim = len(faces[0].getCenter())
-	self.faceTangents1 = Numeric.zeros((N,dim),'d')
-	self.faceTangents2 = Numeric.zeros((N,dim),'d')
-	for i in range(N):
-	    self.faceTangents1[i] = faces[i].calcTangent1()
-	    self.faceTangents2[i] = faces[i].calcTangent2()
-
     def getFaceTangents1(self):
 	return self.faceTangents1
 
     def getFaceTangents2(self):
 	return self.faceTangents2
 	
+    def calcFaceTangents(self, faces):
+	N = len(faces)
+	dim = len(faces[0].getCenter())
+	self.faceTangents1 = Numeric.zeros((N,dim),'d')
+	self.faceTangents2 = Numeric.zeros((N,dim),'d')
+	# get the units right
+	self.faceTangents1 = self.faceTangents1 * faces[0].calcTangent1()
+	self.faceTangents2 = self.faceTangents2 * faces[0].calcTangent2()
+	for i in range(N):
+	    self.faceTangents1[i] = faces[i].calcTangent1()
+	    self.faceTangents2[i] = faces[i].calcTangent2()
+
     def getFaceToCellDistanceRatio(self):
 	return self.faceToCellDistanceRatio
 	

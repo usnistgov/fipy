@@ -6,9 +6,11 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/29/03 {2:41:51 PM} 
+ #                                last update: 1/13/04 {11:56:55 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -44,267 +46,78 @@
  
 from __future__ import nested_scopes
 
+import unittest
+
 import Numeric
 
-import unittest
 from tests.testBase import TestBase
-from meshes.grid2D import Grid2D
+
 import elphf
 
 class TestElPhF(TestBase):
     """
     Simple test case for the phase field equation.
     """
-    def setUp(self):
-	self.parameters = {
-	    'diffusivity': 1.,
-	    'time step duration': 10000.	
-	}
+    def setUp(self, input):
+	self.mesh = input.mesh
+	self.it = input.it
+	self.fields = input.fields
+	self.parameters = input.parameters
 	
 	self.tolerance = 1e-7
 	self.steps = 40
+
+	self.final = {
+	    'phase': [1],
+	    'potential': [0],
+	    'substitutionals': [],
+	    'interstitials': []
+	}
 	
-	self.getParameters(self.parameters)
-	
-	self.mesh = Grid2D(
-	    dx = self.parameters['mesh']['dx'],
-	    dy = self.parameters['mesh']['dy'],
-	    nx = self.parameters['mesh']['nx'],
-	    ny = self.parameters['mesh']['ny'])
-	    
-	fields = elphf.makeFields(self.mesh, self.parameters)
-	    
-	self.it = elphf.makeIterator(mesh = self.mesh, fields = fields, parameters = self.parameters)
-	
+    def assertFieldWithinTolerance(self, field, final):
+	self.assertWithinTolerance(field[0], final[0], self.tolerance)	
+	self.assertWithinTolerance(field[-1], final[-1], self.tolerance)	
+
     def testResult(self):
 	self.it.timestep(steps = self.steps)
 
-# 	for field in [self.parameters['phase']] + list(self.parameters['substitutionals']):
-# 	    field['var'].plot()
-# 	raw_input()
-	    
-	for field in [self.parameters['phase']] + list(self.parameters['substitutionals']):
-	    final = field['var'].copy()
-	    final.setValue(field['final'][0])
-	    for fin in field['final'][1:]:
-		setCells = self.mesh.getCells(fin['func'])
-		final.setValue(fin['value'], setCells)
-
-	    self.assertWithinTolerance(field['var'][0], final[0], self.tolerance)	
-	    self.assertWithinTolerance(field['var'][-1], final[-1], self.tolerance)	
-	    
+	self.assertFieldWithinTolerance(self.fields['phase'], self.final['phase'])	
+	self.assertFieldWithinTolerance(self.fields['potential'], self.final['potential'])	
+	
+	for i in range(len(self.fields['substitutionals'])):
+	    self.assertFieldWithinTolerance(self.fields['substitutionals'][i], self.final['substitutionals'][i])	
+	
+	for i in range(len(self.fields['interstitials'])):
+	    self.assertFieldWithinTolerance(self.fields['interstitials'][i], self.final['interstitials'][i])	
+		
 class TestElPhF1D(TestElPhF):
-    def getParameters(self, parameters):
-	mesh = {
-	    'nx': 40,
-	    'ny': 1,
-	    'dx': 1.,
-	    'dy': 1.
-	}
+    def setUp(self):
+	import input1D
+	TestElPhF.setUp(self, input1D)
 	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 1.,
-	    'initial': (1.,),
-	    'final': (1.,)
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': 0.,
-	    'barrier height': 0.
-	}
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
-	
-	parameters['substitutionals'] = (
-	    {
-		'name': "c1",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.3,
-		    {
-			'value': 0.6,
-			'func': rightFunc
-		    }
-		),
-		'final': (0.45,)
-	    },
-	    {
-		'name': "c2",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.6,
-		    {
-			'value': 0.3,
-			'func': rightFunc
-		    }
-		),
-		'final': (0.45,)
-	    }
-	)
+	self.final['substitutionals'] = [[0.45],[0.45]]
 
 class TestElPhF2D(TestElPhF):
-    def getParameters(self, parameters):
-	mesh = {
-	    'nx': 40,
-	    'ny': 40,
-	    'dx': 1.,
-	    'dy': 1.
-	}
+    def setUp(self):
+	import input2D
+	TestElPhF.setUp(self, input2D)
 	
-	L = mesh['nx'] * mesh['dx']
+	self.final['substitutionals'] = [[0.45],[0.45]]
+    
+class TestElPhF2Dcorner(TestElPhF):
+    def setUp(self):
+	import input2Dcorner
+	TestElPhF.setUp(self, input2Dcorner)
 	
-	parameters['mesh'] = mesh
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 1.,
-	    'initial': (1.,),
-	    'final': (1.,)
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': 0.,
-	    'barrier height': 0.
-	}
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
+	self.final['substitutionals'] = [[0.375],[0.525]]
 
-	parameters['substitutionals'] = (
-	    {
-		'name': "c1",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.3,
-		    {
-			'value': 0.6,
-			'func': rightFunc
-		    }
-		),
-		'final': (0.45,)
-	    },
-	    {
-		'name': "c2",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.6,
-		    {
-			'value': 0.3,
-			'func': rightFunc
-		    }
-		),
-		'final': (0.45,)
-	    }
-	)
-
-class TestElPhF2DCorner(TestElPhF):
-    def getParameters(self, parameters):
-	mesh = {
-	    'nx': 40,
-	    'ny': 40,
-	    'dx': 1.,
-	    'dy': 1.
-	}
-	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 1.,
-	    'initial': (1.,),
-	    'final': (1.,)
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': 0.,
-	    'barrier height': 0.
-	}
-	
-	def cornerFunc(cell):
-	    center = cell.getCenter()
-	    return (center[0] > L/2) and (center[1] > L/2) 
-	
-	parameters['substitutionals'] = (
-	    {
-		'name': "c1",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.3,
-		    {
-			'value': 0.6,
-			'func': cornerFunc
-		    }
-		),
-		'final': (0.375,)
-	    },
-	    {
-		'name': "c2",
-		'standard potential': 1.,
-		'barrier height': 1.,
-		'initial': (
-		    0.6,
-		    {
-			'value': 0.3,
-			'func': cornerFunc
-		    }
-		),
-		'final': (0.525,)
-	    }
-	)
-	
 class TestElPhF1Dphase(TestElPhF):
-    def getParameters(self, parameters):
+    def setUp(self):
+	import input1Dphase
+	TestElPhF.setUp(self, input1Dphase)
+	
 	self.tolerance = 1e-4
 	self.steps = 10
-	
-	mesh = {
-	    'nx': 400,
-	    'ny': 1,
-	    'dx': 0.01,
-	    'dy': 0.01
-	}
-	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	parameters['time step duration'] = 10000.	
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 0.025,
-	    'initial': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    )
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': 0.,
-	    'barrier height': 1.
-	}
-	
-	parameters['substitutionals'] = ()
 	
     def testResult(self):
 	self.it.timestep(steps = self.steps)
@@ -317,242 +130,44 @@ class TestElPhF1Dphase(TestElPhF):
 	d = Numeric.sqrt(field['gradient energy'] / (self.parameters['solvent']['barrier height']))
 	final = (1. - Numeric.tanh(x/(2.*d))) / 2.
 	
-	self.assertArrayWithinTolerance(field['var'][:], final, self.tolerance)
+	self.assertArrayWithinTolerance(self.fields['phase'].getNumericValue(), final, self.tolerance)
 	
 class TestElPhF1DphaseBinary(TestElPhF):
-    def getParameters(self, parameters):
+    def setUp(self):
+	import input1DphaseBinary
+	TestElPhF.setUp(self, input1DphaseBinary)
+	
 	self.tolerance = 2e-3
 	
-	mesh = {
-	    'nx': 400,
-	    'ny': 1,
-	    'dx': 0.01,
-	    'dy': 0.01
-	}
-	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 0.1,
-	    'initial': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    ),
-	    'final': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    ),
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': Numeric.log(.7/.3),
-	    'barrier height': 1.
-	}
-	
-	parameters['substitutionals'] = (
-	    {
-		'name': "c1",
-		'standard potential': Numeric.log(.3/.7),
-		'barrier height': parameters['solvent']['barrier height'], 
-		'initial': (0.5,),
-		'final': (
-		    0.7,
-		    {
-			'value': 0.3,
-			'func': rightFunc
-		    }
-		),
-	    },
-	)
-	
+	self.final['phase'] = [1.,0.]
+	self.final['substitutionals'] = [[0.7,0.3]]
+
 class TestElPhF1DphaseQuaternary(TestElPhF):
-    def getParameters(self, parameters):
+    def setUp(self):
+	import input1DphaseQuaternary
+	TestElPhF.setUp(self, input1DphaseQuaternary)
+	
 	self.tolerance = 2e-3
 	
-	mesh = {
-	    'nx': 400,
-	    'ny': 1,
-	    'dx': 0.01,
-	    'dy': 0.01
-	}
+	self.final['phase'] = [1.,0.]
+	self.final['substitutionals'] = [[0.4,0.3],[0.3,0.4],[0.1,0.2]]
 	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 0.025,
-	    'initial': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    ),
-	    'final': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    ),
-	}
-	
-	parameters['solvent'] = {
-	    'standard potential': Numeric.log(.1/.2),
-	    'barrier height': 1.
-	}
-	
-	parameters['substitutionals'] = (
-	    {
-		'name': "c1",
-		'standard potential': Numeric.log(.3/.4),
-		'barrier height': parameters['solvent']['barrier height'],
-		'initial': (0.35,),
-		'final': (
-		    0.4,
-		    {
-			'value': 0.3,
-			'func': rightFunc
-		    }
-		)
-	    },
-	    {
-		'name': "c2",
-		'standard potential': Numeric.log(.4/.3),
-		'barrier height': parameters['solvent']['barrier height'],
-		'initial': (0.35,),
-		'final': (
-		    0.3,
-		    {
-			'value': 0.4,
-			'func': rightFunc
-		    }
-		)
-	    },
-	    {
-		'name': "c3",
-		'standard potential': Numeric.log(.2/.1),
-		'barrier height': parameters['solvent']['barrier height'],
-		'initial': (0.15,),
-		'final': (
-		    0.1,
-		    {
-			'value': 0.2,
-			'func': rightFunc
-		    }
-		)
-	    }
-	)
-	    
 class TestElPhF1DphaseTernaryAndElectrons(TestElPhF):
-    def getParameters(self, parameters):
+    def setUp(self):
+	import input1DphaseTernAndElectrons
+	TestElPhF.setUp(self, input1DphaseTernAndElectrons)
+	
 	self.tolerance = 2e-3
 	
-	mesh = {
-	    'nx': 400,
-	    'ny': 1,
-	    'dx': 0.01,
-	    'dy': 0.01
-	}
+	self.final['phase'] = [1.,0.]
+	self.final['interstitials'] = [[0.4,0.3]]
+	self.final['substitutionals'] = [[0.3,0.4],[0.1,0.2]]
 	
-	L = mesh['nx'] * mesh['dx']
-	
-	parameters['mesh'] = mesh
-	
-	rightFunc = lambda cell: cell.getCenter()[0] > L/2
-	
-	parameters['phase'] = {
-	    'name': "xi",
-	    'mobility': 1.,
-	    'gradient energy': 0.025,
-	    'initial': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    ),
-	    'final': (
-		1.,
-		{
-		    'value': 0.,
-		    'func': rightFunc
-		}
-	    )
-	}
-	
-	parameters['interstitials'] = (
-	    {
-		'name': "e-",
-		'standard potential': Numeric.log(.3/.4),
-		'barrier height': 0.,
-		'initial': (0.35,),
-		'final': (
-		    0.4,
-		    {
-			'value': 0.3,
-			'func': rightFunc
-		    }
-		)
-	    },
-	)
-	    
-	parameters['solvent'] = {
-	    'standard potential': Numeric.log(.4/.6),
-	    'barrier height': 1.
-	}
-	
-	parameters['substitutionals'] = (
-	    {
-		'name': "c2",
-		'standard potential': Numeric.log(.4/.3),
-		'barrier height': parameters['solvent']['barrier height'],
-		'initial': (0.35,),
-		'final': (
-		    0.3,
-		    {
-			'value': 0.4,
-			'func': rightFunc
-		    }
-		)
-	    },
-	    {
-		'name': "c3",
-		'standard potential': Numeric.log(.2/.1),
-		'barrier height': parameters['solvent']['barrier height'],
-		'initial': (0.15,),
-		'final': (
-		    0.1,
-		    {
-			'value': 0.2,
-			'func': rightFunc
-		    }
-		)
-	    }
-	)
-	    
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
-    theSuite.addTest(unittest.makeSuite(TestElPhF2DCorner))    
+    theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
     theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
