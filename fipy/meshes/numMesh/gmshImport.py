@@ -120,7 +120,7 @@ it does not return negative volumes. Firstly we set up a list with
 tuples of strings to be read by gmsh. The list provide instuctions to
 gmsh to form a circular mesh.
 
-   >>> cellSize = 0.1
+   >>> cellSize = 0.7
    >>> radius = 1.
    >>> lines = ['cellSize = ' + str(cellSize) + ';\n',
    ...           'radius = ' + str(radius) + ';\n',
@@ -157,7 +157,7 @@ Check that the sign of the mesh volumes is correct
    >>> mesh = buildMesh(lines)
    >>> print mesh.getCellVolumes()[0] > 0
    1
-
+      
 Reverse the handedness of the mesh and check the sign
 
    >>> lines[7:12] = ['Circle(6) = {3, 1, 2};\n',
