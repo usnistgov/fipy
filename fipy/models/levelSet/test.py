@@ -42,14 +42,19 @@
  ##
 
 import doctest
-import advection.advectionTerm
 import fipy.tests.testProgram
 import unittest
+
+import advection.advectionTerm
+import distanceFunction.distanceVariable
+import surfactant.surfactantVariable
 
 def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(advection.advectionTerm))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceVariable))
+    theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
     
     return theSuite
     
