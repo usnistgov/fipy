@@ -154,8 +154,38 @@ Test cases:
    >>> testlist = array.tolist()
    >>> print testlist
    [[1.0, 1.0, 3.0, 3.0], [1.0, 1.0, 3.0, 3.0], [2.0, 2.0, 4.0, 4.0], [2.0, 2.0, 4.0, 4.0]]
-   
 
+   >>> from fipy.meshes.numMesh.grid3D import Grid3D
+   >>> import fipy.variables.cellVariable
+   >>> mesh = Grid3D(1.0, 1.0, 1.0, 2, 2, 2)
+   >>> myvar = fipy.variables.cellVariable.CellVariable(mesh)
+   >>> myvar[0] = 1.0
+   >>> myvar[1] = 2.0
+   >>> myvar[2] = 3.0
+   >>> myvar[3] = 4.0
+   >>> myvar[4] = 5.0
+   >>> myvar[5] = 6.0
+   >>> myvar[6] = 7.0
+   >>> myvar[7] = 8.0
+   >>> myviewer = Grid3DPyxViewer(myvar, zvalue = 1.0)
+   >>> array = myviewer.getValueMatrix(0.0, 2.0, 0.0, 2.0, 0.5)
+   >>> testlist = array.tolist()
+   >>> print testlist
+   [[2.25, 3.25, 4.25, 5.25], [2.75, 3.75, 4.75, 5.75], [3.25, 4.25, 5.25, 6.25], [3.75, 4.75, 5.75, 6.75]]
+   
+   >>> from fipy.meshes.numMesh.grid3D import Grid3D
+   >>> import fipy.variables.cellVariable
+   >>> mesh = Grid3D(1.0, 1.0, 1.0, 2, 2, 1)
+   >>> myvar = fipy.variables.cellVariable.CellVariable(mesh)
+   >>> myvar[0] = 1.0
+   >>> myvar[1] = 2.0
+   >>> myvar[2] = 3.0
+   >>> myvar[3] = 4.0
+   >>> myviewer = Grid3DPyxViewer(myvar, zvalue = 0.75)
+   >>> array = myviewer.getValueMatrix(0.0, 2.0, 0.0, 2.0, 0.5)
+   >>> testlist = array.tolist()
+   >>> print testlist
+   [[0.25, 1.25, 2.25, 3.25], [0.75, 1.75, 2.75, 3.75], [1.25, 2.25, 3.25, 4.25], [1.75, 2.75, 3.75, 4.75]]
    
 """
 
@@ -205,7 +235,7 @@ class PyxViewer:
         ## calculate the number of points to plot in the X direction (xsize) and the Y direction (ysize). The total number of points plotted
         ## will be equal to (xsize * ysize).
         xsize = ((maxx - minx) / resolution) - 0.5
-        ysize = ((maxx - minx) / resolution) - 0.5
+        ysize = ((maxy - miny) / resolution) - 0.5
         if (xsize == int(xsize)):
             xsize = int(xsize)
         else:
@@ -245,20 +275,16 @@ class PyxViewer:
         maxylist = ylist + ((0.5 + gridcorrect) * resolution)
         baselist = Numeric.array([minxlist, maxxlist, minylist, maxylist, vallist])
         displaylist = Numeric.transpose(baselist)
-        ##print displaylist
         ## If the user did not specify a filename but does want to view the picture, create a file anyway so the picture can be viewed.
         if(filename == None):
             if(viewcmd != None):
                 filename = "temp"
         displayinput = displaylist.tolist()
-        ##print displayinput
         ## Create the graph and plot it.
         if(filename != None):
             mycanvas = pyx.canvas.canvas()
             mygraph = pyx.graph.graphxy(height = 12, width = 12, xpos = 0, ypos = 0, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
-            ##print displayinput
             mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
-            ##print displayinput
             mycanvas.stroke(mygraph)
             if(valuelabel == None):
                 valuelabel = self.var.name
@@ -276,15 +302,19 @@ class PyxViewer:
             mycanvas.writeEPSfile(filename)
             if(viewcmd != None):
                 os.system(viewcmd + " " + filename + ".eps &")
-        ##print displayinput
         if(returnlist == 1):
             return displayinput
         else:
             return None
 ## ---------------------------------------------------------------------------------------------------
+    def generateArray(self):
+        """ generates the array of variable values
+        """
+        self.theArray = Numeric.array(self.var)
+## ---------------------------------------------------------------------------------------------------
             
     def getValueMatrix(self, minx, maxx, miny, maxy, resolution):
-        self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
+        self.generateArray() 
         xsize = ((maxx - minx) / resolution) - 0.5
         ysize = ((maxx - minx) / resolution) - 0.5
         if (xsize == int(xsize)):
@@ -371,10 +401,8 @@ class Grid2DPyxViewer(PyxViewer):
             raise InvalidClassException, "Grid2DPyxViewer can be used only with Grid2D meshes"
         else:
             self.var = variable
-            self.theArray = Numeric.array(self.var)
-
+    
     def getValue(self, x, y):
-        ## note - need to change so it takes into account that the lower left corner might not be (0,0)
         ## This function uses the method of bilinear interpolation on the grid square. This method is described in
         ## "Numerical Recipes in C", William H. Press et al., page 105.
         width = self.var.getMesh().__getstate__()["nx"]
@@ -417,6 +445,38 @@ class Grid2DPyxViewer(PyxViewer):
         return resArray
 
 
+##----------------------##---------------------------##------------------------##-----------------------##---------------------##
+
+ValueOutOfRangeException = "Value out of range"
+
+class Grid3DPyxViewer(Grid2DPyxViewer):
+    def __init__(self, variable, showpercent = 0, showtime = 0, zvalue = 0):
+        if(variable.getMesh().__class__.__name__ != "Grid3D"):
+            raise InvalidClassException, "Grid3DPyxViewer can be used only with Grid3D meshes"
+        else:
+            self.var = variable
+            if(zvalue < 0) or(zvalue > (self.var.getMesh().__getstate__()["nz"] * self.var.getMesh().__getstate__()["dz"])):
+                raise ValueOutOfRangeException, "Z value is out of the range of the mesh"
+            self.zvalue = zvalue
+
+    def generateArray(self):
+        totarray = Numeric.array(self.var)
+        if(self.var.getMesh().__getstate__()["nz"] == 1):
+            self.theArray = totarray
+            return None
+        zcells = (self.zvalue / self.var.getMesh().__getstate__()["dz"]) - 0.5
+        znumcells = int(zcells)
+        if(znumcells == (self.var.getMesh().__getstate__()["nz"] - 1)):
+            znumcells = znumcells - 1
+        resid = zcells - znumcells
+        totarray = Numeric.array(self.var)
+        persheet = (self.var.getMesh().__getstate__()["nx"]) * (self.var.getMesh().__getstate__()["ny"])
+        bottom = totarray[persheet * znumcells : persheet * (znumcells + 1)]
+        top = totarray[persheet * (znumcells + 1) : persheet * (znumcells + 2)]
+        result = (top * resid) + (bottom * (1.0 - resid))
+        self.theArray = result
+
+##--------------------------##---------------------##----------------------------##----------------------##-------------------------##
 def _test(): 
     import doctest
     return doctest.testmod()
