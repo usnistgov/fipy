@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/03 {2:24:22 PM} 
+ #                                last update: 12/16/03 {9:42:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,22 +51,18 @@
     
     Iteration is profiled for performance.
 """
-
+import elphf
 from meshes.grid2D import Grid2D
 from variables.cellVariable import CellVariable
 from viewers.grid2DGistViewer import Grid2DGistViewer
-from concentrationEquation import ConcentrationEquation
-from solvers.linearCGSSolver import LinearCGSSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-from solvers.linearLUSolver import LinearLUSolver
 
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
-valueLeft=0.3
-valueRight=0.6
+valueLeft="0.3 mol/l"
+valueRight="0.6 mol/l"
+# valueLeft=0.3
+# valueRight=0.6
 
 nx = 40
 dx = 1.
@@ -92,80 +88,34 @@ var2 = CellVariable(
     viewer = Grid2DGistViewer
     )
    
-    
-def func(x):
-    if x[0] > L / 2.:
-	return 1
-    else:
-	return 0
-
-rightCells = mesh.getCells(func)
+rightCells = mesh.getCells(lambda center: center[0] > L/2.)
 
 var1.setValue(valueRight,rightCells)
 var2.setValue(valueLeft,rightCells)
     
 parameters = {
-    'substitutionals': (var1,var2)
+    'substitutionals': (var1,var2),
+    'diffusivity': 1.
 }
 
-diffusivity = 1.
-
-eq1 = ConcentrationEquation(
-    var = var1,
-    diffusivity = diffusivity,
-    solver = LinearLUSolver(),
-#    solver = LinearCGSSolver(
-#	tolerance = 1.e-15, 
-#	steps = 1000
-#    ),
-    boundaryConditions=(
-# 	FixedValue(faces = mesh.getFacesLeft(),value = valueLeft),
-# 	FixedValue(faces = mesh.getFacesRight(),value = valueRight),
-	FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
-	FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-	FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-	FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-    ),
-    parameters = parameters
-)
-
-eq2 = ConcentrationEquation(
-    var = var2,
-    diffusivity = diffusivity,
-    solver = LinearLUSolver(),
-#    solver = LinearCGSSolver(
-#	tolerance = 1.e-15, 
-#	steps = 1000
-#    ),
-    boundaryConditions=(
-# 	FixedValue(faces = mesh.getFacesLeft(),value = valueRight),
-# 	FixedValue(faces = mesh.getFacesRight(),value = valueLeft),
-	FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
-	FixedFlux(faces = mesh.getFacesRight(),value = 0.),
-	FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-	FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-    ),
-    parameters = parameters
-)
-
-it = Iterator(equations = (eq1,eq2), maxSweeps = 1)
+it = elphf.makeIterator(mesh = mesh, parameters = parameters)
 
 var1.plot()
 var2.plot()
 
-for i in range(100):
-#    fudge = calibrate_profiler(10000)
-#    profile = Profiler('profile', fudge=fudge)
-    it.iterate(1,10000.)
-#    profile.stop()
+fudge = calibrate_profiler(10000)
+profile = Profiler('profile', fudge=fudge)
 
-    print var1.getValue()
-    print var2.getValue()
+for i in range(5):
+    it.iterate(1,10000.)
+    
+#     print var1.getValue()
+#     print var2.getValue()
     
     var1.plot()
     var2.plot()
 
-
-
+profile.stop()
+	
 raw_input()
 

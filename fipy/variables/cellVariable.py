@@ -5,7 +5,7 @@
  # 
  #  FILE: "CellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/10/03 {2:24:08 PM} 
+ #                                last update: 12/15/03 {2:34:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,16 +39,16 @@ import Numeric
 import meshes.tools
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = 1):
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, viewer = None, hasOld = 1):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
-	array[:] = value
+# 	array[:] = value
 	
 	if viewer is not None:
 	    self.viewer = viewer(var = self)
 	else:
 	    self.viewer = None
 	    
-	Variable.__init__(self, mesh, name = name, value = array)
+	Variable.__init__(self, mesh, name = name, value = value, array = array, scaling = scaling, unit = unit)
 
 	if hasOld:
 	    self.old = self.copy()
@@ -66,6 +66,7 @@ class CellVariable(Variable):
 	    mesh = self.mesh, 
 	    name = self.name + "_old", 
 	    value = self.getValue(),
+	    scaling = self.scaling,
 	    viewer = viewer,
 	    hasOld = 0)
 

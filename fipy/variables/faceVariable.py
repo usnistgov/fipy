@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 12/9/03 {2:36:35 PM} 
+ #                                last update: 12/15/03 {2:34:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -36,7 +36,7 @@ from variable import Variable
 import Numeric
 
 class FaceVariable(Variable):
-    def __init__(self, mesh, name = '', value=0.):
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None):
 	array = Numeric.zeros([len(mesh.getFaces())],'d')
-	array[:] = value
-	Variable.__init__(self,mesh = mesh, name = name, value = array)
+# 	array[:] = value
+	Variable.__init__(self,mesh = mesh, name = name, value = value, array = array, scaling = scaling, unit = unit)

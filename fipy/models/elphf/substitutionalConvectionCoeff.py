@@ -5,7 +5,7 @@
  # 
  #  FILE: "substitutionalConvectionCoeff.py"
  #                                    created: 12/9/03 {3:32:09 PM} 
- #                                last update: 12/10/03 {2:13:12 PM} 
+ #                                last update: 12/15/03 {3:16:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

@@ -4,7 +4,7 @@
  # 
  #  FILE: "phaseDiffCoeffVariable.py"
  #                                    created: 12/8/03 {6:05:05 PM} 
- #                                last update: 12/9/03 {2:42:08 PM} 
+ #                                last update: 12/11/03 {12:16:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,12 +37,16 @@ import Numeric
 
 class PhaseDiffCoeffVariable(FaceVariable):
     def __init__(self,mesh, parameters):
-	self.parameters = parameters
 	FaceVariable.__init__(self, mesh)
+	self.parameters = parameters
+	self.phi = self.requires(parameters['phi'])
+	self.m = self.requires(parameters['mPhi'])
 	
-    def getValue(self):
-	phi = self.parameters['phi']
-	m = self.parameters['mPhi']
+    def calcValue(self):
+# 	phi = self.parameters['phi']
+# 	m = self.parameters['mPhi']
+	phi = self.phi
+	m = self.m
 
 	alpha = self.parameters['alpha']
 	N = self.parameters['symmetry']
@@ -57,5 +61,5 @@ class PhaseDiffCoeffVariable(FaceVariable):
 	z = (1. - z) / (1. + z)
 	z = (1.+ c2 * z)
 	
-	return alpha**2 * z * z
+	self.value = alpha**2 * z * z
 	

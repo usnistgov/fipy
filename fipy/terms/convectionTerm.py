@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/12/03 {10:25:38 PM} 
+                               last update: 12/15/03 {3:17:13 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler

@@ -5,7 +5,7 @@
  # 
  #  FILE: "phaseMVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/9/03 {2:25:06 PM} 
+ #                                last update: 12/11/03 {12:01:40 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,13 +38,13 @@ from variables.cellVariable import CellVariable
 
 class PhaseMVariable(CellVariable):
     def __init__(self, mesh, phi, temperature):
-	self.phi = phi
-	self.temperature = temperature
 	CellVariable.__init__(self,name = "Mphi", mesh = mesh, hasOld = 0)
+	self.phi = self.requires(phi)
+	self.temperature = self.requires(temperature)
 	
-    def getValue(self):
+    def calcValue(self):
 	phi = self.phi
 	t = self.temperature
-	return phi - 0.5 + t * phi * (1 - phi)
+	self.value = phi - 0.5 + t * phi * (1 - phi)
 
 

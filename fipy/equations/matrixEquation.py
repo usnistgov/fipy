@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 12/10/03 {2:06:46 PM} 
+                               last update: 12/15/03 {1:38:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler

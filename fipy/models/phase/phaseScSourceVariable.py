@@ -5,7 +5,7 @@
  # 
  #  FILE: "phaseScSourceVariable.py"
  #                                    created: 12/8/03 {4:44:40 PM} 
- #                                last update: 12/9/03 {2:25:03 PM} 
+ #                                last update: 12/11/03 {12:25:20 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,13 +38,14 @@ from variables.cellVariable import CellVariable
 
 class PhaseScSourceVariable(CellVariable):
     def __init__(self,mesh,parameters):
-	self.parameters = parameters
 	CellVariable.__init__(self,name = "ScSource", mesh = mesh, hasOld = 0)
+	self.phi = self.requires(parameters['phi'])
+	self.m = self.requires(parameters['mPhi'])
 	
-    def getValue(self):
-	phi = self.parameters['phi']
-	m = self.parameters['mPhi']
-
+    def calcValue(self):
+	phi = self.phi
+	m = self.m
+	
 	## driving force double well
 
 	sc = (m > 0.) * m * phi
@@ -63,4 +64,4 @@ class PhaseScSourceVariable(CellVariable):
 #         
 # ##        sc + = phaseTools.add_over_faces_inline(self.ff,-self.dphi[:,1],self.dphi[:,0],mesh)
 
-	return sc
+	self.value = sc

@@ -5,7 +5,7 @@
  # 
  #  FILE: "phaseSourceField.py"
  #                                    created: 12/8/03 {4:44:40 PM} 
- #                                last update: 12/9/03 {2:24:47 PM} 
+ #                                last update: 12/11/03 {12:24:56 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,12 +38,15 @@ from variables.cellVariable import CellVariable
 
 class PhaseSpSourceVariable(CellVariable):
     def __init__(self,mesh,parameters):
-	self.parameters = parameters
 	CellVariable.__init__(self,name = "SpSource", mesh = mesh, hasOld = 0)
+	self.parameters = parameters
+	self.phi = self.requires(parameters['phi'])
+	self.m = self.requires(parameters['mPhi'])
+	self.theta = self.requires(parameters['theta'].getOld())
 	
-    def getValue(self):
-	phi = self.parameters['phi']
-	m = self.parameters['mPhi']
+    def calcValue(self):
+	phi = self.phi
+	m = self.m
 
 	## driving force double well
 
@@ -51,10 +54,10 @@ class PhaseSpSourceVariable(CellVariable):
     
 	## theta source terms
 
-	thetaMag = self.parameters['theta'].getOld().getGradMag()
+	thetaMag = self.theta.getGradMag()
 	s = self.parameters['s']
 	epsilon = self.parameters['epsilon']
 
 	sp += (2*s + epsilon**2 * thetaMag) * thetaMag
 	
-	return sp
+	self.value = sp
