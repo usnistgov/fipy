@@ -41,6 +41,7 @@ they have been modified.
 """
 
 from variables.cellVariable import CellVariable
+import Numeric
 
 class TransientVariable(CellVariable):
 
@@ -49,19 +50,20 @@ class TransientVariable(CellVariable):
         CellVariable.__init__(self, phase.getMesh())
 
         self.parameters = parameters
-        self.phase = self.required(phase)
-        self.theta = self.required(theta)
+        self.phase = self.requires(phase)
+        self.theta = self.requires(theta)
 
     def calcValue(self):
 
-        smallValue = self.parameters['small Value']
-        epsion = self.parameters['epsilon']
+        smallValue = self.parameters['small value']
+        epsilon = self.parameters['epsilon']
         
         phaseMod = self.phase[:] + ( self.phase[:] < smallValue ) * smallValue
         phaseSq = phaseMod * phaseMod
-        expo = - epsilon * self.parameters['beta'] * self.var.getGradMag()[:]
-        pFunc = 1. + Numerix.exp(expo) * (self.parameters['mu'] / epsilon - 1.)
+        expo = epsilon * self.parameters['beta'] * self.theta.getGrad().getMag()[:]
+        expo = (expo < 100.) * (expo - 100.) + 100.
+        pFunc = 1. + Numeric.exp(- expo) * (self.parameters['mu'] / epsilon - 1.)
 
-        self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['timeStepDuration'] 
+        self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration'] 
     
 

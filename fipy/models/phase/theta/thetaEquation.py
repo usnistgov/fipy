@@ -5,7 +5,8 @@
 
  FILE: "thetaEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/07/04 {11:49:03 AM}
+                               last update: 01/08/04 { 4:13:57 PM}
+
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -47,27 +48,30 @@ from terms.scSourceTerm import ScSourceTerm
 from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable
 from transientVariable import TransientVariable
-from examples.phase.phase.phasehalfAngleVariable import PhaseHalfAngleVariable
+from thetaHalfAngleVariable import ThetaHalfAngleVariable
 import Numeric
 
 class ThetaEquation(MatrixEquation):
 
-    def __init__(self, var = var, solver = 'default_solver', boundaryConditions = (), fields = {}, parameters = {}):
+    def __init__(self, var = None, solver = 'default_solver', boundaryConditions = (), fields = {}, parameters = {}):
         
         mesh = var.getMesh()
-        
+
+        phase = fields['phase']
+           
         transientCoeff = TransientVariable(phase = phase, theta = var, parameters = parameters)
-        diffusionCoeff = diffusionVariable(phase = phase, theta = var, parameters = parameters)
-        halfAngleVariable = PhaseHalfAngleVariable(phase = phase, theta = theta, parameters = parameters)
+        diffusionCoeff = DiffusionVariable(phase = phase, theta = var, parameters = parameters)
+        halfAngleVariable = ThetaHalfAngleVariable(phase = phase, theta = var, parameters = parameters)
         
         sourceCoeff = SourceVariable(phase = phase,
                                      theta = var,
-                                     diffCoeff = diffusionCOeff,
-                                     halfAngleVariable = halfAngleVariable)
+                                     diffCoeff = diffusionCoeff,
+                                     halfAngleVariable = halfAngleVariable,
+                                     parameters = parameters)
         	
-        transientTerm = TransientTerm(transientCoeff, mesh),
+        transientTerm = TransientTerm(transientCoeff, mesh)
         diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff, mesh, boundaryConditions)
-        scSourceTerm = ScSourceTerm(SourceCoeff, mesh)
+        scSourceTerm = ScSourceTerm(sourceCoeff, mesh)
         
 	terms = (transientTerm, diffusionTerm, scSourceTerm)
 

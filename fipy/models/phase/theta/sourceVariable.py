@@ -5,7 +5,7 @@
 
  FILE: "sourceVariable.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/07/04 { 4:30:43 PM}
+                               last update: 01/08/04 { 4:15:25 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -41,7 +41,8 @@ they have been modified.
 """
 
 from variables.cellVariable import CellVariable
-
+from examples.phase.phase.tools import addOverFaces
+import Numeric
 class SourceVariable(CellVariable):
 
     def __init__(self,
@@ -51,31 +52,31 @@ class SourceVariable(CellVariable):
                  halfAngleVariable = None,
                  parameters = None):
 
-        CellVariable.__init__(self, phase.getMesh())
+        CellVariable.__init__(self, theta.getMesh())
 
         self.parameters = parameters
-        self.phase = self.required(phase)
-        self.theta = self.required(theta)
-        self.diffCoeff = self.required(diffCoeff)
-        self.halfAngleVariable = self.required(halfAngleVariable)
+        self.phase = self.requires(phase)
+        self.theta = self.requires(theta)
+        self.diffCoeff = self.requires(diffCoeff)
+        self.halfAngleVariable = self.requires(halfAngleVariable)
 
     def calcValue(self):
 
-        mesh = self.phase.getMesh
-        c2 = self.['anisotropy']
+        mesh = self.theta.getMesh()
+        c2 = self.parameters['anisotropy']
         
         thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
 
-        correctionTerm = tools.addOverFaces(faceGradient = thetaGradDiff,
-                                            faceVariable = self.diffCoeff[:],
-                                            mesh = mesh,
-                                            NCells = len(self.phase[:]))
+        correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
+                                      faceVariable = self.diffCoeff[:],
+                                      mesh = mesh,
+                                      NCells = len(self.phase[:]))
 
         halfAngleSq = self.halfAngleVariable[:] * self.halfAngleVariable[:]
         beta = (1. - halfAngleSq) / (1. + halfAngleSq)
-        dbeta = N * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
-        
-        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGradMag() * (1. + c2 * beta)
+        dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
+
+        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
         
     
 

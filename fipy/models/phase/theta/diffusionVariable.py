@@ -40,17 +40,18 @@ they have been modified.
 ###################################################################
 """
 
-from variables.faceVariable import FaceVariable
+from variables.cellVariable import CellVariable
+import Numeric
 
-class TransientVariable(CellVariable):
+class DiffusionVariable(CellVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 
         CellVariable.__init__(self, phase.getMesh())
 
         self.parameters = parameters
-        self.phase = self.required(phase)
-        self.theta = self.required(theta)
+        self.phase = self.requires(phase)
+        self.theta = self.requires(theta)
 
     def calcValue(self):
 
@@ -59,7 +60,7 @@ class TransientVariable(CellVariable):
         
         phaseFace = self.phase.getFaceValue()[:]
         phaseSq = phaseFace * phaseFace
-        gradMag = self.theta.getFaceGradMag()[:]
+        gradMag = self.theta.getFaceGrad().getMag()[:]
 
         IGamma = Numeric.where(gradMag > 1. / gamma, 1 / gradMag, gamma)
 
