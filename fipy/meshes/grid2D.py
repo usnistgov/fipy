@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/25/03 {9:37:19 AM} 
+ #                                last update: 11/25/03 {9:50:44 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -151,7 +151,7 @@ class Grid2D(Mesh):
         return vertices	
 		    
     def createFaces(self, vertices):
-	"""Return 'tuples' of 'Faces' bounded by 'Vertices'. 
+	"""Return 'tuples' of 'Faces' bounded by 'vertices'. 
 	
 	First 'tuple' are the 'Faces' that separate rows of 'Cells'.  Second
 	'tuple' are the 'Faces' that separate columns of 'Cells'.  These
@@ -192,8 +192,8 @@ class Grid2D(Mesh):
 	    interiorFaces += rowFace
 	for colFace in colFaces:
 	    interiorFaces += colFace[1:-1]
+	    
 	faces = interiorFaces
-	
 	faces += rowFaces[0] + rowFaces[-1]
 	for colFace in colFaces:
 	    faces += (colFace[0],)

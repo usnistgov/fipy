@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/25/03 {8:37:14 AM} 
+ #                                last update: 11/26/03 {9:47:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,6 +40,7 @@
  ##
 
 from term import Term
+import Numeric
 
 class FaceTerm(Term):
     def __init__(self,stencil,faces,interiorFaces,boundaryConditions):
@@ -50,16 +51,45 @@ class FaceTerm(Term):
         self.interiorFaces = interiorFaces
         self.boundaryConditions = boundaryConditions
 	
-    def buildMatrix(self,L,array,b):
-	for face in self.interiorFaces:
-            id1 = face.getCellId(0)
-            id2 = face.getCellId(1)
-            faceId = face.getId()
-            L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
-            L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
-            L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
-            L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
+	N = len(self.interiorFaces)
 
+	self.id1 = Numeric.zeros((N))
+	self.id2 = Numeric.zeros((N))
+	for i in range(N):
+	    self.id1[i] = self.faces[i].getCellId(0)
+	    self.id2[i] = self.faces[i].getCellId(1)
+	
+    def actuallyDoSomething(self, L, aa, bb, id1, id2):
+	L.update_add_something(aa,id1,id1)
+	L.update_add_something(bb,id1,id2)
+	L.update_add_something(bb,id2,id1)
+	L.update_add_something(aa,id2,id2)
+	
+    def buildMatrix(self,L,array,b):
+	interiorN = len(self.interiorFaces)
+	
+	aa=self.coeff[:interiorN]*self.stencil[1]
+	bb=-self.coeff[:interiorN]*self.stencil[0]
+	
+# 	id1 = Numeric.zeros((interiorN))
+# 	id2 = Numeric.zeros((interiorN))
+# 	for i in range(interiorN):
+#             id1[i] = self.faces[i].getCellId(0)
+# 	    id2[i] = self.faces[i].getCellId(1)
+
+#             faceId = face.getId()
+#             L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
+#             L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
+#             L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
+#             L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
+	    
+# 	L.update_add_something(aa,id1,id1)
+# 	L.update_add_something(bb,id1,id2)
+# 	L.update_add_something(bb,id2,id1)
+# 	L.update_add_something(aa,id2,id2)
+	
+	self.actuallyDoSomething(L, aa, bb, self.id1, self.id2)
+	
         for boundaryCondition in self.boundaryConditions:
             for face in boundaryCondition.getFaces():
                 cellId = face.getCellId()
