@@ -40,7 +40,6 @@
  # ###################################################################
  ##
 
-from phaseEquation import PhaseEquation
 from mPhiVariable import MPhiVariable
 
 class Type1MPhiVariable(MPhiVariable):

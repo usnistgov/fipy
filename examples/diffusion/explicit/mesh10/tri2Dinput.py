@@ -56,13 +56,12 @@ steps.
     >>> ny = 1
     >>> valueLeft = 0.
     >>> valueRight = 1.
-    >>> timeStepDuration = 0.2
+    >>> timeStepDuration = 0.02
     >>> steps = 10
 
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     var.updateOld()
     ...     eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     
 The result is again tested in the same way:
@@ -93,7 +92,7 @@ ny = 1
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.02
-steps = 10
+steps = 1000
 
 mesh = Tri2D(dx, dy, nx, ny)
 
@@ -122,7 +121,6 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
 
 if __name__ == '__main__':
     for step in range(steps):
-        var.updateOld()    
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
     viewer = PyxViewer(var)
