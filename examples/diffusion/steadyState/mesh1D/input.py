@@ -175,15 +175,13 @@ tolerance of `1e-10`.
     >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
     
-A `Viewer` object allows a variable to be displayed. Here we are using  the Gist package
-to view the field. The Gist viewer is constructed in the following way:
-
-    >>> from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    >>> viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
-    
-and if we run interactively, we view the result with
+A `Viewer` object allows a variable to be displayed. Here we are using
+the Gist package to view the field. The Gist viewer is constructed and
+the results are viewed:
 
     >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
     ...     viewer.plot()
 
 ..
