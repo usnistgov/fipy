@@ -40,7 +40,6 @@ class VectorCellVariable(Variable):
 	array = Numeric.zeros([len(mesh.getCells()),mesh.getDim()],'d')
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)
-	self.mag = None
 	
     def getVariableClass(self):
 	return VectorCellVariable
