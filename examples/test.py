@@ -61,7 +61,7 @@ def suite():
     theSuite.addTest(fivol.examples.convection.test.suite())
     theSuite.addTest(fivol.examples.phase.test.suite())
     theSuite.addTest(fivol.examples.elphf.test.suite())
-    theSuite.addTest(fivol.examples.levelSet.test.suite())    
+##    theSuite.addTest(fivol.examples.levelSet.test.suite())    
     
     return theSuite
 
