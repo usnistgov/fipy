@@ -78,24 +78,24 @@ class PhaseSystem:
       dx = self.L / self.nx
       dy = self.L / self.ny
 
-      fileName = '%s/meshes'%(fivol.examples.phase.examples.missOrientation.__path__[0])
+##      fileName = '%s/meshe'%(fivol.examples.phase.examples.missOrientation.__path__[0])
 
-      try:
-         meshDict = dump.read(fileName)
-      except:
-         meshDict = {}
+##      try:
+##         meshDict = dump.read(fileName)
+##      except:
+##         meshDict = {}
 
-      key = 'dx%f' % dx + 'dy%f' % dy + 'nx%i' % self.nx + 'ny%i' % self.ny
-      print key
-      print meshDict.keys()
-      print 
-      if key in meshDict.keys():
-         mesh = meshDict[key]
-      else:
-         mesh = Grid2D(dx, dy, self.nx, self.ny)
-         meshDict[key] = mesh
-         print meshDict
-         dump.write(meshDict, fileName)
+##      key = 'meshdx%f' % dx + 'dy%f' % dy + 'nx%i' % self.nx + 'ny%i' % self.ny
+##      print key
+##      print meshDict.keys()
+##      print 
+##      if key in meshDict.keys():
+##         mesh = meshDict[key]
+##      else:
+      mesh = Grid2D(dx, dy, self.nx, self.ny)
+##         meshDict[key] = mesh
+##         print meshDict
+##         dump.write(meshDict, fileName)
          
       self.var = CellVariable(
          name = 'PhaseField',

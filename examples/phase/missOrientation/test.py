@@ -93,10 +93,10 @@ class TestPhaseCircleModular(TestPhase):
 
 def suite():
     theSuite = unittest.TestSuite()
-##    theSuite.addTest(unittest.makeSuite(TestPhase1D))
-##    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
+    theSuite.addTest(unittest.makeSuite(TestPhase1D))
+    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     theSuite.addTest(unittest.makeSuite(TestPhaseCircleModular))
-##    theSuite.addTest(testLevel2.suite())
+    theSuite.addTest(testLevel2.suite())
     return theSuite
     
 if __name__ == '__main__':
