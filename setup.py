@@ -459,7 +459,6 @@ class efficiency_test(Command):
         import threading
         import tempfile
         import os
-        from fipy.tools.memoryUsage import memory
         
         file = open('efficiencyData.txt', 'w')
 
@@ -474,9 +473,17 @@ class efficiency_test(Command):
 
             def run(self):
                 maxMem = 0
-                for i in range(100):
-                    maxMem = max(maxMem, memory(0.0, self.pid))
-                    time.sleep(self.runTimeEstimate / 100)
+                for i in range(10):
+                    (f, fileName) = tempfile.mkstemp()
+                    os.system('ps -p %i -o vsz > ' + fileName % self.pid)
+                    ff = open('tmp.txt', 'r')
+                    ff.readline()
+                    s = ff.readline()
+                    ff.close()
+                    os.remove('tmp.txt')
+                    os.close(f)
+                    maxMem = max(maxMem, int(s))
+                    time.sleep(self.runTimeEstimate / 10)
                 self.fileObject.write(str(maxMem))
                 self.fileObject.close()
 
@@ -513,7 +520,7 @@ class efficiency_test(Command):
                 os.remove(fileName)
                 os.close(f)
                 sys.argv.remove('numberOfElements=' + str(numberOfElements))
-                file.write('Elements: %i, CPU time: %.3f seconds, memory usage: %.0f bytes\n' % (numberOfElements, t2 - t1, memUsage))
+                file.write('Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB\n' % (numberOfElements, t2 - t1, memUsage))
                 
                 numberOfElements *= self.factor
                 runTimeEstimate = (t2 - t1) * self.factor
