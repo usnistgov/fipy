@@ -184,7 +184,7 @@ class MaxCoeff(CellVariable):
     def _calcMax(self):
         total = 0
         for var in self.vars:
-            total += var.getInterfaceVar()
+            total += Numeric.array(var.getInterfaceVar())
         return Numeric.array(total > 1) * self.distanceVar.getCellInterfaceFlag()
 
 class SpMaxCoeff(MaxCoeff):
@@ -198,7 +198,7 @@ class ScMaxCoeff(MaxCoeff):
             val -= self.distanceVar.getCellInterfaceFlag() * Numeric.array(var)
 
         self.value = 1e20 * self._calcMax() * val
-            
+
 class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
                  surfactantVar = None,
@@ -236,11 +236,11 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff
 
-    def solve(self, var, dt):
+    def solve(self, var, boundaryConditions = (), solver = LinearLUSolver(), dt = 1.):
         for coeff in self.coeffs:            
             coeff.updateDt(dt)
-        SurfactantEquation.solve(self, var)
-            
+        SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
+
 def _test(): 
     import doctest
     return doctest.testmod()
