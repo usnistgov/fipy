@@ -61,7 +61,7 @@ where the free energy functional is given by,
 We solve the problem on a 1D mesh
 
     >>> L = 40.
-    >>> nx = 10000
+    >>> nx = 1000
     >>> ny = 1
     >>> dx = L / nx
     >>> dy = 1.
@@ -114,21 +114,22 @@ or
 
 Using
 
-    >>> parameters={
-    ...     'asq' : 1.0,
-    ...     'epsilon' : 1,
-    ...     'diffusionCoeff' : 1
-    ... }
+    >>> asq = 1.0
+    >>> epsilon = 1
+    >>> diffusionCoeff = 1
 
-we create the Cahn-Hilliard equation object
+we create the Cahn-Hilliard equation:
+
+    >>> faceVar = var.getArithmeticFaceValue()
+    >>> doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
+
+    >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> diffTerm2 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff * doubleWellDerivative,))
+    >>> diffTerm4 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff, -epsilon**2))
+    >>> eqch = TransientTerm() - diffTerm2 - diffTerm4
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> from fipy.models.cahnHilliard.cahnHilliardEquation import buildCahnHilliardEquation
-    >>> eqch = buildCahnHilliardEquation(
-    ...     var = var,
-    ...     parameters = parameters
-    ... )
-
     >>> solver = LinearLUSolver(tolerance = 1e-15, steps = 100)
 
 The solution to this 1D problem over an infinite domain is given by,
@@ -140,9 +141,9 @@ The solution to this 1D problem over an infinite domain is given by,
 or
 
     >>> import Numeric
-    >>> a = Numeric.sqrt(parameters['asq'])
+    >>> a = Numeric.sqrt(asq)
     >>> answer = 1 / (1 + 
-    ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+    ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 
@@ -155,10 +156,9 @@ We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
     >>> dexp=-5
-    >>> ##for step in range(100):
-    >>> for step in range(1):
+    >>> for step in range(100):
     ...     dt = Numeric.exp(dexp)
-    ...     dt = min(10,dt)
+    ...     dt = min(10, dt)
     ...     dexp += 0.5
     ...     eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
     ...     if __name__ == '__main__':
@@ -173,14 +173,9 @@ we update the display and output data about the progression of the solution
 
 We compare the analytical solution with the numerical result,
 
-   >>> Numeric.allclose(var, answer, atol = 1e-2)
-   1
-   >>> Numeric.allclose(var, answer, atol = 1e-3)
-   1
    >>> Numeric.allclose(var, answer, atol = 1e-4)
-   0
-   >>> Numeric.allclose(var, answer, atol = 1e-5)
-   0
+   1
+
 """
 __docformat__ = 'restructuredtext'
 
