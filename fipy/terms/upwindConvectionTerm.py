@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/2/04 {4:00:49 PM} 
+ #                                last update: 7/14/04 {3:10:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -48,43 +48,28 @@ class UpwindConvectionTerm(ConvectionTerm):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
 	    self.P = self.requires(P)
 	    
-	def _calcValuePy(self, eps, P):
-	    P = Numeric.where(abs(P) < eps, eps, P)
-	    
-	    alpha = Numeric.where(P > 0., Numeric.ones(len(P)), Numeric.zeros(len(P)))
+	def _calcValuePy(self, P):
+	    alpha = Numeric.where(P > 0., 1., 0.)
 
 	    self.value = PhysicalField(value = alpha)
 
-	def _calcValueIn(self, eps, P):
+	def _calcValueIn(self, P):
 
 	    inline.runInlineLoop1("""
-		if (P(i) > 0) {
-		    P(i) = eps;
-		}
-		
 		alpha(i) = 0.5;
 		
-		if (P(i) > 10.) {
-		    alpha(i) = (P(i) - 1.) / P(i);
-		} else if (10. >= P(i) && P(i) > eps) {
-		    double	tmp = (1. - P(i) / 10.);
-		    double	tmpSqr = tmp * tmp;
-		    alpha(i) = ((P(i) - 1.) + tmpSqr*tmpSqr*tmp) / P(i);
-		} else if (eps >= P(i) && P(i) >= -10) {
-		    double	tmp = (1. + P(i) / 10.);
-		    double	tmpSqr = tmp * tmp;
-		    alpha(i) = (tmpSqr*tmpSqr*tmp - 1.) / P(i);
-		} else {	// P(i) < -10.
-		    alpha(i) = -1. / P(i);
+		if (P(i) > 0.) {
+		    alpha(i) = 1.;
+		} else {
+		    alpha(i) = 0.;
 		}
 	    """,
-	    alpha = self.value.value, eps = eps, P = P,
+	    alpha = self.value.value, P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
 
 
 	def calcValue(self):	    
-	    eps = 1e-3
 	    P  = self.P.getNumericValue()
 	    
-	    inline.optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
+	    inline.optionalInline(self._calcValueIn, self._calcValuePy, P)
