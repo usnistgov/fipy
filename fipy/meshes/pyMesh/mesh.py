@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/2/04 {4:00:37 PM} 
+ #                                last update: 5/5/04 {5:47:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,9 +44,11 @@
 
 import Numeric
 
+import fipy.meshes.common.mesh
+
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class Mesh:
+class Mesh(fipy.meshes.common.mesh.Mesh):
     def __init__(self, cells, faces, interiorFaces, vertices):
         self.cells = cells
         self.faces = faces
@@ -56,50 +58,106 @@ class Mesh:
 	if not self.__dict__.has_key("scale"):
 	    self.scale = 1
 	
-	self.calcCellFaceIDs(cells)
-	self.calcCellCenters(cells)
-	self.calcFaceTangents(faces)
+	fipy.meshes.common.mesh.Mesh.__init__(self)
+## ## 	self.calcTopology()
+## ## 	self.calcGeometry()
 	
-	self.calcAdjacentCellIDs()
+## ## 	self.calcCellFaceIDs(cells)
+## ## 	self.calcCellCenters()
+## ## 	self.calcFaceTangents()
+	
+## ## 	self.calcAdjacentCellIDs()
 
-    def getCells(self,func = None, **args):
-	"""Return Cells of Mesh.
-	"""
-        if func == None:
-            return self.cells
-        else:        
-	    return [cell for cell in self.cells if func(cell, **args)]
-##             returnCells = ()
-##             for cell in self.cells:
-##                 if func(cell, **args):
-##                     returnCells += (cell,)
-##             return returnCells
+    """calc Topology methods"""
+    
+    def calcTopology(self):
+	self.dim = len(self.vertices[0].getCoordinates())
+	self.numberOfFaces = len(self.faces)
+	self.numberOfCells = len(self.cells)
+	self.calcCellFaceIDs()
+	
+	fipy.meshes.common.mesh.Mesh.calcTopology(self)
+
+## ## 	self.calcInteriorAndExteriorFaceIDs()
+## ## 	self.calcCellToFaceOrientations()
+## ## 	self.calcAdjacentCellIDs()
+## ## ## 	self.calcCellToCellIDs()
+
+	self.calcFaceOrientations()
+
+    def calcInteriorAndExteriorFaceIDs(self):
+	self.exteriorFaceIDs = Numeric.arange(len(self.interiorFaces),len(self.faces))
+	self.interiorFaceIDs = Numeric.arange(len(self.interiorFaces))
+	
+    def calcInteriorAndExteriorCellIDs(self):
+	pass
+
+    def calcCellToFaceOrientations(self):
+	cells = self.getCells()
+	N = len(cells)
+	M = self.getMaxFacesPerCell()
+	self.cellToFaceOrientations = Numeric.zeros((N,M,1))
+	for i in range(N):
+	    orientations = cells[i].getFaceOrientations()
+	    orientations = Numeric.reshape(orientations,(len(cells[i].getFaces()),))
+	    for j in range(len(orientations)):
+		self.cellToFaceOrientations[i,j,0] = orientations[j]
+		
+    def calcCellToCellIDs(self):
+	pass
+## 	self.cellToCellIDs = MAtake(self.faceCellIDs, self.cellFaceIDs)
+## 	self.cellToCellIDs = MA.where(self.cellToFaceOrientations == 1, self.cellToCellIDs[:,:,1], self.cellToCellIDs[:,:,0])
+
+    """get Topology methods"""
+	
+    def getCellsByID(self, ids = None):
+	if ids is None:
+	    ids = range(self.numberOfCells) 
+## 	print "ids:",ids
+## 	print "cells:",self.cells
+## 	raw_input()
+	return [self.cells[id] for id in ids]
+	
+## ##     def getCells(self, ids = None, func = None, **args):
+## ## 	"""Return Cells of Mesh.
+## ## 	"""
+## ## 	if ids is None:
+## ## 	    ids = range(self.numberOfCells) 	    
+## ## 	return common.Mesh.getCells(self, cells = [self.cells[id] for id in ids], func = func, **args)
+## ## 	    
+## ##         if func is None:
+## ##             return self.cells
+## ##         else:        
+## ## 	    return [cell for cell in self.cells if func(cell, **args)]
+## ##             returnCells = ()
+## ##             for cell in self.cells:
+## ##                 if func(cell, **args):
+## ##                     returnCells += (cell,)
+## ##             return returnCells
 	    
-    def getNumberOfCells(self):
-	return len(self.cells)
+## ##     def getNumberOfCells(self):
+## ## 	return len(self.cells)
 
-    def getNumberOfFaces(self):
-        return len(self.faces)
+## ##     def getNumberOfFaces(self):
+## ##         return len(self.faces)
 
     def getFaces(self):
-	"""Return Faces of Mesh.
-	"""
+	"""Return Faces of Mesh."""
         return self.faces
 
-    def getInteriorFaceIDs(self):
-	"""Return Face IDs of Mesh that are not on a Mesh boundary.
-	"""
-	return Numeric.arange(len(self.interiorFaces))
+## ##     def getInteriorFaceIDs(self):
+## ## 	"""Return Face IDs of Mesh that are not on a Mesh boundary.
+## ## 	"""
+## ## 	return Numeric.arange(len(self.interiorFaces))
 	    
     def getInteriorFaces(self):
-	"""Return Faces of Mesh that are not on a Mesh boundary.
-	"""
+	"""Return Faces of Mesh that are not on a Mesh boundary."""
         return self.interiorFaces
 
-    def getExteriorFaceIDs(self):
-	"""Return Face IDs of Mesh that are not on a Mesh boundary.
-	"""
-	return Numeric.arange(len(self.interiorFaces),len(self.faces))
+## ##     def getExteriorFaceIDs(self):
+## ## 	"""Return Face IDs of Mesh that are not on a Mesh boundary.
+## ## 	"""
+## ## 	return Numeric.arange(len(self.interiorFaces),len(self.faces))
 	
     def getExteriorFaces(self):
         """Return all exterior faces
@@ -111,8 +169,8 @@ class Mesh:
 	"""
         pass
 
-    def getDim(self):
-        return self.dim 
+## ##     def getDim(self):
+## ##         return self.dim 
 
 ##    def removeCell(self,cell):
 ##        """Remove cell from Mesh.
@@ -148,43 +206,35 @@ class Mesh:
     def setScale(self, scale):
 	self.scale = PhysicalField(value = scale)
         
-    def getAdjacentCellIDs(self):
-	return (self.cellID1, self.cellID2)
+## ##     def getAdjacentCellIDs(self):
+## ## 	return (self.cellID1, self.cellID2)
 	
     def calcAdjacentCellIDs(self):
-	self.cellID1 = Numeric.array([face.getCellID(0) for face in self.faces])
-	self.cellID2 = Numeric.array([face.getCellID(1) for face in self.faces])
+	self.adjacentCellIDs = (Numeric.array([face.getCellID(0) for face in self.faces]),
+				Numeric.array([face.getCellID(1) for face in self.faces]))
 
     def getFaceOrientations(self):
         return self.faceOrientations
     
-    def calcFaceOrientations(self,faces):
+    def calcFaceOrientations(self):
+	faces = self.getFaces()
         N = len(faces)
         orientations = Numeric.zeros((N),'d')
         for i in range(N):
             orientations[i] = faces[i].getOrientation()
         self.faceOrientations = orientations
 
-    def getMaxFacesPerCell(self):
-        pass
+## ##     def getMaxFacesPerCell(self):
+## ##         pass
     
-    def getCellFaceOrientations(self):
-        return self.cellFaceOrientations
+## ##     def getCellFaceOrientations(self):
+## ##         return self.cellFaceOrientations
 
-    def calcCellFaceOrientations(self,cells):
-        N = len(cells)
-        M = self.getMaxFacesPerCell()
-        self.cellFaceOrientations = Numeric.zeros((N,M,1))
-        for i in range(N):
-            orientations = cells[i].getFaceOrientations()
-            orientations = Numeric.reshape(orientations,(len(cells[i].getFaces()),))
-            for j in range(len(orientations)):
-                self.cellFaceOrientations[i,j,0] = orientations[j]
+## ##     def getCellFaceIDs(self):
+## ##         return self.cellFaceIDs
 
-    def getCellFaceIDs(self):
-        return self.cellFaceIDs
-
-    def calcCellFaceIDs(self,cells):
+    def calcCellFaceIDs(self):
+	cells = self.getCells()
 	for cell in cells:
 	    cell.calcFaceIDs()
         self.cellFaceIDs = ()
@@ -194,12 +244,33 @@ class Mesh:
             ids = cell.getFaceIDs()
             self.cellFaceIDs += ids
 	self.cellFaceIDs = Numeric.array(self.cellFaceIDs)
-	self.cellFaceIDs = Numeric.reshape(self.cellFaceIDs, (len(self.getCells()), self.getMaxFacesPerCell()))
+	self.cellFaceIDs = Numeric.reshape(self.cellFaceIDs, (len(cells), self.getMaxFacesPerCell()))
         
-    def getFaceAreas(self):
-	return self.faceAreas
 	
-    def calcFaceAreas(self,faces):
+    """geometry methods"""
+    
+## ##     def calcGeometry(self):
+## ## 	self.calcFaceAreas()
+## ## 	self.calcFaceNormals()
+## ## 	self.calcOrientedFaceNormals()
+## ## 	self.calcCellVolumes()
+## ## 	self.calcCellCenters()
+## ## 	self.calcFaceToCellDistances()
+## ## 	self.calcCellDistances()        
+## ## 	self.calcAreaProjections()
+## ## 	self.calcOrientedAreaProjections()
+## ## 	self.calcFaceTangents()
+## ## 	self.calcFaceToCellDistanceRatio()
+## ## 	self.calcFaceAspectRatios()
+## ## 	self.calcCellToCellDistances()
+## ## ##        self.setScale()
+
+
+## ##     def getFaceAreas(self):
+## ## 	return self.faceAreas
+	
+    def calcFaceAreas(self):
+	faces = self.getFaces()
 	N = len(faces)
 	self.faceAreas = Numeric.zeros((N),'d')
 	# get the units right
@@ -207,10 +278,11 @@ class Mesh:
 	for i in range(N):
 	    self.faceAreas[i] = faces[i].getArea()
 	    
-    def getCellVolumes(self):
-	return self.cellVolumes
+## ##     def getCellVolumes(self):
+## ## 	return self.cellVolumes
 	
-    def calcCellVolumes(self,cells):
+    def calcCellVolumes(self):
+	cells = self.getCells()
 	N = len(cells)
 	self.cellVolumes = Numeric.zeros((N),'d')
 	# get the units right
@@ -218,10 +290,11 @@ class Mesh:
 	for i in range(N):
 	    self.cellVolumes[i] = cells[i].getVolume()	    
 	    
-    def getCellCenters(self):
-	return self.cellCenters
+## ##     def getCellCenters(self):
+## ## 	return self.cellCenters
 	
-    def calcCellCenters(self,cells):
+    def calcCellCenters(self):
+	cells = self.getCells()
 	N = len(cells)
 	self.cellCenters = Numeric.zeros((N,self.dim),'d')
 	# get the units right
@@ -229,10 +302,11 @@ class Mesh:
 	for i in range(N):
 	    self.cellCenters[i] = cells[i].getCenter()	    
 	
-    def getCellDistances(self):
-	return self.cellDistances
+## ##     def getCellDistances(self):
+## ## 	return self.cellDistances
 	
-    def calcCellDistances(self,faces):
+    def calcCellDistances(self):
+	faces = self.getFaces()
 	N = len(faces)
 	self.cellDistances = Numeric.zeros((N),'d')
 	# get the units right
@@ -240,10 +314,11 @@ class Mesh:
 	for i in range(N):
 	    self.cellDistances[i] = faces[i].getCellDistance()
 	
-    def getFaceToCellDistances(self):
-	return self.faceToCellDistances
+## ##     def getFaceToCellDistances(self):
+## ## 	return self.faceToCellDistances
 	
-    def calcFaceToCellDistances(self,faces):
+    def calcFaceToCellDistances(self):
+	faces = self.getFaces()
 	N = len(faces)
 	self.faceToCellDistances = Numeric.zeros((N),'d')
 	# get the units right
@@ -251,10 +326,11 @@ class Mesh:
 	for i in range(N):
 	    self.faceToCellDistances[i] = faces[i].getFaceToCellDistance()
 
-    def getFaceNormals(self):
-	return self.faceNormals
+## ##     def getFaceNormals(self):
+## ## 	return self.faceNormals
 
-    def calcFaceNormals(self, faces):
+    def calcFaceNormals(self):
+	faces = self.getFaces()
 	N = len(faces)
 	dim = len(faces[0].getCenter())
 	self.faceNormals = Numeric.zeros((N,dim),'d')
@@ -263,28 +339,32 @@ class Mesh:
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
 	    
-    def getOrientedFaceNormals(self):        
-	return self.orientedFaceNormals
+## ##     def getOrientedFaceNormals(self):        
+## ## 	return self.orientedFaceNormals
 
     def calcOrientedFaceNormals(self):
         self.orientedFaceNormals = self.getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	    
-    def getAreaProjections(self):
-	return self.areaProjections
+## ##     def getAreaProjections(self):
+## ## 	return self.areaProjections
 
     def calcAreaProjections(self):
         self.areaProjections = self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis] 
 	
-    def getOrientedAreaProjections(self):
-	return self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
+    def calcOrientedAreaProjections(self):
+	self.orientedAreaProjections = self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	
-    def getFaceTangents1(self):
-	return self.faceTangents1
+## ##     def getOrientedAreaProjections(self):
+## ## 	return self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
 
-    def getFaceTangents2(self):
-	return self.faceTangents2
+## ##     def getFaceTangents1(self):
+## ## 	return self.faceTangents1
+
+## ##     def getFaceTangents2(self):
+## ## 	return self.faceTangents2
 	
-    def calcFaceTangents(self, faces):
+    def calcFaceTangents(self):
+	faces = self.getFaces()
 	N = len(faces)
 	dim = len(faces[0].getCenter())
 	self.faceTangents1 = Numeric.zeros((N,dim),'d')
@@ -296,30 +376,34 @@ class Mesh:
 	    self.faceTangents1[i] = faces[i].calcTangent1()
 	    self.faceTangents2[i] = faces[i].calcTangent2()
 
-    def getFaceToCellDistanceRatio(self):
-	return self.faceToCellDistanceRatio
+## ##     def getFaceToCellDistanceRatio(self):
+## ## 	return self.faceToCellDistanceRatio
 	
     def calcFaceToCellDistanceRatio(self):
 	dAP = self.getCellDistances()
 	dFP = self.getFaceToCellDistances()
 	self.faceToCellDistanceRatio = dFP / dAP
 
-    def refreshFaces(self,faces):
-	self.calcFaceOrientations(faces)
-	self.calcFaceAreas(faces)
-	self.calcCellDistances(faces)
-	self.calcFaceToCellDistances(faces)
-	self.calcFaceToCellDistanceRatio()
-	self.calcFaceNormals(faces)
-        self.calcAreaProjections()
-        self.calcOrientedFaceNormals()
-        
-    def getPointToCellDistances(self, point):
-	import fipy.tools.array
-	tmp = self.getCellCenters() - Numeric.array(point)
-	return fipy.tools.array.sqrtDot(tmp, tmp)
+    def calcCellToCellDistances(self):
+	self.cellToCellDistances = fipy.tools.array.take(self.getCellDistances(), self.getCellFaceIDs())
 
-    def getNearestCell(self, point):
-        d = self.getPointToCellDistances(point)
-        i = Numeric.argsort(d)
-        return self.cells[i[0]]
+## ##     def refreshFaces(self,faces):
+## ## 	self.calcFaceOrientations(faces)
+## ## 	self.calcFaceAreas(faces)
+## ## 	self.calcCellDistances(faces)
+## ## 	self.calcFaceToCellDistances(faces)
+## ## 	self.calcFaceToCellDistanceRatio()
+## ## 	self.calcFaceNormals(faces)
+## ##         self.calcAreaProjections()
+## ## 	self.calcOrientedAreaProjections()
+## ##         self.calcOrientedFaceNormals()
+        
+## ##     def getPointToCellDistances(self, point):
+## ## 	import fipy.tools.array
+## ## 	tmp = self.getCellCenters() - Numeric.array(point)
+## ## 	return fipy.tools.array.sqrtDot(tmp, tmp)
+
+## ##     def getNearestCell(self, point):
+## ##         d = self.getPointToCellDistances(point)
+## ##         i = Numeric.argsort(d)
+## ##         return self.cells[i[0]]

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/2/04 {4:06:51 PM} 
+ #                                last update: 5/5/04 {7:29:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,5 +66,5 @@ class Mesh2D(Mesh):
     def calcFaceTangents(self):
         tmp = Numeric.transpose(Numeric.array((-self.faceNormals[:,1], self.faceNormals[:,0])))
         mag = fipy.tools.array.sqrtDot(tmp, tmp)
-        self.tangents1 = tmp / mag[:,Numeric.NewAxis]
-        self.tangents2 = Numeric.zeros(self.tangents1.shape, 'd')
+        self.faceTangents1 = tmp / mag[:,Numeric.NewAxis]
+        self.faceTangents2 = Numeric.zeros(self.faceTangents1.shape, 'd')

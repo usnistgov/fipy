@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:00:28 PM} 
+ #                                last update: 5/5/04 {7:19:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,8 +50,8 @@ from fipy.tools.inline import inline
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
+	self.mesh = mesh
 	Term.__init__(self,weight)
-        self.mesh = mesh
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 
