@@ -173,8 +173,12 @@ class TestMesh3D(TestMeshBase):
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):
         TestMesh3D.setUp(self)
-        pickledMesh = dump.write(self.mesh, 'pickledMesh')
-        self.mesh = dump.read('pickledMesh')
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        fileName = os.path.join(tmp, 'data')
+        pickledMesh = dump.write(self.mesh, fileName)
+        self.mesh = dump.read(fileName)
 
 def suite():
     theSuite = unittest.TestSuite()
