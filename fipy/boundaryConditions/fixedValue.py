@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/19/04 {5:23:34 PM}
+ #                                last update: 11/23/04 {12:45:17 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,9 +74,12 @@ class FixedValue(BoundaryCondition):
 	LL.addAt(array.take(cell1dia[:],self.faceIds) / coeffScale, self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, array.take(-cell1off[:],self.faceIds) * self.value / coeffScale)
+	vector.putAdd(bb, self.adjacentCellIds, array.take(-cell1off[:],self.faceIds) * self.getValue() / coeffScale)
 
 	return (LL, bb)
+	
+    def getValue(self):
+	return self.value
 
 
 
