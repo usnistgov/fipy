@@ -68,12 +68,12 @@ from advectionTerm import AdvectionTerm
 
 class AdvectionEquation(MatrixEquation):
 
-    def __init__(self, var = None, transientCoeff = None, advectionCoeff = None, solver = None):
+    def __init__(self, var = None, advectionCoeff = None, solver = None):
         
         mesh = var.getMesh()
 
         terms = (
-            TransientTerm(transientCoeff, mesh),
+            TransientTerm(1., mesh),
             AdvectionTerm(advectionCoeff, mesh))
 	
 	MatrixEquation.__init__(
