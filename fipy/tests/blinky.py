@@ -86,7 +86,7 @@ if __name__ == '__main__':
     
 ##     pt = (0.045, 0.045)
 ##     
-##     d = mesh.getPointToCellDistances(pt)
+##     d = mesh._getPointToCellDistances(pt)
 ##     
 ##     print d
 ## 

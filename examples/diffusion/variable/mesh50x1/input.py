@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:12:09 PM} 
+ #                                last update: 4/4/05 {3:16:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ A simple analytical answer can be used to test the result:
    >>> values = x + 18. * L / 4.
    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> var.allclose(values, atol = 1e-8, rtol = 1e-8)
+   >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveIterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 10/19/04 {2:52:05 PM} 
+ #                                last update: 4/4/05 {2:21:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ class AdaptiveIterator(Iterator):
     def resetTimeStep(self):
 	for equation in self.equations:
 	    var = equation.getVar()
-	    var.resetToOld()
+	    var._resetToOld()
 	    
     def adjustTimeStep(self, dt):
 	factor = min([equation._getFigureOfMerit() for equation in self.equations])

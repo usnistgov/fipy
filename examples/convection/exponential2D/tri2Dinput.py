@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2Dinput.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:31:43 PM} 
+ #                                last update: 4/4/05 {3:14:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ The analytical solution test for this problem is given by:
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = CC / DD
-   >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
+   >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
    1
    
    >>> if __name__ == '__main__':

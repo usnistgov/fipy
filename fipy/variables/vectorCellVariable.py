@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 4/1/05 {10:50:50 AM} 
+ #                                last update: 4/4/05 {11:04:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,12 @@ class VectorCellVariable(Variable):
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
         self.arithmeticFaceValue = None
+
+    def __call__(self, point = None, order = 0):
+        if point != None:
+            return self[self.getMesh()._getNearestCellID(point)]
+        else:
+            return Variable.__call__(self)
 
     def getArithmeticFaceValue(self):
         """

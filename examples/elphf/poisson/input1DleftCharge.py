@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 3/7/05 {1:20:08 PM} 
+ #                                last update: 4/5/05 {8:11:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,7 +115,7 @@ We verify that the correct equilibrium is attained
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = Numeric.where(x < 1, (x**2)/2 - x, -0.5)
 
-    >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+    >>> print fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
     1
     
 If we are running the example interactively, we view the result

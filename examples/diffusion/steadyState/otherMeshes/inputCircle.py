@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:26:55 PM} { 5:14:21 PM}
+ #                                last update: 4/4/05 {3:13:27 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -124,7 +124,7 @@ The example is then solved as an implicit diffusion problem.
                                                     
 The values at the elements should be equal to the x coordinate
 
-   >>> var.allclose(mesh.getCellCenters()[:,0], atol = 0.02)
+   >>> print var.allclose(mesh.getCellCenters()[:,0], atol = 0.02)
    1
 
 Display the results if run as a script.

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/4/05 {6:52:09 PM} 
+ #                                last update: 4/4/05 {3:13:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ The result is again tested against the expected linear composition profile:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
     
 If the problem is run interactively, we can view the result:

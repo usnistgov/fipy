@@ -80,7 +80,7 @@ class Face:
 
      
     def getArea(self):
-	return self.mesh.getFaceAreas()[self.id]
+	return self.mesh._getFaceAreas()[self.id]
 ##     
 ##     def getNormal(self):
 ## 	"""Return the unit normal vector
@@ -92,7 +92,7 @@ class Face:
 ## 	"""
 ##         return self.cellDistance
 ## 
-##     def getFaceToCellDistance(self, cellId = None):
+##     def _getFaceToCellDistance(self, cellId = None):
 ##         if cellId == self.cellsId[0] or cellId == None:
 ##             return self.faceToCellDistances[0]
 ##         elif cellId == self.cellsId[1]:
@@ -105,5 +105,5 @@ class Face:
 ## 	"""
 ## 	return "<id = " + str(self.id) + ", area = " + str(self.area) + ", normal = " + str(self.normal) + ", vertices = " + str(self.vertices) + ", center = " + str(self.center) + ">\n"
 ##             
-##     def getOrientation(self):
+##     def _getOrientation(self):
 ##         return self.orientation

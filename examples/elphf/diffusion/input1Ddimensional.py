@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:47:37 PM} 
+ #                                last update: 4/5/05 {8:09:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -126,10 +126,10 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3",
+    >>> print fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3",
+    >>> print fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
     

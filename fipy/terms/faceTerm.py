@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/25/05 {5:23:56 PM} 
+ #                                last update: 4/4/05 {2:27:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,7 +73,7 @@ class FaceTerm(Term):
 	L.addAt(array.take(coeffMatrix['cell 2 diag'], interiorFaceIDs),    id2, id2)
 
         N = mesh.getNumberOfCells()
-	M = mesh.getMaxFacesPerCell()
+	M = mesh._getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
@@ -87,7 +87,7 @@ class FaceTerm(Term):
         inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
 
         N = mesh.getNumberOfCells()
-	M = mesh.getMaxFacesPerCell()
+	M = mesh._getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
 
@@ -101,7 +101,7 @@ class FaceTerm(Term):
 
 	weight = self._getWeight(mesh)['explicit']
         coeff = Numeric.array(self._getGeomCoeff(mesh))
-        Nfac = mesh.getNumberOfFaces()
+        Nfac = mesh._getNumberOfFaces()
 
         cell1Diag = Numeric.zeros((Nfac,),'d')
         cell1Diag[:] = weight['cell 1 diag']
@@ -160,7 +160,7 @@ class FaceTerm(Term):
 
 	mesh = var.getMesh()
 	
-	id1, id2 = mesh.getAdjacentCellIDs()
+	id1, id2 = mesh._getAdjacentCellIDs()
 	id1 = array.take(id1, mesh.getInteriorFaceIDs())
 	id2 = array.take(id2, mesh.getInteriorFaceIDs())
 	

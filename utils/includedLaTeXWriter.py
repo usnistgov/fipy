@@ -4,11 +4,10 @@
  # 
  #  FILE: "includedLaTeXWriter.py"
  #                                    created: 9/29/04 {11:38:07 AM} 
- #                                last update: 10/27/04 {2:45:00 PM} 
+ #                                last update: 3/17/05 {11:56:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: James Warren <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  

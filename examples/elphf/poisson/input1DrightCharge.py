@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 3/7/05 {2:35:34 PM} 
+ #                                last update: 4/5/05 {8:12:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -143,7 +143,7 @@ We verify that the correct equilibrium is attained
     >>> import Numeric
     >>> analyticalArray = Numeric.where(x < 1, -x, ((x-1)**2)/2 - x)
 
-    >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+    >>> print fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
     1
     
 If we are running the example interactively, we view the result

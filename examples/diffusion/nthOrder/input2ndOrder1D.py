@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:01:15 PM} 
+ #                                last update: 4/4/05 {3:10:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -105,7 +105,7 @@ The result is tested against the expected linear diffusion profile:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> value = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> var.allclose(value)
+    >>> print var.allclose(value)
     1
 
 If the problem is run interactively, we can view the result:

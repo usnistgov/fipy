@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:57:14 PM} 
+ #                                last update: 4/5/05 {5:55:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,8 +70,8 @@ The result is again tested in the same way:
     >>> Lx = (2 * nx * dx)
     >>> x = bigMesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> ## var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
-    >>> var.allclose(answer)
+    >>> ## print var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
+    >>> print var.allclose(answer)
     1
 
 """
@@ -136,9 +136,9 @@ var = CellVariable(
 
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
-boundaryConditions=(FixedValue(bigMesh.getFacesWithFilter(leftSide), valueLeft),
-                    FixedValue(bigMesh.getFacesWithFilter(inMiddle), (valueLeft + valueRight) * 0.5),
-                    FixedValue(bigMesh.getFacesWithFilter(rightSide), valueRight))
+boundaryConditions=(FixedValue(bigMesh.getFaces(leftSide), valueLeft),
+                    FixedValue(bigMesh.getFaces(inMiddle), (valueLeft + valueRight) * 0.5),
+                    FixedValue(bigMesh.getFaces(rightSide), valueRight))
 
 answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
         5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,

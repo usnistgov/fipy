@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonAllCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 3/7/05 {2:18:39 PM} 
+ #                                last update: 4/5/05 {8:11:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,7 +103,7 @@ We verify that the correct equilibrium is attained
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = (x**2)/2 - 2*x
 
-    >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+    >>> print fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
     1
     
 If we are running the example interactively, we view the result

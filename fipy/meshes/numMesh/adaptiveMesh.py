@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/29/05 {2:39:17 PM} 
+ #                                last update: 4/3/05 {12:31:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,53 +36,19 @@
  # ###################################################################
  ##
 
-"""
-
-The AdaptiveMesh classes allow meshes to be created "on-the-fly" using a
-variable specified by the user.  The AdaptiveMesh classes use Gmsh, a free
-open-source meshing utility (http://www.geuz.org/gmsh). To do this, pass in a
-variable to the initializer function that has a mesh with the same
-boundaries (though not necessarily the same interior geometry) as the mesh
-you want to create and values that are equal to the approximate mesh sizes
-you want at any given point.  For example, if you want the mesh to be finer
-in areas where a concentration gradient is steeper, create a variable whose
-value is equal to some constant times the reciprocal of the concentration
-gradient and pass it to the initializer.  The following will create a mesh
-that is finer toward the upper right hand corner:
-
-   >>> baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
-   >>> var = CellVariable(mesh = baseMesh, 
-   ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), 
-   ...     name = "characteristic lengths")
-
-Since the value of `var` is smaller in the upper right hand corner, the mesh
-will be finer there.  To create the mesh, do this:
-
-   >>> newMesh = AdaptiveMesh2D(var)
-
-.. note:: 
-    
-   At present, AdaptiveMesh supports triangular meshes only.
-
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
-from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.meshes.numMesh.mesh2D import Mesh2D
-from fipy.meshes.numMesh.mesh import Mesh
-from fipy.meshes.numMesh.gmshImport import DataGetter
-from fipy.variables.cellVariable import CellVariable
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
 
-def removeDuplicates(list):
+from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+
+def _removeDuplicates(list):
     dict = {}
     for item in list:
         dict[item] = None
     return dict.keys()
 
-def orderVertices(vertexCoords, vertices):
+def _orderVertices(vertexCoords, vertices):
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
@@ -91,44 +57,80 @@ def orderVertices(vertexCoords, vertices):
     sortorder = Numeric.argsort(angles)
     return Numeric.take(vertices, sortorder)
 
-def bracedList(list):
-    res = '{' + str(list[0])
-    for i in list[1:]:
-        res = res + ", " + str(i)
-    res = res + '}'
-    return res
+def _bracedList(l):
+    return "{%s}" % ', '.join([str(i) for i in l])
 
-def parenList(list):
-    res = '(' + str(list[0])
-    for i in list[1:]:
-        res = res + ", " + str(i)
-    res = res + ')'
-    return res
+def _parenList(l):
+    return "(%s)" % ', '.join([str(i) for i in l])
        
-class AdaptiveMesh2D(Mesh2D):
+class AdaptiveMesh2D(GmshImporter2D):
+    """
+
+    The `AdaptiveMesh` classes allow meshes to be created "on-the-fly" using a
+    variable specified by the user.  The `AdaptiveMesh` classes use Gmsh, a free
+    open-source meshing utility (http://www.geuz.org/gmsh). To do this, pass in a
+    variable to the initializer function that has a mesh with the same
+    boundaries (though not necessarily the same interior geometry) as the mesh
+    you want to create and values that are equal to the approximate mesh sizes
+    you want at any given point.  For example, if you want the mesh to be finer
+    in areas where a concentration gradient is steeper, create a variable whose
+    value is equal to some constant times the reciprocal of the concentration
+    gradient and pass it to the initializer.  The following will create a mesh
+    that is finer toward the upper right hand corner:
+
+       >>> from fipy.meshes.numMesh.tri2D import Tri2D
+       >>> baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
+       
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> var = CellVariable(mesh = baseMesh, 
+       ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), 
+       ...     name = "characteristic lengths")
+
+    Since the value of `var` is smaller in the upper right hand corner, the mesh
+    will be finer there.  To create the mesh, do this:
+
+       >>> newMesh = AdaptiveMesh2D(var)
+
+    .. note:: 
+        
+       At present, AdaptiveMesh supports triangular meshes only.
+
+    """
     
     def __init__(self, variable):
         self.variable = variable
-        self.getExteriorVertexIDs()
-        self.getGeometryPoints()
-        self.getExteriorLines()
-        geomFile = self.writeGeometryFile()
-        self.createBackgroundMesh()
-        bgMesh = self.writeBackgroundMesh()
-        self.finalInit(geomFile, bgMesh)
+        self._calcExteriorVertexIDs()
+        self._calcGeometryPoints()
+        self._calcExteriorLines()
+        geomFile = self._writeGeometryFile()
+        self._createBackgroundMesh()
+        bgMesh = self._writeBackgroundMesh()
+        
+        
+        import os
+        import tempfile
+        (f, meshFile) = tempfile.mkstemp('.msh')
+        os.system("gmsh -v 0 %s -bgm %s -format msh -2 -o %s" % (geomFile, bgMesh, meshFile))
+        
+        GmshImporter2D.__init__(self, meshFile)
 
-    def getExteriorVertexIDs(self):
+        os.close(f)
+        os.remove(geomFile)
+        os.remove(bgMesh)
+        os.remove(meshFile)
+
+    def _calcExteriorVertexIDs(self):
         ## get the exterior vertex IDs
         self.varMesh = self.variable.getMesh()
         exteriorFaces = self.varMesh.getExteriorFaceIDs()
         exteriorFaceVertexIDs = Numeric.take(self.varMesh.faceVertexIDs, exteriorFaces)
         exteriorVertexIDs = Numeric.ravel(exteriorFaceVertexIDs)
-        exteriorVertexIDs = removeDuplicates(exteriorVertexIDs)
+        exteriorVertexIDs = _removeDuplicates(exteriorVertexIDs)
         ## sort the exterior vertex IDs going counterclockwise
-        exteriorVertexIDs = orderVertices(self.varMesh.getVertexCoords(), exteriorVertexIDs)
+        exteriorVertexIDs = _orderVertices(self.varMesh.getVertexCoords(), exteriorVertexIDs)
         self.exteriorVertexIDs = exteriorVertexIDs
 
-    def getGeometryPoints(self):
+    def _calcGeometryPoints(self):
         ## get the points to put in the geometry file
         geometryPoints = Numeric.zeros((len(self.varMesh.getVertexCoords()), 4)).astype(Numeric.Float)
         geometryPoints[:, :2] = self.varMesh.getVertexCoords()
@@ -137,7 +139,7 @@ class AdaptiveMesh2D(Mesh2D):
         geometryPoints = Numeric.take(geometryPoints, self.exteriorVertexIDs)
         self.geometryPoints = geometryPoints
 
-    def getExteriorLines(self):
+    def _calcExteriorLines(self):
         ## get the exterior lines to put in the geometry file
         exteriorLines = Numeric.zeros((len(self.exteriorVertexIDs), 2))
         exteriorLines[:, 0] = Numeric.arange(len(self.exteriorVertexIDs))
@@ -150,23 +152,23 @@ class AdaptiveMesh2D(Mesh2D):
         self.exteriorLines = exteriorLines
         self.lineLoop = lineLoop
 
-    def writeGeometryFile(self):
+    def _writeGeometryFile(self):
         ## do the geometry file
         import tempfile
 	(f, fileName) = tempfile.mkstemp('.geo')
 	
         geomFile = open(fileName, mode = 'w')
         ## create the points
-        pointList = ["Point(" + str(i + 1) + ") = " + bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
+        pointList = ["Point(" + str(i + 1) + ") = " + _bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
         for i in pointList:
             geomFile.write(i)
         index = 1
         ## create the lines
         for j in self.exteriorLines:
-            geomFile.write("Line(" + str(index) + ") = " + bracedList(j) + " ; \n")
+            geomFile.write("Line(" + str(index) + ") = " + _bracedList(j) + " ; \n")
             index = index + 1
         ## create the line-loop
-        geomFile.write("Line Loop(" + str(index) + ") = " + bracedList(self.lineLoop) + " ; \n")
+        geomFile.write("Line Loop(" + str(index) + ") = " + _bracedList(self.lineLoop) + " ; \n")
         LLindex = index
         index = index + 1
         ## create the plane surface
@@ -177,7 +179,7 @@ class AdaptiveMesh2D(Mesh2D):
 	
 	return fileName
     
-    def createBackgroundMesh(self):
+    def _createBackgroundMesh(self):
         ## create the background mesh (this works for Triangular Meshes ONLY)
         cellFaceVertexIDs = Numeric.take(self.varMesh.faceVertexIDs, self.varMesh.cellFaceIDs)
         cellVertexIDs = Numeric.reshape(cellFaceVertexIDs, (len(self.varMesh.getCellCenters()), 6))
@@ -192,7 +194,7 @@ class AdaptiveMesh2D(Mesh2D):
         self.cellOutputs = cellOutputs
         self.cellVertexValues = cellVertexValues
 
-    def writeBackgroundMesh(self):
+    def _writeBackgroundMesh(self):
         ## write the mesh
         import tempfile
 	(f, bgFile) = tempfile.mkstemp('.pos')
@@ -200,37 +202,16 @@ class AdaptiveMesh2D(Mesh2D):
         bgmeshFile = open(bgFile, mode = 'w')
         bgmeshFile.write("View \"characteristic lengths\" {")
         for i in range(len(self.varMesh.getCellCenters())):
-            bgmeshFile.write("ST" + parenList(self.cellOutputs[i]) + bracedList(self.cellVertexValues[i]) + ";\n")
+            bgmeshFile.write("ST" + _parenList(self.cellOutputs[i]) + _bracedList(self.cellVertexValues[i]) + ";\n")
         bgmeshFile.write("};")
         bgmeshFile.close()
 	
 	return bgFile
-
-    def finalInit(self, geomFile, bgFile):
-        import os
-	import tempfile
-	(f, meshFile) = tempfile.mkstemp('.msh')
-        os.system("gmsh -v 0 %s -bgm %s -format msh -2 -o %s"%(geomFile, bgFile, meshFile))
-        dg = DataGetter()
-	vertexCoords, faceVertexIDs, cellFaceIDs = dg.getData(meshFile, dimensions = 2)
-        Mesh2D.__init__(self, vertexCoords, faceVertexIDs, cellFaceIDs)
-        os.close(f)
-	os.remove(geomFile)
-	os.remove(bgFile)
-	os.remove(meshFile)
 
 def _test():
     import doctest
     return doctest.testmod()
 
 if __name__ == "__main__":
-    baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
-##     fudge = calibrate_profiler(10000)
-##     profile = Profiler('profile', fudge=fudge)
-    var = CellVariable(mesh = baseMesh,
-                       value = 0.025 - (0.005 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)),
-                       name = "characteristic lengths")
-    newMesh = AdaptiveMesh2D(var)
-##     profile.stop()
     _test()
 

@@ -55,13 +55,13 @@ class Face2D(Face):
 	Face2D is bounded by two Vertices.
     """
     
-    def calcArea(self):
+    def _calcArea(self):
 	"""Area is length of vector between vertices.
 	"""
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
         return fipy.tools.vector.sqrtDot(tangent,tangent)
 	
-    def calcNormal(self):
+    def _calcNormal(self):
 	"""Normal is perpendicular to vector between vertices.
 	"""
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
@@ -73,7 +73,7 @@ class Face2D(Face):
 
 	return norm
 
-    def calcTangent1(self):
+    def _calcTangent1(self):
 	norm = self.normal
 	mag = fipy.tools.vector.sqrtDot(norm,norm)
 ## 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
@@ -81,6 +81,6 @@ class Face2D(Face):
 ## 	tan1 = PhysicalField(value = (-norm[1],norm[0]))
 	return tan1/mag
 	    
-    def calcTangent2(self):
+    def _calcTangent2(self):
 	return Numeric.array((0.,0.))
 ## 	return PhysicalField(value = (0.,0.))

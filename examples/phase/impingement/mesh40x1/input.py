@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:54:39 PM}
+ #                                last update: 4/5/05 {8:05:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -230,7 +230,7 @@ data and compares it with the `theta` variable.
    >>> filestream.close()
    >>> import Numeric
    >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
-   >>> theta.allclose(testData)
+   >>> print theta.allclose(testData)
    1
 """
 __docformat__ = 'restructuredtext'

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/7/05 {1:21:42 PM} 
+ #                                last update: 4/5/05 {8:08:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -105,7 +105,7 @@ data and compares it with the `theta` variable.
    >>> filestream.close()
    >>> import Numeric
    >>> testData = Numeric.reshape(testData, Numeric.array(phase).shape)
-   >>> phase.allclose(testData)
+   >>> print phase.allclose(testData)
    1
    
 """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:11:15 PM} 
+ #                                last update: 4/2/05 {6:38:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,20 +45,18 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(
-        testModuleNames = (
-            'fipy.meshes.numMesh.testGrid',
-            'fipy.meshes.numMesh.testMesh',
-            'fipy.meshes.numMesh.testMesh3D',
-            'fipy.meshes.numMesh.testTri2D',
-        ),
         docTestModuleNames = (
             'fipy.meshes.numMesh.mesh',
+            'fipy.meshes.numMesh.mesh2D',
+            'fipy.meshes.numMesh.grid2D',
+            'fipy.meshes.numMesh.grid3D',
+            'fipy.meshes.numMesh.tri2D',
             'fipy.meshes.numMesh.gmshImport',
             'fipy.meshes.numMesh.adaptiveMesh',
             'fipy.meshes.numMesh.refinedMesh',
         ))
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')

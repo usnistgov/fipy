@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:02:38 AM}
+ #                                last update: 4/5/05 {8:06:26 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ We iterate the solution in time, plotting as we go if running interactively,
     
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> theta.allclose(testData)
+    >>> print theta.allclose(testData)
     1
 """
 __docformat__ = 'restructuredtext'

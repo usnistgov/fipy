@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/1/05 {9:14:20 PM} 
+ #                                last update: 4/6/05 {3:47:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,15 +124,15 @@ class Variable:
 	
     def __array__(self, t = None):
 	"""
-	Attempt to convert the Variable to a Numeric `array` object
-	
-	    >>> v = Variable(value = [2,3])
-	    >>> Numeric.array(v)
-	    [2,3,]
-	    
-	It is an error to convert a dimensional Variable to a 
-	Numeric `array`
-	
+        Attempt to convert the Variable to a Numeric `array` object
+        
+            >>> v = Variable(value = [2,3])
+            >>> Numeric.array(v)
+            [ 2., 3.,]
+            
+        It is an error to convert a dimensional Variable to a 
+        Numeric `array`
+        
             >>> v = Variable(value = [2,3], unit = "m")
             >>> Numeric.array(v)
             Traceback (most recent call last):
@@ -258,7 +258,8 @@ class Variable:
 
     def _setValue(self, value, unit = None, array = None):
 	PF = fipy.tools.dimensions.physicalField.PhysicalField
-	if not isinstance(value, PF) and (unit is not None or type(value) is type('')):
+	if not isinstance(value, PF) \
+        and (unit is not None or type(value) in [type(''), type(()), type([])]):
 	    self.value = PF(value = value, unit = unit, array = array)
 	elif array is not None:
 	    array[:] = value
@@ -356,6 +357,8 @@ class Variable:
 		    self._requires(aVar)
 		    
 	    def __repr__(self):
+                import opcode
+                
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
 		
 		def _getIndex():
@@ -375,30 +378,23 @@ class Variable:
 		while len(bytecodes) > 0:
 		    bytecode = bytecodes.pop(0)
 		    
-		    if bytecode == 13:
-			# UNARY_CONVERT
+		    if opcode.opname[bytecode] == 'UNARY_CONVERT':
 			stack.append("`" + stack.pop() + "`")
-		    elif bytecode == 25:	
-			# BINARY_SUBSCR
+		    elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
 			stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
-		    elif bytecode == 83:	
-			# RETURN_VALUE
+		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
 			return stack.pop()
-		    elif bytecode == 105:
-			# LOAD_ATTR
+                    elif opcode.opname[bytecode] == 'LOAD_CONST':
+                        stack.append(self.op.func_code.co_consts[_getIndex()])
+		    elif opcode.opname[bytecode] == 'LOAD_ATTR':
 			stack.append(stack.pop() + "." + self.op.func_code.co_names[_getIndex()])
-		    elif bytecode == 106:
-			# COMPARE_OP
-			import dis
-			stack.append(stack.pop(-2) + " " + dis.cmp_op[_getIndex()] + " " + stack.pop())
-		    elif bytecode == 116:
-			# LOAD_GLOBAL
+		    elif opcode.opname[bytecode] == 'COMPARE_OP':
+			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_getIndex()] + " " + stack.pop())
+		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
 			stack.append(self.op.func_code.co_names[_getIndex()])
-		    elif bytecode == 124:	
-			# LOAD_FAST
+		    elif opcode.opname[bytecode] == 'LOAD_FAST':
 			stack.append(repr(self.var[_getIndex()]))
-		    elif bytecode == 131:
-			# CALL_FUNCTION
+		    elif opcode.opname[bytecode] == 'CALL_FUNCTION':
 			args = []
 			for j in range(bytecodes.pop(1)):
 			    # keyword parameters
@@ -407,12 +403,15 @@ class Variable:
 			    # positional parameters
 			    args.insert(0, stack.pop())
 			stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+                    elif opcode.opname[bytecode] == 'LOAD_DEREF':
+                        free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
+                        stack.append(free[_getIndex()])
 		    elif unop.has_key(bytecode):
 			stack.append(unop[bytecode] + stack.pop())
 		    elif binop.has_key(bytecode):
 			stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
 		    else:
-			raise SyntaxError, "Unknown bytecode: " + `bytecode` + " in " + `[ord(byte) for byte in self.op.func_code.co_code]`
+			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`)
 
 	    def copy(self):
 	       return self.__class__(
@@ -653,8 +652,14 @@ class Variable:
     def take(self, ids):
 	return array.take(self.getValue(), ids)
 	
-    def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
-	return array.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
+##     def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
+## 	return array.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
+        
+    def allclose(self, other, rtol = 1.e-5, atol = 1.e-8):
+        return self._getBinaryOperatorVariable(lambda a,b: array.allclose(a, b, atol = atol, rtol = rtol), other)
+        
+    def allequal(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: array.allequal(a,b), other)
 
     def getMag(self):
         if self.mag is None:

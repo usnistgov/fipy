@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 9/3/04 {10:41:39 PM}
+ #                                last update: 4/2/05 {7:30:51 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,10 @@ class ModFaceGradVariable(FaceGradVariable):
         
     def _calcValueInline(self):
 
-	id1, id2 = self.mesh.getAdjacentCellIDs()
+	id1, id2 = self.mesh._getAdjacentCellIDs()
 	
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
+	tangents1 = self.mesh._getFaceTangents1()
+	tangents2 = self.mesh._getFaceTangents2()
 
 	inline.runInline(self.modIn + """
         int i;
@@ -79,10 +79,10 @@ class ModFaceGradVariable(FaceGradVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
-            normals = Numeric.array(self.mesh.getOrientedFaceNormals()),
+            normals = Numeric.array(self.mesh._getOrientedFaceNormals()),
             id1 = Numeric.array(id1),
             id2 = Numeric.array(id2),
-            dAP = Numeric.array(self.mesh.getCellDistances()),
+            dAP = Numeric.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = self._getArray(),
             ni = tangents1.shape[0],

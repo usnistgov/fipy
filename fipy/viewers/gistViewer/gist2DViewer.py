@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 3/4/05 {4:30:02 PM} 
+ #                                last update: 4/5/05 {5:33:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,15 +70,16 @@ class Gist2DViewer(GistViewer):
         :Parameters:
           - `vars`: a `CellVariable` object to plot (not a list or tuple).
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window.
-          - `palette`: The color scheme to use for the image plot. Default is `heat.gp`. Another choice would be `rainbow.gp`.
-          - `grid`: Whether to show the grid lines in the plot. Default is 1. Use 0 to switch them off.
-          
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
+            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
+            use `ymin` and `ymax`, and so on.  All viewers will use
+            `datamin` and `datamax`.  Any limit set to a (default) value of
+            `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window
+          - `palette`: The color scheme to use for the image plot. Default is 
+            `heat.gp`. Another choice would be `rainbow.gp`.
+          - `grid`: Whether to show the grid lines in the plot. Default is 1. 
+             Use 0 to switch them off.
         """
 
         GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
@@ -121,8 +122,8 @@ class Gist2DViewer(GistViewer):
         if maxVal == minVal:
             maxVal = minVal + 1e-10
             
-        vertexIDs = self.mesh.getOrderedCellVertexIDs()
-        Nfac = self.mesh.getMaxFacesPerCell()
+        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        Nfac = self.mesh._getMaxFacesPerCell()
         Ncells = self.mesh.getNumberOfCells()
         xCoords = Numeric.take(self.mesh.getVertexCoords()[:,0], vertexIDs.flat)
         yCoords = Numeric.take(self.mesh.getVertexCoords()[:,1], vertexIDs.flat)
@@ -138,7 +139,7 @@ class Gist2DViewer(GistViewer):
         """
         self._plot()
         
-        faceVertexIDs = self.mesh.getFaceVertexIDs()
+        faceVertexIDs = self.mesh._getFaceVertexIDs()
         vertexCoords = self.mesh.getVertexCoords()
         
         from fipy.tools import array

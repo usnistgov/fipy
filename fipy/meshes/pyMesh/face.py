@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/19/04 {2:52:34 PM} 
+ #                                last update: 4/2/05 {11:45:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,9 +69,9 @@ class Face:
         self.cellsID = ()
         self.cellCenters = ()
 	self.id = id
-	self.center = self.calcCenter()
-        self.area = self.calcArea()
-	self.setNormal()
+	self.center = self._calcCenter()
+        self.area = self._calcArea()
+	self._setNormal()
 	self.orientation = 1
             
 ##    def addBoundingCell(self, cell, orientation):
@@ -83,8 +83,8 @@ class Face:
 ##	    self.orientation = orientation
 ##	else:
 ##	    self.orientation = -orientation	    
-##	self.setCellDistance()
-##	self.setFaceToCellDistances()
+##	self._setCellDistance()
+##	self._setFaceToCellDistances()
 
     def addBoundingCell(self, cell, orientation):
 	"""Add `cell` to the list of `Cell` objects which lie 
@@ -97,8 +97,8 @@ class Face:
 	else:
 	    self.orientation = -orientation
         self.cellCenters += (cell.getCenter(),)
-	self.setCellDistance()
-	self.setFaceToCellDistances()
+	self._setCellDistance()
+	self._setFaceToCellDistances()
         
     def getCells(self):
 	"""Return the `Cell` objects which lie on either side of this `Face`.
@@ -123,7 +123,7 @@ class Face:
 	"""
 	return self.center
     
-    def calcCenter(self):
+    def _calcCenter(self):
 	"""Calculate the coordinates of the `Face` center.
 	
 	Cell center is the average of the bounding Vertex centers.
@@ -138,7 +138,7 @@ class Face:
 	"""
         return self.area
     
-    def calcArea(self):
+    def _calcArea(self):
 	"""Calculate the area of the `Face`.
 	
 	Area is the signed sum of the area of the triangles bounded by
@@ -157,15 +157,15 @@ class Face:
 	"""
 	return self.normal
 		
-    def setNormal(self):
+    def _setNormal(self):
 	"""Cache the unit normal vector.
 	
 	Called by Cell initializer after bounding Cells have been added to
 	Faces.
 	"""
-        self.normal = self.calcNormal()
+        self.normal = self._calcNormal()
 	
-    def calcNormal(self):
+    def _calcNormal(self):
 	"""Calculate the unit normal vector.	
 	
 	Unit normal vector is calculated from cross-product of two
@@ -184,14 +184,14 @@ class Face:
 	
 	return norm
 	
-    def calcTangent1(self):
+    def _calcTangent1(self):
 	norm = self.normal
 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
 # 	tan1 = Numeric.array((-norm[1],norm[0],0))
 	tan1 = PhysicalField(value = (-norm[1],norm[0],0))
 	return tan1/mag
 
-    def calcTangent2(self):
+    def _calcTangent2(self):
 	norm = self.normal
 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
 # 	tan2 = Numeric.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
@@ -203,19 +203,19 @@ class Face:
 	"""
         return self.cellDistance
 
-##    def setCellDistance(self):
+##    def _setCellDistance(self):
 ##	"""Assign the cached distance between adjacent cell centers.
 ##	"""
-##        self.cellDistance = self.calcCellDistance()
+##        self.cellDistance = self._calcCellDistance()
 
     
-    def setCellDistance(self):
+    def _setCellDistance(self):
 	"""Assign the cached distance between adjacent `Cell` centers.
 	"""
-        self.cellDistance = self.calcCellDistance()
+        self.cellDistance = self._calcCellDistance()
 
 
-##    def calcCellDistance(self):
+##    def _calcCellDistance(self):
 ##	"""Calculate the distance between adjacent Cell centers.
 	
 ##	If the Face is on a boundary and has only one bordering Cell,
@@ -227,7 +227,7 @@ class Face:
 ##            vec=self.center-self.cells[0].getCenter()        
 ##        return vector.sqrtDot(vec,vec)
 
-    def calcCellDistance(self):
+    def _calcCellDistance(self):
 	"""Calculate the distance between adjacent `Cell` centers.
 	
 	If the Face is on a boundary and has only one bordering Cell,
@@ -239,36 +239,36 @@ class Face:
             vec=self.center-self.cellCenters[0]        
         return vector.sqrtDot(vec,vec)
 
-##    def calcFaceToCellDistance(self, cell):
+##    def _calcFaceToCellDistance(self, cell):
 ##        vec=self.center-cell.getCenter()        
 ##        return vector.sqrtDot(vec,vec)
 
-    def calcFaceToCellDistance(self, id):
+    def _calcFaceToCellDistance(self, id):
         vec=self.center - self.cellCenters[id]
         return vector.sqrtDot(vec,vec)
 
-##    def setFaceToCellDistances(self):
+##    def _setFaceToCellDistances(self):
 ##        faceToCellDistances = ()
 ##        for cell in self.cells:
-##            faceToCellDistances += (self.calcFaceToCellDistance(cell),)
+##            faceToCellDistances += (self._calcFaceToCellDistance(cell),)
 ##        self.faceToCellDistances = faceToCellDistances
 
-    def setFaceToCellDistances(self):
+    def _setFaceToCellDistances(self):
         faceToCellDistances = ()
         for id in range(len(self.cellsID)):
-            faceToCellDistances += (self.calcFaceToCellDistance(id),)
+            faceToCellDistances += (self._calcFaceToCellDistance(id),)
         self.faceToCellDistances = faceToCellDistances
         
 
-##    def getFaceToCellDistance(self, cell = None):
+##    def _getFaceToCellDistance(self, cell = None):
 ##        if cell == self.cells[0] or cell == None:
 ##            return self.faceToCellDistances[0]
 ##        elif cell == self.cells[1]:
 ##            return self.faceToCellDistances[1]
 ##        else:
-##            return self.calcFaceToCellDistance(cell)
+##            return self._calcFaceToCellDistance(cell)
 
-    def getFaceToCellDistance(self, cellID = None):
+    def _getFaceToCellDistance(self, cellID = None):
         if cellID == self.cellsID[0] or cellID == None:
             return self.faceToCellDistances[0]
         elif cellID == self.cellsID[1]:
@@ -287,7 +287,7 @@ class Face:
 	"""
 	return "<id = " + str(self.id) + ", area = " + str(self.area) + ", normal = " + str(self.normal) + ", vertices = " + str(self.vertices) + ", center = " + str(self.center) + ">\n"
 
-    def removeBoundingCell(self,cell):
+    def _removeBoundingCell(self,cell):
 	"""Remove `cell` from the list of bounding `Cell` objects.
 	
 	Called by the Mesh when a Cell is removed.
@@ -298,14 +298,14 @@ class Face:
             else:
                 self.cells = self.cells[1:]
         else:
-            print "error in removeBoundingCell:"
+            print "error in _removeBoundingCell:"
             print "cell not in face.cells"
             
         
-    def setID(self,id):
+    def _setID(self,id):
 	"""Set the `id` of the `Face`.
 	"""
         self.id = id
             
-    def getOrientation(self):
+    def _getOrientation(self):
         return self.orientation

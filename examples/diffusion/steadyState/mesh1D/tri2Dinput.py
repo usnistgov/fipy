@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:29:22 PM} 
+ #                                last update: 4/4/05 {3:13:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`. 
 
-    >>> var.allclose(analyticalArray)
+    >>> print var.allclose(analyticalArray)
     1
 
 """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/8/05 {5:05:42 PM} 
+ #                                last update: 4/4/05 {3:09:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,7 +138,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`.
 
-    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
 The function 'fipy.viewers.make()' returns a suitable viewer depending
@@ -181,7 +181,7 @@ remaining lines, leaving::
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     
-    var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     
     if __name__ == '__main__':
         import fipy.viewers

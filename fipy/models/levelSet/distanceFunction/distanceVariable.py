@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 4/2/05 {1:58:26 PM}
+ #                                last update: 4/6/05 {3:48:50 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ class DistanceVariable(CellVariable):
        >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
        >>> var.calcDistanceFunction()
        >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
-       >>> Numeric.allclose(answer, var)
+       >>> print var.allclose(answer)
        1
 
     A 1D test case with very small dimensions.
@@ -87,7 +87,7 @@ class DistanceVariable(CellVariable):
        >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
        >>> var.calcDistanceFunction()
        >>> answer = Numeric.arange(8) * dx - 3.5 * dx
-       >>> Numeric.allclose(answer, var)
+       >>> print var.allclose(answer)
        1
 
     A 2D test case to test _calcTrialValue for a pathological case.
@@ -107,7 +107,7 @@ class DistanceVariable(CellVariable):
        >>> sqrt = Numeric.sqrt(max(sqrt, 0))
        >>> vmr = (top + sqrt) / dsq
        >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
-       >>> Numeric.allclose(answer, var)
+       >>> print var.allclose(answer)
        1
 
     The `extendVariable` method solves the following equation for a given
@@ -127,10 +127,10 @@ class DistanceVariable(CellVariable):
        >>> var.calcDistanceFunction()
        >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
        >>> tmp = 1 / Numeric.sqrt(2)
-       >>> Numeric.allclose(var, (-tmp / 2, 0.5, 0.5, 0.5 + tmp))
+       >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp))
        1
        >>> var.extendVariable(extensionVar)
-       >>> Numeric.allclose(extensionVar, (1.25, .5, 2, 1.25))
+       >>> print extensionVar.allclose((1.25, .5, 2, 1.25))
        1
        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
@@ -145,11 +145,11 @@ class DistanceVariable(CellVariable):
        >>> v2 = 1.5
        >>> tmp1 = (v1 + v2) / 2 + Numeric.sqrt(2. - (v1 - v2)**2) / 2
        >>> tmp2 = tmp1 + 1 / Numeric.sqrt(2)
-       >>> Numeric.allclose(var, (-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
+       >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
        1
        >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
        >>> var.extendVariable(extensionVar)
-       >>> Numeric.allclose(answer, extensionVar, atol = 1e-5)
+       >>> print extensionVar.allclose(answer, atol = 1e-5)
        1
 
     Test case for a bug that occurs when initializing the distance
@@ -160,7 +160,7 @@ class DistanceVariable(CellVariable):
        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
        >>> var.calcDistanceFunction()
-       >>> var.allclose((-0.5, 0.5, -0.5))
+       >>> print var.allclose((-0.5, 0.5, -0.5))
        1
 
     For future reference, the minimum distance for the interface cells can
@@ -203,10 +203,10 @@ class DistanceVariable(CellVariable):
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
 
-        self.cellToCellDistances = Numeric.array(MA.array(self.mesh.getCellToCellDistances()).filled(0))
-        self.cellNormals = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(0))       
-        self.cellAreas = Numeric.array(MA.array(self.mesh.getCellAreas()).filled(0))
-        self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
+        self.cellToCellDistances = Numeric.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
+        self.cellNormals = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(0))       
+        self.cellAreas = Numeric.array(MA.array(self.mesh._getCellAreas()).filled(0))
+        self.cellToCellIDs = Numeric.array(self.mesh._getCellToCellIDsFilled())
         
     def extendVariable(self, extensionVariable, deleteIslands = False):
         """
@@ -249,7 +249,7 @@ class DistanceVariable(CellVariable):
 
         ## calculate interface values
 
-        cellToCellIDs = self.mesh.getCellToCellIDs()
+        cellToCellIDs = self.mesh._getCellToCellIDs()
 
         if deleteIslands:
             adjVals = MAtake(self.value, cellToCellIDs)
@@ -260,7 +260,7 @@ class DistanceVariable(CellVariable):
 
         adjVals = MAtake(self.value, cellToCellIDs)
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
-        dAP = self.mesh.getCellToCellDistances()
+        dAP = self.mesh._getCellToCellDistances()
         distances = abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues))
         indices = MA.argsort(distances, 1)
         sign = (self.value > 0) * 2 - 1
@@ -456,7 +456,7 @@ class DistanceVariable(CellVariable):
         """
 
         normals = Numeric.array(self._getCellInterfaceNormals().filled(fill_value = 0))
-        areas = Numeric.array(self.mesh.getCellAreaProjections().filled(fill_value = 0))
+        areas = Numeric.array(self.mesh._getCellAreaProjections().filled(fill_value = 0))
         import fipy.tools.array as array
         return Numeric.sum(abs(array.dot(normals, areas, axis = 2)), axis = 1)
 
@@ -480,13 +480,13 @@ class DistanceVariable(CellVariable):
         """
 
         N = self.mesh.getNumberOfCells()
-        M = self.mesh.getMaxFacesPerCell()
+        M = self.mesh._getMaxFacesPerCell()
         dim = self.mesh.getDim()
 
         valueOverFaces = Numeric.resize(Numeric.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
         from fipy.tools.array import MAtake
-        interfaceNormals = MAtake(self._getInterfaceNormals(), self.mesh.getCellFaceIDs())
+        interfaceNormals = MAtake(self._getInterfaceNormals(), self.mesh._getCellFaceIDs())
         import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
@@ -510,7 +510,7 @@ class DistanceVariable(CellVariable):
            
         """
         
-        N = self.mesh.getNumberOfFaces()
+        N = self.mesh._getNumberOfFaces()
         M = self.mesh.getDim()
         interfaceFlag = Numeric.resize(Numeric.repeat(self._getInterfaceFlag(), M),(N, M))
         return Numeric.where(interfaceFlag, self._getLevelSetNormals(), 0)
@@ -529,8 +529,8 @@ class DistanceVariable(CellVariable):
            1
            
         """
-        val0 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[0])
-        val1 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[1])
+        val0 = Numeric.take(Numeric.array(self.value), self.mesh._getAdjacentCellIDs()[0])
+        val1 = Numeric.take(Numeric.array(self.value), self.mesh._getAdjacentCellIDs()[1])
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
@@ -551,7 +551,7 @@ class DistanceVariable(CellVariable):
 
         from fipy.tools.array import MAtake
         
-        flag = MAtake(self._getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
+        flag = MAtake(self._getInterfaceFlag(), self.mesh._getCellFaceIDs()).filled(fill_value = 0)
 
         flag = Numeric.sum(flag, axis = 1)
         
@@ -575,7 +575,7 @@ class DistanceVariable(CellVariable):
 
         """
         
-        M = self.mesh.getMaxFacesPerCell()
+        M = self.mesh._getMaxFacesPerCell()
         N = self.mesh.getNumberOfCells()
         return Numeric.reshape(Numeric.repeat(Numeric.array(self.value), M), (N, M))
 

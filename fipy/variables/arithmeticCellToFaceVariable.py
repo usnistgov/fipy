@@ -56,6 +56,6 @@ class ArithmeticCellToFaceVariable(CellToFaceVariable):
 	val = self._getArray(), 
 	alpha = alpha,
 	id1 = id1, id2 = id2,
-	ni = self.mesh.getNumberOfFaces())
+	ni = self.mesh._getNumberOfFaces())
 
 	

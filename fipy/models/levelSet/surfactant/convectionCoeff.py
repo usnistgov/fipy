@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 4/2/05 {1:58:22 PM} 
+ #                                last update: 4/6/05 {3:23:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,7 +70,7 @@ class ConvectionCoeff(VectorFaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
-           >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2),'d')
+           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2),'d')
            >>> answer[7,0] = -1
            >>> Numeric.allclose(ConvectionCoeff(distanceVar), answer)
            1
@@ -87,7 +87,7 @@ class ConvectionCoeff(VectorFaceVariable):
 
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
            >>> distanceVar = DistanceVariable(mesh, value = (-1.5, -.5, -.5, .5))
-           >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2),'d')
+           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2),'d')
            >>> answer[2,1] = -.5
            >>> answer[3,1] = -1
            >>> answer[7,0] = -.5
@@ -101,7 +101,7 @@ class ConvectionCoeff(VectorFaceVariable):
            >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5 , 1.5,
            ...                                           .5 , -.5, .5 ,
            ...                                           1.5, .5 , 1.5))
-           >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2), 'd')
+           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2), 'd')
            >>> answer[4,1] = .25
            >>> answer[7,1] = -.25
            >>> answer[7,1] = -.25
@@ -118,15 +118,15 @@ class ConvectionCoeff(VectorFaceVariable):
     def _calcValue(self):
 
         Ncells = self.mesh.getNumberOfCells()
-        Nfaces = self.mesh.getNumberOfFaces()
-        M = self.mesh.getMaxFacesPerCell()
+        Nfaces = self.mesh._getNumberOfFaces()
+        M = self.mesh._getMaxFacesPerCell()
         dim = self.mesh.getDim()
      
-        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
+        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()[:,Numeric.NewAxis]
 
         from fipy.tools.array import MAtake
-        cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh.getCellFaceIDs()).filled(fill_value = 0))
-        norms = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(fill_value = 0))
+        cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh._getCellFaceIDs()).filled(fill_value = 0))
+        norms = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(fill_value = 0))
         
         alpha = array.dot(cellFaceNormalAreas, norms, axis = 2)
         alpha = Numeric.where(alpha > 0, alpha, 0)
@@ -143,13 +143,13 @@ class ConvectionCoeff(VectorFaceVariable):
 
         self.value = Numeric.zeros(Nfaces * dim,'d')
 
-        cellFaceIDs = (self.mesh.getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getCellFaceIDs().flat),dim))
+        cellFaceIDs = (self.mesh._getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh._getCellFaceIDs().flat),dim))
         
         vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
 
         self.value = Numeric.reshape(self.value, (Nfaces, dim))
 
-        self.value = -self.value / self.mesh.getFaceAreas()[:,Numeric.NewAxis]
+        self.value = -self.value / self.mesh._getFaceAreas()[:,Numeric.NewAxis]
 
 def _test(): 
     import doctest

@@ -205,18 +205,18 @@ class HigherOrderAdvectionTerm(AdvectionTerm):
     """
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         
-        dAP = mesh.getCellToCellDistances()
+        dAP = mesh._getCellToCellDistances()
         
 ##        adjacentGradient = Numeric.take(oldArray.getGrad(), cellToCellIDs)
         from fipy.tools.array import MAtake
-        adjacentGradient = MAtake(oldArray.getGrad(), mesh.getCellToCellIDs())
-        adjacentNormalGradient = array.dot(adjacentGradient, mesh.getCellNormals(), axis = 2)
+        adjacentGradient = MAtake(oldArray.getGrad(), mesh._getCellToCellIDs())
+        adjacentNormalGradient = array.dot(adjacentGradient, mesh._getCellNormals(), axis = 2)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
-        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(mesh.getNumberOfCells()), mesh.getMaxFacesPerCell()), cellToCellIDs.shape)
-        cellIDs = MA.masked_array(cellIDs, mask = mesh.getCellToCellIDs().mask())
+        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(mesh.getNumberOfCells()), mesh._getMaxFacesPerCell()), cellToCellIDs.shape)
+        cellIDs = MA.masked_array(cellIDs, mask = mesh._getCellToCellIDs().mask())
         cellGradient = MAtake(oldArray.getGrad(), cellIDs)
-        cellNormalGradient = array.dot(cellGradient, mesh.getCellNormals(), axis = 2)
+        cellNormalGradient = array.dot(cellGradient, mesh._getCellNormals(), axis = 2)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2

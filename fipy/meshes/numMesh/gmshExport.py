@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshExport.py"
  #                                    created: 8/12/04 {10:21:00 AM} 
- #                                last update: 10/22/04 {4:21:26 PM} 
+ #                                last update: 4/1/05 {4:28:51 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -53,7 +53,7 @@ import Numeric
 
 MeshExportError = "MeshExportError"
 
-def getElementType(vertices, dimensions):
+def _getElementType(vertices, dimensions):
     if(vertices == 3 and dimensions == 2):
         return 2 ## triangle
     elif(vertices == 4 and dimensions == 2):
@@ -69,7 +69,7 @@ def getElementType(vertices, dimensions):
     else:
         raise MeshExportError, "Element type unsupported by Gmsh"
 
-def orderVertices(vertexCoords, vertices):
+def _orderVertices(vertexCoords, vertices):
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
@@ -116,9 +116,9 @@ def exportAsMesh(mesh, filename):
                 if vertexNum not in vertexList:
                     vertexList = vertexList + [vertexNum]
         if(dimensions == 2):
-            vertexList = orderVertices(mesh.getVertexCoords(), vertexList)
+            vertexList = _orderVertices(mesh.getVertexCoords(), vertexList)
         numVertices = len(vertexList)
-        elementType = getElementType(numVertices, dimensions)
+        elementType = _getElementType(numVertices, dimensions)
         outFile.write(str(i + 1))
         outFile.write(' ')
         outFile.write(str(elementType))

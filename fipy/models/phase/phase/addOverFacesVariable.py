@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:19 AM}
+ #                                last update: 4/2/05 {7:26:19 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,13 +102,13 @@ class AddOverFacesVariable(CellVariable):
         else:
             faceGradient = self.faceGradient
 
-        contributions = fipy.tools.array.sum(self.mesh.getAreaProjections() * faceGradient[:],1)
+        contributions = fipy.tools.array.sum(self.mesh._getAreaProjections() * faceGradient[:],1)
         contributions = contributions * self.faceVariable[:]
-##        contributions[len(self.mesh.getInteriorFaces()):] = 0.
+##        contributions[len(self.mesh._getInteriorFaces()):] = 0.
         extFaceIDs = self.mesh.getExteriorFaceIDs()
 
         fipy.tools.array.put(contributions, extFaceIDs, Numeric.zeros(Numeric.shape(extFaceIDs), 'd'))
-        ids = self.mesh.getCellFaceIDs()
+        ids = self.mesh._getCellFaceIDs()
         
         contributions = fipy.tools.array.take(contributions[:], ids.flat)
 
@@ -116,7 +116,7 @@ class AddOverFacesVariable(CellVariable):
 
         contributions = fipy.tools.array.reshape(contributions,(NCells,-1))
         
-        orientations = fipy.tools.array.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
+        orientations = fipy.tools.array.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
 
         orientations = Numeric.array(orientations)
         
@@ -132,8 +132,8 @@ class AddOverFacesVariable(CellVariable):
             faceGradient = self.faceGradient
 
         NCells = self.mesh.getNumberOfCells()
-	ids = self.mesh.getCellFaceIDs()
-##         ids = Numeric.reshape(ids,(NCells,self.mesh.getMaxFacesPerCell()))
+	ids = self.mesh._getCellFaceIDs()
+##         ids = Numeric.reshape(ids,(NCells,self.mesh._getMaxFacesPerCell()))
 
         inline.runInline("""
         int i;
@@ -162,16 +162,16 @@ class AddOverFacesVariable(CellVariable):
           }
           """,numberOfInteriorFaces = len(self.mesh.getInteriorFaceIDs()),
               numberOfDimensions = self.mesh.getDim(),
-              numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
+              numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
               numberOfCells = NCells,
               interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
-              contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
-              areaProjections = Numeric.array(self.mesh.getAreaProjections()),
+              contributions =  Numeric.zeros((self.mesh._getNumberOfFaces()),'d'),
+              areaProjections = Numeric.array(self.mesh._getAreaProjections()),
               faceGradient = Numeric.array(faceGradient),
               faceVariable = self.faceVariable.getNumericValue()[:],
               ids = Numeric.array(ids),
               value = self._getArray(),
-              orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
+              orientations = Numeric.array(self.mesh._getCellFaceOrientations()),
               cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 
     def _calcValue(self):

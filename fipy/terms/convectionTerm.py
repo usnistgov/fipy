@@ -73,7 +73,7 @@ class ConvectionTerm(FaceTerm):
 	if not isinstance(self.coeff, VectorFaceVariable):
 	    self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
 
-	projectedCoefficients = self.coeff * mesh.getOrientedAreaProjections()
+	projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
 	
 	self.geomCoeff = projectedCoefficients.sum(1)
 	

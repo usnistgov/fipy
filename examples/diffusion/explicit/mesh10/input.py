@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:02:07 PM} 
+ #                                last update: 4/5/05 {5:55:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,7 +118,7 @@ The result is tested against the expected profile:
     >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
     >>> import scipy
     >>> analyticalArray = scipy.special.erf(epsi/2)
-    >>> var.allclose(analyticalArray, atol = 2e-3)
+    >>> print var.allclose(analyticalArray, atol = 2e-3)
     1
     
 If the problem is run interactively, we can view the result:

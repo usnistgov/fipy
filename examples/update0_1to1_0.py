@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/11/05 {3:25:18 PM} 
+ #                                last update: 4/4/05 {3:10:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -281,7 +281,7 @@ The analytical solution is unchanged, and we can test as before
     
 or we can use the slightly simpler syntax
 
-    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
 The `ImportError: No module named grid2DGistViewer` results because the

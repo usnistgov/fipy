@@ -64,13 +64,13 @@ class ModCellGradVariable(CellGradVariable):
         ids = Numeric.array(ids),
         orientations = Numeric.array(orientations),
         volumes = Numeric.array(volumes),
-        areaProj = Numeric.array(self.mesh.getAreaProjections()),
+        areaProj = Numeric.array(self.mesh._getAreaProjections()),
         faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
 	ni = N, nj = self.mesh.getDim(), nk = M,
-        gridSpacing = Numeric.array(self.mesh.getMeshSpacing()))
+        gridSpacing = Numeric.array(self.mesh._getMeshSpacing()))
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
-        gridSpacing = self.mesh.getMeshSpacing()
+        gridSpacing = self.mesh._getMeshSpacing()
 	self.value = self.modPy(self.value * gridSpacing) / gridSpacing
 

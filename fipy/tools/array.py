@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 4/2/05 {1:55:59 PM} 
+ #                                last update: 4/6/05 {5:23:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -279,13 +279,15 @@ def allequal(first, second):
     Provides the same functionality as `Numeric.allequal`.
     """
     if _isPhysical(first):
-	return first == second
+        return first.allequal(second)
+## 	return MA.alltrue(first == second)
     elif _isPhysical(second):
-	return second == first
+        return first.allequal(first)
+## 	return MA.alltrue(second == first)
     else:
 	return MA.allequal(first, second)
 	    
-def allclose(first, second, atol = 1.e-5, rtol = 1.e-8):
+def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
     """
     Provides the same functionality as `Numeric.allclose`.
     """

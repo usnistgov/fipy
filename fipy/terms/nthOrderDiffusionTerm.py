@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 3/7/05 {10:06:27 PM} 
+ #                                last update: 4/4/05 {3:03:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -236,12 +236,12 @@ class NthOrderDiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-            self.geomCoeff = -self.nthCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
+            self.geomCoeff = -self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
             self.geomCoeff = None
         
     def _getCoefficientMatrix(self, mesh, coeff):
-	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh.getMaxFacesPerCell())
+	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
 
 	interiorCoeff = Numeric.array(coeff)
         
@@ -249,7 +249,7 @@ class NthOrderDiffusionTerm(Term):
         from fipy.variables.faceVariable import FaceVariable
         interiorCoeff = FaceVariable(mesh = mesh, value = interiorCoeff)
         
-	contributions = array.take(interiorCoeff, mesh.getCellFaceIDs())
+	contributions = array.take(interiorCoeff, mesh._getCellFaceIDs())
 
         interiorCoeff0 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
         interiorCoeff1 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
@@ -298,7 +298,7 @@ class NthOrderDiffusionTerm(Term):
             boundaryB = Numeric.zeros(N,'d')
                 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
-            M = mesh.getMaxFacesPerCell()
+            M = mesh._getMaxFacesPerCell()
 
             coeffs = {
 		'cell 1 diag':     coeff,

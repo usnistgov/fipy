@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {5:19:35 PM} 
+ #                                last update: 4/5/05 {5:56:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ The result is again tested in the same way:
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> var.allclose(analyticalArray, atol = 0.025)
+    >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
 Note that this test case will only work if you run it by running the
@@ -118,8 +118,8 @@ def topSide(face):
         return 0
 
 
-boundaryConditions = (FixedValue(mesh.getFacesWithFilter(leftSide), valueLeft),
-                      FixedValue(mesh.getFacesWithFilter(rightSide), valueRight))
+boundaryConditions = (FixedValue(mesh.getFaces(leftSide), valueLeft),
+                      FixedValue(mesh.getFaces(rightSide), valueRight))
                       
 
 if __name__ == '__main__':

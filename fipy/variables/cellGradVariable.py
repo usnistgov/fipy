@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 4/2/05 {1:58:33 PM} 
+ #                                last update: 4/2/05 {7:30:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ class CellGradVariable(VectorCellVariable):
             ids = Numeric.array(MA.filled(ids, 0)),
             orientations = Numeric.array(MA.filled(orientations, 0)),
             volumes = Numeric.array(volumes),
-            areaProj = Numeric.array(self.mesh.getAreaProjections()),
+            areaProj = Numeric.array(self.mesh._getAreaProjections()),
             faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
 	    ni = N, nj = self.mesh.getDim(), nk = M)
         
@@ -99,11 +99,11 @@ class CellGradVariable(VectorCellVariable):
 
     def _calcValue(self):
 	N = self.mesh.getNumberOfCells()
-	M = self.mesh.getMaxFacesPerCell()
+	M = self.mesh._getMaxFacesPerCell()
 	
-	ids = self.mesh.getCellFaceIDs()
+	ids = self.mesh._getCellFaceIDs()
 
-	orientations = self.mesh.getCellFaceOrientations()
+	orientations = self.mesh._getCellFaceOrientations()
 	volumes = self.mesh.getCellVolumes()
 
 	inline.optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

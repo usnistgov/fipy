@@ -98,7 +98,7 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
         """
 	if self.grad is None:
-##	    gridSpacing = self.mesh.getMeshSpacing()
+##	    gridSpacing = self.mesh._getMeshSpacing()
 ##            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing
             self.grad = ModCellGradVariable(self, self._modIn, self.value.mod)
 

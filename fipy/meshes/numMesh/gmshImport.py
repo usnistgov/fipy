@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 10/22/04 {4:21:35 PM}
+ #                                last update: 4/3/05 {12:26:33 AM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -99,20 +99,20 @@ Test cases:
    >>> print newmesh.getVertexCoords().tolist()
    [[0.0, 0.0, 0.0], [0.5, 0.5, 1.0], [1.0, 0.0, 0.0], [0.5, 1.0, 0.0], [0.5, 0.5, 0.5]]
 
-   >>> print newmesh.faceVertexIDs.tolist()
+   >>> print newmesh._getFaceVertexIDs().tolist()
    [[2, 1, 0], [4, 1, 0], [4, 2, 0], [4, 2, 1], [3, 1, 0], [4, 3, 0], [4, 3, 1], [3, 2, 0], [4, 3, 2], [3, 2, 1]]
 
-   >>> print newmesh.cellFaceIDs.tolist()
+   >>> print newmesh._getCellFaceIDs().tolist()
    [[0, 1, 2, 3], [4, 1, 5, 6], [7, 2, 5, 8], [9, 3, 6, 8]]
 
    >>> twomesh = GmshImporter2D('fipy/meshes/numMesh/GmshTest2D.msh')
    >>> print twomesh.getVertexCoords().tolist()
    [[0.0, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [1.0, 1.0], [0.5, 1.5], [0.0, 2.0], [1.0, 2.0]]
    
-   >>> print twomesh.faceVertexIDs.tolist()
+   >>> print twomesh._getFaceVertexIDs().tolist()
    [[2, 0], [0, 1], [1, 2], [0, 3], [3, 2], [1, 4], [4, 2], [4, 3], [3, 5], [5, 4], [3, 6], [6, 5], [5, 7], [7, 4], [7, 6]]
    
-   >>> print twomesh.cellFaceIDs.tolist()
+   >>> print twomesh._getCellFaceIDs().tolist()
    [[0, 1, 2], [0, 3, 4], [2, 5, 6], [7, 4, 6], [7, 8, 9], [8, 10, 11], [12, 13, 9], [14, 11, 12]]
 
 The following test case is to test the handedness of the mesh to check
@@ -183,37 +183,45 @@ import mesh2D
 
 MeshImportError = "MeshImportError"
 
-class DataGetter:
+class _DataGetter:
 
     def getData(self, fileName, dimensions):
 
-        self.dimensions = dimensions
-        self.fileName = fileName
-        self.computeVertexCoords()
-        self.computeCellVertexIDs()
-        self.computeBaseFaceVertexIDs()
-        self.computeFaceVertexIDs()
-        self.computeCellFaceIDs()
-        self.inFile.close()
-        return (self.vertexCoords, self.faceVertexIDs, self.cellFaceIDs)
-
-    def computeVertexCoords(self):
-
-        dimensions = self.dimensions
         if (dimensions != 2 and dimensions != 3):
             raise MeshImportError, "Number of dimensions must be 2 or 3"
+            
+        self.dimensions = dimensions
+        
+        self.inFile = open(fileName)
+        
+        vertexCoords = self._calcVertexCoords()
+        self._calcCellVertexIDs()
+        self._calcBaseFaceVertexIDs()
+        faceVertexIDs = self._calcFaceVertexIDs()
+        cellFaceIDs = self._calcCellFaceIDs()
+
+        self.inFile.close()
+        
+        return {
+            'vertexCoords': vertexCoords,
+            'faceVertexIDs': faceVertexIDs,
+            'cellFaceIDs': cellFaceIDs
+            }
+
+    def _calcVertexCoords(self):
+
+        dimensions = self.dimensions
         
     ## initialize the file input stream
-        inFile = open(self.fileName)
-        a = inFile.readline() ## skip the $NOD
+        a = self.inFile.readline() ## skip the $NOD
 
     ## get the vertex coordinates
         nodeToVertexIDdict = {}
-        numVertices = int(inFile.readline())
+        numVertices = int(self.inFile.readline())
         vertexCoords = Numeric.zeros((numVertices, dimensions))
         vertexCoords = vertexCoords.astype(Numeric.Float)
         for i in range(numVertices):
-            currLine = inFile.readline()
+            currLine = self.inFile.readline()
             currLineArray = currLine.split()
             currLineArray[0] = int(currLineArray[0])
             for j in range(1, (dimensions + 1)):
@@ -221,71 +229,68 @@ class DataGetter:
                 nodeToVertexIDdict[currLineArray[0]] = i
             vertexCoords[i] = currLineArray[1:(dimensions + 1)]
 
-        self.vertexCoords = vertexCoords
-        self.inFile = inFile
         maxNode = max(nodeToVertexIDdict.keys())
         nodeToVertexIDs = Numeric.zeros((maxNode + 1,))
         for i in nodeToVertexIDdict.keys():
             nodeToVertexIDs[i] = nodeToVertexIDdict[i]
         self.nodeToVertexIDs = nodeToVertexIDs
+        
+        return vertexCoords
 
-    def computeCellVertexIDs(self):
-
-        dimensions = self.dimensions
-        inFile = self.inFile
-        vertexCoords = self.vertexCoords
-    
-    ## get the elements
-    ## note: all we care about are the three-dimensional elements (cells).
-    ## note: so far this only supports tetrahedral and triangular meshes.
-        a = inFile.readline() ## skip the $ENDNOD
-        a = inFile.readline() ## skip the $ELM
-        numElements = int(inFile.readline())
+    def _calcCellVertexIDs(self):
+        """
+        Get the elements.
+        
+        .. note:: all we care about are the three-dimensional elements (cells).
+        
+        .. note:: so far this only supports tetrahedral and triangular meshes.
+        """
+        a = self.inFile.readline() ## skip the $ENDNOD
+        a = self.inFile.readline() ## skip the $ELM
+        numElements = int(self.inFile.readline())
         numCells = 0
-        maxLength = (6 + dimensions)
+        maxLength = (6 + self.dimensions)
         elementArray = Numeric.zeros((numElements, maxLength))
         for i in range(numElements):
-            currLineArrayInt = [int(x) for x in inFile.readline().split()]
+            currLineArrayInt = [int(x) for x in self.inFile.readline().split()]
             elementArray[i, :len(currLineArrayInt)] = currLineArrayInt
-        validElementArray = Numeric.compress(elementArray[:, 1] == ((2 * dimensions) - 2), elementArray, 0)
+        validElementArray = Numeric.compress(elementArray[:, 1] == ((2 * self.dimensions) - 2), elementArray, 0)
         cellNodeIDs = validElementArray[:, 5:]
         cellVertexIDs = Numeric.take(self.nodeToVertexIDs, cellNodeIDs)        
         self.cellVertexIDs = cellVertexIDs
         self.numCells = len(cellVertexIDs)
 
 
-    def computeBaseFaceVertexIDs(self):
+    def _calcBaseFaceVertexIDs(self):
         
-        dimensions = self.dimensions
         cellVertexIDs = self.cellVertexIDs
     ## compute the face vertex IDs.
-        cellFaceVertexIDs = Numeric.ones((self.numCells, dimensions + 1, dimensions))
+        cellFaceVertexIDs = Numeric.ones((self.numCells, self.dimensions + 1, self.dimensions))
         cellFaceVertexIDs = -1 * cellFaceVertexIDs
 
-        if (dimensions == 3):
+        if (self.dimensions == 3):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :3]
             cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :2], cellVertexIDs[:, 3:]), axis = 1)
             cellFaceVertexIDs[:, 2, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
             cellFaceVertexIDs[:, 3, :] = cellVertexIDs[:, 1:]
-        if (dimensions == 2):
+        if (self.dimensions == 2):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :2]
 ##            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
             cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, 2:], cellVertexIDs[:, :1]), axis = 1)
             cellFaceVertexIDs[:, 2, :] = cellVertexIDs[:, 1:]
 
         cellFaceVertexIDs = cellFaceVertexIDs[:, :, ::-1]
-        self.unsortedBaseIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (dimensions + 1), dimensions))
+        self.unsortedBaseIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
 
         cellFaceVertexIDs = Numeric.sort(cellFaceVertexIDs, axis = 2)
-        baseFaceVertexIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (dimensions + 1), dimensions))
+        baseFaceVertexIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
 
         self.baseFaceVertexIDs = baseFaceVertexIDs       
         self.cellFaceVertexIDs = cellFaceVertexIDs
 
-    def computeFaceVertexIDs(self):
+    def _calcFaceVertexIDs(self):
 
-        dimensions = self.dimensions
-        faceStrToFaceIDs = {}
+        self.faceStrToFaceIDs = {}
         faceStrToFaceIDsUnsorted = {}
 
         currIndex = 0
@@ -293,57 +298,47 @@ class DataGetter:
         for i in range(len(self.baseFaceVertexIDs)):
             listI = self.baseFaceVertexIDs[i]
             listJ = self.unsortedBaseIDs[i]
-##            for i in self.baseFaceVertexIDs:
-            if(not (faceStrToFaceIDs.has_key(listToString(listI)))):
-                faceStrToFaceIDs[listToString(listI)] = currIndex
-                faceStrToFaceIDsUnsorted[listToString(listJ)] = currIndex
+
+            key = ' '.join([str(i) for i in listI])
+            if(not (self.faceStrToFaceIDs.has_key(key))):
+                self.faceStrToFaceIDs[key] = currIndex
+                faceStrToFaceIDsUnsorted[' '.join([str(j) for j in listJ])] = currIndex
 
                 currIndex = currIndex + 1
         numFaces = currIndex
-        faceVertexIDs = Numeric.zeros((numFaces, dimensions))
+        faceVertexIDs = Numeric.zeros((numFaces, self.dimensions))
         for i in faceStrToFaceIDsUnsorted.keys():
-            faceVertexIDs[faceStrToFaceIDsUnsorted[i], :] = stringToList(i)
+            faceVertexIDs[faceStrToFaceIDsUnsorted[i], :] = [int(x) for x in i.split(' ')]
 
-        self.faceVertexIDs = faceVertexIDs
-        self.faceStrToFaceIDs = faceStrToFaceIDs
+        return faceVertexIDs
 
-    def computeCellFaceIDs(self):
+    def _calcCellFaceIDs(self):
 
         cellFaceIDs = Numeric.zeros(self.cellFaceVertexIDs.shape[:2])
         for i in range(len(self.cellFaceVertexIDs)):
             cell = self.cellFaceVertexIDs[i]
             for j in range(len(cell)):
-                cellFaceIDs[i, j] = self.faceStrToFaceIDs[listToString(self.cellFaceVertexIDs[i, j])]
-        self.cellFaceIDs = cellFaceIDs
+                cellFaceIDs[i, j] = self.faceStrToFaceIDs[' '.join([str(k) for k in self.cellFaceVertexIDs[i, j]])]
+        return cellFaceIDs
     
 class GmshImporter2D(mesh2D.Mesh2D):
 
     def __init__(self, filename):
-        dg = DataGetter()
-        a = dg.getData(filename, dimensions = 2)
-        mesh2D.Mesh2D.__init__(self, a[0], a[1], a[2])
+        mesh2D.Mesh2D.__init__(self, **_DataGetter().getData(filename, dimensions = 2))
 
     def getCellVolumes(self):
         return abs(mesh2D.Mesh2D.getCellVolumes(self))
     
 class GmshImporter3D(mesh.Mesh):
+    """
+        >>> mesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
+    """
 
     def __init__(self, filename):
-        dg = DataGetter()
-        a = dg.getData(filename, dimensions = 3)
-        mesh.Mesh.__init__(self, a[0], a[1], a[2])
+        mesh.Mesh.__init__(self, **_DataGetter().getData(filename, dimensions = 3))
 
     def getCellVolumes(self):
         return abs(mesh.Mesh.getCellVolumes(self))
-    
-def listToString(list):
-    res = str(list[0])
-    for i in list[1:]:
-        res = res + ' ' + str(i)
-    return res
-
-def stringToList(string):
-    return [int(x) for x in string.split(' ')]
     
 def _test():
     import doctest
@@ -355,6 +350,4 @@ if __name__ == "__main__":
     ##newmesh = GmshImporter3D('untitled.msh')
     ##profile.stop()
 
-    newmesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
-    
     _test()

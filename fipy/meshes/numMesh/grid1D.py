@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/7/05 {8:43:02 AM} 
+ #                                last update: 4/4/05 {11:57:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,31 +54,50 @@ class Grid1D(Mesh1D):
     """
     Creates a 1D grid mesh. Vertices and cells are numbered 
     in the usual way.
+    
+        >>> mesh = Grid1D(nx = 3)
+        >>> print mesh.getCellCenters()
+        [[ 0.5,]
+         [ 1.5,]
+         [ 2.5,]] 1
+         
+        >>> mesh = Grid1D(dx = (1, 2, 3))
+        >>> print mesh.getCellCenters()
+        [[ 0.5,]
+         [ 2. ,]
+         [ 4.5,]] 1
+         
+        >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
+        Traceback (most recent call last):
+        ...
+        IndexError: nx != len(dx)
+
     """
-    def __init__(self, dx = 1., nx = 1):
-        self.nx = nx
-        
+    def __init__(self, dx = 1., nx = None):
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
+        self.nx = self._calcNumPts(d = self.dx, n = nx)
+        
         self.numberOfVertices = self.nx + 1
         
-        vertices = self.createVertices()
-        faces = self.createFaces()
-        cells = self.createCells()
+        vertices = self._createVertices()
+        faces = self._createFaces()
+        cells = self._createCells()
         Mesh1D.__init__(self, vertices, faces, cells)
         
         self.setScale(value = scale)
         
-    def createVertices(self):
-        x = Numeric.arange(self.numberOfVertices) * self.dx
+    def _createVertices(self):
+        x = self._calcVertexCoordinates(self.dx, self.nx)
+        
         return Numeric.transpose(Numeric.array((x,)))
     
-    def createFaces(self):
+    def _createFaces(self):
         return Numeric.arange(self.numberOfVertices)
 
-    def createCells(self):
+    def _createCells(self):
         """
         cells = (f1, f2) going left to right.
         f1 etc. refer to the faces
@@ -109,7 +128,7 @@ class Grid1D(Mesh1D):
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
-    def getMeshSpacing(self):
+    def _getMeshSpacing(self):
         return Numeric.array((self.dx,))
     
     def getShape(self):
@@ -126,3 +145,9 @@ class Grid1D(Mesh1D):
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], nx = dict['nx'])
 
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

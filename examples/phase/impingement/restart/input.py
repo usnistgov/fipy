@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:21:03 PM}
+ #                                last update: 4/5/05 {8:07:20 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,7 +64,7 @@ but this time we only iterate for half as many time steps
 We confirm that the solution has not yet converged to that given by 
 Ryo Kobayashi's FORTRAN code:
 
-    >>> theta.allclose(testData)
+    >>> print theta.allclose(testData)
     0
 
 We save the variables to disk
@@ -131,7 +131,7 @@ and finish doing the iterations
 Finally, we check that the results have at last converged to Ryo Kobayashi's 
 FORTRAN code:
 
-    >>> newTheta.allclose(testData)
+    >>> print newTheta.allclose(testData)
     1
 """
 __docformat__ = 'restructuredtext'

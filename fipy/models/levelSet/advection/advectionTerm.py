@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 3/8/05 {4:12:08 PM} 
+ #                                last update: 4/6/05 {3:28:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -129,12 +129,12 @@ class AdvectionTerm(Term):
 
         mesh = var.getMesh()
         NCells = mesh.getNumberOfCells()
-        NCellFaces = mesh.getMaxFacesPerCell()
+        NCellFaces = mesh._getMaxFacesPerCell()
 
         cellValues = Numeric.repeat(oldArray[:,Numeric.NewAxis], NCellFaces, axis = 1)
         
         cellIDs = Numeric.repeat(Numeric.arange(NCells)[:,Numeric.NewAxis], NCellFaces, axis = 1)
-        cellToCellIDs = mesh.getCellToCellIDs()
+        cellToCellIDs = mesh._getCellToCellIDs()
 
         cellToCellIDs = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs) 
 
@@ -153,7 +153,7 @@ class AdvectionTerm(Term):
         return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh.getCellToCellDistances()
+        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
 
 def _test(): 
     import doctest

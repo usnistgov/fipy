@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 12/7/04 {4:27:41 PM} 
+ #                                last update: 4/6/05 {5:17:47 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -41,65 +41,41 @@
  # ###################################################################
  ##
 
-
-"""
-
-2-dimensional triangular mesh.
-
-This class creates a mesh made out of triangles. It does this by starting with a standard Cartesian mesh (Grid2D) and dividing each cell in that mesh (hereafter referred to as a 'box') into four equal partswith the dividing lines being the diagonals. A Tri2D mesh is constructed using the following keyword arguments:
-
-dx, dy - The X and Y dimensions of each box. Note that if dx \ne dy, the line segments connecting the cell centers will not be orthogonal to the faces.
-
-nx, ny - The number of boxes in the X direction and the Y direction. The total number of boxes will be equal to nx * ny, and the total number of cells will be equal to 4 * nx * ny.
-
-The faces, cells, and vertices are numbered as follows:
-
-Faces - Horizontal faces are numbered first, then vertical faces, then diagonal faces on the lower left of the boxes, then diagonal faces on the llower right of boxes, then diagonal faces on the upper left of boxes, then diagonal faces on the upper right of boxes.
-
-Vertices - Vertices on the corners of boxes are numbered first, then vertices on the box centers.
-
-Cells - Cells on the right of boxes are numbered first, then cells on the top of boxes, then cells on the left of boxes, then cells on the bottom of boxes.
-
-Within each of the 'sub-categories' in the above, the vertices, cells and faces are numbered in the usual way.
-
-
-
-Test cases:
-
-   >>> testmesh = Tri2D(dx = 0.5, dy = 0.5, nx = 2, ny = 2)
-   >>> list = testmesh.createVertices().tolist()
-   >>> print list
-   [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0], [0.0, 0.5], [0.5, 0.5], [1.0, 0.5], [0.0, 1.0], [0.5, 1.0], [1.0, 1.0], [0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
-
-   >>> testmesh = Tri2D(dx = 0.5, dy = 0.5, nx = 2, ny = 2)
-   >>> list = testmesh.createFaces().tolist()
-   >>> print list
-   [[1, 0], [2, 1], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [4, 1], [5, 2], [3, 6], [7, 4], [8, 5], [9, 0], [10, 1], [11, 3], [12, 4], [1, 9], [2, 10], [4, 11], [5, 12], [9, 3], [10, 4], [11, 6], [12, 7], [9, 4], [10, 5], [11, 7], [12, 8]]
-
-   >>> testmesh = Tri2D(dx = 0.5, dy = 0.5, nx = 2, ny = 2)
-   >>> list = testmesh.createCells().tolist()
-   >>> print list
-   [[7, 24, 16], [8, 25, 17], [10, 26, 18], [11, 27, 19], [2, 20, 24], [3, 21, 25], [4, 22, 26], [5, 23, 27], [6, 12, 20], [7, 13, 21], [9, 14, 22], [10, 15, 23], [0, 16, 12], [1, 17, 13], [2, 18, 14], [3, 19, 15]]
-
-"""
-
 __docformat__ = "restructuredtext"
 
 import Numeric
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.face import Face
-import fipy.tools.vector as vector
+from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Tri2D(Mesh2D):
     """
-    Creates a 2D triangular mesh with horizontal faces numbered
-    first then vertical faces, then diagonal faces. Vertices are numbered starting with the
-    vertices at the corners of boxes and then the vertices at the centers of boxes. Vertices and cells are numbered 
-    in the usual way.
+    This class creates a mesh made out of triangles.  It does this by
+    starting with a standard Cartesian mesh (`Grid2D`) and dividing each cell
+    in that mesh (hereafter referred to as a 'box') into four equal
+    parts with the dividing lines being the diagonals.
     """
+    
     def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1):
+        """
+        Creates a 2D triangular mesh with horizontal faces numbered first then
+        vertical faces, then diagonal faces.  Vertices are numbered starting
+        with the vertices at the corners of boxes and then the vertices at the
+        centers of boxes.  Cells on the right of boxes are numbered first, then
+        cells on the top of boxes, then cells on the left of boxes, then cells
+        on the bottom of boxes.  Within each of the 'sub-categories' in the
+        above, the vertices, cells and faces are numbered in the usual way.
+        
+        :Parameters:
+          - `dx`, `dy`: The X and Y dimensions of each 'box'. 
+            If `dx` <> `dy`, the line segments connecting the cell 
+            centers will not be orthogonal to the faces.
+          - `nx`, `ny`: The number of boxes in the X direction and the Y direction. 
+            The total number of boxes will be equal to `nx * ny`, and the total 
+            number of cells will be equal to `4 * nx * ny`.
+        """
         self.nx = nx
         self.ny = ny
 	
@@ -117,14 +93,14 @@ class Tri2D(Mesh2D):
         self.numberOfCenterVertices = self.nx * self.ny
         self.numberOfTotalVertices = self.numberOfCornerVertices + self.numberOfCenterVertices
 	
-	vertices = self.createVertices()
-        faces = self.createFaces()
-        cells = self.createCells()
+	vertices = self._createVertices()
+        faces = self._createFaces()
+        cells = self._createCells()
         cells = Numeric.sort(cells)
         Mesh2D.__init__(self, vertices, faces, cells)
 	self.setScale(value = scale)
         
-    def createVertices(self):
+    def _createVertices(self):
         
         x = Numeric.arange(self.nx + 1) * self.dx
         y = Numeric.arange(self.ny + 1) * self.dy
@@ -138,7 +114,7 @@ class Tri2D(Mesh2D):
         boxCenters = Numeric.transpose(Numeric.array((x, y)))
         return Numeric.concatenate((boxCorners, boxCenters))
     
-    def createFaces(self):
+    def _createFaces(self):
         """
         v1, v2 refer to the cells.
         Horizontel faces are first
@@ -175,7 +151,7 @@ class Tri2D(Mesh2D):
         upperRightFaces = Numeric.transpose(Numeric.array((cellCenters, upperRights)))
         return Numeric.concatenate((horizontalFaces, verticalFaces, lowerLeftFaces, lowerRightFaces, upperLeftFaces, upperRightFaces))
 
-    def createCells(self):
+    def _createCells(self):
         """
         cells = (f1, f2, f3, f4) going anticlockwise.
         f1 etx refer to the faces
@@ -228,7 +204,7 @@ class Tri2D(Mesh2D):
 
 
 
-    def getMeshSpacing(self):
+    def _getMeshSpacing(self):
 	return Numeric.array((self.dx,self.dy))
     
     def getShape(self):
@@ -246,6 +222,269 @@ class Tri2D(Mesh2D):
 
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])
+
+        
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected.
+
+            >>> dx = 0.5
+            >>> dy = 2.
+            >>> nx = 3
+            >>> ny = 2
+            
+            >>> mesh = Tri2D(nx = nx, ny = ny, dx = dx, dy = dy)     
+            
+            >>> vertices = Numeric.array(((0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.5, 0.0),
+            ...                           (0.0, 2.0), (0.5, 2.0), (1.0, 2.0), (1.5, 2.0),
+            ...                           (0.0, 4.0), (0.5, 4.0), (1.0, 4.0), (1.5, 4.0),
+            ...                           (0.25, 1.0), (0.75, 1.0), (1.25, 1.0),
+            ...                           (0.25, 3.0), (0.75, 3.0), (1.25, 3.0)))
+            
+            >>> from fipy.tools import array
+            >>> array.allequal(vertices, mesh._createVertices())
+            1
+        
+            >>> faces = Numeric.array(((1, 0), (2, 1), (3, 2),
+            ...                        (4, 5), (5, 6), (6, 7),
+            ...                        (8, 9), (9, 10), (10, 11),
+            ...                        (0, 4), (5, 1), (6, 2), (7, 3),
+            ...                        (4, 8), (9, 5), (10, 6), (11, 7),
+            ...                        (12, 0), (13, 1), (14, 2), (15, 4), (16, 5), (17, 6),
+            ...                        (1, 12), (2, 13), (3, 14), (5, 15), (6, 16), (7, 17),
+            ...                        (12, 4), (13, 5), (14, 6), (15, 8), (16, 9), (17, 10),
+            ...                        (12, 5), (13, 6), (14, 7), (15, 9), (16, 10), (17, 11)))
+            >>> array.allequal(faces, mesh._createFaces())
+            1
+
+            >>> cells = Numeric.array(((10, 35, 23), (11, 36, 24), (12, 37, 25), (14, 38, 26), (15, 39, 27), (16, 40, 28),
+            ...                        (3, 29, 35), (4, 30, 36), (5, 31, 37), (6, 32, 38), (7, 33, 39), (8, 34, 40),
+            ...                        (9, 17, 29), (10, 18, 30), (11, 19, 31), (13, 20, 32), (14, 21, 33), (15, 22, 34),
+            ...                        (0, 23, 17), (1, 24, 18), (2, 25, 19), (3, 26, 20), (4, 27, 21), (5, 28, 22)))
+            >>> array.allequal(cells, mesh._createCells())
+            1
+
+            >>> externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> array.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            1
+
+            >>> internalFaces = Numeric.array((3, 4, 5, 10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40))
+            >>> array.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            1
+
+            >>> import MA
+            >>> faceCellIds = MA.masked_values(((18, -1), (19, -1), (20, -1), (6, 21), (7, 22), (8, 23), (9, -1), (10, -1), (11, -1),
+            ...                                 (12, -1), (0, 13), (1, 14), (2, -1), (15, -1), (3, 16), (4, 17), (5, -1),
+            ...                                 (12, 18), (13, 19), (14, 20), (15, 21), (16, 22), (17, 23),
+            ...                                 (0, 18), (1, 19), (2, 20), (3, 21), (4, 22), (5, 23),
+            ...                                 (6, 12), (7, 13), (8, 14), (9, 15), (10, 16), (11, 17),
+            ...                                 (0, 6), (1, 7), (2, 8), (3, 9), (4, 10), (5, 11)), -1)
+            >>> array.allequal(faceCellIds, mesh.getFaceCellIDs())
+            1
+            
+            >>> d = (Numeric.sqrt((dx*dx)+(dy*dy))) / 2.0 ## length of diagonal edges  
+            >>> faceAreas = Numeric.array((0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+            ...                            2, 2, 2, 2, 2, 2, 2, 2,
+            ...                            d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d))
+            >>> array.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            1
+            
+            >>> faceCoords = Numeric.take(vertices, faces)
+            >>> faceCenters = (faceCoords[:,0] + faceCoords[:,1]) / 2.
+            >>> array.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> xc = dy  / Numeric.sqrt((dx * dx) + (dy * dy))
+            >>> yc = dx  / Numeric.sqrt((dx * dx) + (dy * dy))
+            
+            >>> faceNormals = Numeric.array((( 0.0,-1.0), (0.0,-1.0), (0.0,-1.0),
+            ...                              ( 0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
+            ...                              ( 0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
+            ...                              (-1.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
+            ...                              (-1.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
+            ...                              (  xc, -yc), ( xc, -yc), ( xc, -yc), ( xc, -yc), ( xc, -yc), ( xc, -yc),
+            ...                              ( -xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc),
+            ...                              ( -xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc), (-xc, -yc),
+            ...                              ( -xc,  yc), (-xc,  yc), (-xc,  yc), (-xc,  yc), (-xc,  yc), (-xc,  yc)))
+            >>> array.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> cellToFaceOrientations = Numeric.array(((1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1),
+            ...                                         (1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1),
+            ...                                         (1, 1,-1), (-1, 1,-1), (-1, 1,-1), ( 1, 1,-1), (-1, 1,-1), (-1, 1,-1),
+            ...                                         (1,-1,-1), ( 1,-1,-1), ( 1,-1,-1), (-1,-1,-1), (-1,-1,-1), (-1,-1,-1)))
+            >>> array.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            1
+                                             
+            >>> cellVolumes = Numeric.array((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+            ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+            ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25))
+            >>> array.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> sixth = 1.0 / 6.0
+            >>> cellCenters = Numeric.array(((5*sixth, 0.5), (11*sixth, 0.5), (17*sixth, 0.5), (5*sixth, 1.5), (11*sixth, 1.5), (17*sixth, 1.5),
+            ...                              (0.5, 5*sixth), (1.5, 5*sixth), (2.5, 5*sixth), (0.5, 11*sixth), (1.5, 11*sixth), (2.5, 11*sixth),
+            ...                              (1*sixth, 0.5), (7*sixth, 0.5), (13*sixth, 0.5), (1*sixth, 1.5), (7*sixth, 1.5), (13*sixth, 1.5),
+            ...                              (0.5, 1*sixth), (1.5, 1*sixth), (2.5, 1*sixth), (0.5, 7*sixth), (1.5, 7*sixth), (2.5, 7*sixth)))
+            >>> cellCenters *= Numeric.array((dx, dy))
+            >>> array.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            1
+                                              
+            >>> yd = Numeric.sqrt(((dx/12.0)*(dx/12.0)) + ((dy/ 4.0)*(dy/ 4.0)))
+            >>> xd = Numeric.sqrt(((dx/ 4.0)*(dx/ 4.0)) + ((dy/12.0)*(dy/12.0)))
+            >>> faceToCellDistances = MA.masked_values(((dy/6.0, -1), (dy/6.0, -1), (dy/6.0, -1), (dy/6.0, dy/6.0), (dy/6.0, dy/6.0), (dy/6.0, dy/6.0), (dy/6.0, -1), (dy/6.0, -1), (dy/6.0, -1),
+            ...                                         (dx/6.0, -1), (dx/6.0, dx/6.0), (dx/6.0, dx/6.0), (dx/6.0, -1), (dx/6.0, -1), (dx/6.0, dx/6.0), (dx/6.0, dx/6.0), (dx/6.0, -1),
+            ...                                         (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd),
+            ...                                         (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd),
+            ...                                         (xd, yd), (xd, yd), (xd, yd), (xd, yd), (xd, yd), (xd, yd),
+            ...                                         (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd)), -1)
+            >>> array.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            1
+                                              
+            >>> dd = Numeric.sqrt((dx*dx)+(dy*dy)) / 3.0
+            >>> cellDistances = Numeric.array((dy/6.0, dy/6.0, dy/6.0, dy/3.0, dy/3.0, dy/3.0, dy/6.0, dy/6.0, dy/6.0,
+            ...                                dx/6.0, dx/3.0, dx/3.0, dx/6.0, dx/6.0, dx/3.0, dx/3.0, dx/6.0,
+            ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd,
+            ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd))
+            >>> array.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            1
+            
+            >>> faceToCellDistanceRatios = faceToCellDistances[...,0] / cellDistances
+            >>> array.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> areaProjections = faceNormals * faceAreas[...,Numeric.NewAxis]
+            >>> array.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> tangents1 = Numeric.array(((1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
+            ...                            (-1.0, 0.0), (-1.0, 0.0), (-1.0, 0.0),
+            ...                            (-1.0, 0.0), (-1.0, 0.0), (-1.0, 0.0),
+            ...                            (0.0, -1.0), (0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
+            ...                            (0.0, -1.0), (0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
+            ...                            (yc, xc),(yc, xc),(yc, xc),(yc, xc),(yc, xc),(yc, xc),
+            ...                            (yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),
+            ...                            (yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),(yc, -xc),
+            ...                            (-yc, -xc),(-yc, -xc),(-yc, -xc),(-yc, -xc),(-yc, -xc),(-yc, -xc)))
+            >>> array.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> tangents2 = Numeric.zeros((41, 2))
+            >>> array.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> cellToCellIDs = MA.masked_values(((13, 18, 6), (14, 19, 7), (-1, 20, 8), (16, 21, 9), (17, 22, 10), (-1, 23, 11),
+            ...                                   (21, 12, 0), (22, 13, 1), (23, 14, 2), (-1, 15, 3), (-1, 16, 4), (-1, 17, 5),
+            ...                                   (-1, 18, 6), (0, 19, 7), (1, 20, 8), (-1, 21, 9), (3, 22, 10), (4, 23, 11),
+            ...                                   (-1, 12, 0), (-1, 13, 1), (-1, 14, 2), (6, 15, 3), (7, 16, 4), (8, 17, 5)), -1)
+            >>> array.allequal(cellToCellIDs, mesh._getCellToCellIDs())
+            1
+
+            >>> cellToCellDistances = Numeric.array([[dx/3.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/6.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/6.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dx/6.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/6.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dx/3.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dy/6.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd],
+            ...                                      [dy/3.0, dd, dd]])
+            >>> array.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> interiorCellIDs = Numeric.array((0, 1, 3, 4, 6, 7, 8, 13, 14, 16, 17, 21, 22, 23))
+            >>> array.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
+            1
+
+            >>> exteriorCellIDs = Numeric.array((2, 5, 9, 10, 11, 12, 15, 18, 19, 20))
+            >>> array.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            1
+
+            >>> cellNormals = Numeric.array((((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((0, 1), (-xc, -yc), (xc, -yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((-1, 0), (xc, -yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)),
+            ...                              ((0, -1), (-xc, yc), (xc, yc)) ))
+            >>> array.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> cellAreaProjections = Numeric.array(((( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((  0, dx), (-dy/2.,-dx/2.), ( dy/2.,-dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((-dy,  0), ( dy/2.,-dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)),
+            ...                                      ((  0,-dx), (-dy/2., dx/2.), ( dy/2., dx/2.)) ))
+            >>> array.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> import tempfile
+            >>> import os
+            >>> from fipy.tools import dump
+            
+            >>> (f, fileName) = tempfile.mkstemp('.gz')
+            >>> pickledMesh = dump.write(mesh, fileName)
+            
+            >>> unpickledMesh = dump.read(fileName)
+            >>> os.close(f)
+            >>> os.remove(fileName)
+
+            >>> array.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            1
+        """
 
 ## test test test
         

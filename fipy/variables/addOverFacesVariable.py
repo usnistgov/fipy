@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:23 AM}
+ #                                last update: 4/2/05 {7:26:20 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,7 @@ class AddOverFacesVariable(CellVariable):
         self.faceVariable = self._requires(faceVariable)
 
     def _calcValuePy(self):
-        ids = self.mesh.getCellFaceIDs()
+        ids = self.mesh._getCellFaceIDs()
         
         contributions = array.take(self.faceVariable[:], ids.flat)
 
@@ -64,7 +64,7 @@ class AddOverFacesVariable(CellVariable):
 
         contributions = array.reshape(contributions,(NCells,-1))
         
-        orientations = array.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
+        orientations = array.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
 
 ##         orientations = Numeric.array(orientations)
         
@@ -73,7 +73,7 @@ class AddOverFacesVariable(CellVariable):
     def _calcValueIn(self):
 
         NCells = self.mesh.getNumberOfCells()
-	ids = self.mesh.getCellFaceIDs()
+	ids = self.mesh._getCellFaceIDs()
 
         inline.runInline("""
         int i;
@@ -89,12 +89,12 @@ class AddOverFacesVariable(CellVariable):
             value(i) = value(i) / cellVolume(i);
           }
           """,
-              numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
+              numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
               numberOfCells = NCells,
               faceVariable = self.faceVariable.getNumericValue(),
               ids = Numeric.array(ids),
               value = self._getArray(),
-              orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
+              orientations = Numeric.array(self.mesh._getCellFaceOrientations()),
               cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 	      
 

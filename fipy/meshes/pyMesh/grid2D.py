@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 10/19/04 {2:53:06 PM} 
+ #                                last update: 4/3/05 {12:01:35 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,13 +133,13 @@ class Grid2D(Mesh):
 	self.dx /= self.scale
 	self.dy /= self.scale
 	
-	vertices = self.createVertices()
-	rowFaces,colFaces = self.createFaces(vertices)
-	cells = self.createCells(rowFaces,colFaces)
-	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
+	vertices = self._createVertices()
+	rowFaces,colFaces = self._createFaces(vertices)
+	cells = self._createCells(rowFaces,colFaces)
+	faces,interiorFaces = self._reorderFaces(rowFaces,colFaces)
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
-    def createVertices(self):
+    def _createVertices(self):
 	"""Return list of `Vertex` objects
 	"""
 	vertices = ()
@@ -153,7 +153,7 @@ class Grid2D(Mesh):
 ## 		vertices += (Vertex(PhysicalField(value = [i * dx, j * dy])),)
         return vertices	
 		    
-    def createFaces(self, vertices):
+    def _createFaces(self, vertices):
 	"""Return 2-`tuple` of `Face` objects bounded by `vertices`. 
 	
 	First `tuple` are the `Face` objects that separate rows of `Cell` objects.  
@@ -182,7 +182,7 @@ class Grid2D(Mesh):
 	    colFaces += (oneCol,)
 	return (rowFaces,colFaces)
 	
-    def reorderFaces(self,rowFaces,colFaces):
+    def _reorderFaces(self,rowFaces,colFaces):
 	"""Return a `tuple` of `Face` objects ordered for best efficiency.
 	
 	Composed from `rowFaces` and `colFaces` such that all interior faces
@@ -205,12 +205,12 @@ class Grid2D(Mesh):
 	
 	id = 0
 	for face in faces:
-	    face.setID(id)
+	    face._setID(id)
 	    id += 1
 
 	return (faces, interiorFaces)
 	
-    def createCells(self,rowFaces,colFaces):
+    def _createCells(self,rowFaces,colFaces):
 	"""Return list of `Cell` objects.
 	"""
 	nx=self.nx
@@ -232,7 +232,7 @@ class Grid2D(Mesh):
 		    
 	return cells
 
-    def createInteriorFaces(self,faces):
+    def _createInteriorFaces(self,faces):
 	"""Return list of faces that are not on boundary of Grid2D.
 	"""
         interiorFaces = ()
@@ -276,21 +276,16 @@ class Grid2D(Mesh):
 	"""
         return (self.nx,self.ny)
         
-    def makeGridData(self,array):
-	"""Return `array` data mapped onto cell geometry of `Grid2D`.
-	"""
-        return Numeric.reshape(array,self.getShape())
-
     def getPhysicalShape(self):
 	"""Return physical dimensions of Grid2D.
 	"""
 	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
-    def getMaxFacesPerCell(self):
+    def _getMaxFacesPerCell(self):
         return 4
 
-    def getFaceAreas(self):
-	return Mesh.getFaceAreas(self) * self.getScale()
+    def _getFaceAreas(self):
+	return Mesh._getFaceAreas(self) * self.getScale()
 
     def getCellVolumes(self):
         if self.getScale() is 1:
@@ -304,17 +299,17 @@ class Grid2D(Mesh):
         else:
             return Mesh.getCellCenters(self) * self.getScale()
 
-    def getCellDistances(self):
+    def _getCellDistances(self):
         if self.getScale() is 1:
-            return Mesh.getCellDistances(self)
+            return Mesh._getCellDistances(self)
         else:
-            return Mesh.getCellDistances(self) * self.getScale()
+            return Mesh._getCellDistances(self) * self.getScale()
         
-    def getFaceToCellDistances(self):
+    def _getFaceToCellDistances(self):
         if self.getScale() is 1:
-            return Mesh.getFaceToCellDistances(self)
+            return Mesh._getFaceToCellDistances(self)
         else:
-            return Mesh.getFaceToCellDistances(self) * self.getScale()
+            return Mesh._getFaceToCellDistances(self) * self.getScale()
 
-    def getMeshSpacing(self):
+    def _getMeshSpacing(self):
 	return PhysicalField(value = (self.dx * self.getScale(),self.dy * self.getScale()))

@@ -54,11 +54,11 @@ class Cell:
     def getCenter(self):
         return self.mesh.getCellCenters()[self.id]
 
-    def getCellToCellDistances(self):
-        return self.mesh.getCellToCellDistances()[self.id]
+    def _getCellToCellDistances(self):
+        return self.mesh._getCellToCellDistances()[self.id]
 
-    def getCellToCellIDs(self):
-        return self.mesh.getCellToCellIDs()[self.id]
+    def _getCellToCellIDs(self):
+        return self.mesh._getCellToCellIDs()[self.id]
 
     def __cmp__(self, cell):
         return cmp(self.id, cell.getID())
@@ -67,8 +67,8 @@ class Cell:
         return self.mesh
 
     def getNormal(self, index):
-        dis = self.getCellToCellDistances()[index]
-        adjCellID = self.getCellToCellIDs()[index]
+        dis = self._getCellToCellDistances()[index]
+        adjCellID = self._getCellToCellIDs()[index]
         vec = self.getCenter() - self.mesh.getCellCenters()[adjCellID]
         return vec / dis
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "SkewedGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/3/04 {10:43:07 PM} 
+ #                                last update: 4/1/05 {7:02:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,7 @@ class SkewedGrid2D(Mesh2D):
 	
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
 	
-	vertices = self.createVertices()
+	vertices = self._createVertices()
         changedVertices = Numeric.zeros(vertices.shape)
         changedVertices = changedVertices.astype(Numeric.Float)
         for i in range(len(vertices)):
@@ -85,20 +85,20 @@ class SkewedGrid2D(Mesh2D):
             else:
                 changedVertices[i, 0] = vertices[i, 0]
                 changedVertices[i, 1] = vertices[i, 1]
-        faces = self.createFaces()
-        cells = self.createCells()
+        faces = self._createFaces()
+        cells = self._createCells()
         Mesh2D.__init__(self, changedVertices, faces, cells)
 	
 	self.setScale(value = scale)
         
-    def createVertices(self):
+    def _createVertices(self):
         x = Numeric.arange(self.nx + 1) * self.dx
         y = Numeric.arange(self.ny + 1) * self.dy
         x = Numeric.resize(x, (self.numberOfVertices,))
         y = Numeric.repeat(y, self.nx + 1)
         return Numeric.transpose(Numeric.array((x, y)))
     
-    def createFaces(self):
+    def _createFaces(self):
         """
         v1, v2 refer to the cells.
         Horizontel faces are first
@@ -124,7 +124,7 @@ class SkewedGrid2D(Mesh2D):
 
         return Numeric.concatenate((horizontalFaces, verticalFaces))
 
-    def createCells(self):
+    def _createCells(self):
         """
         cells = (f1, f2, f3, f4) going anticlock wise.
         f1 etx refer to the faces
@@ -165,7 +165,7 @@ class SkewedGrid2D(Mesh2D):
 	"""
 	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
-    def getMeshSpacing(self):
+    def _getMeshSpacing(self):
 	return Numeric.array((self.dx,self.dy))
     
     def getShape(self):

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/19/04 {11:33:34 AM} 
+ #                                last update: 4/3/05 {12:36:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,16 +36,7 @@
  # ###################################################################
  ##
 
-"""
-Generic mesh class defining implementation-agnostic behavior.
-
-Make changes to mesh here first, then implement specific implementations in
-`pyMesh` and `numMesh`.
-
-Meshes contain cells, faces, and vertices.
-"""
-
-##import sets
+__docformat__ = 'restructuredtext'
 
 import Numeric
 import MA
@@ -53,6 +44,15 @@ import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Mesh:
+    """
+    Generic mesh class defining implementation-agnostic behavior.
+
+    Make changes to mesh here first, then implement specific implementations in
+    `pyMesh` and `numMesh`.
+
+    Meshes contain cells, faces, and vertices.
+    """
+
     def __init__(self):
 	self.scale = {
 	    'length': 1.,
@@ -60,28 +60,184 @@ class Mesh:
 	    'volume': 1.
 	}
 	
-	self.calcTopology()
-	self.calcGeometry()
+	self._calcTopology()
+	self._calcGeometry()
     
+    def __add__(self, other):
+        """
+        Either translate a `Mesh` or concatenate two `Mesh` objects.
+        
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+            >>> print baseMesh.getCellCenters()
+            [[ 0.5, 0.5,]
+             [ 1.5, 0.5,]
+             [ 0.5, 1.5,]
+             [ 1.5, 1.5,]] 1
+             
+        If a vector is added to a `Mesh`, a translated `Mesh` is returned
+        
+            >>> translatedMesh = baseMesh + (5, 10)
+            >>> translatedMesh.getCellCenters()
+            [[  5.5, 10.5,]
+             [  6.5, 10.5,]
+             [  5.5, 11.5,]
+             [  6.5, 11.5,]]
+             
+        If a `Mesh` is added to a `Mesh`, a concatenation of the two 
+        `Mesh` objects is returned
+        
+            >>> addedMesh = baseMesh + (baseMesh + (2, 0))
+            >>> addedMesh.getCellCenters()
+            [[ 0.5, 0.5,]
+             [ 1.5, 0.5,]
+             [ 0.5, 1.5,]
+             [ 1.5, 1.5,]
+             [ 2.5, 0.5,]
+             [ 3.5, 0.5,]
+             [ 2.5, 1.5,]
+             [ 3.5, 1.5,]]
+        
+        The two `Mesh` objects must be properly aligned in order to concatenate them
+        
+            >>> addedMesh = baseMesh + (baseMesh + (3, 0))
+            Traceback (most recent call last):
+            ...
+            MeshAdditionError: Vertices are not aligned
+
+            >>> addedMesh = baseMesh + (baseMesh + (2, 2))
+            Traceback (most recent call last):
+            ...
+            MeshAdditionError: Faces are not aligned
+
+        No provision is made to avoid or consolidate overlapping `Mesh` objects
+        
+            >>> addedMesh = baseMesh + (baseMesh + (1, 0))
+            >>> addedMesh.getCellCenters()
+            [[ 0.5, 0.5,]
+             [ 1.5, 0.5,]
+             [ 0.5, 1.5,]
+             [ 1.5, 1.5,]
+             [ 1.5, 0.5,]
+             [ 2.5, 0.5,]
+             [ 1.5, 1.5,]
+             [ 2.5, 1.5,]]
+             
+        Different `Mesh` classes can be concatenated
+         
+            >>> from fipy.meshes.numMesh.tri2D import Tri2D
+            >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
+            >>> triMesh = triMesh + (2, 0)
+            >>> triAddedMesh = baseMesh + triMesh
+            >>> triAddedMesh.getCellCenters()
+            [[ 0.5       , 0.5       ,]
+             [ 1.5       , 0.5       ,]
+             [ 0.5       , 1.5       ,]
+             [ 1.5       , 1.5       ,]
+             [ 2.83333333, 0.5       ,]
+             [ 3.83333333, 0.5       ,]
+             [ 2.5       , 0.83333333,]
+             [ 3.5       , 0.83333333,]
+             [ 2.16666667, 0.5       ,]
+             [ 3.16666667, 0.5       ,]
+             [ 2.5       , 0.16666667,]
+             [ 3.5       , 0.16666667,]]
+
+        but their faces must still align properly
+        
+            >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
+            >>> triMesh = triMesh + (2, 0)
+            >>> triAddedMesh = baseMesh + triMesh
+            Traceback (most recent call last):
+            ...
+            MeshAdditionError: Faces are not aligned
+
+        `Mesh` concatenation is not limited to 2D meshes
+        
+            >>> from fipy.meshes.numMesh.grid3D import Grid3D
+            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 2, ny = 2, nz = 2)
+            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 1, ny = 1, nz = 1)
+            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + (2, 0, 0))
+            >>> threeDAddedMesh.getCellCenters()
+            [[ 0.5, 0.5, 0.5,]
+             [ 1.5, 0.5, 0.5,]
+             [ 0.5, 1.5, 0.5,]
+             [ 1.5, 1.5, 0.5,]
+             [ 0.5, 0.5, 1.5,]
+             [ 1.5, 0.5, 1.5,]
+             [ 0.5, 1.5, 1.5,]
+             [ 1.5, 1.5, 1.5,]
+             [ 2.5, 0.5, 0.5,]]
+
+        but the different `Mesh` objects must, of course, have the same 
+        dimensionality.
+        
+            >>> InvalidMesh = threeDBaseMesh + baseMesh
+            Traceback (most recent call last):
+            ...
+            MeshAdditionError: Dimensions do not match
+        """
+        pass
+        
+    def __mul__(self, factor):
+        """
+        Dilate a `Mesh` by `factor`.
+        
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+            >>> print baseMesh.getCellCenters()
+            [[ 0.5, 0.5,]
+             [ 1.5, 0.5,]
+             [ 0.5, 1.5,]
+             [ 1.5, 1.5,]] 1
+             
+        The `factor` can be a scalar
+        
+            >>> dilatedMesh = baseMesh * 3
+            >>> dilatedMesh.getCellCenters()
+            [[ 1.5, 1.5,]
+             [ 4.5, 1.5,]
+             [ 1.5, 4.5,]
+             [ 4.5, 4.5,]]
+             
+        or a vector
+        
+            >>> dilatedMesh = baseMesh * (3, 2)
+            >>> dilatedMesh.getCellCenters()
+            [[ 1.5, 1. ,]
+             [ 4.5, 1. ,]
+             [ 1.5, 3. ,]
+             [ 4.5, 3. ,]]
+        
+        but the vector must have the same dimensionality as the `Mesh`
+        
+            >>> dilatedMesh = baseMesh * (3, 2, 1)
+            Traceback (most recent call last):
+            ...
+            ValueError: frames are not aligned
+
+        """
+        pass
+        
     """topology methods"""
     
-    def calcTopology(self):
-	self.calcInteriorAndExteriorFaceIDs()
-	self.calcInteriorAndExteriorCellIDs()
-	self.calcCellToFaceOrientations()
-	self.calcAdjacentCellIDs()
-	self.calcCellToCellIDs()
-        self.calcCellToCellIDsFilled()
+    def _calcTopology(self):
+	self._calcInteriorAndExteriorFaceIDs()
+	self._calcInteriorAndExteriorCellIDs()
+	self._calcCellToFaceOrientations()
+	self._calcAdjacentCellIDs()
+	self._calcCellToCellIDs()
+        self._calcCellToCellIDsFilled()
        
     """calc topology methods"""
 	
-    def calcInteriorAndExteriorFaceIDs(self):
+    def _calcInteriorAndExteriorFaceIDs(self):
 	pass
 
-    def calcExteriorCellIDs(self):
+    def _calcExteriorCellIDs(self):
 	pass
 	
-    def calcInteriorCellIDs(self):
+    def _calcInteriorCellIDs(self):
         pass
 ##	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
 ##        onesWhereInterior = Numeric.zeros(self.numberOfCells)
@@ -89,33 +245,33 @@ class Mesh:
 ##        self.interiorCellIDs = Numeric.nonzero(onesWhereInterior)
 ##        self.interiorCellIDs = (0,0)
         
-    def calcInteriorAndExteriorCellIDs(self):
-	self.calcExteriorCellIDs()
-	self.calcInteriorCellIDs()
+    def _calcInteriorAndExteriorCellIDs(self):
+	self._calcExteriorCellIDs()
+	self._calcInteriorCellIDs()
 
-    def calcCellToFaceOrientations(self):
+    def _calcCellToFaceOrientations(self):
 	pass
 
-    def calcAdjacentCellIDs(self):
+    def _calcAdjacentCellIDs(self):
 	pass
 
-    def calcCellToCellIDs(self):
+    def _calcCellToCellIDs(self):
 	pass
 
-    def calcCellToCellIDsFilled(self):
+    def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
-        M = self.getMaxFacesPerCell()
+        M = self._getMaxFacesPerCell()
         cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
-        cellToCellIDs = self.getCellToCellIDs()
+        cellToCellIDs = self._getCellToCellIDs()
         self.cellToCellIDsFilled = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs)
 
     
     """get topology methods"""
 
-    def getFaceVertexIDs(self):
+    def _getFaceVertexIDs(self):
         return self.faceVertexIDs
 
-    def getCellFaceIDs(self):
+    def _getCellFaceIDs(self):
         return self.cellFaceIDs
 
     def getExteriorFaceIDs(self):
@@ -127,129 +283,129 @@ class Mesh:
     def getInteriorFaceIDs(self):
 	return self.interiorFaceIDs
 	    
-    def getInteriorFaces(self):
+    def _getInteriorFaces(self):
 	pass
 	
-    def getExteriorCellIDs(self):
+    def _getExteriorCellIDs(self):
 	return self.exteriorCellIDs
 
-    def getInteriorCellIDs(self):
+    def _getInteriorCellIDs(self):
 	return self.interiorCellIDs
 
-    def getCellFaceOrientations(self):
+    def _getCellFaceOrientations(self):
         return self.cellToFaceOrientations
 
     def getNumberOfCells(self):
 	return self.numberOfCells
 	
-    def getAdjacentCellIDs(self):
+    def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs
 
     def getDim(self):
         return self.dim
 
-    def getCellsByID(self, ids = None):
+    def _getCellsByID(self, ids = None):
 	pass
 	    
     def getCells(self, filter = None, ids = None, **args):
 	"""Return `Cell` objects of `Mesh`."""
-	cells = self.getCellsByID(ids)
+	cells = self._getCellsByID(ids)
 	
         if filter is None:
             return cells
         else:        
 	    return [cell for cell in cells if filter(cell, **args)]
 
-    def getFaces(self):
+    def _getFaces(self):
         pass
     
-    def getFacesWithFilter(self, filter, **args):
+    def getFaces(self, filter = None, **args):
 	"""Return `Face` objects of `Mesh`."""
-	faces = self.getFaces()
+	faces = self._getFaces()
 	
         if filter is None:
             return faces
         else:        
 	    return [face for face in faces if filter(face, **args)]
 
-    def getMaxFacesPerCell(self):
+    def _getMaxFacesPerCell(self):
 	pass
 
-    def getNumberOfFaces(self):
+    def _getNumberOfFaces(self):
 	return self.numberOfFaces
 
-    def getCellToCellIDs(self):
+    def _getCellToCellIDs(self):
         return self.cellToCellIDs
 
-    def getCellToCellIDsFilled(self):
+    def _getCellToCellIDsFilled(self):
         return self.cellToCellIDsFilled
 	
     """geometry methods"""
     
-    def calcGeometry(self):
-	self.calcFaceAreas()
-	self.calcFaceNormals()
-	self.calcOrientedFaceNormals()
-	self.calcCellVolumes()
-	self.calcCellCenters()
-	self.calcFaceToCellDistances()
-	self.calcCellDistances()        
-	self.calcFaceTangents()
-	self.calcCellToCellDistances()
-	self.calcScaledGeometry()
-        self.calcCellAreas()
+    def _calcGeometry(self):
+	self._calcFaceAreas()
+	self._calcFaceNormals()
+	self._calcOrientedFaceNormals()
+	self._calcCellVolumes()
+	self._calcCellCenters()
+	self._calcFaceToCellDistances()
+	self._calcCellDistances()        
+	self._calcFaceTangents()
+	self._calcCellToCellDistances()
+	self._calcScaledGeometry()
+        self._calcCellAreas()
        
     """calc geometry methods"""
     
-    def calcFaceAreas(self):
+    def _calcFaceAreas(self):
 	pass
 	
-    def calcFaceNormals(self):
+    def _calcFaceNormals(self):
 	pass
 	
-    def calcOrientedFaceNormals(self):
+    def _calcOrientedFaceNormals(self):
 	pass
 	
-    def calcCellVolumes(self):
+    def _calcCellVolumes(self):
 	pass
 	
-    def calcCellCenters(self):
+    def _calcCellCenters(self):
 	pass
 	
-    def calcFaceToCellDistances(self):
+    def _calcFaceToCellDistances(self):
 	pass
 
-    def calcCellDistances(self):
+    def _calcCellDistances(self):
 	pass
         
-    def calcAreaProjections(self):
+    def _calcAreaProjections(self):
 	pass
 
-    def calcOrientedAreaProjections(self):
+    def _calcOrientedAreaProjections(self):
 	pass
 
-    def calcFaceTangents(self):
+    def _calcFaceTangents(self):
 	pass
 
-    def calcFaceToCellDistanceRatio(self):
+    def _calcFaceToCellDistanceRatio(self):
 	pass
 
-    def calcFaceAspectRatios(self):
-	self.faceAspectRatios = self.getFaceAreas() / self.getCellDistances()
+    def _calcFaceAspectRatios(self):
+	self.faceAspectRatios = self._getFaceAreas() / self._getCellDistances()
 
-    def calcCellToCellDistances(self):
+    def _calcCellToCellDistances(self):
 	pass
 
-    def calcCellAreas(self):
-        from fipy.meshes.numMesh.mesh import MAtake
-        self.cellAreas =  MAtake(self.getFaceAreas(), self.cellFaceIDs)
+    def _calcCellAreas(self):
+        from fipy.tools.array import MAtake
+        self.cellAreas =  MAtake(self._getFaceAreas(), self.cellFaceIDs)
     
     """get geometry methods"""
         
-    def getFaceAreas(self):
+    def _getFaceAreas(self):
         return self.scaledFaceAreas
 
-    def getFaceNormals(self):
+    def _getFaceNormals(self):
         return self.faceNormals
 	
     def getCellVolumes(self):
@@ -258,57 +414,57 @@ class Mesh:
     def getCellCenters(self):
 	return self.scaledCellCenters
 
-    def getFaceToCellDistances(self):
+    def _getFaceToCellDistances(self):
         return self.scaledFaceToCellDistances
 
-    def getCellDistances(self):
+    def _getCellDistances(self):
         return self.scaledCellDistances
 
-    def getFaceToCellDistanceRatio(self):
+    def _getFaceToCellDistanceRatio(self):
         return self.faceToCellDistanceRatio
 
-    def getOrientedAreaProjections(self):
+    def _getOrientedAreaProjections(self):
         return self.orientedAreaProjections
 
-    def getAreaProjections(self):
+    def _getAreaProjections(self):
         return self.areaProjections
 
-    def getOrientedFaceNormals(self):
+    def _getOrientedFaceNormals(self):
         return self.orientedFaceNormals
 
-    def getFaceTangents1(self):
+    def _getFaceTangents1(self):
         return self.faceTangents1
 
-    def getFaceTangents2(self):
+    def _getFaceTangents2(self):
         return self.faceTangents2
 	
-    def getFaceAspectRatios(self):
+    def _getFaceAspectRatios(self):
 	return self.faceAspectRatios
     
-    def getCellToCellDistances(self):
+    def _getCellToCellDistances(self):
 	return self.scaledCellToCellDistances
 
-    def getCellNormals(self):
+    def _getCellNormals(self):
         return self.cellNormals
 
-    def getCellAreas(self):
+    def _getCellAreas(self):
         return self.cellAreas
 
-    def getCellAreaProjections(self):
-        return self.cellNormals * self.getCellAreas()[:, :, Numeric.NewAxis]
+    def _getCellAreaProjections(self):
+        return self.cellNormals * self._getCellAreas()[:, :, Numeric.NewAxis]
 
     """scaling"""
 
     def setScale(self, value = 1.):
         self.scale['length'] = PhysicalField(value = value)
-	self.calcHigherOrderScalings()
-	self.calcScaledGeometry()
+	self._calcHigherOrderScalings()
+	self._calcScaledGeometry()
 
-    def calcHigherOrderScalings(self):
+    def _calcHigherOrderScalings(self):
 	self.scale['area'] = self.scale['length']**2
 	self.scale['volume'] = self.scale['length']**3
 
-    def calcScaledGeometry(self):
+    def _calcScaledGeometry(self):
 	self.scaledFaceAreas = self.scale['area'] * self.faceAreas
 	self.scaledCellVolumes = self.scale['volume'] * self.cellVolumes
 	self.scaledCellCenters = self.scale['length'] * self.cellCenters
@@ -317,14 +473,14 @@ class Mesh:
 	self.scaledCellDistances = self.scale['length'] * self.cellDistances
 	self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
 	
-	self.calcAreaProjections()
-	self.calcOrientedAreaProjections()
-	self.calcFaceToCellDistanceRatio()
-	self.calcFaceAspectRatios()
+	self._calcAreaProjections()
+	self._calcOrientedAreaProjections()
+	self._calcFaceToCellDistanceRatio()
+	self._calcFaceAspectRatios()
 	
     """point to cell distances"""
     
-    def getPointToCellDistances(self, point):
+    def _getPointToCellDistances(self, point):
 	tmp = self.getCellCenters() - PhysicalField(point)
 	import fipy.tools.array
 	return fipy.tools.array.sqrtDot(tmp, tmp)
@@ -335,9 +491,9 @@ class Mesh:
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
         i = Numeric.argmin(Numeric.add.reduce((tmp * tmp), axis = 1))
-	return self.getCellsByID([i])[0]
+	return self._getCellsByID([i])[0]
 
-    def getNearestCellID(self, point):
+    def _getNearestCellID(self, point):
         try:
             tmp = self.getCellCenters() - point
         except TypeError:
@@ -363,3 +519,9 @@ class Mesh:
         
                       
     
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

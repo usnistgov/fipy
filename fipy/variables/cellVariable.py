@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 4/2/05 {9:07:53 AM} 
+ #                                last update: 4/4/05 {2:53:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,7 +63,7 @@ class CellVariable(Variable):
         >>> dump.write(var, fileName)
         >>> unPickledVar = dump.read(fileName)
         
-        >>> var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
+        >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
         1
         
         >>> os.close(f)
@@ -101,7 +101,7 @@ class CellVariable(Variable):
 	    
     def __call__(self, point = None, order = 0):
 	if point != None:
-	    return self[self.getMesh().getNearestCellID(point)]
+	    return self[self.getMesh()._getNearestCellID(point)]
 	else:
 	    return Variable.__call__(self)
 ## 	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
@@ -179,21 +179,21 @@ class CellVariable(Variable):
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> answer = (var[0] - var[1]) / 2. + var[1]
+            >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> answer = (var[0] - var[1]) / 4. + var[1]
+            >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> answer = (var[0] - var[1]) / 20. + var[1]
+            >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
@@ -218,21 +218,21 @@ class CellVariable(Variable):
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> answer = var[0] * var[1] / ((var[1] - var[0]) / 2. + var[0])
+            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> answer = var[0] * var[1] / ((var[1] - var[0]) / 4. + var[0])
+            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
-            >>> anwswer = var[0] * var[1] / ((var[1] - var[0]) / 20. + var[0])
+            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:41:06 PM} 
+ #                                last update: 4/5/05 {5:55:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,7 +51,7 @@ A simple analytical answer can be used to test the result:
    >>> x = mesh.getCellCenters()[:,0]
    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> var.allclose(values, atol = 1e-8, rtol = 1e-8)
+   >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """

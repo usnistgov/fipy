@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {3:00:58 PM} 
+ #                                last update: 4/5/05 {5:52:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,7 @@ The analytical solution test for this problem is given by:
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
+    >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1
     
     >>> if __name__ == '__main__':

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/1/05 {9:14:05 PM} 
+ #                                last update: 4/4/05 {1:45:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -637,7 +637,10 @@ class PhysicalField:
         return self.value >= other.value
             
     def __len__(self):
-        return len(self.value)
+        if type(self.value) in [type(1), type(1.)]:
+            return 1
+        else:
+            return len(self.value)
         
     def convertToUnit(self, unit):
         """
@@ -988,6 +991,13 @@ class PhysicalField:
 	    atol = self._inMyUnits(atol)
 	    
         return MA.allclose(self.value, other.value, atol = atol.value, rtol = rtol)
+
+    def allequal(self, other):
+        """
+        This function tests whether or not `self` and `other` are exactly equal.
+        """
+        other = self._inMyUnits(other)
+        return MA.allequal(self.value, other.value)
 
 class PhysicalUnit:
     """

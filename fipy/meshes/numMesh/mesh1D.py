@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/9/05 {10:22:37 AM} 
+ #                                last update: 4/1/05 {5:39:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,10 +50,10 @@ from fipy.meshes.numMesh.mesh import Mesh
 from fipy.tools import vector
 
 class Mesh1D(Mesh):
-    def calcFaceAreas(self):
+    def _calcFaceAreas(self):
         self.faceAreas = Numeric.ones(self.numberOfFaces, 'd')
 
-    def calcFaceCenters(self):
+    def _calcFaceCenters(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
         faceVertexCoords = Numeric.take(self.vertexCoords, faceVertexIDs)
         if self.faceVertexIDs.mask() == None:
@@ -63,30 +63,29 @@ class Mesh1D(Mesh):
             
         self.faceCenters = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
         
-    def calcFaceNormals(self):
+    def _calcFaceNormals(self):
         self.faceNormals = Numeric.transpose(Numeric.array((Numeric.ones(self.numberOfFaces, 'd'),)))
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         self.faceNormals[0] = -self.faceNormals[0]
 
-    def calcFaceTangents(self):
+    def _calcFaceTangents(self):
         self.faceTangents1 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
         self.faceTangents2 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
 
-    def calcHigherOrderScalings(self):
+    def _calcHigherOrderScalings(self):
 	self.scale['area'] = 1.
 	self.scale['volume'] = self.scale['length']
 
-    def translate(self, vector):
+    def _translate(self, vector):
         newCoords = self.vertexCoords + vector
         newmesh = Mesh1D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
         return newmesh
 
-    def dilate(self, factor):
+    def __mul__(self, factor):
         newCoords = self.vertexCoords * factor
         newmesh = Mesh1D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
         return newmesh
 
-    def meshAdd(self, other, smallNumber):
-        a = self.getAddedMeshValues(other, smallNumber)
-        return Mesh1D(a[0], a[1], a[2])
+    def _concatenate(self, other, smallNumber):
+        return Mesh1D(**self._getAddedMeshValues(other, smallNumber))

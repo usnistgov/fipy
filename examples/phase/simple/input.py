@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {4:56:09 PM} 
+ #                                last update: 4/5/05 {8:04:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -200,7 +200,7 @@ we obtain the surprising result that |phase| is zero everywhere.
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Fully explicit source. Press <return> to proceed...")
-    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     0
 
 .. image:: images/examples/phase/simple/explicit.pdf
@@ -251,7 +251,7 @@ transient term from
 
 After 13 time steps, the solution has converged to the analytical solution
 
-    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
 
 .. note:: The solution is only found accurate to
@@ -330,7 +330,7 @@ iterations at the same time step to reach a converged solution).
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Kobayashi, semi-implicit. Press <return> to proceed...")
-    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
 
 In general, the best convergence is obtained when the linearization gives a
@@ -386,7 +386,7 @@ tangent to the source, we reach convergence in only 5 sweeps
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Tangent, semi-implicit. Press <return> to proceed...")
-    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
 
 Although, for this simple problem, there is no appreciable difference in

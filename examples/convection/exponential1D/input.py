@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {4:51:17 PM} 
+ #                                last update: 4/4/05 {3:09:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,7 +133,7 @@ or
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
    
 If the problem is run interactively, we can view the result:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 4/1/05 {11:02:57 AM} 
+ #                                last update: 4/4/05 {11:04:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,12 +42,18 @@ from fipy.variables.variable import Variable
 class VectorFaceVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
 
-	array = Numeric.zeros([mesh.getNumberOfFaces(), mesh.getDim()],'d')
+	array = Numeric.zeros([mesh._getNumberOfFaces(), mesh.getDim()],'d')
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
         self.indexAsFaceVar = {}
 
+    def __call__(self, point = None, order = 0):
+        if point != None:
+            return self[self.getMesh()._getNearestCellID(point)]
+        else:
+            return Variable.__call__(self)
+            
     def _getVariableClass(self):
 	return VectorFaceVariable
 
@@ -74,7 +80,7 @@ class VectorFaceVariable(Variable):
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
             from fipy.variables.addOverFacesVariable import AddOverFacesVariable
-            self.divergence = AddOverFacesVariable(self.dot(self.getMesh().getOrientedAreaProjections()))
+            self.divergence = AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
             
         return self.divergence
         

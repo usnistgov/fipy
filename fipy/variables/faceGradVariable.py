@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 4/1/05 {11:03:15 AM}
+ #                                last update: 4/2/05 {7:30:57 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,14 +51,14 @@ class FaceGradVariable(VectorFaceVariable):
     
     def _calcValuePy(self):
     
-        dAP = self.mesh.getCellDistances()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
+        dAP = self.mesh._getCellDistances()
+	id1, id2 = self.mesh._getAdjacentCellIDs()
 ##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1)) / dAP
 	N = (array.take(self.var,id2) - array.take(self.var,id1)) / dAP
-	normals = self.mesh.getOrientedFaceNormals()
+	normals = self.mesh._getOrientedFaceNormals()
         
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
+	tangents1 = self.mesh._getFaceTangents1()
+	tangents2 = self.mesh._getFaceTangents2()
 	cellGrad = self.var.getGrad().getNumericValue()
         
       
@@ -81,10 +81,10 @@ class FaceGradVariable(VectorFaceVariable):
 
     def _calcValueInline(self):
 
-	id1, id2 = self.mesh.getAdjacentCellIDs()
+	id1, id2 = self.mesh._getAdjacentCellIDs()
 	
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
+	tangents1 = self.mesh._getFaceTangents1()
+	tangents2 = self.mesh._getFaceTangents2()
 
 	inline.runInlineLoop1("""
             int j;
@@ -109,10 +109,10 @@ class FaceGradVariable(VectorFaceVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
-            normals = self.mesh.getOrientedFaceNormals(),
+            normals = self.mesh._getOrientedFaceNormals(),
             id1 = id1,
             id2 = id2,
-	    dAP = Numeric.array(self.mesh.getCellDistances()),
+	    dAP = Numeric.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = self._getArray(),
             ni = tangents1.shape[0],

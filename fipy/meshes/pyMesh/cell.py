@@ -6,7 +6,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 10/19/04 {2:52:19 PM} 
+ #                                last update: 4/2/05 {11:39:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,8 +70,8 @@ class Cell:
 	self.faceOrientations = Numeric.array(faceOrientations)
 	self.faceOrientations = Numeric.reshape(faceOrientations,(len(faces),1))
         self.id = id
-	self.center = self.calcCenter()
-	self.volume = self.calcVolume()
+	self.center = self._calcCenter()
+	self.volume = self._calcVolume()
 	for i in range(len(self.faces)):
 	    self.faces[i].addBoundingCell(self,faceOrientations[i])
 
@@ -83,7 +83,7 @@ class Cell:
     def getFaceOrientations(self):
 	return self.faceOrientations
 	
-    def calcVolume(self):
+    def _calcVolume(self):
 	"""Calculate the volume of the Cell.
 	
 	Sums the projected volumes of the faces.  
@@ -108,7 +108,7 @@ class Cell:
 	"""
         return self.center
 
-    def calcCenter(self):
+    def _calcCenter(self):
 	"""Calculate the coordinates of the `Cell` center.
 	
 	Cell center is the average of the bounding Face centers.
@@ -140,7 +140,7 @@ class Cell:
 	"""
         return self.faces
 
-    def setID(self,id):
+    def _setID(self,id):
 	"""Set the `id` of the `Cell`.
 	"""
         self.id = id
@@ -148,12 +148,12 @@ class Cell:
     def getFaceIDs(self):
 	return self.faceIDs
 	
-#    def calcFaceIDs(self):
+#    def _calcFaceIDs(self):
 #	self.faceIDs = Numeric.zeros(len(self.faces))
 #	for i in range(len(self.faces)):
 #	    self.faceIDs[i] = self.faces[i].getId()
             
-    def calcFaceIDs(self):
+    def _calcFaceIDs(self):
 	self.faceIDs = ()
 	for i in range(len(self.faces)):
 	    self.faceIDs += (self.faces[i].getID(),)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {10:21:46 AM} 
+ #                                last update: 4/6/05 {4:32:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ solver has no fixed value and can become unstable.
 
 The result of the calculation will be the average value over the domain.
 
-   >>> var.allclose((valueLeft + valueRight) / 2.)
+   >>> var.allclose((valueLeft + valueRight) / 2.).getValue()
    1
    
 """

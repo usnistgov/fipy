@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {5:05:55 PM} 
+ #                                last update: 4/5/05 {8:11:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -135,7 +135,7 @@ We verify that the correct equilibrium solution is attained
     ...     / (2 * parameters['solvent']['barrier height']))
     >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2 * d))) / 2.
 
-    >>> fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
     
 If we are running interactively, we will want to see the results
