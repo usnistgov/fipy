@@ -44,9 +44,9 @@
 
 """
 
-The `GnuplotViewer` is the base class for Gnuplot1DViewer and Gnuplot2DViewer
-It using a front end python
-wrapper available to download (Gnuplot.py_).
+The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
+`Gnuplot2DViewer` It using a front end python wrapper available to
+download (Gnuplot.py_).
 
 .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
 
@@ -70,17 +70,17 @@ from fipy.viewers.viewer import Viewer
 
 class GnuplotViewer(Viewer):
     
-    def __init__(self, vars, limits = {}, title = None):
+    def __init__(self, vars, limits = None, title = None):
         """
 
         :Parameters:
 
           - `vars`: a `Variable` or tuple of `Variable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
                       `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
+                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer
+                      will also use `ymin` and `ymax`, and so on.
+                      All viewers will use `datamin` and `datamax`.
                       Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
 
@@ -89,9 +89,21 @@ class GnuplotViewer(Viewer):
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
+    def getLimit(self, key):
+        limit = Viewer.getLimit(self, key)
+        if limit is None:
+            return ''
+        else:
+            return str(limit)
+
     def plot(self, fileName = None):
+
+        self.g('set xrange [' + self.getLimit('xmin')  + ':' + self.getLimit('xmax') + ']')
+        self.g('set yrange [' + self.getLimit('ymin')  + ':' + self.getLimit('ymax') + ']')
+        self.g('set zrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
+        self.g('set cbrange [' + self.getLimit('datamin')  + ':' + self.getLimit('datamax') + ']')
 
         self._plot()
         if fileName is not None:
-            g.hardcopy(fileName)
+            self.g.hardcopy(fileName)
 

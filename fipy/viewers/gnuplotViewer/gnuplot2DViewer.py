@@ -44,8 +44,8 @@
 
 """
 
-The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
-wrapper available to download (Gnuplot.py_).
+The `Gnuplot2DViewer` plots a 2D `CellVariable` using a front end
+python wrapper available to download (Gnuplot.py_).
 
 .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
 
@@ -61,24 +61,43 @@ Different style script demos_ are available at the Gnuplot_ site.
 """
 __docformat__ = 'restructuredtext'
 
+import Numeric
 import Gnuplot
 
 from gnuplotViewer import GnuplotViewer
 
-class Gnuplot1DViewer(GnuplotViewer):
+class Gnuplot2DViewer(GnuplotViewer):
 
+    def __init__(self, vars, limits = None, title = None):
+        """
+        :Parameters:
+          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+                      will also use `ymin` and `ymax`, and so on. 
+                      All viewers will use `datamin` and `datamax`. 
+                      Any limit set to a (default) value of `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window
+        """
+        GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        
+        if len(self.vars) != 1:
+            raise IndexError, "A 2D Gnuplot viewer can only display one Variable"
+            
     def _plot(self):
 
-        self.g('set yrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
-        self.g('set yrange [' + self.getLimit('datamin')  + ':' + self.getLimit('datamax') + ']')
+        self.g('set cbrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
+        self.g('set view map')
+        self.g('set style data pm3d')
+        self.g('set pm3d at st solid')
+
+        mesh = self.vars[0].getMesh()
+        NCells = int(Numeric.sqrt(mesh.getNumberOfCells()))
         
-        tupleOfGnuplotData = ()
+        self.g('set dgrid3d %i, %i, 1' % (NCells, NCells))
+        
+        data = Gnuplot.Data(mesh.getCellCenters()[:,0], mesh.getCellCenters()[:,1], self.vars[0][:])
+        
+        self.g.splot(data)
 
-        for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(var.getMesh().getCellCenters()[:,0],
-                                               var[:],
-                                               title=var.getName(),
-                                               with='lines'),)
-
-        apply(self.g.plot, tupleOfGnuplotData)
-    
