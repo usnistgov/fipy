@@ -49,7 +49,7 @@ class DiffusionVariable(CellVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 
-        CellVariable.__init__(self, phase.getMesh())
+        CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 
         self.parameters = parameters
         self.phase = self.requires(phase)
@@ -63,7 +63,6 @@ class DiffusionVariable(CellVariable):
         phaseFace = self.phase.getFaceValue()[:]
         phaseSq = phaseFace * phaseFace
         gradMag = self.theta.getFaceGrad().getMag()[:]
-
         IGamma = Numeric.where(gradMag > 1. / gamma, 1 / gradMag, gamma)
 
         self.value = phaseSq * (self.parameters['s'] * IGamma + self.parameters['epsilon']**2)

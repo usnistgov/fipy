@@ -48,7 +48,7 @@ from fivol.inline.inline import runInline
 
 class ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
-        CellVariable.__init__(self, phase.getMesh())
+        CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 	self.parameters = parameters
 	self.phase = self.requires(phase)
         self.theta = self.requires(theta)

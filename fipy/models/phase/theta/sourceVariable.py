@@ -55,21 +55,23 @@ class SourceVariable(CellVariable):
                  halfAngleVariable = None,
                  parameters = None):
 
-        CellVariable.__init__(self, theta.getMesh())
+        CellVariable.__init__(self, theta.getMesh(), hasOld = 0)
 
         self.parameters = parameters
         self.phase = self.requires(phase)
         self.theta = self.requires(theta)
         self.diffCoeff = self.requires(diffCoeff)
         self.halfAngleVariable = self.requires(halfAngleVariable)
-
+        
     def calcValue(self):
 
         mesh = self.theta.getMesh()
         c2 = self.parameters['anisotropy']
-        
-        thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
 
+        
+
+        thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
+        
         correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
                                       faceVariable = self.diffCoeff[:],
                                       mesh = mesh,

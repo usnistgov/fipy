@@ -46,15 +46,15 @@ from fivol.variables.faceGradVariable import FaceGradVariable
 
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
-
         self.mod = lambda array, pi=Numeric.pi: (array + 3. * pi) % (2 * pi) - pi
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
+        self.faceGradNoMod = None
 
     def getGrad(self):
 	if self.grad is None:
 	    gridSpacing = self.mesh.getMeshSpacing()
 	    self.grad = self.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
-	
+
 	return self.grad
 
     def getFaceValue(self):
@@ -70,10 +70,10 @@ class ModularVariable(CellVariable):
 	return self.faceGrad
 
     def getFaceGradNoMod(self):
-        if self.faceGrad is None:
-	    self.faceGrad = FaceGradVariable(self)
+        if self.faceGradNoMod is None:
+	    self.faceGradNoMod = FaceGradVariable(self)
 
-	return self.faceGrad
+	return self.faceGradNoMod
     
     def updateOld(self):
         if self.old != None:

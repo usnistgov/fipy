@@ -49,7 +49,7 @@ class TransientVariable(CellVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 
-        CellVariable.__init__(self, phase.getMesh())
+        CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 
         self.parameters = parameters
         self.phase = self.requires(phase)

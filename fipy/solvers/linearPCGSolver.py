@@ -56,15 +56,12 @@ class LinearPCGSolver(Solver):
     def solve(self, L, x, b):
         
 	A = L.to_sss()
-	
+
 	Assor=precon.ssor(A)
 	
  	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
 
 ##        print info, iter, relres
-# 	y = x.copy()
-# 	L.matvec(x,y)
-# 	print "L * x: ", y
 
 	if (info != 0):
 	    print >> sys.stderr, 'cg not converged'
