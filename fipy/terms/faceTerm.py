@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/27/03 {10:30:04 AM} 
+ #                                last update: 11/28/03 {9:55:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,31 +61,22 @@ class FaceTerm(Term):
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 	
-	self.calcAdjacentCellIDs()
-	
-    def calcAdjacentCellIDs(self):
-	self.id1 = Numeric.zeros((self.interiorN))
-	self.id2 = Numeric.zeros((self.interiorN))
-	faces = self.mesh.getFaces()
-	for i in range(self.interiorN):
-	    self.id1[i] = faces[i].getCellId(0)
-	    self.id2[i] = faces[i].getCellId(1)
-	
-    def actuallyDoSomething(self, L, aa, bb, id1, id2):
-	L.update_add_something(aa,id1,id1)
-	L.update_add_something(bb,id1,id2)
-	L.update_add_something(bb,id2,id1)
-	L.update_add_something(aa,id2,id2)
-	
     def buildMatrix(self,L,array,b):
-
+	
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	id1 = id1[:self.interiorN]
+	id2 = id2[:self.interiorN]
+	
         ## implicit
         if self.stencil[0]!='None':
             stencil = self.stencil[0]
             aa =  self.coeff[:self.interiorN]*stencil[1]
             bb = -self.coeff[:self.interiorN]*stencil[0]
 	
-            self.actuallyDoSomething(L, aa, bb, self.id1, self.id2)
+	    L.update_add_something(aa,id1,id1)
+	    L.update_add_something(bb,id1,id2)
+	    L.update_add_something(bb,id2,id1)
+	    L.update_add_something(aa,id2,id2)
             
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
@@ -102,10 +93,8 @@ class FaceTerm(Term):
             bb = self.coeff[:self.interiorN]*stencil[0]
 
             for i in range(self.interiorN):
-                id1 = self.id1[i]
-                id2 = self.id2[i]
-                b[id1] += aa[i] * array[id1] + bb[i] * array[id2]
-                b[id2] += aa[i] * array[id2] + bb[i] * array[id1]
+                b[id1[i]] += aa[i] * array[id1[i]] + bb[i] * array[id2[i]]
+                b[id2[i]] += aa[i] * array[id2[i]] + bb[i] * array[id1[i]]
 	
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
