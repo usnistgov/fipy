@@ -131,8 +131,8 @@ class FaceTerm(Term):
         
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffScale, varScale):
 
-        oldArrayId1 = array.take(oldArray, id1)
-        oldArrayId2 = array.take(oldArray, id2)
+        oldArrayId1 = fivol.tools.array.take(oldArray, id1)
+        oldArrayId2 = fivol.tools.array.take(oldArray, id2)
 
 	cell1diag = Numeric.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
 	cell1offdiag = Numeric.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
