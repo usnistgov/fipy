@@ -46,10 +46,8 @@ r"""
     >>> exec(examples.diffusion.steadyState.mesh1D.input.script())
     
 One can then solve the same problem as in
-
-    $ examples/diffusion/steadyState/mesh1D/input.py
-
-but with periodic boundary conditions.
+`examples/diffusion/steadyState/mesh1D/input.py` but with periodic
+boundary conditions.
 
    >>> from fipy.boundaryConditions.periodicBoundaryCondition import PeriodicBoundaryCondition
    >>> boundaryConditions = (PeriodicBoundaryCondition(mesh.getFacesLeft(), mesh.getFacesRight()),)
