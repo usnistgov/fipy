@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/9/03 {2:39:10 PM} 
+                               last update: 12/10/03 {1:58:30 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,7 +48,12 @@ class Variable:
     def __init__(self, mesh, name = '', value=0.):
 	self.mesh = mesh
 	self.name = name
+	
+	self.requiredVariables = []
+	self.subscribedVariables = []
+
 	self.value = value
+	self.markFresh()
 	    
     def __coerce__(self,other):
 	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1),type(True)]:
@@ -61,10 +66,43 @@ class Variable:
 
     def __setitem__(self, index, value): 
 	self.value[index] = value
+	self.markFresh()
 		
     def getMesh(self):
 	return self.mesh
 
     def getValue(self):
+	self.refresh()
         return self.value
+	
+    def refresh(self):
+	if self.stale:
+	    for required in self.requiredVariables:
+		required.refresh()
+	    self.calcValue()
+	    self.markFresh()
+		    
+    def calcValue(self):
+	pass
+	
+    def markFresh(self):
+	self.stale = 0
+	for subscriber in self.subscribedVariables:
+	    subscriber.markStale() 
+
+    def markStale(self):
+	self.stale = 1
+	for subscriber in self.subscribedVariables:
+	    subscriber.markStale()
+	    
+    def requires(self, var):
+	assert isinstance(var, Variable)
+	self.requiredVariables.append(var)
+	var.requiredBy(self)
+	self.markStale()
+	return var
+	    
+    def requiredBy(self, var):
+	assert isinstance(var, Variable)
+	self.subscribedVariables.append(var)
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/10/03 {9:57:39 AM} 
+ #                                last update: 12/10/03 {11:59:14 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -224,6 +224,13 @@ class Mesh:
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
 	    
+    def getOrientedFaceNormals(self):
+	return self.orientedFaceNormals
+	
+    def calcOrientedFaceNormals(self):
+	self.orientedFaceNormals = self.getFaceNormals().copy()
+	self.orientedFaceNormals *= Numeric.reshape(self.getFaceOrientations(),(len(self.orientedFaceNormals),1))
+	    
     def getFaceAreas(self):
 	return self.faceAreas
 	
@@ -261,12 +268,22 @@ class Mesh:
 
     def getFaceTangents2(self):
 	return self.faceTangents2
+	
+    def getFaceToCellDistanceRatio(self):
+	return self.faceToCellDistanceRatio
+	
+    def calcFaceToCellDistanceRatio(self):
+	dAP = self.getCellDistances()
+	dFP = self.getFaceToCellDistances()
+	self.faceToCellDistanceRatio = dFP / dAP
 
     def refreshFaces(self,faces):
 	self.calcFaceOrientations(faces)
 	self.calcFaceAreas(faces)
 	self.calcCellDistances(faces)
 	self.calcFaceToCellDistances(faces)
+	self.calcFaceToCellDistanceRatio()
 	self.calcFaceNormals(faces)
+	self.calcOrientedFaceNormals()
 	self.calcAreaProjections()
 	self.calcOrientedAreaProjections()

@@ -4,7 +4,7 @@
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 12/10/03 {10:50:46 AM} 
+ #                                last update: 12/10/03 {2:01:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,12 +37,15 @@ import Numeric
 
 class SubstitutionalSumVariable(CellVariable):
     def __init__(self,mesh,Cj,substitutionals):
-	self.substitutionals = [component for component in substitutionals if component != Cj]
 	array = Cj.getValue()
 	CellVariable.__init__(self,mesh = mesh, value = array, name = Cj.name + "_sum", hasOld = False)
+
+	self.substitutionals = [component for component in substitutionals if component != Cj]
+	for component in self.substitutionals:
+	    self.requires(component)
 	
-    def getValue(self):
+    def calcValue(self):
 	self.value[:] = 0.
 	for component in self.substitutionals:
 	    self.value = self.value + component #.getOld()
-	return self.value
+

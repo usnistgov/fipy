@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 12/10/03 {11:24:46 AM} 
+ #                                last update: 12/10/03 {2:17:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -84,3 +84,4 @@ class Iterator:
 		    converged = converged and equation.isConverged()
 		if converged:
 		    break
+
