@@ -136,7 +136,7 @@ class AddOverFacesVariable(CellVariable):
               interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
               contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
               areaProjections = Numeric.array(self.mesh.getAreaProjections()),
-              faceGradient = faceGradient.getNumericValue()[:],
+              faceGradient = Numeric.array(faceGradient),
               faceVariable = faceVariable.getNumericValue()[:],
               ids = Numeric.array(ids),
               value = self._getArray(),
