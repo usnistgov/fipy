@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 7/28/04 {11:18:34 AM} 
- #                                last update: 7/30/04 {7:16:33 PM} 
+ #                                last update: 10/28/04 {3:54:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,28 +47,28 @@ def suite():
     
     theSuite = unittest.TestSuite()
 
-    import input1D
-    theSuite.addTest(doctest.DocTestSuite(input1D))
-    import input1Ddimensional
-    theSuite.addTest(doctest.DocTestSuite(input1Ddimensional))
-    import input2D
-    theSuite.addTest(doctest.DocTestSuite(input2D))
-    import input2Dcorner
-    theSuite.addTest(doctest.DocTestSuite(input2Dcorner))
-    import input1Dphase
-    theSuite.addTest(doctest.DocTestSuite(input1Dphase))
-    import input1DphaseBinary
-    theSuite.addTest(doctest.DocTestSuite(input1DphaseBinary))
-    import input1DphaseQuaternary
-    theSuite.addTest(doctest.DocTestSuite(input1DphaseQuaternary))
-    import input1DphaseTernAndElectrons
-    theSuite.addTest(doctest.DocTestSuite(input1DphaseTernAndElectrons))
-    import input1DpoissonAllCharge
-    theSuite.addTest(doctest.DocTestSuite(input1DpoissonAllCharge))
-    import input1DpoissonLeftCharge
-    theSuite.addTest(doctest.DocTestSuite(input1DpoissonLeftCharge))
-    import input1DpoissonRightCharge
-    theSuite.addTest(doctest.DocTestSuite(input1DpoissonRightCharge))
+    import diffusion.input1D
+    theSuite.addTest(doctest.DocTestSuite(diffusion.input1D))
+    import diffusion.input1Ddimensional
+    theSuite.addTest(doctest.DocTestSuite(diffusion.input1Ddimensional))
+    import diffusion.input2D
+    theSuite.addTest(doctest.DocTestSuite(diffusion.input2D))
+    import diffusion.input2Dcorner
+    theSuite.addTest(doctest.DocTestSuite(diffusion.input2Dcorner))
+    import phase.input1D
+    theSuite.addTest(doctest.DocTestSuite(phase.input1D))
+    import phaseDiffusion.input1Dbinary
+    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1Dbinary))
+    import phaseDiffusion.input1Dquaternary
+    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1Dquaternary))
+    import phaseDiffusion.input1DternaryAndElectrons
+    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1DternaryAndElectrons))
+    import poisson.input1DallCharge
+    theSuite.addTest(doctest.DocTestSuite(poisson.input1DallCharge))
+    import poisson.input1DleftCharge
+    theSuite.addTest(doctest.DocTestSuite(poisson.input1DleftCharge))
+    import poisson.input1DrightCharge
+    theSuite.addTest(doctest.DocTestSuite(poisson.input1DrightCharge))
 
     return theSuite
     
