@@ -67,26 +67,47 @@ import Gnuplot
 from gnuplotViewer import GnuplotViewer
 
 class Gnuplot1DViewer(GnuplotViewer):
+
+    def __init__(self, vars, limits = {}, title = None):
+        """
+
+        :Parameters:
+
+          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+                      will also use `ymin` and `ymax`, and so on. 
+                      All viewers will use `datamin` and `datamax`. 
+                      Any limit set to a (default) value of `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window
+
+          """
+
+        GnuplotViewer.__init__(self, vars, limits = limits, title = title)
+
+        for key in self.limits.keys():
+            if 'x' == key[0]:
+                range = 'xrange'
+            elif 'y' == key[0] or 'data' == key[:4]:
+                range = 'yrange'
+                
+            if 'min' in key:
+                bra = '[%f:]'
+            elif 'max' in key:
+                bra = '[:%f]'
+
+            self.g('set ' + range + ' ' + bra % self.limits[key])
     
     def _plot(self):
         
-        mesh = self.vars[0].getMesh()
-        x = mesh.getCellCenters()[:,0]
-        NCells = mesh.getNumberOfCells()
-##        listOfArrays = []
-        listOfGnuplotData = ()
+        tupleOfGnuplotData = ()
 
         for var in self.vars:
-##            arr = Numeric.zeros((NCells, 2), 'd')
-##            arr[:,0] = x
-##            arr[:,1] = var[:]
-##            listOfArrays += [arr]
-            listOfGnuplotData += (Gnuplot.Data(mesh.getCellCenters()[:,0],
+            tupleOfGnuplotData += (Gnuplot.Data(var.getMesh().getCellCenters()[:,0],
                                                var[:],
                                                title=var.getName(),
                                                with='lines'),)
 
-            
-        self.g('set data style linespoints')
-        apply(self.g.plot, listOfGnuplotData)
+        apply(self.g.plot, tupleOfGnuplotData)
     

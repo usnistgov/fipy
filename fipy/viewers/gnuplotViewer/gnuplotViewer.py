@@ -70,7 +70,7 @@ from fipy.viewers.viewer import Viewer
 
 class GnuplotViewer(Viewer):
     
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, limits = {}, title = None):
         """
 
         :Parameters:
@@ -88,12 +88,8 @@ class GnuplotViewer(Viewer):
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
-        
+
     def plot(self, fileName = None):
-
-        if self.limits != None:
-            xmin = self.getLimit
-
 
         self._plot()
         if fileName is not None:
