@@ -46,9 +46,27 @@
 
 """
 
-2D triangular Mesh
+2-dimensional triangular mesh.
 
-Test cases
+This class creates a mesh made out of triangles. It does this by starting with a standard Cartesian mesh (Grid2D) and dividing each cell in that mesh (hereafter referred to as a 'box') into four equal partswith the dividing lines being the diagonals. A Tri2D mesh is constructed using the following keyword arguments:
+
+dx, dy - The X and Y dimensions of each box. Note that if dx \ne dy, the line segments connecting the cell centers will not be orthogonal to the faces.
+
+nx, ny - The number of boxes in the X direction and the Y direction. The total number of boxes will be equal to nx * ny, and the total number of cells will be equal to 4 * nx * ny.
+
+The faces, cells, and vertices are numbered as follows:
+
+Faces - Horizontal faces are numbered first, then vertical faces, then diagonal faces on the lower left of the boxes, then diagonal faces on the llower right of boxes, then diagonal faces on the upper left of boxes, then diagonal faces on the upper right of boxes.
+
+Vertices - Vertices on the corners of boxes are numbered first, then vertices on the box centers.
+
+Cells - Cells on the right of boxes are numbered first, then cells on the top of boxes, then cells on the left of boxes, then cells on the bottom of boxes.
+
+Within each of the 'sub-categories' in the above, the vertices, cells and faces are numbered in the usual way.
+
+
+
+Test cases:
 
    >>> testmesh = Tri2D(dx = 0.5, dy = 0.5, nx = 2, ny = 2)
    >>> list = testmesh.createVertices().tolist()
