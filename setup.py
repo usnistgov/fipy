@@ -266,7 +266,8 @@ Any changes to the contents should be made in the file '""" + document.attribute
         restructuredTextFiles = ['INSTALLATION',
                                  'README',
                                  'CREDITS',
-                                 'TALKS']
+                                 'TALKS',
+                                 'TODOLIST']
         
 	if self.latex:
 	    self._buildTeXAPIs()
