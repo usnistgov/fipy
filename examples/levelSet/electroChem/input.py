@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 8/26/04 {4:01:07 PM} { 1:23:41 PM}
+ #                                last update: 12/2/04 {11:28:51 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -459,7 +459,7 @@ is calculated with the CFL number and the maximum extension velocity.
     $v_\text{ext}$ throughout the whole domain using
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
 
-The following code steps through the solution.
+.. 
 
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
