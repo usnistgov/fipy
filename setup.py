@@ -507,8 +507,9 @@ class efficiency_test(Command):
 
                 try:
                     execfile(case, globals())
+
                 except:
-                    file.write('Exception executing ' + case)
+                    file.write('Exception executing ' + case + '\n')
                     exceptionFlag = True
                     
                 t2 = time.clock()
