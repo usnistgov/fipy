@@ -92,9 +92,9 @@ class FaceTerm(Term):
         for boundaryCondition in boundaryConditions:
 
             LL,bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
-
             if LL != 0:
-		b -= LL.takeDiagonal() * Numeric.array(oldArray)
+##		b -= LL.takeDiagonal() * Numeric.array(oldArray)
+                b -= LL * Numeric.array(oldArray)
 	    b += bb
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
