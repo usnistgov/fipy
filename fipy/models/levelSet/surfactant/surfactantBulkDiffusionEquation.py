@@ -141,7 +141,7 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                             transientCoeff = transientCoeff)
 
         if otherSurfactantVar is not None:
-            otherCoeff = ScAdsorptionCoeff(bulkVar = var,
+            otherCoeff = ScAdsorptionCoeff(bulkVar = bulkVar,
                                            surfactantVar = otherSurfactantVar,
                                            rateConstant = rateConstant,
                                            distanceVar = distanceVar)
