@@ -51,6 +51,16 @@ import fipy.tools.array
 import fipy.tools.vector as vector
 
 
+def orderVertices(vertexCoords, vertices):
+    pi = 3.1415926535
+    coordinates = Numeric.take(vertexCoords, vertices)
+    centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
+    coordinates = coordinates - centroid
+    coordinates = Numeric.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
+    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    sortorder = Numeric.argsort(angles)
+    return Numeric.take(vertices, sortorder)
+
 class Mesh2D(Mesh):
     def calcFaceAreas(self):
         faceVertexCoords = Numeric.take(self.vertexCoords, self.faceVertexIDs)
@@ -88,6 +98,17 @@ class Mesh2D(Mesh):
         a = self.getAddedMeshValues(other)
         return Mesh2D(a[0], a[1], a[2])
 
+    def getOrderedCellVertexIDs(self):
+        cellFaceVertexIDs = Numeric.take(self.faceVertexIDs, self.cellFaceIDs)
+        cellVertexIDs = Numeric.reshape(cellFaceVertexIDs, (len(self.getCellCenters()), Numeric.size(cellFaceVertexIDs) / len(self.getCellCenters())))
+        cellVertexIDs = Numeric.sort(cellVertexIDs)
+        cellVertexIDs = cellVertexIDs[:, ::2]
+        orderedCellVertexIDs = Numeric.zeros(cellVertexIDs.shape)
+        for i in range(cellVertexIDs.shape[0]):
+            orderedCellVertexIDs[i, :] = orderVertices(self.getVertexCoords(), cellVertexIDs[i, :])
+        return orderedCellVertexIDs
+                                                     
+        
     def getNonOrthogonality(self):
         exteriorFaceArray = Numeric.zeros((self.faceCellIDs.shape[0],))
         Numeric.put(exteriorFaceArray, self.getExteriorFaceIDs(), 1)
