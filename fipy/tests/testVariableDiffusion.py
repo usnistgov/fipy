@@ -93,8 +93,7 @@ class TestVariableDiffusion(TestBase):
 	    value = self.valueLeft,
             viewer = 'None')
 
-        def diffFunc(x):
-	    L = self.Lx
+        def diffFunc(x, L = self.Lx):
             if x[0] < L / 4.:
                 return 1.
             elif x[0] < 3.* L / 4.:
