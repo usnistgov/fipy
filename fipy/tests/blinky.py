@@ -69,6 +69,8 @@ bottomRight = mesh.getCells(lambda cell: cell.getCenter()[0] >= L/2. and cell.ge
 topLeft = mesh.getCells(lambda cell: cell.getCenter()[0] < L/2. and cell.getCenter()[1] >= L/2.)
 topRight = mesh.getCells(lambda cell: cell.getCenter()[0] >= L/2. and cell.getCenter()[1] >= L/2.)
 
+
+
 var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
 
 if __name__ == '__main__':
