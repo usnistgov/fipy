@@ -44,10 +44,10 @@
 import os
 import sys
 
-if '--numMesh' in sys.argv[1:]:
-    mesh = 'numMesh'
-else:
+if '--pymesh' in sys.argv[1:]:
     mesh = 'pyMesh'
+else:
+    mesh = 'numMesh'
 
 __path__.insert(0, os.path.join(__path__[0], mesh))
 
