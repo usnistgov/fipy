@@ -51,10 +51,6 @@ class LinearPCGSolver(Solver):
 	
     def solve(self, L, x, b):
 
-## 	print "L: ", L
-## 	print "b: ", b
-## 	print "x: ", x
-	
 	A = L.to_sss()
 	
 	Assor=precon.ssor(A)
