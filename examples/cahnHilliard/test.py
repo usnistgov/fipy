@@ -47,12 +47,12 @@ import fipy.tests.testProgram
 
 import doctest
 
-import cahnHilliardTanh1D
+import inputTanh1D
 
 def suite():
     theSuite = unittest.TestSuite()
 
-    theSuite.addTest(doctest.DocTestSuite(cahnHilliardTanh1D))
+    theSuite.addTest(doctest.DocTestSuite(inputTanh1D))
 
     return theSuite
 
