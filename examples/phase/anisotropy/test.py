@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:02:10 PM} 
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,43 +41,19 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
  
 import unittest
-import os
-import cPickle
-
-from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-import examples.phase.anisotropy
+import doctest
 
-from inputTemperature import AnisotropySystem
-
-class TestAnisotropy(TestBase):
-    def setUp(self):
-        self.system = AnisotropySystem()
-        self.testFile = 'testAnisotropy.gz'
-        parameters = self.system.getParameters()
-
-	self.steps = parameters['steps']
-	self.tolerance = 1e-10
-
-        self.it = parameters['it']
-        self.var = parameters['var']
-        
-    def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0],self.testFile),'r')
-	
-	testData = cPickle.load(filestream)
-	filestream.close()
-
-	return testData
+import input
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestAnisotropy))
+
+    theSuite.addTest(doctest.DocTestSuite(input))
+    
     return theSuite
     
 if __name__ == '__main__':
