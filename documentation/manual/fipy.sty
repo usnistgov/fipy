@@ -2,11 +2,13 @@
 \ProvidesPackage{fipy}
 	     [2004/10/07 Document style (FiPy manual)]
 
+% Put Part as topmost level in PDF bookmarks
 \def\tocPDFlevel{-1}
 \DeclareOption{tocAsPDFpart}{\def\tocPDFlevel{-1}}
 \DeclareOption{tocAsPDFchapter}{\def\tocPDFlevel{0}}
 \ProcessOptions
 
+% Use epydoc base class to format module documentation
 \RequirePackage[index]{epydoc}
 
 % \usepackage[text={7in,9.333in}]{geometry}
@@ -25,6 +27,7 @@
 
 \DeclareMathOperator{\erf}{erf}
 
+% Give a mini-table-of-contents for each part
 \RequirePackage{minitoc}
 % \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{1}
@@ -87,9 +90,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \includeonly{installation}
-
-
+% reformat the TOC
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
 \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
 \renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
@@ -270,6 +271,8 @@
 \renewcommand{\EpydocHyperlink}[2]{\hyperlink{#1}{#2}}
 \renewcommand{\EpydocHypertarget}[2]{\label{#1}\hypertarget{#1}{#2}}
 
+% differentiate the appearance of different Index items (somewhat 
+% overriden by url.sty-formatted items).
 \renewcommand{\EpydocIndex}[2][]{%
 %     #2%
     \ifthenelse{\equal{#1}{}}{}{%
@@ -290,8 +293,10 @@
 \definecolor{middle-gray}{gray}{0.55}
 
 \usepackage{calc}
-\newcommand{\cmcolor}{}
 
+% lifted from <http://www.texnik.de/color/color.phtml> for colored 
+% paragraph boxes
+\newcommand{\cmcolor}{}
 \newenvironment{cminipage}[1][white]%
   {%\setlength{\fboxsep}{-\fboxrule}
    \renewcommand{\cmcolor}{#1}\noindent%
@@ -301,19 +306,15 @@
    \end{lrbox}%
    \colorbox{\cmcolor}{\usebox{\@tempboxa}}}%
 
-% \renewenvironment{EpydocFunctionSignature}[1]{%
-%     \renewcommand{\and}{, }%
-%     \newcommand{\VarArg}[1]{*\textit{##1}}%
-%     \newcommand{\GenericArg}{\textit{\ldots}}%
-%     \newcommand{\KWArg}[1]{**\textit{##1}}%
-%     \newcommand{\Param}[2][]{%
-%         \textit{##2}%
-%         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
-%     \begin{cminipage}[middle-gray]
-%     \color{white}\large\raggedright\hangfrom{\ttfamily #1(}% 
-%     }
-%     {{\ttfamily)}\end{cminipage}}
-   
+% no explicit box around functions, but keep them grouped 
+% (we could use a plain minipage)
+\renewenvironment{EpydocFunction}{%
+    \begin{cminipage}}%
+    {\end{cminipage}}
+       
+% format function signatures in large text, with long arguments 
+% aligned at open-(, and whole thing underlined to separate from 
+% rest of function documentation.
 \renewenvironment{EpydocFunctionSignature}[1]{%
     \renewcommand{\and}{, }%
     \newcommand{\VarArg}[1]{*\textit{##1}}%
@@ -325,47 +326,26 @@
     \Large\raggedright\hangfrom{\ttfamily #1(}% 
     }
     {{\ttfamily)}\\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
-   
-% \renewenvironment{EpydocFunction}{%
-%     \begin{cminipage}[hazy-gray]}
-%     {\end{cminipage}}
 
-\renewenvironment{EpydocFunction}{%
-    \begin{cminipage}}%
-    {\end{cminipage}}
-    
-% \renewenvironment{EpydocFunction}{\vspace{1ex}}{}
-
-% \renewenvironment{EpydocDocstring}{%
-%     \vspace{0.4ex}}
-%     {}
-
-% \renewenvironment{EpydocDocstring}{%
-%     \begin{quote}}
-%     {\end{quote}}
-
+% indent on left
 \renewenvironment{EpydocDocstring}{%
     \begin{list}{}{\leftmargin1.5em}\item{}}
     {\end{list}}
 
+% box in gray, indent on left
 \renewenvironment{EpydocFunctionParameters}[1]{%
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
     \begin{cminipage}[light-gray]\textbf{Parameters}\begin{quote}%
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
-    
-% \renewcommand{\EpydocFunctionOverrides}[1]{%
-%     Overrides: {\ttfamily #1()} \textit{(inherited documentation)}}
+
+% indent on left
 \renewcommand{\EpydocFunctionOverrides}[2][0]{%
     \begin{list}{}{\leftmargin1.5em}\item{}%
     \raggedright Overrides: #2() %
     \ifthenelse{#1=1}{\textit{(inherited documentation)}}{}%
     \end{list}}
-
-% \renewenvironment{EpydocInheritanceList}{%
-%     \begin{description}}
-%     {\end{description}}
 
 \renewenvironment{EpydocInheritanceList}{%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
@@ -374,17 +354,14 @@
     \raggedright\begin{description}}
     {\end{description}}
 
-% \renewenvironment{EpydocInheritedFrom}[1]%
-%     {\item[Inherited from #1:]}{}
-
-
 % lifted from memoir.cls
-
 \newcommand{\hangfrom}[1]{%
   \setbox\@tempboxa\hbox{{#1}}%
   \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
 
   
+% Same as book.cls, except ragged-right. Looks much better for long 
+% module names.
 \renewcommand\section{\@startsection {section}{1}{\z@}%
                                    {-3.5ex \@plus -1ex \@minus -.2ex}%
                                    {2.3ex \@plus.2ex}%
@@ -406,6 +383,9 @@
                                        {-1em}%
                                       {\raggedright\normalfont\normalsize\bfseries}}
 
+% display style for Python modules. Allows non-hyphenated wrapping at 
+% . module separators. Rest is a simplified version of url.sty's tt 
+% style.
 \RequirePackage{url}
 \def\Url@pydo{% style assignments for tt fonts or T1 encoding
 \def\UrlBreaks{\do\.\do\]\do\)}%
@@ -419,5 +399,4 @@
 }
 \newcommand\pymodule{\begingroup \urlstyle{py}\Url}
 \renewcommand\EpydocDottedName[1]{\texorpdfstring{\protect\pymodule{#1}}{#1}}
-% \renewcommand\EpydocDottedName[1]{\texorpdfstring{\protect\path{#1}}{#1}}
 
