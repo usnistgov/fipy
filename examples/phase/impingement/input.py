@@ -175,7 +175,8 @@ class ImpingementSystem:
         return self.parameters
 
     def run(self):
-        self.phaseViewer.plot()
+        self.phaseViewer.plot(fileName = 'phase.ps')
+        raw_input('written file, press key to continue')
         self.thetaViewer.plot()
 
         for i in range(self.steps):
