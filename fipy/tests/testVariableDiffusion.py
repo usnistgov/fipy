@@ -90,8 +90,7 @@ class TestVariableDiffusion(TestBase):
         self.var = CellVariable(
             name = "diffusion",
             mesh = self.mesh,
-	    value = self.valueLeft,
-            viewer = None)
+	    value = self.valueLeft)
 
         def diffFunc(x, L = self.Lx):
             if x[0] < L / 4.:

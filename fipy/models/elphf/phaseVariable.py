@@ -36,8 +36,8 @@ from variables.cellVariable import CellVariable
 from variables.variable import Variable
 
 class PhaseVariable(CellVariable):
-    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = 1):
-	CellVariable.__init__(self, mesh, name, value, viewer = viewer, hasOld = hasOld)
+    def __init__(self, mesh, name = '', value=0., hasOld = 1):
+	CellVariable.__init__(self, mesh, name, value, hasOld = hasOld)
 	self.p = self**3 * (6. * self**2 - 15. * self + 10.)
 	self.g = (self * (1. - self))**2
 	self.gFace = (self.getFaceValue() * (1. - self.getFaceValue()))**2

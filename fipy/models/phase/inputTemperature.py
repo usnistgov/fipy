@@ -79,9 +79,9 @@ temperatureParameters = {
     }
 
 
-Length = 2.5
-nx = 100
-ny = 100
+Length = 0.5
+nx = 20
+ny = 20
 dx = Length / nx
 dy = Length / ny
 
@@ -91,25 +91,25 @@ print "built mesh"
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
-    value = 0.,
-    viewer = Grid2DGistViewer
+    value = 0.
     )
 
 theta = ModularVariable(
     name = 'Theta',
     mesh = mesh,
     value = 0.,
-    viewer = Grid2DGistViewer,
     hasOld = 0
     )
 
 temperature = ModularVariable(
     name = 'Theta',
     mesh = mesh,
-    value = 1.,
-    viewer = Grid2DGistViewer,
+    value = -0.5,
     hasOld = 0
     )
+
+phaseViewer = Grid2DGistViewer(var = phase)
+temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
 
 phaseFields = {
     'theta' : theta,
@@ -167,8 +167,8 @@ it = Iterator((phaseEq, temperatureEq))
 print "solving"
 for i in range(10):
     it.iterate(10)
-    phase.plot()
-    temperature.plot()
+    phaseViewer.plot()
+    temperatureViewer.plot()
 # profile.stop()
 
 raw_input()

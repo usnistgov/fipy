@@ -71,8 +71,7 @@ class TestExplicitDiffusion(TestBase):
         self.var = CellVariable(
             name = "concentration",
             mesh = self.mesh,
-	    value = self.valueLeft,
-            viewer = None)
+	    value = self.valueLeft)
 
         self.eq = ExplicitDiffusionEquation(
             self.var,

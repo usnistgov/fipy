@@ -73,8 +73,7 @@ class TestAdvection(TestBase):
         self.var = CellVariable(
             name = "concentration",
             mesh = self.mesh,
-	    value = self.valueLeft,
-            viewer = None)
+	    value = self.valueLeft)
 
 	self.eq = AdvectionEquation(
 	    var = self.var,

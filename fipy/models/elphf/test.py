@@ -60,8 +60,6 @@ from iterators.iterator import Iterator
 from examples.phase.modularVariable import ModularVariable
 from variables.cellVariable import CellVariable
 
-from viewers.grid2DGistViewer import Grid2DGistViewer
-
 class TestElPhF(TestBase):
     """
     Simple test case for the phase field equation.
@@ -82,8 +80,7 @@ class TestElPhF(TestBase):
 	fields['phase'] = PhaseVariable(
 	    name = "phase",
 	    mesh = self.mesh,
-	    value = self.phaseValue['left'],
-	    viewer = Grid2DGistViewer
+	    value = self.phaseValue['left']
 	    )
 	    
 	fields['phase'].setValue(self.phaseValue['right'],setCells)
@@ -102,8 +99,7 @@ class TestElPhF(TestBase):
 		mesh = self.mesh,
 		standardPotential = component['standard potential'],
 		barrierHeight = component['barrier height'],
-		value = component['left value'],
-		viewer = Grid2DGistViewer
+		value = component['left value']
 		)
 		
 	    component['var'].setValue(component['right value'],setCells)
@@ -380,11 +376,11 @@ class TestElPhF1DphaseSeparateBoring(TestElPhF):
 		
 def suite():
     theSuite = unittest.TestSuite()
-#     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
-#     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
-#     theSuite.addTest(unittest.makeSuite(TestElPhF2DCorner))
-    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseSeparate))
-#     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseSeparateBoring))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1D))
+#    theSuite.addTest(unittest.makeSuite(TestElPhF2D))
+#    theSuite.addTest(unittest.makeSuite(TestElPhF2DCorner))
+#    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseSeparate))
+#    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseSeparateBoring))
     return theSuite
     
 if __name__ == '__main__':

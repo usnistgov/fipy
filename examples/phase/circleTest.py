@@ -88,16 +88,16 @@ phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
     value = 1.,
-    viewer = Grid2DGistViewer
     )
 
 theta = CellVariable(
     name = 'Theta',
     mesh = mesh,
     value = 1.,
-    viewer = Grid2DGistViewer,
     hasOld = 0
     )
+
+phaseViewer = Grid2DGistViewer(phase)
 
 def func(x):
     r = L / 4.
@@ -135,7 +135,7 @@ profile.stop()
 print phase.getArray()
 
 
-phase.plot()
+phaseViewer.plot()
 
 raw_input()
 

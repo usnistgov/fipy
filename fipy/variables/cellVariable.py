@@ -37,15 +37,10 @@ from variable import Variable
 import Numeric
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, viewer = None, hasOld = 1):
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, hasOld = 1):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
 # 	array[:] = value
 	
-	if viewer is not None:
-	    self.viewer = viewer(var = self)
-	else:
-	    self.viewer = None
-	    
 	Variable.__init__(self, mesh, name = name, value = value, array = array, scaling = scaling, unit = unit)
 
 	if hasOld:
@@ -59,23 +54,14 @@ class CellVariable(Variable):
 	return CellVariable
 
     def copy(self):
-	if self.viewer is None:
-	    viewer = None
-	else:
-	    viewer = self.viewer.__class__
 	    
 	return CellVariable(
 	    mesh = self.mesh, 
 	    name = self.name + "_old", 
 	    value = self.getValue(),
 	    scaling = self.scaling,
-	    viewer = viewer,
 	    hasOld = 0)
 
-    def plot(self):
-	if self.viewer != None:
-	    self.viewer.plot()
-	
     def getGridArray(self):
 	return self.mesh.makeGridData(self.value)
 	

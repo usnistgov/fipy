@@ -35,8 +35,8 @@
 from variables.cellVariable import CellVariable
 
 class ComponentVariable(CellVariable):
-    def __init__(self, mesh, standardPotential, barrierHeight, name = '', value=0., viewer = None, hasOld = 1):
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, viewer = viewer, hasOld = hasOld)
+    def __init__(self, mesh, standardPotential, barrierHeight, name = '', value=0., hasOld = 1):
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 	self.standardPotential = standardPotential
 	self.barrierHeight = barrierHeight
 	

@@ -93,9 +93,10 @@ print "built mesh"
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
-    value = 1.,
-    viewer = Grid2DGistViewer
+    value = 1.
     )
+
+phaseViewer = Grid2DGistViewer(phase)
 
 theta = ModularVariable(
     name = 'Theta',
@@ -147,7 +148,7 @@ print "solving"
 it.iterate(100,0.02)
 # profile.stop()
 
-phase.plot()
+phaseViewer.plot()
 
 print phase
 

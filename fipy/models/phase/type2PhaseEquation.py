@@ -59,7 +59,7 @@ class Type2PhaseEquation(PhaseEquation):
         kappa2 = parameters['kappa 2']
         pi = Numeric.pi
         
-        mPhi = var - 0.5 - kappa1 / pi * Numeric.atan(kappa2 * temp)
+        mPhi = var - 0.5 - kappa1 / pi * Numeric.arctan(kappa2 * temp)
 
         PhaseEquation.__init__(self,
                                var = var,

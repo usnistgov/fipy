@@ -84,7 +84,6 @@ phase = PhaseVariable(
     name = "phase",
     mesh = mesh,
     value = 1.,
-    viewer = Grid2DGistViewer
     )
     
 var1 = ComponentVariable(
@@ -93,7 +92,6 @@ var1 = ComponentVariable(
     barrierHeight = 0.1,
     mesh = mesh,
     value = .35,
-    viewer = Grid2DGistViewer
     )
 
 var2 = ComponentVariable(
@@ -102,7 +100,6 @@ var2 = ComponentVariable(
     barrierHeight = 0.1,
     mesh = mesh,
     value = .35,
-    viewer = Grid2DGistViewer
     )
    
 var3 = ComponentVariable(
@@ -111,9 +108,13 @@ var3 = ComponentVariable(
     barrierHeight = 0.1,
     mesh = mesh,
     value = .15,
-    viewer = Grid2DGistViewer
     )
-   
+
+phaseViewer = Grid2DGistViewer(phase)
+var1Viewer = Grid2DGistViewer(var1)
+var2Viewer = Grid2DGistViewer(var2)
+var3viewer = Grid2DGistViewer(var3)
+
 rightCells = mesh.getCells(lambda center: center[0] > L/2.)
 
 phase.setValue(0.,rightCells)
@@ -137,9 +138,9 @@ it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
 # print var2[:]
 # print var3[:]
 
-var1.plot()
-var2.plot()
-var3.plot()
+var1Viewer.plot()
+var2Viewer.plot()
+var3Viewer.plot()
 
 raw_input()
 
