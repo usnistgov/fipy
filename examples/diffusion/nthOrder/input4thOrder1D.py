@@ -95,9 +95,9 @@ alpha2 = 1.
 alpha3 = 4.
 alpha4 = -3.
 
-L = 10000.
+L = 1000.
 
-nx = 10000
+nx = 1000
 ny = 1
 
 dx = L / nx
