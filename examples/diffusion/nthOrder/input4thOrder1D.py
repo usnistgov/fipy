@@ -47,22 +47,22 @@ This example solves the following equation:
 
 .. raw:: latex
 
-    $$ \\frac{\partial^4 \phi}{\parial x^4} = 0 $$
+    $$ \\frac{\partial^4 \phi}{\partial x^4} = 0 $$
 
 with the following boundary conditions:
 
 .. raw:: latex
 
     $$ \\phi = \\alpha_1 \;\; \\text{at} \;\; x = 0 $$
-    $$ \\frac{\partial \phi}{\parial x} = \\alpha_2 \;\; \\text{at} \;\; x = L $$
-    $$ \\frac{\partial^2 \phi}{\parial x^2} = \\alpha_3 \;\; \\text{at} \;\; x = 0 $$
-    $$ \\frac{\partial^3 \phi}{\parial x^3} = \\alpha_4 \;\; \\text{at} \;\; x = L $$
+    $$ \\frac{\partial \phi}{\partial x} = \\alpha_2 \;\; \\text{at} \;\; x = L $$
+    $$ \\frac{\partial^2 \phi}{\partial x^2} = \\alpha_3 \;\; \\text{at} \;\; x = 0 $$
+    $$ \\frac{\partial^3 \phi}{\partial x^3} = \\alpha_4 \;\; \\text{at} \;\; x = L $$
 
 The analytical solution is:
 
 .. raw:: latex
 
-    $$ \\phi = \\frac{ \\alpha_4 }{6} x^3 + \\frac{ \\alpha_3 }{2} x^2 + \\left( \\alpha_2 - \\frac{ \\alpha_4 }{2} - \\alpha_3 L \\right) x + \alpha_1 $$
+    $$ \\phi = \\frac{ \\alpha_4 }{6} x^3 + \\frac{ \\alpha_3 }{2} x^2 + \\left( \\alpha_2 - \\frac{ \\alpha_4 }{2} L^2  - \\alpha_3 L \\right) x + \\alpha_1 $$
 
 Do a timestep to steady state
 

@@ -110,8 +110,9 @@ times.
 
 .. |FiPy| raw:: latex
 
-          \FiPy\ 
+          FiPy
 
 .. |TeX| raw:: latex
 
-	  \TeX\ 
+	  TeX
+ 

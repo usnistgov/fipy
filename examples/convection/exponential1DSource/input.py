@@ -53,6 +53,8 @@ value such that,
 
 Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
+.. raw:: latex
+
     $$ \\vec{u} = (0, 10) $$
 
 The analytical solution test for this problem is given by:

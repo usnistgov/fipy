@@ -44,7 +44,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` with `nx=10` and `ny = 10`.
+`./examples/diffusion/convection/exponential1D/inpuy.py` with `nx = 10` and `ny = 10`.
 
 The analytical solution test for this problem is given by:
 

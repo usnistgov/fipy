@@ -43,7 +43,7 @@
 
 """
 
-Here we solve the level set equation in one dimension. The equation is
+Here we solve the level set equation in two dimensions for a square. The equation is
 given by:
 
 .. raw:: latex
