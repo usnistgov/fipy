@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 2/2/04 {2:52:19 PM}
+ #                                last update: 2/17/04 {4:20:07 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -81,35 +81,40 @@ class FaceGradVariable(VectorFaceVariable):
     def _calcValueInline(self):
         
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-        
-	inline.runInlineLoop1("""
-	int j;
-	double t1grad1, t1grad2, t2grad1, t2grad2, N;
-
-	N = (var(id2(i)) - var(id1(i))) / dAP;
-
-	t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
-
-	for (j = 0; j < nj; j++) {
-	    t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
-	    t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
-	    t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
-	    t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
-	}
 	
-	for (j = 0; j < nj; j++) {
-	    val(i,j) = normals(i,j) * N;
-	    val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-	    val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
-        }""",tangents1 = mesh.getFaceTangents1(),
-                              tangents2 = self.mesh.getFaceTangents2(),
-                              cellGrad = self.var.getGrad().getNumericValue(),
-                              normals = self.mesh.getOrientedFaceNormals(),
-                              id1 = id1,
-                              id2 = id2,
-                              dAP = self.mesh.getCellDistances(),
-                              val = self.value.value,
-                              ni = tangents1.shape[0],
-                              nj = tangents1.shape[1])
+	tangents1 = self.mesh.getFaceTangents1()
+	tangents2 = self.mesh.getFaceTangents2()
+
+	inline.runInlineLoop1("""
+	    int j;
+	    double t1grad1, t1grad2, t2grad1, t2grad2, N;
+
+	    N = (var(id2(i)) - var(id1(i))) / dAP(i);
+
+	    t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
+
+	    for (j = 0; j < nj; j++) {
+		t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
+		t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
+		t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
+		t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
+	    }
+	    
+	    for (j = 0; j < nj; j++) {
+		val(i,j) = normals(i,j) * N;
+		val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
+		val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
+	    }
+	""",tangents1 = tangents1,
+	  tangents2 = tangents2,
+	  cellGrad = self.var.getGrad().getNumericValue(),
+	  normals = self.mesh.getOrientedFaceNormals(),
+	  id1 = id1,
+	  id2 = id2,
+	  dAP = self.mesh.getCellDistances().getNumericValue(),
+	  var = self.var.getNumericValue(),
+	  val = self.value.value,
+	  ni = tangents1.shape[0],
+	  nj = tangents1.shape[1])
 
     
