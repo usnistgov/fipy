@@ -84,11 +84,13 @@ class DPhiReverse(VectorFaceVariable):
     def __init__(self, phase):
         VectorFaceVariable.__init__(self, phase.getMesh())
         self.phase = self.requires(phase)
-        
+
     def calcValue(self):
-        dphi = self.phase.getFaceGrad()[:,:]
-        self.value = dphi[:,::-1] * Numeric.array((-1.,1))
-    
+        dPhi = self.phase.getFaceGrad()[:,:]
+##        self.value = dPhi[:,::-1] * Numeric.array((-1.,1.))
+        self.value[:,0] = -dPhi[:,1]
+        self.value[:,1] = dPhi[:,0]
+
 class AnisotropyVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, halfAngle = None):
         CellVariable.__init__(self, phase.getMesh())

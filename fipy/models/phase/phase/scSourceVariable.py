@@ -42,7 +42,7 @@
  ##
 
 import Numeric
-
+from fivol.inline import inline
 from fivol.variables.cellVariable import CellVariable
 
 class ScSourceVariable(CellVariable):
@@ -51,7 +51,21 @@ class ScSourceVariable(CellVariable):
         self.mPhi = self.requires(mPhi)
         self.phase = self.requires(phase)
         self.anisotropy = self.requires(anisotropy)
+
+    def calcValue(self):
+        inline.optionalInline(self._calcValueIn, self._calcValuePy)
     
-    def  calcValue(self):
+    def _calcValuePy(self):
         self.value = (self.mPhi[:] > 0.) * self.mPhi[:] * self.phase[:] + self.anisotropy[:]
 
+    def _calcValueIn(self):
+        inline.runInlineLoop1("""
+            if (mPhi(i) > 0.)
+                value(i) = mPhi(i) * phase(i) + anisotropy(i);                
+            else
+                value(i) = anisotropy(i);
+        """,mPhi = self.mPhi.getNumericValue(),
+            phase = self.phase.getNumericValue(),
+            anisotropy = self.anisotropy.getNumericValue(),
+            value = self.value.value,
+            ni = len(self.value.value))

@@ -49,13 +49,13 @@ from fivol.tools.dimensions.physicalField import PhysicalField
 class Term:
     def __init__(self,weight):
 	self.weight = weight
-##	self.calcCoeffScale()
+	self.calcCoeffScale()
         
     def buildMatrix(self,L,oldArray,b):
 	pass
 	
     def getCoeffScale(self):
-        self.calcCoeffScale()
+##        self.calcCoeffScale()
         return self.coeffScale
 
     def calcCoeffScale(self):

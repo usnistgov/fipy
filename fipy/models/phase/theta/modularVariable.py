@@ -40,6 +40,7 @@ from Numeric import pi
 
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.cellGradVariable import CellGradVariable
+from fivol.examples.phase.theta.modCellGradVariable import ModCellGradVariable
 from modCellToFaceVariable import ModCellToFaceVariable
 from fivol.examples.phase.theta.modPhysicalField import ModPhysicalField
 
@@ -64,8 +65,9 @@ class ModularVariable(CellVariable):
 
     def getGrad(self):
 	if self.grad is None:
-	    gridSpacing = self.mesh.getMeshSpacing()
-            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
+##	    gridSpacing = self.mesh.getMeshSpacing()
+##            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing
+            self.grad = ModCellGradVariable(self, self.mod, self.value.mod)
 
 	return self.grad
 
