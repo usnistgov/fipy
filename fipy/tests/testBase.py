@@ -52,7 +52,13 @@ class TestBase(unittest.TestCase):
 	"""
 	if not Numeric.allclose(first, second, rtol, atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
-	    
+        
+    def assertEqual(self, first, second, msg = None):
+        if first == second:
+            pass
+        else:
+            raise self.failureException, (msg or '\n%s\n!=\n%s' % (first, second))
+        
     def getTestValue(self, cell):
 	pass
 	
