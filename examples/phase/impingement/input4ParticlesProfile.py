@@ -46,6 +46,8 @@ from fivol.examples.phase.examples.impingement.input4Particles import System4Par
 import Numeric
 from fivol.profiler.profiler import calibrate_profiler
 from fivol.profiler.profiler import Profiler
+import fivol.inline.inline
+import sys
 
 class System4ParticlesProfile(System4Particles):
 
@@ -60,6 +62,7 @@ class System4ParticlesProfile(System4Particles):
         print 'finished run'
     
 if __name__ == '__main__':
+    fivol.inline.inline.readInlineArgs(sys.argv)
     system = System4ParticlesProfile(nx = 40, ny = 40)
     system.run()
     raw_input()
