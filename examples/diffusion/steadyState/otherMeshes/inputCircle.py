@@ -43,16 +43,16 @@
 
 r"""
 
-This input example demonstrates how to create a non-standard mesh and
-solve a simple diffusion example with varying boundary conditions. The
-gmsh package is required to run this example. First set up some
-parameters: 
+This example demonstrates how to solve a simple diffusion problem on a
+non-standard mesh with varying boundary conditions. The gmsh package
+is used to create the mesh. Firstly, define some parameters for the
+creation of the mesh,
 
    >>> cellSize = 0.05
    >>> radius = 1.
 
-The `cellSize` is the preferred edge length of each mesh element. The
-meshing domain will be circular and thus a radius is defined. In the
+The `cellSize` is the preferred edge length of each mesh element and
+the `radius` is the radius of the circular mesh domain. In the
 following code section a file is created with the geometry that
 describes the mesh. For details of how to write such geometry files
 for gmsh, see the gmsh manual.
@@ -79,8 +79,8 @@ for gmsh, see the gmsh manual.
    >>> import os
    >>> os.close(f)
 
-The temporary file is used by gmsh to mesh the geometrically defined
-region.
+The temporary file created above is used by gmsh to mesh the
+geometrically defined region.
 
    >>> (f, meshName) = tempfile.mkstemp('.msh')
    >>> os.system('gmsh ' + geomName + ' -2 -v 0 -o ' + meshName)
@@ -90,9 +90,9 @@ region.
 
 .. raw:: latex
 
-   The mesh created by gmsh is then used to create a $\FiPy{}$
+   The mesh created by gmsh is then imported as a \FiPy{}
 
-mesh.
+mesh using the `GmshImporter2D` object.
    
    >>> from fipy.meshes.numMesh.gmshImport import GmshImporter2D
    >>> mesh = GmshImporter2D(meshName)
@@ -106,9 +106,9 @@ A solution variable is required.
 The following line extracts the x coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
-   >>> import Numeric
-   >>> exteriorXcoords = Numeric.take(mesh.getFaceCenters()[:,0],
-   ...                                   mesh.getExteriorFaceIDs())
+   >>> import fipy.tools.array
+   >>> exteriorXcoords = fipy.tools.array.take(mesh.getFaceCenters()[:,0],
+   ...                                         mesh.getExteriorFaceIDs())
 
 The example is then solved as an implicit diffusion problem.
 
@@ -122,13 +122,25 @@ The values at the elements should be equal to the x coordinate
    >>> var.allclose(mesh.getCellCenters()[:,0], atol = 0.02)
    1
 
-Display the results if run as a script
+Display the results if run as a script.
 
    >>> if __name__ == '__main__':
    ...     from fipy.viewers.mesh2DGistViewer import Mesh2DMeshViewer
-   ...     Mesh2DMeshViewer(mesh, grid = 0).plot(fileName = 'circleMesh.cgm')
+   ...     Mesh2DMeshViewer(mesh, grid = 0).plot()
    ...     from fipy.viewers.mesh2DGistViewer import Mesh2DGistViewer
-   ...     Mesh2DGistViewer(var, grid = 0, minVal = 0.0, maxVal = 1.0).plot(fileName = 'results.cgm')
+   ...     Mesh2DGistViewer(var, grid = 0, minVal = 0.0, maxVal = 1.0).plot()
+
+.. raw:: latex
+
+    The results should look like those displayed in
+    Figure~\ref{fig:inputCircle}.
+    \begin{figure}[tbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{inputCircle}
+        \caption{Screen shot of the Gist results, a smooth contour varying with
+         spatial position in the x-direction and the corresponding meshed domain.}
+        \label{fig:inputCircle}
+    \end{figure}
 
 """
 
