@@ -86,6 +86,9 @@ Release Goals 0.2
   * Merge ``term`` and ``equation`` objects into one object:
 
     - Implicitly define solvers for terms-equations.
+    - Boundary conditions should just be terms.
+   
+      * Include periodic boundary condition.
  
   * Use ``doctest`` exclusively.
 
