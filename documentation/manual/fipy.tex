@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/4/04 {2:41:36 PM} 
+ %                                last update: 6/5/04 {10:49:30 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,11 +34,12 @@
  % ###################################################################
  %%
 
-\documentclass[]{book}
+\documentclass[letterpaper,oldfontcommands]{memoir}
+% \documentclass[]{book}
 % \usepackage[]{}
 
 \usepackage{alltt, parskip, fancyheadings, boxedminipage}
-\usepackage{makeidx, multirow, longtable, tocbibind, amssymb}
+\usepackage{multirow, longtable, tocbibind, amssymb} % makeidx, 
 % \usepackage{fullpage}
 %\usepackage[headings]{fullpage}
 \makeindex
@@ -46,9 +47,30 @@
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \usepackage[pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+
 \begin{document}
 
-\setlength{\parindent}{0ex}
+\settypeblocksize{9in}{7in}{*}
+\setlrmargins{*}{*}{*}
+\setulmargins{*}{*}{*}
+
+% \settrimmedsize{8.5in}{11in}{*}	% pi/2
+% % \settypeblocksize{40\onelineskip}{*}{0.61803}  % golden ratio
+% \settypeblocksize{33\onelineskip}{*}{0.61803}  % golden ratio
+% \setlength{\trimtop}{0pt}
+% \setlength{\trimedge}{\stockwidth}
+% \addtolength{\trimedge}{-\paperwidth}
+% \addtolength{\trimedge}{-1.5in}
+% \setlrmargins{*}{*}{2}
+% % \setlrmargins{*}{1in}{*}
+% \setulmargins{5\onelineskip}{*}{*}
+% \setheadfoot{3\onelineskip}{3\onelineskip}
+% \setheaderspaces{\onelineskip}{*}{*}
+% \setmarginnotes{17pt}{65pt}{\onelineskip}
+
+\checkandfixthelayout
+
+% \setlength{\parindent}{0ex}
 \setlength{\fboxrule}{2\fboxrule}
 \newlength{\BCL} % base class length, for base trees.
 
