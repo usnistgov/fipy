@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/21/04 {10:34:27 PM} 
+ #                                last update: 3/4/05 {10:21:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,12 +51,11 @@ import fipy.tools.vector as vector
 
 
 def orderVertices(vertexCoords, vertices):
-    pi = 3.1415926535
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
     coordinates = Numeric.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
-    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, Numeric.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
     sortorder = Numeric.argsort(angles)
     return Numeric.take(vertices, sortorder)
 
