@@ -42,6 +42,7 @@
  ##
 
 import Numeric
+from fivol.inline import inline
 
 from fivol.variables.cellVariable import CellVariable
 
@@ -56,6 +57,9 @@ class TransientVariable(CellVariable):
         self.theta = self.requires(theta)
 
     def calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValue)
+
+    def _calcValue(self):
 
         smallValue = self.parameters['small value']
         epsilon = self.parameters['epsilon']
@@ -68,4 +72,34 @@ class TransientVariable(CellVariable):
 
         self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration']
     
+    def _calcValueInline(self):
 
+        inline.runInlineLoop1("""
+        phaseMod = phase(i);
+        if(phaseMod < smallValue)
+          phaseMod += smallValue;
+        phaseSq = phaseMod * phaseMod;
+
+        expo = epsilon * beta * thetaGradMag(i);
+        pFunc = 1. + exp(-expo) * (mu / epsilon - 1.);
+        value(i) = tau * phaseSq * pFunc / timeStepDuration;""",
+                              phaseMod = 0.,
+                              phase = self.phase.getNumericValue(),
+                              smallValue = self.parameters['small value'],
+                              phaseSq = 0.,
+                              expo = 0.,
+                              epsilon = self.parameters['epsilon'],
+                              beta = self.parameters['beta'],
+                              thetaGradMag = self.theta.getGrad().getMag().getNumericValue(),
+                              pFunc = 0.,
+                              mu = self.parameters['mu'],
+                              tau = self.parameters['tau'],
+                              timeStepDuration = self.parameters['time step duration'],
+                              value = self.value.value,
+                              ni = len(self.phase.getNumericValue())
+                              )
+                              
+        
+        
+          
+        
