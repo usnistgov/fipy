@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "testExplicitDiffusion.py"
- #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:00:29 PM} 
+ #  FILE: "test.py"
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,60 +45,25 @@
 """
  
 import unittest
-
 import fipy.tests.testProgram
-from fipy.tests.testBase import TestBase
 
-import input
+import doctest
 
-class TestExplicitDiffusion(TestBase):
-    """Generic steady-state diffusion class
-    Same as TestSteadyStateDiffusion biut for explicit case
-    Constructs a mesh, variable, equation, and iterator based
-    on the mesh dimensions specified by the child class
-    """
-    def setUp(self):
-        parameters = input.getParameters(self.nx, self.ny)
-	self.steps = parameters['steps']
-	self.timeStep = parameters['timeStep']
-	self.tolerance = parameters['tolerance']
-        self.mesh = parameters['mesh']
-        self.var = parameters['var']
-        self.it = parameters['it']
-        self.valueLeft = parameters['valueLeft']
-        self.valueRight = parameters['valueRight']
+import mesh50.input
+import mesh10.input
 
-    def getTestValues(self):
-	(lx,ly) = self.mesh.getPhysicalShape()
-	vl = self.valueLeft
-	vr = self.valueRight
-	x = self.mesh.getCellCenters()[:,0]
-	return vl + (vr - vl) * x / lx
-	
-class  TestExplicitDiffusion10(TestExplicitDiffusion):
-    """Steady-state 1D diffusion on a 10x1 mesh
-    """
-    def setUp(self):
-	self.nx = 10
-	self.ny = 1
-	TestExplicitDiffusion.setUp(self)
 
-class  TestExplicitDiffusion50(TestExplicitDiffusion):
-    """Steady-state 1D diffusion on a 50x1 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 1
-	TestExplicitDiffusion.setUp(self)
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion10))
-    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion50))
+
+    theSuite.addTest(doctest.DocTestSuite(mesh10.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh50.input))
+    
     return theSuite
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')
-    
+
             
             
