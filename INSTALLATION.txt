@@ -184,12 +184,6 @@ not succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
 recommend building the package with the ``--x11`` option described in
 the documentation.
 
-.. warning::
-
-   If you choose not to install this package, you should create an
-   environment variable ``FIPY_NOGIST`` to allow the test suite to run to
-   completion.
-
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 PyX
@@ -200,12 +194,6 @@ http://pyx.sourceforge.net/
 PyX_ allows the production of publication quality graphics with |TeX|
 labels. If available, |FiPy| can use this package to view or print
 results.
-
-.. warning::
-
-   If you choose not to install this package, you should create an
-   environment variable ``FIPY_NOPYX`` to allow the test suite to run to
-   completion.
 
 .. _PyX: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pyx.sourceforge.net/
 
