@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 2/4/05 {10:22:08 AM} 
+ #                                last update: 3/16/05 {9:19:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,5 +70,14 @@ class VectorFaceVariable(Variable):
         else:
             
             return self.indexAsFaceVar[index]
+            
+    def getDivergence(self):
+        if not hasattr(self, 'divergence'):
+            from fipy.variables.addOverFacesVariable import AddOverFacesVariable
+            self.divergence = AddOverFacesVariable(self.dot(self.getMesh().getOrientedFaceNormals()))
+            
+        return self.divergence
+        
+
 
 	
