@@ -43,19 +43,23 @@
 
 import Numeric
 
-from fivol.variables.cellVariable import CellVariable
+from fivol.inline import inline
+from fivol.variables.faceVariable import FaceVariable
 
-class DiffusionVariable(CellVariable):
+class DiffusionVariable(FaceVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 
-        CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
+        FaceVariable.__init__(self, phase.getMesh())
 
         self.parameters = parameters
         self.phase = self.requires(phase)
         self.theta = self.requires(theta)
 
     def calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValue)
+
+    def _calcValue(self):
 
         gamma = self.parameters['gamma']
 
@@ -68,4 +72,21 @@ class DiffusionVariable(CellVariable):
 
         self.value = phaseSq * (self.parameters['s'] * IGamma + self.parameters['epsilon']**2)
     
+    def _calcValueInline(self):
 
+        inline.runInlineLoop1("""
+        phaseSq = phaseFace(i) * phaseFace(i);
+        IGamma = gamma;
+        if(gradMag(i) > 1. / gamma)
+          IGamma = 1 / gradMag(i);
+        value(i) = phaseSq * (s * IGamma + epsilon * epsilon);""",
+                              phaseSq = 0.,
+                              phaseFace = self.phase.getFaceValue().getNumericValue(),
+                              gradMag = self.theta.getFaceGrad().getMag().getNumericValue(),
+                              gamma = self.parameters['gamma'],
+                              IGamma = 0.,
+                              s = self.parameters['s'],
+                              epsilon = self.parameters['epsilon'],                                                         value = self.value.value,
+                              ni = len(self.mesh.getFaces()))
+                              
+                              
