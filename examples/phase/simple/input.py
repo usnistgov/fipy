@@ -274,7 +274,7 @@ After 13 time steps, the solution has converged to the analytical solution
       $L$.
 
 Setting fixed-value boundary conditions of 1 and 0 would still require the
-relaxation method with the fully explicit source. ??? Explain why ???
+relaxation method with the fully explicit source.
 
 Solution performance can be improved if we exploit the dependence of the
 source on |phase|.  By doing so, we can make the source semi-implicit,
@@ -303,8 +303,9 @@ we make it more implicit by adding the coefficient
 to the matrix diagonal.  For numerical stability, this linear coefficient
 must never be negative.
 
-There are an infinite number of choices for this linearization, but many do
-not converge very well (can we explain why not?).  One choice is that used by Ryo Kobayashi:
+There are an infinite number of choices for this linearization, but
+many do not converge very well. One choice is that used by Ryo
+Kobayashi:
     
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
@@ -340,14 +341,15 @@ such that
 
 .. raw:: latex
 
-   $ S = S_\text{old} 
-   + \left.\frac{\partial S}{\partial \phi}\right\rvert_\text{old}
-   (\phi - \phi_\text{old}) 
-   = (S - \frac{\partial S}{\partial\phi} \phi)_\text{old} 
-   + \left.\frac{\partial S}{\partial \phi}\right|_\text{old} \phi $,
-   such that $ S_1 = -\left.\frac{\partial S}{\partial \phi}\right|_\text{old} $
-   and $ S_0 = (S - \frac{\partial S}{\partial\phi} \phi)_\text{old} 
-   = S_\text{old} + S_1 \phi_\text{old} $.
+   $ S = S_\text{old} + \left.\frac{\partial S}{\partial
+   \phi}\right\rvert_\text{old} (\phi - \phi_\text{old}) = (S -
+   \frac{\partial S}{\partial\phi} \phi)_\text{old} +
+   \left.\frac{\partial S}{\partial \phi}\right|_\text{old} \phi $.
+   Now, if our source term is represented by $S = S_0 + S_1 \phi$,
+   then $ S_1 = \left.\frac{\partial S}{\partial
+   \phi}\right|_\text{old} $ and $ S_0 = (S - \frac{\partial
+   S}{\partial\phi} \phi)_\text{old} = S_\text{old} - S_1
+   \phi_\text{old} $.
    
 In this way, the linearized source will be tangent to the curve of the
 actual source as a function of the dependendent variable.

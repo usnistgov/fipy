@@ -94,8 +94,8 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 
-	LL.addAt(array.take(coeff['cell 1 diag'][:], self.faceIds),self.adjacentCellIds,self.adjacentCellIds)
-	LL.addAt(array.take(coeff['cell 1 offdiag'][:], self.faceIds),self.adjacentCellIds,self.offdiagonalCellIds)
+	LL.addAt(array.take(coeff['cell 1 diag'][:] / 2., self.faceIds),self.adjacentCellIds,self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 1 offdiag'][:] / 2., self.faceIds),self.adjacentCellIds,self.offdiagonalCellIds)
 ##	LL.addAt(array.take(coeff['cell 2 offdiag'][:], self.faceIds),self.offdiagonalCellIds,self.adjacentCellIds)
 ##	LL.addAt(array.take(coeff['cell 2 diag'][:], self.faceIds),self.offdiagonalCellIds,self.offdiagonalCellIds)
 

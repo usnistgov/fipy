@@ -100,8 +100,8 @@ faces.  It is created in the following way:
     >>> outerFaces = Numeric.logical_or(x < L / 4., x >= 3. * L / 4.)
     >>> diffCoeff = Numeric.where(outerFaces, 1., 0.1)
 
-For boundary conditions, we have no-flux conditions top and bottom, a
-fixed value of `valueLeft` to the left, and a fixed flux of
+For boundary conditions, we a fixed value of `valueLeft` to the left,
+and a fixed flux of
 
     >>> fluxRight = 1.
     
