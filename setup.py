@@ -85,10 +85,29 @@ class build_docs (Command):
 	    
 	os.makedirs(dir)
 	os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext fipy/")
-	
+
+    def _buildExamples(self):
+        type = 'latex'
+        dir = os.path.join('documentation', 'manual', 'examples', type)
+        try:
+            for root, dirs, files in os.walk(dir, topdown=False): 
+                for name in files: 
+                    os.remove(os.path.join(root, name)) 
+                for name in dirs: 
+                    os.rmdir(os.path.join(root, name)) 
+            os.rmdir(dir)
+        except:
+            pass
+	    
+        os.makedirs(dir)
+        os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext examples/")
+
+            
+        
     def run (self):
 	if self.latex:
 	    self._build('latex')
+            self._buildExamples()
 	    savedir = os.getcwd()
 	    try:
 		os.chdir(os.path.join('documentation','manual'))
