@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/27/04 {10:53:01 AM} 
+ #                                last update: 2/12/04 {2:08:04 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@
 import Numeric
 
 import fivol.tools.dimensions.physicalField
+
 import fivol.tools.array as array
 
 class Variable:
@@ -78,7 +79,7 @@ class Variable:
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
-	self.value = fivol.tools.dimensions.physicalField.PhysicalField(value = value, unit = unit, array = array)
+	self.value = self.getPhysicalFieldClass()(value = value, unit = unit, array = array)
 ## 	self.value = value
 ## 	if array is not None:
 ## 	    array[:] = self.value
@@ -93,6 +94,9 @@ class Variable:
 	self.transposeVar = None
 	self.sumVar = {}
         self.mag = None
+	
+    def getPhysicalFieldClass(self):
+	return fivol.tools.dimensions.physicalField.PhysicalField
 	
     def copy(self):
 	return Variable(self)
@@ -195,7 +199,7 @@ class Variable:
 		self.requires(self.var)
 		
 	    def calcValue(self):
-		self.value = fivol.tools.dimensions.physicalField.PhysicalField(self.op(self.var.getValue()))
+		self.value = self.getPhysicalFieldClass()(self.op(self.var.getValue()))
 # 		print "unOp value:", self.value.value
 # 		print "unOp unit:", self.value.unit
 		
@@ -229,7 +233,7 @@ class Variable:
 		else:
 		    val2 = self.var2
 		    
-		self.value = fivol.tools.dimensions.physicalField.PhysicalField(self.op(self.var1.getValue(), val2))
+		self.value = self.getPhysicalFieldClass()(self.op(self.var1.getValue(), val2))
 # 		print "\nbinOp class: ", self.__class__.__bases__[0]
 # 		print "binOp op:", self.op
 # 		print "binOp var1:", self.var1
