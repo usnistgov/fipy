@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 2/26/05 {9:30:44 PM} 
+ #                                last update: 2/28/05 {4:24:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,45 +88,53 @@ class Term:
 	self.residual = residual
 	self.converged = Numeric.alltrue(self.residual < solutionTolerance)
 
+    def _otherIsZero(self, other):
+        if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
+            return True
+        else:
+            return False
+
     def __add__(self, other):
-	from fipy.terms.binaryTerm import AdditionTerm
-	return AdditionTerm(term1 = self, term2 = other)
+        if self._otherIsZero(other):
+            return self
+        else:
+            from fipy.terms.binaryTerm import AdditionTerm
+            return AdditionTerm(term1 = self, term2 = other)
 	    
     __radd__ = __add__
     
     def __neg__(self):
         return self.__class__(coeff = -self.coeff)
         
-##         import copy
-##         negated = copy.copy(self)
-##         negated.coeff = -negated.coeff
-##         negated.geomCoeff = None
-        
-##         return negated
-    
     def __sub__(self, other):
-	from fipy.terms.binaryTerm import SubtractionTerm
-	return SubtractionTerm(term1 = self, term2 = other)
+        if self._otherIsZero(other):
+            return self
+        else:
+            from fipy.terms.binaryTerm import SubtractionTerm
+            return SubtractionTerm(term1 = self, term2 = other)
 
     def __rsub__(self, other):
-	from fipy.terms.binaryTerm import SubtractionTerm
-	return SubtractionTerm(term1 = other, term2 = self)
+        if self._otherIsZero(other):
+            return self
+        else:
+            from fipy.terms.binaryTerm import SubtractionTerm
+            return SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
         if not isinstance(other, Term):
             return False
         else:
-            from fipy.terms.binaryTerm import EquationTerm
-            # because of the semantics of comparisons in Python,
-            # the following test doesn't work
-##         if isinstance(self, EquationTerm) or isinstance(other, EquationTerm):
-##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
-            return EquationTerm(term1 = self, term2 = other)
-        
-##     def __copy__(self):
-##         result = self.__class__(coeff = self.coeff)
-##         return result
-        
+            if self._otherIsZero(other):
+                return self
+            else:
+                from fipy.terms.binaryTerm import EquationTerm
+                return EquationTerm(term1 = self, term2 = other)
+
+                # because of the semantics of comparisons in Python,
+                # the following test doesn't work
+                ##         if isinstance(self, EquationTerm) or isinstance(other, EquationTerm):
+                ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
+
     def __repr__(self):
         return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
 
