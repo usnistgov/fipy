@@ -91,7 +91,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.inline.inline.readInlineArgs()    
+##    fivol.inline.inline.readInlineArgs()    
     theSuite = suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 

@@ -175,17 +175,14 @@ class ImpingementSystem:
         return self.parameters
 
     def run(self):
-        self.thetaViewer.plot(fileName = 'theta1.ps')
         self.phaseViewer.plot()
         self.thetaViewer.plot()
-##        raw_input()
+
         for i in range(self.steps):
             self.it.timestep(1)
             self.phaseViewer.plot()
             self.thetaViewer.plot()
 
-        self.thetaViewer.plot(fileName = 'theta.ps')
-##            raw_input()
 
 
 
