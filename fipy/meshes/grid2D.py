@@ -206,7 +206,8 @@ class Grid2D(Mesh):
 	for face in faces:
 	    face.setId(id)
 	    id += 1
-	
+
+	self.calcFaceOrientations(faces)
 	self.calcFaceAreas(faces)
 	self.calcCellDistances(faces)
 	self.calcFaceToCellDistances(faces)
@@ -237,7 +238,6 @@ class Grid2D(Mesh):
 		    
 		    
 	self.calcCellVolumes(cells)
-	self.calcCellFaceIDs(cells)
         self.calcCellFaceOrientations(cells)
 
 
