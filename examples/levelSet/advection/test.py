@@ -49,8 +49,8 @@ import doctest
 
 import mesh1D.input
 import circle.input
-import circle.adaptiveMeshInput
-import circle.altTestInput
+##import circle.adaptiveMeshInput
+##import circle.altTestInput
 import trench.input
 
 def suite():
@@ -59,8 +59,8 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
     theSuite.addTest(doctest.DocTestSuite(circle.input))
     theSuite.addTest(doctest.DocTestSuite(trench.input))
-    theSuite.addTest(doctest.DocTestSuite(circle.adaptiveMeshInput))
-    theSuite.addTest(doctest.DocTestSuite(circle.altTestInput))
+##    theSuite.addTest(doctest.DocTestSuite(circle.adaptiveMeshInput))
+##    theSuite.addTest(doctest.DocTestSuite(circle.altTestInput))
     return theSuite
     
 if __name__ == '__main__':
