@@ -57,7 +57,7 @@ import fivol.tools.dump as dump
 import fivol.examples.phase.examples.missOrientation
 
 class PhaseSystem:
-   def __init__(self, fileName = None):
+   def __init__(self):
       self.steps = 100
       timeStepDuration = 0.02
    
@@ -78,25 +78,15 @@ class PhaseSystem:
       dx = self.L / self.nx
       dy = self.L / self.ny
 
-##      fileName = '%s/meshe'%(fivol.examples.phase.examples.missOrientation.__path__[0])
+      fileName = 'grid2d.%f.%f.%i.%i' % (dx,dy,self.nx,self.ny)
+      filePath = '%s/%s'%(fivol.examples.phase.examples.missOrientation.__path__[0],fileName)      
 
-##      try:
-##         meshDict = dump.read(fileName)
-##      except:
-##         meshDict = {}
-
-##      key = 'meshdx%f' % dx + 'dy%f' % dy + 'nx%i' % self.nx + 'ny%i' % self.ny
-##      print key
-##      print meshDict.keys()
-##      print 
-##      if key in meshDict.keys():
-##         mesh = meshDict[key]
-##      else:
-      mesh = Grid2D(dx, dy, self.nx, self.ny)
-##         meshDict[key] = mesh
-##         print meshDict
-##         dump.write(meshDict, fileName)
-         
+      try:
+         mesh = dump.read(filePath)
+      except:
+         mesh = Grid2D(dx, dy, self.nx, self.ny)
+         dump.write(mesh, filePath)
+            
       self.var = CellVariable(
          name = 'PhaseField',
          mesh = mesh,
