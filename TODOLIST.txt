@@ -16,9 +16,6 @@ Release goals 0.1
   * Manual and web site WERBed.
   * Review Process.
   * Class diagram and explanation
-  * Rename ``examples/cahnHilliard/cahnHilliardTanh1D.py`` to
-    ``examples/cahnHilliard/inputTanh1D.py``, or something.  Let's be
-    consistent that ``examples/*/*input*.py`` are files that users can run.
 
 - Refactoring:
 
