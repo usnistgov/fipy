@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/3/04 {5:09:52 PM} 
+ #                                last update: 6/10/04 {2:51:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,6 +47,7 @@ from fipy.terms.term import Term
 import fipy.tools.vector
 import fipy.tools.array as array
 from fipy.tools.inline import inline
+from fipy.tools.sparseMatrix import SparseMatrix
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
@@ -141,7 +142,7 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
 
                  
-    def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
+    def buildMatrix(self, oldArray, coeffScale, varScale):
 	"""Implicit portion considers
 	"""
 
@@ -149,12 +150,18 @@ class FaceTerm(Term):
 	id1 = array.take(id1, self.mesh.getInteriorFaceIDs())
 	id2 = array.take(id2, self.mesh.getInteriorFaceIDs())
 	
+        N = len(oldArray)
+        b = Numeric.zeros((N),'d')
+        L = SparseMatrix(size = N)
+        
         ## implicit
         if self.weight.has_key('implicit'):
 	    self.implicitBuildMatrix(L, coeffScale, id1, id2, b, varScale)
 
         if self.weight.has_key('explicit'):
             self.explicitBuildMatrix(oldArray, id1, id2, b, coeffScale, varScale)
+            
+        return (L, b)
 
 ##    def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
 ##	"""Implicit portion considers

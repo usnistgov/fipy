@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 5/13/04 {10:20:23 AM} 
+ #                                last update: 6/10/04 {2:50:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,7 +52,7 @@ class Term:
 	self.weight = weight
 	self.calcCoeffScale()
         
-    def buildMatrix(self, L, oldArray, b):
+    def buildMatrix(self, oldArray, coeffScale, varScale):
 	pass
 	
     def getMesh(self):

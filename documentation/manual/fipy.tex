@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/9/04 {9:39:29 PM} 
+ %                                last update: 6/10/04 {9:57:13 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,11 +34,11 @@
  % ###################################################################
  %%
 
-\documentclass[letterpaper,oldfontcommands,book,titlepage]{memoir}
+\documentclass[letterpaper,oldfontcommands]{memoir}
 % \documentclass[]{book}
 % \usepackage[]{}
 
-\usepackage{alltt, parskip, boxedminipage} % fancyheadings, 
+\usepackage{alltt, boxedminipage} % fancyheadings,  parskip, 
 \usepackage{multirow, longtable, amssymb} % makeidx, 
 %\usepackage{multirow, longtable, tocbibind, amssymb} % makeidx, 
 % \usepackage{fullpage}
@@ -47,8 +47,10 @@
 \usepackage[usenames]{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+\usepackage[bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \usepackage{graphicx}
+\usepackage{memhfixc}
+% \usepackage{nameref}
 
 \newcommand{\logo}{\rotatebox{4}{\textcolor{red}{\( \varphi \)}}\kern-.7em\raisebox{-.15em}{\textcolor{blue}{\( \pi\)}}}
 
@@ -74,11 +76,13 @@
 
 \checkandfixthelayout
 
-% \setlength{\parindent}{0ex}
+\fixpdflayout
+
+\setlength{\parindent}{0ex}
 \setlength{\fboxrule}{2\fboxrule}
 \newlength{\BCL} % base class length, for base trees.
 
-% \pagestyle{fancy}
+\pagestyle{Ruled}
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
 

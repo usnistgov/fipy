@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/10/04 {10:08:30 AM} 
+ #                                last update: 6/15/04 {11:48:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -74,10 +74,10 @@ class FixedFlux(BoundaryCondition):
 	"""
 	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
         
-    def getDerivative(self, order = 1):
-        if order == 1:
-            return FixedValue(self.faces, self.value) 
-        else:
-            return None
+    def getDerivative(self, order):
+	if order == 1:
+	    return FixedValue(self.faces, self.value) 
+	else:
+	    return BoundaryCondition.getDerivative(self, order)
 
 

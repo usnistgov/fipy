@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 5/17/04 {4:35:32 PM} 
+ #                                last update: 6/10/04 {3:08:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,6 +46,8 @@ import Numeric
 from fipy.terms.term import Term
 from fipy.tools.inline import inline
 
+from fipy.tools.sparseMatrix import SparseMatrix
+
 class CellTerm(Term):
     def __init__(self,weight,mesh):
 	Term.__init__(self, mesh = mesh, weight = weight)
@@ -63,9 +65,16 @@ class CellTerm(Term):
 ## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 
-    def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
+    def buildMatrix(self, oldArray, coeffScale, varScale):
         coeffScale = coeffScale * varScale
+        
+        N = len(oldArray)
+        b = Numeric.zeros((N),'d')
+        L = SparseMatrix(size = N)
+
         inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale)
+        
+        return (L, b)
 
     def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale):
 

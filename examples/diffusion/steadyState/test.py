@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/7/04 {11:25:17 AM} 
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,6 +59,8 @@ def suite():
     
     import mesh1D.input
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
+    import mesh1D.inputNthOrder
+    theSuite.addTest(doctest.DocTestSuite(mesh1D.inputNthOrder))
     
 ##     theSuite.addTest(mesh1D.test.suite())
     theSuite.addTest(mesh20x20.test.suite())

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/7/04 {11:44:37 AM} 
+ #                                last update: 6/15/04 {10:58:12 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -72,7 +72,7 @@ and parameter values,
 The first step is to create a mesh with 50 elements. The `Grid2D`
 object represents a cubic structured grid.
 
-    >>> nx = 50
+    >>> nx = 10
     >>> ny = 1
     >>> dx = 1.
     >>> dy = 1.

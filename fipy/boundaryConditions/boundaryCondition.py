@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/9/04 {4:00:23 PM} 
+ #                                last update: 6/15/04 {11:47:42 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -89,6 +89,9 @@ class BoundaryCondition:
         return self.faces
         
     def getDerivative(self, order):
-        return None
+	if order == 0:
+	    return self
+	else:
+	    return None
 
 

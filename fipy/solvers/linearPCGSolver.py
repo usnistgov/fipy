@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/17/04 {4:25:16 PM} 
+ #                                last update: 6/15/04 {11:06:00 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,10 +54,10 @@ class LinearPCGSolver(Solver):
 	Solver.__init__(self, tolerance, steps)
 	
     def solve(self, L, x, b):
-##        print 'L:',L
-##        print 'x:',x
-##        print 'b:',b
-##        raw_input('end output')
+## 	print 'L:',L
+## 	print 'x:',x
+## 	print 'b:',b
+## 	raw_input('end output')
 	A = L.getMatrix().to_sss()
 
 	Assor=precon.ssor(A)

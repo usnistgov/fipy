@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 6/9/04 {4:23:33 PM} 
+ #                                last update: 6/15/04 {11:50:51 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,9 +39,11 @@
  # ###################################################################
  ##
 
+import Numeric
+
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
-from fipy.boundaryConditions.boundaryCondition import FixedFlux
-from fipy.boundaryConditions.boundaryCondition import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.boundaryConditions.fixedValue import FixedValue
 
 class NthOrderBoundaryCondition(BoundaryCondition):
     def __init__(self,faces,value,order):
@@ -57,10 +59,10 @@ class NthOrderBoundaryCondition(BoundaryCondition):
 
             'cell1off' -- *unused*
         """
-        return ([],[],[])
+        return (Numeric.array([]),Numeric.array([]),Numeric.array([]))
         
-    def getDerivative(self, order = 1):
-        newOrder = self.order - order
+    def getDerivative(self, order):
+	newOrder = self.order - order
         if newOrder > 1:
             return NthOrderBoundaryCondition(self.faces, self.value, newOrder)
         elif newOrder == 1:

@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 6/10/04 {9:59:07 AM} 
+ #                                last update: 6/15/04 {11:52:53 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,14 @@ This `Term` implements a higher order Laplacian term, such as for Cahn-Hilliard
 """
 __docformat__ = 'restructuredtext'
 
+import Numeric
+
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import SparseIdentityMatrix
+from fipy.variables.addOverFacesVariable import AddOverFacesVariable
+import fipy.tools.array as array
+import fipy.tools.vector
 
 class NthOrderDiffusionTerm(Term):
     def __init__(self,coeffs,mesh,boundaryConditions):
@@ -79,96 +85,74 @@ class NthOrderDiffusionTerm(Term):
 	if len(coeffs) > 0:
 	    self.coeff = coeffs[0] * mesh.getFaceAreas() / mesh.getCellDistances()
 	else:
-	    pass
+	    self.coeff = None
 	
-## 	if self.order == 0:
-## 	    self.term = None
-## 	    self.coeff = 1
-## 	    weight = {
-## 		'implicit':{
-## 		    'cell 1 diag':     1, 
-## 		    'cell 1 offdiag':  0, 
-## 		    'cell 2 diag':     1, 
-## 		    'cell 2 offdiag':  0,
-## 		    'b vector':        0
-## 		}
-## 	    }
-## 	else:
-## 	    self.term = NthOrderDiffusionTerm(coeffs[1:], mesh, boundaryConditions)
-## 	    lowerWeight = self.term.getWeight()
-## 	    lowerCoeff = self.term.getCoeff()
-## 	    weight = {
-## 		'implicit':{
-## 		    'cell 1 diag':     1, 
-## 		    'cell 1 offdiag':  0, 
-## 		    'cell 2 diag':     1, 
-## 		    'cell 2 offdiag':  0,
-## 		    'b vector':        0
-## 		}
-## 	    }
-	    
-        myBoundaryConditions = []
+	self.boundaryConditions = []
+        lowerBoundaryConditions = []
         for bc in boundaryConditions:
-            bc = bc.getDerivative(self.order)
-            if bc:
-                myBoundaryConditions.append(bc)
+            bcDeriv = bc.getDerivative(self.order-2)
+	    if bcDeriv:
+		self.boundaryConditions.append(bcDeriv)
+	    else:
+		lowerBoundaryConditions.append(bc)
             
-	Term.__init__(self, weight = weight, mesh = mesh, boundaryConditions = myBoundaryConditions)
+	Term.__init__(self, weight = None, mesh = mesh)
 	
 	N = mesh.getNumberOfCells()
-## 	self.b = Numeric.zeros((N),'d')
 	if self.order > 0:
-	    self.L = SparseMatrix(size = N, bandwidth = mesh.getMaxFacesPerCell())
-	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeffs = coeffs[1:], mesh = mesh, boundaryConditions = boundaryConditions)
-	else:
-	    self.L = SparseIdentityMatrix(size = N)
-## 	    self.L.put_diagonal(Numeric.ones((N,), 0)
+	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeffs = coeffs[1:], mesh = mesh, boundaryConditions = lowerBoundaryConditions)
 
     def getCoefficientMatrix(self):
 	mesh = self.getMesh()
 	
 	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh.getMaxFacesPerCell())
 	
-	interiorCoeff1 = self.coeff.getNumericValue()
+	interiorCoeff1 = Numeric.array(self.coeff)
 	array.put(interiorCoeff1, mesh.getExteriorFaceIDs(), 0)
+        from fipy.variables.faceVariable import FaceVariable
+        interiorCoeff1 = FaceVariable(mesh = mesh, value = interiorCoeff1)
+        
+	contributions = array.take(interiorCoeff1, mesh.getCellFaceIDs())
+	contributions = array.sum(contributions, 1)
 	
-	coefficientMatrix.addAtDiagonal(AddOverFacesVariable(interiorCoeff1))
-	
-	interiorCoeff2 = -array.take(self.coeff.getNumericValue(), mesh.getInteriorFaceIDs())
-	interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaces())
+	coefficientMatrix.addAtDiagonal(contributions)
+        
+	interiorCoeff2 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
+	interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
 	
 	coefficientMatrix.addAt(interiorCoeff2, interiorFaceCellIDs[:,0], interiorFaceCellIDs[:,1])
 	coefficientMatrix.addAt(interiorCoeff2, interiorFaceCellIDs[:,1], interiorFaceCellIDs[:,0])
 	
 	return coefficientMatrix
 	
-    def _buildMatrix(self):
-	if self.order > 0:
-	    self.L = self.getCoefficientMatrix() * self.lowerOrderDiffusionTerm.getL()
-##             self.b = self.getCoefficientMatrix() * self.lowerOrderDiffusionTerm.getb()
-	else:
-	    pass
-	    
-    def getL(self):
-	self._buildMatrix()
-	return self.L
-        
-    def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
-	L += self.getL()
-	
-	for boundaryCondition in self.boundaryConditions:
-	    LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-		
-	    L.addAt(LL / coeffScale,ids,ids)
-	    ## WARNING: the next line will not work if one cell has two faces on the same
-	    ## boundary. Numeric.put will not add both values to the b array but over write
-	    ## the first with the second. We really need a putAdd function rather than put.
-	    ## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
-		
-	    fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+    def buildMatrix(self, oldArray, coeffScale, varScale):
+        if self.order > 0:
+            L, b = self.lowerOrderDiffusionTerm.buildMatrix(oldArray, coeffScale, varScale)
+            
+            coefficientMatrix = self.getCoefficientMatrix()
+            self.L = coefficientMatrix * L
+            self.b = coefficientMatrix * b
+        else:
+            N = self.getMesh().getNumberOfCells()
+            self.L = SparseIdentityMatrix(size = N)
+            self.b = Numeric.zeros((N),'d')
 
+        for boundaryCondition in self.boundaryConditions:
+            LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
+	    
+            self.L.addAt(LL / coeffScale,ids,ids)
+            ## WARNING: the next line will not work if one cell has two faces on the same
+            ## boundary. Numeric.put will not add both values to the b array but over write
+            ## the first with the second. We really need a putAdd function rather than put.
+            ## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+                
+            fipy.tools.vector.putAdd(self.b, ids, bb/(coeffScale * varScale))
 	
-	b += self.getb()
+	print "order:", self.order
+	print "L:", self.L
+	print "b:", self.b
+	
+        return (self.L, self.b)
 
 def _test(): 
     import doctest
