@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 2/18/05 {2:20:50 PM} 
+ #                                last update: 2/25/05 {8:25:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,8 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
-    def __init__(self):
+    def __init__(self, coeff = 1.):
+        self.coeff = coeff
 	self.geomCoeff = None
         
     def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
@@ -93,6 +94,16 @@ class Term:
 	    
     __radd__ = __add__
     
+    def __neg__(self):
+        return self.__class__(coeff = -self.coeff)
+        
+##         import copy
+##         negated = copy.copy(self)
+##         negated.coeff = -negated.coeff
+##         negated.geomCoeff = None
+        
+##         return negated
+    
     def __sub__(self, other):
 	from fipy.terms.binaryTerm import SubtractionTerm
 	return SubtractionTerm(term1 = self, term2 = other)
@@ -100,6 +111,21 @@ class Term:
     def __rsub__(self, other):
 	from fipy.terms.binaryTerm import SubtractionTerm
 	return SubtractionTerm(term1 = other, term2 = self)
+        
+    def __eq__(self, other):
+        from fipy.terms.binaryTerm import EquationTerm
+        # because of the semantics of comparisons in Python,
+        # the following test doesn't work
+##         if isinstance(self, EquationTerm) or isinstance(other, EquationTerm):
+##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
+        return EquationTerm(term1 = self, term2 = other)
+        
+    def __copy__(self):
+        result = self.__class__(coeff = self.coeff)
+        return result
+        
+    def __repr__(self):
+        return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
 
     def calcGeomCoeff(self, mesh):
 	pass

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/20/04 {4:42:21 PM} 
+ #                                last update: 2/25/05 {5:47:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -451,12 +451,20 @@ class Variable:
 	return binOp(op, [self, other])
 	
     def __add__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a+b, other)
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return other + self
+        else:
+            return self.getBinaryOperatorVariable(lambda a,b: a+b, other)
 	
     __radd__ = __add__
 
     def __sub__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a-b, other)
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return -other + self
+        else:
+            return self.getBinaryOperatorVariable(lambda a,b: a-b, other)
 	
     def __rsub__(self, other):
 	return self.getBinaryOperatorVariable(lambda a,b: b-a, other)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:06:09 PM} 
+ #                                last update: 2/25/05 {8:25:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -189,11 +189,8 @@ The simplest approach is to add this source explicitly
 
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> S0 = mPhi * phase * (1 - phase)
-    >>> eq = diffusionTerm + S0
+    >>> eq = S0 + diffusionTerm
     
-..  attention:: It is not presently possible to add or subtract a term from
-    an explicit source, so we must reverse them.
-
 After solving this equation
 
     >>> eq.solve(var = phase)
@@ -236,15 +233,16 @@ transient term from
 :
     
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> eq = TransientTerm() - S0 - diffusionTerm
+    >>> eq = TransientTerm() == diffusionTerm + S0
     
     >>> phase.setValue(1.)
     >>> phase.setValue(0.,setCells)
     
     >>> for i in range(13):
     ...     eq.solve(var = phase)
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
     >>> if __name__ == '__main__':
-    ...     viewer.plot()
     ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
 
 .. image:: images/examples/phase/simple/relaxation.pdf

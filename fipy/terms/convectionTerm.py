@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 2/18/05 {3:01:57 PM} 
+ #                                last update: 2/25/05 {5:35:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,11 +47,13 @@ from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class ConvectionTerm(FaceTerm):
     def __init__(self, coeff, diffusionTerm = None):
-	self.coeff = coeff
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
-	FaceTerm.__init__(self)
+	FaceTerm.__init__(self, coeff = coeff)
 	
+    def __neg__(self):
+        return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
+
     def calcGeomCoeff(self, mesh):
 	if not isinstance(self.coeff, VectorFaceVariable):
 	    self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 2/18/05 {3:17:12 PM} 
+ #                                last update: 2/25/05 {5:25:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,10 +43,6 @@
 from fipy.terms.cellTerm import CellTerm
 
 class TransientTerm(CellTerm):
-    def __init__(self, coeff = 1.):
-	self.coeff = coeff
-	CellTerm.__init__(self) 
-	
     def getWeight(self, mesh):
 	return {
 	    'b vector':  0, 

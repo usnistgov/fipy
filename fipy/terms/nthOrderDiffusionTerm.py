@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 2/18/05 {2:20:45 PM} 
+ #                                last update: 2/25/05 {5:34:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -198,21 +198,25 @@ import fipy.tools.array as array
 import fipy.tools.vector
 
 class NthOrderDiffusionTerm(Term):
-    def __init__(self, coeffs):
+    def __init__(self, coeff):
 
-	self.order = len(coeffs) * 2
+	self.order = len(coeff) * 2
 
-	if len(coeffs) > 0:
-            self.nthCoeff = coeffs[0]
+	if len(coeff) > 0:
+            self.nthCoeff = coeff[0]
 	else:
 	    self.nthCoeff = None
 
-	Term.__init__(self)
+	Term.__init__(self, coeff = coeff)
 	
 	if self.order > 0:
-	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeffs = coeffs[1:])
+	    self.lowerOrderDiffusionTerm = NthOrderDiffusionTerm(coeff = coeff[1:])
 
-
+    def __neg__(self):
+        negatedCoeff = self.coeff
+        negatedCoeff[0] = -negatedCoeff[0]
+        return self.__class__(coeff = negatedCoeff)
+            
     def getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
         lowerOrderBCs = []

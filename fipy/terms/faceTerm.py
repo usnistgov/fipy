@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/18/05 {3:14:54 PM} 
+ #                                last update: 2/25/05 {5:23:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,8 +49,8 @@ from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class FaceTerm(Term):
-    def __init__(self):
-	Term.__init__(self)
+    def __init__(self, coeff = 1.):
+	Term.__init__(self, coeff = coeff)
         self.coeffMatrix = None
             
     def getCoeffMatrix(self, mesh, weight):
