@@ -65,8 +65,6 @@ class CellTerm(Term):
 ## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale/dt)
         L.addAtDiagonal(Numeric.ones([N]) * self.diagCoeff[:]/coeffScale)
-        
-
 
     def buildMatrix(self, oldArray, coeffScale, varScale, dt):
         coeffScale = coeffScale * varScale
