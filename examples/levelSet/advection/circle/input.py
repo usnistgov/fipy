@@ -53,14 +53,68 @@ The variable is advected with,
 
     $$ \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0 $$
 
-The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
+The scheme used in the `AdvectionTerm` preserves the `var` as a
+distance function.  The solution to this problem will be demonstrated
+in the following script. Firstly, setup the parameters.
 
-The result can be tested with the following code:
+   >>> L = 1.
+   >>> nx = 25
+   >>> velocity = 1.
+   >>> cfl = 0.1
+   >>> velocity = 1.
+   >>> distanceToTravel = L / 10.
+   >>> radius = L / 4.
+   >>> dx = L / nx   
+   >>> timeStepDuration = cfl * dx / velocity
+   >>> steps = int(distanceToTravel / dx / cfl)
 
+Construct the mesh.
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
+
+Construct a `distanceVariable` object.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(
+   ...     name = 'level set variable',
+   ...     mesh = mesh,
+   ...     value = 1.)
+
+Initialise the `distanceVariable` to be a circular distance function.
+
+   >>> import Numeric
+   >>> initialArray = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
+   ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - radius
+   >>> var.setValue(initialArray)
+
+The `advectionEquation` is constructed.
+   
+   >>> from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
+   >>> advEqn = AdvectionEquation(
+   ...     var,
+   ...     advectionCoeff = velocity)
+
+An `Iterator` object is constructed.
+
+   >>> from fipy.iterators.iterator import Iterator
+   >>> it = Iterator((advEqn,))
+
+The problem can then be solved by executing a serious of time steps.
+
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -radius,
+   ...                               maxVal = radius)
+   ...     viewer.plot()
+   ...     for step in range(steps):        
+   ...         it.timestep(dt = timeStepDuration)
+   ...         viewer.plot()
+
+The result can be tested with the following commands.
 
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-   
    >>> x = Numeric.array(mesh.getCellCenters())
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
@@ -76,10 +130,7 @@ is more accurate,
    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
    >>> advEqn = HigherOrderAdvectionEquation(
    ...     var,
-   ...     advectionCoeff = velocity,
-   ...     solver = LinearPCGSolver(
-   ...         tolerance = 1.e-15, 
-   ...         steps = 1000))
+   ...     advectionCoeff = velocity)
    >>> it = Iterator((advEqn,))
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
@@ -90,55 +141,7 @@ is more accurate,
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
-L = 1.
-nx = 25
-velocity = 1.
-cfl = 0.1
-velocity = 1.
-distanceToTravel = L / 10.
-radius = L / 4.
-
-dx = L / nx
-timeStepDuration = cfl * dx / velocity
-steps = int(distanceToTravel / dx / cfl)
-
-mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
-
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = 1.
-    )
-
-initialArray = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - radius
-
-var.setValue(initialArray)
-
-advEqn = AdvectionEquation(
-    var,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
-
-it = Iterator((advEqn,))
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -radius, maxVal = radius)
-    viewer.plot()
-
-    for step in range(steps):
-        
-        it.timestep(dt = timeStepDuration)
-        viewer.plot()
-
-    raw_input('finished')
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    raw_input("finished")

@@ -41,7 +41,7 @@
  ##
 
 r"""
-This example first solves the distance function `Equation` in one dimension:
+This example first solves the distance function equation in one dimension:
 
 .. raw:: latex
 
@@ -53,7 +53,7 @@ with
 
     $\phi = 0$ at $x = L / 5$.
 
-The variable is advected with,
+The variable is then advected with,
 
 .. raw:: latex
 
@@ -61,12 +61,69 @@ The variable is advected with,
 
 The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
 
+The solution to this problem will be demonstrated in the following
+script. Firstly, setup the parameters.
+
+   >>> velocity = 1.
+   >>> dx = 1.
+   >>> dy = 1.
+   >>> nx = 10
+   >>> ny = 1
+   >>> timeStepDuration = 1.
+   >>> steps = 2
+   >>> L = nx * dx
+   >>> interfacePosition = L / 5.
+
+Construct the mesh.
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+Construct a `distanceVariable` object. This object is required by the
+`distanceEquation`.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(name = 'level set variable',
+   ...                        mesh = mesh,
+   ...                        value = -1.)
+
+The domain must be divided into positive and negative regions.
+
+   >>> var.setValue(1.,  mesh.getCells(filter = lambda cell:
+   ...                                 cell.getCenter()[0] > interfacePosition))
+
+The `distanceEquation` is then constructed.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+   >>> disEqn = DistanceEquation(var)
+
+The `advectionEquation` is constructed.
+
+   >>> from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
+   >>> advEqn = AdvectionEquation(var, advectionCoeff = velocity)
+
+An `Iterator` object is constructed.
+
+   >>> from fipy.iterators.iterator import Iterator
+   >>> it = Iterator((advEqn,))
+
+The problem can then be solved by executing a serious of time steps.
+
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
+   ...     viewer.plot()
+   ...     disEqn.solve()
+   ...     for step in range(steps):
+   ...         it.timestep(dt = timeStepDuration)
+   ...         viewer.plot()
+
 The result can be tested with the following code:
 
    >>> disEqn.solve()
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-
+   >>> import Numeric
    >>> x = Numeric.array(mesh.getCellCenters()[:,0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
@@ -77,58 +134,7 @@ The result can be tested with the following code:
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
-velocity = 1.
-dx = 1.
-dy = 1.
-nx = 10
-ny = 1
-timeStepDuration = 1.
-steps = 2
-
-L = nx * dx
-
-interfacePosition = L / 5.
-
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = -1.
-    )
-
-var.setValue(1.,  mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition))
-
-disEqn = DistanceEquation(var)
-
-advEqn = AdvectionEquation(
-    var,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000))
-
-it = Iterator((advEqn,))
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
-    viewer.plot()
-
-    disEqn.solve()
-
-    for step in range(steps):
-        it.timestep(dt = timeStepDuration)
-
-        viewer.plot()
-
-    raw_input('finished')
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    raw_input("finished")

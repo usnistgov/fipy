@@ -40,22 +40,73 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-Here we solve the level set equation in two dimensions for a circle. The equation is
-given by:
+Here we solve the level set equation in two dimensions for a circle. The 2D
+level set equation can be written,
 
 .. raw:: latex
 
-    $$ | \\nabla \\phi | = 1 $$
-    $$ \\phi = 0 \;\; \\text{at} \;\;  (x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2 $$
+    $$ | \nabla \phi | = 1$$
 
-Do the tests:
+and the boundary condition for a circle is given by,
+
+.. raw:: latex
+
+    $ \phi = 0 $ at $(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2 $.
+
+The solution to this problem will be demonstrated in the following
+script. Firstly, setup the parameters.
+
+   >>> dx = 1.
+   >>> dy = 1.
+   >>> nx = 11
+   >>> ny = 11
+   >>> Lx = nx * dx
+   >>> Ly = ny * dy
+
+Construct the mesh.
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+Construct a `distanceVariable` object. This object is required by the
+`distanceEquation`.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(name = 'level set variable',
+   ...                        mesh = mesh,
+   ...                        value = -1.)
+
+The domain must be divided into positive and negative regions.
+
+   >>> positiveCells = mesh.getCells(filter = lambda cell:
+   ...                   (cell.getCenter()[0] - Lx / 2.)**2 +
+   ...                   (cell.getCenter()[1] - Ly / 2.)**2 <
+   ...                   (Lx / 4.)**2)
+   >>> var.setValue(1.,positiveCells)
+
+The `distanceEquation` is then constructed.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+   >>> eqn = DistanceEquation(var)
+
+The problem can then be solved by executing the `solve()` method of the equation.
+
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+   ...     viewer.plot()
+   ...     eqn.solve()
+   ...     viewer.plot()
+
+The result can be tested with the following commands.
 
    >>> eqn.solve()
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
+   >>> import Numeric
    >>> m1 = dY * dX / Numeric.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
@@ -82,46 +133,13 @@ Do the tests:
    ...     -1000, -1000, -1000, -1000, -3*dY, -3*dY, -3*dY, -1000, -1000, -1000, -1000,
    ...     -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000), 
    ...     -1000)
-   >>> MA.allclose(Numeric.array(var), trialValues)
+   >>> MA.allclose(var, trialValues)
    1
    
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-
-dx = 1.
-dy = 1.
-nx = 11
-ny = 11
-Lx = nx * dx
-Ly = ny * dy
-
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = -1.
-    )
-
-positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] - Lx / 2.)**2 + (cell.getCenter()[1] - Ly / 2.)**2 < (Lx / 4.)**2)
-var.setValue(1.,positiveCells)
-
-eqn = DistanceEquation(var)
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
-    viewer.plot()
-
-    eqn.solve()
-
-    viewer.plot()
-
-    raw_input('finished')
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    raw_input("finished")
