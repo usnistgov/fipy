@@ -74,6 +74,6 @@ class MatrixEquation(Equation):
 	self.L.matvec(oldSweepArray,residual)
 	residual -= self.b 
 	residual = meshes.tools.sqrtDot(residual,residual)
-        print self,'residual: ',residual
+#        print self,'residual: ',residual
 	self.converged = residual < self.solutionTolerance
 	
