@@ -129,7 +129,7 @@ class Variable:
 	
 	    >>> v = Variable(value = [2,3])
 	    >>> Numeric.array(v)
-	    [ 2., 3.,]
+	    [2,3,]
 	    
 	It is an error to convert a dimensional Variable to a 
 	Numeric `array`
@@ -188,20 +188,21 @@ class Variable:
 	else:
 	    return value
 
-    def __getitem__(self, index): 
-	"""
-	"Evaluate" the variable and return the specified element
+    def __getitem__(self, index):
+        """    
+        "Evaluate" the variable and return the specified element
 	
-	    >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
-	    >>> print a[1,1]
-	    10.0 m
-	    
-	It is an error to slice a Variable whose `value` is not sliceable
-	
+            >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
+            >>> print a[1,1]
+            10.0 m
+
+        It is an error to slice a Variable whose `value` is not sliceable
+
 	    >>> Variable(value = 3)[2]
 	    Traceback (most recent call last):
-		...
+                  ...
 	    TypeError: unsubscriptable object
+
 	"""
 	return self.getValue()[index]
 	
