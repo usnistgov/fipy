@@ -73,7 +73,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 ## 	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
 
-    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
+    def buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
 	**b** is unchanged.
 	
@@ -94,10 +94,10 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 	
-	LL.addAt(array.take(coeff['cell 1 diag'][:], self.faceIds) / coeffScale,self.adjacentCellIds,self.adjacentCellIds)
-	LL.addAt(array.take(coeff['cell 1 offdiag'][:], self.faceIds) / coeffScale,self.adjacentCellIds,self.offdiagonalCellIds)
-	LL.addAt(array.take(coeff['cell 2 offdiag'][:], self.faceIds) / coeffScale,self.offdiagonalCellIds,self.adjacentCellIds)
-	LL.addAt(array.take(coeff['cell 2 diag'][:], self.faceIds) / coeffScale,self.offdiagonalCellIds,self.offdiagonalCellIds)
+	LL.addAt(array.take(coeff['cell 1 diag'][:], self.faceIds),self.adjacentCellIds,self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 1 offdiag'][:], self.faceIds),self.adjacentCellIds,self.offdiagonalCellIds)
+	LL.addAt(array.take(coeff['cell 2 offdiag'][:], self.faceIds),self.offdiagonalCellIds,self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 2 diag'][:], self.faceIds),self.offdiagonalCellIds,self.offdiagonalCellIds)
 
 ## 	diagonalContribution = array.take(cell1dia[:],self.faceIds) / (2 * coeffScale)
 ## 	offdiagonalContribution = array.take(cell1off[:],self.faceIds) / (2 * coeffScale)
