@@ -103,6 +103,7 @@ Somewhat less trivial test case:
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 import MA
