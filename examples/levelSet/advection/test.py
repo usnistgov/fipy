@@ -49,12 +49,14 @@ import doctest
 
 import mesh1D.input
 import circle.input
+import trench.input
 
 def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
     theSuite.addTest(doctest.DocTestSuite(circle.input))
+    theSuite.addTest(doctest.DocTestSuite(trench.input))
 
     return theSuite
     
