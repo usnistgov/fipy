@@ -47,6 +47,7 @@ import tests.testSteadyStateDiffusion
 import tests.testExplicitDiffusion
 import tests.testPhase
 import tests.testStdyConvectionDiffusion
+import examples.elphf.test
 import unittest
 
 if __name__ == '__main__':
@@ -57,6 +58,7 @@ if __name__ == '__main__':
     theSuite.addTest(tests.testVariableDiffusion.suite())
     theSuite.addTest(tests.testPhase.suite())
     theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
+    theSuite.addTest(examples.elphf.test.suite())
     
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 
