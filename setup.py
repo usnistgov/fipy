@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/5/04 {3:37:44 PM} 
+ #                                last update: 11/16/04 {12:58:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -433,16 +433,10 @@ class copy_script(Command):
 	
 	print "Script code exported from '%s' to '%s'"%(self.From, self.To)
     
-long_description = """
-A finite volume PDE solver in Python.
-
-The authors and maintainers of this package are:
-    
-Daniel Wheeler <daniel.wheeler@nist.gov>
-Jonathan Guyer <guyer@nist.gov>
-Jim Warren <jwarren@nist.gov>
-"""
-
+f = open('README.txt', 'r') 
+long_description = '\n' + f.read() + '\n'
+f.close()
+	
 f = open('LICENSE.txt', 'r') 
 license = '\n' + f.read() + '\n'
 f.close()
@@ -488,6 +482,20 @@ dist = setup(	name = "FiPy",
 			    'fipy.tools.inline',
 			'fipy.variables',
 			'fipy.viewers'
+	],
+	classifiers = [
+	    'Development Status :: 4 - Alpha',
+	    'Environment :: Console',
+	    'Environment :: X11 Applications',
+	    'Intended Audience :: Science/Research',
+	    'License :: Public Domain',
+	    'Natural Language :: English',
+	    'Operating System :: OS Independent',
+	    'Programming Language :: Python',
+	    'Topic :: Scientific/Engineering :: Mathematics',
+	    'Topic :: Scientific/Engineering :: Physics',
+	    'Topic :: Scientific/Engineering :: Visualization',
+	    'Topic :: Software Development :: Libraries :: Python Modules'
 	]
 )
 
