@@ -52,8 +52,10 @@ class ImplicitSourceTerm(SourceTerm):
     .. raw:: latex
 
        $$ \int_V \phi S \,dV \simeq \phi_P S_P V_P $$ where $S$ is the
+
     `coeff` value and in general should be negative to maintain
     stability.       
+
     """
     def _getWeight(self, mesh):
 	return {

@@ -42,6 +42,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import os
 
 import Numeric
@@ -55,14 +57,17 @@ class GistViewer(Viewer):
     
     def __init__(self, vars, limits = None, title = None, dpi = 75):
         """
+        The `GistViewer` should not be called directly only `Gist1DViewer`
+        and `Gist2DViewer` should be called.
+        
         :Parameters:
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
           - `dpi`: the dot-per-inch resolution of the display
         """
@@ -75,8 +80,8 @@ class GistViewer(Viewer):
         
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
-    def getLimit(self, key):
-        limit = Viewer.getLimit(self, key = key)
+    def _getLimit(self, key):
+        limit = Viewer._getLimit(self, key = key)
         if limit is None:
             limit = 'e'
             

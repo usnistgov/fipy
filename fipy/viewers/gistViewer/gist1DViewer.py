@@ -42,52 +42,63 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
  
 from fipy.viewers.gistViewer import GistViewer
 
-# 
-
 class Gist1DViewer(GistViewer):
+    """
+    Displays a y vs. x plot of one or more 1D `CellVariable` objects.
+    Usage:
+
+    ::
+    
+        viewer = Gist1DViewer(vars)
+        viewer.plot()
+
+    """
     
     def __init__(self, vars, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
         """
-        Displays a y vs. x plot of one or more 1D Variable objects
+        Creates a `Gist1DViewer`.
         
         :Parameters:
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
           - `xlog`: set `True` to give logarithmic scaling of the x axis
           - `ylog`: set `True` to give logarithmic scaling of the y axis
           - `style`: the Gist style file to use
+
         """
         GistViewer.__init__(self, vars = vars, limits = limits, title = title)
 	self.xlog = xlog
 	self.ylog = ylog
 	self.style = style
         
-    def getLimit(self, key):
+    def _getLimit(self, key):
         subs = {'ymin': 'datamin', 'ymax': 'datamax'}
         
         if subs.has_key(key):
-            limit = GistViewer.getLimit(self, key = subs[key])
+            limit = GistViewer._getLimit(self, key = subs[key])
             if limit == 'e':
-                limit = GistViewer.getLimit(self, key = key)
+                limit = GistViewer._getLimit(self, key = key)
         else:
-            limit = GistViewer.getLimit(self, key = key)
+            limit = GistViewer._getLimit(self, key = key)
             if limit == 'e':
                 subs = {'datamin': 'ymin', 'datamax': 'ymax'}
-                limit = GistViewer.getLimit(self, key = key)
+                limit = GistViewer._getLimit(self, key = key)
             
         return limit
 
-    def getArrays(self):
+    def _getArrays(self):
 	arrays = []
         
 	for var in self.vars:
@@ -95,15 +106,18 @@ class Gist1DViewer(GistViewer):
             
 	return arrays
 	
-    def plotArrays(self):
+    def _plotArrays(self):
 	import gist
 	
-	for array in self.getArrays():
+	for array in self._getArrays():
             gist.plg(*array)
             
 	gist.logxy(self.xlog, self.ylog)
 
     def plot(self):
+        """
+        Plot the `CellVariable` ot list of `CellVariable`s as a y vs x plot.
+        """
 	import gist
 
 	gist.window(self.id, wait = 1, style = self.style)
@@ -111,8 +125,8 @@ class Gist1DViewer(GistViewer):
 	gist.animate(1)
 
         if self.limits != None:
-            gist.limits(self.getLimit('xmin'), self.getLimit('xmax'), self.getLimit('datamin'), self.getLimit('datamax'))
+            gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('datamin'), self._getLimit('datamax'))
 	    
-	self.plotArrays()
+	self._plotArrays()
 	    
 	gist.fma()

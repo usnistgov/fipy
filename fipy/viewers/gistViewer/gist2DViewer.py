@@ -42,6 +42,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 import fipy.tools.array 
 from fipy.viewers.gistViewer import GistViewer
@@ -50,28 +52,39 @@ import gist
 import colorbar
 
 class Gist2DViewer(GistViewer):
+    """
+    Displays a contour plot of a 2D `CellVariable` object.
+    Usage:
+
+    ::
+    
+       viewer = Gist2DViewer(var)
+       viewer.plot()
+
+    """
     
     def __init__(self, vars, limits = None, title = None, palette = 'heat.gp', grid = 1, dpi = 75):
         """
+        Creates a `Gist2DViewer`.
+        
         :Parameters:
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `vars`: a `CellVariable` object to plot (not a list or tuple).
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `palette`: The color scheme to use for the image plot. Default is 
-                       `heat.gp`. Another choice would be `rainbow.gp`.
-          - `grid`: Whether to show the grid lines in the plot. Default is 1. 
-                    Use 0 to switch them off.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window.
+          - `palette`: The color scheme to use for the image plot. Default is `heat.gp`. Another choice would be `rainbow.gp`.
+          - `grid`: Whether to show the grid lines in the plot. Default is 1. Use 0 to switch them off.
+          
         """
 
         GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
 
         if len(self.vars) != 1:
-            raise IndexError, "A 2D Gist viewer can only display one Variable"
+            raise IndexError, "A 2D Gist viewer can only display one CellVariable"
         
         self.palette = palette
         self.grid = grid
@@ -84,13 +97,16 @@ class Gist2DViewer(GistViewer):
         gist.gridxy(self.grid)
 
         if self.limits != None:
-            gist.limits(self.getLimit('xmin'), self.getLimit('xmax'), self.getLimit('ymin'), self.getLimit('ymax'))
+            gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('ymin'), self._getLimit('ymax'))
 
     def plot(self):
+        """
+        Plot the `CellVariable` as a contour plot.
+        """
         self._plot()
 
-        minVal = self.getLimit('datamin')
-        maxVal = self.getLimit('datamax')
+        minVal = self._getLimit('datamin')
+        maxVal = self._getLimit('datamax')
         
         if minVal == 'e':
             minVal = fipy.tools.array.min(self.vars[0][:])
@@ -117,6 +133,9 @@ class Gist2DViewer(GistViewer):
         gist.fma()
 
     def plotMesh(self):
+        """
+        Plot the `CellVariable`'s mesh as a wire frame.
+        """
         self._plot()
         
         faceVertexIDs = self.mesh.getFaceVertexIDs()

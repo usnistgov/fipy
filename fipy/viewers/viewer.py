@@ -42,18 +42,23 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 class Viewer:
     def __init__(self, vars, limits = None, title = None):
         """
+        The `Viewer` class should not be called directly.
+        
         :Parameters:
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
+
         """
         if type(vars) not in [type([]), type(())]:
             vars = [vars]
@@ -70,10 +75,22 @@ class Viewer:
         self.title = title
 
     def setLimits(self, limits):
+        """
+        Update the limits.
+
+        :Parameters:
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
+            
+        """           
         for key in limits.keys():
             self.limits[key] = limits[key]
         
-    def getLimit(self, key):
+    def _getLimit(self, key):
         if self.limits and self.limits.has_key(key):
             limit = self.limits[key]
         else:

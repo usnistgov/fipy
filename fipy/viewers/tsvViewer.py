@@ -52,31 +52,34 @@ from fipy.viewers.viewer import Viewer
 from fipy.variables.vectorCellVariable import VectorCellVariable
 
 class TSVViewer(Viewer):
+    """
+    "Views" one or more variables in tab-separated-value format.
+        
+    Output is a list of coordinates and variable values at each cell center.
+        
+    File contents will be, e.g.::
+            
+        title
+        x	y	...	var0	var2	...
+        0.0	0.0	...	3.14	1.41	...
+        1.0	0.0	...	2.72	0.866	...
+        :
+        :
+        
+    Any cell centers that lie outside the `limits` provided will not be included.
+    Any values that lie outside the `datamin` or `datamax` of  `limits` will be 
+    replaced with `nan`.
     
+    All variables must have the same mesh.
+        
+    It tries to do something reasonable with `VectorCellVariable` objects.
+
+    """
     _axis = ["x", "y", "z"]
     
     def __init__(self, vars, limits = None, title = None):
         """
-        "Views" one or more variables in tab-separated-value format.
-        
-        Output is a list of coordinates and variable values at each cell center.
-        
-        File contents will be, e.g.::
-            
-          title
-          x	y	...	var0	var2	...
-          0.0	0.0	...	3.14	1.41	...
-          1.0	0.0	...	2.72	0.866	...
-          :
-          :
-        
-        Any cell centers that lie outside the `limits` provided will not be included.
-        Any values that lie outside the `datamin` or `datamax` of  `limits` will be 
-        replaced with `nan`.
-        
-        All variables must have the same mesh.
-        
-        It tries to do something reasonable with VectorCellVariable objects.
+        Creates a `TSVViewer`.
         
         :Parameters:
           - `vars`: a `Variable` or tuple of `Variable` objects to plot

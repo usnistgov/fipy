@@ -42,23 +42,9 @@
  # ###################################################################
  ##
 
-"""
+__docformat__ = 'restructuredtext'
 
-The `Gnuplot2DViewer` plots a 2D `CellVariable` using a front end
-python wrapper available to download (Gnuplot.py_).
 
-.. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
-
-Different style script demos_ are available at the Gnuplot_ site.
-
-.. _Gnuplot: http://gnuplot.sourceforge.net/
-.. _demos: http://gnuplot.sourceforge.net/demo/
-
-.. note::
-    
-   `GnuplotViewer` requires Gnuplot_ version 4.0.
-
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -68,18 +54,44 @@ from gnuplotViewer import GnuplotViewer
 from fipy.meshes.grid2D import Grid2D
 
 class Gnuplot2DViewer(GnuplotViewer):
+    """
+    Displays a contour plot of a 2D `CellVariable` object.    
+    Usage
 
+    ::
+    
+        viewer = Gnuplot2DViewer(var)
+        viewer.plot()
+       
+    The `Gnuplot2DViewer` plots a 2D `CellVariable` using a front end
+    python wrapper available to download (Gnuplot.py_).
+
+    .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+
+    Different style script demos_ are available at the Gnuplot_ site.
+
+    .. _Gnuplot: http://gnuplot.sourceforge.net/
+    .. _demos: http://gnuplot.sourceforge.net/demo/
+
+    .. note::
+    
+        `GnuplotViewer` requires Gnuplot_ version 4.0.
+
+    """
     def __init__(self, vars, limits = None, title = None):
         """
+        Creates a `Gnuplot2DViewer`.
+        
         :Parameters:
           - `vars`: a `Variable` or tuple of `Variable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, `ymin`,
+            `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
+
         """
         GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
         

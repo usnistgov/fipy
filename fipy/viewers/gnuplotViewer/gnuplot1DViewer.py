@@ -41,24 +41,7 @@
  #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
-
-"""
-
-The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
-wrapper available to download (Gnuplot.py_).
-
-.. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
-
-Different style script demos_ are available at the Gnuplot_ site.
-
-.. _Gnuplot: http://gnuplot.sourceforge.net/
-.. _demos: http://gnuplot.sourceforge.net/demo/
-
-.. note::
-    
-   `GnuplotViewer` requires Gnuplot_ version 4.0.
-
-"""
+ 
 __docformat__ = 'restructuredtext'
 
 import Gnuplot
@@ -66,7 +49,30 @@ import Gnuplot
 from gnuplotViewer import GnuplotViewer
 
 class Gnuplot1DViewer(GnuplotViewer):
+    """
+    Displays a y vs. x plot of one or more 1D `CellVariable` objects.
+    Usage
 
+    ::
+    
+       viewer = Gnuplot1DViewer(vars)
+       viewer.plot()
+
+    The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
+    wrapper available to download (Gnuplot.py_).
+
+    .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+
+    Different style script demos_ are available at the Gnuplot_ site.
+
+    .. _Gnuplot: http://gnuplot.sourceforge.net/
+    .. _demos: http://gnuplot.sourceforge.net/demo/
+
+    .. note::
+    
+        `GnuplotViewer` requires Gnuplot_ version 4.0.
+
+    """
     def _plot(self):
 
         self.g('set yrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')

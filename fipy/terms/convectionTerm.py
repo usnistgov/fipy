@@ -50,6 +50,8 @@ from fipy.variables.vectorFaceVariable import VectorFaceVariable
 class ConvectionTerm(FaceTerm):
     def __init__(self, coeff = 1.0, diffusionTerm = None):
         """
+        `Convection Term` should not be called directly.
+        
         :Parameters:
           - `coeff` : The `term`'s coefficient value.
           - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.

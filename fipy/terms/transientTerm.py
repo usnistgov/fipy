@@ -53,8 +53,8 @@ class TransientTerm(CellTerm):
        $$ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
        \frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t} $$
        where $\rho$ is the
-    `coeff` value.
 
+    `coeff` value.
     """
 
     def _getWeight(self, mesh):

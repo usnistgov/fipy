@@ -42,46 +42,45 @@
  # ###################################################################
  ##
 
-"""
 
-The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
-`Gnuplot2DViewer` It using a front end python wrapper available to
-download (Gnuplot.py_).
-
-.. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
-
-If one would like more specific styles for a plot, it is probably best
-to create an inherited class and change the `gnuplotCommands` method.
-
-Different style script demos_ are available at the Gnuplot_ site.
-
-.. _Gnuplot: http://gnuplot.sourceforge.net/
-.. _demos: http://gnuplot.sourceforge.net/demo/
-
-.. note::
-    
-   `GnuplotViewer` requires Gnuplot_ version 4.0.
-
-"""
 __docformat__ = 'restructuredtext'
 
 import Gnuplot
 from fipy.viewers.viewer import Viewer
 
 class GnuplotViewer(Viewer):
+    """
+
+    The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
+    `Gnuplot2DViewer` It uses a front end python wrapper available to
+    download (Gnuplot.py_).
+
+    .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+
+    Different style script demos_ are available at the Gnuplot_ site.
+
+    .. _Gnuplot: http://gnuplot.sourceforge.net/
+    .. _demos: http://gnuplot.sourceforge.net/demo/
+
+    .. note::
     
+        `GnuplotViewer` requires Gnuplot_ version 4.0.
+
+   """    
     def __init__(self, vars, limits = None, title = None):
         """
-
+        The `GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
+        and `Gnuplot2DViewer` should be called.
+        
         :Parameters:
 
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer
-                      will also use `ymin` and `ymax`, and so on.
-                      All viewers will use `datamin` and `datamax`.
-                      Any limit set to a (default) value of `None` will autoscale.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer
+            will also use `ymin` and `ymax`, and so on.
+            All viewers will use `datamin` and `datamax`.
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
 
         """
@@ -89,19 +88,22 @@ class GnuplotViewer(Viewer):
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
-    def getLimit(self, key):
-        limit = Viewer.getLimit(self, key)
+    def _getLimit(self, key):
+        limit = Viewer._getLimit(self, key)
         if limit is None:
             return ''
         else:
             return str(limit)
 
     def plot(self, fileName = None):
+        """
+        Plot the `CellVariable` as a contour plot.
+        """
 
-        self.g('set xrange [' + self.getLimit('xmin')  + ':' + self.getLimit('xmax') + ']')
-        self.g('set yrange [' + self.getLimit('ymin')  + ':' + self.getLimit('ymax') + ']')
-        self.g('set zrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
-        self.g('set cbrange [' + self.getLimit('datamin')  + ':' + self.getLimit('datamax') + ']')
+        self.g('set xrange [' + self._getLimit('xmin')  + ':' + self._getLimit('xmax') + ']')
+        self.g('set yrange [' + self._getLimit('ymin')  + ':' + self._getLimit('ymax') + ']')
+        self.g('set zrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
+        self.g('set cbrange [' + self._getLimit('datamin')  + ':' + self._getLimit('datamax') + ']')
 
         self._plot()
         if fileName is not None:
