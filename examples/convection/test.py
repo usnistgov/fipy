@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:49 PM} 
+ #                                last update: 12/13/04 {2:20:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,7 @@ import fipy.tests.testProgram
 import doctest
 
 import exponential1D.input
+import exponential1D.tri2Dinput
 import exponential2D.input
 import exponential1DSource.tri2Dinput
 import exponential1DBack.input
@@ -57,6 +58,7 @@ def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(exponential1D.input))
+    theSuite.addTest(doctest.DocTestSuite(exponential1D.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(exponential2D.input))
     theSuite.addTest(doctest.DocTestSuite(exponential1DBack.input))
     theSuite.addTest(doctest.DocTestSuite(powerLaw1D.input))

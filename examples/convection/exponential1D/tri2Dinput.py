@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/13/04 {11:32:47 AM} 
+ #                                last update: 12/13/04 {2:08:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,12 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` but uses a constant source
-value such that,
-
-.. raw:: latex
-
-    $$ S_c = 1. $$
+`./examples/diffusion/convection/exponential1D/input.py` but uses `Tri2D` mesh.
 
 Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
@@ -61,12 +56,10 @@ The analytical solution test for this problem is given by:
    >>> it.timestep()
    >>> axis = 1
    >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
-   >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
    >>> import Numeric
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = AA + BB * CC / DD
+   >>> analyticalArray = CC / DD
    >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-6, atol = 1e-6) 
    1
    
@@ -75,7 +68,7 @@ __docformat__ = 'restructuredtext'
 
      
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
+from fipy.equations.stdyConvDiffEquation import SteadyConvectionDiffusionEquation
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
@@ -89,10 +82,9 @@ valueBottom = 0.
 valueTop = 1.
 L = 10.
 nx = 1
-ny = 100
+ny = 1000
 diffCoeff = 1.
 convCoeff = (0., 10.)
-sourceCoeff = 1.
 
 
 
@@ -111,11 +103,10 @@ boundaryConditions = (
     )
 
         
-eq = SteadyConvectionDiffusionScEquation(
+eq = SteadyConvectionDiffusionEquation(
     var = var,
     diffusionCoeff = diffCoeff,
     convectionCoeff = convCoeff,
-    sourceCoeff = sourceCoeff,
     solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
     convectionScheme = ExponentialConvectionTerm,
     boundaryConditions = boundaryConditions
