@@ -5,7 +5,7 @@
 #
 # FILE: "mesh.py"
 #                                   created: 11/10/03 {2:44:42 PM} 
-#                               last update: 11/12/03 {10:09:47 AM} 
+#                               last update: 11/13/03 {10:58:15 AM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -36,8 +36,6 @@
 """
 
 class Mesh:
-	def __init__(self, cells, faces, vertices):
-		self.cells = cells
-		self.faces = faces
-		self.vertices = vertices
+	def __init__(self):
+	    pass
 		

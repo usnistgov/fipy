@@ -4,7 +4,7 @@
 #
 # FILE: "grid2D.py"
 #                                   created: 11/10/03 {3:30:42 PM} 
-#                               last update: 11/10/03 {4:59:03 PM} 
+#                               last update: 11/13/03 {11:16:39 AM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -39,38 +39,65 @@ import cell
 
 class Grid2D(mesh.Mesh):
     def __init__(self, dx, dy, nx, ny):
-	vertices = self.createVertices(dx, dy, nx, ny)
-	faces = self.createFaces(vertices, nx, ny)
-	cells = self.createCells(faces, nx, ny)
+	self.vertices = self.createVertices(dx, dy, nx, ny)
+	self.faceVertices,self.faceCells = self.createFaces(vertices, nx, ny)
+	self.cells = self.createCells(faces, nx, ny)
 	
-	mesh.Mesh.__init__(self, cells, faces, vertices)
+	mesh.Mesh.__init__(self)
 		
     def createVertices(self, dx, dy, nx, ny):
-	    vertices = ()
-	    for j in range(ny+1):
-		    for	i in range(nx+1):
-			vertices += (vertex.Vertex((i * dx, j * dy)),)
-	    return vertices
-		
+	vertices = Numeric.zeroes([(nx+1) * (ny+1),2],'d')
+	for j in range(ny+1):
+	    for	i in range(nx+1):
+		vertices[i + (j * (nx+1)),0] = i * dx
+		vertices[i + (j * (nx+1)),1] = j * dy
+	return vertices
+		    
     def createFaces(self, vertices, nx, ny):
-	faces = ()
+	numFaces = (nx + 1) * ny + (ny + 1) * nx
+	faceVertices = Numeric.zeroes([numFaces,2])
+	faceCells = Numeric.zeroes([numFaces,2])
+
 	for j in range(ny+1):
 	    for i in range(nx):
-		faces += (face.Face((vertices[i + j * nx],vertices[i + 1 + j * nx])),)
+		faceVertices[i +  (j * nx),0] = i + (j * nx)
+		faceVertices[i +  (j * nx),1] = i + 1 + (j * nx)
+		
+	for j in range(ny):
+	    for i in range(nx):
+		faceCells[i +  (j * nx),0] = i + (j * nx)
+		faceCells[i +  ((j+1) * nx),1] = i + (j * nx)
+		
+	for i in range(nx):
+	    faceCells[i,0] =
+	    faceCells[i + (ny+1) * nx,1] = 
+		
+	numHorzFaces = nx * (ny + 1)
 	for j in range(ny):
 	    for i in range(nx+1):
-		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1])),)
-	return faces
+		faceVertices[numHorzFaces + (i * ny) + j,0] = (i * ny) + j
+		faceVertices[numHorzFaces + (i * ny) + j,1] = (i * ny) + j + 1
+		
+	return (faceVertices,faceCells)
 	
     def createCells(self, faces, nx, ny):
 	cells = ()
 	for j in range(ny):
-		for i in range(nx):
-		    cells += (cell.Cell((faces[i + j * nx],
-					    faces[i + (j+1) * nx],
-					    faces[nx * (ny + 1) + i + j * (nx + 1)],
-					    faces[nx * (ny + 1) + i + 1 + j * (nx + 1)])),)
+	    for i in range(nx):
+		cells += (cell.Cell((faces[i + j * nx],
+			faces[i + (j+1) * nx],
+			faces[nx * (ny + 1) + i + j * (nx + 1)],
+			faces[nx * (ny + 1) + i + 1 + j * (nx + 1)])),)
 	return cells
+	
+    def facesCellIDs(self):
+	self.facesCellIDs = Numeric.zeroes([len(self.faces),2])
+	for i in range(len(self.faces)):
+	    self.facesCellIDs[i,0] = self.faces[i].cells()[0].id()
+	    self.facesCellIDs[i,1] = self.faces[i].cells()[1].id()
+	
+    def cellsFaceIDs(self):
+	pass
 	
 	
 		

@@ -5,7 +5,7 @@
 #
 # FILE: "transientTerm.py"
 #                                   created: 11/12/03 {11:35:45 AM} 
-#                               last update: 11/12/03 {11:38:20 AM} 
+#                               last update: 11/13/03 {11:50:36 AM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -16,7 +16,7 @@
 #and Technology by employees of the Federal Government in the course
 #of their official duties.  Pursuant to title 17 Section 105 of the
 #United States Code this software is not subject to copyright
-#protection and is in the public domain.  PFM is an experimental
+#protection and is in the public domain.  PFM is an experimentalœf
 #system.  NIST assumes no responsibility whatsoever for its use by
 #other parties, and makes no guarantees, expressed or implied, about
 #its quality, reliability, or any other characteristic.  We would
@@ -37,8 +37,8 @@
 import cellTerm
 
 class TransientTerm(cellTerm.CellTerm):
-	def __init__(self,equation,coeff):
-		cellTerm.CellTerm.__init__(self, stencil = (0,1,1), equation) 
-		self.coeff = coeff
-
+    def __init__(self,equation,coeff):
+	cellTerm.CellTerm.__init__(self, stencil = (0,1,1), equation) 
+	self.coeff = coeff
+	
 

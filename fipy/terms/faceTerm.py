@@ -5,7 +5,7 @@
 #
 # FILE: "faceTerm.py"
 #                                   created: 11/12/03 {11:01:56 AM} 
-#                               last update: 11/12/03 {11:58:30 AM} 
+#                               last update: 11/13/03 {11:36:08 AM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -38,23 +38,30 @@
 import term
 
 class FaceTerm(term.Term):
-	def __init__(self,stencil,equation):
-		"""
-		stencil = [phi_adj, phi]
-		"""
-		term.Term.__init__(self,stencil,equation)
-		
-	def buildMatrix(self):
-		var = self.equation.var()
-		N = var.size()
-		
-		for face in var.mesh().faces():
-			cell1=face.cell()[0]
-			cell2=face.cell()[1]
-			if cell2!='None':
-				self.equation.L()[cell1]+=self.coeff
-				
-		self.equation.b() += var.old()*self.coeff*self.stencil[2]
-		self.equation.b() += Numeric.ones([N])*self.coeff*self.stencil[0]
-		self.equation.L().update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
-		
+    def __init__(self,stencil,equation):
+	"""
+	stencil = [phi_adj, phi]
+	"""
+	term.Term.__init__(self,stencil,equation)
+	
+    def buildMatrix(self):
+	var = self.equation.var()
+	N = var.size()
+	
+	for face in var.mesh().faces():
+	    if len(face.cells()) == 2:
+		id1 = face.cells()[0].id()
+		id2 = face.cells()[1].id()
+		self.equation.L()[id1,id1]+=self.coeff * self.stencil[1]
+		self.equation.L()[id1,id2]-=self.coeff * self.stencil[0]
+		self.equation.L()[id2,id1]-=self.coeff * self.stencil[0]
+		self.equation.L()[id2,id2]+=self.coeff * self.stencil[1]
+	    else if len(face.cells()) == 1:
+# 		do boundary conditions
+# 		for the moment this is zero flux
+		pass
+	    else:
+# 		cause catastrophic failure
+		pass
+		    
+		    

@@ -5,7 +5,7 @@
 #
 # FILE: "matrixEquation.py"
 #                                   created: 11/12/03 {10:41:06 AM} 
-#                               last update: 11/12/03 {11:23:24 AM} 
+#                               last update: 11/13/03 {12:13:10 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -41,14 +41,20 @@ import spmatrix
 
 
 class MatrixEquation(equation.Equation):
-	bandwidth = 5
+    bandwidth = 5
+    
+    def __init__(self,var,terms):
+	Equation.__init__(self,var,terms)
 	
-	def __init__(self,var,terms):
-		Equation.__init__(self,var,terms)
+	def updateVar(self):
+	    N = var.size()
+	    self.L = spmatrix.ll_mat_sym(N,self.bandwidth*N)
+	    self.b = Numeric.zeros((N),'d')
+	    for term in self.terms:
+		term.updateMatrix()
 		
-	def updateMatrix(self):
-		N = var.size()
-		self.L = spmatrix.ll_mat_sym(N,self.bandwidth*N)
-		self.b = Numeric.zeros((N),'d')
-		for term in self.terms:
-			term.updateMatrix(self.L,self.b,self.var)
+	def L(self):
+	    return self.L
+	    
+	def b(self):
+	    return self.b

@@ -5,7 +5,7 @@
 #
 # FILE: "equation.py"
 #                                   created: 11/10/03 {2:45:34 PM} 
-#                               last update: 11/12/03 {10:57:06 AM} 
+#                               last update: 11/13/03 {12:09:39 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -43,4 +43,4 @@ class Equation:
     def updateCoeffs(self):
         for term in self.terms:
             term.updateCoeff(self.var)
-    
+

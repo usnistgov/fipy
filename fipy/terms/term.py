@@ -5,7 +5,7 @@
 #
 # FILE: "term.py"
 #                                   created: 11/12/03 {10:54:17 AM} 
-#                               last update: 11/12/03 {11:01:46 AM} 
+#                               last update: 11/13/03 {12:12:51 PM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -36,12 +36,13 @@
 """
 
 class Term:
-	def __init__(self,stencil):
-		self.stencil = stencil
-		
-	def updateCoeff(self,var):
-		pass
-		
-	def updateMatrix(self,L,b,var):
-		pass
-
+    def __init__(self,stencil):
+	self.stencil = stencil
+	self.coeff = 1.
+	
+    def updateCoeff(self,var):
+	pass
+	    
+    def buildMatrix(self):
+	pass
+	    

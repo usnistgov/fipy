@@ -5,7 +5,7 @@
 #
 # FILE: "variable.py"
 #                                   created: 11/10/03 {3:13:28 PM} 
-#                               last update: 11/12/03 {11:34:47 AM} 
+#                               last update: 11/13/03 {12:08:25 PM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -34,7 +34,16 @@
 #----
 """
 
+import Numeric
+import equation
+
 class Variable:
-	def __init__(self):
-		pass
+    variables = ()
+    
+    def __init__(self,name,mesh,equation = equation.Equation(self,(,))):
+	self.name = name
+	self.mesh = mesh
+	self.value = Numeric.zeroes([len(mesh.cells())],'d')
+	self.equation = equation
+	self.variables += self
 
