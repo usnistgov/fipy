@@ -442,7 +442,7 @@ class efficiency_test(Command):
                      ('maximumelements=', None, 'maximum number of elements')]
     
     def initialize_options(self):
-        self.factor = 2
+        self.factor = 10
         self.inline = False
         self.maximumelements = 1000
         self.minimumelements = 100
@@ -456,25 +456,68 @@ class efficiency_test(Command):
 
         import time
         import sys
-
-        file = open('efficicncyData.txt', 'w')
+        import threading
+        import tempfile
+        import os
+        from fipy.tools.memoryUsage import memory
+        
+        file = open('efficiencyData.txt', 'w')
 
         sys.argv.append('viewers=off')
 
+        class GetMemoryThread(threading.Thread):
+            def __init__(self, runTimeEstimate, fileObject, pid):
+                threading.Thread.__init__(self)
+                self.runTimeEstimate = runTimeEstimate
+                self.fileObject = fileObject
+                self.pid = pid
+
+            def run(self):
+                maxMem = 0
+                for i in range(100):
+                    maxMem = max(maxMem, memory(0.0, self.pid))
+                    time.sleep(self.runTimeEstimate / 100)
+                self.fileObject.write(str(maxMem))
+                self.fileObject.close()
+
         for case in ['examples/cahnHilliard/input2D.py',
                      'examples/levelSet/electroChem/input.py']:
-
+            
+            runTimeEstimate = 10.
             file.write('case:' + case + '\n')
             numberOfElements = self.minimumelements
             while numberOfElements <= self.maximumelements:
                 sys.argv.append('numberOfElements=' + str(numberOfElements))
+                (f, fileName) = tempfile.mkstemp()
+                tmpFile = open(fileName, 'w')
+                thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid())
+                thread.start()
                 t1 = time.clock()
-                execfile(case, globals())
+                try:
+                    execfile(case, globals())
+                except:
+                    thread.join()
+                    tmpFile = open(fileName,'r')
+                    memUsage = float(tmpFile.read())
+                    tmpfile.close()
+                    os.remove(fileName)
+                    os.close(f)
+                    file.write('Exception executing ' + case + ' with %i elements and maximum memory usage of %.0f bytes\n' % (numberOfElements, memUsage))
+                    break
+                
                 t2 = time.clock()
+                thread.join()
+                tmpFile = open(fileName,'r')
+                memUsage = float(tmpFile.read())
+                tmpFile.close()
+                os.remove(fileName)
+                os.close(f)
                 sys.argv.remove('numberOfElements=' + str(numberOfElements))
-                file.write('Elements: %i, CPU time: %.3f seconds\n' % (numberOfElements, t2 - t1))
+                file.write('Elements: %i, CPU time: %.3f seconds, memory usage: %.0f bytes\n' % (numberOfElements, t2 - t1, memUsage))
+                
                 numberOfElements *= self.factor
-
+                runTimeEstimate = (t2 - t1) * self.factor
+                                        
         file.close()
         
 f = open('README.txt', 'r') 
