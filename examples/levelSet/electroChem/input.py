@@ -462,7 +462,8 @@ is calculated with the CFL number and the maximum extension velocity.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewers = buildViewers()
+   ...     if 'viewers=off' not in sys.argv:
+   ...         viewers = buildViewers()
    ...
    ...     for step in range(numberOfSteps):
    ...
@@ -483,8 +484,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         surfactantEquation.solve(acceleratorVar, dt = dt)
    ...         metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
    ...         bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
-   ...         for viewer in viewers:
-   ...             if 'viewers=off' not in sys.argv:
+   ...         if 'viewers=off' not in sys.argv:
+   ...             for viewer in viewers:
    ...                 viewer.plot()
 
 The following is a short test case. It uses saved data from a
