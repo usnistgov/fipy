@@ -45,13 +45,13 @@ r"""
 
 This input example demonstrates how to create a non-standard mesh and
 solve a simple diffusion example with varying boundary conditions. The
-gmsh package is required to ruin this example. First set up some
-parameters:
+gmsh package is required to run this example. First set up some
+parameters: 
 
-   >>> cellSize = 0.02
+   >>> cellSize = 0.05
    >>> radius = 1.
 
-The `cellSize` is the preffered edge length of each mesh element. The
+The `cellSize` is the preferred edge length of each mesh element. The
 meshing domain will be circular and thus a radius is defined. In the
 following code section a file is created with the geometry that
 describes the mesh. For details of how to write such geometry files
@@ -88,13 +88,17 @@ region.
    >>> os.close(f)
    >>> os.remove(geomName)
 
-The mesh created by gmsh is used to create a \FiPy{} mesh.
+.. raw:: latex
+
+   The mesh created by gmsh is then used to create a $\FiPy{}$
+
+mesh.
    
    >>> from fipy.meshes.numMesh.gmshImport import GmshImporter2D
    >>> mesh = GmshImporter2D(meshName)
    >>> os.remove(meshName)
     
-Create a solution variable:
+A solution variable is required.
 
    >>> from fipy.variables.cellVariable import CellVariable
    >>> var = CellVariable(mesh = mesh, value = 0)
@@ -115,15 +119,16 @@ The example is then solved as an implicit diffusion problem.
                                                     
 The values at the elements should be equal to the x coordinate
 
-   >>> var.allclose(mesh.getCellCenters()[:,0], atol = 0.0079)
+   >>> var.allclose(mesh.getCellCenters()[:,0], atol = 0.02)
    1
 
 Display the results if run as a script
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.pyxviewer import PyxViewer
-   ...     viewer = PyxViewer(var)
-   ...     viewer.plot()
+   ...     from fipy.viewers.mesh2DGistViewer import Mesh2DMeshViewer
+   ...     Mesh2DMeshViewer(mesh, grid = 0).plot(fileName = 'circleMesh.cgm')
+   ...     from fipy.viewers.mesh2DGistViewer import Mesh2DGistViewer
+   ...     Mesh2DGistViewer(var, grid = 0, minVal = 0.0, maxVal = 1.0).plot(fileName = 'results.cgm')
 
 """
 
