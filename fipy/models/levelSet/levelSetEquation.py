@@ -60,9 +60,8 @@ class LevelSetEquation(Equation):
             solver = None)
 
     def solve(self):
-        cells = self.mesh.getCells()
-        zeroCells = self.getZeroCells(cells)
-        self.setZeroValues(zeroCells)
+        zeroCells = self.getZeroCells()
+##        self.setZeroValues(zeroCells)
 
         ## find bounding cells to the evaluatedCells
 ##        boundingCells = self.getBoundingCells(zeroCells)
@@ -81,12 +80,12 @@ class LevelSetEquation(Equation):
     def getZeroCells(self, cells):
         zeroCells = ()
         array = self.var.getNumericValue()
-        for cell in cells:
+        for cell in self.mesh.getCells():
             id = cell.getId()
             zeroCell = ()
             for adjacentCell in cell.getBoundingCells():                
                 adjacentId = adjacentCell.getId()
-                if array[id] * array[adjacentId]<0.:
+                if array[id] * array[adjacentId] < 0.:
                     zeroCell = (cell,)
             zeroCells += zeroCell
         return zeroCells
