@@ -46,6 +46,7 @@ import Numeric
 from fivol.variables.cellVariable import CellVariable
 from fivol.examples.phase.phase.toolsTmp import addOverFaces
 import fivol.inline.inline
+from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
 
 class SourceVariable(CellVariable):
 
@@ -63,18 +64,20 @@ class SourceVariable(CellVariable):
         self.theta = self.requires(theta)
         self.diffCoeff = self.requires(diffCoeff)
         self.halfAngleVariable = self.requires(halfAngleVariable)
+        thetaGradDiff = self.theta.getFaceGrad() - self.theta.getFaceGradNoMod()
+        self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
         
     def calcValue(self):
 
         mesh = self.theta.getMesh()
         c2 = self.parameters['anisotropy']
 
-        thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
+##        thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
         
-        correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
-                                      faceVariable = self.diffCoeff[:],
-                                      mesh = mesh,
-                                      NCells = len(self.phase[:]))
+##        correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
+##                                      faceVariable = self.diffCoeff[:],
+##                                      mesh = mesh,
+##                                      NCells = len(self.phase[:]))
 
 ##        print self.value.value.shape
 ##        print correctionTerm[:].shape
@@ -108,7 +111,7 @@ class SourceVariable(CellVariable):
         beta = (1. - halfAngleSq) / (1. + halfAngleSq)
         dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
 
-        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
+        self.value = self.AOFVariable[:] + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
         
     
 
