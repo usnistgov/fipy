@@ -57,10 +57,11 @@ import fivol.examples.phase.examples.test
 import fivol.inline.inline
 
 if __name__ == '__main__':
-    if "inline" in sys.argv:
-	fivol.inline.inline.doInline()
-    else:
-	fivol.inline.inline.dontInline()
+    fivol.inline.inline.readInlineArgs(sys.argv)
+##    if "inline" in sys.argv:
+##	fivol.inline.inline.doInline()
+##    else:
+##	fivol.inline.inline.dontInline()
     
     theSuite = unittest.TestSuite()
     
