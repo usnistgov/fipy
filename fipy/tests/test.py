@@ -45,7 +45,7 @@
 """
 
 import unittest
-import sys
+
 
 import fivol.examples.diffusion.variable.test
 import fivol.examples.diffusion.steadyState.test
@@ -54,11 +54,7 @@ import fivol.examples.convection.test
 import fivol.examples.elphf.test
 import fivol.examples.phase.examples.test
 
-import fivol.inline.inline
-
 if __name__ == '__main__':
-    fivol.inline.inline.readInlineArgs(sys.argv)
-    
     theSuite = unittest.TestSuite()
     
     theSuite.addTest(fivol.examples.diffusion.steadyState.test.suite())
