@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 10/19/04 {2:27:25 PM} 
+ #                                last update: 3/10/05 {3:20:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -129,7 +129,7 @@ class CellVariable(Variable):
     def getGrad(self):
 	if self.grad is None:
 	    from cellGradVariable import CellGradVariable
-	    self.grad = CellGradVariable(self)
+	    self.grad = CellGradVariable(var = self, name = "%s_grad" % self.getName())
         
 	return self.grad
 
