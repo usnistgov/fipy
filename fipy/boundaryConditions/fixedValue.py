@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/16/04 {11:58:17 AM}
+ #                                last update: 2/2/04 {11:30:32 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,9 +44,8 @@
 """Fixed value (Dirichlet) boundary condition
 """
 
-import Numeric
-
 from fivol.boundaryConditions.boundaryCondition import BoundaryCondition
+from fivol.tools import array
 
 class FixedValue(BoundaryCondition):
     """Fixed value (Dirichlet) boundary condition
@@ -74,8 +73,8 @@ class FixedValue(BoundaryCondition):
 	    
 	    'cell1off' -- contribution to b-vector by this exterior face
 	"""
-	return (Numeric.take(cell1dia[:],self.faceIds),
-		Numeric.take(-cell1off[:],self.faceIds)*self.value,
+	return (array.take(cell1dia[:],self.faceIds),
+		array.take(-cell1off[:],self.faceIds)*self.value,
 		self.adjacentCellIds)
 
 

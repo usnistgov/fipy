@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {4:41:14 PM} 
+ #                                last update: 2/2/04 {11:31:37 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

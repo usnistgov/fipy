@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 1/30/04 {6:02:36 PM} 
+ #                                last update: 2/2/04 {11:31:44 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -94,6 +94,5 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
-
     inline.optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
