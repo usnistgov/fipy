@@ -44,7 +44,7 @@
 
 import tests.testVariableDiffusion
 import examples.diffusion.steadyState.test
-import tests.testExplicitDiffusion
+import examples.diffusion.explicit.test
 import tests.testPhase
 import tests.testStdyConvectionDiffusion
 import examples.elphf.test
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     theSuite = unittest.TestSuite()
     
     theSuite.addTest(examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(tests.testExplicitDiffusion.suite())
+    theSuite.addTest(examples.diffusion.explicit.test.suite())
     theSuite.addTest(tests.testVariableDiffusion.suite())
     theSuite.addTest(tests.testPhase.suite())
     theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
