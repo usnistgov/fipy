@@ -44,6 +44,8 @@
 
 import Numeric
 
+import fipy.tools.array as array
+
 from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
@@ -59,7 +61,7 @@ class SurfactantEquation(MatrixEquation):
 		     
 	mesh = var.getMesh()
 
-        transientCoeff = Numeric.where(distanceVar < 0., 1., 0.)
+        transientCoeff = Numeric.where(distanceVar < 0., 1e10, 0.)
 
 	transientTerm = TransientTerm(transientCoeff,mesh)
 	convectionTerm = UpwindConvectionTerm(ConvectionCoeff(distanceVar), mesh, boundaryConditions)
@@ -81,11 +83,44 @@ class ConvectionCoeff(VectorFaceVariable):
         self.distanceVar = self.requires(distanceVar)
         
     def calcValue(self):
+##        id1, id2 = self.mesh.getAdjacentCellIDs()
+##        epsilon = 1e-10
+
+##        cellGrad = self.distanceVar.getGrad()
+##        shape = Numeric.shape(cellGrad)
+##        cellGradMag = Numeric.reshape(Numeric.repeat(cellGrad.getMag(), shape[1]), shape)
+
+##        cellNormal = Numeric.where(cellGradMag > epsilon,
+##                                   cellGrad / cellGradMag,
+##                                   Numeric.zeros(shape))
+
+##        faceNormal1 = array.take(cellNormal, id1)
+##        faceNormal2 = array.take(cellNormal, id2)
+##        var1 = array.take(self.distanceVar, id1)
+##        var2 = array.take(self.distanceVar, id2)
+##        shape = Numeric.shape(faceNormal1)
+##        var1 = Numeric.reshape(Numeric.repeat(var1, shape[1]), shape)
+##        var2 = Numeric.reshape(Numeric.repeat(var2, shape[1]), shape)
+
+##        self.value = -Numeric.where(var2 > var1, faceNormal1, faceNormal2)
+##        print "convectionCoeff",array.take(self.value, self.mesh.getCellFaceIDs())[3]
+##        raw_input('convectionCoeff')
+        
+        ## interior faces
         faceGrad = self.distanceVar.getFaceGrad()
         faceGradMag = Numeric.array(faceGrad.getMag())
         faceGrad = Numeric.array(faceGrad)
         faceGradMag = Numeric.where(faceGradMag < 1e-10, 1e-10, faceGradMag)
-        normal = faceGrad / faceGradMag[:, Numeric.NewAxis]
-        faceValue = Numeric.array(self.distanceVar.getArithmeticFaceValue())
-        faceValue = Numeric.resize(faceValue, normal.shape)
-        self.value = Numeric.where(faceValue > 0., normal, 0.)
+        self.value = -faceGrad / faceGradMag[:, Numeric.NewAxis]
+
+        ## exterior faces
+        id1 = self.mesh.getAdjacentCellIDs()[0]
+        cellGradMag = self.distanceVar.getGrad().getMag()
+        cellGradMag = Numeric.where(cellGradMag < 1e-10, 1e-10, cellGradMag)
+        cellNormal = self.distanceVar.getGrad() / cellGradMag[:, Numeric.NewAxis]
+        faceCellNormals = Numeric.take(cellNormal, id1)
+        mask = (self.mesh.getFaceCellIDs()[:,1]).mask()
+        shape = Numeric.shape(faceCellNormals)
+        mask = Numeric.reshape(Numeric.repeat(mask, shape[1]), shape)
+        self.value = Numeric.where(mask, -faceCellNormals, self.value)
+
