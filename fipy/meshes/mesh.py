@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/8/04 {2:06:47 PM} 
+ #                                last update: 3/8/04 {4:08:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -311,3 +311,7 @@ class Mesh:
         self.calcAreaProjections()
         self.calcOrientedFaceNormals()
         
+    def getPointToCellDistances(self, point):
+	import fivol.tools.array
+	tmp = self.getCellCenters() - Numeric.array(point)
+	return fivol.tools.array.sqrtDot(tmp, tmp)
