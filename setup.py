@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/12/05 {10:00:48 AM} 
+ #                                last update: 3/28/05 {3:53:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,6 +39,8 @@ import string
 
 from distutils.core import setup
 from distutils.core import Command
+
+from utils.epydoc import driver
 
 class build_docs (Command):
 
@@ -106,7 +108,8 @@ class build_docs (Command):
     def _buildTeXAPIs(self):
 	dir = os.path.join('documentation', 'manual', 'api')
 	self._initializeDirectory(dir = dir, type = 'latex')
-	self._epydocFiles(module = 'fipy/', dir = dir, type = 'latex')
+        dir = os.path.join(dir, 'latex')
+        driver.epylatex(module_names = ['fipy/'], options = {'target':dir})
 	
         savedir = os.getcwd()
         try:
@@ -214,16 +217,16 @@ class build_docs (Command):
 	    if self.guide:
 		dir = os.path.join('documentation', 'manual', 'examples')
 		self._initializeDirectory(dir = dir, type = 'latex')
-		for module in ['examples/update0_1to1_0.py',
+                dir = os.path.join(dir, 'latex')
+                modules = ['examples/update0_1to1_0.py',
                                'examples/diffusion/',
 			       'examples/convection/',
 			       'examples/phase/',
 			       'examples/levelSet/',
 			       'examples/elphf/',
 			       'examples/cahnHilliard/'
-			       ]:
-		    self._epydocFiles(module = module, dir = dir, type = 'latex')
-
+			       ]
+                driver.epylatex(module_names = modules, options = {'target':dir})
 
 	if self.html:
 	    dir = os.path.join('documentation', 'manual', 'api')
@@ -306,7 +309,11 @@ class build_docs (Command):
             os.system("/Library/WebServer/Documents/CSS/ctcmsWeb.py %s %s" % (tmp, dir))
             
             print "removing directories"
-            os.removedirs(tmp)
+            for root, dirs, files in os.walk(tmp, topdown=False): 
+                for name in files: 
+                    os.remove(os.path.join(root, name)) 
+                for name in dirs: 
+                    os.rmdir(os.path.join(root, name)) 
 
         if self.upload:
 
