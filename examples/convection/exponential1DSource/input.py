@@ -51,55 +51,51 @@ this example solves a steady-state convection-diffusion equation, but adds a con
 
      $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0. $$
 
-Here, the axes are reversed
-
-    >>> nx = 1
-    >>> ny = 1000
-
 and
 
 .. raw:: latex
 
-    $ \\vec{u} = (0, 10)$
+    $ \vec{u} = (10,)$
     
 such that
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (0., 10.)
+    >>> convCoeff = (10.,)
     >>> sourceCoeff = 1.
 
 We define a 1D mesh
 
+    >>> nx = 1000
     >>> L = 10.
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = L / 1000, nx = nx)
 
 and impose the boundary conditions
 
 .. raw:: latex
 
    $$ \phi = \begin{cases}
-   0& \text{at $y = 0$,} \\
-   1& \text{at $y = L$,}
+   0& \text{at $x = 0$,} \\
+   1& \text{at $x = L$,}
    \end{cases} $$ 
 
 or
 
-    >>> valueBottom = 0.
-    >>> valueTop = 1.
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesTop(), valueTop),
-    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
+    ...     FixedValue(mesh.getFacesRight(), valueRight),
+    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     )
 
-The solution variable is initialized to `valueBottom`:
+The solution variable is initialized to `valueLeft`:
     
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
     ...     name = "concentration",
     ...     mesh = mesh,
-    ...     value = valueBottom)
+    ...     value = valueLeft)
 
 We define the convection-diffusion equation with source
 
@@ -117,20 +113,20 @@ and test the solution against the analytical result:
     
 .. raw:: latex
 
-   $$ \phi = -\frac{S_0 y}{u_y} 
-   + \left(1 + \frac{S_0 y}{u_y}\right)\frac{1 - \exp(-u_y y / D)}{1 - \exp(-u_y L / D)} $$
+   $$ \phi = -\frac{S_0 x}{u_x} 
+   + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
 
 or
 
-    >>> axis = 1
-    >>> y = mesh.getCellCenters()[:,axis]
-    >>> AA = -sourceCoeff * y / convCoeff[axis]
+    >>> axis = 0
+    >>> x = mesh.getCellCenters()[:,axis]
+    >>> AA = -sourceCoeff * x / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
     >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
+    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
-    >>> var.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4) 
+    >>> var.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
          
 If the problem is run interactively, we can view the result:

@@ -93,6 +93,13 @@ class AddOverFacesVariable(CellVariable):
         
     def _calcValueInline(self):
 
+        if self.faceGradient is None:
+            faceGradient = Numeric.zeros((len(self.xGrad),2), 'd')
+            faceGradient[:,0] = self.xGrad[:]
+            faceGradient[:,1] = self.yGrad[:]            
+        else:
+            faceGradient = self.faceGradient
+
         NCells = self.mesh.getNumberOfCells()
 	ids = self.mesh.getCellFaceIDs()
 ##         ids = Numeric.reshape(ids,(NCells,self.mesh.getMaxFacesPerCell()))

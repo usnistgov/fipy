@@ -56,8 +56,8 @@ We create an appropriate mesh
 
     >>> nx = 1000
     >>> dx = L / nx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and initialize the solution variable to 0
 
