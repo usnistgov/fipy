@@ -43,8 +43,6 @@ class ModularVariable(CellVariable):
 
         self.mod = lambda array, pi=Numeric.pi: (array + 3. * pi) % (2 * pi) - pi
 
-    
-
     def getGrad(self):
 	if self.grad is None:
 	    from variables.cellGradVariable import CellGradVariable
@@ -60,13 +58,6 @@ class ModularVariable(CellVariable):
 
 	return self.faceValue
 
-#     def getFaceValue(self):
-#         alpha = self.mesh.getFaceToCellDistanceRatio()
-# 	id1, id2 = self.mesh.getAdjacentCellIDs()
-# 	cell1 = Numeric.take(self[:], id1)
-# 	cell2 = Numeric.take(self[:], id2)
-# 	return self.mod(cell1 - cell2) * alpha + cell2
-
     def getFaceGrad(self):
 	if self.faceGrad is None:
 	    from variables.faceGradVariable import FaceGradVariable
@@ -74,35 +65,6 @@ class ModularVariable(CellVariable):
 
 	return self.faceGrad
 	
-#     def getFaceGrad(self):
-#         dAP = self.mesh.getCellDistances()
-# 	id1, id2 = self.mesh.getAdjacentCellIDs()
-# 	N = self.mod(Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
-#         
-# 	normals = self.mesh.getFaceNormals().copy()
-# 	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
-# 	tangents1 = self.mesh.getFaceTangents1()
-# 	tangents2 = self.mesh.getFaceTangents2()
-# 	cellGrad = self.getGrad()
-# 	grad1 = Numeric.take(cellGrad, id1)
-# 	grad2 = Numeric.take(cellGrad, id2)
-# 	t1grad1 = Numeric.sum(tangents1*grad1,1)
-# 	t1grad2 = Numeric.sum(tangents1*grad2,1)
-# 	t2grad1 = Numeric.sum(tangents2*grad1,1)
-# 	t2grad2 = Numeric.sum(tangents2*grad2,1)
-# 	T1 = (t1grad1 + t1grad2) / 2.
-# 	T2 = (t2grad1 + t2grad2) / 2.
-# 	
-# 	N = Numeric.reshape(N, (len(normals),1)) 
-# 	T1 = Numeric.reshape(T1, (len(normals),1)) 
-# 	T2 = Numeric.reshape(T2, (len(normals),1)) 
-# 
-# 	return normals * N + tangents1 * T1 + tangents2 * T2
-    
-#     def mod(self, array):
-#         pi=Numeric.pi
-#         return (array + 3. * pi) % (2 * pi) - pi
-    
     def updateOld(self):
         if self.old != None:
             self.value = self.mod(self.value)
