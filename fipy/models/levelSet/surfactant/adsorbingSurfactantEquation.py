@@ -109,11 +109,11 @@ class AdsorptionCoeff(CellVariable):
         self.dt = dt
         self.markStale()
 
-class SpAdsorptionCoeff(AdsorptionCoeff):
+class AdsorptionCoeffInterfaceFlag(AdsorptionCoeff):
     def multiplier(self):
         return self.distanceVar.getCellInterfaceFlag()
     
-class ScAdsorptionCoeff(AdsorptionCoeff):
+class AdsorptionCoeffAreaOverVolume(AdsorptionCoeff):
     def multiplier(self):
         return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
  
@@ -122,12 +122,20 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                  var,
                  distanceVar,
                  bulkVar,
-                 rateConstant):
+                 rateConstant,
+                 scCoeff = None,
+                 spCoeff = None):
         
         SurfactantEquation.__init__(self, var, distanceVar)
-        
-        self.spCoeff = SpAdsorptionCoeff(distanceVar, bulkVar, rateConstant)
-        self.scCoeff = ScAdsorptionCoeff(distanceVar, bulkVar, rateConstant)
+
+        self.spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
+        self.scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
+
+        if spCoeff != None:
+            self.spCoeff += spCoeff
+
+        if scCoeff != None:
+            self.scCoeff += scCoeff
 
         self.terms += (
             SpSourceTerm(self.spCoeff, self.var.getMesh()),
