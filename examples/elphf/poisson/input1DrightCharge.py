@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/28/04 {10:41:45 AM} 
+ #                                last update: 12/9/04 {11:09:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ ElPhF on a 1D mesh
     >>> dx = 0.01
     >>> L = nx * dx
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = 1)
+    >>> mesh = Grid2D(dx = dx, nx = nx)
 
 The dimensionless Poisson equation is
 
@@ -97,10 +97,8 @@ to electromigration.
 We again let the ElPhF module construct the appropriate fields and governing equations
 
     >>> import fipy.models.elphf.elphf as elphf
-    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-    >>> equations = elphf.makeEquations(mesh = mesh, 
-    ...                                 fields = fields, 
-    ...                                 parameters = parameters)
+    >>> fields = elphf.makeFields(mesh = mesh, 
+    ...                           parameters = parameters)
 
 We segregate all of the electrons to one side of the domain
 
@@ -120,10 +118,14 @@ We segregate all of the electrons to one side of the domain
 
 and iterate one implicit timestep to equilibrate the electrostatic potential
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator(equations = equations)
-    >>> it.timestep()
-
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
+    
+    >>> from fipy.models.elphf.poissonEquation import factory
+    >>> poisson = factory.make(fields, parameters['potential'])
+    >>> poisson.solve(var = fields['potential'], 
+    ...               boundaryConditions = bcs)
+    
 This problem has the analytical solution
 
 .. raw:: latex
