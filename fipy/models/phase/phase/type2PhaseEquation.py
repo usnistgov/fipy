@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2PhaseEquation.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {12:03:24 PM} 
+ #                                last update: 1/20/04 {11:27:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

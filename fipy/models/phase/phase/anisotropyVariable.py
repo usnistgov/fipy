@@ -6,7 +6,7 @@
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:22:22 AM} { 2:35:45 PM}
+ #                                last update: 1/20/04 {11:30:33 AM} { 2:35:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,7 +61,7 @@ class AnisotropyVariable(CellVariable):
         
         zsq = self.halfAngle[:] * self.halfAngle[:]
 	b = (1. - zsq) / (1. + zsq)
-	db = -N*2*self.halfAngle/(1+zsq)
+	db = -N * 2 * self.halfAngle[:] / (1 + zsq)
         ff = alpha**2 * c2 * (1. + c2 * b) * db
 
         dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
