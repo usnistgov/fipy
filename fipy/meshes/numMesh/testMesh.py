@@ -193,7 +193,18 @@ class TestMesh(TestMeshBase):
                                             (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
                                             (  (nx, -ny), (0, 1), (-1, 0), (-1000, -1000) ),
                                             (  (0, -1), (nx, ny), (-1, 0), (-1000, -1000) ) ), -1000 )
- 
+
+
+        
+        vv = Numeric.array(((0, -dx), (dy, 0), (0, dx), (-dy, 0)))
+
+
+        area = Numeric.sqrt(dx**2 + dy**2)
+        
+        self.cellAreaProjections = MA.masked_values((vv,vv,vv,vv,vv,vv,
+                                                      (  (nx * area, -ny * area), (0, dx), (-dy, 0), (-1000, -1000) ),
+                                                      (  (0, -dx), (nx * area, ny * area), (-dy, 0), (-1000, -1000) )), -1000)
+                                                              
 class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)

@@ -166,6 +166,10 @@ class TestMesh3D(TestMeshBase):
         self.cellNormals = MA.masked_values( ( (-znor, znor, -xnor, xnor, -ynor, ynor),
                                             (-xnor, -znor, znor, -ynor, nor, (-1000, -1000, -1000) ) ), -1000)
 
+
+        self.cellAreaProjections =  MA.masked_values( ( (-znor * dx * dy, znor * dx * dy, -xnor * dy * dz, xnor * dy * dz, -ynor * dx * dz, ynor * dx * dz),
+                                                        (-xnor * dy * dz, -znor * dx * dy / 2, znor * dx * dy / 2, -ynor * dx * dz, nor * Numeric.sqrt(dx**2 + dy**2) * dz, (-1000, -1000, -1000) ) ), -1000)
+
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):
         TestMesh3D.setUp(self)

@@ -171,6 +171,10 @@ class TestGrid(TestMeshBase):
                                             (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
                                             (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
                                             (  (0, -1), (1, 0), (0, 1), (-1, 0) )  ) )
+
+        vv = Numeric.array(((0, -dx), (dy, 0), (0, dx), (-dy, 0)))
+        
+        self.cellAreaProjections = Numeric.array(((vv,vv,vv,vv,vv,vv)))
                                        
     def testVertices(self):
         self.assertArrayEqual(self.vertices, self.mesh.createVertices())

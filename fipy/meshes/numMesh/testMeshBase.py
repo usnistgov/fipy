@@ -111,6 +111,10 @@ class TestMeshBase(TestBase):
 
     def testCellNormals(self):
         self.assertArrayWithinTolerance(self.cellNormals, self.mesh.getCellNormals())
+
+    def testCellAreaProjections(self):
+##        print 'getCellAreaProjections:',self.mesh.getCellAreaProjections()
+        self.assertArrayWithinTolerance(self.cellAreaProjections, self.mesh.getCellAreaProjections())
         
     def testResult(self):
         pass

@@ -234,6 +234,9 @@ class TestTri2D(TestMeshBase):
     def testCellNormals(self):
         pass
 
+    def testCellAreaProjections(self):
+        pass
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestTri2D))
