@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/20/04 {2:20:18 PM} 
+ #                                last update: 6/3/04 {4:04:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,6 @@ import Numeric
 
 from fipy.variables.cellGradVariable import CellGradVariable
 from fipy.tools.inline import inline
-import fipy.tools.array
 
 class ModCellGradVariable(CellGradVariable):
     def __init__(self, var, modIn, modPy):
@@ -63,13 +62,13 @@ class ModCellGradVariable(CellGradVariable):
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
 	""",
 	val = self.value.value,
-        ids = fipy.tools.array.convertNumeric(ids),
-        orientations = fipy.tools.array.convertNumeric(orientations),
-        volumes = fipy.tools.array.convertNumeric(volumes),
-        areaProj = fipy.tools.array.convertNumeric(self.mesh.getAreaProjections()),
-        faceValues = fipy.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
+        ids = Numeric.array(ids),
+        orientations = Numeric.array(orientations),
+        volumes = Numeric.array(volumes),
+        areaProj = Numeric.array(self.mesh.getAreaProjections()),
+        faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
 	ni = N, nj = self.mesh.getDim(), nk = M,
-        gridSpacing = fipy.tools.array.convertNumeric(self.mesh.getMeshSpacing()))
+        gridSpacing = Numeric.array(self.mesh.getMeshSpacing()))
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)

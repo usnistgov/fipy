@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/3/04 {1:22:12 PM} 
+ #                                last update: 6/3/04 {5:09:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,8 @@
  # ###################################################################
  ##
  
+import Numeric
+
 from fipy.terms.term import Term
 import fipy.tools.vector
 import fipy.tools.array as array
@@ -102,7 +104,7 @@ class FaceTerm(Term):
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, coeffScale, varScale):
 
         weight = self.weight['explicit']
-        coeff = fipy.tools.array.convertNumeric(self.coeff)
+        coeff = Numeric.array(self.coeff)
 
 	inline.runInlineLoop1("""
 	    long int faceID = faceIDs(i);

@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 5/10/04 {10:51:05 AM}
+ #                                last update: 6/3/04 {5:10:15 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,6 +40,8 @@
  #  2004- 4-30 JEG 1.0 original
  # ###################################################################
  ##
+
+import Numeric
 
 import fipy.tools.array as array
 import fipy.tools.inline.inline as inline
@@ -89,10 +91,10 @@ class AddOverFacesVariable(CellVariable):
               numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
               numberOfCells = NCells,
               faceVariable = self.faceVariable.getNumericValue(),
-              ids = array.convertNumeric(ids),
+              ids = Numeric.array(ids),
               value = self.value.value,
-              orientations = array.convertNumeric(self.mesh.getCellFaceOrientations()),
-              cellVolume = array.convertNumeric(self.mesh.getCellVolumes()))
+              orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
+              cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 	      
 
     def calcValue(self):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 3/1/04 {3:47:36 PM}
+ #                                last update: 6/3/04 {4:04:55 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,6 @@ import Numeric
 
 from fipy.variables.faceGradVariable import FaceGradVariable
 from fipy.tools.inline import inline
-import fipy.tools.array
 
 class ModFaceGradVariable(FaceGradVariable):
     def __init__(self, var, mod):
@@ -81,10 +80,10 @@ class ModFaceGradVariable(FaceGradVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
-            normals = fipy.tools.array.convertNumeric(self.mesh.getOrientedFaceNormals()),
-            id1 = fipy.tools.array.convertNumeric(id1),
-            id2 = fipy.tools.array.convertNumeric(id2),
-            dAP = fipy.tools.array.convertNumeric(self.mesh.getCellDistances()),
+            normals = Numeric.array(self.mesh.getOrientedFaceNormals()),
+            id1 = Numeric.array(id1),
+            id2 = Numeric.array(id2),
+            dAP = Numeric.array(self.mesh.getCellDistances()),
             var = self.var.getNumericValue(),
             val = self.value.value,
             ni = tangents1.shape[0],

@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/3/04 {2:46:49 PM} 
+ #                                last update: 6/6/04 {11:42:08 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,14 +47,6 @@ def _isPhysical(arr):
 
     return isinstance(arr,fipy.variables.variable.Variable) \
 	or isinstance(arr,fipy.tools.dimensions.physicalField.PhysicalField)
-
-def convertNumeric(arr):
-    if _isPhysical(arr):
-        return arr.getNumericValue()
-    elif type(arr) is type(MA.array((0))):
-        return Numeric.array(arr)
-    else:
-        return arr
 
 def take(arr, ids):
     if _isPhysical(arr):

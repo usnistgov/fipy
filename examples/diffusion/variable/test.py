@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:01:06 PM} 
+ #                                last update: 6/3/04 {4:11:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,6 @@ import Numeric
 
 from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
-import fipy.tools.array as array
 
 import input
 
@@ -83,7 +82,7 @@ class TestVariableDiffusion(TestBase):
 
     def getTestValues(self):
 	x = self.mesh.getCellCenters()[:,0]
-	x = array.convertNumeric(x)
+	x = Numeric.array(x)
 	L = self.Lx
 	values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
 	values = Numeric.where(     x < L / 4.,                    x,           values)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 5/6/04 {2:43:55 PM} 
+ #                                last update: 6/4/04 {2:52:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,8 @@ import fipy.tools.array as array
 
 class Variable:
     
-    """Lazily evaluated physical field or quantity with units
+    """
+    Lazily evaluated physical field or quantity with units
 
     Constructor:
 
@@ -107,6 +108,9 @@ class Variable:
 	self.faceDifferences = {}
 	self.laplacian = {}
         self.mag = None
+	
+    def __array__(self, t = None):
+	return Numeric.array(self.getValue(), t)
 	
     def getPhysicalFieldClass(self):
 	return fipy.tools.dimensions.physicalField.PhysicalField

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/3/04 {12:12:12 PM}
+ #                                last update: 6/3/04 {4:03:34 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -118,13 +118,13 @@ class AddOverFacesVariable(CellVariable):
               numberOfCells = NCells,
               interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
               contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
-              areaProjections = fipy.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+              areaProjections = Numeric.array(self.mesh.getAreaProjections()),
               faceGradient = self.faceGradient.getNumericValue()[:],
               faceVariable = self.faceVariable.getNumericValue()[:],
-              ids = fipy.tools.array.convertNumeric(ids),
+              ids = Numeric.array(ids),
               value = self.value.value,
-              orientations = fipy.tools.array.convertNumeric(self.mesh.getCellFaceOrientations()),
-              cellVolume = fipy.tools.array.convertNumeric(self.mesh.getCellVolumes()))
+              orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
+              cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 
     def calcValue(self):
 
