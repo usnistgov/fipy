@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 import fipy.tools.array
@@ -48,13 +50,42 @@ from fipy.variables.cellVariable import CellVariable
 import fipy.variables.cellVariable 
 
 class AddOverFacesVariable(CellVariable):
+    r"""
+    
+    The `AddOverFacesVariable` is a `CellVariable` that evaluates the
+    following summation over faces for each cell,
+
+    .. raw:: latex
+
+        $$ \frac{1}{V_P} \sum_{\text{faces}} \left[ \vec{n} \cdot \vec{G} \phi A
+        \right]_{\text{face}} $$ where $\phi$ is a
+
+    `FaceVariable` and
+
+    .. raw:: latex
+
+        $\vec{G}$ is a
+
+    `VectorFaceVariable`.
+        
+    """
+
+    
     def __init__(self,
                  faceGradient = None,
                  faceVariable = None,
                  xGrad = None,
                  yGrad = None):
-                 
-    
+        """
+        Create an `AddOverFacesVariable`.
+
+        :Parameters:
+          - `faceGradient` : The `VectorFaceVariable` object.
+          - `faceVariable` : The `FaceVariable` object.
+          - `xGrad` : Used as the x component of the `VectorFaceVariable` if `faceGradient` is `None`.
+          - `yGrad` : Used as the y component of the `VectorFaceVariable` if `faceGradient` is `None`.
+
+        """
 
         CellVariable.__init__(self, faceVariable.getMesh(), hasOld = 0)
 

@@ -40,10 +40,21 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.variables.cellVariable import CellVariable
 
 class MPhiVariable(CellVariable):
     def __init__(self, phase = None, temperature = None, parameters = None):
+        """
+        Base class for `MPhiVariable` objects
+
+        :Parameters:
+          - `phase` : The phase field.
+          - `temperature` : The temperature.
+          - `parameters` : A dictionary with keys `'kappa1'` and `'kappa2'`.
+
+        """    
         CellVariable.__init__(self, mesh = phase.getMesh())
         if type(temperature) is (type(0.) or type(0)):
             self.temperature = (temperature,)

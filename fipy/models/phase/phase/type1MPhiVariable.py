@@ -40,9 +40,20 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from mPhiVariable import MPhiVariable
 
 class Type1MPhiVariable(MPhiVariable):
+    r"""
+    The `Type1MPhiVariable` is given by,
+
+    .. raw:: latex
+
+        $$ \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
+
+    """
+    
     def _calcValue(self):        
         self.value = self.phase[:] - 0.5 + self.temperature[:] * self.phase[:] * (1 - self.phase[:])
 

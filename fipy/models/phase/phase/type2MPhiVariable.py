@@ -40,11 +40,21 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from mPhiVariable import MPhiVariable
 import Numeric
 import fipy.tools.array as array
 
 class Type2MPhiVariable(MPhiVariable):
+    r"""
+    The `Type2MPhiVariable` is given by,
+
+    .. raw:: latex
+
+        $$\phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
+
+    """
     def _calcValue(self):        
         self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * array.arctan(self.parameters['kappa 2'] * self.temperature[:])
 

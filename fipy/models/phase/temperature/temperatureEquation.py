@@ -40,14 +40,28 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 def buildTemperatureEquation(phase, parameters = {}):
+    r"""
+    Creates a temperature equation of the following form,
+    
+    .. raw:: latex
+
+        $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t}. $$
+
+    :Parameters:
+      - `phase` : The phase field.
+      - `parameters` : A dictionary with keys `'latent heat'`, `'heat capacity'`,
+        `'timeStepDuration'` and `'temperature diffusion'`.
+
+    """
+    latentHeat = parameters['latent heat']
+    heatCapacity = parameters['heat capacity']
+    phaseOld =  phase.getOld()
+    dt = parameters['timeStepDuration']
         
-        latentHeat = parameters['latent heat']
-        heatCapacity = parameters['heat capacity']
-        phaseOld =  phase.getOld()
-        dt = parameters['timeStepDuration']
-        
-        return TransientTerm(1.) - ImplicitDiffusionTerm(parameters['temperature diffusion']) - latentHeat / heatCapacity * (phase - phaseOld) / dt
+    return TransientTerm(1.) - ImplicitDiffusionTerm(parameters['temperature diffusion']) - latentHeat / heatCapacity * (phase - phaseOld) / dt

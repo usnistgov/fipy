@@ -40,6 +40,8 @@
  #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
+ 
+__docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
@@ -53,6 +55,27 @@ from noModularVariable import NoModularVariable
 def buildThetaEquation(phase = None,
                        theta = None,
                        parameters = {}):
+	r"""
+	Builds a crystal orientation equation of the following form,
+
+	.. raw:: latex
+
+	    $$ P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
+	    \frac{\partial \theta}{\partial t} 
+	    = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
+	    + \epsilon^2 \right) \nabla \theta \right] $$
+	    where
+	    $$ P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)}. $$
+        
+
+        :Parameters:
+	  - `phase` : The phase field.
+	  - `theta` : The crystal orientation.
+	  - `parameters` : A dictionary with keys `'small value'`, `'beta'`,
+	    `'mu'`, `'tau'`, `'gamma'`, `'epsilon'`, `'s'`, `'anisotropy'`, `'alpha'`,
+	    `'symmetry'`.
+
+	"""
 
         transientCoeff = TransientVariable(phase = phase, theta = theta, parameters = parameters)
 

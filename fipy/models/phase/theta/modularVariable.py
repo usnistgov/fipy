@@ -35,6 +35,7 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
  
 import Numeric
 
@@ -45,7 +46,26 @@ from modCellToFaceVariable import ModCellToFaceVariable
 from fipy.models.phase.theta.modPhysicalField import ModPhysicalField
 
 class ModularVariable(CellVariable):
+    r"""
+    The `ModularVariable` defines a variable that exisits on the circle between
+
+    .. raw:: latex
+
+        $0$ and $\pi$
+
+    """    
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
+        """
+        Creates a `ModularVariable` object.
+
+        :Parameters:
+          - `mesh` : The mesh that defines the geometry of this variable.
+          - `name` : The user-readable name of the variable.
+	  - `value` : The initial value.
+	  - `unit` : The physical units of the variable.
+	  - `hasOld` : Whether a variable keeps its old variable.
+	
+        """
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self.arithmeticFaceValue = None
         self.grad = None
@@ -59,11 +79,24 @@ class ModularVariable(CellVariable):
 	self.value = ModPhysicalField(value = value, unit = unit, array = array)
 	
     def updateOld(self):
+        """
+        Set the values of the previous solution sweep to the current values.
+        """
 	self.setValue(self.value.mod(self()))
         if self.old != None:
 	    self.old.setValue(self())
 
     def getGrad(self):
+        r"""
+        Return
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorCellVariable` (first-order gradient).
+        Adjusted for a `ModularVariable`
+        """
 	if self.grad is None:
 ##	    gridSpacing = self.mesh.getMeshSpacing()
 ##            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing
@@ -72,6 +105,17 @@ class ModularVariable(CellVariable):
 	return self.grad
 
     def getArithmeticFaceValue(self):
+        r"""
+        Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
+        of the adjacent cells:
+            
+        .. raw:: latex
+        
+           \[ \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2 \]
+
+        Adjusted for a `ModularVariable`
+           
+        """
 	if self.arithmeticFaceValue is None:
 	    from modCellToFaceVariable import ModCellToFaceVariable
 	    self.arithmeticFaceValue = ModCellToFaceVariable(self, self._modIn)
@@ -79,6 +123,16 @@ class ModularVariable(CellVariable):
  	return self.arithmeticFaceValue
 
     def getFaceGrad(self):
+        r"""
+        Return
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorFaceVariable` (second-order gradient).
+        Adjusted for a `ModularVariable`
+        """
 	if self.faceGrad is None:
 	    from modFaceGradVariable import ModFaceGradVariable
 	    self.faceGrad = ModFaceGradVariable(self, self._modIn)

@@ -41,6 +41,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -52,6 +54,41 @@ from phaseHalfAngleVariable import PhaseHalfAngleVariable
 from scSourceVariable import ScSourceVariable
 
 def buildPhaseEquation(phase = None, theta = None, temperature = None, parameters = {}, mPhi = None):
+    r"""
+    Creates a phase field equation of the following form,
+
+    .. raw:: latex
+    
+        $$ \tau_{\phi} \frac{\partial \phi}{\partial t} = \nabla \cdot
+        \left[ D \nabla \phi + A \nabla \xi \right] + \phi ( 1 - \phi
+        ) m_1 ( \phi , T) - 2 s \phi | \nabla \theta | - \epsilon^2
+        \phi | \nabla \theta |^2. $$
+
+        The coefficients $D$ and $A$ are given by,
+
+        $$ D = \alpha^2 \left[ 1 + c \beta \right]^2 $$
+
+        and
+
+        $$ A = \alpha^2 c \left[ 1 + c \beta \right] \Phi_\psi $$
+
+        where $ \beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2} $,
+        $ \Phi = \tan \left( \frac{ \theta } { 2 } + \frac{ N } { 2 } \arctan \psi \right) $,
+        $ \psi = \frac{ \phi_y } { \phi_x } $ and
+        $ \xi_x = -\phi_y $ and $ \xi_y = \phi_x $.
+
+
+
+    :Parameters:
+      - `phase` : The phase field.
+      - `theta` : The crystal orientation.
+      - `temperature` : The system temperature.
+      - `parameters` : A dictionary that includes the following keys,
+        `'tau'`, `'epsilon'`, `'s'`, `'anisotropy'`, `'alpha'`, `'symmetry'`, `'c2'`. 
+        
+    """
+            
+      
 
     thetaOld = theta.getOld()
         	
