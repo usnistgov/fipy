@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 11/20/04 {11:18:11 PM} 
+ #                                last update: 11/22/04 {9:48:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -74,11 +74,11 @@ class NthOrderBoundaryCondition(BoundaryCondition):
     def getDerivative(self, order):
 	newOrder = self.order - order
         if newOrder > 1:
-            return NthOrderBoundaryCondition(self.faces, self.value, newOrder), None
+            return NthOrderBoundaryCondition(self.faces, self.value, newOrder)
         elif newOrder == 1:
-            return FixedFlux(self.faces, self.value), None
+            return FixedFlux(self.faces, self.value)
         elif newOrder == 0:
-            return FixedValue(self.faces, self.value), None
+            return FixedValue(self.faces, self.value)
         else:
-            return None, None
+            return None
 

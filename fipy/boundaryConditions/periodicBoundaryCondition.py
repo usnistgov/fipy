@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/20/04 {11:18:18 PM} 
+ #                                last update: 11/22/04 {9:48:55 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -95,7 +95,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	return (LL, 0)
 	
     def getDerivative(self, order):
-	return self, self
+	return self
 
 
 

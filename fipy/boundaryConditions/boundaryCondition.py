@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/20/04 {11:15:40 PM} 
+ #                                last update: 11/22/04 {9:48:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -93,8 +93,8 @@ class BoundaryCondition:
 	to the term and to the derivative of the term
 	"""
 	if order == 0:
-	    return self, None
+	    return self
 	else:
-	    return None, None
+	    return None
 
 

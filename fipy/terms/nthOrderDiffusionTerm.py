@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 11/20/04 {11:41:41 PM} 
+ #                                last update: 11/22/04 {10:27:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -212,11 +212,12 @@ class NthOrderDiffusionTerm(Term):
 	self.boundaryConditions = []
         lowerBoundaryConditions = []
         for bc in boundaryConditions:
-	    thisBC, lowerBC = bc.getDerivative(self.order - 2)
-	    if thisBC:
-		self.boundaryConditions.append(thisBC)
-	    if lowerBC:
-		lowerBoundaryConditions.append(lowerBC)
+	    lowerBoundaryConditions.append(bc)
+	    
+	    bcDeriv = bc.getDerivative(self.order - 2)
+	    if bcDeriv:
+		self.boundaryConditions.append(bcDeriv)
+		
             
 	Term.__init__(self, weight = None, mesh = mesh)
 	
