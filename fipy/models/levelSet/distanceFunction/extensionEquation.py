@@ -86,7 +86,7 @@ from distanceEquation import DistanceEquation
 
 class ExtensionEquation(DistanceEquation):
 
-    def __init__(self, var = None, extensionVar = None, terminationValue = 1e10):
+    def __init__(self, var = None, extensionVar = None, terminationValue = 1e10, maskedCells = ()):
         """
 
         The `var` argument must contain both positive and negative
@@ -102,7 +102,7 @@ class ExtensionEquation(DistanceEquation):
         """
         self.distanceVar = var
         self.extensionVar = extensionVar
-        DistanceEquation.__init__(self, var, terminationValue)
+        DistanceEquation.__init__(self, var, terminationValue, maskedCells = maskedCells)
         self.numericExtensionVar = Numeric.array(self.extensionVar.copy())
 
     def solve(self, dt = None):
@@ -111,7 +111,7 @@ class ExtensionEquation(DistanceEquation):
         DistanceEquation.solve(self)
         self.extensionVar.setValue(self.numericExtensionVar)
 
-    def _calcInterfaceValues(self):
+    def _calcInterfaceValues(self, maskedCells = ()):
         """
 
         Sets the values in cells at the interface (cells that have a neighbour
@@ -148,7 +148,7 @@ class ExtensionEquation(DistanceEquation):
 
         """
         
-        setValueFlag = DistanceEquation._calcInterfaceValues(self)
+        setValueFlag = DistanceEquation._calcInterfaceValues(self, maskedCells)
         
         positiveInterfaceCellFlag = Numeric.logical_and(Numeric.where(setValueFlag == 1, 1, 0), self.var > 0)
         negativeInterfaceCellIDs = Numeric.nonzero(Numeric.logical_and(Numeric.where(setValueFlag == 1, 1, 0), self.var < 0))
@@ -183,7 +183,7 @@ class ExtensionEquation(DistanceEquation):
         u2 = self.numericExtensionVar[adjCellID2]
 
         self.numericExtensionVar[cellID] = (u1 * n1grad * area1 + u2 * n2grad * area2) / (area1 * n1grad + area2 * n2grad)
-
+        
         return val
 
 def _test(): 
