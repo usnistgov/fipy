@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/19/04 {5:22:24 PM} 
+ #                                last update: 11/20/04 {11:15:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,9 +89,12 @@ class BoundaryCondition:
         return self.faces
         
     def getDerivative(self, order):
+	"""Return a tuple of the boundary conditions to apply
+	to the term and to the derivative of the term
+	"""
 	if order == 0:
-	    return self
+	    return self, None
 	else:
-	    return None
+	    return None, None
 
 

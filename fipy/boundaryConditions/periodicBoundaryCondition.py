@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/19/04 {5:25:09 PM} 
+ #                                last update: 11/20/04 {11:18:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -49,6 +49,7 @@ import Numeric
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import array
+from fipy.tools.sparseMatrix import SparseMatrix
 
 class PeriodicBoundaryCondition(BoundaryCondition):
     def __init__(self, faces1, faces2):
@@ -63,7 +64,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	self.adjacentCell1Ids = Numeric.array([face.getCellID() for face in self.faces1])
 	self.adjacentCell2Ids = Numeric.array([face.getCellID() for face in self.faces2])
 
-    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off):
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
 	**b** is unchanged.
 	
@@ -88,13 +89,13 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 	LL.addAt(diagonalContribution, self.adjacentCell1Ids, self.adjacentCell1Ids)
 	LL.addAt(offdiagonalContribution, self.adjacentCell1Ids, self.adjacentCell2Ids)
-	LL.addAt(offdiagonalContribution, self.adjacentCell1Ids, self.adjacentCell2Ids)
+	LL.addAt(offdiagonalContribution, self.adjacentCell2Ids, self.adjacentCell1Ids)
 	LL.addAt(diagonalContribution, self.adjacentCell2Ids, self.adjacentCell2Ids)
 	
 	return (LL, 0)
 	
     def getDerivative(self, order):
-	return self
+	return self, self
 
 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 11/19/04 {5:21:41 PM} 
+ #                                last update: 11/20/04 {11:41:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -212,11 +212,11 @@ class NthOrderDiffusionTerm(Term):
 	self.boundaryConditions = []
         lowerBoundaryConditions = []
         for bc in boundaryConditions:
-            bcDeriv = bc.getDerivative(self.order - 2)
-	    if bcDeriv:
-		self.boundaryConditions.append(bcDeriv)
-	    else:
-		lowerBoundaryConditions.append(bc)
+	    thisBC, lowerBC = bc.getDerivative(self.order - 2)
+	    if thisBC:
+		self.boundaryConditions.append(thisBC)
+	    if lowerBC:
+		lowerBoundaryConditions.append(lowerBC)
             
 	Term.__init__(self, weight = None, mesh = mesh)
 	
@@ -272,6 +272,9 @@ class NthOrderDiffusionTerm(Term):
                 
 	    M = self.getMesh().getMaxFacesPerCell()
 	    
+## 	    print self
+## 	    print self.boundaryConditions
+	    
             for boundaryCondition in self.boundaryConditions:
 		LL, bb = boundaryCondition.buildMatrix(N, M, self.coeff,-self.coeff, coeffScale)
 		
@@ -285,6 +288,11 @@ class NthOrderDiffusionTerm(Term):
             volMatrix.addAtDiagonal(1. / volumes )
             lowerOrderL = volMatrix * lowerOrderL
     
+## 	    print "coefficientMatrix"
+## 	    print coefficientMatrix
+## 	    print "lowerOrderL"
+## 	    print lowerOrderL
+	    
             L = coefficientMatrix * lowerOrderL
 
             iseven = not ((self.order / 2) % 2)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 11/19/04 {7:27:42 PM} 
+ #                                last update: 11/20/04 {11:32:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,6 +66,14 @@ class MatrixEquation(Equation):
             L, b = term.buildMatrix(oldArray = self.var.getOld(), coeffScale = self.terms[0].getCoeffScale(), varScale = varScale, dt = dt)
             self.matrix += L
             self.b += b
+	    
+## 	    print term
+## 	    print L
+## 	    print b
+## 	    
+## 	print self
+## 	print self.matrix
+## 	print self.b
 
     def postSolve(self, array):
 	pass
