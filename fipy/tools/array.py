@@ -134,17 +134,35 @@ def sqrtDot(a1, a2):
 def _sqrtDotPy(a1, a2):
     return sqrt(sum((a1*a2)[:],1))
 
+##def _sqrtDotIn(a1, a2):
+##    ni, nj = Numeric.shape(a1)
+##    result = Numeric.zeros((ni,),'d')
+##    inline.runInlineLoop1("""
+##	int j;
+##	result(i) = 0.;
+##	for (j = 0; j < nj; j++)
+##	{
+##	    result(i) += a1(i,j) * a2(i,j);
+##	}
+##	result(i) = sqrt(result(i));
+##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
+##    return result
+
 def _sqrtDotIn(a1, a2):
     ni, nj = Numeric.shape(a1)
     result = Numeric.zeros((ni,),'d')
-    inline.runInlineLoop1("""
-	int j;
-	result(i) = 0.;
-	for (j = 0; j < nj; j++)
+    inline.runInline("""
+        int i;
+        for (i = 0; i < ni; i++)
 	{
-	    result(i) += a1(i,j) * a2(i,j);
-	}
-	result(i) = sqrt(result(i));
+	    int j;
+            result(i) = 0.;
+            for (j = 0; j < nj; j++)
+            {
+	        result(i) += a1(i,j) * a2(i,j);
+            }
+            result(i) = sqrt(result(i));
+        }
     """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
     return result
 

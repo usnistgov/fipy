@@ -50,7 +50,7 @@ class ArithmeticCellToFaceVariable(CellToFaceVariable):
 	
     def _calcValueIn(self, alpha, id1, id2):
 	inline.runInlineLoop1("""
-	    double	cell2 = var(id2(i));
+	    double cell2 = var(id2(i));
 	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
 	""",
 	var = self.var.getNumericValue(),

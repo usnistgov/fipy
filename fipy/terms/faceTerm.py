@@ -74,10 +74,10 @@ class FaceTerm(Term):
 	    }
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
-	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 diag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
-	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
-	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
-	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 diag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
+        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
+        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
+        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
+        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
 
         for boundaryCondition in self.boundaryConditions:
             LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])

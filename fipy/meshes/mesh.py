@@ -149,8 +149,8 @@ class Mesh:
 	return (self.cellID1, self.cellID2)
 	
     def calcAdjacentCellIDs(self):
-	self.cellID1 = [face.getCellID(0) for face in self.faces]
-	self.cellID2 = [face.getCellID(1) for face in self.faces]
+	self.cellID1 = Numeric.array([face.getCellID(0) for face in self.faces])
+	self.cellID2 = Numeric.array([face.getCellID(1) for face in self.faces])
 
     def getFaceOrientations(self):
         return self.faceOrientations

@@ -82,7 +82,7 @@ def getParameters(nx ,ny):
     faces = mesh.getFaces()
     diffCoeff = Numeric.zeros((len(faces)),'d')
     for face in faces:
-        diffCoeff[face.getId()] = diffFunc(face.getCenter())
+        diffCoeff[face.getID()] = diffFunc(face.getCenter())
         
     eq = DiffusionEquation(
         var,

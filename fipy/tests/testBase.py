@@ -71,7 +71,7 @@ class TestBase(unittest.TestCase):
     def getTestValues(self):
 	values = self.var.getNumericValue().copy()
 	for cell in self.mesh.getCells():
-	    id = cell.getId()
+	    id = cell.getID()
 	    values[id] = self.getTestValue(cell)
 	return values
 	
