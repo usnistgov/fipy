@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+
+## 
+ # ###################################################################
+ #  PFM - Python-based phase field solver
+ # 
+ #  FILE: "testStdyConvectionDiffusion.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 12/4/03 {10:24:04 PM} 
+ #  Author: Jonathan Guyer
+ #  E-mail: guyer@nist.gov
+ #    mail: NIST
+ #     www: http://ctcms.nist.gov
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  PFM is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-10 JEG 1.0 original
+ # ###################################################################
+ ##
+
+"""Test steady convection diffusion solutions
+"""
+ 
+import unittest
+from meshes.grid2D import Grid2D
+from equations.stdyConvDiffEquation import SteadyConvectionDiffusionEquation
+from solvers.linearCGSSolver import LinearCGSSolver
+from boundaryConditions.fixedValue import FixedValue
+from boundaryConditions.fixedFlux import FixedFlux
+from iterators.iterator import Iterator
+from variables.variable import Variable
+import Numeric
+
+class TestSteadyConvectionDiffusion(unittest.TestCase):
+    """Generic steady-state diffusion class
+    
+    	Constructs a mesh, variable, equation, and iterator based
+	on the mesh dimensions specified by the child class
+    """
+    def setUp(self):
+
+        self.valueLeft = 0.
+        self.valueRight = 1.
+
+        self.mesh = Grid2D(self.L/self.nx,1.,self.nx,self.ny)
+        
+        self.var = Variable(
+            name = "concentration",
+            mesh = self.mesh,
+	    value = self.valueLeft,
+            viewer = 'None')
+
+	self.eq = SteadyConvectionDiffusionEquation(
+	    var = self.var,
+	    diffusionCoeff = self.diffCoeff,
+	    convectionCoeff = self.convCoeff,
+	    solver = LinearCGSSolver(
+		tolerance = 1.e-15, 
+		steps = 1000
+	    ),
+	    boundaryConditions=(
+		FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
+		FixedValue(faces = self.mesh.getFacesRight(),value = self.valueRight),
+		FixedFlux(faces = self.mesh.getFacesTop(),value = 0.),
+		FixedFlux(faces = self.mesh.getFacesBottom(),value = 0.)
+	    )
+	)
+
+        self.it = Iterator((self.eq,))
+
+    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
+        """Fail if the two objects are unequal by more than tol.
+        """
+        if abs(first - second) > tol:
+            raise self.failureException, (msg or '%s !~ %s' % (first, second))
+        
+    def testResult(self):
+        self.it.iterate(steps = 1, timeStep = 1.)
+        array = self.var.getArray()
+	print array
+        (lx,ly) = self.mesh.getPhysicalShape()
+        vl = self.valueLeft
+        vr = self.valueRight
+
+        for cell in self.mesh.getCells():
+            coords = cell.getCenter()
+            id = cell.getId()
+	    x = coords[0]
+	    val = (1. - Numeric.exp(-self.convCoeff[0] * x / (self.diffCoeff * self.L))) / (1. - Numeric.exp(-self.convCoeff[0]  / (self.diffCoeff * self.L)))
+            norm = abs(array[id] - val)        
+            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
+            
+	    
+class  TestSteadyConvectionDiffusion1D(TestSteadyConvectionDiffusion):
+    """Steady-state 1D diffusion on a 100x1 mesh
+    """
+    def setUp(self):
+	self.L = 10.
+	self.nx = 10
+	self.ny = 1
+	self.diffCoeff = 1.
+	self.convCoeff = (100.,0)
+	TestSteadyConvectionDiffusion.setUp(self)
+
+def suite():
+    theSuite = unittest.TestSuite()
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1D))
+    return theSuite
+    
+if __name__ == '__main__':
+    theSuite = suite()
+    unittest.TextTestRunner(verbosity=2).run(theSuite)
+
+            
+            
