@@ -156,7 +156,8 @@ class Variable:
 	return Variable
 	
     def getUnaryOperatorVariable(self, op):
-	parentClass = self.getVariableClass()
+        parentClass = self.getVariableClass()
+
 	class unOp(parentClass):
 	    def __init__(self, op, var, mesh = None):
 		if mesh is None:
@@ -274,8 +275,11 @@ class Variable:
         return self.getBinaryOperatorVariable(Numeric.greater_equal, other)
 
     def tan(self):
-	return self.getUnaryOperatorVariable(Numeric.tan)
-	
+        return self.getUnaryOperatorVariable(Numeric.tan)
+
+    def arctan(self):
+        return self.getUnaryOperatorVariable(Numeric.arctan)
+
     def transpose(self):
 	if self.transposeVar is None:
 	    from transposeVariable import TransposeVariable

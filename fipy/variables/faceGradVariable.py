@@ -1,3 +1,4 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
@@ -31,6 +32,7 @@
  #  
  # ###################################################################
  ##
+"""
 
 from vectorFaceVariable import VectorFaceVariable
 import Numeric
