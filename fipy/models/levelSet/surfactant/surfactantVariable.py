@@ -94,6 +94,10 @@ class SurfactantVariable(CellVariable):
         
         self.value = distanceVariable.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
 
+    def getInterfaceValue(self):
+        return self * self.mesh.getCellVolumes() / distanceVariable.getCellInterfaceAreas()
+        
+
 def _test(): 
     import doctest
     return doctest.testmod()
