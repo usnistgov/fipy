@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 2/2/05 {5:08:14 PM} 
+ #                                last update: 2/19/05 {9:04:20 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -563,7 +563,7 @@ f = open('LICENSE.txt', 'r')
 license = '\n' + f.read() + '\n'
 f.close()
 
-import py2app
+## import py2app
 
 dist = setup(	name = "FiPy",
 	app = [os.path.join('examples','levelSet','electroChem','input.py')],
