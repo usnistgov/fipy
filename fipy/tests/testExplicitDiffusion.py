@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 11/28/03 {6:13:48 PM} 
+ #                                last update: 12/3/03 {4:01:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

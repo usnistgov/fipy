@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/1/03 {3:15:37 PM} 
+                               last update: 12/3/03 {4:39:19 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -132,9 +132,7 @@ class PhaseEquation(MatrixEquation):
         epsilon = self.parameters['epsilon']
 
         sp += (2*s + epsilon**2 * thetaMag) * thetaMag
-
-        aa = (2*s + epsilon**2 * thetaMag) * thetaMag
-
+	
         ## anisotropy
 
 ##        z = Numeric.atan2(self.dphi[:,1],self.dphi[:,0]);
@@ -147,6 +145,6 @@ class PhaseEquation(MatrixEquation):
         
 ##        sc + = phaseTools.add_over_faces_inline(self.ff,-self.dphi[:,1],self.dphi[:,0],mesh)
 
-        self.scTerm.setScCoeff(sc)
-        self.spTerm.setSpCoeff(sp)
+        self.scTerm.setSourceCoeff(sc)
+        self.spTerm.setSourceCoeff(sp)
 

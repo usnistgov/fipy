@@ -5,7 +5,7 @@
 
  FILE: "scSourceTerm.py"
                                    created: 11/28/03 {11:36:25 AM} 
-                               last update: 11/28/03 {11:14:13 AM} 
+                               last update: 12/3/03 {3:11:34 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,20 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-from cellTerm import CellTerm
+from sourceTerm import SourceTerm
 
-class ScSourceTerm(CellTerm):
+class ScSourceTerm(SourceTerm):
     """
-    Sp source term. This term in general should be positive
-    for stability. Added to the matrix diagonal.
+    Sc source term. This term in general should be positive
+    for stability. Added to the b vector.
     """
-    def __init__(self, scCoeff, mesh):
-        stencil = (1., 0., 0.)
-	CellTerm.__init__(self, stencil, mesh) 
-	self.scCoeff = scCoeff
-	    
-    def updateCoeff(self, dt):
-	self.coeff = self.scCoeff * self.mesh.getCellVolumes()
-
-    def setScCoeff(self, scCoeff):
-        self.scCoeff = scCoeff
+    def __init__(self, sourceCoeff, mesh):
+	weight = {'b vector': 1, 'new value': 0, 'old value': 0}
+	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 

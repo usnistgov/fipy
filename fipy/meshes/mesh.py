@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/3/03 {10:45:11 AM} 
+ #                                last update: 12/3/03 {4:37:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -133,7 +133,7 @@ class Mesh:
         N = len(faces)
         orientations = Numeric.zeros((N),'d')
         for i in range(N):
-            orientations = faces[i].getOrientation()
+            orientations += faces[i].getOrientation()
         self.faceOrientations = orientations
 
     def getMaxFacesPerCell(self):
@@ -232,7 +232,7 @@ class Mesh:
 	
     def calcOrientedAreaProjections(self):
 	N = len(self.faceNormals)
-	self.areaProjections = self.areaProjections * Numeric.reshape(self.getFaceOrientations(),(N,1))
+	self.orientedAreaProjections = self.areaProjections * Numeric.reshape(self.getFaceOrientations(),(N,1))
 	
     def calcFaceTangents(self, faces):
 	N = len(faces)
@@ -256,4 +256,4 @@ class Mesh:
 	self.calcFaceToCellDistances(faces)
 	self.calcFaceNormals(faces)
 	self.calcAreaProjections()
-	self.calcOrientedAreaProjects()
+	self.calcOrientedAreaProjections()

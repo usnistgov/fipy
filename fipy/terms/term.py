@@ -5,7 +5,7 @@
 
  FILE: "term.py"
                                    created: 11/12/03 {10:54:37 AM} 
-                               last update: 11/17/03 {4:11:27 PM} 
+                               last update: 12/3/03 {3:00:51 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -43,8 +43,8 @@ they have been modified.
 import Numeric
 
 class Term:
-    def __init__(self,stencil):
-	self.stencil = stencil
+    def __init__(self,weight):
+	self.weight = weight
 	self.coeff = 1.
 	
     def updateCoeff(self,var):

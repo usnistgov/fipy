@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/24/03 {10:21:50 AM} 
+ #                                last update: 12/3/03 {3:45:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -70,7 +70,7 @@ class BoundaryCondition:
 	    
 	    'coeff' -- 'Term' coefficient value at this face
 	    
-	    'stencil' -- equation stencil for this 'Term'
+	    'weight' -- equation weight for this 'Term'
 	
 	A 'tuple' of (LL,bb) is calculated, to be added to the equation's (L,b)
 	matrices at the cell bounding the specified face.

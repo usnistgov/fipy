@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/24/03 {10:23:47 AM} 
+ #                                last update: 12/3/03 {3:39:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,7 @@ class FixedFlux(BoundaryCondition):
     """Fixed flux (Neumann) boundary condition
     """
     
-    def update(self,face,coeff,stencil):
+    def update(self,face,coeff,weight):
 	"""Leave L unchanged and add gradient to b
 	
 	Arguments:
@@ -59,7 +59,7 @@ class FixedFlux(BoundaryCondition):
 	    
 	    'coeff' -- *unused*
 
-	    'stencil' -- *unused*
+	    'weight' -- *unused*
 	"""
         return (0, self.value * face.getArea())
 

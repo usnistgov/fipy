@@ -5,7 +5,7 @@
 
  FILE: "explicitDiffusionTerm.py"
                                    created: 11/27/03 {11:39:03 AM} 
-                               last update: 11/28/03 {10:12:45 AM} 
+                               last update: 12/3/03 {3:55:26 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,11 +44,8 @@ from diffusionTerm import DiffusionTerm
 
 class ExplicitDiffusionTerm(DiffusionTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions):
-        """
-        The stencil ( 'None', (1., 1.)) represents an entirely explicit scheme
-        """
-        stencil = ( 'None', (1., 1.))
-	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions,stencil)
+	weight = {'explicit':{'cell 1 diag':1, 'cell 1 offdiag': -1, 'cell 2 diag':1, 'cell 2 offdiag': -1}}
+	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions,weight)
 	
 	
 

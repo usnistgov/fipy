@@ -5,7 +5,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 11/26/03 {10:34:36 AM} 
+                               last update: 12/3/03 {4:01:18 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,19 +44,19 @@ import Numeric
 from term import Term
 
 class CellTerm(Term):
-    def __init__(self,stencil,mesh):
-	"""
-	stencil = [b, phi, phi_old]
-	"""
-	Term.__init__(self,stencil)
+    def __init__(self,weight,mesh):
+	Term.__init__(self,weight)
         self.mesh = mesh
 	
     def buildMatrix(self,L,array,b):
 	N = len(array)
-        stencil = self.stencil
-	b += array*self.coeff*self.stencil[2]
-	b += Numeric.ones([N])*self.coeff*self.stencil[0]
-	L.update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
+        weight = self.weight
+# 	print "array: ", array
+# 	print "coeff: ", self.coeff
+# 	print "weight: ", weight['old value']
+	b += array*self.coeff*weight['old value']
+	b += Numeric.ones([N])*self.coeff*weight['b vector']
+	L.update_add_pyarray(Numeric.ones([N])*self.coeff*weight['new value'])
 	
 		
 		

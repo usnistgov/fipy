@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "spSourceTerm.py"
+ FILE: "sourceTerm.py"
                                    created: 11/28/03 {11:36:25 AM} 
-                               last update: 12/3/03 {3:32:56 PM} 
+                               last update: 12/3/03 {3:14:55 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,15 @@ they have been modified.
 ###################################################################
 """
 
-from sourceTerm import SourceTerm
+from cellTerm import CellTerm
 
-class SpSourceTerm(SourceTerm):
-    """
-    Sp source term. This term in general should be positive
-    for stability. Added to the matrix diagonal.
-    """
-    def __init__(self, sourceCoeff, mesh):
-	weight = {'b vector': 0, 'new value': 1, 'old value': 0}
-	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 
+class SourceTerm(CellTerm):
+    def __init__(self, sourceCoeff, weight, mesh):
+	CellTerm.__init__(self, weight, mesh) 
+	self.sourceCoeff = sourceCoeff
+	    
+    def updateCoeff(self, dt):
+	self.coeff = self.sourceCoeff * self.mesh.getCellVolumes()
+
+    def setSourceCoeff(self, sourceCoeff):
+        self.sourceCoeff = sourceCoeff

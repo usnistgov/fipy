@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/28/03 {9:55:23 PM} 
+ #                                last update: 12/3/03 {3:55:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,62 +45,58 @@ from term import Term
 import Numeric
 
 class FaceTerm(Term):
-    def __init__(self,stencil,mesh,boundaryConditions):
-	"""
-        Stencil is for a mixed explicit/implicit scheme
-        stencil = ( ( phi_adj, phi ) , ( phi_adj_exp , phi_exp ) )
-        for a completly implicit scheme use:
-        ( ( 1, 1) , 'None' )
-        and for an explicit scheme use:
-        ( 'None', ( 1, 1) )
-        for a mixed explicit, implicit scheme:
-        ( ( .8, .8), (.2, .2) ) for example
-	"""
-	Term.__init__(self,stencil)
+    def __init__(self,weight,mesh,boundaryConditions):
+	Term.__init__(self,weight)
         self.mesh = mesh
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 	
     def buildMatrix(self,L,array,b):
+	"""Implicit portion considers
+	"""
 	
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	id1 = id1[:self.interiorN]
 	id2 = id2[:self.interiorN]
 	
         ## implicit
-        if self.stencil[0]!='None':
-            stencil = self.stencil[0]
-            aa =  self.coeff[:self.interiorN]*stencil[1]
-            bb = -self.coeff[:self.interiorN]*stencil[0]
+        if self.weight.has_key('implicit'):
+	    weight = self.weight['implicit']
+            aa = self.coeff[:self.interiorN]*weight['cell 1 diag']
+            ab = self.coeff[:self.interiorN]*weight['cell 1 offdiag']
+	    ba = self.coeff[:self.interiorN]*weight['cell 2 offdiag']
+	    bb = self.coeff[:self.interiorN]*weight['cell 2 diag']
 	
 	    L.update_add_something(aa,id1,id1)
-	    L.update_add_something(bb,id1,id2)
-	    L.update_add_something(bb,id2,id1)
-	    L.update_add_something(aa,id2,id2)
+	    L.update_add_something(ab,id1,id2)
+	    L.update_add_something(ba,id2,id1)
+	    L.update_add_something(bb,id2,id2)
             
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],stencil)
+                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],weight)
                     L[cellId,cellId] += LL
                     b[cellId] += bb
 
         ## explicit
-        if self.stencil[1]!='None':
-            stencil = self.stencil[1]
-            aa = -self.coeff[:self.interiorN]*stencil[1]
-            bb = self.coeff[:self.interiorN]*stencil[0]
+        if self.weight.has_key('explicit'):
+	    weight = self.weight['explicit']
+            aa = self.coeff[:self.interiorN]*weight['cell 1 diag']
+            ab = self.coeff[:self.interiorN]*weight['cell 1 offdiag']
+	    ba = self.coeff[:self.interiorN]*weight['cell 2 offdiag']
+	    bb = self.coeff[:self.interiorN]*weight['cell 2 diag']
 
             for i in range(self.interiorN):
-                b[id1[i]] += aa[i] * array[id1[i]] + bb[i] * array[id2[i]]
-                b[id2[i]] += aa[i] * array[id2[i]] + bb[i] * array[id1[i]]
+                b[id1[i]] -= aa[i] * array[id1[i]] + ab[i] * array[id2[i]]
+                b[id2[i]] -= bb[i] * array[id2[i]] + ba[i] * array[id1[i]]
 	
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],stencil)
+                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],weight)
                     b[cellId] -= LL * array[cellId]
                     b[cellId] += bb
         

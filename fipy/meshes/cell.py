@@ -7,7 +7,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 12/1/03 {3:50:54 PM} 
+ #                                last update: 12/3/03 {3:26:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

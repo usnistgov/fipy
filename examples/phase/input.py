@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/1/03 {3:02:51 PM} 
+ #                                last update: 12/3/03 {4:36:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -76,9 +76,10 @@ phaseParameters={
 valueLeft=1.
 valueRight=1.
 
-L = 1.5
-nx = 100
+L = 10
+nx = 10
 dx = L/nx
+dx = 1.
 
 mesh = Grid2D(dx,1.,nx,1)
 
@@ -125,7 +126,7 @@ it = Iterator((eq,))
 
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
-it.iterate(100,0.02)
+it.iterate(10,0.02)
 # profile.stop()
 
 print phase.getArray()

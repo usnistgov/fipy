@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/1/03 {3:55:22 PM} 
+ #                                last update: 12/3/03 {3:32:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -69,6 +69,7 @@ class Face:
 	self.center = self.calcCenter()
         self.area = self.calcArea()
 	self.setNormal()
+	self.orientation = 1
             
     def addBoundingCell(self, cell, orientation):
 	"""Add cell to the list of Cells which lie on either side of this Face.
@@ -78,7 +79,6 @@ class Face:
 	self.orientation = -orientation
 	self.setCellDistance()
 	self.setFaceToCellDistances()
-
         
     def getCells(self):
 	"""Return the Cells which lie on either side of this Face.

@@ -5,7 +5,7 @@
 
  FILE: "transientTerm.py"
                                    created: 11/12/03 {11:36:25 AM} 
-                               last update: 11/26/03 {11:14:13 AM} 
+                               last update: 12/3/03 {3:06:03 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,8 +45,8 @@ import Numeric
 
 class TransientTerm(CellTerm):
     def __init__(self,tranCoeff,mesh):
-        stencil = (0,1,1)
-	CellTerm.__init__(self,stencil,mesh) 
+	weight = {'b vector': 0, 'new value': 1, 'old value': 1}
+	CellTerm.__init__(self,weight,mesh) 
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):

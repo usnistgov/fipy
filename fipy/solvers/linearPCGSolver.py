@@ -5,7 +5,7 @@
 
  FILE: "linearPCGSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 11/26/03 {11:11:21 AM} 
+                               last update: 12/3/03 {4:38:27 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler

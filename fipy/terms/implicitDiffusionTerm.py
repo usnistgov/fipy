@@ -4,7 +4,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 11/28/03 {10:13:57 AM} 
+ #                                last update: 12/3/03 {3:14:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,11 +37,8 @@ from diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions):
-	"""
-	The stencil ( 'None', (1., 1.)) represents an entirely implicit scheme
-	"""
-	stencil = ( (1., 1.), 'None' )
-	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions, stencil)
+	weight = {'implicit':{'cell 1 diag':1, 'cell 1 offdiag': -1, 'cell 2 diag':1, 'cell 2 offdiag': -1}}
+	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions, weight)
 	 
 	 
 

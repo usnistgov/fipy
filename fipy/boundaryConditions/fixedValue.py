@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/24/03 {10:24:16 AM} 
+ #                                last update: 12/3/03 {3:44:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,7 @@ class FixedValue(BoundaryCondition):
     """Fixed value (Dirichlet) boundary condition
     """
     
-    def update(self,face,coeff,stencil):
+    def update(self,face,coeff,weight):
 	"""???
 	
 	Arguments:
@@ -59,12 +59,9 @@ class FixedValue(BoundaryCondition):
 	    
 	    'coeff' -- 'Term' coefficient value at this face
 	    
-	    'stencil' -- equation stencil for this 'Term'
-	    
-	**Unclean design**.  Each BC class has to know how the term stores
-	its stencil.
+	    'weight' -- equation weight for this 'Term'
 	"""
-        return (coeff * stencil[1],coeff*stencil[0]*self.value)
+        return (coeff * weight['cell 1 diag'],-coeff*weight['cell 1 offdiag']*self.value)
 
 
 
