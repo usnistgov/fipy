@@ -59,9 +59,9 @@ class TestDump(unittest.TestCase):
             value = 100.0)
 
         self.data = (theta, mesh)
-        tempfile.mktemp()
-        dump.write(self.data, tempfile)
-        self.dataUnpickled = dump.read(tempfile)
+        tempFile = tempfile.mktemp()
+        dump.write(self.data, tempFile)
+        self.dataUnpickled = dump.read(tempFile)
 
     def assertEqual(self, first, second, msg = None):
         if first == second:
