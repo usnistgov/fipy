@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 9/3/04 {10:35:55 PM} 
+ #                                last update: 10/7/04 {10:12:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -77,6 +77,7 @@ Here is a test for increasing the resolution:
    1
    
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
  
@@ -86,30 +87,21 @@ class Grid2DGistViewer(GistViewer):
     
     def __init__(self, var = None, minVal=None, maxVal=None, palette = 'heat.gp', grid = 1, resolution = 1, limits = None, dpi = 75):
         """
-        The following arguments can be given to a `Grid2DGistViewer`:
-
-        `var` - The variable that is to be plotted
-
-        `minVal` - The minimum value to display in the plot. The
-        default will use the minimum value from the variable values.
-
-        `maxVal` - The maximum value to display in the plot. The
-        default will use the maximum value from the variable values.
-
-        `palette` - The color scheme to use for the contour
-        plot. Default is `heat.gp`. Another choice would be
-        `rainbow.gp`.
-
-        `grid` - Whether to show the grid lines in the plot. Default
-        is 1. Use 0 to switch them off.
-
-        `resolution` - Is an integer greater than 0. It corresponds to
-        the amount of resolution required for the plot. The default is
-        1. The increase in resolution is equivalent to `2**(resolution - 1)`.
-
-        `limits` - Plot limits of interest, tuple of four values
-        corresponding to `(xmin, xmax, ymin, ymax)`
-        
+	:Parameters:
+	  - `var`: The variable that is to be plotted
+	  - `minVal`: The minimum value to display in the plot. The
+	    default will use the minimum value from the variable values.
+	  - `maxVal`: The maximum value to display in the plot. The
+	    default will use the maximum value from the variable values.
+	  - `palette`: The color scheme to use for the contour
+	    plot. Default is `heat.gp`. Another choice would be `rainbow.gp`.
+	  - `grid`: Whether to show the grid lines in the plot. Default
+	    is 1. Use 0 to switch them off.
+	  - `resolution`: Is an integer greater than 0. It corresponds to
+	    the amount of resolution required for the plot. The default is
+	    1. The increase in resolution is equivalent to `2**(resolution - 1)`.
+	  - `limits`: Plot limits of interest. A tuple of four values corresponding 
+	    to `(xmin, xmax, ymin, ymax)`
         """
 
         self.var = var

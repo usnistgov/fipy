@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/30/04 {5:59:29 PM} 
+ #                                last update: 10/7/04 {8:06:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -233,12 +233,14 @@ class build_docs (Command):
 
 
 	    if self.guide:
-		os.system("pdflatex fipy.tex")
-		os.system("pdflatex fipy.tex")
+		os.system("pdflatex fipy")
+		os.system("makeindex fipy")
+		os.system("pdflatex fipy")
 		
 	    if self.apis:
-		os.system("pdflatex reference.tex")
-		os.system("pdflatex reference.tex")
+		os.system("pdflatex reference")
+		os.system("makeindex reference")
+		os.system("pdflatex reference")
 
 ##	    except:
 ##		pass

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:46:31 PM} 
+ #                                last update: 10/7/04 {7:51:29 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -69,7 +69,7 @@ iterating to equilibrium
 we confirm that the far-field phases have remained separated
 
     >>> ends = Numeric.take(fields['phase'], (0,-1))
-    >>> Numeric.allclose(, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields has appropriately segregated into into

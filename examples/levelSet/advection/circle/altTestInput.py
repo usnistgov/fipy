@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:48:55 PM} { 1:23:41 PM}
+ #                                last update: 10/6/04 {5:30:55 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -84,8 +84,8 @@ from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderA
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
+## fudge = calibrate_profiler(10000)
+## profile = Profiler('profile', fudge=fudge)
 
 L = 1.
 nx = 100
@@ -128,4 +128,4 @@ if __name__ == '__main__':
         
         it.timestep(dt = timeStepDuration)
         distanceViewer.plot()
-profile.stop()
+## profile.stop()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {3:15:15 PM} { 5:14:21 PM}
+ #                                last update: 10/7/04 {8:23:02 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -127,7 +127,8 @@ data and compares it with the `phase` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.anisotropy
-   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0], testFile)
+   >>> gzfile = 'gunzip --fast -c < %s/%s'
+   >>> gzfile = gzfile%(examples.phase.anisotropy.__path__[0], testFile)
    >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 8/31/04 {4:00:26 PM} 
+ #                                last update: 10/6/04 {5:10:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -83,6 +83,7 @@ The following is a test case:
    1
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

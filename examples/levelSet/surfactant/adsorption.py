@@ -8,7 +8,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 9/10/04 {10:40:08 PM} 
+ #                                last update: 10/6/04 {5:40:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -113,6 +113,7 @@ Compare the analaytical and numerical results:
 
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

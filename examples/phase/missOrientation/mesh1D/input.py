@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/6/04 {3:48:31 PM} 
+ #                                last update: 10/7/04 {8:29:01 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 In this example a phase equation is solved in 1 dimension with a
 missorientation present. The phase equation is given by:
@@ -94,7 +94,8 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.mesh1D
-   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.mesh1D.__path__[0],'test.gz')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'
+   >>> gzfile = gzfile%(examples.phase.missOrientation.mesh1D.__path__[0],'test.gz')
    >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

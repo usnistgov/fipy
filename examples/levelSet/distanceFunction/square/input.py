@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:36:43 PM} { 1:23:41 PM}
+ #                                last update: 10/7/04 {9:21:39 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 Here we solve the level set equation in two dimensions for a square. The equation is
 given by:
@@ -49,10 +49,13 @@ given by:
 .. raw:: latex
 
     \begin{align*}
-    $$ | \\nabla \\phi | = 1 $$
-    $$ \\phi = 0 \;\; \\text{at} $$
-    $$ x = \\left( L / 3, 2 L / 3 \\right) \;\; \\text{for} \;\; L / 3 \\le y \\le 2 L / 3 $$
-    $$ y = \\left( L / 3, 2 L / 3 \\right) \;\; \\text{for} \;\; L / 3 \\le x \\le 2 L / 3 $$
+    | \nabla \phi | &= 1 && \\
+    \phi &= 0 && \text{at} \qquad \begin{cases}
+	x = \left( L / 3, 2 L / 3 \right) 
+	& \text{for $L / 3 \le y \le 2 L / 3$} \\
+	y = \left( L / 3, 2 L / 3 \right) 
+	& \text{for $L / 3 \le x \le 2 L / 3$}
+    \end{cases}
     \end{align*}
     
 
@@ -80,6 +83,7 @@ Do the tests:
 
 """
 __docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D

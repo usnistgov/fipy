@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/6/04 {3:39:27 PM} 
+ #                                last update: 10/7/04 {8:28:36 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -95,7 +95,8 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.circle
-   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.circle.__path__[0],'test.gz')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'
+   >>> gzfile = gzfile%(examples.phase.missOrientation.circle.__path__[0],'test.gz')
    >>> filestream=os.popen(gzfile, 'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

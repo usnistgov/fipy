@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/3/04 {10:40:08 PM} 
+ #                                last update: 10/7/04 {10:08:00 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -79,13 +79,6 @@ class Variable:
 	"""
 	Create a Variable.
 	
-	:Parameters:
-	  - `value`: the initial value
-	  - `unit`: the physical units of the variable
-	  - `array`: the storage array for the variable
-	  - `name`: the user-readable name of the variable
-	  - `mesh`: the mesh that defines the geometry of this variable
-	  
 	    >>> Variable(value = 3)
 	    Variable(value = 3)
 	    >>> Variable(value = 3, unit = "m")
@@ -95,8 +88,14 @@ class Variable:
 	     [3,3,]
 	     [3,3,]],'m'))
 
+	:Parameters:
+	  - `value`: the initial value
+	  - `unit`: the physical units of the variable
+	  - `array`: the storage array for the variable
+	  - `name`: the user-readable name of the variable
+	  - `mesh`: the mesh that defines the geometry of this variable
 	"""
-	
+
 	self.requiredVariables = []
 	self.subscribedVariables = []
 

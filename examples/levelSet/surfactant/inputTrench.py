@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:38:00 PM} { 1:23:41 PM}
+ #                                last update: 10/6/04 {5:39:24 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -112,7 +112,7 @@ distanceEquation.solve()
 
 surfactantVariable = SurfactantVariable(
     value = 1,
-    distanceVariable = distanceVariable
+    distanceVar = distanceVariable
     )
 
 velocity = CellVariable(

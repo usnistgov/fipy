@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:36:39 PM} 
+ #                                last update: 10/6/04 {10:33:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 Electrochemical Phase Field input file
 
 Build a mesh, variable, and diffusion equation with fixed (zero) flux

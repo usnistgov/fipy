@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {3:25:26 PM}
+ #                                last update: 10/7/04 {8:26:23 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -77,7 +77,8 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh20x20
-   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+   >>> gzfile = 'gunzip --fast -c < %s/%s'
+   >>> gzfile = gzfile%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
    >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {3:18:15 PM}
+ #                                last update: 10/7/04 {8:27:01 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -78,13 +78,14 @@ The initial conditions for this problem are set such that
 
 .. raw:: latex
 
-    \begin{align*}
-    \phi &= 1 && \text{for $0 \le x \le L_x$} \\
-\intertext{and}
-    \theta &= \begin{cases}
+    $\phi = 1$ for $0 \le x \le L_x$ and 
+    
+    $$
+    \theta = \begin{cases}
     1 & \text{for $0 \le x < L_x / 2$,} \\
     0 & \text{for $L_x / 2 \ge x \le L_x$.}
-    \end{align*}
+    \end{cases}
+    $$
 
 Further details of the numerical method for this problem can be found in
 "Extending Phase Field Models of Solidification to Polycrystalline
@@ -108,7 +109,8 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh40x1
-   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh40x1.__path__[0], testFile)
+   >>> gzfile = 'gunzip --fast -c < %s/%s'
+   >>> gzfile = gzfile%(examples.phase.impingement.mesh40x1.__path__[0], testFile)
    >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

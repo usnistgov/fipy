@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/6/04 {4:25:57 PM} 
+ #                                last update: 10/7/04 {9:44:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,9 +59,13 @@ will be finer there.  To create the mesh, do this:
 
    >>> newMesh = AdaptiveMesh2D(var)
 
-NOTE: At present, AdaptiveMesh supports triangular meshes only.
+.. note:: 
+    
+   At present, AdaptiveMesh supports triangular meshes only.
 
 """
+__docformat__ = 'restructuredtext'
+
 import os
 import Numeric
 from fipy.meshes.numMesh.tri2D import Tri2D

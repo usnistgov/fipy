@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/4/04 {3:22:17 PM} 
+ %                                last update: 10/7/04 {11:36:17 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,43 +34,13 @@
  % ###################################################################
  %%
 
-\documentclass[letterpaper]{book}
-
-\usepackage{fipy}
+\documentclass[tocAsPDFpart]{fipy}
 
 \begin{document}
 
 \doparttoc
 
-% \crop[frame,axes]
-
 \frontmatter
-
-% \layout
-
-% \settypeblocksize{9in}{7in}{*}
-% \setlrmargins{*}{*}{*}
-% \setulmargins{*}{*}{*}
-
-% \settrimmedsize{8.5in}{11in}{*}       % pi/2
-% % \settypeblocksize{40\onelineskip}{*}{0.61803}  % golden ratio
-% \settypeblocksize{33\onelineskip}{*}{0.61803}  % golden ratio
-% \setlength{\trimtop}{0pt}
-% \setlength{\trimedge}{\stockwidth}
-% \addtolength{\trimedge}{-\paperwidth}
-% \addtolength{\trimedge}{-1.5in}
-% \setlrmargins{*}{*}{2}
-% % \setlrmargins{*}{1in}{*}
-% \setulmargins{5\onelineskip}{*}{*}
-% \setheadfoot{3\onelineskip}{3\onelineskip}
-% \setheaderspaces{\onelineskip}{*}{*}
-% \setmarginnotes{17pt}{65pt}{\onelineskip}
-
-% \checkandfixthelayout
-
-% \fixpdflayout
-
-% \setlength{\parindent}{0ex}
 
 \title{\FiPy{}}
 \subtitle{A Finite Volume PDE Solver Using Python}

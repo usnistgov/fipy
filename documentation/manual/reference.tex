@@ -4,7 +4,7 @@
  % 
  %  FILE: "reference.tex"
  %                                    created: 9/29/04 {11:03:55 AM} 
- %                                last update: 9/30/04 {3:52:34 PM} 
+ %                                last update: 10/7/04 {11:36:36 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -41,49 +41,19 @@
  % ###################################################################
  %%
 
-\documentclass[letterpaper]{book}
-
-\usepackage{fipy}
+\documentclass[tocAsPDFchapter]{fipy}
 
 \begin{document}
 
 % \doparttoc
 
-% \crop[frame,axes]
-
 \frontmatter
-
-% \layout
-
-% \settypeblocksize{9in}{7in}{*}
-% \setlrmargins{*}{*}{*}
-% \setulmargins{*}{*}{*}
-
-% \settrimmedsize{8.5in}{11in}{*}       % pi/2
-% % \settypeblocksize{40\onelineskip}{*}{0.61803}  % golden ratio
-% \settypeblocksize{33\onelineskip}{*}{0.61803}  % golden ratio
-% \setlength{\trimtop}{0pt}
-% \setlength{\trimedge}{\stockwidth}
-% \addtolength{\trimedge}{-\paperwidth}
-% \addtolength{\trimedge}{-1.5in}
-% \setlrmargins{*}{*}{2}
-% % \setlrmargins{*}{1in}{*}
-% \setulmargins{5\onelineskip}{*}{*}
-% \setheadfoot{3\onelineskip}{3\onelineskip}
-% \setheaderspaces{\onelineskip}{*}{*}
-% \setmarginnotes{17pt}{65pt}{\onelineskip}
-
-% \checkandfixthelayout
-
-% \fixpdflayout
-
-% \setlength{\parindent}{0ex}
 
 \title{\FiPy{}}
 \subtitle{Programmer's Reference}
 
 \author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
-\affiliation{Metallurgy Division 
+\affiliation{Metallurgy Division \and
 and the Center for Theoretical and Computational Materials Science 
 \and Materials Science and Engineering Laboratory}
 
@@ -97,33 +67,17 @@ and the Center for Theoretical and Computational Materials Science
 % 
 % \input disclaimer
 
-\maxtocdepth{all} 
+\maxtocdepth{section} 
 \tableofcontents
 % \faketableofcontents
 
 \mainmatter
 
-%%%%%%%%%%%%%%%%
-% I. INTRODUCTION
-%%%%%%%%%%%%%%%%
-
-% \include{examples}
-% 
-% \include{theory}
-% 
-% \include{code}
- 
-% \appendix
-% 
-% \part{APIs}
-% 
-% \settocdepth{chapter} 
-
-% \parttoc
+\sloppy
 
 \input api
 
-% \settocdepth{all} 
+\fussy
 
 \backmatter
 
@@ -131,7 +85,6 @@ and the Center for Theoretical and Computational Materials Science
 %%                                 Index                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \pdfbookmark[-1]{Index}{index}
 \printindex
 
 

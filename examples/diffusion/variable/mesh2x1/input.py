@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {1:00:57 PM} 
+ #                                last update: 10/6/04 {5:00:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -63,8 +63,8 @@ The diffusion coefficient varies with the following profile:
 
    $$ D = \begin{cases}
    1& \text{for $0 < x < L / 2$,} \\
-   0.1& \text{for $L / 2 \\ge x < 3 L / 4$,} \\
-   1& \text{for $3 L / 4 \\ge x < L$,}
+   0.1& \text{for $L / 2 \ge x < 3 L / 4$,} \\
+   1& \text{for $3 L / 4 \ge x < L$,}
    \end{cases} $$
 
 where `L` is the length of the bar.  In this example the diffusion
