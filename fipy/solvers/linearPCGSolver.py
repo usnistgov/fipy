@@ -53,13 +53,13 @@ from fipy.solvers.solver import Solver
 class LinearPCGSolver(Solver):
     """
     
-    The `LinearPCGSolver` solves a system of equations using the
+    The `LinearPCGSolver` solves a linear system of equations using the
     Preconditioned Conjugate Gradient method (PCG) with SSOR
     preconditioning. The PCG method solves systems with a symmetric
     positive definite coefficient matrix.
 
     The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg` and `precon.ssor` method. Usage:
+    `itsolvers.pcg` and `precon.ssor` methods. Usage:
 
     ::
 

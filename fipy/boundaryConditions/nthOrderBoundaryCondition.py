@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
@@ -39,12 +41,6 @@
  # ###################################################################
  ##
 
-"""Boundary condition to describe high-order derivatives. 
-
-This `BoundaryCondition` never has any direct effect on the solution
-matrices, but its derivatives do.
-"""
-
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -54,7 +50,32 @@ from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
 
 class NthOrderBoundaryCondition(BoundaryCondition):
+    """
+
+    This boundary condition is generally used in conjunction with the
+    `NthOrderDiffusionTerm`. It does not have any direct effect on the
+    solution matrices, but its derivatives do.
+
+    Usage ::
+    
+        NthOrderBoundaryCondition(faces, value, order)
+        
+    """
+    
     def __init__(self,faces,value,order):
+        """
+        Creates an `NthOrderBoundaryCondition`.
+
+        :Parameters:
+          - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
+          - `value` : The value to impose.
+          - `order` : The order of the boundary condition. An `order` of `0`
+            corresponds to a `FixedValue` and an `order` of `1` corresponds to
+            a `FixedFlux`. Even and odd orders behave like a `FixedValue` and a `FixedFlux` objects,
+            respectively, but apply to higher order terms.
+
+          
+        """
         self.order = order
         self.derivative = {}
         BoundaryCondition.__init__(self,faces,value)
@@ -70,7 +91,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         """
         return (0, 0)
         
-    def getDerivative(self, order):
+    def _getDerivative(self, order):
 	newOrder = self.order - order
         if not self.derivative.has_key(newOrder):
             if newOrder > 1:

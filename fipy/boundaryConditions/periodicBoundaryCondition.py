@@ -41,8 +41,6 @@
  # ###################################################################
  ##
 
-"""Periodic boundary condition
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -52,7 +50,33 @@ from fipy.tools import array
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class PeriodicBoundaryCondition(BoundaryCondition):
+    r"""
+    
+    A `PeriodicBoundaryCondition` creates a periodic boundary across given
+    sets of faces.
+
+    .. warning::
+
+        This boundary condition only works for diffusion with a
+        gridded mesh. It currently does not work for convection terms
+        or the `NthOrderDiffusionTerm`.
+
+    Usage ::
+
+        PeriodicBoundaryCondition(faces1, faces2)
+
+    """
     def __init__(self, faces1, faces2):
+        """
+        Creates a `PeriodicBoundaryCondition`.
+
+        :Parameters:
+          - `faces1` : A `list` or `tuple` of faces.
+          - `faces2` : A `list` or `tuple` of faces.
+
+        The faces in each list are matched in order.
+        """
+        
 	if len(faces1) != len(faces2):
 	    raise "Incompatible numbers of faces: %d vs %d"%(len(faces1), len(faces2))
 
@@ -101,7 +125,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 
 	return (LL, 0)
 	
-    def getDerivative(self, order):
+    def _getDerivative(self, order):
 	return self
 
 

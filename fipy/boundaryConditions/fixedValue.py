@@ -41,6 +41,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 """Fixed value (Dirichlet) boundary condition
 """
 __docformat__ = 'restructuredtext'
@@ -53,6 +55,29 @@ from fipy.tools import vector
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class FixedValue(BoundaryCondition):
+    r"""
+    
+    The `FixedValue` boundary condition adds a contribution,
+    equivalent to a fixed value (Dirichlet), to the equation's RHS
+    vector and coefficient matrix.  The contributions are given by
+
+    .. raw:: latex
+
+        $ -\text{value} * G_{\text{face}}, $ for the RHS vector and $
+        G_{\text{face}}, $ for the coefficient matrix. The parameter,
+        $ G_{\text{face}}, $ represents the terms's geometric
+        coefficient.
+
+    Contributions are only added to entries corresponding to the
+    specified faces. Usage:
+
+    ::
+
+        FixedValue(faces, value)
+       
+    """
+
+    
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Set boundary equal to value.
 	
@@ -70,11 +95,11 @@ class FixedValue(BoundaryCondition):
 	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self.getValue())
+	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self._getValue())
 
 	return (LL, bb)
 	
-    def getValue(self):
+    def _getValue(self):
 	return self.value
 
 

@@ -58,7 +58,7 @@ class LinearGMRESSolver(Solver):
     coefficient matrix.
 
     The `LinearGMRESSolver` is a wrapper class for the the PySparse_
-    `itsolvers.gmres` and `precon.jacobi` method. Usage:
+    `itsolvers.gmres` and `precon.jacobi` methods. Usage:
 
     ::
 

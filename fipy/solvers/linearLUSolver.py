@@ -55,7 +55,7 @@ import Numeric
 class LinearLUSolver(Solver):
     """
     
-    The `LinearLUSolver` solves a system of equations using
+    The `LinearLUSolver` solves a linear system of equations using
     LU-factorisation. This method solves systems with a general
     non-symmetric coefficient matrix using partial pivoting.
 

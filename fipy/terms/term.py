@@ -168,8 +168,8 @@ class Term:
         
     def __eq__(self, other):
         """
-        This method allows `Term`s to be equated in a natural way. Note that the
-        following does not return `False`.
+        This method allows `Terms` to be equated in a natural way. Note that the
+        following does not return `False.`
 
            >>> Term(coeff = 1.) == Term(coeff = 2.)
            (Term(coeff = 1.0) == Term(coeff = 2.0))

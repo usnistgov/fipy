@@ -226,7 +226,7 @@ class NthOrderDiffusionTerm(Term):
         higherOrderBCs = []
         lowerOrderBCs = []
         for bc in boundaryConditions:
-            bcDeriv = bc.getDerivative(self.order - 2)
+            bcDeriv = bc._getDerivative(self.order - 2)
             if bcDeriv:
                 higherOrderBCs.append(bcDeriv)
             else:

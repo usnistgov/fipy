@@ -41,8 +41,6 @@
  # ###################################################################
  ##
 
-"""Fixed flux (Neumann) boundary condition
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -52,7 +50,34 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
 class FixedFlux(BoundaryCondition):
+    r"""
+
+    The `FixedFlux` boundary condition adds a contribution, equivalent
+    to a fixed flux (Neumann) , to the equation's RHS vector.  The
+    contribution, given by
+
+    .. raw:: latex
+
+        $ \text{value} * A_{\text{face}} $ where $A_{\text{face}}$
+
+    is the area of the face, is only added to entries corresponding to
+    the specified faces. Usage:
+
+    ::
+
+        FixedFlux(faces, value)
+       
+    """
+    
     def __init__(self,faces,value):
+        """
+        Creates a `FixedFlux` object.
+	
+	:Parameters:
+	    - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
+	    - `value` : The value to impose.
+            
+	"""
 	BoundaryCondition.__init__(self,faces,value)
 	N = len(self.faces)
 	##self.contribution = Numeric.zeros((N,),'d')
@@ -80,10 +105,10 @@ class FixedFlux(BoundaryCondition):
 	
 	return (0, bb)
 
-    def getDerivative(self, order):
+    def _getDerivative(self, order):
 	if order == 1:
 	    return FixedValue(self.faces, self.value)
 	else:
-	    return BoundaryCondition.getDerivative(self, order)
+	    return BoundaryCondition._getDerivative(self, order)
 
 

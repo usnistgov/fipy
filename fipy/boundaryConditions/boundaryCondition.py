@@ -40,8 +40,6 @@
  # ###################################################################
  ##
 
-"""Generic boundary condition base class
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -49,13 +47,19 @@ import Numeric
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class BoundaryCondition:
+    """
+    Generic boundary condition base class
+    """
+    
     def __init__(self,faces,value):
-	"""Generic boundary condition base class.
+	"""
+
+        The `BoundaryCondition` class should not be invoked directly.
 	
 	:Parameters:
-	    
-	    - `faces`: `list` or `tuple` of `Face` objects to which this condition applies
-	    - `value`: the value to impose
+	    - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
+	    - `value` : The value to impose.
+            
 	"""
         self.faces = faces
         self.value = PhysicalField(value)
@@ -80,12 +84,7 @@ class BoundaryCondition:
 	""" 
 	pass
     
-    def getFaces(self):
-	"""Return the faces this boundary condition applies to.
-	"""
-        return self.faces
-        
-    def getDerivative(self, order):
+    def _getDerivative(self, order):
 	"""Return a tuple of the boundary conditions to apply
 	to the term and to the derivative of the term
 	"""

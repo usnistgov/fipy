@@ -49,8 +49,9 @@ from fipy.solvers.solver import Solver
 
 class LinearScipyLUSolver(Solver):
     """
-    The `LinearScipyLUSolver` solves a system of equations using
-    LU-factorisation. This method solves systems of general
+    
+    The `LinearScipyLUSolver` solves a linear system of equations
+    using LU-factorisation. This method solves systems of general
     non-symmetric matrices with partial pivoting.
 
     The `LinearScipyLUSolver` is a wrapper class for the the Scipy_
