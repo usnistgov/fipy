@@ -114,11 +114,17 @@ class build_docs (Command):
 		f = open('api.tex', 'w')
 		f.write("% This file is created automatically by:\n")
 		f.write("% 	python setup.py build_doc --latex\n\n")
-		for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True): 
+		for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
+
 		    if 'api.tex' in files:
 			files.remove('api.tex')
-		    for name in files: 
+
+                    ## Added because linux does not sort files in the same order
+                    files.sort()
+
+		    for name in files:
 			f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
+
 		f.close()
 	    except:
 		pass
