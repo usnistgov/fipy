@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/26/04 {2:37:38 PM} 
+ #                                last update: 1/30/04 {5:06:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

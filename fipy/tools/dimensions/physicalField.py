@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/28/04 {4:21:15 PM} 
+ #                                last update: 1/30/04 {5:05:07 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -168,28 +168,38 @@ class PhysicalField:
  		`self.unit.name()` + ')')
 
     def _sum(self, other, sign1 = lambda a: a, sign2 = lambda b: b):
+	# stupid Numeric bug
+	# it's smart enough to negate a boolean, but not 
+	# smart enough to know that it's negative when it
+	# gets done.
+	
+	selfValue = self.value
+	if type(self.value) is type(Numeric.array((0))) and self.value.typecode() is 'b':
+	    selfValue = 1. * self.value
+	    
 	if _isVariable(other):
-	    return sign2(other) + self.__class__(value = sign1(self.value), unit = self.unit)
+	    return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
+	    
 	if type(other) is type(''):
 	    other = PhysicalField(value = other)
+	    
 	if not isinstance(other,PhysicalField):
 	    if Numeric.alltrue(other == 0):
-		new_value = sign1(self.value)
+		new_value = sign1(selfValue)
 	    elif self.unit.isDimensionlessOrAngle():
-		# stupid Numeric bug
-		# it's smart enough to negate a boolean, but not 
-		# smart enough to know that it's negative when it
-		# gets done.
-		if type(self.value) is type(Numeric.array((0))) and self.value.typecode() is 'b':
-		    self.value = 1. * other
+		otherValue = other
 		if type(other) is type(Numeric.array((0))) and other.typecode() is 'b':
-		    other = 1. * other
-		new_value = sign1(self.value) + sign2(other)
+		    otherValue = 1. * other
+		new_value = sign1(selfValue) + sign2(otherValue)
 	    else:
 		raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
 	else:
-	    new_value = sign1(self.value) + \
-			sign2(other.value)*other.unit.conversionFactorTo(self.unit)
+	    otherValue = other.value
+	    if type(other.value) is type(Numeric.array((0))) and other.value.typecode() is 'b':
+		otherValue = 1. * other.value
+		
+	    new_value = sign1(selfValue) + \
+			sign2(otherValue)*other.unit.conversionFactorTo(self.unit)
 	return self.__class__(value = new_value, unit = self.unit)
 
     def __add__(self, other):
