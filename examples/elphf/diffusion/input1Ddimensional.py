@@ -103,8 +103,9 @@ If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (fields['solvent'],) + fields['substitutionals'],
-    ...                                limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = fipy.viewers.make(
+    ...         vars = (fields['solvent'],) + fields['substitutionals'],
+    ...         limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go

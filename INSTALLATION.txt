@@ -120,6 +120,8 @@ supported at this time.
 PySparse
 --------
 
+http://pysparse.sourceforge.net
+
 |FiPy| requires `Roman Geus`_' PySparse_ package.
 
 You can either `download the PySparse archive`_ or check it out via
@@ -146,8 +148,37 @@ instructions for building PySparse_ for your platform.
    directory for specialist instructions.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
-.. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/pyfemax/pysparse.html
+.. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/projects/pysparse
+
+Viewers
+-------
+
+|FiPy| will work perfectly well without them, but at least one of the
+following packages will be needed to allow viewing the results of |FiPy|
+calculations:
+
+Pygist
+~~~~~~
+
+http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
+The Pygist_ package can be used to display simulation results. We have
+not succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
+recommend building the package with the ``--x11`` option described in
+the documentation.
+
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
+Gnuplot-py
+~~~~~~~~~~
+
+http://gnuplot-py.sourceforge.net
+
+Gnuplot.py is a Python_ package that interfaces to gnuplot_, the
+popular open-source plotting program.
+
+.. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
 
 Recommended Packages
 ====================
@@ -184,45 +215,7 @@ It is possible to create irregular meshes with this package.
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
-Viewers
-=======
 
-|FiPy| will work perfectly well without them, but at least one of the
-following packages will be needed to allow viewing the results of |FiPy|
-calculations:
-
-Pygist
-------
-
-http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
-
-The Pygist_ package can be used to display simulation results. We have
-not succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
-recommend building the package with the ``--x11`` option described in
-the documentation.
-
-.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
-
-PyX
----
-
-http://pyx.sourceforge.net/
-
-PyX_ allows the production of publication quality graphics with |TeX|
-labels. If available, |FiPy| can use this package to view or print
-results.
-
-.. _PyX: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pyx.sourceforge.net/
-
-Gnuplot-py
-----------
-
-http://gnuplot-py.sourceforge.net
-
-Gnuplot.py is a Python_ package that interfaces to gnuplot_, the
-popular open-source plotting program.
-
-.. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
 
 ----------------
 Obtaining |FiPy|
@@ -314,9 +307,9 @@ ensure that the |FiPy| distribution directory is appended to your
 Using |FiPy|
 ------------
 
-To see examples of problems that |FiPy| is capable of solving, you can run
-any of the scripts in |examples/|.  All should have appropriate executable
-permissions, allowing you to type, *e.g.*::
+To see examples of problems that |FiPy| is capable of solving, you can
+run any of the scripts in |examples/|. All should have appropriate
+executable permissions, allowing you to type, *e.g.*::
 
     $ examples/diffusion/steadyState/mesh1D/input.py
 

@@ -214,7 +214,7 @@ The \Python{} classes that make up \FiPy{} are described in detail in
 the \href{file:reference.pdf}{\textit{\FiPy{} Programmer's
 Reference}}, but we give a brief overview here.  \FiPy{} is based
 around three fundamental \Python{} classes: \Class{Mesh},
-\Class{Variable}, and \Class{Equation}.  Using the terminology of
+\Class{Variable}, and \Class{Term}.  Using the terminology of
 Chapter~\ref{chap:Numerics}:
 \begin{description}
     \item[A \Class{Mesh} object] represents the domain of interest.
@@ -258,8 +258,9 @@ Chapter~\ref{chap:Numerics}:
 \end{verbatim}
 \end{quote}
 
-    \item[An \Class{Equation} object] represents
-    Equation~\eqref{eqn:general-equation}.
+    \item[A \Class{Term} object] represents any of the terms in
+    Equation~\eqref{eqn:general-equation} or any linear combination of
+    such terms.
     
 \end{description}
 
@@ -272,21 +273,26 @@ Figure~\ref{fig:objects}.
     \caption{Primary object relationships in \FiPy{}.}
     \label{fig:objects}
 \end{figure}
+
 A \Class{Mesh} object is composed of \Class{Cell} objects.  Each
 \Class{Cell} is defined by its bounding \Class{Face} objects and each
-\Class{Face} is defined by its bounding \Class{Vertex} objects.  As
-shown conceptually in Equation~\eqref{eqn:num:gen}, an
-\Class{Equation} is composed of multiple \Class{Term} objects, which
-encapsulate the building of different parts of the
-\Class{SparseMatrix} that defines the solution of the
-\Class{Equation}.  \Class{BoundaryCondition} objects are used to
+\Class{Face} is defined by its bounding \Class{Vertex} objects. Although
+one would think of Equation~\eqref{eqn:num:gen} conceptually being an
+\Class{Equation} object consisting of \Class{Term} objects. In \FiPy{} this
+is not the case as the \Class{Equation} object does not exist.
+Instead Equation~\eqref{eqn:num:gen} is in fact represented by a
+\Class{Term} object. \Class{Term} objects can be single entities such
+as an \Class{ImplicitDiffusionTerm} or a linear combination of other
+\Class{Term} objects that build up to form new term objects.
+Different \Class{Term} objects, encapsulate the
+building of different parts of the
+\Class{SparseMatrix} that defines the solution of an equation.
+\Class{BoundaryCondition} objects are used to
 describe the conditions on the boundaries of the \Class{Mesh}, and
 each \Class{Term} interprets the \Class{BoundaryCondition} objects as
-necessary to modify the \Class{SparseMatrix}.  An \Class{Iterator}
-object handles the iterative solution of a set of \Class{Equation}
-objects until some desired convergence criterion has been met.  Each
-\Class{Equation} can apply a unique \Class{Solver} to invert its
-\Class{SparseMatrix} in the most expedient and stable fashion.  At any
+necessary to modify the \Class{SparseMatrix}. An equation constructed
+from \Class{Term} objects can apply a unique \Class{Solver} to invert
+its \Class{SparseMatrix} in the most expedient and stable fashion.  At any
 point during the solution, a \Class{Viewer} can be invoked to display
 the values of the solved \Class{Variable} objects.
 

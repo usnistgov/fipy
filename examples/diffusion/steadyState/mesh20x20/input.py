@@ -69,8 +69,8 @@ automatically applied to the top and bottom.
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> ImplicitDiffusionTerm().solve(var = var, 
-    ...                               boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...                                                     FixedValue(mesh.getFacesRight(),valueRight)))
+    ...     boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                           FixedValue(mesh.getFacesRight(),valueRight)))
 
 The result is again tested against the expected linear composition profile:
 

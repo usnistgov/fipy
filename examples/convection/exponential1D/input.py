@@ -103,7 +103,8 @@ instance must be passed to the convection term.
    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
    
    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-   >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
+   >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff,
+   ...                                           diffusionTerm = diffTerm)
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in the numerical section of the manual. Essentially

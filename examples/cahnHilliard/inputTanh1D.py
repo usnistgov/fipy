@@ -123,7 +123,8 @@ we create the Cahn-Hilliard equation:
 
     >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> diffTerm2 = NthOrderDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
+    >>> diffTerm2 = NthOrderDiffusionTerm(
+    ...     coeff = (diffusionCoeff * doubleWellDerivative,))
     >>> diffTerm4 = NthOrderDiffusionTerm(coeff = (diffusionCoeff, epsilon**2))
     >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
@@ -147,7 +148,8 @@ If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
+    ...     viewer = fipy.viewers.make(vars = var,
+    ...         limits = {'datamin': 0., 'datamax': 1.0})
     ...     viewer.plot()
 
 We iterate the solution to equilibrium and, if we are running interactively, 

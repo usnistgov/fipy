@@ -119,7 +119,8 @@ The example is then solved as an implicit diffusion problem.
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> ImplicitDiffusionTerm().solve(var = var,
-   ...     boundaryConditions = (FixedValue(mesh.getExteriorFaces(), exteriorXcoords),))
+   ...     boundaryConditions = (
+   ...         FixedValue(mesh.getExteriorFaces(), exteriorXcoords),))
                                                     
 The values at the elements should be equal to the x coordinate
 
@@ -131,7 +132,8 @@ Display the results if run as a script.
    >>> if __name__ == '__main__':
    ...     import fipy.viewers
    ...     fipy.viewers.make(vars = var).plotMesh()
-   ...     fipy.viewers.make(vars = var, limits = {'datamin': -1.0, 'datamax': 1.0}).plot()
+   ...     fipy.viewers.make(vars = var,
+   ...         limits = {'datamin': -1.0, 'datamax': 1.0}).plot()
 
 .. image:: inputCircle.pdf
    :scale: 50

@@ -567,7 +567,7 @@ f.close()
 
 dist = setup(	name = "FiPy",
 	app = [os.path.join('examples','levelSet','electroChem','input.py')],
-	version = "0.2",
+	version = "1.0a1",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",

@@ -143,7 +143,8 @@ If we are running interactively, we will want to see the results
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     from fipy.variables.cellVariable import CellVariable
-    ...     viewer = fipy.viewers.make(vars = (fields['phase'] - CellVariable(mesh = mesh, value = analyticalArray),))
+    ...     viewer = fipy.viewers.make(vars = (fields['phase'] - \
+    ...         CellVariable(mesh = mesh, value = analyticalArray),))
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

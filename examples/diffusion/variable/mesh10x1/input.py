@@ -116,7 +116,8 @@ We iterate one time step to implicitly find the steady state
 solution:
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var,
+    ...     boundaryConditions = boundaryConditions)
 
 A simple analytical answer can be used to test the result:
     
@@ -141,7 +142,8 @@ If the problem is run interactively, we can view the result:
    
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
+    ...     viewer = fipy.viewers.make(vars = var,
+    ...         limits = {'datamax': L + 18. * L / 4.})
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

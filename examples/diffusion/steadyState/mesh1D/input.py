@@ -97,7 +97,8 @@ centers. The boundary conditions are given by `valueLeft = 0` and
     >>> valueLeft = 0
     >>> valueRight = 1
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
+    >>> var = CellVariable(name = "solution variable", mesh = mesh,
+    ...                                                value = valueLeft)
 
 Boundary conditions are given to the equation via a `Tuple`
 (list). Boundary conditions are formed with a value and a set of faces
@@ -118,10 +119,12 @@ The steady-state diffusion equation
 .. raw:: latex
 
    $$ \nabla \cdot (D \nabla \phi) = 0 $$
-   is represented in \FiPy{} by an `ImplicitDiffusionTerm` object.
+
+is represented in FiPy by an `ImplicitDiffusionTerm` object.
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> ImplicitDiffusionTerm().solve(var = var, boundaryConditions = boundaryConditions)
+    >>> ImplicitDiffusionTerm().solve(var = var,
+    ...                               boundaryConditions = boundaryConditions)
     
 To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain
@@ -143,7 +146,8 @@ on available viewers and the dimension of the mesh.
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer = fipy.viewers.make(vars = var,
+    ...                                limits = {'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
     ...     raw_input("press key to continue")
 

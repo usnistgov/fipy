@@ -11,12 +11,12 @@ CONTRIBUTORS
     is a caveman.  Daniel's interests are in numerical modeling, finite
     volume techniques, and level set treatments.
 
-`Jim Warren`_ 
-    is a member of the research staff of the `Metallurgy Division`_ and the
-    Director of |CTCMS| of |MSEL| at |NIST|.  Jim is interested in a
-    variety of problems, including the phase field modeling of
-    solidification, polycrystalline solids, and the electrochemical
-    interface.
+`Jim Warren`_
+    is the group leader of the Themodynamics and Kinetics group in the
+    `Metallurgy Division`_ and Director of |CTCMS| of |MSEL| at
+    |NIST|. Jim is interested in a variety of problems, including the
+    phase field modeling of solidification, polycrystalline solids,
+    and the electrochemical interface.
 
 Alex Mont
     is a student at `Montgomery Blair High School`_.  Alex developed the

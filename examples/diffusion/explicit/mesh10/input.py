@@ -99,7 +99,8 @@ required to execute the necessary time steps:
     >>> steps = 100
     >>> for step in range(steps):
     ...     var.updateOld()     
-    ...     eq.solve(var = var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
+    ...     eq.solve(var = var, boundaryConditions = boundaryConditions,
+    ...                         dt = timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given
 by
