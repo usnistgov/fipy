@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/3/04 {11:58:42 AM} 
+ #                                last update: 11/3/04 {12:42:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -312,8 +312,6 @@ class build_docs (Command):
 	    print "setting group and ownership of web pages..."
 	    os.system('chgrp -R pfm documentation/www/')
 	    os.system('chmod -R g+w documentation/www/')
-	    
-	    import os
 	    
 	    print "uploading web pages..."
 	    os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
