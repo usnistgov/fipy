@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/6/03 {9:49:56 PM} 
+ #                                last update: 12/8/03 {11:50:06 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -66,7 +66,7 @@ class TestSteadyConvectionDiffusionSc(TestBase):
         self.valueLeft = 0.
         self.valueRight = 1.
 
-        self.mesh = Grid2D(self.L/self.nx,1.,self.nx,self.ny)
+        self.mesh = Grid2D(self.L/self.nx,self.L/self.ny,self.nx,self.ny)
         
         self.var = Variable(
             name = "concentration",
@@ -81,24 +81,30 @@ class TestSteadyConvectionDiffusionSc(TestBase):
             sourceCoeff = self.sourceCoeff,
 	    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
 	    convectionScheme = self.convectionScheme,
-	    boundaryConditions=(
-		FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
-		FixedValue(faces = self.mesh.getFacesRight(),value = self.valueRight),
-		FixedFlux(faces = self.mesh.getFacesTop(),value = 0.),
-		FixedFlux(faces = self.mesh.getFacesBottom(),value = 0.)
-	    )
+	    boundaryConditions= self.getBoundaryConditions()
 	)
 
         self.it = Iterator((self.eq,))
-
+	
     def getTestValues(self):
-	x = self.mesh.getCellCenters()[:,0]
-        AA = -self.sourceCoeff * x / self.convCoeff[0]
-        BB = 1. + self.sourceCoeff * self.L / self.convCoeff[0]
-        CC = 1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)
-        DD = 1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff)
-        return AA + BB * CC / DD
-
+	if self.convCoeff[0] != 0.:
+	    axis = 0
+	else:
+	    axis = 1
+	x = self.mesh.getCellCenters()[:,axis]
+        AA = -self.sourceCoeff * x / self.convCoeff[axis]
+        BB = 1. + self.sourceCoeff * self.L / self.convCoeff[axis]
+        CC = 1. - Numeric.exp(-self.convCoeff[axis] * x / self.diffCoeff)
+        DD = 1. - Numeric.exp(-self.convCoeff[axis] * self.L / self.diffCoeff)
+	return AA + BB * CC / DD
+	
+    def getBoundaryConditions(self):
+	return (
+	    FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
+	    FixedValue(faces = self.mesh.getFacesRight(),value = self.valueRight),
+	    FixedFlux(faces = self.mesh.getFacesTop(),value = 0.),
+	    FixedFlux(faces = self.mesh.getFacesBottom(),value = 0.)
+	)
 	    
 class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
@@ -142,6 +148,28 @@ class  TestSteadyConvectionDiffusion1DExponentialBackwards(TestSteadyConvectionD
 	self.convectionScheme = ExponentialConvectionTerm
 	TestSteadyConvectionDiffusionSc.setUp(self)
 	
+class  TestSteadyConvectionDiffusion1DExponentialUp(TestSteadyConvectionDiffusionSc):
+    """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
+    """
+    def setUp(self):
+	self.L = 10.
+	self.nx = 1
+	self.ny = 1000
+	self.diffCoeff = 1.
+	self.convCoeff = (0,-10.)
+	self.tolerance = 1e-10
+	self.sourceCoeff = 0.
+	self.convectionScheme = ExponentialConvectionTerm
+	TestSteadyConvectionDiffusionSc.setUp(self)
+
+    def getBoundaryConditions(self):
+	return (
+	    FixedFlux(faces = self.mesh.getFacesLeft(),value = 0.),
+	    FixedFlux(faces = self.mesh.getFacesRight(),value = 0.),
+	    FixedValue(faces = self.mesh.getFacesTop(),value = self.valueRight),
+	    FixedValue(faces = self.mesh.getFacesBottom(),value = self.valueLeft)
+	)
+	
 class  TestSteadyConvectionDiffusion1DPowerLaw(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 100x1 mesh, with power law convection scheme
     """
@@ -161,19 +189,28 @@ class  TestSteadyConvectionDiffusion1DExponentialSc(TestSteadyConvectionDiffusio
     """
     def setUp(self):
 	self.L = 1.
-	self.nx = 1000
-	self.ny = 1
+	self.nx = 1
+	self.ny = 1000
 	self.diffCoeff = 1.
-	self.convCoeff = (10.,0)
+	self.convCoeff = (0,10.)
 	self.tolerance = 1e-6
         self.sourceCoeff = 1.
 	self.convectionScheme = ExponentialConvectionTerm
 	TestSteadyConvectionDiffusionSc.setUp(self)
 
+    def getBoundaryConditions(self):
+	return (
+	    FixedFlux(faces = self.mesh.getFacesLeft(),value = 0.),
+	    FixedFlux(faces = self.mesh.getFacesRight(),value = 0.),
+	    FixedValue(faces = self.mesh.getFacesTop(),value = self.valueRight),
+	    FixedValue(faces = self.mesh.getFacesBottom(),value = self.valueLeft)
+	)
+	
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponential))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialUp))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DPowerLaw))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialBackwards))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion2DExponential))

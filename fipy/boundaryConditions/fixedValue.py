@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/4/03 {5:06:27 PM} 
+ #                                last update: 12/8/03 {2:00:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@
 """
 
 from boundaryCondition import BoundaryCondition
+import Numeric
 
 class FixedValue(BoundaryCondition):
     """Fixed value (Dirichlet) boundary condition
@@ -62,6 +63,19 @@ class FixedValue(BoundaryCondition):
 	    'cell1off' -- contribution to b-vector by this exterior face
 	"""
         return (cell1dia,-cell1off*self.value)
+
+    def getContribution(self,cell1dia,cell1off):
+	"""???
+	
+	Arguments:
+	    
+	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
+	    
+	    'cell1off' -- contribution to b-vector by this exterior face
+	"""
+	return (Numeric.take(cell1dia,self.faceIds),
+		Numeric.take(-cell1off,self.faceIds)*self.value,
+		self.adjacentCellIds)
 
 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/4/03 {10:42:38 AM} 
+ #                                last update: 12/8/03 {1:47:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,11 +45,18 @@
 """
 
 from boundaryCondition import BoundaryCondition
+import Numeric
 
 class FixedFlux(BoundaryCondition):
     """Fixed flux (Neumann) boundary condition
     """
-    
+    def __init__(self,faces,value):
+	BoundaryCondition.__init__(self,faces,value)
+	N = len(self.faces)
+	self.contribution = Numeric.zeros((N,),'d')
+	for i in range(N):
+	    self.contribution[i] = self.value * self.faces[i].getArea()
+	
     def update(self,face,cell1dia,cell1off):
 	"""Leave L unchanged and add gradient to b
 	
@@ -61,10 +68,16 @@ class FixedFlux(BoundaryCondition):
 
 	    'cell1off' -- *unused*
 	"""
-        return (0, self.value * face.getArea())
+        return (0., self.value * face.getArea())
 
-        
-    
+    def getContribution(self,cell1dia,cell1off):
+	"""Leave L unchanged and add gradient to b
 	
+	Arguments:
+	    
+	    'cell1dia' -- *unused*
 
+	    'cell1off' -- *unused*
+	"""
+	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
 
