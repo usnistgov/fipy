@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/29/03 {1:22:30 PM} 
+ #                                last update: 12/29/03 {2:36:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -133,7 +133,7 @@ def makeFields(mesh, parameters):
     return fields
 
 
-def makeIterator(mesh, fields, parameters, maxSweeps = 1):
+def makeIterator(mesh, fields, parameters):
     equations = (PhaseEquation(
 	phase = fields['phase'],
 	timeStepDuration = parameters['time step duration'],
@@ -219,6 +219,6 @@ def makeIterator(mesh, fields, parameters, maxSweeps = 1):
 	)
 	equations += (eq,)
 	
-    return Iterator(equations = equations, maxSweeps = maxSweeps)
+    return Iterator(equations = equations)
 
 

@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 12/22/03 {4:59:02 PM} 
+                               last update: 12/29/03 {2:31:41 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -72,7 +72,7 @@ class MatrixEquation(Equation):
 	residual = oldSweepArray.copy()
 	self.L.matvec(oldSweepArray,residual)
 	residual -= self.b 
-	residual = tools.vector.sqrtDot(residual,residual)
+	self.residual = tools.vector.sqrtDot(residual,residual)
 #        print self,'residual: ',residual
-	self.converged = residual < self.solutionTolerance
+	self.converged = self.residual < self.solutionTolerance
 	

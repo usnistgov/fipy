@@ -5,7 +5,7 @@
 
  FILE: "equation.py"
                                    created: 11/10/03 {2:45:34 PM} 
-                               last update: 12/22/03 {5:00:53 PM} 
+                               last update: 12/29/03 {2:32:07 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -54,6 +54,7 @@ class Equation:
 	
 	self.solutionTolerance = solutionTolerance
 	self.converged = 1
+	self.residual = 0
 
     def getVar(self):
         return self.var 
@@ -66,3 +67,6 @@ class Equation:
     
     def isConverged(self):
 	return self.converged
+
+    def getResidual(self):
+	return self.residual

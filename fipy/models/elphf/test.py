@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/29/03 {11:49:59 AM} 
+ #                                last update: 12/29/03 {2:41:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -77,7 +77,7 @@ class TestElPhF(TestBase):
 	self.it = elphf.makeIterator(mesh = self.mesh, fields = fields, parameters = self.parameters)
 	
     def testResult(self):
-	self.it.iterate(steps = self.steps)
+	self.it.timestep(steps = self.steps)
 
 # 	for field in [self.parameters['phase']] + list(self.parameters['substitutionals']):
 # 	    field['var'].plot()
@@ -307,7 +307,7 @@ class TestElPhF1Dphase(TestElPhF):
 	parameters['substitutionals'] = ()
 	
     def testResult(self):
-	self.it.iterate(steps = self.steps)
+	self.it.timestep(steps = self.steps)
 
 	field  = self.parameters['phase']
     

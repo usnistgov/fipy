@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/24/03 {10:14:23 AM} 
+ #                                last update: 12/29/03 {2:44:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -142,7 +142,7 @@ it = Iterator((eq,))
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
 print "solving"
-it.iterate(100,0.02)
+it.timestep(steps = 100,dt = 0.02)
 # profile.stop()
 
 phaseViewer.plot()

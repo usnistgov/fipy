@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 12/22/03 {10:56:31 PM} 
+ #                                last update: 12/29/03 {2:39:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,15 +48,32 @@ class Iterator:
     """Generic equation iterator
     """
     
-    def __init__(self,equations,maxSweeps = 1):
+    def __init__(self,equations):
 	"""Arguments:
 	    
 	    'equations' -- list or tuple of equations to iterate over
 	"""
         self.equations = equations
-	self.maxSweeps = maxSweeps
 	
-    def iterate(self,steps):
+    def sweep(self, maxSweeps = 1):
+	converged = 0
+	for sweep in range(maxSweeps):
+	    for equation in self.equations:
+		equation.solve()
+	    converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
+	    for equation in self.equations:
+		converged = converged and equation.isConverged()
+	    if converged:
+		break
+		
+	return converged
+	
+    def advanceTimeStep(self):
+	for equation in self.equations:
+	    var = equation.getVar()
+	    var.updateOld()
+
+    def timestep(self, steps = 1, maxSweeps = 1):
 	"""Iterate the solution.
 	
 	Arguments:
@@ -64,21 +81,7 @@ class Iterator:
 	    'steps' -- number of iteration time steps
 	    
 	    'timeStep' -- duration of each time step
-	
-	The 'preSolve()' method of each equation is called to do any
-	necessary initialization, the equations are 'solve()' ed, then the
-	'postSolve()' methods are called to do any necessary cleanup.
 	"""
 	for step in range(steps):
-            for equation in self.equations:
-                var = equation.getVar()
-                var.updateOld()
-	    for sweep in range(self.maxSweeps):
-		for equation in self.equations:
-		    equation.solve()
-		converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
-		for equation in self.equations:
-		    converged = converged and equation.isConverged()
-		if converged:
-		    break
-		    
+	    self.advanceTimeStep()
+	    self.sweep(maxSweeps)

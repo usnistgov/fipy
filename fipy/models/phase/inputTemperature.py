@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/9/03 {2:25:25 PM} 
+ #                                last update: 12/29/03 {2:45:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -166,7 +166,7 @@ it = Iterator((phaseEq, temperatureEq))
 # profile = Profiler('profile', fudge=fudge)
 print "solving"
 for i in range(10):
-    it.iterate(10)
+    it.timestep(steps = 10)
     phaseViewer.plot()
     temperatureViewer.plot()
 # profile.stop()
