@@ -73,33 +73,33 @@ class LevelSetEquation(Equation):
         zeroCells = self.getZeroCells(cells)
 
         ## set the interface cells to have a value.
-        self.setZeroValues(zeroCells)
+##        self.setZeroValues(zeroCells)
 
-        ## find bounding cells to setCells
-        boundingCells = self.getBoundingCells(zeroCells)
+        ## find bounding cells to the evaluatedCells
+##        boundingCells = self.getBoundingCells(zeroCells)
 
-        while(len(boundingCells) != 0):
+##        while(len(boundingCells) != 0):
 
-        ## get MinimumCell
-            minimumCell = self.getMinimumCell(boundingCells)
+##        ## get MinimumCell
+##            minimumCell = self.getMinimumCell(boundingCells)
 
-        ## set value of minimum cell
-            self.setCellValue(minimumCell)
+##        ## set value of minimum cell
+##            self.setCellValue(minimumCell)
 
-        ## add the extra cell
-            boundingCells, zeroCells = self.updateBoundingCells(minimumCell, boundingCells, zeroCells)
+##        ## add the extra cell
+##            boundingCells, zeroCells = self.updateBoundingCells(minimumCell, boundingCells, zeroCells)
 
     def getZeroCells(self, cells):
         zeroCells = ()
-        array = var.getArray()
+        array = var.getNumericValue()
         for cell in cells:
             id = cell.getId()
             zeroCell = ()
             for adjacentCell in cell.getAdjacentCells():                
                 adjacentId = adjacentCell.getId()
-                if array(array[id] * array[adjacentId]<0.):
+                if array[id] * array[adjacentId]<0.:
                     zeroCell = (cell,)
-             zeroCells += zeroCell            
+             zeroCells += zeroCell
         return zeroCells
 
     def setZeroCellValues(self, zeroCells):
@@ -122,7 +122,7 @@ class LevelSetEquation(Equation):
                         boundingCell = (cell,)
             boundingCells += boundingCell
 
-    def getMinimumCell
+##    def getMinimumCell(
             
 
             
