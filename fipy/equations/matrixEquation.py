@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 6/3/04 {1:13:08 PM} 
+ #                                last update: 6/10/04 {9:58:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,7 @@
 
 import Numeric
 
-from fipy.sparseMatrix.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import SparseMatrix
 from fipy.equations.equation import Equation
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
