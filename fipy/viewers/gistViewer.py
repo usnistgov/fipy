@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 11/17/03 {11:07:02 AM} 
+                               last update: 11/27/03 {10:19:52 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -57,7 +57,8 @@ class GistViewer:
     def plot(self):
         gist.window(self.id, wait= 1)
         gist.animate(1)
-        gist.palette('rainbow.gp')
+        gist.palette('heat.gp')
+	gist.gridxy(1)
         gist.pli(self.getArray(), cmin = self.minVal, cmax = self.maxVal)
         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
         gist.fma()

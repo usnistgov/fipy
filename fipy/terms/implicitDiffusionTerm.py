@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/28/03 {10:50:29 AM} 
+ #  FILE: "implicitDiffusionTerm.py"
+ #                                    created: 11/28/03 {10:07:06 AM} 
+ #                                last update: 11/28/03 {10:13:57 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -28,32 +26,23 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-"""Run all the test cases
-"""
 
-import tests.testVariableDiffusion
-import tests.testSteadyStateDiffusion
-import tests.testExplicitDiffusion
-import unittest
+from diffusionTerm import DiffusionTerm
 
-if __name__ == '__main__':
-    theSuite = tests.testSteadyStateDiffusion.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
-    
-    theSuite = tests.testExplicitDiffusion.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
-    
-    theSuite = tests.testVariableDiffusion.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+class ImplicitDiffusionTerm(DiffusionTerm):
+    def __init__(self, diffCoeff, mesh, boundaryConditions):
+	"""
+	The stencil ( 'None', (1., 1.)) represents an entirely implicit scheme
+	"""
+	stencil = ( (1., 1.), 'None' )
+	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions, stencil)
+	 
+	 
+
 

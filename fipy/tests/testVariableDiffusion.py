@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/26/03 {11:11:48 AM} 
+ #                                last update: 11/28/03 {10:50:14 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -177,14 +177,15 @@ class TestVariableDiffusion50x1(TestVariableDiffusion):
 	TestVariableDiffusion.setUp(self)
 
 def suite():
-    suite2 = unittest.makeSuite(TestVariableDiffusion2x1, 'test')
-    suite10 = unittest.makeSuite(TestVariableDiffusion10x1, 'test')
-    suite50 = unittest.makeSuite(TestVariableDiffusion50x1, 'test')
-    alltests = unittest.TestSuite((suite2,suite10,suite50))
-    return alltests
+    theSuite = unittest.TestSuite()
+    theSuite.addTest(unittest.makeSuite(TestVariableDiffusion2x1))
+    theSuite.addTest(unittest.makeSuite(TestVariableDiffusion10x1))
+    theSuite.addTest(unittest.makeSuite(TestVariableDiffusion50x1))
+    return theSuite
     
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    theSuite = suite()
+    unittest.TextTestRunner(verbosity=2).run(theSuite)
 
             
             

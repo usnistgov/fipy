@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/26/03 {11:11:48 AM} 
+ #                                last update: 11/28/03 {10:46:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -143,14 +143,15 @@ class  TestSteadyStateDiffusion1D(TestSteadyStateDiffusion):
 	TestSteadyStateDiffusion.setUp(self)
 	
 def suite():
-    suite1D = unittest.makeSuite(TestSteadyStateDiffusion1D, 'test')
-    suite20 = unittest.makeSuite(TestSteadyStateDiffusion20x20, 'test')
-    suite50 = unittest.makeSuite(TestSteadyStateDiffusion50x50, 'test')
-    alltests = unittest.TestSuite((suite1D,suite20,suite50))
-    return alltests
+    theSuite = unittest.TestSuite()
+    theSuite.addTest(unittest.makeSuite(TestSteadyStateDiffusion1D))
+    theSuite.addTest(unittest.makeSuite(TestSteadyStateDiffusion20x20))
+    theSuite.addTest(unittest.makeSuite(TestSteadyStateDiffusion50x50))
+    return theSuite
     
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    theSuite = suite()
+    unittest.TextTestRunner(verbosity=2).run(theSuite)
 
             
             

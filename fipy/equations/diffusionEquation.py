@@ -5,7 +5,7 @@
 
  FILE: "diffusionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/26/03 {10:25:42 AM} 
+                               last update: 11/28/03 {10:12:49 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,7 +42,7 @@ they have been modified.
 
 from matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
-from terms.diffusionTerm import DiffusionTerm
+from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 class DiffusionEquation(MatrixEquation):
     """
@@ -58,7 +58,7 @@ class DiffusionEquation(MatrixEquation):
         mesh = var.getMesh()
 	terms = (
 	    TransientTerm(transientCoeff,mesh),
-	    DiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	    ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
             )
 	MatrixEquation.__init__(
             self,

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 11/27/03 {11:11:48 AM} 
+ #                                last update: 11/28/03 {10:49:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -125,15 +125,16 @@ class  TestExplicitDiffusion50(TestExplicitDiffusion):
 	self.nx = 50
 	self.ny = 1
 	TestExplicitDiffusion.setUp(self)
-	
+
 def suite():
-    suite10 = unittest.makeSuite(TestExplicitDiffusion10, 'test')
-    suite50 = unittest.makeSuite(TestExplicitDiffusion50, 'test')
-    alltests = unittest.TestSuite((suite10,suite50))
-    return alltests
+    theSuite = unittest.TestSuite()
+    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion10))
+    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion50))
+    return theSuite
     
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
-
+    theSuite = suite()
+    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    
             
             

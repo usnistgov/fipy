@@ -5,7 +5,7 @@
 
  FILE: "explicitDiffusionTerm.py"
                                    created: 11/27/03 {11:39:03 AM} 
-                               last update: 11/27/03 {11:14:04 AM} 
+                               last update: 11/28/03 {10:12:45 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -41,16 +41,14 @@ they have been modified.
 """
 
 from diffusionTerm import DiffusionTerm
-import Numeric
 
 class ExplicitDiffusionTerm(DiffusionTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions):
         """
-        The default stencil ( 'None', (1., 1.)) represents an entirely explicit scheme
+        The stencil ( 'None', (1., 1.)) represents an entirely explicit scheme
         """
         stencil = ( 'None', (1., 1.))
 	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions,stencil)
-	self.diffCoeff = diffCoeff
 	
 	
 

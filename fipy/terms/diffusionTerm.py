@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 11/26/03 {11:14:04 AM} 
+                               last update: 11/28/03 {10:09:50 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,10 +44,7 @@ from faceTerm import FaceTerm
 import Numeric
 
 class DiffusionTerm(FaceTerm):
-    def __init__(self, diffCoeff, mesh, boundaryConditions, stencil = ( (1., 1.), 'None' )):
-        """
-        The default stencil ( (1., 1.), 'None') represents an entirely implicit scheme
-        """
+    def __init__(self, diffCoeff, mesh, boundaryConditions, stencil):
 	FaceTerm.__init__(self,stencil,mesh,boundaryConditions)
 	self.diffCoeff = diffCoeff
 	
