@@ -129,17 +129,9 @@ Display the results if run as a script.
    ...     fipy.viewers.make(vars = var).plotMesh()
    ...     fipy.viewers.make(vars = var, limits = {'datamin': -1.0, 'datamax': 1.0}).plot()
 
-.. raw:: latex
-
-    The results should look like those displayed in
-    Figure~\ref{fig:inputCircle}.
-    \begin{figure}[tbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{inputCircle}
-        \caption{Screen shot of the Gist results, a smooth contour varying with
-         spatial position in the x-direction and the corresponding meshed domain.}
-        \label{fig:inputCircle}
-    \end{figure}
+.. image:: inputCircle.pdf
+   :scale: 50
+   :align: center
 
 """
 
