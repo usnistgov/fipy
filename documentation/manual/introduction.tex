@@ -1,0 +1,261 @@
+\chapter{Introduction}
+
+\section{Overview}
+
+\FiPy{} is an object oriented partial differential equation (PDE) solver
+written in \href{http://www.python.org/}{Python} based on a standard
+finite volume (FV) approach.
+
+The solution of coupled sets of PDEs is ubiquitous in the numerical
+simulation of science problems.  Numerous PDE solvers exist using a
+variety of languages and numerical approaches. Many are proprietary,
+expensive and difficult to customize.  As a result, scientists spend
+considerable resources repeatedly developing limited tools for
+specific problems.  Our approach, combining the FV method and
+\href{http://www.python.org/}{Python}, provides a tool that is
+extensible, powerful and freely available. A significant advantage to
+\href{http://www.python.org/}{Python} is the existing suite of tools
+for array calculations, sparse matrices and data representation.
+
+The \FiPy{} framework includes terms for transient diffusion,
+convection and standard sources, enabling the solution of arbitrary
+combinations of coupled elliptic, hyperbolic and parabolic
+PDEs. Current models include phase field treatments of
+electrochemical, polycrystalline and dendritic phase transformations
+as well as a level set treatment of the electrodeposition process.
+
+\section{Aims}
+
+The goal of the \FiPy{} framework is to develop a highly customizable
+open source code available to the scientific community. \FiPy{} allows
+users to select and customize modules from within the framework. Those
+modules can then be combined with an extremely powerful high level
+scripting language allowing the user full control over the solution
+algorithm. This 'top down' method of computer programming allows
+significant code reuse while accounting for the unique vagaries of
+each problem.
+
+The initial development of the framework has been undertaken in the
+Center for Theoretical and Computational Materials Science
+(\href{http://www.ctcms.nist.gov/}{CTCMS}), in the Materials Science
+and Engineering Laboratory(\href{http://www.msel.nist.gov/}{MSEL}) at
+the National Institute of Standards and Technology
+(\href{http://www.nist.gov/}{NIST}). The framework is known as \FiPy{}
+and is developed at the top level in the
+\href{http://www.python.org/}{Python} programming language.
+\href{http://www.python.org/}{Python} enables the integration of
+low-level high performance languages such as C and FORTRAN allowing
+for efficient optimization. \href{http://www.python.org/}{Python} also
+has a large repository of free numerical and scientific software that
+can be integrated into the \FiPy{} framework. At
+\href{http://www.nist.gov/}{NIST}, there is a significant ongoing effort
+to maximize the efficiency of \FiPy{} with the use of third party
+software and the judicious use of the C programming language embedded
+in standard core modules.
+
+The end goal of \FiPy{} is to provide a realistic open source choice
+for solving coupled sets of equations. Once an efficient customizable
+framework is developed, the end goal will only be achieved with proper
+support for the community of users. Many previous scientific computing
+projects, although valuable tools, are not adopted by the end users
+due to inadequate distribution tools and lack of support. Adequate
+support consists of clear documentation, efficient distribution
+methods, a code repository, regular code updates (bug fixes) and a
+test infrastructure. We aim to address all of these issues.
+
+The aims mentioned above can be summarized as
+follows:
+\begin{itemize}
+\item Develop core test piece models for various material science problems.
+\item Develop a highly efficient and customizable code.
+\item Support the distribution of code to the end users.
+\end{itemize}
+
+\section{Research Background}
+
+The equations that model the evolution of physical, chemical and
+biological systems often have a remarkably universal form. Indeed,
+partial differential equations (PDEs) have proven necessary to model
+complex physical systems and processes that involve variations in both
+space and time.  In general, given a variable of interest such as
+species concentration, pH or temperature, there exists an evolution
+equation of the form
+\begin{equation}
+  \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
+  \label{eqn:general-equation}
+\end{equation}
+where $H$ is a function of $\phi$, other state variables $\lambda_i$,
+and higher order derivatives of all of these variables. Examples of
+such systems are wide ranging, but include problems that exhibit a
+combination of diffusing and reacting species, as well as such diverse
+problems as determination of the electric potential in heart tissue,
+of fluid flow, stress evolution, and even the Schroedinger equation.
+
+The initial implementation of \FiPy{} has been developed to address
+model problems in materials science such as poly-crystals, dendrititic
+growth and electrochemical deposition. These applications all contain
+various combinations of PDEs with differing forms in conjunction with
+other unusual physics (over varying length scales) and unique solution
+procedures. The philosophy of \FiPy{} is to enable unique
+customization while providing a library of efficient modules for
+common objects and data types.
+
+\section{Expected Impact}
+
+It is hard to estimate the future impact of a particular open source
+project. However, we believe that the core principles used in the development of
+\FiPy{} will enable it to have significant future growth 
+within the scientific community. The core principles of \FiPy{} are
+outlined in some of the following sections.
+
+\section{\href{http://www.python.org/}{Python} Programming Language}
+
+\href{http://www.python.org/}{Python} combines
+remarkable power with very clear syntax. It is freely usable and
+distributable, even for commercial
+use. \href{http://www.python.org/}{Python} is an example of an
+interpreted scripting language. Scripting languages are seen as
+distinctive from compiled lower level languages such as C or
+FORTRAN. Such lower level languages are commonly used for numerical
+codes due to their increased efficiency over scripting languages. This
+makes \href{http://www.python.org/}{Python} an unusual choice for the
+bases of a numerical framework.
+
+Codes, programmed exclusively in C or FORTRAN, are often hard to
+readapt to new application areas mainly due to the inability to allow
+developers access at various levels of the code. In general, such
+codes use a distinctive scripting language written for the code at
+hand allowing users to vary parameter values and switch between
+different internal solution algorithms. Such exclusive scripting
+languages can often be difficult to write and must be an integral part
+of the design of the numerical code and cannot easily account for the
+various ways a prospective user may wish to use the code.
+
+Thus \FiPy{}, rather than taking the approach of writing the fast
+numerical code first and then dealing with the issue of user
+interaction, initially implements most modules in the \href{http://www.python.org/}{Python} scripting
+language and only translates to C those parts of the code that prove
+inefficient. This leads to most top-level structures being written in
+\href{http://www.python.org/}{Python} allowing easy to understand implementation and
+modification. The choice of \href{http://www.python.org/}{Python} is
+in part due to the easy integration of C either as separate modules or
+encapsulated in \href{http://www.python.org/}{Python} functions as
+well as the ability to directly translate from
+\href{http://www.python.org/}{Python} to C
+(\href{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}{PyRex}). This
+low-level integration has resulted in a number of freely available
+efficient numerical modules (\href{http://www.scipy.org/}{SciPy},
+\href{http://www.numpy.org/}{NumPy}) for
+\href{http://www.python.org/}{Python} some of which are utilized in
+the \FiPy{} framework.
+
+\section{Object Oriented Approach}
+
+\FiPy{} is programmed in an object-oriented manner. The benefit of object
+oriented programming mainly lies in encapsulation and
+inheritance. Encapsulation allows parts of the code to be separated
+into clearly defined independent modules that can be re-applied or
+extended in new ways. Inheritance allows code to be reused and new
+capabilities to be added without altering the original code. These are
+extremely powerful techniques not available to numerical codes written
+in C or FORTRAN.
+
+\section{Test Based Development}
+
+\FiPy{} has been developed with a large number of test cases. These test
+cases operate on two levels. The lower level tests operate on the core
+modules at the individual method level. Thus every method within the
+core installation has a test case. The high level test cases operate
+in conjunction with example test piece solutions and test global
+solution algorithms and the interaction of various modules. Thus at
+any stage in code development the test cases can be executed and
+errors can be identified.
+
+A test base is essential for the adoption of the code by new users and
+developers. Many numerical codes do not have test bases available with
+the code. This is a severe drawback in any prospective development
+making it difficult to alter the code without the reassurance that any
+code breakages will be clearly demonstrated with a broken test case. A
+test base also aids dissemination of the code by providing simple
+examples and knowledge of whether the code is working on a particular
+computer environment.
+
+\href{http://www.python.org/}{Python} has modules
+(\href{http://www.python.org/doc/current/lib/module-doctest.html}{doctest},
+href{http://www.python.org/doc/current/lib/module-unittest.html}{unittest})
+that automate the testing procedure.
+
+\section{Documentation}
+
+FiPY has been developed with a continuously updated manual. The manual
+contains introductory material, installation procedures and
+explanation of numerical algorithms. The manual also contains an
+automated description of each module and method. The automated
+description is derived from comments in the source code. Thus the
+manual will stay current as the code develops and encourage developers
+to comment the code. The same automated method is used to build
+descriptions of core examples making it each for a prospective user to
+understand and start using the code.
+
+Many numerical codes do not have adequate documentation.
+
+\section{Numerical Approach}
+
+The solution algorithms given in the \FiPy{} examples involve combining
+sets of PDEs while tracking an interface where the parameters of the
+problem change rapidly. The Phase Field Method (PFM) and the Level Set
+Method (LSM) are specialized techniques to handle the solution of
+PDEs in conjunction with a deforming interface. The combination of
+these methods within one code is novel and useful for academic as well
+as practical comparison of both methods. Both methods are not new but
+are still undergoing constant development.
+
+\FiPy{} uses the well-known Finite Volume Method (FVM) to reduce the
+model equations to a form tractable to linear solvers.
+
+In general, both the LSM and PFM methods do not appear with standard
+FV solvers, usually the more standard Volume Of Fluid Method (VOFM) is
+used as an interface-tracking algorithm. Generally, VOFM is used for
+very different applications to the LSM and PFM.
+
+\section{Distribution}
+
+Clear distribution techniques and easy installation are required for
+prospective users to begin using the code. Two prospective methods are
+planned for code distribution. The first method is simply creating
+stable archive releases that users can unpack. The second method is to
+create a code repository where users can update to the latest unstable
+version of the code. This is useful to allow users access to the
+latest bug fixes. Also having a central code repository allows more
+developers to join the main project or select parts of the project.
+
+Most numerical software is not distributed via a code repository and
+thus makes obtaining the latest version of the software and bug fixes
+difficult.
+
+\section{Open Source}
+
+In recent years there has been a movement towards more open source
+unrestrictive licenses especially within the scientific community. The
+\FiPy{} framework will be written with an open source license allowing
+users to develop with complete access to the source code and then
+either contribute back to the main source repository or freely
+distribute their new adapted version. Many members of the scientific
+community prefer to use an open source license due to the unrestricted
+access and ability to develop extensible codes. Specifically, the
+restrictions of non-open source licenses involve an inability to
+redistribute code, a lack of access to source code and the expense of
+maintaining licenses. Redistribution of code not only allows tools to
+be shared but also promotes communication of ideas. Access to source
+code is essential for developers and users to understand the function
+of a code and allow bugs to be fixed.
+
+\section{Pair Programming}
+
+\href{http://www.extremeprogramming.org/rules/pair.html}{Pair programming} is a good way to develop computer code.
+
+\section{Contributions}
+
+\section{Bugs}
+
+\section{Efficiency}
