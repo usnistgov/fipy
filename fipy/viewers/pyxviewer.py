@@ -48,8 +48,8 @@ of a large number of small rectangles (hereafter referred to as 'plot cells') ea
 to the value of the variable at the center of it. The PyxViewer has a subclass Grid2DPyxViewer. Grid2DPyxViewer should be used
 when the variable's mesh is a Grid2D mesh, and PyxViewer should be used otherwise.
 
-NOTE: The current implementation of PyxViewer (but not Grid2DPyxViewer) is known to cause a segmentation fault when the mesh
-size and/or the number of plot cells is large.
+NOTE: The current implementation of PyxViewer (but not Grid2DPyxViewer) is known to cause an out of memory error when the mesh
+size time sthe number of plot cells is large.
 
 A PyxViewer is created with one argument: the variable to be plotted. To actually plot the variable, it is necessary to
 call the PyxViewer's plot() method. The plot() method has the following keyword arguments:
@@ -70,9 +70,15 @@ to view your plot. If no viewcmd is specified, no graphics program will open.
 xlabel - The label to use for the X axis. Default is 'X values'.
 ylabel - The label to use for the Y axis. Default is 'Y values'.
 gridcorrect - The amount by which adjacent plot cells should overlap. Used for correcting the 'grid effect'. Default value is 0.03.
+scalefile - The file name to put the scale into. The scale will automatically be displayed after the original image is displayed if a viewcmd is specified.
+If no scalefile is specified, no scale will be created.
+
+The following are keyword arguments in the __init__() method: (Note that these work for PyxViewer only, not Grid2DPyxViewer)
+
+showpercent - If set to 1, this displays the percentage complete at 5% intervals as the plot progresses. Default value is 1.
+showtime - If set to 1, this displays the approximate time it will take to plot it. Default value is 1.
 
 Test cases:
-
    >>> from fipy.meshes.grid2D import Grid2D
    >>> import fipy.variables.cellVariable
    >>> mesh = Grid2D(1.0, 1.0, 2, 2)
@@ -81,7 +87,7 @@ Test cases:
    >>> myvar[1] = 2.0
    >>> myvar[2] = 3.0
    >>> myvar[3] = 4.0
-   >>> myviewer = Grid2DPyxViewer(myvar)
+   >>> myviewer = Grid2DPyxViewer(myvar, showpercent = 0, showtime = 0)
    >>> array = myviewer.getValueMatrix(0.0, 2.0, 0.0, 2.0, 1.0)
    >>> testlist = array.tolist() 
    >>> print testlist
@@ -95,7 +101,7 @@ Test cases:
    >>> myvar[1] = 2.0
    >>> myvar[2] = 3.0
    >>> myvar[3] = 4.0
-   >>> myviewer = Grid2DPyxViewer(myvar)
+   >>> myviewer = Grid2DPyxViewer(myvar, showpercent = 0, showtime = 0)
    >>> testlist = myviewer.plot(minx = 0.0, maxx = 2.0, miny = 0.0, maxy = 2.0, resolution = 1.0, minval = 1.0, maxval = 5.0, gridcorrect = 0.0, returnlist = 1) 
    >>> print testlist
    [[0.0, 1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 1.0, 2.0, 0.5], [1.0, 2.0, 0.0, 1.0, 0.25], [1.0, 2.0, 1.0, 2.0, 0.75]]
@@ -135,7 +141,7 @@ Test cases:
    >>> myvar[1] = 2.0
    >>> myvar[2] = 3.0
    >>> myvar[3] = 4.0
-   >>> myviewer = PyxViewer(myvar)
+   >>> myviewer = PyxViewer(myvar, showpercent = 0, showtime = 0)
    >>> array = myviewer.getValueMatrix(0.0, 2.0, 0.0, 2.0, 0.5)
    >>> testlist = array.tolist()
    >>> print testlist
@@ -157,18 +163,21 @@ pyx.text.set(fontmaps="psfonts.cmz")
 
 class PyxViewer:
     
-    def __init__(self, variable):
+    def __init__(self, variable, showpercent = 1, showtime = 1):
         self.var = variable
         self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
+        self.showpercent = showpercent
+        self.showtime = showtime
 
 ## ------------------------------------------------------------------------------------
 
-    def plot(self, returnlist = 0, debug=0, minx=0.0, maxx=10.0, miny=0.0, maxy=10.0, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", gridcorrect = 0.03):
+    def plot(self, returnlist = 0, debug=0, minx=0.0, maxx=10.0, miny=0.0, maxy=10.0, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", gridcorrect = 0.03, scalefile = None):
         
         ## initialize variables
         
         starttime = time.time()
         thepalette = pyx.color.palette.ReverseRainbow
+        
         ## calculate the resolution. If there is no resolution set, calculate a "default" resolution that will lead to 1,000 points being plotted.
         ## If a resolution is given, use that.
         
@@ -204,8 +213,12 @@ class PyxViewer:
             minval = min(vallist)
         if(maxval == None):
             maxval = max(vallist)
+        if(debug == 1):
+            print vallist
+            print minval
+            print maxval
         vallist = (vallist - minval) / (maxval - minval)
-        minxlist= xlist - (0.5 * resolution)
+        minxlist = xlist - (0.5 * resolution)
         maxxlist = xlist + (0.5 * resolution)
         minylist = ylist - (0.5 * resolution)
         maxylist = ylist + (0.5 * resolution)
@@ -221,7 +234,7 @@ class PyxViewer:
         ## Create the graph and plot it.
         if(filename != None):
             mygraph = pyx.graph.graphxy(height = 8, width = 8, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
-            mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(pyx.color.palette.Rainbow))
+            mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
             mygraph.dodata()
             mygraph.dokey()
             mygraph.writeEPSfile(filename)
@@ -231,10 +244,24 @@ class PyxViewer:
             print tottime
             print("resolution:")
             print resolution
-
         if(viewcmd != None):
             os.system(viewcmd + " " + filename + ".eps")
 
+        ## if the user inputted a scalefile, create the scale and view it.
+        if(scalefile != None):
+            scalegraph = pyx.graph.graphxy(height = 8, width = 1, y = pyx.graph.axis.linear(min = minval, max = maxval, title = ylabel))
+            scaleminx = Numeric.zeros((100,))
+            scalemaxx = Numeric.ones((100,))
+            scaleminy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*(num / 100.0), (100,))
+            scalemaxy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*((num + 1.2) / 100.0), (100,))
+            scalecolors = Numeric.fromfunction(lambda num: (num + 0.5) / 100.0, (100,))
+            scalearray = Numeric.array([scaleminx, scalemaxx, scaleminy, scalemaxy, scalecolors])
+            scalearray = Numeric.transpose(scalearray)
+            scalelist = scalearray.tolist()
+            scalegraph.plot(pyx.graph.data.list(scalelist, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
+            scalegraph.writeEPSfile(scalefile)
+            if(viewcmd != None):
+                os.system(viewcmd + " " + scalefile + ".eps")   
         if(returnlist == 1):
             return displayinput
         else:
@@ -261,9 +288,61 @@ class PyxViewer:
 
         ## This function gets the value of the variable at a given point x, y. This function is designed to be used with
         ## x and y being arrays.
-        
-        cellIDarray = self.var.getMesh().getNearestCellID((x, y))
-        resArray = Numeric.take(self.theArray, cellIDarray)
+        xsize = x.shape[0]
+        ysize = x.shape[1]
+        totsize = xsize * ysize
+        if(totsize > 10000):
+            estamt = 100
+        else:
+            estamt = (totsize / 100)
+        if estamt == 0:
+            estamt = 1
+        resArray = Numeric.zeros((totsize,))
+        resArray = resArray.astype(Numeric.Float)
+        xlist = Numeric.reshape(x, (totsize,))
+        ylist = Numeric.reshape(y, (totsize,))
+        cellCenters = self.var.getMesh().getCellCenters()
+        cellXvalues = Numeric.transpose(cellCenters)[0]
+        cellYvalues = Numeric.transpose(cellCenters)[1]
+        meshsize = Numeric.size(cellXvalues)
+        plotCellsPerLoop = 1
+        cellXvalues = Numeric.reshape(cellXvalues, (meshsize, 1))
+        cellYvalues = Numeric.reshape(cellYvalues, (meshsize, 1))
+        currPlot = 0
+        lastDisplayedPercent = 0
+        displayInterval = 5
+        if(self.showpercent == 1):
+            print "Entering process now."
+        starttime = time.time()
+        while (currPlot + plotCellsPerLoop < totsize):
+            Xoffsets = cellXvalues - xlist[currPlot : currPlot + plotCellsPerLoop]
+            Yoffsets = cellYvalues - ylist[currPlot : currPlot + plotCellsPerLoop]
+            a = Xoffsets ** 2
+            b = Yoffsets ** 2
+            squaredDists = a + b
+            cellIDarray = Numeric.argmin(squaredDists, axis = 0)
+            resArray[currPlot: currPlot + plotCellsPerLoop] = Numeric.take(self.theArray, cellIDarray)
+            currPlot = currPlot + plotCellsPerLoop
+            if(self.showtime == 1):
+                if(currPlot == estamt):
+                    estTime = ((time.time() - starttime) * totsize) / estamt
+                    estTime = int(estTime)
+                    print "Estimated time to completion:", estTime, "seconds." 
+            if(self.showpercent == 1):            
+                percentComplete = (currPlot * 100) / totsize
+                if(percentComplete - lastDisplayedPercent > displayInterval):
+                    lastDisplayedPercent = lastDisplayedPercent + displayInterval
+                    print lastDisplayedPercent, "percent complete."
+        Xoffsets = cellXvalues - xlist[currPlot:]
+        Yoffsets = cellYvalues - ylist[currPlot:]
+        a = Xoffsets ** 2
+        b = Yoffsets ** 2
+        squaredDists = a + b
+        cellIDarray = Numeric.argmin(squaredDists, axis = 0)
+        resArray[currPlot:] = Numeric.take(self.theArray, cellIDarray)
+        if(self.showpercent == 1):
+            print "100 percent complete."
+        resArray = Numeric.reshape(resArray, (xsize, ysize))
         return resArray
 
 ##------------------##------------------##------------------------------## ----------------##----------------##----------
@@ -309,7 +388,7 @@ class Grid2DPyxViewer(PyxViewer):
         resArray = Numeric.take(self.theArray, cellIDarray) * Y1coeffs   ## contribution from lower left point
         resArray = resArray + Numeric.take(self.theArray, cellIDarray + 1) * Y2coeffs   ## contribution from lower right point
         resArray = resArray + Numeric.take(self.theArray, cellIDarray + (width + 1)) * Y3coeffs   ## contribution from upper right point
-        resArray = resArray + Numeric.take(self.theArray, cellIDarray + width) * Y4coeffs   ##contribution from upper left point
+        resArray = resArray + Numeric.take(self.theArray, cellIDarray + width) * Y4coeffs   ## contribution from upper left point
         return resArray
 
 
