@@ -56,8 +56,10 @@ call the PyxViewer's plot() method. The plot() method has the following keyword 
 
 debug - When set to 1, prints debugging information. Default value is 0.
 returnlist - When set to 1, returns the displaylist. Used for debugging and test cases. Default value is 0.
-minx, maxx - The minimum and maximum values of X to appear on the plot. Default values are 0.0 and 10.0.
-miny, maxy - The minimum and maximum values of Y to appear on the plot. Default values are 0.0 and 10.0.
+minx, maxx - The minimum and maximum values of X to appear on the plot. By default, minx and maxx are set to the minimum and
+maximum values of the X coordinates of the mesh centers. 
+miny, maxy - The minimum and maximum values of Y to appear on the plot. By default, miny and maxy are set tp the minimum and
+maximum values of the Y coordinates of the mesh centers.
 minval, maxval - The minimum and maximum values on the color scale. A value of minval will appear completely
 blue and a value of maxval will appear completely red. If no values are specified, minval will default to the lowest value of the variable
 over the area to be plotted and maxval will default to the highest value of the variable over the area to be plotted/ 
@@ -170,7 +172,7 @@ class PyxViewer:
 
 ## ------------------------------------------------------------------------------------
 
-    def plot(self, returnlist = 0, debug=0, minx=0.0, maxx=10.0, miny=0.0, maxy=10.0, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", valuelabel = "Variable Value", scalefile = None):
+    def plot(self, returnlist = 0, debug=0, minx=None, maxx=None, miny=None, maxy=None, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", valuelabel = "Variable Value", scalefile = None):
         
         ## initialize variables
         
@@ -213,6 +215,14 @@ class PyxViewer:
             minval = min(vallist)
         if(maxval == None):
             maxval = max(vallist)
+        if(minx = None):
+            minx = min(xlist)
+        if(maxx = None):
+            maxx = max(xlist)
+        if(miny = None):
+            miny = min(ylist)
+        if(maxy = None):
+            maxy = max(ylist)
         if(debug == 1):
             print vallist
             print minval
