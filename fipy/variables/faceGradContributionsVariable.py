@@ -49,6 +49,6 @@ class FaceGradContributions(VectorCellVariable):
         self.calcValue1()
 
     def calcValue1(self):
-        self.value = self.mesh.getAreaProjections() * self.var.getArithmeticFaceValue().transpose().getNumericValue()
+        self.value = self.mesh.getAreaProjections()[:] * self.var.getArithmeticFaceValue().transpose().getNumericValue()[:]
     
 

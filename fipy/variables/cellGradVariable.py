@@ -39,9 +39,10 @@
 import Numeric
 
 from fivol.variables.vectorCellVariable import VectorCellVariable
-from fivol.tools import array
+import fivol.tools.array
 from fivol.inline import inline
 from fivol.variables.faceGradContributionsVariable import FaceGradContributions
+import MA
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -50,7 +51,8 @@ class CellGradVariable(VectorCellVariable):
         self.faceGradientContributions = FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
-        
+        print fivol.tools.array.convertNumeric(self.mesh.getAreaProjections())
+        print fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue())
 	inline.runInlineLoop2("""
 	    val(i,j) = 0.;
 	    
@@ -63,8 +65,8 @@ class CellGradVariable(VectorCellVariable):
 	    val(i, j) /= volumes(i);
 	""",
 	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
-        areaProj = self.mesh.getAreaProjections().getNumericValue(),
-        faceValues = self.var.getArithmeticFaceValue().getNumericValue(),
+        areaProj = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+        faceValues = fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
 	ni = N, nj = self.mesh.getDim(), nk = M
 	)
         
@@ -85,12 +87,14 @@ class CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
+	contributions = fivol.tools.array.take(self.faceGradientContributions[:],ids.flat)
 
-	contributions = array.take(self.faceGradientContributions[:],ids.flat)
-	contributions = contributions.reshape((N,M,self.mesh.getDim()))
+##        contributions = contributions.reshape((N,M,self.mesh.getDim()))
+        contributions = fivol.tools.array.reshape(contributions, (N, M, self.mesh.getDim()))
+        orientations = fivol.tools.array.reshape(orientations, (N, M, 1))
+        grad = fivol.tools.array.sum(orientations * contributions, 1)
+##        grad = (orientations*contributions).sum(1)
 
-	grad = (orientations*contributions).sum(1)
-	
 	grad = grad / volumes[:,Numeric.NewAxis]
 
 	self.value = grad
