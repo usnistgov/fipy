@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -47,9 +48,9 @@ class FixedValue(boundaryCondition.BoundaryCondition):
 
     def update(self,term):
         for face in self.faces:
-            id=face.cells()[0].id()
-            term.equation.L()[id,id]+=coeff[face.id()] * term.stencil[1]
-            term.equation.b()[id]+=coeff[face.id()] * term.stencil[0] * self.value
+            id=face.getCells()[0].getId()
+            term.equation.getL()[id,id]+=term.coeff[face.getId()] * term.stencil[1]
+            term.equation.getB()[id]+=term.coeff[face.getId()] * term.stencil[0] * self.value
         
     
 	

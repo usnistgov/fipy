@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -45,12 +46,26 @@ class Equation:
         name,
         var,
         terms,
-        solver):
+        solver,
+	boundaryConditions,
+	initialConditions):
+
 	self.name = name
 	self.var = var
         self.terms = terms
 	self.solver = solver
-        
+        self.boundaryConditions = boundaryConditions
+	self.initialConditions = initialConditions
+
+	for initialCondition in initialConditions:
+            initialCondition.setInitialCondition(self.var)
+
+    def getVar(self):
+        return self.var 
+
+    def getBoundaryConditions(self):
+        return self.boundaryConditions
+
     def updateVar(self):
 	pass
 	

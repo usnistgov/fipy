@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -46,13 +47,12 @@ class LinearPCGSolver(solver.Solver):
 	solver.Solver.__init__(self, tolerance, steps)
 	
     def solve(self, L, x, b):
-	A = self.L.to_sss()
+	A = L.to_sss()
 	
 	Assor=precon.ssor(A)
 	
 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
-	
-## 	print info, iter, relres
+        print info, iter, relres
 	    
 	if (info != 0):
 	    print >> sys.stderr, 'cg not converged'

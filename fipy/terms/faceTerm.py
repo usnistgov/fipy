@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -68,5 +69,5 @@ class FaceTerm(term.Term):
             self.equation.getL()[id2,id1]-=self.coeff[faceId] * self.stencil[0]
             self.equation.getL()[id2,id2]+=self.coeff[faceId] * self.stencil[1]
 
-        for boundaryCondition in equation.boundaryConditions():            
+        for boundaryCondition in self.equation.getBoundaryConditions():            
             boundaryCondition.update(self)

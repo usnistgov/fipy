@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -47,8 +48,8 @@ class FixedFlux(boundaryCondition.BoundaryCondition):
 
     def update(self,term):
         for face in self.faces:
-            id = face.cells().id()            
-            term.equation.b()[id] += self.value * face.area()
+            id = face.getCells()[0].getId()            
+            term.equation.getB()[id] += self.value * face.area()
         
     
 	

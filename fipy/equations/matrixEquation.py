@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -47,8 +48,7 @@ import spmatrix
 class MatrixEquation(equation.Equation):
     bandwidth = 5
     
-    def __init__(
-        self,
+    def __init__(self,
         name,
         mesh,
         terms,
@@ -57,19 +57,16 @@ class MatrixEquation(equation.Equation):
         initialConditions
         ):
 	self.mesh = mesh
-	print "mesh: ", self.mesh
         var = Numeric.zeros([len(mesh.getCells())],'d')
 
-	equation.Equation.__init__(
-	    self,
+	equation.Equation.__init__(self,
 	    name,
 	    var,
 	    terms,
-	    solver)
-        print initialConditions
-
-        for initialCondition in initialConditions:
-            initialCondition.setInitialCondition(self.var)
+	    solver,
+            boundaryConditions,
+            initialConditions
+	)
 
     def getVar(self):
         return self.var    

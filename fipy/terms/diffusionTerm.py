@@ -54,7 +54,7 @@ class DiffusionTerm(faceTerm.FaceTerm):
 	faces = mesh.getFaces()
 	self.coeff = Numeric.zeros(len(faces),'d')
 	for face in faces:
-	    self.coeff[face.id()] = self.diffCoeff * face.area() / face.cellDistance()
+	    self.coeff[face.getId()] = self.diffCoeff * face.area() / face.cellDistance()
 	
 	
 
