@@ -155,3 +155,17 @@ class Cell:
 	self.faceIDs = ()
 	for i in range(len(self.faces)):
 	    self.faceIDs += (self.faces[i].getId(),)
+
+    def getBoundingCells(self):
+        boundingCells = ()
+        for face in self.faces:
+            faceCells = face.getCells()
+            if len(faceCells) == 2:
+                if faceCells[0].getId() == self.id:
+                    boundingCells += (faceCells[1],)
+                else:
+                    boundingCells += (faceCells[0],)
+
+        return boundingCells
+                
+                
