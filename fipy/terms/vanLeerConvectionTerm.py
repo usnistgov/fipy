@@ -4,7 +4,7 @@
  # 
  #  FILE: "vanLeerConvectionTerm.py"
  #                                    created: 7/14/04 {4:42:01 PM} 
- #                                last update: 7/16/04 {10:15:47 AM} 
+ #                                last update: 12/7/04 {5:19:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,19 +62,21 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 			
 	return grad
 	
-    def getOldAdjacentValues(self, oldArray, id1, id2):
-	oldArray1, oldArray2 = ExplicitUpwindConvectionTerm.getOldAdjacentValues(self, oldArray, id1, id2)
+    def getOldAdjacentValues(self, oldArray, id1, id2, dt):
+	oldArray1, oldArray2 = ExplicitUpwindConvectionTerm.getOldAdjacentValues(self, oldArray, id1, id2, dt)
+	
+	mesh = oldArray.getMesh()
 
-	interiorIDs = self.mesh.getInteriorFaceIDs()
-	interiorFaceAreas = array.take(self.mesh.getFaceAreas(), interiorIDs)
-	interiorFaceNormals = array.take(self.mesh.getOrientedFaceNormals(), interiorIDs)
+	interiorIDs = mesh.getInteriorFaceIDs()
+	interiorFaceAreas = array.take(mesh.getFaceAreas(), interiorIDs)
+	interiorFaceNormals = array.take(mesh.getOrientedFaceNormals(), interiorIDs)
 	
 	# Courant-Friedrichs-Levy number
-	interiorCFL = abs(array.take(self.coeff, interiorIDs)) * self.dt
+	interiorCFL = abs(array.take(self.coeff, interiorIDs)) * dt
 	
-	gradUpwind = (oldArray2 - oldArray1) / array.take(self.mesh.getCellDistances(), interiorIDs)
+	gradUpwind = (oldArray2 - oldArray1) / array.take(mesh.getCellDistances(), interiorIDs)
 	
-	vol1 = array.take(self.mesh.getCellVolumes(), id1)
+	vol1 = array.take(mesh.getCellVolumes(), id1)
 ## 	if Numeric.logical_or.reduce(interiorCFL > vol1):
 	self.CFL = interiorCFL / vol1
 ## 	print "CFL1:", Numeric.maximum.reduce(interiorCFL / vol1)
@@ -82,7 +84,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	oldArray1 += 0.5 * self.getGradient(array.dot(array.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
 	    * (vol1 - interiorCFL) / interiorFaceAreas
 	    
-	vol2 = array.take(self.mesh.getCellVolumes(), id2)
+	vol2 = array.take(mesh.getCellVolumes(), id2)
 ## 	if Numeric.logical_or.reduce(interiorCFL > vol2):
 	
 	self.CFL = Numeric.maximum(interiorCFL / vol2, self.CFL)
@@ -92,7 +94,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	oldArray2 += 0.5 * self.getGradient(array.dot(array.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
 	    * (vol2 - interiorCFL) / interiorFaceAreas
 	
-## 	print "volume:", array.take(self.mesh.getCellVolumes(), id1)
+## 	print "volume:", array.take(mesh.getCellVolumes(), id1)
 ## 	print "sweep:", interiorCFL
 ## 	print "area:", interiorFaceAreas
 ## 	print "oldArray:", oldArray

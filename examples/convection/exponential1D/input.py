@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {11:03:31 AM} 
+ #                                last update: 12/7/04 {4:05:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ given by:
 
 .. raw:: latex
 
-     $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0 $$
+   $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0 $$
 
 with coefficients
 

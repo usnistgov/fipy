@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/7/04 {11:27:41 AM} 
+ #                                last update: 12/7/04 {5:18:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,10 +78,10 @@ class FaceTerm(Term):
 		
             fipy.tools.vector.putAdd(b, ids, bb)
 
-    def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions):
+    def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
 	coeffMatrix = self.getCoeffMatrix(mesh, weight)
 
-        inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh)
+        inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
         
         for boundaryCondition in boundaryConditions:
 
@@ -122,8 +122,8 @@ class FaceTerm(Term):
 	    faceIDs = mesh.getInteriorFaceIDs(),
 	    ni = len(mesh.getInteriorFaceIDs()))
 
-    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh):
-        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2)
+    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, dt):
+        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2, dt)
 
 	interiorFaceIDs = mesh.getInteriorFaceIDs()
 	
@@ -135,7 +135,7 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
 
-    def getOldAdjacentValues(self, oldArray, id1, id2):
+    def getOldAdjacentValues(self, oldArray, id1, id2, dt):
 	return array.take(oldArray, id1), array.take(oldArray, id2)
 
     def buildMatrix(self, var, boundaryConditions, dt):
@@ -158,7 +158,7 @@ class FaceTerm(Term):
 	    self.implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
 
         if weight.has_key('explicit'):
-            self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions)
+            self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
             
         return (L, b)
 

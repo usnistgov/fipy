@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:07:13 PM} 
+ #                                last update: 12/7/04 {4:45:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as
-described in:: `examples/diffusion/convection/exponential1D/input.py` but
+described in `examples/diffusion/convection/exponential1D/input.py` but
 uses the `PowerLawConvectionTerm` rather than the
 `ExponentialConvectionTerm`.
 
@@ -67,7 +67,7 @@ uses the `PowerLawConvectionTerm` rather than the
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (-10.,0.)
+    >>> convCoeff = (10.,0.)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
@@ -91,6 +91,12 @@ We test the solution against the analytical result:
     >>> var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2) 
     1
    
+If the problem is run interactively, we can view the result:
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 """
      
 __docformat__ = 'restructuredtext'

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:02:38 PM} 
+ #                                last update: 12/7/04 {4:06:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,9 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in::
-`examples/diffusion/convection/exponential1D/input.py`
-    
-but with
+`examples/diffusion/convection/exponential1D/input.py` but with
 
 .. raw:: latex
 
@@ -94,7 +92,7 @@ We test the solution against the analytical result:
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10) 
+    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1
    
     >>> if __name__ == '__main__':

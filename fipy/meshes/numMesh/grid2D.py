@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/3/04 {10:35:47 PM} 
+ #                                last update: 12/7/04 {4:27:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,7 @@ class Grid2D(Mesh2D):
     first and then vertical faces. Vertices and cells are numbered 
     in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = 1):
+    def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1):
         self.nx = nx
         self.ny = ny
 	

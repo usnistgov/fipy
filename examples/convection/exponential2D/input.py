@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {3:54:03 PM} 
+ #                                last update: 12/7/04 {4:02:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,3 +104,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus.getScript())
     
     raw_input('finished')
+    

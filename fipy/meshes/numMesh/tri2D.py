@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 10/22/04 {4:21:13 PM} 
+ #                                last update: 12/7/04 {4:27:41 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -99,7 +99,7 @@ class Tri2D(Mesh2D):
     vertices at the corners of boxes and then the vertices at the centers of boxes. Vertices and cells are numbered 
     in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = 1):
+    def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1):
         self.nx = nx
         self.ny = ny
 	
