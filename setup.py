@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/1/04 {11:11:53 AM} 
+ #                                last update: 11/2/04 {2:44:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -265,7 +265,8 @@ class build_docs (Command):
                                      destination_dir = dir,
                                      writer = IncludedHTMLWriter(),
                                      settings = {'initial_header_level' : 3,
-                                                 'stylesheet' : 'ctcms.css'},
+                                                 'stylesheet' : 'ctcms.css',
+						 'xml_declaration' : 0},
                                      ext = '.html')
 
             import shutil
