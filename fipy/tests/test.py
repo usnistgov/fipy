@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/5/03 {10:10:49 PM} 
+ #                                last update:  01/05/04 { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -48,8 +48,7 @@ import examples.diffusion.explicit.test
 import examples.convection.test
 import examples.elphf.test
 import unittest
-import examples.phase.examples.missOrientation.test
-import examples.phase.examples.anisotropy.test
+import examples.phase.examples.test
 
 if __name__ == '__main__':
     theSuite = unittest.TestSuite()
@@ -58,8 +57,7 @@ if __name__ == '__main__':
     theSuite.addTest(examples.diffusion.explicit.test.suite())
     theSuite.addTest(examples.diffusion.variable.test.suite())
     theSuite.addTest(examples.convection.test.suite())
-    theSuite.addTest(examples.phase.examples.missOrientation.test.suite())
-    theSuite.addTest(examples.phase.examples.anisotropy.test.suite())    
+    theSuite.addTest(examples.phase.examples.test.suite())
     theSuite.addTest(examples.elphf.test.suite())
     
     unittest.TextTestRunner(verbosity=2).run(theSuite)
