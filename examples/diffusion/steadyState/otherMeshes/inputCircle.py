@@ -128,7 +128,7 @@ Display the results if run as a script.
    ...     from fipy.viewers.mesh2DGistViewer import Mesh2DMeshViewer
    ...     Mesh2DMeshViewer(mesh, grid = 0).plot()
    ...     from fipy.viewers.mesh2DGistViewer import Mesh2DGistViewer
-   ...     Mesh2DGistViewer(var, grid = 0, minVal = 0.0, maxVal = 1.0).plot()
+   ...     Mesh2DGistViewer(var, grid = 0, minVal = -1.0, maxVal = 1.0).plot()
 
 .. raw:: latex
 
