@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/21/03 {11:39:44 AM} 
+ #                                last update: 11/24/03 {10:21:50 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,6 +46,14 @@
 
 class BoundaryCondition:
     def __init__(self,faces,value):
+	"""Generic boundary condition base class.
+	
+	Arguments:
+	    
+	    'faces' -- 'list' or 'tuple' of 'Faces' to which this condition applies
+	    
+	    'value' -- the value to impose
+	"""
         self.faces = faces
         self.value = value
 
@@ -53,10 +61,19 @@ class BoundaryCondition:
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
-	    coeff and stencil are supplied by each equation term for each
-	    face the boundary condition applies to.  A tuple of (LL,bb) is
-	    calculated to be added to the the equation's (L,b) matrices at
-	    the cell bounding the specified face.
+	'update()' is called by each 'Term' of each 'Equation' for each
+	'Face' that this boundary condition applies to.
+	
+	Arguments:
+	    
+	    'face' -- which 'Face' to update
+	    
+	    'coeff' -- 'Term' coefficient value at this face
+	    
+	    'stencil' -- equation stencil for this 'Term'
+	
+	A 'tuple' of (LL,bb) is calculated, to be added to the equation's (L,b)
+	matrices at the cell bounding the specified face.
 	""" 
 	pass
     

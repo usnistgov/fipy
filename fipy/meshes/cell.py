@@ -7,7 +7,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 11/21/03 {5:19:05 PM} 
+ #                                last update: 11/24/03 {10:25:57 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,8 +52,13 @@ class Cell:
     """
     
     def __init__(self, faces, id):
-	"""Cell is initialized by Mesh with its bounding faces and a
-	unique id.
+	"""Cell is initialized by Mesh with 
+	
+	Arguments:
+	    
+	    'faces' -- 'list' or 'tuple' of bounding faces that define the cell
+	    
+	    'id' -- unique identifier
 	"""
         self.faces = faces
         self.id = id
@@ -78,11 +83,11 @@ class Cell:
     def calcVolume(self):
 	"""Calculate the volume of the Cell.
 	
-	    Sums the projected volumes of the faces.  
-	    
-	    Projected volume of a face is a right-prism bounded by the
-	    center of the face and the y-z plane, with a cross-section of
-	    the projection of the face on the y-z plane.
+	Sums the projected volumes of the faces.  
+	
+	Projected volume of a face is a right-prism bounded by its center
+	and the y-z plane, whose cross-section is the projection of the face
+	on the y-z plane.
 	"""
 	vol = 0.
 	for face in self.faces:
@@ -90,6 +95,8 @@ class Cell:
 	return vol
 
     def getVolume(self):
+	"""Return the volume of the Cell.
+	"""
         return self.volume
 
     def getCenter(self):
@@ -100,9 +107,9 @@ class Cell:
     def calcCenter(self):
 	"""Calculate the coordinates of the Cell center.
 	
-	    Cell center is the average of the bounding Face centers.
-	    
-	    **Is this right? Seems to give too much weight to small faces.**
+	Cell center is the average of the bounding Face centers.
+	
+	**Is this right? Seems to give too much weight to small faces.**
 	"""
         ctr = self.faces[0].getCenter().copy()
         for face in self.faces[1:]:
@@ -110,7 +117,7 @@ class Cell:
         return ctr/float(len(self.faces))
             
     def __repr__(self):
-	"""Textual representation of Cell
+	"""Textual representation of Cell.
 	"""
 	rep = "<id = " + str(self.id) + ", volume = " + str(self.volume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
 	

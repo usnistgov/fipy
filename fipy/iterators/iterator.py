@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 11/21/03 {1:36:50 PM} 
+ #                                last update: 11/24/03 {10:16:58 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,17 +45,28 @@
 """
 
 class Iterator:
+    """Generic equation iterator
+    """
+    
     def __init__(self,equations):
-	"""Set the list or tuple of equations to iterate.
+	"""Arguments:
+	    
+	    'equations' -- list or tuple of equations to iterate over
 	"""
         self.equations = equations
 	
     def iterate(self,n,dt):
-	"""Iterate over n time steps of duration dt.
+	"""Iterate the solution.
 	
-	    The preSolve() method of each equation is called to do any
-	    necessary initialization, the equations are solved, then the
-	    postSolve() methods are called to do any necessary cleanup.
+	Arguments:
+	    
+	    'n' -- number of iteration time steps
+	    
+	    'dt' -- duration of each time step
+	
+	The 'preSolve()' method of each equation is called to do any
+	necessary initialization, the equations are 'solve()' ed, then the
+	'postSolve()' methods are called to do any necessary cleanup.
 	"""
 	for i in range(n):
 	    for equation in self.equations:

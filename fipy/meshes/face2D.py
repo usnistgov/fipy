@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/21/03 {5:24:04 PM} 
+ #                                last update: 11/21/03 {5:33:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,8 +42,6 @@
  ##
 
 """1D (edge) Face in a 2D Mesh
-
-    Face2D is bounded by two Vertices.
 """
 
 import tools
@@ -51,6 +49,11 @@ from face import Face
 import Numeric
 
 class Face2D(Face):
+    """1D (edge) Face in a 2D Mesh
+
+	Face2D is bounded by two Vertices.
+    """
+    
     def calcArea(self):
 	"""Area is length of vector between vertices.
 	"""

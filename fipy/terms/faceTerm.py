@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/21/03 {11:48:08 AM} 
+ #                                last update: 11/24/03 {5:56:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,16 +49,16 @@ class FaceTerm(Term):
         self.faces = faces
         self.interiorFaces = interiorFaces
         self.boundaryConditions = boundaryConditions
-        
+	
     def buildMatrix(self,L,array,b):
 	for face in self.interiorFaces:
             id1 = face.getCellId(0)
             id2 = face.getCellId(1)
             faceId = face.getId()
-            L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
-            L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
-            L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
-            L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
+#             L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
+#             L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
+#             L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
+#             L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
 
         for boundaryCondition in self.boundaryConditions:
             for face in boundaryCondition.getFaces():

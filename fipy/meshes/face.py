@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/21/03 {5:23:12 PM} 
+ #                                last update: 11/24/03 {6:07:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,18 +42,25 @@
  ##
 
 """Face within a Mesh
-
-    Faces are bounded by Vertices. Faces separate Cells.
 """
 
 import tools
 import Numeric
 
 class Face:
+    """Face within a Mesh
+
+    Faces are bounded by Vertices. Faces separate Cells.
+    """
+    
     def __init__(self, vertices, id):
-	"""Face is initialized by Mesh with its bounding vertices and a unique
-	id.
+	"""Face is initialized by Mesh
 	
+	Arguments:
+	    
+	    'vertices' -- the 'Vertex' points that bound the 'Face'
+	    
+	    'id' -- a unique identifier
 	"""
         self.vertices = vertices
         self.cells = ()
@@ -64,26 +71,22 @@ class Face:
             
     def addBoundingCell(self, cell):
 	"""Add cell to the list of Cells which lie on either side of this Face.
-	
 	"""
         self.cells += (cell,)
         self.cellsId += (cell.getId(), )
         
     def getCells(self):
 	"""Return the Cells which lie on either side of this Face.
-	
 	"""
         return self.cells
 		
     def getId(self):
 	"""Return the id of this Face.
-	
 	"""
 	return self.id
 
     def getCellId(self, index = 0):
 	"""Return the id of the specified Cell on one side of this Face.
-	
 	"""
         return self.cellsId[index]
 
@@ -92,14 +95,13 @@ class Face:
 	
     def getCenter(self):
 	"""Return the coordinates of the Face center.
-	
 	"""
 	return self.center
     
     def calcCenter(self):
 	"""Calculate the coordinates of the Face center.
 	
-	    Cell center is the average of the bounding Vertex centers.
+	Cell center is the average of the bounding Vertex centers.
 	"""
 	ctr = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[1:]:
@@ -114,9 +116,8 @@ class Face:
     def calcArea(self):
 	"""Calculate the area of the Face.
 	
-	    Area is the signed sum of the area of the triangles bounded by
-	    the origin and each polygon edge.  Properly calculates the area
-	    of concave and convex polygons.
+	Area is the signed sum of the area of the triangles bounded by
+	each polygon edge and the origin.
 	"""
 	a=0.
 	p1 = self.vertices[0].getCoordinates().copy()
@@ -129,15 +130,17 @@ class Face:
     def orientNormal(self, norm, cell):
 	"""Determine if normal points into or out of the cell in question.
 	
-	    *Maybe the cell should keep track of this, rather than the face?*
+	*Maybe the cell should keep track of this, rather than the face?*
+	
+	Note:
+	    
+	    Boundary faces only have one cell
+	    
+	    center-to-center vector is from face center to cell center
 	"""
         if len(self.cells) == 0:
             return "abnormal"
 	elif len(self.cells) == 1:
-	    """Boundary faces only have one cell
-	    
-	    center-to-center vector is from face center to cell center
-	    """
 	    cc = self.cells[0].getCenter() - self.center
 	else:
 	    cc = self.cells[0].getCenter() - self.cells[1].getCenter()
@@ -171,10 +174,10 @@ class Face:
 	"""Calculate the unit normal vector, accounting for whether the Face
 	points toward or away from the specified Cell.	
 	
-	    Unit normal vector is calculated from cross-product of two
-	    tangent vectors.
-	
-	    **Doesn't work if t1 and t2 are colinear!**
+	Unit normal vector is calculated from cross-product of two
+	tangent vectors.
+    
+	**Doesn't work if t1 and t2 are colinear!**
 	"""
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
@@ -196,8 +199,8 @@ class Face:
     def calcCellDistance(self):
 	"""Calculate the distance between adjacent Cell centers.
 	
-	    If the Face is on a boundary and has only one bordering Cell,
-	    the distance is from the Cell center to the Face center.
+	If the Face is on a boundary and has only one bordering Cell,
+	the distance is from the Cell center to the Face center.
 	"""
         if(len(self.cells)==2):
             vec=self.cells[1].getCenter()-self.cells[0].getCenter()
@@ -208,12 +211,17 @@ class Face:
     def __repr__(self):
 	"""Textual representation of Face.
 	"""
-	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
+	return "<id = " + str(self.id) + ">"
+# 	+ ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
+#     def __repr__(self):
+# 	"""Textual representation of Face.
+# 	"""
+# 	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
 
     def removeBoundingCell(self,cell):
 	"""Remove cell from the list of bounding Cells.
 	
-	    Called by the Mesh when a Cell is removed.
+	Called by the Mesh when a Cell is removed.
 	"""
         if cell in self.cells:
             if cell == self.cells[0]:
