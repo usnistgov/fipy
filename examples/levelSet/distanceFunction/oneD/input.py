@@ -12,7 +12,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -42,61 +42,75 @@
 
 """
 
-Here we solve the level set equation in one dimension. The equation is
-given by:
+Here we solve the level set equation in one dimension. The level set
+equation is generally to solve a variable to be a distance function
+such that,
 
 .. raw:: latex
 
     $$ | \\nabla \\phi | = 1 $$
+
+with a boundary condition,
     
     $\phi = 0$ at $x = L / 2$.
 
-Do the tests:
+The solution to this problem in FiPy will be demonstrated
+Set up the parameters:
+
+   >>> dx = 0.5
+   >>> dy = 2.
+   >>> nx = 10
+   >>> ny = 1
+   >>> L = nx * dx
+
+Construct the mesh:
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+Construct a 'distanceVariable' object. This object is required by the
+distanceEquation in order to solve.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(
+   ...     name = 'level set variable',
+   ...     mesh = mesh,
+   ...     value = -1.)
+
+The positive and negative parts of the domain must be set.
+
+   >>> positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] < L / 2.)
+   >>> var.setValue(1.,positiveCells)
+
+A distanceEquation is constructed.
+
+   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+   >>> eqn = DistanceEquation(var)
+
+The problem can be executed with the following commands.
+
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+   ...     viewer.plot()
+   ...     eqn.solve()
+   ...     viewer.plot()
+
+The result can be tested.
 
    >>> eqn.solve()
+   >>> import Numeric
    >>> Numeric.allclose(var, \\
    ...     Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 
    ...     3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., 
    ...     -7. * dx / 2., -9. * dx / 2.)))
    1
 
+
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-
-dx = 0.5
-dy = 2.
-nx = 10
-ny = 1
-
-L = nx * dx
-
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = -1.
-    )
-
-positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] < L / 2.)
-var.setValue(1.,positiveCells)
-
-eqn = DistanceEquation(var)
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
-    viewer.plot()
-
-    eqn.solve()
-
-    viewer.plot()
-
-    raw_input('finished run()')
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    raw_input("finished")
