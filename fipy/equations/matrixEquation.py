@@ -141,4 +141,5 @@ class MatrixEquation(Equation):
 	
 	self.residual = residual
 	self.converged = Numeric.alltrue(self.residual < self.solutionTolerance)
-	
+            
+    
