@@ -1,27 +1,23 @@
 \section{Aims}
 
-The goal of the \FiPy{} framework is to develop a highly customizable
-open source code available to the scientific community. \FiPy{} allows
-users to select and customize modules from within the framework. Those
-modules can then be combined with an extremely powerful high level
-scripting language allowing the user full control over the solution
-algorithm. This 'top down' method of computer programming allows
-significant code reuse while accounting for the unique vagaries of
-each problem.
+The goal of the \FiPy{} framework is to provide to the scientific
+community a highly customizable, open source code for modeling
+problems involving coupled sets of PDEs.  \FiPy{} allows users to
+select and customize modules from within the framework.  Those modules
+can then be combined with an extremely powerful, high-level scripting
+language, allowing the user full control over the solution algorithm.
+This `top down' method of computer programming allows significant code
+reuse while accounting for the unique vagaries of each problem.
 
-The initial development of the framework has been undertaken in the
-Center for Theoretical and Computational Materials Science (\CTCMS{}),
-in the Materials Science and Engineering Laboratory (\MSEL{}) at the
-National Institute of Standards and Technology (\NIST{}). The framework
-is known as \FiPy{} and is developed at the top level in the \Python{}
-programming language. \Python{} enables the integration of low-level
-high performance languages such as C and FORTRAN allowing for
-efficient optimization. \Python{} also has a large repository of free
-numerical and scientific software that can be integrated into the
-\FiPy{} framework. At \NIST{}, there is a significant ongoing effort to
-maximize the efficiency of \FiPy{} with the use of third party software
-and the judicious use of the C programming language embedded in
-standard core modules.
+The framework is known as \FiPy{} and is developed at the top level in
+the \Python{} programming language.  \Python{} enables the integration
+of low-level, high-performance languages such as C and FORTRAN
+allowing for efficient optimization.  \Python{} also has a large
+repository of free numerical and scientific software that can be
+integrated into the \FiPy{} framework.  At \NIST{}, there is a
+significant ongoing effort to maximize the efficiency of \FiPy{} with
+the use of third party software and the judicious use of the C
+programming language embedded in standard core modules.
 
 The end goal of \FiPy{} is to provide a realistic open source choice
 for solving coupled sets of equations. Once an efficient customizable
@@ -35,32 +31,37 @@ test infrastructure. We aim to address all of these issues.
 
 The aims mentioned above can be summarized as follows:
 
-* Develop core test piece models for various material science problems.
-* Develop a highly efficient and customizable code.
-* Support the distribution of code to the end users.
+\begin{itemize}
+    \item Develop core test piece models for various materials science problems.
+
+    \item Develop a highly efficient and customizable code.
+
+    \item Support the distribution of code to the end users.
+\end{itemize}
 
 \section{Background}
 
 The equations that model the evolution of physical, chemical and
-biological systems often have a remarkably universal form. Indeed,
+biological systems often have a remarkably universal form.  Indeed,
 partial differential equations (PDEs) have proven necessary to model
 complex physical systems and processes that involve variations in both
-space and time.  In general, given a variable of interest such as
-species concentration, pH or temperature, there exists an evolution
-equation of the form
+space and time.  In general, given a variable of interest \( \phi \)
+such as species concentration, pH or temperature, there exists an
+evolution equation of the form
 \begin{equation}
   \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
   \label{eqn:general-equation}
 \end{equation}
-where $H$ is a function of $\phi$, other state variables $\lambda_i$,
-and higher order derivatives of all of these variables. Examples of
-such systems are wide ranging, but include problems that exhibit a
-combination of diffusing and reacting species, as well as such diverse
-problems as determination of the electric potential in heart tissue,
-of fluid flow, stress evolution, and even the Schroedinger equation.
+where \( H \) is a function of \(\phi\), other state variables
+\(\lambda_i\), and higher order derivatives of all of these variables.
+Examples of such systems are wide ranging, but include problems that
+exhibit a combination of diffusing and reacting species, as well as
+such diverse problems as determination of the electric potential in
+heart tissue, of fluid flow, stress evolution, and even the
+Schr\"odinger equation.
 
 The initial implementation of \FiPy{} has been developed to address
-model problems in materials science such as poly-crystals, dendrititic
+model problems in materials science such as poly-crystals, dendritic
 growth and electrochemical deposition. These applications all contain
 various combinations of PDEs with differing forms in conjunction with
 other unusual physics (over varying length scales) and unique solution
@@ -75,32 +76,29 @@ sections.
 
 \subsection{Object Oriented Approach}
 
-\FiPy{} is programmed in an object-oriented manner. The benefit of object
-oriented programming mainly lies in encapsulation and
-inheritance. Encapsulation allows parts of the code to be separated
+\FiPy{} is programmed in an object-oriented manner.  The benefit of
+object oriented programming mainly lies in encapsulation and
+inheritance.  Encapsulation allows parts of the code to be separated
 into clearly defined independent modules that can be re-applied or
-extended in new ways. Inheritance allows code to be reused and new
+extended in new ways.  Inheritance allows code to be reused and new
 capabilities to be added without altering the original code.
 
 \subsection{Test Based Development}
 
-\FiPy{} has been developed with a large number of test cases. These test
-cases operate on two levels. The lower level tests operate on the core
-modules at the individual method level. The aim is that every method
-within the core installation has a test case. The high level test
-cases operate in conjunction with example test piece solutions and
-test global solution algorithms and the interaction of various
-modules. Thus at any stage in code development the test cases can be
-executed and errors can be identified.
+\FiPy{} has been developed with a large number of test cases.  These
+test cases operate on two levels.  The lower level tests operate on
+the core modules at the individual method level.  The aim is that
+every method within the core installation has a test case.  The high
+level test cases operate in conjunction with example test piece
+solutions and test global solution algorithms and the interaction of
+various modules.  Thus at any stage in code development the test cases
+can be executed and errors can be identified.
 
 A test base is essential for the adoption of the code by new users and
 developers. It provides reassurance that any code breakages will be
 clearly demonstrated with a broken test case. A test base also aids
 dissemination of the code by providing simple examples and knowledge
 of whether the code is working on a particular computer environment.
-
-\Python{} has modules (\doctest{}, \unittest{}) that automate the
-testing procedure.
 
 \subsection{Documentation}
 
@@ -141,33 +139,59 @@ developers to join the main project or select parts of the project.
 
 \subsection{Open Source}
 
-In recent years there has been a movement towards more open source
-unrestrictive licenses especially within the scientific community. The
-\FiPy{} framework will be written with an open source license allowing
-users to develop with complete access to the source code and then
-either contribute back to the main source repository or freely
-distribute their new adapted version. 
+In recent years there has been a movement to release software under
+open source and associated unrestrictied licenses, especially within
+the scientific community.  These licensing terms allow users to
+develop their own applications with complete access to the source code
+and then either contribute back to the main source repository or
+freely distribute their new adapted version.  As a product of the
+National Institute of Standards and Technology, the \FiPy{} framework
+is placed in the public domain as a matter of U. S. Federal law.
 
-\subsection{\Python{} Programming Language}
+\subsection{High-Level Scripting Language}
 
-\Python{} combines remarkable power with very clear syntax. It is
-freely usable and distributable, even for commercial use. \Python{} is
-an example of an interpreted scripting language. Scripting languages
-are seen as distinctive from compiled lower level languages such as C
-or FORTRAN. Such lower level languages are commonly used for numerical
-codes due to their increased efficiency over scripting languages. This
-makes \Python{} an unusual choice for the bases of a numerical
-framework.
+A rather common scenario in the development of scientific codes is
+that the first draft hard-codes all of the problem parameters.  After
+a few (hundred) iterations of recompiling and relinking the
+application to explore changes to the parameters, code is added to
+read an input file containing a list of numbers.  Eventually, the
+point is reached where it is impossible to remember which parameter
+comes in which order or what physical units are required, so code is
+added to, for example, interpret a line beginning with `\verb|#|' as a
+comment.  At this point, the programmer has begun developing a
+scripting language without even knowing it.  Unfortunately for them,
+very few scientists have actually studied computer science or actually
+know anything about the design and implementation of script
+interpreters.  Even if they have the expertise, the time spent
+developing such a language interpreter is time not spent actually
+doing research.
 
-Codes, programmed exclusively in C or FORTRAN, are often hard to
-readapt to new application areas mainly due to the inability to allow
-developers access at various levels of the code. In general, such
-codes use a distinctive scripting language written for the code at
-hand allowing users to vary parameter values and switch between
-different internal solution algorithms. Such exclusive scripting
-languages can often be difficult to write and must be an integral part
-of the design of the numerical code and cannot easily account for the
-various ways a prospective user may wish to use the code.
+In contrast, a number of very powerful scripting languages, such as
+Tcl, Java, Python, Ruby, and even the venerable BASIC, have been
+developed that have open source interpreters that can be embedded
+directly in an application, giving scientific codes immediate access
+to a high-level scripting language designed by someone who actually
+knew what they were doing.
+
+We have chosen to go a step further and not just embed a full-fledged 
+scripting language in the \FiPy{} framework, but instead to design the
+framework from the ground up in a scripting language.
+
+Scientific codes, when programmed exclusively in C or FORTRAN, are
+often hard to readapt to new application areas mainly due to the
+inability to allow developers access at various levels of the code.
+In general, such codes use a distinctive scripting language written
+for the code at hand allowing users to vary parameter values and
+switch between different internal solution algorithms.  Such exclusive
+scripting languages can often be difficult to write and must be an
+integral part of the design of the numerical code and cannot easily
+account for the various ways a prospective user may wish to use the
+code.
+
+Scripting languages are seen as distinctive from compiled
+lower level languages such as C or FORTRAN. Such lower level languages
+are commonly used for numerical codes due to their increased
+efficiency over scripting languages.  
 
 Thus \FiPy{}, rather than taking the approach of writing the fast
 numerical code first and then dealing with the issue of user
@@ -175,13 +199,31 @@ interaction, initially implements most modules in the \Python{}
 scripting language and only translates to C those parts of the code
 that prove inefficient. This leads to most top-level structures being
 written in \Python{} allowing easy to understand implementation and
-modification. The choice of \Python{} is in part due to the easy
-integration of C either as separate modules or encapsulated in
-\Python{} functions as well as the ability to directly translate from
-\Python{} to C (\PyRex{}). This low-level integration has resulted
-in a number of freely available efficient numerical modules (\SciPy{},
+modification. 
+
+\subsection{\Python{} Programming Language}
+
+Although a number of scripting languages offer a number, if not all,
+of the features above, we have selected \Python{} for the
+implementation of \FiPy{}.  \Python{} combines remarkable power with
+very clear syntax.  It is freely usable and distributable, even for
+commercial use.  \Python{} is an example of an interpreted scripting
+language.  
+
+This makes \Python{} an unusual
+choice for the bases of a numerical framework.
+
+The choice of \Python{} is in part due to the easy integration of C
+either as separate modules or encapsulated in \Python{} (\weave{})
+functions as well as the ability to directly translate from \Python{}
+to C (\blitz{}, \PyRex{}).  This low-level integration has resulted in
+a number of freely available efficient numerical modules (\SciPy{},
 \Numeric{}) for \Python{} some of which are utilized in the \FiPy{}
 framework.
+
+\Python{} has modules (\doctest{}, \unittest{}) that automate the
+testing procedure.
+
 
 \section{Outstanding Issues}
 

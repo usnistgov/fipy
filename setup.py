@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/22/04 {11:59:55 AM} 
+ #                                last update: 9/28/04 {4:11:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -267,7 +267,9 @@ Any changes to the contents should be made in the file '""" + document.attribute
                                  'README',
                                  'CREDITS',
                                  'TALKS',
-                                 'TODOLIST']
+                                 'TODOLIST',
+				 'LICENSE',
+				 'DISCLAIMER']
         
 	if self.latex:
 	    self._buildTeXAPIs()

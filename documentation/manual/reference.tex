@@ -1,0 +1,136 @@
+%% -*-TeX-*-
+ % ###################################################################
+ %  FiPy - a finite volume PDE solver in Python
+ % 
+ %  FILE: "reference.tex"
+ %                                    created: 9/29/04 {11:03:55 AM} 
+ %                                last update: 9/29/04 {11:17:01 AM} 
+ %  Author: Jonathan Guyer
+ %  E-mail: guyer@nist.gov
+ %  Author: Daniel Wheeler
+ %  E-mail: daniel.wheeler@nist.gov
+ %    mail: NIST
+ %     www: http://ctcms.nist.gov
+ %  
+ % ========================================================================
+ % This document was prepared at the National Institute of Standards
+ % and Technology by employees of the Federal Government in the course
+ % of their official duties.  Pursuant to title 17 Section 105 of the
+ % United States Code this document is not subject to copyright
+ % protection and is in the public domain.  reference.tex
+ % is an experimental work.  NIST assumes no responsibility whatsoever
+ % for its use by other parties, and makes no guarantees, expressed
+ % or implied, about its quality, reliability, or any other characteristic.
+ % We would appreciate acknowledgement if the document is used.
+ % 
+ % This document can be redistributed and/or modified freely
+ % provided that any derivative works bear some notice that they are
+ % derived from it, and any modified versions bear some notice that
+ % they have been modified.
+ % ========================================================================
+ % See the file "license.terms" for information on usage and 
+ % redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ %  
+ %  Description: 
+ % 
+ %  History
+ % 
+ %  modified   by  rev reason
+ %  ---------- --- --- -----------
+ %  2004-09-29 JEG 1.0 original
+ % ###################################################################
+ %%
+
+\documentclass[letterpaper]{book}
+
+\usepackage{fipy}
+
+\begin{document}
+
+% \doparttoc
+
+% \crop[frame,axes]
+
+\frontmatter
+
+% \layout
+
+% \settypeblocksize{9in}{7in}{*}
+% \setlrmargins{*}{*}{*}
+% \setulmargins{*}{*}{*}
+
+% \settrimmedsize{8.5in}{11in}{*}       % pi/2
+% % \settypeblocksize{40\onelineskip}{*}{0.61803}  % golden ratio
+% \settypeblocksize{33\onelineskip}{*}{0.61803}  % golden ratio
+% \setlength{\trimtop}{0pt}
+% \setlength{\trimedge}{\stockwidth}
+% \addtolength{\trimedge}{-\paperwidth}
+% \addtolength{\trimedge}{-1.5in}
+% \setlrmargins{*}{*}{2}
+% % \setlrmargins{*}{1in}{*}
+% \setulmargins{5\onelineskip}{*}{*}
+% \setheadfoot{3\onelineskip}{3\onelineskip}
+% \setheaderspaces{\onelineskip}{*}{*}
+% \setmarginnotes{17pt}{65pt}{\onelineskip}
+
+% \checkandfixthelayout
+
+% \fixpdflayout
+
+% \setlength{\parindent}{0ex}
+
+\title{\FiPy{}}
+\subtitle{Programmer's Reference}
+
+\author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+\affiliation{Metallurgy Division \and Materials Science and Engineering Laboratory}
+
+\maketitle
+
+\vspace*{\fill}
+
+\input license
+
+% \rule{\textwidth}{1pt}
+% 
+% \input disclaimer
+
+\maxtocdepth{all} 
+\tableofcontents
+% \faketableofcontents
+
+\mainmatter
+
+%%%%%%%%%%%%%%%%
+% I. INTRODUCTION
+%%%%%%%%%%%%%%%%
+
+% \include{examples}
+% 
+% \include{theory}
+% 
+% \include{code}
+ 
+% \appendix
+% 
+% \part{APIs}
+% 
+% \settocdepth{chapter} 
+
+% \parttoc
+
+\input api
+
+% \settocdepth{all} 
+
+\backmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                 Index                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \pdfbookmark[-1]{Index}{index}
+\printindex
+
+
+\end{document}

@@ -1,3 +1,4 @@
+=======
 CREDITS
 =======
 
@@ -22,6 +23,7 @@ Alex Mont
 =========
 
 Developed the `PyxViewer` and the `Gmsh` import and export modules.
+
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler

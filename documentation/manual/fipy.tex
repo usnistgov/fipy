@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 7/30/04 {9:53:31 PM} 
+ %                                last update: 9/29/04 {11:16:32 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -36,172 +36,7 @@
 
 \documentclass[letterpaper]{book}
 
-\usepackage[text={7in,9.333in}]{geometry}
-
-\usepackage{crop}
-
-\usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
-\usepackage{multirow, longtable, makeidx, tocbibind, amssymb} 
-\usepackage{amsmath} 
-
-\usepackage{minitoc}
-% \setcounter{tocdepth}{0}
-\setcounter{parttocdepth}{1}
-
-\usepackage[ascii]{inputenc}
-
-%\usepackage{multirow, longtable, tocbibind, amssymb} % makeidx, 
-% \usepackage{fullpage}
-%\usepackage[headings]{fullpage}
-\makeindex
-\usepackage[usenames]{color}
-\definecolor{darkblue}{rgb}{0,0.05,0.35}
-\definecolor{redish}{rgb}{0.894,0.122,0.122}
-\definecolor{bluish}{rgb}{0.216,0.188,0.533}
-% \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
-\usepackage{graphicx}
-% \usepackage{memhfixc}
-% \usepackage{nameref}
-
-\graphicspath{{../figures/}}
-
-% for reStructuredText
-\usepackage{shortvrb}
-\usepackage{tabularx}
-\setlength{\extrarowheight}{2pt}
-\newlength{\admonitionwidth}
-\setlength{\admonitionwidth}{0.9\textwidth}
-\newlength{\docinfowidth}
-\setlength{\docinfowidth}{0.9\textwidth}
-\newlength{\locallinewidth}
-\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
-\newenvironment{optionlist}[1]
-{\begin{list}{}
-  {\setlength{\labelwidth}{#1}
-   \setlength{\rightmargin}{1cm}
-   \setlength{\leftmargin}{\rightmargin}
-   \addtolength{\leftmargin}{\labelwidth}
-   \addtolength{\leftmargin}{\labelsep}
-   \renewcommand{\makelabel}{\optionlistlabel}}
-}{\end{list}}
-% begin: floats for footnotes tweaking.
-\setlength{\floatsep}{0.5em}
-\setlength{\textfloatsep}{\fill}
-\addtolength{\textfloatsep}{3em}
-\renewcommand{\textfraction}{0.5}
-\renewcommand{\topfraction}{0.5}
-\renewcommand{\bottomfraction}{0.5}
-\setcounter{totalnumber}{50}
-\setcounter{topnumber}{50}
-\setcounter{bottomnumber}{50}
-% end floats for footnotes
-% some commands, that could be overwritten in the style file.
-\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
-\newcommand{\titlereference}[1]{\textsl{#1}}
-
-
-\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
-% \newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{bluish}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}}
-
-% commands for various weblinks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand{\FiPy}{\textsf{FiPy}}
-
-\newcommand{\SciPy}{\href{http://www.scipy.org/}{\textsf{SciPy}}}
-
-\newcommand{\PyRex}{\href{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}{\textsf{PyRex}}}
-
-\newcommand{\Python}{\href{http://www.python.org/}{\textsf{Python}}}
-
-\newcommand{\Numeric}{\href{http://www.numpy.org/}{\textsf{Numeric}}}
-
-\newcommand{\NIST}{\href{http://www.nist.gov/}{\textsf{NIST}}}
-
-\newcommand{\CTCMS}{\href{http://www.ctcms.nist.gov/}{\textsf{CTCMS}}}
-
-\newcommand{\MSEL}{\href{http://www.msel.nist.gov/}{\textsf{MSEL}}}
-
-\newcommand{\PyX}{\href{http://pyx.sourceforge.net/}{\textsf{PyX}}}
-
-\newcommand{\PyGist}{\href{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}{\textsf{PyGist}}}
-
-\newcommand{\MacOSX}{\href{http://www.apple.com/macosx/}{\textsf{Mac OS X}}}
-
-\newcommand{\Gmsh}{\href{http://www.geuz.org/gmsh/}{\textsf{Gmsh}}}
-
-\newcommand{\weave}{\href{http://www.scipy.org/documentation/weave/}{\textsf{weave}}}
-
-\newcommand{\doctest}{\href{http://www.python.org/doc/current/lib/module-doctest.html}{\textsf{doctest}}}
-
-\newcommand{\unittest}{\href{http://www.python.org/doc/current/lib/module-unittest.html}{\textsf{unittest}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \includeonly{installation}
-
-\makeatletter
-\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
-\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
-\renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
-\renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
-\renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
-
-\renewcommand\tableofcontents{%
-    \if@twocolumn
-      \@restonecoltrue\onecolumn
-    \else
-      \@restonecolfalse
-    \fi
-    \chapter*{\contentsname\pdfbookmark[-1]{Contents}{contents}
-        \@mkboth{%
-           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
-    \@starttoc{toc}%
-    \if@restonecol\twocolumn\fi
-    }
-
-\renewcommand\maketitle{\begin{titlepage}%
-\let\footnotesize\small
-\let\footnoterule\relax
-\let \footnote \thanks
-\null\vfil
-\vskip 20\p@
-\begin{flushright}%
-  {\Huge \@title \par}%
-  \vskip 3em%
-  {\large
-   \lineskip .75em%
-    \begin{tabular}[t]{r@{}}%
-      \@author
-    \end{tabular}\par}%
-    \vskip 1.5em%
-  {\large \@date \par}%       % Set date in \large size.
-\end{flushright}\par
-\@thanks
-\vfil\null
-\end{titlepage}%
-\setcounter{footnote}{0}%
-\global\let\thanks\relax
-\global\let\maketitle\relax
-\global\let\@thanks\@empty
-\global\let\@author\@empty
-\global\let\@date\@empty
-\global\let\@title\@empty
-\global\let\title\relax
-\global\let\author\relax
-\global\let\date\relax
-\global\let\and\relax
-}
-
-\makeatother
-
-% \usepackage{layout}
-
-
-\usepackage{tocvsec2}
-
-\input{version}
+\usepackage{fipy}
 
 \begin{document}
 
@@ -236,84 +71,22 @@
 % \fixpdflayout
 
 % \setlength{\parindent}{0ex}
-\setlength{\fboxrule}{2\fboxrule}
-\newlength{\BCL} % base class length, for base trees.
 
-% \pagestyle{Ruled}
-\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
-\renewcommand{\subsectionmark}[1]{\markright{#1}}
+\title{\FiPy{}}
+\subtitle{A Finite Volume PDE Solver Using Python}
 
-\newenvironment{Ventry}[1]%
-  {\begin{list}{}{%
-    \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
-    \settowidth{\labelwidth}{\texttt{#1:}}%
-    \setlength{\leftmargin}{\labelsep}%
-    \addtolength{\leftmargin}{\labelwidth}}}%
-  {\end{list}}
+\author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+\affiliation{Metallurgy Division \and Materials Science and Engineering Laboratory}
 
-\newsavebox{\NISTbox}
-\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.5]{NIST_right2line}}
-%\newlength{\photoheight}
-%\settoheight{\photoheight}{\usebox{\photobox}}
-%\newlength{\photowidth}
-%\settowidth{\photowidth}{\usebox{\photobox}}
+\maketitle
 
-\makeatletter
-\newcommand*{\ps@mytitlepage}{%
-  \let\@oddhead\@empty
-  \renewcommand*{\@oddfoot}{%
-  \hfill\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}%\vspace*{-0.5in}}
-\makeatother
+\vspace*{\fill}
 
-\makeatletter  
-\begin{titlepage}%
-\thispagestyle{mytitlepage}
-\let\footnotesize\small
-\let\footnoterule\relax
-\let \footnote \thanks
-% \begin{flushleft}
-%     \scalebox{10}{\logo}
-% \end{flushleft}
-% \null\vfil
-% \vskip 20\p@
-\begin{flushright}%
-  \scalebox{10}{\logo}\par
-%   \vspace*{\fill}
-  \vskip 3em%
-  {\Huge FiPy \\
-    \huge A Finite Volume PDE Solver Using Python \par}%
-  \vskip 3em%
-  {\large
-   \lineskip .75em%
-    \begin{tabular}[t]{r@{}}%
-        Daniel Wheeler \\
-        Jonathan E. Guyer \\ 
-        James A. Warren \\
-        \textit{Metallurgy Division} \\
-        \textit{Materials Science and Engineering Laboratory}
-    \end{tabular}\par}%
-    \vskip 1.5em%
-  {\large \@date \par}%       % Set date in \large size.
-      \vskip 1.5em%
-  {\large Version~\Version \par}
-% \vfil\null
-  \vspace*{\fill}%
-%   \raisebox{-5cm}{\fbox{\includegraphics[hiresbb,scale=1.5]{NIST_right2line}}}%
-\end{flushright}%
-\end{titlepage}%
-\makeatother
+\input license
 
-% \title{
-% \scalebox{5}{\logo} \\[2ex]
-% \Huge FiPy \\
-% A Finite Volume PDE Solver Using Python \\
-% }
-% 
-% \author{Daniel Wheeler, Jonathan E. Guyer \& James A. Warren \\
-% Metallurgy Division, Materials Science and Engineering Laboratory\\
-% National Institute of Standards and Technology}
-% 
-% \maketitle
+\rule{\textwidth}{1pt}
+
+\input disclaimer
 
 \maxtocdepth{all} 
 \tableofcontents
@@ -342,6 +115,7 @@
 % B Installation
 
 \chapter{Installation}
+\label{chap:Installation}
 
 \inputencoding{latin1}
 
@@ -350,6 +124,7 @@
 % C Implementation
 
 \chapter{Design and Implementation}
+\label{chap:Design}
 
 \inputencoding{latin1}
 
@@ -358,6 +133,7 @@
 % D Numerical
 
 \chapter{Numerical Methods}
+\label{chap:Numerics}
 
 \inputencoding{ascii}
 
@@ -366,6 +142,7 @@
 % E TODO List
 
 \chapter{To-Do List}
+\label{chap:ToDo}
 
 \inputencoding{latin1}
 
@@ -374,6 +151,7 @@
 % F Credits
 
 \chapter{Credits}
+\label{chap:Credits}
 
 \inputencoding{latin1}
 
@@ -386,6 +164,7 @@
 \settocdepth{all} 
 
 \part{Examples}
+\label{part:Examples}
 
 \settocdepth{chapter} 
 \parttoc
@@ -500,17 +279,17 @@
 % 
 % \include{code}
  
-\appendix
-
-\part{APIs}
-
-\settocdepth{chapter} 
-
-\parttoc
-
-\input api
-
-\settocdepth{all} 
+% \appendix
+% 
+% \part{APIs}
+% 
+% \settocdepth{chapter} 
+% 
+% \parttoc
+% 
+% \input api
+% 
+% \settocdepth{all} 
 
 \backmatter
 

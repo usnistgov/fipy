@@ -1,7 +1,6 @@
-To-Do List
-----------
-
-Here is the To-Do list:
+-----------
+Future Work
+-----------
 
 Release goals 0.1
 -----------------
@@ -11,7 +10,8 @@ Release goals 0.1
   * Check for errors.
   * Manual and web site WERBed.
   * Review Process.
-  * Mention --inline flag.
+  * Mention ``--inline`` flag.
+  * Class diagram and explanation
 
 - Refactoring:
 
