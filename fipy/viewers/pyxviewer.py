@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 
 ## 
@@ -13,6 +14,7 @@
  #  Author: Daniel Wheeler
  #  E-mail: daniel.wheeler@nist.gov
  #  Author: Alexander Mont
+ #  E-mail: alexander.mont@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov/
  #  
@@ -48,18 +50,15 @@ of a large number of small rectangles (hereafter referred to as 'plot cells') ea
 to the value of the variable at the center of it. The PyxViewer has a subclass Grid2DPyxViewer. Grid2DPyxViewer should be used
 when the variable's mesh is a Grid2D mesh, and PyxViewer should be used otherwise.
 
-NOTE: The current implementation of PyxViewer (but not Grid2DPyxViewer) is known to cause an out of memory error when the mesh
-size time sthe number of plot cells is large.
-
 A PyxViewer is created with one argument: the variable to be plotted. To actually plot the variable, it is necessary to
 call the PyxViewer's plot() method. The plot() method has the following keyword arguments:
 
 debug - When set to 1, prints debugging information. Default value is 0.
 returnlist - When set to 1, returns the displaylist. Used for debugging and test cases. Default value is 0.
 minx, maxx - The minimum and maximum values of X to appear on the plot. By default, minx and maxx are set to the minimum and
-maximum values of the X coordinates of the mesh centers. 
+maximum values of the X coordinates of the mesh vertices. 
 miny, maxy - The minimum and maximum values of Y to appear on the plot. By default, miny and maxy are set tp the minimum and
-maximum values of the Y coordinates of the mesh centers.
+maximum values of the Y coordinates of the mesh vertices.
 minval, maxval - The minimum and maximum values on the color scale. A value of minval will appear completely
 blue and a value of maxval will appear completely red. If no values are specified, minval will default to the lowest value of the variable
 over the area to be plotted and maxval will default to the highest value of the variable over the area to be plotted/ 
@@ -71,9 +70,10 @@ viewcmd - The OS command used to access your graphics viewer. If specified, the 
 to view your plot. If no viewcmd is specified, no graphics program will open.
 xlabel - The label to use for the X axis. Default is 'X values'.
 ylabel - The label to use for the Y axis. Default is 'Y values'.
-valuelabel - The label to use for the value of the variable on the scale. Default is 'variable value'.
-scalefile - The file name to put the scale into. The scale will automatically be displayed after the original image is displayed if a viewcmd is specified.
-If no scalefile is specified, no scale will be created.
+valuelabel - The label to use for the value of the variable on the scale. Default is the variable's name.
+scalefile - The file name to put the scale into. The scale will automatically be displayed after the original image is displayed if a viewcmdis specified. If no scalefile is specified, no scale will be created.
+gridcorrect - The amount, in multiples of the resolution, that adjacent plot cells overlap. This overlap eliminates the 'grid effect'. If you still
+see a grid of white space, increase this value. Default value is 0.3.
 
 The following are keyword arguments in the __init__() method: (Note that these work for PyxViewer only, not Grid2DPyxViewer)
 
@@ -104,7 +104,7 @@ Test cases:
    >>> myvar[2] = 3.0
    >>> myvar[3] = 4.0
    >>> myviewer = Grid2DPyxViewer(myvar, showpercent = 0, showtime = 0)
-   >>> testlist = myviewer.plot(minx = 0.0, maxx = 2.0, miny = 0.0, maxy = 2.0, resolution = 1.0, minval = 1.0, maxval = 5.0, gridcorrect = 0.0, returnlist = 1) 
+   >>> testlist = myviewer.plot(minx = 0.0, maxx = 2.0, miny = 0.0, maxy = 2.0, resolution = 1.0, minval = 1.0, maxval = 5.0, gridcorrect = 0.0, returnlist = 1, viewcmd = None) 
    >>> print testlist
    [[0.0, 1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 1.0, 2.0, 0.5], [1.0, 2.0, 0.0, 1.0, 0.25], [1.0, 2.0, 1.0, 2.0, 0.75]]
 
@@ -117,7 +117,7 @@ Test cases:
    >>> myvar[2] = 5.0
    >>> myvar[3] = 6.0
    >>> myviewer = Grid2DPyxViewer(myvar)
-   >>> testlist = myviewer.plot(minx = 0.0, maxx = 2.0, miny = 0.0, maxy = 2.0, resolution = 1.0, gridcorrect = 0.0, returnlist = 1) 
+   >>> testlist = myviewer.plot(minx = 0.0, maxx = 2.0, miny = 0.0, maxy = 2.0, resolution = 1.0, gridcorrect = 0.0, returnlist = 1, viewcmd = None) 
    >>> print testlist
    [[0.0, 1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 1.0, 2.0, 0.75], [1.0, 2.0, 0.0, 1.0, 0.25], [1.0, 2.0, 1.0, 2.0, 1.0]]
 
@@ -172,14 +172,24 @@ class PyxViewer:
 
 ## ------------------------------------------------------------------------------------
 
-    def plot(self, returnlist = 0, debug=0, minx=None, maxx=None, miny=None, maxy=None, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", valuelabel = "Variable Value", scalefile = None):
+    def plot(self, returnlist = 0, debug=0, minx=None, maxx=None, miny=None, maxy=None, minval=None, maxval=None, resolution = None, filename = None, viewcmd = "gv", xlabel = "X values", ylabel = "Y values", valuelabel = None, gridcorrect = 0.3):
         
         ## initialize variables
         
         starttime = time.time()
         thepalette = pyx.color.palette.ReverseRainbow
-        self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
+        theMesh = self.var.getMesh()
+        vertexCoords = theMesh.getVertexCoords()
         
+        if(minx == None):
+            minx = vertexCoords[Numeric.argmin(vertexCoords, axis = 0)[0], 0]
+        if(miny == None):
+            miny = vertexCoords[Numeric.argmin(vertexCoords, axis = 0)[1], 1]
+        if(maxx == None):
+            maxx = vertexCoords[Numeric.argmax(vertexCoords, axis = 0)[0], 0]
+        if(maxy == None):
+            maxy = vertexCoords[Numeric.argmax(vertexCoords, axis = 0)[1], 1]
+            
         ## calculate the resolution. If there is no resolution set, calculate a "default" resolution that will lead to 1,000 points being plotted.
         ## If a resolution is given, use that.
         
@@ -215,14 +225,6 @@ class PyxViewer:
             minval = min(vallist)
         if(maxval == None):
             maxval = max(vallist)
-        if(minx == None):
-            minx = min(xlist)
-        if(maxx == None):
-            maxx = max(xlist)
-        if(miny == None):
-            miny = min(ylist)
-        if(maxy == None):
-            maxy = max(ylist)
         if(debug == 1):
             print vallist
             print minval
@@ -232,49 +234,43 @@ class PyxViewer:
         vallist = vallist.astype(Numeric.Float)
         vallist = (vallist - minval) / (maxval - minval)
         minxlist = xlist - (0.5 * resolution)
-        maxxlist = xlist + (0.7 * resolution)
+        maxxlist = xlist + ((0.5 + gridcorrect) * resolution)
         minylist = ylist - (0.5 * resolution)
-        maxylist = ylist + (0.7 * resolution)
+        maxylist = ylist + ((0.5 + gridcorrect) * resolution)
         baselist = Numeric.array([minxlist, maxxlist, minylist, maxylist, vallist])
         displaylist = Numeric.transpose(baselist)
-
+        ##print displaylist
         ## If the user did not specify a filename but does want to view the picture, create a file anyway so the picture can be viewed.
         if(filename == None):
             if(viewcmd != None):
                 filename = "temp"
         displayinput = displaylist.tolist()
-
+        ##print displayinput
         ## Create the graph and plot it.
         if(filename != None):
-            mygraph = pyx.graph.graphxy(height = 8, width = 8, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
+            mycanvas = pyx.canvas.canvas()
+            mygraph = pyx.graph.graphxy(height = 12, width = 12, xpos = 0, ypos = 0, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
+            print displayinput
             mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
-            mygraph.dodata()
-            mygraph.dokey()
-            mygraph.writeEPSfile(filename)
-        tottime = time.time() - starttime
-        if(debug == 1):
-            print("time to execute:")
-            print tottime
-            print("resolution:")
-            print resolution
-        if(viewcmd != None):
-            os.system(viewcmd + " " + filename + ".eps &")
-
-        ## if the user inputted a scalefile, create the scale and view it.
-        if(scalefile != None):
-            scalegraph = pyx.graph.graphxy(height = 8, width = 1, y = pyx.graph.axis.linear(min = minval, max = maxval, title = valuelabel))
+            print displayinput
+            mycanvas.stroke(mygraph)
+            if(valuelabel == None):
+                valuelabel = self.var.name
+            scalegraph = pyx.graph.graphxy(height = 12, width = 1, xpos = 14, ypos = 0, y = pyx.graph.axis.linear(min = minval, max = maxval, title = valuelabel))
             scaleminx = Numeric.zeros((100,))
             scalemaxx = Numeric.ones((100,))
             scaleminy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*(num / 100.0), (100,))
-            scalemaxy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*((num + 1.2) / 100.0), (100,))
+            scalemaxy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*((num + (1 + gridcorrect)) / 100.0), (100,))
             scalecolors = Numeric.fromfunction(lambda num: (num + 0.5) / 100.0, (100,))
             scalearray = Numeric.array([scaleminx, scalemaxx, scaleminy, scalemaxy, scalecolors])
             scalearray = Numeric.transpose(scalearray)
             scalelist = scalearray.tolist()
             scalegraph.plot(pyx.graph.data.list(scalelist, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
-            scalegraph.writeEPSfile(scalefile)
+            mycanvas.stroke(scalegraph)
+            mycanvas.writeEPSfile(filename)
             if(viewcmd != None):
-                os.system(viewcmd + " " + scalefile + ".eps &")   
+                os.system(viewcmd + " " + filename + ".eps &")
+        ##print displayinput
         if(returnlist == 1):
             return displayinput
         else:
@@ -282,6 +278,7 @@ class PyxViewer:
 ## ---------------------------------------------------------------------------------------------------
             
     def getValueMatrix(self, minx, maxx, miny, maxy, resolution):
+        self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
         xsize = ((maxx - minx) / resolution) - 0.5
         ysize = ((maxx - minx) / resolution) - 0.5
         if (xsize == int(xsize)):
@@ -363,7 +360,7 @@ class PyxViewer:
 InvalidClassException = "Wrong class"
 
 class Grid2DPyxViewer(PyxViewer):
-    def __init__(self, variable):
+    def __init__(self, variable, showpercent = 0, showtime = 0):
         if(variable.getMesh().__class__.__name__ != "Grid2D"):
             raise InvalidClassException, "Grid2DPyxViewer can be used only with Grid2D meshes"
         else:
@@ -375,7 +372,7 @@ class Grid2DPyxViewer(PyxViewer):
         ## This function uses the method of bilinear interpolation on the grid square. This method is described in
         ## "Numerical Recipes in C", William H. Press et al., page 105.
         width = self.var.getMesh().__getstate__()["nx"]
-        height = self.var.getMesh().__getstate__()["ny"] 
+        height = self.var.getMesh().__getstate__()["ny"]
         lowerleft = self.var.getMesh().getCells()[0].getCenter()
         startx = lowerleft[0]
         starty = lowerleft[1]
@@ -393,15 +390,24 @@ class Grid2DPyxViewer(PyxViewer):
         ynumcells = ynumcells - onTop
         Tvalues = (xcells - xnumcells)
         Uvalues = (ycells - ynumcells)
+        if(width == 1):
+            xnumcells = Numeric.zeros(xnumcells.shape)
+            Tvalues = Numeric.zeros(xnumcells.shape)
+        if(height == 1):
+            ynumcells = Numeric.zeros(ynumcells.shape)
+            Uvalues = Numeric.zeros(ynumcells.shape)
         Y1coeffs = (1 - Tvalues)*(1 - Uvalues)
         Y2coeffs = Tvalues * (1 - Uvalues)
         Y3coeffs = Tvalues * Uvalues
         Y4coeffs = (1 - Tvalues) * Uvalues
         cellIDarray = (ynumcells * width) + xnumcells
         resArray = Numeric.take(self.theArray, cellIDarray) * Y1coeffs   ## contribution from lower left point
-        resArray = resArray + Numeric.take(self.theArray, cellIDarray + 1) * Y2coeffs   ## contribution from lower right point
-        resArray = resArray + Numeric.take(self.theArray, cellIDarray + (width + 1)) * Y3coeffs   ## contribution from upper right point
-        resArray = resArray + Numeric.take(self.theArray, cellIDarray + width) * Y4coeffs   ## contribution from upper left point
+        if(width != 1):
+            resArray = resArray + Numeric.take(self.theArray, cellIDarray + 1) * Y2coeffs   ## contribution from lower right point
+        if(height != 1):
+            resArray = resArray + Numeric.take(self.theArray, cellIDarray + (width + 1)) * Y3coeffs   ## contribution from upper right point
+        if(width != 1 and height != 1):
+            resArray = resArray + Numeric.take(self.theArray, cellIDarray + width) * Y4coeffs   ## contribution from upper left point
         return resArray
 
 
