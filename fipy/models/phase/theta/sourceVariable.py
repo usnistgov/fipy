@@ -44,7 +44,6 @@
 import Numeric
 
 from fivol.variables.cellVariable import CellVariable
-from fivol.examples.phase.phase.toolsTmp import addOverFaces
 import fivol.inline.inline
 from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
 

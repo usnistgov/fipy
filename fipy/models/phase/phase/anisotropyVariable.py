@@ -47,7 +47,6 @@ from fivol.variables.cellVariable import CellVariable
 from fivol.variables.faceVariable import FaceVariable
 from fivol.variables.vectorFaceVariable import VectorFaceVariable
 from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
-import toolsTmp
 
 class FFVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):
