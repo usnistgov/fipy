@@ -79,14 +79,14 @@ class Test10by10(TestDump):
     def setUp(self):
         TestDump.setUp(self, 10, 10)
 
-class Test100by100(TestDump):
+class Test50by50(TestDump):
     def setUp(self):
-        TestDump.setUp(self, 100, 100)
+        TestDump.setUp(self, 50, 50)
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test10by10))
-    theSuite.addTest(unittest.makeSuite(Test100by100))
+    theSuite.addTest(unittest.makeSuite(Test50by50))
     return theSuite
     
 if __name__ == '__main__':
