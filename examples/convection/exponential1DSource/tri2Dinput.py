@@ -77,7 +77,6 @@ __docformat__ = 'restructuredtext'
      
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
