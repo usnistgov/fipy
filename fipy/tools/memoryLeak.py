@@ -6,7 +6,7 @@
  # 
  #  FILE: "memoryLeak.py"
  #                                    created: 8/18/04 {10:29:10 AM} 
- #                                last update: 9/10/04 {4:30:10 PM} { 1:23:41 PM}
+ #                                last update: 12/20/04 {2:39:00 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ object.
 import sys
 import types
 
-def get_refcounts():
+def get_refcounts(theClass = None):
     d = {}
     sys.modules
     # collect all classes
@@ -60,6 +60,8 @@ def get_refcounts():
         for sym in dir(m):
             o = getattr (m, sym)
             if type(o) is types.ClassType:
+                if theClass is not None and o is not theClass:
+                    continue
                 d[o] = sys.getrefcount (o)
     # sort by refcount
     pairs = map (lambda x: (x[1],x[0]), d.items())
@@ -67,8 +69,8 @@ def get_refcounts():
     pairs.reverse()
     return pairs
 
-def print_top_N(n = 100):
-    for n, c in get_refcounts()[:n]:
+def print_top_N(n = 100, theClass = None):
+    for n, c in get_refcounts(theClass)[:n]:
         print '%10d %s' % (n, c.__name__)
 
 if __name__ == '__main__':
