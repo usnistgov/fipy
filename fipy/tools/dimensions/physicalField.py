@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/14/04 {4:14:23 PM} 
+ #                                last update: 1/14/04 {4:44:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -347,12 +347,6 @@ class PhysicalField:
 	
     def __gt__(self,other):
 	other = self._inMyUnits(other)
-	
-	print "__gt__"
-	print "self:", self.value
-	print "other:", other.value
-	raw_input()
-	
 	return self.value > other.value
 	
     def __ge__(self,other):

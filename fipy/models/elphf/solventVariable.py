@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 1/13/04 {11:46:04 AM} 
+ #                                last update: 1/15/04 {4:11:39 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,12 +41,11 @@ import Numeric
 from componentVariable import ComponentVariable
 
 class SolventVariable(ComponentVariable):
-    def __init__(self, mesh, parameters, systemParameters, substitutionals):
+    def __init__(self, mesh, parameters, substitutionals):
 	ComponentVariable.__init__(
 	    self, 
 	    mesh = mesh,
-	    parameters = parameters,
-	    systemParameters = systemParameters
+	    parameters = parameters
 	    )
 	    
 	self.concentration = Numeric.array([1])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {11:58:20 AM} 
+ #                                last update: 1/16/04 {8:57:06 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,6 +58,7 @@ class ConcentrationEquation(MatrixEquation):
 		 fields = {},
 		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
+		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
 		     
         mesh = Cj.getMesh()
@@ -84,7 +85,7 @@ class ConcentrationEquation(MatrixEquation):
             var = Cj,
             terms = terms,
             solver = solver,
-            solutionTolerance = 1e-10)
+            solutionTolerance = solutionTolerance)
 	    
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/13/04 {1:10:35 PM} 
+ #                                last update: 1/15/04 {4:22:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -65,8 +65,8 @@ class GistViewer:
 	gist.gridxy(1)
 	array = self.getArray()
 	gist.pli(array)
-#         gist.pli(self.getArray(), cmin = self.minVal, cmax = self.maxVal)
-#         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
+##         gist.pli(array, cmin = self.minVal, cmax = self.maxVal)
+##         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
 	min = Numeric.minimum.reduce(array.flat)
 	max = Numeric.maximum.reduce(array.flat)
 	if max == min:

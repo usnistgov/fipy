@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {12:02:57 PM} { 2:33:45 PM}
+ #                                last update: 1/14/04 {11:55:08 PM} { 2:33:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,27 +43,35 @@
 
 import Numeric
 
+import tools.array
+
 def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells = None):
     
-    contributions = Numeric.sum(mesh.getAreaProjections() * faceGradient,1)
+##     contributions = Numeric.sum(mesh.getAreaProjections() * faceGradient,1)
+    contributions = tools.array.sum(mesh.getAreaProjections() * faceGradient,1)
     
     contributions = contributions * faceVariable
     
-    NIntFac = len(mesh.getInteriorFaces())
-    NExtFac = len(mesh.getFaces()) - NIntFac
+##     NIntFac = len(mesh.getInteriorFaces())
+##     NExtFac = len(mesh.getFaces()) - NIntFac
     
-    contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
+##     contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
+    contributions[len(mesh.getInteriorFaces()):] = 0
     ids = mesh.getCellFaceIDs()
     
-    contributions = Numeric.take(contributions, ids)
+##     contributions = Numeric.take(contributions, ids)
+    contributions = tools.array.take(contributions, ids)
     
-    NMaxFac = mesh.getMaxFacesPerCell()
+##     NMaxFac = mesh.getMaxFacesPerCell()
     
-    contributions = Numeric.reshape(contributions,(NCells,-1))
+##     contributions = Numeric.reshape(contributions,(NCells,-1))
+    contributions = tools.array.reshape(contributions,(NCells,-1))
     
-    orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
+##     orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
+    orientations = tools.array.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
     
-    return Numeric.sum(orientations*contributions,1) / mesh.getCellVolumes()
+##     return Numeric.sum(orientations*contributions,1) / mesh.getCellVolumes()
+    return tools.array.sum(orientations*contributions,1) / mesh.getCellVolumes()
         
 
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 12/29/03 {2:39:31 PM} 
+ #                                last update: 1/16/04 {8:47:35 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,7 +66,18 @@ class Iterator:
 	    if converged:
 		break
 		
-	return converged
+	if not converged:
+	    class ConvergenceError(ArithmeticError):
+		def __init__(self, equations):
+		    self.equations = equations
+		    
+		def __str__(self):
+		    s = '\n'
+		    for equation in self.equations:
+			s += str(equation) + ' has residual = ' + str(equation.getResidual()) + '\n'
+		    return s
+	    
+	    raise ConvergenceError(self.equations)
 	
     def advanceTimeStep(self):
 	for equation in self.equations:
@@ -82,6 +93,9 @@ class Iterator:
 	    
 	    'timeStep' -- duration of each time step
 	"""
+	
+	converged = 0
 	for step in range(steps):
 	    self.advanceTimeStep()
 	    self.sweep(maxSweeps)
+

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "type1PhaseEquation.py"
- #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 1/14/04 {4:44:38 PM} 
+ #  FILE: "input1Dpoisson.py"
+ #                                    created: 1/15/04 {3:45:27 PM} 
+ #                                last update: 1/15/04 {6:52:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -37,39 +37,47 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
+ #  2004-01-15 JEG 1.0 original
  # ###################################################################
  ##
 
-import Numeric
+from profiler.profiler import Profiler
+from profiler.profiler import calibrate_profiler
 
-import tools.array
+from viewers.grid2DGistViewer import Grid2DGistViewer
 
-from phaseEquation import PhaseEquation
+import input1Dpoisson
 
-class Type2PhaseEquation(PhaseEquation):
-    """
-    Diffusion equation is implicit.
-    """    
-    def __init__(self,
-                 var,
-                 solver = 'default_solver',
-                 boundaryConditions = (),
-                 fields = {},
-                 parameters = {}):
+mesh = input1Dpoisson.mesh
+it = input1Dpoisson.it
+fields = input1Dpoisson.fields
+parameters = input1Dpoisson.parameters
+L = input1Dpoisson.L
 
-	temp = fields['temperature']
-        kappa1 = parameters['kappa 1']
-        kappa2 = parameters['kappa 2']
-        pi = Numeric.pi
-        
-        mPhi = var - 0.5 - kappa1 / pi * tools.array.arctan(kappa2 * temp)
+setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > L/2.)
+fields['interstitials'][0].setValue(1.)
+fields['interstitials'][0].setValue(0.,setCells)
 
-        PhaseEquation.__init__(self,
-                               var = var,
-                               solver = solver,
-                               boundaryConditions = boundaryConditions,
-                               fields = fields,
-                               parameters = parameters,
-                               mPhi = mPhi)
-        
+if __name__ == '__main__':
+    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+
+    for viewer in viewers:
+	viewer.plot()
+	
+    raw_input()
+
+    # fudge = calibrate_profiler(10000)
+    # profile = Profiler('profile', fudge=fudge)
+
+    it.timestep(1)
+    
+    for viewer in viewers:
+	viewer.plot()
+	
+    print fields['potential']
+    print fields['potential'][0], fields['potential'][-1]
+	
+    # profile.stop()
+	    
+    raw_input()
+

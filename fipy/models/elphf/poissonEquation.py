@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {11:57:32 AM} 
+ #                                last update: 1/16/04 {8:57:33 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,28 +59,27 @@ class PoissonEquation(MatrixEquation):
 		 parameters,
 		 fields = {},
                  solver='default_solver',
+		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
 		     
         mesh = potential.getMesh()
 	
-## 	print "LENGTH: ", physicalField.PhysicalField("1 LENGTH").inBaseUnits()
-## 	print "ENERGY: ", physicalField.PhysicalField("1 ENERGY").inBaseUnits()
-## 	print "MOLARVOLUME: ", physicalField.PhysicalField("1 MOLARVOLUME").inBaseUnits()
+	dielectric = physicalField.Scale(parameters['dielectric'], "eps0") 
+	dielectric *= physicalField.PhysicalField(value = "eps0 / (Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME))")
 	
 	diffusionTerm = ImplicitDiffusionTerm(
-	    diffCoeff = physicalField.Scale(parameters['dielectric'], "eps0 * Faraday**2 * LENGTH**2 / ENERGY / MOLARVOLUME"),
-## 	    diffCoeff = physicalField.PhysicalField(value = parameters['dielectric'], unit = "eps0"),
+	    diffCoeff = dielectric,
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
-	charge = fields['solvent'].getValence()
+	fields['charge'] = fields['solvent'].getValence()
 	for component in list(fields['interstitials']) + list(fields['substitutionals']):
-	    charge = charge + component * component.getValence() #.getOld()
+	    fields['charge'] = fields['charge'] + component * component.getValence() #.getOld()
 	    
 ## 	charge = charge * "1 Faraday/MOLARVOLUME"
 	
 	self.scTerm = ScSourceTerm(
-	    sourceCoeff = charge,
+	    sourceCoeff = fields['charge'],
 	    mesh = mesh)
 	    
 	terms = (
@@ -93,5 +92,5 @@ class PoissonEquation(MatrixEquation):
             var = potential,
             terms = terms,
             solver = solver,
-            solutionTolerance = 1e-10)
+            solutionTolerance = solutionTolerance)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/14/04 {4:23:38 PM} 
+ #                                last update: 1/14/04 {5:20:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -82,6 +82,14 @@ def tan(arr):
     else:
 	return umath.tan(arr)
 
+def arctan(arr):
+    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+	return arr.arctan()
+    elif type(arr) is type(Numeric.array((0))):
+	return Numeric.arctan(arr)
+    else:
+	return umath.arctan(arr)
+		
 def arctan2(arr, other):
     if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
 	return arr.arctan2(other)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/10/04 {11:55:15 PM} 
+ #                                last update: 1/16/04 {9:35:02 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,10 +64,6 @@ from tools.dimensions.physicalField import PhysicalField
 
 import elphf
 
-# valueLeft="0.3 mol/l"
-# valueRight="0.4 mol/l"
-# valueOther="0.2 mol/l"
-
 nx = 100
 dx = "0.03 nm"
 # L = nx * dx
@@ -79,8 +75,8 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': "10000000. s",
-    'molar volume': "1.8e5 m**3/mol",
+    'time step duration': "1e-12 s",
+    'substitutional molar volume': "1.8e-5 m**3/mol",
     'phase': {
 	'name': "xi",
 	'mobility': "1e-2 m**3/J/s",
@@ -92,7 +88,6 @@ parameters = {
 	'dielectric': 78.49
     },
     'solvent': {
-## 	'standard potential': PhysicalField(Numeric.log(.4/.6),"298*K*Nav*kB"),
 	'standard potential': "34139.7265625 J/mol",
 	'barrier height': "3.6e5 J/mol",
 	'valence': 0
@@ -103,47 +98,35 @@ parameters['interstitials'] = (
     {
 	'name': "e-",
 	'diffusivity': "1e-9 m**2/s",
-## 	'standard potential': PhysicalField(Numeric.log(.1/.9),"298*K*Nav*kB"),
 	'standard potential': "-33225.9453125 J/mol",
-	'barrier height': "0. J/mol", #parameters['solvent']['barrier height'],
+	'barrier height': "0. J/mol",
 	'valence': -1,
 	'value': "111.110723815414 mol/l",
-## 	'value': "0.5 mol/l",
     },
 )
 
 parameters['substitutionals'] = (
-#     {
-# 	'name': "c1",
-# 	'standard potential': Numeric.log(.3/.4),
-# 	'barrier height': parameters['solvent']['barrier height'],
-# 	'value': 0.35,
-#     },
     {
 	'name': "SO4",
 	'diffusivity': "1e-9 m**2/s",
-## 	'standard potential': PhysicalField(Numeric.log(.4/.3),"298*K*Nav*kB"),
 	'standard potential': "24276.6640625 J/mol",
 	'barrier height': parameters['solvent']['barrier height'],
 	'valence': -2,
 	'value': "0.000010414586295976 mol/l",
-## 	'value': "0.35 mol/l",
     },
     {
 	'name': "Cu",
 	'diffusivity': "1e-9 m**2/s",
-## 	'standard potential': PhysicalField(Numeric.log(.2/.1),"298*K*Nav*kB"),
 	'standard potential': "-7231.81396484375 J/mol",
 	'barrier height': parameters['solvent']['barrier height'],
 	'valence': +2,
 	'value': "55.5553718417909 mol/l",
-## 	'value': "0.15 mol/l",
     }
 )
 
 fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
-setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2.)
+setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/4.)
 fields['phase'].setValue(0.,setCells)
 fields['interstitials'][0].setValue("0.000111111503177394 MOLARVOLUME*mol/l", setCells)
 fields['substitutionals'][0].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
@@ -169,11 +152,12 @@ raw_input()
 
 
 for i in range(50):
-    it.timestep(1)
-#     raw_input()
+    it.timestep(steps = 1, maxSweeps = 5)
     
     for viewer in viewers:
 	viewer.plot()
+
+    raw_input()
     
 # profile.stop()
 	

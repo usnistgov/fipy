@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/14/04 {2:37:20 PM} 
+ #                                last update: 1/15/04 {4:11:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -119,7 +119,7 @@ def makeFields(mesh, parameters):
 
     parameters['potential']['var'] = CellVariable(
 	mesh = mesh,
-	name = 'psi',
+	name = parameters['potential']['name'],
 	value = 0
 ## 	value = "0 V"
 	)
@@ -140,7 +140,6 @@ def makeFields(mesh, parameters):
 	    component['var'] = ComponentVariable(
 		mesh = mesh,
 		parameters = component,
-		systemParameters = parameters,
 		value = value,
 		)
 	    
@@ -172,7 +171,6 @@ def makeFields(mesh, parameters):
     parameters['solvent']['var'] = SolventVariable(
 	mesh = mesh,
 	parameters = parameters['solvent'],
-	systemParameters = parameters,
 	substitutionals = fields['substitutionals']
 	)
 	

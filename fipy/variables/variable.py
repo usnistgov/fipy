@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/14/04 {2:55:01 PM} 
+ #                                last update: 1/14/04 {5:30:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -96,10 +96,18 @@ class Variable:
 	return self.mesh
 	
     def getUnit(self):
-	return self.value.getUnit()
+	value = self.getValue()
+	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	    return value.getUnit()
+	else:
+	    return ""
 	
     def inBaseUnits(self):
-	return self.getValue().inBaseUnits()
+	value = self.getValue()
+	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	    return value.inBaseUnits()
+	else:
+	    return value
 
     def __getitem__(self, index): 
 	return self.getValue()[index]
@@ -123,7 +131,11 @@ class Variable:
 	self.markFresh()
 	    
     def getNumericValue(self):
-	return self.getValue().value
+	value = self.getValue()
+	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	    return value.value
+	else:
+	    return value
 	
     def refresh(self):
 	if self.stale:           

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/13/04 {9:04:38 AM} 
+ #                                last update: 1/15/04 {3:23:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -71,7 +71,7 @@ parameters = {
 	'value': 1.
     },
     'solvent': {
-	'standard potential': Numeric.log(.4/.6),
+	'standard potential': Numeric.log(.4/.6) - Numeric.log(1.3/1.4),
 	'barrier height': 1.
     }
 }
@@ -80,7 +80,7 @@ parameters['interstitials'] = (
     {
 	'name': "c1",
 	'diffusivity': 1.,
-	'standard potential': Numeric.log(.3/.4),
+	'standard potential': Numeric.log(.3/.4) - Numeric.log(1.3/1.4),
 	'barrier height': 0., 
 	'value': 0.35
     },
@@ -90,14 +90,14 @@ parameters['substitutionals'] = (
     {
 	'name': "c2",
 	'diffusivity': 1.,
-	'standard potential': Numeric.log(.4/.3),
+	'standard potential': Numeric.log(.4/.3) - Numeric.log(1.3/1.4),
 	'barrier height': parameters['solvent']['barrier height'], 
 	'value': 0.35
     },
     {
 	'name': "c3",
 	'diffusivity': 1.,
-	'standard potential': Numeric.log(.2/.1),
+	'standard potential': Numeric.log(.2/.1) - Numeric.log(1.3/1.4),
 	'barrier height': parameters['solvent']['barrier height'], 
 	'value': 0.15
     },
@@ -105,7 +105,7 @@ parameters['substitutionals'] = (
 
 fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
-setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > L/2)
+setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > L/2.)
 fields['phase'].setValue(1.)
 fields['phase'].setValue(0.,setCells)
 
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    for i in range(50):
+    for i in range(500):
 	it.timestep(1)
 	
 	for viewer in viewers:

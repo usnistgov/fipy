@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/13/04 {11:58:34 AM} 
+ #                                last update: 1/15/04 {3:58:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,7 @@ from variables.cellVariable import CellVariable
 from tools.dimensions import physicalField
 
 class ComponentVariable(CellVariable):
-    def __init__(self, mesh, parameters, systemParameters, value=0., hasOld = 1):
+    def __init__(self, mesh, parameters, value=0., hasOld = 1):
 	if parameters.has_key('name'):
 	    name = parameters['name']
 	else:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/14/04 {3:47:15 PM} { 3:50:26 PM}
+ #                                last update: 1/14/04 {5:03:22 PM} { 3:50:26 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,11 @@
  # ###################################################################
  ##
 
-from variables.faceVariable import FaceVariable
 import Numeric
+ 
 from inline.inline import runInline
+import tools.array
+from variables.faceVariable import FaceVariable
 
 class PhaseHalfAngleVariable(FaceVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
@@ -57,9 +59,11 @@ class PhaseHalfAngleVariable(FaceVariable):
         dphi = self.phase.getFaceGrad()[:,:]
         thetaFace = self.theta.getFaceValue()[:]
 
-        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+##         z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+	z = tools.array.arctan2(dphi[:,1],dphi[:,0])
         z = N * (z - thetaFace)
-        self.value = Numeric.tan(z / 2.)
+## 	self.value = Numeric.tan(z / 2.)
+        self.value = tools.array.tan(z / 2.)
 
 ##        runInline(
 ##            """

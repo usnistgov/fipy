@@ -6,7 +6,7 @@
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {12:59:56 PM} { 2:35:45 PM}
+ #                                last update: 1/14/04 {4:44:33 PM} { 2:35:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -65,7 +65,7 @@ class AnisotropyVariable(CellVariable):
 
         dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
 
-        self.value = tools.addOverFaces(faceGradient = dphiReverse,
+        self.value = toolsTmp.addOverFaces(faceGradient = dphiReverse,
                                         faceVariable = ff,
                                         mesh = self.mesh,
                                         NCells = len(self.value[:]))

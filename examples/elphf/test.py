@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/13/04 {11:56:55 AM} 
+ #                                last update: 1/16/04 {10:27:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -130,7 +130,7 @@ class TestElPhF1Dphase(TestElPhF):
 	d = Numeric.sqrt(field['gradient energy'] / (self.parameters['solvent']['barrier height']))
 	final = (1. - Numeric.tanh(x/(2.*d))) / 2.
 	
-	self.assertArrayWithinTolerance(self.fields['phase'].getNumericValue(), final, self.tolerance)
+	self.assertArrayWithinTolerance(field.getNumericValue(), final, self.tolerance)
 	
 class TestElPhF1DphaseBinary(TestElPhF):
     def setUp(self):
@@ -163,6 +163,57 @@ class TestElPhF1DphaseTernaryAndElectrons(TestElPhF):
 	self.final['interstitials'] = [[0.4,0.3]]
 	self.final['substitutionals'] = [[0.3,0.4],[0.1,0.2]]
 	
+class TestElPhF1DpoissonAllCharge(TestElPhF):
+    def setUp(self):
+	import input1DpoissonAllCharge
+	TestElPhF.setUp(self, input1DpoissonAllCharge)
+	
+	self.tolerance = 2e-5
+	
+    def testResult(self):
+	self.it.timestep(steps = self.steps)
+
+	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
+	x += 0.5
+	x *= self.parameters['mesh']['dx']
+	final = (x**2)/2 - 2*x
+	
+	self.assertArrayWithinTolerance(self.fields['potential'].getNumericValue(), final, self.tolerance)
+		
+class TestElPhF1DpoissonLeftCharge(TestElPhF):
+    def setUp(self):
+	import input1DpoissonLeftCharge
+	TestElPhF.setUp(self, input1DpoissonLeftCharge)
+	
+	self.tolerance = 2e-5
+	
+    def testResult(self):
+	self.it.timestep(steps = self.steps)
+
+	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
+	x += 0.5
+	x *= self.parameters['mesh']['dx']
+	final = Numeric.where(x < 1, (x**2)/2 - x, -0.5)
+	
+	self.assertArrayWithinTolerance(self.fields['potential'].getNumericValue(), final, self.tolerance)
+    
+class TestElPhF1DpoissonRightCharge(TestElPhF):
+    def setUp(self):
+	import input1DpoissonRightCharge
+	TestElPhF.setUp(self, input1DpoissonRightCharge)
+	
+	self.tolerance = 2e-5
+	
+    def testResult(self):
+	self.it.timestep(steps = self.steps)
+
+	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
+	x += 0.5
+	x *= self.parameters['mesh']['dx']
+	final = Numeric.where(x < 1, -x, ((x-1)**2)/2 - x)
+	
+	self.assertArrayWithinTolerance(self.fields['potential'].getNumericValue(), final, self.tolerance)
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
@@ -172,6 +223,9 @@ def suite():
     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseTernaryAndElectrons))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonAllCharge))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonLeftCharge))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonRightCharge))
     return theSuite
     
 if __name__ == '__main__':

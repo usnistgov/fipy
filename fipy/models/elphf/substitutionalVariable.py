@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/13/04 {11:46:48 AM} 
+ #                                last update: 1/16/04 {7:07:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@ from tools.dimensions import physicalField
 
 class SubstitutionalVariable(ComponentVariable):
     def __init__(self, mesh, parameters, systemParameters, value=0., hasOld = 1):
-	ComponentVariable.__init__(self, mesh = mesh, parameters = parameters, systemParameters = systemParameters, value = value, hasOld = hasOld)
+	ComponentVariable.__init__(self, mesh = mesh, parameters = parameters, value = value, hasOld = hasOld)
 	self.solventParameters = systemParameters['solvent']
 ## 	self.standardPotential -= physicalField.PhysicalField(self.solventParameters['standard potential'])
 ## 	self.barrierHeight -= physicalField.PhysicalField(self.solventParameters['barrier height'])
