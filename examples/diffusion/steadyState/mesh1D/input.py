@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:02:29 PM} 
+ #                                last update: 6/7/04 {11:44:37 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,19 @@
  # ###################################################################
  ##
 
+"""
+This tests this input
+
+    >>> it.timestep()
+    >>> Lx = nx * dx
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> import Numeric
+    >>> Numeric.allclose(var.getNumericValue(), valueLeft + (valueRight - valueLeft) * x / Lx, rtol = 1e-10, atol = 1e-10)
+    1
+
+"""
+__docformat__ = 'restructuredtext'
+
 ##from fipy.tools.profiler.profiler import Profiler
 ##from fipy.tools.profiler.profiler import calibrate_profiler
  
@@ -68,8 +81,6 @@ var = CellVariable(name = "concentration",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
-
 eq = DiffusionEquation(var,
                        transientCoeff = 0., 
                        diffusionCoeff = 1.,
@@ -85,19 +96,10 @@ eq = DiffusionEquation(var,
 
 it = Iterator((eq,))
 
-def run():
-    it.timestep()
-    return var.getNumericValue()
-
-def testResult():
-    Lx = nx * dx
-    x = mesh.getCellCenters()[:,0]
-    return valueLeft + (valueRight - valueLeft) * x / Lx
-
 if __name__ == '__main__':
 
-    run()
-    
+    viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+    it.timestep()
     viewer.plot()
 
     raw_input("finished")
