@@ -45,7 +45,7 @@
 """
 
 import Numeric
-from fipy.meshes.mesh import Mesh
+from fipy.meshes.numMesh.mesh import Mesh
 import fipy.tools.array
 import fipy.tools.vector as vector
 

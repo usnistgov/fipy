@@ -45,15 +45,15 @@
 
 import unittest
 import fipy.tests.testProgram
-import fipy.meshes.testGrid
-import fipy.meshes.testMesh
-import fipy.meshes.testMesh3D
+import fipy.meshes.numMesh.testGrid
+import fipy.meshes.numMesh.testMesh
+import fipy.meshes.numMesh.testMesh3D
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fipy.meshes.testGrid.suite())
-    theSuite.addTest(fipy.meshes.testMesh.suite())
-    theSuite.addTest(fipy.meshes.testMesh3D.suite())
+    theSuite.addTest(fipy.meshes.numMesh.testGrid.suite())
+    theSuite.addTest(fipy.meshes.numMesh.testMesh.suite())
+    theSuite.addTest(fipy.meshes.numMesh.testMesh3D.suite())
     return theSuite
     
 if __name__ == '__main__':

@@ -47,9 +47,9 @@ import unittest
 from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 import Numeric
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.numMesh.grid2D import Grid2D
 import MA
-from fipy.meshes.testMeshBase import TestMeshBase
+from fipy.meshes.numMesh.testMeshBase import TestMeshBase
 import fipy.tools.dump as dump
 
 class TestGrid(TestMeshBase):

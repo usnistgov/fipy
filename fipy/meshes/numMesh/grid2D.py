@@ -46,8 +46,8 @@
 
 import Numeric
 
-from fipy.meshes.mesh2D import Mesh2D
-from fipy.meshes.face import Face
+from fipy.meshes.numMesh.mesh2D import Mesh2D
+from fipy.meshes.numMesh.face import Face
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 

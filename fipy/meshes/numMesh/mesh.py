@@ -47,8 +47,8 @@
 import Numeric
 import MA
 
-from fipy.meshes.face import Face
-from fipy.meshes.cell import Cell
+from fipy.meshes.numMesh.face import Face
+from fipy.meshes.numMesh.cell import Cell
 
 import fipy.tools.array
 import fipy.tools.vector as vector

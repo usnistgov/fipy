@@ -47,10 +47,10 @@ import unittest
 from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 import Numeric
-from fipy.meshes.mesh import Mesh
+from fipy.meshes.numMesh.mesh import Mesh
 import MA
 from mesh import Mesh
-from fipy.meshes.testMeshBase import TestMeshBase
+from fipy.meshes.numMesh.testMeshBase import TestMeshBase
 import fipy.tools.dump as dump
 
 class TestMesh3D(TestMeshBase):

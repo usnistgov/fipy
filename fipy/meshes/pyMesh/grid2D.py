@@ -46,10 +46,10 @@
 
 import Numeric
 
-from fipy.meshes.mesh import Mesh
-from fipy.meshes.vertex import Vertex
-from fipy.meshes.face2D import Face2D
-from fipy.meshes.cell import Cell
+from fipy.meshes.pyMesh.mesh import Mesh
+from fipy.meshes.pyMesh.vertex import Vertex
+from fipy.meshes.pyMesh.face2D import Face2D
+from fipy.meshes.pyMesh.cell import Cell
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh):

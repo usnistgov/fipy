@@ -47,8 +47,8 @@ import unittest
 import fipy.tests.testProgram
 import Numeric
 import MA
-from fipy.meshes.mesh2D import Mesh2D
-from fipy.meshes.testMeshBase import TestMeshBase
+from fipy.meshes.numMesh.mesh2D import Mesh2D
+from fipy.meshes.numMesh.testMeshBase import TestMeshBase
 import fipy.tools.dump as dump
 
 class TestMesh(TestMeshBase):
