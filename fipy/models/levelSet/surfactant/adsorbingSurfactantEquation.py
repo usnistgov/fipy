@@ -203,7 +203,7 @@ become negative.
    ...     accEq.solve(accVar, dt = dt)
 
    >>> Numeric.sum(accVar < -1e-10) == 0
-   True
+   1
    
 """
 

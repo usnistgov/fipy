@@ -49,7 +49,15 @@ In the following examples, we solve the same set of equations as in::
 with different initial conditions and a 2D mesh:
 
     >>> import optparse
-    >>> parser = optparse.OptionParser(option_list = [
+
+    >>> class MyOptionParser(optparse.OptionParser):
+    ...     def error(self, msg):
+    ...         if 'no such option' in msg:
+    ...             pass
+    ...         else:
+    ...             optparse.OptionParser.error(self, msg)
+
+    >>> parser = MyOptionParser(option_list = [
     ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
     ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 10)])
 
@@ -223,6 +231,16 @@ data and compares it with the `theta` variable.
 The preceding initialization steps are used in the next few examples.
 """
 __docformat__ = 'restructuredtext'
+
+import optparse
+
+class MyOptionParser(optparse.OptionParser):
+    def error(self, msg):
+        if 'no such option' in msg:
+            pass
+        else:
+            optparse.OptionParser(self, msg)
+
 
 def script():
     """

@@ -128,7 +128,14 @@ Build the mesh:
 
    >>> import optparse
 
-   >>> parser = optparse.OptionParser(option_list = [
+   >>> class MyOptionParser(optparse.OptionParser):
+   ...     def error(self, msg):
+   ...         if 'no such option' in msg:
+   ...             pass
+   ...         else:
+   ...             optparse.OptionParser.error(self, msg)
+
+   >>> parser = MyOptionParser(option_list = [
    ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = -1),
    ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 5)])
    
