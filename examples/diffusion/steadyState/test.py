@@ -49,8 +49,9 @@ import doctest
 import mesh1D.tri2Dinput
 import mesh1D.input
 import mesh20x20.input
+import mesh20x20.tri2Dinput
 import mesh50x50.input
-
+import mesh50x50.tri2Dinput
 
 
 def suite():
@@ -58,8 +59,9 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(mesh1D.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
     theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh20x20.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(mesh50x50.input))
-    
+    theSuite.addTest(doctest.DocTestSuite(mesh50x50.tri2Dinput))
     return theSuite
     
 if __name__ == '__main__':
