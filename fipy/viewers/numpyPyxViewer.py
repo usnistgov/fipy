@@ -8,7 +8,7 @@
  # 
  #  FILE: "pyxviewer.py"
  #                                    created: 6/25/04 {3:17:21 PM} 
- #                                last update: 10/22/04 {4:09:57 PM} 
+ #                                last update: 11/3/04 {11:12:18 AM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -48,9 +48,7 @@
 
 """
 
-import pyx
 import Numeric
-import os
 
 class NumpyPyxViewer:
     def __init__(self, array, dx = 1., dy = 1., plotWidth = 10, viewCommand = 'gv', maxVal = 1., minVal = 0.):
@@ -74,6 +72,8 @@ class NumpyPyxViewer:
         Lx = self.dx * self.nx
         Ly = self.dy * self.ny
 
+	import pyx
+	
         g = pyx.graph.graphxy(height = self.plotWidth * Ly / Lx, width = self.plotWidth,
                               x = pyx.graph.axis.linear(min = 0, max = Lx),
                               y = pyx.graph.axis.linear(min = 0, max = Ly))
@@ -92,6 +92,7 @@ class NumpyPyxViewer:
 
         g.writeEPSfile(fileName)
 
+	import os
         os.system(self.viewCommand + " " + fileName + ".eps &")
 
 

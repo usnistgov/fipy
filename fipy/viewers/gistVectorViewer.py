@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 9/3/04 {10:43:25 PM} { 2:45:36 PM}
+ #                                last update: 11/3/04 {8:21:17 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,8 +44,6 @@
 
 import Numeric
 
-import gist
-
 from fipy.viewers.gistViewer import GistViewer
 
 class GistVectorViewer(GistViewer):
@@ -55,6 +53,8 @@ class GistVectorViewer(GistViewer):
 	GistViewer.__init__(self, title, grid)
 	
     def plot(self, fileName = None):
+	import gist
+
         gist.window(self.id, wait = 1)
 	gist.pltitle(self.title)
         gist.animate(1)

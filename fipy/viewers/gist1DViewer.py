@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 11/2/04 {7:38:00 PM} 
+ #                                last update: 11/3/04 {11:09:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,12 +44,6 @@
 
 import Numeric
  
-import os
-try:
-    import gist
-except:
-    print "Unable to load gist"
-
 from fipy.viewers.gistViewer import GistViewer
 
 class Gist1DViewer(GistViewer):
@@ -73,6 +67,8 @@ class Gist1DViewer(GistViewer):
 	return arrays
 	
     def plotArrays(self):
+	import gist
+	
 ## 	gist.plsys(0)
 	for array in self.getArrays():
             if len(array.shape) > 1:
@@ -82,6 +78,8 @@ class Gist1DViewer(GistViewer):
 	gist.logxy(self.xlog, self.ylog)
 
     def plot(self, minVal=None, maxVal=None):
+	import gist
+
 	gist.window(self.id, wait= 1, style = self.style)
 	gist.pltitle(self.title)
 	gist.animate(1)
