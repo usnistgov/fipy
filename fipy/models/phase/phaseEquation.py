@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/22/03 {4:58:35 PM} 
+                               last update: 12/22/03 {5:53:13 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,10 +45,6 @@ from terms.transientTerm import TransientTerm
 from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
-from phaseMVariable import PhaseMVariable
-from phaseSpSourceVariable import PhaseSpSourceVariable
-from phaseScSourceVariable import PhaseScSourceVariable
-from phaseDiffCoeffVariable import PhaseDiffCoeffVariable
 import Numeric
 
 class PhaseEquation(MatrixEquation):
@@ -123,5 +119,5 @@ class PhaseEquation(MatrixEquation):
 	s = self.parameters['s']
 	epsilon = self.parameters['epsilon']
 	spSourceCoeff += (2*s + epsilon**2 * thetaMag) * thetaMag
-
+	
 	return spSourceCoeff
