@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 9/3/04 {10:28:52 PM}
+ #                                last update: 3/8/05 {4:45:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,7 @@
 import Numeric
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
-import fipy.tools.array as array
+from fipy.tools import array
 from fipy.tools.inline import inline
 
 class FaceGradVariable(VectorFaceVariable):
@@ -56,7 +56,7 @@ class FaceGradVariable(VectorFaceVariable):
 ##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1)) / dAP
 	N = (array.take(self.var,id2) - array.take(self.var,id1)) / dAP
 	normals = self.mesh.getOrientedFaceNormals()
-	
+        
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 	cellGrad = self.var.getGrad().getNumericValue()
@@ -76,7 +76,7 @@ class FaceGradVariable(VectorFaceVariable):
 	N = N[:,Numeric.NewAxis]
 	T1 = T1[:,Numeric.NewAxis]
 	T2 = T2[:,Numeric.NewAxis]
-
+        
 	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 
     def _calcValueInline(self):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:21:51 PM} 
+ #                                last update: 3/7/05 {5:02:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,8 +50,8 @@ We create a 1D mesh:
     
     >>> nx = 100
     >>> dx = 1.
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and we initialize a `CellVariable` to `initialValue`:
     

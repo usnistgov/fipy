@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/4/05 {8:38:43 PM} 
+ #                                last update: 3/7/05 {5:08:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,22 +72,20 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
 
 dx = 1.
-dy = 1.
 nx = 50
-ny = 1
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.2
 steps = 10
 
-mesh = Grid2D(dx, dy, nx, ny)
+mesh = Grid1D(dx = dx, nx = nx)
 
 var = CellVariable(
     name = "concentration",

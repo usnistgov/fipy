@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:37:48 PM} 
+ #                                last update: 3/7/05 {5:22:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:40:06 PM} 
+ #                                last update: 3/7/05 {5:14:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ from fipy.models.phase.theta.noModularVariable import NoModularVariable
 
 class TestMod(TestBase):
     def setUp(self, value, dx = 1., dy = 1.):
-        self.mesh = Grid2D(dx, dy, 2, 1)
+        self.mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 1)
         self.theta = ModularVariable(
             mesh = self.mesh,
             value = value)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:35:05 PM} 
+ #                                last update: 3/7/05 {5:09:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,14 +47,14 @@ This example solves the steady-state convection-diffusion equation as described 
 
 .. raw:: latex
 
-    $ \\vec{u} = (-10, 0)$.
+    $ \\vec{u} = (-10,)$.
 
 ..
 
     >>> L = 10.
     >>> nx = 1000
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = L / nx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -71,7 +71,7 @@ This example solves the steady-state convection-diffusion equation as described 
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (-10.,0.)
+    >>> convCoeff = (-10.,)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)

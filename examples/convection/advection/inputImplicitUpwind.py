@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputImpicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {1:58:47 PM} 
+ #                                last update: 3/7/05 {4:57:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ order implicit upwind scheme.
 
 import Numeric
      
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
@@ -59,17 +59,15 @@ valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 400
-ny = 1
 dx = L / nx
-dy = L / ny
 cfl = 0.01
 velocity = 1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 1000
 
-mesh = Grid2D(dx, dy, nx, ny)
+mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = Numeric.zeros(nx * ny, 'd')
+startingArray = Numeric.zeros(nx, 'd')
 startingArray[50:90] = 1. 
 
 var = CellVariable(
@@ -79,15 +77,13 @@ var = CellVariable(
 
 boundaryConditions = (
     FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight),
-    FixedFlux(mesh.getFacesTop(), 0.),
-    FixedFlux(mesh.getFacesBottom(), 0.)
+    FixedValue(mesh.getFacesRight(), valueRight)
     )
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
-eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity, 0.))
+eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     

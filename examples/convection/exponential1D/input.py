@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {1:33:59 PM} 
+ #                                last update: 3/7/05 {4:51:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,20 +53,19 @@ with coefficients
 
 .. raw:: latex
 
-   $D = 1$ and $\vec{u} = (10, 0)$,
+   $D = 1$ and $\vec{u} = (10,)$,
    
 or
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,0.)
+    >>> convCoeff = (10.,)
     
 We define a 1D mesh
 
     >>> L = 10.
     >>> nx = 1000
-    >>> ny = 1
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(L / nx, nx)
 
 and impose the boundary conditions
 

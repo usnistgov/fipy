@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/4/05 {8:38:00 PM} 
+ #                                last update: 3/7/05 {5:23:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,7 +102,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 2
-ny = 1
 
 valueLeft = 0.
 fluxRight = 1.
@@ -111,9 +110,8 @@ timeStepDuration = 1.
 L = 1.
 
 dx = L / nx
-dy = 1.
 
-mesh = Grid2D(dx, dy, nx, ny)
+mesh = Grid2D(dx = dx, nx = nx)
     
 var = CellVariable(
     name = "solution variable",

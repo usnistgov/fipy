@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "grid2D.py"
+ #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 12/7/04 {4:27:59 PM} 
+ #                                last update: 3/7/05 {5:16:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -217,7 +217,7 @@ class Grid3D(Mesh):
 	return self.scale['length']
 	
     def getPhysicalShape(self):
-	"""Return physical dimensions of Grid2D.
+	"""Return physical dimensions of Grid3D.
 	"""
 	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
 

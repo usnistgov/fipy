@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:27:42 PM} { 1:23:41 PM}
+ #                                last update: 3/8/05 {3:49:57 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,9 +66,7 @@ script. Firstly, setup the parameters.
 
    >>> velocity = 1.
    >>> dx = 1.
-   >>> dy = 1.
    >>> nx = 10
-   >>> ny = 1
    >>> timeStepDuration = 1.
    >>> steps = 2
    >>> L = nx * dx
@@ -77,13 +75,13 @@ script. Firstly, setup the parameters.
 Construct the mesh.
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+   >>> mesh = Grid2D(dx = dx, nx = nx)
 
 Construct a `distanceVariable` object. This object is required by the
 `distanceEquation`.
 
    >>> import Numeric
-   >>> values = -Numeric.ones(nx * ny, 'd')
+   >>> values = -Numeric.ones(nx, 'd')
    >>> cells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition)
    >>> for cell in cells:
    ...    values[cell.getID()] = 1
@@ -102,8 +100,8 @@ The `advectionEquation` is constructed.
 The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
+   ...     import fipy.viewers
+   ...     viewer = fipy.viewer.make(vars = var, limits = {'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:52:23 PM} 
+ #                                last update: 3/7/05 {5:16:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,8 +50,8 @@ on a 1D mesh
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = 1)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 The problem parameters are
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "depositionRateVariable.py"
  #                                    created: 8/26/04 {10:39:23 AM} 
- #                                last update: 8/26/04 {4:00:40 PM} 
+ #                                last update: 3/7/05 {5:38:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,8 +91,8 @@ Here is a small test,
    ...             'ion charge'    : 2.
    ...         }
    ...     }
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(nx = 2, ny = 1, dx = 1., dy = 1.)
+   >>> from fipy.meshes.grid1D import Grid1D
+   >>> mesh = Grid1D(nx = 2, dx = 1.)
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
    >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5))
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable

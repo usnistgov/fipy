@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:01:44 PM} 
+ #                                last update: 3/8/05 {5:11:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,6 @@ import fipy.tests.testProgram
 def suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'pyxviewer',
-            'grid2DGistViewer',
         ), base = __name__)
     
 if __name__ == '__main__':

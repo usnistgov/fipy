@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {3:59:12 PM} 
+ #                                last update: 3/8/05 {4:46:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -105,7 +105,7 @@ specified simply by providing a `Tuple` of species parameters
 
 We use ElPhF to create the variable fields
 
-    >>> import fipy.models.elphf.elphf as elphf
+    >>> from fipy.models.elphf import elphf
     >>> fields = elphf.makeFields(mesh = mesh, 
     ...                           parameters = parameters)
     
@@ -126,12 +126,12 @@ If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     # viewers = [fipy.viewers.make(vars = field, limits = {'datamin': 0, 'datamax': 1}) for field in (fields['solvent'],) + fields['substitutionals']]
-    ...     viewer = fipy.viewers.make(vars = (fields['solvent'],) + fields['substitutionals'],
-    ...                                limits = {'datamin': 0, 'datamax': 1})
-    ...     viewer.plot()
-    ...     # for viewer in viewers:
-    ...     #     viewer.plot()
+    ...     viewers = [fipy.viewers.make(vars = field, limits = {'datamin': 0, 'datamax': 1}) for field in (fields['solvent'],) + fields['substitutionals']]
+    ...     # viewer = fipy.viewers.make(vars = (fields['solvent'],) + fields['substitutionals'],
+    ...     #                            limits = {'datamin': 0, 'datamax': 1})
+    ...     # viewer.plot()
+    ...     for viewer in viewers:
+    ...         viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
@@ -146,10 +146,9 @@ Now, we iterate the problem to equilibrium, plotting as we go
     ...                              dt = parameters['time step duration'],
     ...                              solver = solver)
     ...     if __name__ == '__main__':
-    ...         # for viewer in viewers:
-    ...         #     viewer.plot()
-    ...         viewer.plot()
-    ...         raw_input('pause')
+    ...         for viewer in viewers:
+    ...             viewer.plot()
+    ...         # viewer.plot()
 
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform

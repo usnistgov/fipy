@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {1:33:30 PM} 
+ #                                last update: 3/8/05 {3:52:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,8 +55,8 @@ We start by defining a 1D mesh
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 The problem parameters are
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 11/28/04 {10:27:46 AM} 
+ #                                last update: 3/7/05 {5:22:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,8 +62,8 @@ class SurfactantVariable(CellVariable):
 
         A simple 1D test:
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 1)
+           >>> from fipy.meshes.grid1D import Grid1D
+           >>> mesh = Grid1D(dx = 1., nx = 4)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable \\
            ...     import DistanceVariable
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -75,6 +75,7 @@ class SurfactantVariable(CellVariable):
 
         A 2D test case:
 
+           >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
            >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (1.5, 0.5, 1.5,

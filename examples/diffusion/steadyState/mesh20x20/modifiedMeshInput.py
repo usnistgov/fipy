@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {3:03:19 PM} 
+ #                                last update: 3/7/05 {5:32:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,7 +64,6 @@ in it will not be able to find the mesh file.
 
 """
 
-from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable

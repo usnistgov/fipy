@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {4:23:11 PM} 
+ #                                last update: 3/7/05 {5:01:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,11 +61,9 @@ This examples shows that the `NthOrderDiffusionEquation` is equivalent to the `D
 We create an appropriate 1D mesh:
     
     >>> nx = 10
-    >>> ny = 1
     >>> dx = 1.
-    >>> dy = 1.
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and initialize the solution variable to `valueLeft`:
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/18/05 {10:43:39 AM} { 5:14:21 PM}
+ #                                last update: 3/7/05 {4:54:33 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -70,7 +70,7 @@ Here are some test cases for the model.
 """
 
 from parameters import parameters
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -82,7 +82,7 @@ nx = 50
 dx = 1.
 L = nx * dx
 
-mesh = Grid2D(nx = nx, ny = 1, dx = dx, dy = 1.)
+mesh = Grid1D(nx = nx, dx = dx)
 
 shift = 1.
 

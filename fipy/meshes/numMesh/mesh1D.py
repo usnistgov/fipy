@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/7/05 {8:42:47 AM} 
+ #                                last update: 3/8/05 {4:44:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,10 +65,11 @@ class Mesh1D(Mesh):
         
     def calcFaceNormals(self):
         self.faceNormals = Numeric.transpose(Numeric.array((Numeric.ones(self.numberOfFaces, 'd'),)))
+        self.faceNormals[0] = -self.faceNormals[0]
 
     def calcFaceTangents(self):
-        self.faceTangents1 = Numeric.zeros(self.numberOfFaces, 'd')
-        self.faceTangents2 = Numeric.zeros(self.numberOfFaces, 'd')
+        self.faceTangents1 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
+        self.faceTangents2 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
 
     def calcHigherOrderScalings(self):
 	self.scale['area'] = 1.

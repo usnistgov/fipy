@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetDiffusionVariable.py"
  #                                    created: 9/8/04 {10:39:23 AM} 
- #                                last update: 9/8/04 {4:00:40 PM} 
+ #                                last update: 3/8/05 {3:47:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,10 +51,10 @@ diffusion coefficient. The diffusion coefficient is given by,
     $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
     $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
 
-Here is a simpel 1D test case:
+Here is a simple 1D test case:
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
+   >>> mesh = Grid2D(dx = 1., nx = 3)
    >>> from fipy.variables.cellVariable import CellVariable
    >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
    >>> arr = Numeric.array(LevelSetDiffusionVariable(var, 1))

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:40:41 PM} 
+ #                                last update: 3/7/05 {5:10:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -195,10 +195,10 @@ import Numeric
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 
 import fipy.viewers
-from fipy.viewers.gistVectorViewer import GistVectorViewer
+## from fipy.viewers.gistVectorViewer import GistVectorViewer
 ## from fipy.iterators.iterator import Iterator
 ## from fipy.iterators.adaptiveIterator import AdaptiveIterator
 from fipy.models.elphf.myAdaptiveIterator import MyAdaptiveIterator
@@ -213,11 +213,9 @@ nx = 1000
 dx = "0.00005 nm"
 # L = nx * dx
 
-mesh = Grid2D(
+mesh = Grid1D(
     dx = dx,
-    dy = "1. nm",
-    nx = nx,
-    ny = 1)
+    nx = nx)
     
 parameters = {
     'time step duration': "1e-9 s",

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 9/3/04 {10:35:38 PM} 
+ #                                last update: 3/7/05 {5:00:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@
  # ###################################################################
  ##
 
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -61,17 +61,13 @@ L = nx * dx
 parameters = {
     'mesh': {
 	'nx': nx,
-	'ny': 1,
-	'dx': dx,
-	'dy': dx
+	'dx': dx
     }
 }
 
-mesh = Grid2D(
+mesh = Grid1D(
     dx = dx,
-    dy = dx,
-    nx = nx,
-    ny = 1)
+    nx = nx)
 
 fields = {}
 fields['all'] = []

@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/19/04 {2:54:01 PM} 
+ #                                last update: 3/8/05 {4:11:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,8 +86,8 @@ also,
 
 Here are some simple test cases for this problem:
 
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1) 
+   >>> from fipy.meshes.grid1D import Grid1D
+   >>> mesh = Grid1D(dx = 1., nx = 3) 
    
 Trivial test:
 
@@ -122,6 +122,7 @@ standing on a harpsichord singing 'trivial test cases are here again')
 
 Somewhat less trivial test case:
 
+   >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
    >>> vel = Numeric.array((3, -5, -6, -3))
    >>> coeff = CellVariable(mesh = mesh, value = Numeric.array((3 , 1, 6, 7)))
@@ -146,7 +147,7 @@ The returned vector `b` should have the value:
 
 Build the test case in the following way,
 
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 5, ny = 1)
+   >>> mesh = Grid1D(dx = 1., nx = 5)
    >>> vel = 1.
    >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[:,0]**2)
    >>> L, b = AdvectionTerm(vel).buildMatrix(coeff)
@@ -199,7 +200,7 @@ import MA
 import Numeric
 
 from advectionTerm import AdvectionTerm
-import fipy.tools.array as array
+from fipy.tools import array
 
 class HigherOrderAdvectionTerm(AdvectionTerm):
 
@@ -225,16 +226,12 @@ class HigherOrderAdvectionTerm(AdvectionTerm):
         adjacentLaplacian = adjacentLaplacian.filled(0)
         cellLaplacian = cellLaplacian.filled(0)
 
-##        print 'adjacentLaplacian',adjacentLaplacian
-##        print 'cellLaplacian',cellLaplacian
-
         mm = Numeric.where(cellLaplacian * adjacentLaplacian < 0.,
                            0.,
                            Numeric.where(abs(cellLaplacian) > abs(adjacentLaplacian),
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-
         return AdvectionTerm.getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
 
 def _test(): 

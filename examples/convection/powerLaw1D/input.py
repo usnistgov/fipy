@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:42:28 PM} 
+ #                                last update: 3/7/05 {5:14:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,8 +49,8 @@ uses the `PowerLawConvectionTerm` rather than the
 
     >>> L = 10.
     >>> nx = 1000
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = L / nx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -67,7 +67,7 @@ uses the `PowerLawConvectionTerm` rather than the
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,0.)
+    >>> convCoeff = (10.,)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)

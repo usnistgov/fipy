@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 2/18/05 {10:45:02 AM} 
+ #                                last update: 3/7/05 {5:37:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,10 +81,10 @@ given by:
 This is the test case,
 
    >>> import Numeric
-   >>> from fipy.meshes.grid2D import Grid2D
+   >>> from fipy.meshes.grid1D import Grid1D
    >>> nx = 11
    >>> dx = 1.
-   >>> mesh = Grid2D(nx = nx, ny = 1, dx = dx, dy = 1)
+   >>> mesh = Grid1D(nx = nx, dx = dx)
    >>> from fipy.variables.cellVariable import CellVariable
    >>> ionVar = CellVariable(mesh = mesh, value = 1)
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable

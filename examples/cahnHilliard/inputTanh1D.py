@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {3:00:36 PM}
+ #                                last update: 3/7/05 {5:20:52 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -62,11 +62,9 @@ We solve the problem on a 1D mesh
 
     >>> L = 40.
     >>> nx = 1000
-    >>> ny = 1
     >>> dx = L / nx
-    >>> dy = 1.
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx, dy, nx, ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and create the solution variable
 

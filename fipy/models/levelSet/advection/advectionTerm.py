@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/18/05 {2:19:56 PM} 
+ #                                last update: 3/8/05 {4:12:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,8 +64,8 @@ The formula used here is given by:
 
 Here are some simple test cases for this problem:
 
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1) 
+   >>> from fipy.meshes.grid1D import Grid1D
+   >>> mesh = Grid1D(dx = 1., nx = 3) 
    >>> from fipy.variables.cellVariable import CellVariable
    
 Trivial test:
@@ -100,6 +100,7 @@ standing on a harpsichord singing 'trivial test cases are here again')
 
 Somewhat less trivial test case:
 
+   >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
    >>> vel = Numeric.array((3, -5, -6, -3))
    >>> var = CellVariable(value = Numeric.array((3 , 1, 6, 7)), mesh = mesh)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 3/4/05 {6:54:37 PM} 
+ #                                last update: 3/7/05 {4:53:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,7 +118,6 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.meshes.grid2D import Grid2D
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.boundaryConditions.fixedValue import FixedValue
@@ -138,9 +137,9 @@ dt = 0.001
 
 ## build the mesh
 
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.grid1D import Grid1D
 dx = L / (nx - 1.5)
-mesh = Grid2D(nx = nx, ny = 1, dx = dx, dy = 1)
+mesh = Grid1D(nx = nx, dx = dx)
 
 ## build the distance variable
 

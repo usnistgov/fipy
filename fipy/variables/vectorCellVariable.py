@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 2/4/05 {3:05:04 PM} 
+ #                                last update: 3/7/05 {5:19:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ class VectorCellVariable(Variable):
         arithmetic mean from the neighboring cells.
         
         >>> from fipy.meshes.grid2D import Grid2D
-        >>> mesh = Grid2D(dx = 1., dy = 1, nx = 2, ny = 1)
+        >>> mesh = Grid2D(dx = 1., nx = 2)
         >>> var = VectorCellVariable(mesh, value = Numeric.array(((0,0),(1,1))))
         >>> answer = Numeric.array(((0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (.5, .5), (1, 1)))
         >>> Numeric.allclose(answer, Numeric.array(var.getArithmeticFaceValue()))

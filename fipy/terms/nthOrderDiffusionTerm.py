@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 2/26/05 {9:02:57 AM} 
+ #                                last update: 3/7/05 {10:06:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,8 +69,8 @@ and so on.
 
 Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(1., 1., 2, 1)
+   >>> from fipy.meshes.grid1D import Grid1D
+   >>> mesh = Grid1D(dx = 1., nx = 2)
    >>> term = NthOrderDiffusionTerm(coeff = (1,))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
@@ -145,7 +145,7 @@ x = 2, fixed value 4, fixed 3rd order -1
 
 Test when dx = 0.5.
 
-   >>> mesh = Grid2D(dx = .5, dy = 1., nx = 2, ny = 1)
+   >>> mesh = Grid1D(dx = .5, nx = 2)
    >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
@@ -165,7 +165,7 @@ Test when dx = 0.5.
 
 Test when dx = 0.25.
 
-   >>> mesh = Grid2D(dx = .25, dy = 1., nx = 2, ny = 1)
+   >>> mesh = Grid1D(dx = .25, nx = 2)
    >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {11:49:56 AM} 
+ #                                last update: 3/8/05 {5:05:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,16 +79,14 @@ and parameter value
 
    $D = 1$.
 
-The first step is to create a mesh with 50 elements. The `Grid2D`
-object represents a rectangular structured grid. The parameters `dx` and
-`dy` refer to the grid spacing (set to unity here).
+The first step is to create a mesh with 50 elements. The `Grid1D`
+object represents a linear structured grid. The parameter `dx`
+refers to the grid spacing (set to unity here).
 
     >>> nx = 50
-    >>> dx = 10.
+    >>> dx = 1.
     >>> from fipy.meshes.numMesh.grid1D import Grid1D
     >>> mesh = Grid1D(nx = nx, dx = dx)
-    >>> # from fipy.meshes.grid2D import Grid2D
-    >>> # mesh = Grid2D(nx = nx, dx = dx)
 
 The solution of all equations in FiPy requires a variable. These variables store
 values on various parts of the mesh. In this case we need a
