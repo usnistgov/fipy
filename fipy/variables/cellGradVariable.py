@@ -48,22 +48,41 @@ class CellGradVariable(VectorCellVariable):
 	VectorCellVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
         self.faceGradientContributions = FaceGradContributions(self.var)
-        
+
     def _calcValueIn(self, N, M, ids, orientations, volumes):
+        
 	inline.runInlineLoop2("""
 	    val(i,j) = 0.;
 	    
 	    int k;
+            
 	    for (k = 0; k < nk; k++) {
-		val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
+		val(i, j) += orientations(i, k) * areaProj(ids(i, k), j) * faceValues(ids(i, k));
 	    }
 		
-	    val(i,j) /= volumes(i);
+	    val(i, j) /= volumes(i);
 	""",
 	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
-	faceGradientContributions = self.faceGradientContributions.getNumericValue(),
+        areaProj = self.mesh.getAreaProjections().getNumericValue(),
+        faceValues = self.var.getFaceValue().getNumericValue(),
 	ni = N, nj = self.mesh.getDim(), nk = M
 	)
+        
+##    def _calcValueIn(self, N, M, ids, orientations, volumes):
+##	inline.runInlineLoop2("""
+##	    val(i,j) = 0.;
+	    
+##	    int k;
+##	    for (k = 0; k < nk; k++) {
+##		val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
+##	    }
+		
+##	    val(i,j) /= volumes(i);
+##	""",
+##	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
+##	faceGradientContributions = self.faceGradientContributions.getNumericValue(),
+##	ni = N, nj = self.mesh.getDim(), nk = M
+##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
 

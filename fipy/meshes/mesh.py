@@ -254,7 +254,10 @@ class Mesh:
 	return self.getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	    
     def getAreaProjections(self):
-	return self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis]
+	return self.areaProjections
+
+    def calcAreaProjections(self):
+        self.areaProjections = self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis] 
 	
     def getOrientedAreaProjections(self):
 	return self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
@@ -292,5 +295,6 @@ class Mesh:
 	self.calcFaceToCellDistances(faces)
 	self.calcFaceToCellDistanceRatio()
 	self.calcFaceNormals(faces)
+        self.calcAreaProjections()
 
         

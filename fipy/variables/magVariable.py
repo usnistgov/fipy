@@ -43,8 +43,11 @@ import fivol.tools.vector as vector
 
 class MagVariable(Variable):
     def __init__(self, var):
-	Variable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
-	
+
+        Variable.__init__(self, mesh = var.getMesh())
+        self.var = self.requires(var)
+        self.result = Numeric.zeros((len(var)),'d')
+        
     def calcValue(self):
-	self.value =  vector.arraySqrtDot(self.var,self.var)
+        self.value.value = vector.arraySqrtDot(self.var.getNumericValue(), self.var.getNumericValue(), self.result)
+

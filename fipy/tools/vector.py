@@ -69,7 +69,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
     return fivol.tools.array.sqrt(fivol.tools.array.sum(v1*v2))
 
-def arraySqrtDot(a1,a2):
+def arraySqrtDot(a1, a2, result):
     """Return array of square roots of vector dot-products
     for arrays a1 and a2 of vectors v1 and v2
     
@@ -77,7 +77,24 @@ def arraySqrtDot(a1,a2):
     """
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
+##    return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
+    return inline.optionalInline(_arraySqrtDotIn, _arraySqrtDotPy, a1, a2, result)
+
+def _arraySqrtDotPy(a1, a2, result):
     return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
+
+def _arraySqrtDotIn(a1, a2, result):
+    ni, nj = Numeric.shape(a1)
+    inline.runInlineLoop1("""
+        int j;
+        result(i) = 0.;
+        for (j = 0; j < nj; j++)
+        {
+            result(i) += a1(i,j) * a2(i,j);
+        }
+        result(i) = sqrt(result(i));
+    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
+    return result
 
 def _putAddPy(vector, ids, additionVector):
     for i in range(len(ids)):

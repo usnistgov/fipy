@@ -74,7 +74,7 @@ class TransientVariable(CellVariable):
         self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration']
 
     def _calcValueInline(self):
-
+        
         inline.runInlineLoop1("""
         phaseMod = phase(i);
         if(phaseMod < smallValue)
