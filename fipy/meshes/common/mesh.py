@@ -324,20 +324,24 @@ class Mesh:
     
     def getPointToCellDistances(self, point):
 	tmp = self.getCellCenters() - PhysicalField(point)
-##        while(Numeric.shape(tmp)[0]) == 1:
-##            tmp = Numeric.array(tmp[0])
 	import fipy.tools.array
 	return fipy.tools.array.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
-        d = self.getPointToCellDistances(point)
-        i = Numeric.argmin(d)
+        try:
+            tmp = self.getCellCenters() - point
+        except TypeError:
+            tmp = self.getCellCenters() - PhysicalField(point)
+        i = Numeric.argmin(Numeric.add.reduce((tmp * tmp), axis = 1))
 	return self.getCellsByID([i])[0]
 
     def getNearestCellID(self, point):
-        d = self.getPointToCellDistances(point)
-        return Numeric.argmin(d, axis=0)
-    
+        try:
+            tmp = self.getCellCenters() - point
+        except TypeError:
+            tmp = self.getCellCenters() - PhysicalField(point)
+        i = Numeric.argmin(Numeric.add.reduce((tmp * tmp), axis = 1))
+	return i    
 
 ## pickling
 
