@@ -41,5 +41,13 @@
  # ###################################################################
  ##
 
-"""Description of mesh geometries
-"""
+import os
+import sys
+
+if '--numMesh' in sys.argv[1:]:
+    mesh = 'numMesh'
+else:
+    mesh = 'pyMesh'
+
+__path__.insert(0, os.path.join(__path__[0], mesh))
+
