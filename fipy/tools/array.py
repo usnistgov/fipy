@@ -136,6 +136,14 @@ def crossProd(v1,v2):
 			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
     return Numeric.reshape(out, Numeric.shape(v1))
 
+def dot(a1, a2, axis = 1):
+    """
+    Jon you can remove this when you add your better version
+    I needed this for some level set stuff (and please add an axis
+    argument to yours...thanks
+    """
+    return sum((a1*a2)[:], axis)
+
 def sqrtDot(a1, a2):
     """Return array of square roots of vector dot-products
     for arrays a1 and a2 of vectors v1 and v2
