@@ -146,6 +146,13 @@ class TestGrid(TestMeshBase):
                                        (-0., 0), (-0., 0),(-0., 0),
                                        (0., -0.), (0., 0.), (0., 0.), (0., 0.),
                                        (0., -0.), (0., 0.), (0., 0.), (0., 0.)))
+
+        self.cellToCellIDs = MA.masked_values(((-1, 1, 3, -1),
+                                      (-1, 2, 4, 0),
+                                      (-1, -1, 5, 1),
+                                      (0, 4, -1, -1),
+                                      (1, 5, -1, 3),
+                                      (2, -1, -1, 4)), -1)
                                        
     def testVertices(self):
         self.assertArrayEqual(self.vertices, self.mesh.createVertices())

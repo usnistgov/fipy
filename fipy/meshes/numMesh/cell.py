@@ -132,7 +132,8 @@ class Cell:
 
 ##    def getBoundingCells(self):
 ##        boundingCells = ()
-##        for face in self.faces:
+##        faceIDs = self.mesh.getCellFaceIDs()[self.id]
+##        for faceID in faceIDs:
 ##            faceCells = face.getCells()
 ##            if len(faceCells) == 2:
 ##                if faceCells[0].getID() == self.id:

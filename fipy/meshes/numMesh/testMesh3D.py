@@ -141,6 +141,9 @@ class TestMesh3D(TestMeshBase):
         tmp = fivol.tools.array.crossProd(self.tangents1, self.faceNormals)
         self.tangents2 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
 
+        self.cellToCellIDs = MA.masked_values(((-1, -1, -1, 1, -1, -1),
+                                              (0, -1, -1, -1, -1, -1)), -1)
+
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):
         TestMesh3D.setUp(self)

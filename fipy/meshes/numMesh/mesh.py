@@ -56,8 +56,8 @@ from fivol.tools.dimensions.physicalField import PhysicalField
 
 
 # Necessary because LLNL hires stupidheads
-def MAtake(array, indices, fill = 0):
-    tmp = MA.take(array, MA.filled(indices, fill))
+def MAtake(array, indices, fill = 0, axis = 0):
+    tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
     if indices.mask() is not None and tmp.shape != indices.mask().shape:
 	mask = MA.repeat(indices.mask()[...,Numeric.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
     else:
@@ -92,6 +92,7 @@ class Mesh:
         self.calcInteriorAndExteriorFaceIDs()
         self.calcCellToFaceOrientations()
         self.calcAdjacentCellIDs()
+        self.calcCellToCellIDs()
 ##        self.calcDim()
         
     """
@@ -122,6 +123,11 @@ class Mesh:
 
     def calcAdjacentCellIDs(self):
         self.adjacentCellIDs = (MA.filled(self.faceCellIDs[:,0]), MA.filled(MA.where(self.faceCellIDs[:,1].mask(), self.faceCellIDs[:,0], self.faceCellIDs[:,1])))
+
+    def calcCellToCellIDs(self):
+        self.cellToCellIDs = MAtake(self.faceCellIDs, self.cellFaceIDs)
+        self.cellToCellIDs = MA.where(self.cellToFaceOrientations == 1, self.cellToCellIDs[:,:,1], self.cellToCellIDs[:,:,0])
+
     """
     get Topology methods
     """
@@ -172,6 +178,9 @@ class Mesh:
 
     def getNumberOfFaces(self):
         return self.numberOfFaces
+
+    def getCellToCellIDs(self):
+        return self.cellToCellIDs
 
     """
     Geometry methods

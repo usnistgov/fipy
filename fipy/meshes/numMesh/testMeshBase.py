@@ -97,6 +97,9 @@ class TestMeshBase(TestBase):
     def testTangents2(self):
         self.assertArrayWithinTolerance(self.tangents2, self.mesh.getFaceTangents2())
 
+    def testCellToCellIDs(self):
+        self.assertArrayEqual(self.cellToCellIDs, self.mesh.getCellToCellIDs())
+
     def testResult(self):
         pass
 

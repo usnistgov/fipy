@@ -156,8 +156,15 @@ class TestMesh(TestMeshBase):
                                         (0., -0.), (0., 0.), (0., 0.), (0., 0.),
                                         (0., -0.), (0., 0.), (0., 0.), (0., 0.),
                                         (0., 0), (0., 0),(0., 0)))
-
-
+        
+        self.cellToCellIDs = MA.masked_values(((-1, 1, 3, -1),
+                                               (-1, 2, 4, 0),
+                                               (-1, 6, 5, 1),
+                                               (0, 4, -1, -1),
+                                               (1, 5, -1, 3),
+                                               (2, 7, -1, 4),
+                                               (-1, 7, 2, -1),
+                                               (6, -1, 5, -1)), -1)
 class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)

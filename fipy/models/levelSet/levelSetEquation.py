@@ -81,7 +81,7 @@ class LevelSetEquation(Equation):
         zeroCells = ()
         array = self.var.getNumericValue()
         for cell in self.mesh.getCells():
-            id = cell.getId()
+            id = cell.getID()
             zeroCell = ()
             for adjacentCell in cell.getBoundingCells():                
                 adjacentId = adjacentCell.getId()
