@@ -116,6 +116,7 @@ class ConvectionCoeff(VectorFaceVariable):
         self.distanceVar = self.requires(distanceVar)
 
     def _calcValue(self):
+
         Ncells = self.mesh.getNumberOfCells()
         Nfaces = self.mesh.getNumberOfFaces()
         M = self.mesh.getMaxFacesPerCell()
@@ -144,29 +145,11 @@ class ConvectionCoeff(VectorFaceVariable):
 
         cellFaceIDs = (self.mesh.getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getCellFaceIDs().flat),dim))
         
-##        print type(cellFaceIDs.flat)
-##        print type(alpha.flat)
-        
         vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
 
         self.value = Numeric.reshape(self.value, (Nfaces, dim))
 
         self.value = -self.value / self.mesh.getFaceAreas()[:,Numeric.NewAxis]
-
-
-##    def getFaceNormals(self):    
-##        faceGrad = self.distanceVar.getGrad().getArithmeticFaceValue()
-##        faceGradMag = Numeric.where(faceGrad.getMag() > 1e-10,
-##                                    faceGrad.getMag(),
-##                                    1e-10)
-##        faceGrad = Numeric.array(faceGrad)
-
-##        ## set faceGrad zero on exteriorFaces
-##        dim = self.mesh.getDim()
-##        exteriorFaces = (self.mesh.getExteriorFaceIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
-##        Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
-        
-##        return faceGrad / faceGradMag[:,Numeric.NewAxis] 
 
 def _test(): 
     import doctest
