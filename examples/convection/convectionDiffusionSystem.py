@@ -42,65 +42,56 @@
 from meshes.grid2D import Grid2D
 from equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
 from solvers.linearCGSSolver import LinearCGSSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.cellVariable import CellVariable
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from terms.scSourceTerm import ScSourceTerm
 from viewers.grid2DGistViewer import Grid2DGistViewer
 
-d
-    valueLeft = 0.
-    valueRight = 1.
+class ConvectionDiffusionSystem:
 
-    L = parameters['L']
-    nx = parameters['nx']
-    ny = parameters['ny']
+    def __init__(self):
 
-    mesh = Grid2D(L / nx, L / ny, nx, ny)
+        self.steps = 1
+        self.valueLeft = 0.
+        self.valueRight = 1.
 
-    var = CellVariable(
-        name = "concentration",
-        mesh = mesh,
-        value = valueLeft)
+        self.mesh = Grid2D(self.L / self.nx, self.L / self.ny, self.nx, self.ny)
+        
+        self.var = CellVariable(
+            name = "concentration",
+            mesh = self.mesh,
+            value = self.valueLeft)
+        
+        eq = SteadyConvectionDiffusionScEquation(
+            var = self.var,
+            diffusionCoeff = self.diffCoeff,
+            convectionCoeff = self.convCoeff,
+            sourceCoeff = self.sourceCoeff,
+            solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
+            convectionScheme = self.convectionScheme,
+            boundaryConditions = self.getBoundaryConditions()
+            )
+        
+        self.it = Iterator((eq,))
 
-    eq = SteadyConvectionDiffusionScEquation(
-        var = var,
-        diffusionCoeff = parameters['diffusion coeff'],
-        convectionCoeff = parameters['convection coeff'],
-        sourceCoeff = parameters['source coeff'],
-        solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-        convectionScheme = parameters['convection scheme'],
-        boundaryConditions =
-        (
-        FixedValue(faces = mesh.getFacesLeft(),value = valueLeft),
-        FixedValue(faces = mesh.getFacesRight(),value = valueRight),
-        FixedFlux(faces = mesh.getFacesTop(),value = 0.),
-        FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-	)
-	)
+        self.parameters = {
+            'steps' : 1,
+            'var' : self.var,
+            'it' : self.it,
+            'mesh' : self.mesh,
+            'convection coeff' : self.convCoeff,
+            'diffusion coeff' : self.diffCoeff,
+            'source coeff' : self.sourceCoeff,
+            'L' : self.L
+            }
 
-    it = Iterator((eq,))
+
+    def getParameters(self):
+        return self.parameters
     
-    return {
-        'steps' : 1,
-        'var' : var,
-        'it' : it,
-        'mesh' : mesh,
-        'convection coeff' : convectionCoeff,
-        'diffusion coeff' : diffusionCoeff,
-        'source coeff' : sourceCoeff
-	}
-	
-def runProcedure(parameters):
-    newParameters = getParameters(parameters)
-
-    it = newParameters['it']
-    var = newParameters['var']
-    steps = newParameters['steps']
-    
-    viewer = Grid2DGistViewer(var)
-    it.timestep(steps)
-    viewer.plot()
-    raw_input()
+    def run(self):
+        viewer = Grid2DGistViewer(self.var)
+        self.it.timestep(self.steps)
+        viewer.plot()
+        raw_input()

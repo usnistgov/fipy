@@ -40,22 +40,33 @@
  ##
 
 from terms.exponentialConvectionTerm import ExponentialConvectionTerm
-import input
+from convectionDiffusionSystem import ConvectionDiffusionSystem
+from boundaryConditions.fixedValue import FixedValue
+from boundaryConditions.fixedFlux import FixedFlux
 
-def getParameters():
-    return {
-        'L' : 10.,
-        'nx' : 1000,
-        'ny' : 1,
-        'diffusion coeff' : 1.,
-        'convection coeff' : (10., 1.),
-        'tolerance' : 1e-10,
-        'source coeff' : 0.,
-        'convection scheme' : ExponentialConvectionTerm
-        }
+class Exponential1DBackSystem(ConvectionDiffusionSystem):
 
+    def __init__(self):
+        self.L = 10.
+        self.nx = 1000
+        self.ny = 1
+        self.diffCoeff = 1.
+        self.convCoeff = (-10.,0.)
+        self.sourceCoeff = 0.
+        self.convectionScheme = ExponentialConvectionTerm
+        ConvectionDiffusionSystem.__init__(self)
+
+    def getBoundaryConditions(self):
+        return (
+            FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
+            FixedValue(faces = self.mesh.getFacesRight(),value = self.valueRight),
+            FixedFlux(faces = self.mesh.getFacesTop(),value = 0.),
+            FixedFlux(faces = self.mesh.getFacesBottom(),value = 0.)
+            )
+        
 if __name__ == '__main__':
-    input.runProcedure(getParameters())
+    system = Exponential1DBackSystem()
+    system.run()
 
             
             
