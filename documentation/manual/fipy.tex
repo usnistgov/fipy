@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/27/04 {10:58:39 AM} 
+ %                                last update: 10/28/04 {3:11:56 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -211,8 +211,136 @@ reference~\cite{WarrenPolycrystal}.
 \addcontentsline{toc}{section}{Electrochemistry Examples} 
 
 The following examples exhibit various parts of a model to study
-electrochemical interfaces.  Further discussion of the models and
-algorithms can be found in references~\cite{ElPhFI} and \cite{ElPhFII}.
+electrochemical interfaces.  In a pair of papers
+\cite{ElPhFI,ElPhFII}, Guyer, Boettinger, Warren and McFadden have
+shown that an electrochemical interface can be modeled by an equation
+for the phase field \( \xi \)
+
+\[
+    \underbrace{
+	\frac{\partial \xi}{\partial t}
+	\vphantom{M_{\xi}\sum_{j=1}^{n} C_j}
+    }_{\text{transient}}
+    = 
+    \underbrace{
+	M_{\xi}\kappa_{\xi}\nabla^2 \xi
+	\vphantom{M_{\xi}\sum_{j=1}^{n} C_j}
+    }_{\text{diffusion}}
+    - 
+    \underbrace{
+	\overbrace{
+	    M_{\xi}\sum_{j=1}^{n} C_j \left[
+		p'(\xi) \Delta\mu_j^\circ
+		+ g'(\xi) W_j
+	    \right]
+	}^{\text{phase transformation}}
+	+
+	\overbrace{
+	    M_{\xi}\frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+	}^{\text{dielectric}}
+    }_{\text{source}}
+\]
+
+a set, for \( j = 2\ldots n-1 \), of diffusion equations for
+the concentrations \( C_j \) of the substitutional elements
+
+\begin{align*}
+    \underbrace{
+	\frac{\partial C_j}{\partial t}
+    }_{\text{transient}}
+    &= \underbrace{
+	D_{j}\nabla^2 C_j
+	\vphantom{\frac{\partial C_j}{\partial t}}
+    }_{\text{diffusion}} \\
+    & \qquad + \underbrace{
+	D_{j}\nabla\cdot 
+	\frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+	\left\{
+	    \overbrace{
+		\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+	    }^{\text{counter diffusion}}
+	    + 
+	    \overbrace{
+		C_n \left[
+		    p'(\xi) \Delta\mu_{jn}^{\circ}
+		    + g'(\xi) W_{jn}
+		\right] \nabla\xi
+		\vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+	    }^{\text{phase transformation}}
+	    +
+	    \overbrace{
+		C_n z_{jn} \nabla \phi
+		\vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+	    }^{\text{electromigration}}
+	\right\}
+    }_{\text{convection}}
+\end{align*}
+
+a diffusion equation for the concentration \( C_{\text{e}^{-}} \) of
+electrons
+
+\[
+    \underbrace{
+	\frac{\partial C_{\text{e}^{-}}}{\partial t}
+	\vphantom{\left\{
+	    \overbrace{
+		\left[p'(\xi)\right]
+	    }^{\text{phase transformation}}
+	\right\}}
+    }_{\text{transient}}
+    = \underbrace{
+	D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}}
+	\vphantom{\left\{
+	    \overbrace{
+		\left[p'(\xi)\right]
+	    }^{\text{phase transformation}}
+	\right\}}
+    }_{\text{diffusion}} \\
+    + \underbrace{
+	D_{\text{e}^{-}}\nabla\cdot 
+	C_{\text{e}^{-}}
+	\left\{
+	    \overbrace{
+		\left[
+		    p'(\xi) \Delta\mu_{\text{e}^{-}}^{\circ}
+		    + g'(\xi) W_{\text{e}^{-}}
+		\right] \nabla\xi
+	    }^{\text{phase transformation}}
+	    +
+	    \overbrace{
+		z_{\text{e}^{-}} \nabla \phi
+	    }^{\text{electromigration}}
+	\right\}
+    }_{\text{convection}}
+\]
+
+and Poisson's equation for the electrostatic potential \( \psi \)
+
+\[ 
+    \underbrace{
+	\nabla\cdot\left(\epsilon\nabla\psi\right) 
+    }_{\text{diffusion}}
+    +
+    \underbrace{
+	\rho
+    }_{\text{source}}
+    = 0
+\]
+
+\( M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the
+phase field gradient energy coefficient, \( p'(\xi) =
+30\xi^2\left(1-\xi\right)^2 \), \( g'(\xi) =
+2\xi\left(1-\xi\right)\left(1-2\xi\right) \), 
+
+\( D_{j} \) is the self diffusivity of the \( j^{\text{th}} \)
+component, 
+
+and \( \rho \equiv \sum_{j=1}^n z_j C_j \) is the charge.
+
+The module \verb+fipy.models.elphf+ has been developed to solve this
+coupled set of equations.  Although unresolved stiffnesses make the
+full solution intractable in \FiPy{}, we can demonstrate the use of
+various parts of the \verb+elphf+ module.
 
 \input{examples/latex/examples.elphf.input1Dphase-module}
 % \newpage
