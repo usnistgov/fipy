@@ -155,7 +155,8 @@ We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
     >>> dexp=-5
-    >>> for step in range(100):      
+    >>> ##for step in range(100):
+    >>> for step in range(1):
     ...     dt = Numeric.exp(dexp)
     ...     dt = min(10,dt)
     ...     dexp += 0.5
@@ -166,6 +167,7 @@ we update the display and output data about the progression of the solution
     ...         print 'maximum error:',diff[maxarg]
     ...         print 'element id:',maxarg
     ...         print 'value at element ',maxarg,' is ',var[maxarg]
+    ...         print 'solution value',answer[maxarg]
     ... 
     ...         viewer.plot()
 
