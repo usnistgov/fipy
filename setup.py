@@ -445,7 +445,7 @@ class efficiency_test(Command):
     def initialize_options(self):
         self.factor = 10
         self.inline = False
-        self.maximumelements = 1000
+        self.maximumelements = 10000
         self.minimumelements = 100
         self.case = None
         
