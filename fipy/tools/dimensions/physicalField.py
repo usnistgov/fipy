@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 6/7/04 {10:59:07 AM} 
+ #                                last update: 6/7/04 {6:06:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -1728,22 +1728,10 @@ del kelvin
 
 _unity = eval("m/m", _unit_table)
 
-# Some demonstration code. Run with "python -i PhysicalQuantities.py"
-# to have this available.
-
 def _test(): 
     import doctest
-    return doctest.testmod() # ditto 
-    
-def suite():
-    """
-    Return the `unittest` suite for this module
-    """
-    import doctest
-##     import unittest
-    import physicalField
-    
-    return doctest.DocTestSuite(physicalField)
+    return doctest.testmod()
     
 if __name__ == "__main__": 
     _test() 
+
