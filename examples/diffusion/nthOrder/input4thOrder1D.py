@@ -114,7 +114,7 @@ var = CellVariable(
 eq = NthOrderDiffusionEquation(
     var,
     transientCoeff = 0.0, 
-    diffusionCoeff = (1., 1.),
+    diffusionCoeff = (-1., 1.),
     solver = LinearLUSolver(tolerance = 1e-11),
     boundaryConditions=(
         FixedValue(mesh.getFacesLeft(), alpha1),
