@@ -354,6 +354,11 @@
     \raggedright\begin{description}}
     {\end{description}}
 
+\newenvironment{EpydocDescriptionShortList}[1]{%
+    \renewcommand{\and}{, }%
+    \raggedright\textbf{#1: }}
+    {}
+
 % lifted from memoir.cls
 \newcommand{\hangfrom}[1]{%
   \setbox\@tempboxa\hbox{{#1}}%
