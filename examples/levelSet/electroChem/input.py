@@ -191,9 +191,8 @@ Create an initial array,
    ...    name = 'distance variable',
    ...    mesh = mesh,
    ...    value = values,
-   ...    narrowBandWidth = 1e+10)
-   >>> distanceVar.calcDistanceFunction()
-   >>> distanceVar.setNarrowBandWidth(narrowBandWidth)
+   ...    narrowBandWidth = narrowBandWidth)
+   >>> distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
 The `distanceVariable` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -459,7 +458,9 @@ is calculated with the CFL number and the maximum extension velocity.
     $v$ to
     $v_\text{ext}$ throughout the whole domain using
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
-    
+
+The following code steps through the solution.
+
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
    ...     for step in range(numberOfSteps):

@@ -162,9 +162,6 @@ class DistanceVariable(CellVariable):
         self.cellAreas = Numeric.array(MA.array(self.mesh.getCellAreas()).filled(0))
         self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
         
-    def setNarrowBandWidth(self, narrowBandWidth):
-        self.narrowBandWidth = narrowBandWidth
-
     def extendVariable(self, extensionVariable):
         self.tmpValue = self.value.copy()
         numericExtensionVariable = Numeric.array(extensionVariable)
@@ -172,12 +169,15 @@ class DistanceVariable(CellVariable):
         extensionVariable[:] = numericExtensionVariable
         self.value = self.tmpValue
 
-    def calcDistanceFunction(self):
-        self._calcDistanceFunction()
+    def calcDistanceFunction(self, narrowBandWidth = None):
+        self._calcDistanceFunction(narrowBandWidth = narrowBandWidth)
         self.markFresh()
     
-    def _calcDistanceFunction(self, extensionVariable = None):
-            
+    def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None):
+
+        if narrowBandWidth == None:
+            narrowBandWidth = self.narrowBandWidth
+        
         ## calculate interface values
 
         cellToCellIDs = self.mesh.getCellToCellIDs()
@@ -241,7 +241,7 @@ class DistanceVariable(CellVariable):
                         if adjID not in trialIDs:
                             trialIDs.append(adjID)
 
-            if abs(self.value[id]) > self.narrowBandWidth / 2:
+            if abs(self.value[id]) > narrowBandWidth / 2:
                 break
 
         self.value = Numeric.array(self.value)
