@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/16/04 {11:51:22 AM} 
+ #                                last update: 1/18/04 {11:44:20 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -201,6 +201,7 @@ def makeIterator(mesh, fields, parameters):
  	phaseMobility = physicalField.Scale(parameters['phase']['mobility'],"MOLARVOLUME/ENERGY/TIME"),
  	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'],"LENGTH**2*ENERGY/MOLARVOLUME"),
 	solver = LinearLUSolver(),
+	solutionTolerance = 1e-8,
 	boundaryConditions=(
 # 	    FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 	    FixedValue(faces = mesh.getFacesRight(),value = 0.),
@@ -218,6 +219,7 @@ def makeIterator(mesh, fields, parameters):
 	    parameters = parameters['potential'],
 	    fields = fields,
 	    solver = LinearLUSolver(),
+	    solutionTolerance =3e-8,
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
@@ -237,6 +239,7 @@ def makeIterator(mesh, fields, parameters):
 	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
+	    solutionTolerance = 2e-8,
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
 # 		 steps = 1000
@@ -264,6 +267,7 @@ def makeIterator(mesh, fields, parameters):
 	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
+	    solutionTolerance = 2e-8,
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
 # 		 steps = 1000

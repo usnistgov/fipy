@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/16/04 {4:24:50 PM} 
+ #                                last update: 1/20/04 {10:44:51 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -74,8 +74,7 @@ class MatrixEquation(Equation):
 	self.var[:] = array#[:]
 	
 	residual = oldSweepArray.copy()
-## 	self.L.matvec(oldSweepArray,residual)
-	self.L.matvec(array,residual)
+	self.L.matvec(oldSweepArray,residual)
 	residual -= self.b 
 	self.residual = vector.sqrtDot(residual,residual)
 ##         print self,'residual: ',residual

@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/16/04 {10:54:47 AM} 
+ #                                last update: 1/20/04 {11:06:35 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,6 +44,8 @@
 """Generic equation iterator
 """
 
+import sys
+
 class Iterator:
     """Generic equation iterator
     """
@@ -57,6 +59,7 @@ class Iterator:
 	
     def sweep(self, maxSweeps = 1):
 	converged = 0
+	sweeping = 0
 	for sweep in range(maxSweeps):
 	    for equation in self.equations:
 		equation.solve()
@@ -65,8 +68,18 @@ class Iterator:
 		converged = converged and equation.isConverged()
 	    if converged:
 		break
+	    elif maxSweeps > 1:
+		if (sweep + 1) % 10 == 0:
+		    sys.stdout.write('|')
+		else:
+		    sys.stdout.write('.')
+		sys.stdout.flush()
+		sweeping = 1
 		
-	if not converged:
+	if sweeping:
+	    sys.stdout.write('\n')
+	
+	if maxSweeps > 1 and not converged:
 	    class ConvergenceError(ArithmeticError):
 		def __init__(self, equations):
 		    self.equations = equations

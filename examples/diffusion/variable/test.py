@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:21:22 AM} 
+ #                                last update: 1/20/04 {11:05:45 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -80,6 +80,7 @@ class TestVariableDiffusion(TestBase):
 
     def getTestValues(self):
 	x = self.mesh.getCellCenters()[:,0]
+	x = x.getNumericValue()
 	L = self.Lx
 	values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
 	values = Numeric.where(     x < L / 4.,                    x,           values)
@@ -92,7 +93,6 @@ class TestVariableDiffusion2x1(TestVariableDiffusion):
 	self.nx = 2
 	self.ny = 1
 	TestVariableDiffusion.setUp(self)
-
 	    
 class TestVariableDiffusion10x1(TestVariableDiffusion):
     """Variable 1D diffusion on a 1x10 mesh

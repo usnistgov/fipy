@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {12:00:40 PM} 
+ #                                last update: 1/19/04 {12:29:24 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,8 +64,8 @@ from fivol.tools.dimensions.physicalField import PhysicalField
 
 import elphf
 
-nx = 100
-dx = "0.03 nm"
+nx = 1000
+dx = "0.003 nm"
 # L = nx * dx
 
 mesh = Grid2D(
@@ -75,7 +75,7 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': "1e-12 s",
+    'time step duration': "1e-15 s",
     'substitutional molar volume': "1.8e-5 m**3/mol",
     'phase': {
 	'name': "xi",
@@ -134,11 +134,20 @@ fields['substitutionals'][1].setValue("0.249944439430068 MOLARVOLUME*mol/l", set
 
 it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
 
-viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+for field in fields['all']:
+    field.viewer = Grid2DGistViewer(var = field)
+## viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
 
-for viewer in viewers:
-    viewer.plot()
-    
+def view(fields):
+    fields['phase'].viewer.plot(minVal = 0., maxVal = 1.)
+    fields['potential'].viewer.plot()
+    for field in fields['substitutionals']:
+	field.viewer.plot(minVal = 0., maxVal = 1.)
+    for field in fields['interstitials']:
+	field.viewer.plot()
+
+view(fields)
+
 raw_input()
 
 # fudge = calibrate_profiler(10000)
@@ -152,10 +161,12 @@ raw_input()
 
 
 for i in range(50):
-    it.timestep(steps = 1, maxSweeps = 5)
+    it.timestep(steps = 1, maxSweeps = 100)
     
-    for viewer in viewers:
-	viewer.plot()
+    view(fields)
+
+##     for viewer in viewers:
+## 	viewer.plot()
 
     raw_input()
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/16/04 {12:19:45 PM} 
+ #                                last update: 1/20/04 {11:05:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -30,7 +30,7 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2001 by Konrad Hinsen, except as noted below.
+ #  Copyright 1997-2004 by Konrad Hinsen, except as noted below.
  # 
  #  Permission to use, copy, modify, and distribute this software and its
  #  documentation for any purpose and without fee is hereby granted,
@@ -385,6 +385,9 @@ class PhysicalField:
 
     def getUnit(self):
 	return self.unit
+	
+    def getNumericValue(self):
+	return self.value
 	
     # Contributed by Berthold Hoellmann
     def inBaseUnits(self):

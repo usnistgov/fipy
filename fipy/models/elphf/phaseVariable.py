@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/16/04 {12:04:50 PM} 
+ #                                last update: 1/19/04 {12:17:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,7 +40,7 @@ from fivol.variables.cellVariable import CellVariable
 
 class PhaseVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., hasOld = 1):
-	CellVariable.__init__(self, mesh, name, value, hasOld = hasOld)
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 	self.p = self**3 * (6. * self**2 - 15. * self + 10.)
 	self.g = (self * (1. - self))**2
 	

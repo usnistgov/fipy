@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/16/04 {4:47:37 PM} 
+ #                                last update: 1/20/04 {11:04:42 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -134,7 +134,7 @@ class Variable:
     def getNumericValue(self):
 	value = self.getValue()
 	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
-	    return value.value
+	    return value.getNumericValue()
 	else:
 	    return value
 	

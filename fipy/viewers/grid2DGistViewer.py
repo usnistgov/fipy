@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/16/04 {10:50:16 AM} 
+ #                                last update: 1/19/04 {12:15:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,13 +45,15 @@
 
 import Numeric
  
+import gist
+
 from fivol.viewers.gistViewer import GistViewer
 
 class Grid2DGistViewer(GistViewer):
     
-    def __init__(self, var = None, minVal=0., maxVal=1.):
+    def __init__(self, var = None, minVal=None, maxVal=None):
         self.var = var
-        GistViewer.__init__(self, minVal, maxVal)
+        GistViewer.__init__(self, minVal, maxVal, title = self.var.name)
 
     def setVar(self,var):
         self.var = var
@@ -59,3 +61,4 @@ class Grid2DGistViewer(GistViewer):
     def getArray(self):
         nx,ny = self.var.getMesh().getShape()
         return Numeric.reshape(self.var.getNumericValue(),(ny,nx))
+

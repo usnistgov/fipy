@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/16/04 {10:58:39 AM} 
+ #                                last update: 1/20/04 {8:37:08 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,26 +52,41 @@ class GistViewer:
     
     id=0
     
-    def __init__(self, minVal=0., maxVal=1.):
+    def __init__(self, minVal=None, maxVal=None, title = ''):
 	self.minVal = minVal
         self.maxVal = maxVal
+	self.title = title
         self.id = GistViewer.id 
 	GistViewer.id += 1
     
-    def plot(self):
+    def plot(self, minVal=None, maxVal=None):
+	array = self.getArray()
+	
         gist.window(self.id, wait= 1)
+	gist.pltitle(self.title)
         gist.animate(1)
         gist.palette('heat.gp')
 	gist.gridxy(1)
-	array = self.getArray()
-	gist.pli(array)
-##         gist.pli(array, cmin = self.minVal, cmax = self.maxVal)
-##         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
-	min = Numeric.minimum.reduce(array.flat)
-	max = Numeric.maximum.reduce(array.flat)
-	if max == min:
-	    max = min + 0.01
-	colorbar.color_bar(min, max, ncol=240, zlabel='fred')
+	
+	if minVal is None:
+	    if self.minVal is None:
+		minVal = Numeric.minimum.reduce(array.flat)
+	    else:
+		minVal = self.minVal
+	if maxVal is None:
+	    if self.maxVal is None:
+		maxVal = Numeric.minimum.reduce(array.flat)
+	    else:
+		maxVal = self.maxVal
+
+## 	min = Numeric.minimum.reduce(array.flat)
+## 	max = Numeric.minimum.reduce(array.flat)
+	if maxVal == minVal:
+	    maxVal = minVal + 0.01
+## 	gist.pli(array)
+        gist.pli(array, cmin = minVal, cmax = maxVal)
+	colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel='fred')
+## 	colorbar.color_bar(minz = min, maxz = max, ncol=240, zlabel='fred')
         gist.fma()
 
     def getArray(self):
