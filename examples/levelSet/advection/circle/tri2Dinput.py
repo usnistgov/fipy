@@ -78,7 +78,7 @@ import Numeric
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.viewers.pyxviewer import PyxViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
