@@ -67,6 +67,7 @@ class MatrixEquation(Equation):
 ##	coeffScale = self.terms[0].getCoeffScale()
 ##        print self.__class__.__name__,coeffScale
 ##        print
+##   gobeldegook
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
 	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,self.terms[0].getCoeffScale(),varScale)
