@@ -75,9 +75,7 @@ class SourceVariable(CellVariable):
         beta = (1. - halfAngleSq) / (1. + halfAngleSq)
         dbeta = N * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
         
-        self.value = correctionTerm
-        self.value += (self.parameters['alpha']**2 * self.parameters['anisotropy'] * dbeta *
-                       self.phase.getGradMag() * (1. + c2 * beta))
+        self.value = correctionTerm + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGradMag() * (1. + c2 * beta)
         
     
 

@@ -47,6 +47,7 @@ from terms.scSourceTerm import ScSourceTerm
 from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable
 from transientVariable import TransientVariable
+from examples.phase.phase.phasehalfAngleVariable import PhaseHalfAngleVariable
 import Numeric
 
 class ThetaEquation(MatrixEquation):
@@ -57,7 +58,12 @@ class ThetaEquation(MatrixEquation):
         
         transientCoeff = TransientVariable(phase = phase, theta = var, parameters = parameters)
         diffusionCoeff = diffusionVariable(phase = phase, theta = var, parameters = parameters)
-        sourceCoeff = SourceVariable()
+        halfAngleVariable = PhaseHalfAngleVariable(phase = phase, theta = theta, parameters = parameters)
+        
+        sourceCoeff = SourceVariable(phase = phase,
+                                     theta = var,
+                                     diffCoeff = diffusionCOeff,
+                                     halfAngleVariable = halfAngleVariable)
         	
         transientTerm = TransientTerm(transientCoeff, mesh),
         diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff, mesh, boundaryConditions)
