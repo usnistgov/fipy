@@ -53,13 +53,17 @@ class DiffusionEquation(MatrixEquation):
                  var,
                  transientCoeff = 1.,
                  diffusionCoeff = 1.,
-                 solver='default_solver',
-                 boundaryConditions=()):
+                 solver = 'default_solver',
+                 boundaryConditions = (),
+                 otherTerms = ()):
+        
         mesh = var.getMesh()
+
 	terms = (
 	    TransientTerm(transientCoeff,mesh),
 	    ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
-            )
+            ) + otherTerms
+
 	MatrixEquation.__init__(
             self,
             var,
