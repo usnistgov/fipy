@@ -61,70 +61,28 @@ class LevelSetEquation(Equation):
             solver = None)
 
     def solve(self):
-        zeroCellIDs = self.getZeroCellIDs()
-##        self.setZeroValues(zeroCells)
+        self.zeroNeighbours = self.getZeroNeighbors()
+        self.numberOfZeroNeighbors = self.getNumberOfZeroNeighbors()
+        self.zeroCellIDs = self.getZeroCellIDs()
 
-        ## find bounding cells to the evaluatedCells
-##        boundingCells = self.getBoundingCells(zeroCells)
-
-##        while(len(boundingCells) != 0):
-
-##        ## get MinimumCell
-##            minimumCell = self.getMinimumCell(boundingCells)
-
-##        ## set value of minimum cell
-##            self.setCellValue(minimumCell)
-
-##        ## add the extra cell
-##            boundingCells, zeroCells = self.updateBoundingCells(minimumCell, boundingCells, zeroCells)
-
-    def getZeroCellIDs(self):
+    def getZeroNeighbors(self):
         values = self.var.getNumericValue()
         tmp = MAtake(values, self.mesh.getCellToCellIDs())* values[:,Numeric.NewAxis]
-        tmp = MA.where(tmp < 0, Numeric.ones(tmp.shape), Numeric.zeros(tmp.shape))
-        tmp = MA.sum(tmp, 1)
-        return Numeric.nonzero(tmp)
-        
-    def getGrad(self, cell1, cell2):
-        dAP = fivol.tools.vector.sqrtdot(cell1.getCenter() - cell2.getCenter())
-        return abs(self.varOld.getValue(cell1) - sellf.varOld.getValue(cell2)) / dAP 
+        return MA.where(tmp < 0, Numeric.ones(tmp.shape), Numeric.zeros(tmp.shape))
 
-    def setZeroCellValues(self, zeroCells):
+    def getNumberOfZeroNeighbors(self):
+        return MA.sum(self.zeroNeighbours, 1)
+
+    def getZeroCellIDs(self):
+        return Numeric.nonzero(self.numberOfZeroNeighbors)
+
+    def getZeroValues(self):
         self.varOld = self.var.copy()
-        cellDistances = sel.mesh.getCellDistances()
-        for cell in zeroCells:
-            neighbours = ()
-            for neighbourCell in cell1.getBoundingCells():
-                if neighbourCell in zeroCells:
-                    neighbourCells += (neighbourCell,)
-            
-            value = varOld.getValue(cell)
-
-            if len(neighbours) == 1:
-                value /= self.getGrad(cell, neighbourCell[0])
-            elif len(neighbours) == 2:
-                value /= sqrt(self.getGrad(cell, neighbourCell[0])**2 - self.getGrad(cell, neighbourCell[1])**2)
-            else:
-                raise Exception("Error")
-
-            var.setValue(value, cell)
-
-##    def getBoundingCells(self, zeroCells):
-##        boundingCells = ()
-##        for cell in cells:
-##            boundingCell = ()
-##            if cell !in zeroCells:
-##                for adjacentCell in cell.getAdjacentCells():
-##                    if adjacentCell in zeroCells:
-##                        boundingCell = (cell,)
-##            boundingCells += boundingCell
-
-##    def getMinimumCell(cells, var):
-##        minVal = var(cells[0].getId())
-##        for cell in cells[1:]:
-##            minVal = min(minVal, var(cell.getId()))
-
-##        return minVal
-
-
-
+        values = self.varOld.getNumericValue()
+        cellToCellDistances = MAtake(self.mesh.getCellDistances(), self.mesh.getCellFaceIDs())
+        adjacentValues = MAtake(values, self.mesh.getCellToCellIDs())
+        d = MA.absolute(values[:,Numeric.NewAxis] * self.zeroNeighbours * cellToCellDistances / (values[:,Numeric.NewAxis] - adjacentValues))
+        d = MA.sort(d, axis = 1)[:,0]
+        sign = values / MA.absolute(values)
+        return MA.where(d.mask(), values, sign * d)
+        
