@@ -47,7 +47,7 @@ class VectorCellToFaceVariable(VectorFaceVariable):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 
-    def calcValue(self):
+    def _calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	inline.optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)
