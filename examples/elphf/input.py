@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/19/04 {12:29:24 AM} 
+ #                                last update: 1/20/04 {4:26:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,12 +59,13 @@ from fivol.profiler.profiler import calibrate_profiler
 
 from fivol.meshes.grid2D import Grid2D
 from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.viewers.gist1DViewer import Gist1DViewer
 
 from fivol.tools.dimensions.physicalField import PhysicalField
 
 import elphf
 
-nx = 1000
+nx = 100
 dx = "0.003 nm"
 # L = nx * dx
 
@@ -75,7 +76,7 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': "1e-15 s",
+    'time step duration': "1e-12 s",
     'substitutional molar volume': "1.8e-5 m**3/mol",
     'phase': {
 	'name': "xi",
@@ -132,21 +133,29 @@ fields['interstitials'][0].setValue("0.000111111503177394 MOLARVOLUME*mol/l", se
 fields['substitutionals'][0].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
 fields['substitutionals'][1].setValue("0.249944439430068 MOLARVOLUME*mol/l", setCells)
 
-it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
+phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+potentialViewer = Gist1DViewer(vars = (fields['potential'],))
+concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']), ylog = 1)
+    
+it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters, viewers = (phaseViewer, potentialViewer, concViewer))
 
-for field in fields['all']:
-    field.viewer = Grid2DGistViewer(var = field)
+## for field in fields['all']:
+##     field.viewer = Grid2DGistViewer(var = field)
 ## viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
 
 def view(fields):
     fields['phase'].viewer.plot(minVal = 0., maxVal = 1.)
     fields['potential'].viewer.plot()
-    for field in fields['substitutionals']:
-	field.viewer.plot(minVal = 0., maxVal = 1.)
-    for field in fields['interstitials']:
-	field.viewer.plot()
+    concViewer.plot(minVal = 0., maxVal = 1.)
+##     for field in fields['substitutionals']:
+## 	field.viewer.plot(minVal = 0., maxVal = 1.)
+##     for field in fields['interstitials']:
+## 	field.viewer.plot()
 
-view(fields)
+phaseViewer.plot()
+potentialViewer.plot()
+concViewer.plot()
+## view(fields)
 
 raw_input()
 
@@ -161,9 +170,9 @@ raw_input()
 
 
 for i in range(50):
-    it.timestep(steps = 1, maxSweeps = 100)
+    it.timestep(steps = 1, maxSweeps = 200)
     
-    view(fields)
+##     view(fields)
 
 ##     for viewer in viewers:
 ## 	viewer.plot()
@@ -172,5 +181,5 @@ for i in range(50):
     
 # profile.stop()
 	
-raw_input()
+## raw_input()
 

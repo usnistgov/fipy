@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:54:10 AM} 
+ #                                last update: 1/20/04 {3:20:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,6 +59,7 @@ class PhaseEquation(MatrixEquation):
                  phaseMobility = 1.,
 		 phaseGradientEnergy = 1.,
                  solver='default_solver',
+		 relaxation = 0.,
 		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
 		     
@@ -98,5 +99,6 @@ class PhaseEquation(MatrixEquation):
             var = phase,
             terms = terms,
             solver = solver,
+	    relaxation = relaxation,
             solutionTolerance = solutionTolerance)
 

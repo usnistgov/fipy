@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {4:28:42 PM} 
+ #                                last update: 1/20/04 {3:19:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,6 +60,7 @@ class PoissonEquation(MatrixEquation):
 		 parameters,
 		 fields = {},
                  solver='default_solver',
+		 relaxation = 0.,
 		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
 		     
@@ -96,5 +97,6 @@ class PoissonEquation(MatrixEquation):
             var = potential,
             terms = terms,
             solver = solver,
+	    relaxation = relaxation,
             solutionTolerance = solutionTolerance)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "equation.py"
  #                                    created: 11/10/03 {2:45:34 PM} 
- #                                last update: 1/16/04 {10:56:58 AM} 
+ #                                last update: 1/20/04 {3:22:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,12 +47,14 @@ class Equation:
         var,
         terms,
         solver,
+	relaxation = 0.,
 	solutionTolerance = 1e-4):
 
 	self.var = var
         self.terms = terms
 	self.solver = solver
 	
+	self.relaxation = relaxation
 	self.solutionTolerance = solutionTolerance
 	self.converged = 1
 	self.residual = 0

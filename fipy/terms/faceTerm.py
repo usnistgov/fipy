@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {4:24:38 PM} 
+ #                                last update: 1/20/04 {2:28:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -82,6 +82,11 @@ class FaceTerm(Term):
         ## implicit
         if self.weight.has_key('implicit'):
 	    
+## 	    print self
+## 	    print "coeff:", self.coeff
+## 	    print "cell 1 diag:",self.weight['implicit']['cell 1 diag']
+## 	    print "cell 2 diag:",self.weight['implicit']['cell 2 diag']
+	    
 	    L.update_add_something(self.implicit['cell 1 diag'][:self.interiorN]/coeffScale,id1,id1)
 	    L.update_add_something(self.implicit['cell 1 offdiag'][:self.interiorN]/coeffScale,id1,id2)
 	    L.update_add_something(self.implicit['cell 2 offdiag'][:self.interiorN]/coeffScale,id2,id1)
@@ -97,6 +102,9 @@ class FaceTerm(Term):
 		## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
                 fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
+## 	    print "L:", L
+## 	    raw_input()
+	    
 		
         ## explicit
         if self.weight.has_key('explicit'):

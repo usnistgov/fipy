@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/18/04 {11:44:20 AM} 
+ #                                last update: 1/20/04 {4:27:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@ from __future__ import nested_scopes
 
 from fivol.boundaryConditions.fixedValue import FixedValue
 from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.iterators.iterator import Iterator
+## from fivol.iterators.iterator import Iterator
 from fivol.solvers.linearCGSSolver import LinearCGSSolver
 from fivol.solvers.linearLUSolver import LinearLUSolver
 from fivol.solvers.linearGMRESSolver import LinearGMRESSolver
@@ -57,6 +57,7 @@ from phaseEquation import PhaseEquation
 from poissonEquation import PoissonEquation
 from substitutionalEquation import SubstitutionalEquation
 from interstitialEquation import InterstitialEquation
+from elphfIterator import ElPhFIterator
 
 def addScales(mesh, parameters):
     
@@ -184,7 +185,8 @@ def makeFields(mesh, parameters):
     return fields
 
 
-def makeIterator(mesh, fields, parameters):
+def makeIterator(mesh, fields, parameters, viewers = None):
+    relaxation = 0.5
     timeStepDuration = physicalField.Scale(parameters['time step duration'], "TIME")
 ##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
     
@@ -201,7 +203,8 @@ def makeIterator(mesh, fields, parameters):
  	phaseMobility = physicalField.Scale(parameters['phase']['mobility'],"MOLARVOLUME/ENERGY/TIME"),
  	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'],"LENGTH**2*ENERGY/MOLARVOLUME"),
 	solver = LinearLUSolver(),
-	solutionTolerance = 1e-8,
+	relaxation = relaxation,
+	solutionTolerance = 1e-3,
 	boundaryConditions=(
 # 	    FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 	    FixedValue(faces = mesh.getFacesRight(),value = 0.),
@@ -219,7 +222,8 @@ def makeIterator(mesh, fields, parameters):
 	    parameters = parameters['potential'],
 	    fields = fields,
 	    solver = LinearLUSolver(),
-	    solutionTolerance =3e-8,
+	    relaxation = relaxation,
+	    solutionTolerance =1e-3,
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
 # 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
@@ -239,7 +243,8 @@ def makeIterator(mesh, fields, parameters):
 	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
-	    solutionTolerance = 2e-8,
+	    relaxation = relaxation,
+	    solutionTolerance = 1e-3,
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
 # 		 steps = 1000
@@ -267,7 +272,8 @@ def makeIterator(mesh, fields, parameters):
 	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
-	    solutionTolerance = 2e-8,
+	    relaxation = relaxation,
+	    solutionTolerance = 1e-3,
 # 	    solver = LinearGMRESSolver(
 # 		 tolerance = 1.e-15, 
 # 		 steps = 1000
@@ -287,6 +293,6 @@ def makeIterator(mesh, fields, parameters):
 	)
 	equations += (eq,)
 	
-    return Iterator(equations = equations)
+    return ElPhFIterator(equations = equations, viewers = viewers)
 
 

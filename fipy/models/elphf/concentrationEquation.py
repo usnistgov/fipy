@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:49:24 AM} 
+ #                                last update: 1/20/04 {3:19:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,15 +49,13 @@ from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from fivol.terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 
 class ConcentrationEquation(MatrixEquation):
-    """
-    Diffusion equation is implicit.
-    """    
     def __init__(self,
                  Cj,
 		 timeStepDuration,
 		 fields = {},
 		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
+		 relaxation = 0.,
 		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
 		     
@@ -85,6 +83,7 @@ class ConcentrationEquation(MatrixEquation):
             var = Cj,
             terms = terms,
             solver = solver,
+	    relaxation = relaxation,
             solutionTolerance = solutionTolerance)
 	    
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/20/04 {11:06:35 AM} 
+ #                                last update: 1/20/04 {4:06:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -57,28 +57,42 @@ class Iterator:
 	"""
         self.equations = equations
 	
-    def sweep(self, maxSweeps = 1):
+    def sweep(self):
+	for equation in self.equations:
+	    equation.solve()
+	converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
+	for equation in self.equations:
+	    converged = converged and equation.isConverged()
+	return converged
+	
+## 	if converged:
+## 	    break
+## 	elif maxSweeps > 1 and self.sweepCallback is not None:
+## 	    self.sweepCallback(self.equations)
+## ## 		print '\n'
+## ## 		for equation in self.equations:
+## ## 		    print str(equation) + ' has residual = ' + str(equation.getResidual())
+## ## 		print '\n'
+## ## 		equation.getVar().viewer.plot()
+## 
+## ## 		if (sweep + 1) % 10 == 0:
+## ## 		    sys.stdout.write('|')
+## ## 		else:
+## ## 		    sys.stdout.write('.')
+## ## 		sys.stdout.flush()
+## 	    sweeping = 1
+	    
+
+	
+    def sweeps(self, maxSweeps = 1):
 	converged = 0
 	sweeping = 0
 	for sweep in range(maxSweeps):
-	    for equation in self.equations:
-		equation.solve()
-	    converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
-	    for equation in self.equations:
-		converged = converged and equation.isConverged()
+	    converged = self.sweep()
+	    
 	    if converged:
 		break
-	    elif maxSweeps > 1:
-		if (sweep + 1) % 10 == 0:
-		    sys.stdout.write('|')
-		else:
-		    sys.stdout.write('.')
-		sys.stdout.flush()
-		sweeping = 1
 		
-	if sweeping:
-	    sys.stdout.write('\n')
-	
 	if maxSweeps > 1 and not converged:
 	    class ConvergenceError(ArithmeticError):
 		def __init__(self, equations):
@@ -110,5 +124,5 @@ class Iterator:
 	converged = 0
 	for step in range(steps):
 	    self.advanceTimeStep()
-	    self.sweep(maxSweeps)
+	    self.sweeps(maxSweeps)
 

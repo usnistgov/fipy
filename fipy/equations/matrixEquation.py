@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/20/04 {10:44:51 AM} 
+ #                                last update: 1/20/04 {3:25:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -71,7 +71,7 @@ class MatrixEquation(Equation):
 	for term in self.terms:
 	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,coeffScale,varScale)
 	self.solver.solve(self.L,array,self.b)
-	self.var[:] = array#[:]
+	self.var[:] = array * (1. - self.relaxation) + oldSweepArray * self.relaxation #[:]
 	
 	residual = oldSweepArray.copy()
 	self.L.matvec(oldSweepArray,residual)

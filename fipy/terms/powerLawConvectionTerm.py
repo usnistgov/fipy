@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/16/04 {11:42:44 AM} 
+ #                                last update: 1/20/04 {4:39:13 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -49,17 +49,24 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	def calcValue(self):
 	    eps = 1e-3
 	    P  = self.P.getNumericValue()
-
+	    
 	    P = Numeric.where(abs(P) < eps, eps, P)
 	    
-	    alpha = Numeric.where(                    P > 10.,                   (P - 1.) / P,   0.5)
+## 	    print "P:", P
+	    
+	    alpha = Numeric.where(                    P > 10.,                     (P - 1.) / P,   0.5)
 
-	    tmp = (1. - P/10.)
+	    tmp = (1. - P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = Numeric.where(   (10. >= P) and (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp)/P, alpha)
+	    alpha = Numeric.where(   (10. >= P) and (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
 
-	    tmp = (1. + P/10.)
+	    tmp = (1. + P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = Numeric.where((eps  >  P) and (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.)/P, alpha)
+	    alpha = Numeric.where((eps  >  P) and (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
+	    
+	    alpha = Numeric.where(                   P < -10.,                          -1. / P, alpha)
+	    
+## 	    print "alpha:", alpha
+## 	    raw_input()
 	    
 	    self.value = PhysicalField(value = alpha)
