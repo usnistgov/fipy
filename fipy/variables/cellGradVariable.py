@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 4/1/05 {11:02:49 AM} 
+ #                                last update: 4/2/05 {1:58:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,7 +86,7 @@ class CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        from fipy.meshes.numMesh.mesh import MAtake
+        from fipy.tools.array import MAtake
 	contributions = MAtake(self.faceGradientContributions[:],ids.flat)
 
         contributions = array.reshape(contributions, (N, M, self.mesh.getDim()))

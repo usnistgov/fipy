@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:50:27 PM} 
+ #                                last update: 4/1/05 {7:50:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,8 +44,6 @@
 
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-
-import fipy.variables.testInterpolation
 
 def _suite():
     return LateImportDocTestSuite(
