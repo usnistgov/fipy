@@ -76,7 +76,7 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
