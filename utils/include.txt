@@ -29,3 +29,8 @@
 .. |htmlExamples/| raw:: html
 
    the Examples portion of the <a href="../manual/fipy.pdf">Manual</a>
+
+.. |htmlExternal| raw:: html
+
+   http://www.nist.gov/cgi-bin/exit_nist.cgi?url= 
+

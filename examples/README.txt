@@ -4,9 +4,8 @@ Examples
 
 .. note::
 
-   Any given "Module example.something.input" can be found in the file::
-
-    $ examples/something/input.py
+   Any given "Module example.something.input" can be found in the file
+   "``examples/something/input.py``".
 
 These examples can be used in at least four ways:
 
@@ -40,20 +39,20 @@ These examples can be used in at least four ways:
 
      The examples shown in this manual have been written with particular
      emphasis on serving as both documentation and as comprehensive tests
-     of the |FiPy| framework.  As explained at the end of
+     of the FiPy framework.  As explained at the end of
      ``examples/diffusion/steadyState/mesh1D.py``, your own scripts can be
      much more succint, if you wish, and include only the text that follows
-     the ``>>>`` and ``...`` prompts shown in these examples.
+     the "``>>>``" and "``...``" prompts shown in these examples.
 
-
+     
 In addition to those presented in this manual, there are dozens of other
-examples (all with "input" in their title), that demonstrate other uses of
-|FiPy|. If these examples do not help you construct your own problem scripts,
-please `contact us`_.
+files in the ``examples/`` directory (all with "``input``" in their title),
+that demonstrate other uses of FiPy.  If these examples do not help you
+construct your own problem scripts, please `contact us`_.
 
 .. include:: ../utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-.. _Python:         http://www.python.org/
+.. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _doctest:        http://www.python.org/doc/current/lib/module-doctest.html
 .. _contact us:     mailto:fipy@nist.gov
