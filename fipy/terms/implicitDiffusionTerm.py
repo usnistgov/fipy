@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 9/3/04 {10:35:46 PM} 
+ #                                last update: 12/6/04 {4:54:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,8 +39,31 @@
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
-    def __init__(self, diffCoeff, mesh, boundaryConditions):
-	weight = {
+    """
+	>>> from fipy.meshes.grid2D import Grid2D
+	>>> mesh = Grid2D(nx = 2)
+	
+	>>> from fipy.variables.cellVariable import CellVariable
+	>>> var = CellVariable(mesh = mesh)
+	
+	>>> term = ImplicitDiffusionTerm()
+	
+	>>> from fipy.boundaryConditions.fixedValue import FixedValue
+	>>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0), 
+	...     FixedValue(faces = mesh.getFacesRight(), value = 1))
+	>>> term.solve(var = var, boundaryConditions = bcs)
+	>>> print var
+	[ 0.25, 0.75,]
+	
+	>>> eq = term + ImplicitDiffusionTerm()
+	>>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 3), 
+	...     FixedValue(faces = mesh.getFacesRight(), value = 2))
+	>>> eq.solve(var = var, boundaryConditions = bcs)
+	>>> print var
+	[ 2.75, 2.25,]
+    """
+    def getWeight(self):
+	return {
 	    'implicit':{
 		'cell 1 diag':     1, 
 		'cell 1 offdiag': -1, 
@@ -48,8 +71,11 @@ class ImplicitDiffusionTerm(DiffusionTerm):
 		'cell 2 offdiag': -1
 	    }
 	}
-	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions, weight)
-	 
-	 
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/3/04 {10:35:27 PM} 
+ #                                last update: 11/9/04 {2:11:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,15 +113,33 @@ class SparseMatrix:
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
+             
+            >>> print L + 0
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---   
+            
+            >>> print L + 3
+            Traceback (most recent call last):
+            ...
+            AttributeError: 'int' object has no attribute 'getMatrix'
         """
-	L = self.matrix.copy()
-	L.shift(1, other.getMatrix())
-	return SparseMatrix(matrix = L)
+	if other is 0:
+	    return self
+	else:
+	    L = self.matrix.copy()
+	    L.shift(1, other.getMatrix())
+	    return SparseMatrix(matrix = L)
+	
+    __radd__ = __add__
 
     def __sub__(self, other):
-	L = self.matrix.copy()
-	L.shift(-1, other.getMatrix())
-	return SparseMatrix(matrix = L)
+	if other is 0:
+	    return -self
+	else:
+	    L = self.matrix.copy()
+	    L.shift(-1, other.getMatrix())
+	    return SparseMatrix(matrix = L)
 
     def __mul__(self, other):
         """

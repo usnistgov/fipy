@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 9/3/04 {10:33:29 PM} 
+ #                                last update: 12/6/04 {4:47:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,26 +46,69 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
-    def __init__(self,mesh, weight):
-	self.mesh = mesh
-	self.weight = weight
-	self.calcCoeffScale()
+    def __init__(self):
+	self.coeff = None
         
-    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
+    def buildMatrix(self, var, boundaryConditions, oldArray, dt):
 	pass
 	
-    def getMesh(self):
-	return self.mesh
-	
-    def getCoeffScale(self):
-##        self.calcCoeffScale()
-        return self.coeffScale
-
-    def calcCoeffScale(self):
-        if isinstance(self.coeff, PhysicalField) or isinstance(self.coeff, Variable):
-	    self.coeffScale = PhysicalField(1, self.coeff.getUnit())
-	else:
-	    self.coeffScale = 1
-    
     def getFigureOfMerit(self):
 	return None
+
+    def getResidual(self, matrix, var, RHSvector):
+	Lx = matrix * var[:]
+	
+	residual = Lx - RHSvector
+	
+	denom = max(abs(Lx))
+	if denom == 0:
+	    denom = max(abs(RHSvector))
+	if denom == 0:
+	    denom = 1.
+	    
+	residual /= denom
+		
+	return abs(residual)
+
+    def isConverged(self):
+	return self.converged
+
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
+	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, oldArray = var.getOld(), dt = dt)
+	residual = self.getResidual(matrix, var, RHSvector)
+	if solver is None:
+	    from fipy.solvers.linearPCGSolver import LinearPCGSolver
+	    solver = LinearPCGSolver()
+	    
+	array = var.getNumericValue()
+	solver.solve(matrix, array, RHSvector)
+	var[:] = array
+	
+	self.residual = residual
+	self.converged = Numeric.alltrue(self.residual < solutionTolerance)
+
+    def __add__(self, other):
+	from fipy.terms.binaryTerm import AdditionTerm
+	return AdditionTerm(term1 = self, term2 = other)
+	    
+    __radd__ = __add__
+    
+    def __sub__(self, other):
+	from fipy.terms.binaryTerm import SubtractionTerm
+	return SubtractionTerm(term1 = self, term2 = other)
+
+    def __rsub__(self, other):
+	from fipy.terms.binaryTerm import SubtractionTerm
+	return SubtractionTerm(term1 = other, term2 = self)
+
+    def calcCoeff(self, mesh):
+	pass
+	
+    def getCoeff(self, mesh):
+	if self.coeff is None:
+	    self.calcCoeff(mesh)
+	return self.coeff
+	
+    def getWeight(self):
+	pass
+	    
