@@ -2,7 +2,7 @@
 Future Work
 -----------
 
-Release Goals 0.2
+Release Goals 1.0
 -----------------
 
 - Documentation:
@@ -82,6 +82,10 @@ Release Goals 0.2
       * DiffPack
       * FebLego?
 
+- Efficiency
+
+  * Cache mesh calculations
+
 Long term Goals
 ---------------
 
@@ -131,6 +135,29 @@ Long term Goals
   * Write a paper on FiPy.
   * Better documentation in Reference.pdf
 
+- Efficiency
+
+  * Automatic inlining
+  * Caching/building sparse matrices?
+  * NthOrderDiffusionTerm 
+
+    - recursive stencil vs. recursive matrix?
+    - special case lower orders?
+    - compare/merge n=2 to ImplicitDiffusionTerm
+
+  * Track down general inefficiencies
+
+    - len(get.xxx()) vs. getNumXXX()
+    - array conversions
+
+  * SciPy linear algebra vs. PySparse
+
+    - solution efficiency
+    - matrix manipulation efficiency
+  
+  * NumArray vs Numeric
+
+    - encapsulate array class
 
 .. _SourceForge CVS repository:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
 .. _Steve:                            mailto:slanger@nist.gov
