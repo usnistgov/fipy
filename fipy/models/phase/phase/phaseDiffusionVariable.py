@@ -54,8 +54,8 @@ class PhaseDiffusionVariable(FaceVariable):
 	alpha = self.parameters['alpha']
 	N = self.parameters['symmetry']
 	c2 = self.parameters['anisotropy']
-	dphi = self.phase.getFaceGrad()
-	thetaFace = self.theta.getFaceValue()
+        dphi = self.phase.getFaceGrad()[:,:]
+        thetaFace = self.theta.getFaceValue()[:]
 
         z = Numeric.arctan2(dphi[:,1],dphi[:,0])
 	z = N * (z - thetaFace)
@@ -64,5 +64,5 @@ class PhaseDiffusionVariable(FaceVariable):
 	z = (1. - z) / (1. + z)
 	z = (1.+ c2 * z)
 
-        self.value = alpha**2 * z[:] * z[:]
+        self.value = alpha**2 * z * z
 

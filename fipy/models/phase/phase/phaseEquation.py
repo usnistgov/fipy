@@ -46,6 +46,7 @@ from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
 from phaseDiffusionVariable import PhaseDiffusionVariable
+from spSourceVariable import SpSourceVariable
 import Numeric
 
 class PhaseEquation(MatrixEquation):
@@ -77,7 +78,8 @@ class PhaseEquation(MatrixEquation):
 	    boundaryConditions = boundaryConditions)
 	
         self.spTerm = SpSourceTerm(
-	    sourceCoeff = self.getSpSourceCoeff(),
+##	    sourceCoeff = self.getSpSourceCoeff(),
+            sourceCoeff = SpSourceVariable(theta = self.thetaOld, mPhi = self.mPhi, phase = self.var, parameters = self.parameters),
 	    mesh = mesh)
 	    
         self.scTerm = ScSourceTerm(

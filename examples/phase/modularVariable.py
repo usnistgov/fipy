@@ -38,8 +38,8 @@ from variables.cellVariable import CellVariable
 import Numeric
 
 class ModularVariable(CellVariable):
-    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, viewer = None, hasOld = 1):
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, scaling = scaling, unit = unit, viewer = viewer, hasOld = hasOld)
+    def __init__(self, mesh, name = '', value=0., scaling = None, unit = None, hasOld = 1):
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, scaling = scaling, unit = unit, hasOld = hasOld)
 
         self.mod = lambda array, pi=Numeric.pi: (array + 3. * pi) % (2 * pi) - pi
 
