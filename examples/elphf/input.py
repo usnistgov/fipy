@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/03 {10:51:16 AM} 
+ #                                last update: 12/10/03 {11:24:24 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -143,14 +143,14 @@ eq2 = ConcentrationEquation(
     parameters = parameters
 )
 
-it = Iterator((eq1,eq2))
+it = Iterator(equations = (eq1,eq2), maxSweeps = 100)
 
 var1.plot()
 var2.plot()
 
 raw_input()
 
-for i in range(100):
+for i in range(1):
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
     it.iterate(1,10000.)

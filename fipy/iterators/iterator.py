@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 12/8/03 {5:23:32 PM} 
+ #                                last update: 12/10/03 {11:24:46 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,14 +48,15 @@ class Iterator:
     """Generic equation iterator
     """
     
-    def __init__(self,equations):
+    def __init__(self,equations,maxSweeps = 1):
 	"""Arguments:
 	    
 	    'equations' -- list or tuple of equations to iterate over
 	"""
         self.equations = equations
+	self.maxSweeps = maxSweeps
 	
-    def iterate(self,steps,timeStep = 1.):
+    def iterate(self,steps,stepDuration = 1.):
 	"""Iterate the solution.
 	
 	Arguments:
@@ -68,13 +69,18 @@ class Iterator:
 	necessary initialization, the equations are 'solve()' ed, then the
 	'postSolve()' methods are called to do any necessary cleanup.
 	"""
-	for i in range(steps):
+	for step in range(steps):
             for equation in self.equations:
                 var = equation.getVar()
                 var.updateOld()
-	    for equation in self.equations:
-		equation.preSolve()	
-	    for equation in self.equations:
-		equation.solve(timeStep)
-	    for equation in self.equations:
-		equation.postSolve()	    
+	    for sweep in range(self.maxSweeps):
+		for equation in self.equations:
+		    equation.preSolve()	
+		for equation in self.equations:
+		    equation.solve(stepDuration)
+		converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
+		for equation in self.equations:
+		    equation.postSolve()
+		    converged = converged and equation.isConverged()
+		if converged:
+		    break

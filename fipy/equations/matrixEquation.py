@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 12/9/03 {1:48:00 PM} 
+                               last update: 12/10/03 {11:22:09 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -43,6 +43,7 @@ they have been modified.
 from equation import Equation
 import Numeric
 import spmatrix
+import meshes.tools
 
 
 class MatrixEquation(Equation):
@@ -59,6 +60,7 @@ class MatrixEquation(Equation):
 
     def solve(self,dt):
         array=self.var.getValue()
+	arrayOld = array.copy()
 	N = len(array)
 	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
@@ -66,4 +68,11 @@ class MatrixEquation(Equation):
 	    term.calculateCoeffGeom(dt)
 	    term.buildMatrix(self.L,array,self.b)
 	self.solver.solve(self.L,array,self.b)
+	
+	residual = arrayOld.copy()
+	self.L.matvec(arrayOld,residual)
+	residual -= self.b 
+	residual = meshes.tools.sqrtDot(residual,residual)
+	print self, "residual: ", residual
+	self.converged = residual < self.solutionTolerance
 	

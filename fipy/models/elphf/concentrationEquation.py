@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/9/03 {4:08:06 PM} 
+                               last update: 12/10/03 {11:25:57 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -86,5 +86,6 @@ class ConcentrationEquation(MatrixEquation):
             self,
             var,
             terms,
-            solver)
+            solver,
+	    solutionTolerance = 1e-11)
 
