@@ -58,6 +58,7 @@ class LinearPCGSolver(Solver):
 ## 	print 'x:',x
 ## 	print 'b:',b
 ## 	raw_input('end output')
+    
 	A = L.getMatrix().to_sss()
 
 	Assor=precon.ssor(A)

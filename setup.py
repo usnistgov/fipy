@@ -125,7 +125,9 @@ class build_docs (Command):
     def run (self):
         modules = ['fipy',
                    'examples/diffusion',
-                   'examples/convection']
+                   'examples/convection',
+                   'examples/phase/anisotropy',
+                   'examples/phase/impingement']
 	if self.latex:
              
 	    self._buildTexFiles(modules = modules)

@@ -80,7 +80,7 @@ class AddOverFacesVariable(CellVariable):
         orientations = Numeric.array(orientations)
         
         self.value = fipy.tools.array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
-        
+
     def _calcValueInline(self):
 
         NCells = self.mesh.getNumberOfCells()

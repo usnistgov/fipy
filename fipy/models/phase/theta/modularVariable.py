@@ -58,8 +58,12 @@ class ModularVariable(CellVariable):
     def getPhysicalFieldClass(self):
 	return ModPhysicalField
 
-    def updateOld(self):
+    def takeMod(self):
         self.value.value = self.value.mod(self.value)
+        self.markFresh()
+        
+    def updateOld(self):
+        self.takeMod()
         if self.old != None:
 	    self.old.setValue(self.value.value)
 

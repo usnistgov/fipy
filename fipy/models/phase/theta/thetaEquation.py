@@ -75,6 +75,7 @@ class ThetaEquation(MatrixEquation):
         	
         transientTerm = TransientTerm(transientCoeff, mesh)
         diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff, mesh, boundaryConditions)
+        
         scSourceTerm = ScSourceTerm(sourceCoeff, mesh)
         
 	terms = (transientTerm, diffusionTerm, scSourceTerm)

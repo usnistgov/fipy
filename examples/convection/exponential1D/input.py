@@ -62,9 +62,10 @@ and coefficients given by:
 
      $$ D = 1, \;\; \\vec{u} = (10, 0) \;\; \\text{and} \;\; S_c = 0 $$     
 
-The `SteadyConvectionDiffusionScEquation` object is used to create the
-equation.  It needs to be passed a convection term instantiator as
-follows:
+The coefficients are represented by `diffCoeff` and `convCoeff` in
+the python code. The `SteadyConvectionDiffusionScEquation` object is
+used to create the equation.  It needs to be passed a convection term
+instantiator as follows:
 
    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
    >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation

@@ -43,11 +43,88 @@
 
 """
 
+In this example we solve a coupled phase and temperature equation to
+model solidification and eventually dendritic growth. Dendritic growth will
+not be observed with this small test system. If you wish to see dendritic growth
+reset the following parameters:
+
+   >>> numberOfCells = 200
+   >>> steps = 10000
+   >>> radius = Length / 80.
+
+The following equations are solved, phase equation:
+
+.. raw:: latex
+
+    $$ \\tau_{\\phi} \\frac{\\partial \\phi}{\\partial t} = \\alpha^2 \\nabla^2 \\phi + \\phi ( 1 - \\phi ) m_2 ( \\phi , T) - 2 s \\phi | \\nabla \\theta | - \\epsilon^2 \\phi | \\nabla \\theta |^2 $$
+
+where
+
+.. raw:: latex
+
+    $$ m_2(\\phi, T) = \\phi - \\frac{1}{2} - \\frac{ \\kappa_1 }{ \\pi } \\arctan \\left( \\kappa_2 T \\right) $$
+    
+and the temperature equation is given by:
+
+.. raw:: latex
+
+    $$ \\frac{\\partial T}{\\partial t} = D_T \\nabla^2 T + \\frac{\\partial \\phi}{\\partial t} $$
+
+Further details of the numerical method for this problem can be found
+in Extending Phase Field Models of Solidification to Polycrystalline
+Materials, J.A. Warren et al., Acta Materialia, 51 (2003) 6035-6058.
+Here the phase and temperature equations are solved with an explicit
+and implicit technique respectively.
+
+The parameters for these equations are given in `phaseParameters` and
+`temperatureParameters`. The variable `theta` represents the
+orientation of the crystal. Here it is constant and thus does not
+affect the solution. The `phase` variable is 0 for a liquid and 1 for
+a solid.  Here we build an example `phaseVar` invoking with a zero
+value,
+
+   >>> phaseVar = CellVariable(
+   ...     name = 'PhaseField',
+   ...     mesh = mesh,
+   ...     value = 0.,
+   ...     hasOld = 1)
+
+The `hasOld` flag keeps the old value of the variable. This is
+necessary for a transient solution. In this example we wish to set up
+an interior region that is solid. A value of 1 if given to the `phase`
+variable on a patch defined by the method `circleCells`. This method
+is passed to `mesh.getCells(filter = circleCells)` which filters out
+the required cells.
+
+   >>> def circleCells(cell,L = Length):
+   ...     x = cell.getCenter()
+   ...     r = radius
+   ...     c = (Length / 2., Length / 2.)
+   ...     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+   ...         return 1
+   ...     else:
+   ...         return 0
+   >>> interiorCells = mesh.getCells(filter = circleCells)           
+   >>> phaseVar.setValue(1.,interiorCells)
+
+The `phaseEquation` requires a `mPhi` instantiator. Here we use
+`Type2MPhiVariable` as outlined in the above equations.` To compare
+with the test result the problem is iterated for `steps = 10` time
+steps.
+
+   >>> steps = 10
    >>> for i in range(steps):
    ...     it.timestep()
+
+The solution is compared with test data. The test data was created
+with a FORTRAN code written by Ryo Kobayshi for phase field
+modeling. The following code opens the file `test.gz` extracts the
+data and compares it with the `phase` variable.
+
    >>> import os
    >>> testFile = 'test.gz'
-   >>> filestream=os.popen('gunzip --fast -c < ' + testFile,'r')
+   >>> import examples.phase.anisotropy
+   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0], testFile),'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
@@ -58,6 +135,7 @@
    1
    
 """
+
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable
 from fipy.models.phase.phase.phaseEquation import PhaseEquation
@@ -99,6 +177,7 @@ nx = numberOfCells
 ny = numberOfCells
 dx = Length / nx
 dy = Length / ny
+radius = Length / 4.
 
 mesh = Grid2D(dx,dy,nx,ny)
 
@@ -135,10 +214,10 @@ temperatureFields = {
     'phase' : phase
     }
         
-def circleCells(cell,L = Length):
+def circleCells(cell):
     x = cell.getCenter()
-    r = L / 4.
-    c = (L / 2., L / 2.)
+    r = radius
+    c = (Length / 2., Length / 2.)
     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
         return 1
     else:
@@ -166,16 +245,12 @@ temperatureEq = TemperatureEquation(
     tolerance = 1.e-15, 
     steps = 1000
     ),
-    boundaryConditions=(
-    FixedFlux(mesh.getExteriorFaces(), 0.),
-    ),
+    boundaryConditions=(FixedFlux(mesh.getExteriorFaces(), 0.),),
     parameters = temperatureParameters,
     fields = temperatureFields
     )
 
 it = Iterator((phaseEq, temperatureEq))
-
-
 
 if __name__ == '__main__':
     
@@ -184,8 +259,9 @@ if __name__ == '__main__':
 
     for i in range(steps):
         it.timestep()
-        phaseViewer.plot()
-        temperatureViewer.plot()
+        if i%10 == 0:
+            phaseViewer.plot()
+            temperatureViewer.plot()
 
     raw_input('finished')
 
