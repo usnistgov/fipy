@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 7/26/04 {11:53:27 AM} 
+ #                                last update: 8/26/04 {5:25:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -173,6 +173,13 @@ class CellVariable(Variable):
     def resetToOld(self):
 	if self.old is not None:
 	    self.setValue(self.old.value)
+	    
+    def remesh(self, mesh):
+	self.value = Numeric.array(self.getValue(points = mesh.getCellCenters()))
+	if self.old is not None:
+	    self.old.remesh(mesh)
+	self.mesh = mesh
+	self.markFresh()
 
 ##pickling
             
