@@ -628,7 +628,13 @@ class Variable:
 		
     def dot(self, other):
 	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)
-	    
+
+    def min(self):
+        return self.getUnaryOperatorVariable(lambda a: array._min(a), parentClass = Variable)
+        
+    def max(self):
+        return self.getUnaryOperatorVariable(lambda a: array._max(a), parentClass = Variable)
+        
     def transpose(self):
 	if self.transposeVar is None:
 	    from transposeVariable import TransposeVariable

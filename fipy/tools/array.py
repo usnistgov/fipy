@@ -224,3 +224,22 @@ def allclose(first, second, atol = 1.e-5, rtol = 1.e-8):
     else:
 	return MA.allclose(first, second, atol = atol, rtol = rtol)
 
+def _min(arr):
+    arr = Numeric.array(arr)
+    return arr[Numeric.argmin(arr)]
+
+def min(arr):
+    if _isPhysical(arr):
+        return arr.min()
+    else:
+        return _min(arr)
+
+def _max(arr):
+    arr = Numeric.array(arr)
+    return arr[Numeric.argmax(arr)]
+
+def max(arr):
+    if _isPhysical(arr):
+        return arr.max()
+    else:
+        return _max(arr)

@@ -43,7 +43,7 @@
  ##
 
 import Numeric
- 
+import fipy.tools.array 
 from fipy.viewers.gistViewer import GistViewer
 
 import gist
@@ -67,10 +67,12 @@ class Gist2DViewer(GistViewer):
           - `grid`: Whether to show the grid lines in the plot. Default is 1. 
                     Use 0 to switch them off.
         """
-        if len(list(vars)) != 1:
-            raise IndexError, "A 2D Gist viewer can only display one Variable"
-            
+
         GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
+
+        if len(self.vars) != 1:
+            raise IndexError, "A 2D Gist viewer can only display one Variable"
+        
         self.palette = palette
         self.grid = grid
 
@@ -80,7 +82,7 @@ class Gist2DViewer(GistViewer):
         gist.pltitle(self.title)
         gist.palette(self.palette)
         gist.gridxy(self.grid)
-        
+
         if self.limits != None:
             gist.limits(self.getLimit('xmin'), self.getLimit('xmax'), self.getLimit('ymin'), self.getLimit('ymax'))
 
@@ -91,14 +93,14 @@ class Gist2DViewer(GistViewer):
         maxVal = self.getLimit('datamax')
         
         if minVal == 'e':
-            minVal = min(self.vars[0])
+            minVal = fipy.tools.array.min(self.vars[0][:])
             for var in self.vars[1:]:
-                minVal = min(minVal, min(var))
+                minVal = min(minVal, fipy.tools.array.min(var[:]))
 
         if maxVal == 'e':
-            maxVal = max(self.vars[0])
+            maxVal = fipy.tools.array.max(self.vars[0][:])
             for var in self.vars[1:]:
-                maxVal = max(maxVal, max(var))
+                maxVal = max(maxVal, fipy.tools.array.max(var[:]))
 
         if maxVal == minVal:
             maxVal = minVal + 1e-10
