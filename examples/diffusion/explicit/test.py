@@ -59,7 +59,6 @@ class TestExplicitDiffusion(TestBase):
 	self.tolerance = parameters['tolerance']
         self.mesh = parameters['mesh']
         self.var = parameters['var']
-        self.eq = parameters['eq']
         self.it = parameters['it']
         self.valueLeft = parameters['valueLeft']
         self.valueRight = parameters['valueRight']

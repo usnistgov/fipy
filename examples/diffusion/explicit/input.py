@@ -40,7 +40,7 @@
  ##
 
 from meshes.grid2D import Grid2D
-from equations.diffusionEquation import DiffusionEquation
+from equations.explicitDiffusionEquation import ExplicitDiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
@@ -61,7 +61,7 @@ def getParameters(nx ,ny):
         mesh = mesh,
         value = valueLeft)
 
-    eq = DiffusionEquation(
+    eq = ExplicitDiffusionEquation(
         var,
         transientCoeff = 1. / timeStep, 
         diffusionCoeff = 1.,
@@ -87,7 +87,6 @@ def getParameters(nx ,ny):
         'steps' : 10000,
         'mesh' : mesh,
         'var' : var,
-        'eq' : eq,
         'it' : it
         }
         
