@@ -157,12 +157,19 @@ class DistanceVariable(CellVariable):
         self.markStale()
         self.narrowBandWidth = narrowBandWidth
 
+        self.cellToCellDistances = Numeric.array(MA.array(self.mesh.getCellToCellDistances()).filled(0))
+        self.cellNormals = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(0))       
+        self.cellAreas = Numeric.array(MA.array(self.mesh.getCellAreas()).filled(0))
+        self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
+        
     def setNarrowBandWidth(self, narrowBandWidth):
         self.narrowBandWidth = narrowBandWidth
 
     def extendVariable(self, extensionVariable):
         self.tmpValue = self.value.copy()
-        self._calcDistanceFunction(extensionVariable)
+        numericExtensionVariable = Numeric.array(extensionVariable)
+        self._calcDistanceFunction(numericExtensionVariable)
+        extensionVariable[:] = numericExtensionVariable
         self.value = self.tmpValue
 
     def calcDistanceFunction(self):
@@ -242,25 +249,26 @@ class DistanceVariable(CellVariable):
         
 
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
-        adjIDs = self.mesh.getCellToCellIDs()[id]
-        adjEvaluatedFlag = MAtake(evaluatedFlag, adjIDs)
-        adjValues = MA.masked_array(MAtake(self.value, adjIDs), MA.logical_not(adjEvaluatedFlag))
-        indices = MA.argsort(abs(adjValues))
+        adjIDs = self.cellToCellIDs[id]
+        adjEvaluatedFlag = Numeric.take(evaluatedFlag, adjIDs)
+        adjValues = Numeric.take(self.value, adjIDs)
+        adjValues = Numeric.where(adjEvaluatedFlag, adjValues, 1e+10)
+        indices = Numeric.argsort(abs(adjValues))
         sign = (self.value[id] > 0) * 2 - 1
-        d0 = self.mesh.getCellToCellDistances()[id, indices[0]]
+        d0 = self.cellToCellDistances[id, indices[0]]
         v0 = self.value[adjIDs[indices[0]]]
         e0 = extensionVariable[adjIDs[indices[0]]]
                               
-        N = Numeric.sum(Numeric.logical_not(adjValues.mask()))
+        N = Numeric.sum(adjEvaluatedFlag)
 
         if N == 0:
             raise Error 
         elif N == 1:
             return v0 + sign * d0, e0
         else:
-            d1 = self.mesh.getCellToCellDistances()[id, indices[1]]
-            n0 = self.mesh.getCellNormals()[id, indices[0]]
-            n1 = self.mesh.getCellNormals()[id, indices[1]]
+            d1 = self.cellToCellDistances[id, indices[1]]
+            n0 = self.cellNormals[id, indices[0]]
+            n1 = self.cellNormals[id, indices[1]]
             v1 = self.value[adjIDs[indices[1]]]
 
             dotProd = d0 * d1 * Numeric.dot(n0, n1)
@@ -276,8 +284,8 @@ class DistanceVariable(CellVariable):
             ## extension variable
 
             e1 = extensionVariable[adjIDs[indices[1]]]
-            a0 = self.mesh.getCellAreas()[id, indices[0]]
-            a1 = self.mesh.getCellAreas()[id, indices[1]]
+            a0 = self.cellAreas[id, indices[0]]
+            a1 = self.cellAreas[id, indices[1]]
             
             if self.value[id] > 0:
                 phi = max(dis, 0)

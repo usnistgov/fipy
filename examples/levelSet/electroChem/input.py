@@ -185,7 +185,7 @@ Create an initial array,
    >>> for cell in electrolyteCells:
    ...     values[cell.getID()] = 1
 
-   >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize / 3
+   >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable        
    >>> distanceVar = DistanceVariable(
    ...    name = 'distance variable',
@@ -439,12 +439,6 @@ viewers.
    ...            dpi = 100,
    ...            resolution = resolution),
    ...        Grid2DGistViewer(
-   ...            var = extensionVelocityVariable,
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution),
-   ...        Grid2DGistViewer(
    ...            var = acceleratorVar.getInterfaceVar(),
    ...            grid = 0,
    ...            limits = (0, cells, 0, cells),
@@ -466,24 +460,16 @@ is calculated with the CFL number and the maximum extension velocity.
     $v_\text{ext}$ throughout the whole domain using
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
     
-   >>> def getDiffData(file, step, var):
-   ...     import fipy.tools.dump as dump
-   ...     vin = dump.read(file + str(step) + '.gz')
-   ...     v = abs(var - vin)
-   ...     argmax = Numeric.argmax(v)
-   ...     print 'step',step,' argmax ',argmax,' difference ',v[argmax],' value ',var[argmax]
-
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
    ...     for step in range(numberOfSteps):
    ...         print 'step',step
    ...
    ...         if step % levelSetUpdateFrequency == 0:
-   ...             print 'updateing distance function'
    ...             distanceVar.calcDistanceFunction()
    ...
    ...         extensionVelocityVariable.setValue(Numeric.array(depositionRateVariable))
-
+   ...
    ...         argmax = Numeric.argmax(extensionVelocityVariable)
    ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
    ...
