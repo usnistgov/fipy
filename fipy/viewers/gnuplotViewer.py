@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/19/04 {2:58:28 PM} { 2:45:36 PM}
+ #                                last update: 11/16/04 {10:15:25 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,6 +63,8 @@ Different style script demos_ are available at the Gnuplot_ site.
 
 """
 __docformat__ = 'restructuredtext'
+
+import os
 
 import Numeric
 import Gnuplot
@@ -125,7 +127,7 @@ class GnuplotViewer:
         (nx, ny) = array.shape
         x = Numeric.arange(ny) * self.dy
         y = Numeric.arange(nx) * self.dx
-        array = Numeric.transpose(array)
+##         array = Numeric.transpose(array)
 
         ## issue the gnuplot commands
 
@@ -157,11 +159,22 @@ class GnuplotViewer:
                 
         if fileName is None:
             g.splot(Gnuplot.GridData(array, x, y))
-        elif '.pdf' == fileName[-4:]:
-            g('set terminal pdf')
-            g('set output "' + fileName + '"')
-            g.splot(Gnuplot.GridData(array, x, y))
-        elif '.ps' == fileName[-3:]:
-            
-            g.splot(Gnuplot.GridData(array, x, y))
-            g.hardcopy(fileName, enhanced=1, color=1, fontsize = 10)
+	else:
+	    ext = os.path.splitext(fileName)[1]
+	    
+	    if '.pdf' == ext:
+		g('set terminal pdf')
+		g('set output "' + fileName + '"')
+		g.splot(Gnuplot.GridData(array, x, y))
+	    elif '.ps' == ext:
+		
+		g.splot(Gnuplot.GridData(array, x, y))
+		g.hardcopy(fileName, enhanced=1, color=1, fontsize = 10)
+		
+# PNG doesn't work: terminal "png" does not support continuous colors.
+
+## 	    elif '.png' == ext:
+## 		g('set terminal png')
+## 		g('set palette color maxcolors 256')
+## 		g('set output "' + fileName + '"')
+## 		g.splot(Gnuplot.GridData(array, x, y))

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/19/04 {2:53:21 PM} 
+ #                                last update: 11/22/04 {9:48:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,6 +49,7 @@ import Numeric
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.tools import vector
 
 class FixedFlux(BoundaryCondition):
     def __init__(self,faces,value):
@@ -60,19 +61,24 @@ class FixedFlux(BoundaryCondition):
 	for i in range(N):
 	    self.contribution[i] = self.value * self.faces[i].getArea()
 	
-    def getContribution(self,cell1dia,cell1off):
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Leave **L** unchanged and add gradient to **b**
 	
 	:Parameters:
-	    
+	  - `Ncells`:   Size of **b**-vector
+	  - `MaxFaces`: *unused*
 	  - `cell1dia`: *unused*
 	  - `cell1off`: *unused*
+	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
-	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
+	bb = Numeric.zeros((Ncells,),'d')
+	vector.putAdd(bb, self.adjacentCellIds, self.contribution / coeffScale)
+	
+	return (0, bb)
         
     def getDerivative(self, order):
 	if order == 1:
-	    return FixedValue(self.faces, self.value) 
+	    return FixedValue(self.faces, self.value)
 	else:
 	    return BoundaryCondition.getDerivative(self, order)
 

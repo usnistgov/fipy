@@ -61,6 +61,7 @@ Merge developments from trunk::
 
     $ cvs tag -r HEAD somePointOnTrunk
     $ cvs up -j somePointOnTrunk
+    $ python setup.py test
     $ cvs ci -m "merged main trunk"
     $ cvs tag merge-somePointOnTrunk_to_refactoring
 
@@ -68,6 +69,7 @@ Refactoring complete::
 
     $ cd ../trunk
     $ cvs up -j branch-refactoring_etc
+    $ python setup.py test
     $ cvs ci -m "merged refactoring, etc."
     $ cvs tag merge-refactoring_etc
 

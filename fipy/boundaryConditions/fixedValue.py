@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/19/04 {2:51:49 PM}
+ #                                last update: 11/23/04 {12:45:17 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,25 +45,41 @@
 """
 __docformat__ = 'restructuredtext'
 
+import Numeric
+
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import array
+from fipy.tools import vector
+from fipy.tools.sparseMatrix import SparseMatrix
+
 
 class FixedValue(BoundaryCondition):
-    def getContribution(self,cell1dia,cell1off):
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Set boundary equal to value.
 	
-	A `tuple` of (`LL`, `bb`, `ids`) is calculated, to be added to the 
-	equation's (**L**, **b**) matrices at the cells specified by `ids`.
+	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
+	Term's (**L**, **b**) matrices.
 	
 	:Parameters:
 	    
+	  - `Ncells`:   Size of matrices
+	  - `MaxFaces`: bandwidth of **L**
 	  - `cell1dia`: contribution to adjacent cell diagonal by this 
 	    exterior face	    
 	  - `cell1off`: contribution to **b**-vector by this exterior face
+	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
-	return (array.take(cell1dia[:],self.faceIds),
-		array.take(-cell1off[:],self.faceIds)*self.value,
-		self.adjacentCellIds)
+	
+	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
+	LL.addAt(array.take(cell1dia[:],self.faceIds) / coeffScale, self.adjacentCellIds, self.adjacentCellIds)
+	
+	bb = Numeric.zeros((Ncells,),'d')
+	vector.putAdd(bb, self.adjacentCellIds, array.take(-cell1off[:],self.faceIds) * self.getValue() / coeffScale)
+
+	return (LL, bb)
+	
+    def getValue(self):
+	return self.value
 
 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 10/19/04 {12:18:57 PM} 
+ #                                last update: 11/23/04 {1:50:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -194,11 +194,6 @@ class NthOrderDiffusionTerm(Term):
 
 	self.order = len(coeffs) * 2
 
-##        if globalOrder is None:
-##            self.globalOrder = self.order
-##        else:
-##            self.globalOrder = globalOrder
-        
 	if len(coeffs) > 0:
 	    self.coeff = coeffs[0] * mesh.getFaceAreas() / mesh.getCellDistances()
             ## Added to change the sign so that all terms are added to
@@ -212,11 +207,12 @@ class NthOrderDiffusionTerm(Term):
 	self.boundaryConditions = []
         lowerBoundaryConditions = []
         for bc in boundaryConditions:
-            bcDeriv = bc.getDerivative(self.order - 2)
+	    lowerBoundaryConditions.append(bc)
+	    
+	    bcDeriv = bc.getDerivative(self.order - 2)
 	    if bcDeriv:
 		self.boundaryConditions.append(bcDeriv)
-	    else:
-		lowerBoundaryConditions.append(bc)
+		
             
 	Term.__init__(self, weight = None, mesh = mesh)
 	
@@ -243,18 +239,9 @@ class NthOrderDiffusionTerm(Term):
         interiorCoeff1 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
         interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
 
-##        if self.globalOrder != self.order:
-##            vols = Numeric.array(mesh.getCellVolumes())
-##            contributions = contributions / vols[:,Numeric.NewAxis]
-##            interiorCoeff0 = interiorCoeff0 / Numeric.take(vols, interiorFaceCellIDs[:,0])
-##            interiorCoeff1 = interiorCoeff1 / Numeric.take(vols, interiorFaceCellIDs[:,1])
-
 	contributions = array.sum(contributions, 1)	
 	coefficientMatrix.addAtDiagonal(contributions)
         
-##	interiorCoeff1 = -array.take(Numeric.array(self.coeff), mesh.getInteriorFaceIDs())
-##	interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
-	
 	coefficientMatrix.addAt(interiorCoeff0, interiorFaceCellIDs[:,0], interiorFaceCellIDs[:,1])
 	coefficientMatrix.addAt(interiorCoeff1, interiorFaceCellIDs[:,1], interiorFaceCellIDs[:,0])
 	
@@ -264,17 +251,17 @@ class NthOrderDiffusionTerm(Term):
         N = self.getMesh().getNumberOfCells()
         volumes = self.mesh.getCellVolumes()
         if self.order > 0:
-           
-            coefficientMatrix = self.getCoefficientMatrix()
 
-            boundaryB = Numeric.zeros(N,'d')
-                
+	    coefficientMatrix = self.getCoefficientMatrix()
+	    boundaryB = 0
+	    
+	    M = self.getMesh().getMaxFacesPerCell()
+	    
             for boundaryCondition in self.boundaryConditions:
-                LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-                
-                coefficientMatrix.addAt(LL / coeffScale,ids,ids)
-                fipy.tools.vector.putAdd(boundaryB, ids, bb/(coeffScale * varScale))
-                
+		LL, bb = boundaryCondition.buildMatrix(N, M, self.coeff,-self.coeff, coeffScale)
+		
+		coefficientMatrix += LL
+		boundaryB += bb / varScale
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(oldArray, coeffScale, varScale)
 
@@ -289,37 +276,14 @@ class NthOrderDiffusionTerm(Term):
             if iseven:
                 boundaryB = -boundaryB
 
-##            print "order",self.order
-##            print "coefficientMatrix",coefficientMatrix
-##            print "L",L
-##            print "lowerOrderL",lowerOrderL
-
             b = coefficientMatrix * lowerOrderb + boundaryB
-
-##            print "order",self.order
-##            print "coefficientMatrix",coefficientMatrix
-##            print "L",L
-##            print "lowerOrderL",lowerOrderL
-
-##            if self.globalOrder != self.order:
-##                volumes = self.mesh.getCellVolumes()
-##                b = b / volumes
-##                L = SparseMatrix(size = N).addAtDiagonal(1. / volumes ) * L
-    
         else:
             N = self.getMesh().getNumberOfCells()
             L = SparseMatrix(size = N)
             L.addAtDiagonal(volumes)
         
-##            L = SparseIdentityMatrix(size = N)
             b = Numeric.zeros((N),'d')
             
-##        for boundaryCondition in self.boundaryConditions:
-##            LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-	    
-##            self.L.addAt(LL / coeffScale,ids,ids)
-##            fipy.tools.vector.putAdd(self.b, ids, bb/(coeffScale * varScale))
-
         return (L, b)
         
 def _test(): 
