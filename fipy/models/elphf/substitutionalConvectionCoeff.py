@@ -4,7 +4,7 @@
  # 
  #  FILE: "substitutionalConvectionCoeff.py"
  #                                    created: 12/9/03 {3:32:09 PM} 
- #                                last update: 12/9/03 {4:12:44 PM} 
+ #                                last update: 12/10/03 {10:28:56 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -48,4 +48,5 @@ class SubstitutionalConvectionCoeff(VectorFaceVariable):
     def getValue(self):
 	num = self.Dj * self.substitutionalSum.getFaceGrad() 
 	den = (1. - self.substitutionalSum.getFaceValue())
-	return num / Numeric.reshape(den,(len(num),1))
+	coef = num / Numeric.reshape(den,(len(num),1))
+	return coef

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/03 {2:40:20 PM} 
+ #                                last update: 12/10/03 {10:02:15 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -72,7 +72,7 @@ class TestSteadyStateDiffusion(TestBase):
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,
-            viewer = 'None')
+            viewer = None)
 
         self.eq = DiffusionEquation(
             self.var,

@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/9/03 {4:22:50 PM} 
+                               last update: 12/10/03 {9:57:36 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,8 +45,15 @@ import meshes.tools
 import Numeric
 
 class ConvectionTerm(FaceTerm):
-    def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = 'None'):
-	weight = {'implicit':{'cell 1 diag': -0.5, 'cell 1 offdiag': 0.5, 'cell 2 diag': 0.5, 'cell 2 offdiag': -0.5}}
+    def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
+	weight = {
+	    'implicit':{
+		'cell 1 diag': -0.5, 
+		'cell 1 offdiag': 0.5, 
+		'cell 2 diag': 0.5, 
+		'cell 2 offdiag': -0.5
+	    }
+	}
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
 	if type(convCoeff) in [type(1), type(1.), type(Numeric.array((1,)))]:
 	    self.convCoeff = Numeric.array(convCoeff)
@@ -61,7 +68,7 @@ class ConvectionTerm(FaceTerm):
     def calculateCoeffGeom(self,dt):
 	areas = self.mesh.getOrientedAreaProjections()
 	self.coeff = Numeric.sum(self.convCoeff * areas, 1)
-	if self.diffusionTerm == 'None':
+	if self.diffusionTerm == None:
 	    diffCoeff = 1e-20
 	else:
 	    diffCoeff = self.diffusionTerm.getCoeff()

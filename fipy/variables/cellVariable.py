@@ -4,7 +4,7 @@
  # 
  #  FILE: "CellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/9/03 {4:01:09 PM} 
+ #                                last update: 12/10/03 {10:27:52 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -37,32 +37,37 @@ import Numeric
 import meshes.tools
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., viewer = 'None', hasOld = True):
+    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = True):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
 	array[:] = value
 	
-	if viewer != 'None':
+	if viewer is not None:
 	    self.viewer = viewer(var = self)
 	else:
-	    self.viewer = 'None'
+	    self.viewer = None
 	    
 	Variable.__init__(self, mesh, name = name, value = array)
 	
 	if hasOld:
 	    self.old = self.copy()
 	else:
-	    self.old = 'None'
+	    self.old = None
 
     def copy(self):
+	if self.viewer is None:
+	    viewer = None
+	else:
+	    viewer = self.viewer.__class__
+	    
 	return CellVariable(
 	    mesh = self.mesh, 
 	    name = self.name + "_old", 
 	    value = self.getValue(),
-	    viewer = self.viewer.__class__,
+	    viewer = viewer,
 	    hasOld = False)
 
     def plot(self):
-	if self.viewer != 'None':
+	if self.viewer != None:
 	    self.viewer.plot()
 	
     def getGridArray(self):
@@ -118,7 +123,7 @@ class CellVariable(Variable):
 	dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	N = (Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
-	normals = self.mesh.getFaceNormals() 
+	normals = self.mesh.getFaceNormals().copy()
 	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
@@ -139,12 +144,12 @@ class CellVariable(Variable):
 	return normals * N + tangents1 * T1 + tangents2 * T2
 
     def getOld(self):
-	if self.old == 'None':
+	if self.old == None:
 	    return self
 	else:
 	    return self.old
 
     def updateOld(self):
-	if self.old != 'None':
+	if self.old != None:
 	    self.old.setValue(self.value)
 	    

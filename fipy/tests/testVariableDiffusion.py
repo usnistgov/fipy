@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/9/03 {2:24:49 PM} 
+ #                                last update: 12/10/03 {9:57:13 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -91,7 +91,7 @@ class TestVariableDiffusion(TestBase):
             name = "diffusion",
             mesh = self.mesh,
 	    value = self.valueLeft,
-            viewer = 'None')
+            viewer = None)
 
         def diffFunc(x, L = self.Lx):
             if x[0] < L / 4.:

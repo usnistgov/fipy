@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 12/9/03 {4:23:56 PM} 
+                               last update: 12/10/03 {9:57:40 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ import Numeric
 
 class Grid2DGistViewer(GistViewer):
     
-    def __init__(self, var = 'None', minVal=0., maxVal=1.):
+    def __init__(self, var = None, minVal=0., maxVal=1.):
         self.var = var
         GistViewer.__init__(self, minVal, maxVal)
 

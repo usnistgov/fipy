@@ -4,7 +4,7 @@
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 12/9/03 {4:45:53 PM} 
+ #                                last update: 12/10/03 {10:50:46 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -44,5 +44,5 @@ class SubstitutionalSumVariable(CellVariable):
     def getValue(self):
 	self.value[:] = 0.
 	for component in self.substitutionals:
-	    self.value = self.value + component.getOld()
+	    self.value = self.value + component #.getOld()
 	return self.value

@@ -5,7 +5,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 12/9/03 {4:57:30 PM} 
+                               last update: 12/10/03 {12:03:21 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -51,9 +51,6 @@ class CellTerm(Term):
     def buildMatrix(self,L,array,b):
 	N = len(array)
         weight = self.weight
-# 	print "array: ", array
-# 	print "coeff: ", self.coeff
-# 	print "weight: ", weight['old value']
 	b += array*self.coeff*weight['old value']
 	b += Numeric.ones([N])*self.coeff*weight['b vector']
 	L.update_add_pyarray(Numeric.ones([N])*self.coeff*weight['new value'])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/9/03 {2:25:19 PM} 
+ #                                last update: 12/10/03 {9:57:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -72,7 +72,7 @@ class TestSteadyConvectionDiffusionSc(TestBase):
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,
-            viewer = 'None')
+            viewer = None)
 
 	self.eq = SteadyConvectionDiffusionScEquation(
 	    var = self.var,

@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/9/03 {5:08:30 PM} 
+ #                                last update: 12/10/03 {10:11:50 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,9 +61,7 @@ class FaceTerm(Term):
 	
         ## implicit
         if self.weight.has_key('implicit'):
-	    print self.__class__
 	    weight = self.weight['implicit']
-	    print weight
  	    cell1dia = self.coeff*weight['cell 1 diag']
 	    cell1off = self.coeff*weight['cell 1 offdiag']
 	    cell2dia = self.coeff*weight['cell 2 diag']

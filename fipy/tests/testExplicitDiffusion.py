@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 12/9/03 {2:25:34 PM} 
+ #                                last update: 12/10/03 {9:56:55 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -72,7 +72,7 @@ class TestExplicitDiffusion(TestBase):
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,
-            viewer = 'None')
+            viewer = None)
 
         self.eq = ExplicitDiffusionEquation(
             self.var,

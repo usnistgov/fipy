@@ -6,7 +6,7 @@
  # 
  #  FILE: "testAdvection.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/03 {2:25:22 PM} 
+ #                                last update: 12/10/03 {9:56:51 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -74,7 +74,7 @@ class TestAdvection(TestBase):
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,
-            viewer = 'None')
+            viewer = None)
 
 	self.eq = AdvectionEquation(
 	    var = self.var,

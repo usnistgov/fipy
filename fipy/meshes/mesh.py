@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/5/03 {9:45:56 PM} 
+ #                                last update: 12/10/03 {9:57:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,10 +58,10 @@ class Mesh:
 	
 	self.calcAdjacentCellIDs()
 
-    def getCells(self,func = 'None'):
+    def getCells(self,func = None):
 	"""Return Cells of Mesh.
 	"""
-        if func == 'None':
+        if func == None:
             return self.cells
         else:        
             returnCells = ()

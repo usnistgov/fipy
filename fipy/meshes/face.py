@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/4/03 {2:53:50 PM} 
+ #                                last update: 12/10/03 {9:57:17 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -212,8 +212,8 @@ class Face:
             faceToCellDistances += (self.calcFaceToCellDistance(cell),)
         self.faceToCellDistances = faceToCellDistances
 
-    def getFaceToCellDistance(self, cell = 'None'):
-        if cell == self.cells[0] or cell == 'None':
+    def getFaceToCellDistance(self, cell = None):
+        if cell == self.cells[0] or cell == None:
             return self.faceToCellDistances[0]
         elif cell == self.cells[1]:
             return self.faceToCellDistances[1]
