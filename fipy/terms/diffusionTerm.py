@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 11/26/03 {11:07:16 AM} 
+                               last update: 11/26/03 {11:14:04 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -50,10 +50,7 @@ class DiffusionTerm(FaceTerm):
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):
-# 	self.coeff = Numeric.zeros(len(self.faces),'d')
 	self.coeff = self.diffCoeff * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
-# 	for face in self.faces:
-# 	    self.coeff[face.getId()] = self.diffCoeff * face.getArea() / face.getCellDistance()
 	
 	
 
