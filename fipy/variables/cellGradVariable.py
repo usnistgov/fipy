@@ -42,9 +42,6 @@ class CellGradVariable(VectorCellVariable):
 	self.faceGradientContributions = self.mesh.getAreaProjections() * self.var.getFaceValue().transpose()
 	
     def calcValue(self):
-# 	areas = self.mesh.getAreaProjections()
-# 	faceGradientContributions = areas * self.var.getFaceValue().transpose()
-	
 	N = len(self.var[:])
 	M = self.mesh.getMaxFacesPerCell()
 	
@@ -58,7 +55,7 @@ class CellGradVariable(VectorCellVariable):
 	grad = Numeric.sum(orientations*contributions,1)
 
 	volumes = self.mesh.getCellVolumes()
-# 	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
+
 	grad = grad/volumes[:,Numeric.NewAxis]
 
 	self.value = grad
