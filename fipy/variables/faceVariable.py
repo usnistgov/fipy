@@ -41,7 +41,7 @@ from fipy.variables.variable import Variable
 
 class FaceVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None):
-	array = Numeric.zeros([len(mesh.getFaces())],'d')
+	array = Numeric.zeros(mesh.getNumberOfFaces(),'d')
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 
