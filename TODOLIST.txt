@@ -10,7 +10,6 @@ Release goals 0.1
   * Check for errors.
   * Manual and web site WERBed.
   * Review Process.
-  * Mention ``--inline`` flag.
   * Class diagram and explanation
 
 - Refactoring:
@@ -23,13 +22,16 @@ Release goals 0.1
 
     - Separate out the profiler:
 
-      * Add as separate CVS project in the fipy sourceforge CVS directory.
-
-    - Create new CTCMS repository project for experimental models.
+      * Pull it out.
+      * Add to local repository.
 
   * Stop FiPy writing temporary files during test case execution:
 
     - Use python temporary file system.
+
+  * Rename elctochem
+
+  * Make sure examples and docs are compatible, check viewers.
 
 - Distribution:
 
