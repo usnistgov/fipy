@@ -110,6 +110,9 @@ class Grid2DGistViewer(GistViewer):
     def setVar(self,var):
         self.var = var
 
+    def getVar(self):
+        return self.var
+
     def getArray(self):
 
         nx,ny = self.var.getMesh().getShape()
