@@ -42,261 +42,95 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
 from fipy.variables.cellVariable import CellVariable
-import fipy.tools.array as array
 
 class DistanceVariable(CellVariable):
-    """
+    def __init__(self, mesh = None, name = 'level set variable', value):
 
-    The 'DistanceVariable` evaluates quantities associated with the
-    distance function. It is mainly evaluated in the
-    'DistanceFunctionEquation`.
+        CellVariable(self, mesh, name = name, value = 1.)
 
+    def _calcValue(self):
 
-    """
-    
-    def getCellInterfaceAreas(self):
-        """
-        Returns the length of the interface that crosses the cell
+        Ncells = self.mesh.getNumberOfCells()
+        unevaluatedIDs = Set(range(NCells))
+        positiveIDs = Set([])
 
-        A simple 1D test:
+        ## obtain positive and negative IDs
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 1)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-1.5, -0.5, 0.5, 1.5))
-           >>> Numeric.allclose(distanceVariable.getCellInterfaceAreas(), 
-           ...                  (0, 0., 1., 0))
-           1
+        for id in unevaluatedIDs:
+            if self.value[id] > 0:
+                positiveIDs.add(id)
 
-        A 2D test case:
+        negativeIDs = unevaluatedIDs - positiveIDs
 
-           >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (1.5, 0.5, 1.5,
-           ...                                              0.5,-0.5, 0.5,
-           ...                                              1.5, 0.5, 1.5))
-           >>> Numeric.allclose(distanceVariable.getCellInterfaceAreas(), 
-           ...                  (0, 1, 0, 1, 0, 1, 0, 1, 0))
-           1
+        ## obtain interface IDs
 
-        Another 2D test case:
+        positiveNeighborIDs = Set([])
+        negativeNeighborIDs = Set([])
 
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> Numeric.allclose(distanceVariable.getCellInterfaceAreas(), 
-           ...                  (0, Numeric.sqrt(2) / 4,  Numeric.sqrt(2) / 4, 0))
-           1
+        for id in positiveIDs:
+            positiveNeighborIDs.union_update(Set(self.mesh.getAdjacentCellIDs()[id]))
 
-        Test to check that the circumfrence of a circle is, in fact,
-	
-	.. raw:: latex
-	
-	   $2\pi r$.
+        for id in negativeIDs:
+            negativeNeighborIDs.union_update(Set(self.mesh.getAdjacentCellIDs()[id]))
 
-	..
-	
-           >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)
-           >>> r = 0.25
-           >>> rad = Numeric.sqrt((mesh.getCellCenters()[:,0] - .5)**2 
-           ...                    + (mesh.getCellCenters()[:,1] - .5)**2) - r
-           >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-           >>> print Numeric.sum(distanceVariable.getCellInterfaceAreas())
-           1.57984690073
-           
-        """
+        interfaceIDs = positiveNeighborIDs & negativeNeighborIDs
 
-        normals = Numeric.array(self.getCellInterfaceNormals().filled(fill_value = 0))
-        areas = Numeric.array(self.mesh.getCellAreaProjections().filled(fill_value = 0))
+        ## calculate interface values
+
+        tmpValue = self.value.copy()
+
+        for id in interfaceIDs:
+            tmpValue[id] = self.setInterfaceValue(id)
+
+        self.value = tmpValue
+
+        ## find trial IDs
+
+        evaluatedIDs = interfaceIDs
+        unevaluatedIDs = unevaluatedIDs - interfaceIDs
+        trialIDs = Set[()]
         
-        return Numeric.sum(abs(array.dot(normals, areas, axis = 2)), axis = 1)
+        for id in evaluatedIDs:
+            adjIDs = Set(self.mesh.adjacentCellIDs()[id])
+            trialCellIDs.union_update(adjIDs & unevaluatedIDs)
 
-    def getCellInterfaceNormals(self):
-        """
+        ## calculate trial cell IDs
+
+        for id in trialCellIDs:
+            self.value[id] = self.setTrialValue(id)
         
-        Returns the interface normals over the cells.
+        unevaluatedIDs = unevaluatedIDs - trialIDs
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> v = 1 / Numeric.sqrt(2)
-           >>> answer = Numeric.array((((0, 0), (0, 0), (0, 0), (0, 0)), 
-           ...                         ((0, 0), (0, 0), (0, 0), (v, v)),
-           ...                         ((v, v), (0, 0), (0, 0), (0, 0)), 
-           ...                         ((0, 0), (0, 0), (0, 0), (0, 0))))
-           >>> Numeric.allclose(distanceVariable.getCellInterfaceNormals(), answer)
-           1
-           
-        """
-
-        N = self.mesh.getNumberOfCells()
-        M = self.mesh.getMaxFacesPerCell()
-        dim = self.mesh.getDim()
-
-        valueOverFaces = Numeric.resize(Numeric.repeat(self.getCellValueOverFaces(), dim), (N, M, dim))
-
-        from fipy.meshes.numMesh.mesh import MAtake
-        interfaceNormals = MAtake(self.getInterfaceNormals(), self.mesh.getCellFaceIDs())
-        import MA
-        return MA.where(valueOverFaces < 0, 0, interfaceNormals)
-
-    def getInterfaceNormals(self):
-        """
-
-        Returns the normals on the boundary faces only, the other are set to zero.
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> v = 1 / Numeric.sqrt(2)
-           >>> answer = Numeric.array(((0, 0), (0, 0),
-           ...                         (v, v), (0, 0),
-           ...                         (0, 0), (0, 0),
-           ...                         (0, 0), (v, v), (0, 0),
-           ...                         (0, 0), (0, 0), (0, 0)))
-           >>> Numeric.allclose(distanceVariable.getInterfaceNormals(), answer)
-           1
-           
-        """
+        ## calculate remaining unevaluted IDs
         
-        N = self.mesh.getNumberOfFaces()
-        M = self.mesh.getDim()
-        interfaceFlag = Numeric.resize(Numeric.repeat(self.getInterfaceFlag(), M),(N, M))
-        return Numeric.where(interfaceFlag, self.getLevelSetNormals(), 0)
+        while len(trialIDs) > 0:
 
-    def getInterfaceFlag(self):
-        """
+            id = self.getMinimumID(trialIDs)
 
-        Returns 1 for faces on boundary and 0 otherwise.
+            evaluatedIds.add(id)
+            trialIDs.remove(id)
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> answer = Numeric.array((0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
-           >>> Numeric.allclose(distanceVariable.getInterfaceFlag(), answer)
-           1
-           
-        """
-        val0 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[0])
-        val1 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[1])
+            adjIDs = Set(self.mesh.adjacentCellIDs()[id])
+            newTrialIDs = adjIDs & unevaluatedIDs
+
+            for trialID in newTrialIDs:
+                self.setTrialValue(trialID)
+
+            trialsIDs.union_update(newTrialsIDs)
+
+            if abs(self.value[id]) > self.narrowBandWidth / 2:
+                break
+            
+
+    def getMinimumID(self, set):
+        IDs = Numeric.array(set)
+        vals = Numeric.take(self.value, IDs)
+        arg = Numeric.argsort(vals)
+        return = IDs[arg]
+
+    def setTrialValue(self):
+        pass
         
-        return Numeric.where(val1 * val0 < 0, 1, 0)
-
-    def getCellInterfaceFlag(self):
-        """
-
-        Returns 1 for those faces on the interface:
-
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-        >>> distanceVariable = DistanceVariable(mesh = mesh, 
-        ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-        >>> answer = Numeric.array((0, 1, 1, 0))
-        >>> Numeric.allclose(distanceVariable.getCellInterfaceFlag(), answer)
-        1
-
-        """
-
-        from fipy.meshes.numMesh.mesh import MAtake
-        
-        flag = MAtake(self.getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
-
-        flag = Numeric.sum(flag, axis = 1)
-        
-        return Numeric.where(Numeric.logical_and(self.value > 0, flag > 0), 1, 0)
-
-    def getCellValueOverFaces(self):
-        """
-
-        Returns the cells values at the faces.
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> answer = Numeric.array(((-.5, -.5, -.5, -.5),
-           ...                         (.5, .5, .5, .5),
-           ...                         (.5, .5, .5, .5),
-           ...                         (1.5, 1.5, 1.5, 1.5)))
-           >>> Numeric.allclose(distanceVariable.getCellValueOverFaces(), answer)
-           1
-
-        """
-        
-        M = self.mesh.getMaxFacesPerCell()
-        N = self.mesh.getNumberOfCells()
-        return Numeric.reshape(Numeric.repeat(Numeric.array(self.value), M), (N, M))
-
-    def getLevelSetNormals(self):
-        """
-
-        Return the face level set normals.
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> v = 1 / Numeric.sqrt(2)
-           >>> answer = Numeric.array(((0, 0), (0, 0), (v, v), (v, v), (0, 0), (0, 0),
-           ...                         (0, 0), (v, v), (0, 0), (0, 0), (v, v), (0, 0)))
-           >>> Numeric.allclose(distanceVariable.getLevelSetNormals(), answer)
-           1
-        """
-        
-        faceGrad = self.getGrad().getArithmeticFaceValue()
-        faceGradMag = Numeric.array(faceGrad.getMag())
-        faceGradMag = Numeric.where(faceGradMag > 1e-10,
-                                    faceGradMag,
-                                    1e-10)
-        faceGrad = Numeric.array(faceGrad)
-
-        ## set faceGrad zero on exteriorFaces
-        dim = self.mesh.getDim()
-        exteriorFaces = (self.mesh.getExteriorFaceIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
-        Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
-        
-        return faceGrad / faceGradMag[:,Numeric.NewAxis] 
-
-    def getUpwindMag(self):
-        import MA
-        NCells = self.mesh.getNumberOfCells()
-        NCellFaces = self.mesh.getMaxFacesPerCell()
-        oldArray = Numeric.array(self)
-        cellValues = Numeric.repeat(oldArray[:,Numeric.NewAxis], NCellFaces, axis = 1)
-        
-        cellIDs = Numeric.repeat(Numeric.arange(NCells)[:,Numeric.NewAxis], NCellFaces, axis = 1)
-        cellToCellIDs = self.mesh.getCellToCellIDs()
-
-        cellToCellIDs = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs) 
-
-        adjacentValues = Numeric.take(oldArray, cellToCellIDs)
-
-        differences = self.getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs)
-
-        minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
-        maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
-
-        return (Numeric.array(self) > 0.) * minsq + (Numeric.array(self) < 0.) * maxsq
-        
-    def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
-        return (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
-
-def _test():
-    import doctest
-    return doctest.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
-
-
-
-
-
-
-        
+    def setInterfaceValue(self):
+        pass
