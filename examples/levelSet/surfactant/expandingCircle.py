@@ -92,7 +92,7 @@ from fipy.models.levelSet.distanceFunction.extensionEquation import ExtensionEqu
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
-from fipy.models.levelSet.surfactant.conservativeSurfactantEquation import ConservativeSurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -143,7 +143,7 @@ advectionEquation = AdvectionEquation(
         steps = 1000),
     advectionTerm = HigherOrderAdvectionTerm)
 
-surfactantEquation = ConservativeSurfactantEquation(
+surfactantEquation = SurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(
