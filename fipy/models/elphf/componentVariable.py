@@ -4,7 +4,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 12/18/03 {3:42:51 PM} 
+ #                                last update: 12/29/03 {11:49:48 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -35,13 +35,25 @@
 from variables.cellVariable import CellVariable
 
 class ComponentVariable(CellVariable):
-    def __init__(self, mesh, standardPotential, barrierHeight, name = '', value=0., hasOld = 1):
+    def __init__(self, mesh, parameters, value=0., hasOld = 1):
+	if parameters.has_key('name'):
+	    name = parameters['name']
+	else:
+	    name = ''
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
-	self.standardPotential = standardPotential
-	self.barrierHeight = barrierHeight
+	self.parameters = parameters
+	self.standardPotential = self.parameters['standard potential']
+	self.barrierHeight = self.parameters['barrier height']
+	if self.parameters.has_key('valence'):
+	    self.valence = self.parameters['valence']
+	else:
+	    self.valence = 0
 	
     def getStandardPotential(self):
 	return self.standardPotential
 	
     def getBarrierHeight(self):
 	return self.barrierHeight
+	
+    def getValence(self):
+	return self.valence

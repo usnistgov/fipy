@@ -4,7 +4,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 12/23/03 {5:35:24 PM} 
+ #                                last update: 12/26/03 {4:59:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -36,12 +36,11 @@ from componentVariable import ComponentVariable
 import Numeric
 
 class SolventVariable(ComponentVariable):
-    def __init__(self, mesh, standardPotential, barrierHeight, substitutionals):
+    def __init__(self, mesh, parameters, substitutionals):
 	ComponentVariable.__init__(
 	    self, 
 	    mesh = mesh,
-	    standardPotential = standardPotential,
-	    barrierHeight = barrierHeight
+	    parameters = parameters
 	    )
 	    
 	self.concentration = Numeric.ones((len(mesh.getCells())),'d')

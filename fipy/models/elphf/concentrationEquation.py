@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/23/03 {3:20:50 PM} 
+                               last update: 12/29/03 {11:29:58 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,10 +42,9 @@ they have been modified.
 
 from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
-from substitutionalSumVariable import SubstitutionalSumVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
-import Numeric
+from terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 
 class ConcentrationEquation(MatrixEquation):
     """
@@ -56,7 +55,7 @@ class ConcentrationEquation(MatrixEquation):
 		 timeStepDuration,
 		 fields = {},
                  diffusivity = 1.,
-		 convectionScheme =PowerLawConvectionTerm,
+		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
                  boundaryConditions=()):
 		     
@@ -67,20 +66,8 @@ class ConcentrationEquation(MatrixEquation):
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
-	Cj.substitutionalSum = Cj.copy()
-	Cj.substitutionalSum.setValue(0.)
-	for component in [component for component in fields['substitutionals'] if component is not Cj]:
-	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
-	    
-	denom = 1. - Cj.substitutionalSum.getFaceValue()
-	Cj.subsConvCoeff = diffusivity * Cj.substitutionalSum.getFaceGrad() /  denom.transpose()
-	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getFaceValue() / denom).transpose()
-	Cj.pConvCoeff = Cj.weightedDiffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
-# 	Cj.pConvCoeff = Cj.weightedDiffusivity * Cj.getStandardPotential() * 30 * fields['phase'].get_gFace().transpose() * fields['phase'].getFaceGrad()
-	Cj.gConvCoeff = Cj.weightedDiffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
-		
 	convectionTerm = convectionScheme(
-	    convCoeff = Cj.subsConvCoeff + Cj.pConvCoeff + Cj.gConvCoeff, 
+	    convCoeff = self.getConvectionCoeff(Cj, fields, diffusivity),
 	    mesh = mesh, 
 	    boundaryConditions = boundaryConditions,
 	    diffusionTerm = diffusionTerm)
@@ -97,4 +84,12 @@ class ConcentrationEquation(MatrixEquation):
             terms = terms,
             solver = solver,
             solutionTolerance = 1e-10)
+
+    def getConvectionCoeff(self, Cj, fields, diffusivity):
+	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
+# 	Cj.pConvCoeff = Cj.weightedDiffusivity * Cj.getStandardPotential() * 30 * fields['phase'].get_gFace().transpose() * fields['phase'].getFaceGrad()
+	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
+	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getFaceGrad() 
+	
+	return Cj.pConvCoeff + Cj.gConvCoeff + Cj.electromigrationCoeff
 

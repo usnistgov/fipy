@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/22/03 {10:49:21 PM} 
+                               last update: 12/29/03 {11:26:34 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -84,22 +84,17 @@ class Variable:
 	self.value = array
 # 	PhysicalField.__init__(self, array, unit)
 		
+	self.stale = 1
 	self.markFresh()
 	
 	self.transposeVar = None
 	self.sumVar = {}
 	
-    def __del__(self):
-	print "__del__\n"
-	for var in self.requiredVariables:
-	    print var, gc.get_references(var), "\n"
-# 	    del var
-	
     def __getitem__(self, index): 
 	return self.getValue()[index]
 	
     def __repr__(self):
-	return (self.__class__.__name__ + '(' + `self.getValue()` + ')')
+	return (self.__class__.__name__ + '("' + self.name + '",' + `self.value` + ')')
 	
     def __setitem__(self, index, value): 
 	self.value[index] = value
@@ -128,16 +123,17 @@ class Variable:
 	pass
 	
     def markFresh(self):
-# 	print self, "is fresh"
 	self.stale = 0
+# 	print self, "is fresh"
 	for subscriber in self.subscribedVariables:
 	    subscriber.markStale() 
 
     def markStale(self):
+	if not self.stale:
+	    self.stale = 1
 # 	print self, "is stale"
-	self.stale = 1
-	for subscriber in self.subscribedVariables:
-	    subscriber.markStale()
+	    for subscriber in self.subscribedVariables:
+		subscriber.markStale()
 	    
     def requires(self, var):
 	if isinstance(var, Variable):
@@ -163,20 +159,22 @@ class Variable:
 		if mesh is None:
 		    mesh = var.getMesh()
 		self.op = op
+		self.var = var
 		# this horrendous hack is necessary because older Python's
 		# (2.1) don't know the value of 'parentClass' at this
 		# point.  Since we're good and dog-fearing people, we don't
 		# ever, ever, ever do multiple inheritance, so we know
 		# there is only one base class.
 		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-		self.var = self.requires(var)
+# 		self.var = self.requires(var)
+		self.requires(self.var)
 		
 	    def calcValue(self):
 		self.value = self.op(self.var.getValue())
 		
 	    def __repr__(self):
-		return ("\n" + `self.op`)
-# 		return ("\n" + `self.op` + "(" + `self.var` + ") = " + `self.value`)
+# 		return ("\n" + `self.op`)
+		return ("\n" + `self.op` + "(" + `self.var` + ") = " + `self.value`)
 		
 	return unOp(op, self)
 	    
@@ -188,15 +186,19 @@ class Variable:
 		if mesh is None:
 		    mesh = var1.getMesh()
 		self.op = op
+		self.var1 = var1
+		self.var2 = var2
 		# this horrendous hack is necessary because older Python's
 		# (2.1) don't know the value of 'parentClass' at this
 		# point.  Since we're good and dog-fearing people, we don't
 		# ever, ever, ever do multiple inheritance, so we know
 		# there is only one base class.
 		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-		self.var1 = self.requires(var1)
-		self.var2 = self.requires(var2)
-		
+# 		self.var1 = self.requires(var1)
+# 		self.var2 = self.requires(var2)
+		self.requires(self.var1)
+		self.requires(self.var2)
+
 	    def calcValue(self):
 		if isinstance(self.var2, Variable):
 		    val2 = self.var2.getValue()
@@ -206,8 +208,8 @@ class Variable:
 		self.value = self.op(self.var1.getValue(), val2)
 		
 	    def __repr__(self):
-		return ("\n" + `self.op`)
-# 		return ("\n" + `self.op` + "(" + `self.var1` + "," + `self.var2` + ") = " + `self.value`)
+# 		return ("\n" + `self.op`)
+		return ("\n" + `self.op` + "(\n\t" + `self.var1` + ",\n\t" + `self.var2` + "\n) = " + `self.value`)
 		
 	return binOp(op, self, var2, parentClass = parentClass)
 	

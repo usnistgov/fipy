@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 12/9/03 {4:28:02 PM} 
+                               last update: 12/27/03 {6:25:17 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,6 +42,8 @@ they have been modified.
 ###################################################################
 """
 
+import Numeric
+
 import gist
 import colorbar
 
@@ -60,8 +62,15 @@ class GistViewer:
         gist.animate(1)
         gist.palette('heat.gp')
 	gist.gridxy(1)
-        gist.pli(self.getArray(), cmin = self.minVal, cmax = self.maxVal)
-        colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
+	array = self.getArray()
+	gist.pli(array)
+#         gist.pli(self.getArray(), cmin = self.minVal, cmax = self.maxVal)
+#         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
+	min = Numeric.minimum.reduce(array.flat)
+	max = Numeric.maximum.reduce(array.flat)
+	if max == min:
+	    max = min + 0.01
+	colorbar.color_bar(min, max, ncol=240, zlabel='fred')
         gist.fma()
 
     def getArray(self):

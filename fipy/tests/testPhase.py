@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/22/03 {6:00:02 PM} 
+ #                                last update: 12/24/03 {10:18:38 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -42,11 +42,15 @@
 """Test steady-state diffusion solutions
 """
  
+from __future__ import nested_scopes
+
 import unittest
-from testBase import TestBase
 import os
 import cPickle
 import tests
+
+import Numeric
+
 from meshes.grid2D import Grid2D
 from examples.phase.type1PhaseEquation import Type1PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -55,7 +59,7 @@ from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from examples.phase.modularVariable import ModularVariable
 from variables.cellVariable import CellVariable
-import Numeric
+from testBase import TestBase
 
 class TestPhase(TestBase):
     """
@@ -142,12 +146,7 @@ class TestPhase1D(TestPhase):
         L = self.L = 1.5
         self.value = 1.
         self.funcValue = 0.
-        def func(x,L=L):
-            if x[0] > L / 2.:
-                return 1
-            else:
-                return 0
-        self.func = func
+        self.func = lambda cell: cell.getCenter()[0] > L / 2.
 	self.testFile = 'testPhaseData.gz'
         TestPhase.setUp(self)
 
@@ -158,13 +157,11 @@ class TestPhaseCircle(TestPhase):
         L = self.L = 1.5
         self.value = 1.
         self.funcValue = 0.
-        def func(x,L=L):
+        def func(cell):
             r = L / 4.
             c = (L / 2., L / 2.)
-            if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-                return 1
-            else:
-                return 0
+	    x = cell.getCenter()
+            return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
         self.func = func
 	self.testFile = 'testCirclePhaseData.gz'
         TestPhase.setUp(self)
@@ -176,13 +173,11 @@ class TestPhaseCircleModular(TestPhase):
         L = self.L = 1.5
         self.value = 2. * Numeric.pi / 3.
         self.funcValue = -2. * Numeric.pi / 3.
-        def func(x,L=L):
+        def func(cell):
             r = L / 4.
             c = (L / 2., L / 2.)
-            if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-                return 1
-            else:
-                return 0
+	    x = cell.getCenter()
+            return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
         self.func = func
 	self.testFile = 'testModularCircleData.gz'
         TestPhase.setUp(self)

@@ -2,9 +2,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "transposeVariable.py"
- #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 12/26/03 {10:47:06 AM} 
+ #  FILE: "substitutionalVariable.py"
+ #                                    created: 12/18/03 {12:18:05 AM} 
+ #                                last update: 12/29/03 {11:49:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,13 +32,13 @@
  # ###################################################################
  ##
 
-from vectorFaceVariable import VectorFaceVariable
-import Numeric
+from componentVariable import ComponentVariable
 
-class TransposeVariable(VectorFaceVariable):
-    def __init__(self, var):
-	VectorFaceVariable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
-
-    def calcValue(self):
-	self.value = self.var[:,Numeric.NewAxis]
+class SubstitutionalVariable(ComponentVariable):
+    def __init__(self, mesh, parameters, solventParameters, value=0., hasOld = 1):
+	ComponentVariable.__init__(self, mesh = mesh, parameters = parameters, value = value, hasOld = hasOld)
+	self.solventParameters = solventParameters
+	self.standardPotential -= self.solventParameters['standard potential']
+	self.barrierHeight -= self.solventParameters['barrier height']
+	if self.solventParameters.has_key('valence'):
+	    self.valence -= self.solventParameters['valence']

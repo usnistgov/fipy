@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "convectionTerm.py"
-                                   created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/26/03 {10:39:41 AM} 
+ FILE: "concentrationEquation.py"
+                                   created: 11/12/03 {10:39:23 AM} 
+                               last update: 12/26/03 {3:33:36 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -36,40 +36,23 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-13 JEG 1.0 original
+ 2003-11-12 JEG 1.0 original
 ###################################################################
 """
 
-from faceTerm import FaceTerm
-from variables.vectorFaceVariable import VectorFaceVariable
-import Numeric
+from concentrationEquation import ConcentrationEquation
 
-class ConvectionTerm(FaceTerm):
-    def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
+class SubstitutionalEquation(ConcentrationEquation):
+    def getConvectionCoeff(self, Cj, fields, diffusivity):
+	Cj.substitutionalSum = Cj.copy()
+	Cj.substitutionalSum.setValue(0.)
+	for component in [component for component in fields['substitutionals'] if component is not Cj]:
+	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
+	    
+	denom = 1. - Cj.substitutionalSum.getFaceValue()
+	Cj.subsConvCoeff = diffusivity * Cj.substitutionalSum.getFaceGrad() / denom.transpose()
+	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getFaceValue() / denom).transpose()
+	
+	return Cj.subsConvCoeff + ConcentrationEquation.getConvectionCoeff(self, Cj, fields, Cj.weightedDiffusivity)
+	
 
-	if not isinstance(convCoeff, VectorFaceVariable):
-	    convCoeff = VectorFaceVariable(mesh = mesh, value = Numeric.array(convCoeff))
-
-	self.diffusionTerm = diffusionTerm
-	
-	self.projectedCoefficients = convCoeff * mesh.getOrientedAreaProjections()
-	self.coeff = self.projectedCoefficients.sum(1)
-	
-	if self.diffusionTerm == None:
-	    diffCoeff = 1e-20
-	else:
-	    diffCoeff = self.diffusionTerm.getCoeff()
-	
-	P = -self.coeff / diffCoeff
-	
-	alpha = self.Alpha(P)
-
-	weight = {
-	    'implicit':{
-		'cell 1 diag':    -alpha,
-		'cell 1 offdiag': -(1-alpha),
-		'cell 2 diag':     (1-alpha),
-		'cell 2 offdiag':  alpha
-	    }
-	}
-	FaceTerm.__init__(self,weight,mesh,boundaryConditions)

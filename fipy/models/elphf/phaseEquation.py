@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/23/03 {6:21:43 PM} 
+                               last update: 12/25/03 {5:06:26 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,13 +40,14 @@ they have been modified.
 ###################################################################
 """
 
+import Numeric
+
 from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
 from substitutionalSumVariable import SubstitutionalSumVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
-import Numeric
 
 class PhaseEquation(MatrixEquation):
     def __init__(self,

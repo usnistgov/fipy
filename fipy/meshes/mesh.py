@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/10/03 {11:59:14 AM} 
+ #                                last update: 12/24/03 {9:55:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,7 +66,7 @@ class Mesh:
         else:        
             returnCells = ()
             for cell in self.cells:
-                if func(cell.getCenter()):
+                if func(cell):
                     returnCells += (cell,)
             return returnCells
 

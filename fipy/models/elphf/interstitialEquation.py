@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "convectionTerm.py"
-                                   created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/26/03 {10:39:41 AM} 
+ FILE: "interstitialEquation.py"
+                                   created: 11/12/03 {10:39:23 AM} 
+                               last update: 12/26/03 {3:39:54 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -36,40 +36,14 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-13 JEG 1.0 original
+ 2003-11-12 JEG 1.0 original
 ###################################################################
 """
 
-from faceTerm import FaceTerm
-from variables.vectorFaceVariable import VectorFaceVariable
-import Numeric
+from concentrationEquation import ConcentrationEquation
 
-class ConvectionTerm(FaceTerm):
-    def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
-
-	if not isinstance(convCoeff, VectorFaceVariable):
-	    convCoeff = VectorFaceVariable(mesh = mesh, value = Numeric.array(convCoeff))
-
-	self.diffusionTerm = diffusionTerm
+class InterstitialEquation(ConcentrationEquation):
+    def getConvectionCoeff(self, Cj, fields, diffusivity):
+	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getFaceValue())).transpose()
 	
-	self.projectedCoefficients = convCoeff * mesh.getOrientedAreaProjections()
-	self.coeff = self.projectedCoefficients.sum(1)
-	
-	if self.diffusionTerm == None:
-	    diffCoeff = 1e-20
-	else:
-	    diffCoeff = self.diffusionTerm.getCoeff()
-	
-	P = -self.coeff / diffCoeff
-	
-	alpha = self.Alpha(P)
-
-	weight = {
-	    'implicit':{
-		'cell 1 diag':    -alpha,
-		'cell 1 offdiag': -(1-alpha),
-		'cell 2 diag':     (1-alpha),
-		'cell 2 offdiag':  alpha
-	    }
-	}
-	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
+	return ConcentrationEquation.getConvectionCoeff(self, Cj, fields, Cj.weightedDiffusivity)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/9/03 {2:25:12 PM} 
+ #                                last update: 12/29/03 {1:06:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,6 +53,10 @@
     Iteration is profiled for performance.
 """
 
+from __future__ import nested_scopes
+
+import Numeric
+
 from meshes.grid2D import Grid2D
 from phaseEquation import PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -63,7 +67,6 @@ from viewers.grid2DGistViewer import Grid2DGistViewer
 from variables.cellVariable import CellVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
-import Numeric
 
 phaseParameters={
     'tau' :        0.1,
@@ -99,13 +102,11 @@ theta = CellVariable(
 
 phaseViewer = Grid2DGistViewer(phase)
 
-def func(x):
+def func(cell):
     r = L / 4.
     c = (L / 2., L / 2.)
-    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-        return 1
-    else:
-        return 0
+    x = cell.getCenter()
+    return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
 
 rightCells = mesh.getCells(func)
 

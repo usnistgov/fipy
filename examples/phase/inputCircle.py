@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/9/03 {2:25:25 PM} 
+ #                                last update: 12/24/03 {10:17:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,6 +52,10 @@
     Iteration is profiled for performance.
 """
 
+from __future__ import nested_scopes
+
+import Numeric
+
 from meshes.grid2D import Grid2D
 from phaseEquation import PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -63,8 +67,6 @@ from variables.cellVariable import CellVariable
 from modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
-
-import Numeric
 
 phaseParameters={
     'tau' :        0.1,
@@ -81,7 +83,7 @@ exteriorValue = 2. * Numeric.pi / 3.
 ##exteriorValue = 0.
 ##interiorValue = -1.
 
-Length = 1.5
+L = 1.5
 nx = 10
 ny = 10
 dx = Length / nx
@@ -109,13 +111,11 @@ phaseParameters['phi'] = phase
 phaseParameters['theta'] = theta
 phaseParameters['temperature'] = 1.
 
-def circleCells(x,L = Length):
+def circleCells(cell):
     r = L / 4.
     c = (L / 2., L / 2.)
-    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-        return 1
-    else:
-        return 0
+    x = cell.getCenter()
+    return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
 
 interiorCells = mesh.getCells(circleCells)
 

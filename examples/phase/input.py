@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/9/03 {2:25:25 PM} 
+ #                                last update: 12/24/03 {10:14:23 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,6 +52,8 @@
     Iteration is profiled for performance.
 """
 
+from __future__ import nested_scopes
+
 from meshes.grid2D import Grid2D
 from phaseEquation import PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
@@ -81,11 +83,11 @@ exteriorValue = 2. * Numeric.pi / 3.
 ##exteriorValue = 0.
 ##interiorValue = -1.
 
-Length = 1.5
+L = 1.5
 nx = 10
 ny = 10
-dx = Length / nx
-dy = Length / ny
+dx = L / nx
+dy = L / ny
 
 mesh = Grid2D(dx,dy,nx,ny)
 print "built mesh"
@@ -108,19 +110,14 @@ theta = ModularVariable(
 
 fields = { 'phi' : phase, 'theta' : theta, 'temperature' : 1.
 
-def leftCells(x,L = Length):
-    if x[0] < L / 2.:
-        return 1
-    else:
-        return 0
+def leftCells(cell):
+    if cell.getCenter()[0] < L / 2.
 
-def circleCells(x,L = Length):
+def circleCells(cell):
     r = L / 4.
     c = (L / 2., L / 2.)
-    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-        return 1
-    else:
-        return 0
+    x = cell.getCenter()
+    return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
 
 interiorCells = mesh.getCells(circleCells)
 

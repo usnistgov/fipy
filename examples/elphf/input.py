@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/22/03 {10:06:59 PM} 
+ #                                last update: 12/29/03 {11:59:55 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,12 +66,9 @@ import Numeric
 # valueLeft="0.3 mol/l"
 # valueRight="0.4 mol/l"
 # valueOther="0.2 mol/l"
-valueLeft=0.3
-valueRight=0.4
-valueOther=0.2
 
-nx = 40
-dx = 1.
+nx = 1000
+dx = 0.01
 L = nx * dx
 
 mesh = Grid2D(
@@ -80,57 +77,68 @@ mesh = Grid2D(
     nx = nx,
     ny = 1)
     
-phase = PhaseVariable(
-    name = "phase",
-    mesh = mesh,
-    value = 1.,
-    )
+rightFunc = lambda cell: cell.getCenter()[0] > L/2.
     
-var1 = ComponentVariable(
-    name = "c1",
-    standardPotential = Numeric.log(.3/.4) - Numeric.log(.1/.2),
-    barrierHeight = 0.1,
-    mesh = mesh,
-    value = .35,
-    )
-
-var2 = ComponentVariable(
-    name = "c2",
-    standardPotential = Numeric.log(.4/.3) - Numeric.log(.1/.2),
-    barrierHeight = 0.1,
-    mesh = mesh,
-    value = .35,
-    )
-   
-var3 = ComponentVariable(
-    name = "c3",
-    standardPotential = Numeric.log(.2/.1) - Numeric.log(.1/.2),
-    barrierHeight = 0.1,
-    mesh = mesh,
-    value = .15,
-    )
-
-phaseViewer = Grid2DGistViewer(phase)
-var1Viewer = Grid2DGistViewer(var1)
-var2Viewer = Grid2DGistViewer(var2)
-var3viewer = Grid2DGistViewer(var3)
-
-rightCells = mesh.getCells(lambda center: center[0] > L/2.)
-
-phase.setValue(0.,rightCells)
-# var1.setValue(valueRight,rightCells)
-# var2.setValue(valueLeft,rightCells)
-# var3.setValue(0.1,rightCells)
-    
-fields = {
-    'phase': phase,
-    'substitutionals': (var1,var2,var3),
-}
-
 parameters = {
     'diffusivity': 1.,
-    'time step duration': 10000.
+    'time step duration': 10000000.,
+    'phase': {
+	'name': "xi",
+	'mobility': 1.,
+	'gradient energy': 0.025,
+	'initial': (
+	    1.,
+	    {
+		'value': 0.,
+		'func': rightFunc
+	    }
+	)
+    },
+    'potential': {
+	'name': "psi",
+	'permittivity': 1.5e1
+    },
+    'solvent': {
+	'standard potential': Numeric.log(.4/.6),
+	'barrier height': 10.0,
+	'valence': +1
+    }
 }
+
+parameters['interstitials'] = (
+    {
+	'name': "c1",
+	'standard potential': Numeric.log(.1/.9),
+	'barrier height': 0., #parameters['solvent']['barrier height'],
+	'valence': -1,
+	'initial': (0.5,),
+    },
+)
+
+parameters['substitutionals'] = (
+#     {
+# 	'name': "c1",
+# 	'standard potential': Numeric.log(.3/.4),
+# 	'barrier height': parameters['solvent']['barrier height'],
+# 	'initial': (0.35,),
+#     },
+    {
+	'name': "c2",
+	'standard potential': Numeric.log(.4/.3),
+	'barrier height': parameters['solvent']['barrier height'],
+	'valence': -1,
+	'initial': (0.35,),
+    },
+    {
+	'name': "c3",
+	'standard potential': Numeric.log(.2/.1),
+	'barrier height': parameters['solvent']['barrier height'],
+	'valence': +1,
+	'initial': (0.15,),
+    }
+)
+
+fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
 it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
 
@@ -138,10 +146,17 @@ it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
 # print var2[:]
 # print var3[:]
 
-var1Viewer.plot()
-var2Viewer.plot()
-var3Viewer.plot()
+viewers = [Grid2DGistViewer(field) for field in [fields['phase'], fields['potential']] + list(fields['substitutionals'])]
+# fields['phase'].plot()
+# fields['potential'].plot()
+# fields['interstitials'][0].plot()
+# fields['substitutionals'][0].plot()
+# for component in fields['interstitials'] + fields['substitutionals']:
+#     component.plot()
 
+for viewer in viewers:
+    viewer.plot()
+    
 raw_input()
 
 # fudge = calibrate_profiler(10000)
@@ -155,13 +170,19 @@ for i in range(50):
 #     print var1.getValue()
 #     print var2.getValue()
     
-#     var1.plot()
-#     var2.plot()
-#     var3.plot()
+    for viewer in viewers:
+	viewer.plot()
+    
+#     fields['phase'].plot()
+#     fields['potential'].plot()
+#     fields['interstitials'][0].plot()
+#     fields['substitutionals'][0].plot()
+#     for component in fields['interstitials'] + fields['substitutionals']:
+# 	component.plot()
 
-print var1
-print var2
-print var3
+# print var1
+# print var2
+# print var3
 # profile.stop()
 	
 raw_input()

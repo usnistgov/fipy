@@ -5,7 +5,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/22/03 {5:02:09 PM} 
+ #                                last update: 12/26/03 {10:40:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

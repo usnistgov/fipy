@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 12/18/03 {2:01:07 PM} 
+ #                                last update: 12/26/03 {10:46:29 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -44,3 +44,11 @@ class FaceVariable(Variable):
     def getVariableClass(self):
 	return FaceVariable
 
+    def transpose(self):
+	if self.transposeVar is None:
+	    from transposeVariable import TransposeVariable
+	    self.transposeVar = TransposeVariable(self)
+	
+	return self.transposeVar
+
+	

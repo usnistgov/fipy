@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/23/03 {6:26:16 PM} 
+ #                                last update: 12/29/03 {11:48:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -34,9 +34,17 @@
  # ###################################################################
  ##
 
-from phaseEquation import PhaseEquation
-from concentrationEquation import ConcentrationEquation
+ 
+from variables.cellVariable import CellVariable
+from phaseVariable import PhaseVariable
+from componentVariable import ComponentVariable
+from substitutionalVariable import SubstitutionalVariable
 from solventVariable import SolventVariable
+ 
+from phaseEquation import PhaseEquation
+from poissonEquation import PoissonEquation
+from substitutionalEquation import SubstitutionalEquation
+from interstitialEquation import InterstitialEquation
 
 from solvers.linearCGSSolver import LinearCGSSolver
 from solvers.linearLUSolver import LinearLUSolver
@@ -45,20 +53,84 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 
-def makeIterator(mesh, fields, parameters, maxSweeps = 1):
-    fields['solvent'] = SolventVariable(
+def makeFields(mesh, parameters):
+    fields = {}
+    
+    parameters['phase']['var'] = PhaseVariable(
+	name = parameters['phase']['name'],
 	mesh = mesh,
-	standardPotential = parameters['solvent standard potential'],
-	barrierHeight = parameters['solvent barrier height'],
+	value = parameters['phase']['initial'][0],
+	)
+	
+    fields['phase'] = parameters['phase']['var']
+    
+    parameterList = [parameters['phase']]
+    
+    if not parameters.has_key('potential'):
+	parameters['potential'] = {
+	    'name': "psi",
+	    'permittivity': 1.
+	}
+
+    parameters['potential']['var'] = CellVariable(
+	mesh = mesh,
+	name = 'psi',
+	)
+    fields['potential'] = parameters['potential']['var']
+	
+    fields['interstitials'] = ()
+    
+    if parameters.has_key('interstitials'):
+	for component in parameters['interstitials']:
+	    component['var'] = ComponentVariable(
+		mesh = mesh,
+		parameters = component,
+		value = component['initial'][0],
+		)
+	    
+	    fields['interstitials'] += (component['var'],)
+	    
+	    parameterList += list(parameters['interstitials'])
+    
+    fields['substitutionals'] = ()
+    
+    if parameters.has_key('substitutionals'):
+	for component in parameters['substitutionals']:
+	    component['var'] = SubstitutionalVariable(
+		mesh = mesh,
+		parameters = component,
+		solventParameters = parameters['solvent'],
+		value = component['initial'][0],
+		)
+	    
+	    fields['substitutionals'] += (component['var'],)
+    
+	    parameterList += list(parameters['substitutionals'])
+	    
+    parameters['solvent']['var'] = SolventVariable(
+	mesh = mesh,
+	parameters = parameters['solvent'],
 	substitutionals = fields['substitutionals']
 	)
+	
+    fields['solvent'] = parameters['solvent']['var']
+	
+    # set initial conditions
+    for field in parameterList:
+	for init in field['initial'][1:]:
+	    setCells = mesh.getCells(init['func'])
+	    field['var'].setValue(init['value'],setCells)
     
+    return fields
+
+
+def makeIterator(mesh, fields, parameters, maxSweeps = 1):
     equations = (PhaseEquation(
 	phase = fields['phase'],
 	timeStepDuration = parameters['time step duration'],
 	fields = fields,
-	phaseMobility = parameters['phase mobility'],
-	phaseGradientEnergy = parameters['phase gradient energy'],
+	phaseMobility = parameters['phase']['mobility'],
+	phaseGradientEnergy = parameters['phase']['gradient energy'],
 	solver = LinearLUSolver(),
 	boundaryConditions=(
 # 	    FixedValue(faces = mesh.getFacesLeft(),value = 1.),
@@ -70,8 +142,50 @@ def makeIterator(mesh, fields, parameters, maxSweeps = 1):
 	)
     ),)
     
+    equations += (PoissonEquation(
+	    potential = fields['potential'],
+	    parameters = parameters['potential'],
+	    fields = fields,
+	    solver = LinearLUSolver(),
+	    boundaryConditions=(
+# 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
+# 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
+		FixedValue(faces = mesh.getFacesLeft(),value = 0.),
+		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
+		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
+		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+	    )
+	),
+    )
+    
     for component in fields['substitutionals']:
-	eq = ConcentrationEquation(
+	eq = SubstitutionalEquation(
+	    Cj = component,
+	    timeStepDuration = parameters['time step duration'],
+	    fields = fields,
+	    diffusivity = parameters['diffusivity'],
+	    solver = LinearLUSolver(),
+# 	    solver = LinearGMRESSolver(
+# 		 tolerance = 1.e-15, 
+# 		 steps = 1000
+# 	    ),
+# 	   solver = LinearCGSSolver(
+# 		tolerance = 1.e-15, 
+# 		steps = 1000
+# 	   ),
+	    boundaryConditions=(
+# 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
+# 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
+		FixedFlux(faces = mesh.getFacesLeft(),value = 0.),
+		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
+		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
+		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
+	    )
+	)
+	equations += (eq,)
+	
+    for component in fields['interstitials']:
+	eq = InterstitialEquation(
 	    Cj = component,
 	    timeStepDuration = parameters['time step duration'],
 	    fields = fields,
