@@ -45,7 +45,35 @@ class VectorCellVariable(Variable):
 	array = Numeric.zeros([len(mesh.getCells()),mesh.getDim()],'d')
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+        self.arithmeticFaceValue = None
+
+    def getArithmeticFaceValue(self):
+        """
+
+        Return a `VectorFaceVariable` with values determined by the
+        arithmetic mean from the neighboring cells.
+        
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = 1., dy = 1, nx = 2, ny = 1)
+        >>> var = VectorCellVariable(mesh, value = Numeric.array(((0,0),(1,1))))
+        >>> answer = Numeric.array(((0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (.5, .5), (1, 1)))
+        >>> Numeric.allclose(answer, Numeric.array(var.getArithmeticFaceValue()))
+        1
+        """
+        
+	if self.arithmeticFaceValue is None:
+	    from vectorArithmeticCellToFaceVariable import VectorArithmeticCellToFaceVariable
+	    self.arithmeticFaceValue = VectorArithmeticCellToFaceVariable(self)
+
+	return self.arithmeticFaceValue
 	
     def getVariableClass(self):
 	return VectorCellVariable
 
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
