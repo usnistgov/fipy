@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:52 PM} 
+ #                                last update: 10/1/04 {3:56:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -158,6 +158,17 @@ for the comparison.
     >>> import Numeric
     >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
+    
+A `Viewer` object allows a variable to be displayed. Here we are using  the Gist package
+to view the field. The Gist viewer is constructed in the following way:
+
+    >>> from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    >>> viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+    
+and if we run interactively, we view the result with
+
+    >>> if __name__ == '__main__':
+    ...     viewer.plot()
 
 """
 

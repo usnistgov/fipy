@@ -5,24 +5,16 @@ CREDITS
 List of contributors so far:
 
 `Jon Guyer`_
-============
-
-Core developer.
+    Core developer.
 
 `Daniel Wheeler`_
-=================
-
-Core developer.
+    Core developer.
 
 `Jim Warren`_
-=============
-
-Oversight and management.
+    Oversight and management.
 
 Alex Mont
-=========
-
-Developed the `PyxViewer` and the `Gmsh` import and export modules.
+    Developed the `PyxViewer` and the `Gmsh` import and export modules.
 
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer

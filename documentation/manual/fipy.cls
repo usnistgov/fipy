@@ -1,9 +1,13 @@
-\usepackage[text={7in,9.333in}]{geometry}
+% \usepackage[text={7in,9.333in}]{geometry}
+\usepackage{geometry}
 
 \usepackage{crop}
 
 \usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
-\usepackage{multirow, longtable, makeidx, tocbibind, amssymb} 
+\usepackage{multirow, longtable, makeidx, amssymb} 
+\usepackage[other]{tocbibind}
+\tocotherhead{part}
+\setlength{\columnsep}{35pt}
 \usepackage{amsmath} 
 
 \usepackage{minitoc}
@@ -12,7 +16,6 @@
 
 \usepackage[ascii]{inputenc}
 
-%\usepackage{multirow, longtable, tocbibind, amssymb} % makeidx, 
 % \usepackage{fullpage}
 %\usepackage[headings]{fullpage}
 \makeindex
@@ -66,40 +69,6 @@
 \newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
 % \newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{bluish}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}}
 
-% commands for various weblinks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand{\FiPy}{\textsf{FiPy}}
-
-\newcommand{\SciPy}{\href{http://www.scipy.org/}{\textsf{SciPy}}}
-
-\newcommand{\PyRex}{\href{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}{\textsf{PyRex}}}
-
-\newcommand{\Python}{\href{http://www.python.org/}{\textsf{Python}}}
-
-\newcommand{\Numeric}{\href{http://www.numpy.org/}{\textsf{Numeric}}}
-
-\newcommand{\NIST}{\href{http://www.nist.gov/}{\textsf{NIST}}}
-
-\newcommand{\CTCMS}{\href{http://www.ctcms.nist.gov/}{\textsf{CTCMS}}}
-
-\newcommand{\MSEL}{\href{http://www.msel.nist.gov/}{\textsf{MSEL}}}
-
-\newcommand{\PyX}{\href{http://pyx.sourceforge.net/}{\textsf{PyX}}}
-
-\newcommand{\PyGist}{\href{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}{\textsf{PyGist}}}
-
-\newcommand{\MacOSX}{\href{http://www.apple.com/macosx/}{\textsf{Mac OS X}}}
-
-\newcommand{\Gmsh}{\href{http://www.geuz.org/gmsh/}{\textsf{Gmsh}}}
-
-\newcommand{\weave}{\href{http://www.scipy.org/documentation/weave/}{\textsf{weave}}}
-
-\newcommand{\blitz}{\href{http://www.scipy.org/documentation/weave/}{\textsf{blitz}}}
-
-\newcommand{\doctest}{\href{http://www.python.org/doc/current/lib/module-doctest.html}{\textsf{doctest}}}
-
-\newcommand{\unittest}{\href{http://www.python.org/doc/current/lib/module-unittest.html}{\textsf{unittest}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -125,43 +94,9 @@
     \if@restonecol\twocolumn\fi
     }
 
-\renewcommand\maketitle{\begin{titlepage}%
-\let\footnotesize\small
-\let\footnoterule\relax
-\let \footnote \thanks
-\null\vfil
-\vskip 20\p@
-\begin{flushright}%
-  {\Huge \@title \par}%
-  \vskip 3em%
-  {\large
-   \lineskip .75em%
-    \begin{tabular}[t]{r@{}}%
-      \@author
-    \end{tabular}\par}%
-    \vskip 1.5em%
-  {\large \@date \par}%       % Set date in \large size.
-\end{flushright}\par
-\@thanks
-\vfil\null
-\end{titlepage}%
-\setcounter{footnote}{0}%
-\global\let\thanks\relax
-\global\let\maketitle\relax
-\global\let\@thanks\@empty
-\global\let\@author\@empty
-\global\let\@date\@empty
-\global\let\@title\@empty
-\global\let\title\relax
-\global\let\author\relax
-\global\let\date\relax
-\global\let\and\relax
-}
-
 \makeatother
 
 % \usepackage{layout}
-
 
 \usepackage{tocvsec2}
 
@@ -189,11 +124,22 @@
 %\newlength{\photowidth}
 %\settowidth{\photowidth}{\usebox{\photobox}}
 
+\newenvironment{changemargin}[2]{%
+ \begin{list}{}{%
+  \setlength{\topsep}{0pt}%
+  \setlength{\leftmargin}{#1}%
+  \setlength{\rightmargin}{#2}%
+  \setlength{\listparindent}{\parindent}%
+  \setlength{\itemindent}{\parindent}%
+  \setlength{\parsep}{\parskip}%
+ }%
+\item[]}{\end{list}}
+
 \makeatletter
 \newcommand*{\ps@mytitlepage}{%
   \let\@oddhead\@empty
   \renewcommand*{\@oddfoot}{%
-  \hfill\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}%\vspace*{-0.5in}}
+  \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}}%\vspace*{-0.5in}}
 
 \def\@makeauthor{\begingroup
 \renewcommand{\and}{\\}
@@ -224,10 +170,12 @@
 \renewcommand{\maketitle}{%
 \begin{titlepage}%
 \thispagestyle{mytitlepage}
+\begin{changemargin}{-1in}{-0.5in}
 \let\footnotesize\small
 \let\footnoterule\relax
 \let \footnote \thanks
 \begin{flushright}%
+  \vspace*{-0.6in}
   \scalebox{10}{\logo}\par
   \vskip 3em%
   {\Huge \@title \par}%
@@ -243,7 +191,54 @@
   {\large Version~\Version \par}
   \vspace*{\fill}%
 \end{flushright}%
+\end{changemargin}%
 \end{titlepage}%
 }
 
+\newcommand{\@Code}[1]{\texttt{#1}}
+\newcommand{\Class}[1]{\@Code{#1}\index{#1@\@Code{#1} class}}
+
+% commands for various weblinks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\@Software}[1]{\textsf{#1}}
+\newcommand{\@Org}[1]{\textsf{#1}}
+
+\newcommand{\FiPy}{\@Software{FiPy}}
+
+\newcommand{\@OrgURL}[2]{\href{#2}{\@Org{#1}}\index{#1@\@Org{#1}}}
+
+\newcommand{\@SoftwareURL}[2]{\href{#2}{\@Software{#1}}\index{#1@\@Software{#1}}}
+
+\newcommand{\SciPy}{\@SoftwareURL{SciPy}{http://www.scipy.org/}}
+
+\newcommand{\PyRex}{\@SoftwareURL{PyRex}{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}}
+
+\newcommand{\Python}{\@SoftwareURL{Python}{http://www.python.org/}}
+
+\newcommand{\Numeric}{\@SoftwareURL{Numeric}{http://www.numpy.org/}}
+
+\newcommand{\PyX}{\@SoftwareURL{PyX}{http://pyx.sourceforge.net/}}
+
+\newcommand{\PyGist}{\@SoftwareURL{PyGist}{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}}
+
+\newcommand{\MacOSX}{\@SoftwareURL{Mac OS X}{http://www.apple.com/macosx/}}
+
+\newcommand{\Gmsh}{\@SoftwareURL{Gmsh}{http://www.geuz.org/gmsh/}}
+
+\newcommand{\weave}{\@SoftwareURL{weave}{http://www.scipy.org/documentation/weave/}}
+
+\newcommand{\blitz}{\@SoftwareURL{blitz}{http://www.scipy.org/documentation/weave/}}
+
+\newcommand{\doctest}{\@SoftwareURL{doctest}{http://www.python.org/doc/current/lib/module-doctest.html}}
+
+\newcommand{\unittest}{\@SoftwareURL{unittest}{http://www.python.org/doc/current/lib/module-unittest.html}}
+
+\newcommand{\NIST}{\@OrgURL{NIST}{http://www.nist.gov/}}
+
+\newcommand{\CTCMS}{\@OrgURL{http://www.ctcms.nist.gov/}{\textsf{CTCMS}}}
+
+\newcommand{\MSEL}{\@OrgURL{http://www.msel.nist.gov/}{\textsf{MSEL}}}
+
 \makeatother
+

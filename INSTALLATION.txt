@@ -16,18 +16,18 @@ installation, most packages (including |FiPy|) will allow you to install to
 an alternate location (see the remarks on getting this to work with the
 Numeric_ package).  Instead of installing these packages with::
 
-    python setup.py install
+    $ python setup.py install
 
 you would use::
 
-    python setup.py install --home=<dir>
+    $ python setup.py install --home=<dir>
 
-where ``<dir>`` is the desired installation directory (usually '``~``' to
+where ``<dir>`` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 ``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
 `Alternate Installation`_ section of the Python_ document `Installing
-Python Modules`_ for more information.  See the Python_ documentation for
-circumstances in which you should use ``--prefix`` instead of ``--home``.
+Python Modules`_ for more information, such as circumstances in which you
+should use ``--prefix`` instead of ``--home``.
 
 .. _Alternate Installation: http://docs.python.org/inst/alt-install-windows.html
 
@@ -66,7 +66,7 @@ installation to run.  Python_ comes pre-installed on many operating
 systems, which you can check by opening a terminal and typing
 ``python``, *e.g.*::
 
-    [dogbert:~] guyer% python
+    $ python
     Python 2.3 (#1, Sep 13 2003, 00:49:11) 
     ...
     Type "help", "copyright", "credits" or "license" for more information.
@@ -90,8 +90,8 @@ supported at this time.
 .. note:: 
 
    Because of a peculiarity_ in the way that Numeric_ is structured, the
-   ``--home=<dir>`` trick described in Privileges_ will not work quite
-   correctly.  To correct this problem, add ``<dir>/lib/python/Numeric`` to
+   ``--home=<dir>`` trick described in Privileges_ will not work quite as
+   intended.  To correct this problem, add ``<dir>/lib/python/Numeric`` to
    your ``PYTHONPATH`` environment variable.
 
 .. _Numeric:  http://www.numpy.org
@@ -109,11 +109,11 @@ Geus`_' PySparse_ package.
 
 You can obtain the customized PySparse_ via anonymous CVS::
 
-     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
 and then::
 
-     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy co pysparse
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
 
 Recommended Packages
 ====================
@@ -180,31 +180,54 @@ http://gnuplot-py.sourceforge.net
 Gnuplot.py is a Python_ package that interfaces to gnuplot_, the
 popular open-source plotting program.
 
+.. _Gnuplot:         http://gnuplot.sorceforge.net/
+
 ----------------
 Obtaining |FiPy|
 ----------------
 
-|FiPy| is freely available for download from sourceforge_ via CVS_ or as
-a tarball. The developers recommend CVS_ over tarballs at this early
-stage of the development cycle. To obtain |FiPy| via anonymous CVS issue
-the following commands::
+|FiPy| is freely available for download via CVS_ or as a `compressed
+archive`_.  We recommend CVS_ over archives at this early stage of the
+development cycle.  To obtain |FiPy| via anonymous CVS, issue the following
+commands::
 
-     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
 and then::
 
-     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy co fipy
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout fipy
 
-Further CVS_ information can be found at sourceforge_.
+Further CVS_ information can be found at http://sourceforge.net/cvs/?group_id=118428.
+
+.. _compressed archive:   http://sourceforge.net/project/showfiles.php?group_id=118428
+
+Manual
+======
+
+.. raw:: html
+
+   The manual can be found in 
+   <tt class="literal"><span class="pre">documentation/manual/fipy.pdf</span></tt>
+
+You can `download the latest manual`_ or, if you have obtained |FiPy| via
+CVS_, a fresh copy can be built by issuing the following command in the
+base directory::
+
+    $ python setup.py build_docs --latex --manual
+
+The epydoc_ package is required in order to build the manual.
+
+.. _download the latest manual:  http://sourceforge.net/docman/?group_id=118428
+.. _epydoc:                      http://epydoc.sourceforge.net/
 
 --------------
 Testing |FiPy|
 --------------
 
-From the ``fipy/`` directory, you can verify that |FiPy| works
-properly by executing::
+From the base directory, you can verify that |FiPy| works properly by
+executing::
 
-    python setup.py test
+    $ python setup.py test
 
 Depending on the packages you chose to install in `Recommended Packages`_,
 be sure to set the appropriate environment variables.  You can expect a few
@@ -213,7 +236,7 @@ errors if you did not install all of the recommended packages.
 If you chose to install the `weave`_ package, you should rerun the
 tests with::
 
-    python setup.py test --inline
+    $ python setup.py test --inline
 
 A few tests will fail the first time as a result of the messages output in
 the course of caching the compiled inline code, but a repeat test should
@@ -227,36 +250,43 @@ Once you are confident that all of the requisite packages have been
 installed properly and |FiPy| passes its tests, you can install it by
 typing::
 
-    python setup.py install
+    $ python setup.py install
 
-at the commandline.  Alternatively, you may choose not to formally install
-|FiPy| and to simply work within the ``fipy/`` directory instead.  Keep in
-mind that you will then need take care not to overwrite your changes when
-upgrades to |FiPy| become available (upgrades via CVS_ will handle this
+at the command line.  Alternatively, you may choose not to formally install
+|FiPy| and to simply work within the base directory instead.  Keep in mind
+that you will then need take care to preserve your changes when upgrades to
+|FiPy| become available (upgrades via CVS_ will handle this issue
 automatically).
 
-------
-Manual
-------
+------------
+Using |FiPy|
+------------
 
-If you are not already reading the manual that comes with the |FiPy| distribution
-(``documentation/manual/fipy.pdf``), you can `download the manual`_.
+To see what |FiPy| is capable of, you can run any of the scripts in
+|examples/|.  All should have appropriate executable permissions, allowing
+you to type, *e.g.*::
 
-Alternatively, a fresh copy of the manual can be built with the use of
-epydoc_ by issuing the following commands in the base directory::
+    $ examples/diffusion/steadyState/mesh1D/input.py
 
-     python setup.py build_docs --latex --manual
+at the command line, which should produce a graphical display of the
+solution. 
 
+With judicious use of the weave_ package, we have been able to obtain
+significantly improved performance.  You can invoke this faster code by
+passing the ``--inline`` option at the command line, *i.e.*::
+
+    $ examples/diffusion/steadyState/mesh1D/input.py --inline
+
+In order to customize the examples, or to develop your own scripts, some
+knowledge of Python syntax is required.  We recommend you familiarize
+yourself with the excellent `Python tutorial`_.
+
+.. _Python tutorial: http://docs.python.org/tut/tut.html
+.. _CVS:             http://cvs.sourceforge.net/viewcvs.py/fipy/
 
 .. include:: utils/include.txt
 
-.. _sourceforge:     http://sourceforge.net/projects/fipy/
-.. _CVS:             http://cvs.sourceforge.net/viewcvs.py/fipy/
-.. _Gnuplot:         http://gnuplot.sorceforge.net/
-.. _download the manual: http://sourceforge.net/docman/?group_id=118428
-.. _epydoc:          http://epydoc.sourceforge.net/
-
 .. |FiPy| replace:: |latexFiPy| |htmlFiPy|
-
 .. |TeX| replace:: |latexTeX| |htmlTeX|
+.. |examples/| replace:: |latexExamples/| |htmlExamples/|
 

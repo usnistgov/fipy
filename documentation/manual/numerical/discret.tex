@@ -73,16 +73,17 @@ The discretization for the transient term is given by,
 \frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
-where the subscript, $P$, represents the average value in the CV and
-the superscript, $O$, represents the previous time-step value.  The
-value, $V_P$, is the volume of the CV and $\Delta t$ is the time step
+where the subscript $P$ represents the average value in the CV and
+the superscript $O$ represents the previous time-step value.  The
+value $V_P$ is the volume of the CV and $\Delta t$ is the time step
 size.
 
 \subsection{Convection Term}
 
 The discretization for the convection term is given by,
 \begin{eqnarray}
-\int_V \nabla \cdot (\vec{u} \phi) dV & = & \int_S (\vec{n} \cdot \vec{u})\phi dS \\
+\int_V \nabla \cdot (\vec{u} \phi)\,dV & = & 
+\int_S (\vec{n} \cdot \vec{u})\phi\,dS \\
 & \simeq & \sum_{f} (\vec{n} \cdot \vec{u})_f \phi_f A_f
 \label{eqn:num:con}
 \end{eqnarray}
@@ -92,11 +93,11 @@ the face pointing out of the CV. The value of $\phi_f$ must depend on
 $\phi_A$ and $\phi_P$ when using a first order approximation such
 that,
 \begin{equation}
-\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A.
+\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A,
 \end{equation}
-where the subscript, $A$, refers to adjacent CVs to $P$. The value,
-$\alpha_f$, is determined by the convection scheme, described later in
-this chapter.
+where the subscript $A$ refers to CVs that are adjacent to $P$.  The
+value $\alpha_f$ is determined by the convection scheme, described
+later in this chapter.
 
 \subsection{Diffusion Term}
 
@@ -120,12 +121,12 @@ currently included in \FiPy{}.
 
 The discretization for the source term is given by, 
 \begin{equation}
-\int_V S_{\phi} dV \simeq S_\phi V_P.
+\int_V S_{\phi}\,dV \simeq S_\phi V_P.
 \label{eqn:num:sou}
 \end{equation}
 Including any negative dependence of $S_\phi$ on $\phi$ increases
 solution stability. The dependence can only be included in a linear
-manner so Equation~\eqref{eqn:num:sou} becomes,
+manner so Equation~\eqref{eqn:num:sou} becomes
 \begin{equation}
 V_P (S_C - S_P \phi_P).
 \end{equation}
@@ -142,40 +143,40 @@ and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites
 that are compatible with Python.
 
-Combining equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
-\eqref{eqn:num:dif} and \eqref{eqn:num:sou} the complete
+Combining Equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
+\eqref{eqn:num:dif} and \eqref{eqn:num:sou}, the complete
 discretization for equation~\eqref{eqn:num:gen} can now be written for
-each CV as,
+each CV as
 \begin{eqnarray}
 \frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
 &=&
 \sum_{f} (\vec{n} \cdot \vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
 \\
-&+&
+&&+
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
 + 
-V_P ( S_C - S_P \phi_P )
+V_P ( S_C - S_P \phi_P ).
 \label{eqn:num:dis}
 \end{eqnarray}
 
 Equation~\eqref{eqn:num:dis} is now in the form of a set of linear
 combinations between each CV value and its neighboring values and can be
-written in the following form,
+written in the form
 \begin{equation}
-a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P
+a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,
 \label{eqn:num:dap}
 \end{equation}
 where
 \begin{eqnarray}
 a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} - F_f) \\
 a_{A} & = & ( 1 - \alpha_f ) F_f + D_f \\
-b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t} 
+b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t}.
 \end{eqnarray}
 The face coefficients, $F_f$ and $D_f$, represent the convective strength
-and diffusive conductance respectively, and are given by,
+and diffusive conductance respectively, and are given by
 \begin{eqnarray}
 F_f & = & A_f \rho_f ( \vec{u} \cdot \vec{n} )_f \\
-D_f & = & \frac{A_f \Gamma_f}{d_{AP}} 
+D_f & = & \frac{A_f \Gamma_f}{d_{AP}} .
 \end{eqnarray}
 
 

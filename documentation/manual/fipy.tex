@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 9/29/04 {11:16:32 AM} 
+ %                                last update: 10/4/04 {3:22:17 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -76,7 +76,9 @@
 \subtitle{A Finite Volume PDE Solver Using Python}
 
 \author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
-\affiliation{Metallurgy Division \and Materials Science and Engineering Laboratory}
+\affiliation{Metallurgy Division \and
+and the Center for Theoretical and Computational Materials Science 
+\and Materials Science and Engineering Laboratory}
 
 \maketitle
 
@@ -84,7 +86,7 @@
 
 \input license
 
-\rule{\textwidth}{1pt}
+\rule{\textwidth}{0.1pt}
 
 \input disclaimer
 
@@ -104,7 +106,7 @@
 
 \parttoc
 
-% A. Technical Overview
+% Technical Overview
 
 \chapter{Overview}
 
@@ -112,16 +114,25 @@
 
 \input readme  
 
-% B Installation
+% Installation
 
-\chapter{Installation}
+\chapter{Installation and Usage}
 \label{chap:Installation}
 
 \inputencoding{latin1}
 
 \input installation
 
-% C Implementation
+% Numerical
+
+\chapter{Theoretical and Numerical Background}
+\label{chap:Numerics}
+
+\inputencoding{ascii}
+
+\input numerical/numerical
+
+% Implementation
 
 \chapter{Design and Implementation}
 \label{chap:Design}
@@ -130,38 +141,22 @@
 
 \input introduction
 
-% D Numerical
+% TODO List
 
-\chapter{Numerical Methods}
-\label{chap:Numerics}
-
-\inputencoding{ascii}
-
-\input numerical/numerical
-
-% E TODO List
-
-\chapter{To-Do List}
+\chapter{Future Work}
 \label{chap:ToDo}
 
 \inputencoding{latin1}
 
 \input todolist
 
-% F Credits
-
-\chapter{Credits}
-\label{chap:Credits}
-
-\inputencoding{latin1}
-
-\input credits
-
 %%%%%%%%%%%%%%%%%
 % 2. EXAMPLES
 %%%%%%%%%%%%%%%%%
 
 \settocdepth{all} 
+
+\sloppy
 
 \part{Examples}
 \label{part:Examples}
@@ -225,24 +220,6 @@
 \newpage
 \input{examples/latex/examples.phase.symmetry.input-module}
 \newpage
-
-\chapter{Level Set Examples}
-
-\input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
-\newpage
-\input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
-\newpage
-\input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
-\newpage
-\input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
-\newpage
-\input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
-\newpage
-\input{examples/latex/examples.levelSet.advection.circle.input-module}
-\newpage
-
-\chapter{Electrochemistry Phase Field Examples}
-
 \input{examples/latex/examples.elphf.input1Dphase-module}
 \newpage
 \input{examples/latex/examples.elphf.input1D-module}
@@ -266,6 +243,22 @@
 \input{examples/latex/examples.elphf.input1DphaseTernAndElectrons-module}
 \newpage
 
+
+\chapter{Level Set Examples}
+
+\input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.advection.circle.input-module}
+\newpage
+
 \chapter{Cahn-Hilliard Examples}
 
 \input{examples/latex/examples.cahnHilliard.cahnHilliardTanh1D-module}
@@ -273,32 +266,28 @@
 
 \settocdepth{all} 
 
-% \include{examples}
-% 
-% \include{theory}
-% 
-% \include{code}
- 
-% \appendix
-% 
-% \part{APIs}
-% 
-% \settocdepth{chapter} 
-% 
-% \parttoc
-% 
-% \input api
-% 
-% \settocdepth{all} 
-
 \backmatter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                 Index                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \pdfbookmark[-1]{Index}{index}
+\fussy
+
 \printindex
+
+\appendix 
+
+% Credits
+
+\chapter*{Credits}
+\addcontentsline{toc}{part}{Credits} 
+\label{chap:Credits}
+
+\inputencoding{latin1}
+
+\input credits
+
 
 
 \end{document}

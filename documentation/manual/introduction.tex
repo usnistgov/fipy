@@ -39,26 +39,27 @@ The aims mentioned above can be summarized as follows:
     \item Support the distribution of code to the end users.
 \end{itemize}
 
-\section{Background}
-
-The equations that model the evolution of physical, chemical and
-biological systems often have a remarkably universal form.  Indeed,
-partial differential equations (PDEs) have proven necessary to model
-complex physical systems and processes that involve variations in both
-space and time.  In general, given a variable of interest \( \phi \)
-such as species concentration, pH or temperature, there exists an
-evolution equation of the form
-\begin{equation}
-  \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
-  \label{eqn:general-equation}
-\end{equation}
-where \( H \) is a function of \(\phi\), other state variables
-\(\lambda_i\), and higher order derivatives of all of these variables.
-Examples of such systems are wide ranging, but include problems that
-exhibit a combination of diffusing and reacting species, as well as
-such diverse problems as determination of the electric potential in
-heart tissue, of fluid flow, stress evolution, and even the
-Schr\"odinger equation.
+% \section{Background}
+% \label{sec:Background}
+% 
+% The equations that model the evolution of physical, chemical and
+% biological systems often have a remarkably universal form.  Indeed,
+% partial differential equations (PDEs) have proven necessary to model
+% complex physical systems and processes that involve variations in both
+% space and time.  In general, given a variable of interest \( \phi \)
+% such as species concentration, pH or temperature, there exists an
+% evolution equation of the form
+% \begin{equation}
+%   \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
+%   \label{eqn:general-equation}
+% \end{equation}
+% where \( H \) is a function of \(\phi\), other state variables
+% \(\lambda_i\), and higher order derivatives of all of these variables.
+% Examples of such systems are wide ranging, but include problems that
+% exhibit a combination of diffusing and reacting species, as well as
+% such diverse problems as determination of the electric potential in
+% heart tissue, of fluid flow, stress evolution, and even the
+% Schr\"odinger equation.
 
 The initial implementation of \FiPy{} has been developed to address
 model problems in materials science such as poly-crystals, dendritic
@@ -223,6 +224,50 @@ framework.
 
 \Python{} has modules (\doctest{}, \unittest{}) that automate the
 testing procedure.
+
+\section{Implementation}
+
+The \Python{} classes that make up \FiPy{} are described in detail in
+the \href{file:reference.pdf}{\textit{\FiPy{} Programmer's Reference}},
+but we give a brief overview here.  \FiPy{} is based around three
+fundamental \Python{} classes: \Class{Variable}, \Class{Mesh}, and
+\Class{Equation}.  Using the terminology of
+Section~\ref{sec:GeneralConservationEquation}, the \Class{Mesh} represents
+the domain of interest. A particular type of
+\Class{Variable}, called a \Class{CellVariable}, represents \( \phi
+\) at the centers of the \Class{Cell}s of the \Class{Mesh}. the \Class{Equation} represents
+Equation~\eqref{eqn:general-equation}.  An equation is composed of multiple
+\Class{Term} objects.  \Class{BoundaryCondition} objects are used to
+describe the conditions on the boundaries of the \Class{Mesh}.
+
+A \Class{CellVariable} describes the values of the field \( \phi \),
+but it is not concerned with their geometry; that role is taken by the
+\Class{Mesh}.  At this point, it may be useful to examine some of the
+example problems in Part~\ref{part:Examples}.
+
+An important property of \Class{Variable} objects is that they can
+describe dependency relationships, such that:
+\begin{verbatim}
+    >>> a = Variable(value = 3)
+    >>> b = a * 4
+\end{verbatim}
+does not assign the value \verb|12| in \verb|b|, but rather it assigns
+a multiplication operator object to \verb|b|, which depends on the
+\Class{Variable} \verb|a|:
+\begin{verbatim}
+    >>> b
+    (Variable(value = 3) * 4)
+    >>> a.setValue(5)
+    >>> b
+    (Variable(value = 5) * 4)
+\end{verbatim}
+The numerical value of the \Class{Variable} is not calculated until it
+is needed (a process known as ``lazy evaluation''):
+\begin{verbatim}
+    >>> print b
+    20
+\end{verbatim}
+
 
 
 \section{Outstanding Issues}

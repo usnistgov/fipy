@@ -1,4 +1,24 @@
 \section{General Conservation Equation}
+\label{sec:GeneralConservationEquation}
+
+The equations that model the evolution of physical, chemical and
+biological systems often have a remarkably universal form.  Indeed,
+partial differential equations (PDEs) have proven necessary to model
+complex physical systems and processes that involve variations in both
+space and time.  In general, given a variable of interest \( \phi \)
+such as species concentration, pH or temperature, there exists an
+evolution equation of the form
+\begin{equation}
+  \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
+  \label{eqn:general-equation}
+\end{equation}
+where \( H \) is a function of \(\phi\), other state variables
+\(\lambda_i\), and higher order derivatives of all of these variables.
+Examples of such systems are wide ranging, but include problems that
+exhibit a combination of diffusing and reacting species, as well as
+such diverse problems as determination of the electric potential in
+heart tissue, of fluid flow, stress evolution, and even the
+Schr\"odinger equation.
 
 A general conservation equation, solved using \FiPy{}, can include any
 combination of the following terms,
@@ -20,7 +40,7 @@ combination of the following terms,
 \underbrace{
   \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
   \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
-}_{\text{n\textit{th} order}}
+}_{\text{$n$\textsuperscript{th} order}}
 +
 \underbrace{
   \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
@@ -29,14 +49,14 @@ combination of the following terms,
 \label{eqn:num:gen}
 \end{equation}
 where $\rho$, $\vec{u}$ and $\Gamma_i$ represent coefficients in the
-transient, convection and diffusion terms respectively. These
+transient, convection and diffusion terms respectively.  These
 coefficients can be arbitrary functions of any parameters or variables
-in the system. The variable $\phi$, represents the unknown quantity in
-the equation. The n\textit{th} order term can represent any higher
-order diffusion-type term depending on the exponent $n$. For example,
-the n\textit{th} order term can represent a diffusion term when the
-exponent $n = 1$ or a Cahn-Hilliard term when $n = 2$. A Cahn-Hilliard
-term has the following form,
+in the system.  The variable $\phi$, represents the unknown quantity
+in the equation.  The $n$\textsuperscript{th} order term can represent
+any higher order diffusion-type term depending on the exponent $n$.
+For example, the $n$\textsuperscript{th} order term can represent a
+diffusion term when the exponent $n = 1$ or a Cahn-Hilliard term when
+$n = 2$.  A Cahn-Hilliard term has the following form,
 \begin{equation}
   \nabla \cdot \left( \Gamma_1 \nabla \left[ 
   \nabla \cdot \left( \Gamma_2 \nabla \phi \right) \right] \right)

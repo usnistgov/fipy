@@ -18,12 +18,14 @@ Release goals 0.1
 
     - Separate out pysparse:
   
-      * Add as separate CVS project in the fipy sourceforge CVS directory.
+      * Add as separate CVS project in the `SourceForge CVS repository`_.
 
     - Separate out the profiler:
 
       * Pull it out.
       * Add to local repository.
+
+    - Move ElPhF into ``examples/phase/``.
 
   * Stop FiPy writing temporary files during test case execution:
 
@@ -81,6 +83,8 @@ Release Goals 0.2
 
   * Pass modified pysparse to Roman and ask for improved functionality.
 
+  * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
+
 - Refactoring:
 
   * Use an array module rather than Numeric and switch to numarray.
@@ -88,25 +92,25 @@ Release Goals 0.2
   * Viewers:
 
     - Create base viewing class.
-    - Use viewers in scipy that are similar to gist and remove gist.
+    - Use viewers in scipy that are similar to gist and remove gist (?).
     - Refactor PyX viewer.
 
-  * Merge terms and equations into one object:
+  * Merge ``term`` and ``equation`` objects into one object:
 
     - Implicitly define solvers for terms-equations.
  
-  * Use doctest exclusively.
+  * Use ``doctest`` exclusively.
 
-  * Make the build_docs just update the files that have changed since
+  * Make the ``build_docs`` just update the files that have changed since
     the last build.
     
   * Major mesh refactor:
 
-    - Remove separate nummesh and pymesh structure
-    - Think about the mesh hierarchy as it stands:
+    - Remove separate ``nummesh`` and ``pymesh`` structure
+    - Think about the ``mesh`` hierarchy as it stands:
 
       * Many branches at present.
-      * Consolidate functionality (__add__ etc).
+      * Consolidate functionality (``__add__`` etc).
       * How does Gmsh fit in?
 
     - Lazy mesh array evaluations.
@@ -134,6 +138,7 @@ Long term Goals
 	
   * Look into pyrex as an alternative to inlining.
   * Laminar Fluid Flow module.
+  * DX viewer.
 
 - Refactoring:
 
@@ -142,3 +147,10 @@ Long term Goals
 - Documentation:
 
   * Write a paper on FiPy.
+
+
+.. _SourceForge CVS repository:       http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _Steve:                            mailto:slanger@nist.gov
+.. _Konrad Hinsen:                    mailto:hinsen@cnrs-orleans.fr
+.. _Roman Geus:                       http://people.web.psi.ch/geus/
+
