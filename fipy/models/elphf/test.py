@@ -122,7 +122,8 @@ class TestElPhF1D(TestElPhF):
 	self.valueLeft="0.3 mol/l"
 	self.valueRight="0.6 mol/l"
 	self.val1 = self.val2 = 0.45
-	self.func = lambda center: center[0] > self.L/2
+        self.L = self.nx * self.dx
+	self.func = lambda center, L = self.L: center[0] > L/2
         TestElPhF.setUp(self)
 
 class TestElPhF2D(TestElPhF):
@@ -135,7 +136,8 @@ class TestElPhF2D(TestElPhF):
 	self.valueLeft="0.3 mol/l"
 	self.valueRight="0.6 mol/l"
 	self.val1 = self.val2 = 0.45
-	self.func = lambda center: center[0] > self.L/2
+        self.L = self.nx * self.dx
+	self.func = lambda center, L = self.L: center[0] > L/2
 	TestElPhF.setUp(self)
 
 class TestElPhF2DCorner(TestElPhF):
@@ -149,13 +151,14 @@ class TestElPhF2DCorner(TestElPhF):
 	self.valueRight="0.6 mol/l"
 	self.val1 = 0.375
 	self.val2 = 0.525
-	self.func = lambda center: (center[0] > self.L/2) and (center[1] > self.L/2) 
+        self.L = self.nx * self.dx
+	self.func = lambda center, L = self.L: (center[0] > L/2) and (center[1] > L/2) 
 	TestElPhF.setUp(self)
 	
 def suite():
     theSuite = unittest.TestSuite()
-#     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
-#     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1D))
+    theSuite.addTest(unittest.makeSuite(TestElPhF2D))
     theSuite.addTest(unittest.makeSuite(TestElPhF2DCorner))
     return theSuite
     
