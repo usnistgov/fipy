@@ -152,7 +152,11 @@ class AdaptiveMesh2D(Mesh2D):
 
     def writeGeometryFile(self):
         ## do the geometry file
-        geomFile = open("temp.geo", mode = 'w')
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        fileName = os.path.join(tmp, 'temp.geo')
+        geomFile = open(fileName, mode = 'w')
         ## create the points
         pointList = ["Point(" + str(i + 1) + ") = " + bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
         for i in pointList:
@@ -189,7 +193,11 @@ class AdaptiveMesh2D(Mesh2D):
 
     def writeBackgroundMesh(self):
         ## write the mesh
-        bgmeshFile = open("tempbgmesh.pos", mode = 'w')
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        bgFile = os.path.join(tmp, 'tempbgmesh.pos')
+        bgmeshFile = open(bgFile, mode = 'w')
         bgmeshFile.write("View \"characteristic lengths\" {")
         for i in range(len(self.varMesh.getCellCenters())):
             bgmeshFile.write("ST" + parenList(self.cellOutputs[i]) + bracedList(self.cellVertexValues[i]) + ";\n")
@@ -197,9 +205,15 @@ class AdaptiveMesh2D(Mesh2D):
         bgmeshFile.close()
 
     def finalInit(self):
-        os.system("gmsh temp.geo -bgm tempbgmesh.pos -format msh -2") ##  -v 0
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        fileName = os.path.join(tmp, 'temp.geo')
+        bgFile = os.path.join(tmp, 'tempbgmesh.pos')
+        os.system("gmsh " + fileName + " -bgm " + bgFile + " -format msh -2") ##  -v 0
         dg = DataGetter()
-        args = dg.getData("temp.msh", dimensions = 2)
+        fileName = os.path.join(tmp, 'temp.msh')
+        args = dg.getData(fileName, dimensions = 2)
         Mesh2D.__init__(self, args[0], args[1], args[2])
 
 def _test():
