@@ -108,6 +108,9 @@ class TestMeshBase(TestBase):
 
     def testExteriorCellIDs(self):
         self.assertArrayEqual(self.exteriorCellIDs, self.mesh.getExteriorCellIDs())
+
+    def testCellNormals(self):
+        self.assertArrayWithinTolerance(self.cellNormals, self.mesh.getCellNormals())
         
     def testResult(self):
         pass
