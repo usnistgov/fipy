@@ -589,6 +589,9 @@ class Variable:
     def arctan(self):
 	return self.getUnaryOperatorVariable(lambda a: array.arctan(a))
 
+    def exp(self):
+	return self.getUnaryOperatorVariable(lambda a: array.exp(a))
+
     def sin(self):
 	return self.getUnaryOperatorVariable(lambda a: array.sin(a))
 		

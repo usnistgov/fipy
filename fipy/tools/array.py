@@ -95,6 +95,14 @@ def sqrt(arr):
 	return Numeric.sqrt(arr)
     else:
 	return umath.sqrt(arr)
+
+def exp(arr):
+    if _isPhysical(arr):
+	return arr.exp()
+    elif type(arr) is type(Numeric.array((0))):
+	return Numeric.exp(arr)
+    else:
+	return umath.exp(arr)
 	
 def tan(arr):
     if _isPhysical(arr):
