@@ -4,7 +4,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/12/03 {10:10:24 PM} 
+ #                                last update: 12/18/03 {3:15:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -36,7 +36,7 @@ from variable import Variable
 import Numeric
 
 class VectorFaceVariable(Variable):
-    def __init__(self,mesh,name,value=0., scaling = None, unit = None):
+    def __init__(self,mesh,name = '',value=0., scaling = None, unit = None):
 	array = Numeric.zeros([len(mesh.getFaces()),mesh.getDim()],'d')
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, array = array, scaling = None, unit = None)

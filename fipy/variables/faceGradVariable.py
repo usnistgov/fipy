@@ -1,11 +1,10 @@
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "exponentialConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/18/03 {4:46:00 PM} 
+ #  FILE: "faceGradVariable.py"
+ #                                    created: 12/18/03 {2:52:12 PM} 
+ #                                last update: 12/18/03 {3:28:02 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,27 +31,37 @@
  #  
  # ###################################################################
  ##
-"""
 
-from convectionTerm import ConvectionTerm
+from vectorFaceVariable import VectorFaceVariable
 import Numeric
 
-class PowerLawConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	eps = 1e-3
-	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+class FaceGradVariable(VectorFaceVariable):
+    def __init__(self, var):
+	VectorFaceVariable.__init__(self, var.getMesh())
+	self.var = self.requires(var)
 	
-	alpha = Numeric.where(                                   P > 10.,                 (P - 1.) / P,   0.5)
-
-	tmp = (1. - P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where(    Numeric.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp)/P, alpha)
-
-	tmp = (1. + P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where( Numeric.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.)/P, alpha)
-
-	alpha = Numeric.where(                                 -10. >  P,                      -1. / P, alpha)
+    def calcValue(self):
+	dAP = self.mesh.getCellDistances()
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	value = self.var[:]
+	N = (Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
+	normals = self.mesh.getOrientedFaceNormals()
 	
-	return alpha
+	tangents1 = self.mesh.getFaceTangents1()
+	tangents2 = self.mesh.getFaceTangents2()
+	cellGrad = self.var.getGrad()
+	grad1 = Numeric.take(cellGrad[:], id1)
+	grad2 = Numeric.take(cellGrad[:], id2)
+	t1grad1 = Numeric.sum(tangents1*grad1,1)
+	t1grad2 = Numeric.sum(tangents1*grad2,1)
+	t2grad1 = Numeric.sum(tangents2*grad1,1)
+	t2grad2 = Numeric.sum(tangents2*grad2,1)
+	T1 = (t1grad1 + t1grad2) / 2.
+	T2 = (t2grad1 + t2grad2) / 2.
+	
+	N = Numeric.reshape(N, (len(normals),1)) 
+	T1 = Numeric.reshape(T1, (len(normals),1)) 
+	T2 = Numeric.reshape(T2, (len(normals),1)) 
+
+	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/17/03 {11:40:28 AM} 
+ #                                last update: 12/18/03 {4:56:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,7 +46,8 @@ import unittest
 from tests.testBase import TestBase
 from meshes.grid2D import Grid2D
 import elphf
-from variables.cellVariable import CellVariable
+from componentVariable import ComponentVariable
+from phaseVariable import PhaseVariable
 
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
@@ -62,16 +63,6 @@ class TestElPhF(TestBase):
     def setUp(self):
 	self.tolerance = 1e-7
 
-        phaseParameters={
-            'tau' :        0.1,
-            'epsilon' :    0.008,
-            's' :          0.01,
-            'alpha' :      0.015,
-            'c2':          0.0,
-            'anisotropy':  0.,
-            'symmetry':    4.
-            }
-        
 	self.L = self.nx * self.dx
 
 	self.mesh = Grid2D(
@@ -80,15 +71,25 @@ class TestElPhF(TestBase):
 	    nx = self.nx,
 	    ny = self.ny)
         
-	self.var1 = CellVariable(
+	self.phase = PhaseVariable(
+	    name = "phase",
+	    mesh = self.mesh,
+	    value = 1.
+	    )
+	    
+	self.var1 = ComponentVariable(
 	    name = "c1",
 	    mesh = self.mesh,
+	    standardPotential = 1.,
+	    barrierHeight = 1.,
 	    value = self.valueLeft
 	    )
 
-	self.var2 = CellVariable(
+	self.var2 = ComponentVariable(
 	    name = "c2",
 	    mesh = self.mesh,
+	    standardPotential = 1.,
+	    barrierHeight = 1.,
 	    value = self.valueRight
 	    )
 	    
@@ -97,12 +98,16 @@ class TestElPhF(TestBase):
 	self.var1.setValue(self.valueRight,setCells)
 	self.var2.setValue(self.valueLeft,setCells)
 	    
+	fields = {
+	    'phase': self.phase,
+	    'substitutionals': (self.var1,self.var2)
+	}
+	
 	parameters = {
-	    'substitutionals': (self.var1,self.var2),
 	    'diffusivity': 1.
 	}
 
-	self.it = elphf.makeIterator(mesh = self.mesh, parameters = parameters)
+	self.it = elphf.makeIterator(mesh = self.mesh, fields = fields, parameters = parameters)
 	
     def testResult(self):
 	self.it.iterate(steps = self.steps, stepDuration = self.timeStep)
@@ -119,8 +124,10 @@ class TestElPhF1D(TestElPhF):
         self.nx = 40
         self.ny = 1
 	self.dx = self.dy = 1.
-	self.valueLeft="0.3 mol/l"
-	self.valueRight="0.6 mol/l"
+	self.valueLeft=0.3
+	self.valueRight=0.6
+# 	self.valueLeft="0.3 mol/l"
+# 	self.valueRight="0.6 mol/l"
 	self.val1 = self.val2 = 0.45
         self.L = self.nx * self.dx
 	self.func = lambda center, L = self.L: center[0] > L/2
@@ -133,8 +140,10 @@ class TestElPhF2D(TestElPhF):
 	self.nx = 40
 	self.ny = 40
 	self.dx = self.dy = 1.
-	self.valueLeft="0.3 mol/l"
-	self.valueRight="0.6 mol/l"
+	self.valueLeft=0.3
+	self.valueRight=0.6
+# 	self.valueLeft="0.3 mol/l"
+# 	self.valueRight="0.6 mol/l"
 	self.val1 = self.val2 = 0.45
         self.L = self.nx * self.dx
 	self.func = lambda center, L = self.L: center[0] > L/2
@@ -147,8 +156,10 @@ class TestElPhF2DCorner(TestElPhF):
 	self.nx = 40
 	self.ny = 40
 	self.dx = self.dy = 1.
-	self.valueLeft="0.3 mol/l"
-	self.valueRight="0.6 mol/l"
+	self.valueLeft=0.3
+	self.valueRight=0.6
+# 	self.valueLeft="0.3 mol/l"
+# 	self.valueRight="0.6 mol/l"
 	self.val1 = 0.375
 	self.val2 = 0.525
         self.L = self.nx * self.dx

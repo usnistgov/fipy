@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/16/03 {9:42:04 AM} 
+ #                                last update: 12/18/03 {5:04:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,16 +53,20 @@
 """
 import elphf
 from meshes.grid2D import Grid2D
-from variables.cellVariable import CellVariable
+from componentVariable import ComponentVariable
+from phaseVariable import PhaseVariable
+# from variables.cellVariable import CellVariable
 from viewers.grid2DGistViewer import Grid2DGistViewer
 
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
-valueLeft="0.3 mol/l"
-valueRight="0.6 mol/l"
-# valueLeft=0.3
-# valueRight=0.6
+# valueLeft="0.3 mol/l"
+# valueRight="0.4 mol/l"
+# valueOther="0.2 mol/l"
+valueLeft=0.3
+valueRight=0.4
+valueOther=0.2
 
 nx = 40
 dx = 1.
@@ -72,39 +76,72 @@ mesh = Grid2D(
     dx = dx,
     dy = 1.,
     nx = nx,
-    ny = 40)
-
-var1 = CellVariable(
+    ny = 1)
+    
+phase = PhaseVariable(
+    name = "phase",
+    mesh = mesh,
+    value = 1.,
+    viewer = Grid2DGistViewer
+    )
+    
+var1 = ComponentVariable(
     name = "c1",
+    standardPotential = 1.,
+    barrierHeight = 0.1,
     mesh = mesh,
     value = valueLeft,
     viewer = Grid2DGistViewer
     )
 
-var2 = CellVariable(
+var2 = ComponentVariable(
     name = "c2",
+    standardPotential = 1.,
+    barrierHeight = 0.1,
     mesh = mesh,
     value = valueRight,
     viewer = Grid2DGistViewer
     )
    
+var3 = ComponentVariable(
+    name = "c3",
+    standardPotential = 1.,
+    barrierHeight = 0.1,
+    mesh = mesh,
+    value = valueOther,
+    viewer = Grid2DGistViewer
+    )
+   
 rightCells = mesh.getCells(lambda center: center[0] > L/2.)
 
+# phase.setValue(0.,rightCells)
 var1.setValue(valueRight,rightCells)
 var2.setValue(valueLeft,rightCells)
+var3.setValue(0.1,rightCells)
     
+fields = {
+    'phase': phase,
+    'substitutionals': (var1,var2,var3),
+}
+
 parameters = {
-    'substitutionals': (var1,var2),
     'diffusivity': 1.
 }
 
-it = elphf.makeIterator(mesh = mesh, parameters = parameters)
+it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
+
+# print var1[:]
+# print var2[:]
+# print var3[:]
 
 var1.plot()
 var2.plot()
+var3.plot()
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
+raw_input()
+
+# fudge = calibrate_profiler(10000)
+# profile = Profiler('profile', fudge=fudge)
 
 for i in range(5):
     it.iterate(1,10000.)
@@ -114,8 +151,12 @@ for i in range(5):
     
     var1.plot()
     var2.plot()
+    var3.plot()
 
-profile.stop()
+print var1
+print var2
+print var3
+# profile.stop()
 	
 raw_input()
 

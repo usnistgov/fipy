@@ -1,11 +1,10 @@
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "exponentialConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/18/03 {4:46:00 PM} 
+ #  FILE: "componentVariable.py"
+ #                                    created: 12/18/03 {12:18:05 AM} 
+ #                                last update: 12/18/03 {4:48:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,27 +31,19 @@
  #  
  # ###################################################################
  ##
-"""
 
-from convectionTerm import ConvectionTerm
-import Numeric
+from variables.cellVariable import CellVariable
+from variables.variable import Variable
 
-class PowerLawConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	eps = 1e-3
-	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+class PhaseVariable(CellVariable):
+    def __init__(self, mesh, name = '', value=0., viewer = None, hasOld = 1):
+	CellVariable.__init__(self, mesh, name, value, viewer, hasOld)
+	self.p = self**3 * (6. * self**2 - 15. * self + 10.)
+	self.g = (self * (1. - self))**2
 	
-	alpha = Numeric.where(                                   P > 10.,                 (P - 1.) / P,   0.5)
-
-	tmp = (1. - P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where(    Numeric.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp)/P, alpha)
-
-	tmp = (1. + P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where( Numeric.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.)/P, alpha)
-
-	alpha = Numeric.where(                                 -10. >  P,                      -1. / P, alpha)
+    def get_p(self):
+	return self.p
 	
-	return alpha
+    def get_g(self):
+	return self.g
 

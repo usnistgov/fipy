@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/15/03 {3:17:13 PM} 
+                               last update: 12/18/03 {4:49:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -67,12 +67,12 @@ class ConvectionTerm(FaceTerm):
 	
     def calculateCoeffGeom(self,dt):
 	areas = self.mesh.getOrientedAreaProjections()
-	self.coeff = Numeric.sum(self.convCoeff * areas, 1)
+	self.coeff = Numeric.sum((self.convCoeff * areas)[:], 1)
 	if self.diffusionTerm == None:
 	    diffCoeff = 1e-20
 	else:
 	    diffCoeff = self.diffusionTerm.getCoeff()
-	    
+	
 	P = -self.coeff / diffCoeff
 	
 	alpha = self.calculateAlpha(P)

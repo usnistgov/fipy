@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/15/03 {2:38:02 PM} 
+                               last update: 12/18/03 {4:42:23 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -43,9 +43,11 @@ they have been modified.
 import meshes.tools
 from tools.dimensionalization import PhysicalField
 from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
+# from binaryOperatorVariable import BinaryOperatorVariable
 import Numeric
 
-class Variable(PhysicalField):
+class Variable:
+# class Variable(PhysicalField):
     
     def __init__(self, mesh, name = '', value=0., array = None, scaling = None, unit = None):
 	self.mesh = mesh
@@ -54,8 +56,8 @@ class Variable(PhysicalField):
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
-	if type(value) not in [type(1),type(1.),type(Numeric.array((1)))] and not isPhysicalQuantity(value):
-	    value = PhysicalField(value)
+# 	if type(value) not in [type(1),type(1.),type(Numeric.array((1)))] and not isPhysicalQuantity(value):
+# 	    value = PhysicalField(value)
 	    
 	self.scaling = scaling
 # 	if scaling is not None:
@@ -68,28 +70,29 @@ class Variable(PhysicalField):
 # 	    self.scaling = PhysicalField(1., unit)
 # 	else:
 # 	    self.scaling = 1
-	if isPhysicalQuantity(value):
-	    unit = value.unit
-	    value = value.value
-	else:
-	    unit = "m/m"
+# 	if isPhysicalQuantity(value):
+# 	    unit = value.unit
+# 	    value = value.value
+# 	else:
+# 	    unit = "m/m"
 	    
 	if array is None:
 	    array = Numeric.array(value)
 	else:
 	    array[:] = value
 
-	PhysicalField.__init__(self, array, unit)
+	self.value = array
+# 	PhysicalField.__init__(self, array, unit)
 		
 	self.markFresh()
 	    
-    def __coerce__(self,other):
-	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1)]:
-	    return (self.getValue(),other)
-	elif isinstance(other, Variable):
-	    return (self.getValue(),other.getValue())
-	else:
-	    return None
+#     def __coerce__(self,other):
+# 	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1)]:
+# 	    return (self.getValue(),other)
+# 	elif isinstance(other, Variable):
+# 	    return (self.getValue(),other.getValue())
+# 	else:
+# 	    return None
 	    
     def __lt__(self,other):
 	return self.getValue() < other
@@ -111,10 +114,13 @@ class Variable(PhysicalField):
 	
     def __getitem__(self, index): 
 	return self.getValue()[index]
-
+	
+    def __repr__(self):
+	return (self.__class__.__name__ + '(' + `self.getValue()` + ')')
+	
     def __setitem__(self, index, value): 
-# 	self.value[index] = value
-	PhysicalField.__setitem__(self, index, value)
+	self.value[index] = value
+# 	PhysicalField.__setitem__(self, index, value)
 	self.markFresh()
 		
     def getMesh(self):
@@ -135,11 +141,13 @@ class Variable(PhysicalField):
 	pass
 	
     def markFresh(self):
+# 	print self, "is fresh"
 	self.stale = 0
 	for subscriber in self.subscribedVariables:
 	    subscriber.markStale() 
 
     def markStale(self):
+# 	print self, "is stale"
 	self.stale = 1
 	for subscriber in self.subscribedVariables:
 	    subscriber.markStale()
@@ -154,4 +162,115 @@ class Variable(PhysicalField):
     def requiredBy(self, var):
 	assert isinstance(var, Variable)
 	self.subscribedVariables.append(var)
+	
+    def getVariableClass(self):
+	return Variable
+	
+    def getUnaryOperatorVariable(self, op):
+	parentClass = self.getVariableClass()
+	class unOp(parentClass):
+	    def __init__(self, op, var, mesh = None):
+		if mesh is None:
+		    mesh = var.getMesh()
+		parentClass.__init__(self, mesh = mesh)
+		self.op = op
+		self.var = self.requires(var)
+		
+	    def calcValue(self):
+		self.value = self.op(self.var.getValue())
+		
+# 	    def __repr__(self):
+# 		return (`self.op` + "(" + `self.var` + ") = " + `self.value`)
+		
+	return unOp(op, self)
+	    
+    def getBinaryOperatorVariable(self, op, var2):
+	parentClass = self.getVariableClass()
+	class binOp(parentClass):
+	    def __init__(self, op, var1, var2, mesh = None):
+		if mesh is None:
+		    mesh = var1.getMesh()
+		parentClass.__init__(self, mesh = mesh)
+		self.op = op
+		self.var1 = self.requires(var1)
+		self.var2 = self.requires(var2)
+		
+	    def calcValue(self):
+		if isinstance(self.var2, Variable):
+		    val2 = self.var2.getValue()
+		else:
+		    val2 = self.var2
+		    
+		self.value = self.op(self.var1.getValue(), val2)
+		
+# 	    def __repr__(self):
+# 		return (`self.op` + "(" + `self.var1` + "," + `self.var2` + ") = " + `self.value`)
+		
+	return binOp(op, self, var2)
+	
+    def __add__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.add, other)
+	
+    def __radd__(self, other):
+	return self.__add__(other)
 
+    def __sub__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.subtract, other)
+	
+    def __rsub__(self, other):
+	return self.__sub__(other)
+	    
+    def __mul__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.multiply, other)
+	
+    def __rmul__(self, other):
+	return self.__mul__(other)
+	    
+#     def __floordiv__(self, other):
+# 	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+# 	return BinaryOperatorVariable(Numeric.divide, self, other)
+	
+    def __mod__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.fmod, other)
+	    
+    def __rmod__(self, other):
+	return self.__mod__(other)
+	    
+#     def __divmod__(self, other):
+# 	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+# 	return BinaryOperatorVariable(self.value.__divmod__, self, other)
+	    
+    def __pow__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.power, other)
+	    
+    def __rpow__(self, other):
+	return self.__pow__(other)
+	    
+    def __div__(self, other):
+	# avoid recursive imports by declaring the class directly
+# 	from binaryOperatorVariable import BinaryOperatorVariable
+	return self.getBinaryOperatorVariable(Numeric.divide, other)
+	
+    def __rdiv__(self, other):
+	return self.__div__(other)
+	    
+    def __neg__(self):
+	return -1 * self
+	
+    def __pos__(self):
+	return self
+	
+    def __abs__(self):
+	return self.getUnaryOperatorVariable(Numeric.fabs)

@@ -1,11 +1,10 @@
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "substitutionalConvectionCoeff.py"
- #                                    created: 12/9/03 {3:32:09 PM} 
- #                                last update: 12/15/03 {3:16:03 PM} 
+ #  FILE: "componentVariable.py"
+ #                                    created: 12/18/03 {12:18:05 AM} 
+ #                                last update: 12/18/03 {3:42:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,23 +31,17 @@
  #  
  # ###################################################################
  ##
-"""
 
-from variables.vectorFaceVariable import VectorFaceVariable
-from substitutionalSumVariable import SubstitutionalSumVariable
-import Numeric
+from variables.cellVariable import CellVariable
 
-class SubstitutionalConvectionCoeff(VectorFaceVariable):
-    def __init__(self,mesh,diffusivity,Cj,substitutionals):
-	VectorFaceVariable.__init__(self,mesh,Cj.name + "_convection")
-	self.Dj = diffusivity
-	self.substitutionalSum = self.requires(SubstitutionalSumVariable(
-	    mesh = mesh, 
-	    Cj = Cj, 
-	    substitutionals = substitutionals))
-	    
-    def calcValue(self):
-	num = self.Dj * self.substitutionalSum.getFaceGrad() 
-	den = (1. - self.substitutionalSum.getFaceValue())
-	self.value = num / Numeric.reshape(den,(len(num),1))
-
+class ComponentVariable(CellVariable):
+    def __init__(self, mesh, standardPotential, barrierHeight, name = '', value=0., viewer = None, hasOld = 1):
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, viewer = viewer, hasOld = hasOld)
+	self.standardPotential = standardPotential
+	self.barrierHeight = barrierHeight
+	
+    def getStandardPotential(self):
+	return self.standardPotential
+	
+    def getBarrierHeight(self):
+	return self.barrierHeight

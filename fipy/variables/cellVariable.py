@@ -5,7 +5,7 @@
  # 
  #  FILE: "CellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/15/03 {2:34:47 PM} 
+ #                                last update: 12/18/03 {4:32:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,7 +33,6 @@
  # ###################################################################
  ##
 """
-
 from variable import Variable
 import Numeric
 import meshes.tools
@@ -54,7 +53,11 @@ class CellVariable(Variable):
 	    self.old = self.copy()
 	else:
             self.old = None
-
+	    
+	self.faceValue = self.grad = self.faceGrad = None
+	
+    def getVariableClass(self):
+	return CellVariable
 
     def copy(self):
 	if self.viewer is None:
@@ -89,143 +92,164 @@ class CellVariable(Variable):
 	    for cell in cells:
 		self[cell.getId()] = value
 		
-    def getGrad1(self):
-	areas = self.mesh.getAreaProjections()
-	faceValues = Numeric.reshape(self.getFaceValue(), (len(areas),1))
-	faceGradientContributions = areas * faceValues
-	
-	return faceGradientContributions
-	
-    def getGrad2(self):
-	N = len(self.value)
-	M = self.mesh.getMaxFacesPerCell()
-	
-	ids = self.mesh.getCellFaceIDs()
-	
-	return N, M, ids
-	
-    def getGrad3(self,faceGradientContributions, ids, N, M):
-	contributions = Numeric.take(faceGradientContributions, ids)
-	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
-
-	orientations = self.mesh.getCellFaceOrientations()
-
-	grad = Numeric.sum(orientations*contributions,1)
-	
-	return grad
-	
-    def getGrad4(self,grad):
-	volumes = self.mesh.getCellVolumes()
-	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
-	grad = grad/volumes
-	
-	return grad
+#     def getGrad1(self):
+# 	areas = self.mesh.getAreaProjections()
+# 	faceValues = Numeric.reshape(self.getFaceValue(), (len(areas),1))
+# 	faceGradientContributions = areas * faceValues
+# 	
+# 	return faceGradientContributions
+# 	
+#     def getGrad2(self):
+# 	N = len(self.value)
+# 	M = self.mesh.getMaxFacesPerCell()
+# 	
+# 	ids = self.mesh.getCellFaceIDs()
+# 	
+# 	return N, M, ids
+# 	
+#     def getGrad3(self,faceGradientContributions, ids, N, M):
+# 	contributions = Numeric.take(faceGradientContributions, ids)
+# 	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
+# 
+# 	orientations = self.mesh.getCellFaceOrientations()
+# 
+# 	grad = Numeric.sum(orientations*contributions,1)
+# 	
+# 	return grad
+# 	
+#     def getGrad4(self,grad):
+# 	volumes = self.mesh.getCellVolumes()
+# 	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
+# 	grad = grad/volumes
+# 	
+# 	return grad
+# 	
+#     def getGrad(self):
+# 	faceGradientContributions = self.getGrad1()
+# 	N, M, ids = self.getGrad2()
+# 	grad = self.getGrad3(faceGradientContributions, ids, N, M)
+# 	grad = self.getGrad4(grad)
+# 	
+# 	return grad
 	
     def getGrad(self):
-	faceGradientContributions = self.getGrad1()
-	N, M, ids = self.getGrad2()
-	grad = self.getGrad3(faceGradientContributions, ids, N, M)
-	grad = self.getGrad4(grad)
+	if self.grad is None:
+	    from cellGradVariable import CellGradVariable
+	    self.grad = CellGradVariable(self)
 	
-	return grad
+	return self.grad
 	
-    def getGradOLD(self):
-	areas = self.mesh.getAreaProjections()
-	faceValues = Numeric.reshape(self.getFaceValue(), (len(areas),1))
-	faceGradientContributions = areas * faceValues
-	
-	N = len(self.value)
-	M = self.mesh.getMaxFacesPerCell()
-	
-	ids = self.mesh.getCellFaceIDs()
-
-	contributions = Numeric.take(faceGradientContributions, ids)
-	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
-
-	orientations = self.mesh.getCellFaceOrientations()
-
-	grad = Numeric.sum(orientations*contributions,1)
-
-	volumes = self.mesh.getCellVolumes()
-	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
-	grad = grad/volumes
-
-	return grad
+#     def getGradOLD(self):
+# 	areas = self.mesh.getAreaProjections()
+# 	faceValues = Numeric.reshape(self.getFaceValue(), (len(areas),1))
+# 	faceGradientContributions = areas * faceValues
+# 	
+# 	N = len(self.value)
+# 	M = self.mesh.getMaxFacesPerCell()
+# 	
+# 	ids = self.mesh.getCellFaceIDs()
+# 
+# 	contributions = Numeric.take(faceGradientContributions, ids)
+# 	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
+# 
+# 	orientations = self.mesh.getCellFaceOrientations()
+# 
+# 	grad = Numeric.sum(orientations*contributions,1)
+# 
+# 	volumes = self.mesh.getCellVolumes()
+# 	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
+# 	grad = grad/volumes
+# 
+# 	return grad
     
-    def getGradMag(self):
-	grad = self.getGrad()
-	return meshes.tools.arraySqrtDot(grad,grad)	
+#     def getGradMag(self):
+# 	grad = self.getGrad()
+# 	return meshes.tools.arraySqrtDot(grad,grad)	
 
     def getFaceValue(self):
-	alpha = self.mesh.getFaceToCellDistanceRatio()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	cell1 = Numeric.take(self[:], id1)
-	cell2 = Numeric.take(self[:], id2)
-	return (cell1 - cell2) * alpha + cell2
+	if self.faceValue is None:
+	    from cellToFaceVariable import CellToFaceVariable
+	    self.faceValue = CellToFaceVariable(self)
+
+	return self.faceValue
+	
+# 	alpha = self.mesh.getFaceToCellDistanceRatio()
+# 	id1, id2 = self.mesh.getAdjacentCellIDs()
+# 	cell1 = Numeric.take(self[:], id1)
+# 	cell2 = Numeric.take(self[:], id2)
+# 	return (cell1 - cell2) * alpha + cell2
 	    
-    def getFaceGrad1(self):
-	dAP = self.mesh.getCellDistances()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	value = self[:]
-	N = (Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
-	normals = self.mesh.getOrientedFaceNormals()
-	
-	return (dAP, id1, id2, N, normals)
-	
-    def getFaceGrad2(self, id1, id2):
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.getGrad()
-	grad1 = Numeric.take(cellGrad, id1)
-	grad2 = Numeric.take(cellGrad, id2)
-	
-	return (tangents1, tangents2, grad1, grad2)
+#     def getFaceGrad1(self):
+# 	dAP = self.mesh.getCellDistances()
+# 	id1, id2 = self.mesh.getAdjacentCellIDs()
+# 	value = self[:]
+# 	N = (Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
+# 	normals = self.mesh.getOrientedFaceNormals()
+# 	
+# 	return (dAP, id1, id2, N, normals)
+# 	
+#     def getFaceGrad2(self, id1, id2):
+# 	tangents1 = self.mesh.getFaceTangents1()
+# 	tangents2 = self.mesh.getFaceTangents2()
+# 	cellGrad = self.getGrad()
+# 	grad1 = Numeric.take(cellGrad, id1)
+# 	grad2 = Numeric.take(cellGrad, id2)
+# 	
+# 	return (tangents1, tangents2, grad1, grad2)
+# 
+#     def getFaceGrad3(self, tangents1, tangents2, grad1, grad2):
+# 	t1grad1 = Numeric.sum(tangents1*grad1,1)
+# 	t1grad2 = Numeric.sum(tangents1*grad2,1)
+# 	t2grad1 = Numeric.sum(tangents2*grad1,1)
+# 	t2grad2 = Numeric.sum(tangents2*grad2,1)
+# 	T1 = (t1grad1 + t1grad2) / 2.
+# 	T2 = (t2grad1 + t2grad2) / 2.
+# 	
+# 	return (T1, T2)
+# 
+# 	
+#     def getFaceGrad(self):
+# 	(dAP, id1, id2, N, normals) = self.getFaceGrad1()
+# 	(tangents1, tangents2, grad1, grad2) = self.getFaceGrad2(id1, id2)
+# 	(T1, T2) = self.getFaceGrad3(tangents1, tangents2, grad1, grad2)
+# 	
+# 	N = Numeric.reshape(N, (len(normals),1)) 
+# 	T1 = Numeric.reshape(T1, (len(normals),1)) 
+# 	T2 = Numeric.reshape(T2, (len(normals),1)) 
+# 
+# 	return normals * N + tangents1 * T1 + tangents2 * T2
 
-    def getFaceGrad3(self, tangents1, tangents2, grad1, grad2):
-	t1grad1 = Numeric.sum(tangents1*grad1,1)
-	t1grad2 = Numeric.sum(tangents1*grad2,1)
-	t2grad1 = Numeric.sum(tangents2*grad1,1)
-	t2grad2 = Numeric.sum(tangents2*grad2,1)
-	T1 = (t1grad1 + t1grad2) / 2.
-	T2 = (t2grad1 + t2grad2) / 2.
-	
-	return (T1, T2)
-
-	
     def getFaceGrad(self):
-	(dAP, id1, id2, N, normals) = self.getFaceGrad1()
-	(tangents1, tangents2, grad1, grad2) = self.getFaceGrad2(id1, id2)
-	(T1, T2) = self.getFaceGrad3(tangents1, tangents2, grad1, grad2)
-	
-	N = Numeric.reshape(N, (len(normals),1)) 
-	T1 = Numeric.reshape(T1, (len(normals),1)) 
-	T2 = Numeric.reshape(T2, (len(normals),1)) 
+	if self.faceGrad is None:
+	    from faceGradVariable import FaceGradVariable
+	    self.faceGrad = FaceGradVariable(self)
 
-	return normals * N + tangents1 * T1 + tangents2 * T2
+	return self.faceGrad
 	
-    def getFaceGradOld(self):
-	dAP = self.mesh.getCellDistances()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	N = (Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
-	normals = self.mesh.getFaceNormals().copy()
-	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.getGrad()
-	grad1 = Numeric.take(cellGrad, id1)
-	grad2 = Numeric.take(cellGrad, id2)
-	t1grad1 = Numeric.sum(tangents1*grad1,1)
-	t1grad2 = Numeric.sum(tangents1*grad2,1)
-	t2grad1 = Numeric.sum(tangents2*grad1,1)
-	t2grad2 = Numeric.sum(tangents2*grad2,1)
-	T1 = (t1grad1 + t1grad2) / 2.
-	T2 = (t2grad1 + t2grad2) / 2.
-	
-	N = Numeric.reshape(N, (len(normals),1)) 
-	T1 = Numeric.reshape(T1, (len(normals),1)) 
-	T2 = Numeric.reshape(T2, (len(normals),1)) 
-
-	return normals * N + tangents1 * T1 + tangents2 * T2
+#     def getFaceGradOld(self):
+# 	dAP = self.mesh.getCellDistances()
+# 	id1, id2 = self.mesh.getAdjacentCellIDs()
+# 	value = self[:]
+# 	N = (Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
+# 	normals = self.mesh.getOrientedFaceNormals()
+# 	
+# 	tangents1 = self.mesh.getFaceTangents1()
+# 	tangents2 = self.mesh.getFaceTangents2()
+# 	cellGrad = self.getGrad()
+# 	grad1 = Numeric.take(cellGrad, id1)
+# 	grad2 = Numeric.take(cellGrad, id2)
+# 	t1grad1 = Numeric.sum(tangents1*grad1,1)
+# 	t1grad2 = Numeric.sum(tangents1*grad2,1)
+# 	t2grad1 = Numeric.sum(tangents2*grad1,1)
+# 	t2grad2 = Numeric.sum(tangents2*grad2,1)
+# 	T1 = (t1grad1 + t1grad2) / 2.
+# 	T2 = (t2grad1 + t2grad2) / 2.
+# 	
+# 	N = Numeric.reshape(N, (len(normals),1)) 
+# 	T1 = Numeric.reshape(T1, (len(normals),1)) 
+# 	T2 = Numeric.reshape(T2, (len(normals),1)) 
+# 
+# 	return normals * N + tangents1 * T1 + tangents2 * T2
 
     def getOld(self):
 	if self.old == None:

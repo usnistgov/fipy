@@ -1,11 +1,10 @@
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "exponentialConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/18/03 {4:46:00 PM} 
+ #  FILE: "cellToFaceVariable.py"
+ #                                    created: 12/18/03 {2:23:41 PM} 
+ #                                last update: 12/18/03 {3:23:02 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,27 +31,19 @@
  #  
  # ###################################################################
  ##
-"""
 
-from convectionTerm import ConvectionTerm
+from faceVariable import FaceVariable
 import Numeric
 
-class PowerLawConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	eps = 1e-3
-	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
-	
-	alpha = Numeric.where(                                   P > 10.,                 (P - 1.) / P,   0.5)
+class CellToFaceVariable(FaceVariable):
+    def __init__(self, var):
+	FaceVariable.__init__(self, var.getMesh())
+	self.var = self.requires(var)
 
-	tmp = (1. - P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where(    Numeric.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp)/P, alpha)
-
-	tmp = (1. + P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where( Numeric.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.)/P, alpha)
-
-	alpha = Numeric.where(                                 -10. >  P,                      -1. / P, alpha)
-	
-	return alpha
-
+    def calcValue(self):
+	alpha = self.mesh.getFaceToCellDistanceRatio()
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	cell1 = Numeric.take(self.var[:], id1)
+	cell2 = Numeric.take(self.var[:], id2)
+	self.value = (cell1 - cell2) * alpha + cell2
+	self.value = Numeric.reshape(self.value, (len(self.value),1))

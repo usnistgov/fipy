@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/10/03 {11:28:11 AM} 
+                               last update: 12/18/03 {4:47:04 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,50 +42,79 @@ they have been modified.
 
 from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
+from substitutionalSumVariable import SubstitutionalSumVariable
+from weightedDiffusivityVariable import WeightedDiffusivityVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from substitutionalConvectionCoeff import SubstitutionalConvectionCoeff
+from pConvectionCoeff import pConvectionCoeff
+from gConvectionCoeff import gConvectionCoeff
+import Numeric
 
 class ConcentrationEquation(MatrixEquation):
     """
     Diffusion equation is implicit.
     """    
     def __init__(self,
-                 var,
+                 Cj,
+		 fields = {},
                  diffusivity = 1.,
 		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
-                 boundaryConditions=(),
-		 parameters = {}):
+                 boundaryConditions=()):
 		     
-        mesh = var.getMesh()
+        mesh = Cj.getMesh()
 	
 	diffusionTerm = ImplicitDiffusionTerm(
 	    diffCoeff = diffusivity,
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
-#	convectionTerm = convectionScheme(
-#	    convCoeff = SubstitutionalConvectionCoeff(
-#	    	mesh = mesh,
-#		diffusivity = diffusivity,
-#		Cj = var,
-#		substitutionals = parameters['substitutionals']), 
-#	    mesh = mesh, 
-#	    boundaryConditions = boundaryConditions,
-#	    diffusionTerm = diffusionTerm)
-
+	substitutionalSum = SubstitutionalSumVariable(
+	    mesh = mesh, 
+	    Cj = Cj, 
+	    substitutionals = fields['substitutionals'])
+	    
+# 	weightedDiffusivity = WeightedDiffusivityVariable(
+# 	    mesh = mesh,
+# 	    diffusivity = diffusivity,
+# 	    Cj = Cj,
+# 	    Cn = fields['solvent'],
+# 	    substitutionalSum = substitutionalSum
+# 	)
+	
+	    
+	subsConvCoeff = diffusivity * substitutionalSum.getFaceGrad() /  (1. - substitutionalSum.getFaceValue())
+# 	subsConvCoeff = SubstitutionalConvectionCoeff(
+# 	    mesh = mesh,
+# 	    diffusivity = diffusivity,
+# 	    Cj = Cj,
+# 	    substitutionalSum = substitutionalSum)
+	    
+	weightedDiffusivity = diffusivity * fields['solvent'].getFaceValue() / (1. - substitutionalSum.getFaceValue())
+	
+	pConvCoeff = weightedDiffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
+	gConvCoeff = weightedDiffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
+	
+# 	pConvCoeff = pConvectionCoeff(
+# 	    mesh = mesh,
+# 	    weightedDiffusivity = weightedDiffusivity,
+# 	    phase = fields['phase'],
+# 	    Cj = Cj)
+# 		
+# 	gConvCoeff = gConvectionCoeff(
+# 	    mesh = mesh,
+# 	    weightedDiffusivity = weightedDiffusivity,
+# 	    phase = fields['phase'],
+# 	    Cj = Cj)
+		
+	convCoeff = pConvCoeff * gConvCoeff
 	convectionTerm = convectionScheme(
-	    convCoeff = SubstitutionalConvectionCoeff(
-	    	mesh = mesh,
-		diffusivity = diffusivity,
-		Cj = var,
-		substitutionals = parameters['substitutionals']), 
+	    convCoeff = subsConvCoeff + pConvCoeff + gConvCoeff, 
 	    mesh = mesh, 
 	    boundaryConditions = boundaryConditions,
 	    diffusionTerm = diffusionTerm)
 
-	    
 	terms = (
 	    TransientTerm(tranCoeff = 1.,mesh = mesh),
 	    diffusionTerm,
@@ -94,8 +123,8 @@ class ConcentrationEquation(MatrixEquation):
 	    
 	MatrixEquation.__init__(
             self,
-            var,
-            terms,
-            solver,
+            var = Cj,
+            terms = terms,
+            solver = solver,
             solutionTolerance = 1e-10)
 

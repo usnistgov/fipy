@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/16/03 {10:37:05 AM} 
+ #                                last update: 12/18/03 {8:40:41 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -35,6 +35,8 @@
  ##
 
 from concentrationEquation import ConcentrationEquation
+from solventVariable import SolventVariable
+
 from solvers.linearCGSSolver import LinearCGSSolver
 from solvers.linearLUSolver import LinearLUSolver
 from solvers.linearGMRESSolver import LinearGMRESSolver
@@ -42,11 +44,15 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 
-def makeIterator(mesh, parameters, maxSweeps = 1):
+def makeIterator(mesh, fields, parameters, maxSweeps = 1):
     equations = ()
-    for component in parameters['substitutionals']:
+    fields['solvent'] = SolventVariable(
+	mesh = mesh, 
+	substitutionals = fields['substitutionals'])
+    for component in fields['substitutionals']:
 	eq = ConcentrationEquation(
-	    var = component,
+	    Cj = component,
+	    fields = fields,
 	    diffusivity = parameters['diffusivity'],
 	    solver = LinearLUSolver(),
 # 	    solver = LinearGMRESSolver(
@@ -64,8 +70,7 @@ def makeIterator(mesh, parameters, maxSweeps = 1):
 		FixedFlux(faces = mesh.getFacesRight(),value = 0.),
 		FixedFlux(faces = mesh.getFacesTop(),value = 0.),
 		FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-	    ),
-	    parameters = parameters
+	    )
 	)
 	equations += (eq,)
 	

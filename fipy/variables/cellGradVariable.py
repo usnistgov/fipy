@@ -1,11 +1,10 @@
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "exponentialConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/18/03 {4:46:00 PM} 
+ #  FILE: "cellGradVariable.py"
+ #                                    created: 12/18/03 {2:28:00 PM} 
+ #                                last update: 12/18/03 {4:44:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,27 +31,33 @@
  #  
  # ###################################################################
  ##
-"""
 
-from convectionTerm import ConvectionTerm
+from vectorCellVariable import VectorCellVariable
 import Numeric
 
-class PowerLawConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	eps = 1e-3
-	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+class CellGradVariable(VectorCellVariable):
+    def __init__(self, var):
+	VectorCellVariable.__init__(self, var.getMesh())
+	self.var = self.requires(var)
 	
-	alpha = Numeric.where(                                   P > 10.,                 (P - 1.) / P,   0.5)
-
-	tmp = (1. - P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where(    Numeric.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp)/P, alpha)
-
-	tmp = (1. + P/10.)
-	tmpSqr = tmp * tmp
-	alpha = Numeric.where( Numeric.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.)/P, alpha)
-
-	alpha = Numeric.where(                                 -10. >  P,                      -1. / P, alpha)
+    def calcValue(self):
+	areas = self.mesh.getAreaProjections()
+	faceGradientContributions = areas * self.var.getFaceValue()
 	
-	return alpha
+	N = len(self.var[:])
+	M = self.mesh.getMaxFacesPerCell()
+	
+	ids = self.mesh.getCellFaceIDs()
 
+	contributions = Numeric.take(faceGradientContributions[:], ids)
+	contributions = Numeric.reshape(contributions,(N,M,self.mesh.getDim()))
+
+	orientations = self.mesh.getCellFaceOrientations()
+
+	grad = Numeric.sum(orientations*contributions,1)
+
+	volumes = self.mesh.getCellVolumes()
+	volumes = Numeric.reshape(volumes, Numeric.shape(volumes)+(1,))
+	grad = grad/volumes
+
+	self.value = grad
