@@ -50,13 +50,17 @@ class FaceTerm(term.Term):
 
         mesh = self.equation.getMesh()
 	
-	for face in mesh.interior_faces():
-            id1 = face.cells()[0].id()
-            id2 = face.cells()[1].id()
-            self.equation.L()[id1,id1]+=self.coeff[face.id()] * self.stencil[1]
-            self.equation.L()[id1,id2]-=self.coeff[face.id()] * self.stencil[0]
-            self.equation.L()[id2,id1]-=self.coeff[face.id()] * self.stencil[0]
-            self.equation.L()[id2,id2]+=self.coeff[face.id()] * self.stencil[1]
+	for face in mesh.getInteriorFaces():
+            cells = face.getCells()
+            print face.getId()
+            print cells
+            id1 = cells[0].getId()
+            id2 = cells[1].getId()
+            faceId = face.getId()
+            self.equation.L()[id1,id1]+=self.coeff[faceId] * self.stencil[1]
+            self.equation.L()[id1,id2]-=self.coeff[faceId] * self.stencil[0]
+            self.equation.L()[id2,id1]-=self.coeff[faceId] * self.stencil[0]
+            self.equation.L()[id2,id2]+=self.coeff[faceId] * self.stencil[1]
 
         for boundaryCondition in equation.boundaryConditions():            
             boundaryCondition.update(self)

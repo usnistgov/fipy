@@ -38,10 +38,10 @@
 
 class Mesh:
     def __init__(self, cells, faces, interiorFaces, vertices):
-        self.cells=cells
-        self.faces=faces
-        self.vertices=vertices
-        self.InteriorFaces
+        self.cells = cells
+        self.faces = faces
+        self.vertices = vertices
+        self.interiorFaces = interiorFaces
 
     def getCells(self):
         return self.cells
@@ -49,6 +49,6 @@ class Mesh:
     def getFaces(self):
         return faces
 
-    def getInteriorFaces():
-        return interiorFaces
+    def getInteriorFaces(self):
+        return self.interiorFaces
     

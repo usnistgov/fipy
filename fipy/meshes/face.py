@@ -35,12 +35,16 @@
 """
 
 class Face:
-	def __init__(self, vertices):
-		self.vertices = vertices
-		self.cells = ()
-		
-	def addBoundingCell(self, cell):
-		self.cells += (cell,)
+    def __init__(self, vertices, id):
+        self.vertices = vertices
+        self.cells = ()
+	self.id = id
+	
+    def addBoundingCell(self, cell):
+        self.cells += (cell,)
 
+    def getCells(self):
+        return self.cells
 		
-		
+    def getId(self):
+	return self.id
