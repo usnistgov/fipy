@@ -42,37 +42,28 @@
  ##
 
 from __future__ import nested_scopes
-from fivol.examples.phase.examples.impingement.input import ImpingementSystem
+from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
 import Numeric
+import time
 
-class System4Particles(ImpingementSystem):
+resultsFile = open('results.txt', 'w')
+resultsFile.write('N     mesh build time      run time\n')
+resultsFile.close()
 
-    def initialConditions(self, mesh = None, phase = None, theta = None, Lx = None, Ly = None):
-        pi = Numeric.pi
-        def circle(cell, a = 0., b = 0., r = 1.):
-            x = cell.getCenter()[0]
-            y = cell.getCenter()[1]
-            if ((x - a)**2 + (y - b)**2) < r**2:
-                return 1.
-
-        cells = mesh.getCells()
-        phase.setValue(0., cells)
-        theta.setValue(-pi + 0.0001, cells)
-
-        circleCenters = ((0., 0.), (Lx, 0.), (0., Ly), (Lx, Ly))
-        thetaValue = (2. * pi / 3., -2. * pi / 3., -2. * pi / 3. + 0.3, 2. * pi / 3.)
-        for i in range(4):
-            aa = circleCenters[i][0]
-            bb = circleCenters[i][1]
-            cells = mesh.getCells(circle, a = aa, b = bb, r = Lx / 2)
-            phase.setValue(1., cells)
-            theta.setValue(thetaValue[i],cells)
-
+for n in (10, 20, 40, 80, 160, 320, 640):
+    for i in range(5):
         
+        t0 = time.time()
+        system = System4Particles(nx = n, ny = n, steps = 100, drivingForce = 10.)
+        
+        t1 = time.time()
+        system.run()
+        
+        t2 = time.time()
+        meshBuildTime = t1 - t0
+        runTime =  t2 - t1
+        
+        resultsFile = open('results.txt', 'a')
+        resultsFile.write('%i     %f       %f\n' % (n, meshBuildTime, runTime))
+        resultsFile.close()
 
-if __name__ == '__main__':
-
-    system = System4Particles(nx = n, ny = n, steps = 100, drivingForce = 10.)
-    system.run()
-
-    
