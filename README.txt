@@ -27,26 +27,17 @@ Download
 --------
 
 FiPy is freely available for download from sourceforge_ via CVS_ or as
-a tarball.
+a tarball. FiPy can be redistributed and/or modified freely provided
+that any derivative works bear some notice that they are derived from
+it, and any modified versions bear some notice that they have been
+modified.
 
 ------------
 Installation
 ------------
 
-Please refer to the installation guide_ or the manual_.
-
-------
-Manual
-------
-
-The manual_ can be downloaded and is also part of the distribution
-(documentation/manual/fipy.pdf).
-
-A fresh copy of the manual_ can be built with the use of epydoc_ by
-issuing the following commands in the base directory::
-
-     python setup.py build_docs --latex --manual
-     python setup.py build_docs --manual
+Please refer to the web based installation guide_ or the the
+Installation chapter in the manual_.
 
 -------
 Support
@@ -55,7 +46,8 @@ Support
 The developers are committed to supporting the project. The project is
 hosted via sourceforge_. Please use the sourceforge_ tracking system_
 for bugs, support requests, feature requests and patch submissions. A
-discussion forum_ is also available.
+discussion forum_ is also available. We are also seeking collaborative
+efforts on this project. Please get involved.
 
 .. |FiPy| raw:: latex
 
