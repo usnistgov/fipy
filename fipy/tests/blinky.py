@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:27:42 PM} 
+ #                                last update: 3/7/05 {2:06:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ import Numeric
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+import fipy.viewers
 from fipy.variables.cellVariable import CellVariable
 
 nx = 20
@@ -73,7 +73,7 @@ topRight = mesh.getCells(lambda cell: cell.getCenter()[0] >= L/2. and cell.getCe
 var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L)
+    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L})
     viewer.plot()
 	
     raw_input()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:01:44 AM} { 5:14:21 PM}
+ #                                last update: 3/7/05 {2:51:38 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -190,10 +190,10 @@ If we are running this example interactively, we create viewers for
 the phase and temperature fields
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     phaseViewer = Grid2DGistViewer(var = phase)
-    ...     temperatureViewer = Grid2DGistViewer(var = temperature, 
-    ...                                          minVal = -0.5, maxVal =0.5)
+    ...     import fipy.viewers
+    ...     phaseViewer = fipy.viewers.make(vars = phase)
+    ...     temperatureViewer = fipy.viewers.make(vars = temperature, 
+    ...                                           limits = {'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 

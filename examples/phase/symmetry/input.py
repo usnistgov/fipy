@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {1:01:46 PM} 
+ #                                last update: 3/7/05 {3:52:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -114,7 +114,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+import fipy.viewers
 from fipy.variables.cellVariable import CellVariable
 
 N = 20
@@ -158,7 +158,7 @@ for cellSet in orderedCells:
         var[idOther] = var[id]
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L / 4.)
+    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
     viewer.plot()
     raw_input('finished')
     

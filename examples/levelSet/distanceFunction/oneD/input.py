@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:30:46 PM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {2:53:22 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,9 +82,9 @@ Construct a `distanceVariable` object.
 The problem can then be solved by executing the `solve()` method of the equation.
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp',
-   ...                               minVal = -5., maxVal = 5.)
+   ...     import fipy.viewers
+   ...     viewer = fipy.viewers.make(vars = var,
+   ...                                limits = {'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
 
 The result can be tested with the following commands.

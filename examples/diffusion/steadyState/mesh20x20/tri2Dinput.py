@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:36 PM} 
+ #                                last update: 3/7/05 {2:22:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ The result is again tested in the same way:
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 20
@@ -76,12 +76,12 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = PyxViewer(var)
+viewer = fipy.viewers.make(vars = var)
 
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
                       FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer.plot(resolution = 0.2)
+    viewer.plot()
     raw_input("finished")

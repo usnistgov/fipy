@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {10:21:46 AM} 
+ #                                last update: 3/7/05 {11:49:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,9 +84,11 @@ object represents a rectangular structured grid. The parameters `dx` and
 `dy` refer to the grid spacing (set to unity here).
 
     >>> nx = 50
-    >>> dx = 1.
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(nx = nx, dx = dx)
+    >>> dx = 10.
+    >>> from fipy.meshes.numMesh.grid1D import Grid1D
+    >>> mesh = Grid1D(nx = nx, dx = dx)
+    >>> # from fipy.meshes.grid2D import Grid2D
+    >>> # mesh = Grid2D(nx = nx, dx = dx)
 
 The solution of all equations in FiPy requires a variable. These variables store
 values on various parts of the mesh. In this case we need a
@@ -144,8 +146,8 @@ the Gist package to view the field. The Gist viewer is constructed and
 the results are viewed:
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = (var,), limits = ('e', 'e', 0, 1))
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
     ...     raw_input("press key to continue")
 
@@ -182,9 +184,9 @@ remaining lines, leaving::
     var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     
     if __name__ == '__main__':
-	from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-	viewer = Grid2DGistViewer(var, minVal = 0., maxVal = 1.)
-	viewer.plot()
+        import fipy.viewers
+        viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
+        viewer.plot()
 	
 Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {10:33:48 PM} 
+ #                                last update: 3/7/05 {2:40:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -197,8 +197,7 @@ import Numeric
 
 from fipy.meshes.grid2D import Grid2D
 
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.viewers.gist1DViewer import Gist1DViewer
+import fipy.viewers
 from fipy.viewers.gistVectorViewer import GistVectorViewer
 ## from fipy.iterators.iterator import Iterator
 ## from fipy.iterators.adaptiveIterator import AdaptiveIterator
@@ -291,14 +290,14 @@ fields['substitutionals'][1].setValue("0.249999982581341 mol/l", setCells)
 ## fields['substitutionals'][1][nx/2-5] = 1.5
 
 
-phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+phaseViewer = fipy.viewers.make(vars = (fields['phase'],))
 ## phaseViewer = Gist1DViewer(vars = (fields['phase'].get_gPrime(),))
 ## phaseViewer1 = GistVectorViewer(var = fields['phase'].get_p().getFaceGrad() )
 ## phaseViewer2 = GistVectorViewer(var = fields['phase'].get_pPrime().getArithmeticFaceValue().transpose()*fields['phase'].getFaceGrad())
 ## phaseViewer3 = Gist1DViewer(vars = (fields['phase'].get_pPrime().getArithmeticFaceValue(),))
-potentialViewer = Gist1DViewer(vars = (fields['potential'],))
+potentialViewer = fipy.viewers.make(vars = (fields['potential'],))
 ## concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']], ylog = 1)
-concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']])
+concViewer = fipy.viewers.make(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']])
 ## concViewer = Gist1DViewer(vars = [field.getGrad() for field in list(fields['substitutionals'])] + [field.getGrad for field in list(fields['interstitials'])] + [fields['solvent'].getGrad()])
 
 ## phaseRelaxation = Variable(value = 1.)
@@ -313,7 +312,7 @@ equations = elphf.makeEquations(
 
 ## timeStepDuration = fipy.tools.dimensions.physicalField.Scale(parameters['time step duration'], "TIME")
 
-chargeViewer = Gist1DViewer(vars = (fields['charge'],))
+chargeViewer = fipy.viewers.make(vars = (fields['charge'],))
 
 viewers = (phaseViewer, potentialViewer, concViewer,chargeViewer)
 	

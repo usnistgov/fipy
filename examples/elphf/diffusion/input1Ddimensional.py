@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/04 {5:02:39 PM} 
+ #                                last update: 3/7/05 {2:47:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,11 +51,9 @@ We solve the problem on a 40 mm long 1D mesh
 
     >>> nx = 40
     >>> dx = PhysicalField(1.,"mm")
-    >>> ny = 1
-    >>> dy = 1
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 The dimensional parameters for this problem are
 
@@ -104,9 +102,9 @@ We use ElPhF again to create the governing equations for the fields
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = (fields['solvent'],) + fields['substitutionals'],
-    ...                           limits = ('e', 'e', 0, 1))
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = (fields['solvent'],) + fields['substitutionals'],
+    ...                                limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go

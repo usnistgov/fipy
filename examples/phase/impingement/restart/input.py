@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/16/04 {11:49:34 AM}
+ #                                last update: 3/7/05 {2:21:03 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -106,14 +106,14 @@ We rebuild the equations:
 and, if the example is run interactively, we recreate the viewers:
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     newPhaseViewer = Grid2DGistViewer(var = newPhase, palette = 'rainbow.gp', 
-    ...                                       minVal = 0., maxVal = 1., grid = 0)
+    ...     import fipy.viewers
+    ...     newPhaseViewer = fipy.viewers.make(vars = newPhase, 
+    ...                                        limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
     ...     newThetaProd = -pi + phase * (newTheta + pi)
     ...     newThetaProductViewer = \
-    ...         Grid2DGistViewer(var = newThetaProd , palette = 'rainbow.gp', 
-    ...                          minVal = -pi, maxVal = pi, grid = 0)
+    ...         fipy.viewers.make(vars = newThetaProd,
+    ...                           limits = {'datamin': -pi, 'datamax': pi})
     ...     newPhaseViewer.plot()
     ...     newThetaProductViewer.plot()
 

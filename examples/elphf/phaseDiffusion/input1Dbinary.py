@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/04 {5:21:20 PM} 
+ #                                last update: 3/7/05 {2:52:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -119,11 +119,11 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     import fipy.viewers
     ...
-    ...     phaseViewer = Gist1DViewer(vars = (fields['phase'],))
-    ...     concViewer = Gist1DViewer(vars = (fields['solvent'],) + fields['substitutionals'],
-    ...                               limits = ('e', 'e', 0, 1))
+    ...     phaseViewer = fipy.viewers.make(vars = (fields['phase'],))
+    ...     concViewer = fipy.viewers.make(vars = (fields['solvent'],) + fields['substitutionals'],
+    ...                                    limits = {'datamin': 0, 'datamax': 1})
     ...     phaseViewer.plot()
     ...     concViewer.plot()
 

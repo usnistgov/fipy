@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:50:42 PM} 
+ #                                last update: 3/7/05 {2:41:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,7 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 10
@@ -93,6 +93,6 @@ boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-    viewer = PyxViewer(var)
+    viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     raw_input('finished')

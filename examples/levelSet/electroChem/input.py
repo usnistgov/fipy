@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 12/2/04 {11:28:51 AM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {1:46:33 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -428,24 +428,26 @@ The function below is constructed to encapsulate the creation of the
 viewers.
 
    >>> def buildViewers():
-   ...    from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+   ...    import fipy.viewers
    ...    resolution = 3
    ...    cells = yCells * 2**(resolution-1)
    ...    return (
-   ...        Grid2DGistViewer(
-   ...            var = distanceVar,
-   ...            minVal = -1e-8,
-   ...            maxVal = 1e-8,
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution),
-   ...        Grid2DGistViewer(
-   ...            var = acceleratorVar.getInterfaceVar(),
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution))
+   ...        fipy.viewers.make(
+   ...            vars = distanceVar,
+   ...            limits = {
+   ...                'xmin': 0,
+   ...                'xmax': cells,
+   ...                'ymin': 0,
+   ...                'xymax': cells,
+   ...                'datamin': -1e-8, 
+   ...                'datamax': 1e-8}),
+   ...        fipy.viewers.make(
+   ...            vars = acceleratorVar.getInterfaceVar(),
+   ...            limits = {
+   ...                'xmin': 0,
+   ...                'xmax': cells,
+   ...                'ymin': 0,
+   ...                'xymax': cells}))
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a

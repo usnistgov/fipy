@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:08:14 PM} 
+ #                                last update: 3/7/05 {2:28:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,9 +108,9 @@ The analytical solution test for this problem is given by:
     1
     
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.pyxviewer import PyxViewer
-    ...     viewer = PyxViewer(var)
-    ...     viewer.plot(resolution = 0.05)
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 

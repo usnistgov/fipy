@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/04 {8:23:49 PM} 
+ #                                last update: 3/7/05 {1:28:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,8 +51,8 @@ We start by defining a 1D mesh
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
 The problem parameters are
 
@@ -135,13 +135,13 @@ and the substitutional concentrations
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     import fipy.viewers
     ...
-    ...     phaseViewer = Gist1DViewer(vars = (fields['phase'],))
-    ...     concViewer = Gist1DViewer(vars = (fields['solvent'],) 
+    ...     phaseViewer = fipy.viewers.make(vars = fields['phase'])
+    ...     concViewer = fipy.viewers.make(vars = (fields['solvent'],) 
     ...                                    + fields['substitutionals'] 
     ...                                    + fields['interstitials'],
-    ...                               limits = ('e', 'e', 0, 1))
+    ...                                   limits = {'datamin': 0, 'datamax': 1})
     ...     phaseViewer.plot()
     ...     concViewer.plot()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:43:02 PM} { 1:23:41 PM}
+ #                                last update: 3/4/05 {6:56:51 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,7 +112,6 @@ __docformat__ = 'restructuredtext'
 import Numeric
    
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
@@ -157,9 +156,10 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -initialRadius, maxVal = initialRadius)
-    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 100.)
-    velocityViewer = Grid2DGistViewer(var = velocity, palette = 'rainbow.gp', minVal = 0., maxVal = 200.)
+    import fipy.viewers
+    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = fipy.viewers.make(var = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
+    velocityViewer = fipy.viewers.make(var = velocity, limits = {'datamin': 0., 'datamax': 200.})
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 12/10/04 {1:56:24 PM} 
+ #                                last update: 3/7/05 {1:20:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,8 +46,8 @@ The same idea as `examples/elphf/input1DpoissonAllCharge.py`, again on a 1D mesh
     >>> nx = 200
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
     
 but now with charge only on the left side of the domain.
 
@@ -121,8 +121,8 @@ We verify that the correct equilibrium is attained
 If we are running the example interactively, we view the result
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = (fields['charge'], fields['potential']))
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

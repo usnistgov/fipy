@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:02:02 AM}
+ #                                last update: 3/7/05 {2:54:39 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -190,13 +190,13 @@ orientation variables. Rather than viewing the raw orientation, which is not
 meaningful in the liquid phase, we weight the orientation by the phase
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', 
-    ...                                    minVal = 0., maxVal = 1., grid = 0)
+    ...     import fipy.viewers
+    ...     phaseViewer = fipy.viewers.make(vars = phase, 
+    ...                                     limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = Grid2DGistViewer(var = thetaProd , palette = 'rainbow.gp', 
-    ...                                           minVal = -pi, maxVal = pi, grid = 0)
+    ...     thetaProductViewer = fipy.viewers.make(vars = thetaProd, 
+    ...                                            limits = {'datamin': -pi, 'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/28/05 {4:28:08 PM} 
+ #                                last update: 3/7/05 {2:21:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -123,8 +123,8 @@ The result is tested against the expected profile:
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer((var,))
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = (var,))
     ...     viewer.plot()
 """
  

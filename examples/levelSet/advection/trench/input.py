@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:41:47 PM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {1:37:51 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,6 @@ __docformat__ = 'restructuredtext'
 import Numeric
    
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
 
@@ -122,7 +121,8 @@ var.calcDistanceFunction()
 advEqn = buildAdvectionEquation(velocity)
                         
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -.1, maxVal = .1)
+    import fipy.viewers
+    viewer = fipy.viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
 
     viewer.plot()
 

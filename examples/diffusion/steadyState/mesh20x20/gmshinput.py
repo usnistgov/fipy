@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:40:18 PM} 
+ #                                last update: 3/7/05 {2:31:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,6 +51,11 @@ the non-orthogonality error, this uses a SkewedGrid2D, which is a
 Grid2D with each interior vertex moved in a random direction.
 
 """
+import sys
+import os
+
+import Numeric
+import pyx
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
@@ -59,12 +64,8 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
-import pyx
-import sys
-import os
-import Numeric
 
 valueLeft = 0.
 valueRight = 1.
@@ -75,7 +76,7 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = PyxViewer(var)
+viewer = fipy.viewers.make(vars = var)
 
 def leftSide(face):
     a = face.getCenter()[0]
@@ -119,12 +120,12 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,
                             value = abs(errorArray))
-    errorViewer = PyxViewer(errorVar)
+    errorViewer = fipy.viewers.make(vars = errorVar)
     ##errorViewer.plot(resolution = 0.1)
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh.getNonOrthogonality())
-    NOViewer = PyxViewer(NonOrthoVar)    
+    NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
     ##NOViewer.plot(resolution = 0.1)
     nonOrthoArray = mesh.getNonOrthogonality()
     displaylist = Numeric.concatenate(([nonOrthoArray], [errorArray]))

@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 10/15/04 {9:19:01 AM} 
+ #                                last update: 3/4/05 {6:54:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,7 +124,6 @@ from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariabl
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from fipy.viewers.gist1DViewer import Gist1DViewer
 
 # parameter values
 
@@ -194,8 +193,9 @@ if __name__ == "__main__":
 
     ## set up the viewers
 
-    timeViewer = Gist1DViewer((analyticalTime, numericalTime))
-    concentrationViewer = Gist1DViewer((analyticalConcentration, numericalConcentration))
+    import fipy.viewers
+    timeViewer = fipy.viewers.make(vars = (analyticalTime, numericalTime))
+    concentrationViewer = fipy.viewers.make(vars = (analyticalConcentration, numericalConcentration))
 
     ## start time stepping
 

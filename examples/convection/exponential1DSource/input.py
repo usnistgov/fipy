@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:06:11 PM} 
+ #                                last update: 3/7/05 {1:34:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -136,8 +136,8 @@ or
 If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var)
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var)
     ...     viewer.plot()
 
 """

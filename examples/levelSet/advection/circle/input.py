@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:28:48 PM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {2:04:28 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,9 +97,9 @@ The `advectionEquation` is constructed.
 The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -radius,
-   ...                               maxVal = radius)
+   ...     import fipy.viewers
+   ...     viewer = fipy.viewers.make(vars = var, 
+   ...                                limits = {'datamin': -radius, 'datamax': radius})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

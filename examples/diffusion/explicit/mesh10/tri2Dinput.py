@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/28/05 {4:29:23 PM} 
+ #                                last update: 3/7/05 {2:42:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,7 +81,7 @@ from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
-    viewer = PyxViewer(var)
+    viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     raw_input('finished')
 

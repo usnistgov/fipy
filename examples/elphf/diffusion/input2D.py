@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/04 {5:15:26 PM} 
+ #                                last update: 3/7/05 {1:35:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,8 +97,8 @@ We use ElPhF to create the governing equations for the fields
 If we are running interactively, we create viewers to see the results 
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    ...     import fipy.viewers
+    ...     viewers = [fipy.viewers.make(vars = field) for field in fields['all']]
     ...     for viewer in viewers:
     ...         viewer.plot()
 

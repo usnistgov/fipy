@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:37:46 PM} 
+ #                                last update: 3/7/05 {3:03:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,7 +68,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
@@ -88,7 +88,7 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = PyxViewer(var)
+viewer = fipy.viewers.make(vars = var)
 
 def leftSide(face):
     a = face.getCenter()[0]
@@ -125,7 +125,7 @@ boundaryConditions = (FixedValue(mesh.getFacesWithFilter(leftSide), valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer.plot(resolution = 0.05)
+    viewer.plot()
     varArray = Numeric.array(var)
     x = mesh.getCellCenters()[:,0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
@@ -133,11 +133,11 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    errorViewer = PyxViewer(errorVar)
-    errorViewer.plot(resolution = 0.05)
+    errorViewer = fipy.viewers.make(vars = errorVar)
+    errorViewer.plot()
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh.getNonOrthogonality())
-    NOViewer = PyxViewer(NonOrthoVar)    
-    NOViewer.plot(resolution = 0.05)
+    NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
+    NOViewer.plot()
     raw_input("finished")

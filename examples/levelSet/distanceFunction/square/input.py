@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/15/04 {11:53:34 AM} { 1:23:41 PM}
+ #                                last update: 3/4/05 {7:04:04 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,7 +86,6 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
@@ -114,6 +113,7 @@ var = DistanceVariable(
 var.calcDistanceFunction()
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+    import fipy.viewers
+    viewer = fipy.viewers.make(vars = var, limits = {'maxval': -5., 'minval': 5.})
     viewer.plot()
     raw_input('finished')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:41:43 PM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {2:01:17 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
    
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
@@ -117,7 +117,7 @@ advectionEquation = AdvectionEquation(
 it = Iterator((advectionEquation,))
 
 if __name__ == '__main__':
-    distanceViewer = PyxViewer(distanceVariable)
+    distanceViewer = fipy.viewers.make(vars = distanceVariable)
     distanceViewer.plot()
 
     for step in range(steps):

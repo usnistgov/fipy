@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/10/04 {4:36:43 PM} 
+ #                                last update: 3/7/05 {2:32:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -141,9 +141,9 @@ We verify that the correct equilibrium solution is attained
 If we are running interactively, we will want to see the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     import fipy.viewers
     ...     from fipy.variables.cellVariable import CellVariable
-    ...     viewer = Gist1DViewer(vars = (fields['phase'] - CellVariable(mesh = mesh, value = analyticalArray),))
+    ...     viewer = fipy.viewers.make(vars = (fields['phase'] - CellVariable(mesh = mesh, value = analyticalArray),))
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

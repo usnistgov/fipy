@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:01:41 AM} 
+ #                                last update: 3/7/05 {2:36:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -116,7 +116,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
 from fipy.models.phase.theta.modularVariable import ModularVariable
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+import fipy.viewers
 
 steps = 100
 timeStepDuration = 0.02
@@ -177,7 +177,7 @@ eq = buildPhaseEquation(
    )
 
 if __name__ == '__main__':
-   phaseViewer = Grid2DGistViewer(phase)
+   phaseViewer = fipy.viewers.make(vars = phase)
    phaseViewer.plot()
    for step in range(steps):
       phase.updateOld()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/13/04 {11:59:32 AM} 
+ #                                last update: 3/7/05 {2:29:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,7 +81,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
@@ -94,7 +94,7 @@ valueLeft = 0
 valueRight = 1
 var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
-viewer = PyxViewer(var)
+viewer = fipy.viewers.make(vars = var)
 
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/25/05 {8:25:04 PM} 
+ #                                last update: 3/7/05 {1:57:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 r"""
 
 To run this example from the base fipy directory type
-`./examples/phase/simple/input.py` at the command line.  A gist viewer
+`./examples/phase/simple/input.py` at the command line.  A viewer
 object should appear and, after being prompted to step through the different
 examples, the word `finished` in the terminal.
 
@@ -114,8 +114,8 @@ and set a step-function initial condition
 If we are running interactively, we'll want a viewer to see the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = (phase,))
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = (phase,))
     ...     viewer.plot()
     ...     raw_input("Initial condition. Press <return> to proceed...")
 

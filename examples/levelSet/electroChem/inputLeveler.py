@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 8/26/04 {4:01:07 PM} { 1:23:41 PM}
+ #                                last update: 3/7/05 {1:55:41 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -447,26 +447,29 @@ viewers.
    ...    resolution = 3
    ...    cells = yCells * 2**(resolution-1)
    ...    return (
-   ...        Grid2DGistViewer(
-   ...            var = distanceVar,
-   ...            minVal = -1e-8,
-   ...            maxVal = 1e-8,
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution),
-   ...        Grid2DGistViewer(
-   ...            var = acceleratorVar.getInterfaceVar(),
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution),
-   ...        Grid2DGistViewer(
-   ...            var = levelerVar.getInterfaceVar(),
-   ...            grid = 0,
-   ...            limits = (0, cells, 0, cells),
-   ...            dpi = 100,
-   ...            resolution = resolution))
+   ...        fipy.viewers.make(
+   ...            vars = distanceVar,
+   ...            limits = {
+   ...                'xmin': 0,
+   ...                'xmax': cells,
+   ...                'ymin': 0,
+   ...                'xymax': cells,
+   ...                'datamin': -1e-8, 
+   ...                'datamax': 1e-8}),
+   ...        fipy.viewers.make(
+   ...            vars = acceleratorVar.getInterfaceVar(),
+   ...            limits = {
+   ...                'xmin': 0,
+   ...                'xmax': cells,
+   ...                'ymin': 0,
+   ...                'xymax': cells}),
+   ...        fipy.viewers.make(
+   ...            vars = levelerVar.getInterfaceVar(),
+   ...            limits = {
+   ...                'xmin': 0,
+   ...                'xmax': cells,
+   ...                'ymin': 0,
+   ...                'xymax': cells}))
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a

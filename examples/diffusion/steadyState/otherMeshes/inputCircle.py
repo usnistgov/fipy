@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {8:23:02 AM} { 5:14:21 PM}
+ #                                last update: 3/7/05 {2:26:55 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -125,10 +125,9 @@ The values at the elements should be equal to the x coordinate
 Display the results if run as a script.
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.mesh2DGistViewer import Mesh2DMeshViewer
-   ...     Mesh2DMeshViewer(mesh, grid = 0).plot()
-   ...     from fipy.viewers.mesh2DGistViewer import Mesh2DGistViewer
-   ...     Mesh2DGistViewer(var, grid = 0, minVal = -1.0, maxVal = 1.0).plot()
+   ...     import fipy.viewers
+   ...     fipy.viewers.make(vars = var).plotMesh()
+   ...     fipy.viewers.make(vars = var, limits = {'datamin': -1.0, 'datamax': 1.0}).plot()
 
 .. raw:: latex
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:05:48 PM} 
+ #                                last update: 3/4/05 {8:38:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -99,7 +99,6 @@ from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 2
@@ -130,6 +129,8 @@ boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-    viewer = Grid2DGistViewer(var, maxVal = L + 18. * L / 4.)
+    
+    import fipy.viewers
+    viewer = fipy.viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
     viewer.plot()
     raw_input('finished')

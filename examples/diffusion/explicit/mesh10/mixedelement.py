@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/28/05 {4:28:57 PM} 
+ #                                last update: 3/7/05 {2:57:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -80,7 +80,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
+import fipy.viewers
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
 
@@ -157,7 +157,7 @@ answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.1
         0.00000000e+00,  1.55453500e-09,  6.18653630e-05,  8.85109369e-02])
 
 if __name__ == '__main__':
-    viewer = PyxViewer(var)
+    viewer = fipy.viewers.make(vars = var)
     for step in range(steps):
         var.updateOld()        
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
@@ -165,6 +165,7 @@ if __name__ == '__main__':
             print (step / 100)
     print var
     theMask = Numeric.array([[10, 1, 20, 2]])
-    viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
+    viewer.plot()
+##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
     raw_input('finished')
 

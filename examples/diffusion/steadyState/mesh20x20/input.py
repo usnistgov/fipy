@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {10:26:55 AM} 
+ #                                last update: 3/4/05 {6:52:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,8 +83,8 @@ The result is again tested against the expected linear composition profile:
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var)
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var)
     ...     viewer.plot()
 """
 
