@@ -57,13 +57,15 @@ class System4ParticlesProfile(System4Particles):
         profile = Profiler('profile.txt', fudge=fudge)
         for i in range(5):
             self.it.timestep(1)
-            print "timestep: ",i
+            print "timestep: ",i        
         profile.stop()
+        
         print 'finished run'
     
 if __name__ == '__main__':
     fivol.inline.inline.readInlineArgs(sys.argv)
     system = System4ParticlesProfile(nx = 40, ny = 40)
     system.run()
+    
     raw_input()
 
