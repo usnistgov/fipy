@@ -137,9 +137,6 @@ class Mesh:
     def getDim(self):
         return self.dim
 
-    def getFaces(self):
-        pass
-
     def getCellsByID(self, ids = None):
 	pass
 	    
@@ -151,7 +148,19 @@ class Mesh:
             return cells
         else:        
 	    return [cell for cell in cells if filter(cell, **args)]
-	    
+
+    def getFaces(self):
+        pass
+    
+    def getFacesWithFilter(self, filter, **args):
+	"""Return Faces of Mesh."""
+	faces = self.getFaces()
+	
+        if filter is None:
+            return faces
+        else:        
+	    return [face for face in faces if filter(face, **args)]
+
     def getMaxFacesPerCell(self):
 	pass
 
