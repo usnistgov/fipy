@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
@@ -42,7 +44,9 @@
  ##
 
 """
-This `Term` implements a higher order Laplacian term, such as for Cahn-Hilliard
+
+##This `Term` implements a higher order Laplacian term, such as for Cahn-Hilliard
+
 """
 __docformat__ = 'restructuredtext'
 

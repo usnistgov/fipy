@@ -160,7 +160,6 @@ class Grid2D(Mesh2D):
     def getShape(self):
         return (self.nx, self.ny)
     
-
 ## pickling
 
     def __getstate__(self):

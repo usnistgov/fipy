@@ -47,19 +47,21 @@
 import unittest
 
 import examples.test
-import fipy.meshes.pyMesh.test
-import fipy.meshes.numMesh.test
-import fipy.tools.test
+import fipy.test
+##import fipy.meshes.pyMesh.test
+##import fipy.meshes.numMesh.test
+##import fipy.tools.test
 import fipy.tests.testProgram
-import fipy.variables.test
+##import fipy.variables.test
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(examples.test.suite())
-    theSuite.addTest(fipy.tools.test.suite())
-    theSuite.addTest(fipy.meshes.numMesh.test.suite())
-    theSuite.addTest(fipy.meshes.pyMesh.test.suite())
-    theSuite.addTest(fipy.variables.test.suite())
+    theSuite.addTest(fipy.test.suite())
+##    theSuite.addTest(fipy.tools.test.suite())
+##    theSuite.addTest(fipy.meshes.numMesh.test.suite())
+##    theSuite.addTest(fipy.meshes.pyMesh.test.suite())
+##    theSuite.addTest(fipy.variables.test.suite())
     return theSuite
 
 if __name__ == '__main__':
