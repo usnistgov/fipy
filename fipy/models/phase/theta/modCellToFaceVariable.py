@@ -42,16 +42,23 @@ from fivol.inline import inline
 from fivol.variables.cellToFaceVariable import CellToFaceVariable
 
 class ModCellToFaceVariable(CellToFaceVariable):
-    def __init__(self, var = None, mod = None):
+    def __init__(self, var = None, myMod = None):
         CellToFaceVariable.__init__(self,var)
-        self.mod = mod
-
+        self.myMod = myMod
+        
     def  _calcValueIn(self, alpha, id1, id2):
-	inline.runInlineLoop1(self.mod + """
-        double	cell2 = var(id2(i));
-        val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
+
+	inline.runInlineLoop1("""
+        double cell2 = var(id2(i));
+        double tmp = var(id1(i)) - cell2;
+        double pi = 3.141592653589793;
+        if (tmp > pi)
+           tmp = tmp - 2. * pi;
+        else if (tmp < - pi)
+           tmp = tmp + 2. * pi;
+        val(i) = tmp * alpha(i) + cell2;
 	""",var = self.var.getNumericValue(),
-            val = self.value.value, 
+            val = self.value.value[:], 
             alpha = alpha,
             id1 = id1, id2 = id2,
             ni = len(self.mesh.getFaces()))
