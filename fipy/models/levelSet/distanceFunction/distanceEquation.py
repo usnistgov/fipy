@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "distanceFunctionEquation.py"
+ #  FILE: "distanceEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
  #                                last update: 6/3/04 {2:53:54 PM} 
  #  Author: Jonathan Guyer
