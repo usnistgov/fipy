@@ -1,0 +1,142 @@
+To-Do List
+----------
+
+Here is the To-Do list:
+
+Release goals 0.1
+-----------------
+
+- Documentation:
+
+  * Check for errors.
+  * Manual and web site WERBed.
+  * Review Process.
+  * Mention --inline flag.
+
+- Refactoring:
+
+  * Finalize repository structure.
+
+    - Separate out pysparse:
+  
+      * Add as separate CVS project in the fipy sourceforge CVS directory.
+
+    - Separate out the profiler:
+
+      * Add as separate CVS project in the fipy sourceforge CVS directory.
+
+    - Create new CTCMS repository project for experimental models.
+
+  * Stop FiPy writing temporary files during test case execution:
+
+    - Use python temporary file system.
+
+- Distribution:
+
+  * Clean install on Mac
+  * Clean install on Debian linux
+
+
+Release Goals 0.2
+-----------------
+
+- Documentation:
+
+  * Include some examples on the web page.
+  * Include some pictures of simulations on the web page.
+  * Efficiency and --inline discussion.
+  * Examples:
+  
+    - 1000*1000 example for efficiency discussion.
+    - Explicit example.
+
+- Distribution
+
+  * Install and test with no write permissions.
+  * Windows install.
+   
+- Functionality:
+
+  * Linear Algebra:
+
+    - Iterative solver in place of superLU for non-symmetric matrices
+    
+  * Viewing variables on an unstructured mesh.
+
+    - gnuplot
+    - gist  
+
+  * Gnuplot-py:
+
+    - Viewing of variables for Grid2D objects.
+    - Justification:
+
+      * Gnuplot is available on Windows and it is standard on unix and linux platforms.
+      * Gnuplot-py is easy to install and is well supported.
+      * Gnuplot version 4.0 looks good for contour plots.
+      * Much faster than PyX. PyX is very slow for plotting large contour plots.
+      * The gist hardcopy functionality is mangled.
+
+  * Pass modified pysparse to Roman and ask for improved functionality.
+
+- Refactoring:
+
+  * Use an array module rather than Numeric and switch to numarray.
+
+  * Viewers:
+
+    - Create base viewing class.
+    - Use viewers in scipy that are similar to gist and remove gist.
+    - Refactor PyX viewer.
+
+  * Merge terms and equations into one object:
+
+    - Implicitly define solvers for terms-equations.
+ 
+  * Use doctest exclusively.
+
+  * Make the build_docs just update the files that have changed since
+    the last build.
+    
+  * Major mesh refactor:
+
+    - Remove separate nummesh and pymesh structure
+    - Think about the mesh hierarchy as it stands:
+
+      * Many branches at present.
+      * Consolidate functionality (__add__ etc).
+      * How does Gmsh fit in?
+
+    - Lazy mesh array evaluations.
+
+  * Reduce memory requirements
+
+    - Identify memory usage.
+
+  * Run time tests.
+
+  * Memory tests.
+
+Long term Goals
+---------------
+
+- Functionality:
+
+  * Multigrid method.
+  * Cell centered FVM.
+  * Adaptive meshing.
+  * Linear Algebra:
+
+    - Petc.
+    - SciPy.
+	
+  * Look into pyrex as an alternative to inlining.
+  * Laminar Fluid Flow module.
+
+- Refactoring:
+
+  * Global approach to phase field equations.
+
+- Documentation:
+
+  * Write a paper on FiPy.
