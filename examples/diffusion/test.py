@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""Run all the test cases
+"""Run all the test cases in examples/diffusion/
 """
 
 import unittest

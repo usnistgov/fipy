@@ -48,7 +48,7 @@ This example solves the steady-state convection-diffusion equation as described 
 
 .. raw:: latex
 
-    $$ \vector{u} = (-10, 0) $$
+    $$ \\vec{u} = (-10, 0) $$
 
 The analytical solution test for this problem is given by:
 

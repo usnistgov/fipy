@@ -46,21 +46,21 @@
 This example solves the steady-state convection-diffusion equation
 given by:
 
-..raw:: latex
+.. raw:: latex
 
-     $$ \\nabla \\cdot \\left(D \\nabla \\phi + \\vector{u} \\phi \\right) + S_c = 0 $$
+     $$ \\nabla \\cdot \\left(D \\nabla \\phi + \\vec{u} \\phi \\right) + S_c = 0 $$
 
 with boundary conditions given by:
 
-..raw:: latex
+.. raw:: latex
 
      $$ \\phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; \\phi = 1 \;\; \\text{at} \;\; x = L $$
 
 and coefficients given by:
 
-..raw:: latex
+.. raw:: latex
 
-     $$ D = 1, \;\; \\vector{u} = (10, 0) \;\; \\text{and} \;\; S_c = 0 $$     
+     $$ D = 1, \;\; \\vec{u} = (10, 0) \;\; \\text{and} \;\; S_c = 0 $$     
 
 The `SteadyConvectionDiffusionScEquation` object is used to create the
 equation.  It needs to be passed a convection term instantiator as

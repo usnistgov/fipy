@@ -38,7 +38,7 @@
 from distutils.core import setup
 import glob
 import os
-
+import string
 from distutils.core import Command
 
 class build_docs (Command):
@@ -71,7 +71,7 @@ class build_docs (Command):
 	    
     # finalize_options()
 
-    def _build(self, type):
+    def _buildTexFiles(self, modules, type = 'latex'):
 	dir = os.path.join('documentation', 'manual', 'api', type)
 	try:
 	    for root, dirs, files in os.walk(dir, topdown=False): 
@@ -84,55 +84,55 @@ class build_docs (Command):
 	    pass
 	    
 	os.makedirs(dir)
-	os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext fipy/")
+        
+        command = "epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext "
+        for module in modules:
+            command = command + module + "/ "
+        
+	os.system(command)
 
-    def _buildExamples(self):
-        type = 'latex'
-        dir = os.path.join('documentation', 'manual', 'examples', type)
+    def _buildApiFile(self, modules):
+        savedir = os.getcwd()
         try:
-            for root, dirs, files in os.walk(dir, topdown=False): 
-                for name in files: 
-                    os.remove(os.path.join(root, name)) 
-                for name in dirs: 
-                    os.rmdir(os.path.join(root, name)) 
-            os.rmdir(dir)
+            
+            os.chdir(os.path.join('documentation','manual'))
+            f = open('api.tex', 'w')
+            f.write("% This file is created automatically by:\n")
+            f.write("% 	python setup.py build_doc --latex\n\n")
+            for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
+                
+                if 'api.tex' in files:
+                    files.remove('api.tex')
+                
+                ## Added because linux does not sort files in the same order
+                files.sort()
+                
+                for module in modules[::-1]:
+                    formattedModule = string.replace(module,'/','.') + '-module.tex'
+                    if formattedModule in files:
+                        files.remove(formattedModule)
+                        files.insert(0, formattedModule)
+
+                for name in files:
+                    f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
+
+            f.close()
         except:
             pass
-	    
-        os.makedirs(dir)
-        os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext examples/")
-
-            
         
+        os.chdir(savedir)
+
     def run (self):
+        modules = ['fipy',
+                   'examples/diffusion',
+                   'examples/convection']
 	if self.latex:
-	    self._build('latex')
-            self._buildExamples()
-	    savedir = os.getcwd()
-	    try:
-		os.chdir(os.path.join('documentation','manual'))
-		f = open('api.tex', 'w')
-		f.write("% This file is created automatically by:\n")
-		f.write("% 	python setup.py build_doc --latex\n\n")
-		for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
-
-		    if 'api.tex' in files:
-			files.remove('api.tex')
-
-                    ## Added because linux does not sort files in the same order
-                    files.sort()
-
-		    for name in files:
-			f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
-
-		f.close()
-	    except:
-		pass
-	    os.chdir(savedir)
-
+             
+	    self._buildTexFiles(modules = modules)
+            self._buildApiFile(modules = modules)
 
 	if self.html:
-	    self._build('html')
+	    self._buildTexFiles(modules = modules, type = 'html')
 
 	if self.manual:
 	    savedir = os.getcwd()
