@@ -70,7 +70,6 @@ tolerance of `1e-10`. The variable `var` is coerced to a `Numeric.array`
 for the comparison.
 
     >>> import Numeric
-    >>> print Numeric.array(var)
     >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
@@ -89,7 +88,7 @@ from fipy.meshes.numMesh.tri2D import Tri2D
 
 nx = 50
 ny = 1
-dx = 2.
+dx = 1.
 dy = 1.
 
 mesh = Tri2D(dx = dx, dy = dy, nx = nx, ny = ny)
