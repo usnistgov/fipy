@@ -6,7 +6,7 @@
  # 
  #  FILE: "interstitialEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/1/04 {10:49:05 AM} 
+ #                                last update: 12/8/04 {5:24:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,71 +40,74 @@
  # ###################################################################
  ##
 
+r"""
+Represents the diffusion equation for interstitial species, such as 
+electrons,
+
+.. raw:: latex
+
+   \[
+       \underbrace{
+	   \frac{\partial C_j}{\partial t}
+	   \vphantom{\left\{
+	       \overbrace{
+		   \left[p'(\xi)\right]
+	       }^{\text{phase transformation}}
+	   \right\}}
+       }_{\text{transient}}
+       = \underbrace{
+	   D_j\nabla^2 C_j
+	   \vphantom{\left\{
+	       \overbrace{
+		   \left[p'(\xi)\right]
+	       }^{\text{phase transformation}}
+	   \right\}}
+       }_{\text{diffusion}} \\
+       + \underbrace{
+	   D_j\nabla\cdot 
+	   C_j
+	   \left\{
+	       \overbrace{
+		   \left[
+		       p'(\xi) \Delta\mu_j^{\circ}
+		       + g'(\xi) W_j
+		   \right] \nabla\xi
+	       }^{\text{phase transformation}}
+	       +
+	       \overbrace{
+		   z_j \nabla \phi
+	       }^{\text{electromigration}}
+	   \right\}
+       }_{\text{convection}}
+   \]
+
+   where, for a given species \( j \), \( C_j \) is the concentration, 
+   \( D_j \) is the self diffusivity, \( \Delta\mu_j^{\circ} \) is the 
+   standard chemical potential difference between the electrode and 
+   electrolyte for a pure material, \( W_j \) is the magnitude of 
+   the energy barrier in the double-well free energy function, and \( z_j \)
+   is the valence.
+   
+   In addition, \( t \) is time, \( \xi \) is the phase field variable, 
+   \( \phi \) is the electrostatic potential,
+   \( p(\xi) \) describes the
+   interpolation of the free energy, \( g(\xi) \) describes the
+   shape of the energy barrier between the electrode and electrolyte
+   phases, \( p'(\xi) = 30\xi^2\left(1-\xi\right)^2 \), and \( g'(\xi) =
+   2\xi\left(1-\xi\right)\left(1-2\xi\right) \).  
+
+"""
 __docformat__ = 'restructuredtext'
 
-from concentrationEquation import ConcentrationEquation
+from concentrationEquation import ConcentrationEquationFactory
 
-class InterstitialEquation(ConcentrationEquation):
-    r"""
-    Represents the diffusion equation for interstitial species, such as 
-    electrons,
-    
-    .. raw:: latex
-    
-       \[
-	   \underbrace{
-	       \frac{\partial C_j}{\partial t}
-	       \vphantom{\left\{
-		   \overbrace{
-		       \left[p'(\xi)\right]
-		   }^{\text{phase transformation}}
-	       \right\}}
-	   }_{\text{transient}}
-	   = \underbrace{
-	       D_j\nabla^2 C_j
-	       \vphantom{\left\{
-		   \overbrace{
-		       \left[p'(\xi)\right]
-		   }^{\text{phase transformation}}
-	       \right\}}
-	   }_{\text{diffusion}} \\
-	   + \underbrace{
-	       D_j\nabla\cdot 
-	       C_j
-	       \left\{
-		   \overbrace{
-		       \left[
-			   p'(\xi) \Delta\mu_j^{\circ}
-			   + g'(\xi) W_j
-		       \right] \nabla\xi
-		   }^{\text{phase transformation}}
-		   +
-		   \overbrace{
-		       z_j \nabla \phi
-		   }^{\text{electromigration}}
-	       \right\}
-	   }_{\text{convection}}
-       \]
-
-       where, for a given species \( j \), \( C_j \) is the concentration, 
-       \( D_j \) is the self diffusivity, \( \Delta\mu_j^{\circ} \) is the 
-       standard chemical potential difference between the electrode and 
-       electrolyte for a pure material, \( W_j \) is the magnitude of 
-       the energy barrier in the double-well free energy function, and \( z_j \)
-       is the valence.
-       
-       In addition, \( t \) is time, \( \xi \) is the phase field variable, 
-       \( \phi \) is the electrostatic potential,
-       \( p(\xi) \) describes the
-       interpolation of the free energy, \( g(\xi) \) describes the
-       shape of the energy barrier between the electrode and electrolyte
-       phases, \( p'(\xi) = 30\xi^2\left(1-\xi\right)^2 \), and \( g'(\xi) =
-       2\xi\left(1-\xi\right)\left(1-2\xi\right) \).  
-    
-    """
+class InterstitialEquationFactory(ConcentrationEquationFactory):
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:
 	    diffusivity = Cj.getDiffusivity()
 	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getHarmonicFaceValue())).transpose()
 	
-	return ConcentrationEquation.getConvectionCoeff(self, Cj = Cj, fields = fields, diffusivity = Cj.weightedDiffusivity)
+	return ConcentrationEquationFactory.getConvectionCoeff(self, Cj = Cj, fields = fields, 
+							       diffusivity = Cj.weightedDiffusivity)
+							       
+factory = InterstitialEquationFactory()
