@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/26/04 {11:12:07 AM} 
+ #                                last update: 11/2/04 {7:38:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,8 +45,10 @@
 import Numeric
  
 import os
-if not os.environ.has_key('FIPY_NOGIST'):
+try:
     import gist
+except:
+    print "Unable to load gist"
 
 from fipy.viewers.gistViewer import GistViewer
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "pyxviewer.py"
  #                                    created: 6/25/04 {3:17:21 PM} 
- #                                last update: 10/26/04 {10:56:28 PM} 
+ #                                last update: 11/2/04 {5:07:01 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -198,11 +198,14 @@ import Numeric
 import os
 import time
 
-if not os.environ.has_key('FIPY_NOPYX'):
+try:
     import pyx
     import pyx.color
 
     pyx.text.set(fontmaps="psfonts.cmz")
+except:
+    print "Unable to load pyx"
+
 
 class PyxViewer:
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/26/04 {11:01:20 AM} { 2:45:36 PM}
+ #                                last update: 11/2/04 {5:06:55 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,9 +45,11 @@
 import Numeric
 
 import os
-if not os.environ.has_key('FIPY_NOGIST'):
+try:
     import gist
     import colorbar
+except:
+    print "Unable to load gist"
 
 class GistViewer:
     

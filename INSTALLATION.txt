@@ -40,14 +40,10 @@ Privileges
 If you do not have administrative privileges on your computer, or if for
 any reason you don't want to tamper with your existing Python_
 installation, most packages (including |FiPy|) will allow you to install to
-an alternate location.  Instead of installing these packages with::
-
-    $ python setup.py install
-
-you would use::
-
-    $ python setup.py install --home=<dir>
-
+an alternate location.  Instead of installing these packages with
+``python setup.py install``,
+you would use
+``python setup.py install --home=<dir>``,
 where ``<dir>`` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 ``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
@@ -354,3 +350,4 @@ yourself with the excellent `Python tutorial`_ |citePythonTutorial|.
 .. |citePythonTutorial| raw:: latex
 
    \cite{PythonTutorial}
+

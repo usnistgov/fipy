@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/2/04 {4:44:47 PM} 
+ #                                last update: 11/2/04 {7:32:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -433,16 +433,12 @@ dist = setup(	name = "FiPy",
 if 'install' in dist.commands:
     req = []
     
-    try:
-	import Numeric
-    except ImportError, exc:
-	req.append('Numeric')
-	
-    try:
-	import spmatrix
-    except ImportError, exc:
-	req.append('PySparse')
-	
+    for pkg in ['Numeric', 'spmatrix', 'superlu']:
+	try:
+	    exec("import %s"%pkg)
+	except ImportError, exc:
+	    req.append(pkg)
+	    
     if len(req) > 0:
 	print "!!!!!!"
 	print "The required module(s) " + str(req) + " cannot be loaded."
@@ -450,36 +446,13 @@ if 'install' in dist.commands:
 
     opt = []
     
-    try:
-	import weave
-    except ImportError, exc:
-	opt.append('weave')
-	
-    try:
-	import gmsh
-    except ImportError, exc:
-	opt.append('gmsh')
+    for pkg in ['weave', 'gmsh', 'gist', 'pyx']:
+	try:
+	    exec("import %s"%pkg)
+	except ImportError, exc:
+	    opt.append(pkg)
 	
     if len(opt) > 0:
 	print "------"
 	print "The optional module(s) " + str(opt) + " cannot be loaded."
 	print "FiPy will have improved capabilities if these modules are installed."
-	
-    if not os.environ.has_key('FIPY_NOGIST'):
-	try:
-	    import gist
-	except ImportError, exc:
-	    print "------"
-	    print "The Pygist package cannot be loaded."
-	    print "If you choose not to install this package, be sure to create an " + \
-	    "environment variable FIPY_NOGIST to allow the test suite to run to completion."
-	
-    if not os.environ.has_key('FIPY_NOPYX'):
-	try:
-	    import pyx
-	except ImportError, exc:
-	    print "------"
-	    print "The PyX package cannot be loaded."
-	    print "If you choose not to install this package, be sure to create an " + \
-	    "environment variable FIPY_NOPYX to allow the test suite to run to completion."
-	
