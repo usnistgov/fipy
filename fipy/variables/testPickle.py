@@ -59,6 +59,7 @@ class TestVariablePickle(TestBase):
 	(f, fileName) = tempfile.mkstemp('.gz')
 	pickledVar = dump.write(self.var, fileName)
 	self.unPickledVar = dump.read(fileName)
+        os.close(f)
 	os.remove(fileName)
         
     def testResult(self):

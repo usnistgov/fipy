@@ -61,6 +61,7 @@ class TestDump(unittest.TestCase):
         self.dataUnpickled = dump.read(tempFile)
 	
 	import os
+        os.close(f)
 	os.remove(tempFile)
 
     def assertEqual(self, first, second, msg = None):
