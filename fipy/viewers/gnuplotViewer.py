@@ -102,7 +102,8 @@ class GnuplotViewer:
         g('set noytics')
         g('set noztics')
         g('set noxtics')
-        g('set pm3d at b')
+        g('set pm3d at st solid')
+##        g('set pm3d scansautomatic flush begin noftriangles nohidden3d solid implicit corners2color mean')
         g('set palette ' + self.palette)
         g('set size ratio -1')
         g('set title "' + self.title + '"')
@@ -161,5 +162,6 @@ class GnuplotViewer:
             g('set output "' + fileName + '"')
             g.splot(Gnuplot.GridData(array, x, y))
         elif '.ps' == fileName[-3:]:
+            
             g.splot(Gnuplot.GridData(array, x, y))
-            g.hardcopy(fileName, enhanced=1, color=1)
+            g.hardcopy(fileName, enhanced=1, color=1, fontsize = 10)
