@@ -67,11 +67,12 @@ Do the tests:
    >>> v1 = evalCell(val, -3. * dx / 2., dx, dy)[0]
    >>> v2 = evalCell(-3. * dy / 2., val, dx, dy)[0]
    >>> v3 = evalCell(v2, v1, dx, dy)[0]
+   >>> v4 = min(dx, dy) / 2 / Numeric.sqrt(2)
    >>> Numeric.allclose(Numeric.array(var), Numeric.array((v3           , v2      , -3. * dy / 2.   , v2      , v3,
-   ...                        v1           , val     , -dy / 2.        , val     , v1           ,
-   ...                        -3. * dx / 2., -dx / 2., min(dx, dy) / 2., -dx / 2., -3. * dx / 2.,
-   ...                        v1           , val     , -dy / 2.        , val     , v1           ,
-   ...                        v3           , v2      , -3. * dy / 2.   , v2      , v3           )), atol = 1e-10)
+   ...                                                     v1           , val     , -dy / 2.        , val     , v1           ,
+   ...                                                     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
+   ...                                                     v1           , val     , -dy / 2.        , val     , v1           ,
+   ...                                                     v3           , v2      , -3. * dy / 2.   , v2      , v3           )), atol = 1e-10)
    1
 
 """
