@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/3/04 {4:35:37 PM} 
+ #                                last update: 11/3/04 {5:53:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -385,7 +385,7 @@ class copy_script(Command):
     user_options = [
 	# Select installation scheme and set base director(y|ies)
 	('From=', None,
-	 "path and name containing script to copy"),
+	 "path and file name containing script to copy"),
 	('To=', None,
 	 "path and file name to save script to")
      ]
@@ -400,6 +400,19 @@ class copy_script(Command):
 	 
 	if self.To == None:
 	    raise "Please specify a '--To' output script file"
+	    
+	if os.path.exists(os.path.expanduser(self.To)):
+	    ans = "junk"
+	    
+	    while (len(ans) > 0) and ("yes".find(ans.lower()) is not 0) and ("no".find(ans.lower()) is not 0):
+		ans = raw_input("The file '%s' already exists. Overwrite? [n] "%self.To)
+		
+	    if ans is '':
+		ans = 'no'
+		
+	    if ("no".find(ans.lower()) is 0):
+		self.To = raw_input("Please give a name for the ouput file: ")
+		self.finalize_options()
 
     def run(self):
 	import imp
@@ -408,9 +421,13 @@ class copy_script(Command):
 	mod = imp.load_source("copy_script_module", self.From)
 	script = fipy.tests.doctestPlus.getScript(name = "copy_script_module")
 	
+	script = "## This script was derived from '%s'\n\n%s"%(self.From, script)
+	
 	f = file(self.To, "w")
 	f.write(script)
 	f.close
+	
+	print "Script code exported from '%s' to '%s'"%(self.From, self.To)
     
 long_description = """
 A finite volume PDE solver in Python.
@@ -475,7 +492,7 @@ if 'install' in dist.commands:
     
     for pkg in ['Numeric', 'spmatrix', 'superlu']:
 	try:
-	    exec("import %s"%pkg)
+	    __import__(pkg)
 	except ImportError, exc:
 	    req.append(pkg)
 	    
@@ -488,7 +505,7 @@ if 'install' in dist.commands:
     
     for pkg in ['weave', 'gmsh', 'gist', 'pyx']:
 	try:
-	    exec("import %s"%pkg)
+	    __import__(pkg)
 	except ImportError, exc:
 	    opt.append(pkg)
 	

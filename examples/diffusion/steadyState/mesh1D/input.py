@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:43:11 AM} 
+ #                                last update: 11/3/04 {6:08:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -241,7 +241,14 @@ remaining lines, leaving::
 	viewer.plot()
 	
 Your own scripts will tend to look like this, although you can always write
-them as doctest scripts if you choose.  Most of the FiPy examples will be a
+them as doctest scripts if you choose.  You can obtain a plain script
+like this from one of the examples by typing::
+    
+    $ python setup.py copy_script --From examples/.../input.py --To myInput.py
+
+at the command line.
+
+Most of the FiPy examples will be a
 mixture of plain scripts and doctest documentation/tests.  
 """
 
