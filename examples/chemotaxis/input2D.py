@@ -129,13 +129,13 @@ it = Iterator((KMEq, TMEq, TCEq, P3Eq, P2Eq, KCEq))
 from fipy.viewers.gnuplotViewer import GnuplotViewer
 import Numeric
 PNArray = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
-PNViewer = GnuplotViewer(PNArray, maxVal = 2., minVal = 0., title = 'Normalised PN distribution')
+PNViewer = GnuplotViewer(PNArray, maxVal = 2., minVal = 0., title = '')
 
 KMArray = Numeric.reshape(KMVar / KMVar.getCellVolumeAverage(), (50, 50))
-KMViewer = GnuplotViewer(KMArray, maxVal = 2., minVal = 0., title = 'Normalised KM distribution')
+KMViewer = GnuplotViewer(KMArray, maxVal = 2., minVal = 0., title = '')
 
 TMArray = Numeric.reshape(TMVar / TMVar.getCellVolumeAverage(), (50, 50))
-TMViewer = GnuplotViewer(TMArray, maxVal = 2., minVal = 0., title = 'Normalised TM distribution')
+TMViewer = GnuplotViewer(TMArray, maxVal = 2., minVal = 0., title = '')
 
 if __name__ == '__main__':
 
@@ -154,13 +154,13 @@ if __name__ == '__main__':
         it.timestep(dt = 0.1)
 
     PNArray[:] = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
-    PNViewer.plot('PN.ps')
+    PNViewer.plot('PN.pdf')
 
     KMArray[:] = Numeric.reshape(KMVar / KMVar.getCellVolumeAverage(), (50, 50))
-    KMViewer.plot('KM.ps')
+    KMViewer.plot('KM.pdf')
 
     TMArray[:] = Numeric.reshape(TMVar / TMVar.getCellVolumeAverage(), (50, 50))
-    TMViewer.plot('TM.ps')
+    TMViewer.plot('TM.pdf')
 
     raw_input("finished")
 
