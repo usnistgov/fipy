@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 4/2/04 {4:02:29 PM} 
  #  Author: Jonathan Guyer
@@ -88,7 +88,7 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+viewer = Grid2DGistViewer(var , minVal = 0., maxVal = 1.)
 
 eq = DiffusionEquation(var,
                        transientCoeff = 0., 
