@@ -43,11 +43,9 @@ from Numeric import array
 import fipy.tests.testProgram
 from fipy.tests.testBase import TestBase
 import Numeric
+import sys
 from fipy.meshes.grid2D import Grid2D
-try:
-    from fipy.meshes.vertex import Vertex
-except:
-    pass
+from fipy.meshes.pyMesh.vertex import Vertex
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 from fipy.variables.harmonicCellToFaceVariable import HarmonicCellToFaceVariable
@@ -58,19 +56,8 @@ class TestMesh(Grid2D):
 	Grid2D.__init__(self, dx, dy, nx, ny)
 
     def createVertices(self):
-        try:
-            dx = self.dx
-            x = ()
-            for i in range(self.nx + 1):
-                x += (i * dx,)
-                dx = dx * self.factor
-            x = Numeric.array(x)
-            y = Numeric.arange(self.ny + 1) * self.dy
-            x = Numeric.resize(x, (self.numberOfVertices,))
-            y = Numeric.repeat(y, self.nx + 1)
-            return Numeric.transpose(Numeric.array((x, y)))
-        except:
-            
+
+        if '--pymesh' in sys.argv:
             vertices = ()
             ny=self.ny
             nx=self.nx
@@ -82,6 +69,17 @@ class TestMesh(Grid2D):
                     vertices += (Vertex(array([i * dx, j * dy],'d')),)
                     dx = dx * self.factor
             return vertices	
+        else:
+            dx = self.dx
+            x = ()
+            for i in range(self.nx + 1):
+                x += (i * dx,)
+                dx = dx * self.factor
+            x = Numeric.array(x)
+            y = Numeric.arange(self.ny + 1) * self.dy
+            x = Numeric.resize(x, (self.numberOfVertices,))
+            y = Numeric.repeat(y, self.nx + 1)
+            return Numeric.transpose(Numeric.array((x, y)))
 
 class TestMean(TestBase):
     def setUp(self, value, dx = 1., dy = 1., factor = 1):

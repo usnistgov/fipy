@@ -61,11 +61,21 @@ class LevelSetEquation(Equation):
             solver = None)
 
     def solve(self):
+        ## Return an array for each cell where each entry has an array
+        ## over the neigbouring cells. The entry is 1 where the nieghbour
+        ## has the opposite sign.
         self.zeroNeighbours = self.getZeroNeighbors()
+        ## Return an array over cells where each entry is the number of
+        ## adjacent cells with opposite sign.
         self.numberOfZeroNeighbors = self.getNumberOfZeroNeighbors()
+        ## Return an array of the index of the cells with adjacent cell
+        ## values of opposite sign.
         self.zeroCellIDs = self.getZeroCellIDs()
+        ## Evaluate the initial bounding cell values.
         self.zeroValues = self.getZeroValues()
+        ## Find the IDs of cells next to the zero values
         self.trialInitialCellIDs = self.getInitialTrialCellIDs()
+        
 
     def getZeroNeighbors(self):
         values = self.var.getNumericValue()
