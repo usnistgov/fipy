@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/28/03 {10:46:22 AM} 
+ #                                last update: 11/28/03 {6:12:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -72,7 +72,6 @@ class TestSteadyStateDiffusion(unittest.TestCase):
 
         self.eq = DiffusionEquation(
             self.var,
-            name = "concentration",
             transientCoeff = 0., 
             diffusionCoeff = 1.,
             solver = LinearPCGSolver(

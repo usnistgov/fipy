@@ -5,7 +5,7 @@
 
  FILE: "diffusionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/26/03 {10:25:42 AM} 
+                               last update: 11/28/03 {6:15:13 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -51,7 +51,6 @@ class ExplicitDiffusionEquation(MatrixEquation):
     """    
     def __init__(self,
                  var,
-                 name='default_name',
                  transientCoeff = 1.,
                  diffusionCoeff = 1.,
                  solver='default_solver',
@@ -63,7 +62,6 @@ class ExplicitDiffusionEquation(MatrixEquation):
             )
 	MatrixEquation.__init__(
             self,
-            name,
             var,
             terms,
             solver)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/28/03 {10:50:14 AM} 
+ #                                last update: 11/28/03 {6:16:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -114,7 +114,6 @@ class TestVariableDiffusion(unittest.TestCase):
 
         self.eq = DiffusionEquation(
             self.var,
-            name = "diffusion",
             transientCoeff = 0., 
             diffusionCoeff = diffCoeff,
             solver = LinearPCGSolver(

@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "diffusionEquation.py"
-                                   created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/28/03 {6:13:06 PM} 
+ FILE: "scSourceTerm.py"
+                                   created: 11/28/03 {11:36:25 AM} 
+                               last update: 11/28/03 {11:14:13 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,28 +40,20 @@ they have been modified.
 ###################################################################
 """
 
-from matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from cellTerm import CellTerm
 
-class DiffusionEquation(MatrixEquation):
+class ScSourceTerm(CellTerm):
     """
-    Diffusion equation is implicit.
-    """    
-    def __init__(self,
-                 var,
-                 transientCoeff = 1.,
-                 diffusionCoeff = 1.,
-                 solver='default_solver',
-                 boundaryConditions=()):
-        mesh = var.getMesh()
-	terms = (
-	    TransientTerm(transientCoeff,mesh),
-	    ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
-            )
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
+    Sp source term. This term in general should be positive
+    for stability. Added to the matrix diagonal.
+    """
+    def __init__(self, scCoeff, mesh):
+        stencil = (1., 0., 0.)
+	CellTerm.__init__(self, stencil, mesh) 
+	self.scCoeff = scCoeff
+	    
+    def updateCoeff(self, dt):
+	self.coeff = self.scCoeff * self.mesh.getCellVolumes()
 
+    def setScCoeff(self, scCoeff):
+        self.scCoeff = scCoeff
