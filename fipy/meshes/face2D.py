@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/21/03 {5:33:50 PM} 
+ #                                last update: 11/30/03 {12:52:53 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,11 +60,12 @@ class Face2D(Face):
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
         return tools.sqrtDot(tangent,tangent)
 	
-    def calcNormal(self, cell = 'None'):
+    def calcNormal(self):
 	"""Normal is perpendicular to vector between vertices.
 	"""
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	norm = Numeric.array([-tangent[1],tangent[0]])
 	norm /= tools.sqrtDot(norm,norm)
-	    
-	return self.orientNormal(norm, cell)
+
+	return norm
+
