@@ -138,15 +138,16 @@ tolerance of `1e-10`.
 
     >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
-    
+
 A `Viewer` object allows a variable to be displayed. Here we are using
 the Gist package to view the field. The Gist viewer is constructed and
 the results are viewed:
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var, minVal = 0., maxVal = 1.)
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = (var,), limits = ('e', 'e', 0, 1))
     ...     viewer.plot()
+    ...     raw_input("press key to continue")
 
 ..
 
@@ -198,6 +199,14 @@ mixture of plain scripts and doctest documentation/tests.
 """
 
 __docformat__ = 'restructuredtext'
+
+def script():
+    """
+    Return the documentation for this module as a script that can be
+    invoked to initialize other scripts.
+    """
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.getScript(__name__)
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

@@ -47,6 +47,7 @@ def suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'mesh1D.tri2Dinput',
             'mesh1D.input',
+            'mesh1D.inputPeriodic',
             'mesh20x20.input',
             'mesh20x20.tri2Dinput',
             'mesh50x50.input',
