@@ -69,9 +69,14 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
     return fipy.tools.array.sqrt(abs(fipy.tools.array.sum(v1 * v2)))
 
-def _putAddPy(vector, ids, additionVector):
-    for i in range(len(ids)):
-	vector[ids[i]] += additionVector[i]
+def _putAddPy(vector, ids, additionVector, mask = None):
+    if mask is None:
+        for i in range(len(ids)):
+            vector[ids[i]] += additionVector[i]
+    else:
+        for i in range(len(ids)):
+            if not mask[i]:
+                vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):
     inline.runInlineLoop1("""
