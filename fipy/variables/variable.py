@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 11/24/03 {10:29:55 PM} 
+                               last update: 11/30/03 {12:56:28 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -46,35 +46,32 @@ import Numeric
 class Variable:
     
     def __init__(self, name, mesh, value=0.,viewer = 'None', hasOld = 1):
+	self.fields = {}
+	
 	self.name = name
 	self.mesh = mesh
 	self.array = Numeric.zeros([len(mesh.getCells())],'d')
-        self.viewer = viewer
         if viewer != 'None':
-            self.viewer.setVar(self)
+	    self.viewer = viewer(var = self)
+	else:
+	    self.viewer = 'None'
 	    
 	self.setValue(value)
 
         if hasOld:
-            self.old = Variable(name + "_old", mesh, value = self.getArray(), viewer = self.viewer, hasOld = 0)
+            self.old = Variable(name + "_old", mesh, value = self.getArray(), viewer = viewer, hasOld = 0)
         else:
             self.old = 'None'
 
     def plot(self):
-        self.viewer.plot()
+	if self.viewer != 'None':
+	    self.viewer.plot()
         
     def getMesh(self):
         return self.mesh
 
     def getArray(self):
         return self.array
-
-    def getFaceArray(self):
-        faces = self.mesh.getFaces()
-        array = Numeric.zeros(len(faces),'d')
-        for face in faces:
-            array[face.getId()] = self.getFaceValue(face)
-        return array
 
     def getGridArray(self):
         return self.mesh.makeGridData(self.array)
@@ -85,50 +82,65 @@ class Variable:
         else:
             for cell in cells:
                 self.array[cell.getId()] = value
+	self.refresh()
 
+    def refresh(self):
+	if self.fields.has_key('faceValues'):
+	    self.calcFaceValues()
+	if self.fields.has_key('gradient'):
+	    self.calcGradient()
+	
     def getFaceValue(self,face):
-        dAP = face.getCellDistance()
-        dFP = face.getFaceToCellDistance()
-        alpha = dFP / dAP
-        id1 = face.getCellId(0)
-        id2 = face.getCellId(1)
-        return self.array[id2] * alpha + self.array[id1] * (1 - alpha)
+	return self.getFaceValues()[face.getId()]
+	    
+    def getFaceValues(self):
+	if not self.fields.has_key('faceValues'):
+	    self.calcFaceValues()
+	return self.fields['faceValues']
 
+    def calcFaceValues(self):
+	dAP = self.mesh.getCellDistances()
+	dFP = self.mesh.getFaceToCellDistances()
+	alpha = dFP / dAP
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	self.fields['faceValues'] = Numeric.take(self.array, id1) * alpha + Numeric.take(self.array, id2) * (1 - alpha)
+	    
+    def calcFaceGradientContributions(self):
+	areas = self.mesh.getAreaProjections()
+	faceValues = Numeric.reshape(self.getFaceValues(), (len(areas),1)) 
+	
+	self.faceGradientContributions = areas * faceValues
+    
     def getCellGradient(self,cell):
-        grad = Numeric.zeros(self.mesh.getDim(),'d')
-        for face in cell.getFaces():
-            grad += self.getFaceValue(face) * face.getNormal(cell) * face.getArea()
-        return grad/cell.getVolume()
-        
+	contributions = Numeric.take(self.faceGradientContributions, cell.getFaceIDs())
+	
+	return Numeric.sum(cell.getFaceOrientations() * contributions) / cell.getVolume()
+	
     def getGradient(self):
+	if not self.fields.has_key('gradient'):
+	    self.calcGradient()
+	return self.fields['gradient']
+	    
+    def calcGradient(self):
+	self.calcFaceGradientContributions()
         grad = Numeric.zeros((len(self.array),self.mesh.getDim()),'d')
         for cell in self.mesh.getCells():
             grad[cell.getId()] = self.getCellGradient(cell)
-        return grad
+	self.fields['gradient'] = grad
 
     def getFaceGradient(self):
-        faceGrad = Numeric.zeros((len(self.mesh.getFaces()),self.mesh.getDim()),'d')
-        cellGrad = self.getGradient()
-        for face in self.mesh.getFaces():
-            dAP = face.getCellDistance()
-            dFP = face.getFaceToCellDistance()
-            alpha = dFP / dAP
-            id1 = face.getCellId(0)
-            id2 = face.getCellId(1)
-            faceGrad[face.getId()] = cellGrad[id2] * alpha + cellGrad[id1] * (1 - alpha)
-        return faceGrad
-
-    def getCellGradientMagnitude(self,cell):
-        grad  = self.getCellGradient(cell)
-        mag = meshes.tools.sqrtDot(grad,grad)
-        return mag
+	cellGrad = self.getGradient()
+	alpha = Numeric.zeros((len(self.mesh.getFaces()),1),'d')
+	dAP = self.mesh.getCellDistances()
+	dFP = self.mesh.getFaceToCellDistances()
+	alpha[:,0] = dFP / dAP
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	return Numeric.take(cellGrad, id1) * alpha + Numeric.take(cellGrad, id2) * (1 - alpha)
     
     def getGradientMagnitude(self):
-        mag = Numeric.zeros(len(self.array),'d')
-        for cell in self.mesh.getCells():
-            mag[cell.getId()] = self.getCellGradientMagnitude(cell)
-        return mag
-
+	grad = self.getGradient()
+	return Numeric.sqrt(Numeric.sum(grad*grad,1))
+	
     def getOld(self):
         if self.old == 'None':
             return self
