@@ -56,16 +56,17 @@ from temperatureEquation import TemperatureEquation
 
 import Numeric
 
-timeStepDuration = 0.02
+##timeStepDuration = 0.02
+timeStepDuration = 1.
 
 phaseParameters = {
-    'tau'                   : 0.1,
+    'tau'                   : 3e-4,
     'time step duration'    : timeStepDuration,
     'epsilon'               : 0.008,
     's'                     : 0.01,
     'alpha'                 : 0.015,
-    'c2'                    : 0.0,
-    'anisotropy'            : 0.,
+    'c2'                    : 0.02,
+    'anisotropy'            : 0.0,
     'symmetry'              : 4.,
     'kappa 1'               : 0.9,
     'kappa 2'               : 20.
@@ -79,11 +80,13 @@ temperatureParameters = {
     }
 
 
-Length = 0.5
+##Length = 0.5
+Length = 20.
 nx = 20
 ny = 20
 dx = Length / nx
 dy = Length / ny
+
 
 mesh = Grid2D(dx,dy,nx,ny)
 print "built mesh"
@@ -120,7 +123,8 @@ temperatureFields = {
     'phase' : phase
     }
 
-def circleCells(x,L = Length):
+def circleCells(cell,L = Length):
+    x = cell.getCenter()
     r = L / 4.
     c = (L / 2., L / 2.)
     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
@@ -165,6 +169,9 @@ it = Iterator((phaseEq, temperatureEq))
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
 print "solving"
+phaseViewer.plot()
+temperatureViewer.plot()
+raw_input()
 for i in range(10):
     it.timestep(steps = 10)
     phaseViewer.plot()
