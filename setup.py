@@ -469,7 +469,7 @@ class efficiency_test(Command):
                 ## because (apparently) it is faster than the ordinary python profiler.
                 prof = hotshot.Profile('tmp.prof')
                 prof.start()
-                execfile(case)
+                execfile(case, {} , {'numberOfElements' : numberOfElements})
                 prof.stop()
                 stats = hotshot.stats.load('tmp.prof')
                 print 'Elements: %i, CPU time: %.3f seconds' % (numberOfElements, stats.total_tt)
