@@ -81,12 +81,10 @@ def getParameters(nx ,ny):
     parameters = {
         'valueLeft' : valueLeft,
         'valueRight' : valueRight,
-        'timeStep' : 1.,
         'tolerance' : 1e-8,
         'steps' : 1,
         'mesh' : mesh,
         'var' : var,
-        'eq' : eq,
         'it' : it
         }
         

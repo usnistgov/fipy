@@ -56,13 +56,13 @@ class Test(TestBase):
         parameters = getParameters(self.nx, self.ny)
         
 	self.steps = parameters['steps']
-	self.timeStep = parameters['timeStep']
+##	self.timeStep = parameters['timeStep']
 	self.tolerance = parameters['tolerance']
         self.valueLeft = parameters['valueLeft']
         self.valueRight = parameters['valueRight']
         self.mesh = parameters['mesh']
         self.var = parameters['var']
-        self.eq = parameters['eq']
+##        self.eq = parameters['eq']
         self.it = parameters['it']
 
     def getTestValues(self):
