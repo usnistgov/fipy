@@ -42,13 +42,31 @@
  ##
 
 """
-This tests this input
+
+This input file describes a simple 1D diffusion problem with nx = 50
+mesh points.  The boundary conditions on each end are fixed values of
+valueLeft = 1 and valueRight = 0 respectively. The following test runs
+executes one time step and checks the solution:
 
     >>> it.timestep()
-    >>> Lx = nx * dx
+
+Pull out the x coordinate of the mesh centers to evaluate the
+analytical result:
+
     >>> x = mesh.getCellCenters()[:,0]
-    >>> import Numeric
-    >>> Numeric.allclose(var.getNumericValue(), valueLeft + (valueRight - valueLeft) * x / Lx, rtol = 1e-10, atol = 1e-10)
+
+the following is the analytical solution as an array (Lx is the length
+of the domain):
+
+    >>> Lx = nx * dx
+    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+
+Finally check that the analytical solution is within 1e-10 of the
+calculated solution. The method getNumericValue() returns the Numeric
+form from the Variable class:
+
+    >>> import Numeric    
+    >>> Numeric.allclose(var.getNumericValue(), analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
 """
