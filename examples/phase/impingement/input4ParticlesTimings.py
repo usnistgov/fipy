@@ -46,24 +46,30 @@ from fivol.examples.phase.examples.impingement.input4Particles import System4Par
 import Numeric
 import time
 
-resultsFile = open('results.txt', 'w')
-resultsFile.write('N     mesh build time      run time\n')
-resultsFile.close()
 
-for n in (10, 20, 40, 80, 160, 320, 640):
-    for i in range(5):
-        
-        t0 = time.time()
-        system = System4Particles(nx = n, ny = n, steps = 100, drivingForce = 10.)
-        
-        t1 = time.time()
-        system.run()
-        
-        t2 = time.time()
-        meshBuildTime = t1 - t0
-        runTime =  t2 - t1
-        
-        resultsFile = open('results.txt', 'a')
-        resultsFile.write('%i     %f       %f\n' % (n, meshBuildTime, runTime))
-        resultsFile.close()
+def timings():
+    
+    resultsFile = open('results.txt', 'w')
+    resultsFile.write('N     mesh build time      run time\n')
+    resultsFile.close()
 
+
+    for n in (10, 20, 40, 80, 160, 320, 640):
+        for i in range(5):
+            
+            t0 = time.time()
+            system = System4Particles(nx = n, ny = n, steps = 100, drivingForce = 10.)
+            
+            t1 = time.time()
+            system.run()
+            
+            t2 = time.time()
+            meshBuildTime = t1 - t0
+            runTime =  t2 - t1
+            
+            resultsFile = open('results.txt', 'a')
+            resultsFile.write('%i     %f       %f\n' % (n, meshBuildTime, runTime))
+            resultsFile.close()
+
+if __name__ == '__main__':
+    timings()
