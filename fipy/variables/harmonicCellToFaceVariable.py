@@ -6,7 +6,7 @@
  # 
  #  FILE: "harmonicCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:15:10 AM} 
- #                                last update: 7/24/04 {9:01:59 AM} 
+ #                                last update: 7/30/04 {7:12:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,8 +47,9 @@ class HarmonicCellToFaceVariable(CellToFaceVariable):
 	cell1 = array.take(self.var,id1)
 	cell2 = array.take(self.var,id2)
 	self.value = ((cell2 - cell1) * alpha + cell1)
-	if self.value != 0:
-	    self.value = cell1 * cell2 / self.value
+	eps = 1e-20
+	self.value = Numeric.where(self.value == 0., eps, self.value)
+	self.value = Numeric.where(self.value <= eps, cell1 * cell2 / self.value, 0.)
 	
     def _calcValueIn(self, alpha, id1, id2):
 	inline.runInlineLoop1("""
