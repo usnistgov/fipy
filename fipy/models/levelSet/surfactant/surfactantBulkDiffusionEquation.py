@@ -98,13 +98,14 @@ class ScAdsorptionCoeff(AdsorptionCoeff):
         bulk = Numeric.array(self.bulkVar)
         val = Numeric.array(self.value)
         self.value = val * bulk * Numeric.array(self.surfactantVar.getInterfaceVar())
-
+        
 class SurfactantBulkDiffusionEquation(LevelSetDiffusionEquation):
     
     def __init__(self,
                  var,
                  distanceVar = None,
                  surfactantVar = None,
+                 otherSurfactantVar = None,
                  diffusionCoeff = None,
                  transientCoeff = 1.,
                  rateConstant = None,
@@ -141,13 +142,24 @@ class SurfactantBulkDiffusionEquation(LevelSetDiffusionEquation):
                                                       rateConstant = rateConstant,
                                                       distanceVar = distanceVar),
                                     mesh)
-        
+
+        otherTerms = (scSourceTerm, spSourceTerm)
+
+        if otherSurfactantVar is not None:
+            otherScSourceTerm = ScSourceTerm(ScAdsorptionCoeff(bulkVar = var,
+                                                               surfactantVar = otherSurfactantVar,
+                                                               rateConstant = rateConstant,
+                                                               distanceVar = distanceVar),
+                                             mesh)
+
+            otherTerms += (otherScSourceTerm,)
+            
         LevelSetDiffusionEquation.__init__(self,
                                            var,
                                            distanceVar = distanceVar,
                                            diffusionCoeff = diffusionCoeff,
                                            transientCoeff = transientCoeff,
                                            boundaryConditions = boundaryConditions,
-                                           otherTerms = (scSourceTerm, spSourceTerm))
+                                           otherTerms = otherTerms)
            
 
