@@ -93,7 +93,7 @@ import fipy.tools.vector as vector
 
 class DistanceEquation(Equation):
 
-    def __init__(self, var, terminationValue = 1e10):
+    def __init__(self, var, terminationValue = 1e10, maskedCells = ()):
         """
 
         The `var` argument must contain both positive and negative to
@@ -107,6 +107,7 @@ class DistanceEquation(Equation):
         
         self.mesh = var.getMesh()
 	self.terminationValue = terminationValue
+        self.maskedCells = maskedCells
         
 	Equation.__init__(
             self,
@@ -118,17 +119,22 @@ class DistanceEquation(Equation):
 
     def solve(self, terminationValue = None):
 
-        setValueFlag = self._calcInterfaceValues()
+        ## setValueFlag:
+        ## 0 indicates a cell that has no value yet
+        ## 1 indicates a cell that is an evaluated cell
+        ## 2 indicates a cell that is a trial cell
+        ## -1 indicates a cell that is masked
+        setValueFlag = self._calcInterfaceValues(self.maskedCells)
         setValueFlag = self._calcInitialTrialValues(setValueFlag)
         self._calcRemainingValues(setValueFlag, terminationValue)
         
     def _calcNumericQuantities(self):
         self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
-        self.cellToCellDistances = Numeric.array(self.mesh.getCellToCellDistances())
-        self.cellNormals = Numeric.array(self.mesh.getCellNormals())
-        self.cellAreas = Numeric.array(self.mesh.getCellAreas())
+        self.cellToCellDistances = Numeric.array(MA.array(self.mesh.getCellToCellDistances()).filled(0))
+        self.cellNormals = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(0))
+        self.cellAreas = Numeric.array(MA.array(self.mesh.getCellAreas()).filled(0))
 
-    def _calcInterfaceValues(self):
+    def _calcInterfaceValues(self, maskedCells = ()):
         """
 
         Sets the values in cells at the interface (cells that have a neighbour
@@ -174,13 +180,24 @@ class DistanceEquation(Equation):
            >>> answer = Numeric.array((-1,-1,-1,-dx/2,dx/2,1,1,1))
            >>> Numeric.allclose(answer, Numeric.array(var))
            1
+
+           >>> dx = 1e-10
+           >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+           >>> var = DistanceVariable(mesh = mesh, value =
+           ...     (-1, -1, -1, -1, 1, 1, 1, 1))
+           >>> DistanceEquation(var)._calcInterfaceValues(maskedCells = (0, 1))
+           [-1,-1, 0, 1, 1, 0, 0, 0,]
+           >>> answer = Numeric.array((-1,-1,-1,-dx/2,dx/2,1,1,1))
+           >>> Numeric.allclose(answer, Numeric.array(var))
+           1
            
         """
         
         N = self.mesh.getNumberOfCells()
         M = self.mesh.getMaxFacesPerCell()
 
-        cellZeroFlag = Numeric.take(self.var.getInterfaceFlag(), self.mesh.getCellFaceIDs())
+        from fipy.meshes.numMesh.mesh import MAtake
+        cellZeroFlag = MAtake(self.var.getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
         
         dAP = self.mesh.getCellToCellDistances()
         cellToCellIDs = self.mesh.getCellToCellIDsFilled()
@@ -205,8 +222,12 @@ class DistanceEquation(Equation):
         cellFlag = Numeric.sum(cellZeroFlag, axis = 1)
 
         self.var.setValue(signedDistance)
+        
+        setValueFlag = Numeric.where(cellFlag > 0, 1, 0)
 
-        return Numeric.where(cellFlag > 0, 1, 0)
+        Numeric.put(setValueFlag, maskedCells, -Numeric.ones(len(maskedCells)))
+
+        return setValueFlag
     
     def _calcLinear(self, phi, d, cellID, adjCellID):
         return (phi + d, phi - d)
@@ -294,31 +315,43 @@ class DistanceEquation(Equation):
            >>> v1 = 0.25 / Numeric.sqrt(2)
            >>> Numeric.allclose(Numeric.array((v, -1, v, -.25, v1, -.25, v, -1, v)), Numeric.array(var), atol = 1e-6)
            1
+
+           >>> mesh = Grid2D(dx = .5, dy = 2., nx = 3, ny = 3)
+           >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, -1, -1, -1, -1))
+           >>> eqn = DistanceEquation(var)
+           >>> setValueFlag = eqn._calcInterfaceValues(maskedCells = (0,2))
+           >>> eqn._calcInitialTrialValues(setValueFlag)
+           [-1, 1,-1, 1, 1, 1, 2, 1, 2,]
+           >>> v = -1.40771446
+           >>> v1 = 0.25 / Numeric.sqrt(2)
+           >>> Numeric.allclose(Numeric.array((-1, -1, -1, -.25, v1, -.25, v, -1, v)), Numeric.array(var), atol = 1e-6)
+           1
         """
         N = self.mesh.getNumberOfCells()
         M = self.mesh.getMaxFacesPerCell()
         cellToCellIDs = self.mesh.getCellToCellIDsFilled()
 
-        adjacentCellFlag = Numeric.take(setValueFlag, cellToCellIDs)
+        adjacentCellFlag = Numeric.take(setValueFlag > 0, cellToCellIDs)
 
         sumAdjacentCellFlag = Numeric.sum(adjacentCellFlag, axis = 1)
-        
+
         setValueFlag = Numeric.where(sumAdjacentCellFlag == 0,
                                      setValueFlag,
-                                     Numeric.where(setValueFlag == 1,
+                                     Numeric.where(Numeric.logical_or(setValueFlag == 1, setValueFlag == -1),
                                                    setValueFlag,
                                                    2))
 
         trialCellIDs = Numeric.nonzero(Numeric.where(setValueFlag == 2, 1, 0))
-
+        
         for cellID in trialCellIDs:
             self.var[cellID] = self._calcTrialValue(cellID, setValueFlag)
 
         return setValueFlag
 
     def _calcTrialValue(self, cellID, setValueFlag):
-
+        
         cellToCellIDs = self.cellToCellIDs[cellID]
+
         dAP = self.cellToCellDistances[cellID]
 
         phiAdj = Numeric.take(self.var, cellToCellIDs)
@@ -383,6 +416,19 @@ class DistanceEquation(Equation):
         >>> answer = Numeric.sqrt((x - .5)**2 + (y - .5)**2) - 0.5
         >>> Numeric.allclose(answer, Numeric.array(var), atol = 5e-1)
         1
+
+        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, 1, 1, 1, 1, 1))
+        >>> eqn = DistanceEquation(var)
+        >>> setValueFlag = eqn._calcInterfaceValues(maskedCells = (8,))
+        >>> setValueFlag = eqn._calcInitialTrialValues(setValueFlag)
+        >>> eqn._calcRemainingValues(setValueFlag)
+        >>> x = mesh.getCellCenters()[:,0]
+        >>> y = mesh.getCellCenters()[:,1]
+        >>> answer = Numeric.sqrt((x - .5)**2 + (y - .5)**2) - 0.5
+        >>> answer[8] = 1
+        >>> Numeric.allclose(answer, Numeric.array(var), atol = 5e-1)
+        1
         
         """
         trialCellIDs = list(Numeric.nonzero(Numeric.where(setValueFlag == 2, 1, 0)))
@@ -403,7 +449,7 @@ class DistanceEquation(Equation):
             trialCellIDs.remove(cellID)
             cellToCellIDs = self.mesh.getCellToCellIDsFilled()[cellID]
             for adjCellID in cellToCellIDs:
-                if setValueFlag[adjCellID] != 1:
+                if setValueFlag[adjCellID] != 1 and setValueFlag[adjCellID] != -1:
                     self.var[adjCellID] = self._calcTrialValue(adjCellID, setValueFlag)
                     if setValueFlag[adjCellID] == 0:
                         setValueFlag[adjCellID] = 2
