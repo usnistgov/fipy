@@ -106,7 +106,7 @@ or
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
     ...     import NthOrderBoundaryCondition
-    >>> boundaryConditions = (
+    >>> BCs = (
     ...     FixedValue(mesh.getFacesRight(), 1),
     ...     FixedValue(mesh.getFacesLeft(), .5),
     ...     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
@@ -123,15 +123,13 @@ Using
 we create the Cahn-Hilliard equation object
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
-    >>> eqch= CahnHilliardEquation(
-    ...     var,
-    ...     parameters = parameters,
-    ...     solver = LinearLUSolver(
-    ...         tolerance = 1e-15,
-    ...         steps = 100),
-    ...     boundaryConditions = boundaryConditions
+    >>> from fipy.models.cahnHilliard.cahnHilliardEquation import buildCahnHilliardEquation
+    >>> eqch = buildCahnHilliardEquation(
+    ...     var = var,
+    ...     parameters = parameters
     ... )
+
+    >>> solver = LinearLUSolver(tolerance = 1e-15, steps = 100)
 
 The solution to this 1D problem over an infinite domain is given by,
 
@@ -156,14 +154,12 @@ If we are running interactively, we create a viewer to see the results
 We iterate the solution to equilibrium and, if we are running interactively, 
 we update the display and output data about the progression of the solution
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eqch,))
     >>> dexp=-5
     >>> for step in range(100):      
     ...     dt = Numeric.exp(dexp)
     ...     dt = min(10,dt)
     ...     dexp += 0.5
-    ...     it.timestep(dt = dt)
+    ...     eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
     ...     if __name__ == '__main__':
     ...         diff = abs(answer - Numeric.array(var))
     ...         maxarg = Numeric.argmax(diff)

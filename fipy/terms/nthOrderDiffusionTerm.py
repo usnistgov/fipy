@@ -130,12 +130,12 @@ x = 2, fixed value 4, fixed 3rd order -1
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 2., 2)
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> term = NthOrderDiffusionTerm(coeffs = (-1., 1.))
    >>> coeff = term.getCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
     1.000000  -1.000000  
    -1.000000   1.000000  
-   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
+   >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh),
    ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print L
    -4.000000   6.000000  
@@ -231,8 +231,8 @@ class NthOrderDiffusionTerm(Term):
             ## Added to change the sign so that all terms are added to
             ## the right hand side, without this the 4th order term is
             ## added to the left side of the equation.
-            if self.order % 4 == 0:
-                self.coeff = -self.coeff
+            ##if self.order % 4 == 0:
+            ##    self.coeff = -self.coeff
         else:
             self.coeff = None
         

@@ -79,47 +79,23 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
 
-class CahnHilliardEquation(MatrixEquation):
-
-    def __init__(self,
-                 var,
-                 solver = 'default_solver',
-                 transientCoeff = 1.0,
-                 boundaryConditions = (),
-                 parameters = {}):
+def buildCahnHilliardEquation(var = None,
+                              transientCoeff = 1.0,
+                              parameters = {}):
         
-	self.parameters = parameters
-	self.var = var
-        diffusionCoeff = self.parameters['diffusionCoeff']
+    parameters = parameters
+    diffusionCoeff = parameters['diffusionCoeff']
+    faceVar = var.getArithmeticFaceValue()
+    
+    doubleWellDerivative = parameters['asq'] * ( 1 - 6 * faceVar * (1 - faceVar))
 
-        faceVar = var.getArithmeticFaceValue()
-        doubleWellDerivative = self.parameters['asq'] * ( 1 - 6 * faceVar * (1 - faceVar))
-        
-	terms = (
-	    TransientTerm(
-                transientCoeff,
-                mesh = var.getMesh()
-                )
-            ,
-	    NthOrderDiffusionTerm(
-                coeffs = (diffusionCoeff, -self.parameters['epsilon']**2),
-                mesh = var.getMesh(),
-                boundaryConditions = boundaryConditions
-                )
-            ,
-            NthOrderDiffusionTerm(
-                coeffs = (diffusionCoeff * doubleWellDerivative,),
-                mesh = var.getMesh(),
-                boundaryConditions = boundaryConditions
-                )
-            )
+    tranTerm = TransientTerm(transientCoeff)
 
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
+    diffTerm2 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff * doubleWellDerivative,))
+
+    diffTerm4 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff, -parameters['epsilon']**2))
+
+    return tranTerm - diffTerm2 - diffTerm4
