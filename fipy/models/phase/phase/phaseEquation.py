@@ -46,6 +46,7 @@ from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
 from phaseDiffusionVariable import PhaseDiffusionVariable
+from anisotropyVariable import AnisotropyVariable
 from spSourceVariable import SpSourceVariable
 import Numeric
 
@@ -81,9 +82,11 @@ class PhaseEquation(MatrixEquation):
 ##	    sourceCoeff = self.getSpSourceCoeff(),
             sourceCoeff = SpSourceVariable(theta = self.thetaOld, mPhi = self.mPhi, phase = self.var, parameters = self.parameters),
 	    mesh = mesh)
-	    
+
+        anisotropy = AnisotropyVariable(parameters, self.var, self.thetaOld)
+
         self.scTerm = ScSourceTerm(
-            sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.var,
+            sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.var + anisotropy,
 	    mesh = mesh)
 	
 	transientCoeff = parameters['tau'] / parameters['time step duration']
@@ -100,6 +103,8 @@ class PhaseEquation(MatrixEquation):
             var,
             terms,
             solver)
+
+    
 	    
 ##    def getPhaseDiffCoeff(self):
 ##	alpha = self.parameters['alpha']
@@ -116,7 +121,6 @@ class PhaseEquation(MatrixEquation):
 ##	z = (1.+ c2 * z)
 
 ##	return alpha**2 * z * z
-
 
     def getSpSourceCoeff(self):
         s = self.parameters['s']

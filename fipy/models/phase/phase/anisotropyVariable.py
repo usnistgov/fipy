@@ -40,12 +40,12 @@ they have been modified.
 ###################################################################
 """
 
-from variables.faceVariable import FaceVariable
+from variables.cellVariable import CellVariable
 import Numeric
 
-class PhaseDiffusionVariable(FaceVariable):
+class AnisotropyVariable(CellVariable):
     def __init__(self, parameters, phase, theta):
-        FaceVariable.__init__(self, phase.getMesh())
+        CellVariable.__init__(self, phase.getMesh())
 	self.parameters = parameters
 	self.phase = self.requires(phase)
         self.theta = self.requires(theta)
@@ -60,9 +60,35 @@ class PhaseDiffusionVariable(FaceVariable):
         z = Numeric.arctan2(dphi[:,1],dphi[:,0])
 	z = N * (z - thetaFace)
 	z = Numeric.tan(z / 2.)
-	z = z * z
-	z = (1. - z) / (1. + z)
-	z = (1.+ c2 * z)
+	zsq = z * z
+	b = (1. - zsq) / (1. + zsq)
+	db = -N*2*z/(1+zsq)
+        ff = alpha**2 * c2 * (1. + c2 * b) * db
+
+        dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
+
+        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
+
+        contributions = contributions * ff
         
-        self.value = alpha**2 * z * z
+        NIntFac = len(self.mesh.getInteriorFaces())
+        NExtFac = len(self.mesh.getFaces()) - NIntFac
+        
+        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
+
+        ids = self.mesh.getCellFaceIDs()
+
+        contributions = Numeric.take(contributions, ids)
+
+        NCells = len(self.value[:])
+	NMaxFac = self.mesh.getMaxFacesPerCell()
+
+        contributions = Numeric.reshape(contributions,(NCells,-1))
+
+        orientations = Numeric.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
+
+        self.value = Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
+
+
+        
 
