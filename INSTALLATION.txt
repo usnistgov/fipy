@@ -233,11 +233,16 @@ commands::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
-and press enter at the password prompt, then::
+and press enter at the password prompt, then to download |FiPy| 1.0 
+(recommended)::
+
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout -r CURRENT fipy
+
+If you prefer, you can download |FiPy| 0.1 with::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout -r STABLE fipy
 
-Further information about CVS_ can be found in |documentation:CVS.txt| and
+Further information about CVS_ can be found in |documentation/CVS.txt| and
 at http://sourceforge.net/cvs/?group_id=118428.
 
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/
@@ -341,7 +346,7 @@ yourself with the excellent `Python tutorial`_ |citePythonTutorial|.
 .. |TeX| replace:: |latexTeX| |htmlTeX|
 .. |examples/| replace:: |latexExamples/| |htmlExamples/|
 
-.. |documentation:CVS.txt| replace:: |latexCVS.txt| |htmlCVS.txt|
+.. |documentation/CVS.txt| replace:: |latexCVS.txt| |htmlCVS.txt|
 
 .. |citeInstallingPythonModules| raw:: latex
 
