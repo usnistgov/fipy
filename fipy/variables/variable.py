@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 11/20/03 {4:17:21 PM} 
+                               last update: 11/24/03 {10:29:55 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -69,6 +69,8 @@ class Variable:
     def setValue(self,value,cells = ()):
 	if cells == ():
 	    cells = self.mesh.getCells()
+	for cell in cells:
+	    self.array[cell.getId()] = value
 	    
 
 
