@@ -108,7 +108,6 @@ parameters obtained from experiments on flat copper electrodes,
 
 general simulation control parameters,
 
-   >>> numberOfSteps = 300
    >>> cflNumber = 0.2
    >>> numberOfCellsInNarrowBand = 10
    >>> cellsBelowTrench = 10
@@ -127,18 +126,25 @@ size.
 
 Build the mesh:
 
-   >>> identifier = 'numberOfElements='
-   >>> import sys
+   >>> import optparse
+
+   >>> parser = optparse.OptionParser(option_list = [
+   ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = -1),
+   ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 5)])
+   
+   >>> (options, args) = parser.parse_args()
+
    >>> import Numeric
-   >>> for s in sys.argv:
-   ...     if identifier in s:
-   ...         numberOfElements = int(s[len(identifier):])
-   ...         pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
-   ...         sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / numberOfElements
-   ...         cellSize = pos + Numeric.sqrt(pos**2 + sqr)
+   >>> if options.numberOfElements != -1:
+   ...     pos = trenchSpacing * cellsBelowTrench / 4 / options.numberOfElements
+   ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / options.numberOfElements
+   ...     cellSize = pos + Numeric.sqrt(pos**2 + sqr)
+   ... else:
+   ...     cellSize = 0.1e-7
 
    >>> yCells = cellsBelowTrench + int((trenchDepth + boundaryLayerDepth) / cellSize)
    >>> xCells = int(trenchSpacing / 2 / cellSize)
+
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = cellSize,
    ...               dy = cellSize,
@@ -462,11 +468,11 @@ is calculated with the CFL number and the maximum extension velocity.
 ..
 
    >>> if __name__ == '__main__':
-   ...     if 'viewers=off' not in sys.argv:
-   ...         viewers = buildViewers()
+   ...     viewers = buildViewers()
+
+   >>> for step in range(options.steps):
    ...
-   ...     for step in range(numberOfSteps):
-   ...
+   ...     if __name__ == '__main__':
    ...         if step % levelSetUpdateFrequency == 0:
    ...             distanceVar.calcDistanceFunction()
    ...
@@ -474,35 +480,27 @@ is calculated with the CFL number and the maximum extension velocity.
    ...
    ...         argmax = Numeric.argmax(extensionVelocityVariable)
    ...
-   ...         distanceVar.updateOld()
-   ...         acceleratorVar.updateOld()
-   ...         metalVar.updateOld()
-   ...         bulkAcceleratorVar.updateOld()
-   ...         distanceVar.extendVariable(extensionVelocityVariable)
-   ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
-   ...         advectionEquation.solve(distanceVar, dt = dt) 
-   ...         surfactantEquation.solve(acceleratorVar, dt = dt)
-   ...         metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
-   ...         bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
-   ...         if 'viewers=off' not in sys.argv:
-   ...             for viewer in viewers:
-   ...                 viewer.plot()
-
-The following is a short test case. It uses saved data from a
-simulation with 5 time steps. It is not a test for accuracy but a way
-to tell if something has changed or been broken.
-
-   >>> for i in range(5):
-   ...     dt = 0.1
    ...     distanceVar.updateOld()
    ...     acceleratorVar.updateOld()
    ...     metalVar.updateOld()
    ...     bulkAcceleratorVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
+   ...     if __name__ == '__main__':
+   ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+   ...     else:
+   ...         dt = 0.1
    ...     advectionEquation.solve(distanceVar, dt = dt) 
    ...     surfactantEquation.solve(acceleratorVar, dt = dt)
    ...     metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
    ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
+   ...
+   ...     if __name__ == '__main__':
+   ...         for viewer in viewers:
+   ...             viewer.plot()
+
+The following is a short test case. It uses saved data from a
+simulation with 5 time steps. It is not a test for accuracy but a way
+to tell if something has changed or been broken.
 
    >>> import os
    >>> testFile = 'test.gz'

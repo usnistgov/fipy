@@ -439,19 +439,22 @@ class efficiency_test(Command):
     user_options = [ ('minimumelements=', None, 'minimum number of elements'),
                      ('factor=', None, 'factor by which the number of elements is increased'),
                      ('inline', None, 'turn on inlining for the efficiency tests'),
-                     ('maximumelements=', None, 'maximum number of elements')]
+                     ('maximumelements=', None, 'maximum number of elements'),
+                     ('case=', None, 'run a specific example')]
     
     def initialize_options(self):
         self.factor = 10
         self.inline = False
         self.maximumelements = 1000
         self.minimumelements = 100
+        self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py']
         
     def finalize_options(self):
         self.factor = int(self.factor)
         self.maximumelements = int(self.maximumelements)
         self.minimumelements = int(self.minimumelements)
-        
+        self.cases = [self.case]
+            
     def run(self):
 
         import time
@@ -462,7 +465,7 @@ class efficiency_test(Command):
         
         file = open('efficiencyData.txt', 'w')
 
-        sys.argv.append('viewers=off')
+        sys.argv.append('--numberOfSteps=100')
 
         class GetMemoryThread(threading.Thread):
             def __init__(self, runTimeEstimate, fileObject, pid):
@@ -488,8 +491,7 @@ class efficiency_test(Command):
                 self.fileObject.write(str(maxMem))
                 self.fileObject.close()
 
-        for case in ['examples/cahnHilliard/input2D.py',
-                     'examples/levelSet/electroChem/input.py']:
+        for case in self.cases:
             
             runTimeEstimate = 10.
             file.write('case:' + case + '\n')
@@ -498,7 +500,7 @@ class efficiency_test(Command):
             exceptionFlag = False
             
             while numberOfElements <= self.maximumelements and not exceptionFlag:
-                sys.argv.append('numberOfElements=' + str(numberOfElements))
+                sys.argv.append('--numberOfElements=' + str(numberOfElements))
                 (f, fileName) = tempfile.mkstemp()
                 tmpFile = open(fileName, 'w')
                 thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid())
@@ -506,7 +508,7 @@ class efficiency_test(Command):
                 t1 = time.clock()
 
                 try:
-                    execfile(case, globals())
+                    execfile(case)
 
                 except:
                     file.write('Exception executing ' + case + '\n')
@@ -519,7 +521,7 @@ class efficiency_test(Command):
                 tmpFile.close()
                 os.remove(fileName)
                 os.close(f)
-                sys.argv.remove('numberOfElements=' + str(numberOfElements))
+                sys.argv.remove('--numberOfElements=' + str(numberOfElements))
                 file.write('Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB\n' % (numberOfElements, t2 - t1, memUsage))
                 
                 numberOfElements *= self.factor

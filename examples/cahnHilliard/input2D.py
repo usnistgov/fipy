@@ -62,20 +62,19 @@ where the free energy functional is given by,
 __docformat__ = 'restructuredtext'
 
 import Numeric
-import sys
 
-nx = 500
-ny = 500
+import optparse
 
-identifier = 'numberOfElements='
-   
-for s in sys.argv:
-    if identifier in s:
-        numberOfElements = int(s[len(identifier):])
-        nx = int(Numeric.sqrt(numberOfElements))
-        ny = int(Numeric.sqrt(numberOfElements))
+parser = optparse.OptionParser(option_list = [
+    optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
+    optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 100)])
 
-steps = 100
+(options, args) = parser.parse_args()
+
+nx = int(Numeric.sqrt(options.numberOfElements))
+ny = int(Numeric.sqrt(options.numberOfElements))
+
+steps = options.steps
 
 dx = 2.
 dy = 2.
@@ -125,20 +124,19 @@ if __name__ == '__main__':
 
     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
-    if 'viewers=off' not in sys.argv:
-        viewer.plot()
+    viewer.plot()
     
-    dexp=-5
-    import os
+dexp=-5
 
-    for step in range(steps):
-        dt = Numeric.exp(dexp)
-        dt = min(100, dt)
-        dexp += 0.01
-        var.updateOld()
-        eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-        if 'viewers=off' not in sys.argv:
-            viewer.plot()
-            print 'step',step,'dt',dt
+for step in range(steps):
+    dt = Numeric.exp(dexp)
+    dt = min(100, dt)
+    dexp += 0.01
+    var.updateOld()
+    eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
+
+    if __name__ == '__main__':
+        viewer.plot()
+        print 'step',step,'dt',dt
             
         

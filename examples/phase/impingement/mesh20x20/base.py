@@ -48,8 +48,17 @@ In the following examples, we solve the same set of equations as in::
     
 with different initial conditions and a 2D mesh:
 
-    >>> nx = 20
-    >>> ny = 20
+    >>> import optparse
+    >>> parser = optparse.OptionParser(option_list = [
+    ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
+    ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 10)])
+
+    >>> (options, args) = parser.parse_args()
+
+    >>> steps = options.steps
+    >>> import Numeric
+    >>> nx = int(Numeric.sqrt(options.numberOfElements))
+    >>> ny = nx
     >>> Lx = 2.5 * nx / 100.
     >>> Ly = 2.5 * ny / 100.            
     >>> dx = Lx / nx
@@ -77,7 +86,6 @@ where the orientation varies.
 The parameters for this example are
 
     >>> timeStepDuration = 0.02
-    >>> steps = 10
     >>> phaseParameters = {
     ...    'tau'                   : 0.1,
     ...    'time step duration'    : timeStepDuration
@@ -207,8 +215,11 @@ data and compares it with the `theta` variable.
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
     >>> import Numeric
-    >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
-
+    >>> if len(testData.flat) == len(Numeric.array(theta)):
+    ...     testData = Numeric.reshape(testData, Numeric.array(theta).shape)
+    ... else:
+    ...     testData = Numeric.resize(testData, Numeric.array(theta).shape)
+    
 The preceding initialization steps are used in the next few examples.
 """
 __docformat__ = 'restructuredtext'
