@@ -7,7 +7,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 11/24/03 {10:11:10 PM} 
+ #                                last update: 11/30/03 {12:22:57 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,33 +44,41 @@
 
 """Cell within a mesh
 """
- 
+
+import Numeric
+
 class Cell:
     """Cell within a mesh
 
 	Cells are bounded by Faces.
     """
     
-    def __init__(self, faces, id):
+    def __init__(self, faces, faceOrientations, id):
 	"""Cell is initialized by Mesh with 
 	
 	Arguments:
 	    
 	    'faces' -- 'list' or 'tuple' of bounding faces that define the cell
 	    
+	    'faceOrientations' -- 'list', 'tuple', or *numarray* of
+	    orientations (+/-1) to indicate whether a face points into this
+	    face or out of it.  Can be calculated, but the mesh typically
+	    knows this information already.
+	    
 	    'id' -- unique identifier
 	"""
         self.faces = faces
+	self.faceOrientations = Numeric.array(faceOrientations)
+	self.faceOrientations = Numeric.reshape(faceOrientations,(len(faces),1))
         self.id = id
         for face in self.faces:
             face.addBoundingCell(self)
         self.center = self.calcCenter()
-## can not calculate face normals until this point
+## can not calculate cell distances until this point
 ## the face needs to know its cells in order to
-## calculate the normal orientation. Initially the
-## normal goes from cell 1 to cell 2.
+## calculate the distances. 
         for face in self.faces:
-            face.setNormal()
+#             face.setNormals()
             face.setCellDistance()
             face.setFaceToCellDistances()
         self.volume = self.calcVolume()
@@ -80,6 +88,9 @@ class Cell:
 	"""Return the id of this Cell.
 	"""
         return self.id
+	
+    def getFaceOrientations(self):
+	return self.faceOrientations
 	
     def calcVolume(self):
 	"""Calculate the volume of the Cell.
@@ -91,8 +102,9 @@ class Cell:
 	on the y-z plane.
 	"""
 	vol = 0.
-	for face in self.faces:
-	    vol += face.getCenter()[0] * face.getArea() * face.getNormal(self)[0]
+	for i in range(len(self.faces)):
+	    face = self.faces[i]
+	    vol += face.getCenter()[0] * face.getArea() * face.getNormal()[0] * self.faceOrientations[i][0]
 	return vol
 
     def getVolume(self):
@@ -122,8 +134,9 @@ class Cell:
 	"""
 	rep = "<id = " + str(self.id) + ", volume = " + str(self.getVolume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
 	
-	for face in self.faces:
-	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.getNormal(self)) + "\n"
+	for i in range(len(self.faces)):
+	    face = self.faces[i]
+	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.getNormal() * self.faceOrientations[i]) + "\n"
 	
 	rep += ">\n"
 	
@@ -139,3 +152,10 @@ class Cell:
 	"""
         self.id = id
     
+    def getFaceIDs(self):
+	return self.faceIDs
+	
+    def calcFaceIDs(self):
+	self.faceIDs = Numeric.zeros(len(self.faces))
+	for i in range(len(self.faces)):
+	    self.faceIDs[i] = self.faces[i].getId()
