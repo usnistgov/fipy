@@ -41,7 +41,7 @@ import Numeric
 from fivol.variables.variable import Variable
 
 class CellVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
+    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
 	array = Numeric.zeros([len(mesh.getCells())],'d')
 # 	array[:] = value
 	
@@ -58,12 +58,18 @@ class CellVariable(Variable):
 	return CellVariable
 
     def copy(self):
-	    
-	return CellVariable(
-	    mesh = self.mesh, 
+
+        return self.__class__(
+            mesh = self.mesh, 
 	    name = self.name + "_old", 
 	    value = self.getValue(),
 	    hasOld = 0)
+	    
+##	return CellVariable(
+##	    mesh = self.mesh, 
+##	    name = self.name + "_old", 
+##	    value = self.getValue(),
+##	    hasOld = 0)
 
     def getGridArray(self):
 	return self.mesh.makeGridData(self.value)
@@ -85,7 +91,7 @@ class CellVariable(Variable):
 	if self.grad is None:
 	    from cellGradVariable import CellGradVariable
 	    self.grad = CellGradVariable(self)
-	
+        
 	return self.grad
 
     def getFaceValue(self):

@@ -45,14 +45,22 @@ class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
 	VectorCellVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
+##        print "in cellgradvariable.init()"
+##        print "self.var:",self.var.__class__
+##        print "mod:",self.var.mod(Numeric.pi+1)
+##        print 'getFaceValue:',self.var.getFaceValue()[:]
+##        raw_input()
 	self.faceGradientContributions = self.mesh.getAreaProjections() * self.var.getFaceValue().transpose()
-	
+        
     def calcValue(self):
 	N = len(self.var[:])
 	M = self.mesh.getMaxFacesPerCell()
 	
 	ids = self.mesh.getCellFaceIDs()
 
+##        print "self.var:",self.var.__class__
+##        print 'getFaceValue:',self.var.getFaceValue()[:]
+##        raw_input()
 	contributions = fivol.tools.array.take(self.faceGradientContributions[:],ids)
 	contributions = contributions.reshape((N,M,self.mesh.getDim()))
 
