@@ -144,7 +144,7 @@ class PhaseSystem:
       
    def run(self):
       self.it.timestep(self.steps)      
-      viewer = Grid2DGistViewer(self.var)      
+      viewer = Grid2DGistViewer(self.var)
       viewer.plot()
       raw_input()
    
