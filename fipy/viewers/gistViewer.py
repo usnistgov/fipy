@@ -52,14 +52,15 @@ class GistViewer:
     
     id=0
     
-    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp'):
+    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp', grid = 1):
 	self.minVal = minVal
         self.maxVal = maxVal
 	self.title = title
         self.id = GistViewer.id 
 	GistViewer.id += 1
         self.palette = palette
-    
+        self.grid = grid
+        
     def plot(self, minVal = None, maxVal = None, fileName = None):
 	array = self.getArray()
 
@@ -67,13 +68,14 @@ class GistViewer:
 	gist.pltitle(self.title)
         gist.animate(1)
         gist.palette(self.palette)
-	gist.gridxy(1)
+	gist.gridxy(self.grid)
 	
 	if minVal is None:
 	    if self.minVal is None:
 		minVal = Numeric.minimum.reduce(array.flat)
 	    else:
 		minVal = self.minVal
+                
 	if maxVal is None:
 	    if self.maxVal is None:
 		maxVal = Numeric.minimum.reduce(array.flat)

@@ -146,5 +146,6 @@ class Grid2D(Mesh2D):
     def getMeshSpacing(self):
 	return Numeric.array((self.dx,self.dy))
     
-        
+    def getShape(self):
+        return (self.nx, self.ny)
     
