@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/13/04 {12:02:54 PM} 
+ #                                last update: 10/25/04 {5:08:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,89 +40,115 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This input file again solves a 1D diffusion problem as in::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
     
-The difference in this example is that the solution method is
-explicit.  The equation used is the `ExplicitDiffusionEquation`.  In
-this case many steps have to be taken to reach equilibrum.
+The difference in this transient example is solved explicitly.
 
-A loop is required to execute the necessary time steps:
+We create a 1D mesh:
+    
+    >>> nx = 100
+    >>> ny = 1
+    >>> dx = 1.
+    >>> dy = 1.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx, dy, nx, ny)
 
+and we initialize a `CellVariable` to `initialValue`:
+    
+    >>> valueLeft = 0.
+    >>> initialValue = 1.
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(
+    ...     name = "concentration",
+    ...     mesh = mesh,
+    ...     value = initialValue)
+
+The transient equation 
+
+.. raw:: latex
+
+   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
+
+is represented by the `ExplicitDiffusionEquation`, which includes a
+`TransientTerm`.  The coefficient of the `TransientTerm` depends on the
+desired time step.
+
+    >>> timeStepDuration = 0.1
+    
+We take the diffusion coefficient 
+
+.. raw:: latex
+
+   $D = 1$
+   
+..
+
+   >>> diffusionCoeff = 1.
+    
+We build the equation with an appropriate solver and boundary conditions:
+
+    >>> from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
+    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> eq = ExplicitDiffusionEquation(var,
+    ...                                transientCoeff = 1. / timeStepDuration, 
+    ...                                diffusionCoeff = diffusionCoeff,
+    ...                                solver = LinearPCGSolver(tolerance = 1.e-15, 
+    ...                                                         steps = 1000
+    ...                                ),
+    ...                                boundaryConditions=(
+    ...                                    FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                                    FixedFlux(mesh.getFacesRight(),0),
+    ...                                    FixedFlux(mesh.getFacesTop(),0.),
+    ...                                    FixedFlux(mesh.getFacesBottom(),0.)
+    ...                                )
+    ... )
+
+In this case, many steps have to be taken to reach equilibrium.  A loop is
+required to execute the necessary time steps:
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((eq,))
+    >>> steps = 100
     >>> for step in range(steps):
     ...     it.timestep()
-    
-The result is again tested in the same way:
 
+The analytical solution for this transient diffusion problem is given
+by
+
+.. raw:: latex
+
+   $\phi = \erf(x/2\sqrt{D t})$.
+   
+The result is tested against the expected profile:
+    
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> t = timeStepDuration * steps
     >>> import Numeric
     >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
     >>> import scipy
-
-The steady state solution is given by: 
-
     >>> analyticalArray = scipy.special.erf(epsi/2)
-    >>> Numeric.allclose(var[0:10], analyticalArray[0:10], atol = 2e-3)
+    >>> Numeric.allclose(var, analyticalArray, atol = 2e-3)
     1
-
+    
+If the problem is run interactively, we can view the result:
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 """
-
+ 
 __docformat__ = 'restructuredtext'
 
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-
-dx = 1.
-dy = 1.
-nx = 100
-ny = 1
-valueLeft = 0.
-initialValue = 1.
-timeStepDuration = 0.1
-steps = 100
-diffusionCoeff = 1.0
-
-mesh = Grid2D(dx, dy, nx, ny)
-
-var = CellVariable(
-    name = "concentration",
-    mesh = mesh,
-    value = 1.)
-
-eq = ExplicitDiffusionEquation(
-    var,
-    transientCoeff = 1. / timeStepDuration, 
-    diffusionCoeff = diffusionCoeff,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedFlux(mesh.getFacesRight(),0),
-    FixedFlux(mesh.getFacesTop(),0.),
-    FixedFlux(mesh.getFacesBottom(),0.)
-    )
-    )
-
-it = Iterator((eq,))
-
 if __name__ == '__main__':
-    for step in range(steps):
-        it.timestep()
-    viewer = Grid2DGistViewer(var)
-    viewer.plot()
+    import doctest
+    doctest.testmod()
+    
     raw_input('finished')
-

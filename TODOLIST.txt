@@ -64,6 +64,8 @@ Release Goals 0.2
 
   * Better ``__repr__`` for FiPy objects.
 
+  * Create Grid1D as trivial decendant of Grid2D.
+
 - Refactoring:
 
   * Use an array module rather than Numeric and switch to numarray.

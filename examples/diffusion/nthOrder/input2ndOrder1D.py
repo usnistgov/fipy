@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:16:30 PM} 
+ #                                last update: 10/25/04 {5:17:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,12 +40,87 @@
  # ###################################################################
  ##
 
-"""
+r"""
+In this problem, we demonstrate the use of the `NthOrderDiffusionEquation` class 
+in the simple case of steady state 1D diffusion, which was introduced in::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+to solve
 
-This is a simple test case for the `NthOrderDiffusionEquation` for the
-case of ordinary diffusion when `N=2`.
+.. raw:: latex
 
+   $$ \nabla \cdot (D \nabla \phi) = 0 $$.
+
+This examples shows that the `NthOrderDiffusionEquation` is equivalent to the `DiffusionEquation` when 
+
+.. raw:: latex
+
+   $n = 2$.
+   
+..
+
+We create an appropriate 1D mesh:
+    
+    >>> nx = 10
+    >>> ny = 1
+    >>> dx = 1.
+    >>> dy = 1.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+and initialize the solution variable to `valueLeft`:
+    
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "concentration",
+    ...                    mesh = mesh,
+    ...                    value = valueLeft)
+
+The order 
+
+.. raw:: latex
+
+   $n$
+   
+of the `NthOrderDiffusionEquation` is determined by twice 
+the number of diffusion coefficients it is created with, so a single 
+diffusion coefficient ``(1.,)`` gives 
+
+.. raw:: latex
+
+   $n = 2$.
+   
+The diffusion equation is again solved with an iterative conjugate
+gradient solver. We apply Dirichlet boundary conditions to the left and
+right and Neumann boundary conditions to the top and bottom.
+   
+    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
+    >>> eq = NthOrderDiffusionEquation(var,
+    ...                                transientCoeff = 0., 
+    ...                                diffusionCoeff = (1.,),
+    ...                                solver = LinearPCGSolver(tolerance = 1.e-15, 
+    ...                                                         steps = 1000
+    ...                                ),
+    ...                                boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                                                      FixedValue(mesh.getFacesRight(),valueRight),
+    ...                                                      FixedFlux(mesh.getFacesTop(),0.),
+    ...                                                      FixedFlux(mesh.getFacesBottom(),0.)
+    ...                                                      )
+    ... )
+
+We iterate one timestep to equilibrium:
+    
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((eq,))
     >>> it.timestep()
+    
+The result is tested against the expected linear diffusion profile:
+    
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> import Numeric
@@ -53,56 +128,21 @@ case of ordinary diffusion when `N=2`.
     >>> Numeric.allclose(var, value, rtol = 1e-10, atol = 1e-10)
     1
 
+If the problem is run interactively, we can view the result:
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 
 ##from fipy.tools.profiler.profiler import Profiler
 ##from fipy.tools.profiler.profiler import calibrate_profiler
  
-from fipy.meshes.grid2D import Grid2D
-from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-
-nx = 10
-ny = 1
-
-dx = 1.
-dy = 1.
-
-valueLeft = 0.
-valueRight = 1.
-
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
-var = CellVariable(name = "concentration",
-                   mesh = mesh,
-                   value = valueLeft)
-
-eq = NthOrderDiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = (1.,),
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-                                             FixedValue(mesh.getFacesRight(),valueRight),
-                                             FixedFlux(mesh.getFacesTop(),0.),
-                                             FixedFlux(mesh.getFacesBottom(),0.)
-                                             )
-                       )
-
-it = Iterator((eq,))
 
 if __name__ == '__main__':
-
-    viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
-    it.timestep()
-##     print var
-    viewer.plot()
+    import doctest
+    doctest.testmod()
 
     raw_input("finished")

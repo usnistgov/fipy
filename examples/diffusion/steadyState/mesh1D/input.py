@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/7/04 {12:54:50 PM} 
+ #                                last update: 10/25/04 {4:10:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ fixed value boundary conditions such that,
 
 .. raw:: latex
 
-   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
+   $$ \nabla \cdot (D \nabla \phi) = 0 $$
 
 with initial conditions
 
@@ -73,11 +73,11 @@ boundary conditions
        1& \text{at $x = 1$,}
    \end{cases} $$
 
-and parameter values
+and parameter value
 
 .. raw:: latex
 
-   $\tau = 0$ and $D = 1$.
+   $D = 1$.
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
 object represents a rectangular structured grid. The parameters `dx` and
@@ -126,8 +126,20 @@ step.
 
 An equation is passed coefficient values, boundary conditions and
 a solver. The equation knows how to assemble and solve a system
-matrix. Here the `transientCoeff` is set to 0, thus
-making the problem steady state.
+matrix. The `DiffusionEquation` object in FiPy represents a general 
+transient diffusion equation
+
+.. raw:: latex
+
+   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi). $$
+   
+We solve this equation in steady state by setting
+
+.. raw:: latex
+
+   $\tau = 0$,
+
+which is accomplished by setting the `transientCoeff` parameter to 0:
 
     >>> from fipy.equations.diffusionEquation import DiffusionEquation
     >>> eq = DiffusionEquation(var,
@@ -174,6 +186,65 @@ and if we run interactively, we view the result with
     >>> if __name__ == '__main__':
     ...     viewer.plot()
 
+..
+
+------
+
+If this example had been written primarily as a script, instead of as
+documentation, we would delete every line that does not begin with
+either "``>>>``" or "``...``", and then delete those prefixes from the
+remaining lines, leaving::
+    
+    nx = 50
+    ny = 1
+    dx = 1.
+    dy = 1.
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+    valueLeft = 0
+    valueRight = 1
+    from fipy.variables.cellVariable import CellVariable
+    var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
+
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    from fipy.boundaryConditions.fixedFlux import FixedFlux
+    boundaryConditions = (FixedFlux(mesh.getFacesTop(),0.),
+			  FixedFlux(mesh.getFacesBottom(),0.),
+			  FixedValue(mesh.getFacesRight(),valueRight),
+			  FixedValue(mesh.getFacesLeft(),valueLeft))
+
+    from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
+
+    from fipy.equations.diffusionEquation import DiffusionEquation
+    eq = DiffusionEquation(var,
+			   transientCoeff = 0.,
+			   diffusionCoeff = 1.,
+			   solver = solver,
+			   boundaryConditions = boundaryConditions)
+
+    from fipy.iterators.iterator import Iterator
+    iterator = Iterator((eq,))
+
+    iterator.timestep()
+    
+    x = mesh.getCellCenters()[:,0]
+    Lx = nx * dx
+    analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+
+    import Numeric
+    Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
+    
+    from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+    
+    if __name__ == '__main__':
+	viewer.plot()
+	
+Your own scripts will tend to look like this, although you can always write
+them as doctest scripts if you choose.  Most of the FiPy examples will be a
+mixture of plain scripts and doctest documentation/tests.  
 """
 
 __docformat__ = 'restructuredtext'

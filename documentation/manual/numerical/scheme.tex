@@ -1,21 +1,21 @@
 \section{Numerical Schemes}
 
 The coefficients of equation~\eqref{eqn:num:dap} must remain positive,
-since an increase in a neighboring value must result in an increase
-in $\phi_P$ to obtain physically realistic solutions. Also, the
+since an increase in a neighboring value must result in an increase in
+$\phi_P$ to obtain physically realistic solutions.  Also, the
 coefficients of equation~\eqref{eqn:num:dis}, when written in the form
-of equation~\eqref{eqn:num:dap}, must remain positive. Thus, the
-inequalities $a_{nb} > 0$ and $a_{nb} - F_f>0$ must be satisfied.  If
-$P_f = -F_f / D_f$, then to achieve physically realistic solutions the
-inequality
+of equation~\eqref{eqn:num:dap}, must remain positive.  Thus, the
+inequalities $a_A > 0$ and $a_A - F_f>0$ must be satisfied.  The
+Peclet number $P_f \equiv -F_f / D_f$ is the ratio between convective
+strength and diffusive conductance.  To achieve physically realistic
+solutions, the inequality
 \begin{equation}
 \frac{1}{1-\alpha_f} > P_f > -\frac{1}{\alpha_f}
 \label{eqn:num:inq}
 \end{equation}
 must be satisfied.
 The parameter $\alpha_f$ is defined by the chosen scheme, depending
-on Equation~\eqref{eqn:num:inq}. The value $P_f$ is the ratio between
-convective strength and diffusive conductance. The various
+on Equation~\eqref{eqn:num:inq}. The various
 differencing schemes are:
 \begin{description}
 %
@@ -83,7 +83,7 @@ however, it deviates from the exponential scheme at $|P_f|=2$.
 \alpha_f = 
 \begin{cases}
     \frac{P_f-1}{P_f} & \text{if $P_f > 10$,} \\
-    \frac{(P_f-1)+(1-P/10)^5}{P_f} & \text{if $0 < P_f < 10$,} \\
+    \frac{(P_f-1)+(1-P_f/10)^5}{P_f} & \text{if $0 < P_f < 10$,} \\
     \frac{(1-P_f/10)^5 - 1}{P_f} & \text{if $-10 < P_f < 0$,} \\
     -\frac{1}{P_f} & \text{if $P_f < -10$.}
 \end{cases}

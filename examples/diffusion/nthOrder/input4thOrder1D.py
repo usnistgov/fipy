@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/13/04 {3:09:39 PM} 
+ #                                last update: 10/25/04 {5:04:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,13 +42,34 @@
 
 r"""
 
-This example solves the following equation:
+This example uses the `NthOrderBoundaryCondition` class to solve the equation
 
 .. raw:: latex
 
     $$ \frac{\partial^4 \phi}{\partial x^4} = 0 $$
 
-with the following boundary conditions:
+on a 1D mesh of length
+
+    >>> L = 1000.
+    
+We create an appropriate mesh
+
+    >>> nx = 1000
+    >>> ny = 1
+    >>> dx = L / nx
+    >>> dy = 1.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx, dy, nx, ny)
+
+and initialize the solution variable to 0
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(
+    ...     name = "concentration",
+    ...     mesh = mesh,
+    ...     value = 0.)
+    
+For this problem, we impose the boundary conditions:
 
 .. raw:: latex
 
@@ -58,78 +79,76 @@ with the following boundary conditions:
     \frac{\partial^2 \phi}{\partial x^2} &= \alpha_3 && \text{at $x = 0$} \\
     \frac{\partial^3 \phi}{\partial x^3} &= \alpha_4 && \text{at $x = L$.}
     \end{alignat*}
+    
+or
+
+    >>> alpha1 = 2.
+    >>> alpha2 = 1.
+    >>> alpha3 = 4.
+    >>> alpha4 = -3.
+    
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
+    >>> boundaryConditions=(
+    ...     FixedValue(mesh.getFacesLeft(), alpha1),
+    ...     FixedFlux(mesh.getFacesRight(), alpha2),
+    ...     NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
+    ...     NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3))
+
+We initialize the steady-state equation and use the `LinearLUSolver` for stability. 
+
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+
+By assigning two diffusion coefficients
+
+    >>> diffusionCoeff = (-1., 1.)
+    
+we obtain a fourth-order diffusion equation
+    
+    >>> from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
+    >>> eq = NthOrderDiffusionEquation(
+    ...         var,
+    ...         transientCoeff = 0.0, 
+    ...         diffusionCoeff = diffusionCoeff,
+    ...         solver = LinearLUSolver(tolerance = 1e-11),
+    ...         boundaryConditions=boundaryConditions)
+
+We perform one implicit timestep to achieve steady state
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((eq,))
+    >>> it.timestep()
 
 The analytical solution is:
 
 .. raw:: latex
 
-    $$ \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2 
-    + \left( \alpha_2 - \frac{ \alpha_4 }{2} L^2  - \alpha_3 L \right) x + \alpha_1 $$
+   $$ \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2 
+   + \left( \alpha_2 - \frac{ \alpha_4 }{2} L^2  - \alpha_3 L \right) x + \alpha_1 $$
 
-Do a timestep to steady state
+or
 
-   >>> it.timestep()
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> answer = alpha4 / 6. * x**3 + alpha3 / 2. * x**2 
+    >>> answer += (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1
+    >>> import Numeric
+    >>> Numeric.allclose(answer, var, atol = 1e-10)
+    1
 
-Test the solution:
-
-   >>> x = mesh.getCellCenters()[:,0]
-   >>> answer = alpha4 / 6. * x**3 + alpha3 / 2. * x**2 
-   >>> answer += (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1
-   >>> Numeric.allclose(answer, var, atol = 1e-10)
-   1
-
+If the problem is run interactively, we can view the result:
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-from fipy.iterators.iterator import Iterator
-from fipy.meshes.grid2D import Grid2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.solvers.linearLUSolver import LinearLUSolver
-
-alpha1 = 2.
-alpha2 = 1.
-alpha3 = 4.
-alpha4 = -3.
-
-L = 1000.
-
-nx = 1000
-ny = 1
-
-dx = L / nx
-dy = 1.
-
-mesh = Grid2D(dx, dy, nx, ny)
-    
-var = CellVariable(
-    name = "concentration",
-    mesh = mesh,
-    value = 0.)
-
-eq = NthOrderDiffusionEquation(
-    var,
-    transientCoeff = 0.0, 
-    diffusionCoeff = (-1., 1.),
-    solver = LinearLUSolver(tolerance = 1e-11),
-    boundaryConditions=(
-        FixedValue(mesh.getFacesLeft(), alpha1),
-        FixedFlux(mesh.getFacesRight(), alpha2),
-        NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
-        NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3)))
-
-it = Iterator((eq,))
+## from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var)
-    it.timestep()
-    viewer.plot()
-##     print var
+    import doctest
+    doctest.testmod()
+    
     raw_input('finished')

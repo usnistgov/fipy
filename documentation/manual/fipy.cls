@@ -26,6 +26,8 @@
 
 \RequirePackage{amsmath} 
 
+\DeclareMathOperator{\erf}{erf}
+
 \RequirePackage{minitoc}
 % \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{1}

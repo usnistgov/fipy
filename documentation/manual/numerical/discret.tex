@@ -10,7 +10,8 @@ CVs are either defined by the cells or are centered on the vertices.
 
 \begin{figure}
  \begin{center}
- \resizebox{8cm}{!}{\includegraphics{numerical/meshcartoon.pdf}}
+%  \resizebox{8cm}{!}{\includegraphics[width=8cm]{numerical/meshcartoon.pdf}}
+ \includegraphics[width=8cm]{numerical/meshcartoon.pdf}
  \caption{A mesh consists of cells, faces and vertices. For the
  purposes of \FiPy{}, the divider between two cells is known as a face
  for all dimensions.}  \label{fig:meshcartoon} \end{center}
@@ -48,7 +49,8 @@ the CC-FVM and VC-FVM capabilities.
 
 \begin{figure}
 \begin{center}
- \rotatebox{-90}{\resizebox{6cm}{!}{\includegraphics{numerical/vc-cc-fv.pdf}}}
+%  \rotatebox{-90}{\resizebox{6cm}{!}{\includegraphics{numerical/vc-cc-fv.pdf}}}
+ \includegraphics[width=6cm,angle=-90]{numerical/vc-cc-fv.pdf}
  \caption{CV structure for an unstructured mesh, (a) $\Omega_a$
  represents a vertex-based CV and (b) $\Omega_1$, $\Omega_2$,
  $\Omega_3$ and $\Omega_4$ represent cell centered CVs. }
@@ -66,48 +68,53 @@ separately.
 
 \subsection{Transient Term}
 
-The discretization for the transient term is given by,
+For the transient term, the discretization of the integral \( \int_V
+\) over the volume of a CV is given by
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
-\frac{\rho_{P}(\phi_{P} - \phi_P^O) V_P}{\Delta t}
+\frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
-where the subscript $P$ represents the average value in the CV and
-the superscript $O$ represents the previous time-step value.  The
-value $V_P$ is the volume of the CV and $\Delta t$ is the time step
-size.
+where \( \phi_P \) represents the average value of \( \phi \) in a CV
+centered on a point \( P \) and the superscript ``$\text{old}$''
+represents the previous time-step value.  The value $V_P$ is the
+volume of the CV and $\Delta t$ is the time step size.
 
 \subsection{Convection Term}
 
-The discretization for the convection term is given by,
+The discretization for the convection term is given by
 \begin{eqnarray}
 \int_V \nabla \cdot (\vec{u} \phi)\,dV & = & 
 \int_S (\vec{n} \cdot \vec{u})\phi\,dS \\
 & \simeq & \sum_{f} (\vec{n} \cdot \vec{u})_f \phi_f A_f
 \label{eqn:num:con}
 \end{eqnarray}
-where $\sum_{f}$ denotes the summation over the faces of a CV and
-$A_f$ is the area of each face.  The vector $\vec{n}$ is the normal to
-the face pointing out of the CV. When using a first order
-approximation, the value of $\phi_f$ must depend on $\phi_A$ and
-$\phi_P$, such that
+where we have used the divergence theorem to transform the integral
+over the CV volume \( \int_V \) into an integral over the CV surface
+\( \int_S \).  The summation over the faces of a CV is denoted by
+$\sum_{f}$ and $A_f$ is the area of each face.  The vector $\vec{n}$
+is the normal to the face pointing out of the CV into an adjacent CV
+centered on point \( A \).  When using a first order approximation,
+the value of $\phi_f$ must depend on the average value in adjacent
+cell $\phi_A$ and the average value in the cell of interest $\phi_P$,
+such that
 \begin{equation}
-\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A,
+\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A.
 \end{equation}
-where the subscript $A$ refers to CVs that are adjacent to $P$.  The
-weighting factor $\alpha_f$ is determined by the convection scheme,
-described later in this chapter.
+The weighting factor $\alpha_f$ is determined by the convection
+scheme, described later in this chapter.
 
 \subsection{Diffusion Term}
 
-The discretization for the diffusion term is given by,
+The discretization for the diffusion term is given by
 \begin{eqnarray}
 \int_V \nabla \cdot (\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n} \cdot \nabla\phi) dS \\
 & \simeq & \sum_f \Gamma_f (\vec{n} \cdot \nabla\phi)_f A_f
 \label{eqn:num:dif}
 \end{eqnarray}
-The estimation for the flux, $(\vec{n} \cdot \nabla\phi)_f$ is obtained via,
+The estimation for the flux, $(\vec{n} \cdot \nabla\phi)_f$, is
+obtained via
 \begin{equation}
 (\vec{n} \cdot \nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
 \end{equation}
@@ -128,8 +135,11 @@ Including any negative dependence of $S_\phi$ on $\phi$ increases
 solution stability. The dependence can only be included in a linear
 manner so Equation~\eqref{eqn:num:sou} becomes
 \begin{equation}
-V_P (S_C - S_P \phi_P).
+V_P (S_0 - S_1 \phi_P),
 \end{equation}
+where \( S_0 \) is the source which is independent of \( \phi \) and
+\( S_1 \) is the coeficient of the source which is linearly dependent
+on \( \phi \).
 
 \section{Linear Equations}
 
@@ -148,7 +158,7 @@ Combining Equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
 discretization for equation~\eqref{eqn:num:gen} can now be written for
 each CV as
 \begin{eqnarray}
-\frac{\rho_{P}(\phi_{P} - \phi_P^O) V_P}{\Delta t}
+\frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
 &=&
 \sum_{f} (\vec{n} \cdot \vec{u})_f A_f 
 \left[\alpha_f \phi_P +\left(1-\alpha_f\right)\phi_A\right]
@@ -156,7 +166,7 @@ each CV as
 &&+
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
 + 
-V_P ( S_C - S_P \phi_P ).
+V_P ( S_0 - S_1 \phi_P ).
 \label{eqn:num:dis}
 \end{eqnarray}
 
@@ -169,15 +179,15 @@ a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,
 \end{equation}
 where
 \begin{eqnarray}
-a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
+a_P & = & V_P S_1 + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
 F_f), \\
 a_{A} & = & ( 1 - \alpha_f ) F_f + D_f, \\
-b_p & = & S_C + \frac{\rho_P V_P \phi_P^O}{\Delta t}.
+b_P & = & V_P S_0 + \frac{\rho_P V_P \phi_P^\text{old}}{\Delta t}.
 \end{eqnarray}
 The face coefficients, $F_f$ and $D_f$, represent the convective strength
 and diffusive conductance respectively, and are given by
 \begin{eqnarray}
-F_f & = & A_f \rho_f ( \vec{u} \cdot \vec{n} )_f, \\
+F_f & = & A_f ( \vec{u} \cdot \vec{n} )_f, \\
 D_f & = & \frac{A_f \Gamma_f}{d_{AP}} .
 \end{eqnarray}
 

@@ -3,11 +3,11 @@ Overview
 ========
 
 |FiPy| is an object oriented, partial differential equation (PDE) solver,
-written in Python_ |citePython|, based on a standard finite volume (FV) approach.  The
-framework has been developed in the `Metallurgy Division`_ and Center for
-Theoretical and Computational Materials Science (CTCMS_), in the Materials
-Science and Engineering Laboratory (MSEL_) at the National Institute of
-Standards and Technology (NIST_).
+written in Python_ |citePython|, based on a standard finite volume (FV)
+approach.  The framework has been developed in the `Metallurgy Division`_
+and Center for Theoretical and Computational Materials Science (CTCMS_), in
+the Materials Science and Engineering Laboratory (MSEL_) at the National
+Institute of Standards and Technology (NIST_).
 
 The solution of coupled sets of PDEs is ubiquitous to the numerical
 simulation of science problems.  Numerous PDE solvers exist, using a
@@ -22,9 +22,9 @@ array calculations, sparse matrices and data rendering.
 The |FiPy| framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
 coupled elliptic, hyperbolic and parabolic PDEs.  Current models include
-phase field |citePhaseField| treatments of polycrystalline, dendritic, and electrochemical
-phase transformations as well as a level set treatment of the
-electrodeposition process |citeCEAC|.
+phase field |citePhaseField| treatments of polycrystalline, dendritic, and
+electrochemical phase transformations as well as a level set treatment of
+the electrodeposition process |citeCEAC|.
 
 The latest information about |FiPy| can be found at
 http://www.ctcms.nist.gov/fipy/.

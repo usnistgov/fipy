@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/13/04 {2:51:55 PM} 
+ #                                last update: 10/25/04 {6:29:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,91 +40,130 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-This example solves the steady-state convection-diffusion equation as described in::
+Like::
     
     $ examples/diffusion/convection/exponential1D/input.py
     
-but uses a constant source value such that
+this example solves a steady-state convection-diffusion equation, but adds a constant source, 
 
 .. raw:: latex
 
-    $ S_c = 1$.
+     $S_0 = 1$, such that
 
-Here, the axes are reversed (`nx = 1`, `ny = 1000`) and
+     $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0. $$
+
+Here, the axes are reversed
+
+    >>> nx = 1
+    >>> ny = 1000
+
+and
 
 .. raw:: latex
 
-    $ \\vec{u} = (0, 10)$.
+    $ \\vec{u} = (0, 10)$
+    
+such that
 
-We test the solution against the analytical result:
+    >>> diffCoeff = 1.
+    >>> convCoeff = (0., 10.)
+    >>> sourceCoeff = 1.
 
-   >>> axis = 1
-   >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
-   >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-   >>> import Numeric
-   >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, var, rtol = 1e-6, atol = 1e-6) 
-   1
-   
+We define a 1D mesh
+
+    >>> L = 10.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
+
+and impose the boundary conditions
+
+.. raw:: latex
+
+   $$ \phi = \begin{cases}
+   0& \text{at $y = 0$,} \\
+   1& \text{at $y = L$,}
+   \end{cases} $$ 
+
+or
+
+    >>> valueBottom = 0.
+    >>> valueTop = 1.
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesTop(), valueTop),
+    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
+    ...     FixedFlux(mesh.getFacesRight(), 0.),
+    ...     FixedFlux(mesh.getFacesLeft(), 0.)
+    ...     )
+
+The solution variable is initialized to `valueBottom`:
+    
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(
+    ...     name = "concentration",
+    ...     mesh = mesh,
+    ...     value = valueBottom)
+
+We define the convection-diffusion equation with source
+
+    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
+    >>> eq = SteadyConvectionDiffusionScEquation(
+    ...      var = var,
+    ...      diffusionCoeff = diffCoeff,
+    ...      convectionCoeff = convCoeff,
+    ...      sourceCoeff = sourceCoeff,
+    ...      solver = LinearLUSolver(tolerance = 1.e-15),
+    ...      convectionScheme = ExponentialConvectionTerm,
+    ...      boundaryConditions = boundaryConditions
+    ...      )
+    
+iterate one implicit timestep to equilibrium
+
+    >>> from fipy.iterators.iterator import Iterator
+    >>> it = Iterator((eq,))
+    >>> it.timestep()
+
+and test the solution against the analytical result:
+    
+.. raw:: latex
+
+   $$ \phi = -\frac{S_0 y}{u_y} 
+   + \left(1 + \frac{S_0 y}{u_y}\right)\frac{1 - \exp(-u_y y / D)}{1 - \exp(-u_y L / D)} $$
+
+or
+
+    >>> axis = 1
+    >>> y = mesh.getCellCenters()[:,axis]
+    >>> AA = -sourceCoeff * y / convCoeff[axis]
+    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
+    >>> import Numeric
+    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> analyticalArray = AA + BB * CC / DD
+    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-4, atol = 1e-4) 
+    1
+         
+If the problem is run interactively, we can view the result:
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
+
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
+## from fipy.solvers.linearCGSSolver import LinearCGSSolver
+## solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
 
-valueBottom = 0.
-valueTop = 1.
-L = 10.
-nx = 1
-ny = 1000
-diffCoeff = 1.
-convCoeff = (0., 10.)
-sourceCoeff = 0.
-
-mesh = Grid2D(L / nx, L / ny, nx, ny)
-
-var = CellVariable(
-    name = "solution variable",
-    mesh = mesh,
-    value = valueBottom)
-
-boundaryConditions = (
-    FixedValue(mesh.getFacesTop(), valueTop),
-    FixedValue(mesh.getFacesBottom(), valueBottom),
-    FixedFlux(mesh.getFacesRight(), 0.),
-    FixedFlux(mesh.getFacesLeft(), 0.)
-    )
-
-        
-eq = SteadyConvectionDiffusionScEquation(
-    var = var,
-    diffusionCoeff = diffCoeff,
-    convectionCoeff = convCoeff,
-    sourceCoeff = sourceCoeff,
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExponentialConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-
-it = Iterator((eq,))
-
-it.timestep()
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var)
-##     print var
-    viewer.plot()
+    import doctest
+    doctest.testmod()
+
     raw_input('finished')
