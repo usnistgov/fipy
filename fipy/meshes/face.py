@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/24/03 {10:17:52 PM} 
+ #                                last update: 11/30/03 {12:27:01 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,6 +68,7 @@ class Face:
 	self.id = id
 	self.center = self.calcCenter()
         self.area = self.calcArea()
+	self.setNormal()
             
     def addBoundingCell(self, cell):
 	"""Add cell to the list of Cells which lie on either side of this Face.
@@ -129,50 +130,20 @@ class Face:
 	    p1 = p2
 	return abs(a/2.)
         
-    def orientNormal(self, norm, cell):
-	"""Determine if normal points into or out of the cell in question.
-	
-	*Maybe the cell should keep track of this, rather than the face?*
-	
-	Note:
-	    
-	    Boundary faces only have one cell
-	    
-	    center-to-center vector is from face center to cell center
+    def getNormal(self):
+	"""Return the unit normal vector
 	"""
-        if len(self.cells) == 0:
-            return "abnormal"
-	elif len(self.cells) == 1:
-	    cc = self.cells[0].getCenter() - self.center
-	else:
-	    cc = self.cells[0].getCenter() - self.cells[1].getCenter()
-            
-	if cell == 'None' or cell == self.cells[0]:
-	    cc *= -1
-            
-	if Numeric.dot(cc,norm) < 0:
-	    norm *= -1
-	    
-	return norm
-
-    def getNormal(self, cell = 'None'):
-	"""Return the unit normal vector, accounting for whether the Face
-	points toward or away from the specified Cell.	
-	"""
-        if cell == self.cells[0] or cell == 'None':
-            return self.normal
-        else:
-            return -self.normal
-
+	return self.normal
+		
     def setNormal(self):
 	"""Cache the unit normal vector.
 	
 	Called by Cell initializer after bounding Cells have been added to
 	Faces.
 	"""
-        self.normal = self.calcNormal(self.cells[0])
+        self.normal = self.calcNormal()
 	
-    def calcNormal(self, cell = 'None'):
+    def calcNormal(self):
 	"""Calculate the unit normal vector, accounting for whether the Face
 	points toward or away from the specified Cell.	
 	
@@ -186,7 +157,7 @@ class Face:
 	norm = tools.crossProd(t1,t2)
 	norm /= tools.sqrtDot(norm,norm)
 	
-	return self.orientNormal(norm, cell)
+	return norm
 
     def getCellDistance(self):
 	"""Return the distance between adjacent cell centers.
