@@ -42,8 +42,9 @@ from fivol.variables.faceGradVariable import FaceGradVariable
 from fivol.inline import inline
 
 class ModFaceGradVariable(FaceGradVariable):
-    def __init__(self, var):
+    def __init__(self, var, mod):
 	FaceGradVariable.__init__(self, var)
+        self.mod = mod
         
     def _calcValueInline(self):
 
@@ -52,19 +53,14 @@ class ModFaceGradVariable(FaceGradVariable):
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 
-	inline.runInline("""
+	inline.runInline(self.mod + """
         int i;
         for(i = 0; i < ni; i++)
         {
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
-            double tmp = double(var(id2(i)) - var(id1(i)));
-            double pi = 3.141592653589793;
-            if (tmp > pi)
-                tmp = tmp - 2. * pi;
-            else if (tmp < - pi)
-                tmp = tmp + 2. * pi;
-            N = tmp / dAP(i);
+
+            N = mod(var(id2(i)) - var(id1(i))) / dAP(i);
 
 	    t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             

@@ -49,6 +49,10 @@ class ModularVariable(CellVariable):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self.faceValue = None
         self.grad = None
+        self.mod = """
+        # define pi 3.141592653589793
+        # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
+        """
         
     def getPhysicalFieldClass(self):
 	return ModPhysicalField
@@ -68,13 +72,13 @@ class ModularVariable(CellVariable):
     def getFaceValue(self):
 	if self.faceValue is None:
 	    from modCellToFaceVariable import ModCellToFaceVariable
-	    self.faceValue = ModCellToFaceVariable(self)
+	    self.faceValue = ModCellToFaceVariable(self, self.mod)
 
  	return self.faceValue
 
     def getFaceGrad(self):
 	if self.faceGrad is None:
 	    from modFaceGradVariable import ModFaceGradVariable
-	    self.faceGrad = ModFaceGradVariable(self)
+	    self.faceGrad = ModFaceGradVariable(self, self.mod)
 
 	return self.faceGrad

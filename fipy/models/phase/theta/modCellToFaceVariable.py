@@ -44,20 +44,18 @@ from fivol.inline import inline
 from fivol.variables.cellToFaceVariable import CellToFaceVariable
 
 class ModCellToFaceVariable(CellToFaceVariable):
-    def __init__(self, var = None):
+    def __init__(self, var, mod):
         CellToFaceVariable.__init__(self,var)
+        self.mod = mod
         
     def  _calcValueIn(self, alpha, id1, id2):
-
-	inline.runInline("""
+        
+	inline.runInline(self.mod + """
         int i;
         for(i = 0; i < ni; i++)
         {
 	    double cell2 = var(id2(i));
-	    double tmp = var(id1(i)) - cell2;
-	    double pi = 3.141592653589793;
-	    tmp = fmod(tmp + 3. * pi, 2. * pi) - pi;
-	    val(i) = tmp * alpha(i) + cell2;
+	    val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
         }
 	""",var = self.var.getNumericValue(),
             val = self.value.value, 
