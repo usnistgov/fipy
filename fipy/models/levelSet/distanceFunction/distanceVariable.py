@@ -165,6 +165,26 @@ class DistanceVariable(CellVariable):
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
+    def getCellInterfaceFlag(self):
+        """
+
+        Returns 1 for those faces on the interface:
+
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
+        >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5, 0.5, 1.5))
+        >>> answer = Numeric.array((0, 1, 1, 0))
+        >>> Numeric.allclose(distanceVariable.getCellInterfaceFlag(), answer)
+        1
+
+        """
+
+        flag = Numeric.take(self.getInterfaceFlag(), self.mesh.getCellFaceIDs())
+
+        flag = Numeric.sum(flag, axis = 1)
+        
+        return Numeric.where(Numeric.logical_and(self.value > 0, flag > 0), 1, 0)
+
     def getCellValueOverFaces(self):
         """
 
