@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 2/25/05 {8:25:51 PM} 
+ #                                last update: 2/26/05 {9:30:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,16 +113,19 @@ class Term:
 	return SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
-        from fipy.terms.binaryTerm import EquationTerm
-        # because of the semantics of comparisons in Python,
-        # the following test doesn't work
+        if not isinstance(other, Term):
+            return False
+        else:
+            from fipy.terms.binaryTerm import EquationTerm
+            # because of the semantics of comparisons in Python,
+            # the following test doesn't work
 ##         if isinstance(self, EquationTerm) or isinstance(other, EquationTerm):
 ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
-        return EquationTerm(term1 = self, term2 = other)
+            return EquationTerm(term1 = self, term2 = other)
         
-    def __copy__(self):
-        result = self.__class__(coeff = self.coeff)
-        return result
+##     def __copy__(self):
+##         result = self.__class__(coeff = self.coeff)
+##         return result
         
     def __repr__(self):
         return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))

@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 2/26/05 {7:47:20 PM} 
+ #                                last update: 2/26/05 {9:35:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,5 +88,10 @@ class EquationTerm(SubtractionTerm):
         return "(%s == %s)" % (repr(self.term1), repr(self.term2))
         
     def __nonzero__(self):
-        return False
+        if self.term1.__class__ != self.term2.__class__:
+            return False
+        elif self.term1.coeff != self.term2.coeff:
+            return False
+        else:
+            return True
         
