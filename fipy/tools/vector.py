@@ -67,7 +67,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(v1.dot(v2))
     ## We can't use Numeric.dot on quantities with units
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return fivol.tools.array.sqrt(fivol.tools.array.sum(v1*v2))
+    return fivol.tools.array.sqrt(fivol.tools.array.sum(v1 * v2))
 
 def arraySqrtDot(a1, a2, result):
     """Return array of square roots of vector dot-products
