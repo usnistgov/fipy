@@ -440,7 +440,8 @@ class efficiency_test(Command):
                      ('factor=', None, 'factor by which the number of elements is increased'),
                      ('inline', None, 'turn on inlining for the efficiency tests'),
                      ('maximumelements=', None, 'maximum number of elements'),
-                     ('case=', None, 'run a specific example')]
+                     ('case=', None, 'run a specific example'),
+                     ('memorysamples=', None, 'number of samplings to find max memory usage')]
     
     def initialize_options(self):
         self.factor = 10
@@ -448,11 +449,13 @@ class efficiency_test(Command):
         self.maximumelements = 10000
         self.minimumelements = 100
         self.case = None
+        self.memorysamples = 10
         
     def finalize_options(self):
         self.factor = int(self.factor)
         self.maximumelements = int(self.maximumelements)
         self.minimumelements = int(self.minimumelements)
+        self.memorysamples = int(self.memorysamples)
         if self.case is None:
             self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py']
         else:
@@ -474,16 +477,17 @@ class efficiency_test(Command):
         sys.argv.append('--numberOfSteps=%i' % numberOfSteps)
 
         class GetMemoryThread(threading.Thread):
-            def __init__(self, runTimeEstimate, fileObject, pid):
+            def __init__(self, runTimeEstimate, fileObject, pid, memorysamples):
                 threading.Thread.__init__(self)
                 self.runTimeEstimate = runTimeEstimate
                 self.fileObject = fileObject
                 self.pid = pid
+                self.memorysamples = memorysamples
 
             def run(self):
                 maxMem = 0
                 
-                for i in range(5):
+                for i in range(self.memorysamples):
                     (f, fileName) = tempfile.mkstemp()
                     os.system(('ps -p %i -o vsz > ' + fileName) % self.pid)
                     ff = open(fileName, 'r')
@@ -492,7 +496,7 @@ class efficiency_test(Command):
                     ff.close()
                     os.remove(fileName)
                     maxMem = max(maxMem, int(s))
-                    time.sleep(self.runTimeEstimate / 10)
+                    time.sleep(self.runTimeEstimate / self.memorysamples)
 
                 self.fileObject.write(str(maxMem))
                 self.fileObject.close()
@@ -509,19 +513,18 @@ class efficiency_test(Command):
                 sys.argv.append('--numberOfElements=' + str(numberOfElements))
                 (f, fileName) = tempfile.mkstemp()
                 tmpFile = open(fileName, 'w')
-                thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid())
+                thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid(), self.memorysamples)
                 thread.start()
                 t1 = time.clock()
                 
                 try:
                     import imp
                     mod = imp.load_source("copy_script_module", case)
-                    runTime = mod.getRunTime()
+                    mod.run()
                 except:
                     print 'Exception executing ' + case
                     exceptionFlag = True
-                    runTime = 0.
-                    
+            
                 t2 = time.clock()
                 thread.join()
                 tmpFile = open(fileName,'r')
@@ -530,7 +533,7 @@ class efficiency_test(Command):
                 os.remove(fileName)
                 os.close(f)
                 sys.argv.remove('--numberOfElements=' + str(numberOfElements))
-                print 'Elements: %i, CPU time: %.3f seconds, CPU time per step: %.3f memory usage: %.0f KB' % (numberOfElements, t2 - t1, runTime / numberOfSteps, memUsage)
+                print 'Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB' % (numberOfElements, t2 - t1, memUsage)
                 
                 numberOfElements *= self.factor
                 runTimeEstimate = (t2 - t1) * self.factor

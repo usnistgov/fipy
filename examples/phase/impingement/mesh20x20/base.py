@@ -48,21 +48,14 @@ In the following examples, we solve the same set of equations as in::
     
 with different initial conditions and a 2D mesh:
 
-    >>> import sys
-    >>> args = [sys.argv[0]]
-    >>> for arg in sys.argv[1:]:
-    ...     if '--numberOfElements' in arg or '--numberOfSteps' in arg:
-    ...         args.append(arg)
+    >>> from fipy.tools.parser import parse
 
-    >>> import optparse
-    >>> parser = optparse.OptionParser(option_list = [
-    ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
-    ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 10)])
+    >>> numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
+    >>> numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
-    >>> (options, args) = parser.parse_args(args)
-    >>> steps = options.steps
+    >>> steps = numberOfSteps
     >>> import Numeric
-    >>> nx = int(Numeric.sqrt(options.numberOfElements))
+    >>> nx = int(Numeric.sqrt(numberOfElements))
     >>> ny = nx
     >>> Lx = 2.5 * nx / 100.
     >>> Ly = 2.5 * ny / 100.

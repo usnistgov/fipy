@@ -63,24 +63,15 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-import optparse
+from fipy.tools.parser import parse
 
-import sys
-args = [sys.argv[0]]
-for arg in sys.argv[1:]:
-    if '--numberOfElements' in arg or '--numberOfSteps' in arg:
-        args.append(arg)
+numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
+numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
-parser = optparse.OptionParser(option_list = [
-    optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
-    optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 100)])
+nx = int(Numeric.sqrt(numberOfElements))
+ny = int(Numeric.sqrt(numberOfElements))
 
-(options, args) = parser.parse_args(args)
-
-nx = int(Numeric.sqrt(options.numberOfElements))
-ny = int(Numeric.sqrt(options.numberOfElements))
-
-steps = options.steps
+steps = numberOfSteps
 
 dx = 2.
 dy = 2.
@@ -134,10 +125,6 @@ if __name__ == '__main__':
     
 dexp=-5
 
-import time
-
-runTime = time.clock()
-
 for step in range(steps):
     dt = Numeric.exp(dexp)
     dt = min(100, dt)
@@ -149,7 +136,6 @@ for step in range(steps):
         viewer.plot()
         print 'step',step,'dt',dt
 
-runTime = time.clock() - runTime
+def run():
+    pass
             
-def getRunTime():
-    return runTime

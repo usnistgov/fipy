@@ -126,25 +126,15 @@ size.
 
 Build the mesh:
 
-   >>> import optparse
+   >>> from fipy.tools.parser import parse
 
-   >>> import sys
-   >>> args = [sys.argv[0]]
-   >>> for arg in sys.argv[1:]:
-   ...     if '--numberOfElements' in arg or '--numberOfSteps' in arg:
-   ...         args.append(arg)
-
-   >>> import optparse
-   >>> parser = optparse.OptionParser(option_list = [
-   ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = -1),
-   ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 5)])
-   
-   >>> (options, args) = parser.parse_args(args)
+   >>> numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = -1)
+   >>> numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 5)
 
    >>> import Numeric
-   >>> if options.numberOfElements != -1:
-   ...     pos = trenchSpacing * cellsBelowTrench / 4 / options.numberOfElements
-   ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / options.numberOfElements
+   >>> if numberOfElements != -1:
+   ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
+   ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / numberOfElements
    ...     cellSize = pos + Numeric.sqrt(pos**2 + sqr)
    ... else:
    ...     cellSize = 0.1e-7
@@ -477,9 +467,7 @@ is calculated with the CFL number and the maximum extension velocity.
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
 
-   >>> import time
-   >>> runTime = time.clock()
-   >>> for step in range(options.steps):
+   >>> for step in range(numberOfSteps):
    ...
    ...     if __name__ == '__main__':
    ...         if step % levelSetUpdateFrequency == 0:
@@ -507,8 +495,6 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         for viewer in viewers:
    ...             viewer.plot()
 
-   >>> runTime = time.clock() - runTime
-
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
@@ -534,7 +520,6 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
 
-def getRunTime():
+def run():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript(__name__))
-    return runTime
