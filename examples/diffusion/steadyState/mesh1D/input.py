@@ -115,11 +115,10 @@ boundary condition if no boundary conditions are specified for exterior faces.
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> bcTop = FixedFlux(mesh.getFacesTop(),0.)
-    >>> bcBottom = FixedFlux(mesh.getFacesBottom(),0.)
-    >>> bcRight = FixedValue(mesh.getFacesRight(),valueRight)
-    >>> bcLeft = FixedValue(mesh.getFacesLeft(),valueLeft)
-    >>> boundaryConditions = (bcLeft, bcRight , bcTop, bcBottom)
+    >>> boundaryConditions = (FixedFlux(mesh.getFacesTop(),0.),
+    ...                       FixedFlux(mesh.getFacesBottom(),0.),
+    ...                       FixedValue(mesh.getFacesRight(),valueRight),
+    ...                       FixedValue(mesh.getFacesLeft(),valueLeft))
 
 A solver is created and passed to the equation. This solver uses an
 iterative conjugant gradient method to solve implicitly at each time
@@ -134,7 +133,11 @@ matrix. Here the `transientCoeff` is set to 0 thus
 making the problem steady state.
 
     >>> from fipy.equations.diffusionEquation import DiffusionEquation
-    >>> eq = DiffusionEquation(var, transientCoeff = 0., diffusionCoeff = 1., solver = solver, boundaryConditions = boundaryConditions)
+    >>> eq = DiffusionEquation(var,
+    ...                        transientCoeff = 0.,
+    ...                        diffusionCoeff = 1.,
+    ...                        solver = solver,
+    ...                        boundaryConditions = boundaryConditions)
 
 The `Iterator` object takes a tuple of equations and solves to a
 required tolerance for the given equations at each time step.
