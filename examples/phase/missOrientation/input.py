@@ -78,14 +78,14 @@ class PhaseSystem:
       dx = self.L / self.nx
       dy = self.L / self.ny
 
-      fileName = 'grid2d.%f.%f.%i.%i' % (dx,dy,self.nx,self.ny)
-      filePath = '%s/%s'%(fivol.examples.phase.examples.missOrientation.__path__[0],fileName)      
+##      fileName = 'grid2d.%f.%f.%i.%i' % (dx,dy,self.nx,self.ny)
+##      filePath = '%s/%s'%(fivol.examples.phase.examples.missOrientation.__path__[0],fileName)      
 
-      try:
-         mesh = dump.read(filePath)
-      except:
-         mesh = Grid2D(dx, dy, self.nx, self.ny)
-         dump.write(mesh, filePath)
+##      try:
+##     mesh = dump.read(filePath)
+##      except:
+      mesh = Grid2D(dx, dy, self.nx, self.ny)
+##         dump.write(mesh, filePath)
             
       self.var = CellVariable(
          name = 'PhaseField',
