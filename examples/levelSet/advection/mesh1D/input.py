@@ -42,9 +42,27 @@
  ##
 
 """
+This example first solves the distance function Equation in one dimension:
 
-This example solves the advection equation in one dimension.
+.. raw:: latex
 
+    $$ |\\nabla \\phi| = 1 $$
+
+with
+
+.. raw:: latex
+
+    $$ \\phi = 0 \;\; \\text{at} \;\; x = L / 5 $$
+
+then the variable is advected with,
+
+.. raw:: latex
+
+    $$ \\frac{ \\partial \\phi } { \\partial t} + \\vec{u} \\cdot \\nabla \\phi = 0 $$
+
+The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
+
+The result can be tested with the following code:
 
    >>> distanceEquation.solve()
    >>> for step in range(steps):
