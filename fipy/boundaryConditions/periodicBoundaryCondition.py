@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/18/04 {6:47:28 PM} 
+ #                                last update: 11/19/04 {5:25:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -63,26 +63,36 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	self.adjacentCell1Ids = Numeric.array([face.getCellID() for face in self.faces1])
 	self.adjacentCell2Ids = Numeric.array([face.getCellID() for face in self.faces2])
 
-    def getContribution(self,cell1dia,cell1off):
-	"""Set boundary equal to value.
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off):
+	"""Modify **L** to make `faces1` and `faces2` contiguous.
+	**b** is unchanged.
 	
-	A `tuple` of (`LL`, `bb`, `ids`) is calculated, to be added to the 
-	equation's (**L**, **b**) matrices at the cells specified by `ids`.
+	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
+	Term's (**L**, **b**) matrices.
 	
 	:Parameters:
 	    
+	  - `Ncells`:   Size of matrices
+	  - `MaxFaces`: bandwidth of **L**
 	  - `cell1dia`: contribution to adjacent cell diagonal by this 
 	    exterior face	    
-	  - `cell1off`: contribution to **b**-vector by this exterior face
+	  - `cell1off`: contribution to this cell diagonal by adjacent 
+	    exterior face
+	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
-	return ({
-		    'cell diag': array.take(cell1dia[:],self.face1Ids) / 2, 
-		    'cell offdiag': array.take(cell1off[:],self.face2Ids) / 2, 
-		},
-		Numeric.zeros((len(self.faces1),),'d'),
-		self.adjacentCell1Ids,
-		self.adjacentCell2Ids)
-		
+	
+	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
+	
+	diagonalContribution = array.take(cell1dia[:],self.face1Ids) / (2 * coeffScale)
+	offdiagonalContribution = array.take(cell1off[:],self.face2Ids) / (2 * coeffScale)
+	
+	LL.addAt(diagonalContribution, self.adjacentCell1Ids, self.adjacentCell1Ids)
+	LL.addAt(offdiagonalContribution, self.adjacentCell1Ids, self.adjacentCell2Ids)
+	LL.addAt(offdiagonalContribution, self.adjacentCell1Ids, self.adjacentCell2Ids)
+	LL.addAt(diagonalContribution, self.adjacentCell2Ids, self.adjacentCell2Ids)
+	
+	return (LL, 0)
+	
     def getDerivative(self, order):
 	return self
 

@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 10/19/04 {2:53:02 PM} 
+ #                                last update: 11/19/04 {5:24:29 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -58,15 +58,18 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         self.order = order
         BoundaryCondition.__init__(self,faces,value)
 
-    def getContribution(self,cell1dia,cell1off):
-        """Leave `L` and `b` unchanged
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
+        """Leave **L** and **b** unchanged
         
         :Parameters:
             
-	  - `cell1dia`: *unused*
-	  - `cell1off`: *unused*
+	  - `Ncells`:     *unused*
+	  - `MaxFaces`:   *unused*
+	  - `cell1dia`:   *unused*
+	  - `cell1off`:   *unused*
+	  - `coeffScale`: *unused*
         """
-        return (Numeric.array([]),Numeric.array([]),Numeric.array([]))
+        return (0, 0)
         
     def getDerivative(self, order):
 	newOrder = self.order - order

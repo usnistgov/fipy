@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/19/04 {10:30:51 AM} 
+ #                                last update: 11/19/04 {5:22:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,21 +63,23 @@ class BoundaryCondition:
 	self.faceIds = Numeric.array([face.getID() for face in self.faces])
 	self.adjacentCellIds = Numeric.array([face.getCellID() for face in self.faces])
 
-    def getContribution(self,cell1dia,cell1off):
+    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
-	`getContribution()` is called by each `Term` of each `Equation`.
+	`buildMatrix()` is called by each `Term` of each `Equation`.
 	
 	:Parameters:
 	    
-	  - `cell1dia`: contribution to adjacent cell diagonal by this 
+	  - `Ncells`:     Number of cells (to build **L** and **b**)
+	  - `MaxFaces`:   Maximum number of faces per cell (to build **L**)
+	  - `cell1dia`:   contribution to adjacent cell diagonal by this 
 	    exterior face       
-	  - `cell1off`: contribution to **b**-vector by this exterior face
+	  - `cell1off`:   contribution to **b**-vector by this exterior face
+	  - `coeffScale`: dimensionality of the coefficient matrix
 	
-	A `tuple` of (`{LL}`, `bb`, `ids1`, `ids2`) is calculated, to be 
-	added to the equation's (**L**, **b**) matrices at the cells specified by 
-	`ids1`, `ids2`. `{LL}` is a `dict` of `cell diag`,`cell offdiag`.
+	A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
+	(**L**, **b**) matrices.
 	""" 
 	pass
     
