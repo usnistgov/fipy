@@ -50,13 +50,12 @@ import cPickle
 
 from fivol.tests.testBase import TestBase
 import fivol.examples.phase.examples.impingement
-
-from input import ImpingementSystem
+from fivol.examples.phase.examples.impingement.input1D import System1D
+from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
 
 class TestImpingement(TestBase):
     def setUp(self):
-        self.system = ImpingementSystem(nx = self.nx, ny = self.ny, initialConditions = self.initialConditions)
-        self.testFile = 'testImpingement.gz'
+
         parameters = self.system.getParameters()
 
 	self.steps = parameters['steps']
@@ -75,26 +74,20 @@ class TestImpingement(TestBase):
 
 class Test1D(TestImpingement):
     def setUp(self):
-        self.nx = 40
-        self.ny = 1
-        
-        def getRightCells(cell, Lx = 1., Ly = 1.):
-            if cell.getCenter()[0] > Lx / 2.:
-                return 1
+        self.system = System1D()
+        self.testFile = 'testImpingement.gz'
+        TestImpingement.setUp(self)
 
-        def getAllCells(cell, Lx = 1., Ly = 1.):
-            return 1.
-    
-        self.initialConditions = (
-        { 'phase value' : 1., 'theta value' : 1., 'func' : getAllCells },
-        { 'phase value' : 1., 'theta value' : 0., 'func' : getRightCells }        
-        )
-
+class Test4Particles(TestImpingement):
+    def setUp(self):
+        self.system = System4Particles()
+        self.testFile = '4ParticleData.gz'
         TestImpingement.setUp(self)
         
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test1D))
+    theSuite.addTest(unittest.makeSuite(Test4Particles))
     return theSuite
     
 if __name__ == '__main__':

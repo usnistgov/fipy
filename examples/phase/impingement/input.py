@@ -59,9 +59,9 @@ from fivol.examples.phase.theta.thetaEquation import ThetaEquation
 
 class ImpingementSystem:
 
-    def __init__(self, nx = 100, ny = 100, initialConditions = None):
+    def __init__(self, nx = 100, ny = 100, initialConditions = None, steps = 10, drivingForce = 1.):
         timeStepDuration = 0.02
-        self.steps = 10
+        self.steps = steps
 
         sharedPhaseThetaParameters = {
             'epsilon'               : 0.008,
@@ -94,6 +94,13 @@ class ImpingementSystem:
         dx = Lx / nx
         dy = Ly / ny
 
+##        Lx = 10
+##        Ly = 10
+##        nx = 10
+##        ny = 10
+##        dx = 1.
+##        dy = 1.
+
         mesh = Grid2D(dx,dy,nx,ny)
 
         phase = CellVariable(
@@ -107,13 +114,14 @@ class ImpingementSystem:
             mesh = mesh,
             value = 0.
             )
-        
-        self.phaseViewer = Grid2DGistViewer(var = phase)
-        self.thetaViewer = Grid2DGistViewer(var = theta)
+
+        pi = Numeric.pi
+        self.phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1.)
+        self.thetaViewer = Grid2DGistViewer(var = theta, palette = 'rainbow.gp', minVal = -pi, maxVal = pi)
         
         phaseFields = {
             'theta' : theta,
-            'temperature' : 1.
+            'temperature' : drivingForce
             }
         
         thetaFields = {
@@ -174,21 +182,7 @@ class ImpingementSystem:
             self.it.timestep(1)
             self.phaseViewer.plot()
             self.thetaViewer.plot()
+##            raw_input()
 
-if __name__ == '__main__':
-    def getRightCells(cell, Lx = 1., Ly = 1.):
-        if cell.getCenter()[0] > Lx / 2.:
-            return 1
 
-    def getAllCells(cell, Lx = 1., Ly = 1.):
-        return 1.
-    
-    initialConditions = (
-        { 'phase value' : 1., 'theta value' : 1., 'func' : getAllCells },
-        { 'phase value' : 1., 'theta value' : 0., 'func' : getRightCells }        
-        )
-    
-    system = ImpingementSystem(nx = 40, ny = 1,  initialConditions = initialConditions)
-    system.run()
-    raw_input()
 
