@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:38:51 PM} 
+ #                                last update: 4/1/05 {11:02:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ class ExponentialConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
-	    self.P = self.requires(P)
+	    self.P = self._requires(P)
 	    
 	def _calcValue(self):
 	    eps = 1e-3

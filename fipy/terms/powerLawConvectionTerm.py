@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 10/26/04 {11:45:27 AM} 
+ #                                last update: 4/1/05 {11:03:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,7 +46,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
-	    self.P = self.requires(P)
+	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, eps, P):
 	    P = Numeric.where(abs(P) < eps, eps, P)

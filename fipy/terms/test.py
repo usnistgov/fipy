@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 6/7/04 {2:33:34 PM} 
- #                                last update: 3/11/05 {11:48:49 AM} 
+ #                                last update: 4/1/05 {2:49:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,10 +46,10 @@ import fipy.tests.testProgram
 
 ## import nthOrderDiffusionTerm
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'nthOrderDiffusionTerm',
         ), base = __name__)
 
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')

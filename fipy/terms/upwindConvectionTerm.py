@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:39:01 PM} 
+ #                                last update: 4/1/05 {11:03:02 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,7 +46,7 @@ class UpwindConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
-	    self.P = self.requires(P)
+	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, P):
 	    alpha = Numeric.where(P > 0., 1., 0.)
