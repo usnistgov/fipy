@@ -49,30 +49,30 @@ boundary conditions such that,
 
 .. raw:: latex
 
-   $$ \partial_t (T \phi) = \partial_x (D \partial_x \phi) $$
+   $$ \\frac{\\partial (\\tau \\phi)}{\\partial t} = \\nabla \\cdot (D \\nabla \\phi) $$
 
 with initial conditions,
 
 .. raw:: latex
 
-   $$ \phi = 0 \;\; at \;\; t = 0 \;\; $$
+   $$ \phi = 0 \;\; \\text{at} \;\; t = 0 \;\; $$
 
 boundary conditions,
 
 .. raw:: latex
 
-   $$ \phi = 0 \;\; at \;\; x = 0 \;\; and \;\; \phi = 1  \;\; at \;\; x = 1 $$
+   $$ \phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; \phi = 1  \;\; \\text{at} \;\; x = 1 $$
 
 and parameter values,
 
 .. raw:: latex
 
-   $$ T = 0 \;\; and \;\; D = 1 $$
+   $$ \\tau = 0 \;\; \\text{and} \;\; D = 1 $$
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
 object represents a cubic structured grid.
 
-    >>> nx = 10
+    >>> nx = 50
     >>> ny = 1
     >>> dx = 1.
     >>> dy = 1.

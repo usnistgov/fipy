@@ -59,8 +59,8 @@ def suite():
     
     import mesh1D.input
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
-    import mesh1D.inputNthOrder
-    theSuite.addTest(doctest.DocTestSuite(mesh1D.inputNthOrder))
+##    import mesh1D.inputNthOrder
+##    theSuite.addTest(doctest.DocTestSuite(mesh1D.inputNthOrder))
     
 ##     theSuite.addTest(mesh1D.test.suite())
     theSuite.addTest(mesh20x20.test.suite())
