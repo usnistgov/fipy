@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/26/03 {10:25:42 AM} 
+                               last update: 11/29/03 {9:45:27 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -98,7 +98,7 @@ class PhaseEquation(MatrixEquation):
         dphi = self.var.getFaceGradient()
         self.dphi = dphi
         z = Numeric.arctan2(dphi[:,1],dphi[:,0])
-        z = N * (z - self.theta.getFaceArray())
+        z = N * (z - self.theta.getFaceValues())
         z = Numeric.tan(z / 2.)
         z = z * z;
         z = (1. - z) / (1. + z);
