@@ -119,11 +119,13 @@ class ImpingementSystem:
         
 
         pi = Numeric.pi
-
+        self.theta = theta
+        self.phase = phase
+        self.thetaProd = -pi + phase * (theta + pi)
         
         self.phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
         self.thetaViewer = Grid2DGistViewer(var = theta , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
-        self.thetaProductViewer = Grid2DGistViewer(var = -pi + phase * (theta + pi) , palette = 'rainbow.gp', minVal = -pi, maxVal = 2. * pi, grid = 0)
+        self.thetaProductViewer = Grid2DGistViewer(var = self.thetaProd , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
         
         phaseFields = {
             'theta' : theta,

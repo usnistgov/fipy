@@ -71,22 +71,34 @@ class System4Particles(ImpingementSystem):
 
     def run(self):
         
-        for j in range(100):
+        for j in range(250):
 
+            self.it.timestep(1)
+            
             self.myPlot(j)
+            self.dumpData(j)
 
-            for i in range(self.steps):
+
+            for i in range(4):
                 self.it.timestep(1)
 
     def myPlot(self, val):
         print 'writing results', val
         self.phaseViewer.plot()
         self.thetaViewer.plot()
-        self.thetaProductViewer.plot(minVal = -Numeric.pi, maxVal = 2. * Numeric.pi)
-        
+        self.thetaProductViewer.plot()
+
+    def dumpData(self, val):
+        phaseFile = open('phase%i.txt' % val, 'w')
+        thetaFile = open('theta%i.txt' % val, 'w')
+        phaseFile.write(str(self.phase.getNumericValue()))
+        thetaFile.write(str(self.thetaProd.getNumericValue()))
+        phaseFile.close()
+        thetaFile.close()
+    
 if __name__ == '__main__':
 
-    system = System4Particles(nx = 100, ny = 100, steps = 5000, drivingForce = 2.)
+    system = System4Particles(nx = 100, ny = 100, steps = 5, drivingForce = 5.)
     system.run()
 
     
