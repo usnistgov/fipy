@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 7/6/04 {1:10:11 PM} 
+ #                                last update: 7/16/04 {3:16:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -90,7 +90,7 @@ class build_docs (Command):
     def _epydocFiles(self, module, dir = None, type = 'latex'):
 	dir = os.path.join(dir, type)
 	
-        command = "epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext " + module
+        command = "epydoc --" + type + " --output " + dir + " --name FiPy " + module
         
 	os.system(command)
 
@@ -131,7 +131,6 @@ class build_docs (Command):
 		    mainMatch = mainModule.match(name)
 		    if mainMatch:
 			f.write("\\chapter{Module " + mainMatch.group(1) + "}\n")
-			continue
 			
 		    subMatch = subModule.match(name)
 		    if subMatch:
@@ -258,14 +257,18 @@ setup(	name = "FiPy",
 			'fipy.equations',
 			'fipy.iterators',
 			'fipy.meshes',
+			    'fipy.meshes.common',
 			    'fipy.meshes.numMesh',
 			    'fipy.meshes.pyMesh',
 			'fipy.models',
 			    'fipy.models.elphf',
 			    'fipy.models.levelSet',
+				'fipy.models.levelSet.advection',
+				'fipy.models.levelSet.distanceFunction',
 			    'fipy.models.phase',
 				'fipy.models.phase.phase',
 				'fipy.models.phase.temperature',
+				'fipy.models.phase.theta',
 			'fipy.solvers',
 			'fipy.terms',
 			'fipy.tests',
