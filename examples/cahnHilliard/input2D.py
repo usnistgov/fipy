@@ -65,11 +65,17 @@ import Numeric
 
 import optparse
 
+import sys
+args = [sys.argv[0]]
+for arg in sys.argv[1:]:
+    if '--numberOfElements' in arg or '--numberOfSteps' in arg:
+        args.append(arg)
+
 parser = optparse.OptionParser(option_list = [
     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 100)])
 
-(options, args) = parser.parse_args()
+(options, args) = parser.parse_args(args)
 
 nx = int(Numeric.sqrt(options.numberOfElements))
 ny = int(Numeric.sqrt(options.numberOfElements))

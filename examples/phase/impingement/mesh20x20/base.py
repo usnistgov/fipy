@@ -48,21 +48,18 @@ In the following examples, we solve the same set of equations as in::
     
 with different initial conditions and a 2D mesh:
 
+    >>> import sys
+    >>> args = [sys.argv[0]]
+    >>> for arg in sys.argv[1:]:
+    ...     if '--numberOfElements' in arg or '--numberOfSteps' in arg:
+    ...         args.append(arg)
+
     >>> import optparse
-
-    >>> class MyOptionParser(optparse.OptionParser):
-    ...     def error(self, msg):
-    ...         if 'no such option' in msg:
-    ...             pass
-    ...         else:
-    ...             optparse.OptionParser.error(self, msg)
-
-    >>> parser = MyOptionParser(option_list = [
+    >>> parser = optparse.OptionParser(option_list = [
     ...     optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'numberOfElements', default = 400),
     ...     optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = 10)])
 
-    >>> (options, args) = parser.parse_args()
-
+    >>> (options, args) = parser.parse_args(args)
     >>> steps = options.steps
     >>> import Numeric
     >>> nx = int(Numeric.sqrt(options.numberOfElements))

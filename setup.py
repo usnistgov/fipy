@@ -468,7 +468,7 @@ class efficiency_test(Command):
         
         file = open('efficiencyData.txt', 'w')
         
-        sys.argv = sys.argv[:1]
+        ##sys.argv = sys.argv[:1]
 
         numberOfSteps = 10
         sys.argv.append('--numberOfSteps=%i' % numberOfSteps)
