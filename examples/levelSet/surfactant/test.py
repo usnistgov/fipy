@@ -48,14 +48,16 @@ import fipy.tests.testProgram
 import doctest
 
 import inputCircle
+import inputSquare
 
 def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(inputCircle))
+    theSuite.addTest(doctest.DocTestSuite(inputSquare))
 
     return theSuite
-    
+
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')
 
