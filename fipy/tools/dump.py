@@ -38,16 +38,15 @@
 
 import cPickle
 import os
+import gzip
 
 def write(data, fileName):
-    fileStream = os.popen('gzip --fast -c > %s.gz' % (fileName), 'w')
-##    fileStream = file(fileName, 'w')
+    fileStream = gzip.GzipFile(filename = fileName, mode = 'w', fileobj = None)
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
-def read(fileName):
-    fileStream = os.popen('gunzip --fast -c < %s.gz' % (fileName), 'r')
-##    fileStream = file(fileName, 'r')
+def read(fileName = None):
+    fileStream = gzip.GzipFile(filename = fileName, mode = 'r', fileobj = None)
     data = cPickle.load(fileStream)
     fileStream.close()
     return data
