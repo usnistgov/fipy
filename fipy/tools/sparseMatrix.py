@@ -1,4 +1,4 @@
-4#!/usr/bin/env python
+#!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/9/04 {2:11:31 PM} 
+ #                                last update: 12/9/04 {9:54:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -117,7 +117,7 @@ class SparseMatrix:
             >>> print L + 0
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
-             2.500000      ---        ---   
+             2.500000      ---        ---    
             
             >>> print L + 3
             Traceback (most recent call last):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 11/1/04 {7:59:49 PM} 
+ #                                last update: 12/9/04 {9:56:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -562,7 +562,7 @@ class PhysicalField:
             >>> float(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
             Traceback (most recent call last):
                 ...
-            TypeError: only rank-0 arrays can be converted to Python scalars.
+            TypeError: only length-1 arrays can be converted to Python scalars.
         
         .. _Numeric: http://www.numpy.org
         """
