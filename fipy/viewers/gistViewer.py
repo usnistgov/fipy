@@ -52,7 +52,7 @@ class GistViewer:
     
     id=0
     
-    def __init__(self, minVal=None, maxVal=None, title = '', palette = 'heat.gp'):
+    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp'):
 	self.minVal = minVal
         self.maxVal = maxVal
 	self.title = title
@@ -60,10 +60,10 @@ class GistViewer:
 	GistViewer.id += 1
         self.palette = palette
     
-    def plot(self, minVal=None, maxVal=None):
+    def plot(self, minVal = None, maxVal = None, fileName = None):
 	array = self.getArray()
-	
-        gist.window(self.id, wait= 1)
+
+        gist.window(self.id, wait = 1)
 	gist.pltitle(self.title)
         gist.animate(1)
         gist.palette(self.palette)
@@ -79,17 +79,20 @@ class GistViewer:
 		maxVal = Numeric.minimum.reduce(array.flat)
 	    else:
 		maxVal = self.maxVal
-
-## 	min = Numeric.minimum.reduce(array.flat)
-## 	max = Numeric.minimum.reduce(array.flat)
+        
 	if maxVal == minVal:
 	    maxVal = minVal + 0.01
-## 	gist.pli(array)
-        gist.pli(array, cmin = minVal, cmax = maxVal)
-	colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel='fred')
-## 	colorbar.color_bar(minz = min, maxz = max, ncol=240, zlabel='fred')
-        gist.fma()
 
+        gist.pli(array, cmin = minVal, cmax = maxVal)
+	colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
+
+        if fileName is not None:
+            
+            gist.hcp_file(fileName)
+            gist.hcp()
+
+        gist.fma()
+        
     def getArray(self):
         pass
         
