@@ -1,0 +1,322 @@
+%% -*-TeX-*-
+ % ###################################################################
+ %  FiPy - a finite volume PDE solver in Python
+ % 
+ %  FILE: "fipy.tex"
+ %                                    created: 4/1/04 {2:58:37 PM} 
+ %                                last update: 4/2/04 {11:24:46 AM} 
+ %  Author: Jonathan Guyer
+ %  E-mail: guyer@nist.gov
+ %  Author: Daniel Wheeler
+ %  E-mail: daniel.wheeler@nist.gov
+ %    mail: NIST
+ %     www: http://ctcms.nist.gov
+ %  
+ % ========================================================================
+ % This document was prepared at the National Institute of Standards
+ % and Technology by employees of the Federal Government in the course
+ % of their official duties.  Pursuant to title 17 Section 105 of the
+ % United States Code this document is not subject to copyright
+ % protection and is in the public domain.  fipy.tex
+ % is an experimental work.  NIST assumes no responsibility whatsoever
+ % for its use by other parties, and makes no guarantees, expressed
+ % or implied, about its quality, reliability, or any other characteristic.
+ % We would appreciate acknowledgement if the document is used.
+ % 
+ % This document can be redistributed and/or modified freely
+ % provided that any derivative works bear some notice that they are
+ % derived from it, and any modified versions bear some notice that
+ % they have been modified.
+ % ========================================================================
+ % See the file "license.terms" for information on usage and  redistribution of
+ % this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ %  
+ % ###################################################################
+ %%
+
+\documentclass[]{book}
+% \usepackage[]{}
+
+\usepackage{alltt, parskip, fancyheadings, boxedminipage}
+\usepackage{makeidx, multirow, longtable, tocbibind, amssymb}
+% \usepackage{fullpage}
+%\usepackage[headings]{fullpage}
+\makeindex
+\usepackage[usenames]{color}
+\definecolor{darkblue}{rgb}{0,0.05,0.35}
+% \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+\usepackage[pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+\begin{document}
+
+\setlength{\parindent}{0ex}
+\setlength{\fboxrule}{2\fboxrule}
+\newlength{\BCL} % base class length, for base trees.
+
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
+\newenvironment{Ventry}[1]%
+  {\begin{list}{}{%
+    \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
+    \settowidth{\labelwidth}{\texttt{#1:}}%
+    \setlength{\leftmargin}{\labelsep}%
+    \addtolength{\leftmargin}{\labelwidth}}}%
+  {\end{list}}
+
+
+% \begin{document}
+
+% \include{code/fivol.variables.variable-module}
+
+\include{code/fivol-module}
+\include{code/fivol.boundaryConditions-module}
+\include{code/fivol.boundaryConditions.boundaryCondition-module}
+\include{code/fivol.boundaryConditions.fixedFlux-module}
+\include{code/fivol.boundaryConditions.fixedValue-module}
+\include{code/fivol.equations-module}
+\include{code/fivol.equations.advectionEquation-module}
+\include{code/fivol.equations.diffusionEquation-module}
+\include{code/fivol.equations.equation-module}
+\include{code/fivol.equations.explicitDiffusionEquation-module}
+\include{code/fivol.equations.matrixEquation-module}
+\include{code/fivol.equations.postRelaxationEquation-module}
+\include{code/fivol.equations.preRelaxationEquation-module}
+\include{code/fivol.equations.relaxationEquation-module}
+\include{code/fivol.equations.stdyConvDiffEquation-module}
+\include{code/fivol.equations.stdyConvDiffScEquation-module}
+\include{code/fivol.examples-module}
+\include{code/fivol.examples.convection-module}
+\include{code/fivol.examples.convection.convectionDiffusionSystem-module}
+\include{code/fivol.examples.convection.exponential1DBackSystem-module}
+\include{code/fivol.examples.convection.exponential1DScSystem-module}
+\include{code/fivol.examples.convection.exponential1DSystem-module}
+\include{code/fivol.examples.convection.exponential1DUpSystem-module}
+\include{code/fivol.examples.convection.exponential2DSystem-module}
+\include{code/fivol.examples.convection.power1DSystem-module}
+\include{code/fivol.examples.convection.test-module}
+\include{code/fivol.examples.diffusion-module}
+\include{code/fivol.examples.diffusion.explicit-module}
+\include{code/fivol.examples.diffusion.explicit.input-module}
+\include{code/fivol.examples.diffusion.explicit.test-module}
+\include{code/fivol.examples.diffusion.steadyState-module}
+\include{code/fivol.examples.diffusion.steadyState.input-module}
+\include{code/fivol.examples.diffusion.steadyState.test-module}
+\include{code/fivol.examples.diffusion.test-module}
+\include{code/fivol.examples.diffusion.variable-module}
+\include{code/fivol.examples.diffusion.variable.input-module}
+\include{code/fivol.examples.diffusion.variable.test-module}
+\include{code/fivol.examples.elphf-module}
+\include{code/fivol.examples.elphf.componentVariable-module}
+\include{code/fivol.examples.elphf.concentrationEquation-module}
+\include{code/fivol.examples.elphf.elphf-module}
+\include{code/fivol.examples.elphf.elphfIterator-module}
+\include{code/fivol.examples.elphf.input-module}
+\include{code/fivol.examples.elphf.input1D-module}
+\include{code/fivol.examples.elphf.input1Dphase-module}
+\include{code/fivol.examples.elphf.input1DphaseBinary-module}
+\include{code/fivol.examples.elphf.input1DphaseQuaternary-module}
+\include{code/fivol.examples.elphf.input1DphaseTernAndElectrons-module}
+\include{code/fivol.examples.elphf.input1Dpoisson-module}
+\include{code/fivol.examples.elphf.input1DpoissonAllCharge-module}
+\include{code/fivol.examples.elphf.input1DpoissonLeftCharge-module}
+\include{code/fivol.examples.elphf.input1DpoissonRightCharge-module}
+\include{code/fivol.examples.elphf.input2D-module}
+\include{code/fivol.examples.elphf.input2Dcorner-module}
+\include{code/fivol.examples.elphf.interstitialEquation-module}
+\include{code/fivol.examples.elphf.phaseEquation-module}
+\include{code/fivol.examples.elphf.phaseVariable-module}
+\include{code/fivol.examples.elphf.poissonEquation-module}
+\include{code/fivol.examples.elphf.semiImplicitPoissonEquation-module}
+\include{code/fivol.examples.elphf.solventVariable-module}
+\include{code/fivol.examples.elphf.substitutionalEquation-module}
+\include{code/fivol.examples.elphf.substitutionalSumVariable-module}
+\include{code/fivol.examples.elphf.substitutionalVariable-module}
+\include{code/fivol.examples.elphf.test-module}
+\include{code/fivol.examples.levelSet-module}
+\include{code/fivol.examples.levelSet.examples-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.circleInput-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.input-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.squareInput-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.test-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.testCircleLevelSet-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.testLevelSetBase-module}
+\include{code/fivol.examples.levelSet.examples.zeroCells.testSquareLevelSet-module}
+\include{code/fivol.examples.levelSet.levelSetEquation-module}
+\include{code/fivol.examples.levelSet.test-module}
+\include{code/fivol.examples.phase-module}
+\include{code/fivol.examples.phase.examples-module}
+\include{code/fivol.examples.phase.examples.anisotropy-module}
+\include{code/fivol.examples.phase.examples.anisotropy.inputProfile-module}
+\include{code/fivol.examples.phase.examples.anisotropy.inputTemperature-module}
+\include{code/fivol.examples.phase.examples.anisotropy.test-module}
+\include{code/fivol.examples.phase.examples.impingement-module}
+\include{code/fivol.examples.phase.examples.impingement.input-module}
+\include{code/fivol.examples.phase.examples.impingement.input1D-module}
+\include{code/fivol.examples.phase.examples.impingement.input4Particles-module}
+\include{code/fivol.examples.phase.examples.impingement.input4ParticlesProfile-module}
+\include{code/fivol.examples.phase.examples.impingement.input4ParticlesRestart-module}
+\include{code/fivol.examples.phase.examples.impingement.input4ParticlesTimings-module}
+\include{code/fivol.examples.phase.examples.impingement.input4ParticlesView-module}
+\include{code/fivol.examples.phase.examples.impingement.test-module}
+\include{code/fivol.examples.phase.examples.missOrientation-module}
+\include{code/fivol.examples.phase.examples.missOrientation.input-module}
+\include{code/fivol.examples.phase.examples.missOrientation.input1D-module}
+\include{code/fivol.examples.phase.examples.missOrientation.inputCircle-module}
+\include{code/fivol.examples.phase.examples.missOrientation.inputModularCircle-module}
+\include{code/fivol.examples.phase.examples.missOrientation.profileMesh-module}
+\include{code/fivol.examples.phase.examples.missOrientation.test-module}
+\include{code/fivol.examples.phase.examples.missOrientation.testLevel2-module}
+\include{code/fivol.examples.phase.examples.symmetry-module}
+\include{code/fivol.examples.phase.examples.symmetry.input-module}
+\include{code/fivol.examples.phase.examples.symmetry.test-module}
+\include{code/fivol.examples.phase.examples.test-module}
+\include{code/fivol.examples.phase.phase-module}
+\include{code/fivol.examples.phase.phase.addOverFacesVariable-module}
+\include{code/fivol.examples.phase.phase.anisotropyVariable-module}
+\include{code/fivol.examples.phase.phase.mPhiVariable-module}
+\include{code/fivol.examples.phase.phase.phaseDiffusionVariable-module}
+\include{code/fivol.examples.phase.phase.phaseEquation-module}
+\include{code/fivol.examples.phase.phase.phaseHalfAngleVariable-module}
+\include{code/fivol.examples.phase.phase.scSourceVariable-module}
+\include{code/fivol.examples.phase.phase.spSourceVariable-module}
+\include{code/fivol.examples.phase.phase.toolsTmp-module}
+\include{code/fivol.examples.phase.phase.type1MPhiVariable-module}
+\include{code/fivol.examples.phase.phase.type1PhaseEquation-module}
+\include{code/fivol.examples.phase.phase.type2MPhiVariable-module}
+\include{code/fivol.examples.phase.phase.type2PhaseEquation-module}
+\include{code/fivol.examples.phase.temperature-module}
+\include{code/fivol.examples.phase.temperature.temperatureEquation-module}
+\include{code/fivol.examples.phase.test-module}
+\include{code/fivol.examples.phase.theta-module}
+\include{code/fivol.examples.phase.theta.diffusionVariable-module}
+\include{code/fivol.examples.phase.theta.modCellGradVariable-module}
+\include{code/fivol.examples.phase.theta.modCellToFaceVariable-module}
+\include{code/fivol.examples.phase.theta.modFaceGradVariable-module}
+\include{code/fivol.examples.phase.theta.modPhysicalField-module}
+\include{code/fivol.examples.phase.theta.modularVariable-module}
+\include{code/fivol.examples.phase.theta.noModularVariable-module}
+\include{code/fivol.examples.phase.theta.sourceVariable-module}
+\include{code/fivol.examples.phase.theta.thetaEquation-module}
+\include{code/fivol.examples.phase.theta.thetaHalfAngleVariable-module}
+\include{code/fivol.examples.phase.theta.transientVariable-module}
+\include{code/fivol.examples.test-module}
+\include{code/fivol.inline-module}
+\include{code/fivol.inline.inline-module}
+\include{code/fivol.iterators-module}
+\include{code/fivol.iterators.adaptiveIterator-module}
+\include{code/fivol.iterators.iterator-module}
+\include{code/fivol.meshes-module}
+\include{code/fivol.meshes.cell-module}
+\include{code/fivol.meshes.face-module}
+\include{code/fivol.meshes.face2D-module}
+\include{code/fivol.meshes.grid2D-module}
+\include{code/fivol.meshes.mesh-module}
+\include{code/fivol.meshes.numMesh-module}
+\include{code/fivol.meshes.numMesh.cell-module}
+\include{code/fivol.meshes.numMesh.face-module}
+\include{code/fivol.meshes.numMesh.mesh-module}
+\include{code/fivol.meshes.numMesh.mesh2D-module}
+\include{code/fivol.meshes.numMesh.testMeshBase-module}
+\include{code/fivol.meshes.pyMesh-module}
+\include{code/fivol.meshes.pyMesh.cell-module}
+\include{code/fivol.meshes.pyMesh.face-module}
+\include{code/fivol.meshes.pyMesh.face2D-module}
+\include{code/fivol.meshes.pyMesh.grid2D-module}
+\include{code/fivol.meshes.pyMesh.mesh-module}
+\include{code/fivol.meshes.pyMesh.test-module}
+\include{code/fivol.meshes.pyMesh.vertex-module}
+\include{code/fivol.meshes.test-module}
+\include{code/fivol.meshes.vertex-module}
+\include{code/fivol.profiler-module}
+\include{code/fivol.profiler.displayprof-module}
+\include{code/fivol.profiler.gfxprof-module}
+\include{code/fivol.profiler.profiler-module}
+\include{code/fivol.solvers-module}
+\include{code/fivol.solvers.linearCGSSolver-module}
+\include{code/fivol.solvers.linearGMRESSolver-module}
+\include{code/fivol.solvers.linearLUSolver-module}
+\include{code/fivol.solvers.linearPCGSolver-module}
+\include{code/fivol.solvers.solver-module}
+\include{code/fivol.terms-module}
+\include{code/fivol.terms.cellTerm-module}
+\include{code/fivol.terms.centralDiffConvectionTerm-module}
+\include{code/fivol.terms.convectionTerm-module}
+\include{code/fivol.terms.diffusionTerm-module}
+\include{code/fivol.terms.explicitDiffusionTerm-module}
+\include{code/fivol.terms.exponentialConvectionTerm-module}
+\include{code/fivol.terms.faceTerm-module}
+\include{code/fivol.terms.hybridConvectionTerm-module}
+\include{code/fivol.terms.implicitDiffusionTerm-module}
+\include{code/fivol.terms.powerLawConvectionTerm-module}
+\include{code/fivol.terms.relaxationTerm-module}
+\include{code/fivol.terms.scSourceTerm-module}
+\include{code/fivol.terms.sourceTerm-module}
+\include{code/fivol.terms.spSourceTerm-module}
+\include{code/fivol.terms.term-module}
+\include{code/fivol.terms.transientTerm-module}
+\include{code/fivol.tests-module}
+\include{code/fivol.tests.blinky-module}
+\include{code/fivol.tests.blitzTest-module}
+\include{code/fivol.tests.test-module}
+\include{code/fivol.tests.testBase-module}
+\include{code/fivol.tests.testProgram-module}
+\include{code/fivol.tests.testSuite-module}
+\include{code/fivol.tests.testVariable-module}
+\include{code/fivol.tools-module}
+\include{code/fivol.tools.array-module}
+\include{code/fivol.tools.dimensions-module}
+\include{code/fivol.tools.dimensions.DictWithDefault-module}
+\include{code/fivol.tools.dimensions.NumberDict-module}
+\include{code/fivol.tools.dimensions.physicalField-module}
+\include{code/fivol.tools.dump-module}
+\include{code/fivol.tools.test-module}
+\include{code/fivol.tools.vector-module}
+\include{code/fivol.variables-module}
+\include{code/fivol.variables.arithmeticCellToFaceVariable-module}
+\include{code/fivol.variables.cellGradVariable-module}
+\include{code/fivol.variables.cellToFaceVariable-module}
+\include{code/fivol.variables.cellVariable-module}
+\include{code/fivol.variables.faceGradContributionsVariable-module}
+\include{code/fivol.variables.faceGradVariable-module}
+\include{code/fivol.variables.faceVariable-module}
+\include{code/fivol.variables.harmonicCellToFaceVariable-module}
+\include{code/fivol.variables.magVariable-module}
+\include{code/fivol.variables.sumVariable-module}
+\include{code/fivol.variables.test-module}
+\include{code/fivol.variables.testInterpolation-module}
+\include{code/fivol.variables.testPickle-module}
+\include{code/fivol.variables.transposeVariable-module}
+\include{code/fivol.variables.variable-module}
+\include{code/fivol.variables.vectorCellVariable-module}
+\include{code/fivol.variables.vectorFaceVariable-module}
+\include{code/fivol.viewers-module}
+\include{code/fivol.viewers.colorbar-module}
+\include{code/fivol.viewers.gist1DResidualViewer-module}
+\include{code/fivol.viewers.gist1DViewer-module}
+\include{code/fivol.viewers.gistViewer-module}
+\include{code/fivol.viewers.grid2DGistViewer-module}
+\include{code/fivol.viewers.numpyGistViewer-module}
+\include{code/fivol.viewers.varGistViewer-module}
+\include{code/fivol.viewers.viewer-module}
+
+
+% \include{intro}
+% 
+% \include{install}
+% 
+% \include{examples}
+% 
+% \include{theory}
+% 
+% \include{code}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                 Index                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\printindex
+
+
+\end{document}
