@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:35:46 PM} 
+ #                                last update: 10/28/04 {11:27:58 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,8 +52,6 @@ from fipy.terms.scSourceTerm import ScSourceTerm
 from fipy.terms.spSourceTerm import SpSourceTerm
 
 from fipy.tools.dimensions import physicalField
-
-from substitutionalSumVariable import SubstitutionalSumVariable
 
 class PoissonEquation(RelaxationEquation):
     def __init__(self,
