@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 7/27/04 {1:55:19 PM} 
+ #                                last update: 7/27/04 {3:27:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,8 +75,7 @@ def _putAddPy(vector, ids, additionVector):
 
 def _putAddIn(vector, ids, additionVector):
     inline.runInlineLoop1("""
-	int	j = ids(i);
-	vector(j) += additionVector(i);
+	vector(ids(i)) += additionVector(i);
     """, 
     vector = vector, ids = ids, additionVector = additionVector,
     ni = len(ids))
