@@ -42,7 +42,12 @@ These examples can be used in at least four ways:
      of the FiPy framework.  As explained at the end of
      ``examples/diffusion/steadyState/mesh1D.py``, your own scripts can be
      much more succint, if you wish, and include only the text that follows
-     the "``>>>``" and "``...``" prompts shown in these examples.
+     the "``>>>``" and "``...``" prompts shown in these examples. 
+
+     To obtain a copy of an example, containing just the script instructions,
+     type::
+
+       $ python setup.py copy_script --From examples/something/input.py --To <wherever you like>
 
      
 In addition to those presented in this manual, there are dozens of other
