@@ -90,8 +90,6 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = Grid2DGistViewer(var , minVal = 0., maxVal = 1.)
-
 eq = DiffusionEquation(var,
                        transientCoeff = 0., 
                        diffusionCoeff = 1.,
@@ -110,5 +108,6 @@ it = Iterator((eq,))
 it.timestep()
 
 if __name__ == '__main__':
+    viewer = Grid2DGistViewer(var , minVal = 0., maxVal = 1.)
     viewer.plot()
     raw_input("finished")
