@@ -58,7 +58,7 @@ Do the tests:
    >>> eqn.solve()
    >>> dX = dx / 2.
    >>> dY = dy / 2.
-   >>> mm = min(dX, dY)
+   >>> mm = dX * dY / Numeric.sqrt(dX**2 + dY**2) 
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
