@@ -1,10 +1,11 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/26/03 {10:30:04 AM} 
+ #                                last update: 11/27/03 {10:30:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,13 +39,22 @@
  #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
-
+"""
+ 
 from term import Term
 import Numeric
 
 class FaceTerm(Term):
     def __init__(self,stencil,mesh,boundaryConditions):
-	"""stencil = [phi_adj, phi]
+	"""
+        Stencil is for a mixed explicit/implicit scheme
+        stencil = ( ( phi_adj, phi ) , ( phi_adj_exp , phi_exp ) )
+        for a completly implicit scheme use:
+        ( ( 1, 1) , 'None' )
+        and for an explicit scheme use:
+        ( 'None', ( 1, 1) )
+        for a mixed explicit, implicit scheme:
+        ( ( .8, .8), (.2, .2) ) for example
 	"""
 	Term.__init__(self,stencil)
         self.mesh = mesh
@@ -68,15 +78,40 @@ class FaceTerm(Term):
 	L.update_add_something(aa,id2,id2)
 	
     def buildMatrix(self,L,array,b):
-	aa =  self.coeff[:self.interiorN]*self.stencil[1]
-	bb = -self.coeff[:self.interiorN]*self.stencil[0]
+
+        ## implicit
+        if self.stencil[0]!='None':
+            stencil = self.stencil[0]
+            aa =  self.coeff[:self.interiorN]*stencil[1]
+            bb = -self.coeff[:self.interiorN]*stencil[0]
 	
-	self.actuallyDoSomething(L, aa, bb, self.id1, self.id2)
+            self.actuallyDoSomething(L, aa, bb, self.id1, self.id2)
+            
+            for boundaryCondition in self.boundaryConditions:
+                for face in boundaryCondition.getFaces():
+                    cellId = face.getCellId()
+                    faceId = face.getId()
+                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],stencil)
+                    L[cellId,cellId] += LL
+                    b[cellId] += bb
+
+        ## explicit
+        if self.stencil[1]!='None':
+            stencil = self.stencil[1]
+            aa = -self.coeff[:self.interiorN]*stencil[1]
+            bb = self.coeff[:self.interiorN]*stencil[0]
+
+            for i in range(self.interiorN):
+                id1 = self.id1[i]
+                id2 = self.id2[i]
+                b[id1] += aa[i] * array[id1] + bb[i] * array[id2]
+                b[id2] += aa[i] * array[id2] + bb[i] * array[id1]
 	
-        for boundaryCondition in self.boundaryConditions:
-            for face in boundaryCondition.getFaces():
-                cellId = face.getCellId()
-                faceId = face.getId()
-                LL,bb = boundaryCondition.update(face,self.coeff[faceId],self.stencil)
-                L[cellId,cellId] += LL
-                b[cellId] += bb
+            for boundaryCondition in self.boundaryConditions:
+                for face in boundaryCondition.getFaces():
+                    cellId = face.getCellId()
+                    faceId = face.getId()
+                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],stencil)
+                    b[cellId] -= LL * array[cellId]
+                    b[cellId] += bb
+        

@@ -44,14 +44,22 @@ from faceTerm import FaceTerm
 import Numeric
 
 class DiffusionTerm(FaceTerm):
-    def __init__(self,diffCoeff,mesh,boundaryConditions):
-        stencil = (1,1)
+    def __init__(self, diffCoeff, mesh, boundaryConditions, stencil = ( (1., 1.), 'None' )):
+        """
+        The default stencil ( (1., 1.), 'None') represents an entirely implicit scheme
+        """
 	FaceTerm.__init__(self,stencil,mesh,boundaryConditions)
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):
 	self.coeff = self.diffCoeff * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
-	
+
+    def setDiffCoeff(self,diffCoeff):
+        """
+        Added to allow the diffusion coefficient to be updated
+        in the equation module
+        """
+        self.diffCoeff = diffCoeff
 	
 
 

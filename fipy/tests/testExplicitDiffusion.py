@@ -4,9 +4,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testSteadyStateDiffusion.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/26/03 {11:11:48 AM} 
+ #  FILE: "testExplicitDiffusion.py"
+ #                                    created: 11/27/03 {3:23:47 PM}
+ #                                last update: 11/27/03 {11:11:48 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -44,18 +44,18 @@
  
 import unittest
 from meshes.grid2D import Grid2D
-from equations.diffusionEquation import DiffusionEquation
+from equations.explicitDiffusionEquation import ExplicitDiffusionEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.variable import Variable
 
-class TestSteadyStateDiffusion(unittest.TestCase):
+class TestExplicitDiffusion(unittest.TestCase):
     """Generic steady-state diffusion class
-    
-    	Constructs a mesh, variable, equation, and iterator based
-	on the mesh dimensions specified by the child class
+    Same as TestSteadyStateDiffusion biut for explcit case
+    Constructs a mesh, variable, equation, and iterator based
+    on the mesh dimensions specified by the child class
     """
     def setUp(self):
 
@@ -70,10 +70,10 @@ class TestSteadyStateDiffusion(unittest.TestCase):
 	    value = self.valueLeft,
             viewer = 'None')
 
-        self.eq = DiffusionEquation(
+        self.eq = ExplicitDiffusionEquation(
             self.var,
             name = "concentration",
-            transientCoeff = 0., 
+            transientCoeff = 1., 
             diffusionCoeff = 1.,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 
@@ -96,7 +96,7 @@ class TestSteadyStateDiffusion(unittest.TestCase):
             raise self.failureException, (msg or '%s !~ %s' % (first, second))
         
     def testResult(self):
-        self.it.iterate(1,1.)
+        self.it.iterate(10000,0.2)
         array = self.var.getArray()
         (lx,ly) = self.mesh.getPhysicalShape()
         vl = self.valueLeft
@@ -106,47 +106,30 @@ class TestSteadyStateDiffusion(unittest.TestCase):
             coords = cell.getCenter()
             id = cell.getId()
             val = vl + (vr - vl) * coords[0] / lx
-            norm = abs(array[id] - val)        
-            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
+            norm = abs(array[id] - val)
+            self.assertWithinTolerance(norm, 0.0, 1e-3,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
             
 	    
-class TestSteadyStateDiffusion20x20(TestSteadyStateDiffusion):
-    """Steady-state 1D diffusion on a 20x20 mesh
+class  TestExplicitDiffusion10(TestExplicitDiffusion):
+    """Steady-state 1D diffusion on a 10x1 mesh
     """
     def setUp(self):
-	self.nx = 20
-	self.ny = 20
-	TestSteadyStateDiffusion.setUp(self)	    
-	
-class TestSteadyStateDiffusion50x50(TestSteadyStateDiffusion):
-    """Steady-state 1D diffusion on a 50x50 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 50
-	TestSteadyStateDiffusion.setUp(self)	    
+	self.nx = 10
+	self.ny = 1
+	TestExplicitDiffusion.setUp(self)
 
-class  TestSteadyStateDiffusion1D(TestSteadyStateDiffusion):
+class  TestExplicitDiffusion50(TestExplicitDiffusion):
     """Steady-state 1D diffusion on a 50x1 mesh
     """
     def setUp(self):
 	self.nx = 50
 	self.ny = 1
-	TestSteadyStateDiffusion.setUp(self)
-
-class  TestSteadyStateDiffusion1D(TestSteadyStateDiffusion):
-    """Steady-state 1D diffusion on a 50x1 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 1
-	TestSteadyStateDiffusion.setUp(self)
+	TestExplicitDiffusion.setUp(self)
 	
 def suite():
-    suite1D = unittest.makeSuite(TestSteadyStateDiffusion1D, 'test')
-    suite20 = unittest.makeSuite(TestSteadyStateDiffusion20x20, 'test')
-    suite50 = unittest.makeSuite(TestSteadyStateDiffusion50x50, 'test')
-    alltests = unittest.TestSuite((suite1D,suite20,suite50))
+    suite10 = unittest.makeSuite(TestExplicitDiffusion10, 'test')
+    suite50 = unittest.makeSuite(TestExplicitDiffusion50, 'test')
+    alltests = unittest.TestSuite((suite10,suite50))
     return alltests
     
 if __name__ == '__main__':

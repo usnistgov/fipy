@@ -42,11 +42,12 @@ they have been modified.
 
 from matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
-from terms.diffusionTerm import DiffusionTerm
+from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 
-class DiffusionEquation(MatrixEquation):
+
+class ExplicitDiffusionEquation(MatrixEquation):
     """
-    Diffusion equation is implicit.
+    Diffusion equation is explicit.
     """    
     def __init__(self,
                  var,
@@ -58,7 +59,7 @@ class DiffusionEquation(MatrixEquation):
         mesh = var.getMesh()
 	terms = (
 	    TransientTerm(transientCoeff,mesh),
-	    DiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	    ExplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
             )
 	MatrixEquation.__init__(
             self,

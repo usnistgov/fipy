@@ -44,6 +44,7 @@
 
 import tests.testVariableDiffusion
 import tests.testSteadyStateDiffusion
+import tests.testExplicitDiffusion
 import unittest
 
 class AllTestSuites(unittest.TestSuite):
@@ -58,7 +59,9 @@ class AllTestSuites(unittest.TestSuite):
 def suite1():
     alltests = AllTestSuites((
         tests.testSteadyStateDiffusion.suite(),
-        tests.testVariableDiffusion.suite()))
+        tests.testVariableDiffusion.suite(),
+        tests.testExplicitDiffusion.suite()
+        ))
     return alltests
 
 if __name__ == '__main__':

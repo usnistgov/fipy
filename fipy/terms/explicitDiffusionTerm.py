@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "diffusionEquation.py"
-                                   created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/26/03 {10:25:42 AM} 
+ FILE: "explicitDiffusionTerm.py"
+                                   created: 11/27/03 {11:39:03 AM} 
+                               last update: 11/27/03 {11:14:04 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -36,34 +36,22 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-12 JEG 1.0 original
+ 2003-11-13 JEG 1.0 original
 ###################################################################
 """
 
-from matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.diffusionTerm import DiffusionTerm
+from diffusionTerm import DiffusionTerm
+import Numeric
 
-class DiffusionEquation(MatrixEquation):
-    """
-    Diffusion equation is implicit.
-    """    
-    def __init__(self,
-                 var,
-                 name='default_name',
-                 transientCoeff = 1.,
-                 diffusionCoeff = 1.,
-                 solver='default_solver',
-                 boundaryConditions=()):
-        mesh = var.getMesh()
-	terms = (
-	    TransientTerm(transientCoeff,mesh),
-	    DiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
-            )
-	MatrixEquation.__init__(
-            self,
-            name,
-            var,
-            terms,
-            solver)
+class ExplicitDiffusionTerm(DiffusionTerm):
+    def __init__(self, diffCoeff, mesh, boundaryConditions):
+        """
+        The default stencil ( 'None', (1., 1.)) represents an entirely explicit scheme
+        """
+        stencil = ( 'None', (1., 1.))
+	DiffusionTerm.__init__(self,diffCoeff,mesh,boundaryConditions,stencil)
+	self.diffCoeff = diffCoeff
+	
+	
+
 
