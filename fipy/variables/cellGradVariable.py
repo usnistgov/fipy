@@ -85,13 +85,12 @@ class CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-	contributions = array.take(self.faceGradientContributions[:],ids.flat)
+        from fipy.meshes.numMesh.mesh import MAtake
+	contributions = MAtake(self.faceGradientContributions[:],ids.flat)
 
-##        contributions = contributions.reshape((N,M,self.mesh.getDim()))
         contributions = array.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = array.reshape(orientations, (N, M, 1))
-	grad = array.sum(orientations * contributions, 1)
-##        grad = (orientations*contributions).sum(1)
+	grad = Numeric.array(array.sum(orientations * contributions, 1))
 
 	grad = grad / volumes[:,Numeric.NewAxis]
 
