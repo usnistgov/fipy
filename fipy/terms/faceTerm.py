@@ -45,29 +45,29 @@ they have been modified.
 import term
 
 class FaceTerm(term.Term):
-    def __init__(self,stencil,equation):
+    def __init__(self,stencil,faces,interiorFaces,boundaryConditions):
 	"""
 	stencil = [phi_adj, phi]
 	"""
-	term.Term.__init__(self,stencil,equation)
+	term.Term.__init__(self,stencil)
+        self.faces = faces
+        self.interiorFaces = interiorFaces
+        self.boundaryConditions = boundaryConditions
 	
-    def buildMatrix(self):
-	var = self.equation.getVar()
-	N = len(var)
-
-        mesh = self.equation.getMesh()
-	
-	for face in mesh.getInteriorFaces():
-            cells = face.getCells()
-            print face.getId()
-            print cells
-            id1 = cells[0].getId()
-            id2 = cells[1].getId()
+    def buildMatrix(self,L,array,b):
+	for face in self.interiorFaces:
+            id1 = face.getCellId(0)
+            id2 = face.getCellId(1)
             faceId = face.getId()
-            self.equation.getL()[id1,id1]+=self.coeff[faceId] * self.stencil[1]
-            self.equation.getL()[id1,id2]-=self.coeff[faceId] * self.stencil[0]
-            self.equation.getL()[id2,id1]-=self.coeff[faceId] * self.stencil[0]
-            self.equation.getL()[id2,id2]+=self.coeff[faceId] * self.stencil[1]
+            L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
+            L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
+            L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
+            L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
 
-        for boundaryCondition in self.equation.getBoundaryConditions():            
-            boundaryCondition.update(self)
+        for boundaryCondition in self.boundaryConditions:
+            for face in boundaryCondition.getFaces():
+                cellId = face.getCellId()
+                faceId = face.getId()
+                LL,bb = boundaryCondition.update(face,self.coeff[faceId],self.stencil)
+                L[cellId,cellId] += LL
+                b[cellId] += bb

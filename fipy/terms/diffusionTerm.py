@@ -44,16 +44,14 @@ import faceTerm
 import Numeric
 
 class DiffusionTerm(faceTerm.FaceTerm):
-    def __init__(self,equation,diffCoeff):
+    def __init__(self,diffCoeff,faces,interiorFaces,boundaryConditions):
         stencil = (1,1)
-	faceTerm.FaceTerm.__init__(self, stencil , equation)
+	faceTerm.FaceTerm.__init__(self,stencil,faces,interiorFaces,boundaryConditions)
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):
-        mesh=self.equation.getMesh()
-	faces = mesh.getFaces()
-	self.coeff = Numeric.zeros(len(faces),'d')
-	for face in faces:
+	self.coeff = Numeric.zeros(len(self.faces),'d')
+	for face in self.faces:
 	    self.coeff[face.getId()] = self.diffCoeff * face.area() / face.cellDistance()
 	
 	

@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -181,5 +182,8 @@ class Grid2D(mesh.Mesh):
         nx=self.nx
         return self.faces[0:nx]
                        
+    def getShape(self):
+        return (self.nx,self.ny)
         
-        
+    def makeGridData(self,array):
+        return Numeric.rehsape(array,self.getShape())

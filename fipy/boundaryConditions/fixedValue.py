@@ -46,13 +46,11 @@ class FixedValue(boundaryCondition.BoundaryCondition):
     def __init__(self,faces,value):
         boundaryCondition.BoundaryCondition.__init__(self,faces,value)
 
-    def update(self,term):
-        for face in self.faces:
-            id=face.getCells()[0].getId()
-            term.equation.getL()[id,id]+=term.coeff[face.getId()] * term.stencil[1]
-            term.equation.getB()[id]+=term.coeff[face.getId()] * term.stencil[0] * self.value
-        
-    
-	
+    def getFaces(self):
+        return self.faces
+
+    def update(self,face,coeff,stencil):
+        return (coeff * stencil[1],coeff*stencil[0]*self.value)
+
 
 

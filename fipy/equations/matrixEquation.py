@@ -50,23 +50,15 @@ class MatrixEquation(equation.Equation):
     
     def __init__(self,
         name,
-        mesh,
+        var,
         terms,
-        solver,
-        boundaryConditions,
-        initialConditions
-        ):
-	self.mesh = mesh
-        var = Numeric.zeros([len(mesh.getCells())],'d')
+        solver):
 
 	equation.Equation.__init__(self,
 	    name,
 	    var,
 	    terms,
-	    solver,
-            boundaryConditions,
-            initialConditions
-	)
+	    solver)
 
     def getVar(self):
         return self.var    
@@ -77,15 +69,13 @@ class MatrixEquation(equation.Equation):
     def getB(self):
 	return self.b
 
-    def getMesh(self):
-        return self.mesh
-    
     def solve(self,dt):
-	N = len(self.mesh.getCells())
-	self.L = spmatrix.ll_mat(N,self.bandwidth*N)
+        array=self.var.getArray()
+	N = len(array)
+	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
 	for term in self.terms:
 	    term.updateCoeff(dt)
-	    term.buildMatrix()
-	self.solver.solve(self.L,self.var,self.b)
+	    term.buildMatrix(self.L,array,self.b)
+	self.solver.solve(self.L,array,self.b)
 	

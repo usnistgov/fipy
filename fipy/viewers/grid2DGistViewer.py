@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "fixedFlux.py"
-                                   created: 11/15/03 {9:47:59 PM} 
-                               last update: 11/17/03 {11:15:34 AM} 
+ FILE: "gistViewer.py"
+                                   created: 11/10/03 {2:48:25 PM} 
+                               last update: 11/17/03 {11:07:02 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -29,6 +29,8 @@ provided that any derivative works bear some notice that they are
 derived from it, and any modified versions bear some notice that
 they have been modified.
 ========================================================================
+ See the file "license.terms" for information on usage and  redistribution
+ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  
  Description: 
 
@@ -36,21 +38,21 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-15 JEG 1.0 original
+ 2003-11-10 JEG 1.0 original
 ###################################################################
 """
 
-import boundaryCondition
+import gistViewer
+import Numeric
 
-class FixedFlux(boundaryCondition.BoundaryCondition):
-    def __init__(self,faces,value):
-        boundaryCondition.BoundaryCondition.__init__(self,faces,value)
-
-    def update(self,face,coeff,stencil):
-        return (0, self.value * face.area())
-
-        
+class Grid2DGistViewer(gistViewer.GistViewer):
     
-	
+    def __init__(self, var = 'None', minVal=0., maxVal=1.):
+        self.var = var
+        gistViewer.GistViewer.__init__(self, minVal, maxVal)
 
+    def setVar(self,var):
+        self.var = var
 
+    def getArray(self):
+        return Numeric.reshape(self.var.getArray(),self.var.getMesh().getShape())

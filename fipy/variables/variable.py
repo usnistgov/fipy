@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -43,12 +44,30 @@ import Numeric
 import equation
 
 class Variable:
-    variables = ()
     
-    def __init__(self,name,mesh,equation = equation.Equation(self,(,))):
+    def __init__(self, name, mesh, initialConditions, viewer):
 	self.name = name
 	self.mesh = mesh
-	self.value = Numeric.zeroes([len(mesh.cells())],'d')
-	self.equation = equation
-	self.variables += self
+	self.array = Numeric.zeros([len(mesh.getCells())],'d')
+        self.viewer = viewer
+        self.viewer.setVar(self)
+        
+        for initialCondition in initialConditions:
+            initialCondition.setInitialCondition(self.array)
 
+    def plot(self):
+        self.viewer.plot()
+        
+    def getMesh(self):
+        return self.mesh
+
+    def getArray(self):
+        return self.array
+
+    def getGridArray(self):
+        return self.mesh.makeGridData(self.array)
+
+
+
+    
+    

@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -42,9 +43,8 @@ they have been modified.
 import Numeric
 
 class Term:
-    def __init__(self,stencil,equation):
+    def __init__(self,stencil):
 	self.stencil = stencil
-	self.equation = equation
 	self.coeff = 1.
 	
     def updateCoeff(self,var):

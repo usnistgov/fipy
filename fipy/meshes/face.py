@@ -55,6 +55,9 @@ class Face:
 		
     def getId(self):
 	return self.id
+
+    def getCellId(self,index=0):
+        return self.cells[index].getId()
 	
     def center(self):
 	ctr = self.vertices[0].getCoordinates().copy()

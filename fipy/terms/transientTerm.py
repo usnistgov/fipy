@@ -44,15 +44,14 @@ import cellTerm
 import Numeric
 
 class TransientTerm(cellTerm.CellTerm):
-    def __init__(self,equation,tranCoeff):
+    def __init__(self,tranCoeff,cells):
         stencil = (0,1,1)
-	cellTerm.CellTerm.__init__(self, stencil , equation) 
+	cellTerm.CellTerm.__init__(self,stencil,cells) 
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):
-	cells = self.equation.getMesh().getCells()
-	self.coeff = Numeric.zeros((len(cells)),'d')
-	for cell in cells:
+	self.coeff = Numeric.zeros((len(self.cells)),'d')
+	for cell in self.cells:
 	    self.coeff[cell.getId()] = self.tranCoeff * cell.volume() / dt
 	
 

@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -43,19 +44,17 @@ import Numeric
 import term
 
 class CellTerm(term.Term):
-    def __init__(self,stencil,equation):
+    def __init__(self,stencil,cells):
 	"""
 	stencil = [b, phi, phi_old]
 	"""
-	term.Term.__init__(self,stencil,equation)
+	term.Term.__init__(self,stencil)
+        self.cells = cells
 	
-    def buildMatrix(self):
-	var = self.equation.getVar()
-	N = len(var)
-        b = self.equation.getB()
-        L = self.equation.getL()
+    def buildMatrix(self,L,array,b):
+	N = len(array)
         stencil = self.stencil
-	b += var*self.coeff*self.stencil[2]
+	b += array*self.coeff*self.stencil[2]
 	b += Numeric.ones([N])*self.coeff*self.stencil[0]
 	L.update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
 	

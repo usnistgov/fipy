@@ -1,8 +1,9 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "viewer.py"
+ FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
                                last update: 11/17/03 {11:07:02 AM} 
  Author: Jonathan Guyer
@@ -41,6 +42,22 @@ they have been modified.
 ###################################################################
 """
 
-class Viewer:
-    def __init__(self):
-	pass
+import gist
+
+class gistViewer:
+    
+    id=0
+    
+    def __init__(self, var, minVal=0., maxVal=1.)
+	self.minVal = minVal
+        self.maxVal = maxVal
+        self.var = var
+        self.id = self.id + 1
+    
+    def plot(self):
+        gist.window(self.id, wait= 1)
+        gist.animate(1)
+        gist.palette('rainbow.gp')
+        gist.pli(self.var, cmin = self.minVal, cmax = self.maxVal)
+        colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
+        gist.fma()

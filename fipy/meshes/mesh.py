@@ -51,4 +51,6 @@ class Mesh:
 
     def getInteriorFaces(self):
         return self.interiorFaces
-    
+
+    def makeGridData(self,array):
+        pass

@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -43,9 +44,11 @@ class BoundaryCondition:
     def __init__(self,faces,value):
         self.faces = faces
         self.value = value
+
+    def update(self,face,coeff,stencil):
+        pass
     
-        
-    
-	
+    def getFaces(self):
+        return self.faces
 
 

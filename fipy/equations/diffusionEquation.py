@@ -1,4 +1,5 @@
-"""-*-Pyth-*-
+"""
+-*-Pyth-*-
 ###################################################################
  PFM - Python-based phase field solver
 
@@ -46,23 +47,21 @@ import diffusionTerm
 
 class DiffusionEquation(matrixEquation.MatrixEquation):
     def __init__(self,
+                 var,
                  name='default_name',
-                 mesh='None',
                  transientCoeff = 1.,
                  diffusionCoeff = 1.,
                  solver='default_solver',
-                 boundaryConditions=(),
-                 initialConditions=()):
+                 boundaryConditions=()):
+        mesh = var.getMesh()
 	terms = (
-	    transientTerm.TransientTerm(self,transientCoeff),
-	    diffusionTerm.DiffusionTerm(self,diffusionCoeff)
+	    transientTerm.TransientTerm(transientCoeff,mesh.getCells()),
+	    diffusionTerm.DiffusionTerm(diffusionCoeff,mesh.getFaces(),mesh.getInteriorFaces(),boundaryConditions)
             )
 	matrixEquation.MatrixEquation.__init__(
             self,
             name,
-            mesh,
+            var,
             terms,
-            solver,
-            boundaryConditions,
-            initialConditions)
+            solver)
 
