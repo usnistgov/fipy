@@ -5,7 +5,7 @@
 
  FILE: "phaseHalfAngleVariable.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/06/04 { 4:25:41 PM}
+                               last update: 01/08/04 { 3:50:26 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,7 +42,7 @@ they have been modified.
 
 from variables.faceVariable import FaceVariable
 import Numeric
-##from inline.inline import runInline
+from inline.inline import runInline
 
 class PhaseHalfAngleVariable(FaceVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
@@ -69,3 +69,5 @@ class PhaseHalfAngleVariable(FaceVariable):
 ##            z = 0., dphi = dphi, N = N, thetaFace = thetaFace, value = self.value,
 ##            ni = len(dphi[:,1]), nj = 0, nk= 0)
             
+
+
