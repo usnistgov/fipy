@@ -37,7 +37,6 @@
  ##
 
 import unittest
-
 import Numeric
 
 class TestBase(unittest.TestCase):
@@ -46,7 +45,11 @@ class TestBase(unittest.TestCase):
 	"""
 	if abs(first - second) > tol:
 	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
-
+        
+    def assertEqual(self, first, second, msg = None):
+        if not first == second:
+            raise self.failureException, ( msg or '%s != %s' % (first, second))
+        
     def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
