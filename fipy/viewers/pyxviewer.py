@@ -69,7 +69,7 @@ viewcmd - The OS command used to access your graphics viewer. If specified, the 
 to view your plot. If no viewcmd is specified, no graphics program will open.
 xlabel - The label to use for the X axis. Default is 'X values'.
 ylabel - The label to use for the Y axis. Default is 'Y values'.
-gridcorrect - The amount by which adjacent plot cells should overlap. Used for correcting the 'grid effect'. Default value is 0.03.
+valuelabel - The label to use for the value of the variable on the scale. Default is 'variable value'.
 scalefile - The file name to put the scale into. The scale will automatically be displayed after the original image is displayed if a viewcmd is specified.
 If no scalefile is specified, no scale will be created.
 
@@ -165,18 +165,18 @@ class PyxViewer:
     
     def __init__(self, variable, showpercent = 1, showtime = 1):
         self.var = variable
-        self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
         self.showpercent = showpercent
         self.showtime = showtime
 
 ## ------------------------------------------------------------------------------------
 
-    def plot(self, returnlist = 0, debug=0, minx=0.0, maxx=10.0, miny=0.0, maxy=10.0, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", gridcorrect = 0.03, scalefile = None):
+    def plot(self, returnlist = 0, debug=0, minx=0.0, maxx=10.0, miny=0.0, maxy=10.0, minval=None, maxval=None, resolution = None, filename = None, viewcmd = None, xlabel = "X values", ylabel = "Y values", valuelabel = "Variable Value", scalefile = None):
         
         ## initialize variables
         
         starttime = time.time()
         thepalette = pyx.color.palette.ReverseRainbow
+        self.theArray = Numeric.array(self.var)    ## the array of variable values, indexed by cell ID number
         
         ## calculate the resolution. If there is no resolution set, calculate a "default" resolution that will lead to 1,000 points being plotted.
         ## If a resolution is given, use that.
@@ -217,12 +217,15 @@ class PyxViewer:
             print vallist
             print minval
             print maxval
+        minval = float(minval)
+        maxval = float(maxval)
+        vallist = vallist.astype(Numeric.Float)
         vallist = (vallist - minval) / (maxval - minval)
         minxlist = xlist - (0.5 * resolution)
-        maxxlist = xlist + (0.5 * resolution)
+        maxxlist = xlist + (0.7 * resolution)
         minylist = ylist - (0.5 * resolution)
-        maxylist = ylist + (0.5 * resolution)
-        baselist = Numeric.array([minxlist, (maxxlist + gridcorrect), minylist, (maxylist + gridcorrect), vallist])
+        maxylist = ylist + (0.7 * resolution)
+        baselist = Numeric.array([minxlist, maxxlist, minylist, maxylist, vallist])
         displaylist = Numeric.transpose(baselist)
 
         ## If the user did not specify a filename but does want to view the picture, create a file anyway so the picture can be viewed.
@@ -245,11 +248,11 @@ class PyxViewer:
             print("resolution:")
             print resolution
         if(viewcmd != None):
-            os.system(viewcmd + " " + filename + ".eps")
+            os.system(viewcmd + " " + filename + ".eps &")
 
         ## if the user inputted a scalefile, create the scale and view it.
         if(scalefile != None):
-            scalegraph = pyx.graph.graphxy(height = 8, width = 1, y = pyx.graph.axis.linear(min = minval, max = maxval, title = ylabel))
+            scalegraph = pyx.graph.graphxy(height = 8, width = 1, y = pyx.graph.axis.linear(min = minval, max = maxval, title = valuelabel))
             scaleminx = Numeric.zeros((100,))
             scalemaxx = Numeric.ones((100,))
             scaleminy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*(num / 100.0), (100,))
@@ -261,7 +264,7 @@ class PyxViewer:
             scalegraph.plot(pyx.graph.data.list(scalelist, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
             scalegraph.writeEPSfile(scalefile)
             if(viewcmd != None):
-                os.system(viewcmd + " " + scalefile + ".eps")   
+                os.system(viewcmd + " " + scalefile + ".eps &")   
         if(returnlist == 1):
             return displayinput
         else:
