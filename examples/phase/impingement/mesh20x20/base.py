@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 10/27/04 {5:34:34 PM}
+ #                                last update: 11/1/04 {11:02:14 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -216,7 +216,7 @@ meaningful in the liquid phase, we weight the orientation by the phase
     ...     thetaProductViewer.plot()
 
 The solution will be tested against data that was created with 
-``steps = 10`` with a FORTRAN code written by Ryo Kobayshi for phase field
+``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 

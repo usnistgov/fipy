@@ -123,9 +123,10 @@ supported at this time.
 .. note:: 
 
    Because of a peculiarity_ in the way that Numeric_ is structured, the
-   ``--home=<dir>`` trick described in Privileges_ will not work quite as
-   intended.  To correct this problem, add ``<dir>/lib/python/Numeric`` to
-   your ``PYTHONPATH`` environment variable.
+   ``--home=<dir>`` installation option described in Privileges_ will not
+   work quite as intended.  To correct this problem, add
+   ``<dir>/lib/python/Numeric`` to your ``PYTHONPATH`` environment
+   variable.
 
 .. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.numpy.org
 .. _Numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
@@ -322,16 +323,16 @@ at the command line.  Alternatively, you may choose not to formally install
 
 If you wish to develop |FiPy| scripts outside of the distribution
 directory, but choose not to formally install |FiPy|, you will need to
-ensure that the |FiPy| distribution directory is appened to your
+ensure that the |FiPy| distribution directory is appended to your
 ``PYTHONPATH`` environment variable.
 
 ------------
 Using |FiPy|
 ------------
 
-To see what |FiPy| is capable of, you can run any of the scripts in
-|examples/|.  All should have appropriate executable permissions, allowing
-you to type, *e.g.*::
+To see examples of problems that |FiPy| is capable of solving, you can run
+any of the scripts in |examples/|.  All should have appropriate executable
+permissions, allowing you to type, *e.g.*::
 
     $ examples/diffusion/steadyState/mesh1D/input.py
 

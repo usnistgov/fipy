@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/26/04 {8:23:52 AM} 
+ #                                last update: 11/1/04 {11:01:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,7 +91,7 @@ The solution is allowed to evolve for `steps = 100` time steps.
    ...     it.timestep(dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
-with a FORTRAN code written by Ryo Kobayshi for phase field
+with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:45:17 AM} 
+ #                                last update: 11/1/04 {11:43:11 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
 
 r"""
 
-To run this example from the base fipy directory type::
+To run this example from the base FiPy directory, type::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
     
@@ -90,7 +90,7 @@ object represents a rectangular structured grid. The parameters `dx` and
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-The solution of all equations in FiPy requires a variable. They store
+The solution of all equations in FiPy requires a variable. These variables store
 values on various parts of the mesh. In this case we need a
 `CellVariable` object as the solution is sought on the cell
 centers. The boundary conditions are given by `valueLeft = 0` and
@@ -101,7 +101,7 @@ centers. The boundary conditions are given by `valueLeft = 0` and
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
 
-Boundary conditions are given to the equation via a tuple. Boundary
+Boundary conditions are given to the equation via a `Tuple` (list). Boundary
 conditions are formed with a value and a set of faces over which they
 apply. For example here the exterior faces on the left of the domain
 are extracted by `mesh.getFacesLeft()`. These faces and a value
@@ -148,7 +148,7 @@ which is accomplished by setting the `transientCoeff` parameter to 0:
     ...                        solver = solver,
     ...                        boundaryConditions = boundaryConditions)
 
-The `Iterator` object takes a tuple of equations and solves to a
+The `Iterator` object takes a `Tuple` of equations and solves to a
 required tolerance for the given equations at each time step.
 
     >>> from fipy.iterators.iterator import Iterator

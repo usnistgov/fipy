@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:54:53 AM} 
+ #                                last update: 11/1/04 {11:53:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,10 +41,8 @@
  ##
 
 """
-This example adds two more components to::
-    
-    $ examples/elphf/input1DphaseBinary.py
-    
+This example adds two more components to
+``examples/elphf/input1DphaseBinary.py``
 one of which is another substitutional species and the other represents 
 electrons and diffuses interterstitially.
 

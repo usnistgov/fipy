@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:48:59 AM} 
+ #                                last update: 11/1/04 {11:44:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,11 +41,9 @@
  ##
 
 """
-This input file again solves a steady 1D diffusion problem as in::
-    
-    $ examples/diffusion/steadyState/mesh1D/input.py
-    
-The difference being that the mesh is two dimensional:
+This input file again solves a steady 1D diffusion problem as in
+``examples/diffusion/steadyState/mesh1D/input.py``,
+the difference being that the mesh is two dimensional:
 
     >>> nx = 20
     >>> ny = 20

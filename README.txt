@@ -21,10 +21,10 @@ array calculations, sparse matrices and data rendering.
 
 The |FiPy| framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
-coupled elliptic, hyperbolic and parabolic PDEs.  Current models include
-phase field |citePhaseField| treatments of polycrystalline, dendritic, and
-electrochemical phase transformations as well as a level set treatment of
-the electrodeposition process |citeCEAC|.
+coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
+models include phase field |citePhaseField| treatments of polycrystalline,
+dendritic, and electrochemical phase transformations as well as a level set
+treatment of the electrodeposition process |citeCEAC|.
 
 The latest information about |FiPy| can be found at
 http://www.ctcms.nist.gov/fipy/.
@@ -56,7 +56,7 @@ Conventions and Notation
 text editor.  |FiPy| sessions are invoked from a command-line shell, such
 as ``tcsh`` or ``bash``.
 
-Throughout, text to by typed at the keyboard will appear ``like this``.
+Throughout, text to be typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::
 
     $ like this

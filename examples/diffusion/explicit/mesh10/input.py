@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:49:31 AM} 
+ #                                last update: 11/1/04 {11:45:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,11 +42,9 @@
 
 r"""
 
-This input file again solves a 1D diffusion problem as in::
-    
-    $ examples/diffusion/steadyState/mesh1D/input.py
-    
-The difference in this transient example is solved explicitly.
+This input file again solves a 1D diffusion problem as in
+``examples/diffusion/steadyState/mesh1D/input.py``,     
+the difference being that this transient example is solved explicitly.
 
 We create a 1D mesh:
     

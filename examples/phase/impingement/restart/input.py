@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:52:33 AM}
+ #                                last update: 11/1/04 {11:50:13 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,10 +41,8 @@
  ##
 
 r"""
-In this example we solve the same set of equations as in::
-    
-    $ examples/phase/impingement/mesh20x20/input.py
-    
+In this example we solve the same set of equations as in
+``examples/phase/impingement/mesh20x20/input.py``
 but a restart method is demonstrated. 
 
 We again initialize the system by running the base script
@@ -61,7 +59,7 @@ but this time we only iterate for half as many time steps
     ...         thetaProductViewer.plot()
 
 We confirm that the solution has not yet converged to that given by 
-Ryo Kobayshi's FORTRAN code:
+Ryo Kobayashi's FORTRAN code:
 
     >>> theta.allclose(testData, rtol = 1e-10, atol = 1e-10)
     0
@@ -142,7 +140,7 @@ and finish doing the iterations
     ...         newPhaseViewer.plot()
     ... 	newThetaProductViewer.plot()
 
-Finally, we check that the results have at last converged to Ryo Kobayshi's 
+Finally, we check that the results have at last converged to Ryo Kobayashi's 
 FORTRAN code:
 
     >>> newTheta.allclose(testData, rtol = 1e-10, atol = 1e-10)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 06/29/04 {2:24:00 PM} 
- #                                last update: 10/22/04 {4:19:54 PM}
+ #                                last update: 11/1/04 {11:01:36 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,7 @@ where the orientation varies.
    ...     it.timestep()
 
 The solution is compared with test data. The test data was created
-with a FORTRAN code written by Ryo Kobayshi for phase field
+with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:54:23 AM} 
+ #                                last update: 11/1/04 {11:53:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,14 +41,10 @@
  ##
 
 r"""
-This example combines a phase field problem, as given in::
-    
-    $ examples/elphf/input1Dphase.py
-    
+This example combines a phase field problem, as given in
+``examples/elphf/input1Dphase.py``,
 with a binary diffusion problem, such as described in the ternary example
-
-    $ examples/elphf/input1D.py
-    
+``examples/elphf/input1D.py``,
 on a 1D mesh
 
     >>> nx = 400

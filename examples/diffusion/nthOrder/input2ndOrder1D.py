@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:50:06 AM} 
+ #                                last update: 11/1/04 {11:47:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,15 +42,13 @@
 
 r"""
 In this problem, we demonstrate the use of the `NthOrderDiffusionEquation` class 
-in the simple case of steady state 1D diffusion, which was introduced in::
-    
-    $ examples/diffusion/steadyState/mesh1D/input.py
-    
+in the simple case of steady state 1D diffusion, which was introduced in
+``examples/diffusion/steadyState/mesh1D/input.py``,
 to solve
 
 .. raw:: latex
 
-   $$ \nabla \cdot (D \nabla \phi) = 0 $$.
+   $$ \nabla \cdot (D \nabla \phi) = 0. $$
 
 This examples shows that the `NthOrderDiffusionEquation` is equivalent to the `DiffusionEquation` when 
 

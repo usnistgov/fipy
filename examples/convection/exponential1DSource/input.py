@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:50:47 AM} 
+ #                                last update: 11/1/04 {11:48:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,7 @@
 
 r"""
 
-Like::
-    
-    $ examples/diffusion/convection/exponential1D/input.py
-    
+Like ``examples/diffusion/convection/exponential1D/input.py``
 this example solves a steady-state convection-diffusion equation, but adds a constant source, 
 
 .. raw:: latex

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:51:20 AM}
+ #                                last update: 11/1/04 {11:02:02 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -237,7 +237,7 @@ we iterate the solution in time, plotting as we go if running interactively,
     ... 	thetaProductViewer.plot()
 
 The solution is compared with test data. The test data was created with 
-``steps = 10`` with a FORTRAN code written by Ryo Kobayshi for phase field
+``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 
