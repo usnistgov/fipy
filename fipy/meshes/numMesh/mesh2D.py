@@ -94,8 +94,8 @@ class Mesh2D(Mesh):
         newmesh = Mesh2D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
         return newmesh
 
-    def meshAdd(self, other):
-        a = self.getAddedMeshValues(other)
+    def meshAdd(self, other, smallNumber):
+        a = self.getAddedMeshValues(other, smallNumber)
         return Mesh2D(a[0], a[1], a[2])
 
     def getOrderedCellVertexIDs(self):
