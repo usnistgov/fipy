@@ -126,7 +126,7 @@ class TestPhase(TestBase):
 	)
         
         self.it = Iterator((eq,))
-	
+
     def getTestValues(self):
 	filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
 	
