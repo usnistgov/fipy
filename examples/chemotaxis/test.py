@@ -48,11 +48,13 @@ import fipy.tests.testProgram
 import doctest
 
 import input
+import input2D
 
 def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(input))
+    theSuite.addTest(doctest.DocTestSuite(input2D))
 
     return theSuite
 
