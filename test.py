@@ -46,19 +46,19 @@
 
 import unittest
 
-import fivol.examples.test
-import fivol.meshes.test
-import fivol.tools.test
-import fivol.tests.testProgram
-import fivol.variables.test
+import examples.test
+import fipy.meshes.test
+import fipy.tools.test
+import fipy.tests.testProgram
+import fipy.variables.test
 
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(fivol.examples.test.suite())
-    theSuite.addTest(fivol.tools.test.suite())
-    theSuite.addTest(fivol.meshes.test.suite())
-    theSuite.addTest(fivol.variables.test.suite())
+    theSuite.addTest(examples.test.suite())
+    theSuite.addTest(fipy.tools.test.suite())
+    theSuite.addTest(fipy.meshes.test.suite())
+    theSuite.addTest(fipy.variables.test.suite())
     return theSuite
 
 if __name__ == '__main__':
