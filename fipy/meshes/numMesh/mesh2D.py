@@ -72,3 +72,17 @@ class Mesh2D(Mesh):
     def calcHigherOrderScalings(self):
 	self.scale['area'] = self.scale['length']
 	self.scale['volume'] = self.scale['length']**2
+
+    def translate(self, vector):
+        newCoords = self.vertexCoords + vector
+        newmesh = Mesh2D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        return newmesh
+
+    def dilate(self, factor):
+        newCoords = self.vertexCoords * factor
+        newmesh = Mesh2D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        return newmesh
+
+    def meshAdd(self, other):
+        a = self.getAddedMeshValues(other)
+        return Mesh2D(a[0], a[1], a[2])
