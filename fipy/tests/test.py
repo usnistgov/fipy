@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:05:52 PM} { 2:26:30 PM}
+ #                                last update: 6/7/04 {2:36:57 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,6 +52,7 @@ import fipy.meshes.pyMesh.test
 import fipy.tools.test
 import fipy.tests.testProgram
 import fipy.variables.test
+import fipy.terms.test
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -60,6 +61,7 @@ def suite():
     theSuite.addTest(fipy.meshes.numMesh.test.suite())
     theSuite.addTest(fipy.meshes.pyMesh.test.suite())
     theSuite.addTest(fipy.variables.test.suite())
+    theSuite.addTest(fipy.terms.test.suite())
     return theSuite
 
 if __name__ == '__main__':
