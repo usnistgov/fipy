@@ -44,9 +44,9 @@
 import Numeric
 
 import fivol.tools.array as array
+import fivol.inline.inline as inline
 
-def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells = None):
-    
+def _addOverFaces(faceGradient, faceVariable, mesh, NCells):
 ##     contributions = Numeric.sum(mesh.getAreaProjections() * faceGradient,1)
     contributions = array.sum(mesh.getAreaProjections() * faceGradient,1)
     
@@ -65,6 +65,7 @@ def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells =
 ##     NMaxFac = mesh.getMaxFacesPerCell()
     
 ##     contributions = Numeric.reshape(contributions,(NCells,-1))
+
     contributions = array.reshape(contributions,(NCells,-1))
     
 ##     orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
@@ -72,7 +73,55 @@ def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells =
     
 ##     return Numeric.sum(orientations*contributions,1) / mesh.getCellVolumes()
     return array.sum(orientations*contributions,1) / mesh.getCellVolumes()
-        
 
-        
+def _addOverFacesInline(faceGradient, faceVariable, mesh, NCells):
+
+    returnValue = Numeric.zeros((NCells),'d')
+
+    inline.runInline("""
+    int i;
+
+    for(i = 0; i < numberOfInteriorFaces; i++)
+      {
+        int j;
+        for(j = 0; j < numberOfDimensions; j++)
+          {
+            contributions(i) += areaProjections(i,j) * faceGradient(i,j);
+          }
+        contributions(i) = contributions(i) * faceVariable(i);
+      }
+
+    for(i = 0; i < numberOfCells; i++)
+      {
+        int j;
+        for(j = 0; j < numberOfCellFaces; j++)
+          {
+            returnValue(i) += orientations(i,j) * contributions(ids(i,j));
+          }
+        returnValue(i) = returnValue(i) / cellVolume(i);
+      }
+    """,numberOfInteriorFaces = len(mesh.getInteriorFaces()),
+                     numberOfDimensions = mesh.getDim(),
+                     numberOfCellFaces = mesh.getMaxFacesPerCell(),
+                     numberOfCells = NCells,
+                     contributions =  Numeric.zeros((len(mesh.getFaces())),'d'),
+                     areaProjections = mesh.getAreaProjections().value[:],
+                     faceGradient = faceGradient.getNumericValue()[:],
+                     faceVariable = faceVariable[:],
+                     ids = Numeric.array(mesh.getCellFaceIDs()[:]),
+                     returnValue = returnValue,
+                     orientations = mesh.getCellFaceOrientations()[:],
+                     cellVolume = mesh.getCellVolumes()[:])
+
+    return returnValue
+
+def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells = None):
+
+    return _addOverFaces(faceGradient, faceVariable, mesh, NCells)
+##    return inline.optionalInline(_addOverFacesInline, _addOverFaces, faceGradient, faceVariable, mesh)
+
+
+
+    
+
 
