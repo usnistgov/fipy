@@ -18,8 +18,8 @@ Core developer.
 
 Oversight and management.
 
-`Alex Mont`_
-============
+Alex Mont
+=========
 
 Developed the `PyxViewer` and the `Gmsh` import and export modules.
 
