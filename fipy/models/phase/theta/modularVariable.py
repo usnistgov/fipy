@@ -64,7 +64,14 @@ class ModularVariable(CellVariable):
 	    self.faceGrad = FaceGradVariable(self, self.mod)
 
 	return self.faceGrad
-	
+
+    def getFaceGradNoMod(self):
+        if self.faceGrad is None:
+	    from variables.faceGradVariable import FaceGradVariable
+	    self.faceGrad = FaceGradVariable(self)
+
+	return self.faceGrad
+    
     def updateOld(self):
         if self.old != None:
             self.value = self.mod(self.value)
