@@ -6,11 +6,9 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {1:12:13 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/29/04 {10:14:38 AM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,11 +39,27 @@
  # ###################################################################
  ##
 
+"""
+A simple 1D three-component diffusion problem to test the
+`ConcentrationEquation` element of ElPhF
+
+    >>> for step in range(40):
+    ...     it.timestep(dt = parameters['time step duration'])
+    
+Verify that the concentrations have become uniform
+
+    >>> fields['substitutionals'][0].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+    1
+    >>> fields['substitutionals'][1].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+    1
+"""
+__docformat__ = 'restructuredtext'
+
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 import fipy.models.elphf.elphf as elphf
@@ -55,7 +69,6 @@ import fipy.models.elphf.elphf as elphf
 nx = 40
 dx = 1.
 L = nx * dx
-
 mesh = Grid2D(
     dx = dx,
     dy = 1.,
@@ -64,14 +77,6 @@ mesh = Grid2D(
     
 parameters = {
     'time step duration': 10000,
-##     'substitutional molar volume': 1,
-    'phase': {
-	'name': "xi",
-	'mobility': 1.,
-	'gradient energy': 1.,
-	'value': 1.,
-	'final': (1.,)
-    },
     'solvent': {
 	'standard potential': 0.,
 	'barrier height': 0.
@@ -110,10 +115,9 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    viewer = Gist1DViewer(vars = fields['substitutionals'])
 
-    for viewer in viewers:
-	viewer.plot()
+    viewer.plot()
 	
     raw_input()
 
@@ -127,12 +131,11 @@ if __name__ == '__main__':
     #     it.advanceTimeStep
 
 
-    for i in range(1):
-	it.timestep(dt = 1)
+    for i in range(40):
+	it.timestep(dt = parameters['time step duration'])
     #     raw_input()
 	
-	for viewer in viewers:
-	    viewer.plot()
+	viewer.plot()
 	
     # profile.stop()
 	    

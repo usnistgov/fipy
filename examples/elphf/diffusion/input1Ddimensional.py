@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:32:24 AM} 
+ #                                last update: 7/29/04 {8:51:50 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,11 +41,27 @@
  # ###################################################################
  ##
 
+""" 
+The same three-component diffusion problem as introduced in `input1D.py`,
+but with dimensional quantities
+
+    >>> for step in range(40):
+    ...     it.timestep(dt = 10000)
+    
+Verify that the concentrations have become uniform
+
+    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3", atol = "1e-7 mol/m**3", rtol = 1e-7)
+    1
+    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3", atol = "1e-7 mol/m**3", rtol = 1e-7)
+    1
+"""
+__docformat__ = 'restructuredtext'
+ 
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -56,7 +72,7 @@ import fipy.models.elphf.elphf as elphf
 ## from elphfIterator import ElPhFIterator
 
 nx = 40
-dx = PhysicalField(1.,"m")
+dx = PhysicalField(1.,"mm")
 L = nx * dx
 
 mesh = Grid2D(
@@ -66,15 +82,7 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': 10000,
-##     'substitutional molar volume': 1,
-    'phase': {
-	'name': "xi",
-	'mobility': 1.,
-	'gradient energy': PhysicalField(1.,"J/m"),
-	'value': 1.,
-	'final': (1.,)
-    },
+    'time step duration': "1e3 s",
     'solvent': {
 	'standard potential': 0.,
 	'barrier height': 0.
@@ -84,13 +92,13 @@ parameters = {
 parameters['substitutionals'] = (
     {
 	'name': "c1",
-	'diffusivity': 1.,
+	'diffusivity': "1.e-9 m**2/s",
 	'standard potential': 1.,
 	'barrier height': 1.
     },
     {
 	'name': "c2",
-	'diffusivity': 1.,
+	'diffusivity': "1.e-9 m**2/s",
 	'standard potential': 1.,
 	'barrier height': 1.
     }
@@ -113,10 +121,9 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    viewer = Gist1DViewer(vars = fields['substitutionals'])
 
-    for viewer in viewers:
-	viewer.plot()
+    viewer.plot()
 	
     raw_input()
 
@@ -130,12 +137,11 @@ if __name__ == '__main__':
     #     it.advanceTimeStep
 
 
-    for i in range(1):
-	it.timestep(1)
+    for i in range(40):
+	it.timestep()
     #     raw_input()
 	
-	for viewer in viewers:
-	    viewer.plot()
+	viewer.plot()
 	
     # profile.stop()
 	    

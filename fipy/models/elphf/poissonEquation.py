@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:00:33 PM} 
+ #                                last update: 7/30/04 {2:48:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,8 @@
  # ###################################################################
  ##
 
-
+import Numeric
+ 
 ## from fipy.equations.matrixEquation import MatrixEquation
 from fipy.equations.preRelaxationEquation import PreRelaxationEquation
 from fipy.equations.postRelaxationEquation import PostRelaxationEquation
@@ -67,10 +68,10 @@ class PoissonEquation(RelaxationEquation):
 		     
         mesh = potential.getMesh()
 	
-	dielectric = physicalField.Scale(parameters['dielectric'], "eps0 * Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME)") 
+	permittivity = physicalField.Scale(parameters['permittivity'], "Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME)") 
 	
 	diffusionTerm = ImplicitDiffusionTerm(
-	    diffCoeff = dielectric,
+	    diffCoeff = permittivity,
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
@@ -99,5 +100,8 @@ class PoissonEquation(RelaxationEquation):
 	    
     def getConcentration(self, component):
 	return component
+	
+##     def getResidual(self):
+## 	return Numeric.array((1e-16,))
 	
 

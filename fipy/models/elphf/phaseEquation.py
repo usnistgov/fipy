@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:06:25 PM} 
+ #                                last update: 7/16/04 {10:39:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -57,7 +57,6 @@ from substitutionalSumVariable import SubstitutionalSumVariable
 class PhaseEquation(RelaxationEquation):
     def __init__(self,
                  phase,
-		 timeStepDuration,
 		 fields = {},
                  phaseMobility = 1.,
 		 phaseGradientEnergy = 1.,
@@ -91,7 +90,7 @@ class PhaseEquation(RelaxationEquation):
 	    mesh = mesh)
 	    
 	terms = (
-	    TransientTerm(tranCoeff = 1. / timeStepDuration,mesh = mesh),
+	    TransientTerm(tranCoeff = 1., mesh = mesh),
 	    diffusionTerm,
 	    self.scTerm,
 	    self.spTerm

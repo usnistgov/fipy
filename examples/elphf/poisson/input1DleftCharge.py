@@ -6,11 +6,9 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 5/5/04 {6:41:54 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/30/04 {7:18:43 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,43 +39,97 @@
  # ###################################################################
  ##
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+r"""
+The same idea as `input1DpoissonAllCharge.py`, but now with charge only on
+the left side of the domain
 
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+.. raw:: latex
 
-import input1Dpoisson
+   $$ C_{\text{e}^{-}} =
+   \begin{cases}
+       1& \text{for $x \le L/2$} \\
+       0& \text{for $x > L/2$}
+   \end{cases} $$
+   
+We iterate one timestep to equilibrate
 
-mesh = input1Dpoisson.mesh
-it = input1Dpoisson.it
-fields = input1Dpoisson.fields
-parameters = input1Dpoisson.parameters
-L = input1Dpoisson.L
+    >>> it.timestep()
+
+This problem has the analytical solution
+
+.. raw:: latex
+
+   $$\psi(x) =
+   \begin{cases}
+       \frac{x^2}{2} - x& \text{for $x \le L/2$} \\
+       -\frac{1}{2}& \text{for $x > L/2$}
+   \end{cases} $$
+
+We verify that the correct equilibrium is attained
+
+    >>> import Numeric
+    
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> analyticalArray = Numeric.where(x < 1, (x**2)/2 - x, -0.5)
+
+    >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+    1
+"""
+__docformat__ = 'restructuredtext'
+ 
+from fipy.meshes.grid2D import Grid2D
+from fipy.iterators.iterator import Iterator
+from fipy.viewers.gist1DViewer import Gist1DViewer
+
+import fipy.models.elphf.elphf as elphf
+
+nx = 200
+dx = 0.01
+L = nx * dx
+
+parameters = {
+    'potential': {
+	'name': "psi",
+	'permittivity': 1.
+    },
+    'interstitials': (
+	{
+	    'name': "e-",
+	    'valence': -1
+	},
+    )
+}
+
+mesh = Grid2D(
+    dx = dx,
+    dy = dx,
+    nx = nx,
+    ny = 1)
+
+fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
 setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
 fields['interstitials'][0].setValue(1.)
 fields['interstitials'][0].setValue(0.,setCells)
 
-if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+equations = elphf.makeEquations(
+    mesh = mesh, 
+    fields = fields, 
+    parameters = parameters
+)
 
-    for viewer in viewers:
-	viewer.plot()
+it = Iterator(equations = equations)
+
+if __name__ == '__main__':
+    viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
+
+    viewer.plot()
 	
     raw_input()
 
-    # fudge = calibrate_profiler(10000)
-    # profile = Profiler('profile', fudge=fudge)
-
-    it.timestep(1)
+    it.timestep()
     
-    for viewer in viewers:
-	viewer.plot()
-	
-    print fields['potential']
-    print fields['potential'][0], fields['potential'][-1]
-	
-    # profile.stop()
+    viewer.plot()
 	    
     raw_input()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 6/2/04 {6:15:34 PM} 
+ #                                last update: 7/30/04 {5:57:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,6 +44,7 @@ from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.solvers.linearGMRESSolver import LinearGMRESSolver
+from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
 from fipy.variables.variable import Variable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools.dimensions import physicalField
@@ -115,9 +116,12 @@ def makeFields(mesh, parameters):
     if not parameters.has_key('potential'):
 	parameters['potential'] = {
 	    'name': "psi",
-	    'dielectric': 1.
+	    'permittivity': 1.
 	}
 	addPotentialToAll = 0
+	
+    if not parameters['potential'].has_key('permittivity'):
+	parameters['potential']['permittivity'] = parameters['potential']['dielectric'] * physicalField.PhysicalField(1, "eps0")
 
     parameters['potential']['var'] = CellVariable(
 	mesh = mesh,
@@ -151,7 +155,13 @@ def makeFields(mesh, parameters):
     
     fields['substitutionals'] = ()
     
+    if not parameters.has_key('solvent'):
+	parameters['solvent'] = {
+	    'standard potential': 0,
+	    'barrier height': 0
+	}
     addSolventToAll = 0
+
     if parameters.has_key('substitutionals'):
 	for component in parameters['substitutionals']:
 	    if component.has_key('value'):
@@ -186,10 +196,8 @@ def makeFields(mesh, parameters):
     return fields
 
 
-def makeEquations(mesh, fields, parameters):
-    relaxation = 0
-    solutionTolerance = 1e-6
-    timeStepDuration = Variable(value = physicalField.Scale(parameters['time step duration'], "TIME"))
+def makeEquations(mesh, fields, parameters, phaseRelaxation = 1., solutionTolerance = 1e-6):
+    relaxation = 1
 ##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
     
 ##     flux = 0 * (fields['potential'][0] / mesh.getPhysicalShape()[0] ) * "1 eps0"
@@ -218,13 +226,16 @@ def makeEquations(mesh, fields, parameters):
     flux = 0
     equations += (PhaseEquation(
 	phase = fields['phase'],
-	timeStepDuration = timeStepDuration,
 	fields = fields,
 ## 	phaseMobility = mobility,
 ## 	phaseGradientEnergy = gradientEnergy,
  	phaseMobility = physicalField.Scale(parameters['phase']['mobility'],"MOLARVOLUME/ENERGY/TIME"),
  	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'],"LENGTH**2*ENERGY/MOLARVOLUME"),
-	solver = LinearLUSolver(),
+## 	solver = LinearLUSolver(),
+	solver = LinearCGSSolver(
+	     tolerance = 1.e-15, 
+	     steps = 1000
+	),
 	solutionTolerance = solutionTolerance,
 	relaxation = relaxation,
 	boundaryConditions=(
@@ -242,19 +253,21 @@ def makeEquations(mesh, fields, parameters):
 	flux = 0
 	eq = SubstitutionalEquation(
 	    Cj = component,
-	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
 	    solutionTolerance = solutionTolerance,
 	    relaxation = relaxation,
-# 	    solver = LinearGMRESSolver(
-# 		 tolerance = 1.e-15, 
-# 		 steps = 1000
-# 	    ),
-# 	   solver = LinearCGSSolver(
-# 		tolerance = 1.e-15, 
-# 		steps = 1000
-# 	   ),
+	    phaseRelaxation = phaseRelaxation,
+## 	    convectionScheme = VanLeerConvectionTerm,
+## 	    
+##  	    solver = LinearGMRESSolver(
+##  		 tolerance = 1.e-15, 
+##  		 steps = 1000
+##  	    ),
+## 	    solver = LinearCGSSolver(
+## 		 tolerance = 1.e-15, 
+## 		 steps = 1000
+## 	    ),
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
 # 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
@@ -271,19 +284,20 @@ def makeEquations(mesh, fields, parameters):
 	flux = 0
 	eq = InterstitialEquation(
 	    Cj = component,
-	    timeStepDuration = timeStepDuration,
 	    fields = fields,
 	    solver = LinearLUSolver(),
 	    solutionTolerance = solutionTolerance,
 	    relaxation = relaxation,
-# 	    solver = LinearGMRESSolver(
-# 		 tolerance = 1.e-15, 
-# 		 steps = 1000
-# 	    ),
-# 	   solver = LinearCGSSolver(
-# 		tolerance = 1.e-15, 
-# 		steps = 1000
-# 	   ),
+	    phaseRelaxation = phaseRelaxation,
+## 	    convectionScheme = VanLeerConvectionTerm,
+##  	    solver = LinearGMRESSolver(
+##  		 tolerance = 1.e-15, 
+##  		 steps = 1000
+##  	    ),
+## 	    solver = LinearCGSSolver(
+## 		 tolerance = 1.e-15, 
+## 		 steps = 1000
+## 	    ),
 	    boundaryConditions=(
 # 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
 # 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
@@ -295,5 +309,5 @@ def makeEquations(mesh, fields, parameters):
 	)
 	equations += (eq,)
 	
-    return equations, timeStepDuration
+    return equations
 

@@ -6,11 +6,9 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:34:02 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/30/04 {7:18:12 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,13 +39,51 @@
  # ###################################################################
  ##
 
+r"""
+This example combines a 1D phase field problem, as given in
+`input1Dphase.py`, with a binary diffusion problem.
+
+We start with a sharp phase boundary
+.. raw:: latex
+
+   $$ \xi =
+   \begin{cases}
+       1& \text{for $x \le L/2$} \\
+       0& \text{for $x > L/2$}
+   \end{cases} $$
+   
+and with a uniform concentration field
+
+.. raw:: latex
+
+   $C_1 = 0.5$.
+
+This problem does not have an analytical solution, so after iterating to
+equilibrium
+
+    >>> for i in range(40):
+    ...     it.timestep()
+
+we confirm that the far-field phases have remained separated
+
+    >>> Numeric.allclose(Numeric.take(fields['phase'], (0,-1)), (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
+    1
+    
+and that the concentration field has appropriately segregated into solute
+rich and solute poor phases
+
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][0], (0,-1)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+    1
+"""
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 import fipy.models.elphf.elphf as elphf
@@ -102,10 +138,11 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+    concViewer = Gist1DViewer(vars = (fields['substitutionals'][0],))
 
-    for viewer in viewers:
-	viewer.plot()
+    phaseViewer.plot()
+    concViewer.plot()
 	
     raw_input()
 
@@ -115,8 +152,8 @@ if __name__ == '__main__':
     for i in range(50):
 	it.timestep(1)
 	
-	for viewer in viewers:
-	    viewer.plot()
+	phaseViewer.plot()
+	concViewer.plot()
 
     # profile.stop()
 	    

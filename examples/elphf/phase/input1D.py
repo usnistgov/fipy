@@ -6,11 +6,9 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:33:48 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/29/04 {10:14:22 AM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,29 +39,72 @@
  # ###################################################################
  ##
 
+r"""
+A simple 1D phase-field problem to test the `PhaseEquation` element of
+ElPhF.
+
+The single-component phase field governing equation can be represented as
+
+.. raw:: latex
+
+   $$ \frac{1}{M_\xi} \frac{\partial \xi}{\partial t} 
+   =  \kappa_\xi \nabla^2 \xi - 2\xi(1-\xi)(1-2\xi) W $$
+
+where 
+
+.. raw:: latex
+
+   $\xi$ is the phase field,
+   $t$  is time,
+   $M_\xi$ is the phase field mobility,
+   $\kappa_\xi$ is the phase field gradient energy coefficient, and
+   $W$ is the phase field barrier energy.
+   
+We iterate to equilibrium
+
+    >>> for i in range(40):
+    ...     it.timestep()
+
+The phase field has the expected analytical form
+
+.. raw:: latex
+
+   $$ \xi(x) = \frac{1}{2}(1 - \tanh\frac{x - L/2}{2d}) $$
+   
+where the interfacial thickness is given by
+
+.. raw:: latex
+
+   $$ d = \sqrt{\frac{\kappa_{\xi}}{W}} $$
+   
+We verify that the correct equilibrium is attained
+
+    >>> import Numeric
+    
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> d = Numeric.sqrt(parameters['phase']['gradient energy'] / (parameters['solvent']['barrier height']))
+    >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2.*d))) / 2.
+
+    >>> fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    1
+"""
+__docformat__ = 'restructuredtext'
+
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 import fipy.models.elphf.elphf as elphf
-
 
 nx = 400
 dx = 0.01
 L = nx * dx
 
 parameters = {
-    'mesh': {
-	'nx': nx,
-	'ny': 1,
-	'dx': dx,
-	'dy': dx
-    },
     'time step duration': 10000,
-    'substitutional molar volume': 1,
     'phase': {
 	'name': "xi",
 	'mobility': 1.,
@@ -77,10 +118,10 @@ parameters = {
 }
 
 mesh = Grid2D(
-    dx = parameters['mesh']['dx'],
-    dy = parameters['mesh']['dy'],
-    nx = parameters['mesh']['nx'],
-    ny = parameters['mesh']['ny'])
+    dx = dx,
+    dy = dx,
+    nx = nx,
+    ny = 1)
     
 fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
@@ -97,23 +138,21 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    viewer = Gist1DViewer(vars = (fields['phase'],))
 
-    for viewer in viewers:
-	viewer.plot()
+    viewer.plot()
 	
     raw_input()
 
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile', fudge=fudge)
+##     fudge = calibrate_profiler(10000)
+##     profile = Profiler('profile', fudge=fudge)
 
     for i in range(50):
 	it.timestep(1)
 	
-## 	for viewer in viewers:
-## 	    viewer.plot()
+	viewer.plot()
 	
-    profile.stop()
+##     profile.stop()
 	    
     raw_input()
 

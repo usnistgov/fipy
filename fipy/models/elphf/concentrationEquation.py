@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:02:37 PM} 
+ #                                last update: 7/30/04 {6:52:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,7 @@
  # ###################################################################
  ##
 
+import Numeric
 
 ## from fipy.equations.matrixEquation import MatrixEquation
 from fipy.equations.preRelaxationEquation import PreRelaxationEquation
@@ -54,13 +55,15 @@ from fipy.terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 class ConcentrationEquation(RelaxationEquation):
     def __init__(self,
                  Cj,
-		 timeStepDuration,
 		 fields = {},
 		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
 		 relaxation = 0.,
+		 phaseRelaxation = 1.,
 		 solutionTolerance = 1e-10,
                  boundaryConditions=()):
+		     
+	self.phaseRelaxation = phaseRelaxation
 		     
         mesh = Cj.getMesh()
 	
@@ -70,17 +73,17 @@ class ConcentrationEquation(RelaxationEquation):
 	    boundaryConditions = boundaryConditions)
         
 	convectionTerm = convectionScheme(
-	    convCoeff = self.getConvectionCoeff(Cj, fields),
+	    convCoeff = self.getConvectionCoeff(Cj, fields, relaxation),
 	    mesh = mesh, 
 	    boundaryConditions = boundaryConditions,
 	    diffusionTerm = diffusionTerm)
 	    
 	terms = (
-	    TransientTerm(tranCoeff = 1. / timeStepDuration,mesh = mesh),
+	    TransientTerm(tranCoeff = 1., mesh = mesh),
 	    diffusionTerm,
 	    convectionTerm
 	)
-	    
+	
 	RelaxationEquation.__init__(
             self,
             var = Cj,
@@ -94,10 +97,15 @@ class ConcentrationEquation(RelaxationEquation):
 	    diffusivity = Cj.getDiffusivity()
 	    
 ## 	diffusivity = diffusivity / "1 ENERGY"
-	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getOld().getFaceGrad() 
-	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getOld().getFaceGrad() 
+## 	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
+## 	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
+	Cj.pConvCoeff = diffusivity * Cj.getStandardPotential() * fields['phase'].get_pPrime().getArithmeticFaceValue().transpose()
+	Cj.gConvCoeff = diffusivity * Cj.getBarrierHeight() * fields['phase'].get_gPrime().getArithmeticFaceValue().transpose()
 ## 	Cj.electromigrationCoeff = diffusivity * "1 Faraday" * Cj.getValence() * fields['potential'].getFaceGrad() 
-	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getOld().getFaceGrad() 
+	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getFaceGrad() 
 	
-	return Cj.pConvCoeff + Cj.gConvCoeff + Cj.electromigrationCoeff
+## 	self.phaseRelaxation
+	
+## 	return (Cj.pConvCoeff + Cj.gConvCoeff) + Cj.electromigrationCoeff
+	return (Cj.pConvCoeff + Cj.gConvCoeff) * fields['phase'].getFaceGrad() + Cj.electromigrationCoeff
 

@@ -6,11 +6,9 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:34:24 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/29/04 {2:42:17 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,13 +39,53 @@
  # ###################################################################
  ##
 
+"""
+Like `input1DphaseQuaternary.py`, this example features four components,
+but one of them represents electrons and diffuses interterstitially.
+
+We start with uniform concentration fields, with the interstitial
+concentration
+
+.. raw:: latex
+
+   $C_1 = 0.35$
+   
+and the substitutional concentrations
+
+.. raw:: latex
+
+   $C_2 = 0.35$ and $C_3 = 0.15$.
+   
+Again, this problem does not have an analytical solution, so after
+iterating to equilibrium
+
+    >>> for step in range(40):
+    ...	    it.timestep()
+
+we confirm that the far-field phases have remained separated
+
+    >>> Numeric.allclose(Numeric.take(fields['phase'], (0,-1)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    1
+    
+and that the concentration fields has appropriately segregated into into
+their respective phases
+
+    >>> Numeric.allclose(Numeric.take(fields['interstitials'][0], (0,-1)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    1
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][0], (0,-1)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    1
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][1], (0,-1)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    1
+"""
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 import fipy.models.elphf.elphf as elphf

@@ -4,7 +4,7 @@
  # 
  #  FILE: "scaledCellVariable.py"
  #                                    created: 6/2/04 {6:17:03 PM} 
- #                                last update: 6/2/04 {6:23:51 PM} 
+ #                                last update: 7/28/04 {9:12:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,9 +49,14 @@ class ScaledCellVariable(CellVariable):
 	self.scale = scale
 	value = physicalField.Scale(value, self.scale)
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
-	
+	self.scaled = self * self.getScale()
+
     def getScale(self):
 	return self.scale
 	
     def setValue(self, value, cells = ()):
 	return CellVariable.setValue(self, physicalField.Scale(value, self.getScale()), cells)
+	
+    def getScaled(self):
+	return self.scaled
+

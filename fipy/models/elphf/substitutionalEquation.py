@@ -7,7 +7,7 @@
  # 
  #  FILE: "substitutionalEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/20/04 {6:58:07 PM} 
+ #                                last update: 7/29/04 {6:08:33 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,12 +45,12 @@
 from concentrationEquation import ConcentrationEquation
 
 class SubstitutionalEquation(ConcentrationEquation):
-    def getConvectionCoeff(self, Cj, fields, diffusivity = None):
+    def getConvectionCoeff(self, Cj, fields, relaxation, diffusivity = None):
 	Cj.substitutionalSum = Cj.copy()
         Cj.substitutionalSum.setValue(0)
 
 	for component in [component for component in fields['substitutionals'] if component is not Cj]:
-	    Cj.substitutionalSum = Cj.substitutionalSum + component.getOld()
+	    Cj.substitutionalSum = Cj.substitutionalSum + component
 
 	denom = 1. - Cj.substitutionalSum.getHarmonicFaceValue()
 	if diffusivity is None:
@@ -59,6 +59,8 @@ class SubstitutionalEquation(ConcentrationEquation):
 	Cj.subsConvCoeff = diffusivity * Cj.substitutionalSum.getFaceGrad() / denom.transpose()
 	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getHarmonicFaceValue() / denom).transpose()
 
-	return Cj.subsConvCoeff + ConcentrationEquation.getConvectionCoeff(self, Cj = Cj, fields = fields, diffusivity = Cj.weightedDiffusivity)
+## 	return 0
+
+	return  self.phaseRelaxation * (Cj.subsConvCoeff + ConcentrationEquation.getConvectionCoeff(self, Cj = Cj, fields = fields, diffusivity = Cj.weightedDiffusivity))
 	
 

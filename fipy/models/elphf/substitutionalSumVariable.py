@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 4/2/04 {4:02:16 PM} 
+ #                                last update: 7/23/04 {10:21:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,8 +49,8 @@ class SubstitutionalSumVariable(CellVariable):
 	for component in self.substitutionals:
 	    self.requires(component)
 	
-    def calcValue(self):
+    def _calcValue(self):
 	self.value[:] = 0.
 	for component in self.substitutionals:
-	    self.value = self.value + component#.getOld()
+	    self.value = self.value + component
 

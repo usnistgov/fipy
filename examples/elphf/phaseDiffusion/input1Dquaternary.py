@@ -6,11 +6,9 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:34:14 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 7/29/04 {2:40:36 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,13 +39,45 @@
  # ###################################################################
  ##
 
+"""
+This example adds two more substitutional components to `input1DphaseBinary.py`.
+
+We start with uniform concentration fields
+
+.. raw:: latex
+
+   $C_1 = C_2 = 0.35$ and $C_3 = 0.15$.
+   
+Again, this problem does not have an analytical solution, so after
+iterating to equilibrium
+
+    >>> for step in range(40):
+    ...     it.timestep()
+
+we confirm that the far-field phases have remained separated
+
+    >>> Numeric.allclose(Numeric.take(fields['phase'], (0,-1)), (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
+    1
+    
+and that the concentration fields has appropriately segregated into into
+their respective phases
+
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][0], (0,-1)), (0.4, 0.3), rtol = 2e-3, atol = 2e-3)
+    1
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][1], (0,-1)), (0.3, 0.4), rtol = 2e-3, atol = 2e-3)
+    1
+    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][2], (0,-1)), (0.1, 0.2), rtol = 2e-3, atol = 2e-3)
+    1
+"""
+__docformat__ = 'restructuredtext'
+ 
 import Numeric
 
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.iterators.iterator import Iterator
 
 import fipy.models.elphf.elphf as elphf
@@ -116,10 +146,11 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+    concViewer = Gist1DViewer(vars = fields['substitutionals'])
 
-    for viewer in viewers:
-	viewer.plot()
+    phaseViewer.plot()
+    concViewer.plot()
 	
     raw_input()
 
@@ -129,8 +160,8 @@ if __name__ == '__main__':
     for i in range(50):
 	it.timestep(1)
 	
-	for viewer in viewers:
-	    viewer.plot()
+	phaseViewer.plot()
+	concViewer.plot()
 	
     # profile.stop()
 	    

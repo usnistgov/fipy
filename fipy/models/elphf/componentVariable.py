@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 6/2/04 {6:22:39 PM} 
+ #                                last update: 7/30/04 {6:20:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,8 +53,14 @@ class ComponentVariable(ScaledCellVariable):
 	ScaledCellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld, scale = "MOLARVOLUME**-1")
 ## 	self.standardPotential = physicalField.PhysicalField(parameters['standard potential'])
 ## 	self.barrierHeight = physicalField.PhysicalField(parameters['barrier height'])
- 	self.standardPotential = physicalField.Scale(parameters['standard potential'], "ENERGY")
- 	self.barrierHeight = physicalField.Scale(parameters['barrier height'], "ENERGY")
+	if parameters.has_key('standard potential'):
+	    self.standardPotential = physicalField.Scale(parameters['standard potential'], "ENERGY")
+	else:
+	    self.standardPotential = 0.
+	if parameters.has_key('barrier height'):
+	    self.barrierHeight = physicalField.Scale(parameters['barrier height'], "ENERGY")
+	else:
+	    self.barrierHeight = 0.
 	if self.parameters.has_key('valence'):
 	    self.valence = self.parameters['valence']
 	else:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/2/04 {5:15:53 PM} 
+ #                                last update: 7/29/04 {5:50:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -109,16 +109,16 @@ fields['all'] += [fields['interstitials'][0]]
 
 ## physicalField.AddConstant(name = 'Rgas', constant = 'Nav*kB')
 ## physicalField.AddConstant(name = 'Faraday', constant = 'Nav*e')
-physicalField.AddConstant(name = 'Rgas', constant = 1)
-physicalField.AddConstant(name = 'Faraday', constant = 1)
-physicalField.AddConstant(name = 'LENGTH', constant = 1)
-physicalField.AddConstant(name = 'ENERGY', constant = 1)
-physicalField.AddConstant(name = 'MOLARVOLUME', constant = 1)
+## physicalField.AddConstant(name = 'Rgas', constant = 1)
+## physicalField.AddConstant(name = 'Faraday', constant = 1)
+## physicalField.AddConstant(name = 'LENGTH', constant = 1)
+## physicalField.AddConstant(name = 'ENERGY', constant = 1)
+## physicalField.AddConstant(name = 'MOLARVOLUME', constant = 1)
     
 poisson = PoissonEquation(
     potential = fields['potential'],
     parameters = {
-	'dielectric': 1.
+	'permittivity': 1.
     },
     fields = fields,
     solver = LinearLUSolver(),

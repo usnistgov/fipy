@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/26/04 {8:38:50 AM} 
+ #                                last update: 7/29/04 {9:17:37 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,6 +41,23 @@
  # ###################################################################
  ##
 
+""" 
+The same three-component diffusion problem introduced in `input2D.py`,
+but with the initial step in concentration occupying only one corner
+instead of half the domain
+
+    >>> for step in range(40):
+    ...     it.timestep(dt = parameters['time step duration'])
+    
+Verify that the concentrations have become uniform
+
+    >>> fields['substitutionals'][0].allclose(0.375, rtol = 1e-7, atol = 1e-7)
+    1
+    >>> fields['substitutionals'][1].allclose(0.525, rtol = 1e-7, atol = 1e-7)
+    1
+"""
+__docformat__ = 'restructuredtext'
+
 from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
@@ -62,13 +79,6 @@ mesh = Grid2D(
     
 parameters = {
     'time step duration': 10000,
-    'substitutional molar volume': 1,
-    'phase': {
-	'name': "xi",
-	'mobility': 1.,
-	'gradient energy': 1.,
-	'value': 1.
-    },
     'solvent': {
 	'standard potential': 0.,
 	'barrier height': 0.

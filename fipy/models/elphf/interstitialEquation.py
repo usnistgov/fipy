@@ -6,7 +6,7 @@
  # 
  #  FILE: "interstitialEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/20/04 {6:58:54 PM} 
+ #                                last update: 7/16/04 {4:44:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,6 +47,6 @@ class InterstitialEquation(ConcentrationEquation):
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:
 	    diffusivity = Cj.getDiffusivity()
-	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getOld().getHarmonicFaceValue())).transpose()
+	Cj.weightedDiffusivity = (diffusivity * (1. + Cj.getHarmonicFaceValue())).transpose()
 	
-	return ConcentrationEquation.getConvectionCoeff(self, Cj, fields, Cj.weightedDiffusivity)
+	return ConcentrationEquation.getConvectionCoeff(self, Cj = Cj, fields = fields, diffusivity = Cj.weightedDiffusivity)

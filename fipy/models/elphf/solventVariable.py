@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 2/20/04 {4:50:25 PM} 
+ #                                last update: 7/23/04 {10:12:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,11 +51,11 @@ class SolventVariable(ComponentVariable):
 	    
 	self.concentration =  Numeric.ones((len(mesh.getCells())),'d')
 	for component in substitutionals:
-	    self.concentration = self.concentration - component#.getOld()
+	    self.concentration = self.concentration - component
 
 	self.requires(self.concentration)
 	
 	self.value = self.concentration[:]
 	
-    def calcValue(self):
+    def _calcValue(self):
 	self.value = self.concentration[:]

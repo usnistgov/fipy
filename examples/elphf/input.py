@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:06:23 PM} 
+ #                                last update: 7/30/04 {6:03:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,16 +41,155 @@
  # ###################################################################
  ##
 
-"""Electrochemical Phase Field input file
-
-    Build a mesh, variable, and diffusion equation with fixed (zero) flux
-    boundary conditions at the top and bottom and fixed value boundary
-    conditions at the left and right.
-    
-    Iterates a solution and plots the result with gist.
-    
-    Iteration is profiled for performance.
 """
+Electrochemical Phase Field input file
+
+Build a mesh, variable, and diffusion equation with fixed (zero) flux
+boundary conditions at the top and bottom and fixed value boundary
+conditions at the left and right.
+
+Iterates a solution and plots the result with gist.
+
+Iteration is profiled for performance.
+
+The dimensionless governing equations for the electrochemical phase field 
+problem consist of the phase field governing equation
+
+.. raw:: latex
+
+   \begin{align}
+       \frac{\partial\Phase}{\partial\Time} 
+       &= -\Mobility{\Phase}\left[
+	   \Interpolate'\left(\Phase\right) 
+	   \sum_{j=1}^{\Components} \Concentration{j} \Delta\Chemical{j}{\Standard}
+	   + \DoubleWell'\left(\Phase\right)
+	   \sum_{j=1}^{\Components} \Concentration{j} \Barrier{j}
+       \right. \nonumber
+       \\
+       &\qquad\left.
+	   \vphantom{\sum_{j=1}^{\Components} \Concentration{j} \Delta\Chemical{j}{\Standard}}
+	   - \Gradient{\Phase}\nabla^2\Phase
+	   - \frac{\Dielectric'(\Phase)}{2} 
+	       \left(\nabla\Potential\right)^{2}
+       \right]
+       \label{eq:Evolution:Ideal:Phase} 
+   \end{align}
+   
+Poisson's equation
+
+.. raw:: latex
+
+   \begin{equation}
+       \nabla\cdot\left[\Dielectric(\Phase)\nabla\Potential\right] 
+       + \sum_{j=1}^{\Components} \Valence{j} \Concentration{j} = 0
+       \label{eq:Governing:Poisson}
+   \end{equation}
+
+and a diffusion equation for each species
+
+.. raw:: latex
+
+   \begin{equation}
+       \frac{\partial\Concentration{j}}{\partial\Time}
+       = - \nabla\cdot\Flux{j},
+       \qquad j = 1 \ldots \Components-1
+       \label{eq:Conservation:Concentration}
+   \end{equation}
+
+where the flux of substitional species is given by
+
+.. raw:: latex
+
+   \begin{equation}
+       \Flux{j} 
+       = -\Mobility{j}\nabla\left[	
+	   \Delta\Chemical{j\Solvent{}}{\Standard}
+		   \Interpolate\left(\Phase\right)
+	   + \ln\frac{\Concentration{j}}{\Concentration{\Solvent{}}}
+	   + \Valence{j\Solvent{}} \Potential
+	   + \Barrier{j\Solvent{}} \DoubleWell\left(\Phase\right)
+       \right]
+       \qquad j = 2 \ldots \Components-1
+       \label{eq:Flux:Ideal:Substitutional}
+   \end{equation}
+
+and the flux of electrons by
+
+.. raw:: latex
+
+   \begin{equation}
+       \Flux{\Electron} 
+	   = -\Mobility{\Electron}\nabla\left[
+	       \Delta\Chemical{\Electron}{\Standard}\Interpolate\left(\Phase\right)
+	       + \ln\frac{\Concentration{\Electron}}{1+\Concentration{\Electron}}
+	       + \Valence{\Electron}\Potential
+	       + \Barrier{\Electron} \DoubleWell\left(\Phase\right)
+	   \right]
+       \label{eq:Flux:Ideal:Interstitial}    
+   \end{equation}
+   
+The mobilities are given by
+
+.. raw:: latex
+
+   \begin{equation}
+       \Mobility{j} 
+       = \frac{\Diffusivity{jj}\Concentration{\Solvent{}}\Concentration{j}}
+	       {\Concentration{\Solvent{}}+\Concentration{j}}
+	   \qquad j = 2 \ldots \Components-1
+	   \label{eq:Mobility:Subsitutional}
+   \end{equation}
+
+and
+
+.. raw:: latex
+
+   \begin{equation}
+       \Mobility{\Electron} 
+       = \Diffusivity{\Electron}\left(
+		   1+\Concentration{\Electron}
+	       \right)\Concentration{\Electron}
+	   \label{eq:Mobility:Electron}
+   \end{equation}
+
+We combine Eq.~\eqref{eq:Conservation:Concentration} with 
+Eq.~\eqref{eq:Flux:Ideal:Substitutional} and rearranged to see the 
+terms
+
+.. raw:: latex
+
+   \begin{equation}
+       \underbrace{
+	   \frac{\partial\Concentration{j}}{\partial\Time}
+       }_\text{transient}
+       = 
+       \underbrace{
+	   \nabla\cdot\Concentration{j}
+	   \frac{\Diffusivity{jj}}{1-\sum_{\substack{i=2\\ i \neq j}}^{\Components-1} \Component{i}}
+	   \left\{
+	       \left(
+		   1-\sum_{i=2}^{\Components-1} \Component{i}
+	       \right)
+	       \left(
+		   \left[
+		       \Delta\Chemical{j\Solvent{}}{\Standard}
+			       \Interpolate'\left(\Phase\right)
+		       + \Barrier{j\Solvent{}} \DoubleWell'\left(\Phase\right)
+		   \right] \nabla\Phase
+		   + \Valence{j\Solvent{}} \nabla\Potential
+	       \right)
+	       + \sum_{\substack{i=2\\ i \neq j}}^{\Components-1} \nabla\Component{i}
+	   \right\}
+       }_\text{convection}       
+       + \underbrace{
+	   \Diffusivity{jj}\nabla^2\Concentration{j}
+       }_\text{diffusion}
+   \end{equation}
+
+"""
+
+__docformat__ = 'restructuredtext'
+
 
 import Numeric
 
@@ -58,27 +197,32 @@ from fipy.tools.profiler.profiler import Profiler
 from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
+
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.viewers.gist1DViewer import Gist1DViewer
-from fipy.iterators.iterator import Iterator
+from fipy.viewers.gistVectorViewer import GistVectorViewer
+## from fipy.iterators.iterator import Iterator
+## from fipy.iterators.adaptiveIterator import AdaptiveIterator
+from fipy.models.elphf.myAdaptiveIterator import MyAdaptiveIterator
 
-from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.variables.variable import Variable
+
+import fipy.tools.dimensions.physicalField
 
 import fipy.models.elphf.elphf as elphf
 
-
-nx = 1150
-dx = "0.0025 nm"
+nx = 1000
+dx = "0.00005 nm"
 # L = nx * dx
 
 mesh = Grid2D(
     dx = dx,
-    dy = "1. m",
+    dy = "1. nm",
     nx = nx,
     ny = 1)
     
 parameters = {
-    'time step duration': "1e-12 s",
+    'time step duration': "1e-9 s",
     'substitutional molar volume': "1.80000006366754e-05 m**3/mol",
     'phase': {
 	'name': "xi",
@@ -135,28 +279,54 @@ fields['interstitials'][0].setValue("0.000111111503177394 MOLARVOLUME*mol/l", se
 fields['substitutionals'][0].setValue("0.249944439430068 MOLARVOLUME*mol/l", setCells)
 fields['substitutionals'][1].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
 
-phaseViewer = Gist1DViewer(vars = (fields['phase'],))
-potentialViewer = Gist1DViewer(vars = (fields['potential'],))
-concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']], ylog = 1)
+## fields['substitutionals'][0][nx/2-5] = 0.6
+## fields['phase'][nx/2-9] = 0.9
+## fields['phase'][nx/2-8] = 0.8
+## fields['phase'][nx/2-7] = 0.7
+## fields['phase'][nx/2-6] = 0.6
+## fields['phase'][nx/2-5] = 0.5
+## fields['phase'][nx/2-4] = 0.4
+## fields['phase'][nx/2-3] = 0.3
+## fields['phase'][nx/2-2] = 0.2
+## fields['phase'][nx/2-1] = 0.1
+## fields['substitutionals'][1][nx/2-5] = 1.5
 
-equations, timeStepDuration = elphf.makeEquations(
+
+phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+## phaseViewer = Gist1DViewer(vars = (fields['phase'].get_gPrime(),))
+## phaseViewer1 = GistVectorViewer(var = fields['phase'].get_p().getFaceGrad() )
+## phaseViewer2 = GistVectorViewer(var = fields['phase'].get_pPrime().getArithmeticFaceValue().transpose()*fields['phase'].getFaceGrad())
+## phaseViewer3 = Gist1DViewer(vars = (fields['phase'].get_pPrime().getArithmeticFaceValue(),))
+potentialViewer = Gist1DViewer(vars = (fields['potential'],))
+## concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']], ylog = 1)
+concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']])
+## concViewer = Gist1DViewer(vars = [field.getGrad() for field in list(fields['substitutionals'])] + [field.getGrad for field in list(fields['interstitials'])] + [fields['solvent'].getGrad()])
+
+## phaseRelaxation = Variable(value = 1.)
+phaseRelaxation = 1.
+
+equations = elphf.makeEquations(
     mesh = mesh, 
     fields = fields, 
-    parameters = parameters
+    parameters = parameters,
+    phaseRelaxation = phaseRelaxation
 )
+
+## timeStepDuration = fipy.tools.dimensions.physicalField.Scale(parameters['time step duration'], "TIME")
 
 chargeViewer = Gist1DViewer(vars = (fields['charge'],))
 
 viewers = (phaseViewer, potentialViewer, concViewer,chargeViewer)
 	
-it = Iterator(equations = equations, timeStepDuration = timeStepDuration)
-
-desiredTime = timeStepDuration.getValue()
+## it = Iterator(equations = equations)
+it = MyAdaptiveIterator(equations = equations, viewers = viewers, phaseRelaxation = phaseRelaxation)
 
 if __name__ == '__main__':
     for viewer in viewers:
 	viewer.plot()
 
+    print fields['substitutionals'][1].name, Numeric.sum(fields['substitutionals'][1].getNumericValue()), fields['substitutionals'][1][540:560]
+    
     raw_input()
 
     # fudge = calibrate_profiler(10000)
@@ -171,11 +341,14 @@ if __name__ == '__main__':
 
     for i in range(50):
 	try:
-	    it.timestep(1)
+	    it.timestep(maxSweeps = 20, dt = 1.)
+## 	    it.timestep(dt = 1.)
 
             for viewer in viewers:
                 viewer.plot()
-
+		
+	    print fields['substitutionals'][1].name, Numeric.sum(fields['substitutionals'][1].getNumericValue()), fields['substitutionals'][1][540:560]
+		
     ## 	it.timestep(steps = 1, maxSweeps = 5)
 	except KeyboardInterrupt:
 	    break

@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 4/2/04 {4:06:19 PM} 
+ #                                last update: 7/13/04 {11:48:16 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,6 +43,8 @@ class PhaseVariable(CellVariable):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 	self.p = self**3 * (6. * self**2 - 15. * self + 10.)
 	self.g = (self * (1. - self))**2
+	self.pPrime = 30. * self.g
+	self.gPrime = 2 * self * (1. - self) * (1. - 2 * self)
 	
     def get_p(self):
 	return self.p
@@ -50,3 +52,8 @@ class PhaseVariable(CellVariable):
     def get_g(self):
 	return self.g
 
+    def get_pPrime(self):
+	return self.pPrime
+	
+    def get_gPrime(self):
+	return self.gPrime
