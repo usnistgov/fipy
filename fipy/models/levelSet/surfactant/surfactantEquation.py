@@ -68,7 +68,7 @@ class SurfactantEquation:
         self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm
 
-    def solve(self, var):
+    def solve(self, var, boundaryConditions = (), solver = LinearLUSolver(), dt = 1.):
         self.eq.solve(var,
-                      boundaryConditions = self.bc,
-                      solver = LinearLUSolver())
+                      boundaryConditions = self.bc + boundaryConditions,
+                      solver = solver)
