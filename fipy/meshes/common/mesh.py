@@ -270,6 +270,9 @@ class Mesh:
     
     def getCellToCellDistances(self):
 	return self.scaledCellToCellDistances
+
+    def getCellNormals(self):
+        return self.cellNormals
 	    
     """scaling"""
 
