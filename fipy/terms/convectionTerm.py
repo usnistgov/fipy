@@ -49,7 +49,7 @@ class ConvectionTerm(FaceTerm):
     def __init__(self, convCoeff, diffusionTerm = None):
 	self.convCoeff = convCoeff
 	self.diffusionTerm = diffusionTerm
-	
+        self.stencil = None
 	FaceTerm.__init__(self)
 	
     def calcCoeff(self, mesh):
@@ -61,23 +61,22 @@ class ConvectionTerm(FaceTerm):
 	self.coeff = projectedCoefficients.sum(1)
 	
     def getWeight(self, mesh):
-	if self.diffusionTerm == None:
-	    diffCoeff = 1e-20
-	else:
-	    diffCoeff = self.diffusionTerm.getCoeff(mesh)
-	    if diffCoeff == 0.:
-		diffCoeff = 1e-20
-	
-	P = -self.getCoeff(mesh) / diffCoeff
-	
-	alpha = self.Alpha(P)
 
-	return {
-	    'implicit':{
-		'cell 1 diag':     alpha,
-		'cell 1 offdiag':  (1-alpha),
-		'cell 2 diag':    -(1-alpha),
-		'cell 2 offdiag': -alpha
-	    }
-	}
+        if self.stencil is None:
 
+
+            if self.diffusionTerm == None:
+                diffCoeff = 1e-20
+            else:
+                diffCoeff = self.diffusionTerm.getCoeff(mesh)
+                if diffCoeff == 0.:
+                    diffCoeff = 1e-20
+
+            alpha = self.Alpha(-self.getCoeff(mesh) / diffCoeff)
+            
+            self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
+                                          'cell 1 offdiag' : (1-alpha),
+                                          'cell 2 diag'    : -(1-alpha),
+                                          'cell 2 offdiag' : -alpha}}
+
+	return self.stencil
