@@ -42,7 +42,7 @@ rather than using the cell faces as in the CC-FVM. The face fluxes use
 all the vertex values from the cell where the face is located to
 calculate interpolations. For this reason, the VC-FVM is less
 efficient and requires more storage (a larger matrix band width) than
-the CC-FVM.  However, the mesh topology does not a have the same
+the CC-FVM.  However, the mesh topology does not have the same
 restrictions as the CC-FVM. It is planned for future releases of
 \FiPy{} to have both the CC-FVM and VC-FVM capabilities.
 
@@ -58,145 +58,121 @@ restrictions as the CC-FVM. It is planned for future releases of
 
 \section{Discretization}
 
-The first step in the discretization of equation~\eqref{eqn:num:gen}
-using the FVM is to integrate over a control volume and then make
-appropriate approximations for fluxes across the boundary of each CV.
-In this section each term in equation~\eqref{eqn:num:gen} will be
-examined separately.
+The first step in the discretization of Equation~\eqref{eqn:num:gen}
+using the CC-FVM is to integrate over a CV and then make appropriate
+approximations for fluxes across the boundary of each CV.  In this
+section each term in Equation~\eqref{eqn:num:gen} will be examined
+separately.
 
 \subsection{Transient Term}
 
-The transient term,
+The discretization for the transient term is given by,
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
-\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P^O)}{\Delta t}
+\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
-where the subscripts $P$ and superscripts $O$ represent the current
-and previous variable value at the CV respectively.
-The value, $V_P$, is the volume of
-the CV and $\Delta t$ is the time step size.
+where the subscript, $P$, represents the average value in the CV and
+the superscript, $O$, represents the previous time-step value.  The
+value, $V_P$, is the volume of the CV and $\Delta t$ is the time step
+size.
 
 \subsection{Convection Term}
 
-The convection term,
+The discretization for the convection term is given by,
 \begin{eqnarray}
-\int_V \nabla.(\rho \vec{u} \phi) dV & = & \int_S (\vec{n}.\vec{u})\rho\phi dS \\
-& \simeq & \sum_{f} \rho_f (\vec{n}.\vec{u})_f \phi_f A_f
+\int_V \nabla.(\vec{u} \phi) dV & = & \int_S (\vec{n}.\vec{u})\phi dS \\
+& \simeq & \sum_{f} (\vec{n}.\vec{u})_f \phi_f A_f
 \label{eqn:num:con}
 \end{eqnarray}
-where $\sum_{f}$ denotes the summation over the faces of a CV and $A_f$ is
-the area of each face.
-The face density, $\rho_f$, is calculated using up-winding such that,
-\begin{eqnarray}
-\rho_f=\rho_P & \mbox{if} & (\vec{n}.\vec{u})_f \ge 0 \\
-\rho_f=\rho_A & \mbox{if} & (\vec{n}.\vec{u})_f < 0 
-\end{eqnarray}
-where the subscript $A$ denotes the adjacent element.
-The face velocity, $(\vec{n}.\vec{u})_f$ is calculated using the
-Rhie-Chow~\cite{rhie}
-interpolation method which will be described later in this chapter. The
-vector $\vec{n}$ is the normal to the face pointing out of the CV.
-The value of $\phi_f$ must depend on $\phi_A$ and $\phi_P$ when using
-a first order approximation such that 
+where $\sum_{f}$ denotes the summation over the faces of a CV and
+$A_f$ is the area of each face.  The vector $\vec{n}$ is the normal to
+the face pointing out of the CV. The value of $\phi_f$ must depend on
+$\phi_A$ and $\phi_P$ when using a first order approximation such
+that,
 \begin{equation}
-\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A
+\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A.
 \end{equation}
-The value $\alpha_f$ is determined by the scheme which is used~\cite{croftphd}.
-First order schemes are discussed later in this chapter.
+where the subscript, $A$, refers to adjacent CVs to $P$. The value,
+$\alpha_f$, is determined by the convection scheme, described later in
+this chapter.
 
 \subsection{Diffusion Term}
 
-The diffusion term,
+The discretization for the diffusion term is given by,
 \begin{eqnarray}
 \int_V \nabla.(\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n}.\nabla\phi) dS \\
 & \simeq & \sum_f \Gamma_f (\vec{n}.\nabla\phi)_f A_f
 \label{eqn:num:dif}
 \end{eqnarray}
-The value of the diffusion coefficient $\Gamma_f$ is estimated using
-the harmonic mean~\cite{patankar}
-given by,
-\begin{equation}
-\Gamma_f = \frac{\Gamma_A\Gamma_P}{\alpha_f \Gamma_P + (1-\alpha_f) \Gamma_A}
-\end{equation}
-The arithmetic mean is not used here because it over estimates the flux
-when there are large differences between $\Gamma_A$ and $\Gamma_P$.
-For example if either $\Gamma_P$ or $\Gamma_A$ are zero it
-would be necessary for $\Gamma_f$ to be zero. If an arithmetic mean
-is used this condition can not be satisfied.
 The estimation for the flux, $(\vec{n}.\nabla\phi)_f$ is obtained via,
 \begin{equation}
 (\vec{n}.\nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
 \end{equation}
-where the value of $d_{AP}$ is the distance between neighboring cell centers.
-This estimate relies on the orthogonality of the mesh, and becomes
-increasingly inaccurate as the non-orthogonality increases. Correction terms
-have been derived to improve this error, these have been described
-elsewhere~\cite{croftphd}.
+where the value of $d_{AP}$ is the distance between neighboring cell
+centers.  This estimate relies on the orthogonality of the mesh, and
+becomes increasingly inaccurate as the non-orthogonality increases.
+Correction terms have been derived to improve this error but are not
+currently included in \FiPy{}.
 
 \subsection{Source Term}
 
-The source term, 
+The discretization for the source term is given by, 
 \begin{equation}
 \int_V S_{\phi} dV \simeq S_\phi V_P.
 \label{eqn:num:sou}
 \end{equation}
-If $S_\phi$ has dependence on $\phi$ then by including this dependence
-stability will be increased. The dependence can only be included in
-a linear manner so equation~\eqref{eqn:num:sou} becomes,
+Including any negative dependence of $S_\phi$ on $\phi$ increases
+solution stability. The dependence can only be included in a linear
+manner so Equation~\eqref{eqn:num:sou} becomes,
 \begin{equation}
-V_P (S_C - S_P \phi_P)
+V_P (S_C - S_P \phi_P).
 \end{equation}
 
 \section{Linear Equations}
 
 The aim of the discretization is to reduce the continuous general
-equation to a set of discrete linear equations which can then be
-solved to obtain the value of the dependent variable at each CV
-center. This results in a sparse linear system that requires an
-efficient iterative scheme to solve. The integrative schemes available
-to \FiPy() are currently encapsulated in the pysparse suite of solvers
-that includes most common solves such as the congegant gradient
-technique and LU decomposition. There are plans to include other solver
-suites that are compatible with Python.
+equation to a set of discrete linear equations that can then be solved
+to obtain the value of the dependent variable at each CV center. This
+results in a sparse linear system that requires an efficient iterative
+scheme to solve. The iterative schemes available to \FiPy() are
+currently encapsulated in the \href{#id5}{spmatrix} suite of solvers
+and include most common solvers such as the conjugate gradient method
+and LU decomposition. There are plans to include other solver suites
+that are compatible with Python.
 
-Combining equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con}, \eqref{eqn:num:dif} and
-\eqref{eqn:num:sou} the complete discretization for equation~\eqref{eqn:num:gen}
-can now be written for each CV as;
+Combining equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
+\eqref{eqn:num:dif} and \eqref{eqn:num:sou} the complete
+discretization for equation~\eqref{eqn:num:gen} can now be written for
+each CV as,
 \begin{eqnarray}
-\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P^O)}{\Delta t}
-&+&
-\sum_{f} \rho_f (\vec{n}.\vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
-\\
+\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
 &=&
+\sum_{f} (\vec{n}.\vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
+\\
+&+&
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
 + 
 V_P ( S_C - S_P \phi_P )
 \label{eqn:num:dis}
 \end{eqnarray}
 
-Equation~\eqref{eqn:num:dis} is now in the form of a set of linear combinations between
-each CV value and its neighbors values.
-The discretization for the continuity equation is given by,
+Equation~\eqref{eqn:num:dis} is now in the form of a set of linear
+combinations between each CV value and its neighboring values and can be
+written in the following form,
 \begin{equation}
-\frac{(\rho_P V_P-\rho_P^O V_P^O)}{\Delta t}+\sum_f F_f = 0
-\label{eqn:num:cdi}
-\end{equation}
-Thus equation~\eqref{eqn:num:dis} using equation~\eqref{eqn:num:cdi} can be rewritten
-in the following form,
-\begin{equation}
-a_P \phi_P = \sum_f a_{nb} \phi_{nb} + b_P
+a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P
 \label{eqn:num:dap}
 \end{equation}
 where
 \begin{eqnarray}
-a_P & = & V_P S_P + \frac{\rho_P^O V_P^O}{\Delta t} + \sum_f a_{nb} \\
-a_{nb} & = & ( \alpha_f - 1 ) F_f + D_f \\
-b_p & = & S_C + \frac{\rho_P^O V_P^O \phi_P^O}{\Delta t} 
+a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} - F_f) \\
+a_{A} & = & ( 1 - \alpha_f ) F_f + D_f \\
+b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t} 
 \end{eqnarray}
-The face coefficients $F_f$ and $D_f$ represent the convective strength
-and diffusive conductance respectively and are given by,
+The face coefficients, $F_f$ and $D_f$, represent the convective strength
+and diffusive conductance respectively, and are given by,
 \begin{eqnarray}
 F_f & = & A_f \rho_f ( \vec{u}.\vec{n} )_f \\
 D_f & = & \frac{A_f \Gamma_f}{d_{AP}} 
