@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/12/04 {11:02:06 AM} 
+ #                                last update: 11/17/04 {10:34:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,27 +58,27 @@ class build_docs (Command):
 
 
     def initialize_options (self):
-	self.latex = 0
-	self.html = 0
-	self.guide = 0
-	self.apis = 0
-	self.manual = 0
-	self.all = 0
+        self.latex = 0
+        self.html = 0
+        self.guide = 0
+        self.apis = 0
+        self.manual = 0
+        self.all = 0
         self.webpage = 0
         self.upload = 0
     # initialize_options()
 
 
     def finalize_options (self):
-	if self.all:
-	    self.latex = 1
-	    self.html = 1
-	    self.manual = 1
-	    self.webpage = 1
-	    
-	if self.manual:
-	    self.guide = 1
-	    self.apis = 1
+        if self.all:
+            self.latex = 1
+            self.html = 1
+            self.manual = 1
+            self.webpage = 1
+            
+        if self.manual:
+            self.guide = 1
+            self.apis = 1
             
     # finalize_options()
 
