@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/15/04 {3:34:26 PM} 
+ #                                last update: 9/1/04 {4:59:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,7 +49,7 @@ import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
-from fipy.viewers.gist1DViewer import Gist1DViewer
+## from fipy.viewers.gist1DViewer import Gist1DViewer
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):

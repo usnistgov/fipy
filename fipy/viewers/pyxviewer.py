@@ -8,7 +8,7 @@
  # 
  #  FILE: "pyxviewer.py"
  #                                    created: 6/25/04 {3:17:21 PM} 
- #                                last update: 8/26/04 {3:32:27 PM} 
+ #                                last update: 9/1/04 {5:59:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -199,11 +199,13 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 import os
-import pyx
-import pyx.color
 import time
 
-pyx.text.set(fontmaps="psfonts.cmz")
+if not os.environ.has_key('FIPY_NOPYX'):
+    import pyx
+    import pyx.color
+
+    pyx.text.set(fontmaps="psfonts.cmz")
 
 class PyxViewer:
     

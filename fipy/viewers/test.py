@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 5/6/04 {4:01:04 PM} 
+ #                                last update: 9/1/04 {5:57:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,10 +46,10 @@
 import doctest
 import unittest
 import fipy.tests.testProgram
-import pyxviewer
 
 def suite():
     theSuite = unittest.TestSuite()
+    import pyxviewer
     theSuite.addTest(doctest.DocTestSuite(pyxviewer))
     return theSuite
     
