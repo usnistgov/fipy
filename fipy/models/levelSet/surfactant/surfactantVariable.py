@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 10/19/04 {4:41:41 PM} 
+ #                                last update: 11/28/04 {10:27:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -117,7 +117,7 @@ class SurfactantVariable(CellVariable):
     
 class InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
-        CellVariable.__init__(self, mesh = surfactantVar.getMesh())
+        CellVariable.__init__(self, name = surfactantVar.name + "_interface", mesh = surfactantVar.getMesh())
         self.surfactantVar = self.requires(surfactantVar)
 
     def _calcValue(self):
