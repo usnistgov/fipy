@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/5/04 {10:49:30 PM} 
+ %                                last update: 6/7/04 {9:29:48 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,7 +34,7 @@
  % ###################################################################
  %%
 
-\documentclass[letterpaper,oldfontcommands]{memoir}
+\documentclass[letterpaper,oldfontcommands,book,titlepage]{memoir}
 % \documentclass[]{book}
 % \usepackage[]{}
 
@@ -47,6 +47,9 @@
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \usepackage[pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+\usepackage{graphicx}
+
+\newcommand{\logo}{\rotatebox{4}{\textcolor{red}{\( \varphi \)}}\kern-.7em\raisebox{-.15em}{\textcolor{blue}{\( \pi\)}}}
 
 \begin{document}
 
@@ -86,6 +89,17 @@
     \addtolength{\leftmargin}{\labelwidth}}}%
   {\end{list}}
 
+\title{
+% \scalebox{10}{\logo} \\
+FiPy\\
+{\large A Finite Volume PDE Solver Using Python} \\
+}
+
+\author{Daniel Wheeler, Jonathan E. Guyer \& James A. Warren \\[2ex]
+Metallurgy Division, Materials Science and Engineering Laboratory\\
+National Institute of Standards and Technology}
+
+\maketitle
 
 % \include{intro}
 % 
