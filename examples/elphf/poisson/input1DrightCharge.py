@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 12/9/04 {11:09:28 AM} 
+ #                                last update: 12/10/04 {1:52:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,7 +94,7 @@ which can diffuse freely without displacing other components
 We have set the diffusivity of electrons to zero to keep them from moving due 
 to electromigration.
 
-We again let the ElPhF module construct the appropriate fields and governing equations
+We again let the ElPhF module construct the appropriate fields
 
     >>> import fipy.models.elphf.elphf as elphf
     >>> fields = elphf.makeFields(mesh = mesh, 

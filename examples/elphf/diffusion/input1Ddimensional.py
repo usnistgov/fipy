@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:51:34 AM} 
+ #                                last update: 12/10/04 {5:02:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,10 +98,8 @@ and we separate the solution domain into two different concentration regimes
 
 We use ElPhF again to create the governing equations for the fields
 
-    >>> equations = elphf.makeEquations(mesh = mesh, 
-    ...                                 fields = fields, 
-    ...                                 parameters = parameters
-    ... )
+    >>> elphf.makeEquations(fields = fields, 
+    ...                     parameters = parameters)
     
 If we are running interactively, we create a viewer to see the results 
 
@@ -113,10 +111,16 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator(equations = equations)
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> solver = LinearLUSolver()
+
     >>> for i in range(40):
-    ...     it.timestep(dt = 10000)
+    ...     for field in fields['substitutionals']:
+    ...         field.updateOld()
+    ...     for field in fields['substitutionals']:
+    ...         field.equation.solve(var = field, 
+    ...                              dt = 10000, # (scaling doesn't work) parameters['time step duration'],
+    ...                              solver = solver)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
 

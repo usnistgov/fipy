@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 12/7/04 {12:05:19 PM} 
+ #                                last update: 12/10/04 {5:02:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,7 +70,7 @@ class CellTerm(Term):
 	
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
-        
+
 	b += Numeric.array(oldArray) * coeffVectors['old value'][:] / dt
 	b += Numeric.ones([N]) * coeffVectors['b vector'][:]
 	L.addAtDiagonal(Numeric.ones([N]) * coeffVectors['new value'][:] / dt)

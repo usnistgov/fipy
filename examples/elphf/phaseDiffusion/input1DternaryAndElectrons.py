@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/1/04 {11:53:25 AM} 
+ #                                last update: 12/10/04 {8:23:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ We start by defining a 1D mesh
     >>> dx = 0.01
     >>> L = nx * dx
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = 1)
+    >>> mesh = Grid2D(dx = dx, nx = nx)
 
 The problem parameters are
 
@@ -104,9 +104,8 @@ We again let the ElPhF module create the appropriate fields and equations
 
     >>> import fipy.models.elphf.elphf as elphf
     >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-    >>> equations = elphf.makeEquations(mesh = mesh, 
-    ...                                 fields = fields, 
-    ...                                 parameters = parameters)
+    >>> elphf.makeEquations(fields = fields, 
+    ...                     parameters = parameters)
 
 Once again, we start with a sharp phase boundary
 
@@ -149,10 +148,18 @@ If running interactively, we create viewers to display the results
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator(equations = equations)
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> solver = LinearLUSolver()
+
     >>> for i in range(50):
-    ...     it.timestep()
+    ...     for field in fields['all']:
+    ...         field.updateOld()
+    ...     fields['phase'].equation.solve(var = fields['phase'],
+    ...                                    dt = parameters['time step duration'])
+    ...     for field in fields['substitutionals'] + fields['interstitials']:
+    ...         field.equation.solve(var = field, 
+    ...                              dt = parameters['time step duration'],
+    ...                              solver = solver)
     ...     if __name__ == '__main__':    
     ...         phaseViewer.plot()
     ...         concViewer.plot()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:53:05 AM} 
+ #                                last update: 12/10/04 {4:36:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,11 +65,9 @@ We solve the problem on a 1D mesh
 
     >>> nx = 400
     >>> dx = 0.01
-    >>> ny = 1
-    >>> dy = dx
     >>> L = nx * dx
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+    >>> mesh = Grid2D(dx = dx, nx = nx)
 
 Rather than rewriting the same code in every electrochemistry example, 
 we use the ElPhF module
@@ -82,7 +80,7 @@ to build the approriate variable fields from
     ...     'time step duration': 10000,
     ...     'phase': {
     ... 	    'name': "xi",
-    ... 	    'mobility': 1.,
+    ... 	    'mobility': float("infinity"),
     ... 	    'gradient energy': 0.025,
     ... 	    'value': 1.
     ...     },
@@ -102,27 +100,21 @@ We separate the phase field into electrode and electrolyte regimes
 
 We use the ElPhF module again to create governing equations from the fields
 
-    >>> equations = elphf.makeEquations(mesh = mesh, 
-    ...                                 fields = fields, 
-    ...                                 parameters = parameters)
+    >>> elphf.makeEquations(fields = fields, 
+    ...                     parameters = parameters)
 
-If we are running interactively, we will want to see the results
+Even though we are solving the steady-state problem
 
-    >>> if __name__ == '__main__':
-    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
-    ...     viewer = Gist1DViewer(vars = (fields['phase'],))
-    ...     viewer.plot()
+.. raw:: latex
 
-Now, we iterate to equilibrium, plotting as we go
+   ($M_\phi = \infty$)
+   
+we still must sweep the solution several times to equilibrate
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator(equations = equations)
-    >>> for i in range(50):
-    ...     it.timestep(1)
-    ...     if __name__ == '__main__':
-    ...         viewer.plot()
-
-The phase field has the expected analytical form
+    >>> for step in range(10):
+    ...     fields['phase'].equation.solve(var = fields['phase'])
+    
+We verify that the phase field has the expected analytical form
 
 .. raw:: latex
 
@@ -132,7 +124,7 @@ where the interfacial thickness is given by
 
 .. raw:: latex
 
-   $ d = \sqrt{\kappa_{\xi}/W} $.
+   $ d = \sqrt{\kappa_{\xi}/2W} $.
    
 We verify that the correct equilibrium solution is attained
 
@@ -140,11 +132,19 @@ We verify that the correct equilibrium solution is attained
     
     >>> import Numeric
     >>> d = Numeric.sqrt(parameters['phase']['gradient energy']
-    ...     / (parameters['solvent']['barrier height']))
-    >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2.*d))) / 2.
+    ...     / (2 * parameters['solvent']['barrier height']))
+    >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2 * d))) / 2.
 
     >>> fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
+    
+If we are running interactively, we will want to see the results
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     from fipy.variables.cellVariable import CellVariable
+    ...     viewer = Gist1DViewer(vars = (fields['phase'] - CellVariable(mesh = mesh, value = analyticalArray),))
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 
