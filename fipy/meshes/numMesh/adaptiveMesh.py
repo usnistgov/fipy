@@ -53,6 +53,7 @@ NOTE: At present, AdaptiveMesh supports triangular meshes only.
 """
 import os
 import Numeric
+import time
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.mesh import Mesh
@@ -184,6 +185,7 @@ class AdaptiveMesh2D(Mesh2D):
 
     def finalInit(self):
         os.system("gmsh temp.geo -bgm tempbgmesh.pos -2 -v 0")
+        time.sleep(10)
         dg = DataGetter()
         args = dg.getData("temp.msh", dimensions = 2)
         Mesh2D.__init__(self, args[0], args[1], args[2])
