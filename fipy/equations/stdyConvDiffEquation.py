@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "linearPCGSolver.py"
-                                   created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/4/03 {10:23:29 PM} 
+ FILE: "stdyConvDiffEquation.py"
+                                   created: 11/12/03 {10:39:23 AM} 
+                               last update: 12/4/03 {3:54:55 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -36,36 +36,39 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-14 JEG 1.0 original
+ 2003-11-12 JEG 1.0 original
 ###################################################################
 """
 
-from solver import Solver
-import precon
-import itsolvers
-import sys
+from matrixEquation import MatrixEquation
+from terms.transientTerm import TransientTerm
+from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from terms.convectionTerm import ConvectionTerm
 
-class LinearPCGSolver(Solver):
-    def __init__(self, tolerance, steps):
-	Solver.__init__(self, tolerance, steps)
+class SteadyConvectionDiffusionEquation(MatrixEquation):
+    """
+    Diffusion equation is implicit.
+    """    
+    def __init__(self,
+                 var,
+                 diffusionCoeff = 1.,
+		 convectionCoeff = 1.,
+                 solver='default_solver',
+                 boundaryConditions=()):
+		     
+	mesh = var.getMesh()
 	
-    def solve(self, L, x, b):
+	diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	convectionTerm = ConvectionTerm(convectionCoeff, mesh, boundaryConditions, diffusionTerm)
+		     
+	terms = (
+	    diffusionTerm,
+	    convectionTerm
+            )
+	    
+	MatrixEquation.__init__(
+            self,
+            var,
+            terms,
+            solver)
 
-# 	print "L: ", L
-# 	print "b: ", b
-# 	print "x: ", x
-	
-	A = L.to_sss()
-	
-	Assor=precon.ssor(A)
-	
-	
- 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
-##        print info, iter, relres
-    
-# 	y = x.copy()
-# 	L.matvec(x,y)
-# 	print "L * x: ", y
-
-	if (info != 0):
-	    print >> sys.stderr, 'cg not converged'

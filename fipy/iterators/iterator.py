@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 11/30/03 {12:48:32 AM} 
+ #                                last update: 12/4/03 {10:19:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,20 +55,20 @@ class Iterator:
 	"""
         self.equations = equations
 	
-    def iterate(self,n,dt):
+    def iterate(self,steps,timeStep = 1.):
 	"""Iterate the solution.
 	
 	Arguments:
 	    
-	    'n' -- number of iteration time steps
+	    'steps' -- number of iteration time steps
 	    
-	    'dt' -- duration of each time step
+	    'timeStep' -- duration of each time step
 	
 	The 'preSolve()' method of each equation is called to do any
 	necessary initialization, the equations are 'solve()' ed, then the
 	'postSolve()' methods are called to do any necessary cleanup.
 	"""
-	for i in range(n):
+	for i in range(steps):
             for equation in self.equations:
                 var = equation.getVar()
                 var.updateOld()
@@ -76,6 +76,6 @@ class Iterator:
 	    for equation in self.equations:
 		equation.preSolve()	
 	    for equation in self.equations:
-		equation.solve(dt)
+		equation.solve(timeStep)
 	    for equation in self.equations:
 		equation.postSolve()	    

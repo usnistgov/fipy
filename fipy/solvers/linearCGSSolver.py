@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "linearPCGSolver.py"
+ FILE: "linearCGSSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/4/03 {10:23:29 PM} 
+                               last update: 12/4/03 {10:23:04 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,7 +45,7 @@ import precon
 import itsolvers
 import sys
 
-class LinearPCGSolver(Solver):
+class LinearCGSSolver(Solver):
     def __init__(self, tolerance, steps):
 	Solver.__init__(self, tolerance, steps)
 	
@@ -55,17 +55,14 @@ class LinearPCGSolver(Solver):
 # 	print "b: ", b
 # 	print "x: ", x
 	
-	A = L.to_sss()
+	A = L.to_csr()
 	
-	Assor=precon.ssor(A)
+	info, iter, relres = itsolvers.cgs(A,b,x,self.tolerance,self.steps)
+# 	print info, iter, relres
 	
-	
- 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
-##        print info, iter, relres
-    
 # 	y = x.copy()
 # 	L.matvec(x,y)
 # 	print "L * x: ", y
-
+	
 	if (info != 0):
 	    print >> sys.stderr, 'cg not converged'
