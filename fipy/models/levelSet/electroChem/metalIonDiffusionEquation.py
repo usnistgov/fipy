@@ -97,7 +97,7 @@ This is the test case,
    >>> cinf = 1.
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> eqn = MetalIonDiffusionEquation(ionVar,
-   ...                                 distanceVariable = disVar,
+   ...                                 distanceVar = disVar,
    ...                                 depositionRate = v * ionVar,
    ...                                 diffusionCoeff = diffusion,
    ...                                 metalIonAtomicVolume = omega,
@@ -117,25 +117,19 @@ This is the test case,
 __docformat__ = 'restructuredtext'
 
 
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.terms.transientTerm import TransientTerm
+from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import LevelSetDiffusionEquation
 from fipy.terms.spSourceTerm import SpSourceTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from metalIonSourceVariable import MetalIonSourceVariable
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import LevelSetDiffusionVariable
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
-class MetalIonDiffusionEquation(DiffusionEquation):
+class MetalIonDiffusionEquation(LevelSetDiffusionEquation):
     
     def __init__(self,
                  var,
-                 distanceVariable = None,
+                 distanceVar = None,
                  depositionRate = 1,
                  diffusionCoeff = 1,
                  transientCoeff = 1,
                  metalIonAtomicVolume = 1,
-                 solver = LinearPCGSolver(tolerance = 1.e-15,
-                                          steps = 1000),
                  boundaryConditions = ()):
         """
         
@@ -160,16 +154,15 @@ class MetalIonDiffusionEquation(DiffusionEquation):
 
         """
 
-	DiffusionEquation.__init__(
+	LevelSetDiffusionEquation.__init__(
             self,
             var,
+            distanceVar = distanceVar,
             transientCoeff = transientCoeff,
-            diffusionCoeff = LevelSetDiffusionVariable(distanceVariable,
-                                                      diffusionCoeff),
-            solver = solver,
+            diffusionCoeff = diffusionCoeff,
             boundaryConditions = boundaryConditions,
             otherTerms = (SpSourceTerm(MetalIonSourceVariable(ionVar = var,
-                                                              distanceVariable = distanceVariable,
+                                                              distanceVar = distanceVar,
                                                               depositionRate = depositionRate,
                                                               metalIonAtomicVolume = metalIonAtomicVolume),
                                        var.getMesh()),
