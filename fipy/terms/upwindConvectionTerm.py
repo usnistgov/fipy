@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 7/14/04 {3:10:46 PM} 
+ #                                last update: 7/26/04 {2:27:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -64,12 +64,12 @@ class UpwindConvectionTerm(ConvectionTerm):
 		    alpha(i) = 0.;
 		}
 	    """,
-	    alpha = self.value.value, P = P,
+	    alpha = self._getArray(), P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
 
 
-	def calcValue(self):	    
+	def _calcValue(self):	    
 	    P  = self.P.getNumericValue()
 	    
 	    inline.optionalInline(self._calcValueIn, self._calcValuePy, P)
