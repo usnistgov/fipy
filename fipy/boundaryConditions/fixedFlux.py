@@ -55,12 +55,16 @@ class FixedFlux(BoundaryCondition):
     def __init__(self,faces,value):
 	BoundaryCondition.__init__(self,faces,value)
 	N = len(self.faces)
-	self.contribution = Numeric.zeros((N,),'d')
+	##self.contribution = Numeric.zeros((N,),'d')
 	# get units right
-	self.contribution = self.contribution * self.value * self.faces[0].getArea()
-	for i in range(N):
-	    self.contribution[i] = self.value * self.faces[i].getArea()
-	
+	##self.contribution = self.contribution * self.value * self.faces[0].getArea()
+	##for i in range(N):  
+	##    self.contribution[i] = self.value * self.faces[i].getArea()
+        areas = Numeric.zeros((N,),'d')
+        for i in range(N):
+            areas[i] = self.faces[i].getArea()
+	self.contribution = self.value * areas
+        
     def buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Leave **L** unchanged and add gradient to **b**
 	
@@ -72,7 +76,7 @@ class FixedFlux(BoundaryCondition):
 	"""
 
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, -self.contribution)
+	vector.putAdd(bb, self.adjacentCellIds, -Numeric.array(self.contribution))
 	
 	return (0, bb)
 
