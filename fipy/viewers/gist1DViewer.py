@@ -65,13 +65,17 @@ class Gist1DViewer(GistViewer):
     def getArrays(self):
 	arrays = ()
 	for var in self.vars:
-	    arrays += var.getNumericValue(),
+##	    arrays += var.getNumericValue(),
+            arrays += (Numeric.array(var),)
 	return arrays
 	
     def plotArrays(self):
 ## 	gist.plsys(0)
 	for array in self.getArrays():
-	    gist.plg(array)
+            if len(array.shape) > 1:
+                gist.plg(array[:,1], array[:,0])
+            else:
+                gist.plg(array)
 	gist.logxy(self.xlog, self.ylog)
 
     def plot(self, minVal=None, maxVal=None):
