@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 9/3/04 {10:33:34 PM} 
+ #                                last update: 2/3/05 {3:57:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,6 +69,7 @@ def sqrtDot(v1,v2):
     return fipy.tools.array.sqrt(abs(fipy.tools.array.sum(v1 * v2)))
 
 def _putAddPy(vector, ids, additionVector, mask = None):
+    additionVector = Numeric.array(additionVector)
     if mask is None:
         for i in range(len(ids)):
             vector[ids[i]] += additionVector[i]

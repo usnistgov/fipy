@@ -7,18 +7,23 @@ Release Goals 0.2
 
 - Documentation:
 
+  * Review all for accuracy/consistency.
+  * Refer to Roman's pysparse distro.
   * Include some examples on the web page.
-  * Include some pictures of simulations on the web page.
+  * Include some pictures of simulations in the documentation.
   * Efficiency and --inline discussion.
   * Examples:
   
     - 1000*1000 example for efficiency discussion.
-    - Explicit example.
 
 - Distribution
 
   * Install and test with no write permissions.
   * Windows install.
+  * freeze or py2exe for CEAC stand-alone
+
+    - viewer? GPL or GLL for gnuplot?
+
   * Get FiPy registered on:
 
     - vaults of parnassus
@@ -34,7 +39,6 @@ Release Goals 0.2
   * Viewing variables on an unstructured mesh.
 
     - gnuplot
-    - gist  
 
   * Gnuplot-py:
 
@@ -47,8 +51,6 @@ Release Goals 0.2
       * Much faster than PyX. PyX is very slow for plotting large contour plots.
       * The gist hardcopy functionality is mangled.
 
-  * Pass modified pysparse to Roman and ask for improved functionality.
-
   * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
 
   * Better ``__repr__`` for FiPy objects.
@@ -57,44 +59,28 @@ Release Goals 0.2
 
 - Refactoring:
 
-  * Use an array module rather than Numeric and switch to numarray.
-
   * Viewers:
 
     - Create base viewing class.
     - Use viewers in scipy that are similar to gist and remove gist (?).
     - Refactor PyX viewer.
 
-  * Merge ``term`` and ``equation`` objects into one object:
-
-    - Implicitly define solvers for terms-equations.
-    - Boundary conditions should just be terms.
-   
-      * Include periodic boundary condition.
- 
-  * Use ``doctest`` exclusively.
-
-  * Make the ``build_docs`` just update the files that have changed since
-    the last build.
-    
-  * Major mesh refactor:
-
-    - Remove separate ``nummesh`` and ``pymesh`` structure
-    - Think about the ``mesh`` hierarchy as it stands:
-
-      * Many branches at present.
-      * Consolidate functionality (``__add__`` etc).
-      * How does Gmsh fit in?
-
-    - Lazy mesh array evaluations.
-
   * Reduce memory requirements
 
+    - Automated tests.
     - Identify memory usage.
 
-  * Run time tests.
+  * Reduce run time
 
-  * Memory tests.
+    - Augment automated tests
+    - Identify time-consuming code
+    - Choose external references 
+
+      * Ryo's code
+      * Spectral MATLAB CH problem
+      * FemLab
+      * DiffPack
+      * FebLego?
 
 Long term Goals
 ---------------
@@ -116,11 +102,34 @@ Long term Goals
 
 - Refactoring:
 
+  * Use an array module rather than Numeric and switch to numarray.
+
   * Global approach to phase field equations.
+
+  * Make the ``build_docs`` just update the files that have changed since
+    the last build.
+    
+  * Merge ``term`` and ``equation`` objects into one object:
+
+    - Boundary conditions should just be terms.
+   
+  * Use ``doctest`` exclusively.
+
+  * Major mesh refactor:
+
+    - Remove separate ``nummesh`` and ``pymesh`` structure
+    - Think about the ``mesh`` hierarchy as it stands:
+
+      * Many branches at present.
+      * Consolidate functionality (``__add__`` etc).
+      * How does Gmsh fit in?
+
+    - Lazy mesh array evaluations.
 
 - Documentation:
 
   * Write a paper on FiPy.
+  * Better documentation in Reference.pdf
 
 
 .. _SourceForge CVS repository:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/

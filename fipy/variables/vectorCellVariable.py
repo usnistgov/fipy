@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 10/19/04 {12:22:48 PM} 
+ #                                last update: 2/4/05 {3:05:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ import fipy.tools.array as array
 
 class VectorCellVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
-	array = Numeric.zeros([len(mesh.getCells()),mesh.getDim()],'d')
+	array = Numeric.zeros([mesh.getNumberOfCells(),mesh.getDim()],'d')
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
         self.arithmeticFaceValue = None

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 12/9/04 {9:56:23 PM} 
+ #                                last update: 2/4/05 {3:38:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,7 +29,7 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2004 by Konrad Hinsen, except as noted below.
+ #  Copyright 1997-2005 by Konrad Hinsen, except as noted below.
  # 
  #  Permission to use, copy, modify, and distribute this software and its
  #  documentation for any purpose and without fee is hereby granted,
@@ -200,7 +200,8 @@ class PhysicalField:
             value = Numeric.array(value)
             
         if unit is None:
-            unit = _findUnit("")
+            unit = _unity
+##             unit = _findUnit("")
 
         self.value = value
         self.unit = unit
@@ -530,7 +531,11 @@ class PhysicalField:
         .. _Numeric: http://www.numpy.org
         """
         if self.unit.isDimensionlessOrAngle():
-            return Numeric.array(self.getNumericValue(), t)
+            value = self.getNumericValue()
+            if type(value) is type(Numeric.array((0))) and (t is None or t == value.typecode()):
+                return value
+            else:
+                return Numeric.array(self.getNumericValue(), t)
         else:
             raise TypeError, 'Numeric array value must be dimensionless'
         
@@ -710,7 +715,7 @@ class PhysicalField:
             >>> print round(PhysicalField("1 inch").getNumericValue(), 6)
             0.0254
         """
-        return self.inBaseUnits().value
+        return self.inSIUnits().value
         
     # Contributed by Berthold Hoellmann
     def inBaseUnits(self):
@@ -743,6 +748,19 @@ class PhysicalField:
         else:
             num = num[1:]
         return self.__class__(value = new_value, unit = num + denom)
+
+    def inSIUnits(self):
+        """
+        Return the quantity with all units reduced to SI-compatible elements.
+        
+            >>> e = PhysicalField('2.7 Hartree*Nav')
+            >>> print e.inSIUnits()
+            7088849.01085 kg*m**2/s**2/mol
+        """
+        if self.unit.factor != 1:
+            return self.inBaseUnits()
+        else:
+            return self
 
     def isCompatible (self, unit):
         unit = _findUnit (unit)
@@ -1398,15 +1416,17 @@ def _findUnit(unit):
             ...
         TypeError: 2.0 is not a unit
     """
+##     print unit, type(unit)
+    
     if type(unit) == type(''):
         name = string.strip(unit)
-        if len(name) == 0:
+        if len(name) == 0 or unit == '1':
             unit = _unity
         else:
             unit = eval(name, _unit_table)
-        for cruft in ['__builtins__', '__args__']:
-            try: del _unit_table[cruft]
-            except: pass
+            for cruft in ['__builtins__', '__args__']:
+                try: del _unit_table[cruft]
+                except: pass
 
     if not isinstance(unit,PhysicalUnit):
         if unit == 1:

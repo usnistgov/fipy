@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/25/04 {9:37:43 PM}
+ #                                last update: 12/15/04 {4:52:11 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,6 @@ class FixedValue(BoundaryCondition):
 	  - `MaxFaces`: bandwidth of **L**
 	  - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
 	                this exterior face
-	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)

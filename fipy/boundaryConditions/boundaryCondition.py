@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/25/04 {9:29:08 PM} 
+ #                                last update: 12/15/04 {4:53:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,7 +63,7 @@ class BoundaryCondition:
 	self.faceIds = Numeric.array([face.getID() for face in self.faces])
 	self.adjacentCellIds = Numeric.array([face.getCellID() for face in self.faces])
 
-    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
+    def buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
@@ -74,7 +74,6 @@ class BoundaryCondition:
 	  - `Ncells`:     Number of cells (to build **L** and **b**)
 	  - `MaxFaces`:   Maximum number of faces per cell (to build **L**)
 	  - `coeff`:      Contribution due to this face
-	  - `coeffScale`: dimensionality of the coefficient matrix
 	
 	A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
 	(**L**, **b**) matrices.

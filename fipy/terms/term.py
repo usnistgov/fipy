@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 12/7/04 {12:05:54 PM} 
+ #                                last update: 12/15/04 {4:55:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,7 @@ class Term:
     def __init__(self):
 	self.coeff = None
         
-    def buildMatrix(self, var, boundaryConditions, oldArray, dt):
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	pass
 	
     def getFigureOfMerit(self):

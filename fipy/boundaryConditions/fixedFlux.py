@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/25/04 {9:29:51 PM} 
+ #                                last update: 2/3/05 {3:52:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,11 +72,11 @@ class FixedFlux(BoundaryCondition):
 	  - `Ncells`:   Size of **b**-vector
 	  - `MaxFaces`: *unused*
 	  - `coeff`:    *unused*
-	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
 
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, -Numeric.array(self.contribution))
+## 	vector.putAdd(bb, self.adjacentCellIds, -Numeric.array(self.contribution))
+        vector.putAdd(bb, self.adjacentCellIds, -self.contribution)
 	
 	return (0, bb)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 11/30/04 {6:41:08 PM} 
+ #                                last update: 2/3/05 {4:45:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -254,7 +254,26 @@ class NthOrderDiffusionTerm(Term):
 	
 	return coefficientMatrix
 	
-    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def bcAdd(self, coefficientMatrix, boundaryB, LLbb):
+        coefficientMatrix += LLbb[0]
+        boundaryB += LLbb[1]
+        
+    def doBCs(self, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
+        [self.bcAdd(coefficientMatrix, boundaryB, boundaryCondition.buildMatrix(N, M, coeffs)) for boundaryCondition in higherOrderBCs]
+            
+        return coefficientMatrix, boundaryB
+
+    def doBCsOLD(self, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
+        for boundaryCondition in higherOrderBCs:
+            LL, bb = boundaryCondition.buildMatrix(N, M, coeffs)
+            
+            coefficientMatrix += LL
+            boundaryB += bb
+            
+        return coefficientMatrix, boundaryB
+
+
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1., coefficientMatrix = None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -263,7 +282,8 @@ class NthOrderDiffusionTerm(Term):
 
             coeff = self.getCoeff(mesh)
             
-            coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
+            if coefficientMatrix is None:
+                coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
 
             boundaryB = Numeric.zeros(N,'d')
                 
@@ -278,15 +298,17 @@ class NthOrderDiffusionTerm(Term):
 	    coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
 	    coeffs['cell 2 diag'] = coeffs['cell 1 diag']
 
-            for boundaryCondition in higherOrderBCs:
-                LL, bb = boundaryCondition.buildMatrix(N, M, coeffs)
-                
-                coefficientMatrix += LL
-                boundaryB += bb
+            coefficientMatrix, boundaryB = self.doBCs(higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB)
+##             for boundaryCondition in higherOrderBCs:
+##                 LL, bb = boundaryCondition.buildMatrix(N, M, coeffs)
+##                 
+##                 coefficientMatrix += LL
+##                 boundaryB += bb
                 
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(var = var, 
                                                                                 boundaryConditions = lowerOrderBCs, 
-                                                                                dt = dt)
+                                                                                dt = dt,
+                                                                                coefficientMatrix = coefficientMatrix)
             lowerOrderb = lowerOrderb / volumes
             volMatrix = SparseMatrix(size = N)
             volMatrix.addAtDiagonal(1. / volumes )

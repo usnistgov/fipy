@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/30/04 {11:40:14 PM} 
+ #                                last update: 2/4/05 {3:16:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,10 +103,19 @@ class FaceTerm(Term):
         coeff = Numeric.array(self.getCoeff(mesh))
         Nfac = mesh.getNumberOfFaces()
 
-        cell1Diag = Numeric.resize(Numeric.array(weight['cell 1 diag']), (Nfac,))
-        cell1OffDiag = Numeric.resize(Numeric.array(weight['cell 1 offdiag']), (Nfac,))
-        cell2Diag = Numeric.resize(Numeric.array(weight['cell 2 diag']), (Nfac,))
-        cell2OffDiag = Numeric.resize(Numeric.array(weight['cell 2 offdiag']), (Nfac,))
+        cell1Diag = Numeric.zeros((Nfac,),'d')
+        cell1Diag[:] = weight['cell 1 diag']
+        cell1OffDiag = Numeric.zeros((Nfac,),'d')
+        cell1OffDiag[:] = weight['cell 1 offdiag']
+        cell2Diag = Numeric.zeros((Nfac,),'d')
+        cell2Diag[:] = weight['cell 2 diag']
+        cell2OffDiag = Numeric.zeros((Nfac,),'d')
+        cell2OffDiag[:] = weight['cell 2 offdiag']
+
+##         cell1Diag = Numeric.resize(Numeric.array(weight['cell 1 diag']), (Nfac,))
+##         cell1OffDiag = Numeric.resize(Numeric.array(weight['cell 1 offdiag']), (Nfac,))
+##         cell2Diag = Numeric.resize(Numeric.array(weight['cell 2 diag']), (Nfac,))
+##         cell2OffDiag = Numeric.resize(Numeric.array(weight['cell 2 offdiag']), (Nfac,))
 
 	inline.runInlineLoop1("""
 	    long int faceID = faceIDs(i);

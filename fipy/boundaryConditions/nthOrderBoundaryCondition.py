@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 11/25/04 {9:38:00 PM} 
+ #                                last update: 2/3/05 {3:21:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -56,6 +56,7 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 class NthOrderBoundaryCondition(BoundaryCondition):
     def __init__(self,faces,value,order):
         self.order = order
+        self.derivative = {}
         BoundaryCondition.__init__(self,faces,value)
 
     def buildMatrix(self, Ncells, MaxFaces, coeff):
@@ -66,18 +67,20 @@ class NthOrderBoundaryCondition(BoundaryCondition):
 	  - `Ncells`:     *unused*
 	  - `MaxFaces`:   *unused*
 	  - `coeff`:      *unused*
-	  - `coeffScale`: *unused*
         """
         return (0, 0)
         
     def getDerivative(self, order):
 	newOrder = self.order - order
-        if newOrder > 1:
-            return NthOrderBoundaryCondition(self.faces, self.value, newOrder)
-        elif newOrder == 1:
-            return FixedFlux(self.faces, self.value)
-        elif newOrder == 0:
-            return FixedValue(self.faces, self.value)
-        else:
-            return None
+        if not self.derivative.has_key(newOrder):
+            if newOrder > 1:
+                self.derivative[newOrder] = NthOrderBoundaryCondition(self.faces, self.value, newOrder)
+            elif newOrder == 1:
+                self.derivative[newOrder] = FixedFlux(self.faces, self.value)
+            elif newOrder == 0:
+                self.derivative[newOrder] = FixedValue(self.faces, self.value)
+            else:
+                self.derivative[newOrder] = None
+                
+        return self.derivative[newOrder]
 
