@@ -48,18 +48,6 @@ import spmatrix
 class MatrixEquation(Equation):
     bandwidth = 5
     
-    def __init__(self,
-        name,
-        var,
-        terms,
-        solver):
-
-	Equation.__init__(self,
-	    name,
-	    var,
-	    terms,
-	    solver)
-
     def getVar(self):
         return self.var    
 	

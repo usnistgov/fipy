@@ -47,11 +47,19 @@ class Mesh:
         self.faces = faces
         self.vertices = vertices
         self.interiorFaces = interiorFaces
+        self.dim = len(self.vertices[0].getCoordinates())
 
-    def getCells(self):
+    def getCells(self,func = 'None'):
 	"""Return Cells of Mesh.
 	"""
-        return self.cells
+        if func == 'None':
+            return self.cells
+        else:        
+            returnCells = ()
+            for cell in self.cells:
+                if func(cell.getCenter()):
+                    returnCells += (cell,)
+            return returnCells
 
     def getFaces(self):
 	"""Return Faces of Mesh.
@@ -67,6 +75,9 @@ class Mesh:
 	"""Return array data mapped onto cell geometry of Mesh.
 	"""
         pass
+
+    def getDim(self):
+        return self.dim 
 
 ##    def removeCell(self,cell):
 ##        """Remove cell from Mesh.

@@ -43,12 +43,10 @@ they have been modified.
 class Equation:
     def __init__(
         self,
-        name,
         var,
         terms,
         solver):
 
-	self.name = name
 	self.var = var
         self.terms = terms
 	self.solver = solver

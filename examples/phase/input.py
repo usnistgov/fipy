@@ -63,45 +63,78 @@ from variables.variable import Variable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
-valueLeft=.5
-valueRight=0.
-valueTop=1.
-valueBottom=.5
+phaseParameters={
+    'tau' :        0.1,
+    'epsilon' :    0.008,
+    's' :          0.01,
+    'alpha' :      0.015,
+    'c2':          0.0,
+    'anisotropy':  0.,
+    'symmetry':    4.
+    }
 
-mesh = Grid2D(1.,1.,10,10)
+valueLeft=1.
+valueRight=1.
 
-var = Variable(
-    name = "phase",
+L = 1.5
+nx = 100
+dx = L/nx
+
+mesh = Grid2D(dx,1.,nx,1)
+
+phase = Variable(
+    name = 'PhaseField',
     mesh = mesh,
-    value = valueLeft,
+    value = 1.,
     viewer = Grid2DGistViewer()
     )
-    
+
+theta = Variable(
+    name = 'Theta',
+    mesh = mesh,
+    value = 1.,
+    viewer = Grid2DGistViewer(),
+    hasOld = 0
+    )
+
+def func(x):
+    if x[0] > L / 2.:
+        return 1
+    else:
+        return 0
+
+rightCells = mesh.getCells(func)
+
+theta.setValue(0.,rightCells)
+
 eq = PhaseEquation(
-    var,
-    name = "concentration",
-    transientCoeff = 1., 
-    diffusionCoeff = 1.,
+    phase,
+    theta = theta,
+    temperature = 1.,
     solver = LinearPCGSolver(
 	tolerance = 1.e-15, 
 	steps = 1000
     ),
     boundaryConditions=(
     FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedValue(mesh.getFacesRight(),valueRight),
-    FixedValue(mesh.getFacesTop(),valueTop),
-    FixedValue(mesh.getFacesBottom(),valueBottom))
+    FixedValue(mesh.getFacesRight(),valueRight)),
+    parameters = phaseParameters
     )
 
 it = Iterator((eq,))
 
 ##fudge = calibrate_profiler(10000)
 ##profile = Profiler('profile', fudge=fudge)
-it.iterate(10000,.1)
+
+
+
+it.iterate(100,0.02)
+
 ##profile.stop()
 
-print var.getArray()
-var.plot()
+print phase.getArray()
+
+phase.plot()
 
 raw_input()
 

@@ -88,6 +88,8 @@ class Face:
     def getCellId(self, index = 0):
 	"""Return the id of the specified Cell on one side of this Face.
 	"""
+        if index == 1 and len(self.cellsId) == 1:
+            index = 0
         return self.cellsId[index]
 
 ##    def getCellId(self,index=0):
@@ -206,6 +208,12 @@ class Face:
             vec=self.cells[1].getCenter()-self.cells[0].getCenter()
         else:
             vec=self.center-self.cells[0].getCenter()        
+        return tools.sqrtDot(vec,vec)
+
+    def getFaceToCellDistance(self,indx = 0):
+        if indx == 1 and len(self.cells) == 1:
+            indx = 0
+        vec=self.center-self.cells[indx].getCenter()        
         return tools.sqrtDot(vec,vec)
 
 #     def __repr__(self):

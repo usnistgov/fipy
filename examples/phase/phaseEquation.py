@@ -40,12 +40,13 @@ they have been modified.
 ###################################################################
 """
 
-from matrixEquation import MatrixEquation
+from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
-from terms.explicitdiffusionTerm import ExplicitDiffusionTerm
+from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
-
+from variables.variable import Variable
+import Numeric
 
 class PhaseEquation(MatrixEquation):
     """
@@ -54,33 +55,89 @@ class PhaseEquation(MatrixEquation):
     def __init__(self,
                  var,
                  theta = 0.,
-                 name='default_name',
-                 solver='default_solver',
-                 boundaryConditions=(),
+                 temperature =0.,
+                 solver = 'default_solver',
+                 boundaryConditions = (),
                  parameters = {}):
         
         mesh = var.getMesh()
+        if type(temperature) != type(var):
+            temperature = Variable('temperature', mesh, temperature, hasOld = 0)
+        self.temperature = temperature
+        if type(theta) != type(var):
+            theta = Variable('theta', mesh, theta, hasOld = 0)
+        self.theta = theta
         self.parameters = parameters
         transientCoeff = self.parameters['tau']
-        
+        self.diffTerm = ExplicitDiffusionTerm(0.,mesh,boundaryConditions)
+        self.spTerm = SpSourceTerm(0.,mesh)
+        self.scTerm = ScSourceTerm(0.,mesh)
+
 	terms = (
 	    TransientTerm(transientCoeff,mesh),
-	    ExplicitDiffusionTerm(0.,mesh,boundaryConditions),
-            SpSourceTerm(0.,mesh),
-            ScSourceTerm(0.,mesh)
+	    self.diffTerm,
+            self.scTerm,
+            self.spTerm
             )
 
 	MatrixEquation.__init__(
             self,
-            name,
             var,
             terms,
             solver)
 
-    def preSolve():
-        self.updateDiffCoeff()
-        self.updateScCoeff()
-        self.updateSpCoeff()
+    def preSolve(self):
+        self.updateDiffusion()
+        self.updateSource()
 
-    def updateDiffCoeff():
+    def updateDiffusion(self):
+        alpha = self.parameters['alpha']
+        N = self.parameters['symmetry']
+        c2 = self.parameters['anisotropy']
+
+        dphi = self.var.getFaceGradient()
+        self.dphi = dphi
+        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+        z = N * (z - self.theta.getFaceArray())
+        z = Numeric.tan(z / 2.)
+        z = z * z;
+        z = (1. - z) / (1. + z);
+        z = (1.+ c2 * z);
+        diffCoeff = alpha**2 * z * z;
+        self.diffTerm.setDiffCoeff(diffCoeff)
+
+    def updateSource(self):
+        phi = self.var.getArray()
+        t = self.temperature.getArray()
+
+        ## driving force double well
+
+        tmp = phi * (1 - phi)
+        m = phi - 0.5 + t * tmp
+
+        sc = (m > 0.) * m * phi
+        sp = m * (phi - (m < 0.))
+    
+        ## theta source terms
+
+        thetaMag = self.theta.getOld().getGradientMagnitude()
+        s = self.parameters['s']
+        epsilon = self.parameters['epsilon']
+
+        sp += (2*s + epsilon**2 * thetaMag) * thetaMag
+
+        ## anisotropy
+
+##        z = Numeric.atan2(self.dphi[:,1],self.dphi[:,0]);
+##        z = N * (z-self.theta);
+##        z = tan(0.5 * z);
+##        zsq = z * z;
+##        b = (1-zsq) / (1+zsq);
+##        db = -N * 2. *z / (1+zsq);
+##        ff = alphasq * c2 * (1.+c2 * b) * db
         
+##        sc + = phaseTools.add_over_faces_inline(self.ff,-self.dphi[:,1],self.dphi[:,0],mesh)
+
+        self.scTerm.setScCoeff(sc)
+        self.spTerm.setSpCoeff(sp)
+

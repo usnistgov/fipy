@@ -40,11 +40,12 @@ they have been modified.
 ###################################################################
 """
 
+import meshes.tools
 import Numeric
 
 class Variable:
     
-    def __init__(self, name, mesh, value=0.,viewer = 'None'):
+    def __init__(self, name, mesh, value=0.,viewer = 'None', hasOld = 1):
 	self.name = name
 	self.mesh = mesh
 	self.array = Numeric.zeros([len(mesh.getCells())],'d')
@@ -53,6 +54,11 @@ class Variable:
             self.viewer.setVar(self)
 	    
 	self.setValue(value)
+
+        if hasOld:
+            self.old = Variable(name + "_old", mesh, value = self.getArray(), viewer = self.viewer, hasOld = 0)
+        else:
+            self.old = 'None'
 
     def plot(self):
         self.viewer.plot()
@@ -63,17 +69,75 @@ class Variable:
     def getArray(self):
         return self.array
 
+    def getFaceArray(self):
+        faces = self.mesh.getFaces()
+        array = Numeric.zeros(len(faces),'d')
+        for face in faces:
+            array[face.getId()] = self.getFaceValue(face)
+        return array
+
     def getGridArray(self):
         return self.mesh.makeGridData(self.array)
 	
     def setValue(self,value,cells = ()):
 	if cells == ():
-	    cells = self.mesh.getCells()
-	for cell in cells:
-	    self.array[cell.getId()] = value
-	    
+            self.array[:] = value
+        else:
+            for cell in cells:
+                self.array[cell.getId()] = value
 
+    def getFaceValue(self,face):
+        dAP = face.getCellDistance()
+        dFP = face.getFaceToCellDistance()
+        alpha = dFP / dAP
+        id1 = face.getCellId(0)
+        id2 = face.getCellId(1)
+        return self.array[id1] * alpha + self.array[id2] * (1 - alpha)
 
+    def getCellGradient(self,cell):
+        grad = Numeric.zeros(self.mesh.getDim(),'d')
+        for face in cell.getFaces():
+            grad += self.getFaceValue(face) * face.getNormal(cell) * face.getArea()
+        return grad/cell.getVolume()
+        
+    def getGradient(self):
+        grad = Numeric.zeros((len(self.array),self.mesh.getDim()),'d')
+        for cell in self.mesh.getCells():
+            grad[cell.getId()] = self.getCellGradient(cell)
+        return grad
+
+    def getFaceGradient(self):
+        faceGrad = Numeric.zeros((len(self.mesh.getFaces()),self.mesh.getDim()),'d')
+        cellGrad = self.getGradient()
+        for face in self.mesh.getFaces():
+            dAP = face.getCellDistance()
+            dFP = face.getFaceToCellDistance()
+            alpha = dFP / dAP
+            id1 = face.getCellId(0)
+            id2 = face.getCellId(1)
+            faceGrad[face.getId()] = cellGrad[id1] * alpha + cellGrad[id2] * (1 - alpha)
+        return faceGrad
+
+    def getCellGradientMagnitude(self,cell):
+        grad  = self.getCellGradient(cell)
+        mag = meshes.tools.sqrtDot(grad,grad)
+        return mag
+    
+    def getGradientMagnitude(self):
+        mag = Numeric.zeros(len(self.array),'d')
+        for cell in self.mesh.getCells():
+            mag[cell.getId()] = self.getCellGradientMagnitude(cell)
+        return mag
+
+    def getOld(self):
+        if self.old == 'None':
+            return self
+        else:
+            return self.old
+
+    def updateOld(self):
+        if self.old != 'None':
+            self.old.setValue(self.array)
 
     
     

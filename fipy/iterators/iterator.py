@@ -69,6 +69,9 @@ class Iterator:
 	'postSolve()' methods are called to do any necessary cleanup.
 	"""
 	for i in range(n):
+            for equation in self.equations:
+                var = equation.getVar()
+                var.updateOld()
 	    for equation in self.equations:
 		equation.preSolve()	
 	    for equation in self.equations:
