@@ -8,6 +8,11 @@ Release goals 0.1
 - Documentation:
 
   * Check for errors.
+
+    - guide
+    - examples
+    - apis
+
   * Manual and web site WERBed.
   * Review Process.
   * Class diagram and explanation
@@ -20,30 +25,20 @@ Release goals 0.1
 
 - Refactoring:
 
-  * Finalize repository structure.
-
-    - Separate out pysparse:
-  
-      * Add as separate CVS project in the `SourceForge CVS repository`_.
-
-    - Separate out the profiler:
-
-      * Pull it out.
-      * Add to local repository.
-
-    - Move ElPhF into ``examples/phase/``.
-
   * Stop FiPy writing temporary files during test case execution:
 
     - Use python temporary file system.
 
   * Rename electochem
+  * Alter verbosity of gmsh in test cases.
 
 - Distribution:
 
+  * Add fipy to sourceforge
+  * Create tarball v 0.1
+  * Add pysparse to sourceforge
   * Clean install on Mac
   * Clean install on Debian linux
-
 
 Release Goals 0.2
 -----------------
