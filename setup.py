@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/5/04 {3:12:08 PM} 
+ #                                last update: 11/5/04 {3:37:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -448,7 +448,7 @@ license = '\n' + f.read() + '\n'
 f.close()
 
 dist = setup(	name = "FiPy",
-	version = "0.1",
+	version = "0.2",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",

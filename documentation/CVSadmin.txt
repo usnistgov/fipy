@@ -79,8 +79,8 @@ Versions
 At point of version release x.y, *on main trunk*::
 
     $ cvs tag version-x_y
-    $ cvs tag -F STABLE
-    $ cvs tag -F CURRENT
+    $ cvs tag -r version-x_y -F STABLE
+    $ cvs tag -r version-x_y -F CURRENT
 
 ---------
 Bug fixes
