@@ -134,11 +134,9 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = 1.
-    )
+    value = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius)
 
-cellRadius = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
-distanceVariable.setValue(cellRadius - initialRadius)
+distanceVariable.markFresh()
 
 initialSurfactantValue =  1.
 
