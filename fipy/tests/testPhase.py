@@ -57,7 +57,7 @@ from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from examples.phase.modularVariable import ModularVariable
+from examples.phase.theta.modularVariable import ModularVariable
 from variables.cellVariable import CellVariable
 from testBase import TestBase
 
