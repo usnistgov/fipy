@@ -43,31 +43,10 @@
 
 """
 
-This example creates a trench with the following zero level set:
+This example follows the advection of a trench as in example
+`examples/levelSet/advection/input.py`. In this example there is
+a surfactant on the interface. We wish to 
 
-.. raw:: latex
-
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; y = L_y / 5 \\text{and} x \ge L_x / 2 $$
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; L_y / 5 \le y \le 3 Ly / 5  \\text{and} x = L_x / 2 $$
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; y = 3 Ly / 5  \\text{and} x \le L_x / 2 $$
-
-The trench is then advected with a unit velocity. The following test can be made
-for the initial position of the interface:
-
-   >>> distanceEquation.solve()
-   >>> x = mesh.getCellCenters()[:,0]
-   >>> y = mesh.getCellCenters()[:,1]
-   >>> r1 =  -Numeric.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
-   >>> r2 =  Numeric.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
-   >>> d = Numeric.zeros((len(x),3), 'd')
-   >>> d[:,0] = Numeric.where(x >= Lx / 2, y - Ly / 5, r1)
-   >>> d[:,1] = Numeric.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
-   >>> d[:,2] = Numeric.where(Numeric.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
-   >>> argmins = Numeric.argmin(Numeric.absolute(d), axis = 1)
-   >>> answer = Numeric.take(d.flat, Numeric.arange(len(argmins))*3 + argmins)
-   >>> solution = Numeric.array(distanceVariable)
-   >>> Numeric.allclose(answer, solution, atol = 1e-1)
-   1
 
 Advect the interface and check the position.
 
@@ -101,12 +80,17 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 
-Lx = 1.
-Ly = 1.
-dx = 0.1
+L = 1.
+dx = 0.02
+velocity = 1.
+cfl = 0.1
+distanceToTravel = L / 2.
 
-nx = int(Lx / dx)
-ny = int(Ly / dx)
+nx = int(L / dx)
+ny = int(L / dx)
+steps = int(distanceToTravel / dx / cfl)
+
+timeStepDuration = cfl * dx / velocity
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
@@ -122,7 +106,7 @@ surfactantVariable = CellVariable(
     value = 1.
     )
 
-positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > Ly / 2) or (cell.getCenter()[0] > Lx / 2 and cell.getCenter()[1] > Ly / 4))
+positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > L / 2) or (cell.getCenter()[0] > L / 2 and cell.getCenter()[1] > L / 4))
 
 distanceVariable.setValue(1., positiveCells)
 
@@ -135,7 +119,24 @@ surfactantEquation = SurfactantEquation(
         tolerance = 1e-10),
     boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0),))
 
-it = Iterator((surfactantEquation,))
+advectionEquation = AdvectionEquation(
+    distanceVariable,
+    advectionCoeff = velocity,
+    solver = LinearPCGSolver(
+        tolerance = 1.e-15, 
+        steps = 1000),
+    advectionTerm = HigherOrderAdvectionTerm)
+
+it = Iterator((surfactantEquation, advectionEquation))
+
+def evaluateCoverage(phi, theta):
+    alpha = 1.5 * dx
+    delta = Numeric.where(phi > -alpha,
+                          Numeric.where(phi < alpha,
+                                        (1 - 0.5 * Numeric.cos(Numeric.pi * phi / alpha)) / (2 * alpha),
+                                        0.),
+                          0.)
+    return Numeric.sum(delta * phi.getGrad().getMag() * theta * mesh.getCellVolumes())
 
 if __name__ == '__main__':
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.001, maxVal = .001)
@@ -145,10 +146,13 @@ if __name__ == '__main__':
     surfactantViewer.plot()
 
     distanceEquation.solve()
-    raw_input()
-    it.timestep(dt = 1.)
-    
-    distanceViewer.plot()
-    surfactantViewer.plot()
+
+    for step in range(steps):
+        print evaluateCoverage(distanceVariable, surfactantVariable)
+        it.timestep(dt = timeStepDuration)
+        print 'step:',step
+
+        distanceViewer.plot()
+        surfactantViewer.plot()
 
     raw_input('finished')
