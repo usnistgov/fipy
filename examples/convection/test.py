@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:25:48 PM} 
+ #                                last update: 12/7/04 {4:48:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,6 +52,7 @@ import powerLaw1D.input
 import exponential1DSource.input
 import exponential2D.tri2Dinput
 import exponential1DSource.tri2Dinput
+import powerLaw1D.tri2Dinput
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -63,6 +64,7 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(exponential1DSource.input))
     theSuite.addTest(doctest.DocTestSuite(exponential2D.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(exponential1DSource.tri2Dinput))
+    theSuite.addTest(doctest.DocTestSuite(powerLaw1D.tri2Dinput))
     return theSuite
     
 if __name__ == '__main__':
