@@ -68,7 +68,7 @@ import Gnuplot
 
 class Gnuplot1DViewer:
     
-    def __init__(self, vars = (), title = '', varTitles = (), xlabel = '', ylabel = ''):
+    def __init__(self, vars = (), title = '', varTitles = (), xlabel = '', ylabel = '', keycoord = (1,1)):
         """
 
         Argument list:
@@ -80,7 +80,8 @@ class Gnuplot1DViewer:
         self.vars = vars
         self.varTitles = varTitles
         self.plotter = Gnuplot.Gnuplot()
-        self.plotter('set key 25, 1.5')
+        self.plotter('set size .5')
+        self.plotter('set key ' + str(keycoord[0]) + ',' + str(keycoord[1]))
         self.plotter('show key')
         self.plotter.xlabel(xlabel)
         self.plotter.ylabel(ylabel)
@@ -91,25 +92,26 @@ class Gnuplot1DViewer:
         data = ()
         i = 0
         for var in self.vars:
+
             data += (Gnuplot.Data(var.getMesh().getCellCenters()[:,0],
                                   var,
                                   title = self.varTitles[i],
-                                  with = 'lines lw 4 lt ' + str(i + 1)),)
+                                  with = 'lines lw 6 lt ' + str(i + 1)),)
             i += 1
 
-        self.plotter.plot(data[0], data[1], data[2])
+        self.plotter.plot(data[0], data[1], data[2], data[3])
 
         if '.ps' == fileName[-3:]:
-            self.plotter('set xtics 10')
-            self.plotter('set ytics .2')
+            self.plotter('set xtics 0.2')
+            self.plotter('set ytics .5')
             self.plotter('set xtics nomirror')
             self.plotter('set ytics nomirror')
-            self.plotter('set terminal postscript landscape enhanced monochrome dashed "arial" 21')
+            self.plotter('set terminal postscript landscape enhanced color dashed "arial" 15')
             self.plotter('set output "' + fileName + '"')
-            self.plotter.plot(data[0], data[1], data[2])
+            self.plotter.plot(data[0], data[1], data[2], data[3])
 ##            self.plotter.hardcopy(fileName, enhanced = 1, color = 0, fontsize = 21)
 
         elif '.pdf' == fileName[-4:]:
-            self.plotter('set terminal pdf')
+            self.plotter('set terminal pdf fsize 10')
             self.plotter('set output "' + fileName + '"')
-            self.plotter.plot(data[0], data[1], data[2])
+            self.plotter.plot(data[0], data[1], data[2], data[3])
