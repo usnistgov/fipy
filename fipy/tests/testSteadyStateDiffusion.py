@@ -7,7 +7,7 @@
 
  FILE: "test.py"
                                    created: 11/10/03 {3:23:47 PM}
-                               last update: 11/20/03 {3:40:06 PM} 
+                               last update: 11/20/03 {4:57:42 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
    mail: NIST
@@ -41,14 +41,13 @@ they have been modified.
 """
 
 import unittest
-from grid2D import Grid2D
-from diffusionEquation import DiffusionEquation
-from linearPCGSolver import LinearPCGSolver
-from fixedValue import FixedValue
-from fixedFlux import FixedFlux
-from initialCondition import InitialCondition
-from iterator import Iterator
-from variable import Variable
+from meshes.grid2D import Grid2D
+from equations.diffusionEquation import DiffusionEquation
+from solvers.linearPCGSolver import LinearPCGSolver
+from boundaryConditions.fixedValue import FixedValue
+from boundaryConditions.fixedFlux import FixedFlux
+from iterators.iterator import Iterator
+from variables.variable import Variable
 
 class TestSteadyStateDiffusion(unittest.TestCase):
     def setUp(self):
@@ -61,7 +60,7 @@ class TestSteadyStateDiffusion(unittest.TestCase):
         self.var = Variable(
             name = "concentration",
             mesh = self.mesh,
-            initialConditions = (InitialCondition(self.mesh.getCells(),self.valueLeft),),
+	    value = self.valueLeft,
             viewer = 'None')
 
         self.eq = DiffusionEquation(
