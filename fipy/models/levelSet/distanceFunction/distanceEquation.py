@@ -106,6 +106,7 @@ class DistanceEquation(Equation):
         self._calcNumericQuantities()
 
     def solve(self):
+        
         setValueFlag = self._calcInterfaceValues()
         setValueFlag = self._calcInitialTrialValues(setValueFlag)
         self._calcRemainingValues(setValueFlag)
@@ -157,7 +158,7 @@ class DistanceEquation(Equation):
         
         N = self.mesh.getNumberOfCells()
         M = self.mesh.getMaxFacesPerCell()
-        
+
         cellZeroFlag = Numeric.take(self.var.getInterfaceFlag(), self.mesh.getCellFaceIDs())
         
         dAP = self.mesh.getCellToCellDistances()
@@ -172,7 +173,7 @@ class DistanceEquation(Equation):
         s = distance[:,0]
         t = distance[:,1]
 
-        sign = Numeric.array(-1 + 2 * (self.var > 0))
+        sign = -1 + 2 * (Numeric.array(self.var) > 0)
 
         signedDistance = MA.where(s.mask(),
                                  self.var,
@@ -196,6 +197,7 @@ class DistanceEquation(Equation):
 
 ##        self.var.setValue(MA.where(cellFlag > 0, distance, self.var))
         self.var.setValue(signedDistance)
+
         return Numeric.where(cellFlag > 0, 1, 0)
     
     def _calcLinear(self, phi, d, cellID, adjCellID):

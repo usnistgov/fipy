@@ -122,6 +122,7 @@ class AdvectionTerm(Term):
         self.L = SparseMatrix(size = NCells)
         
     def buildMatrix(self, oldArray, coeffScale = None, varScale = None, dt = None):
+
         NCells = self.mesh.getNumberOfCells()
         NCellFaces = self.mesh.getMaxFacesPerCell()
 
@@ -139,8 +140,9 @@ class AdvectionTerm(Term):
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
 
-        coeffXdiffereneces = self.coeff * ((self.coeff > 0.) * minsq + (self.coeff < 0.) * maxsq)
-        
+        coeff = Numeric.array(self.coeff)
+        coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
+
         return (self.L, -coeffXdiffereneces * self.mesh.getCellVolumes())
         
     def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
