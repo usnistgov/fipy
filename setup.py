@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/2/04 {2:44:01 PM} 
+ #                                last update: 11/2/04 {4:44:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -187,16 +187,17 @@ class build_docs (Command):
 
     def run (self):
 
-        restructuredTextFiles = ['INSTALLATION',
-                                 'README',
-                                 'CREDITS',
-                                 'TALKS',
-                                 'TODOLIST',
-				 'LICENSE',
-				 'DISCLAIMER',
-				 'MAIL',
-				 'examples/README']
+        mainRestructuredTextFiles = ['INSTALLATION',
+				     'README',
+				     'LICENSE',
+				     'DISCLAIMER',
+				     'examples/README']
         
+	secondaryRestructuredTextFiles = ['CREDITS',
+					  'TALKS',
+					  'TODOLIST',
+					  'MAIL']
+
 	if self.latex:
 	    if self.apis:
 		self._buildTeXAPIs()
@@ -233,11 +234,17 @@ class build_docs (Command):
             
 	    from utils.includedLaTeXWriter import IncludedLaTeXWriter
 	    
-            self._translateTextFiles(files = restructuredTextFiles,
+            self._translateTextFiles(files = mainRestructuredTextFiles,
                                      source_dir = '../..',
                                      writer = IncludedLaTeXWriter(),
                                      settings ={'use_latex_toc': True,
                                                 'footnote_references': 'superscript'})
+
+	    self._translateTextFiles(files = secondaryRestructuredTextFiles,
+				     source_dir = '..',
+				     writer = IncludedLaTeXWriter(),
+				     settings ={'use_latex_toc': True,
+						'footnote_references': 'superscript'})
 
 
 	    if self.guide:
@@ -261,13 +268,22 @@ class build_docs (Command):
 
 	    from utils.includedHTMLWriter import IncludedHTMLWriter
 	    
-            self._translateTextFiles(files = restructuredTextFiles,
+            self._translateTextFiles(files = mainRestructuredTextFiles,
                                      destination_dir = dir,
                                      writer = IncludedHTMLWriter(),
                                      settings = {'initial_header_level' : 3,
                                                  'stylesheet' : 'ctcms.css',
 						 'xml_declaration' : 0},
                                      ext = '.html')
+
+	    self._translateTextFiles(files = secondaryRestructuredTextFiles,
+	                             source_dir = "documentation",
+				     destination_dir = dir,
+				     writer = IncludedHTMLWriter(),
+				     settings = {'initial_header_level' : 3,
+						 'stylesheet' : 'ctcms.css',
+						 'xml_declaration' : 0},
+				     ext = '.html')
 
             import shutil
             shutil.move(os.path.join(dir, 'readme.html'), os.path.join(dir, 'index.html'))
