@@ -85,15 +85,10 @@ class ConvectionCoeff(VectorFaceVariable):
     def __init__(self, distanceVar):
         VectorFaceVariable.__init__(self, distanceVar.getMesh(), name = 'surfactant convection')
         self.distanceVar = self.requires(distanceVar)
-        
+
     def _calcValue(self):
-        v1 = self._calcValue1()
-        self.value = v1
-##        v2 = self._calcValue2()
-##        id1 = self.mesh.getAdjacentCellIDs()[0]
-##        faceCellNormals = Numeric.take(cellNormal, id1)
-        
-        
+        self.value = self._calcValue2()
+
     def _calcValue3(self):
          ## interior faces
         faceGrad = self.distanceVar.getFaceGrad()
