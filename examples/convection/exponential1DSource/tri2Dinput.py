@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:02:23 PM} 
+ #                                last update: 7/23/04 {5:02:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -76,6 +76,7 @@ The analytical solution test for this problem is given by:
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
 from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms.scSourceTerm import ScSourceTerm
@@ -115,7 +116,7 @@ eq = SteadyConvectionDiffusionScEquation(
     diffusionCoeff = diffCoeff,
     convectionCoeff = convCoeff,
     sourceCoeff = sourceCoeff,
-    solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000),
+    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
     convectionScheme = ExponentialConvectionTerm,
     boundaryConditions = boundaryConditions
     )
