@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/29/04 {4:23:15 PM} 
+ #                                last update: 10/30/04 {10:00:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -273,19 +273,31 @@ class build_docs (Command):
 
         if self.upload:
 
-            wwwhost = 'lurch:/u/WWW/wd15/fipy/'
+	    wwwhost = 'dromio.nist.gov:/u/WWW/wd15/fipy/'
 
+	    print "setting group and ownership of manuals..."
 	    os.system('chgrp -R pfm documentation/manual/fipy.pdf')
 	    os.system('chmod -R g+w documentation/manual/reference.pdf')
+	    os.system('chmod -R g+w documentation/manual/reference.pdf')
+	    os.system('chgrp -R pfm documentation/manual/fipy.pdf')
+	    os.system('chmod -R g+w dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
+	    os.system('chgrp -R pfm dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
+	    
+	    print "linking manuals to website..."
 	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/')
 	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/')
+	    os.system('ln -sf ../../../dist/FiPy-%s.tar.gz documentation/www/download/'%self.distribution.metadata.get_version())
 	    
+	    print "setting group and ownership of web pages..."
 	    os.system('chgrp -R pfm documentation/www/')
 	    os.system('chmod -R g+w documentation/www/')
+	    
+	    print "uploading web pages..."
 	    os.system('rsync -aLC -e ssh %s %s'%('documentation/www/',wwwhost))
 
-            print "\nBe sure to run updatewww on lurch to make webpages accessible"
-            
+	    print "activating web pages..."
+	    os.system('ssh dromio.nist.gov "ssh lurch updatewww"')
+
                 
     # run()
 
