@@ -43,9 +43,9 @@
 
 """
 
-The `MetalIonDiffusionEquation` solves the diffusion of the metal
-species with a source term at the electrolyte interface. The governing
-equation is given by,
+The `SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
+species with a source term for the jump from the bulk to an interface.
+The governing equation is given by,
 
 .. raw:: latex
 
@@ -58,103 +58,74 @@ where,
     $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
     $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
 
-The velocity of the interface generally has a linear dependence on ion
-concentration. The following boundary condition applies at the zero
-level set,
+The jump condition at the interface is defined by Langmuir
+adsorption. Langmuir adsorption essentially states that the ability for
+a species to jump from an electrolyte to an interface is proportional to
+the concentration in the electrolyte, available site density and a
+jump coefficient. The boundary condition at the interface is given by
 
 .. raw:: latex
 
-    $$ D \\hat{n} \\cdot \\nabla c = \\frac{v(c)}{\\Omega} \;\; \\text{at} \;\; \\phi = 0$$ 
+    $$ D \\hat{n} \\cdot \\nabla c = -k c (1 - \\theta) \;\; \\text{at} \;\; \\phi = 0$$
 
-where
-
-.. raw:: latex
-
-    $$ v(c) = c V_0 $$
-
-The test case below is for a 1D steady state problem. The solution is
-given by:
-
-.. raw:: latex
-
-    $$ c(x) = \\frac{c^{\\infty}}{\Omega D / V_0 + L}\\left(x - L\\right) + c^{\\infty} $$
-
-This is the test case,
-
-   >>> import Numeric
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> nx = 11
-   >>> dx = 1.
-   >>> mesh = Grid2D(nx = nx, ny = 1, dx = dx, dy = 1)
-   >>> from fipy.variables.cellVariable import CellVariable
-   >>> ionVar = CellVariable(mesh = mesh, value = 1)
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-   >>> disVar = DistanceVariable(mesh = mesh, value = Numeric.arange(11) - 0.99)
-
-   >>> v = 1.
-   >>> diffusion = 1.
-   >>> omega = 1.
-   >>> cinf = 1.
-   >>> from fipy.boundaryConditions.fixedValue import FixedValue
-   >>> eqn = MetalIonDiffusionEquation(ionVar,
-   ...                                 distanceVariable = disVar,
-   ...                                 depositionRate = v * ionVar,
-   ...                                 diffusionCoeff = diffusion,
-   ...                                 metalIonAtomicVolume = omega,
-   ...                                 boundaryConditions = (
-   ...                                     FixedValue(mesh.getFacesRight(), cinf),))
-   >>> for i in range(10):
-   ...     eqn.solve(dt = 1000)
-   >>> L = (nx - 1) * dx - dx / 2
-   >>> gradient = cinf / (omega * diffusion / v + L)
-   >>> answer = gradient * (mesh.getCellCenters()[:,0] - L - dx * 3 / 2) + cinf
-   >>> answer[0] = 1
-   >>> Numeric.allclose(answer, Numeric.array(ionVar))
-   1
-   
 """
 
 __docformat__ = 'restructuredtext'
 
+import Numeric
 
-from fipy.equations.matrixEquation import MatrixEquation
-from fipy.terms.transientTerm import TransientTerm
+from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import LevelSetDiffusionEquation
 from fipy.terms.spSourceTerm import SpSourceTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from metalIonSourceVariable import MetalIonSourceVariable
-from metalIonDiffusionVariable import MetalIonDiffusionVariable
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.terms.scSourceTerm import ScSourceTerm
+from fipy.variables.cellVariable import CellVariable
 
-class MetalIonDiffusionEquation(MatrixEquation):
+class AdsorptionCoeff(CellVariable):
+    def __init__(self, rateConstant = None, distanceVar = None):
+        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        self.distanceVar = self.requires(distanceVar)
+        self.rateConstant = rateConstant
+
+    def _calcValue(self):
+        self.value = self.rateConstant * self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+
+class ScAdsorptionCoeff(AdsorptionCoeff):
+    def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
+        AdsorptionCoeff.__init__(self, rateConstant = rateConstant, distanceVar = distanceVar)
+        self.bulkVar = self.requires(bulkVar)
+        self.surfactantVar = self.requires(surfactantVar)
+    
+    def _calcValue(self):
+        AdsorptionCoeff._calcValue(self)
+        bulk = Numeric.array(self.bulkVar)
+        val = Numeric.array(self.value)
+        self.value = val * bulk * self.surfactantVar.getInterfaceValue()
+
+class SurfactantBulkDiffusionEquation(LevelSetDiffusionEquation):
     
     def __init__(self,
                  var,
-                 distanceVariable = None,
-                 depositionRate = 1,
-                 diffusionCoeff = 1,
-                 transientCoeff = 1,
-                 metalIonAtomicVolume = 1,
-                 solver = LinearPCGSolver(tolerance = 1.e-15,
-                                          steps = 1000),
+                 distanceVar = None,
+                 surfactantVar = None,
+                 diffusionCoeff = None,
+                 transientCoeff = 1.,
+                 rateConstant = None,
                  boundaryConditions = ()):
         """
         
-        A `MetalIonDiffusionEquation` is instantiated with the
+        A `SurfactantBulkDiffusionEquation` is instantiated with the
         following arguments,
 
-        `var` - The metal ion concentration variable.
+        `var` - The bulk surfactant concentration variable.
 
-        `distanceVariable` - A `DistanceVariable` object
+        `distanceVar` - A `DistanceVariable` object
 
-        `depositionRate` - A float or a `CellVariable` representing the interface deposition rate.
+        `surfactantVariable` - A `SurfactantVariable` object
 
         `diffusionCoeff` - A float or a `FaceVariable`.
 
         `transientCoeff` - In general 1 is used.
 
-        `metalIonAtomicVolume` - Atomic volume of the metal ions.
-
-        `solver` - A given solver.
+        `jumpRate` - The adsorption coefficient.
 
         `boundaryConditions` - A tuple of `BoundaryCondition` objects.
 
@@ -162,32 +133,22 @@ class MetalIonDiffusionEquation(MatrixEquation):
         
         mesh = var.getMesh()
 
-	terms = (
-            
-	    TransientTerm(transientCoeff, mesh),
-            
-	    ImplicitDiffusionTerm(MetalIonDiffusionVariable(distanceVariable,
-                                                            diffusionCoeff),
-                                  mesh,
-                                  boundaryConditions),
-            
-            SpSourceTerm(MetalIonSourceVariable(ionVar = var,
-                                                distanceVariable = distanceVariable,
-                                                depositionRate = depositionRate,
-                                                metalIonAtomicVolume = metalIonAtomicVolume),
-                         mesh),
-            
-            )
+        spSourceTerm = SpSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
+                                                    distanceVar = distanceVar),
+                                    mesh)
 
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
+        scSourceTerm = ScSourceTerm(ScAdsorptionCoeff(bulkVar = var,
+                                                      surfactantVar = surfactantVar,
+                                                      rateConstant = rateConstant,
+                                                      distanceVar = distanceVar),
+                                    mesh)
+        
+        LevelSetDiffusionEquation.__init__(self,
+                                           var,
+                                           distanceVar = distanceVar,
+                                           diffusionCoeff = diffusionCoeff,
+                                           transientCoeff = transientCoeff,
+                                           boundaryConditions = boundaryConditions,
+                                           otherTerms = (scSourceTerm, spSourceTerm))
+           
 
-def _test(): 
-    import doctest
-    return doctest.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
