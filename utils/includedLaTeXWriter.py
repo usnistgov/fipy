@@ -4,7 +4,7 @@
  # 
  #  FILE: "includedLaTeXWriter.py"
  #                                    created: 9/29/04 {11:38:07 AM} 
- #                                last update: 9/29/04 {11:40:23 AM} 
+ #                                last update: 10/27/04 {2:45:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,30 @@ from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
 from docutils import languages
 
 class NotStupidLaTeXTranslator(LaTeXTranslator):
-    pass
+    import re
+    externalNISThref = re.compile(r"http://www\.nist\.gov/cgi-bin/exit_nist\.cgi\?url=(.*)")
+    
+    def visit_reference(self, node):
+	# BUG: hash_char "#" is trouble some in LaTeX.
+	# mbox and other environment do not like the '#'.
+	hash_char = '\\#'
+	if node.has_key('refuri'):
+	    href = node['refuri'].replace('#',hash_char)
+	elif node.has_key('refid'):
+	    href = hash_char + node['refid']
+	elif node.has_key('refname'):
+	    href = hash_char + self.document.nameids[node['refname']]
+	else:
+	    raise AssertionError('Unknown reference.')
+	
+	# It doesn't make any sense to redirect external 
+	# web pages through a NIST disclaimer page
+	# when linked from a PDF document.
+	externalMatch = self.externalNISThref.match(href)
+	if externalMatch:
+	    href = externalMatch.group(1)
+	    
+	self.body.append('\\href{%s}{' % href)
 
 class IncludedLaTeXWriter(LaTeXWriter):
     def write(self, document, destination):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/16/04 {12:30:31 AM} 
+ #                                last update: 10/27/04 {4:23:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -192,6 +192,7 @@ class build_docs (Command):
                                  'TODOLIST',
 				 'LICENSE',
 				 'DISCLAIMER',
+				 'MAIL',
 				 'examples/README']
         
 	if self.latex:

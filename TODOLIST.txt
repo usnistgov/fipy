@@ -7,8 +7,6 @@ Release goals 0.1
 
 - Documentation:
 
-  * Manual and web site WERBed.
-  * Review Process.
   * Some of the pickled data for the test cases requires a
     scipy installation and thus users without scipy have test failures.
     This data should be independent of scipy???
@@ -137,8 +135,8 @@ Long term Goals
   * Write a paper on FiPy.
 
 
-.. _SourceForge CVS repository:       http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _SourceForge CVS repository:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
 .. _Steve:                            mailto:slanger@nist.gov
 .. _Konrad Hinsen:                    mailto:hinsen@cnrs-orleans.fr
-.. _Roman Geus:                       http://people.web.psi.ch/geus/
+.. _Roman Geus:                       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 

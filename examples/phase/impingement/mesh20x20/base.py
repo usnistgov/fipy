@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 10/27/04 {9:44:49 AM}
+ #                                last update: 10/27/04 {5:34:34 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -243,5 +243,9 @@ The preceding initialization steps are used in the next few examples.
 __docformat__ = 'restructuredtext'
 
 def script():
+    """
+    Return the documentation for this module as a script that can be
+    invoked to initialize other scripts.
+    """
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.getScript(__name__)

@@ -13,10 +13,10 @@ CONTRIBUTORS
 
 `Jim Warren`_ 
     is a member of the research staff of the `Metallurgy Division`_ and the
-    Director of |CTCMS| of |MSEL| at |NIST|.  Jim is responsible for the
-    oversight and management of |FiPy|.  Jim is interested in a variety of
-    problems, including the phase field modeling of solidification,
-    polycrystalline solids, and the electrochemical interface.
+    Director of |CTCMS| of |MSEL| at |NIST|.  Jim is interested in a
+    variety of problems, including the phase field modeling of
+    solidification, polycrystalline solids, and the electrochemical
+    interface.
 
 Alex Mont
     is a student at `Montgomery Blair High School`_.  Alex developed the
@@ -37,7 +37,7 @@ Alex Mont
 .. _Metallurgy Division:                                           http://www.metallurgy.nist.gov/
 .. _National Institute of Standards and Technology:                http://www.nist.gov/
 
-.. _Montgomery Blair High School:                                  http://www.mbhs.edu/
+.. _Montgomery Blair High School:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.mbhs.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler

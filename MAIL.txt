@@ -1,0 +1,25 @@
+------------
+Mailing List
+------------
+
+In order to discuss |FiPy| with other users and with the developers, 
+we encourage you to sign up for the mailing list by sending a
+`subscription email <mailto:listproc@nist.gov?&body=subscribe%20fipy%20!!!YOUR%20NAME%20HERE!!!>`__:
+
+    To:
+	``listproc@nist.gov``
+
+    Subject:
+	*(optional)*
+
+    Body:
+	``subscribe fipy`` *Your Name*
+
+Once you are subscribed, you can post messages to the list simply by
+addressing email to mailto:fipy@nist.gov.
+
+.. include:: utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+

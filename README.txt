@@ -50,7 +50,7 @@ Support
 
 |FiPy| is being actively developed and supported.  Please use the `tracking
 system`_ for bugs, support requests, feature requests and patch
-submissions.  A `discussion forum`_ is also available.  We are also seeking
+submissions.  A `mailing list`_ is also available.  We are also seeking
 collaborative efforts on this project.
 
 ------------------------
@@ -129,11 +129,11 @@ or a
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
 .. _NIST:                 http://www.nist.gov/
-.. _Python:               http://www.python.org/
-.. _CVS:                  http://cvs.sourceforge.net/viewcvs.py/fipy/
-.. _compressed archive:   http://sourceforge.net/project/showfiles.php?group_id=118428
-.. _tracking system:      http://sourceforge.net/tracker/?group_id=118428&atid=681142
-.. _discussion forum:     http://sourceforge.net/forum/?group_id=118428
+.. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+.. _CVS:                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _compressed archive:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=118428
+.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/tracker/?group_id=118428
+.. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 
 .. include:: utils/include.txt
 

@@ -4,7 +4,7 @@
  # 
  #  FILE: "includedHTMLWriter.py"
  #                                    created: 9/29/04 {11:41:20 AM} 
- #                                last update: 9/29/04 {11:47:46 AM} 
+ #                                last update: 10/27/04 {11:20:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,9 @@ Any changes to the contents should be made in the file '""" + document.attribute
 -->
 """)
 	
+	self.body_prefix.insert(0, r"""<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+""")
+
 	dir = os.path.join('documentation', 'www')
 
 	headObj = open(os.path.join(dir, 'head.html'))
