@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 7/14/04 {3:22:52 PM} 
+ #                                last update: 7/30/04 {6:46:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,6 +62,8 @@ class ConvectionTerm(FaceTerm):
 	    diffCoeff = 1e-20
 	else:
 	    diffCoeff = self.diffusionTerm.getCoeff()
+	    if diffCoeff == 0.:
+		diffCoeff = 1e-20
 
 	P = -self.coeff / diffCoeff
 	
