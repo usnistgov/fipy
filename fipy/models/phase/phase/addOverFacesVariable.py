@@ -137,7 +137,7 @@ class AddOverFacesVariable(CellVariable):
               contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
               areaProjections = Numeric.array(self.mesh.getAreaProjections()),
               faceGradient = Numeric.array(faceGradient),
-              faceVariable = faceVariable.getNumericValue()[:],
+              faceVariable = self.faceVariable.getNumericValue()[:],
               ids = Numeric.array(ids),
               value = self._getArray(),
               orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
