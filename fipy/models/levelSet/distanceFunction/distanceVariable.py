@@ -79,6 +79,26 @@ A 1D test case with very small dimensions.
    >>> Numeric.allclose(answer, var)
    1
 
+A 2D test case to test _calcTrialValue for a pathological case.
+
+   >>> dx = 1.
+   >>> dy = 2.
+   >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
+   >>> var.calcDistanceFunction()
+   >>> vbl = -dx * dy / Numeric.sqrt(dx**2 + dy**2) / 2.
+   >>> vbr = dx / 2
+   >>> vml = dy / (Numeric.sqrt(2) * 2.)
+   >>> crossProd = dx * dy
+   >>> dsq = dx**2 + dy**2
+   >>> top = vbr * dx**2 + vml * dy**2
+   >>> sqrt = crossProd**2 *(dsq - (vbr - vml)**2)
+   >>> sqrt = Numeric.sqrt(max(sqrt, 0))
+   >>> vmr = (top + sqrt) / dsq
+   >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
+   >>> Numeric.allclose(answer, var)
+   1
+
 The `extendVariable` method solves the following equation for a given
 extensionVariable.
 
@@ -188,6 +208,7 @@ class DistanceVariable(CellVariable):
         sign = (self.value > 0) * 2 - 1
         s = distances[:,0]
         t = distances[:,1]
+        
         signedDistance = MA.where(s.mask(),
                                   self.value,
                                   MA.where(t.mask(),
@@ -246,8 +267,6 @@ class DistanceVariable(CellVariable):
 
         self.value = Numeric.array(self.value)
 
-        
-
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.cellToCellIDs[id]
         adjEvaluatedFlag = Numeric.take(evaluatedFlag, adjIDs)
@@ -257,36 +276,51 @@ class DistanceVariable(CellVariable):
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[id, indices[0]]
         v0 = self.value[adjIDs[indices[0]]]
-        e0 = extensionVariable[adjIDs[indices[0]]]
-                              
+        e0 = extensionVariable[adjIDs[indices[0]]]                             
         N = Numeric.sum(adjEvaluatedFlag)
 
+        index0 = indices[0]
+        index1 = indices[1]
+        index2 = indices[2]
+        
+        if N > 1:
+            n0 = self.cellNormals[id, index0]
+            n1 = self.cellNormals[id, index1]
+            cross = (n0[0] * n1[1] - n0[1] * n1[0])
+            
+            if abs(cross) < 0.1:
+                if N == 2:
+                    N = 1
+                elif N == 3:
+                    index1 = index2
         if N == 0:
             raise Error 
         elif N == 1:
             return v0 + sign * d0, e0
         else:
-            d1 = self.cellToCellDistances[id, indices[1]]
-            n0 = self.cellNormals[id, indices[0]]
-            n1 = self.cellNormals[id, indices[1]]
-            v1 = self.value[adjIDs[indices[1]]]
-
-            dotProd = d0 * d1 * Numeric.dot(n0, n1)
+            d1 = self.cellToCellDistances[id, index1]
+            n0 = self.cellNormals[id, index0]
+            n1 = self.cellNormals[id, index1]
+            v1 = self.value[adjIDs[index1]]
+            
             crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
+            dotProd = d0 * d1 * Numeric.dot(n0, n1)
             dsq = d0**2 + d1**2 - 2 * dotProd
             
             top = -v0 * (dotProd - d1**2) - v1 * (dotProd - d0**2)
             sqrt = crossProd**2 *(dsq - (v0 - v1)**2)
             sqrt = Numeric.sqrt(max(sqrt, 0))
 
+
+
             dis = (top + sign * sqrt) / dsq
 
             ## extension variable
 
-            e1 = extensionVariable[adjIDs[indices[1]]]
-            a0 = self.cellAreas[id, indices[0]]
-            a1 = self.cellAreas[id, indices[1]]
-            
+            e1 = extensionVariable[adjIDs[index1]]
+            a0 = self.cellAreas[id, index0]
+            a1 = self.cellAreas[id, index1]
+
             if self.value[id] > 0:
                 phi = max(dis, 0)
             else:
@@ -294,7 +328,7 @@ class DistanceVariable(CellVariable):
 
             n0grad = a0 * abs(v0 - phi) / d0
             n1grad = a1 * abs(v1 - phi) / d1
-
+            
             return dis, (e0 * n0grad + e1 * n1grad) / (n0grad + n1grad)
 
     def getCellInterfaceAreas(self):
