@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+    color: black;
+    background: white url(img/sidebar.gif) left top no-repeat;
+}
+
+table {
+    width: 100%;
+    margin: 0;
+}
+
+table td {
+    text-align: center;
+    padding: 0;
+    border-width: 0;
+}
+
+a {
+    color: #002E4F;
+    text-decoration: underline;
+}
+    
+a:hover {
+    color: #C5DAE3;
+}
+
+div#logo {
+    position: absolute;
+    top: 45px;
+    left: 70px;
+    width: 110px;
+}
+
+div#MSEL {
+    margin-left: 180px;
+    margin-top: 22px;
+    font-size: 75%;
+    font-weight: bold;
+}
+
+div#MSEL a {
+    color: black;
+    text-decoration: none;
+}
+
+div#MSEL a:hover {
+    color: #C5DAE3;
+}
+
+
+div#CTCMS {
+    margin-left: 180px;
+    margin-top: 10px;
+    background: url("img/topline2.gif") transparent;
+}
+
+div#main {
+    margin-left: 180px;
+}
+
+div#main p {
+    width: 60%;
+}
+
+div#main div.header1 {
+    text-align: center;
+    font-family: Berkeley, Garamond , "Times New Roman", serif;
+    font-size: 130%;
+    font-weight: normal;
+    font-style: normal;
+    color: black;
+    padding-top: 10px;
+}
+
+div#main div.header2 {
+    width: 60%;
+    text-align: center;
+    font-weight: bold;
+}
+
+div#group {
+    width: 60%;
+    color: #FB4A04;
+    font-style: normal;
+    font-weight: lighter;
+    font-size: 130%;
+    font-family: Garamond, Palatino, Times, "Times New Roman", serif;
+}
+
+div#topmenu {
+    position: absolute;
+    top: 0;
+    left: 180px;
+    height: 22px;
+    background: #7FA4B6;
+}
+
+div#topmenu table {
+    width: 235px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 2px;
+}
+
+div#topmenu td {
+    vertical-align: middle;
+    font-family : Arial, Helvetica, sans-serif;
+    height: 18px;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-right: 2px solid black;
+}
+
+div#topmenu td#right {
+    border-right: 0;
+}
+
+div#topmenu a {
+    font-weight : bold;
+    font-size: 70%;
+}
+
+div#topmenu a:visited {
+    color: #ffffff;
+}
+div#topmenu a:link {
+    color: #ffffff;	
+}
+div#topmenu a:hover {
+    color: #C5DAE3;
+}
+
+div#NIST {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+div#leftmenu {
+    position: absolute;
+    top: 200px;
+    left: 52px;
+}
+
+div#leftmenu table {
+    font-family : Arial, Helvetica, sans-serif;
+    color: #7EA3B5;
+    font-weight : normal;
+    font-size: 90%;
+    font-style: normal;   
+    width: 128px;
+}
+
+div#leftmenu td, th {
+    text-align: left;
+}
+
+div#leftmenu th {
+    font-weight: bold;
+    height: 5ex;
+}
+
+div#footer {
+    background: #C5DAE4;
+    vertical-align: middle;
+}
+
+div#Commerce {
+    position: relative;
+    left: 180px;
+    background: #7FA4B6;
+    padding-left: 3em;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: white;
+    font-size: 70%;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    vertical-align: middle;
+}
+
+div#update {
+    text-align: center;
+    font-size: 70%;
+    font-family: Arial,Helvetica,sans-serif;
+    margin-top: 2ex;
+}
+
+div.credits {
+    margin-top: 2ex;
+}
