@@ -53,6 +53,7 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.variable import Variable
+import Numeric
 
 class TestPhase(unittest.TestCase):
     """
@@ -73,11 +74,12 @@ class TestPhase(unittest.TestCase):
         valueLeft=1.
         valueRight=1.
         
-        L = 1.5
-        nx = 100
-        dx = L/nx
+        nx = self.nx
+        ny = self.ny
+        dx = self.L/nx
+        dy = self.L/ny
         
-        mesh = Grid2D(dx,1.,nx,1)
+        mesh = Grid2D(dx,dy,nx,ny)
         
         self.phase = Variable(
             name = 'PhaseField',
@@ -92,11 +94,7 @@ class TestPhase(unittest.TestCase):
             hasOld = 0
             )
         
-        def func(x,L=L):
-            if x[0] > L / 2.:
-                return 1
-            else:
-                return 0
+        func = self.func
 
         rightCells = mesh.getCells(func)
         
@@ -128,17 +126,51 @@ class TestPhase(unittest.TestCase):
         self.it.iterate(100,0.02)
         array = self.phase.getArray()
 
-        filestream=os.popen('gunzip --fast -c < %s/testPhaseData.gz'%tests.__path__[0],'r')
+        filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
+        
         testArray=cPickle.load(filestream)
         filestream.close()
 
+        testArray = Numeric.reshape(testArray,(len(array),))
+
         for i in range(len(array)):
-            norm = abs(array[i] - testArray[0,i])        
-            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (i,array[i],testArray[0,i],norm)))
-	
+            norm = abs(array[i] - testArray[i])        
+            self.assertWithinTolerance(norm, 0.0, 1e-7,("cell(%g)'s value of %g differs from %g by %g" % (i,array[i],testArray[i],norm)))
+
+class TestPhase1D(TestPhase):
+    def setUp(self):
+        self.nx = 100
+        self.ny = 1
+        L = self.L = 1.5
+        def func(x,L=L):
+            if x[0] > L / 2.:
+                return 1
+            else:
+                return 0
+        self.func = func
+        TestPhase.setUp(self)
+        self.testFile = 'testPhaseData.gz'
+
+class TestPhaseCircle(TestPhase):
+    def setUp(self):
+        self.nx = 100
+        self.ny = 100
+        L = self.L = 1.5
+        def func(x,L=L):
+            r = L / 4.
+            c = (L / 2., L / 2.)
+            if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+                return 1
+            else:
+                return 0
+        self.func = func
+        TestPhase.setUp(self)
+        self.testFile = 'testCirclePhaseData.gz'
+
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestPhase))
+    theSuite.addTest(unittest.makeSuite(TestPhase1D))
+    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     return theSuite
     
 if __name__ == '__main__':

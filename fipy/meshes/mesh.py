@@ -132,3 +132,37 @@ class Mesh:
         for i in range(N):
             orientations = self.faces[i].getOrientation()
         return orientations
+
+    def getMaxFacesPerCell(self):
+        pass
+    
+    def getCellFaceOrientations(self):
+        return self.cellFaceOrientations
+
+    def calcCellFaceOrientations(self,cells):
+        N = len(cells)
+        M = self.getMaxFacesPerCell()
+        self.cellFaceOrientations = Numeric.zeros((N,M))
+        for i in range(N):
+            orientations = cells[i].getFaceOrientations()
+            orientations = Numeric.reshape(orientations,(len(cells[i].getFaces()),))
+            for j in range(len(orientations)):
+                self.cellFaceOrientations[i,j] = orientations[j]
+
+    def getCellFaceIDs(self):
+        return (self.cellFaceIDs,self.cellFaceIDIndices)
+
+    def calcCellFaceIDs(self,cells):
+	for cell in cells:
+	    cell.calcFaceIDs()
+        self.cellFaceIDs = ()
+        self.cellFaceIDIndices = ()
+        for i in range(len(cells)):
+            cell = cells[i]
+            ids = cell.getFaceIDs()
+            self.cellFaceIDs += ids
+            for j in range(len(ids)):
+                self.cellFaceIDIndices += (i*self.getMaxFacesPerCell() + j,)
+
+        self.cellFaceIDIndices = Numeric.array(self.cellFaceIDIndices)
+        

@@ -79,7 +79,7 @@ valueLeft=1.
 valueRight=1.
 
 L = 1.5
-nx = 10
+nx = 20
 dx = L/nx
 
 mesh = Grid2D(dx,dx,nx,nx)
@@ -127,10 +127,10 @@ eq = PhaseEquation(
 
 it = Iterator((eq,))
 
-# fudge = calibrate_profiler(10000)
-# profile = Profiler('profile', fudge=fudge)
-it.iterate(10,0.02)
-# profile.stop()
+#fudge = calibrate_profiler(10000)
+#profile = Profiler('profile', fudge=fudge)
+it.iterate(1,0.02)
+#profile.stop()
 
 print phase.getArray()
 

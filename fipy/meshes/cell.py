@@ -147,7 +147,12 @@ class Cell:
     def getFaceIDs(self):
 	return self.faceIDs
 	
+#    def calcFaceIDs(self):
+#	self.faceIDs = Numeric.zeros(len(self.faces))
+#	for i in range(len(self.faces)):
+#	    self.faceIDs[i] = self.faces[i].getId()
+            
     def calcFaceIDs(self):
-	self.faceIDs = Numeric.zeros(len(self.faces))
+	self.faceIDs = ()
 	for i in range(len(self.faces)):
-	    self.faceIDs[i] = self.faces[i].getId()
+	    self.faceIDs += (self.faces[i].getId(),)

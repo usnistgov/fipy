@@ -133,6 +133,8 @@ class PhaseEquation(MatrixEquation):
 
         sp += (2*s + epsilon**2 * thetaMag) * thetaMag
 
+        aa = (2*s + epsilon**2 * thetaMag) * thetaMag
+
         ## anisotropy
 
 ##        z = Numeric.atan2(self.dphi[:,1],self.dphi[:,0]);

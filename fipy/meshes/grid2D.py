@@ -237,7 +237,9 @@ class Grid2D(Mesh):
 		    
 		    
 	self.calcCellVolumes(cells)
-	self.calcCellFaceIDs(cells)	
+	self.calcCellFaceIDs(cells)
+        self.calcCellFaceOrientations(cells)
+
 
 	return cells
 
@@ -350,10 +352,6 @@ class Grid2D(Mesh):
 	for i in range(N):
 	    self.faceAreas[i] = faces[i].getArea()
 	    
-    def calcCellFaceIDs(self, cells):
-	for cell in cells:
-	    cell.calcFaceIDs()
-	    
     def getAreaProjections(self):
 	return self.areaProjections
 	
@@ -376,4 +374,10 @@ class Grid2D(Mesh):
     def getFaceTangents2(self):
         return self.faceTangents2
 
+    def getMaxFacesPerCell(self):
+        return 4
+
+
+                
+        
 
