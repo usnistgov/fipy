@@ -274,7 +274,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                  rateConstant = None,
                  otherVar = None,
                  otherBulkVar = None,
-                 otherRateConstant = None):
+                 otherRateConstant = None,
+                 consumptionRateConstant = None,
+                 depositionRate = None):
 
         SurfactantEquation.__init__(self, distanceVar = distanceVar)
 
@@ -302,6 +304,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         scMaxCoeff = ScMaxCoeff(distanceVar, vars)
 
         self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
+
+        if consumptionRateConstant is not None:
+            self.eq += DependentSourceTerm(depositionRate * consumptionRateConstant)
 
     def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
         for coeff in self.coeffs:
