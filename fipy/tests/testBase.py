@@ -39,6 +39,7 @@
 import unittest
 import Numeric
 import MA
+import fivol.tools.array as array
 
 class TestBase(unittest.TestCase):
     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):

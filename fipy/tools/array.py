@@ -38,7 +38,7 @@
 
 import Numeric
 import umath
-
+import MA
 import fivol.inline.inline as inline
 
 def _isPhysical(arr):
@@ -47,13 +47,21 @@ def _isPhysical(arr):
 
     return isinstance(arr,fivol.variables.variable.Variable) \
 	or isinstance(arr,fivol.tools.dimensions.physicalField.PhysicalField)
-	
+
+def convertNumeric(arr):
+    if _isPhysical(arr):
+        print 'inPhysical'
+        return arr.getNumericValue()
+    else:
+        return Numeric.array(arr[:],'d')
+
 def take(arr, ids):
     if _isPhysical(arr):
-	return arr.take(ids)
-    
+	return arr.take(ids)    
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.take(arr, ids)
+    elif type(arr) is type(MA.array((0))):
+	return MA.take(arr, ids)
     else:
 	raise TypeError, 'cannot take from object ' + str(arr)
     
@@ -71,6 +79,8 @@ def reshape(arr, shape):
 	return arr.reshape(shape)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.reshape(arr, shape)
+    elif type(arr) is type(MA.array((0))):
+        return MA.reshape(arr, shape)
     else:
 	raise TypeError, 'cannot reshape object ' + str(arr)
 	
@@ -79,7 +89,9 @@ def sum(arr, index = 0):
 	return arr.sum(index)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.sum(arr, index)
-    else:
+    elif type(arr) is type(MA.array((0))):
+	return MA.sum(arr, index)
+    else:        
 	raise TypeError, 'cannot sum object ' + str(arr)
 
 def sqrt(arr):

@@ -62,7 +62,6 @@ class PhaseHalfAngleVariable(FaceVariable):
 	N = self.parameters['symmetry']
         dphi = self.phase.getFaceGrad()[:,:]
         thetaFace = self.theta.getArithmeticFaceValue()[:]
-
 	z = array.arctan2(dphi[:,1],dphi[:,0])
         z = N * (z - thetaFace)
         self.value = array.tan(z / 2.)

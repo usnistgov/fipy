@@ -74,7 +74,14 @@ class AddOverFacesVariable(CellVariable):
         contributions = array.reshape(contributions,(NCells,-1))
         
         orientations = array.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
-
+        orientations = Numeric.array(orientations)
+##        print 'faceOrientations:',self.mesh.getCellFaceOrientations()
+##        print 'orientations.shape:',orientations.shape
+##        print 'contributions:',contributions
+##        print 'orientations',orientations
+##        print 'contributions',contributions
+ ##       print array.sum(orientations * contributions,1)
+        
         self.value = array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
 
     def _calcValueInline(self):

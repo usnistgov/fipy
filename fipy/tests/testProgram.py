@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
@@ -39,10 +41,11 @@ import unittest
 class TestProgram(unittest.TestProgram):
     def parseArgs(self, argv):
 	import getopt
-	inline = 0
+##	inline = 0
+##        numMesh = 0
 	try:
 	    options, args = getopt.getopt(argv[1:], 'hHvq',
-					  ['help','verbose','quiet','inline'])
+					  ['help','verbose','quiet','inline','numMesh'])
 	    for opt, value in options:
 		if opt in ('-h','-H','--help'):
 		    self.usageExit()
@@ -50,8 +53,10 @@ class TestProgram(unittest.TestProgram):
 		    self.verbosity = 0
 		if opt in ('-v','--verbose'):
 		    self.verbosity = 2
-		if opt in ('--inline',):
-		    inline = 1
+##		if opt in ('--inline',):
+##		    inline = 1
+##                if opt in ('--numMesh',):
+##                    numMesh = 1
 	    if len(args) == 0 and self.defaultTest is None:
 		self.test = self.testLoader.loadTestsFromModule(self.module)
 		return
@@ -60,8 +65,12 @@ class TestProgram(unittest.TestProgram):
 	    else:
 		self.testNames = (self.defaultTest,)
 	    self.createTests()
-	    if inline:
-		argv[1:] = ['--inline']
+##            print argv
+##            raw_input()
+##	    if inline:
+##		argv[1:] = ['--inline']
+##            if numMesh:
+##                argv[1:] = ['--numMesh']
 	except getopt.error, msg:
 	    self.usageExit(msg)
 

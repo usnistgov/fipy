@@ -44,7 +44,7 @@ import fivol.tests.testProgram
 from fivol.tests.testBase import TestBase
 
 from fivol.meshes.grid2D import Grid2D
-from fivol.meshes.vertex import Vertex
+##from fivol.meshes.vertex import Vertex
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 from fivol.variables.harmonicCellToFaceVariable import HarmonicCellToFaceVariable
@@ -54,20 +54,20 @@ class TestMesh(Grid2D):
 	self.factor = factor
 	Grid2D.__init__(self, dx, dy, nx, ny)
 	
-    def createVertices(self):
-	"""Return list of Vertices
-	"""
-	vertices = ()
-	ny=self.ny
-	nx=self.nx
-	dx=self.dx
-	dy=self.dy
-	for j in range(ny+1):
-	    dx = self.dx
-	    for	i in range(nx+1):
-		vertices += (Vertex(array([i * dx, j * dy],'d')),)
-		dx = dx * self.factor
-	return vertices	
+##    def createVertices(self):
+##	"""Return list of Vertices
+##	"""
+##	vertices = ()
+##	ny=self.ny
+##	nx=self.nx
+##	dx=self.dx
+##	dy=self.dy
+##	for j in range(ny+1):
+##	    dx = self.dx
+##	    for	i in range(nx+1):
+##		vertices += (Vertex(array([i * dx, j * dy],'d')),)
+##		dx = dx * self.factor
+##	return vertices	
 
 class TestMean(TestBase):
     def setUp(self, value, dx = 1., dy = 1., factor = 1):
