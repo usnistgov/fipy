@@ -49,7 +49,8 @@ class build_docs (Command):
     user_options = [('latex', None, "compile the LaTeX variant of the apis"),
 		    ('html', None, "compile the HTML variant of the apis"),
 		    ('manual', None, "compile the manual"),
-		    ('all', None, "compile both the LaTeX and HTML variants of the apis")
+		    ('all', None, "compile both the LaTeX and HTML variants of the apis"),
+                    ('webpage', None, "compile the html for the web page")
 		   ]
 
 
@@ -58,7 +59,7 @@ class build_docs (Command):
 	self.html = 0
 	self.manual = 0
 	self.all = 0
-
+        self.webpage = 0
     # initialize_options()
 
 
@@ -67,7 +68,8 @@ class build_docs (Command):
 	    self.latex = 1
 	    self.html = 1
 	    self.manual = 1
-	    
+	    self.webpage = 1
+            
     # finalize_options()
 
     def _initializeDirectory(self, dir, type = 'latex'):
@@ -157,7 +159,7 @@ class build_docs (Command):
         
         os.chdir(savedir)
 
-    def _translateTextFiles(self):
+    def _LatexWriter(self):
 	from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
 	from docutils import languages
 
@@ -184,30 +186,89 @@ class build_docs (Command):
 		self.body = visitor.body
 		self.body_suffix = visitor.body_suffix
 
+        return  IncludedLaTeXWriter()
+
+    def _htmlWriter(self):
+        from docutils.writers.html4css1 import Writer as htmlWriter
+        return htmlWriter()
+    
+    def _translateTextFiles(self, type = 'latex', source_dir = '.', destination_dir = '.', files = []):
 	from docutils import core
 
-	core.publish_file(source_path='../../INSTALLATION.txt',
-			  destination_path='installation.tex',
-			  reader_name='standalone',
-			  parser_name='restructuredtext',
-			  writer=IncludedLaTeXWriter(),
-			  settings_overrides = {
-			      'use_latex_toc': True,
-			      'footnote_references': 'superscript'
-			  })
+        if type == 'html':
+            writer = self._htmlWriter()
+        elif type == 'latex':
+            writer = self._LaTeXWriter()
 
-        core.publish_file(source_path='../../README.txt',
-			  destination_path='readme.tex',
-			  reader_name='standalone',
-			  parser_name='restructuredtext',
-			  writer=IncludedLaTeXWriter(),
-			  settings_overrides = {
-			      'use_latex_toc': True,
-			      'footnote_references': 'superscript'
-			  })
+        for file in files:
+
+            destination_path = os.path.join(destination_dir, string.lower(file) + '.' + type)
+            source_path = os.path.join(source_dir, file + '.txt')
+
+            core.publish_file(source_path= source_path,
+                              destination_path = destination_path,
+                              reader_name = 'standalone',
+                              parser_name = 'restructuredtext',
+                              writer = writer,
+                              settings_overrides = {'use_latex_toc': True,
+                                                    'footnote_references': 'superscript'
+                                                    })
+
+##    def _translateTextFiles(self):
+##	from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
+##	from docutils import languages
+
+##	class NotStupidLaTeXTranslator(LaTeXTranslator):
+##	    pass
+
+##	class IncludedLaTeXWriter(LaTeXWriter):
+##	    def write(self, document, destination):
+##		self.document = document
+##		self.language = languages.get_language(
+##		    document.settings.language_code)
+##		self.destination = destination
+##		self.translate()
+##		output = self.destination.write(''.join(self.body))
+##		return output
+		
+##	    def translate(self):
+##		visitor = NotStupidLaTeXTranslator(self.document)
+##		self.document.walkabout(visitor)
+##		self.output = visitor.astext()
+##		self.head_prefix = visitor.head_prefix
+##		self.head = visitor.head
+##		self.body_prefix = visitor.body_prefix
+##		self.body = visitor.body
+##		self.body_suffix = visitor.body_suffix
+
+##	from docutils import core
+
+##	core.publish_file(source_path='../../INSTALLATION.txt',
+##			  destination_path='installation.tex',
+##			  reader_name='standalone',
+##			  parser_name='restructuredtext',
+##			  writer=IncludedLaTeXWriter(),
+##			  settings_overrides = {
+##			      'use_latex_toc': True,
+##			      'footnote_references': 'superscript'
+##			  })
+
+##        core.publish_file(source_path='../../README.txt',
+##			  destination_path='readme.tex',
+##			  reader_name='standalone',
+##			  parser_name='restructuredtext',
+##			  writer=IncludedLaTeXWriter(),
+##			  settings_overrides = {
+##			      'use_latex_toc': True,
+##			      'footnote_references': 'superscript'
+##			  })
 
 
     def run (self):
+
+        restructuredTextFiles = ['INSTALLATION',
+                                 'README']
+        
 	if self.latex:
 	    self._buildTeXAPIs()
 	    dir = os.path.join('documentation', 'manual', 'examples')
@@ -239,7 +300,8 @@ class build_docs (Command):
 		f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
 		f.close()
 
-		self._translateTextFiles()
+##		self._translateTextFiles()
+                self._translateTextFiles(files = restructuredTextFiles, source_dir = '../..')
 
 		os.system("pdflatex fipy.tex")
 		os.system("pdflatex fipy.tex")
@@ -247,6 +309,31 @@ class build_docs (Command):
 		pass
 	    os.chdir(savedir)
 
+        if self.webpage:
+            dir = os.path.join('documentation', 'www')
+            self._translateTextFiles(files = restructuredTextFiles, type = 'html', destination_dir = dir)
+
+            headObj = open(os.path.join(dir, 'head.html'))
+            tailObj = open(os.path.join(dir, 'tail.html'))
+
+            s0 = headObj.read()
+            s2 = tailObj.read()
+
+            for file in restructuredTextFiles:
+                file = os.path.join(dir, string.lower(file))
+                fileObj = open(file + '.html', 'r')
+                s1 = fileObj.read()
+                fileObj.close()
+                os.remove(file + '.html')
+                fileObj = open(string.lower(file) + '.html', 'w')
+                fileObj.write(s0 + s1 + s2)
+                fileObj.close()
+
+            import shutil
+
+            shutil.move(os.path.join(dir, 'readme.html'), os.path.join(dir, 'index.html'))
+
+                
     # run()
 
 class test(Command):
