@@ -2,13 +2,13 @@
  Installation
 -------------
 
-The |FiPy| finite volume PDE solver relies on several third-party
+The FiPy finite volume PDE solver relies on several third-party
 packages. [*]_ It is best to obtain and install those first, before
-attempting to install |FiPy|.
+attempting to install FiPy.
 
 If you do not have administrative privileges on your computer, or if
 for any reason you don't want to tamper with your existing Python_
-installation, most packages (including |FiPy|) will allow you to
+installation, most packages (including FiPy) will allow you to
 install to an alternate location (we have not been able to get this to
 work with the Numeric_ package).  Instead of installing these packages
 with::
@@ -42,11 +42,11 @@ Prerequisites
 Operating System
 ================
 
-The only elements of |FiPy| that may be platform-dependent are the
+The only elements of FiPy that may be platform-dependent are the
 viewers.  All other aspects should function on any platform that has a
 recent Python_ installation.
 
-|FiPy| has been developed and tested on `Mac OS X`_ 10.3 and higher
+FiPy has been developed and tested on `Mac OS X`_ 10.3 and higher
 and on ???  running Debian_ Linux blah blah. We welcome reports of
 compatibility with other systems, along with any steps necessary to
 install.
@@ -62,7 +62,7 @@ Python
 
 http://www.python.org/
 
-|FiPy| is written in the Python_ language and requires a Python_
+FiPy is written in the Python_ language and requires a Python_
 installation to run.  Python_ comes pre-installed on many operating
 systems, which you can check by opening a terminal and typing
 ``python``, *e.g.*::
@@ -74,7 +74,7 @@ systems, which you can check by opening a terminal and typing
     >>> 
 
 If necessary, you can download_ and install it for your platform.
-|FiPy| requires at least version 2.3 of Python_.
+FiPy requires at least version 2.3 of Python_.
 
 .. _Python:   http://www.python.org/
 .. _download: http://www.python.org/download/
@@ -84,22 +84,29 @@ Numeric
 
 http://www.numpy.org
 
-Obtain and install the Numeric_ package.  |FiPy| has been tested with
+Obtain and install the Numeric_ package.  FiPy has been tested with
 version 23.1 of Numeric_.  The newer Numarray_ package is not
 supported at this time.
 
 .. _Numeric:  http://www.numpy.org
 .. _Numarray: http://www.stsci.edu/resources/software_hardware/numarray
 
-spmatrix
+PySparse
 --------
 
-The |FiPy| distribution includes a customized version of `Roman
-Geus`_' spmatrix_ package. Install it according to its instructions.
+The FiPy distribution includes a customized version of `Roman
+Geus`_' PySparse_ package.
 
-.. _Roman Geus:
-.. _spmatrix:
+.. _Roman Geus: http://people.web.psi.ch/geus/
+.. _PySparse: http://people.web.psi.ch/geus/pyfemax/pysparse.html
 
+You can obtain the customized PySparse_ via anonynous CVS::
+
+     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+
+and then::
+
+     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy co pysparse
 
 Recommended Packages
 ====================
@@ -107,14 +114,14 @@ Recommended Packages
 weave
 -----
 
-http://ww.scipy.org/documentation/weave/
+http://www.scipy.org/documentation/weave/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
 SciPy_ package.
 
-.. _weave: http://ww.scipy.org/documentation/weave/
-.. _SciPy: http://ww.scipy.org/
+.. _weave: http://www.scipy.org/documentation/weave/
+.. _SciPy: http://www.scipy.org/
 
 gmsh
 ----
@@ -143,7 +150,7 @@ PyX
 http://pyx.sourceforge.net/
 
 PyX_ allows the production of publication quality graphics with |TeX|
-labels. If available, |FiPy| can use this package to view or print
+labels. If available, FiPy can use this package to view or print
 results.
 
 If you choose not to install this package, you should create an
@@ -152,23 +159,36 @@ completion.
 
 .. _PyX: http://pyx.sourceforge.net/
 
+Gnulot-py
+---------
+
+http://gnuplot-py.sourceforge.net
+
+Gnuplot.py is a Python_ package that interfaces to gnuplot_, the
+popular open-source plotting program.
+
 ----------------
-Obtaining |FiPy|
+Obtaining FiPy
 ----------------
 
-These instructions will need to be made more general for a public
-distribution but, for the moment, the source for |FiPy| can be
-obtained via CVS (ssh access to the CTCMS computers is required).  Set
-the shell variable `CVS_RSH` to `ssh` and then execute the following
-shell command::
+FiPy is freely available for download from sourceforge_ via CVS_ or as
+a tarball. The developers recommend CVS_ over tarballs at this early
+stage of the development cycle. To obtain FiPy via anonymous CVS issue
+the following commands::
 
-    cvs -d dromio.nist.gov:/users/wd15/pkg/python/repository checkout fipy
+     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+
+and then::
+
+     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy co fipy
+
+Further CVS_ information can be found at sourceforge_.
 
 --------------
-Testing |FiPy|
+Testing FiPy
 --------------
 
-From the ``fipy/`` directory, you can verify that |FiPy| works
+From the ``fipy/`` directory, you can verify that FiPy works
 properly by by executing ``python setup.py test``.  Depending on the
 packages you chose to install in `Recommended Packages`_, be sure to
 set the appropriate environment variables.  You can expect a few
@@ -181,11 +201,11 @@ caching the compiled inline code, but a repeat test should have no
 failures.
 
 -----------------
-Installing |FiPy|
+Installing FiPy
 -----------------
 
 Once you are confident that all of the requisite packages have been
-installed properly and |FiPy| passes its tests, you can install it by
+installed properly and FiPy passes its tests, you can install it by
 typing ``python setup.py install`` at the commandline.
 
 
@@ -196,4 +216,23 @@ typing ``python setup.py install`` at the commandline.
 .. |TeX| raw:: latex
 
 	  \TeX{}
- 
+
+------
+Manual
+------
+
+The manual_ can be downloaded and is also part of the distribution
+(documentation/manual/fipy.pdf).
+
+A fresh copy of the manual_ can be built with the use of epydoc_ by
+issuing the following commands in the base directory::
+
+     python setup.py build_docs --latex --manual
+     python setup.py build_docs --manual
+
+.. _manual:      ../manual/fipy.pdf
+.. _CVS:         http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _sourceforge: http://sourceforge.net/projects/fipy/
+.. _epydoc:      http://epydoc.sourceforge.net/
+.. _Python:      http://www.python.org/
+.. _Gnuplot:     http://gnuplot.sorceforge.net/
