@@ -48,12 +48,12 @@ import os
 import cPickle
 import tests
 from meshes.grid2D import Grid2D
-from phase.phaseEquation import PhaseEquation
+from examples.phase.phaseEquation import PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from phase.modularVariable import ModularVariable
+from examples.phase.modularVariable import ModularVariable
 from variables.cellVariable import CellVariable
 import Numeric
 
