@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/11/05 {6:52:58 PM} 
+ #                                last update: 3/12/05 {10:00:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -317,6 +317,7 @@ class build_docs (Command):
 	    os.system('chgrp -R pfm documentation/manual/fipy.pdf')
 	    
 	    print "linking manuals to website..."
+            os.system('mkdir documentation/www/download/')
 	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
 	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
 	    
