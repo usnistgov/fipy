@@ -1,39 +1,55 @@
+\NeedsTeXFormat{LaTeX2e} %[1995/12/01]
+\ProvidesClass{fipy}
+	     [2004/10/07 Document class (FiPy manual)]
+
+% Change the options here to get a different set of basic options, but only
+% if you have to.
+%
+\LoadClass[letterpaper]{book}
+
+\def\tocPDFlevel{-1}
+\DeclareOption{tocAsPDFpart}{\def\tocPDFlevel{-1}}
+\DeclareOption{tocAsPDFchapter}{\def\tocPDFlevel{0}}
+\ProcessOptions
+
 % \usepackage[text={7in,9.333in}]{geometry}
-\usepackage{geometry}
+\RequirePackage{geometry}
 
-\usepackage{crop}
+\RequirePackage{crop}
 
-\usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
-\usepackage{multirow, longtable, makeidx, amssymb} 
-\usepackage[other]{tocbibind}
+\RequirePackage{alltt, parskip, boxedminipage} % fancyheadings,  
+\RequirePackage{multirow, longtable, makeidx, amssymb} 
+
+\RequirePackage[other]{tocbibind}
 \tocotherhead{part}
 \setlength{\columnsep}{35pt}
-\usepackage{amsmath} 
 
-\usepackage{minitoc}
+\RequirePackage{amsmath} 
+
+\RequirePackage{minitoc}
 % \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{1}
 
-\usepackage[ascii]{inputenc}
+\RequirePackage[ascii]{inputenc}
 
 % \usepackage{fullpage}
 %\usepackage[headings]{fullpage}
 \makeindex
-\usepackage[usenames]{color}
+\RequirePackage[usenames]{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 \definecolor{redish}{rgb}{0.894,0.122,0.122}
 \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
-\usepackage{graphicx}
+\RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
+\RequirePackage{graphicx}
 % \usepackage{memhfixc}
 % \usepackage{nameref}
 
 \graphicspath{{../figures/}}
 
 % for reStructuredText
-\usepackage{shortvrb}
-\usepackage{tabularx}
+\RequirePackage{shortvrb}
+\RequirePackage{tabularx}
 \setlength{\extrarowheight}{2pt}
 \newlength{\admonitionwidth}
 \setlength{\admonitionwidth}{0.9\textwidth}
@@ -74,31 +90,16 @@
 
 % \includeonly{installation}
 
-\makeatletter
+
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
 \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
 \renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
 \renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
 \renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
 
-\renewcommand\tableofcontents{%
-    \if@twocolumn
-      \@restonecoltrue\onecolumn
-    \else
-      \@restonecolfalse
-    \fi
-    \chapter*{\contentsname\pdfbookmark[-1]{Contents}{contents}
-	\@mkboth{%
-	   \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
-    \@starttoc{toc}%
-    \if@restonecol\twocolumn\fi
-    }
-
-\makeatother
-
 % \usepackage{layout}
 
-\usepackage{tocvsec2}
+\RequirePackage{tocvsec2}
 
 \input{version}
 
@@ -135,7 +136,19 @@
  }%
 \item[]}{\end{list}}
 
-\makeatletter
+\renewcommand\tableofcontents{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\contentsname\pdfbookmark[\tocPDFlevel]{Contents}{contents}
+	\@mkboth{%
+	   \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+    \@starttoc{toc}%
+    \if@restonecol\twocolumn\fi
+    }
+
 \newcommand*{\ps@mytitlepage}{%
   \let\@oddhead\@empty
   \renewcommand*{\@oddfoot}{%
@@ -240,5 +253,4 @@
 
 \newcommand{\MSEL}{\@OrgURL{http://www.msel.nist.gov/}{\textsf{MSEL}}}
 
-\makeatother
 
