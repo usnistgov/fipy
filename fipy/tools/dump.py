@@ -41,11 +41,13 @@ import os
 
 def write(data, fileName):
     fileStream = os.popen('gzip --fast -c > %s.gz' % (fileName), 'w')
+##    fileStream = file(fileName, 'w')
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
 def read(fileName):
     fileStream = os.popen('gunzip --fast -c < %s.gz' % (fileName), 'r')
+##    fileStream = file(fileName, 'r')
     data = cPickle.load(fileStream)
     fileStream.close()
     return data

@@ -59,7 +59,7 @@ class TestDump(unittest.TestCase):
             value = 100.0)
 
         self.data = (theta, mesh)
-        tempFile = tempfile.mktemp()
+        tempfile.mktemp()
         dump.write(self.data, tempFile)
         self.dataUnpickled = dump.read(tempFile)
 
@@ -79,7 +79,7 @@ class Test10by10(TestDump):
 
 class Test50by50(TestDump):
     def setUp(self):
-        TestDump.setUp(self, 50, 50)
+        TestDump.setUp(self, 50,50)
 
 def suite():
     theSuite = unittest.TestSuite()
