@@ -48,11 +48,13 @@ from fipy.viewers.gistViewer import GistViewer
 
 class NumpyGistViewer(GistViewer):
     
-    def __init__(self, array, minVal=0., maxVal=1., palette = 'heat.gp'):
+    def __init__(self, array, minVal=0., maxVal=1., palette = 'heat.gp', grid = 1, limits = None, dpi = 75):
         self.array = array
-        GistViewer.__init__(self, minVal, maxVal, palette = palette)
+        GistViewer.__init__(self, minVal, maxVal, palette = palette, grid = grid, limits = limits, dpi = dpi)
     
 
     def getArray(self):
         return self.array
+
+    
         
