@@ -467,9 +467,11 @@ class efficiency_test(Command):
         import os
         
         file = open('efficiencyData.txt', 'w')
-
+        
         sys.argv = sys.argv[:1]
-        sys.argv.append('--numberOfSteps=100')
+
+        numberOfSteps = 10
+        sys.argv.append('--numberOfSteps=%i' % numberOfSteps)
 
         class GetMemoryThread(threading.Thread):
             def __init__(self, runTimeEstimate, fileObject, pid):
@@ -498,7 +500,7 @@ class efficiency_test(Command):
         for case in self.cases:
             
             runTimeEstimate = 10.
-            print 'case:' + case + '\n'
+            print 'case:' + case
             numberOfElements = self.minimumelements
 
             exceptionFlag = False
@@ -514,10 +516,11 @@ class efficiency_test(Command):
                 try:
                     import imp
                     mod = imp.load_source("copy_script_module", case)
-                    mod.run()
+                    runTime = mod.getRunTime()
                 except:
-                    print 'Exception executing ' + case + '\n'
+                    print 'Exception executing ' + case
                     exceptionFlag = True
+                    runTime = 0.
                     
                 t2 = time.clock()
                 thread.join()
@@ -527,7 +530,7 @@ class efficiency_test(Command):
                 os.remove(fileName)
                 os.close(f)
                 sys.argv.remove('--numberOfElements=' + str(numberOfElements))
-                print 'Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB\n' % (numberOfElements, t2 - t1, memUsage)
+                print 'Elements: %i, CPU time: %.3f seconds, CPU time per step: %.3f memory usage: %.0f KB' % (numberOfElements, t2 - t1, runTime / numberOfSteps, memUsage)
                 
                 numberOfElements *= self.factor
                 runTimeEstimate = (t2 - t1) * self.factor

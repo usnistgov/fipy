@@ -128,6 +128,10 @@ if __name__ == '__main__':
     
 dexp=-5
 
+import time
+
+runTime = time.clock()
+
 for step in range(steps):
     dt = Numeric.exp(dexp)
     dt = min(100, dt)
@@ -138,6 +142,8 @@ for step in range(steps):
     if __name__ == '__main__':
         viewer.plot()
         print 'step',step,'dt',dt
+
+runTime = time.clock() - runTime
             
-def run():
-    pass
+def getRunTime():
+    return runTime

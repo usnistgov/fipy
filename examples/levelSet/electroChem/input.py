@@ -477,6 +477,8 @@ is calculated with the CFL number and the maximum extension velocity.
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
 
+   >>> import time
+   >>> runTime = time.clock()
    >>> for step in range(options.steps):
    ...
    ...     if __name__ == '__main__':
@@ -505,6 +507,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         for viewer in viewers:
    ...             viewer.plot()
 
+   >>> runTime = time.clock() - runTime
+
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
@@ -530,6 +534,7 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
 
-def run():
+def getRunTime():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript(__name__))
+    return runTime

@@ -48,6 +48,8 @@ We initialize the system by running the base script
     
 We iterate the solution in time, plotting as we go if running interactively,
 
+    >>> import time
+    >>> runTime = time.clock()
     >>> for i in range(steps):
     ...     theta.updateOld()
     ...     phase.updateOld()
@@ -56,7 +58,8 @@ We iterate the solution in time, plotting as we go if running interactively,
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ... 	thetaProductViewer.plot()
-
+    >>> runTime = time.clock() - runTime
+    
 The solution is compared against Ryo Kobayashi's test data
 
     >>> theta.allclose(testData)
@@ -64,10 +67,11 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
-def run():
+def getRunTime():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript(__name__))
-
+    return runTime
+    
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
