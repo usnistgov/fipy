@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/3/03 {3:32:34 PM} 
+ #                                last update: 12/4/03 {2:53:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -76,7 +76,10 @@ class Face:
 	"""
         self.cells += (cell,)
         self.cellsId += (cell.getId(),)
-	self.orientation = -orientation
+	if len(self.cells) == 1:
+	    self.orientation = orientation
+	else:
+	    self.orientation = -orientation	    
 	self.setCellDistance()
 	self.setFaceToCellDistances()
         

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/3/03 {4:37:55 PM} 
+ #                                last update: 12/4/03 {10:09:36 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -133,7 +133,7 @@ class Mesh:
         N = len(faces)
         orientations = Numeric.zeros((N),'d')
         for i in range(N):
-            orientations += faces[i].getOrientation()
+            orientations[i] = faces[i].getOrientation()
         self.faceOrientations = orientations
 
     def getMaxFacesPerCell(self):

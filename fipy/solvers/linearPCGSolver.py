@@ -5,7 +5,7 @@
 
  FILE: "linearPCGSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/3/03 {4:38:27 PM} 
+                               last update: 12/4/03 {5:05:34 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -51,11 +51,24 @@ class LinearPCGSolver(Solver):
 	
     def solve(self, L, x, b):
 
+# 	print "L: ", L
+# 	print "b: ", b
+# 	print "x: ", x
+	
+# 	A = L.to_csr()
 	A = L.to_sss()
 	
 	Assor=precon.ssor(A)
-
-	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
+	
+# 	info, iter, relres = itsolvers.cgs(A,b,x,self.tolerance,self.steps)
+	
+# 	print info, iter, relres
+	
+# 	y = x.copy()
+# 	L.matvec(x,y)
+# 	print "L * x: ", y
+	
+ 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
 ##        print info, iter, relres
     
 	if (info != 0):

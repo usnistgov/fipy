@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/3/03 {3:55:09 PM} 
+ #                                last update: 12/4/03 {5:04:27 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,42 +61,59 @@ class FaceTerm(Term):
 	
         ## implicit
         if self.weight.has_key('implicit'):
+# 	    print "L-before: ", L
+# 	    
+# 	    print "coeff: ", self.coeff
+	    
 	    weight = self.weight['implicit']
-            aa = self.coeff[:self.interiorN]*weight['cell 1 diag']
-            ab = self.coeff[:self.interiorN]*weight['cell 1 offdiag']
-	    ba = self.coeff[:self.interiorN]*weight['cell 2 offdiag']
-	    bb = self.coeff[:self.interiorN]*weight['cell 2 diag']
+	    cell1dia = self.coeff*weight['cell 1 diag']
+	    cell1off = self.coeff*weight['cell 1 offdiag']
+	    cell2dia = self.coeff*weight['cell 2 diag']
+	    cell2off = self.coeff*weight['cell 2 offdiag']
 	
-	    L.update_add_something(aa,id1,id1)
-	    L.update_add_something(ab,id1,id2)
-	    L.update_add_something(ba,id2,id1)
-	    L.update_add_something(bb,id2,id2)
-            
+	    L.update_add_something(cell1dia[:self.interiorN],id1,id1)
+# 	    print "cell1dia: ", cell1dia
+# 	    print "L1: ", L
+	    
+	    L.update_add_something(cell1off[:self.interiorN],id1,id2)
+# 	    print "cell1off: ", cell1off
+# 	    print "L2: ", L
+	    
+	    L.update_add_something(cell2off[:self.interiorN],id2,id1)
+# 	    print "cell2off: ", cell2off
+# 	    print "L3: ", L
+	    
+	    L.update_add_something(cell2dia[:self.interiorN],id2,id2)
+# 	    print "cell2dia: ", cell2dia
+# 	    print "L4: ", L
+
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],weight)
+                    LL,bb = boundaryCondition.update(face,cell1dia[faceId],cell1off[faceId])
                     L[cellId,cellId] += LL
                     b[cellId] += bb
 
+# 	    print "L: ", L
+		
         ## explicit
         if self.weight.has_key('explicit'):
 	    weight = self.weight['explicit']
-            aa = self.coeff[:self.interiorN]*weight['cell 1 diag']
-            ab = self.coeff[:self.interiorN]*weight['cell 1 offdiag']
-	    ba = self.coeff[:self.interiorN]*weight['cell 2 offdiag']
-	    bb = self.coeff[:self.interiorN]*weight['cell 2 diag']
+	    cell1dia = self.coeff*weight['cell 1 diag']
+	    cell1off = self.coeff*weight['cell 1 offdiag']
+	    cell2off = self.coeff*weight['cell 2 offdiag']
+	    cell2dia = self.coeff*weight['cell 2 diag']
 
             for i in range(self.interiorN):
-                b[id1[i]] -= aa[i] * array[id1[i]] + ab[i] * array[id2[i]]
-                b[id2[i]] -= bb[i] * array[id2[i]] + ba[i] * array[id1[i]]
+                b[id1[i]] -= cell1dia[i] * array[id1[i]] + cell1off[i] * array[id2[i]]
+                b[id2[i]] -= cell2dia[i] * array[id2[i]] + cell2off[i] * array[id1[i]]
 	
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,self.coeff[faceId],weight)
+                    LL,bb = boundaryCondition.update(face,cell1dia[faceId],cell1off[faceId])
                     b[cellId] -= LL * array[cellId]
                     b[cellId] += bb
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/3/03 {3:45:25 PM} 
+ #                                last update: 12/4/03 {10:43:41 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -57,7 +57,7 @@ class BoundaryCondition:
         self.faces = faces
         self.value = value
 
-    def update(self,face,coeff,stencil): 
+    def update(self,face,cell1dia,cell1off):
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
@@ -68,9 +68,9 @@ class BoundaryCondition:
 	    
 	    'face' -- which 'Face' to update
 	    
-	    'coeff' -- 'Term' coefficient value at this face
+	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
 	    
-	    'weight' -- equation weight for this 'Term'
+	    'cell1off' -- contribution to b-vector by this exterior face
 	
 	A 'tuple' of (LL,bb) is calculated, to be added to the equation's (L,b)
 	matrices at the cell bounding the specified face.

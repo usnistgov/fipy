@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/3/03 {2:49:10 PM} 
+                               last update: 12/4/03 {11:17:58 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -57,6 +57,9 @@ class DiffusionTerm(FaceTerm):
         in the equation module
         """
         self.diffCoeff = diffCoeff
+	
+    def getCoeff(self):
+	return self.coeff
 	
 
 

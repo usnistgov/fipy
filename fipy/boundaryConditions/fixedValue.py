@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/3/03 {3:44:36 PM} 
+ #                                last update: 12/4/03 {5:06:27 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,18 +50,18 @@ class FixedValue(BoundaryCondition):
     """Fixed value (Dirichlet) boundary condition
     """
     
-    def update(self,face,coeff,weight):
+    def update(self,face,cell1dia,cell1off):
 	"""???
 	
 	Arguments:
 	    
 	    'face' -- *unused*
 	    
-	    'coeff' -- 'Term' coefficient value at this face
+	    'cell1dia' -- contribution to adjacent cell diagonal by this exterior face
 	    
-	    'weight' -- equation weight for this 'Term'
+	    'cell1off' -- contribution to b-vector by this exterior face
 	"""
-        return (coeff * weight['cell 1 diag'],-coeff*weight['cell 1 offdiag']*self.value)
+        return (cell1dia,-cell1off*self.value)
 
 
 
