@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/20/04 {3:11:29 PM} 
+ #                                last update: 12/20/04 {4:42:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -304,16 +304,25 @@ class Variable:
     def _calcValue(self):
 	pass
 	
+    def _markStale(self):
+        import weakref
+        remainingSubscribedVariables = []
+        for subscriber in self.subscribedVariables:
+            try:
+                subscriber.markStale() 
+                remainingSubscribedVariables.append(subscriber)
+            except weakref.ReferenceError:
+                pass
+        self.subscribedVariables = remainingSubscribedVariables
+
     def markFresh(self):
 	self.stale = 0
-	for subscriber in self.subscribedVariables:
-	    subscriber.markStale() 
+        self._markStale()
 
     def markStale(self):
 	if not self.stale:
 	    self.stale = 1
-	    for subscriber in self.subscribedVariables:
-		subscriber.markStale()
+            self._markStale()
 	    
     def requires(self, var):
 	if isinstance(var, Variable):
