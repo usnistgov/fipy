@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {11:57:51 AM} 
+ #                                last update: 1/14/04 {2:40:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -74,7 +74,7 @@ class PhaseEquation(MatrixEquation):
 	    enthalpy = enthalpy + component * component.getStandardPotential() #.getOld()
 	    barrier = barrier + component * component.getBarrierHeight() #.getOld()
 	
-	self.mPhi = -phaseMobility * (30. * phase * (1. - phase) * enthalpy + (1. - 2 * phase) * barrier) / "1 MOLARVOLUME"
+	self.mPhi = -phaseMobility * (30. * phase * (1. - phase) * enthalpy + (1. - 2 * phase) * barrier)
 	
 	self.spTerm = SpSourceTerm(
 	    sourceCoeff = self.mPhi * (phase - (self.mPhi < 0.)),

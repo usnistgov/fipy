@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/13/04 {11:58:12 AM} 
+ #                                last update: 1/14/04 {2:37:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,7 +55,6 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 
-import tools.vector
 from tools.dimensions import physicalField
 
 def addScales(mesh, parameters):
@@ -71,8 +70,8 @@ def addScales(mesh, parameters):
 	physicalField.AddConstant(scale, physicalField.NonDimOrUnits(value, unit))
 	
     addScale(scale = 'TIME', unit = 's', parameter = 'time step duration')
-    Ls = mesh.getPhysicalShape()
-    addScale(scale = 'LENGTH', unit = 'm', value = tools.vector.sqrtDot(Ls,Ls))
+    addScale(scale = 'LENGTH', unit = 'm', value = mesh.getScale())
+    mesh.setScale(1)
     addScale(scale = 'MOLARVOLUME', unit = 'm**3/mol', parameter = 'substitutional molar volume', value = '1 m**3/mol')
     addScale(scale = 'TEMPERATURE', unit = 'K', parameter = 'temperature', value = '298 K')
     physicalField.AddConstant('Rgas', 'Nav*kB')

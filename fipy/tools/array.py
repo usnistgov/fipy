@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/13/04 {11:46:22 AM} 
+ #                                last update: 1/14/04 {4:23:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -85,6 +85,8 @@ def tan(arr):
 def arctan2(arr, other):
     if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
 	return arr.arctan2(other)
+    elif isinstance(other,variables.variable.Variable) or isinstance(other,tools.dimensions.physicalField.PhysicalField):
+	return tools.dimensions.physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.arctan2(arr,other)
     else:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 1/12/04 {10:22:16 PM} 
+ #                                last update: 1/14/04 {2:45:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -295,38 +295,25 @@ class Grid2D(Mesh):
     def getPhysicalShape(self):
 	"""Return physical dimensions of Grid2D.
 	"""
-        return PhysicalField(value = (self.nx*self.dx*self.scale,self.ny*self.dy*self.scale))
+	return PhysicalField(value = (self.nx*self.dx*self.getScale(),self.ny*self.dy*self.getScale()))
 
     def getMaxFacesPerCell(self):
         return 4
 
     def getFaceAreas(self):
-	return Mesh.getFaceAreas(self) * self.scale
+	return Mesh.getFaceAreas(self) * self.getScale()
 	
     def getCellVolumes(self):
-	return Mesh.getCellVolumes(self) * self.scale * self.scale
+	return Mesh.getCellVolumes(self) * self.getScale() * self.getScale()
 	
     def getCellCenters(self):
-	return Mesh.getCellCenters(self) * self.scale
+	return Mesh.getCellCenters(self) * self.getScale()
 	
     def getCellDistances(self):
-	return Mesh.getCellDistances(self) * self.scale
+	return Mesh.getCellDistances(self) * self.getScale()
 	
     def getFaceToCellDistances(self):
-	return Mesh.getFaceToCellDistances(self) * self.scale
+	return Mesh.getFaceToCellDistances(self) * self.getScale()
 
-    def getFaceNormals(self):
-	return Mesh.getFaceNormals(self) * self.scale
-	    
-    def getFaceTangents1(self):
-	return Mesh.getFaceTangents1(self) * self.scale
-
-    def getFaceTangents2(self):
-	return Mesh.getFaceTangents2(self) * self.scale
-	    
     def getMeshSpacing(self):
-# 	return Numeric.array((self.dx,self.dy))
-        return PhysicalField(value = (self.dx*self.scale,self.dy*self.scale))
-                
-        
-
+	return PhysicalField(value = (self.dx*self.getScale(),self.dy*self.getScale()))

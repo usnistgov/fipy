@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/13/04 {1:08:23 PM} { 5:38:26 PM}
+ #                                last update: 1/14/04 {3:07:14 PM} { 5:38:26 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,9 +36,10 @@
  # ###################################################################
  ##
 
+import Numeric
 
 from vectorFaceVariable import VectorFaceVariable
-import Numeric
+import tools.array
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var, mod = None):
@@ -52,25 +53,26 @@ class FaceGradVariable(VectorFaceVariable):
     def calcValue(self):        
 	dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	value = self.var[:]
-	N = self.mod(Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
+	N = self.mod(tools.array.take(self.var,id2) - tools.array.take(self.var,id1))/dAP
+	
 	normals = self.mesh.getOrientedFaceNormals()
 	
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 	cellGrad = self.var.getGrad()
-	grad1 = Numeric.take(cellGrad[:], id1)
-	grad2 = Numeric.take(cellGrad[:], id2)
-	t1grad1 = Numeric.sum(tangents1*grad1,1)
-	t1grad2 = Numeric.sum(tangents1*grad2,1)
-	t2grad1 = Numeric.sum(tangents2*grad1,1)
-	t2grad2 = Numeric.sum(tangents2*grad2,1)
+	grad1 = tools.array.take(cellGrad,id1)
+	grad2 = tools.array.take(cellGrad,id2)
+	t1grad1 = tools.array.sum(tangents1*grad1,1)
+	t1grad2 = tools.array.sum(tangents1*grad2,1)
+	t2grad1 = tools.array.sum(tangents2*grad1,1)
+	t2grad2 = tools.array.sum(tangents2*grad2,1)
+	
 	T1 = (t1grad1 + t1grad2) / 2.
 	T2 = (t2grad1 + t2grad2) / 2.
 	
-	N = Numeric.reshape(N, (len(normals),1)) 
-	T1 = Numeric.reshape(T1, (len(normals),1)) 
-	T2 = Numeric.reshape(T2, (len(normals),1)) 
+	N = N[:,Numeric.NewAxis]
+	T1 = T1[:,Numeric.NewAxis]
+	T2 = T2[:,Numeric.NewAxis]
 
 	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 

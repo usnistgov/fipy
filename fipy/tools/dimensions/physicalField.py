@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/13/04 {11:45:42 AM} 
+ #                                last update: 1/14/04 {4:14:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -175,7 +175,7 @@ class PhysicalField:
 	if not isinstance(other,PhysicalField):
 	    if Numeric.alltrue(other == 0):
 		new_value = sign1 * self.value
-	    elif self.unit.isDimensionless():
+	    elif self.unit.isDimensionlessOrAngle():
 		new_value = sign1*self.value + sign2*other
 	    else:
 		raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
@@ -311,7 +311,7 @@ class PhysicalField:
 	if not isinstance(other,PhysicalField):
 	    if type(other) is type(''):
 		other = PhysicalField(other)
-	    elif other == 0 or self.unit.isDimensionless():
+	    elif other == 0 or self.unit.isDimensionlessOrAngle():
 		other = PhysicalField(value = other, unit = self.unit)
 	    else:
 		raise TypeError, 'Incompatible types'
@@ -347,6 +347,12 @@ class PhysicalField:
 	
     def __gt__(self,other):
 	other = self._inMyUnits(other)
+	
+	print "__gt__"
+	print "self:", self.value
+	print "other:", other.value
+	raw_input()
+	
 	return self.value > other.value
 	
     def __ge__(self,other):
@@ -456,6 +462,9 @@ class PhysicalField:
     def arctan2(self,other):
 	other = self._inMyUnits(other)
 	return PhysicalField(value = umath.arctan2(self.value, other.value), unit = "rad")
+	    
+    def arctan(self):
+	return PhysicalField(value = umath.arctan(self.value), unit = "rad")
 	    
     def dot(self, other):
 	if not isinstance(other,PhysicalField):
@@ -570,8 +579,7 @@ class PhysicalUnit:
 
     def conversionFactorTo(self, other):
 	if self.powers != other.powers:
-	    if (self.isDimensionless() or self.isAngle()) and \
-		(other.isDimensionless() or other.isAngle()):
+	    if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
 		return self.factor/other.factor
 	    else:
 		raise TypeError, 'Incompatible units'
@@ -614,7 +622,10 @@ class PhysicalUnit:
     def isAngle(self):
 	return self.powers[7] == 1 and \
 	       reduce(lambda a,b: a + b, self.powers) == 1
-
+	       
+    def isDimensionlessOrAngle(self):
+	return self.isDimensionless() or self.isAngle()
+		   
     def setName(self, name):
 	self.names = NumberDict()
 	self.names[name] = 1
@@ -698,7 +709,7 @@ def Scale(quantity, scaling):
 
 def NonDimOrUnits(quantity, units):
     quantity = AnyQuantity(quantity)
-    if isinstance(quantity,PhysicalField):
+    if isinstance(quantity,PhysicalField) and not quantity.unit.isDimensionless():
 	quantity.convertToUnit(units)
     return quantity
 	

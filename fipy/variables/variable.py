@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/13/04 {10:24:44 AM} 
+ #                                last update: 1/14/04 {2:55:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -118,6 +118,10 @@ class Variable:
 	self.refresh()
         return self.value
 	
+    def setValue(self,value):
+	self.value = value
+	self.markFresh()
+	    
     def getNumericValue(self):
 	return self.getValue().value
 	

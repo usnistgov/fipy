@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/12/04 {9:45:03 PM} 
+ #                                last update: 1/14/04 {2:48:13 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,6 +44,8 @@
 
 import Numeric
 
+from tools.dimensions.physicalField import PhysicalField
+
 class Mesh:
     def __init__(self, cells, faces, interiorFaces, vertices):
         self.cells = cells
@@ -51,6 +53,8 @@ class Mesh:
         self.vertices = vertices
         self.interiorFaces = interiorFaces
         self.dim = len(self.vertices[0].getCoordinates())
+	if not self.__dict__.has_key("scale"):
+	    self.scale = 1
 	
 	self.calcCellFaceIDs(cells)
 	self.calcCellCenters(cells)
@@ -120,6 +124,12 @@ class Mesh:
 	"""Return physical dimensions of Mesh.
 	"""
         pass
+
+    def getScale(self):
+	return self.scale
+
+    def setScale(self, scale):
+	self.scale = PhysicalField(value = scale)
 
     def getAdjacentCellIDs(self):
 	return (self.cellId1, self.cellId2)
@@ -239,24 +249,13 @@ class Mesh:
 	    self.faceNormals[i] = faces[i].calcNormal()
 	    
     def getOrientedFaceNormals(self):
-	return self.orientedFaceNormals
-	
-    def calcOrientedFaceNormals(self):
-	self.orientedFaceNormals = self.getFaceNormals().copy()
-	self.orientedFaceNormals *= self.getFaceOrientations()[:,Numeric.NewAxis]
+	return self.getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	    
     def getAreaProjections(self):
-	return self.areaProjections
+	return self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis]
 	
-    def calcAreaProjections(self):
-	self.areaProjections = self.getFaceNormals() * self.getFaceAreas()[:,Numeric.NewAxis]
-
     def getOrientedAreaProjections(self):
-	return self.orientedAreaProjections
-	
-    def calcOrientedAreaProjections(self):
-	N = len(self.faceNormals)
-	self.orientedAreaProjections = self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
+	return self.getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	
     def getFaceTangents1(self):
 	return self.faceTangents1
@@ -291,8 +290,5 @@ class Mesh:
 	self.calcFaceToCellDistances(faces)
 	self.calcFaceToCellDistanceRatio()
 	self.calcFaceNormals(faces)
-	self.calcOrientedFaceNormals()
-	self.calcAreaProjections()
-	self.calcOrientedAreaProjections()
 
         
