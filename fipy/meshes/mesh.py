@@ -315,3 +315,8 @@ class Mesh:
 	import fivol.tools.array
 	tmp = self.getCellCenters() - Numeric.array(point)
 	return fivol.tools.array.sqrtDot(tmp, tmp)
+
+    def getNearestCell(self, point):
+        d = self.getPointToCellDistances(point)
+        i = Numeric.argsort(d)
+        return self.cells[i[0]]
