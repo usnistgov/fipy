@@ -129,6 +129,7 @@ depositionRateVariable = DepositionRateVariable(
     metalIonVariable,
     name = "deposition rate variable",
     acceleratorVariable = acceleratorVar,
+    overpotential = experimentalParameters['overpotential'],
     parameters = parameters
     )
 
