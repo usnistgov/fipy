@@ -40,29 +40,6 @@
  # ###################################################################
  ##
 
-"""
-
-This variable sets it's face value to zero if either of the
-surrounding cell values are zero else it uses the value of the
-diffusion coefficient. The diffusion coefficient is given by,
-
-.. raw:: latex
-
-    $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
-    $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
-
-Here is a simple 1D test case:
-
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1., nx = 3)
-   >>> from fipy.variables.cellVariable import CellVariable
-   >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
-   >>> arr = Numeric.array(LevelSetDiffusionVariable(var, 1))
-   >>> Numeric.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
-   1
-
-"""
-
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -71,15 +48,35 @@ from fipy.variables.cellToFaceVariable import CellToFaceVariable
 from fipy.tools.inline import inline
 
 class LevelSetDiffusionVariable(CellToFaceVariable):
+    """
 
+    This variable sets it's face value to zero if either of the
+    surrounding cell values are zero else it uses the value of the
+    diffusion coefficient. The diffusion coefficient is given by,
+
+    .. raw:: latex
+
+        $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
+        $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
+
+    Here is a simple 1D test case:
+
+       >>> from fipy.meshes.grid2D import Grid2D
+       >>> mesh = Grid2D(dx = 1., nx = 3)
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
+       >>> arr = Numeric.array(LevelSetDiffusionVariable(var, 1))
+       >>> Numeric.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
+       1
+
+    """
     def __init__(self, distanceVariable = None, diffusionCoeff = None):
         """
+        Creates a `LevelSetDiffusionVariable`.
 
-        Requires the following arguments to instantiate,
-
-        `distanceVariable` - A `DistanceVariable` object
-
-        `diffusionCoeff` - Either a `CellVariable` or a single value
+        :Parameters:
+          - `distanceVariable` : A `DistanceVariable` object
+          - `diffusionCoeff` : The `coeff` value.
 
         """
         CellToFaceVariable.__init__(self, distanceVariable)

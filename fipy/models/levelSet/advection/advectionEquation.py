@@ -39,26 +39,7 @@
  #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
-
-"""
-
-The `AdvectionEquation` object constructs the b vector and L matrix
-necessary for the solution of the advection equation. The advection
-equation is given by:
-
-.. raw:: latex
-
-    $$ \\frac{\\partial \\phi}{\\partial t} + u | \\nabla \\phi | $$
-
-This solution method for the `AdvectionTerm` is set up specifically to
-evolve `var` while preserving `var` as a distance function. This
-equation is used in conjunction with the `DistanceFunction`
-object. Further details of the numerical method can be found in "Level
-Set Methods and Fast Marching Methods" by J.A. Sethian, Cambridge
-University Press, 1999. Testing for the advection equation is in
-`examples.levelSet.advection`
-
-"""
+ 
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
@@ -66,6 +47,28 @@ from advectionTerm import AdvectionTerm
 
 def buildAdvectionEquation(advectionCoeff = None,
                            advectionTerm = AdvectionTerm):
+    r"""
+
+    The `buildAdvectionEquation` function constructs and returns an
+    advection equation. The advection equation is given by:
+
+    .. raw:: latex
+
+        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0$$
+
+    This solution method for the `AdvectionTerm` is set up specifically to
+    evolve `var` while preserving `var` as a distance function. This
+    equation is used in conjunction with the `DistanceFunction`
+    object. Further details of the numerical method can be found in "Level
+    Set Methods and Fast Marching Methods" by J.A. Sethian, Cambridge
+    University Press, 1999. Testing for the advection equation is in
+    `examples.levelSet.advection`
+
+    :Parameters:
+      - `advectionCoeff` : The coeff to pass to the `advectionTerm`.
+      - `advectionTerm` : An advection term class.
+
+    """
 
     return TransientTerm(1.) + advectionTerm(advectionCoeff)
         

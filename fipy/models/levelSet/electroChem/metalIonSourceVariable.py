@@ -40,31 +40,6 @@
  # ###################################################################
  ##
 
-"""
-
-The `MetalIonSourceVariable` object evaluates the source coefficient
-for the `MetalIonEquation`. The source only exists on the cells in
-front of the interface and simulates the loss of material from bulk
-diffusion as the interface advances. The source is given by,
-
-.. raw:: latex
-
-    $$ D \\hat{n} \\cdot \\nabla c = \\frac{v(c)}{\\Omega} \;\; \\text{at} \;\; \\phi = 0$$ 
-
-Here is a test,
-
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-   >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
-   >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
-   >>> arr = Numeric.array(MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
-   >>> sqrt = Numeric.sqrt(2)
-   >>> Numeric.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
-   1
-
-"""
-
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -72,20 +47,40 @@ import Numeric
 from fipy.variables.cellVariable import CellVariable
 
 class MetalIonSourceVariable(CellVariable):
+    """
 
+    The `MetalIonSourceVariable` object evaluates the source
+    coefficient for the `MetalIonEquation`. The source only exists
+    on the cells in front of the interface and simulates the loss
+    of material from bulk diffusion as the interface advances. The
+    source is given by,
+
+    .. raw:: latex
+
+        $$ D \\hat{n} \\cdot \\nabla c = \\frac{v(c)}{\\Omega} \;\; \\text{at} \;\; \\phi = 0$$ 
+
+    Here is a test,
+
+       >>> from fipy.meshes.grid2D import Grid2D
+       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+       >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+       >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
+       >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
+       >>> arr = Numeric.array(MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
+       >>> sqrt = Numeric.sqrt(2)
+       >>> Numeric.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
+       1
+
+    """
     def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonAtomicVolume = None):
         """
+        Creates a `MetalIonSourceVariable` object.
 
-        The following arguments are required to instatiate a
-        `MetalIonSourceVariable`,
-
-        `ionVar` - A `CellVariable`.
-
-        `distanceVar` - A `DistanceVariable` object.
-
-        `depositionRate` - Either a `CellVariable` or a float.
-
-        `metalIonAtomicVolume` - Atomic volume of the metal ions.
+        :Parameters:
+          - `ionVar` : The metal ion concentration.
+          - `distanceVar` : A `DistanceVariable` object.
+          - `depositionRate` : The deposition rate.
+          - `metalIonAtomicVolume` : Atomic volume of the metal ions.
        
         """
         

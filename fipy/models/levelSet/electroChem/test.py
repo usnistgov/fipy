@@ -47,7 +47,6 @@ def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'metalIonSourceVariable',
             'metalIonDiffusionEquation',
-            'depositionRateVariable',
         ), base = __name__)
     
 if __name__ == '__main__':

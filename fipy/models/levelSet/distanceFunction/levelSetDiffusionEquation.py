@@ -40,26 +40,6 @@
  # ###################################################################
  ##
 
-"""
-
-The `LevelSetDiffusionEquation` solves the diffusion of a species in
-conjunction with the level set equation. Essentially the spcies is
-only transported in the electrolyte. The governing equation is given
-by,
-
-.. raw:: latex
-
-    $$ \\frac{\\partial c}{\\partial t} = \\nabla \\cdot D \\nabla  c $$
-
-where,
-
-.. raw:: latex
-
-    $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
-    $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
-   
-"""
-
 __docformat__ = 'restructuredtext'
 
 
@@ -67,18 +47,33 @@ from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import Leve
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-def buildLevelSetDiffusionEquation(ionVar = None,
+def _buildLevelSetDiffusionEquation(ionVar = None,
                                    distanceVar = None,
                                    transientCoeff = 1.,
                                    diffusionCoeff = 1.):
+    r"""
 
-    """
-        
-    `ionVar` - The species concentration variable.
-    
-    `distanceVar` - A `DistanceVariable` object
+    The `LevelSetDiffusionEquation` solves the diffusion of a species in
+    conjunction with the level set equation. Essentially the spcies is
+    only transported in the electrolyte. The governing equation is given
+    by,
 
-    `transientCoeff` - In general 1 is used.
+    .. raw:: latex
+
+        $$ \\frac{\\partial c}{\\partial t} = \\nabla \\cdot D \\nabla  c $$
+
+    where,
+
+    .. raw:: latex
+
+        $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
+        $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
+
+    :Parameters:    
+      - `ionVar` : The species concentration variable.    
+      - `distanceVar` : A `DistanceVariable` object.
+      - `transientCoeff` : The coefficient for the `TransientTerm`
+      - `diffusionCoeff` : The coefficient for the `DiffusionTerm`
 
     """
 

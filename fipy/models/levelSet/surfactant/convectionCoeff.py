@@ -122,7 +122,7 @@ class ConvectionCoeff(VectorFaceVariable):
         M = self.mesh.getMaxFacesPerCell()
         dim = self.mesh.getDim()
      
-        faceNormalAreas = self.distanceVar.getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
+        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
 
         from fipy.tools.array import MAtake
         cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh.getCellFaceIDs()).filled(fill_value = 0))

@@ -40,40 +40,11 @@
  # ###################################################################
  ##
 
-"""
-
-The `SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
-species with a source term for the jump from the bulk to an interface.
-The governing equation is given by,
-
-.. raw:: latex
-
-    $$ \\frac{\\partial c}{\\partial t} = \\nabla \\cdot D \\nabla  c $$
-
-where,
-
-.. raw:: latex
-
-    $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
-    $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
-
-The jump condition at the interface is defined by Langmuir
-adsorption. Langmuir adsorption essentially states that the ability for
-a species to jump from an electrolyte to an interface is proportional to
-the concentration in the electrolyte, available site density and a
-jump coefficient. The boundary condition at the interface is given by
-
-.. raw:: latex
-
-    $$ D \\hat{n} \\cdot \\nabla c = -k c (1 - \\theta) \;\; \\text{at} \;\; \\phi = 0$$
-
-"""
-
 __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import buildLevelSetDiffusionEquation
+from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
@@ -105,47 +76,63 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          diffusionCoeff = None,
                                          transientCoeff = 1.,
                                          rateConstant = None):
+    r"""
 
-        """
+    The `buildSurfactantBulkDiffusionEquation` function returns a bulk diffusion of a
+    species with a source term for the jump from the bulk to an interface.
+    The governing equation is given by,
+
+    .. raw:: latex
+
+        $$ \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c $$
+
+    where,
+
+    .. raw:: latex
+
+        $$ D = D_c \;\; \text{when} \;\; \phi > 0 $$
+        $$ D = 0   \;\; \text{when} \;\; \phi \le 0 $$
+
+    The jump condition at the interface is defined by Langmuir
+    adsorption. Langmuir adsorption essentially states that the ability for
+    a species to jump from an electrolyte to an interface is proportional to
+    the concentration in the electrolyte, available site density and a
+    jump coefficient. The boundary condition at the interface is given by
+
+    .. raw:: latex
+
+        $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta) \;\; \text{at} \;\; \phi = 0$$
         
-        A `SurfactantBulkDiffusionEquation` is instantiated with the
-        following arguments,
+    :Parameters:
+      - `bulkVar` : The bulk surfactant concentration variable.
+      - `distanceVar` : A `DistanceVariable` object
+      - `surfactantVar` : A `SurfactantVariable` object
+      - `otherSurfactantVar` : Any other surfactants that may remove this one.
+      - `diffusionCoeff` : A float or a `FaceVariable`.
+      - `transientCoeff` : In general 1 is used.
+      - `rateConstant` : The adsorption coefficient.
 
-        `var` - The bulk surfactant concentration variable.
-
-        `distanceVar` - A `DistanceVariable` object
-
-        `surfactantVariable` - A `SurfactantVariable` object
-
-        `diffusionCoeff` - A float or a `FaceVariable`.
-
-        `transientCoeff` - In general 1 is used.
-
-        `jumpRate` - The adsorption coefficient.
-
-        `boundaryConditions` - A tuple of `BoundaryCondition` objects.
-
-        """
+    """
         
-        spSourceTerm = ImplicitSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
-                                                    distanceVar = distanceVar))
+    spSourceTerm = ImplicitSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
+                                                      distanceVar = distanceVar))
 
-        coeff = ScAdsorptionCoeff(bulkVar = bulkVar,
-                                  surfactantVar = surfactantVar,
-                                  rateConstant = rateConstant,
-                                  distanceVar = distanceVar)
+    coeff = ScAdsorptionCoeff(bulkVar = bulkVar,
+                              surfactantVar = surfactantVar,
+                              rateConstant = rateConstant,
+                              distanceVar = distanceVar)
                                   
-        eq = buildLevelSetDiffusionEquation(ionVar = bulkVar,
-                                            distanceVar = distanceVar,
-                                            diffusionCoeff = diffusionCoeff,
-                                            transientCoeff = transientCoeff)
+    eq = _buildLevelSetDiffusionEquation(ionVar = bulkVar,
+                                         distanceVar = distanceVar,
+                                         diffusionCoeff = diffusionCoeff,
+                                         transientCoeff = transientCoeff)
 
-        if otherSurfactantVar is not None:
-            otherCoeff = ScAdsorptionCoeff(bulkVar = bulkVar,
-                                           surfactantVar = otherSurfactantVar,
-                                           rateConstant = rateConstant,
-                                           distanceVar = distanceVar)
-        else:
-            otherCoeff = 0
+    if otherSurfactantVar is not None:
+        otherCoeff = ScAdsorptionCoeff(bulkVar = bulkVar,
+                                       surfactantVar = otherSurfactantVar,
+                                       rateConstant = rateConstant,
+                                       distanceVar = distanceVar)
+    else:
+        otherCoeff = 0
             
-        return eq - coeff + spSourceTerm - otherCoeff
+    return eq - coeff + spSourceTerm - otherCoeff

@@ -40,139 +40,6 @@
  # ###################################################################
  ##
 
-r"""
-
-.. raw:: latex
-
-    A `DistanceVariable` object calculates $\phi$ so it satisfies,
-
-    $$ | \\nabla \\phi | = 1 $$
-
-    using the fast marching method with an initial condition defined by
-    the zero level set.
-
-Currently the solution is first order, This suffices for initial
-conditions with straight edges (e.g. trenches in
-electrodeposition). The method should work for unstructured 2D grids
-but testing on unstructured grids is untested thus far. This is a 2D
-implementation as it stands. Extending to 3D should be relatively
-simple.
-
-Here we will define a few test cases. Firstly a 1D test case
-
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
-   >>> from distanceVariable import DistanceVariable
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
-   >>> var.calcDistanceFunction()
-   >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
-   >>> Numeric.allclose(answer, var)
-   1
-
-A 1D test case with very small dimensions.
-
-   >>> dx = 1e-10
-   >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
-   >>> var.calcDistanceFunction()
-   >>> answer = Numeric.arange(8) * dx - 3.5 * dx
-   >>> Numeric.allclose(answer, var)
-   1
-
-A 2D test case to test _calcTrialValue for a pathological case.
-
-   >>> dx = 1.
-   >>> dy = 2.
-   >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
-   >>> var.calcDistanceFunction()
-   >>> vbl = -dx * dy / Numeric.sqrt(dx**2 + dy**2) / 2.
-   >>> vbr = dx / 2
-   >>> vml = dy / 2.
-   >>> crossProd = dx * dy
-   >>> dsq = dx**2 + dy**2
-   >>> top = vbr * dx**2 + vml * dy**2
-   >>> sqrt = crossProd**2 *(dsq - (vbr - vml)**2)
-   >>> sqrt = Numeric.sqrt(max(sqrt, 0))
-   >>> vmr = (top + sqrt) / dsq
-   >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
-   >>> Numeric.allclose(answer, var)
-   1
-
-The `extendVariable` method solves the following equation for a given
-extensionVariable.
-
-.. raw:: latex
-
-    $$ \\nabla u \\cdot \\nabla \\phi = 0 $$
-
-using the fast marching method with an initial condition defined at
-the zero level set. Essentially the equation solves a fake distance
-function to march out the velocity from the interface.
-
-   >>> from fipy.variables.cellVariable import CellVariable
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1))
-   >>> var.calcDistanceFunction()
-   >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
-   >>> tmp = 1 / Numeric.sqrt(2)
-   >>> Numeric.allclose(var, (-tmp / 2, 0.5, 0.5, 0.5 + tmp))
-   1
-   >>> var.extendVariable(extensionVar)
-   >>> Numeric.allclose(extensionVar, (1.25, .5, 2, 1.25))
-   1
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
-   ...                                               1, 1, 1,
-   ...                                               1, 1, 1))
-   >>> var.calcDistanceFunction()
-   >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, -1,
-   ...                                                    2, -1, -1,
-   ...                                                   -1, -1, -1))
-
-   >>> v1 = 0.5 + tmp
-   >>> v2 = 1.5
-   >>> tmp1 = (v1 + v2) / 2 + Numeric.sqrt(2. - (v1 - v2)**2) / 2
-   >>> tmp2 = tmp1 + 1 / Numeric.sqrt(2)
-   >>> Numeric.allclose(var, (-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
-   1
-   >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
-   >>> var.extendVariable(extensionVar)
-   >>> Numeric.allclose(answer, extensionVar, atol = 1e-5)
-   1
-
-Test case for a bug that occurs when initializing the distance
-variable at the interface. Currently it is assumed that adjacent cells
-that are opposite sign neighbors have perpendicular normal vectors. In
-fact the two closest cells could have opposite normals.
-
-   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
-   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
-   >>> var.calcDistanceFunction()
-   >>> var.allclose((-0.5, 0.5, -0.5))
-   1
-
-For future reference, the minimum distance for the interface cells can
-be calculated with the following functions. The trial cell values will
-also be calculated with these functions. In essence it is not
-difficult to calculate the level set distance function on an
-unstructured 3D grid. However a lot of testing will be required. The
-minimum distance functions will take the following form.
-
-.. raw:: latex
-
-    $$ X_{\text{min}} = \frac{\left| \vec{s} \times \vec{t} \right|}
-    {\left| \vec{s} - \vec{t} \right|} $$
-
-    and in 3D,
-
-    $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left(
-    \vec{t} \times \vec{u} \right) \right| $$
-
-    where the vectors $\vec{s}$, $\vec{t}$ and $\vec{u}$ represent the
-    vectors from the cell of interest to the neighboring cell.
-    
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -183,7 +50,155 @@ from fipy.variables.cellVariable import CellVariable
 import fipy.tools.array
 
 class DistanceVariable(CellVariable):
+    r"""
+    A `DistanceVariable`
+    
+    .. raw:: latex
+
+        object calculates $\phi$ so it satisfies,
+
+        $$ | \nabla \phi | = 1 $$
+
+        using the fast marching method with an initial condition defined by
+        the zero level set.
+
+    Currently the solution is first order, This suffices for initial
+    conditions with straight edges (e.g. trenches in
+    electrodeposition). The method should work for unstructured 2D grids
+    but testing on unstructured grids is untested thus far. This is a 2D
+    implementation as it stands. Extending to 3D should be relatively
+    simple.
+
+    Here we will define a few test cases. Firstly a 1D test case
+
+       >>> from fipy.meshes.grid2D import Grid2D
+       >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
+       >>> from distanceVariable import DistanceVariable
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+       >>> var.calcDistanceFunction()
+       >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
+       >>> Numeric.allclose(answer, var)
+       1
+
+    A 1D test case with very small dimensions.
+
+       >>> dx = 1e-10
+       >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+       >>> var.calcDistanceFunction()
+       >>> answer = Numeric.arange(8) * dx - 3.5 * dx
+       >>> Numeric.allclose(answer, var)
+       1
+
+    A 2D test case to test _calcTrialValue for a pathological case.
+
+       >>> dx = 1.
+       >>> dy = 2.
+       >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
+       >>> var.calcDistanceFunction()
+       >>> vbl = -dx * dy / Numeric.sqrt(dx**2 + dy**2) / 2.
+       >>> vbr = dx / 2
+       >>> vml = dy / 2.
+       >>> crossProd = dx * dy
+       >>> dsq = dx**2 + dy**2
+       >>> top = vbr * dx**2 + vml * dy**2
+       >>> sqrt = crossProd**2 *(dsq - (vbr - vml)**2)
+       >>> sqrt = Numeric.sqrt(max(sqrt, 0))
+       >>> vmr = (top + sqrt) / dsq
+       >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
+       >>> Numeric.allclose(answer, var)
+       1
+
+    The `extendVariable` method solves the following equation for a given
+    extensionVariable.
+
+    .. raw:: latex
+
+        $$ \nabla u \cdot \nabla \phi = 0 $$
+
+    using the fast marching method with an initial condition defined at
+    the zero level set. Essentially the equation solves a fake distance
+    function to march out the velocity from the interface.
+
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1))
+       >>> var.calcDistanceFunction()
+       >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
+       >>> tmp = 1 / Numeric.sqrt(2)
+       >>> Numeric.allclose(var, (-tmp / 2, 0.5, 0.5, 0.5 + tmp))
+       1
+       >>> var.extendVariable(extensionVar)
+       >>> Numeric.allclose(extensionVar, (1.25, .5, 2, 1.25))
+       1
+       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
+       ...                                               1, 1, 1,
+       ...                                               1, 1, 1))
+       >>> var.calcDistanceFunction()
+       >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, -1,
+       ...                                                    2, -1, -1,
+       ...                                                   -1, -1, -1))
+
+       >>> v1 = 0.5 + tmp
+       >>> v2 = 1.5
+       >>> tmp1 = (v1 + v2) / 2 + Numeric.sqrt(2. - (v1 - v2)**2) / 2
+       >>> tmp2 = tmp1 + 1 / Numeric.sqrt(2)
+       >>> Numeric.allclose(var, (-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
+       1
+       >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
+       >>> var.extendVariable(extensionVar)
+       >>> Numeric.allclose(answer, extensionVar, atol = 1e-5)
+       1
+
+    Test case for a bug that occurs when initializing the distance
+    variable at the interface. Currently it is assumed that adjacent cells
+    that are opposite sign neighbors have perpendicular normal vectors. In
+    fact the two closest cells could have opposite normals.
+
+       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
+       >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
+       >>> var.calcDistanceFunction()
+       >>> var.allclose((-0.5, 0.5, -0.5))
+       1
+
+    For future reference, the minimum distance for the interface cells can
+    be calculated with the following functions. The trial cell values will
+    also be calculated with these functions. In essence it is not
+    difficult to calculate the level set distance function on an
+    unstructured 3D grid. However a lot of testing will be required. The
+    minimum distance functions will take the following form.
+
+    .. raw:: latex
+
+        $$ X_{\text{min}} = \frac{\left| \vec{s} \times \vec{t} \right|}
+        {\left| \vec{s} - \vec{t} \right|} $$
+
+        and in 3D,
+
+        $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left(
+        \vec{t} \times \vec{u} \right) \right| $$
+
+        where the vectors $\vec{s}$, $\vec{t}$ and $\vec{u}$ represent the
+        vectors from the cell of interest to the neighboring cell.
+
+    """
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 1, narrowBandWidth = 1e+10):
+        """
+        Creates a `distanceVariable` object.
+
+        :Parameters:
+          - `mesh` : The mesh that defines the geometry of this variable.
+          - `name` : The name of the variable.
+	  - `value` : The initial value.
+	  - `unit` : the physical units of the variable
+          - `hasOld` : Whether the variable maintains an old value.
+          - `narrowBandWidth` : The width of the region about the zero level set
+            within which the distance function is evaluated.
+
+        """
+
         CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
@@ -194,6 +209,19 @@ class DistanceVariable(CellVariable):
         self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
         
     def extendVariable(self, extensionVariable, deleteIslands = False):
+        """
+        
+        Takes a `cellVariable` and extends the variable from the zero
+        to the region encapuslated by the `narrowBandWidth`
+
+        :Parameters:
+          - `extensionVariable` : The variable to extend from the zero
+            level set.
+          - `deleteIslands` : Sets the temporary level set value to
+            zero in isolated cells.
+
+        """
+        
         self.tmpValue = self.value.copy()
         numericExtensionVariable = Numeric.array(extensionVariable)
         self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
@@ -201,6 +229,16 @@ class DistanceVariable(CellVariable):
         self.value = self.tmpValue
 
     def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
+        """
+        Calculates the `distanceVariable` as a distance function.
+
+        :Parameters:
+          - `narrowBandWidth` : The width of the region about the zero level set
+            within which the distance function is evaluated.
+          - `deleteIslands` : Sets the temporary level set value to
+            zero in isolated cells.
+
+        """
         self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
         self._markFresh()
     
@@ -417,12 +455,12 @@ class DistanceVariable(CellVariable):
            
         """
 
-        normals = Numeric.array(self.getCellInterfaceNormals().filled(fill_value = 0))
+        normals = Numeric.array(self._getCellInterfaceNormals().filled(fill_value = 0))
         areas = Numeric.array(self.mesh.getCellAreaProjections().filled(fill_value = 0))
         import fipy.tools.array as array
         return Numeric.sum(abs(array.dot(normals, areas, axis = 2)), axis = 1)
 
-    def getCellInterfaceNormals(self):
+    def _getCellInterfaceNormals(self):
         """
         
         Returns the interface normals over the cells.
@@ -436,7 +474,7 @@ class DistanceVariable(CellVariable):
            ...                         ((0, 0), (0, 0), (0, 0), (v, v)),
            ...                         ((v, v), (0, 0), (0, 0), (0, 0)), 
            ...                         ((0, 0), (0, 0), (0, 0), (0, 0))))
-           >>> Numeric.allclose(distanceVariable.getCellInterfaceNormals(), answer)
+           >>> Numeric.allclose(distanceVariable._getCellInterfaceNormals(), answer)
            1
            
         """
@@ -445,14 +483,14 @@ class DistanceVariable(CellVariable):
         M = self.mesh.getMaxFacesPerCell()
         dim = self.mesh.getDim()
 
-        valueOverFaces = Numeric.resize(Numeric.repeat(self.getCellValueOverFaces(), dim), (N, M, dim))
+        valueOverFaces = Numeric.resize(Numeric.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
         from fipy.tools.array import MAtake
-        interfaceNormals = MAtake(self.getInterfaceNormals(), self.mesh.getCellFaceIDs())
+        interfaceNormals = MAtake(self._getInterfaceNormals(), self.mesh.getCellFaceIDs())
         import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
-    def getInterfaceNormals(self):
+    def _getInterfaceNormals(self):
         """
 
         Returns the normals on the boundary faces only, the other are set to zero.
@@ -467,17 +505,17 @@ class DistanceVariable(CellVariable):
            ...                         (0, 0), (0, 0),
            ...                         (0, 0), (v, v), (0, 0),
            ...                         (0, 0), (0, 0), (0, 0)))
-           >>> Numeric.allclose(distanceVariable.getInterfaceNormals(), answer)
+           >>> Numeric.allclose(distanceVariable._getInterfaceNormals(), answer)
            1
            
         """
         
         N = self.mesh.getNumberOfFaces()
         M = self.mesh.getDim()
-        interfaceFlag = Numeric.resize(Numeric.repeat(self.getInterfaceFlag(), M),(N, M))
-        return Numeric.where(interfaceFlag, self.getLevelSetNormals(), 0)
+        interfaceFlag = Numeric.resize(Numeric.repeat(self._getInterfaceFlag(), M),(N, M))
+        return Numeric.where(interfaceFlag, self._getLevelSetNormals(), 0)
 
-    def getInterfaceFlag(self):
+    def _getInterfaceFlag(self):
         """
 
         Returns 1 for faces on boundary and 0 otherwise.
@@ -487,7 +525,7 @@ class DistanceVariable(CellVariable):
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = Numeric.array((0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
-           >>> Numeric.allclose(distanceVariable.getInterfaceFlag(), answer)
+           >>> Numeric.allclose(distanceVariable._getInterfaceFlag(), answer)
            1
            
         """
@@ -496,7 +534,7 @@ class DistanceVariable(CellVariable):
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
-    def getCellInterfaceFlag(self):
+    def _getCellInterfaceFlag(self):
         """
 
         Returns 1 for those faces on the interface:
@@ -506,20 +544,20 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = Numeric.array((0, 1, 1, 0))
-        >>> Numeric.allclose(distanceVariable.getCellInterfaceFlag(), answer)
+        >>> Numeric.allclose(distanceVariable._getCellInterfaceFlag(), answer)
         1
 
         """
 
         from fipy.tools.array import MAtake
         
-        flag = MAtake(self.getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
+        flag = MAtake(self._getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
 
         flag = Numeric.sum(flag, axis = 1)
         
         return Numeric.where(Numeric.logical_and(self.value > 0, flag > 0), 1, 0)
 
-    def getCellValueOverFaces(self):
+    def _getCellValueOverFaces(self):
         """
 
         Returns the cells values at the faces.
@@ -532,7 +570,7 @@ class DistanceVariable(CellVariable):
            ...                         (.5, .5, .5, .5),
            ...                         (.5, .5, .5, .5),
            ...                         (1.5, 1.5, 1.5, 1.5)))
-           >>> Numeric.allclose(distanceVariable.getCellValueOverFaces(), answer)
+           >>> Numeric.allclose(distanceVariable._getCellValueOverFaces(), answer)
            1
 
         """
@@ -541,7 +579,7 @@ class DistanceVariable(CellVariable):
         N = self.mesh.getNumberOfCells()
         return Numeric.reshape(Numeric.repeat(Numeric.array(self.value), M), (N, M))
 
-    def getLevelSetNormals(self):
+    def _getLevelSetNormals(self):
         """
 
         Return the face level set normals.
@@ -553,7 +591,7 @@ class DistanceVariable(CellVariable):
            >>> v = 1 / Numeric.sqrt(2)
            >>> answer = Numeric.array(((0, 0), (0, 0), (v, v), (v, v), (0, 0), (0, 0),
            ...                         (0, 0), (v, v), (0, 0), (0, 0), (v, v), (0, 0)))
-           >>> Numeric.allclose(distanceVariable.getLevelSetNormals(), answer)
+           >>> Numeric.allclose(distanceVariable._getLevelSetNormals(), answer)
            1
         """
         
@@ -570,30 +608,6 @@ class DistanceVariable(CellVariable):
         Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
         
         return faceGrad / faceGradMag[:,Numeric.NewAxis] 
-
-    def getUpwindMag(self):
-        import MA
-        NCells = self.mesh.getNumberOfCells()
-        NCellFaces = self.mesh.getMaxFacesPerCell()
-        oldArray = Numeric.array(self)
-        cellValues = Numeric.repeat(oldArray[:,Numeric.NewAxis], NCellFaces, axis = 1)
-        
-        cellIDs = Numeric.repeat(Numeric.arange(NCells)[:,Numeric.NewAxis], NCellFaces, axis = 1)
-        cellToCellIDs = self.mesh.getCellToCellIDs()
-
-        cellToCellIDs = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs) 
-
-        adjacentValues = Numeric.take(oldArray, cellToCellIDs)
-
-        differences = self.getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs)
-
-        minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
-        maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
-
-        return (Numeric.array(self) > 0.) * minsq + (Numeric.array(self) < 0.) * maxsq
-        
-    def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
-        return (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
 
 def _test(): 
     import doctest

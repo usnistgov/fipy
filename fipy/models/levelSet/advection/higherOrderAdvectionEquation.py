@@ -40,21 +40,24 @@
  # ###################################################################
  ##
 
-"""
-
-The `HigherOrderAdvectionEquation` is the same as and `AdvectionTerm` but uses
-a `HigherOrderAdvectionTerm`. The `HigherOrderAdvectionEquation` solves,
-
-.. raw:: latex
-
-    $$ \\frac{\\partial \\phi}{\\partial t} + u | \\nabla \\phi | $$
-
-"""
-
 __docformat__ = 'restructuredtext'
 
 from higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 from advectionEquation import buildAdvectionEquation
 
 def buildHigherOrderAdvectionEquation(advectionCoeff = None):
+    r"""
+
+    The `buildHigherOrderAdvectionEquation` function returns an
+    advection equation that uses the `HigherOrderAdvectionTerm`. The
+    advection equation is given by,
+
+    .. raw:: latex
+
+        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0 $$
+
+    :Parameters:
+      - `advectionCoeff` : The `coeff` to pass to the `HigherOrderAdvectionTerm`
+
+    """
     return buildAdvectionEquation(advectionCoeff = advectionCoeff, advectionTerm = HigherOrderAdvectionTerm)
