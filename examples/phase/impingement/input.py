@@ -183,6 +183,6 @@ class ImpingementSystem:
             self.phaseViewer.plot()
             self.thetaViewer.plot()
 
-
+        self.thetaViewer.plot(fileName = 'theta.ps')
 
 
