@@ -6,7 +6,7 @@
  # 
  #  FILE: "ThetaHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:19:34 AM} { 4:14:24 PM}
+ #                                last update: 1/26/04 {3:58:40 PM} { 4:14:24 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@ import Numeric
 
 from fivol.variables.cellVariable import CellVariable
 from fivol.inline.inline import runInline
+import fivol.tools.array as array
 
 class ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
@@ -57,9 +58,9 @@ class ThetaHalfAngleVariable(CellVariable):
 	N = self.parameters['symmetry']
         dphi = self.phase.getGrad()[:,:]
 
-        z = Numeric.arctan2(dphi[:,1],dphi[:,0])
+        z = array.arctan2(dphi[:,1],dphi[:,0])
         z = N * (z - self.theta[:])
-        self.value = Numeric.tan(z / 2.)
+        self.value = array.tan(z / 2.)
 
 ##        runInline(
 ##            """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/20/04 {2:28:19 PM} 
+ #                                last update: 1/26/04 {4:41:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@ import Numeric
 
 from fivol.terms.term import Term
 import fivol.tools.vector
+import fivol.tools.array as array
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
@@ -71,6 +72,50 @@ class FaceTerm(Term):
 		'cell 2 offdiag': self.coeff*weight['cell 2 offdiag']
 	    }
 	    
+##     def buildImplicit(self,L,oldArray,b,coeffScale,varScale,id1,id2):
+## 	L.update_add_something(self.implicit['cell 1 diag'][:self.interiorN]/coeffScale,id1,id1)
+## 	L.update_add_something(self.implicit['cell 1 offdiag'][:self.interiorN]/coeffScale,id1,id2)
+## 	L.update_add_something(self.implicit['cell 2 offdiag'][:self.interiorN]/coeffScale,id2,id1)
+## 	L.update_add_something(self.implicit['cell 2 diag'][:self.interiorN]/coeffScale,id2,id2)
+## 	
+## 	for boundaryCondition in self.boundaryConditions:
+## 	    LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
+## 	    
+## 	    L.update_add_something(LL/coeffScale,ids,ids)
+## 	    ## WARNING: the next line will not work if one cell has two faces on the same
+## 	    ## boundary. Numeric.put will not add both values to the b array but over write
+## 	    ## the first with the second. We really need a putAdd function rather than put.
+## 	    ## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+## 	    fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+## 	
+##     def buildExplicit(self,L,oldArray,b,coeffScale,varScale,id1,id2):
+## 	oldArrayId1 = array.take(oldArray, id1)
+## 	oldArrayId2 = array.take(oldArray, id2)
+## 	
+## 	fivol.tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
+## 	fivol.tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
+## 
+## 	for boundaryCondition in self.boundaryConditions:
+## 
+## 	    LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
+## 	    oldArrayIds = array.take(oldArray, ids)
+## 	    fivol.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
+## 	    fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+## 	    
+##     def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
+## 	id1, id2 = self.mesh.getAdjacentCellIDs()
+## 	id1 = id1[:self.interiorN]
+## 	id2 = id2[:self.interiorN]
+## 	
+## 	## implicit
+## 	if self.weight.has_key('implicit'):
+## 	    self.buildImplicit(L,oldArray,b,coeffScale,varScale,id1,id2)
+## 	    
+## 	if self.weight.has_key('explicit'):
+## 	    self.buildExplicit(L,oldArray,b,coeffScale,varScale,id1,id2)
+		
+
+	
     def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
 	"""Implicit portion considers
 	"""
@@ -109,9 +154,9 @@ class FaceTerm(Term):
         ## explicit
         if self.weight.has_key('explicit'):
             
-            oldArrayId1 = Numeric.take(oldArray, id1)
-            oldArrayId2 = Numeric.take(oldArray, id2)
-            
+	    oldArrayId1 = array.take(oldArray, id1)
+	    oldArrayId2 = array.take(oldArray, id2)
+	    
             fivol.tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
             fivol.tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
 
@@ -123,7 +168,7 @@ class FaceTerm(Term):
             for boundaryCondition in self.boundaryConditions:
 
                 LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
-                oldArrayIds = Numeric.take(oldArray, ids)
+                oldArrayIds = array.take(oldArray, ids)
                 fivol.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
                 fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:47:27 AM}
+ #                                last update: 1/26/04 {4:08:48 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,6 +64,7 @@ class DiffusionVariable(CellVariable):
         phaseSq = phaseFace * phaseFace
         gradMag = self.theta.getFaceGrad().getMag()[:]
         IGamma = Numeric.where(gradMag > 1. / gamma, 1 / gradMag, gamma)
+## 	IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
 
         self.value = phaseSq * (self.parameters['s'] * IGamma + self.parameters['epsilon']**2)
     

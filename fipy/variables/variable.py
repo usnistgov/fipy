@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/20/04 {11:04:42 AM} 
+ #                                last update: 1/26/04 {3:42:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -79,6 +79,10 @@ class Variable:
 	self.subscribedVariables = []
 
 	self.value = fivol.tools.dimensions.physicalField.PhysicalField(value = value, unit = unit, array = array)
+## 	self.value = value
+## 	if array is not None:
+## 	    array[:] = self.value
+## 	    self.value = array
 		
 	self.mesh = mesh
 	self.name = name
