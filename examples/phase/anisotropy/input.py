@@ -241,9 +241,9 @@ data and compares it with the `phase` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.anisotropy
-   >>> gzfile = 'gunzip --fast -c < %s/%s'
-   >>> gzfile = gzfile%(examples.phase.anisotropy.__path__[0], testFile)
-   >>> filestream=os.popen(gzfile,'r')
+   >>> import gzip
+   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], testFile)
+   >>> filestream = gzip.open(filepath,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

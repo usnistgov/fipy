@@ -97,9 +97,9 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.circle
-   >>> gzfile = 'gunzip --fast -c < %s/%s'
-   >>> gzfile = gzfile%(examples.phase.missOrientation.circle.__path__[0],'test.gz')
-   >>> filestream=os.popen(gzfile, 'r')
+   >>> import gzip
+   >>> filepath = os.path.join(examples.phase.missOrientation.circle.__path__[0], 'test.gz')
+   >>> filestream = gzip.open(filepath,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
