@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/28/04 {11:28:07 AM} 
+ #                                last update: 11/1/04 {10:49:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 ## from fipy.equations.matrixEquation import MatrixEquation
@@ -52,6 +54,48 @@ from fipy.terms.scSourceTerm import ScSourceTerm
 from fipy.terms.spSourceTerm import SpSourceTerm
 
 class PhaseEquation(RelaxationEquation):
+    r"""
+    Represents the phase field equation
+    
+    .. raw:: latex
+    
+       \[
+	   \underbrace{
+	       \frac{\partial \xi}{\partial t}
+	       \vphantom{M_{\xi}\sum_{j=1}^{n} C_j}
+	   }_{\text{transient}}
+	   = 
+	   \underbrace{
+	       M_{\xi}\kappa_{\xi}\nabla^2 \xi
+	       \vphantom{M_{\xi}\sum_{j=1}^{n} C_j}
+	   }_{\text{diffusion}}
+	   - 
+	   \underbrace{
+	       \overbrace{
+		   M_{\xi}\sum_{j=1}^{n} C_j \left[
+		       p'(\xi) \Delta\mu_j^\circ
+		       + g'(\xi) W_j
+		   \right]
+	       }^{\text{phase transformation}}
+	       % +
+	       % \overbrace{
+	       %   M_{\xi}\frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+	       % }^{\text{dielectric}}
+	   }_{\text{source}}
+       \]
+
+       where \( \xi \) is the phase field variable, \( t \) is time, \(
+       M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the phase
+       field gradient energy coefficient.  \( p(\xi) \) describes the
+       interpolation of the free energy, \( g(\xi) \) describes the
+       shape of the energy barrier between the electrode and electrolyte
+       phases, \( p'(\xi) = 30\xi^2\left(1-\xi\right)^2 \), and \( g'(\xi) =
+       2\xi\left(1-\xi\right)\left(1-2\xi\right) \).  For a given species
+       \( j \), \( C_j \) is the concentration, \( \Delta\mu_j^{\circ} \)
+       is the standard chemical potential difference between the electrode
+       and electrolyte for a pure material, and \( W_j \) is the magnitude
+       of the energy barrier in the double-well free energy function.
+    """
     def __init__(self,
                  phase,
 		 fields = {},

@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/28/04 {11:27:58 AM} 
+ #                                last update: 11/1/04 {11:33:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
  
 ## from fipy.equations.matrixEquation import MatrixEquation
@@ -54,6 +56,28 @@ from fipy.terms.spSourceTerm import SpSourceTerm
 from fipy.tools.dimensions import physicalField
 
 class PoissonEquation(RelaxationEquation):
+    r"""
+    Represents the Poisson equation
+    
+    .. raw:: latex
+    
+       \[ 
+	   \underbrace{
+	       \nabla\cdot\left(\epsilon\nabla\phi\right) 
+	   }_{\text{diffusion}}
+	   +
+	   \underbrace{
+	       \rho
+	   }_{\text{source}}
+	   = 0
+       \]
+
+       where \( \phi \) is the electrostatic potential, 
+       \( \epsilon \) is the dielectric constant
+       \( \rho \equiv \sum_{j=1}^n z_j C_j \), is the total charge,
+       \( C_j \) is the concentration of the \( j^\text{th} \)
+       species, and \( z_j \) is the valence of that species.
+    """
     def __init__(self,
                  potential,
 		 parameters,
