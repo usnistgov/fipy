@@ -1,10 +1,11 @@
+"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 12/21/03 {11:22:03 PM} 
+ #                                last update: 01/06/04 { 5:38:23 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -31,6 +32,7 @@
  #  
  # ###################################################################
  ##
+"""
 
 from vectorCellVariable import VectorCellVariable
 import Numeric
