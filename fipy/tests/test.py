@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/28/03 {10:50:29 AM} 
+ #                                last update: 11/29/03 {9:08:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -45,6 +45,7 @@
 import tests.testVariableDiffusion
 import tests.testSteadyStateDiffusion
 import tests.testExplicitDiffusion
+import tests.testPhase
 import unittest
 
 if __name__ == '__main__':
@@ -57,3 +58,6 @@ if __name__ == '__main__':
     theSuite = tests.testVariableDiffusion.suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 
+    theSuite = tests.testPhase.suite()
+    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    
