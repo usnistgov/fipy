@@ -134,6 +134,9 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 
     """get Topology methods"""
 
+    def getVertexCoords(self):
+        return self.vertexCoords
+
     def getExteriorFaces(self):
 	return [Face(self, id) for id in self.exteriorFaceIDs]
 
