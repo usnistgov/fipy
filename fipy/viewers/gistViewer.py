@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/20/04 {8:37:08 AM} 
+ #                                last update: 01/21/04 { 2:45:36 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,12 +52,13 @@ class GistViewer:
     
     id=0
     
-    def __init__(self, minVal=None, maxVal=None, title = ''):
+    def __init__(self, minVal=None, maxVal=None, title = '', palette = 'heat.gp'):
 	self.minVal = minVal
         self.maxVal = maxVal
 	self.title = title
         self.id = GistViewer.id 
 	GistViewer.id += 1
+        self.palette = palette
     
     def plot(self, minVal=None, maxVal=None):
 	array = self.getArray()
@@ -65,7 +66,7 @@ class GistViewer:
         gist.window(self.id, wait= 1)
 	gist.pltitle(self.title)
         gist.animate(1)
-        gist.palette('heat.gp')
+        gist.palette(self.palette)
 	gist.gridxy(1)
 	
 	if minVal is None:

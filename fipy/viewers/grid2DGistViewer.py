@@ -51,9 +51,9 @@ from fivol.viewers.gistViewer import GistViewer
 
 class Grid2DGistViewer(GistViewer):
     
-    def __init__(self, var = None, minVal=None, maxVal=None):
+    def __init__(self, var = None, minVal=None, maxVal=None, palette = 'heat.gp'):
         self.var = var
-        GistViewer.__init__(self, minVal, maxVal, title = self.var.name)
+        GistViewer.__init__(self, minVal, maxVal, title = self.var.name, palette = palette)
 
     def setVar(self,var):
         self.var = var
