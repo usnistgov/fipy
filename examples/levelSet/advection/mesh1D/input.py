@@ -60,11 +60,11 @@ then the variable is advected with,
 
     $$ \\frac{ \\partial \\phi } { \\partial t} + \\vec{u} \\cdot \\nabla \\phi = 0 $$
 
-The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
+The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
 
 The result can be tested with the following code:
 
-   >>> distanceEquation.solve()
+   >>> disEqn.solve()
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
 
@@ -72,7 +72,7 @@ The result can be tested with the following code:
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
    >>> answer = Numeric.where(x < distanceTravelled, x[0] - interfacePosition, answer)
-   >>> Numeric.allclose(answer, Numeric.array(distanceVariable), atol = 1e-10)
+   >>> Numeric.allclose(answer, Numeric.array(var), atol = 1e-10)
    1
    
 """
@@ -82,8 +82,8 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -102,34 +102,34 @@ interfacePosition = L / 5.
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-distanceVariable = CellVariable(
+var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-distanceVariable.setValue(1.,  mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition))
+var.setValue(1.,  mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition))
 
-distanceEquation = DistanceFunctionEquation(distanceVariable)
+disEqn = DistanceEquation(var)
 
-advectionEquation = AdvectionEquation(
-    distanceVariable,
+advEqn = AdvectionEquation(
+    var,
     advectionCoeff = velocity,
     solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
+    tolerance = 1.e-15, 
+    steps = 1000))
 
-it = Iterator((advectionEquation,))
+it = Iterator((advEqn,))
 
 if __name__ == '__main__':
-    distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
-    distanceViewer.plot()
+    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
+    viewer.plot()
 
-    distanceEquation.solve()
+    disEqn.solve()
 
     for step in range(steps):
         it.timestep(dt = timeStepDuration)
 
-        distanceViewer.plot()
+        viewer.plot()
 
     raw_input('finished')
