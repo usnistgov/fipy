@@ -6,11 +6,13 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 4/2/04 {4:01:08 PM} 
+ #                                last update: 4/2/04 {5:34:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
  #  E-mail: daniel.wheeler@nist.gov
+ #  Author: James Warren
+ #  E-mail: jwarren@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

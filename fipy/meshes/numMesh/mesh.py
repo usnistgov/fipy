@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/2/04 {4:00:31 PM} 
+ #                                last update: 5/4/04 {10:55:42 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,6 +44,8 @@
     This is built for a non-mixed element mesh.
 """
 
+import sets
+
 import Numeric
 import MA
 
@@ -79,7 +81,7 @@ class Mesh:
     def updateMesh(self):
         self.calcTopology()
         self.calcGeometry()
-
+	
     """
     Topology methods
     """
@@ -90,6 +92,7 @@ class Mesh:
         self.numberOfCells = len(self.cellFaceIDs)
         self.calcFaceCellIDs()
         self.calcInteriorAndExteriorFaceIDs()
+	self.calcInteriorAndExteriorCellIDs()
         self.calcCellToFaceOrientations()
         self.calcAdjacentCellIDs()
         self.calcCellToCellIDs()
@@ -116,6 +119,11 @@ class Mesh:
     def calcInteriorAndExteriorFaceIDs(self):
         self.exteriorFaceIDs = Numeric.nonzero(self.faceCellIDs[:,1].mask())
         self.interiorFaceIDs = Numeric.nonzero(Numeric.logical_not(self.faceCellIDs[:,1].mask()))
+
+    def calcInteriorAndExteriorCellIDs(self):
+	self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[:,0],self.exteriorFaceIDs))
+	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
+	self.exteriorCellIDs = list(self.exteriorCellIDs)
 
     def calcCellToFaceOrientations(self):
 	tmp = MAtake(self.faceCellIDs[:,0], self.cellFaceIDs)
@@ -146,6 +154,12 @@ class Mesh:
 	    
     def getInteriorFaces(self):
 	return [Face(self, id) for id in self.interiorFaceIDs]
+	
+    def getExteriorCellIDs(self):
+	return self.exteriorCellIDs
+
+    def getInteriorCellIDs(self):
+	return self.interiorCellIDs
 
     def getFaceCellIDs(self):
         return self.faceCellIDs
@@ -169,9 +183,9 @@ class Mesh:
 	"""Return Cells of Mesh.
 	"""
         if func == None:
-            return [Cell(self, id) for id in range(self.numberOfCells)] 
+            return sets.Set([Cell(self, id) for id in range(self.numberOfCells)])
         else:        
-	    return [Cell(self, id) for id in range(self.numberOfCells) if func(Cell(self, id), **args)]
+	    return sets.Set([Cell(self, id) for id in range(self.numberOfCells) if func(Cell(self, id), **args)])
 
     def getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
@@ -197,6 +211,7 @@ class Mesh:
         self.calcAreaProjections()
         self.calcFaceTangents()
         self.calcFaceToCellDistanceRatio()
+	self.calcFaceAspectRatios()
         self.calcCellToCellDistances()
 ##        self.setScale()
 
@@ -275,13 +290,17 @@ class Mesh:
         self.tangents1 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]  
         tmp = fipy.tools.array.crossProd(self.tangents1, self.faceNormals)
         self.tangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
-
+        
+    def calcFaceAspectRatios(self):
+	self.faceAspectRatios = self.getFaceAreas() / self.getCellDistances()
+        
     def calcCellToCellDistances(self):
 ##        print self.getCellDistances()
 ##        print self.getCellFaceIDs()
         self.cellToCellDistances = MAtake(self.getCellDistances(), self.getCellFaceIDs())
 ##        print self.cellToCellDistances
 ##        raw_input()
+
     """
     get geometry methods
     """
@@ -325,6 +344,9 @@ class Mesh:
 
     def getFaceTangents2(self):
         return self.tangents2
+	
+    def getFaceAspectRatios(self):
+	return self.faceAspectRatios
 
     def getCellToCellDistances(self):
         return self.cellToCellDistances

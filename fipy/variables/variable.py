@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/2/04 {4:06:18 PM} 
+ #                                last update: 4/30/04 {3:40:42 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -104,6 +104,8 @@ class Variable:
         
 	self.transposeVar = None
 	self.sumVar = {}
+	self.faceDifferences = {}
+	self.laplacian = {}
         self.mag = None
 	
     def getPhysicalFieldClass(self):
@@ -355,5 +357,30 @@ class Variable:
 	    
 	return self.mag
 
+    def getLaplacian(self, order):
+	"""
+	order is even
+	"""
+	
+	if not self.laplacian.has_key(order):
+	    from fipy.variables.addOverFacesVariable import AddOverFacesVariable
+	    self.laplacian[order] = AddOverFacesVariable(self.getFaceDifference(order - 1))
+	    
+	return self.laplacian[order]
+
+	
+    def getFaceDifference(self, order):
+	"""
+	order is odd
+	"""
+	if not self.faceDifferences.has_key(order):
+	    from fipy.variables.faceDifferenceVariable import FaceDifferenceVariable
+	    if order is 1:
+		self.faceDifferences[order] = FaceDifferenceVariable(self)
+	    else:
+		self.faceDifferences[order] = FaceDifferenceVariable(self.getLaplacian(order-1))
+	    
+	return self.faceDifferences[order]
+	    
         
 

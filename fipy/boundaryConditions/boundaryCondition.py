@@ -6,11 +6,13 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 4/2/04 {4:00:14 PM} 
+ #                                last update: 4/2/04 {5:34:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
  #  E-mail: daniel.wheeler@nist.gov
+ #  Author: James Warren
+ #  E-mail: jwarren@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
