@@ -52,12 +52,9 @@ import MA
 from mesh import Mesh
 
 class TestMeshBase(TestBase):
-    def testResult(self):
-        pass
-
     def testExteriorFaces(self):
         self.assertEqual(self.externalFaces, [face.getID() for face in self.mesh.getExteriorFaces()])
-        
+
     def testInternalFaces(self):
         self.assertArrayEqual(self.internalFaces, [face.getID() for face in self.mesh.getInteriorFaces()])
 
@@ -66,7 +63,7 @@ class TestMeshBase(TestBase):
 
     def testFaceAreas(self):
         self.assertArrayWithinTolerance(self.faceAreas, self.mesh.getFaceAreas())
-        
+
     def testFaceCenters(self):
         self.assertArrayWithinTolerance(self.faceCenters, self.mesh.getFaceCenters())
 
@@ -74,19 +71,19 @@ class TestMeshBase(TestBase):
         self.assertArrayWithinTolerance(self.faceNormals, self.mesh.getFaceNormals())
 
     def testCellToFaceOrientations(self):
-	self.assertArrayEqual(self.cellToFaceOrientations, self.mesh.getCellFaceOrientations())
+        self.assertArrayEqual(self.cellToFaceOrientations, self.mesh.getCellFaceOrientations())
 
     def testCellVolumes(self):
-	self.assertArrayWithinTolerance(self.cellVolumes, self.mesh.getCellVolumes())
+        self.assertArrayWithinTolerance(self.cellVolumes, self.mesh.getCellVolumes())
 
     def testCellCenters(self):
-	self.assertArrayWithinTolerance(self.cellCenters, self.mesh.getCellCenters())
+        self.assertArrayWithinTolerance(self.cellCenters, self.mesh.getCellCenters())
 
     def testFaceToCellDistances(self):
-	self.assertArrayWithinTolerance(self.faceToCellDistances, self.mesh.getFaceToCellDistances())
+        self.assertArrayWithinTolerance(self.faceToCellDistances, self.mesh.getFaceToCellDistances())
 
     def testCellDistances(self):
-	self.assertArrayWithinTolerance(self.cellDistances, self.mesh.getCellDistances())
+        self.assertArrayWithinTolerance(self.cellDistances, self.mesh.getCellDistances())
 
     def testFaceToCellDistanceRatios(self):
         self.assertArrayWithinTolerance(self.faceToCellDistanceRatios, self.mesh.getFaceToCellDistanceRatio())
@@ -99,3 +96,7 @@ class TestMeshBase(TestBase):
 
     def testTangents2(self):
         self.assertArrayWithinTolerance(self.tangents2, self.mesh.getFaceTangents2())
+
+    def testResult(self):
+        pass
+

@@ -51,28 +51,32 @@ from fivol.meshes.mesh import Mesh
 import MA
 from mesh import Mesh
 from fivol.meshes.testMeshBase import TestMeshBase
+import fivol.tools.dump as dump
 
 class TestMesh3D(TestMeshBase):
+
     def setUp(self):
         dx = 2.
         dy = 1.23456
         dz = 1.e-1
-
+        
         self.vertices = Numeric.array(((0., 0., 0.), (1., 0., 0.), (1., 1., 0.), (0., 1., 0.),
                                        (0., 0., 1.), (1., 0., 1.), (1., 1., 1.), (0., 1., 1.),
                                        (2., 0., 0.), (2., 0., 1.)))
-        self.vertices = self.vertices * Numeric.array((dx, dy, dz))
+        
         self.faces = MA.masked_values(((0, 1, 2, 3), (7, 6, 5, 4),
                                     (3, 7, 4, 0), (5, 6, 2, 1),
                                     (1, 0, 4, 5), (3, 2, 6, 7),
                                     (1, 8, 2, -1), (9, 5, 6, -1), (8, 1, 5, 9), (8, 9, 6, 2)),-1)
         
         self.cells = MA.masked_values(((0, 1, 2, 3, 4, 5),
-				  (3 , 6, 7, 8, 9, -1)), -1)
+                                       (3 , 6, 7, 8, 9, -1)), -1)
+    
 
+        self.vertices = self.vertices * Numeric.array((dx, dy, dz))
 
         self.mesh = Mesh(self.vertices, self.faces, self.cells)
-
+        
         self.externalFaces = Numeric.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
         self.internalFaces = Numeric.array((3,))
         self.faceCellIds = MA.masked_values(((0, -1), (0, -1), (0, -1),
@@ -136,10 +140,17 @@ class TestMesh3D(TestMeshBase):
         
         tmp = fivol.tools.array.crossProd(self.tangents1, self.faceNormals)
         self.tangents2 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
-        
+
+class TestMesh3DPickle(TestMesh3D):
+    def setUp(self):
+        TestMesh3D.setUp(self)
+        pickledMesh = dump.write(self.mesh, 'pickledMesh')
+        self.mesh = dump.read('pickledMesh')
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestMesh3D))
+    theSuite.addTest(unittest.makeSuite(TestMesh3DPickle))
     return theSuite
     
 if __name__ == '__main__':
