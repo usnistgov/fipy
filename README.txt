@@ -37,6 +37,30 @@ http://www.ctcms.nist.gov/fipy/.
   
    -->
 
+-------------------------
+What's new in version 1.0
+-------------------------
+
+Numerous changes have been made since |FiPy| 0.1 was released, but the most 
+signficant ones are:
+
+- `Equation` objects no longer exist. PDEs are constructed from `Term` 
+  objects. `Term` objects can be added, subtracted, and equated to build up 
+  an equation.
+
+- A true 1D grid class has been added: `fipy.meshes.grid1D.Grid1D`.
+
+- A generic "factory" method `fipy.viewers.make()` has been added that will 
+  do a reasonable job of automatically creating a `Viewer` for the supplied 
+  `Variable` objects.
+
+- A simple `TSVViewer` has been added to allow display or export to a file of 
+  your solution data.
+
+The syntax of |FiPy| 1.0 scripts is incompatible with earlier releases.  A 
+tutorial for updating your existing scripts can be found in 
+|examples/update0_1to1_0.py|.
+
 
 -------------------------
 Download and Installation
@@ -128,15 +152,6 @@ or a
 
    to indicate something that could cause serious problems.
 
--------------------------
-What's new in version 1.0
--------------------------
-
-The main elements that have been changed are
-
-- `Equation` objects no longer exist. PDEs are constructed from `Term` 
-  objects. 
-
 .. _MSEL:                 http://www.msel.nist.gov/
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
@@ -152,6 +167,15 @@ The main elements that have been changed are
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION.txt| replace:: |latexINSTALLATION.txt| |htmlINSTALLATION.txt|
 
+.. |latexUpdate0_1to1_0.py| raw:: latex
+
+   Chapter~\ref{chap:Update0.1to1.0}
+
+.. |htmlUpdate0_1to1_0.py| raw:: html
+
+   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/fipy/examples/update0_1to1_0.py?view=markup">examples/update0_1to1_0.py</a>
+
+.. |examples/update0_1to1_0.py| replace:: |latexUpdate0_1to1_0.py| |htmlUpdate0_1to1_0.py|
 
 .. |citePython| raw:: latex
 
