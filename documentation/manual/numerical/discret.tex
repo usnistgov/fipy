@@ -12,22 +12,21 @@ defined by the cells or are centered on the vertices.
  \begin{center}
  \resizebox{8cm}{!}{\includegraphics{numerical/meshcartoon.pdf}}
  \caption{A mesh consists of cells, faces and vertices. For the
- purposes of \FiPy{}, the divider between two cells is always known as
- a face whatever the dimension of the problem of interest.}
- \label{fig:meshcartoon} \end{center}
+ purposes of \FiPy{}, the divider between two cells is known as a face
+ for all dimensions.}  \label{fig:meshcartoon} \end{center}
 \end{figure}
 
 \subsection{Cell Centered FVM (CC-FVM)}
 
-In the CC-FVM the CV's are formed by the mesh cells with the cell
+In the CC-FVM the CVs are formed by the mesh cells with the cell
 center 'storing' the average variable value in the CV, (see
 Figure~\ref{fig:vc-cc-fv}). The face fluxes are approximated using the
 variable values in the two adjacent cells surrounding the face. This
 low order approximation has the advantage of being efficient and
 requiring matrices of low band width (the band width is equal to the
-number of cell neighbors + 1) and thus low storage
+number of cell neighbors plus one) and thus low storage
 requirement. However, the mesh topology is restricted due to an
-orthogonality and conjuncanility requirement. The value at a face is
+orthogonality and conjunctionality requirement. The value at a face is
 assumed to be the average value over the face. On an unstructured mesh
 the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. \FiPy{} currently
