@@ -65,6 +65,7 @@ import Numeric
 import Gnuplot
 
 from gnuplotViewer import GnuplotViewer
+from fipy.meshes.grid2D import Grid2D
 
 class Gnuplot2DViewer(GnuplotViewer):
 
@@ -91,11 +92,15 @@ class Gnuplot2DViewer(GnuplotViewer):
         self.g('set view map')
         self.g('set style data pm3d')
         self.g('set pm3d at st solid')
-
         mesh = self.vars[0].getMesh()
-        NCells = int(Numeric.sqrt(mesh.getNumberOfCells()))
-        
-        self.g('set dgrid3d %i, %i, 1' % (NCells, NCells))
+
+        if isinstance(mesh, Grid2D):
+            nx, ny = mesh.getShape()
+        else:
+            N = int(Numeric.sqrt(mesh.getNumberOfCells()))
+            nx, ny = N, N
+            
+        self.g('set dgrid3d %i, %i, 2' % (ny, nx))
         
         data = Gnuplot.Data(mesh.getCellCenters()[:,0], mesh.getCellCenters()[:,1], self.vars[0][:])
         
