@@ -4,7 +4,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 11/17/03 {10:55:15 AM} 
+                               last update: 11/17/03 {11:33:32 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -37,7 +37,7 @@ they have been modified.
  ---------- --- --- -----------
  2003-11-12 JEG 1.0 original
 ###################################################################
-
+"""
 
 import Numeric
 import term
