@@ -92,7 +92,8 @@ class AnisotropySystem:
         phase = CellVariable(
             name = 'PhaseField',
             mesh = mesh,
-            value = 0.
+            value = 0.,
+            hasOld = 1
             )
         
         theta = ModularVariable(
@@ -102,10 +103,11 @@ class AnisotropySystem:
             hasOld = 0
             )
         
-        temperature = ModularVariable(
+        temperature = CellVariable(
             name = 'Theta',
             mesh = mesh,
-            value = -0.4
+            value = -0.4,
+            hasOld = 1
             )
 
         self.phaseViewer = Grid2DGistViewer(var = phase)
