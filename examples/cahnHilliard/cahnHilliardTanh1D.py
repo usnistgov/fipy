@@ -97,15 +97,15 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
 
-L = 100.
-nx = 2000
+L = 50.
+nx = 200
 ny = 1
-steps = 400
+steps = 100
 dx = L / nx
 dy = 1.
 
 parameters={
-    'asq' : 0.5,
+    'asq' : 1.0,
     'epsilon' : 1,
     'diffusionCoeff' : 1}
          
@@ -115,9 +115,10 @@ mesh = Grid2D(dx, dy, nx, ny)
 var = CellVariable(
     name = "phase field",
     mesh = mesh,
-    value = 0)
+    value = 1.0)
 
-var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
+##var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
+#var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 
 eqch= CahnHilliardEquation(
     var,
@@ -125,30 +126,33 @@ eqch= CahnHilliardEquation(
     solver = LinearPCGSolver(tolerance = 1e-10,steps = 1000),
     boundaryConditions=(
     FixedValue(mesh.getFacesRight(), 1),
-    FixedValue(mesh.getFacesLeft(), 0),
+    FixedValue(mesh.getFacesLeft(), 0.5),
     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
-    NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 2)))
+    NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
 
 it = Iterator((eqch,))
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var,minVal=0.0,maxVal=1.0)
+    viewer = Grid2DGistViewer(var,minVal=-2.0,maxVal=2.0)
     viewer.plot()
-    for step in range(steps):
-        dt=Numeric.exp(step/30)/1000
+    dexp=-5
+    
+    for step in range(steps):      
+        dt=Numeric.exp(dexp)
+        dexp=dexp+.1
         print 'in loop ',step,dt
         it.timestep(dt = dt)
         viewer.plot()
 
     a = Numeric.sqrt(parameters['asq'])
-    answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+    answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0]) / parameters['epsilon']))
     diff = answer - Numeric.array(var)
     maxarg = Numeric.argmax(diff)
     print diff[maxarg]
     print maxarg
     aa = Numeric.argsort(diff)
     print diff[aa[nx-1]],diff[aa[nx-2]],aa[nx-1],aa[nx-2]
-    print diff[nx/2-30:nx/2+30]
+    print answer,diff
     
         
     raw_input('finished')
