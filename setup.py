@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/3/04 {5:53:23 PM} 
+ #                                last update: 11/5/04 {3:12:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -185,6 +185,9 @@ class build_docs (Command):
                               settings_overrides = settings)
 
     def run (self):
+	f = open(os.path.join('documentation','VERSION.txt'), 'w')
+	f.write("The current version of |FiPy| is %s."%self.distribution.metadata.get_version())
+	f.close()
 
         mainRestructuredTextFiles = ['INSTALLATION',
 				     'README',
@@ -195,7 +198,8 @@ class build_docs (Command):
 	secondaryRestructuredTextFiles = ['CREDITS',
 					  'TALKS',
 					  'TODOLIST',
-					  'MAIL']
+					  'MAIL',
+					  'CVS']
 
 	if self.latex:
 	    if self.apis:

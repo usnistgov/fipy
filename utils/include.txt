@@ -30,4 +30,12 @@
 
    the Examples portion of the <a href="../manual/fipy.pdf">Manual</a>
 
+.. |latexCVS.txt| raw:: latex
+
+   Section~\ref{sec:CVS}
+
+.. |htmlCVS.txt| raw:: html
+
+   <a href="cvs.html">CVS tags</a>
+
 
