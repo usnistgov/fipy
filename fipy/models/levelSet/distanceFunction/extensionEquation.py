@@ -86,7 +86,7 @@ from distanceEquation import DistanceEquation
 
 class ExtensionEquation(DistanceEquation):
 
-    def __init__(self, var = None, extensionVar = None):
+    def __init__(self, var = None, extensionVar = None, terminationValue = 1e10):
         """
 
         The `var` argument must contain both positive and negative
@@ -95,15 +95,21 @@ class ExtensionEquation(DistanceEquation):
         The `extensionVar` must be defined on the positive interface
         cells.
         
+        The `terminationValue` represents the furthest distance from
+        the interface that the signed distance function will be
+        calculated.
+        
         """
         self.distanceVar = var
         self.extensionVar = extensionVar
-        DistanceEquation.__init__(self, var)
+        DistanceEquation.__init__(self, var, terminationValue)
+        self.numericExtensionVar = Numeric.array(self.extensionVar.copy())
 
     def solve(self, dt = None):
         self.var = self.distanceVar.copy()
+        self.numericExtensionVar = Numeric.array(self.extensionVar.copy())
         DistanceEquation.solve(self)
-
+        self.extensionVar.setValue(self.numericExtensionVar)
 
     def _calcInterfaceValues(self):
         """
@@ -151,29 +157,32 @@ class ExtensionEquation(DistanceEquation):
         
         for cellID in negativeInterfaceCellIDs:
             DistanceEquation._calcTrialValue(self, cellID, positiveInterfaceCellFlag)
-                        
+
+        self.var = self.distanceVar.copy()
+
+        self.extensionVar.setValue(self.numericExtensionVar)
+        
         return setValueFlag
 
-
     def _calcLinear(self, phi1, d1, cellID, adjCellID):
-        self.extensionVar[cellID] = self.extensionVar[adjCellID]
+        self.numericExtensionVar[cellID] = self.numericExtensionVar[adjCellID]
         return DistanceEquation._calcLinear(self, phi1, d1, cellID, adjCellID)
 
     def _calcQuadratic(self, phi1, phi2, n1, n2, d1, d2, area1, area2, cellID, adjCellID1, adjCellID2):
         val = DistanceEquation._calcQuadratic(self, phi1, phi2, n1, n2, d1, d2, area1, area2, cellID, adjCellID1, adjCellID2)
 
         if self.var[cellID] > 0:
-            phi = val[0]
+            phi = max(val[0], 0)
         else:
-            phi = val[1]
+            phi = min(val[1], 0)
 
-        n1grad = (phi1 - phi) / d1
-        n2grad = (phi2 - phi) / d2
+        n1grad = abs(phi1 - phi) / d1
+        n2grad = abs(phi2 - phi) / d2
 
-        u1 = self.extensionVar[adjCellID1]
-        u2 = self.extensionVar[adjCellID2]
+        u1 = self.numericExtensionVar[adjCellID1]
+        u2 = self.numericExtensionVar[adjCellID2]
 
-        self.extensionVar[cellID] = (u1 * n1grad * area1 + u2 * n2grad * area2) / (area1 * n1grad + area2 * n2grad)
+        self.numericExtensionVar[cellID] = (u1 * n1grad * area1 + u2 * n2grad * area2) / (area1 * n1grad + area2 * n2grad)
 
         return val
 
