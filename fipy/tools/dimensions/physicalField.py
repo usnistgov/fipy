@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 6/5/04 {11:03:00 PM} 
+ #                                last update: 6/7/04 {10:59:07 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -1509,14 +1509,14 @@ def AddConstant(name, constant):
     """
     Add `constant` to the table of available units
     
-	>>> print PhysicalField("1. Faraday")
+	>>> print PhysicalField("1. faraday")
 	Traceback (most recent call last):
 	    ...
-	NameError: name 'Faraday' is not defined
-	>>> AddConstant('Faraday', 'Nav*e')
-	>>> b = PhysicalField("1. Faraday")
+	NameError: name 'faraday' is not defined
+	>>> AddConstant('faraday', 'Nav*e')
+	>>> b = PhysicalField("1. faraday")
 	>>> print b
-	1.0 Faraday
+	1.0 faraday
 	>>> print b.inBaseUnits()
 	96485.308989 A*s/mol
     """
