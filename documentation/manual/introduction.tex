@@ -3,7 +3,7 @@
 \section{Overview}
 
 \FiPy{} is an object oriented partial differential equation (PDE) solver
-written in \href{http://www.python.org/}{Python} based on a standard
+written in \Python{} based on a standard
 finite volume (FV) approach.
 
 The solution of coupled sets of PDEs is ubiquitous in the numerical
@@ -12,9 +12,9 @@ variety of languages and numerical approaches. Many are proprietary,
 expensive and difficult to customize.  As a result, scientists spend
 considerable resources repeatedly developing limited tools for
 specific problems.  Our approach, combining the FV method and
-\href{http://www.python.org/}{Python}, provides a tool that is
+\Python{}, provides a tool that is
 extensible, powerful and freely available. A significant advantage to
-\href{http://www.python.org/}{Python} is the existing suite of tools
+\Python{} is the existing suite of tools
 for array calculations, sparse matrices and data representation.
 
 The \FiPy{} framework includes terms for transient diffusion,
@@ -36,19 +36,15 @@ significant code reuse while accounting for the unique vagaries of
 each problem.
 
 The initial development of the framework has been undertaken in the
-Center for Theoretical and Computational Materials Science
-(\href{http://www.ctcms.nist.gov/}{CTCMS}), in the Materials Science
-and Engineering Laboratory(\href{http://www.msel.nist.gov/}{MSEL}) at
-the National Institute of Standards and Technology
-(\href{http://www.nist.gov/}{NIST}). The framework is known as \FiPy{}
-and is developed at the top level in the
-\href{http://www.python.org/}{Python} programming language.
-\href{http://www.python.org/}{Python} enables the integration of
+Center for Theoretical and Computational Materials Science (\CTCMS{}),
+in the Materials Science and Engineering Laboratory (\MSEL{}) at the
+National Institute of Standards and Technology (\NIST{}). The
+framework is known as \FiPy{} and is developed at the top level in the
+\Python{} programming language. \Python{} enables the integration of
 low-level high performance languages such as C and FORTRAN allowing
-for efficient optimization. \href{http://www.python.org/}{Python} also
-has a large repository of free numerical and scientific software that
-can be integrated into the \FiPy{} framework. At
-\href{http://www.nist.gov/}{NIST}, there is a significant ongoing effort
+for efficient optimization. \Python{} also has a large repository of
+free numerical and scientific software that can be integrated into the
+\FiPy{} framework. At \NIST{}, there is a significant ongoing effort
 to maximize the efficiency of \FiPy{} with the use of third party
 software and the judicious use of the C programming language embedded
 in standard core modules.
@@ -108,18 +104,16 @@ project. However, we believe that the core principles used in the development of
 within the scientific community. The core principles of \FiPy{} are
 outlined in some of the following sections.
 
-\section{\href{http://www.python.org/}{Python} Programming Language}
+\section{\Python{} Programming Language}
 
-\href{http://www.python.org/}{Python} combines
-remarkable power with very clear syntax. It is freely usable and
-distributable, even for commercial
-use. \href{http://www.python.org/}{Python} is an example of an
-interpreted scripting language. Scripting languages are seen as
-distinctive from compiled lower level languages such as C or
-FORTRAN. Such lower level languages are commonly used for numerical
+\Python{} combines remarkable power with very clear syntax. It is
+freely usable and distributable, even for commercial use. \Python{} is
+an example of an interpreted scripting language. Scripting languages
+are seen as distinctive from compiled lower level languages such as C
+or FORTRAN. Such lower level languages are commonly used for numerical
 codes due to their increased efficiency over scripting languages. This
-makes \href{http://www.python.org/}{Python} an unusual choice for the
-bases of a numerical framework.
+makes \Python{} an unusual choice for the bases of a numerical
+framework.
 
 Codes, programmed exclusively in C or FORTRAN, are often hard to
 readapt to new application areas mainly due to the inability to allow
@@ -133,21 +127,17 @@ various ways a prospective user may wish to use the code.
 
 Thus \FiPy{}, rather than taking the approach of writing the fast
 numerical code first and then dealing with the issue of user
-interaction, initially implements most modules in the \href{http://www.python.org/}{Python} scripting
-language and only translates to C those parts of the code that prove
-inefficient. This leads to most top-level structures being written in
-\href{http://www.python.org/}{Python} allowing easy to understand implementation and
-modification. The choice of \href{http://www.python.org/}{Python} is
-in part due to the easy integration of C either as separate modules or
-encapsulated in \href{http://www.python.org/}{Python} functions as
-well as the ability to directly translate from
-\href{http://www.python.org/}{Python} to C
-(\href{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}{PyRex}). This
-low-level integration has resulted in a number of freely available
-efficient numerical modules (\href{http://www.scipy.org/}{SciPy},
-\href{http://www.numpy.org/}{NumPy}) for
-\href{http://www.python.org/}{Python} some of which are utilized in
-the \FiPy{} framework.
+interaction, initially implements most modules in the \Python{}
+scripting language and only translates to C those parts of the code
+that prove inefficient. This leads to most top-level structures being
+written in \Python{} allowing easy to understand implementation and
+modification. The choice of \Python{} is in part due to the easy
+integration of C either as separate modules or encapsulated in
+\Python{} functions as well as the ability to directly translate from
+\Python{} to C (\PyRex{}). This low-level integration has resulted
+in a number of freely available efficient numerical modules (\SciPy{},
+\Numeric{}) for \Python{} some of which are utilized in the \FiPy{}
+framework.
 
 \section{Object Oriented Approach}
 
@@ -180,10 +170,7 @@ test base also aids dissemination of the code by providing simple
 examples and knowledge of whether the code is working on a particular
 computer environment.
 
-\href{http://www.python.org/}{Python} has modules
-(\href{http://www.python.org/doc/current/lib/module-doctest.html}{doctest},
-href{http://www.python.org/doc/current/lib/module-unittest.html}{unittest})
-that automate the testing procedure.
+\Python{} has modules (\doctest{}, \unittest{}) that automate the testing procedure.
 
 \section{Documentation}
 
@@ -252,7 +239,8 @@ of a code and allow bugs to be fixed.
 
 \section{Pair Programming}
 
-\href{http://www.extremeprogramming.org/rules/pair.html}{Pair programming} is a good way to develop computer code.
+\href{http://www.extremeprogramming.org/rules/pair.html}{Pair programming}
+is a good way to develop computer code.
 
 \section{Contributions}
 
