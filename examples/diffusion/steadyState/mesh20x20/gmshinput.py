@@ -49,8 +49,6 @@
 This input file again solves a 1D diffusion problem as in
 `./examples/diffusion/steadyState/mesh1D/input.py`. In order to test the non-orthogonality error,
 this uses a SkewedGrid2D, which is a Grid2D with each interior vertex moved in a random direction.
-The RMS non-orthogonality and RMS error are measured for lots of different meshes and a graph is computed and
-displayed. See the section of the manual under AdaptiveMesh for more information.
 
 """
 
