@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:11:28 PM} 
+ #                                last update: 3/29/05 {2:37:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,14 +46,12 @@ from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
 import fipy.variables.testInterpolation
-import fipy.variables.testLaplacian
 import fipy.variables.testPickle
 
 def suite():
     return LateImportDocTestSuite(
         testModuleNames = (
             'fipy.variables.testInterpolation',
-            'fipy.variables.testLaplacian',
             'fipy.variables.testPickle',
         ),
         docTestModuleNames = (
