@@ -194,8 +194,12 @@ class TestGrid(TestMeshBase):
 class TestGridPickle(TestGrid):
     def setUp(self):
         TestGrid.setUp(self)
-        pickledMesh = dump.write(self.mesh, 'pickledMesh')
-        self.mesh = dump.read('pickledMesh')
+        import tempfile
+        import os
+        tmp = tempfile.gettempdir()
+        fileName = os.path.join(tmp, 'data')
+        pickledMesh = dump.write(self.mesh, fileName)
+        self.mesh = dump.read(fileName)
 
 def suite():
     theSuite = unittest.TestSuite()
