@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {10:41:02 AM} 
+ #                                last update: 2/18/05 {11:37:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -200,11 +200,11 @@ After solving this equation
     
 we obtain the surprising result that |phase| is zero everywhere.
 
-   >>> if __name__ == '__main__':
-   ...     viewer.plot()
-   ...     raw_input("Fully explicit source. Press <return> to proceed...")
-   >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-   false
+    >>> if __name__ == '__main__':
+    ...     viewer.plot()
+    ...     raw_input("Fully explicit source. Press <return> to proceed...")
+    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    0
 
 .. image:: images/examples/phase/simple/explicit.pdf
    :scale: 50
@@ -243,7 +243,7 @@ transient term from
     
     >>> for i in range(13):
     ...     eq.solve(var = phase)
-    ... if __name__ == '__main__':
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
 
@@ -254,7 +254,7 @@ transient term from
 After 13 time steps, the solution has converged to the analytical solution
 
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    true
+    1
 
 .. note:: The solution is only found accurate to
 
@@ -328,11 +328,11 @@ iterations at the same time step to reach a converged solution).
     
     >>> for i in range(8):
     ...     eq.solve(var = phase)
-    ... if __name__ == '__main__':
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Kobayashi, semi-implicit. Press <return> to proceed...")
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    true
+    1
 
 In general, the best convergence is obtained when the linearization gives a
 good representation of the relationship between the source and the
@@ -383,11 +383,11 @@ tangent to the source, we reach convergence in only 5 sweeps
     
     >>> for i in range(5):
     ...     eq.solve(var = phase)
-    ... if __name__ == '__main__':
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Tangent, semi-implicit. Press <return> to proceed...")
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    true
+    1
 
 Although, for this simple problem, there is no appreciable difference in
 run-time between the fully explicit source and the optimized semi-implicit
