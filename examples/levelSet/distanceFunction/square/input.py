@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:40:21 PM} { 1:23:41 PM}
+ #                                last update: 10/6/04 {4:36:43 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,10 +48,12 @@ given by:
 
 .. raw:: latex
 
+    \begin{align*}
     $$ | \\nabla \\phi | = 1 $$
     $$ \\phi = 0 \;\; \\text{at} $$
     $$ x = \\left( L / 3, 2 L / 3 \\right) \;\; \\text{for} \;\; L / 3 \\le y \\le 2 L / 3 $$
     $$ y = \\left( L / 3, 2 L / 3 \\right) \;\; \\text{for} \;\; L / 3 \\le x \\le 2 L / 3 $$
+    \end{align*}
     
 
 Do the tests:
@@ -68,11 +70,12 @@ Do the tests:
    >>> v2 = evalCell(-3. * dy / 2., val, dx, dy)[0]
    >>> v3 = evalCell(v2, v1, dx, dy)[0]
    >>> v4 = min(dx, dy) / 2 / Numeric.sqrt(2)
-   >>> Numeric.allclose(Numeric.array(var), Numeric.array((v3           , v2      , -3. * dy / 2.   , v2      , v3,
-   ...                                                     v1           , val     , -dy / 2.        , val     , v1           ,
-   ...                                                     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
-   ...                                                     v1           , val     , -dy / 2.        , val     , v1           ,
-   ...                                                     v3           , v2      , -3. * dy / 2.   , v2      , v3           )), atol = 1e-10)
+   >>> Numeric.allclose(var, 
+   ...     Numeric.array((v3           , v2      , -3. * dy / 2.   , v2      , v3,
+   ...                    v1           , val     , -dy / 2.        , val     , v1           ,
+   ...                    -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
+   ...                    v1           , val     , -dy / 2.        , val     , v1           ,
+   ...                    v3           , v2      , -3. * dy / 2.   , v2      , v3           )), atol = 1e-10)
    1
 
 """

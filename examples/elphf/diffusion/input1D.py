@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {4:58:06 PM} 
+ #                                last update: 10/6/04 {4:31:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -55,8 +55,8 @@ Verify that the concentrations have become uniform
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.gist1DViewer import Gist1DViewer

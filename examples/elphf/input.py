@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:43:20 PM} 
+ #                                last update: 10/6/04 {4:36:39 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -193,8 +193,8 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 

@@ -5,8 +5,8 @@ This module takes a FiPy mesh and creates a mesh file that can be opened in Gmsh
 """
 
 import Numeric
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 MeshExportError = "MeshExportError"
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {4:59:18 PM} 
+ #                                last update: 10/6/04 {4:45:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -40,16 +40,20 @@
  ##
 
 r"""
-This example combines a 1D phase field problem, as given in
-`input1Dphase.py`, with a binary diffusion problem.
+This example combines a 1D phase field problem, as given in::
+    
+    $ examples/elphf/input1Dphase.py
+    
+with a binary diffusion problem.
 
 We start with a sharp phase boundary
+
 .. raw:: latex
 
    $$ \xi =
    \begin{cases}
-       1& \text{for $x \le L/2$} \\
-       0& \text{for $x > L/2$}
+       1& \text{for $x \le L/2$,} \\
+       0& \text{for $x > L/2$,}
    \end{cases} $$
    
 and with a uniform concentration field
@@ -66,21 +70,23 @@ equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> Numeric.allclose(Numeric.take(fields['phase'], (0,-1)), (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['phase'], (0,-1))
+    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
     1
     
 and that the concentration field has appropriately segregated into solute
 rich and solute poor phases
 
-    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][0], (0,-1)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['substitutionals'][0], (0,-1))
+    >>> Numeric.allclose(ends, (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
     1
 """
 __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.gist1DViewer import Gist1DViewer

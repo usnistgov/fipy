@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:09:43 PM} 
+ #                                last update: 10/6/04 {4:47:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,8 +61,8 @@ Verify that the concentrations have become uniform
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer

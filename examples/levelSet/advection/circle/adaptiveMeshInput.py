@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveMeshInput.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:40:07 PM} { 1:23:41 PM}
+ #                                last update: 10/6/04 {4:48:38 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -123,8 +123,8 @@ from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 from fipy.meshes.numMesh.adaptiveMesh import AdaptiveMesh2D
 from fipy.meshes.numMesh.gmshExport import exportAsMesh
 

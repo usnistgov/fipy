@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 9/3/04 {10:41:45 PM} 
+ #                                last update: 10/6/04 {4:25:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -69,8 +69,8 @@ from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.mesh import Mesh
 from fipy.meshes.numMesh.gmshImport import DataGetter
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 def removeDuplicates(list):
     dict = {}

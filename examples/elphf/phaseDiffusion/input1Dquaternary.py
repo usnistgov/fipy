@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {4:57:12 PM} 
+ #                                last update: 10/6/04 {4:46:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -40,7 +40,9 @@
  ##
 
 """
-This example adds two more substitutional components to `input1DphaseBinary.py`.
+This example adds two more substitutional components to::
+    
+    $ examples/elphf/input1DphaseBinary.py
 
 We start with uniform concentration fields
 
@@ -56,25 +58,29 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> Numeric.allclose(Numeric.take(fields['phase'], (0,-1)), (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['phase'], (0,-1))
+    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 2e-3, atol = 2e-3)
     1
     
 and that the concentration fields has appropriately segregated into into
 their respective phases
 
-    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][0], (0,-1)), (0.4, 0.3), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['substitutionals'][0], (0,-1))
+    >>> Numeric.allclose(ends, (0.4, 0.3), rtol = 2e-3, atol = 2e-3)
     1
-    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][1], (0,-1)), (0.3, 0.4), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['substitutionals'][1], (0,-1))
+    >>> Numeric.allclose(ends, (0.3, 0.4), rtol = 2e-3, atol = 2e-3)
     1
-    >>> Numeric.allclose(Numeric.take(fields['substitutionals'][2], (0,-1)), (0.1, 0.2), rtol = 2e-3, atol = 2e-3)
+    >>> ends = Numeric.take(fields['substitutionals'][2], (0,-1))
+    >>> Numeric.allclose(ends, (0.1, 0.2), rtol = 2e-3, atol = 2e-3)
     1
 """
 __docformat__ = 'restructuredtext'
  
 import Numeric
 
-from fipy.tools.profiler.profiler import Profiler
-from fipy.tools.profiler.profiler import calibrate_profiler
+## from fipy.tools.profiler.profiler import Profiler
+## from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.gist1DViewer import Gist1DViewer

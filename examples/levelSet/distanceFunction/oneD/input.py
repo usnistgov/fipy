@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:33:28 PM} { 1:23:41 PM}
+ #                                last update: 10/6/04 {4:30:46 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,12 +49,16 @@ given by:
 .. raw:: latex
 
     $$ | \\nabla \\phi | = 1 $$
-    $$ \\phi = 0 \;\; \\text{at} \;\; x = L / 2 $$
+    
+    $\phi = 0$ at $x = L / 2$.
 
 Do the tests:
 
    >>> eqn.solve()
-   >>> Numeric.allclose(Numeric.array(var), Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., -7. * dx / 2., -9. * dx / 2.)))
+   >>> Numeric.allclose(var, \\
+   ...     Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 
+   ...     3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., 
+   ...     -7. * dx / 2., -9. * dx / 2.)))
    1
 
 """
