@@ -5,7 +5,7 @@
 
  FILE: "anisotropyVariable.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 01/05/04 { 6:04:48 PM}
+                               last update: 01/07/04 { 2:35:45 PM}
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -42,6 +42,7 @@ they have been modified.
 
 from variables.cellVariable import CellVariable
 import Numeric
+import tools
 
 class AnisotropyVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, halfAngle = None):
@@ -63,27 +64,54 @@ class AnisotropyVariable(CellVariable):
 
         dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
 
-        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
-
-        contributions = contributions * ff
+        self.value = tools.addOverFaces(faceGradient = dphiReverse,
+                                        faceVariable = ff,
+                                        mesh = self.mesh,
+                                        NCells = len(self.value[:]))
         
-        NIntFac = len(self.mesh.getInteriorFaces())
-        NExtFac = len(self.mesh.getFaces()) - NIntFac
+##        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
+
+##        contributions = contributions * ff
         
-        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
-        ids = self.mesh.getCellFaceIDs()
+##        NIntFac = len(self.mesh.getInteriorFaces())
+##        NExtFac = len(self.mesh.getFaces()) - NIntFac
+        
+##        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
+##        ids = self.mesh.getCellFaceIDs()
 
-        contributions = Numeric.take(contributions, ids)
+##        contributions = Numeric.take(contributions, ids)
 
-        NCells = len(self.value[:])
-	NMaxFac = self.mesh.getMaxFacesPerCell()
+##        NCells = len(self.value[:])
+##	NMaxFac = self.mesh.getMaxFacesPerCell()
 
-        contributions = Numeric.reshape(contributions,(NCells,-1))
+##        contributions = Numeric.reshape(contributions,(NCells,-1))
 
-        orientations = Numeric.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
+##        orientations = Numeric.reshape(self.mesh.getCellFaceOrientations(),(NCells,-1))
 
-        self.value = Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
+##        self.value = Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
 
+##    def addOverFaces(grad, diffusion, mesh, Ncells):
+
+##        contributions = Numeric.sum(mesh.getAreaProjections() * grad,1)
+
+##        contributions = contributions * ff
+        
+##        NIntFac = len(mesh.getInteriorFaces())
+##        NExtFac = len(mesh.getFaces()) - NIntFac
+        
+##        contributions = Numeric.concatenate((contributions[:NIntFac], Numeric.zeros(NExtFac,'d')))
+##        ids = mesh.getCellFaceIDs()
+
+##        contributions = Numeric.take(contributions, ids)
+
+##	NMaxFac = mesh.getMaxFacesPerCell()
+
+##        contributions = Numeric.reshape(contributions,(NCells,-1))
+
+##        orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
+
+##        return Numeric.sum(orientations*contributions,1) / self.mesh.getCellVolumes()
+        
 
         
 
