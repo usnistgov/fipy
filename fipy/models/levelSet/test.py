@@ -48,6 +48,7 @@ import unittest
 import advection.advectionTerm
 import distanceFunction.distanceVariable
 import surfactant.surfactantVariable
+import surfactant.adsorbingSurfactantEquation
 import distanceFunction.extensionEquation
 import distanceFunction.distanceEquation
 import distanceFunction.levelSetDiffusionVariable
@@ -62,6 +63,7 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.extensionEquation))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceEquation))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.levelSetDiffusionVariable))
+    theSuite.addTest(doctest.DocTestSuite(surfactant.adsorbingSurfactantEquation))
     theSuite.addTest(electroChem.test.suite())
     return theSuite
     
