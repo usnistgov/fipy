@@ -50,6 +50,7 @@ def suite():
         ),
         docTestModuleNames = (
             'advection.advectionTerm',
+            'advection.higherOrderAdvectionTerm',
             'distanceFunction.distanceVariable',
             'surfactant.surfactantVariable',
             'distanceFunction.extensionEquation',

@@ -54,13 +54,7 @@ a `HigherOrderAdvectionTerm`. The `HigherOrderAdvectionEquation` solves,
 __docformat__ = 'restructuredtext'
 
 from higherOrderAdvectionTerm import HigherOrderAdvectionTerm
-from advectionEquation import AdvectionEquation
+from advectionEquation import buildAdvectionEquation
 
-class HigherOrderAdvectionEquation(AdvectionEquation):
-
-    def __init__(self,
-                 var = None,
-                 advectionCoeff = None,
-                 solver = None):
-        
-        AdvectionEquation.__init__(self, var = var, advectionCoeff = advectionCoeff, solver = solver, advectionTerm = HigherOrderAdvectionTerm)
+def buildHigherOrderAdvectionEquation(advectionCoeff = None):
+    return buildAdvectionEquation(advectionCoeff = advectionCoeff, advectionTerm = HigherOrderAdvectionTerm)

@@ -61,33 +61,13 @@ University Press, 1999. Testing for the advection equation is in
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from advectionTerm import AdvectionTerm
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
-class AdvectionEquation(MatrixEquation):
+def buildAdvectionEquation(advectionCoeff = None,
+                           advectionTerm = AdvectionTerm):
 
-    def __init__(self,
-                 var = None,
-                 advectionCoeff = None,
-                 solver = None,
-                 advectionTerm = AdvectionTerm):
-
-        if solver == None:
-            solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
-        
-        mesh = var.getMesh()
-
-        terms = (
-            TransientTerm(1., mesh),
-            advectionTerm(advectionCoeff, mesh))
-	
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
+    return TransientTerm(1.) + advectionTerm(advectionCoeff)
         
 
         

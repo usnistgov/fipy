@@ -74,13 +74,16 @@ The following is a test case:
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
    >>> distanceVar = DistanceVariable(mesh = mesh, 
    ...                                value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
-   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
-   ...                          distanceVar = distanceVar)
+   >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
+   ...                                    distanceVar = distanceVar)
    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
-   >>> eqn = AdsorbingSurfactantEquation(var, distanceVar, bulkVar, k)
+   >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
+   ...                                   distanceVar = distanceVar,
+   ...                                   bulkVar = bulkVar,
+   ...                                   rateConstant = k)
    >>> eqn.solve(dt = dt)
    >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-   >>> Numeric.allclose(var.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
+   >>> Numeric.allclose(surfactantVar.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
    1
 
 """
@@ -89,11 +92,10 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.cellVariable import CellVariable
-from surfactantEquation import SurfactantEquation
-from fipy.terms.spSourceTerm import SpSourceTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
+from surfactantEquation import buildSurfactantEquation
+from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.solvers.linearLUSolver import LinearLUSolver
 
- 
 class AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
@@ -118,16 +120,16 @@ class AdsorptionCoeffAreaOverVolume(AdsorptionCoeff):
     def multiplier(self):
         return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
  
-class AdsorbingSurfactantEquation(SurfactantEquation):
+class AdsorbingSurfactantEquation:
     def __init__(self,
-                 var,
-                 distanceVar,
-                 bulkVar,
-                 rateConstant,
+                 surfactantVar = None,
+                 distanceVar = None,
+                 bulkVar = None,
+                 rateConstant = None,
                  scCoeff = None,
                  spCoeff = None):
         
-        SurfactantEquation.__init__(self, var, distanceVar)
+        eq, bc = buildSurfactantEquation(distanceVar = distanceVar)
 
         self.spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
         self.scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
@@ -138,17 +140,17 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         if scCoeff != None:
             self.scCoeff += scCoeff
 
-        self.terms += (
-            SpSourceTerm(self.spCoeff, self.var.getMesh()),
-            ScSourceTerm(self.scCoeff, self.var.getMesh())
-            )
+        self.bc = bc
+        self.eq = eq + DependentSourceTerm(self.spCoeff) - self.scCoeff
+        self.surfactantVar = surfactantVar
 
     def solve(self, dt):
-        self.dt = dt
         self.scCoeff.updateDt(dt)
         self.spCoeff.updateDt(dt)
-        SurfactantEquation.solve(self, dt)
-        
+        self.eq.solve(self.surfactantVar,
+                      boundaryConditions = self.bc,
+                      solver = LinearLUSolver())
+            
 def _test(): 
     import doctest
     return doctest.testmod()

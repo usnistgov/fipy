@@ -41,15 +41,13 @@
  # ###################################################################
  ##
 
-from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import ConvectionCoeff
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 
-class SurfactantEquation(MatrixEquation):
+def buildSurfactantEquation(distanceVar = None):
     """
 
     A `SurfactantEquation` aims to evolve a surfactant on an interface
@@ -61,32 +59,10 @@ class SurfactantEquation(MatrixEquation):
     
     """
     
-    def __init__(self,
-                 var,
-                 distanceVar,
-                 solver = LinearLUSolver(tolerance = 1e-15),
-                 boundaryConditions = None):
+    boundaryConditions = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
 
-	mesh = var.getMesh()
+    transientTerm = TransientTerm(tranCoeff = 1)
 
-        if boundaryConditions == None:
-            boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0),)
+    convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar))
 
-	transientTerm = TransientTerm(1. ,mesh)
-
-        convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar), mesh, boundaryConditions)
-
-	terms = (
-	    transientTerm,
-	    convectionTerm
-            )
-	    
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
-
-    def solve(self, dt = 1.):
-        MatrixEquation.solve(self, dt = 1.)
-
+    return transientTerm - convectionTerm, boundaryConditions

@@ -63,48 +63,29 @@ where,
 __docformat__ = 'restructuredtext'
 
 
-from fipy.equations.diffusionEquation import DiffusionEquation
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import LevelSetDiffusionVariable
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-class LevelSetDiffusionEquation(DiffusionEquation):
-    
-    def __init__(self,
-                 var,
-                 distanceVar = None,
-                 transientCoeff = 1.,
-                 diffusionCoeff = 1.,
-                 solver = LinearPCGSolver(tolerance = 1.e-15,
-                                          steps = 1000),
-                 boundaryConditions = (),
-                 otherTerms = ()):
-        """
+def buildLevelSetDiffusionEquation(ionVar = None,
+                                   distanceVar = None,
+                                   transientCoeff = 1.,
+                                   diffusionCoeff = 1.):
+
+    """
         
-        A `LevelSetDiffusionEquation` is instantiated with the
-        following arguments,
+    `ionVar` - The species concentration variable.
+    
+    `distanceVar` - A `DistanceVariable` object
 
-        `var` - The species concentration variable.
+    `transientCoeff` - In general 1 is used.
 
-        `distanceVar` - A `DistanceVariable` object
+    """
 
-        `transientCoeff` - In general 1 is used.
-
-        `solver` - A given solver.
-
-        `boundaryConditions` - A tuple of `BoundaryCondition` objects.
-
-        """
-
-	DiffusionEquation.__init__(
-            self,
-            var,
-            transientCoeff = transientCoeff,
-            diffusionCoeff = LevelSetDiffusionVariable(distanceVar,
-                                                       diffusionCoeff),
-            solver = solver,
-            boundaryConditions = boundaryConditions,
-            otherTerms = otherTerms
-            )
+    diffusionCoeff = LevelSetDiffusionVariable(distanceVar,
+                                               diffusionCoeff)
+        
+    return TransientTerm(transientCoeff) - ImplicitDiffusionTerm(diffusionCoeff)
         
 def _test(): 
     import doctest

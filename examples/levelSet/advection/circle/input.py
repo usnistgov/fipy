@@ -90,15 +90,9 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 The `advectionEquation` is constructed.
    
-   >>> from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-   >>> advEqn = AdvectionEquation(
-   ...     var,
+   >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+   >>> advEqn = buildAdvectionEquation(
    ...     advectionCoeff = velocity)
-
-An `Iterator` object is constructed.
-
-   >>> from fipy.iterators.iterator import Iterator
-   >>> it = Iterator((advEqn,))
 
 The problem can then be solved by executing a serious of time steps.
 
@@ -108,13 +102,13 @@ The problem can then be solved by executing a serious of time steps.
    ...                               maxVal = radius)
    ...     viewer.plot()
    ...     for step in range(steps):        
-   ...         it.timestep(dt = timeStepDuration)
+   ...         advEqn.solve(var, dt = timeStepDuration)
    ...         viewer.plot()
 
 The result can be tested with the following commands.
 
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     advEqn.solve(var, dt = timeStepDuration)
    >>> x = Numeric.array(mesh.getCellCenters())
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
@@ -127,13 +121,11 @@ If the `AdvectionEquation` is built with the `HigherOrderAdvectionTerm` the resu
 is more accurate,
 
    >>> var.setValue(initialArray)
-   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
-   >>> advEqn = HigherOrderAdvectionEquation(
-   ...     var,
+   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
+   >>> advEqn = buildHigherOrderAdvectionEquation(
    ...     advectionCoeff = velocity)
-   >>> it = Iterator((advEqn,))
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     advEqn.solve(var, dt = timeStepDuration)
    >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(var))
    >>> Numeric.allclose(answer, solution, atol = 1.02e-3)
    1
