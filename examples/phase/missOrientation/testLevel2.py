@@ -41,9 +41,6 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
- 
 import unittest
 import fipy.tests.testProgram
 

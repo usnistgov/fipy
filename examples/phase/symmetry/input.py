@@ -43,6 +43,53 @@
 
 """
 
+This example creates four symmetric quadrilateral regions in a box.
+We start with a `CellVariable` object that contains the following
+values:
+
+.. raw:: latex
+
+    $$ \\phi(x, y) = x y $$
+    $$ 0 \\le x \\le L $$
+    $$ 0 \\le y \\le L $$
+
+We wish to create 4 symmetric regions such that
+
+.. raw:: latex
+
+    $$ \\phi(x, y) = \\phi(L - x, y) = \\phi(L - x, y) = \\phi(L - x, L - y) $$
+    $$ 0 \\le x \\le L / 2 $$
+    $$ 0 \\le y \\le L / 2 $$
+    
+First set the values as given in the above equation:
+
+   >>> var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+
+then extract the bottom left quadrant of cells:
+
+   >>> def func(cell, Length = None):
+   ...     return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
+   >>> bottomLeftCells = mesh.getCells(filter = func,  Length = L)
+
+Next, extract the corresponding cells from each region in the correct order:
+
+   >>> for cell in bottomLeftCells:
+   ...     x, y = cell.getCenter()
+   ...     bottomRightCells += (mesh.getNearestCell((L - x, y)),)            
+   ...     topRightCells += (mesh.getNearestCell((L - x , L - y)),)
+   ...     topLeftCells += (mesh.getNearestCell((x , L - y)),)
+
+The method `mesh.getNearestCell((x, y))` finds the nearest cell to
+the` given coordinate. The cells are then set to the symmetry value:
+
+   >>> for cellSet in orderedCells:
+   ...     for i in range(len(cellSet)):
+   ...         id = symmetryCells[i].getID()
+   ...         idOther = cellSet[i].getID()
+   ...         var[idOther] = var[id]
+
+The following code tests the results with a different algorithm:
+
    >>> testResult = Numeric.zeros((N / 2, N / 2), 'd')
    >>> bottomRight = Numeric.zeros((N / 2, N / 2), 'd')
    >>> topLeft = Numeric.zeros((N / 2, N / 2), 'd')
@@ -103,8 +150,6 @@ for cell in bottomLeftCells:
     
     orderedCells = (bottomRightCells, topRightCells, topLeftCells)
     symmetryCells = bottomLeftCells
-        
-viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L)
 
 for cellSet in orderedCells:
     for i in range(len(cellSet)):
@@ -113,7 +158,7 @@ for cellSet in orderedCells:
         var[idOther] = var[id]
 
 if __name__ == '__main__':
-
+    viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L / 4.)
     viewer.plot()
     raw_input('finished')
     

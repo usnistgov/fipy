@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:05:54 PM}
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,22 +41,25 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
-
+ 
 import unittest
 import fipy.tests.testProgram
-import square.test
-import circle.test
-import oneD.test
-import interior.test
+
+import doctest
+
+import oneD.input
+import circle.input
+import square.input
+import interior.input
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(square.test.suite())
-    theSuite.addTest(circle.test.suite())
-    theSuite.addTest(oneD.test.suite())
-    theSuite.addTest(interior.test.suite())
+
+    theSuite.addTest(doctest.DocTestSuite(oneD.input))
+    theSuite.addTest(doctest.DocTestSuite(circle.input))
+    theSuite.addTest(doctest.DocTestSuite(square.input))
+    theSuite.addTest(doctest.DocTestSuite(interior.input))
+        
     return theSuite
     
 if __name__ == '__main__':

@@ -126,9 +126,8 @@ class build_docs (Command):
         modules = ['fipy',
                    'examples/diffusion',
                    'examples/convection',
-                   'examples/phase/anisotropy',
-                   'examples/phase/impingement',
-                   'examples/phase/missOrientation']
+                   'examples/phase',
+                   'examples/levelSet']
 
 	if self.latex:
              
