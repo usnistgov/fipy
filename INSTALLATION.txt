@@ -1,0 +1,117 @@
+=====================================
+ Installation
+=====================================
+
+Operating System
+================
+
+The only elements of |FiPy| that may be platform-dependent are the viewers. 
+All other aspects should function on any platform that has a Python_
+installation.
+
+|FiPy| has been developed and tested on `Mac OS X`_ 10.3 [*]_ and higher and
+on ???  runing RedHat Linux blah blah.  
+
+.. _Mac OS X: http://www.apple.com/macosx/
+
+..  [*] Certain commercial products are identified here to foster
+    understanding.  Such identification does not imply recommendation or
+    endorsement by the National Institute of Standards and Technology, nor
+    does it imply that the products identified are necessarily the best
+    available for the purpose.
+
+Required Packages
+=================
+
+Python
+------
+
+|FiPy| is built with the Python_ language and requires a Python_
+installation to run. Python_ comes pre-installed on many operating systems,
+which you can check by opening a terminal and typing ``python``, *e.g.*::
+
+    [dogbert:~] guyer% python
+    Python 2.3 (#1, Sep 13 2003, 00:49:11) 
+    [GCC 3.3 20030304 (Apple Computer, Inc. build 1495)] on darwin
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> 
+
+If necessary, you can download_ and install it for your platform.  |FiPy|
+requires at least version 2.1 of Python_, but version 2.3 or newer is
+recommended.
+
+.. _Python:   http://www.python.org/
+.. _download: http://www.python.org/download/
+
+Numeric
+-------
+
+Obtain and install the Numeric_ package.  |FiPy| has been tested with
+version 23.1 of Numeric_.  The newer Numarray_ package is not supported at
+this time.
+
+.. _Numeric:  http://www.numpy.org
+.. _Numarray: http://www.stsci.edu/resources/software_hardware/numarray
+
+weave
+-----
+
+Significantly improved performance has been achieved with the judicious use
+of C language inlining, via the weave_ module of the SciPy_ package. 
+
+.. _weave: http://ww.scipy.org/documentation/weave/
+.. _SciPy: http://ww.scipy.org/
+
+Recommended Packages
+====================
+
+One or more of the following packages is required to view results.
+
+Pygist
+------
+
+The Pygist_ package can be used to display simulation results. We have not 
+succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
+recommend building the package with the ``--x11`` option described in the
+documentation.
+
+.. _Pygist: http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
+PyX
+---
+
+PyX_ allows the production of publication quality graphics with |TeX|
+labels.
+
+.. _PyX: http://pyx.sourceforge.net/
+
+
+Obtaining |FiPy|
+================
+
+The source for |FiPy| can be obtained via CVS::
+
+    ssh_agent
+    ssh_add
+    CVSROOT=dromio.nist.gov:/users/wd15/pkg/python/repository
+    export CVSROOT
+    CVS_RSH=ssh
+    export CVS_RSH
+    cvs checkout fipy
+
+|FiPy| uses a customized version of Roman Geus'_ spmatrix_ package.  Due to
+a peculiar bug in its ``setup.py`` script, ``python setup.py install`` may
+not work correctly on the first execution, but will generate an error
+regarding ``/usr/bin/ld: undefined symbols``.  If you receive this error,
+copy the preceding command beginning with ``gcc`` (it can be several lines)
+and paste it at the command-line to re-execute it.  Then execute ``python
+setup.py install`` again.  You will need to repeat this sequence four
+times.
+
+.. |FiPy| raw:: latex
+
+          \FiPy\ 
+
+.. |TeX| raw:: latex
+
+	  \TeX\ 

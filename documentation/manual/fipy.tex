@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/10/04 {9:57:13 PM} 
+ %                                last update: 6/30/04 {11:22:09 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,14 +34,15 @@
  % ###################################################################
  %%
 
-\documentclass[letterpaper,oldfontcommands]{memoir}
-% \documentclass[]{book}
-% \usepackage[]{}
+\documentclass{book}
 
+\usepackage[text={7in,9in}]{geometry}
 
-\usepackage{alltt, parskip, boxedminipage} % fancyheadings, 
-\usepackage{multirow, longtable, amssymb} % makeidx
+\usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
+\usepackage{multirow, longtable, makeidx, amssymb} 
 \usepackage{amsmath} 
+
+\usepackage[ascii]{inputenc}
 
 %\usepackage{multirow, longtable, tocbibind, amssymb} % makeidx, 
 % \usepackage{fullpage}
@@ -50,18 +51,60 @@
 \usepackage[usenames]{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true]{hyperref}
 \usepackage{graphicx}
-\usepackage{memhfixc}
+% \usepackage{memhfixc}
 % \usepackage{nameref}
 
-\newcommand{\logo}{\rotatebox{4}{\textcolor{red}{\( \varphi \)}}\kern-.7em\raisebox{-.15em}{\textcolor{blue}{\( \pi\)}}}
+% for reStructuredText
+\usepackage{shortvrb}
+\usepackage{tabularx}
+\setlength{\extrarowheight}{2pt}
+\newlength{\admonitionwidth}
+\setlength{\admonitionwidth}{0.9\textwidth}
+\newlength{\docinfowidth}
+\setlength{\docinfowidth}{0.9\textwidth}
+\newlength{\locallinewidth}
+\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
+\newenvironment{optionlist}[1]
+{\begin{list}{}
+  {\setlength{\labelwidth}{#1}
+   \setlength{\rightmargin}{1cm}
+   \setlength{\leftmargin}{\rightmargin}
+   \addtolength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}{\optionlistlabel}}
+}{\end{list}}
+% begin: floats for footnotes tweaking.
+\setlength{\floatsep}{0.5em}
+\setlength{\textfloatsep}{\fill}
+\addtolength{\textfloatsep}{3em}
+\renewcommand{\textfraction}{0.5}
+\renewcommand{\topfraction}{0.5}
+\renewcommand{\bottomfraction}{0.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+% end floats for footnotes
+% some commands, that could be overwritten in the style file.
+\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
+\newcommand{\titlereference}[1]{\textsl{#1}}
+
+
+\newcommand{\logo}{\rotatebox{4}{\textcolor{red}{\( \varphi \)}}\kern-.74em\raisebox{-.15em}{\textcolor{blue}{\( \pi\)}}}
+\newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{blue}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{red}{\( \varphi \)}}}
+
+\newcommand{\FiPy}{\textsf{FiPy}}
+
+\includeonly{installation}
 
 \begin{document}
 
-\settypeblocksize{9in}{7in}{*}
-\setlrmargins{*}{*}{*}
-\setulmargins{*}{*}{*}
+\frontmatter
+
+% \settypeblocksize{9in}{7in}{*}
+% \setlrmargins{*}{*}{*}
+% \setulmargins{*}{*}{*}
 
 % \settrimmedsize{8.5in}{11in}{*}       % pi/2
 % % \settypeblocksize{40\onelineskip}{*}{0.61803}  % golden ratio
@@ -77,15 +120,15 @@
 % \setheaderspaces{\onelineskip}{*}{*}
 % \setmarginnotes{17pt}{65pt}{\onelineskip}
 
-\checkandfixthelayout
+% \checkandfixthelayout
 
-\fixpdflayout
+% \fixpdflayout
 
-\setlength{\parindent}{0ex}
+% \setlength{\parindent}{0ex}
 \setlength{\fboxrule}{2\fboxrule}
 \newlength{\BCL} % base class length, for base trees.
 
-\pagestyle{Ruled}
+% \pagestyle{Ruled}
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
 
@@ -98,7 +141,8 @@
   {\end{list}}
 
 \title{
-% \scalebox{10}{\logo} \\
+\scalebox{5}{\logo} \\[2ex]
+\scalebox{5}{\logoToo} \\[2ex]
 FiPy\\
 {\large A Finite Volume PDE Solver Using Python} \\
 }
@@ -109,33 +153,53 @@ National Institute of Standards and Technology}
 
 \maketitle
 
+\pdfbookmark[0]{Contents}{contents}
+\tableofcontents
+
+\mainmatter
+
+\chapter{Installation}
+
+\inputencoding{latin1}
+
+\input installation
+
+\inputencoding{ascii}
+
 % \include{intro}
-% 
-% \include{install}
-% 
+
+\include{numerical/numerical}
+
+\chapter{Examples}
+
+\include{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
+\include{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
+\include{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
+\include{examples/latex/examples.diffusion.explicit.mesh10.input-module}
+\include{examples/latex/examples.diffusion.explicit.mesh50.input-module}
+\include{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
+\include{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
+\include{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
+
 % \include{examples}
 % 
 % \include{theory}
 % 
 % \include{code}
  
-% \include{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
-% \include{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
-% \include{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
-% \include{examples/latex/examples.diffusion.explicit.mesh10.input-module}
-% \include{examples/latex/examples.diffusion.explicit.mesh50.input-module}
-% \include{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
-% \include{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
-% \include{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
+\appendix
 
-\include{numerical/numerical}
+\chapter{APIs}
 
 \input api
+
+\backmatter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                 Index                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\pdfbookmark[0]{Index}{index}
 \printindex
 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/7/04 {2:08:08 PM} 
+ #                                last update: 6/30/04 {12:00:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -41,6 +41,33 @@ import os
 import string
 from distutils.core import Command
 
+from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
+from docutils import languages
+
+class NotStupidLaTeXTranslator(LaTeXTranslator):
+    pass
+
+class IncludedLaTeXWriter(LaTeXWriter):
+    def write(self, document, destination):
+	self.document = document
+	self.language = languages.get_language(
+	    document.settings.language_code)
+	self.destination = destination
+	self.translate()
+	output = self.destination.write(''.join(self.body))
+	return output
+	
+    def translate(self):
+	visitor = NotStupidLaTeXTranslator(self.document)
+	self.document.walkabout(visitor)
+	self.output = visitor.astext()
+	self.head_prefix = visitor.head_prefix
+	self.head = visitor.head
+	self.body_prefix = visitor.body_prefix
+	self.body = visitor.body
+	self.body_suffix = visitor.body_suffix
+
+	
 class build_docs (Command):
 
     description = "build the FiPy api documentation"
@@ -71,8 +98,9 @@ class build_docs (Command):
 	    
     # finalize_options()
 
-    def _buildTexFiles(self, modules, type = 'latex'):
-	dir = os.path.join('documentation', 'manual', 'api', type)
+    def _initializeDirectory(self, dir, type = 'latex'):
+	dir = os.path.join(dir, type)
+	
 	try:
 	    for root, dirs, files in os.walk(dir, topdown=False): 
 		for name in files: 
@@ -84,14 +112,19 @@ class build_docs (Command):
 	    pass
 	    
 	os.makedirs(dir)
-        
-        command = "epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext "
-        for module in modules:
-            command = command + module + "/ "
+	
+    def _epydocFiles(self, module, dir = None, type = 'latex'):
+	dir = os.path.join(dir, type)
+	
+        command = "epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext " + module
         
 	os.system(command)
 
-    def _buildApiFile(self, modules):
+    def _buildTeXAPIs(self):
+	dir = os.path.join('documentation', 'manual', 'api')
+	self._initializeDirectory(dir = dir, type = 'latex')
+	self._epydocFiles(module = 'fipy/', dir = dir, type = 'latex')
+	
         savedir = os.getcwd()
         try:
             
@@ -107,11 +140,11 @@ class build_docs (Command):
                 ## Added because linux does not sort files in the same order
                 files.sort()
                 
-                for module in modules[::-1]:
-                    formattedModule = string.replace(module,'/','.') + '-module.tex'
-                    if formattedModule in files:
-                        files.remove(formattedModule)
-                        files.insert(0, formattedModule)
+##                 for module in modules[::-1]:
+##                     formattedModule = string.replace(module,'/','.') + '-module.tex'
+##                     if formattedModule in files:
+##                         files.remove(formattedModule)
+##                         files.insert(0, formattedModule)
 
                 for name in files:
                     f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
@@ -123,28 +156,44 @@ class build_docs (Command):
         os.chdir(savedir)
 
     def run (self):
-        modules = ['fipy',
-                   'examples/diffusion',
-                   'examples/convection',
-                   'examples/phase',
-                   'examples/levelSet']
-
 	if self.latex:
-             
-	    self._buildTexFiles(modules = modules)
-            self._buildApiFile(modules = modules)
+	    self._buildTeXAPIs()
+	    dir = os.path.join('documentation', 'manual', 'examples')
+	    self._initializeDirectory(dir = dir, type = 'latex')
+	    for module in ['examples/diffusion/',
+			   'examples/convection/',
+			   'examples/phase/',
+			   'examples/levelSet/']:
+		self._epydocFiles(module = module, dir = dir, type = 'latex')
+
 
 	if self.html:
-	    self._buildTexFiles(modules = modules, type = 'html')
+	    dir = os.path.join('documentation', 'manual', 'api')
+	    self._initializeDirectory(dir = dir, type = 'html')
+	    self._epydocFiles(module = 'fipy/', dir = dir, type = 'html')
 
 	if self.manual:
 	    savedir = os.getcwd()
-	    try:
-		os.chdir(os.path.join('documentation','manual'))
-		os.system("pdflatex fipy.tex")
-	    except:
-		pass
-	    os.chdir(savedir)
+	    
+## 	    try:
+	    os.chdir(os.path.join('documentation','manual'))
+	    
+	    from docutils import core
+
+	    core.publish_file(source_path='../../INSTALLATION.txt',
+			      destination_path='installation.tex',
+			      reader_name='standalone',
+			      parser_name='restructuredtext',
+			      writer=IncludedLaTeXWriter(),
+			      settings_overrides = {
+				  'use_latex_toc': True,
+				  'footnote_references': 'superscript'
+			      })
+
+	    os.system("pdflatex fipy.tex")
+## 	    except:
+## 		pass
+## 	    os.chdir(savedir)
 
     # run()
 
