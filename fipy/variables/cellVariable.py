@@ -54,7 +54,7 @@ class CellVariable(Variable):
 	else:
             self.old = None
 	    
-	self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = None
+	self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = self.volumeAverage = None
 	
     def getVariableClass(self):
 	return CellVariable
@@ -105,7 +105,26 @@ class CellVariable(Variable):
 
 	    for cell in cells:
 		self[cell.getID()] = value
-	
+
+    def getCellVolumeAverage(self):
+
+        """
+
+        Here is a test case for the volume average
+
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
+            >>> print CellVariable(value = (1, 2, 6), mesh = mesh).getCellVolumeAverage()
+            3.0
+        
+        """
+
+	if self.volumeAverage is None:
+	    from cellVolumeAverageVariable import CellVolumeAverageVariable
+	    self.volumeAverage = CellVolumeAverageVariable(self)
+        
+	return self.volumeAverage
+
     def getGrad(self):
 	if self.grad is None:
 	    from cellGradVariable import CellGradVariable
@@ -209,3 +228,11 @@ class ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
+
