@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/29/03 {11:48:04 AM} 
+ #                                last update: 12/29/03 {1:22:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -56,6 +56,8 @@ from iterators.iterator import Iterator
 def makeFields(mesh, parameters):
     fields = {}
     
+    fields['all'] = []
+    
     parameters['phase']['var'] = PhaseVariable(
 	name = parameters['phase']['name'],
 	mesh = mesh,
@@ -63,6 +65,8 @@ def makeFields(mesh, parameters):
 	)
 	
     fields['phase'] = parameters['phase']['var']
+    
+    fields['all'] += [fields['phase']]
     
     parameterList = [parameters['phase']]
     
@@ -78,6 +82,8 @@ def makeFields(mesh, parameters):
 	)
     fields['potential'] = parameters['potential']['var']
 	
+    fields['all'] += [fields['potential']]
+    
     fields['interstitials'] = ()
     
     if parameters.has_key('interstitials'):
@@ -89,6 +95,7 @@ def makeFields(mesh, parameters):
 		)
 	    
 	    fields['interstitials'] += (component['var'],)
+	    fields['all'] += [component['var']]
 	    
 	    parameterList += list(parameters['interstitials'])
     
@@ -104,7 +111,8 @@ def makeFields(mesh, parameters):
 		)
 	    
 	    fields['substitutionals'] += (component['var'],)
-    
+	    fields['all'] += [component['var']]
+
 	    parameterList += list(parameters['substitutionals'])
 	    
     parameters['solvent']['var'] = SolventVariable(
@@ -114,6 +122,7 @@ def makeFields(mesh, parameters):
 	)
 	
     fields['solvent'] = parameters['solvent']['var']
+    fields['all'] += [fields['solvent']]
 	
     # set initial conditions
     for field in parameterList:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/29/03 {11:59:55 AM} 
+ #                                last update: 12/29/03 {1:22:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,17 +51,16 @@
     
     Iteration is profiled for performance.
 """
-import elphf
-from meshes.grid2D import Grid2D
-from componentVariable import ComponentVariable
-from phaseVariable import PhaseVariable
-# from variables.cellVariable import CellVariable
-from viewers.grid2DGistViewer import Grid2DGistViewer
+
+import Numeric
 
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
-import Numeric
+from meshes.grid2D import Grid2D
+from viewers.grid2DGistViewer import Grid2DGistViewer
+
+import elphf
 
 # valueLeft="0.3 mol/l"
 # valueRight="0.4 mol/l"
@@ -142,17 +141,7 @@ fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
 it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
 
-# print var1[:]
-# print var2[:]
-# print var3[:]
-
-viewers = [Grid2DGistViewer(field) for field in [fields['phase'], fields['potential']] + list(fields['substitutionals'])]
-# fields['phase'].plot()
-# fields['potential'].plot()
-# fields['interstitials'][0].plot()
-# fields['substitutionals'][0].plot()
-# for component in fields['interstitials'] + fields['substitutionals']:
-#     component.plot()
+viewers = [Grid2DGistViewer(field) for field in fields['all']]
 
 for viewer in viewers:
     viewer.plot()
@@ -167,22 +156,9 @@ for i in range(50):
 #     raw_input()
 #     it.iterate(1,10000.)
     
-#     print var1.getValue()
-#     print var2.getValue()
-    
     for viewer in viewers:
 	viewer.plot()
     
-#     fields['phase'].plot()
-#     fields['potential'].plot()
-#     fields['interstitials'][0].plot()
-#     fields['substitutionals'][0].plot()
-#     for component in fields['interstitials'] + fields['substitutionals']:
-# 	component.plot()
-
-# print var1
-# print var2
-# print var3
 # profile.stop()
 	
 raw_input()
