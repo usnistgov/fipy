@@ -68,7 +68,7 @@ import Gnuplot
 
 class GnuplotViewer:
     
-    def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color', legend = True):
+    def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color', legend = True, title = ''):
         """
 
         Argument list:
@@ -97,6 +97,7 @@ class GnuplotViewer:
         self.minVal = minVal
         self.palette = palette
         self.legend = legend
+        self.title = title
         
     def gnuplotCommands(self, g):
         g('set data style lines')
@@ -111,6 +112,7 @@ class GnuplotViewer:
         g('set pm3d at b')
         g('set palette ' + self.palette)
         g('set size ratio -1')
+        g('set title "' + self.title + '"')
 ##        g('set size square')
         return g
 
