@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/30/04 {10:00:57 PM} 
+ #                                last update: 10/31/04 {9:30:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -426,11 +426,6 @@ if 'install' in dist.commands:
     except ImportError, exc:
 	req.append('PySparse')
 	
-    try:
-	import pooky
-    except ImportError, exc:
-	req.append('pooky')
-	
     if len(req) > 0:
 	print "!!!!!!"
 	print "The required module(s) " + str(req) + " cannot be loaded."
@@ -453,19 +448,21 @@ if 'install' in dist.commands:
 	print "The optional module(s) " + str(opt) + " cannot be loaded."
 	print "FiPy will have improved capabilities if these modules are installed."
 	
-    try:
-	import gisty
-    except ImportError, exc:
-	print "------"
-	print "The Pygist package cannot be loaded."
-	print "If you choose not to install this package, be sure to create an " + \
-	"environment variable FIPY_NOGIST to allow the test suite to run to completion."
+    if not os.environ.has_key('FIPY_NOGIST'):
+	try:
+	    import gist
+	except ImportError, exc:
+	    print "------"
+	    print "The Pygist package cannot be loaded."
+	    print "If you choose not to install this package, be sure to create an " + \
+	    "environment variable FIPY_NOGIST to allow the test suite to run to completion."
 	
-    try:
-	import pyx
-    except ImportError, exc:
-	print "------"
-	print "The PyX package cannot be loaded."
-	print "If you choose not to install this package, be sure to create an " + \
-	"environment variable FIPY_NOPYX to allow the test suite to run to completion."
+    if not os.environ.has_key('FIPY_NOPYX'):
+	try:
+	    import pyx
+	except ImportError, exc:
+	    print "------"
+	    print "The PyX package cannot be loaded."
+	    print "If you choose not to install this package, be sure to create an " + \
+	    "environment variable FIPY_NOPYX to allow the test suite to run to completion."
 	
