@@ -42,7 +42,7 @@ they have been modified.
 
 import Numeric
 
-def addOverFaces(faceGradient, faceVariable, mesh, NCells):
+def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells = None):
     
     contributions = Numeric.sum(mesh.getAreaProjections() * faceGradient,1)
     

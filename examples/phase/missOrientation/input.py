@@ -89,7 +89,7 @@ class PhaseSystem:
          )
       
       rightCells = mesh.getCells(self.func)
-      
+
       theta.setValue(self.thetaFuncValue,rightCells)
       
       fields = {

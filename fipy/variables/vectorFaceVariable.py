@@ -5,7 +5,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 01/08/04 { 2:25:54 PM}
+ #                                last update: 01/08/04 { 5:16:38 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,3 +46,15 @@ class VectorFaceVariable(Variable):
 
     def getVariableClass(self):
 	return VectorFaceVariable
+
+##    def getMag(self):
+##	if self.mag is None:
+##	    from magVectorVariable import MagVectorVariable
+##	    self.mag = MagVectorVariable(self)
+	    
+##	return self.mag
+
+	
+
+
+	
