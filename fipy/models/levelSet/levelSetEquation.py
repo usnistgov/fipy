@@ -49,21 +49,15 @@ class LevelSetEquation(Equation):
     """
     Level set equation is implicit.
     """    
-    def __init__(self,
-                 var,
-                 solver = 'default_solver',
-                 boundaryConditions = (),
-                 parameters = {}):
+    def __init__(self, var):
         
         mesh = var.getMesh()
 	
-	terms = ()
-
 	Equation.__init__(
             self,
-            var,
-            terms,
-            solver)
+            var = var,
+            terms = (),
+            solver = None)
 
     def solve(self):
         ## keep the old values
@@ -71,6 +65,8 @@ class LevelSetEquation(Equation):
 
         ## find all the cells with neighbours of opposite sign
         zeroCells = self.getZeroCells(cells)
+
+        print zeroCells
 
         ## set the interface cells to have a value.
 ##        self.setZeroValues(zeroCells)
@@ -102,25 +98,25 @@ class LevelSetEquation(Equation):
              zeroCells += zeroCell
         return zeroCells
 
-    def setZeroCellValues(self, zeroCells):
-        varOld = var.getOld()
-        for cell in zeroCells:
-            minCell1 = cell.getMinimumCell(cell.getAdjacentCells())
-            minCell2 = cell.getMinimumCell(cell.getAdjacentCells()-minCell1)
-            value = varOld.getValue(cell)
-            gradx,grady = cell.getGradient(minCell1, minCell2)
-            value = value / Numeric.sqrt(gradx * gradx, grady * grady)
-            var.setValue(value, cell)
+##    def setZeroCellValues(self, zeroCells):
+##        varOld = var.getOld()
+##        for cell in zeroCells:
+##            minCell1 = cell.getMinimumCell(cell.getAdjacentCells())
+##            minCell2 = cell.getMinimumCell(cell.getAdjacentCells()-minCell1)
+##            value = varOld.getValue(cell)
+##            gradx,grady = cell.getGradient(minCell1, minCell2)
+##            value = value / Numeric.sqrt(gradx * gradx, grady * grady)
+##            var.setValue(value, cell)
 
-    def getBoundingCells(self, zeroCells):
-        boundingCells = ()
-        for cell in cells:
-            boundingCell = ()
-            if cell !in zeroCells:
-                for adjacentCell in cell.getAdjacentCells():
-                    if adjacentCell in zeroCells:
-                        boundingCell = (cell,)
-            boundingCells += boundingCell
+##    def getBoundingCells(self, zeroCells):
+##        boundingCells = ()
+##        for cell in cells:
+##            boundingCell = ()
+##            if cell !in zeroCells:
+##                for adjacentCell in cell.getAdjacentCells():
+##                    if adjacentCell in zeroCells:
+##                        boundingCell = (cell,)
+##            boundingCells += boundingCell
 
 ##    def getMinimumCell(
             
