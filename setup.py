@@ -457,7 +457,7 @@ class efficiency_test(Command):
         self.minimumelements = int(self.minimumelements)
         self.memorysamples = int(self.memorysamples)
         if self.case is None:
-            self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py']
+            self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py', 'examples/phase/impingement/mesh20x20/base.py', 'examples/meshing/inputGrid2D.py']
         else:
             self.cases = [self.case]
 
