@@ -42,6 +42,8 @@
  ##
 
 import Numeric
+import MA
+
 from fipy.equations.equation import Equation
 import fipy.tools.vector as vector
 
@@ -205,24 +207,25 @@ class DistanceFunctionEquation(Equation):
                 return min(vals)
             else:
                 return max(vals)
-            
         else:
             return self._evaluateTwoCells(cell, indices[0], indices[1])
 
     def evaluateThreeCells(self, cell, indices):
         if self.array[cell.getID()] < 0.:
-            cellIDs = Numeric.take(cell.getCellToCellIDs(), indices)
+            cellIDs = MA.take(cell.getCellToCellIDs(), indices)
             minCellID = self.getMinCellID(cellIDs)
-            indices.remove(list(cell.getCellToCellIDs()).index(minCellID))
+            filledList = list(MA.filled(cell.getCellToCellIDs(), value = -1))
+            indices.remove(filledList.index(minCellID))
             return self.evaluateTwoCells(cell, indices)
         else:
-            cellIDs = Numeric.take(cell.getCellToCellIDs(), indices)
+            cellIDs = MA.take(cell.getCellToCellIDs(), indices)
             maxCellID = self.getMaxCellID(cellIDs)
-            indices.remove(list(cell.getCellToCellIDs()).index(maxCellID))
+            filledList = list(MA.filled(cell.getCellToCellIDs(), value = -1))
+            indices.remove(filledList.index(maxCellID))
             return self.evaluateTwoCells(cell, indices)
-                
+
     def evaluateFourCells(self, cell, indices):
-        
+
         if self.array[cell.getID()] < 0.:
             cellIDs = Numeric.take(cell.getCellToCellIDs(), indices)
             minCellID = self.getMinCellID(cellIDs)
@@ -233,7 +236,7 @@ class DistanceFunctionEquation(Equation):
             maxCellID = self.getMaxCellID(cellIDs)
             indices.remove(list(cell.getCellToCellIDs()).index(maxCellID))
             return self.evaluateThreeCells(cell, indices)
-    
+
     def _evaluateTwoCells(self, cell, index1, index2):
         d1 = cell.getCellToCellDistances()[index1]
         d2 = cell.getCellToCellDistances()[index2]
