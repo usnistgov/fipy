@@ -53,7 +53,7 @@ steps have to be taken to reach equilibrium.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     it.timestep()
+    ...     eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
 
 The result is again tested in the same way:
 
@@ -61,7 +61,7 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
-    >>> Numeric.allclose(var, answer, rtol = 1e-3, atol = 1e-3)
+    >>> var.allclose(answer, rtol = 1e-3, atol = 1e-3)
     1
 
 """
@@ -71,13 +71,11 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fipy.terms.transientTerm import TransientTerm
 
 dx = 1.
 dy = 1.
@@ -95,23 +93,11 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-eq = ExplicitDiffusionEquation(
-    var,
-    transientCoeff = 1. / timeStepDuration, 
-    diffusionCoeff = 1.,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedValue(mesh.getFacesRight(),valueRight),
-    FixedFlux(mesh.getFacesTop(),0.),
-    FixedFlux(mesh.getFacesBottom(),0.)
-    )
-    )
+eqn = TransientTerm() - ExplicitDiffusionTerm()
 
-it = Iterator((eq,))
+boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
+                    FixedValue(mesh.getFacesRight(),valueRight))
+
 
 answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
         0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
@@ -129,8 +115,7 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
 
 if __name__ == '__main__':
     for step in range(steps):
-        it.timestep()
-##     print var
+        eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     viewer = Grid2DGistViewer(var)
     viewer.plot()
     raw_input('finished')

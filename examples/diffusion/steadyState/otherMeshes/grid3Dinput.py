@@ -45,7 +45,9 @@
 
 """
 Test case for the Grid3D.
-
+ 
+   >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+   >>> ImplicitDiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
    >>> a = Numeric.array(var)
    >>> b = Numeric.array(var2)
    >>> c = Numeric.ravel(Numeric.array((b, b, b)))
@@ -57,14 +59,11 @@ Test case for the Grid3D.
 from fipy.meshes.numMesh.grid3D import Grid3D
 from fipy.meshes.grid2D import Grid2D
 import Numeric
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import Grid3DPyxViewer
 from fipy.viewers.pyxviewer import Grid2DPyxViewer
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 10
 ny = 5
@@ -85,25 +84,11 @@ var = CellVariable(name = "solution variable",
 
 viewer = Grid3DPyxViewer(var, zvalue = 1.0)
 
-eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeftRight),
-                                             FixedValue(mesh.getFacesRight(),valueLeftRight),
-                                             FixedValue(mesh.getFacesTop(),valueBottomTop),
-                                             FixedValue(mesh.getFacesBottom(),valueBottomTop),
-                                             FixedFlux(mesh.getFacesFront(), 0.),
-                                             FixedFlux(mesh.getFacesBack(), 0.),
-                                             )
-                       )
-
-it = Iterator((eq,))
-
-it.timestep()
-
+boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeftRight),
+                      FixedValue(mesh.getFacesRight(),valueLeftRight),
+                      FixedValue(mesh.getFacesTop(),valueBottomTop),
+                      FixedValue(mesh.getFacesBottom(),valueBottomTop))
+                      
 #do the 2D problem for comparison
 
 nx = 10
@@ -115,28 +100,19 @@ dy = 1.
 mesh2 = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
 var2 = CellVariable(name = "solution variable 2D",
-                   mesh = mesh2,
-                   value = valueBottomTop)
+                    mesh = mesh2,
+                    value = valueBottomTop)
 
 viewer2 = Grid2DPyxViewer(var2)
 
-eq2 = DiffusionEquation(var2,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
-                                             FixedValue(mesh2.getFacesRight(),valueLeftRight),
-                                             FixedValue(mesh2.getFacesTop(),valueBottomTop),
-                                             FixedValue(mesh2.getFacesBottom(),valueBottomTop)
-                                             )
-                       )
+boundaryConditions2 = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
+                       FixedValue(mesh2.getFacesRight(),valueLeftRight),
+                       FixedValue(mesh2.getFacesTop(),valueBottomTop),
+                       FixedValue(mesh2.getFacesBottom(),valueBottomTop))
 
-it2 = Iterator((eq2,))
-
-it2.timestep()
+eqn = ImplicitDiffusionTerm()  
 
 if __name__ == '__main__':
+    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer.plot(resolution = 0.1)
     raw_input("finished")

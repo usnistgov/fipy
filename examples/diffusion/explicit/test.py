@@ -46,18 +46,18 @@ import fipy.tests.testProgram
 
 import doctest
 
-## import mesh50.input
+import mesh50.input
 import mesh10.input
-## import mesh10.tri2Dinput
-## import mesh10.mixedelement
+import mesh10.tri2Dinput
+import mesh10.mixedelement
 
 
 def suite():
     theSuite = unittest.TestSuite()
-##     theSuite.addTest(doctest.DocTestSuite(mesh10.tri2Dinput))
+    theSuite.addTest(doctest.DocTestSuite(mesh10.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(mesh10.input))
-##     theSuite.addTest(doctest.DocTestSuite(mesh50.input))
-##     theSuite.addTest(doctest.DocTestSuite(mesh10.mixedelement))
+    theSuite.addTest(doctest.DocTestSuite(mesh50.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh10.mixedelement))
     
     return theSuite
     

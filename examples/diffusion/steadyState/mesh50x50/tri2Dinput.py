@@ -54,34 +54,30 @@ being that the mesh size is given by
 
 The result is again tested in the same way:
 
+    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(analyticalArray)
     1
 
 """
 
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 50
 ny = 50
 
 dx = 1.
-dy = 1.
 
 valueLeft = 0.
 valueRight = 1.
 
-mesh = Tri2D(dx = dx, dy = dy, nx = nx, ny = ny)
+mesh = Tri2D(dx = dx, nx = nx, ny = ny)
 
 var = CellVariable(name = "solution variable",
                    mesh = mesh,
@@ -89,23 +85,10 @@ var = CellVariable(name = "solution variable",
 
 viewer = PyxViewer(var)
 
-eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-                                             FixedValue(mesh.getFacesRight(),valueRight),
-                                             FixedFlux(mesh.getFacesTop(),0.),
-                                             FixedFlux(mesh.getFacesBottom(),0.)
-                                             )
-                       )
-
-it = Iterator((eq,))
-
-it.timestep()
+boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+                      FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
+    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer.plot(resolution = 0.5)
     raw_input("finished")
