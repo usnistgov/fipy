@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/26/04 {2:33:19 PM} 
+ #                                last update: 1/26/04 {6:25:33 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -107,8 +107,10 @@ fields['interstitials'] = (ComponentVariable(
 )
 fields['all'] += [fields['interstitials'][0]]
 
-physicalField.AddConstant(name = 'Rgas', constant = 'Nav*kB')
-physicalField.AddConstant(name = 'Faraday', constant = 'Nav*e')
+## physicalField.AddConstant(name = 'Rgas', constant = 'Nav*kB')
+## physicalField.AddConstant(name = 'Faraday', constant = 'Nav*e')
+physicalField.AddConstant(name = 'Rgas', constant = 1)
+physicalField.AddConstant(name = 'Faraday', constant = 1)
 physicalField.AddConstant(name = 'LENGTH', constant = 1)
 physicalField.AddConstant(name = 'ENERGY', constant = 1)
 physicalField.AddConstant(name = 'MOLARVOLUME', constant = 1)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/26/04 {2:37:49 PM} 
+ #                                last update: 1/26/04 {10:15:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -67,11 +67,7 @@ class PoissonEquation(RelaxationEquation):
 		     
         mesh = potential.getMesh()
 	
-	dielectric = physicalField.PhysicalField(value = "eps0 / (Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME))")
-	# LENGTH, ENERGY, or MOLARVOLUME might not have correct units
-	# in simple problems
-	dielectric /= physicalField.PhysicalField(value = 1, unit = dielectric.inBaseUnits().getUnit())
-	dielectric *= physicalField.Scale(parameters['dielectric'], "eps0") 
+	dielectric = physicalField.Scale(parameters['dielectric'], "eps0 * Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME)") 
 	
 	diffusionTerm = ImplicitDiffusionTerm(
 	    diffCoeff = dielectric,

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/26/04 {2:39:22 PM} 
+ #                                last update: 1/26/04 {10:15:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -217,13 +217,13 @@ class TestElPhF1DpoissonRightCharge(TestElPhF):
 
 def suite():
     theSuite = unittest.TestSuite()
-##     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
-##     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
-##     theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
-##     theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
-##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
-##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
-##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseTernaryAndElectrons))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1D))
+    theSuite.addTest(unittest.makeSuite(TestElPhF2D))
+    theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
+    theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseTernaryAndElectrons))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonAllCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonLeftCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonRightCharge))
