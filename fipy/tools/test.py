@@ -58,8 +58,6 @@ class TestDump(unittest.TestCase):
             mesh = mesh,
             value = 100.0)
 
-
-
         self.data = (theta, mesh)
         tempFile = tempfile.mktemp()
         dump.write(self.data, tempFile)
