@@ -6,7 +6,7 @@ biological systems often have a remarkably universal form.  Indeed,
 PDEs have proven necessary to model complex physical systems and
 processes that involve variations in both space and time.  In general,
 given a variable of interest \( \phi \) such as species concentration,
-pH or temperature, there exists an evolution equation of the form
+pH, or temperature, there exists an evolution equation of the form
 \begin{equation}
   \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
   \label{eqn:general-equation}
@@ -52,16 +52,17 @@ transient, convection and diffusion terms respectively.  These
 coefficients can be arbitrary functions of any parameters or variables
 in the system.  The variable $\phi$, represents the unknown quantity
 in the equation.  The $n$\textsuperscript{th} order term can represent
-any higher order diffusion-type term depending on the exponent $n$.
-For example, the $n$\textsuperscript{th} order term can represent a
-diffusion term when the exponent $n = 1$ or a Cahn-Hilliard term when
-$n = 2$.  A Cahn-Hilliard term has the following form,
+any higher order diffusion-type term, where the order is given by the
+exponent $n$.  For example, the $n$\textsuperscript{th} order term can
+represent a diffusion term when the exponent $n = 1$ or a
+Cahn-Hilliard term when $n = 2$.  A Cahn-Hilliard term has the
+form~\cite{CahnHilliardI,CahnHilliardII,CahnHilliardIII},
 \begin{equation}
   \nabla \cdot \left( \Gamma_1 \nabla \left[ 
   \nabla \cdot \left( \Gamma_2 \nabla \phi \right) \right] \right)
   \label{eqn:cahn-hilliard}
 \end{equation}
-Higher order terms are also possible for $n > 2$.
+Of course, higher order terms ($n > 2$) are also possible.
 
 
 

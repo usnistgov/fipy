@@ -45,7 +45,7 @@
 % \usepackage{memhfixc}
 % \usepackage{nameref}
 
-\graphicspath{{../figures/}}
+\graphicspath{{../figures/},{images/}}
 
 % for reStructuredText
 \RequirePackage{shortvrb}
@@ -234,6 +234,10 @@
 \newcommand{\PyX}{\@SoftwareURL{PyX}{http://pyx.sourceforge.net/}}
 
 \newcommand{\PyGist}{\@SoftwareURL{PyGist}{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}}
+
+\newcommand{\PySparse}{\@SoftwareURL{PySparse}{http://people.web.psi.ch/geus/pyfemax/pysparse.html}}
+
+\newcommand{\ScientificPython}{\@SoftwareURL{Scientific Python}{http://starship.python.net/~hinsen/ScientificPython/}}
 
 \newcommand{\MacOSX}{\@SoftwareURL{Mac OS X}{http://www.apple.com/macosx/}}
 

@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/13/04 {4:41:05 PM} 
+ %                                last update: 10/14/04 {5:17:05 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -74,6 +74,8 @@ and the Center for Theoretical and Computational Materials Science
 
 \settocdepth{chapter} 
 
+\renewcommand{\ptctitle}{Introduction Contents}
+
 \parttoc
 
 % Technical Overview
@@ -131,49 +133,50 @@ and the Center for Theoretical and Computational Materials Science
 \part{Examples}
 \label{part:Examples}
 
-\settocdepth{chapter} 
-\parttoc
-
 % \chapter{Usage}
 \input{examples/readme}
+
+\settocdepth{chapter} 
+\renewcommand{\ptctitle}{Example Contents}
+\parttoc
 
 \chapter{Diffusion Examples}
 
 \input{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.steadyState.mesh1D.tri2Dinput-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.explicit.mesh10.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.explicit.mesh50.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.nthOrder.input2ndOrder1D-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
-\newpage
+% \newpage
 
 \chapter{Convection Examples}
 
 \input{examples/latex/examples.convection.exponential1D.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.convection.exponential1DBack.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.convection.exponential1DSource.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.convection.exponential2D.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.convection.powerLaw1D.input-module}
-\newpage
+% \newpage
 
 \chapter{Phase Field Examples}
 
@@ -188,17 +191,17 @@ of Solidification to Polycrystalline Materials'', J.A. Warren \emph{et
 al.}, \textit{Acta Materialia}, \textbf{51} (2003) 6035--6058.
 
 \input{examples/latex/examples.phase.anisotropy.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.impingement.mesh40x1.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.impingement.mesh20x20.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.impingement.restart.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.missOrientation.circle.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.phase.missOrientation.modCircle.input-module}
 \newpage
 
@@ -213,48 +216,48 @@ I: Equilibrium'' and ``II: Kinetics'', J. E. Guyer \emph{et al.},
 \textit{Physical Review E}, \textbf{69} (2004) 021603 and 021604.
 
 \input{examples/latex/examples.elphf.input1Dphase-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1D-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1Ddimensional-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input2D-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input2Dcorner-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DpoissonAllCharge-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DpoissonLeftCharge-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DpoissonRightCharge-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DphaseBinary-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DphaseQuaternary-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.elphf.input1DphaseTernAndElectrons-module}
-\newpage
+% \newpage
 
 
 \chapter{Level Set Examples}
 
 \input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
-\newpage
+% \newpage
 \input{examples/latex/examples.levelSet.advection.circle.input-module}
-\newpage
+% \newpage
 
 \chapter{Cahn-Hilliard Examples}
 
 \input{examples/latex/examples.cahnHilliard.inputTanh1D-module}
-\newpage
+% \newpage
 
 \settocdepth{all} 
 
@@ -265,6 +268,10 @@ I: Equilibrium'' and ``II: Kinetics'', J. E. Guyer \emph{et al.},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \fussy
+
+% \bibliographystyle{unsrt_no_title}
+\bibliographystyle{fipy}
+\bibliography{refs}
 
 \printindex
 
@@ -280,9 +287,5 @@ I: Equilibrium'' and ``II: Kinetics'', J. E. Guyer \emph{et al.},
 \inputencoding{latin1}
 
 \input credits
-
-% \bibliographystyle{unsrt_no_title}
-\bibliographystyle{unsrt}
-\bibliography{refs}
 
 \end{document}

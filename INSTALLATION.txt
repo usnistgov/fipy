@@ -4,7 +4,17 @@ Installation
 
 The |FiPy| finite volume PDE solver relies on several third-party packages.
 It is best to obtain and install those first, before attempting to install
-|FiPy|.
+|FiPy|.  Most of the installation steps will involve a variant on the
+command::
+
+    $ python setup.py
+
+In addition to the specific commands given here, further information about
+each ``setup.py`` script is available by typing::
+
+    $ python setup.py --help
+
+
 
 ----------
 Privileges
@@ -24,8 +34,14 @@ you would use::
 where ``<dir>`` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 ``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
-`Alternate Installation`_ section of the Python_ document *`Installing
-Python Modules`_* for more information, such as circumstances in which you
+`Alternate Installation`_ section of the Python_ document "`Installing
+Python Modules`_"
+
+.. raw:: latex
+
+   \cite{InstallingPythonModules}
+
+for more information, such as circumstances in which you
 should use ``--prefix`` instead of ``--home``.
 
 .. _Alternate Installation: http://docs.python.org/inst/alt-install-windows.html
@@ -41,7 +57,7 @@ Operating System
 ================
 
 |FiPy| has been developed and tested on the Unix operating systems `Mac OS
-X`_ 10.3 and Debian_ Linux 3.0.  We welcome reports of compatibility with
+X`_ 10.3 and `Debian Linux`_ 3.0.  We welcome reports of compatibility with
 other systems, along with any steps necessary to install.
 
 The only elements of |FiPy| that are likely to be platform-dependent are
@@ -49,7 +65,7 @@ the viewers.  All other aspects should function on any platform that has a
 recent Python_ installation.
 
 .. _Mac OS X: http://www.apple.com/macosx/
-.. _Debian:   http://www.debian.org/
+.. _Debian Linux:   http://www.debian.org/
 
 Required Packages
 =================
@@ -115,6 +131,8 @@ You can obtain the customized PySparse_ via anonymous CVS::
 and then::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
+
+Follow the included instructions for building PySparse_ for your platform.
 
 Recommended Packages
 ====================
@@ -202,15 +220,6 @@ and then::
 
 Further information about CVS_ can be found at
 http://sourceforge.net/cvs/?group_id=118428.
-
-The following sections use variants on the command::
-
-    $ python setup.py
-
-In addition to the specific commands given here, further information about
-the ``setup.py`` script is available by typing::
-
-    $ python setup.py --help
 
 .. _compressed archive:   http://sourceforge.net/project/showfiles.php?group_id=118428
 
@@ -302,14 +311,20 @@ option at the command line, *i.e.*::
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_.
+yourself with the excellent `Python tutorial`_
+
+.. raw:: latex
+
+   \cite{PythonTutorial}
+
+.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _CVS:             http://cvs.sourceforge.net/viewcvs.py/fipy/
 
 .. include:: utils/include.txt
 
-.. |FiPy| replace:: |latexFiPy| |htmlFiPy|
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |TeX| replace:: |latexTeX| |htmlTeX|
 .. |examples/| replace:: |latexExamples/| |htmlExamples/|
 

@@ -1,6 +1,6 @@
 \section{Numerical Schemes}
 
-The coefficients of equation~\eqref{eqn:num:dap} must remain positive
+The coefficients of equation~\eqref{eqn:num:dap} must remain positive,
 since an increase in a neighboring value must result in an increase
 in $\phi_P$ to obtain physically realistic solutions. Also, the
 coefficients of equation~\eqref{eqn:num:dis}, when written in the form
@@ -17,11 +17,11 @@ The parameter $\alpha_f$ is defined by the chosen scheme, depending
 on Equation~\eqref{eqn:num:inq}. The value $P_f$ is the ratio between
 convective strength and diffusive conductance. The various
 differencing schemes are:
-\begin{itemize}
+\begin{description}
 %
 %
 %
-\item In the central differencing scheme,
+\item[the central differencing scheme] where
 \begin{equation}
 \alpha_f = \frac{d_{Af}}{d_{Af}+d_{fP}}.
 \label{eqn:num:cds}
@@ -33,7 +33,7 @@ $P_f$.
 %
 %
 %
-\item In the upwind scheme,
+\item[the upwind scheme] where
 \begin{eqnarray}
 \alpha_f = \begin{cases}
 1 & \text{if $P_f > 0$,} \\
@@ -48,7 +48,7 @@ numerical smearing (``false diffusion'').
 %
 %
 %
-\item In the exponential scheme,
+\item[the exponential scheme] where
 \begin{equation}
 \alpha_f = \frac{(P_f-1)\exp{(P_f)}+1}{P_f(\exp{(P_f)}-1)}.
 \label{eqn:num:exs}
@@ -61,7 +61,7 @@ dimensions.
 %
 %
 %
-\item In the hybrid scheme,
+\item[the hybrid scheme] where
 \begin{eqnarray}
 \alpha_f = 
 \begin{cases}
@@ -78,7 +78,7 @@ however, it deviates from the exponential scheme at $|P_f|=2$.
 %
 %
 %
-\item In the power law scheme,
+\item[the power law scheme] where
 \begin{eqnarray}
 \alpha_f = 
 \begin{cases}
@@ -91,7 +91,7 @@ however, it deviates from the exponential scheme at $|P_f|=2$.
 \end{eqnarray}
 The power law scheme overcomes the inaccuracies of the hybrid scheme,
 while improving on the computational time for the exponential scheme.
-\end{itemize}
+\end{description}
 
 All of the numerical schemes presented here are implemented in \FiPy{}.
 

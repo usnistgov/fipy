@@ -1,12 +1,12 @@
 \section{Finite Volume Method}
 
 To use the FVM, the solution domain must first be divided into
-non-overlapping polyhedral elements or cells. A solution domain
-divided in such a way is generally known as a mesh (a \texttt{mesh} is
-also a \FiPy{} object). A mesh consists of vertices, faces and cells
-(see Figure~\ref{fig:meshcartoon}).  In the FVM the variables of
-interest are averaged over control volumes (CVs). The CVs are either
-defined by the cells or are centered on the vertices.
+non-overlapping polyhedral elements or cells.  A solution domain
+divided in such a way is generally known as a mesh (as we will see, a
+\Class{Mesh} is also a \FiPy{} object).  A mesh consists of vertices,
+faces and cells (see Figure~\ref{fig:meshcartoon}).  In the FVM the
+variables of interest are averaged over control volumes (CVs).  The
+CVs are either defined by the cells or are centered on the vertices.
 
 \begin{figure}
  \begin{center}
@@ -19,7 +19,7 @@ defined by the cells or are centered on the vertices.
 \subsection{Cell Centered FVM (CC-FVM)}
 
 In the CC-FVM the CVs are formed by the mesh cells with the cell
-center 'storing' the average variable value in the CV, (see
+center `storing' the average variable value in the CV, (see
 Figure~\ref{fig:vc-cc-fv}). The face fluxes are approximated using the
 variable values in the two adjacent cells surrounding the face. This
 low order approximation has the advantage of being efficient and
@@ -36,15 +36,15 @@ only uses the CC-FVM.
 
 In the VC-FVM the CV is centered around the vertices and the cells are
 divided into sub-control volumes that make up the main CVs, (see
-Figure~\ref{fig:vc-cc-fv}). The vertices 'store' the average variable
-values over the CVs. The CV faces are constructed within the cells
+Figure~\ref{fig:vc-cc-fv}).  The vertices `store' the average variable
+values over the CVs.  The CV faces are constructed within the cells
 rather than using the cell faces as in the CC-FVM. The face fluxes use
 all the vertex values from the cell where the face is located to
-calculate interpolations. For this reason, the VC-FVM is less
+calculate interpolations.  For this reason, the VC-FVM is less
 efficient and requires more storage (a larger matrix band width) than
-the CC-FVM.  However, the mesh topology does not have the same
-restrictions as the CC-FVM. It is planned for future releases of
-\FiPy{} to have both the CC-FVM and VC-FVM capabilities.
+the CC-FVM. However, the mesh topology does not have the same
+restrictions as the CC-FVM. Future releases of \FiPy{} will have both
+the CC-FVM and VC-FVM capabilities.
 
 \begin{figure}
 \begin{center}
@@ -61,7 +61,7 @@ restrictions as the CC-FVM. It is planned for future releases of
 The first step in the discretization of Equation~\eqref{eqn:num:gen}
 using the CC-FVM is to integrate over a CV and then make appropriate
 approximations for fluxes across the boundary of each CV.  In this
-section each term in Equation~\eqref{eqn:num:gen} will be examined
+section, each term in Equation~\eqref{eqn:num:gen} will be examined
 separately.
 
 \subsection{Transient Term}
@@ -70,7 +70,7 @@ The discretization for the transient term is given by,
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
-\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
+\frac{\rho(\rho \phi_{P} - \phi_P^O) V_P}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
 where the subscript $P$ represents the average value in the CV and
@@ -89,15 +89,15 @@ The discretization for the convection term is given by,
 \end{eqnarray}
 where $\sum_{f}$ denotes the summation over the faces of a CV and
 $A_f$ is the area of each face.  The vector $\vec{n}$ is the normal to
-the face pointing out of the CV. The value of $\phi_f$ must depend on
-$\phi_A$ and $\phi_P$ when using a first order approximation such
-that,
+the face pointing out of the CV. When using a first order
+approximation, the value of $\phi_f$ must depend on $\phi_A$ and
+$\phi_P$, such that
 \begin{equation}
 \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A,
 \end{equation}
 where the subscript $A$ refers to CVs that are adjacent to $P$.  The
-value $\alpha_f$ is determined by the convection scheme, described
-later in this chapter.
+weighting factor $\alpha_f$ is determined by the convection scheme,
+described later in this chapter.
 
 \subsection{Diffusion Term}
 
@@ -141,16 +141,17 @@ scheme to solve. The iterative schemes available to \FiPy{} are
 currently encapsulated in the \href{#id5}{spmatrix} suite of solvers
 and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites
-that are compatible with Python.
+that are compatible with \Python{}.
 
 Combining Equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
 \eqref{eqn:num:dif} and \eqref{eqn:num:sou}, the complete
 discretization for equation~\eqref{eqn:num:gen} can now be written for
 each CV as
 \begin{eqnarray}
-\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
+\frac{\rho(\phi_{P} - \phi_P^O) V_P}{\Delta t}
 &=&
-\sum_{f} (\vec{n} \cdot \vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
+\sum_{f} (\vec{n} \cdot \vec{u})_f A_f 
+\left[\alpha_f \phi_P +\left(1-\alpha_f\right)\phi_A\right]
 \\
 &&+
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
@@ -168,14 +169,15 @@ a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,
 \end{equation}
 where
 \begin{eqnarray}
-a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} - F_f) \\
-a_{A} & = & ( 1 - \alpha_f ) F_f + D_f \\
+a_P & = & V_P S_P + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
+F_f), \\
+a_{A} & = & ( 1 - \alpha_f ) F_f + D_f, \\
 b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t}.
 \end{eqnarray}
 The face coefficients, $F_f$ and $D_f$, represent the convective strength
 and diffusive conductance respectively, and are given by
 \begin{eqnarray}
-F_f & = & A_f \rho_f ( \vec{u} \cdot \vec{n} )_f \\
+F_f & = & A_f \rho_f ( \vec{u} \cdot \vec{n} )_f, \\
 D_f & = & \frac{A_f \Gamma_f}{d_{AP}} .
 \end{eqnarray}
 

@@ -3,37 +3,55 @@ Overview
 ========
 
 |FiPy| is an object oriented, partial differential equation (PDE) solver,
-written in Python_, based on a standard finite volume (FV) approach.  The
+written in Python_
+
+.. raw:: latex
+
+   \cite{Python}
+
+, based on a standard finite volume (FV) approach.  The
 framework has been developed in the `Metallurgy Division`_ and Center for
 Theoretical and Computational Materials Science (CTCMS_), in the Materials
 Science and Engineering Laboratory (MSEL_) at the National Institute of
 Standards and Technology (NIST_).
 
-The solution of coupled sets of PDEs is ubiquitous in the numerical
-simulation of science problems.  Numerous PDE solvers exist using a
+The solution of coupled sets of PDEs is ubiquitous to the numerical
+simulation of science problems.  Numerous PDE solvers exist, using a
 variety of languages and numerical approaches. Many are proprietary,
 expensive and difficult to customize.  As a result, scientists spend
 considerable resources repeatedly developing limited tools for
 specific problems.  Our approach, combining the FV method and Python_,
 provides a tool that is extensible, powerful and freely available. A
 significant advantage to Python_ is the existing suite of tools for
-array calculations, sparse matrices and data representation.
+array calculations, sparse matrices and data rendering.
 
 The |FiPy| framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
 coupled elliptic, hyperbolic and parabolic PDEs.  Current models include
-phase field treatments of polycrystalline, dendritic, and electrochemical
+phase field treatments
+
+.. raw:: latex
+
+   \cite{BoettingerReview:2002,McFaddenReview:2002}
+
+of polycrystalline, dendritic, and electrochemical
 phase transformations as well as a level set treatment of the
-electrodeposition process.
+electrodeposition process
+
+.. raw:: latex
+
+   \cite{NIST:damascene:2001}
+
+.
 
 The latest information about |FiPy| can be found at
-http://www.ctcms.nist.gov/fipy/
+http://www.ctcms.nist.gov/fipy/.
 
 --------
 Download
 --------
 
-|FiPy| is freely available for download via CVS_ or as a `compressed
+|FiPy| is available for download via CVS_ or as a `compressed
 archive`_.  |FiPy| can be redistributed and/or modified freely, provided
 that any derivative works bear some notice that they are derived from it,
 and any modified versions bear some notice that they have been modified.
@@ -137,6 +155,6 @@ or a
 
 .. include:: utils/include.txt
 
-.. |FiPy| replace:: |latexFiPy| |htmlFiPy|
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION.txt| replace:: |latexINSTALLATION.txt| |htmlINSTALLATION.txt|
 
