@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 4/2/04 {4:06:50 PM} 
+ #                                last update: 7/14/04 {3:22:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -67,7 +67,12 @@ class ConvectionTerm(FaceTerm):
 	
 	alpha = self.Alpha(P)
 
-	weight = {
+	weight = self.getWeight(alpha)
+	
+	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
+	
+    def getWeight(self, alpha):
+	return {
 	    'implicit':{
 		'cell 1 diag':    -alpha,
 		'cell 1 offdiag': -(1-alpha),
@@ -75,4 +80,4 @@ class ConvectionTerm(FaceTerm):
 		'cell 2 offdiag':  alpha
 	    }
 	}
-	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
+

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/10/04 {2:51:50 PM} 
+ #                                last update: 7/15/04 {3:34:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,6 +49,8 @@ import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
+from fipy.viewers.gist1DViewer import Gist1DViewer
+
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
 	Term.__init__(self, mesh = mesh, weight = weight)
@@ -72,6 +74,10 @@ class FaceTerm(Term):
 		'cell 2 diag': self.coeff * weight['cell 2 diag'],
 		'cell 2 offdiag': self.coeff * weight['cell 2 offdiag']
 	    }
+	    
+## 	import fipy.terms.convectionTerm
+## 	if isinstance(self, fipy.terms.convectionTerm.ConvectionTerm):
+## 	    self.coeffViewer = Gist1DViewer(vars = (self.coeff,), title = "stupid", minVal = -1000, maxVal = 1000)
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
 
@@ -129,9 +135,7 @@ class FaceTerm(Term):
 	    ni = len(self.mesh.getInteriorFaceIDs()))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffScale, varScale):
-
-        oldArrayId1 = array.take(oldArray, id1)
-        oldArrayId2 = array.take(oldArray, id2)
+        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2)
 
 	cell1diag = array.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
 	cell1offdiag = array.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
@@ -141,11 +145,21 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:])/coeffScale)
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
 
-                 
+    def getOldAdjacentValues(self, oldArray, id1, id2):
+	return array.take(oldArray, id1), array.take(oldArray, id2)
+
     def buildMatrix(self, oldArray, coeffScale, varScale, dt):
 	"""Implicit portion considers
 	"""
 
+## 	print self, "coeff:\n", self.coeff
+	
+## 	import fipy.terms.convectionTerm
+## 	if isinstance(self, fipy.terms.convectionTerm.ConvectionTerm):
+## 	    self.coeffViewer.plot()
+
+	self.dt = dt
+	
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	id1 = array.take(id1, self.mesh.getInteriorFaceIDs())
 	id2 = array.take(id2, self.mesh.getInteriorFaceIDs())
