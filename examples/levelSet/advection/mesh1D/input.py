@@ -82,20 +82,16 @@ Construct the mesh.
 Construct a `distanceVariable` object. This object is required by the
 `distanceEquation`.
 
+   >>> import Numeric
+   >>> values = -Numeric.ones(nx * ny, 'd')
+   >>> cells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition)
+   >>> for cell in cells:
+   ...    values[cell.getID()] = 1
+
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
-   ...                        value = -1.)
-
-The domain must be divided into positive and negative regions.
-
-   >>> var.setValue(1.,  mesh.getCells(filter = lambda cell:
-   ...                                 cell.getCenter()[0] > interfacePosition))
-
-The `distanceEquation` is then constructed.
-
-   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-   >>> disEqn = DistanceEquation(var)
+   ...                        value = values)
 
 The `advectionEquation` is constructed.
 
@@ -113,22 +109,19 @@ The problem can then be solved by executing a serious of time steps.
    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
    ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
    ...     viewer.plot()
-   ...     disEqn.solve()
    ...     for step in range(steps):
    ...         it.timestep(dt = timeStepDuration)
    ...         viewer.plot()
 
 The result can be tested with the following code:
 
-   >>> disEqn.solve()
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-   >>> import Numeric
    >>> x = Numeric.array(mesh.getCellCenters()[:,0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
    >>> answer = Numeric.where(x < distanceTravelled, x[0] - interfacePosition, answer)
-   >>> Numeric.allclose(answer, Numeric.array(var), atol = 1e-10)
+   >>> Numeric.allclose(answer, var, atol = 1e-10)
    1
    
 """

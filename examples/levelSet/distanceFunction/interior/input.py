@@ -54,7 +54,6 @@ given by:
     
 Do the tests:
 
-   >>> eqn.solve()
    >>> dX = dx / 2.
    >>> dY = dy / 2.
    >>> mm = dX * dY / Numeric.sqrt(dX**2 + dY**2) 
@@ -71,7 +70,7 @@ Do the tests:
    ...                           dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
    ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
    ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
-   >>> Numeric.allclose(Numeric.array(var), values, atol = 1e-10)
+   >>> Numeric.allclose(var, values, atol = 1e-10)
    1
 
 """
@@ -81,8 +80,6 @@ import Numeric
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
 dx = 1.
@@ -95,21 +92,20 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = -1.
-    )
+initialArray = -Numeric.ones(nx * ny, 'd')
 
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] < dx) or (cell.getCenter()[0] > (Lx - dx)) or (cell.getCenter()[1] < dy) or (cell.getCenter()[1] > (Ly - dy)))
 
-var.setValue(1.,positiveCells)
+for cell in positiveCells:
+    initialArray[cell.getID()] = 1.
 
-eqn = DistanceEquation(var)
+var = DistanceVariable(
+    name = 'level set variable',
+    mesh = mesh,
+    value = initialArray
+    )
 
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
-    viewer.plot()
-    eqn.solve()
     viewer.plot()
     raw_input('finished')

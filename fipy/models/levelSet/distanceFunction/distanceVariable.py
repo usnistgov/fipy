@@ -40,148 +40,165 @@
  # ###################################################################
  ##
 
+r"""
+
+.. raw:: latex
+
+    A `DistanceVariable` object calculates $\phi$ so it satisfies,
+
+    $$ | \\nabla \\phi | = 1 $$
+
+    using the fast marching method with an initial condition defined by
+    the zero level set.
+
+Currently the solution is first order, This suffices for initial
+conditions with straight edges (e.g. trenches in
+electrodeposition). The method should work for unstructured 2D grids
+but testing on unstructured grids is untested thus far. This is a 2D
+implementation as it stands. Extending to 3D should be relatively
+simple.
+
+Here we will define a few test cases. Firstly a 1D test case
+
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
+   >>> from distanceVariable import DistanceVariable
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75) 
+   >>> Numeric.allclose(answer, var)
+   1
+
+A 1D test case with very small dimensions.
+
+   >>> dx = 1e-10
+   >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> answer = Numeric.arange(8) * dx - 3.5 * dx
+   >>> Numeric.allclose(answer, var)
+   1
+
+
+For future reference, the minimum distance for the interface cells can
+be calculated with the following functions. The trial cell values will
+also be calculated with these functions. In essence it is not
+difficult to calculate the level set distance function on an
+unstructured 3D grid. However a lot of testing will be required. The
+minimum distance functions will take the following form.
+
+.. raw:: latex
+
+    $$ X_{\text{min}} = \frac{\left| \vec{s} \cross \vec{t} \right|}
+    {\left| \vec{s} - \vec{t} \right|} $$
+
+    and in 3D,
+
+    $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left(
+    \vec{t} \cross \vec{u} \right) \left| $$
+
+    where the vectors $\vec{s}$, $\vec{t}$ and $\vec{u}$ represent the
+    vectors from the cell of interest to the neighboring cell.
+    
+"""
 __docformat__ = 'restructuredtext'
 
+import Numeric
+import MA
+
+from fipy.meshes.numMesh.mesh import MAtake
 from fipy.variables.cellVariable import CellVariable
 
 class DistanceVariable(CellVariable):
-    def __init__(self, mesh = None, name = 'level set variable', value):
-
-        CellVariable(self, mesh, name = name, value = 1.)
-
+    def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 1, narrowBandWidth = 1e+10):
+        CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
+        self.markStale()
+        self.narrowBandWidth = narrowBandWidth
+        
     def _calcValue(self):
 
-        Ncells = self.mesh.getNumberOfCells()
-        unevaluatedIDs = Set(range(NCells))
-        adjCellIDS = self.mesh.getAdjacentCellIDs()
-        
-        ## obtain positive and negative IDs
-
-        positiveIDs = Set(Numeric.nonzero(self.value > 0))
-        negativeIDs = unevaluatedIDs - positiveIDs
-
-        ## obtain interface IDs
-
-        positiveNeighbourIDs = Set(Numeric.take(adjCellIDs, positiveIDs).flat)
-        negativeNeighbourIDs = Set(Numeric.take(adjCellIDs, negativeIDs).flat)
-
-        interfaceIDs = positiveNeighborIDs & negativeNeighborIDs
-        positiveInterfaceIDs = interfaceIDs & positiveIDs
-        negativeInterfaceIDs = interfaceIDs & negativeIDs
-        
         ## calculate interface values
 
-        tmpValue = self.value.copy()
+        cellToCellIDs = self.mesh.getCellToCellIDs()
+        adjVals = MAtake(self.value, cellToCellIDs)
+        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
+        dAP = self.mesh.getCellToCellDistances()
+        distances = MA.sort(abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues)), 1)
+        sign = (self.value > 0) * 2 - 1
+        s = distances[:,0]
+        t = distances[:,1]
+        signedDistance = MA.where(s.mask(),
+                                  self.value,
+                                  MA.where(t.mask(),
+                                           sign * s,
+                                           sign * s * t / MA.sqrt(s**2 + t**2)))
+
+        self.value = signedDistance
+
+        ## calculate initial trial values
+        interfaceFlag = Numeric.sum(Numeric.logical_not(distances.mask()), 1) > 0
+        adjInterfaceFlag = MAtake(interfaceFlag, cellToCellIDs)
+        hasAdjInterface = Numeric.sum(adjInterfaceFlag.filled(), 1) > 0
+        trialFlag = Numeric.logical_and(Numeric.logical_not(interfaceFlag), hasAdjInterface) 
+        trialIDs = list(Numeric.nonzero(trialFlag))
+        evaluatedFlag = interfaceFlag
         
-        for id in positiveInterfaceIDs:
-            tmpValue[id] = self.calcInterfaceValue(id, Set(adjCellIDs[id]) & negativeInterfaceIDs, adjCellIDs[id])
-
-        for id in negativeInterfaceIDs:
-            tmpValue[id] = self.calcInterfaceValue(id, Set(adjCellIDs[id]) & positiveInterfaceIDs, adjCellIDs[id])
-
-        self.value = tmpValue
-        
-
-        ## find trial IDs
-
-        evaluatedIDs = interfaceIDs
-        unevaluatedIDs = unevaluatedIDs - evaluatedIDs
-        interfaceNeighborIDs = Set(Numeric.take(adjCellIDs, interfaceIDs).flat)
-        trialIDs = interfaceNeighbourIDs - interfaceIDs
-
-        ## calculate trial cell IDs
-
-        for id in trialCellIDs:
-            self.value[id] = self.calcTrialValue(id, Set(adjCellIDs[id]) & evaluatedIDs)
-
-        unevaluatedIDs = unevaluatedIDs - trialIDs
-
-        ## calculate remaining unevaluted IDs
-
-        trialIDs = list(trialIDs)
-         
+        for id in trialIDs:
+            self.value[id] = self._calcTrialValue(id, evaluatedFlag)
+            
         while len(trialIDs) > 0:
 
-            id = Numeric.argmin(abs(Numeric.take(self.value, trialsIDs)))
-            
-            evaluatedIds.add(id)
+            id = trialIDs[Numeric.argmin(abs(Numeric.take(self.value, trialIDs)))]
             trialIDs.remove(id)
-
-            newTrialIDs = Set(adjCellIDs[id]) & unevaluatedIDs
-
-            for trialID in newTrialIDs:
-                self.setTrialValue(trialID)
-                trialIDs.add(trialID)
-
+            evaluatedFlag[id] = 1
             if abs(self.value[id]) > self.narrowBandWidth / 2:
                 break
+
+            for adjID in cellToCellIDs[id].filled(fill_value = -1):
+                if adjID != -1:
+                    if not evaluatedFlag[adjID]:
+                        self.value[adjID] = self._calcTrialValue(adjID, evaluatedFlag)
+                        if adjID not in trialIDs:
+                            trialIDs.append(adjID)
+
+        self.value = Numeric.array(self.value)
+
+    def _calcTrialValue(self, id, evaluatedFlag):
+        adjIDs = self.mesh.getCellToCellIDs()[id]
+        adjEvaluatedFlag = MAtake(evaluatedFlag, adjIDs)
+        adjValues = MA.masked_array(MAtake(self.value, adjIDs), MA.logical_not(adjEvaluatedFlag))
+        indices = MA.argsort(abs(adjValues))
+        sign = (self.value[id] > 0) * 2 - 1
+        d0 = self.mesh.getCellToCellDistances()[id, indices[0]]
+        v0 = self.value[adjIDs[indices[0]]]
+
+        N = Numeric.sum(Numeric.logical_not(adjValues.mask()))
+
+        if N == 0:
+            raise Error 
+        elif N == 1:
+            return v0 + sign * d0
+        else:
+            d1 = self.mesh.getCellToCellDistances()[id, indices[1]]
+            n0 = self.mesh.getCellNormals()[id, indices[0]]
+            n1 = self.mesh.getCellNormals()[id, indices[1]]
+            v1 = self.value[adjIDs[indices[1]]]
+
+            dotProd = d0 * d1 * Numeric.dot(n0, n1)
+            crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
+            dsq = d0**2 + d1**2 - 2 * dotProd
             
-    def calcTrialValue(self):
-        
-        pass
-        
-    def calcInterfaceValue(self, id, adjIDs, allAdjIDs):
-        distances = ()
-        val = self.value[adjID]
-        sign = -1
-        if val > 0:
-            sign = 1
-
-
-        
-        for adjID in adjIDs:
-            index = list(allAdjIDs).index(adjID)
-            dAP = self.mesh.getCellDistances()[id][index]
-            normal = self.mesh.getCellToCellNormals()[id][index]
-            distances += (abs(val * dAP / (val - self.value[adjID])),)
-            normals = += (normal,)
-
-        indices = Numeric.argsort(distances)
-
-        if len(adjIDs) == 1:
-            return s * sign
-        if len(adjIDs) == 2:
-            return array.cross(
-
-    def calcInterfaceValues(self, interfaceIDs):
-        r"""
-
-        interfaceIDs - is a set of all the interface IDs
-        
-
-
-        To caclulate minimum distance in 2D use,
-
-        .. raw:: latex
-
-            $$ X_{\text{min}} = \frac{\left| \vec{s} \cross \vec{t} \right|} {\left| \vec{s} - \vec{t} \right|} $$
-
-            and in 3D,
-
-            $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left( \vec{t} \cross \vec{u} \right) \left| $$
-
-            where the vectors $\vec{s}$, $\vec{t}$ amd $\vec{u}$ represent the vectors from the cell of intest to the neighbouring cell.
-
-        """
-        __docformat__ = `restructuedtext`
-
-        interfaceAdjIDs = Numeric.take(adjCellIDs, interfcaeIDs)
-        interfaceIDs = 
-        
-        numInterfaceIDs = Numeric.array(negativeInterfaceIDs)
-        numInterfaceIDs = Numeric.array(negativeInterfaceIDs
-
-        ids = list(interfaceIDs)
-        values = Numeric.take(self.values, ids)
-        dAP = Numeric.take(self.mesh.getCellToCellDistances, ids)
-        
-        distances = 
-
-
+            top = -v0 * (dotProd - d1**2) - v1 * (dotProd - d0**2)
+            sqrt = crossProd**2 *(dsq - (v0 - v1)**2)
+            sqrt = Numeric.sqrt(max(sqrt, 0))
             
-            
-
-
+            return (top + sign * sqrt) / dsq
+        
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test()         
+    
 
 
 

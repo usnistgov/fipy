@@ -42,8 +42,8 @@
 
 r"""
 
-Here we solve the level set equation in one dimension. The level set
-equation solves a variable so that its value at any point in the
+Here we create a level set variable in one dimension. The level set
+variable calculates its value so that that value at any point in the
 domain is the distance from the zero level set. This can be
 represented succinctly in the following equation with a boundary
 condition at the zero level set such that,
@@ -65,30 +65,18 @@ script. Firstly, setup the parameters.
    >>> dy = 2.
    >>> nx = 10
    >>> ny = 1
-   >>> L = nx * dx
 
 Construct the mesh.
 
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-Construct a `distanceVariable` object. This object is required by the
-`distanceEquation`.
+Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
-   ...                        value = -1.)
-
-The domain must be divided into positive and negative regions.
-
-   >>> positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] < L / 2.)
-   >>> var.setValue(1.,positiveCells)
-
-The `distanceEquation` is then constructed.
-
-   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-   >>> eqn = DistanceEquation(var)
+   ...                        value = (1,1,1,1,1,-1,-1,-1,-1,-1))
 
 The problem can then be solved by executing the `solve()` method of the equation.
 
@@ -97,19 +85,12 @@ The problem can then be solved by executing the `solve()` method of the equation
    ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp',
    ...                               minVal = -5., maxVal = 5.)
    ...     viewer.plot()
-   ...     eqn.solve()
-   ...     viewer.plot()
 
 The result can be tested with the following commands.
 
-   >>> eqn.solve()
    >>> import Numeric
-   >>> Numeric.allclose(var,
-   ...     Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 
-   ...     3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., 
-   ...     -7. * dx / 2., -9. * dx / 2.)))
+   >>> Numeric.allclose(var, dx * (-Numeric.arange(nx) + (nx - 1) / 2. ))
    1
-
 
 """
 __docformat__ = 'restructuredtext'
