@@ -118,7 +118,7 @@ class Variable:
 	return self.value
 	
     def refresh(self):
-	if self.stale:
+	if self.stale:           
 	    for required in self.requiredVariables:
 		required.refresh()
 	    self.calcValue()

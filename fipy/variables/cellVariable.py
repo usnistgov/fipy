@@ -99,12 +99,12 @@ class CellVariable(Variable):
 	return self.faceGrad
 
     def getOld(self):
-	if self.old == None:
+	if self.old is None:
 	    return self
 	else:
 	    return self.old
 
     def updateOld(self):
-	if self.old != None:
+	if self.old is not None:
 	    self.old.setValue(self.value)
 	    
