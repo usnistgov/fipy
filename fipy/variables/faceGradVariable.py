@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/29/04 {11:58:50 AM}
+ #                                last update: 1/29/04 {6:52:32 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,7 @@ class FaceGradVariable(VectorFaceVariable):
 	    self.mod = lambda argument: argument
 	else:
 	    self.mod = mod
-	
+	    
     def _calcValuePy(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
 	grad1 = array.take(cellGrad,id1)
 	grad2 = array.take(cellGrad,id2)
@@ -69,33 +69,32 @@ class FaceGradVariable(VectorFaceVariable):
 	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 
     def _calcValueIn(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
-	t1grad1 = Numeric.zeros(N.shape,'d')
-	t1grad2 = Numeric.zeros(N.shape,'d')
-	t2grad1 = Numeric.zeros(N.shape,'d')
-	t2grad2 = Numeric.zeros(N.shape,'d')
-
 	inline.runInlineLoop1("""
 	int j;
+	double t1grad1, t1grad2, t2grad1, t2grad2;
+	
+	t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0;
 	for (j = 0; j < nj; j++) {
-	    t1grad1(i) += tangents1(i,j) * cellGrad(id1(i),j);
-	    t1grad2(i) += tangents1(i,j) * cellGrad(id2(i),j);
-	    t2grad1(i) += tangents2(i,j) * cellGrad(id1(i),j);
-	    t2grad2(i) += tangents2(i,j) * cellGrad(id2(i),j);
+	    t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
+	    t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
+	    t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
+	    t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
 	}
 	
 	for (j = 0; j < nj; j++) {
 	    val(i,j) = normals(i,j) * N(i);
-	    val(i,j) += tangents1(i,j) * (t1grad1(i) + t1grad2(i)) / 2.;
-	    val(i,j) += tangents2(i,j) * (t2grad1(i) + t2grad2(i)) / 2.;
+	    val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
+	    val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
 	}
 	""", 
-	t1grad1 = t1grad1, t1grad2 = t1grad2, 
-	t2grad1 = t2grad1,  t2grad2 = t2grad2, 
 	tangents1 = tangents1, tangents2 = tangents2,
 	cellGrad = cellGrad, normals = normals, N = N, 
 	id1 = id1, id2 = id2,
 	val = self.value.value,
 	ni = tangents1.shape[0], nj = tangents1.shape[1], nk = 0)
+
+## 	t1grad1 = self.t1grad1, t1grad2 = self.t1grad2, 
+## 	t2grad1 = self.t2grad1,  t2grad2 = self.t2grad2, 
 	
     def calcValue(self):        
 	dAP = self.mesh.getCellDistances()

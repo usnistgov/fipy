@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 01/21/04 { 2:45:36 PM}
+ #                                last update: 1/29/04 {5:09:43 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

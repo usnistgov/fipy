@@ -6,7 +6,7 @@
  # 
  #  FILE: "input4ParticlesProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/29/04 {10:10:03 AM}
+ #                                last update: 1/29/04 {6:47:56 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,12 +58,13 @@ class System4ParticlesProfile(System4Particles):
         for i in range(5):
             self.it.timestep(1)
             print "timestep: ",i        
+	    
         profile.stop()
         
-        print 'finished run'
+	print 'finished run'
+	    
     
 if __name__ == '__main__':
-    fivol.inline.inline.readInlineArgs(sys.argv)
     system = System4ParticlesProfile(nx = 40, ny = 40)
     system.run()
     
