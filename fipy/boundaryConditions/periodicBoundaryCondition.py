@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/23/04 {5:48:45 PM} 
+ #                                last update: 11/25/04 {8:53:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -56,11 +56,24 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	if len(faces1) is not len(faces2):
 	    raise "Incompatible numbers of faces"
 
-	BoundaryCondition.__init__(self, faces1 + faces2, 0)
+	self.faces1 = faces1
+	self.faces2 = faces2
 	
-	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
+	self.faceIds = Numeric.array([face.getID() for face in faces1 + faces2])
+	self.face1Ids = Numeric.array([face.getID() for face in faces1])
+	self.face2Ids = Numeric.array([face.getID() for face in faces2])
 
-    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
+	self.adjacentCellIds = Numeric.array([face.getCellID() for face in faces1 + faces2])
+	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
+	
+	self.adjacent1CellIds = Numeric.array([face.getCellID() for face in faces1])
+	self.adjacent2CellIds = Numeric.array([face.getCellID() for face in faces2])
+	
+## 	BoundaryCondition.__init__(self, faces1 + faces2, 0)
+	
+## 	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
+
+    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
 	**b** is unchanged.
 	
@@ -71,20 +84,26 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	    
 	  - `Ncells`:   Size of matrices
 	  - `MaxFaces`: bandwidth of **L**
-	  - `cell1dia`: contribution to adjacent cell diagonal by this 
-	    exterior face	    
-	  - `cell1off`: contribution to this cell diagonal by adjacent 
-	    exterior face
+	  - `coeff`: contributions to **L** by this exterior face
+## 	  - `cell1dia`: contribution to adjacent cell diagonal by this 
+## 	    exterior face	    
+## 	  - `cell1off`: contribution to this cell diagonal by adjacent 
+## 	    exterior face
 	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 	
-	diagonalContribution = array.take(cell1dia[:],self.faceIds) / (2 * coeffScale)
-	offdiagonalContribution = array.take(cell1off[:],self.faceIds) / (2 * coeffScale)
+	LL.addAt(array.take(coeff['cell 1 diag'][:], self.faceIds) / coeffScale,self.adjacentCellIds,self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 1 offdiag'][:], self.faceIds) / coeffScale,self.adjacentCellIds,self.offdiagonalCellIds)
+	LL.addAt(array.take(coeff['cell 2 offdiag'][:], self.faceIds) / coeffScale,self.offdiagonalCellIds,self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 2 diag'][:], self.faceIds) / coeffScale,self.offdiagonalCellIds,self.offdiagonalCellIds)
 
-	LL.addAt(diagonalContribution, self.adjacentCellIds, self.adjacentCellIds)
-	LL.addAt(offdiagonalContribution, self.adjacentCellIds, self.offdiagonalCellIds)
+## 	diagonalContribution = array.take(cell1dia[:],self.faceIds) / (2 * coeffScale)
+## 	offdiagonalContribution = array.take(cell1off[:],self.faceIds) / (2 * coeffScale)
+
+## 	LL.addAt(diagonalContribution, self.adjacentCellIds, self.adjacentCellIds)
+## 	LL.addAt(offdiagonalContribution, self.adjacentCellIds, self.offdiagonalCellIds)
 
 	return (LL, 0)
 	

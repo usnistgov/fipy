@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/19/04 {7:27:08 PM} 
+ #                                last update: 11/25/04 {9:01:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,6 +78,11 @@ class FaceTerm(Term):
 ## 	    self.coeffViewer = Gist1DViewer(vars = (self.coeff,), title = "stupid")
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
+## 	print self
+## 	print "before all"
+## 	print L
+## 	print b
+
 	L.addAt(array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
 	L.addAt(array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
 	L.addAt(array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
@@ -86,12 +91,26 @@ class FaceTerm(Term):
 	N = self.getMesh().getNumberOfCells()
 	M = self.getMesh().getMaxFacesPerCell()
 	
+## 	print self
+## 	print "before BCs"
+## 	print L
+## 	print b
+	
         for boundaryCondition in self.boundaryConditions:
-	    LL, bb = boundaryCondition.buildMatrix(N, M, self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'], coeffScale)
+## 	    print self.implicit['cell 1 diag']
+## 	    print self.implicit['cell 1 offdiag']
+## 	    print self.implicit['cell 2 offdiag']
+## 	    print self.implicit['cell 2 diag']
+	    
+	    LL, bb = boundaryCondition.buildMatrix(N, M, self.implicit, coeffScale)
 	    
 	    L += LL
 	    b += bb / varScale
-
+	    
+## 	    print boundaryCondition
+## 	    print L
+## 	    print b
+	    
     def explicitBuildMatrix(self, oldArray, id1, id2, b, coeffScale, varScale):
 
         inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffScale, varScale)
@@ -99,12 +118,23 @@ class FaceTerm(Term):
 	N = self.getMesh().getNumberOfCells()
 	M = self.getMesh().getMaxFacesPerCell()
 	
+## 	print self
+## 	print "before BCs"
+## ## 	print L
+## 	print b
+	
         for boundaryCondition in self.boundaryConditions:
-	    LL, bb = boundaryCondition.buildMatrix(N, M, self.explicit['cell 1 diag'], self.explicit['cell 1 offdiag'], coeffScale)
+	    LL, bb = boundaryCondition.buildMatrix(N, M, self.explicit, coeffScale)
+	    
+## 	    print boundaryCondition
 	    
 	    if LL != 0:
+## 		print LL
 		b -= LL.takeDiagonal() * oldArray / varScale
 	    b += bb / varScale
+	    
+## 	    print L
+## 	    print b
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, coeffScale, varScale):
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 11/23/04 {12:45:17 PM}
+ #                                last update: 11/25/04 {9:37:43 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ from fipy.tools.sparseMatrix import SparseMatrix
 
 
 class FixedValue(BoundaryCondition):
-    def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
+    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
 	"""Set boundary equal to value.
 	
 	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
@@ -64,17 +64,16 @@ class FixedValue(BoundaryCondition):
 	    
 	  - `Ncells`:   Size of matrices
 	  - `MaxFaces`: bandwidth of **L**
-	  - `cell1dia`: contribution to adjacent cell diagonal by this 
-	    exterior face	    
-	  - `cell1off`: contribution to **b**-vector by this exterior face
+	  - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
+	                this exterior face
 	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
-	LL.addAt(array.take(cell1dia[:],self.faceIds) / coeffScale, self.adjacentCellIds, self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds) / coeffScale, self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, array.take(-cell1off[:],self.faceIds) * self.getValue() / coeffScale)
+	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self.getValue() / coeffScale)
 
 	return (LL, bb)
 	
