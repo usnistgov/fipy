@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "randCahnHilliard.py"
+ #  FILE: "inputRand.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 9/3/04 {10:35:33 PM}
  # Stolen from:

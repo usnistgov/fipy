@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "cahnHilliardTanh1D.py"
+ #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 9/3/04 {10:29:57 PM}
  # Stolen from:
