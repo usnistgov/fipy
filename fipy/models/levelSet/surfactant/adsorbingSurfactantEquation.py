@@ -147,7 +147,7 @@ import Numeric
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.dependentSourceTerm import DependentSourceTerm
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers.linearCGSSolver import LinearCGSSolver
 
 class AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -236,7 +236,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff
 
-    def solve(self, var, boundaryConditions = (), solver = LinearLUSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
         for coeff in self.coeffs:            
             coeff.updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
