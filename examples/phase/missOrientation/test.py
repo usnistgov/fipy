@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:00:46 PM} 
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,62 +41,25 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
  
 import unittest
-import os
-import cPickle
-
-from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-from input1D import Phase1DSystem
-from inputCircle import CircleSystem
-from inputModularCircle import ModularCircleSystem
-import examples.phase.missOrientation
+import doctest
+
+import mesh1D.input
+import circle.input
+import modCircle.input
 import testLevel2
-
-class TestPhase(TestBase):
-    def setUp(self):
-        parameters = self.system.getParameters()
-
-	self.steps = parameters['steps']
-	self.tolerance = 1e-10
-
-        self.it = parameters['it']
-        self.var = parameters['var']
-        
-    def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.__path__[0],self.testFile),'r')
-	testData = cPickle.load(filestream)
-	filestream.close()
-	return testData
-
-class TestPhase1D(TestPhase):
-    def setUp(self):
-        self.system = Phase1DSystem()
-        self.testFile = 'testPhaseData.gz'
-        TestPhase.setUp(self)
-
-class TestPhaseCircle(TestPhase):
-    def setUp(self):
-        self.system = CircleSystem()
-        self.testFile = 'testCirclePhaseData.gz'
-        TestPhase.setUp(self)
-        
-class TestPhaseCircleModular(TestPhase):
-    def setUp(self):
-        self.system = ModularCircleSystem()
-	self.testFile = 'testModularCircleData.gz'
-        TestPhase.setUp(self)
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestPhase1D))
-    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
-    theSuite.addTest(unittest.makeSuite(TestPhaseCircleModular))
+
+    theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
+    theSuite.addTest(doctest.DocTestSuite(circle.input))
+    theSuite.addTest(doctest.DocTestSuite(modCircle.input))
     theSuite.addTest(testLevel2.suite())
+        
     return theSuite
     
 if __name__ == '__main__':
