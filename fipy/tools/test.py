@@ -58,6 +58,8 @@ class TestDump(unittest.TestCase):
             mesh = mesh,
             value = 100.0)
 
+
+
         self.data = (theta, mesh)
         tempFile = tempfile.mktemp()
         dump.write(self.data, tempFile)
@@ -77,14 +79,14 @@ class Test10by10(TestDump):
     def setUp(self):
         TestDump.setUp(self, 10, 10)
 
-class Test20by20(TestDump):
+class Test100by100(TestDump):
     def setUp(self):
-        TestDump.setUp(self, 50, 50)
+        TestDump.setUp(self, 100, 100)
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test10by10))
-##    theSuite.addTest(unittest.makeSuite(Test20by20))
+    theSuite.addTest(unittest.makeSuite(Test100by100))
     return theSuite
     
 if __name__ == '__main__':
