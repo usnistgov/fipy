@@ -5,8 +5,8 @@
  #  PFM - Python-based phase field solver
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {9:49:56 PM} 
+ #                                    created: 12/16/03 {3:23:47 PM}
+ #                                last update: 12/6/03 {9:49:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,13 +39,13 @@
  # ###################################################################
  ##
 
-"""Test steady convection diffusion solutions
+"""Test steady convection diffusion solutions with a constant source
 """
  
 import unittest
 from testBase import TestBase
 from meshes.grid2D import Grid2D
-from equations.stdyConvDiffEquation import SteadyConvectionDiffusionEquation
+from equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
 from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
@@ -53,13 +53,11 @@ from iterators.iterator import Iterator
 from variables.variable import Variable
 from terms.exponentialConvectionTerm import ExponentialConvectionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from terms.scSourceTerm import ScSourceTerm
 import Numeric
 
-class TestSteadyConvectionDiffusion(TestBase):
-    """Generic steady-state diffusion class
-    
-    	Constructs a mesh, variable, equation, and iterator based
-	on the mesh dimensions specified by the child class
+class TestSteadyConvectionDiffusionSc(TestBase):
+    """steady-state convection-diffusion-source 
     """
     def setUp(self):
 	self.steps = 1
@@ -76,14 +74,12 @@ class TestSteadyConvectionDiffusion(TestBase):
 	    value = self.valueLeft,
             viewer = 'None')
 
-	self.eq = SteadyConvectionDiffusionEquation(
+	self.eq = SteadyConvectionDiffusionScEquation(
 	    var = self.var,
 	    diffusionCoeff = self.diffCoeff,
 	    convectionCoeff = self.convCoeff,
-	    solver = LinearCGSSolver(
-		tolerance = 1.e-15, 
-		steps = 1000
-	    ),
+            sourceCoeff = self.sourceCoeff,
+	    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
 	    convectionScheme = self.convectionScheme,
 	    boundaryConditions=(
 		FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
@@ -97,9 +93,14 @@ class TestSteadyConvectionDiffusion(TestBase):
 
     def getTestValues(self):
 	x = self.mesh.getCellCenters()[:,0]
-	return (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
+        AA = -self.sourceCoeff * x / self.convCoeff[0]
+        BB = 1. + self.sourceCoeff * self.L / self.convCoeff[0]
+        CC = 1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)
+        DD = 1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff)
+        return AA + BB * CC / DD
+
 	    
-class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusion):
+class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
     """
     def setUp(self):
@@ -109,10 +110,11 @@ class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusion)
 	self.diffCoeff = 1.
 	self.convCoeff = (10.,0)
 	self.tolerance = 1e-10
+        self.sourceCoeff = 0.
 	self.convectionScheme = ExponentialConvectionTerm
-	TestSteadyConvectionDiffusion.setUp(self)
+	TestSteadyConvectionDiffusionSc.setUp(self)
 
-class  TestSteadyConvectionDiffusion2DExponential(TestSteadyConvectionDiffusion):
+class  TestSteadyConvectionDiffusion2DExponential(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 10x10 mesh, with exponentional convection scheme
     """
     def setUp(self):
@@ -122,10 +124,11 @@ class  TestSteadyConvectionDiffusion2DExponential(TestSteadyConvectionDiffusion)
 	self.diffCoeff = 1.
 	self.convCoeff = (10.,0)
 	self.tolerance = 1e-10
+        self.sourceCoeff = 0.
 	self.convectionScheme = ExponentialConvectionTerm
-	TestSteadyConvectionDiffusion.setUp(self)
+	TestSteadyConvectionDiffusionSc.setUp(self)
 	
-class  TestSteadyConvectionDiffusion1DExponentialBackwards(TestSteadyConvectionDiffusion):
+class  TestSteadyConvectionDiffusion1DExponentialBackwards(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
     """
     def setUp(self):
@@ -135,10 +138,11 @@ class  TestSteadyConvectionDiffusion1DExponentialBackwards(TestSteadyConvectionD
 	self.diffCoeff = 1.
 	self.convCoeff = (-10.,0)
 	self.tolerance = 1e-10
+        self.sourceCoeff = 0.
 	self.convectionScheme = ExponentialConvectionTerm
-	TestSteadyConvectionDiffusion.setUp(self)
+	TestSteadyConvectionDiffusionSc.setUp(self)
 	
-class  TestSteadyConvectionDiffusion1DPowerLaw(TestSteadyConvectionDiffusion):
+class  TestSteadyConvectionDiffusion1DPowerLaw(TestSteadyConvectionDiffusionSc):
     """Steady-state 1D diffusion on a 100x1 mesh, with power law convection scheme
     """
     def setUp(self):
@@ -148,15 +152,32 @@ class  TestSteadyConvectionDiffusion1DPowerLaw(TestSteadyConvectionDiffusion):
 	self.diffCoeff = 1.
 	self.convCoeff = (10.,0)
 	self.tolerance = 1e-2
+        self.sourceCoeff = 0.
 	self.convectionScheme = PowerLawConvectionTerm
-	TestSteadyConvectionDiffusion.setUp(self)
-	
+	TestSteadyConvectionDiffusionSc.setUp(self)
+        
+class  TestSteadyConvectionDiffusion1DExponentialSc(TestSteadyConvectionDiffusionSc):
+    """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
+    """
+    def setUp(self):
+	self.L = 1.
+	self.nx = 1000
+	self.ny = 1
+	self.diffCoeff = 1.
+	self.convCoeff = (10.,0)
+	self.tolerance = 1e-6
+        self.sourceCoeff = 1.
+	self.convectionScheme = ExponentialConvectionTerm
+	TestSteadyConvectionDiffusionSc.setUp(self)
+
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponential))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DPowerLaw))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialBackwards))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion2DExponential))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialSc))
     return theSuite
     
 if __name__ == '__main__':

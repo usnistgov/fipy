@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "linearCGSSolver.py"
-                                   created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/5/03 {4:19:36 PM} 
+ FILE: "stdyConvDiffScEquation.py"
+                                   created: 12/6/03 {10:39:23 AM} 
+                               last update: 12/6/03 {3:02:09 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -36,34 +36,44 @@ they have been modified.
 
  modified   by  rev reason
  ---------- --- --- -----------
- 2003-11-14 JEG 1.0 original
+ 2003-11-12 JEG 1.0 original
 ###################################################################
 """
 
-from solver import Solver
-import precon
-import itsolvers
-import sys
+from matrixEquation import MatrixEquation
+from terms.transientTerm import TransientTerm
+from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from terms.scSourceTerm import ScSourceTerm
 
-class LinearCGSSolver(Solver):
-    def __init__(self, tolerance, steps):
-	Solver.__init__(self, tolerance, steps)
+class SteadyConvectionDiffusionScEquation(MatrixEquation):
+    """
+    Diffusion equation is implicit.
+    """    
+    def __init__(self,
+                 var,
+                 diffusionCoeff = 1.,
+		 convectionCoeff = 1.,
+                 sourceCoeff = 0.,
+                 solver='default_solver',
+		 convectionScheme = PowerLawConvectionTerm,
+                 boundaryConditions=()):
+		     
+	mesh = var.getMesh()
 	
-    def solve(self, L, x, b):
+	diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	convectionTerm = convectionScheme(convectionCoeff, mesh, boundaryConditions, diffusionTerm)
+        sourceTerm = ScSourceTerm(sourceCoeff, mesh)
 
-# 	print "L: ", L
-# 	print "b: ", b
-# 	print "x: ", x
-	
-	A = L.to_csr()
+	terms = (
+	    diffusionTerm,
+	    convectionTerm,
+            sourceTerm
+            )
+	    
+	MatrixEquation.__init__(
+            self,
+            var,
+            terms,
+            solver)
 
-        info, iter, relres = itsolvers.cgs(A,b,x,self.tolerance,self.steps)
-        
-## 	print info, iter, relres
-	
-## 	y = x.copy()
-## 	L.matvec(x,y)
-## 	print "L * x: ", y
-	
-	if (info != 0):
-	    print >> sys.stderr, 'cg not converged'
