@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/19/04 {7:32:00 PM} 
+ #                                last update: 11/20/04 {11:36:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,10 +104,8 @@ class SparseMatrix:
 	self.matrix[index] = value
 	
     def _iadd(self, L, other, sign = 1):
-	if other == 0:
-	    return
-	    
-	L.shift(sign, other.getMatrix())
+	if other != 0:
+	    L.shift(sign, other.getMatrix())
 	
 	return self
 
