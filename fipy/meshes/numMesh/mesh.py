@@ -44,7 +44,7 @@
     This is built for a non-mixed element mesh.
 """
 
-import sets
+
 
 import Numeric
 import MA
@@ -123,10 +123,20 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.interiorFaceIDs = Numeric.nonzero(Numeric.logical_not(self.faceCellIDs[:,1].mask()))
 
     def calcInteriorAndExteriorCellIDs(self):
-	self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[:,0],self.exteriorFaceIDs))
-	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
-	self.exteriorCellIDs = list(self.exteriorCellIDs)
+        try:
+            import sets
+            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[:,0],self.exteriorFaceIDs))
+            self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
+            self.exteriorCellIDs = list(self.exteriorCellIDs)
+        except:
+            self.exteriorCellIDs = Numeric.take(self.faceCellIDs[:,0], self.exteriorFaceIDs)
+            tmp = Numeric.zeros(self.numberOfCells)
+            Numeric.put(tmp, self.exteriorCellIDs, Numeric.ones(len(self.exteriorCellIDs)))
+            self.exteriorCellIDs = Numeric.nonzero(tmp)            
+            self.interiorCellIDs = Numeric.nonzero(Numeric.logical_not(tmp))
+            
 
+            
     def calcCellToFaceOrientations(self):
 	tmp = MAtake(self.faceCellIDs[:,0], self.cellFaceIDs)
 	self.cellToFaceOrientations = (tmp == MA.indices(tmp.shape)[0]) * 2 - 1

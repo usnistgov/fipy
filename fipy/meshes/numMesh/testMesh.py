@@ -178,6 +178,10 @@ class TestMesh(TestMeshBase):
                                                      (d2, 2. * dy / 3., d1, -1),
                                                      (2. * dy / 3., d2, d1, -1)), -1)
 
+        self.interiorCellIDs = Numeric.array(())
+
+        self.exteriorCellIDs = Numeric.array((0, 1, 2, 3, 4, 5, 6, 7))
+
 class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)

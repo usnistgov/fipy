@@ -154,6 +154,10 @@ class TestMesh3D(TestMeshBase):
         self.cellToCellDistances = MA.masked_values(((dz / 2., dz / 2., dx / 2., d4, dy / 2., dy / 2.),
                                                       (d4, -1, -1, -1, -1, -1)), -1)
 
+        self.interiorCellIDs = Numeric.array(())
+
+        self.exteriorCellIDs = Numeric.array((0, 1))
+
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):
         TestMesh3D.setUp(self)
