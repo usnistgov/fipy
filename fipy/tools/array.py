@@ -105,3 +105,13 @@ def arctan2(arr, other):
     else:
 	return umath.arctan2(arr,other)
 	
+def crossProd(v1,v2):
+    """Return vector cross-product of v1 and v2.
+    """
+    v1n = Numeric.reshape(v1, (-1, 3))
+    v2n = Numeric.reshape(v2, (-1, 3))
+
+    out = Numeric.transpose(Numeric.array((v1n[:,1] * v2n[:,2] - v1n[:,2] * v2n[:,1],
+			    v1n[:,2] * v2n[:,0] - v1n[:,0] * v2n[:,2],
+			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
+    return Numeric.reshape(out, Numeric.shape(v1))

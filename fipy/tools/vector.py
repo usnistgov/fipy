@@ -113,3 +113,11 @@ def putAdd(vector, ids, additionVector):
     """
     inline.optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
+def prune(array, shift, start = 0):
+    """
+    removes elements with indices i = start + shift * n
+    where n = 0, 1, 2, ...
+    """
+    
+    takeArray = [x for x in range(len(array)) if (x % shift) != start]
+    return Numeric.take(array, takeArray)
