@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/1/05 {11:02:53 AM} 
+ #                                last update: 9/3/04 {10:38:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,12 +35,28 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
 class ExponentialConvectionTerm(ConvectionTerm):
+    r"""
+    The discretization for the `ExponentialConvectionTerm` is given by
+
+    .. raw:: latex
+    
+       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f $$
+
+       where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
+       $\alpha_f$ is calculated using the exponential scheme.
+       For further details see Section 3.5 of the main \FiPy{}
+       guide~\cite{FiPyGuide}.
+
+    """
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
@@ -55,3 +71,4 @@ class ExponentialConvectionTerm(ConvectionTerm):
 	    alpha = Numeric.where(abs(P) > eps and P <= 101., ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
 
 	    self.value = alpha
+

@@ -35,11 +35,23 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
 
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
-    def getWeight(self, mesh):
+    r"""
+    The discretization for the `ImplicitDiffusionTerm` is given by
+
+    .. raw:: latex
+
+       $$ \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
+       \frac{\phi_A-\phi_P}{d_{AP}} A_f. $$ The variable $\phi$ is
+       evaluated implicitly as part of the solution
+       routine.
+    """
+        
+    def _getWeight(self, mesh):
 	return {
 	    'implicit':{
 		'cell 1 diag':    -1, 

@@ -62,7 +62,7 @@ class AdaptiveIterator(Iterator):
 	    var.resetToOld()
 	    
     def adjustTimeStep(self, dt):
-	factor = min([equation.getFigureOfMerit() for equation in self.equations])
+	factor = min([equation._getFigureOfMerit() for equation in self.equations])
 	if factor > 1.:
 	    factor = factor**0.5
 	dt *= factor

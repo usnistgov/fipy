@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.variables.variable import Variable
@@ -50,13 +52,13 @@ class Term:
         self.coeff = coeff
 	self.geomCoeff = None
         
-    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	pass
 	
-    def getFigureOfMerit(self):
+    def _getFigureOfMerit(self):
 	return None
 
-    def getResidual(self, matrix, var, RHSvector):
+    def _getResidual(self, matrix, var, RHSvector):
 	Lx = matrix * Numeric.array(var[:])
 	
 	residual = Lx - RHSvector
@@ -71,12 +73,24 @@ class Term:
 		
 	return abs(residual)
 
-    def isConverged(self):
+    def _isConverged(self):
 	return self.converged
 
     def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
- 	matrix, RHSvector = self.buildMatrix(var, boundaryConditions, dt = dt)
-        residual = self.getResidual(matrix, var, RHSvector)
+        r"""
+        Builds and solves the `term`'s linear system once.
+        	
+        :Parameters:
+
+           - `var` : The variable to be solved for. Provides the initial condition the old value and the holds the solution on completion.
+           - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions` : A tuple of boundaryConditions.
+           - `dt` : The time step size.
+           - `solutionTolerance` : A value that the residual must be less than so that `_isConverged()` returns `True`.
+	"""
+        
+ 	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
+        residual = self._getResidual(matrix, var, RHSvector)
 	if solver is None:
 	    from fipy.solvers.linearPCGSolver import LinearPCGSolver
 	    solver = LinearPCGSolver()
@@ -95,6 +109,15 @@ class Term:
             return False
 
     def __add__(self, other):
+        """
+        Add a `term` to another `term`, number or variable.
+
+           >>> Term(coeff = 1.) + 10.
+           (Term(coeff = 1.0) + ExplicitSourceTerm(coeff = 10.0))
+           >>> Term(coeff = 1.) + Term(coeff = 2.)
+           (Term(coeff = 1.0) + Term(coeff = 2.0))
+        """
+        
         if self._otherIsZero(other):
             return self
         else:
@@ -104,9 +127,25 @@ class Term:
     __radd__ = __add__
     
     def __neg__(self):
+        """
+         Negate a `Term`.
+
+           >>> -Term(coeff = 1.)
+           Term(coeff = -1.0)
+
+        """
         return self.__class__(coeff = -self.coeff)
         
     def __sub__(self, other):
+        """
+        Subtract a `Term` from a `Term`, number or variable.
+
+           >>> Term(coeff = 1.) - 10.
+           (Term(coeff = 1.0) - ExplicitSourceTerm(coeff = 10.0))
+           >>> Term(coeff = 1.) - Term(coeff = 2.)
+           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           
+        """        
         if self._otherIsZero(other):
             return self
         else:
@@ -114,6 +153,15 @@ class Term:
             return SubtractionTerm(term1 = self, term2 = other)
 
     def __rsub__(self, other):
+        """
+        Subtract a `Term`, number or variable from a `Term`.
+
+           >>> Term(coeff = 1.) - 10.
+           (Term(coeff = 1.0) - ExplicitSourceTerm(coeff = 10.0))
+           >>> Term(coeff = 1.) - Term(coeff = 2.)
+           (Term(coeff = 1.0) - Term(coeff = 2.0))
+
+        """        
         if self._otherIsZero(other):
             return self
         else:
@@ -121,6 +169,18 @@ class Term:
             return SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
+        """
+        This method allows `term`s to be equated in a natural way. Note that the
+        following does not return `False`.
+
+           >>> Term(coeff = 1.) == Term(coeff = 2.)
+           (Term(coeff = 1.0) == Term(coeff = 2.0))
+
+        it is equivalent to,
+
+           >>> Term(coeff = 1.) - Term(coeff = 2.)
+           (Term(coeff = 1.0) - Term(coeff = 2.0))
+        """
         if self._otherIsZero(other):
             return self
         else:
@@ -136,16 +196,29 @@ class Term:
                 ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
 
     def __repr__(self):
+        """
+        The representation of a `Term` object is given by,
+        
+           >>> print Term(123.456)
+           Term(coeff = 123.456)
+
+        """
         return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
 
-    def calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, mesh):
 	pass
 	
     def getGeomCoeff(self, mesh):
 	if self.geomCoeff is None:
-	    self.calcGeomCoeff(mesh)
+	    self._calcGeomCoeff(mesh)
 	return self.geomCoeff
 	
-    def getWeight(self, mesh):
+    def _getWeight(self, mesh):
 	pass
 	    
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

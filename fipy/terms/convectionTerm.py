@@ -40,21 +40,34 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class ConvectionTerm(FaceTerm):
-    def __init__(self, coeff, diffusionTerm = None):
+    def __init__(self, coeff = 1.0, diffusionTerm = None):
+        """
+        :Parameters:
+          - `coeff` : The term's coefficient value.
+          - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate its Peclet number.
+        """
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
 	FaceTerm.__init__(self, coeff = coeff)
 	
     def __neg__(self):
+        """
+        Negate the term.
+
+           >>> -ConvectionTerm(coeff = 1.0)
+           ConvectionTerm(coeff = -1.0)
+        """
         return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
 
-    def calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, mesh):
 	if not isinstance(self.coeff, VectorFaceVariable):
 	    self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
 
@@ -62,7 +75,7 @@ class ConvectionTerm(FaceTerm):
 	
 	self.geomCoeff = projectedCoefficients.sum(1)
 	
-    def getWeight(self, mesh):
+    def _getWeight(self, mesh):
 
         if self.stencil is None:
 
@@ -82,3 +95,10 @@ class ConvectionTerm(FaceTerm):
                                           'cell 2 offdiag' : -alpha}}
 
 	return self.stencil
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

@@ -46,6 +46,6 @@ class SourceTerm(CellTerm):
     def __init__(self, coeff = 0.):
 	CellTerm.__init__(self, coeff = coeff) 
 	
-    def calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()
 

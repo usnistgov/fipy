@@ -53,7 +53,7 @@ from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 import fipy.tools.array as array
 
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
-    def getGradient(self, normalGradient, gradUpwind):
+    def _getGradient(self, normalGradient, gradUpwind):
 	gradUpUpwind = -gradUpwind + 2 * normalGradient
 	
 	grad = Numeric.where(gradUpwind * gradUpUpwind < 0., 
@@ -64,8 +64,8 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 			
 	return grad
 	
-    def getOldAdjacentValues(self, oldArray, id1, id2, dt):
-	oldArray1, oldArray2 = ExplicitUpwindConvectionTerm.getOldAdjacentValues(self, oldArray, id1, id2, dt)
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
+	oldArray1, oldArray2 = ExplicitUpwindConvectionTerm._getOldAdjacentValues(self, oldArray, id1, id2, dt)
 	
 	mesh = oldArray.getMesh()
 
@@ -83,7 +83,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	self.CFL = interiorCFL / vol1
 ## 	print "CFL1:", Numeric.maximum.reduce(interiorCFL / vol1)
 	
-	oldArray1 += 0.5 * self.getGradient(array.dot(array.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
+	oldArray1 += 0.5 * self._getGradient(array.dot(array.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
 	    * (vol1 - interiorCFL) / interiorFaceAreas
 	    
 	vol2 = array.take(mesh.getCellVolumes(), id2)
@@ -93,7 +93,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 
 ## 	print "CFL2:", Numeric.maximum.reduce(interiorCFL / vol2)
 
-	oldArray2 += 0.5 * self.getGradient(array.dot(array.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
+	oldArray2 += 0.5 * self._getGradient(array.dot(array.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
 	    * (vol2 - interiorCFL) / interiorFaceAreas
 	
 ## 	print "volume:", array.take(mesh.getCellVolumes(), id1)
@@ -105,5 +105,5 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	
 	return oldArray1, oldArray2
 
-    def getFigureOfMerit(self):
+    def _getFigureOfMerit(self):
 	return min(0.2 / self.CFL)

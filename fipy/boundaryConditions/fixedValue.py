@@ -53,7 +53,7 @@ from fipy.tools import vector
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class FixedValue(BoundaryCondition):
-    def buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Set boundary equal to value.
 	
 	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 

@@ -71,21 +71,21 @@ Here are some simple test cases for this problem:
 Trivial test:
 
    >>> var = CellVariable(value = Numeric.zeros(3, 'd'), mesh = mesh)
-   >>> L, b = AdvectionTerm(0.).buildMatrix(var)
+   >>> L, b = AdvectionTerm(0.)._buildMatrix(var)
    >>> Numeric.allclose(b, Numeric.zeros(3, 'd'), atol = 1e-10)
    1
    
 Less trivial test:
 
    >>> var = CellVariable(value = Numeric.arange(3), mesh = mesh)
-   >>> L, b = AdvectionTerm(1.).buildMatrix(var)
+   >>> L, b = AdvectionTerm(1.)._buildMatrix(var)
    >>> Numeric.allclose(b, Numeric.array((0., -1., -1.)), atol = 1e-10)
    1
 
 Even less trivial
 
    >>> var = CellVariable(value = Numeric.arange(3), mesh = mesh)
-   >>> L, b = AdvectionTerm(-1.).buildMatrix(var)
+   >>> L, b = AdvectionTerm(-1.)._buildMatrix(var)
    >>> Numeric.allclose(b, Numeric.array((1., 1., 0.)), atol = 1e-10)
    1
 
@@ -94,7 +94,7 @@ standing on a harpsichord singing 'trivial test cases are here again')
 
    >>> vel = Numeric.array((-1, 2, -3))
    >>> var = CellVariable(value = Numeric.array((4,6,1)), mesh = mesh)
-   >>> L, b = AdvectionTerm(vel).buildMatrix(var)
+   >>> L, b = AdvectionTerm(vel)._buildMatrix(var)
    >>> Numeric.allclose(b, -vel * Numeric.array((2, Numeric.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
    1
 
@@ -104,7 +104,7 @@ Somewhat less trivial test case:
    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
    >>> vel = Numeric.array((3, -5, -6, -3))
    >>> var = CellVariable(value = Numeric.array((3 , 1, 6, 7)), mesh = mesh)
-   >>> L, b = AdvectionTerm(vel).buildMatrix(var)
+   >>> L, b = AdvectionTerm(vel)._buildMatrix(var)
    >>> answer = -vel * Numeric.array((2, Numeric.sqrt(2**2 + 6**2), 1, 0))
    >>> Numeric.allclose(b, answer, atol = 1e-10)
    1
@@ -124,7 +124,7 @@ class AdvectionTerm(Term):
         Term.__init__(self)
         self.geomCoeff = coeff
         
-    def buildMatrix(self, var, boundaryCondtions = (), dt = None):
+    def _buildMatrix(self, var, boundaryCondtions = (), dt = None):
 
         oldArray = var.getOld()
 

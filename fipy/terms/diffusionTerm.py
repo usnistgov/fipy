@@ -45,5 +45,5 @@ import Numeric
 from fipy.terms.faceTerm import FaceTerm
 
 class DiffusionTerm(FaceTerm):
-    def calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getFaceAreas() / mesh.getCellDistances()

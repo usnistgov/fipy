@@ -63,11 +63,11 @@ class BoundaryCondition:
 	self.faceIds = Numeric.array([face.getID() for face in self.faces])
 	self.adjacentCellIds = Numeric.array([face.getCellID() for face in self.faces])
 
-    def buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Return the effect of this boundary condition on the equation
 	solution matrices.
     
-	`buildMatrix()` is called by each `Term` of each `Equation`.
+	`_buildMatrix()` is called by each `Term` of each `Equation`.
 	
 	:Parameters:
 	    

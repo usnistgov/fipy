@@ -40,10 +40,24 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ExplicitDiffusionTerm(DiffusionTerm):
-    def getWeight(self, mesh):
+    r"""
+    The discretization for the `ExplicitDiffusionTerm` is given by
+
+    .. raw:: latex
+
+       $$ \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
+       \frac{\phi_A^\text{old}-\phi_P^\text{old}}{d_{AP}} A_f $$ where $\phi_A^\text{old}$ and
+       $\phi_P^\text{old}$ are the old values of the variable. The term is
+       added to the equation's RHS vector and makes no contribution to
+       the equation's matrix.
+    """
+    
+    def _getWeight(self, mesh):
 	return {
 	    'explicit':{
 		'cell 1 diag':    -1, 
@@ -52,7 +66,6 @@ class ExplicitDiffusionTerm(DiffusionTerm):
 		'cell 2 offdiag':  1
 	    }
 	}
-	
 	
 	
 

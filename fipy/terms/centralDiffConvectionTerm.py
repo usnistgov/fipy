@@ -35,10 +35,28 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
 class CentralDifferenceConvectionTerm(ConvectionTerm):
+    r"""
+
+    The discretization for the `CentralDifferenceConvectionTerm` is given by
+
+    .. raw:: latex
+    
+       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f $$
+
+       where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
+       $\alpha_f$ is calculated using the central differencing scheme.
+       For further details see Section 3.5 of the main \FiPy{}
+       guide~\cite{FiPyGuide}.
+
+    """
+    
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())

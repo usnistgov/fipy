@@ -73,7 +73,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 ## 	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
 
-    def buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
 	**b** is unchanged.
 	

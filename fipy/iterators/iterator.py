@@ -53,7 +53,7 @@ class ConvergenceError(ArithmeticError):
     def __str__(self):
 	s = '\n'
 	for equation in self.equations:
-	    s += str(equation) + ' has residual = ' + str(equation.getResidual()) + '\n'
+	    s += str(equation) + ' has residual = ' + str(equation._getResidual()) + '\n'
 	return s
 
 class Iterator:
@@ -75,7 +75,7 @@ class Iterator:
 	    equation.solve(dt)
 	converged = True
 	for equation in self.equations:
-	    converged = converged and equation.isConverged()
+	    converged = converged and equation._isConverged()
 	return converged
 	
 ## 	if converged:
@@ -84,7 +84,7 @@ class Iterator:
 ## 	    self.sweepCallback(self.equations)
 ## ## 		print '\n'
 ## ## 		for equation in self.equations:
-## ## 		    print str(equation) + ' has residual = ' + str(equation.getResidual())
+## ## 		    print str(equation) + ' has residual = ' + str(equation._getResidual())
 ## ## 		print '\n'
 ## ## 		equation.getVar().viewer.plot()
 ## 

@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.terms.term import Term
@@ -52,9 +54,9 @@ class CellTerm(Term):
 	Term.__init__(self, coeff = coeff)
         self.coeffVectors = None
 
-    def calcCoeffVectors(self, mesh):
+    def _calcCoeffVectors(self, mesh):
 	coeff = self.getGeomCoeff(mesh)
-	weight = self.getWeight(mesh)
+	weight = self._getWeight(mesh)
 	
 	self.coeffVectors = {
 	    'diagonal': coeff * weight['diagonal'],
@@ -63,9 +65,9 @@ class CellTerm(Term):
 	    'new value': coeff * weight['new value']
 	}
 
-    def getCoeffVectors(self, mesh):
+    def _getCoeffVectors(self, mesh):
 	if self.coeffVectors is None:
-	    self.calcCoeffVectors(mesh)
+	    self._calcCoeffVectors(mesh)
 	return self.coeffVectors
 	
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
@@ -96,12 +98,12 @@ class CellTerm(Term):
 
 	L.addAtDiagonal(updatePyArray)
 
-    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	N = len(var)
 	b = Numeric.zeros((N),'d')
 	L = SparseMatrix(size = N)
 	
-	coeffVectors = self.getCoeffVectors(var.getMesh())
+	coeffVectors = self._getCoeffVectors(var.getMesh())
 
 	inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 	

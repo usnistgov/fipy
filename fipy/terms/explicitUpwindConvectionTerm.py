@@ -34,13 +34,31 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 
 class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
-    def getWeight(self, mesh):
-	weight = UpwindConvectionTerm.getWeight(self, mesh)
+    r"""
+    The discretization for the `ExplicitUpwindConvectionTerm` is given by
+
+    .. raw:: latex
+    
+       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f $$
+
+       where $ \phi_f=\alpha_f \phi_P^\text{old} +(1-\alpha_f)\phi_A^\text{old} $ and
+       $\alpha_f$ is calculated using the upwind scheme.
+       For further details see Section 3.5 of the main \FiPy{}
+       guide~\cite{FiPyGuide}.
+
+    """
+
+    def _getWeight(self, mesh):
+        weight = UpwindConvectionTerm._getWeight(self, mesh)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']
 
-	return weight
+        return weight
+

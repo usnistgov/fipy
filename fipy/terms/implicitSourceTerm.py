@@ -40,15 +40,22 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.sourceTerm import SourceTerm
 
 class ImplicitSourceTerm(SourceTerm):
+    r"""
+
+    The `ImplicitSourceTerm` discretisation is given by
+
+    .. raw:: latex
+
+       $$ \int_V \phi S \,dV \simeq \phi_P S_P V_P $$ where $S$ is the
+    `coeff` value and in general should be negative to maintain
+    stability.       
     """
-    Source term that is linearly dependent on the solution variable. 
-    This term in general should be positive for stability. 
-    Added to the matrix diagonal.
-    """
-    def getWeight(self, mesh):
+    def _getWeight(self, mesh):
 	return {
 	    'b vector':   0, 
 	    'new value':  0, 

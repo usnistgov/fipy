@@ -53,7 +53,7 @@ class FaceTerm(Term):
 	Term.__init__(self, coeff = coeff)
         self.coeffMatrix = None
             
-    def getCoeffMatrix(self, mesh, weight):
+    def _getCoeffMatrix(self, mesh, weight):
 	coeff = self.getGeomCoeff(mesh)
         if self.coeffMatrix is None:
             self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
@@ -62,8 +62,8 @@ class FaceTerm(Term):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
-	coeffMatrix = self.getCoeffMatrix(mesh, weight)
+    def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
+	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 	
 	interiorFaceIDs = mesh.getInteriorFaceIDs()
 	
@@ -76,13 +76,13 @@ class FaceTerm(Term):
 	M = mesh.getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
-            LL, bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
+            LL, bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
             L += LL
             b += bb
 
-    def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
+    def _explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
 
-	coeffMatrix = self.getCoeffMatrix(mesh, weight)
+	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
         inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
 
@@ -91,7 +91,7 @@ class FaceTerm(Term):
 
         for boundaryCondition in boundaryConditions:
 
-            LL,bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
+            LL,bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
             if LL != 0:
 ##		b -= LL.takeDiagonal() * Numeric.array(oldArray)
                 b -= LL * Numeric.array(oldArray)
@@ -99,7 +99,7 @@ class FaceTerm(Term):
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
 
-	weight = self.getWeight(mesh)['explicit']
+	weight = self._getWeight(mesh)['explicit']
         coeff = Numeric.array(self.getGeomCoeff(mesh))
         Nfac = mesh.getNumberOfFaces()
 
@@ -139,7 +139,7 @@ class FaceTerm(Term):
 	    ni = len(mesh.getInteriorFaceIDs()))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, dt):
-        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2, dt)
+        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
 
 	interiorFaceIDs = mesh.getInteriorFaceIDs()
 
@@ -151,10 +151,10 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
 
-    def getOldAdjacentValues(self, oldArray, id1, id2, dt):
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
 	return array.take(oldArray, id1), array.take(oldArray, id2)
 
-    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	"""Implicit portion considers
 	"""
 
@@ -168,13 +168,13 @@ class FaceTerm(Term):
         b = Numeric.zeros((N),'d')
         L = SparseMatrix(size = N)
 
-	weight = self.getWeight(mesh)
+	weight = self._getWeight(mesh)
 
         if weight.has_key('implicit'):
-	    self.implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
+	    self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
 
         if weight.has_key('explicit'):
-            self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
+            self._explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
 
         return (L, b)
 

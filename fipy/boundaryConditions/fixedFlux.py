@@ -65,7 +65,7 @@ class FixedFlux(BoundaryCondition):
             areas[i] = self.faces[i].getArea()
 	self.contribution = self.value * areas
         
-    def buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Leave **L** unchanged and add gradient to **b**
 	
 	:Parameters:

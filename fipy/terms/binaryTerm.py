@@ -46,6 +46,7 @@ from fipy.terms.explicitSourceTerm import ExplicitSourceTerm
 
 class BinaryTerm(Term):
     def __init__(self, term1, term2):
+
 	if isinstance(term1, Term):
 	    if not isinstance(term2, Term):
 		term2 = ExplicitSourceTerm(coeff = term2)
@@ -59,13 +60,13 @@ class BinaryTerm(Term):
 	    
 	Term.__init__(self)
 	
-    def buildMatrix(self, var, boundaryConditions, dt):
-	matrix, RHSvector = self.term1.buildMatrix(var, boundaryConditions, dt = dt)
+    def _buildMatrix(self, var, boundaryConditions, dt):
+	matrix, RHSvector = self.term1._buildMatrix(var, boundaryConditions, dt = dt)
 	
-	termMatrix, termRHSvector = self.term2.buildMatrix(var, boundaryConditions, dt = dt)
+	termMatrix, termRHSvector = self.term2._buildMatrix(var, boundaryConditions, dt = dt)
 
-	matrix = self.operator()(matrix,termMatrix)
-	RHSvector = self.operator()(RHSvector,termRHSvector)
+	matrix = self._operator()(matrix,termMatrix)
+	RHSvector = self._operator()(RHSvector,termRHSvector)
 	
 	return (matrix, RHSvector)
 
@@ -73,14 +74,14 @@ class AdditionTerm(BinaryTerm):
     def __repr__(self):
         return "(%s + %s)" % (repr(self.term1), repr(self.term2))
         
-    def operator(self):
+    def _operator(self):
 	return lambda a,b: a + b
 	
 class SubtractionTerm(BinaryTerm):
     def __repr__(self):
         return "(%s - %s)" % (repr(self.term1), repr(self.term2))
         
-    def operator(self):
+    def _operator(self):
 	return lambda a,b: a - b
 
 class EquationTerm(SubtractionTerm):

@@ -271,8 +271,10 @@ class build_docs (Command):
 		
 	    if self.apis:
 		os.system("pdflatex reference")
+                os.system("bibtex reference")
 		os.system("makeindex reference")
 		os.system("pdflatex reference")
+                os.system("pdflatex reference")
 
 ##	    except:
 ##		pass

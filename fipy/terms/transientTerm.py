@@ -40,10 +40,24 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.cellTerm import CellTerm
 
 class TransientTerm(CellTerm):
-    def getWeight(self, mesh):
+    r"""
+    The `TransientTerm` is discretized in the following way
+    
+    .. raw:: latex
+
+       $$ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
+       \frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t} $$
+       where $\rho$ is the
+    `coeff` value.
+
+    """
+
+    def _getWeight(self, mesh):
 	return {
 	    'b vector':  0, 
 	    'new value': 1, 
@@ -51,7 +65,7 @@ class TransientTerm(CellTerm):
             'diagonal': 0
 	}
 	
-    def calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()
 	
 

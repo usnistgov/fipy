@@ -59,7 +59,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         self.derivative = {}
         BoundaryCondition.__init__(self,faces,value)
 
-    def buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged
         
         :Parameters:

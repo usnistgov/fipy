@@ -44,11 +44,12 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-## import nthOrderDiffusionTerm
-
 def _suite():
+
     return LateImportDocTestSuite(docTestModuleNames = (
             'nthOrderDiffusionTerm',
+            'term',
+            'convectionTerm'
         ), base = __name__)
 
 if __name__ == '__main__':

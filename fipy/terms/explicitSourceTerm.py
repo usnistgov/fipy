@@ -40,16 +40,24 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
 
 from fipy.terms.sourceTerm import SourceTerm
 
 class ExplicitSourceTerm(SourceTerm):
-    """
-    Source term that does not depend on the solution variable. 
-    Subtracted from the b vector.
+    r"""
+
+    The `ExplicitSourceTerm` discretisation is given by
+
+    .. raw:: latex
+
+       $$ \int_V S \,dV \simeq S_P V_P $$ where $S$ is the
+    `coeff` value. This source is added to the RHS vector and
+    does not contribute to the solution matrix.
+
     """
 	
-    def getWeight(self, mesh):
+    def _getWeight(self, mesh):
 	return {
 	    'b vector': -1, 
 	    'new value': 0, 
