@@ -510,19 +510,14 @@ class efficiency_test(Command):
                 thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid())
                 thread.start()
                 t1 = time.clock()
-
-                import imp
-                import fipy.tests.doctestPlus
                 
-                mod = imp.load_source("copy_script_module", case)
-                mod.run()
-                
-##                execfile(case)
-##                try:
-##                    execfile(case)
-##                except:
-##                    print 'Exception executing ' + case + '\n'
-##                    exceptionFlag = True
+                try:
+                    import imp
+                    mod = imp.load_source("copy_script_module", case)
+                    mod.run()
+                except:
+                    print 'Exception executing ' + case + '\n'
+                    exceptionFlag = True
                     
                 t2 = time.clock()
                 thread.join()
