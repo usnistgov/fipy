@@ -162,7 +162,7 @@ class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)
         pickledMesh = dump.write(self.mesh, 'pickledMesh')
-##        self.mesh = dump.read('pickledMesh')
+        self.mesh = dump.read('pickledMesh')
 
 def suite():
     theSuite = unittest.TestSuite()
