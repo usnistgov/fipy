@@ -58,6 +58,25 @@ where the free energy functional is given by,
 
     $$ f = \\frac{a^2}{2} \\phi^2 (1 - \\phi)^2 $$
 
+The equation is transformed into
+the following form,
+
+.. raw:: latex
+
+    $$ \\frac{\\partial \\phi}{\\partial t} = \\nabla \\cdot D \\frac{\\partial^2 f}{\\partial \\phi^2} \\nabla \\phi - \\nabla \\cdot D \\nabla \\epsilon^2 \\nabla^2 \\phi $$
+
+This form of the equation allows the `CahnHilliardEquation` to be
+constructed from a transient term, a diffusion term, and a fourth
+order diffusion term. Notice that the diffusion coefficient for the
+diffusion term does not always remain positive since,
+
+.. raw:: latex
+
+    $$ \\frac{\\partial^2 f}{\\partial \\phi^2} = a^2 (1 - 6 \\phi (1 - \\phi)) $$
+
+can be less than zero and thus unstable. The fourth order diffusion
+term acts to stabilize the problem.
+
 """
 __docformat__ = 'restructuredtext'
 
