@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 1/31/04 {12:05:15 AM} 
+ #                                last update: 2/23/04 {11:14:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -301,25 +301,25 @@ class Grid2D(Mesh):
 	return Mesh.getFaceAreas(self) * self.getScale()
 
     def getCellVolumes(self):
-        if self.getScale() == 1:
+        if self.getScale() is 1:
             return Mesh.getCellVolumes(self)
         else:
             return Mesh.getCellVolumes(self) * self.getScale() * self.getScale()
 
     def getCellCenters(self):
-        if self.getScale() == 1:
+        if self.getScale() is 1:
             return Mesh.getCellCenters(self)
         else:
             return Mesh.getCellCenters(self) * self.getScale()
 
     def getCellDistances(self):
-        if self.getScale() == 1:
+        if self.getScale() is 1:
             return Mesh.getCellDistances(self)
         else:
             return Mesh.getCellDistances(self) * self.getScale()
         
     def getFaceToCellDistances(self):
-        if self.getScale() == 1:
+        if self.getScale() is 1:
             return Mesh.getFaceToCellDistances(self)
         else:
             return Mesh.getFaceToCellDistances(self) * self.getScale()

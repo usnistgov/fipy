@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 2/17/04 {4:20:07 PM}
+ #                                last update: 3/1/04 {3:47:51 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -113,8 +113,7 @@ class FaceGradVariable(VectorFaceVariable):
             normals = self.mesh.getOrientedFaceNormals(),
             id1 = id1,
             id2 = id2,
-##            dAP = self.mesh.getCellDistances().getNumericValue(),
-            dAP = self.mesh.getCellDistances(),
+	    dAP = self.mesh.getCellDistances().getNumericValue(),
             var = self.var.getNumericValue(),
             val = self.value.value,
             ni = tangents1.shape[0],

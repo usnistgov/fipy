@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 2/19/04 {11:49:17 AM} 
+ #                                last update: 2/20/04 {5:32:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,6 @@ from __future__ import nested_scopes
 
 from fivol.boundaryConditions.fixedValue import FixedValue
 from fivol.boundaryConditions.fixedFlux import FixedFlux
-## from fivol.iterators.iterator import Iterator
 from fivol.solvers.linearCGSSolver import LinearCGSSolver
 from fivol.solvers.linearLUSolver import LinearLUSolver
 from fivol.solvers.linearGMRESSolver import LinearGMRESSolver

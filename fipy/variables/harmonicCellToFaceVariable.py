@@ -6,7 +6,7 @@
  # 
  #  FILE: "harmonicCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:15:10 AM} 
- #                                last update: 2/20/04 {5:08:09 PM} 
+ #                                last update: 2/20/04 {7:06:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,12 @@ class HarmonicCellToFaceVariable(CellToFaceVariable):
 	inline.runInlineLoop1("""
 	    double	cell1 = var(id1(i));
 	    double	cell2 = var(id2(i));
-	    val(i) = cell1 * cell2 / ((cell2 - cell1) * alpha(i) + cell1);
+	    double	tmp = ((cell2 - cell1) * alpha(i) + cell1);
+	    if (tmp != 0) {
+		val(i) = cell1 * cell2 / tmp;
+	    } else {
+		val(i) = tmp;
+	    }
 	""",
 	var = self.var.getNumericValue(),
 	val = self.value.value, 
