@@ -473,17 +473,18 @@ class efficiency_test(Command):
 
             def run(self):
                 maxMem = 0
-                for i in range(10):
+                
+                for i in range(5):
                     (f, fileName) = tempfile.mkstemp()
-                    os.system('ps -p %i -o vsz > ' + fileName % self.pid)
-                    ff = open('tmp.txt', 'r')
+                    os.system(('ps -p %i -o vsz > ' + fileName) % self.pid)
+                    ff = open(fileName, 'r')
                     ff.readline()
                     s = ff.readline()
                     ff.close()
-                    os.remove('tmp.txt')
-                    os.close(f)
+                    os.remove(fileName)
                     maxMem = max(maxMem, int(s))
                     time.sleep(self.runTimeEstimate / 10)
+
                 self.fileObject.write(str(maxMem))
                 self.fileObject.close()
 
@@ -493,25 +494,23 @@ class efficiency_test(Command):
             runTimeEstimate = 10.
             file.write('case:' + case + '\n')
             numberOfElements = self.minimumelements
-            while numberOfElements <= self.maximumelements:
+
+            exceptionFlag = False
+            
+            while numberOfElements <= self.maximumelements and not exceptionFlag:
                 sys.argv.append('numberOfElements=' + str(numberOfElements))
                 (f, fileName) = tempfile.mkstemp()
                 tmpFile = open(fileName, 'w')
                 thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid())
                 thread.start()
                 t1 = time.clock()
+
                 try:
                     execfile(case, globals())
                 except:
-                    thread.join()
-                    tmpFile = open(fileName,'r')
-                    memUsage = float(tmpFile.read())
-                    tmpfile.close()
-                    os.remove(fileName)
-                    os.close(f)
-                    file.write('Exception executing ' + case + ' with %i elements and maximum memory usage of %.0f bytes\n' % (numberOfElements, memUsage))
-                    break
-                
+                    file.write('Exception executing ' + case)
+                    exceptionFlag = True
+                    
                 t2 = time.clock()
                 thread.join()
                 tmpFile = open(fileName,'r')
