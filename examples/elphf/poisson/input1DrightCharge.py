@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/2/04 {4:02:13 PM} 
+ #                                last update: 5/5/04 {6:41:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ fields = input1Dpoisson.fields
 parameters = input1Dpoisson.parameters
 L = input1Dpoisson.L
 
-setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > L/2.)
+setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
 fields['interstitials'][0].setValue(0.)
 fields['interstitials'][0].setValue(1.,setCells)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:02:17 PM} 
+ #                                last update: 5/5/04 {6:41:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -73,7 +73,7 @@ class SymmetrySystem:
         def func(cell, Length = None):
             return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
 
-        bottomLeftCells = mesh.getCells(func,  Length = L)
+        bottomLeftCells = mesh.getCells(filter = func,  Length = L)
         bottomRightCells = ()
         topLeftCells = ()
         topRightCells = ()

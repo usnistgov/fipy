@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:06:56 PM} 
+ #                                last update: 5/5/04 {6:41:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -100,7 +100,7 @@ class PhaseSystem:
          hasOld = 0
          )
       
-      rightCells = mesh.getCells(self.func)
+      rightCells = mesh.getCells(filter = self.func)
 
       theta.setValue(self.thetaFuncValue,rightCells)
       

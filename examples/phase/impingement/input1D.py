@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:06:31 PM}
+ #                                last update: 5/5/04 {6:41:18 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,7 +56,7 @@ class System1D(ImpingementSystem):
             if cell.getCenter()[0] > Lx / 2.:
                 return 1
             
-        self.theta.setValue(0., self.mesh.getCells(getRightCells, Lx = Lx))
+        self.theta.setValue(0., self.mesh.getCells(filter = getRightCells, Lx = Lx))
         
 if __name__ == '__main__':
     system = System1D(nx = 40, ny = 1)

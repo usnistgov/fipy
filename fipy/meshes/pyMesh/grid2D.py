@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/5/04 {4:33:35 PM} 
+ #                                last update: 5/7/04 {10:36:43 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -211,8 +211,6 @@ class Grid2D(Mesh):
 	    face.setID(id)
 	    id += 1
 
-## ## 	self.refreshFaces(faces)
-	
 	return (faces, interiorFaces)
 	
     def createCells(self,rowFaces,colFaces):
@@ -235,9 +233,6 @@ class Grid2D(Mesh):
 			),
 		    ) 
 		    
-## ## 	self.calcCellVolumes(cells)
-## ##         self.calcCellToFaceOrientations(cells)
-
 	return cells
 
     def createInteriorFaces(self,faces):

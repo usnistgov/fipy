@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:06:49 PM} 
+ #                                last update: 5/6/04 {4:01:04 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,11 +46,13 @@
 import unittest
 import fipy.tests.testProgram
 import fipy.variables.testInterpolation
+import fipy.variables.testLaplacian
 import fipy.variables.testPickle
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(fipy.variables.testInterpolation.suite())
+    theSuite.addTest(fipy.variables.testLaplacian.suite())
     theSuite.addTest(fipy.variables.testPickle.suite())
     return theSuite
     

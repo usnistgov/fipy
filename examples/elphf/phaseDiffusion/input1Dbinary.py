@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:00:13 PM} 
+ #                                last update: 5/5/04 {6:41:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -89,7 +89,7 @@ parameters['substitutionals'] = (
 
 fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
-setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > L/2)
+setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
 fields['phase'].setValue(1.)
 fields['phase'].setValue(0.,setCells)
 

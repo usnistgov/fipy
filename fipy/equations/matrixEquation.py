@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 4/2/04 {4:05:49 PM} 
+ #                                last update: 5/17/04 {4:14:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,27 +42,19 @@
  ##
 
 import Numeric
-import spmatrix
 
+from fipy.sparseMatrix.sparseMatrix import SparseMatrix
 from fipy.equations.equation import Equation
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class MatrixEquation(Equation):
-    bandwidth = 5
-    
     def getVar(self):
         return self.var    
 	
-    def getL(self):
-	return self.L
-	
-    def getB(self):
-	return self.b
-
     def buildMatrix(self):
 	N = len(self.array)
-	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
+	self.matrix = SparseMatrix(size = N, bandwidth = self.getVar().getMesh().getMaxFacesPerCell())
 	self.b = Numeric.zeros((N),'d')
 ##	coeffScale = self.terms[0].getCoeffScale()
 ##        print self.__class__.__name__,coeffScale
@@ -70,14 +62,13 @@ class MatrixEquation(Equation):
 ##   gobeldegook
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
-	    term.buildMatrix(self.L, self.var.getOld().getValue(), self.b, self.terms[0].getCoeffScale() , varScale)
+	    term.buildMatrix(self.matrix, self.var.getOld().getValue(), self.b, self.terms[0].getCoeffScale(), varScale)
 	    
     def postSolve(self, array):
 	pass
 	
     def getResidual(self):
-	Lx = self.oldSweepArray.copy()
-	self.L.matvec(self.oldSweepArray,Lx)
+	Lx = self.matrix * self.oldSweepArray
 	
 	residual = Lx - self.b
 	
@@ -89,9 +80,8 @@ class MatrixEquation(Equation):
 	return abs(residual) + self.solutionTolerance * 1e-10
 	    
     def getResidual2(self):
-	Lx = self.oldSweepArray.copy()
-	self.L.matvec(self.oldSweepArray,Lx)
-	
+	Lx = self.matrix * self.oldSweepArray
+
 	# prevent divide-by-zero
 ## 	epsilon = 1e-60
 ## 	b = Numeric.where(self.b == 0, epsilon, self.b)
@@ -134,7 +124,7 @@ class MatrixEquation(Equation):
 	self.array = self.var.getNumericValue()
 	self.oldSweepArray = self.array.copy()
 	self.buildMatrix()
-	self.solver.solve(self.L,self.array,self.b)
+	self.solver.solve(self.matrix,self.array,self.b)
 	residual = self.getResidual()
 	self.postSolve(residual)
 	self.var[:] = self.array

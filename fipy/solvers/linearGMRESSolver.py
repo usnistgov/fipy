@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 4/2/04 {4:00:43 PM} 
+ #                                last update: 5/17/04 {4:31:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -58,7 +58,7 @@ class LinearGMRESSolver(Solver):
 ## 	print "b: ", b
 ## 	print "x: ", x
 	
-	A = L.to_csr()
+	A = L.getMatrix().to_csr()
         
         Assor=precon.jacobi(L)
         

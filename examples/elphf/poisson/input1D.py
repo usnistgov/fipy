@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/2/04 {4:46:57 PM} 
+ #                                last update: 4/2/04 {5:15:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

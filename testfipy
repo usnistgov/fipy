@@ -1,6 +1,4 @@
 #!/bin/sh
 
 ./test.py --inline
-./test.py --inline --pymesh
 ./test.py
-./test.py --pymesh

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 4/2/04 {4:00:19 PM} 
+ #                                last update: 5/6/04 {3:54:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,7 +38,7 @@
 
 import unittest
 import Numeric
-import MA
+
 import fipy.tools.array as array
 
 class TestBase(unittest.TestCase):
@@ -55,14 +55,13 @@ class TestBase(unittest.TestCase):
     def assertArrayEqual(self, first, second, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
-	
-	if not MA.allequal(first, second):
+	if not array.allequal(first, second):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
 	
     def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
-	if not MA.allclose(first, second, rtol = rtol, atol = atol):
+	if not array.allclose(first, second, rtol = rtol, atol = atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
 
     def getTestValue(self, cell):

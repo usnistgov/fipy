@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 4/2/04 {4:06:05 PM} 
+ #                                last update: 5/13/04 {10:20:23 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,12 +47,16 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
-    def __init__(self,weight):
+    def __init__(self,mesh, weight):
+	self.mesh = mesh
 	self.weight = weight
 	self.calcCoeffScale()
         
-    def buildMatrix(self,L,oldArray,b):
+    def buildMatrix(self, L, oldArray, b):
 	pass
+	
+    def getMesh(self):
+	return self.mesh
 	
     def getCoeffScale(self):
 ##        self.calcCoeffScale()

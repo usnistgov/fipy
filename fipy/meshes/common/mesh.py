@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/6/04 {11:28:45 AM} 
+ #                                last update: 5/6/04 {4:14:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -37,18 +37,18 @@
  # ###################################################################
  ##
 
-"""Generic mesh class defining implementation-agnostic behavior
+"""
+Generic mesh class defining implementation-agnostic behavior.
 
-    Meshes contain cells, faces, and vertices.
+Make changes to mesh here first, then implement specific implementations in
+pyMesh and numMesh.
+
+Meshes contain cells, faces, and vertices.
 """
 
-## import sets
+import sets
 
 import Numeric
-
-## from fipy.tools.dimensions.physicalField import PhysicalField
-
-
 
 class Mesh:
     def __init__(self):
@@ -64,7 +64,32 @@ class Mesh:
 	self.calcAdjacentCellIDs()
 	self.calcCellToCellIDs()
        
-    """get Topology methods"""
+    """calc topology methods"""
+	
+    def calcInteriorAndExteriorFaceIDs(self):
+	pass
+
+    def calcExteriorCellIDs(self):
+	pass
+	
+    def calcInteriorCellIDs(self):
+	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
+	
+    def calcInteriorAndExteriorCellIDs(self):
+	self.calcExteriorCellIDs()
+	self.calcInteriorCellIDs()
+
+    def calcCellToFaceOrientations(self):
+	pass
+
+    def calcAdjacentCellIDs(self):
+	pass
+
+    def calcCellToCellIDs(self):
+	pass
+
+    
+    """get topology methods"""
 
     def getCellFaceIDs(self):
         return self.cellFaceIDs
@@ -143,16 +168,50 @@ class Mesh:
        
     """calc geometry methods"""
     
+    def calcFaceAreas(self):
+	pass
+	
+    def calcFaceNormals(self):
+	pass
+	
+    def calcOrientedFaceNormals(self):
+	pass
+	
+    def calcCellVolumes(self):
+	pass
+	
+    def calcCellCenters(self):
+	pass
+	
+    def calcFaceToCellDistances(self):
+	pass
+
+    def calcCellDistances(self):
+	pass
+        
+    def calcAreaProjections(self):
+	pass
+
+    def calcOrientedAreaProjections(self):
+	pass
+
+    def calcFaceTangents(self):
+	pass
+
+    def calcFaceToCellDistanceRatio(self):
+	pass
+
     def calcFaceAspectRatios(self):
 	self.faceAspectRatios = self.getFaceAreas() / self.getCellDistances()
 
+    def calcCellToCellDistances(self):
+	pass
+
+    
     """get geometry methods"""
         
     def getFaceAreas(self):
         return self.faceAreas
-
-##     def getFaceCenters(self):
-##         return self.faceCenters
 
     def getFaceNormals(self):
         return self.faceNormals

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 11/21/03 {1:38:57 PM} 
+ #                                last update: 5/10/04 {10:43:01 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,5 @@
  # ###################################################################
  ##
 
-import sys
-
-if '--pymesh' in sys.argv[1:]:
-    from pyMesh.grid2D import Grid2D
-else:
-    from numMesh.grid2D import Grid2D
+from numMesh.grid2D import Grid2D
 

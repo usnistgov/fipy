@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSuite.py"
  #                                    created: 2/12/04 {11:02:02 AM} 
- #                                last update: 2/13/04 {10:57:38 AM} 
+ #                                last update: 5/10/04 {10:44:56 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,7 @@ class TestProgram(unittest.TestProgram):
 ##        numMesh = 0
 	try:
 	    options, args = getopt.getopt(argv[1:], 'hHvq',
-					  ['help','verbose','quiet','inline','pymesh'])
+					  ['help','verbose','quiet','inline'])
 	    for opt, value in options:
 		if opt in ('-h','-H','--help'):
 		    self.usageExit()

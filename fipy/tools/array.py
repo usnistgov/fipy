@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 4/2/04 {4:06:02 PM} 
+ #                                last update: 5/6/04 {3:52:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -192,3 +192,18 @@ def _sqrtDotIn(a1, a2):
     """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
     return result
 
+def allequal(first, second):
+    if _isPhysical(first):
+	return first == second
+    elif _isPhysical(second):
+	return second == first
+    else:
+	return MA.allequal(first, second)
+	    
+def allclose(first, second, atol, rtol):
+    if _isPhysical(first):
+	return first.allclose(other = second, atol = atol, rtol = rtol)
+    elif _isPhysical(second):
+	return second.allclose(other = first, atol = atol, rtol = rtol)
+    else:
+	return MA.allclose(first, second, atol = atol, rtol = rtol)

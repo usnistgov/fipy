@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/04 {7:19:57 PM} 
+ #                                last update: 5/17/04 {4:16:29 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,8 +50,7 @@ from fipy.tools.inline import inline
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
-	self.mesh = mesh
-	Term.__init__(self,weight)
+	Term.__init__(self, mesh = mesh, weight = weight)
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 
@@ -75,15 +74,15 @@ class FaceTerm(Term):
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
 
-        L.update_add_pyarray_at_indices(fipy.tools.array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
-        L.update_add_pyarray_at_indices(fipy.tools.array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
-        L.update_add_pyarray_at_indices(fipy.tools.array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
-        L.update_add_pyarray_at_indices(fipy.tools.array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
-
+	L.addAt(fipy.tools.array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
+	L.addAt(fipy.tools.array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
+	L.addAt(fipy.tools.array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
+	L.addAt(fipy.tools.array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
+	
         for boundaryCondition in self.boundaryConditions:
             LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
                 
-            L.update_add_pyarray_at_indices(LL / coeffScale,ids,ids)
+	    L.addAt(LL / coeffScale,ids,ids)
             ## WARNING: the next line will not work if one cell has two faces on the same
             ## boundary. Numeric.put will not add both values to the b array but over write
             ## the first with the second. We really need a putAdd function rather than put.
@@ -143,12 +142,10 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
 
                  
-    def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
+    def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
 	"""Implicit portion considers
 	"""
 
-
-	
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	id1 = Numeric.take(id1, self.mesh.getInteriorFaceIDs())
 	id2 = Numeric.take(id2, self.mesh.getInteriorFaceIDs())

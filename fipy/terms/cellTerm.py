@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 4/2/04 {4:00:21 PM} 
+ #                                last update: 5/17/04 {4:35:32 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,8 +48,7 @@ from fipy.tools.inline import inline
 
 class CellTerm(Term):
     def __init__(self,weight,mesh):
-	Term.__init__(self,weight)
-        self.mesh = mesh
+	Term.__init__(self, mesh = mesh, weight = weight)
 	
 	self.oldCoeff = self.coeff * weight['old value']
 	self.bCoeff = self.coeff * weight['b vector']
@@ -61,7 +60,8 @@ class CellTerm(Term):
         
 	b += oldArray * self.oldCoeff[:] / (coeffScale * varScale)
 	b += Numeric.ones([N]) * self.bCoeff[:] / (coeffScale)
-	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
+## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
+	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 
     def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
         coeffScale = coeffScale * varScale
@@ -97,6 +97,6 @@ class CellTerm(Term):
             updatePyArray = self.updatePyArray[:],
             ni = len(self.updatePyArray[:]))
         
-        L.update_add_pyarray(self.updatePyArray)
+	L.addAtDiagonal(self.updatePyArray)
 
         

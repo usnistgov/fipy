@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/2/04 {4:00:03 PM} 
+ #                                last update: 5/6/04 {3:52:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -493,6 +493,10 @@ class PhysicalField:
 	    
     def sum(self, index = 0):
 	return self.__class__(value = Numeric.sum(self.value, index), unit = self.unit)
+	
+    def allclose(self, other, atol, rtol):
+	other = self._inMyUnits(other)
+	return Numeric.allclose(self.value, other.value, atol = atol, rtol = rtol)
 
 class PhysicalUnit:
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/30/04 {3:40:42 PM} 
+ #                                last update: 5/17/04 {4:22:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,98 +44,123 @@
 
 import Numeric
 
+import spmatrix
 
 class SparseMatrix:
     
     """
     SparseMatrix class wrapper for pysparse.
-    Allowing basic python operations __add__, __sub__ etx
+    SparseMatrix is always NxN
+    Allowing basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way
     An example subcalls will be the identity matrix or the empty matrix.
     """
 
-    def __init__(self, size = None, vector = None, id1 = None, id2 = None, bandWidth = None, spmatrix = None):
-        if spmatrix != None:
-            self.matrix = spmatrix
-        else
-            self.matrix = spmatrix.ll_mat(size[0], size[1], size[0] * bandWidth)
-            if vector != None:
-                self.put(vector, id1, id2)
+    def __init__(self, size = None, bandwidth = 0, matrix = None):
+        if matrix != None:
+            self.matrix = matrix
+        else:
+            self.matrix = spmatrix.ll_mat(size, size, size * bandwidth)
                 
-    def getMatrix():
+    def getMatrix(self):
         return self.matrix
     
     def copy(self):
-	return self.matrix.copy()
+	return SparseMatrix(matrix = self.matrix.copy())
 	
     def __getitem__(self, index): 
 	return self.matrix[index]
 	
-    def __str__(self):
-	return self.matrix.__str__()
+##     def __str__(self):
+## 	return self.matrix.__str__()
 	    
     def __repr__(self):
-	return self.matrix.__repr__()
+	return repr(self.getNumeric())
+## 	return self.matrix.__repr__()
 	
     def __setitem__(self, index, value):
 	self.matrix[index] = value
 	
     def __add__(self, other):
-        return self.matrix.copy().shift(1., other.getMatrix())
+	L = self.matrix.copy()
+	L.shift(1, other.getMatrix())
+	return SparseMatrix(matrix = L)
 
     def __sub__(self, other):
-	return self.matrix.copy().shift(-1., other.getMatrix())
+	L = self.matrix.copy()
+	L.shift(-1, other.getMatrix())
+	return SparseMatrix(matrix = L)
 
-    def __rsub__(self, other):
-        return other.matrix.copy().shift(-1., self.matrix)
-	    
     def __mul__(self, other):
         if type(other) == type(self):
-            return spmatrix.matrixMultiply(self.matrix, other.getMatrix())
-        elif type(1) == type(other):
+            return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other.getMatrix()))
+        elif type(1) == type(other) or type(1.) == type(other):
+	    N = self.matrix.shape[0]
+	    L = spmatrix.ll_mat(N, N)
+	    L.put(other * Numeric.ones(N))
+	    return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
+	elif type(Numeric.ones(1)) == type(other):
+	    y = other.copy()
+	    self.matrix.matvec(other, y)
+	    return y
+	else:
+ 	    raise TypeError
             
+    def __rmul__(self, other):
+	if type(Numeric.ones(1)) == type(other):
+	    y = other.copy()
+	    self.matrix.matvec_transp(other, y)
+	    return y
+	else:
+	    return self * other
+	
     def __neg__(self):
-	return -self.matrix
+	return self * -1
 	
     def __pos__(self):
-	return +self.matrix
+	return self
 	
-    def __eq__(self,other):
-	return self.matrix.__eq__(other.getMatrix())
+##     def __eq__(self,other):
+## 	return self.matrix.__eq__(other.getMatrix())
 
-    def shape(self):
+    def getShape(self):
         return self.matrix.shape
 	
     def transpose(self):
-        return self.matrix.shape()
+        return self.matrix.fuckEverythingUp()
 
     def put(self, vector, id1, id2):
-        if id2 == None:
-            id2 = id1
-        for i in range(len(vector)):
-            self.matrix[id1[i], id2[i]] = vector[i]
+	self.matrix.put(vector, id1, id2)
 
-    def take(self, id1, id2 = None):
-        if id2 == None:
-            id2 = id1
-        vector = Numeric.zeros(len(id1), 'd')
-        for i in range(len(id1)):
-            vector[i] = self.matrix[id1[i], id2[i]]            
+    def putDiagonal(self, vector):
+	ids = Numeric.arange(len(vector))
+	self.put(vector, ids, ids)
+
+    def take(self, id1, id2):
+	vector = Numeric.zeros(veclen, 'd')
+	self.matrix.take(vector, id1, id2)
         return vector
 
-    def putAdd(self, vector, id1, id2):
-        tmp = SparseMatrix(matrix = 0. * self.copy())
-        tmp.put(vector, id1, id2)
-        return self + tmp
-            
+    def takeDiagonal(self):
+	ids = Numeric.arange(len(vector))
+	return self.take(ids, ids)
+
+    def addAt(self, vector, id1, id2):
+	self.matrix.update_add_at(vector, id1, id2)
+
+    def addAtDiagonal(self, vector):
+	ids = Numeric.arange(len(vector))
+	self.addAt(vector, ids, ids)
+	
     def getNumeric(self):
-        numMatrix = Numeric.zeros(self.getShape(), 'd')
-        for i in self.shape[0]:
-            for j in self.shape[1]:
-                numMatrix[i, j] = self.matrix[i, j]
+	shape = self.getShape()
+	indices = Numeric.indices(shape)
+	numMatrix = self.take(indices[0].flat, indices[1].flat)
+	
+	return Numeric.reshape(numMatrix, shape)
 
-        return numMatrix
-
-    def getDiagonal(self):
-        numMatrix = Numeric.zeros(self.getShape()[0], 'd')
-        for i in range(self.getShape[0])
+class SparseIdentityMatrix(SparseMatrix):
+    def __init__(self, size):
+	SparseMatrix.__init__(self, size = size, bandwidth = 1)
+	self.put(Numeric.ones(size))
+    

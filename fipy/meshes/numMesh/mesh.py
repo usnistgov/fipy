@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/6/04 {11:26:05 AM} 
+ #                                last update: 5/13/04 {1:37:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -77,13 +77,6 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.cellFaceIDs = MA.array(cellFaceIDs)
 
 	fipy.meshes.common.mesh.Mesh.__init__(self)
-## ##         self.updateMesh()
-## ##         self.calcTopology()
-## ##         self.calcGeometry()
-
-## ##     def updateMesh(self):
-## ##         self.calcTopology()
-## ##         self.calcGeometry()
 	
     """Topology methods"""
 
@@ -95,13 +88,6 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	
 	fipy.meshes.common.mesh.Mesh.calcTopology(self)
 
-## ##         self.calcInteriorAndExteriorFaceIDs()
-## ## 	self.calcInteriorAndExteriorCellIDs()
-## ##         self.calcCellToFaceOrientations()
-## ##         self.calcAdjacentCellIDs()
-## ##         self.calcCellToCellIDs()
-## ## ##        self.calcDim()
-        
     """calc Topology methods"""
 
     def calcFaceCellIDs(self):
@@ -135,8 +121,6 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             self.exteriorCellIDs = Numeric.nonzero(tmp)            
             self.interiorCellIDs = Numeric.nonzero(Numeric.logical_not(tmp))
             
-
-            
     def calcCellToFaceOrientations(self):
 	tmp = MAtake(self.faceCellIDs[:,0], self.cellFaceIDs)
 	self.cellToFaceOrientations = (tmp == MA.indices(tmp.shape)[0]) * 2 - 1
@@ -150,41 +134,14 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 
     """get Topology methods"""
 
-## ##     def getCellFaceIDs(self):
-## ##         return self.cellFaceIDs
-
-## ##     def getExteriorFaceIDs(self):
-## ## 	return self.exteriorFaceIDs
-	
     def getExteriorFaces(self):
 	return [Face(self, id) for id in self.exteriorFaceIDs]
 
-## ##     def getInteriorFaceIDs(self):
-## ## 	return self.interiorFaceIDs
-	    
     def getInteriorFaces(self):
 	return [Face(self, id) for id in self.interiorFaceIDs]
 	
-## ##     def getExteriorCellIDs(self):
-## ## 	return self.exteriorCellIDs
-
-## ##     def getInteriorCellIDs(self):
-## ## 	return self.interiorCellIDs
-
     def getFaceCellIDs(self):
         return self.faceCellIDs
-
-## ##     def getCellFaceOrientations(self):
-## ##         return self.cellToFaceOrientations
-
-## ##     def getNumberOfCells(self):
-## ## 	return len(self.cellFaceIDs)
-	
-## ##     def getAdjacentCellIDs(self):
-## ##         return self.adjacentCellIDs
-
-## ##     def getDim(self):
-## ##         return self.dim
 
     def getFaces(self):
         return [Face(self, id) for id in Numeric.arange(self.numberOfFaces)]
@@ -194,41 +151,14 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	    ids = range(self.numberOfCells) 
 	return [Cell(self, id) for id in ids]
 	
-## ##     def getCells(self, ids = None, func = None, **args):
-## ## 	"""Return Cells of Mesh."""
-## ## 	if ids is None:
-## ## 	    ids = range(self.numberOfCells) 
-## ## 	return common.Mesh.getCells(self, cells = [Cell(self, id) for id in ids], func = func, **args)
-
     def getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
-
-## ##     def getNumberOfFaces(self):
-## ##         return self.numberOfFaces
-
-## ##     def getCellToCellIDs(self):
-## ##         return self.cellToCellIDs
 
     """Geometry methods"""
 
     def calcGeometry(self):
 	self.calcFaceCenters()
 	fipy.meshes.common.mesh.Mesh.calcGeometry(self)
-
-## ##     def calcGeometry(self):
-## ## 	self.calcFaceCenters()
-## ##         self.calcFaceAreas()
-## ##         self.calcFaceNormals()
-## ## 	self.calcCellVolumes()
-## ## 	self.calcCellCenters()
-## ## 	self.calcFaceToCellDistances()
-## ## 	self.calcCellDistances()        
-## ##         self.calcAreaProjections()
-## ##         self.calcFaceTangents()
-## ##         self.calcFaceToCellDistanceRatio()
-## ## 	self.calcFaceAspectRatios()
-## ##         self.calcCellToCellDistances()
-## ## ##        self.setScale()
 
     """calc geometry methods"""
 
@@ -310,60 +240,14 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         tmp = fipy.tools.array.crossProd(self.faceTangents1, self.faceNormals)
         self.faceTangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
         
-## ##     def calcFaceAspectRatios(self):
-## ## 	self.faceAspectRatios = self.getFaceAreas() / self.getCellDistances()
-        
     def calcCellToCellDistances(self):
         self.cellToCellDistances = MAtake(self.getCellDistances(), self.getCellFaceIDs())
 
     """get geometry methods"""
 
-        
-## ##     def getFaceAreas(self):
-## ##         return self.faceAreas
-
     def getFaceCenters(self):
         return self.faceCenters
 
-## ##     def getFaceNormals(self):
-## ##         return self.faceNormals
-	
-## ##     def getCellVolumes(self):
-## ## 	return self.cellVolumes
-
-## ##     def getCellCenters(self):
-## ## 	return self.cellCenters
-
-## ##     def getFaceToCellDistances(self):
-## ##         return self.faceToCellDistances
-
-## ##     def getCellDistances(self):
-## ##         return self.cellDistances
-
-## ##     def getFaceToCellDistanceRatio(self):
-## ##         return self.faceToCellDistanceRatio
-
-## ##     def getOrientedAreaProjections(self):
-## ##         return self.areaProjections
-## ## 
-## ##     def getAreaProjections(self):
-## ##         return self.areaProjections
-
-## ##     def getOrientedFaceNormals(self):
-## ##         return self.faceNormals
-
-## ##     def getFaceTangents1(self):
-## ##         return self.tangents1
-
-## ##     def getFaceTangents2(self):
-## ##         return self.tangents2
-	
-## ##     def getFaceAspectRatios(self):
-## ## 	return self.faceAspectRatios
-## ## 
-## ##     def getCellToCellDistances(self):
-## ##         return self.cellToCellDistances
-    
     """scaling"""
 
 ## ##     def setScale(self, value = 1.):
@@ -378,19 +262,6 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 ##        self.faceToCellDistances = self.faceToCellDistances * self.scale
 ##        self.cellDistances = self.cellDistances * self.scale
 ##        self.areaProjections = self.areaProjections * self.scale**2
-
-    """point to cell distances"""
-    
-## ##     def getPointToCellDistances(self, point):
-## ## 	import fipy.tools.array
-## ## 	tmp = self.getCellCenters() - Numeric.array(point)
-## ## 	return fipy.tools.array.sqrtDot(tmp, tmp)
-
-## ##     def getNearestCell(self, point):
-## ##         d = self.getPointToCellDistances(point)
-## ##         i = Numeric.argsort(d)
-## ##         return Cell(self, i[0])
-    
 
 ## pickling
 

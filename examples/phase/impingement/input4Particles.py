@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:06:17 PM}
+ #                                last update: 5/5/04 {6:40:43 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,7 +64,7 @@ class System4Particles(ImpingementSystem):
         for i in range(4):
             aa = circleCenters[i][0]
             bb = circleCenters[i][1]
-            cells = self.mesh.getCells(circle, a = aa, b = bb, r = Lx / 2)
+            cells = self.mesh.getCells(filter = circle, a = aa, b = bb, r = Lx / 2)
             self.phase.setValue(1., cells)
             self.theta.setValue(thetaValue[i],cells)
 
