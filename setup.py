@@ -209,6 +209,7 @@ class build_docs (Command):
 			   'examples/phase/',
 			   'examples/levelSet/',
 			   'examples/elphf/',
+                           'examples/cahnHilliard/'
 			   ]:
 		self._epydocFiles(module = module, dir = dir, type = 'latex')
 
@@ -333,6 +334,7 @@ setup(	name = "FiPy",
 				'fipy.models.phase.phase',
 				'fipy.models.phase.temperature',
 				'fipy.models.phase.theta',
+                            'fipy.models.cahnHilliard',
 			'fipy.solvers',
 			'fipy.terms',
 			'fipy.tests',
