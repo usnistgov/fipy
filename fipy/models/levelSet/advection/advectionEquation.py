@@ -60,6 +60,7 @@ University Press, 1999. Testing for the advection equation is in
 `examples.levelSet.advection`
 
 """
+__docformat__ = 'restructuredtext'
 
 from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
@@ -68,13 +69,13 @@ from advectionTerm import AdvectionTerm
 
 class AdvectionEquation(MatrixEquation):
 
-    def __init__(self, var = None, advectionCoeff = None, solver = None):
+    def __init__(self, var = None, advectionCoeff = None, solver = None, advectionTerm = AdvectionTerm):
         
         mesh = var.getMesh()
 
         terms = (
             TransientTerm(1., mesh),
-            AdvectionTerm(advectionCoeff, mesh))
+            advectionTerm(advectionCoeff, mesh))
 	
 	MatrixEquation.__init__(
             self,
