@@ -43,15 +43,23 @@ from fivol.tools import array
 from fivol.inline import inline
 
 class FaceGradVariable(VectorFaceVariable):
-    def __init__(self, var, mod = None):
+    def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
-	if mod is None:
-	    self.mod = lambda argument: argument
-	else:
-	    self.mod = mod
 	    
-    def _calcValuePy(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
+##    def _calcValue(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
+    def _calcValue(self):
+    
+        dAP = self.mesh.getCellDistances()
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
+	
+	normals = self.mesh.getOrientedFaceNormals()
+	
+	tangents1 = self.mesh.getFaceTangents1()
+	tangents2 = self.mesh.getFaceTangents2()
+	cellGrad = self.var.getGrad().getNumericValue()
+        
 	grad1 = array.take(cellGrad,id1)
 	grad2 = array.take(cellGrad,id2)
 	t1grad1 = array.sum(tangents1*grad1,1)
@@ -68,7 +76,18 @@ class FaceGradVariable(VectorFaceVariable):
 
 	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 
-    def _calcValueIn(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
+    def _calcValueInline(self):
+        
+        dAP = self.mesh.getCellDistances()
+	id1, id2 = self.mesh.getAdjacentCellIDs()
+	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
+	
+	normals = self.mesh.getOrientedFaceNormals()
+	
+	tangents1 = self.mesh.getFaceTangents1()
+	tangents2 = self.mesh.getFaceTangents2()
+	cellGrad = self.var.getGrad().getNumericValue()
+        
 	inline.runInlineLoop1("""
 	int j;
 	double t1grad1, t1grad2, t2grad1, t2grad2;
@@ -92,18 +111,21 @@ class FaceGradVariable(VectorFaceVariable):
 	id1 = id1, id2 = id2,
 	val = self.value.value,
 	ni = tangents1.shape[0], nj = tangents1.shape[1])
-	
+    
+    def mod(self, argument):
+        return argument
+    
     def calcValue(self):        
-	dAP = self.mesh.getCellDistances()
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
+##	dAP = self.mesh.getCellDistances()
+##	id1, id2 = self.mesh.getAdjacentCellIDs()
+##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
 	
-	normals = self.mesh.getOrientedFaceNormals()
+##	normals = self.mesh.getOrientedFaceNormals()
 	
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.var.getGrad().getNumericValue()
-	inline.optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
+##	tangents1 = self.mesh.getFaceTangents1()
+##	tangents2 = self.mesh.getFaceTangents2()
+##	cellGrad = self.var.getGrad().getNumericValue()
+	inline.optionalInline(self._calcValueInline, self._calcValue)
 	
 	
 ##    def calcValue(self):

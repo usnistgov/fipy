@@ -42,7 +42,7 @@ from fivol.variables.cellVariable import CellVariable
 from fivol.variables.cellGradVariable import CellGradVariable
 from fivol.variables.cellToFaceVariable import CellToFaceVariable
 from fivol.variables.faceGradVariable import FaceGradVariable
-from fivol.variables.faceGradVariable import FaceGradVariable
+from fivol.examples.phase.theta.modFaceGradVariable import ModFaceGradVariable
 
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
@@ -65,7 +65,7 @@ class ModularVariable(CellVariable):
 
     def getFaceGrad(self):
 	if self.faceGrad is None:
-	    self.faceGrad = FaceGradVariable(self, self.mod)
+	    self.faceGrad = ModFaceGradVariable(self, self.mod)
 
 	return self.faceGrad
 

@@ -41,6 +41,7 @@ import Numeric
 from fivol.variables.vectorCellVariable import VectorCellVariable
 from fivol.tools import array
 from fivol.inline import inline
+from fivol.variables.faceGradContributionsVariable import FaceGradContributions
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -51,7 +52,8 @@ class CellGradVariable(VectorCellVariable):
 ##        print "mod:",self.var.mod(Numeric.pi+1)
 ##        print 'getFaceValue:',self.var.getFaceValue()[:]
 ##        raw_input()
-	self.faceGradientContributions = self.mesh.getAreaProjections() * self.var.getFaceValue().transpose()
+##	self.faceGradientContributions = self.mesh.getAreaProjections() * self.var.getFaceValue().transpose()
+        self.faceGradientContributions = FaceGradContributions(self.var)
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
 	inline.runInlineLoop2("""
@@ -79,7 +81,7 @@ class CellGradVariable(VectorCellVariable):
 
 	grad = (orientations*contributions).sum(1)
 	
-	grad = grad/volumes[:,Numeric.NewAxis]
+	grad = grad / volumes[:,Numeric.NewAxis]
 
 	self.value = grad
 	    

@@ -90,14 +90,28 @@ class LevelSetEquation(Equation):
             zeroCells += zeroCell
         return zeroCells
 
+    def getGrad(self, cell1, cell2):
+        dAP = fivol.tools.vector.sqrtdot(cell1.getCenter() - cell2.getCenter())
+        return abs(self.varOld.getValue(cell1) - sellf.varOld.getValue(cell2)) / dAP 
+
     def setZeroCellValues(self, zeroCells):
-        varOld = var.copy()
+        self.varOld = self.var.copy()
+        cellDistances = sel.mesh.getCellDistances()
         for cell in zeroCells:
-            minCell1 = cell.getMinimumCell(cell.getAdjacentCells())
-            minCell2 = cell.getMinimumCell(cell.getAdjacentCells()-minCell1)
+            neighbours = ()
+            for neighbourCell in cell1.getBoundingCells():
+                if neighbourCell in zeroCells:
+                    neighbourCells += (neighbourCell,)
+            
             value = varOld.getValue(cell)
-            gradx,grady = cell.getGradient(minCell1, minCell2)
-            value = value / Numeric.sqrt(gradx * gradx, grady * grady)
+
+            if len(neighbours) == 1:
+                value /= self.getGrad(cell, neighbourCell[0])
+            elif len(neighbours) == 2:
+                value /= sqrt(self.getGrad(cell, neighbourCell[0])**2 - self.getGrad(cell, neighbourCell[1])**2)
+            else:
+                raise Exception("Error")
+
             var.setValue(value, cell)
 
 ##    def getBoundingCells(self, zeroCells):
@@ -110,12 +124,12 @@ class LevelSetEquation(Equation):
 ##                        boundingCell = (cell,)
 ##            boundingCells += boundingCell
 
-    def getMinimumCell(cells, var):
-        minVal = var(cells[0].getId())
-        for cell in cells[1:]:
-            minVal = min(minVal, var(cell.getId()))
+##    def getMinimumCell(cells, var):
+##        minVal = var(cells[0].getId())
+##        for cell in cells[1:]:
+##            minVal = min(minVal, var(cell.getId()))
 
-        return minVal
+##        return minVal
 
 
 

@@ -58,6 +58,6 @@ class CellToFaceVariable(FaceVariable):
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	cell1 = fivol.tools.array.take(self.var,id1)
 	cell2 = fivol.tools.array.take(self.var,id2)
-	
+
 	self.value = self.mod(cell1 - cell2) * alpha + cell2
 
