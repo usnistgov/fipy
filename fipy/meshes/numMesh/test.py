@@ -52,7 +52,7 @@ import fipy.meshes.numMesh.testMesh3D
 import fipy.meshes.numMesh.testTri2D
 import fipy.meshes.numMesh.mesh
 import fipy.meshes.numMesh.gmshImport
-
+import fipy.meshes.numMesh.adaptiveMesh
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(fipy.meshes.numMesh.testGrid.suite())
@@ -61,6 +61,7 @@ def suite():
     theSuite.addTest(fipy.meshes.numMesh.testTri2D.suite())
     theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.mesh))
     theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.gmshImport))
+    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.adaptiveMesh))
     return theSuite
     
 if __name__ == '__main__':
