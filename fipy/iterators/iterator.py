@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/23/04 {5:45:43 PM} 
+ #                                last update: 7/28/04 {6:04:11 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,6 +43,7 @@
 
 """Generic equation iterator
 """
+__docformat__ = 'restructuredtext'
 
 import sys
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {1:45:57 PM} 
+ #                                last update: 7/28/04 {6:04:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,6 +43,7 @@
 
 """Face within a Mesh
 """
+__docformat__ = 'restructuredtext'
 
 class Face:
     """Face within a Mesh

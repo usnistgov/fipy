@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/25/04 {8:03:39 PM}
+ #                                last update: 7/28/04 {5:44:55 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,7 @@
 """
 
 In this example we solve the same set of equations as in
-`examples/phase/impingemnet/mesh40x1/input.py` with different initial
+`examples/phase/impingement/mesh40x1/input.py` with different initial
 conditions and mesh size. The initial conditions are given by
 
 .. raw:: latex

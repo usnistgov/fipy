@@ -6,7 +6,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 3/5/04 {2:36:24 PM} 
+ #                                last update: 7/28/04 {6:04:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,6 +43,7 @@
 
 """Cell within a mesh
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

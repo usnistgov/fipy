@@ -4,7 +4,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 6/15/04 {11:50:51 AM} 
+ #                                last update: 7/28/04 {6:18:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,6 +38,8 @@
  #  2004-06-09 JEG 1.0 original
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

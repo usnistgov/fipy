@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:02:27 PM}
+ #                                last update: 7/28/04 {6:06:56 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -81,6 +81,7 @@ data and compares it with the `theta` variable.
 
 
 """
+__docformat__ = 'restructuredtext'
 
 ##from __future__ import nested_scopes
 

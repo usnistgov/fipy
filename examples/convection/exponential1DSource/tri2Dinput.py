@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/23/04 {5:02:24 PM} 
+ #                                last update: 7/28/04 {6:19:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -72,6 +72,8 @@ The analytical solution test for this problem is given by:
    1
    
 """
+__docformat__ = 'restructuredtext'
+
      
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation

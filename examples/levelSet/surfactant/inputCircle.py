@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:01:07 PM} { 1:23:41 PM}
+ #                                last update: 7/28/04 {6:09:38 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -83,6 +83,7 @@ The result can be tested with the following code:
    0.00813776069241
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
    

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/15/04 {11:48:19 AM} 
+ #                                last update: 7/28/04 {6:03:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,7 @@
 
 """Fixed flux (Neumann) boundary condition
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/7/04 {10:36:43 AM} 
+ #                                last update: 7/28/04 {6:05:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,6 +43,7 @@
 
 """2D rectangular Mesh
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 

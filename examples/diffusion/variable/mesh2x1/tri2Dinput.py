@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:06:26 PM} 
+ #                                last update: 7/28/04 {6:06:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -92,6 +92,7 @@ A simple analytical answer can be used to test the result:
    1
 
 """
+__docformat__ = 'restructuredtext'
 
 import Numeric
 
