@@ -55,8 +55,12 @@ but a restart method is demonstrated.  First do `steps / 2` time steps.
 Save the variables and recall them to test the mechanism
 
    >>> import fipy.tools.dump as dump
-   >>> dump.write({'phase' : phase, 'theta' : theta, 'mesh' : mesh}, 'data')
-   >>> data = dump.read('data')
+   >>> import tempfile
+   >>> import os
+   >>> tmp = tempfile.gettempdir()
+   >>> fileName = os.path.join(tmp, 'data')
+   >>> dump.write({'phase' : phase, 'theta' : theta, 'mesh' : mesh}, fileName)
+   >>> data = dump.read(fileName)
    >>> newPhase = data['phase']
    >>> newTheta = data['theta']
    >>> newMesh = data['mesh']
