@@ -75,7 +75,7 @@ phaseParameters={
     'symmetry':    4.
     }
 
-interiorValue = Numeric.pi
+interiorValue = -Numeric.pi
 exteriorValue = Numeric.pi / 2.
 
 L = 1.5
@@ -85,7 +85,7 @@ dx = L / nx
 dy = L / ny
 
 mesh = Grid2D(dx,dy,nx,ny)
-
+print "built mesh"
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
@@ -96,7 +96,7 @@ phase = CellVariable(
 theta = ModularVariable(
     name = 'Theta',
     mesh = mesh,
-    value = Numeric.pi,
+    value = exteriorValue,
     viewer = Grid2DGistViewer,
     hasOld = 0
     )
@@ -118,6 +118,7 @@ interiorCells = mesh.getCells(func)
 
 theta.setValue(interiorValue,interiorCells)
 
+print "building equation"
 eq = PhaseEquation(
     phase,
     solver = LinearPCGSolver(
@@ -134,6 +135,7 @@ it = Iterator((eq,))
 
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
+print "solving"
 it.iterate(100,0.02)
 # profile.stop()
 

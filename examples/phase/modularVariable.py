@@ -40,9 +40,6 @@ import Numeric
 class ModularVariable(CellVariable):
 
     def getGrad(self):
-##        print CellVariable.getGrad(self)
-##        print self.mod(CellVariable.getGrad(self))
-##        raw_input()
         gridSpacing = self.mesh.getMeshSpacing()
         return self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing       
 

@@ -83,11 +83,7 @@ class Mesh:
     def getExteriorFaces(self):
         """Return all exterior faces
         """
-        exteriorFaces = ()
-        for face in self.faces:
-            if face not in self.getInteriorFaces():
-                exteriorFaces += (face,)
-        return exteriorFaces
+        return self.faces[len(self.getInteriorFaces()):]
     
     def makeGridData(self,array):
 	"""Return array data mapped onto cell geometry of Mesh.

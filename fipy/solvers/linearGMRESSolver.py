@@ -56,8 +56,10 @@ class LinearGMRESSolver(Solver):
 ## 	print "x: ", x
 	
 	A = L.to_csr()
-
-        info, iter, relres = itsolvers.gmres(A,b,x,self.tolerance,self.steps)
+        
+        Assor=precon.jacobi(L)
+        
+        info, iter, relres = itsolvers.gmres(A,b,x,self.tolerance,self.steps,Assor)
         
 ## 	print info, iter, relres
 	
