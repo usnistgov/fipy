@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/29/05 {11:21:02 AM} 
+ #                                last update: 3/31/05 {9:41:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -574,7 +574,7 @@ f.close()
 
 dist = setup(	name = "FiPy",
 	app = [os.path.join('examples','levelSet','electroChem','input.py')],
-	version = "1.0a1",
+	version = "1.0a2",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",
