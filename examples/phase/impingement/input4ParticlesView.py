@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+!/usr/bin/env python
 
+"""
 ## 
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
@@ -40,7 +41,8 @@
  #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
-
+"""
+ 
 from __future__ import nested_scopes
 from fivol.examples.phase.examples.impingement.input import ImpingementSystem
 from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
@@ -94,7 +96,7 @@ class System4Particles(ImpingementSystem):
         thetaFile = open('theta%i.txt' % val, 'w')
         shape = self.mesh.getShape()
         phaseArray = Numeric.reshape(self.phase.getNumericValue(),shape)
-        thetaArray = Numeric.reshape(self.theta.getNumericValue(),shape)
+        thetaArray = Numeric.reshape(self.thetaProd.getNumericValue(),shape)
         phaseFile.write(Numeric.array2string(phaseArray))
         thetaFile.write(Numeric.array2string(thetaArray))
         phaseFile.close()
