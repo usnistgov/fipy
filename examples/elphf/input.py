@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/20/04 {1:56:42 PM} 
+ #                                last update: 4/2/04 {10:02:47 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -154,37 +154,38 @@ it = ElPhFIterator(equations = equations, timeStepDuration = timeStepDuration, v
 
 desiredTime = timeStepDuration.getValue()
 
-for viewer in viewers:
-    viewer.plot()
+if __name__ == '__main__':
+    for viewer in viewers:
+	viewer.plot()
 
-raw_input()
+    raw_input()
 
-# fudge = calibrate_profiler(10000)
-# profile = Profiler('profile', fudge=fudge)
+    # fudge = calibrate_profiler(10000)
+    # profile = Profiler('profile', fudge=fudge)
 
-# it.timestep(50)
-# 
-# for timestep in range(5):
-#     it.sweep(50)
-#     it.advanceTimeStep
+    # it.timestep(50)
+    # 
+    # for timestep in range(5):
+    #     it.sweep(50)
+    #     it.advanceTimeStep
 
 
-for i in range(50):
-    try:
-	it.elapseTime(desiredTime = desiredTime, maxSweepsPerStep = 100)
-## 	it.timestep(steps = 1, maxSweeps = 5)
-    except KeyboardInterrupt:
-	break
-    except Exception, e:
-	print "Error:", e
-    except:
-	print "Not converged"
+    for i in range(50):
+	try:
+	    it.elapseTime(desiredTime = desiredTime, maxSweepsPerStep = 100)
+    ## 	it.timestep(steps = 1, maxSweeps = 5)
+	except KeyboardInterrupt:
+	    break
+	except Exception, e:
+	    print "Error:", e
+	except:
+	    print "Not converged"
+	    
+	print "***** timestep", i, "******"
 	
-    print "***** timestep", i, "******"
-    
-raw_input()
-    
-# profile.stop()
+    raw_input()
 	
-## raw_input()
+    # profile.stop()
+	    
+    ## raw_input()
 

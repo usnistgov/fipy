@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/9/04 {11:12:13 AM} 
+ #                                last update: 4/1/04 {4:08:07 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,12 +54,12 @@ class Variable:
 
     Constructor:
 
-    - Variable(|mesh|, |value|, |unit|), where |value| is a number of
-      arbitrary type and |unit| is a string containing the unit name.
+	- Variable(|mesh|, |value|, |unit|), where |value| is a number of
+	arbitrary type and |unit| is a string containing the unit name.
 
-    - PhysicalField(|mesh|, |string|), where |string| contains both the value
-      and the unit. This form is provided to make interactive use more
-      convenient.
+	- PhysicalField(|mesh|, |string|), where |string| contains both the
+	value and the unit.  This form is provided to make interactive use
+	more convenient.
 
     Variable instances allow addition, subtraction,
     multiplication, and division with each other as well as
@@ -72,10 +72,21 @@ class Variable:
     sqrt -- equivalent to exponentiation with 0.5.
 
     sin, cos, tan -- applicable only to objects whose unit is compatible
-		     with 'rad'.
+    with 'rad'.  
     """
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
+	"""
+	Create a variable.
+	
+	:Parameters:
+	  - `value`: the initial value
+	  - `unit`: the physical units of the variable
+	  - `array`: the storage array for the variable
+	  - `name`: the user-readable name of the variable
+	  - `mesh`: the mesh that defines the geometry of this variable
+	"""
+	
 	self.requiredVariables = []
 	self.subscribedVariables = []
 

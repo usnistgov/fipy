@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 3/9/04 {11:33:18 AM} 
+ #                                last update: 3/30/04 {11:48:25 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -77,6 +77,8 @@ the correct unit. A quantity can be raised to a non-integer
 power only if the result can be represented by integer powers
 of the base units.
 
+M{\sin x = a^2 + b^2}
+
 The values of physical constants are taken from the 1986
 recommended values from CODATA. Other conversion factors
 (e.g. for British units) come from various sources. I can't
@@ -107,7 +109,7 @@ class PhysicalField:
       and the unit. This form is provided to make interactive use more
       convenient.
 
-    PhysicalField instances allow addition, subtraction,
+    PhysicalField instances allow addition, subtraction, M{y = m x + b}
     multiplication, and division with each other as well as
     multiplication, division, and exponentiation with numbers.
     Addition and subtraction check that the units of the two operands
