@@ -54,33 +54,39 @@ A PyxViewer is created with one argument: the variable to be plotted. To actuall
 call the PyxViewer's plot() method. The plot() method has the following keyword arguments:
 
 debug - When set to 1, prints debugging information. Default value is 0.
+
 returnlist - When set to 1, returns the displaylist. Used for debugging and test cases. Default value is 0.
-minx, maxx - The minimum and maximum values of X to appear on the plot. By default, minx and maxx are set to the minimum and
-maximum values of the X coordinates of the mesh vertices. 
-miny, maxy - The minimum and maximum values of Y to appear on the plot. By default, miny and maxy are set tp the minimum and
-maximum values of the Y coordinates of the mesh vertices.
-minval, maxval - The minimum and maximum values on the color scale. A value of minval will appear completely
-blue and a value of maxval will appear completely red. If no values are specified, minval will default to the lowest value of the variable
-over the area to be plotted and maxval will default to the highest value of the variable over the area to be plotted/ 
-resolution - The distance between the centers of adjacent plot cells. Lower values will result in higher quality images. If no value
-is specified, the resolution will be set such that there will be approximately 1,000 plot cells.
-filename - The name of the file to store the resulting image in. An extension is not needed here - the .eps extension
-will automatically be added.
+
+minx, maxx - The minimum and maximum values of X to appear on the plot. By default, minx and maxx are set to the minimum and maximum values of the X coordinates of the mesh vertices. 
+
+miny, maxy - The minimum and maximum values of Y to appear on the plot. By default, miny and maxy are set to the minimum and maximum values of the Y coordinates of the mesh vertices.
+
+minval, maxval - The minimum and maximum values on the color scale. A value of minval will appear completely blue and a value of maxval will appear completely red. If no values are specified, minval will default to the lowest value of the variable over the area to be plotted and maxval will default to the highest value of the variable over the area to be plotted.
+
+resolution - The distance between the centers of adjacent plot cells. Lower values will result in higher quality images. If no value is specified, the resolution will be set such that there will be approximately 1,000 plot cells.
+
+filename - The name of the file to store the resulting image in. An extension is not needed here - the .eps extension will automatically be added. If no filename is specified, the image will be stored inthe file `temp.eps` so it can be viewed.
+
 viewcmd - The OS command used to access your graphics viewer. If specified, the graphics viewer will be automatically opened
-to view your plot. If no viewcmd is specified, no graphics program will open.
+to view your plot. Default is 'gv'.
+
 xlabel - The label to use for the X axis. Default is 'X values'.
+
 ylabel - The label to use for the Y axis. Default is 'Y values'.
+
 valuelabel - The label to use for the value of the variable on the scale. Default is the variable's name.
-scalefile - The file name to put the scale into. The scale will automatically be displayed after the original image is displayed if a viewcmdis specified. If no scalefile is specified, no scale will be created.
+
 gridcorrect - The amount, in multiples of the resolution, that adjacent plot cells overlap. This overlap eliminates the 'grid effect'. If you still
 see a grid of white space, increase this value. Default value is 0.3.
 
 The following are keyword arguments in the __init__() method: (Note that these work for PyxViewer only, not Grid2DPyxViewer)
 
 showpercent - If set to 1, this displays the percentage complete at 5% intervals as the plot progresses. Default value is 1.
+
 showtime - If set to 1, this displays the approximate time it will take to plot it. Default value is 1.
 
 Test cases:
+
    >>> from fipy.meshes.grid2D import Grid2D
    >>> import fipy.variables.cellVariable
    >>> mesh = Grid2D(1.0, 1.0, 2, 2)
