@@ -4,7 +4,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/24/03 {5:56:36 PM} 
+ #                                last update: 11/25/03 {8:37:14 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,10 +55,10 @@ class FaceTerm(Term):
             id1 = face.getCellId(0)
             id2 = face.getCellId(1)
             faceId = face.getId()
-#             L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
-#             L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
-#             L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
-#             L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
+            L[id1,id1]+=self.coeff[faceId] * self.stencil[1]
+            L[id1,id2]-=self.coeff[faceId] * self.stencil[0]
+            L[id2,id1]-=self.coeff[faceId] * self.stencil[0]
+            L[id2,id2]+=self.coeff[faceId] * self.stencil[1]
 
         for boundaryCondition in self.boundaryConditions:
             for face in boundaryCondition.getFaces():
