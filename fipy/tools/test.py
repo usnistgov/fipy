@@ -89,6 +89,7 @@ def _suite():
     theSuite = LateImportDocTestSuite(docTestModuleNames = (
             'sparseMatrix',
             'dimensions.physicalField',
+            'array',
         ), base = __name__)
 
     theSuite.addTest(unittest.makeSuite(Test10by10))

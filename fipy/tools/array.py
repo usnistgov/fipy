@@ -35,12 +35,50 @@
  # ###################################################################
  ##
 
+"""
+
+The functions provided in ths module replace the `Numeric` module.
+The functions work with `Variables`, arrays or numbers. For example,
+create a `Variable`.
+
+   >>> from fipy.variables.variable import Variable
+   >>> var = Variable(value = 0)
+
+Take the tangent of such a variable. The returned value is itself a
+`Variable`.
+
+   >>> v = tan(var)
+   >>> v
+   array.tan(Variable(value = 0))
+   >>> print v
+   0.0
+
+Take the tangent of a int.
+
+   >>> tan(0)
+   0.0
+   
+Take the tangent of an array.
+
+   >>> tan(Numeric.array((0,0,0)))
+   [ 0., 0., 0.,]
+   
+This module is building towards a `'Numericx'` module that will be the
+only place in the code where `Numeric` is imported.
+
+"""
+
+__docformat__ = 'restructuredtext'
+
 import Numeric
 import umath
 import MA
 import fipy.tools.inline.inline as inline
 
 def _isPhysical(arr):
+    """
+    Returns `True` if arr is a `Variable` or `PhysicalField`.
+    """
     import fipy.variables.variable
     import fipy.tools.dimensions.physicalField
 
@@ -48,6 +86,10 @@ def _isPhysical(arr):
 	or isinstance(arr,fipy.tools.dimensions.physicalField.PhysicalField)
 
 def take(arr, ids):
+    """
+    Provides the same functionality as `Numeric.take`.
+    """
+    
     if _isPhysical(arr):
 	return arr.take(ids)    
     elif type(arr) is type(Numeric.array((0))):
@@ -58,6 +100,9 @@ def take(arr, ids):
 	raise TypeError, 'cannot take from object ' + str(arr)
     
 def put(arr, ids, values):
+    """
+    Provides the same functionality as `Numeric.put`.
+    """
     if _isPhysical(arr):
 	return arr.put(ids, values)
     
@@ -69,6 +114,9 @@ def put(arr, ids, values):
 	raise TypeError, 'cannot put in object ' + str(arr)
     
 def reshape(arr, shape):
+    """
+    Provides the same functionality as `Numeric.reshape`.
+    """
     if _isPhysical(arr):
 	return arr.reshape(shape)
     elif type(arr) is type(Numeric.array((0))):
@@ -79,6 +127,9 @@ def reshape(arr, shape):
 	raise TypeError, 'cannot reshape object ' + str(arr)
 	
 def sum(arr, index = 0):
+    """
+    Provides the same functionality as `Numeric.sum`.
+    """
     if _isPhysical(arr):
 	return arr.sum(index)
     elif type(arr) is type(Numeric.array((0))):
@@ -89,6 +140,9 @@ def sum(arr, index = 0):
 	raise TypeError, 'cannot sum object ' + str(arr)
 
 def sqrt(arr):
+    """
+    Provides the same functionality as `Numeric.sqrt`.
+    """
     if _isPhysical(arr):
 	return arr.sqrt()
     elif type(arr) is type(Numeric.array((0))):
@@ -97,6 +151,9 @@ def sqrt(arr):
 	return umath.sqrt(arr)
 
 def exp(arr):
+    """
+    Provides the same functionality as `Numeric.exp`.
+    """
     if _isPhysical(arr):
 	return arr.exp()
     elif type(arr) is type(Numeric.array((0))):
@@ -105,6 +162,9 @@ def exp(arr):
 	return umath.exp(arr)
 	
 def tan(arr):
+    """
+    Provides the same functionality as `Numeric.tan`.
+    """
     if _isPhysical(arr):
 	return arr.tan()
     elif type(arr) is type(Numeric.array((0))):
@@ -113,6 +173,9 @@ def tan(arr):
 	return umath.tan(arr)
 
 def arctan(arr):
+    """
+    Provides the same functionality as `Numeric.arctan`.
+    """
     if _isPhysical(arr):
 	return arr.arctan()
     elif type(arr) is type(Numeric.array((0))):
@@ -121,6 +184,9 @@ def arctan(arr):
 	return umath.arctan(arr)
 		
 def arctan2(arr, other):
+    """
+    Provides the same functionality as `Numeric.arctan2`.
+    """
     if _isPhysical(arr):
 	return arr.arctan2(other)
     elif _isPhysical(other):
@@ -209,6 +275,9 @@ def _sqrtDotIn(a1, a2):
     return result
 
 def allequal(first, second):
+    """
+    Provides the same functionality as `Numeric.allequal`.
+    """
     if _isPhysical(first):
 	return first == second
     elif _isPhysical(second):
@@ -217,6 +286,9 @@ def allequal(first, second):
 	return MA.allequal(first, second)
 	    
 def allclose(first, second, atol = 1.e-5, rtol = 1.e-8):
+    """
+    Provides the same functionality as `Numeric.allclose`.
+    """
     if _isPhysical(first):
 	return first.allclose(other = second, atol = atol, rtol = rtol)
     elif _isPhysical(second):
@@ -229,6 +301,9 @@ def _min(arr):
     return arr[Numeric.argmin(arr)]
 
 def min(arr):
+    """
+    Find the minimum value in `arr`.
+    """
     if _isPhysical(arr):
         return arr.min()
     else:
@@ -239,6 +314,9 @@ def _max(arr):
     return arr[Numeric.argmax(arr)]
 
 def max(arr):
+    """
+    Find the maximum value in `arr`.
+    """
     if _isPhysical(arr):
         return arr.max()
     else:
@@ -247,6 +325,10 @@ def max(arr):
         
 # Necessary because LLNL hires stupidheads
 def MAtake(array, indices, fill = 0, axis = 0):
+    """
+    Replaces `MA.take`. `MA.take` does not always work when
+    `indices` is a masked array.
+    """
     tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
     if indices.mask() is not None and tmp.shape != indices.mask().shape:
         mask = MA.repeat(indices.mask()[...,Numeric.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
@@ -256,3 +338,9 @@ def MAtake(array, indices, fill = 0, axis = 0):
         mask = indices.mask()
     return MA.array(data = tmp, mask = mask)
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__":
+    _test() 
