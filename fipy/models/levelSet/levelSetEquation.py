@@ -42,7 +42,8 @@
  ##
 
 import Numeric
-
+import MA
+from fivol.meshes.numMesh.mesh import MAtake
 from fivol.equations.equation import Equation
 
 class LevelSetEquation(Equation):
@@ -60,7 +61,7 @@ class LevelSetEquation(Equation):
             solver = None)
 
     def solve(self):
-        zeroCells = self.getZeroCells()
+        zeroCellIDs = self.getZeroCellIDs()
 ##        self.setZeroValues(zeroCells)
 
         ## find bounding cells to the evaluatedCells
@@ -77,19 +78,13 @@ class LevelSetEquation(Equation):
 ##        ## add the extra cell
 ##            boundingCells, zeroCells = self.updateBoundingCells(minimumCell, boundingCells, zeroCells)
 
-    def getZeroCells(self, cells):
-        zeroCells = ()
-        array = self.var.getNumericValue()
-        for cell in self.mesh.getCells():
-            id = cell.getID()
-            zeroCell = ()
-            for adjacentCell in cell.getBoundingCells():                
-                adjacentId = adjacentCell.getId()
-                if array[id] * array[adjacentId] < 0.:
-                    zeroCell = (cell,)
-            zeroCells += zeroCell
-        return zeroCells
-
+    def getZeroCellIDs(self):
+        values = self.var.getNumericValue()
+        tmp = MAtake(values, self.mesh.getCellToCellIDs())* values[:,Numeric.NewAxis]
+        tmp = MA.where(tmp < 0, Numeric.ones(tmp.shape), Numeric.zeros(tmp.shape))
+        tmp = MA.sum(tmp, 1)
+        return Numeric.nonzero(tmp)
+        
     def getGrad(self, cell1, cell2):
         dAP = fivol.tools.vector.sqrtdot(cell1.getCenter() - cell2.getCenter())
         return abs(self.varOld.getValue(cell1) - sellf.varOld.getValue(cell2)) / dAP 
