@@ -7,13 +7,12 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 9/3/04 {10:35:30 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 10/21/04 {10:34:27 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov/
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards

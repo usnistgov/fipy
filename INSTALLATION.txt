@@ -300,9 +300,9 @@ at the command line.  Alternatively, you may choose not to formally install
 
 .. warning::
 
-   Keep in mind that you will then need to take care to preserve your
-   changes when upgrades to |FiPy| become available (upgrades via CVS_ will
-   handle this issue automatically).
+   Keep in mind that you will then need to preserve your changes when
+   upgrades to |FiPy| become available (upgrades via CVS_ will handle this
+   issue automatically).
 
 If you wish to develop |FiPy| scripts outside of the distribution
 directory, but choose not to formally install |FiPy|, you will need to

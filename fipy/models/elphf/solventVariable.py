@@ -7,12 +7,11 @@
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
  #                                last update: 9/3/04 {10:43:23 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards

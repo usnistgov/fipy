@@ -7,12 +7,11 @@
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
  #                                last update: 9/3/04 {10:40:15 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards

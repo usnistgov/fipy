@@ -9,8 +9,9 @@
  #                                last update: 7/30/04 {7:16:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This document was prepared at the National Institute of Standards

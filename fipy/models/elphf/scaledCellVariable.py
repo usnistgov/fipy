@@ -5,12 +5,11 @@
  #  FILE: "scaledCellVariable.py"
  #                                    created: 6/2/04 {6:17:03 PM} 
  #                                last update: 7/28/04 {9:12:16 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This document was prepared at the National Institute of Standards

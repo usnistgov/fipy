@@ -5,14 +5,14 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:29:58 PM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                    created: 06/29/04 {2:24:00 PM} 
+ #                                last update: 10/22/04 {4:19:54 PM}
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Alexander Mont <alexander.mont@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
@@ -37,7 +37,7 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
+ #  2004-6-24 ADM 1.0 original
  # ###################################################################
  ##
 

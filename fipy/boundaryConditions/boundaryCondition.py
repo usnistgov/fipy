@@ -6,15 +6,12 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/19/04 {2:51:57 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
- #  Author: James Warren
- #  E-mail: jwarren@nist.gov
+ #                                last update: 10/22/04 {4:04:46 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards

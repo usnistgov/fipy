@@ -7,13 +7,13 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 10/19/04 {11:38:55 AM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 10/22/04 {4:21:35 PM}
+ #  Author: Alexander Mont <alexander.mont@nist.gov>
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov/
+ #     www: http://www.ctcms.nist.gov/fipy/
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
@@ -34,6 +34,13 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2004-8-12 ADM 1.0 original
  # ###################################################################
  #
 

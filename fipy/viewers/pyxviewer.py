@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 ## 
@@ -8,15 +7,13 @@
  # 
  #  FILE: "pyxviewer.py"
  #                                    created: 6/25/04 {3:17:21 PM} 
- #                                last update: 9/3/04 {10:30:52 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
- #  Author: Alexander Mont
- #  E-mail: alexander.mont@nist.gov
+ #                                last update: 10/22/04 {4:09:04 PM} 
+ #  Author: Alexander Mont <alexander.mont@nist.gov>
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov/
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
