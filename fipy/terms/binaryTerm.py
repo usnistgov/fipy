@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 12/7/04 {3:21:53 PM} 
+ #                                last update: 12/13/04 {2:10:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

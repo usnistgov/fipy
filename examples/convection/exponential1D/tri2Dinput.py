@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/13/04 {2:11:45 PM} 
+ #                                last update: 12/13/04 {2:22:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,12 +43,8 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/input.py` but uses a constant source
-value such that,
-
-.. raw:: latex
-
-    $$ S_c = 1. $$
+`./examples/diffusion/convection/exponential1D/input.py` but uses a 
+`Tri2D` mesh.
 
 Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
@@ -62,7 +58,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> nx = 1
     >>> ny = 1000
     >>> from fipy.meshes.numMesh.tri2D import Tri2D
-    >>> mesh = Tri2D(dx = L / nx, dy = L / ny, nx = nx, ny = ny)
+    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
     
     >>> valueBottom = 0.
     >>> valueTop = 1.
@@ -80,15 +76,13 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     >>> diffCoeff = 1.
     >>> convCoeff = (0., 10.)
-    >>> sourceCoeff = 1.
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
 
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = -sourceCoeff - diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) 
+    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) 
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
@@ -98,12 +92,10 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 1
     >>> y = mesh.getCellCenters()[:,axis]
-    >>> AA = -sourceCoeff * y / convCoeff[axis]
-    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
     >>> import Numeric
     >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = AA + BB * CC / DD
+    >>> analyticalArray = CC / DD
     >>> var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1
     

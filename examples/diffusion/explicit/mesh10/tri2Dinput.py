@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:33:35 PM} 
+ #                                last update: 12/13/04 {10:53:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,7 +92,6 @@ ny = 1
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.02
-steps = 1000
 
 mesh = Tri2D(dx, dy, nx, ny)
 
@@ -120,6 +119,8 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
                           0.00000000e+00,  4.99169535e-05,  1.49682805e-02,  3.82262622e-01]) 
 
 if __name__ == '__main__':
+    steps = 1000
+    
     for step in range(steps):
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var

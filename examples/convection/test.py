@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:12:03 PM} 
+ #                                last update: 12/13/04 {2:13:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,7 @@ import fipy.tests.testProgram
 def suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'exponential1D.input',
+            'exponential1D.tri2Dinput',
             'exponential2D.input',
             'exponential1DBack.input',
             'powerLaw1D.input',
