@@ -93,13 +93,14 @@ from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCo
 from fipy.iterators.iterator import Iterator
 from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.cahnHilliard.cahnHilliardEquation import CahnHilliardEquation
 from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
 
-L = 50.
-nx = 200
+L = 40.
+nx = 10000
 ny = 1
 steps = 100
 dx = L / nx
@@ -113,59 +114,73 @@ parameters={
 
 mesh = Grid2D(dx, dy, nx, ny)
 
+##a = Numeric.sqrt(parameters['asq'])
+##answer = 1 / (1 + Numeric.exp(a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+
 var = CellVariable(
     name = "phase field",
     mesh = mesh,
-    value = 1.0)
+    value = 1)
 
-##var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
-#var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
-
-eq= NthOrderDiffusionEquation(
-    var,
-    diffusionCoeff = (-1.0,1.0),
-    solver = LinearPCGSolver(tolerance = 1e-10,steps = 1000),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesRight(), 1),
-    FixedValue(mesh.getFacesLeft(), 0.5),
-    NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
-    NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
-
+var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 
 eqch= CahnHilliardEquation(
     var,
     parameters = parameters,
-    solver = LinearPCGSolver(tolerance = 1e-10,steps = 1000),
+    solver = LinearLUSolver(tolerance = 1e-15,steps = 100),
     boundaryConditions=(
     FixedValue(mesh.getFacesRight(), 1),
-    FixedValue(mesh.getFacesLeft(), 0.5),
+    FixedValue(mesh.getFacesLeft(), .5),
     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
     NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3)))
 
-it = Iterator((eq,))
+it = Iterator((eqch,))
 
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var,minVal=-2.0,maxVal=2.0)
+    viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
     viewer.plot()
     dexp=-5
-    
-    for step in range(steps):      
-        dt=Numeric.exp(dexp)
-        dexp=dexp+.1
-        print 'in loop ',step,dt
-        it.timestep(dt = dt)
-        viewer.plot()
 
     a = Numeric.sqrt(parameters['asq'])
     answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0]) / parameters['epsilon']))
-    diff = answer - Numeric.array(var)
-    maxarg = Numeric.argmax(diff)
-    print diff[maxarg]
-    print maxarg
-    aa = Numeric.argsort(diff)
-    print diff[aa[nx-1]],diff[aa[nx-2]],aa[nx-1],aa[nx-2]
-    print answer,diff
     
+    for step in range(steps):      
+        dt=Numeric.exp(dexp)
+        dt = min(10,dt)
+        dexp=dexp+.5
+##        print 'in loop ',step,dt
+        print 'step:',step,dt
+        it.timestep(dt = dt)
+        diff = abs(answer - Numeric.array(var))
+        maxarg = Numeric.argmax(diff)
+        print 'maximum error:',diff[maxarg]
+        print 'element id:',maxarg
+        print 'value at element ',maxarg,' is ',var[maxarg]
         
+        
+        viewer.plot()
+        
+        
+##    a = Numeric.sqrt(parameters['asq'])
+##    answer = 1 / (1 + Numeric.exp(a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+
+##    from fipy.viewers.gist1DViewer import Gist1DViewer
+##    view1Dvar = Gist1DViewer(vars = (var,), minVal = 0., maxVal = 1.)
+##    view1Ddiff = Gist1DViewer(vars = (var - answer,), minVal = -1e-3, maxVal = 1e-3)
+
+##    view1Dvar.plot()
+##    view1Ddiff.plot()
+    
+##    diff = answer - Numeric.array(var)
+##    maxarg = Numeric.argmax(diff)
+##    print diff[maxarg]
+##    print maxarg
+##    aa = Numeric.argsort(diff)
+##    print diff[aa[nx-1]],diff[aa[nx-2]],aa[nx-1],aa[nx-2]
+##    print diff[800:840]
+##    print answer[800:840]
+
+    
     raw_input('finished')
-   
+
+
