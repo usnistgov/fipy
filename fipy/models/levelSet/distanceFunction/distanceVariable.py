@@ -158,8 +158,8 @@ class DistanceVariable(CellVariable):
            1
            
         """
-        val0 = Numeric.take(self.value, self.mesh.getAdjacentCellIDs()[0])
-        val1 = Numeric.take(self.value, self.mesh.getAdjacentCellIDs()[1])
+        val0 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[0])
+        val1 = Numeric.take(Numeric.array(self.value), self.mesh.getAdjacentCellIDs()[1])
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
@@ -182,7 +182,7 @@ class DistanceVariable(CellVariable):
         
         M = self.mesh.getMaxFacesPerCell()
         N = self.mesh.getNumberOfCells()
-        return Numeric.reshape(Numeric.repeat(self.value, M), (N, M))
+        return Numeric.reshape(Numeric.repeat(Numeric.array(self.value), M), (N, M))
 
     def getLevelSetNormals(self):
         """
@@ -200,8 +200,9 @@ class DistanceVariable(CellVariable):
         """
         
         faceGrad = self.getGrad().getArithmeticFaceValue()
-        faceGradMag = Numeric.where(faceGrad.getMag() > 1e-10,
-                                    faceGrad.getMag(),
+        faceGradMag = Numeric.array(faceGrad.getMag())
+        faceGradMag = Numeric.where(faceGradMag > 1e-10,
+                                    faceGradMag,
                                     1e-10)
         faceGrad = Numeric.array(faceGrad)
 
@@ -231,7 +232,7 @@ class DistanceVariable(CellVariable):
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
 
-        return (self > 0.) * minsq + (self < 0.) * maxsq
+        return (Numeric.array(self) > 0.) * minsq + (Numeric.array(self) < 0.) * maxsq
         
     def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
         return (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
