@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "cellToFaceVariable.py"
- #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 4/2/04 {4:00:53 PM} 
+ #  FILE: "vectorCellToFaceVariable.py"
+ #                                    created: 7/26/04 {2:23:41 PM} 
+ #                                last update: 7/26/04 {4:00:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
