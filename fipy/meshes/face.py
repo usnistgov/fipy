@@ -46,7 +46,8 @@ class Face:
         self.vertices = vertices
         self.cells = ()
 	self.id = id
-	
+	self.center = self.calcCenter()
+        
     def addBoundingCell(self, cell):
         self.cells += (cell,)
 
@@ -59,12 +60,20 @@ class Face:
     def getCellId(self,index=0):
         return self.cells[index].getId()
 	
-    def center(self):
+    def calcCenter(self):
 	ctr = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[1:]:
 	    ctr += vertex.getCoordinates()
 	return ctr / float(len(self.vertices))
-	
+
+    def getCenter(self):
+##        return self.calcCenter()
+#        print self.id
+#        print self.center
+#        print self
+#        raw_input()
+	return self.center
+    
     def area(self):
 	a=0.
 	p1 = self.vertices[0].getCoordinates()
@@ -78,16 +87,20 @@ class Face:
 	"""
 	Determine if normal points into or out of the cell in question
 	"""
-	if len(self.cells) == 1:
+        if len(self.cells) == 0:
+            return "abnormal"
+	elif len(self.cells) == 1:
 	    """Boundary faces only have one cell
 	    
 	    center-to-center vector is from face center to cell center
 	    """
-	    cc = self.cells[0].center() - self.center()
+	    cc = self.cells[0].center() - self.center
 	else:
 	    cc = self.cells[0].center() - self.cells[1].center()
+            
 	if cell == None or cell == self.cells[0]:
 	    cc *= -1
+            
 	if Numeric.dot(cc,norm) < 0:
 	    norm *= -1
 	    
@@ -106,11 +119,11 @@ class Face:
         if(len(self.cells)==2):
             vec=self.cells[1].center()-self.cells[0].center()
         else:
-            vec=self.center()-self.cells[0].center()        
+            vec=self.center-self.cells[0].center()        
         return tools.sqrtDot(vec,vec)
 
     def __repr__(self):
-	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal(self.cells[0])) + ", vertices = " + str(self.vertices) + ">\n"
+	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
 
 
     def removeBoundingCell(self,cell):

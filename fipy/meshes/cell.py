@@ -53,13 +53,13 @@ class Cell:
     def volume(self):
 	vol = 0.
 	for face in self.faces:
-	    vol += face.center()[0] * face.area() * face.normal(self)[0]
+	    vol += face.getCenter()[0] * face.area() * face.normal(self)[0]
 	return vol
 
     def center(self):
-        ctr = self.faces[0].center()
+        ctr = self.faces[0].getCenter().copy()
         for face in self.faces[1:]:
-            ctr += face.center()
+            ctr += face.getCenter()
         return ctr/float(len(self.faces))
             
     def __repr__(self):
