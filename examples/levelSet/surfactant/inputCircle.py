@@ -64,8 +64,11 @@ The result can be tested with the following code:
 
    >>> surfactantBefore = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
-   >>> surfactantEquation.solve()
+   ...     surfactantVariable.updateOld()
+   ...     distanceVariable.updateOld()
+   ...     surfactantEquation.solve(surfactantVariable)
+   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
+   >>> surfactantEquation.solve(surfactantVariable)
    >>> surfactantAfter = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
    >>> Numeric.allclose(surfactantBefore, surfactantAfter)
    1
@@ -89,15 +92,9 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
+from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-
 
 L = 1.
 nx = 50
@@ -129,21 +126,11 @@ surfactantVariable = SurfactantVariable(
     distanceVar = distanceVariable
     )
 
-advectionEquation = HigherOrderAdvectionEquation(
-    distanceVariable,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
+advectionEquation = buildHigherOrderAdvectionEquation(
+    advectionCoeff = velocity)
 
 surfactantEquation = SurfactantEquation(
-    surfactantVariable,
-    distanceVariable,
-    solver = LinearLUSolver(
-        tolerance = 1e-10),
-    boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0.), ))
-
-it = Iterator((surfactantEquation, advectionEquation))
+    distanceVar = distanceVariable)
 
 if __name__ == '__main__':
     
@@ -155,10 +142,13 @@ if __name__ == '__main__':
     print 'total surfactant before:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())
     
     for step in range(steps):
-        it.timestep(dt = timeStepDuration)
+        surfactantVariable.updateOld()
+        distanceVariable.updateOld()
+        surfactantEquation.solve(surfactantVariable)
+        advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         distanceViewer.plot()
         surfactantViewer.plot()
-    surfactantEquation.solve()
+    surfactantEquation.solve(surfactantVariable)
 
 
     print 'total surfactant after:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())

@@ -97,7 +97,10 @@ Start time steping:
 
    >>> currentTime = 0.
    >>> for i in range(totalTimeSteps):
-   ...     it.timestep(dt = dt)
+   ...     surfactantVar.updateOld()
+   ...     bulkVar.updateOld()
+   ...     surfEqn.solve(surfactantVar, dt)
+   ...     bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
    ...     currentTime += dt
 
 Compare the analaytical and numerical results:
@@ -119,9 +122,8 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import SurfactantBulkDiffusionEquation
+from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from fipy.iterators.iterator import Iterator
 from fipy.viewers.gist1DViewer import Gist1DViewer
 
 # parameter values
@@ -151,20 +153,20 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
-bulkEqn = SurfactantBulkDiffusionEquation(bulkVar,
+bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,
                                           diffusionCoeff = diffusion,
-                                          rateConstant = rateConstant * siteDensity,
-                                          boundaryConditions = (FixedValue(mesh.getFacesRight(), cinf),))
+                                          rateConstant = rateConstant * siteDensity)
+
+bcs = (FixedValue(mesh.getFacesRight(), cinf),)
 
 ## Build the surfactant equation
 
-surfEqn = AdsorbingSurfactantEquation(surfactantVar, distanceVar, bulkVar, rateConstant)
-
-## iterator
-
-it = Iterator((surfEqn, bulkEqn))
+surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
+                                      distanceVar = distanceVar,
+                                      bulkVar = bulkVar,
+                                      rateConstant = rateConstant)
 
 ## Build the analytical solutions,
 
@@ -215,8 +217,10 @@ if __name__ == "__main__":
         concentrationViewer.plot()
 
         ## do a time step
-        
-        it.timestep(dt = dt)
+        surfactantVar.updateOld()
+        bulkVar.updateOld()
+        surfEqn.solve(surfactantVar, dt)
+        bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
         currentTime += dt
 
     raw_input("finished")

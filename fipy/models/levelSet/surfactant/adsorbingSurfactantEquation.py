@@ -81,7 +81,7 @@ The following is a test case:
    ...                                   distanceVar = distanceVar,
    ...                                   bulkVar = bulkVar,
    ...                                   rateConstant = k)
-   >>> eqn.solve(dt = dt)
+   >>> eqn.solve(surfactantVar, dt = dt)
    >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
    >>> Numeric.allclose(surfactantVar.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
    1
@@ -92,7 +92,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.cellVariable import CellVariable
-from surfactantEquation import buildSurfactantEquation
+from surfactantEquation import SurfactantEquation
 from fipy.terms.dependentSourceTerm import DependentSourceTerm
 from fipy.solvers.linearLUSolver import LinearLUSolver
 
@@ -120,7 +120,7 @@ class AdsorptionCoeffAreaOverVolume(AdsorptionCoeff):
     def multiplier(self):
         return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
  
-class AdsorbingSurfactantEquation:
+class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
                  surfactantVar = None,
                  distanceVar = None,
@@ -128,8 +128,8 @@ class AdsorbingSurfactantEquation:
                  rateConstant = None,
                  scCoeff = None,
                  spCoeff = None):
-        
-        eq, bc = buildSurfactantEquation(distanceVar = distanceVar)
+
+        SurfactantEquation.__init__(self, distanceVar = distanceVar)
 
         self.spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
         self.scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
@@ -140,16 +140,12 @@ class AdsorbingSurfactantEquation:
         if scCoeff != None:
             self.scCoeff += scCoeff
 
-        self.bc = bc
-        self.eq = eq + DependentSourceTerm(self.spCoeff) - self.scCoeff
-        self.surfactantVar = surfactantVar
+        self.eq = self.eq + DependentSourceTerm(self.spCoeff) - self.scCoeff
 
-    def solve(self, dt):
+    def solve(self, var, dt):
         self.scCoeff.updateDt(dt)
         self.spCoeff.updateDt(dt)
-        self.eq.solve(self.surfactantVar,
-                      boundaryConditions = self.bc,
-                      solver = LinearLUSolver())
+        SurfactantEquation.solve(self, var)
             
 def _test(): 
     import doctest

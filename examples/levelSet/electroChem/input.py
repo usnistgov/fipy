@@ -314,10 +314,10 @@ in FiPy:
    >>> from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
    ...             import AdsorbingSurfactantEquation
    >>> surfactantEquation = AdsorbingSurfactantEquation(
-   ...     acceleratorVar,
-   ...     distanceVar,
-   ...     bulkAcceleratorConcentration,
-   ...     rateConstant + overpotentialDependence * overpotential**3)
+   ...     surfactantVar = acceleratorVar,
+   ...     distanceVar = distanceVar,
+   ...     bulkVar = bulkAcceleratorConcentration,
+   ...     rateConstant = rateConstant + overpotentialDependence * overpotential**3)
 
 .. raw:: latex
 
@@ -332,9 +332,8 @@ in FiPy:
 and is set up with the following commands:
 
    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-   ...                import HigherOrderAdvectionEquation
-   >>> advectionEquation = HigherOrderAdvectionEquation(
-   ...     distanceVar,
+   ...                import buildHigherOrderAdvectionEquation
+   >>> advectionEquation = buildHigherOrderAdvectionEquation(
    ...     advectionCoeff = extensionVelocityVariable)
 
 The `extensionEquation` extends the interface velocity 
@@ -375,20 +374,21 @@ The `MetalIonDiffusionEquation` is set up with the following commands.
 
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-   ...                      import MetalIonDiffusionEquation
-   >>> metalEquation = MetalIonDiffusionEquation(
-   ...     metalVar,
+   ...                      import buildMetalIonDiffusionEquation
+   >>> metalEquation = buildMetalIonDiffusionEquation(
+   ...     ionVar = metalVar,
    ...     distanceVar = distanceVar,
    ...     depositionRate = depositionRateVariable,
    ...     diffusionCoeff = metalDiffusionCoefficient,
    ...     metalIonAtomicVolume = atomicVolume,
-   ...     boundaryConditions = (
+   ... )
+
+   >>> metalEquationBCs = (
    ...         FixedValue(
    ...             mesh.getFacesTop(),
    ...             bulkMetalConcentration
    ...         ),
    ...     )
-   ... )
 
 The `SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -422,30 +422,30 @@ density and a jump coefficient. The boundary condition
 The `SurfactantBulkDiffusionEquation` is set up with the following commands.
 
    >>> from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-   ...                 import SurfactantBulkDiffusionEquation
-   >>> bulkAcceleratorEquation = SurfactantBulkDiffusionEquation(
-   ...     bulkAcceleratorVar,
+   ...                 import buildSurfactantBulkDiffusionEquation
+   >>> bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
+   ...     bulkVar = bulkAcceleratorVar,
    ...     distanceVar = distanceVar,
    ...     surfactantVar = acceleratorVar,
    ...     diffusionCoeff = acceleratorDiffusionCoefficient,
-   ...     rateConstant = rateConstant * siteDensity,
-   ...         boundaryConditions = (
+   ...     rateConstant = rateConstant * siteDensity
+   ... )
+
+   >>> acceleratorBCs = (
    ...         FixedValue(
    ...             mesh.getFacesTop(),
    ...             bulkAcceleratorConcentration
-   ...         ),
-   ...     ) 
-   ... )
-
+   ...         ),)
+   
 The equations are now given to an `Iterator` object in the order that
 they will be solved.
 
-   >>> from fipy.iterators.iterator import Iterator
-   >>> iterator = Iterator((extensionEquation,
-   ...                      advectionEquation,
-   ...                      surfactantEquation,
-   ...                      metalEquation,
-   ...                      bulkAcceleratorEquation))
+   >>> ##from fipy.iterators.iterator import Iterator
+   >>> ##iterator = Iterator((extensionEquation,
+   ... ##                     advectionEquation,
+   ... ##                     surfactantEquation,
+   ... ##                     metalEquation,
+   ... ##                     bulkAcceleratorEquation))
 
 The function below is constructed to encapsulate the creation of the
 viewers.
@@ -486,7 +486,17 @@ is calculated with the CFL number and the maximum extension velocity.
    ...             distanceEquation.solve()
    ...         extensionVelocityVariable.setValue(Numeric.array(depositionRateVariable))
    ...         argmax = Numeric.argmax(extensionVelocityVariable)
-   ...         iterator.timestep(dt = cflNumber * cellSize / extensionVelocityVariable[argmax])
+   ...         distanceVar.updateOld()
+   ...         acceleratorVar.updateOld()
+   ...         metalVar.updateOld()
+   ...         bulkAcceleratorVar.updateOld()
+   ...         extensionEquation.solve()
+   ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+   ...         advectionEquation.solve(distanceVar, dt = dt) 
+   ...         surfactantEquation.solve(acceleratorVar, dt = dt)
+   ...         metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
+   ...         bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
+   ... ##        iterator.timestep(dt = cflNumber * cellSize / extensionVelocityVariable[argmax])
    ...         for viewer in viewers:
    ...             viewer.plot()
    ...     raw_input('finished')
@@ -496,7 +506,17 @@ simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
 
    >>> for i in range(5):
-   ...     iterator.timestep(dt = 0.1)
+   ...     dt = 0.1
+   ...     distanceVar.updateOld()
+   ...     acceleratorVar.updateOld()
+   ...     metalVar.updateOld()
+   ...     bulkAcceleratorVar.updateOld()
+   ...     extensionEquation.solve()
+   ...     advectionEquation.solve(distanceVar, dt = dt) 
+   ...     surfactantEquation.solve(acceleratorVar, dt = dt)
+   ...     metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
+   ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
+   ... ##    iterator.timestep(dt = 0.1)
 
    >>> import os
    >>> testFile = 'test.gz'

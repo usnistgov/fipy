@@ -47,7 +47,7 @@ from convectionCoeff import ConvectionCoeff
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 
-def buildSurfactantEquation(distanceVar = None):
+class SurfactantEquation:
     """
 
     A `SurfactantEquation` aims to evolve a surfactant on an interface
@@ -58,11 +58,17 @@ def buildSurfactantEquation(distanceVar = None):
     as it stands.
     
     """
-    
-    boundaryConditions = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
 
-    transientTerm = TransientTerm(tranCoeff = 1)
+    def __init__(self, distanceVar = None):
 
-    convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar))
+        transientTerm = TransientTerm(tranCoeff = 1)
 
-    return transientTerm - convectionTerm, boundaryConditions
+        convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar))
+
+        self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
+        self.eq = transientTerm - convectionTerm
+
+    def solve(self, var):
+        self.eq.solve(var,
+                      boundaryConditions = self.bc,
+                      solver = LinearLUSolver())
