@@ -222,6 +222,7 @@ def suite():
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonAllCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonLeftCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonRightCharge))
+
     return theSuite
     
 if __name__ == '__main__':

@@ -47,10 +47,11 @@ from concentrationEquation import ConcentrationEquation
 class SubstitutionalEquation(ConcentrationEquation):
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	Cj.substitutionalSum = Cj.copy()
-	Cj.substitutionalSum.setValue(0)
+        Cj.substitutionalSum.setValue(0)
+
 	for component in [component for component in fields['substitutionals'] if component is not Cj]:
 	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
-	    
+
 	denom = 1. - Cj.substitutionalSum.getFaceValue()
 	if diffusivity is None:
 	    diffusivity = Cj.getDiffusivity()

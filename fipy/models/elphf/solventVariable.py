@@ -48,7 +48,7 @@ class SolventVariable(ComponentVariable):
 	    parameters = parameters
 	    )
 	    
-	self.concentration = Numeric.array([1])
+	self.concentration =  Numeric.ones((len(mesh.getCells())),'d')
 	for component in substitutionals:
 	    self.concentration = self.concentration - component#.getOld()
 

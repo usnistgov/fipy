@@ -62,7 +62,7 @@ class ConvectionTerm(FaceTerm):
 	    diffCoeff = 1e-20
 	else:
 	    diffCoeff = self.diffusionTerm.getCoeff()
-	    
+
 	P = -self.coeff / diffCoeff
 	
 	alpha = self.Alpha(P)
