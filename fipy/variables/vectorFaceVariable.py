@@ -42,7 +42,8 @@ from fivol.variables.variable import Variable
 
 class VectorFaceVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None, length = 1):
-	
+
+	length = len(mesh.getFaces())
 	array = Numeric.zeros([length,mesh.getDim()],'d')
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
