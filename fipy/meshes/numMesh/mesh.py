@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/8/05 {4:13:54 PM} 
+ #                                last update: 3/16/05 {5:51:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -254,7 +254,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.faceVertexIDs = MA.array(faceVertexIDs)
         self.cellFaceIDs = MA.array(cellFaceIDs)
 
-	fipy.meshes.common.mesh.Mesh.__init__(self)
+        fipy.meshes.common.mesh.Mesh.__init__(self)
 	
     """Topology methods"""
 
@@ -393,7 +393,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.numberOfCells = len(self.cellFaceIDs)
         self.calcFaceCellIDs()
 	
-	fipy.meshes.common.mesh.Mesh.calcTopology(self)
+        fipy.meshes.common.mesh.Mesh.calcTopology(self)
 
 
     """calc Topology methods"""
@@ -474,7 +474,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 
     def calcGeometry(self):
 	self.calcFaceCenters()
-	fipy.meshes.common.mesh.Mesh.calcGeometry(self)
+        fipy.meshes.common.mesh.Mesh.calcGeometry(self)
         self.calcCellNormals()
         
     """calc geometry methods"""

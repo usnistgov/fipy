@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 3/10/05 {4:38:57 PM} 
+ #                                last update: 3/15/05 {10:57:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,6 @@
 __docformat__ = 'restructuredtext'
 
 import sys
-import string
 
 import Numeric
  
@@ -145,7 +144,7 @@ class TSVViewer(Viewer):
             else:
                 headings.extend([name])
             
-        f.write(string.join(headings, "\t"))
+        f.write("\t".join(headings))
         f.write("\n")
         
         values = mesh.getCellCenters()
@@ -181,7 +180,7 @@ class TSVViewer(Viewer):
                     break
             
             line = ["%.15g" % value for value in lineValues]
-            f.write(string.join(line, "\t"))
+            f.write("\t".join(line))
             f.write("\n")
 
         if f is not sys.stdout:
