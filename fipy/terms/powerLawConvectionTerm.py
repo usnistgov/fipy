@@ -50,8 +50,6 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    eps = 1e-3
 	    P  = self.P.getNumericValue()
 
-            print "P: ", type(P)
-
 	    P = Numeric.where(abs(P) < eps, eps, P)
 	    
 	    alpha = Numeric.where(                    P > 10.,                   (P - 1.) / P,   0.5)
