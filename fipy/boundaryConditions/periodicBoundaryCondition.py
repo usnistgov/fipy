@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/22/04 {9:48:55 AM} 
+ #                                last update: 11/22/04 {10:56:36 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -53,16 +53,10 @@ from fipy.tools.sparseMatrix import SparseMatrix
 
 class PeriodicBoundaryCondition(BoundaryCondition):
     def __init__(self, faces1, faces2):
-	self.faces1 = faces1
-	self.faces2 = faces2
-	
 	if len(faces1) is not len(faces2):
 	    raise "Incompatible numbers of faces"
-	
-	self.face1Ids = Numeric.array([face.getID() for face in self.faces1])
-	self.face2Ids = Numeric.array([face.getID() for face in self.faces2])
-	self.adjacentCell1Ids = Numeric.array([face.getCellID() for face in self.faces1])
-	self.adjacentCell2Ids = Numeric.array([face.getCellID() for face in self.faces2])
+
+	BoundaryCondition.__init__(self, faces1 + faces2, 0)
 
     def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
@@ -84,14 +78,12 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 	
-	diagonalContribution = array.take(cell1dia[:],self.face1Ids) / (2 * coeffScale)
-	offdiagonalContribution = array.take(cell1off[:],self.face2Ids) / (2 * coeffScale)
-	
-	LL.addAt(diagonalContribution, self.adjacentCell1Ids, self.adjacentCell1Ids)
-	LL.addAt(offdiagonalContribution, self.adjacentCell1Ids, self.adjacentCell2Ids)
-	LL.addAt(offdiagonalContribution, self.adjacentCell2Ids, self.adjacentCell1Ids)
-	LL.addAt(diagonalContribution, self.adjacentCell2Ids, self.adjacentCell2Ids)
-	
+	diagonalContribution = array.take(cell1dia[:],self.faceIds) / (2 * coeffScale)
+	offdiagonalContribution = array.take(cell1off[:],self.faceIds) / (2 * coeffScale)
+
+	LL.addAt(diagonalContribution, self.adjacentCellIds, self.adjacentCellIds)
+	LL.addAt(offdiagonalContribution, self.adjacentCellIds, self.adjacentCellIds[::-1])
+
 	return (LL, 0)
 	
     def getDerivative(self, order):
