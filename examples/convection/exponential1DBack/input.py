@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:57:05 PM} 
+ #                                last update: 10/7/04 {12:58:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,7 +51,7 @@ but with
 
 .. raw:: latex
 
-    $$ \\vec{u} = (-10, 0). $$
+    $ \\vec{u} = (-10, 0)$.
 
 The analytical solution test for this problem is given by:
 

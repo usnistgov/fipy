@@ -54,7 +54,7 @@ collaborative efforts on this project.  Please get involved.
 Conventions and Notation
 ------------------------
 
-Throughout, content to by typed at the keyboard will appear ``like this``.
+Throughout, text to by typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::
 
     $ like this
@@ -73,6 +73,7 @@ Text of the form::
     a is twelve
 
 is intended to indicate an interactive session in the Python_ interpreter.
+We will refer to these as "interactive sessions" or as "doctest blocks".
 The text "``>>>``" at the beginning of a line denotes the *primary prompt*,
 calling for input of a Python_ command.  The text "``...``" denotes the
 *secondary prompt*, which calls for input that continues from the line

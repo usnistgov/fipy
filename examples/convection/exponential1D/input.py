@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:27:06 PM} 
+ #                                last update: 10/7/04 {12:54:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -57,13 +57,11 @@ with boundary conditions given by:
    1& \text{at $x = L$,}
    \end{cases} $$ 
 
-and coefficients given by:
+and coefficients
 
 .. raw:: latex
 
-   \begin{center}
    $D = 1$, $\vec{u} = (10, 0)$, and $S_c = 0$.     
-   \end{center}
 
 The coefficients are represented by `diffCoeff` and `convCoeff` in
 the Python code. The `SteadyConvectionDiffusionScEquation` object is

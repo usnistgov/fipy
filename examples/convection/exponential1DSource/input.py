@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:56:25 PM} 
+ #                                last update: 10/7/04 {12:59:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,13 +51,13 @@ but uses a constant source value such that
 
 .. raw:: latex
 
-    $$ S_c = 1. $$
+    $ S_c = 1$.
 
 Here, the axes are reversed (`nx = 1`, `ny = 1000`) and
 
 .. raw:: latex
 
-    $$ \\vec{u} = (0, 10). $$
+    $ \\vec{u} = (0, 10)$.
 
 The analytical solution test for this problem is given by:
 

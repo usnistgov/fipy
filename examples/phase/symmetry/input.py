@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:30:54 PM} 
+ #                                last update: 10/7/04 {1:01:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -80,7 +80,7 @@ Next, extract the corresponding cells from each region in the correct order:
    ...     topLeftCells += (mesh.getNearestCell((x , L - y)),)
 
 The method `mesh.getNearestCell((x, y))` finds the nearest cell to
-the` given coordinate. The cells are then set to the symmetry value:
+the given coordinate. The cells are then set to the symmetry value:
 
    >>> for cellSet in orderedCells:
    ...     for i in range(len(cellSet)):

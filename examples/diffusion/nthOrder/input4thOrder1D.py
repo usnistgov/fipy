@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:23:02 PM} 
+ #                                last update: 10/7/04 {12:52:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,12 +53,12 @@ with the following boundary conditions:
 
 .. raw:: latex
 
-    \begin{align*}
-    \phi &= \alpha_1 && \text{at $x = 0$} \\
+    \begin{alignat*}
+    \phi &= \alpha_1 &\quad& \text{at $x = 0$} \\
     \frac{\partial \phi}{\partial x} &= \alpha_2 && \text{at $x = L$} \\
     \frac{\partial^2 \phi}{\partial x^2} &= \alpha_3 && \text{at $x = 0$} \\
     \frac{\partial^3 \phi}{\partial x^3} &= \alpha_4 && \text{at $x = L$.}
-    \end{align*}
+    \end{alignat*}
 
 The analytical solution is:
 

@@ -1,21 +1,43 @@
-=======
-CREDITS
-=======
+============
+CONTRIBUTORS
+============
 
-List of contributors so far:
+`Jon Guyer`_ 
+    is a member of the research staff of the `Metallurgy Division`_ in
+    |MSEL| at |NIST|.  Jon is interested in object-oriented design and
+    in phase field modeling of electrochemistry.
 
-`Jon Guyer`_
-    Core developer.
+`Daniel Wheeler`_ 
+    is a caveman.  Daniel's interests are in numerical modeling, finite
+    volume techniques, and level set treatments.
 
-`Daniel Wheeler`_
-    Core developer.
-
-`Jim Warren`_
-    Oversight and management.
+`Jim Warren`_ 
+    is a member of the research staff of the `Metallurgy Division`_ and the
+    Director of |CTCMS| of |MSEL| at |NIST|.  Jim was responsible for the
+    oversight and management of |FiPy|.  Jim is interested in a variety of
+    problems, including the phase field modeling of solidification,
+    polycrystalline solids, and the electrochemical interface.
 
 Alex Mont
-    Developed the `PyxViewer` and the `Gmsh` import and export modules.
+    is a student at `Montgomery Blair High School`_.  Alex developed the
+    `PyxViewer` and the `Gmsh` import and export modules.
 
+
+
+.. include:: utils/include.txt
+
+.. |FiPy| replace:: |latexFiPy| |htmlFiPy|
+
+.. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
+.. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_
+.. |NIST| replace:: the `National Institute of Standards and Technology`_
+
+.. _Materials Science and Engineering Laboratory:                  http://www.msel.nist.gov/
+.. _Center for Theoretical and Computational Materials Science:    http://www.ctcms.nist.gov/
+.. _Metallurgy Division:                                           http://www.metallurgy.nist.gov/
+.. _National Institute of Standards and Technology:                http://www.nist.gov/
+
+.. _Montgomery Blair High School:                                  http://www.mbhs.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler

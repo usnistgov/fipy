@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {12:58:53 PM} 
+ #                                last update: 10/7/04 {12:54:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,9 +62,7 @@ with initial conditions
 
 .. raw:: latex
 
-   \begin{center}
    $\phi = 0$ at $t = 0$,
-   \end{center}
 
 boundary conditions
 
@@ -80,9 +78,7 @@ and parameter values
 
 .. raw:: latex
 
-   \begin{center}
    $\tau = 0$ and $D = 1$.
-   \end{center}
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
 object represents a rectangular structured grid. The parameters `dx` and

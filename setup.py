@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/7/04 {8:06:27 AM} 
+ #                                last update: 10/7/04 {4:21:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -190,7 +190,8 @@ class build_docs (Command):
                                  'TALKS',
                                  'TODOLIST',
 				 'LICENSE',
-				 'DISCLAIMER']
+				 'DISCLAIMER',
+				 'examples/README']
         
 	if self.latex:
 	    self._buildTeXAPIs()
@@ -364,7 +365,6 @@ setup(	name = "FiPy",
 			'fipy.tools',
 			    'fipy.tools.dimensions',
 			    'fipy.tools.inline',
-			    'fipy.tools.profiler',
 			'fipy.variables',
 			'fipy.viewers'
 	]

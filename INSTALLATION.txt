@@ -13,8 +13,7 @@ Privileges
 If you do not have administrative privileges on your computer, or if for
 any reason you don't want to tamper with your existing Python_
 installation, most packages (including |FiPy|) will allow you to install to
-an alternate location (see the remarks on getting this to work with the
-Numeric_ package).  Instead of installing these packages with::
+an alternate location.  Instead of installing these packages with::
 
     $ python setup.py install
 
@@ -25,8 +24,8 @@ you would use::
 where ``<dir>`` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 ``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
-`Alternate Installation`_ section of the Python_ document `Installing
-Python Modules`_ for more information, such as circumstances in which you
+`Alternate Installation`_ section of the Python_ document *`Installing
+Python Modules`_* for more information, such as circumstances in which you
 should use ``--prefix`` instead of ``--home``.
 
 .. _Alternate Installation: http://docs.python.org/inst/alt-install-windows.html
@@ -45,8 +44,8 @@ The only elements of |FiPy| that may be platform-dependent are the
 viewers.  All other aspects should function on any platform that has a
 recent Python_ installation.
 
-|FiPy| has been developed and tested on `Mac OS X`_ 10.3 and higher
-and on ???  running Debian_ Linux blah blah. We welcome reports of
+|FiPy| has been developed and tested on the Unix operating systems `Mac OS
+X`_ 10.3 and Debian_ Linux running on blah blah.  We welcome reports of
 compatibility with other systems, along with any steps necessary to
 install.
 
@@ -139,7 +138,7 @@ Viewers
 -------
 
 At least one of the following packages will be needed to allow viewing the
-results of |FiPy| calculations.
+results of |FiPy| calculations:
 
 Pygist
 ~~~~~~
@@ -253,10 +252,13 @@ typing::
     $ python setup.py install
 
 at the command line.  Alternatively, you may choose not to formally install
-|FiPy| and to simply work within the base directory instead.  Keep in mind
-that you will then need take care to preserve your changes when upgrades to
-|FiPy| become available (upgrades via CVS_ will handle this issue
-automatically).
+|FiPy| and to simply work within the base directory instead.  
+
+.. warning::
+
+   Keep in mind that you will then need take care to preserve your changes
+   when upgrades to |FiPy| become available (upgrades via CVS_ will handle
+   this issue automatically).
 
 ------------
 Using |FiPy|

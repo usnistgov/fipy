@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:59:01 PM} 
+ #                                last update: 10/7/04 {1:00:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,7 +48,7 @@ This example solves the steady-state convection-diffusion equation as described 
     $ examples/diffusion/convection/exponential1D/input.py
     
 but uses the `PowerLawConvectionTerm` rather than the
-`ExponentialConvectionTerm` instatiator.
+`ExponentialConvectionTerm` instantiator.
 
 The analytical solution test for this problem is given by:
 

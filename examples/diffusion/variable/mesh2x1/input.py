@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {5:00:17 PM} 
+ #                                last update: 10/7/04 {12:52:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,11 +53,9 @@ with boundary conditions
 
 .. raw:: latex
 
-    \begin{center}
     $\phi = 0$ at $x = 0$ and $D \frac{\partial \phi}{\partial x} = 1$ at $x = L$.
-    \end{center}
 
-The diffusion coefficient varies with the following profile:
+The diffusion coefficient varies with the profile
 
 .. raw:: latex
 
@@ -67,7 +65,9 @@ The diffusion coefficient varies with the following profile:
    1& \text{for $3 L / 4 \ge x < L$,}
    \end{cases} $$
 
-where `L` is the length of the bar.  In this example the diffusion
+   where $L$ is the length of the bar.  
+   
+In this example the diffusion
 coefficient is a numerical array that is passed to the diffusion equation.
 The diffusion coefficient exists on the faces of the cells and thus has to
 be the length of the faces.  It is created in the following way:

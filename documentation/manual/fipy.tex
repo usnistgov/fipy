@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/7/04 {11:36:17 AM} 
+ %                                last update: 10/7/04 {5:07:16 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -134,6 +134,9 @@ and the Center for Theoretical and Computational Materials Science
 \settocdepth{chapter} 
 \parttoc
 
+\chapter{Usage}
+\input{examples/readme}
+
 \chapter{Diffusion Examples}
 
 \input{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
@@ -174,6 +177,16 @@ and the Center for Theoretical and Computational Materials Science
 
 \chapter{Phase Field Examples}
 
+\section*{Solidification Examples}
+% \addstarredsection{Solidification Examples}
+\addcontentsline{toc}{section}{Solidification Examples} 
+
+The following examples exhibit various phenomena in solidification, including
+dendritic growth and grain impingement.  Further discussion of the
+models and algorithms can be found in ``Extending Phase Field Models
+of Solidification to Polycrystalline Materials'', J.A. Warren \emph{et
+al.}, \textit{Acta Materialia}, \textbf{51} (2003) 6035--6058.
+
 \input{examples/latex/examples.phase.anisotropy.input-module}
 \newpage
 \input{examples/latex/examples.phase.impingement.mesh40x1.input-module}
@@ -190,6 +203,17 @@ and the Center for Theoretical and Computational Materials Science
 \newpage
 \input{examples/latex/examples.phase.symmetry.input-module}
 \newpage
+
+\section*{Electrochemistry Examples}
+% \addstarredsection{Electrochemistry Examples} 
+\addcontentsline{toc}{section}{Electrochemistry Examples} 
+
+The following examples exhibit various parts of a model to study
+electrochemical interfaces.  Further discussion of the models and
+algorithms can be found in ``Phase field modeling of electrochemistry
+I: Equilibrium'' and ``II: Kinetics'', J. E. Guyer \emph{et al.},
+\textit{Physical Review E}, \textbf{69} (2004) 021603 and 021604.
+
 \input{examples/latex/examples.elphf.input1Dphase-module}
 \newpage
 \input{examples/latex/examples.elphf.input1D-module}
@@ -250,9 +274,10 @@ and the Center for Theoretical and Computational Materials Science
 
 % Credits
 
-\chapter*{Credits}
-\addcontentsline{toc}{part}{Credits} 
-\label{chap:Credits}
+\chapter*{Contributors}
+% \addstarredpart{Contributors} 
+\addcontentsline{toc}{part}{Contributors} 
+\label{chap:Contributors}
 
 \inputencoding{latin1}
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 10/6/04 {5:10:47 PM} 
+ #                                last update: 10/7/04 {12:18:33 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,7 @@
 """
 
 The `AdsorbingSurfactantEquation` object solves the
-`SurfactantEquation but with an adsorbing species from some bulk
+`SurfactantEquation` but with an adsorbing species from some bulk
 value. The equation that describes the surfactant adsorbing is given
 by,
 
