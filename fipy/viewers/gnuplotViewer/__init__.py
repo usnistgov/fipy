@@ -1,3 +1,5 @@
+from gnuplotViewer import GnuplotViewer
+
 def make(vars, title = None, limits = None):
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
