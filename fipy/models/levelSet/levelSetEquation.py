@@ -43,7 +43,7 @@
 
 import Numeric
 
-from fivol.equations.Equation import Equation
+from fivol.equations.equation import Equation
 
 class LevelSetEquation(Equation):
     """
@@ -51,7 +51,7 @@ class LevelSetEquation(Equation):
     """    
     def __init__(self, var):
         
-        mesh = var.getMesh()
+        self.mesh = var.getMesh()
 	
 	Equation.__init__(
             self,
@@ -60,16 +60,9 @@ class LevelSetEquation(Equation):
             solver = None)
 
     def solve(self):
-        ## keep the old values
         cells = self.mesh.getCells()
-
-        ## find all the cells with neighbours of opposite sign
         zeroCells = self.getZeroCells(cells)
-
-        print zeroCells
-
-        ## set the interface cells to have a value.
-##        self.setZeroValues(zeroCells)
+        self.setZeroValues(zeroCells)
 
         ## find bounding cells to the evaluatedCells
 ##        boundingCells = self.getBoundingCells(zeroCells)
@@ -87,26 +80,26 @@ class LevelSetEquation(Equation):
 
     def getZeroCells(self, cells):
         zeroCells = ()
-        array = var.getNumericValue()
+        array = self.var.getNumericValue()
         for cell in cells:
             id = cell.getId()
             zeroCell = ()
-            for adjacentCell in cell.getAdjacentCells():                
+            for adjacentCell in cell.getBoundingCells():                
                 adjacentId = adjacentCell.getId()
                 if array[id] * array[adjacentId]<0.:
                     zeroCell = (cell,)
-             zeroCells += zeroCell
+            zeroCells += zeroCell
         return zeroCells
 
-##    def setZeroCellValues(self, zeroCells):
-##        varOld = var.getOld()
-##        for cell in zeroCells:
-##            minCell1 = cell.getMinimumCell(cell.getAdjacentCells())
-##            minCell2 = cell.getMinimumCell(cell.getAdjacentCells()-minCell1)
-##            value = varOld.getValue(cell)
-##            gradx,grady = cell.getGradient(minCell1, minCell2)
-##            value = value / Numeric.sqrt(gradx * gradx, grady * grady)
-##            var.setValue(value, cell)
+    def setZeroCellValues(self, zeroCells):
+        varOld = var.copy()
+        for cell in zeroCells:
+            minCell1 = cell.getMinimumCell(cell.getAdjacentCells())
+            minCell2 = cell.getMinimumCell(cell.getAdjacentCells()-minCell1)
+            value = varOld.getValue(cell)
+            gradx,grady = cell.getGradient(minCell1, minCell2)
+            value = value / Numeric.sqrt(gradx * gradx, grady * grady)
+            var.setValue(value, cell)
 
 ##    def getBoundingCells(self, zeroCells):
 ##        boundingCells = ()
@@ -118,7 +111,8 @@ class LevelSetEquation(Equation):
 ##                        boundingCell = (cell,)
 ##            boundingCells += boundingCell
 
-##    def getMinimumCell(
+    def getMinimumCell(cells):
+        values = 
             
 
             
