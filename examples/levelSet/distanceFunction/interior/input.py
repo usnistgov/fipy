@@ -55,18 +55,10 @@ given by:
     
 Do the tests:
 
-   >>> eqn.setInitialEvaluatedCells()
+   >>> eqn.solve()
    >>> dX = dx / 2.
    >>> dY = dy / 2.
    >>> mm = min(dX, dY)
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), Numeric.array((  1.  ,   dY  ,   dY  ,  dY  ,  1.  ,
-   ...                                                         dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                                                         dX  ,   -dX ,   -1. ,  -dX ,  dX  ,
-   ...                                                         dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                                                         1.  ,   dY  ,   dY  ,  dY  ,  1.  )), atol = 1e-10)
-   1
-   >>> Numeric.allclose(eqn.getInitialTrialCells(), Numeric.array((0, 4, 12, 20, 24)), atol = 1e-10)
-   1
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
@@ -75,17 +67,12 @@ Do the tests:
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> v1 = evalCell(dY, dX, dx, dy)[1]
    >>> v2 = max(-dY*3, -dX*3)   
-   >>> _testInitialTrialValues = Numeric.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
-   ...                                                     dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                                                     dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
-   ...                                                     dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                                                     v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), _testInitialTrialValues, atol = 1e-10)
-   1
-   >>> eqn.resetCells()
-   >>> eqn.solve()
-   >>> _testFinalValues = _testInitialTrialValues
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), _testFinalValues, atol = 1e-10)
+   >>> values = Numeric.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
+   ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
+   ...                           dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
+   ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
+   ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
+   >>> Numeric.allclose(Numeric.array(var), values, atol = 1e-10)
    1
 
 """
@@ -96,7 +83,8 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
 dx = 1.
 dy = 1.
@@ -108,23 +96,22 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-distanceFunctionVariable = CellVariable(
+var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-distanceFunctionViewer = Grid2DGistViewer(var = distanceFunctionVariable, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
 
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] < dx) or (cell.getCenter()[0] > (Lx - dx)) or (cell.getCenter()[1] < dy) or (cell.getCenter()[1] > (Ly - dy)))
 
-distanceFunctionVariable.setValue(-1.)
-distanceFunctionVariable.setValue(1.,positiveCells)
+var.setValue(1.,positiveCells)
 
-eqn = DistanceFunctionEquation(distanceFunctionVariable)
+eqn = DistanceEquation(var)
 
 if __name__ == '__main__':
-    distanceFunctionViewer.plot()
+    viewer.plot()
     eqn.solve()
-    distanceFunctionViewer.plot()
+    viewer.plot()
     raw_input('finished')

@@ -63,7 +63,7 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.models.levelSet.surfactant.conservativeSurfactantEquation import ConservativeSurfactantEquation
@@ -100,7 +100,7 @@ x1 = (L + boxSize) / 2
 
 distanceVariable.setValue(-1., mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1))
 
-distanceEquation = DistanceFunctionEquation(distanceVariable)
+distanceEquation = DistanceEquation(distanceVariable)
 distanceEquation.solve()
 
 surfactantVariable = SurfactantVariable(

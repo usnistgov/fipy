@@ -53,16 +53,8 @@ given by:
 
 Do the tests:
 
-   >>> eqn.setInitialEvaluatedCells()
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), Numeric.array((1., 1., 1., 1., dx / 2., -dx / 2., -1., -1., -1., -1.)), atol = 1e-10)
-   1
-   >>> Numeric.allclose(eqn.getInitialTrialCells(), Numeric.array((3, 6)))
-   1
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), Numeric.array((1., 1., 1., 3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -1., -1., -1.)))
-   1
-   >>> eqn.resetCells()
    >>> eqn.solve()
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., -7. * dx / 2., -9. * dx / 2.)))
+   >>> Numeric.allclose(Numeric.array(var), Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., -7. * dx / 2., -9. * dx / 2.)))
    1
 
 """
@@ -73,7 +65,8 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
 dx = 0.5
 dy = 2.
@@ -84,25 +77,24 @@ L = nx * dx
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-distanceFunctionVariable = CellVariable(
+var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-distanceFunctionViewer = Grid2DGistViewer(var = distanceFunctionVariable, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
 
 positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] < L / 2.)
-distanceFunctionVariable.setValue(-1.)
-distanceFunctionVariable.setValue(1.,positiveCells)
+var.setValue(1.,positiveCells)
 
-eqn = DistanceFunctionEquation(distanceFunctionVariable)
+eqn = DistanceEquation(var)
 
 if __name__ == '__main__':
-    distanceFunctionViewer.plot()
+    viewer.plot()
 
     eqn.solve()
 
-    distanceFunctionViewer.plot()
+    viewer.plot()
 
     raw_input('finished run()')

@@ -70,8 +70,8 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
@@ -94,13 +94,13 @@ timeStepDuration = cfl * dx / velocity
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-distanceVariable = CellVariable(
+distanceVariable = DiatanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-surfactantVariable = CellVariable(
+surfactantVariable = SurfactantVariable(
     name = 'surfactant variable',
     mesh = mesh,
     value = 1.
@@ -112,7 +112,7 @@ distanceVariable.setValue(1., positiveCells)
 
 distanceEquation = DistanceFunctionEquation(distanceVariable)
 
-surfactantEquation = SurfactantEquation(
+surfactantEquation = ConservativeSurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(

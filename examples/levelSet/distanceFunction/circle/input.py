@@ -53,36 +53,10 @@ given by:
 
 Do the tests:
 
-   >>> eqn.setInitialEvaluatedCells()
+   >>> eqn.solve()
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)     
-   >>> _testInitialEvaluatedValues = Numeric.array((-1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -dY  ,  -dY  , -dY  ,  -1.  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -mm  ,  mm   ,  dY   , mm   ,  -mm  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -dX  ,  mm   ,  1.   ,  1    , 1.   ,  mm   ,  -dX  , -1., -1.,
-   ...                                                   -1.,  -1.  , -dX  ,  dX   ,  1.   ,  1    , 1.   ,  dX   ,  -dX  , -1., -1.,
-   ...                                                   -1.,  -1.  , -dX  ,  mm   ,  1.   ,  1.   , 1.   ,  mm   ,  -dX  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -mm  ,  mm   ,  dY   , mm   ,  -mm  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -dY  ,  -dY  , -dY  ,  -1.  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1., -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1., -1.))
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), _testInitialEvaluatedValues, atol = 1e-10)
-   1
-
-   >>> _testInitialTrialCellIDs = Numeric.array((15, 16, 17,
-   ...                                               25, 29,
-   ...                                               35, 41,
-   ...                                               45, 48, 49, 50, 53,
-   ...                                               56, 59, 61, 64,
-   ...                                               67, 70, 71, 72, 75,
-   ...                                                79, 85,
-   ...                                               91, 95,
-   ...                                               103, 104, 105))
-   >>> Numeric.allclose(Numeric.sort(eqn.getInitialTrialCells()), _testInitialTrialCellIDs)
-   1
-
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
@@ -92,18 +66,21 @@ Do the tests:
    >>> v1 = evalCell(-dY, -mm, dx, dy)[0] 
    >>> v2 = evalCell(-mm, -dX, dx, dy)[0]
    >>> v3 = evalCell(mm,  mm,  dx, dy)[1]
-   >>> _testInitialTrialValues = Numeric.array((-1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1.  , -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -3*dY,  -3*dY, -3*dY,  -1.  ,  -1.  , -1.  , -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  v1   ,  -dY  ,  -dY  , -dY  ,  v1   ,  -1.  , -1.  , -1.,
-   ...                                                   -1.,  -1.  , v2   ,  -mm  ,  mm   ,  dY   , mm   ,  -mm  ,  v2   , -1.  , -1.,
-   ...                                                   -1.,  -dX*3, -dX  ,  mm   ,  v3   ,  3*dY , v3   ,  mm   ,  -dX  , -dX*3, -1.,
-   ...                                                   -1.,  -dX*3, -dX  ,  dX   ,  3*dX ,  1    , 3*dX ,  dX   ,  -dX  , -dX*3, -1.,
-   ...                                                   -1.,  -dX*3, -dX  ,  mm   ,  v3   ,  3*dY , v3   ,  mm   ,  -dX  , -dX*3, -1.,
-   ...                                                   -1.,  -1.  , v2   ,  -mm  ,  mm   ,  dY   , mm   ,  -mm  ,  v2   , -1.  , -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  v1   ,  -dY  ,  -dY  , -dY  ,  v1   ,  -1.  , -1.  , -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -3*dY,  -3*dY, -3*dY,  -1.  ,  -1.  , -1.  , -1.,
-   ...                                                   -1.,  -1.  , -1.  ,  -1.  ,  -1.  ,  -1.  , -1.  ,  -1.  ,  -1.  , -1.  , -1.))
-   >>> Numeric.allclose(Numeric.array(eqn.getVar()), _testInitialTrialValues)
+   >>> v4 = evalCell(v3, dY, dx, dy)[1]
+   >>> v5 = evalCell(dX, v3, dx, dy)[1]
+   >>> import MA
+   >>> trialValues = MA.masked_values((-1000,  -1000  , -1000  ,  -1000  ,  -1000  ,  -1000  , -1000  ,  -1000  ,  -1000  , -1000  , -1000,
+   ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -3*dY  ,  -3*dY  , -3*dY  ,  -1000  ,  -1000  , -1000  , -1000,
+   ...                                 -1000,  -1000  , -1000  ,  v1     ,  -dY    ,  -dY    , -dY    ,  v1     ,  -1000  , -1000  , -1000,
+   ...                                 -1000,  -1000  , v2     ,  -mm    ,  mm     ,  dY     , mm     ,  -mm    ,  v2     , -1000  , -1000,
+   ...                                 -1000,  -dX*3  , -dX    ,  mm     ,   v3    ,  v4     , v3     ,  mm     ,  -dX    , -dX*3  , -1000,
+   ...                                 -1000,  -dX*3  , -dX    ,  dX     ,  v5     ,  -1000  , v5     ,  dX     ,  -dX    , -dX*3  , -1000,
+   ...                                 -1000,  -dX*3  , -dX    ,  mm     ,  v3     ,  v4     , v3     ,  mm     ,  -dX    , -dX*3  , -1000,
+   ...                                 -1000,  -1000  , v2     ,  -mm    ,  mm     ,  dY     , mm     ,  -mm    ,  v2     , -1000  , -1000,
+   ...                                 -1000,  -1000  , -1000  ,  v1     ,  -dY    ,  -dY    , -dY    ,  v1     ,  -1000  , -1000  , -1000,
+   ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -3*dY  ,  -3*dY  , -3*dY  ,  -1000  ,  -1000  , -1000  , -1000,
+   ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -1000  ,  -1000  , -1000  ,  -1000  ,  -1000  , -1000  , -1000), -1000)
+   >>> MA.allclose(Numeric.array(var), trialValues)
    1
    
 """
@@ -114,7 +91,8 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
 dx = 1.
 dy = 1.
@@ -125,26 +103,25 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-distanceFunctionVariable = CellVariable(
+var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = -1.
     )
 
-distanceFunctionViewer = Grid2DGistViewer(var = distanceFunctionVariable, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
 
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] - Lx / 2.)**2 + (cell.getCenter()[1] - Ly / 2.)**2 < (Lx / 4.)**2)
-distanceFunctionVariable.setValue(-1.)
-distanceFunctionVariable.setValue(1.,positiveCells)
+var.setValue(1.,positiveCells)
 
-eqn = DistanceFunctionEquation(distanceFunctionVariable)
+eqn = DistanceEquation(var)
 
 if __name__ == '__main__':
 
-    distanceFunctionViewer.plot()
+    viewer.plot()
 
     eqn.solve()
 
-    distanceFunctionViewer.plot()
+    viewer.plot()
 
     raw_input('finished')
