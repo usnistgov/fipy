@@ -80,7 +80,7 @@ Here the phase equation is solved with an explicit technique.
 The solution is allowed to evolve for `steps = 100` time steps.
 
    >>> for step in range(steps):
-   ...     it.timestep()
+   ...     it.timestep(dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayshi for phase field
@@ -120,7 +120,6 @@ ny = 100
 
 phaseParameters={
    'tau' :        0.1,
-   'time step duration' : timeStepDuration,
    'epsilon' :    0.008,
    's' :          0.01,
    'alpha' :      0.015,
@@ -184,6 +183,6 @@ if __name__ == '__main__':
    phaseViewer = Grid2DGistViewer(phase)
    phaseViewer.plot()
    for step in range(steps):
-      it.timestep()
+      it.timestep(dt = timeStepDuration)
       phaseViewer.plot()
    raw_input('finished')

@@ -52,7 +52,7 @@ class MatrixEquation(Equation):
     def getVar(self):
         return self.var    
 	
-    def buildMatrix(self):
+    def buildMatrix(self, dt):
 	N = len(self.array)
 	self.matrix = SparseMatrix(size = N, bandwidth = self.getVar().getMesh().getMaxFacesPerCell())
 	self.b = Numeric.zeros((N),'d')
@@ -62,7 +62,7 @@ class MatrixEquation(Equation):
 ##   gobeldegook
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
-	    L, b = term.buildMatrix(oldArray = self.var.getOld().getValue(), coeffScale = self.terms[0].getCoeffScale(), varScale = varScale)
+	    L, b = term.buildMatrix(oldArray = self.var.getOld().getValue(), coeffScale = self.terms[0].getCoeffScale(), varScale = varScale, dt = dt)
             self.matrix += L
             self.b += b
 	    
@@ -122,10 +122,10 @@ class MatrixEquation(Equation):
 		
 	return residual
 
-    def solve(self):
+    def solve(self, dt = 1.):
 	self.array = self.var.getNumericValue()
 	self.oldSweepArray = self.array.copy()
-	self.buildMatrix()
+	self.buildMatrix(dt)
 	self.solver.solve(self.matrix,self.array,self.b)
 	residual = self.getResidual()
 	self.postSolve(residual)

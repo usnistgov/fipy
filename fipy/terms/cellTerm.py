@@ -51,51 +51,57 @@ from fipy.tools.sparseMatrix import SparseMatrix
 class CellTerm(Term):
     def __init__(self,weight,mesh):
 	Term.__init__(self, mesh = mesh, weight = weight)
-	
+
+	self.diagCoeff = self.coeff * weight['diagonal']
 	self.oldCoeff = self.coeff * weight['old value']
 	self.bCoeff = self.coeff * weight['b vector']
 	self.newCoeff = self.coeff * weight['new value']
-        self.updatePyArray = Numeric.zeros((mesh.getNumberOfCells()),'d')
 	
-    def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale):
+    def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale, dt):
         N = len(oldArray)
 
-	b += oldArray * self.oldCoeff[:] / (coeffScale * varScale)
+	b += oldArray * self.oldCoeff[:] / (coeffScale * varScale) / dt
 	b += Numeric.ones([N]) * self.bCoeff[:] / (coeffScale)
 ## 	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
-	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
+	L.addAtDiagonal(Numeric.ones([N]) * self.newCoeff[:]/coeffScale/dt)
+        L.addAtDiagonal(Numeric.ones([N]) * self.diagCoeff[:]/coeffScale)
+        
 
-    def buildMatrix(self, oldArray, coeffScale, varScale):
+
+    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
         coeffScale = coeffScale * varScale
         
         N = len(oldArray)
         b = Numeric.zeros((N),'d')
         L = SparseMatrix(size = N)
 
-        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale)
+        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale, dt)
         
         return (L, b)
 
-    def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale):
+    def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale, dt):
 
         if type(self.oldCoeff) is type(Numeric.zeros((2),'d')):
             oldCoeff = self.oldCoeff
             bCoeff = self.bCoeff
             newCoeff = self.newCoeff
+            diagCoeff = self.diagCOeff
         else:
             oldCoeff = self.oldCoeff.getNumericValue()
             bCoeff = self.bCoeff.getNumericValue()
             newCoeff = self.newCoeff.getNumericValue()
-
+            diagCoeff = self.diagCoeff.getNumericValue()
+            
         if type(coeffScale) in (type(Numeric.zeros((2),'d')),type(1)):
             cScale = coeffScale
         else:
             cScale = coeffScale.getNumericValue()
-                
+        updatePyArray = Numeric.zeros((self.mesh.getNumberOfCells()),'d')
         inline.runInlineLoop1("""
-            b(i) += oldArray(i) * oldCoeff(i) / coeffScale / varScale;
+            b(i) += oldArray(i) * oldCoeff(i) / coeffScale / varScale / dt;
             b(i) += bCoeff(i) / coeffScale;
-            updatePyArray(i) = newCoeff(i) / coeffScale;
+            updatePyArray(i) += newCoeff(i) / coeffScale / dt;
+            updatePyArray(i) += diagCoeff(i) / coeffScale;
         """,b = b[:],
             oldArray = oldArray.getNumericValue(),
             oldCoeff = oldCoeff,
@@ -103,9 +109,11 @@ class CellTerm(Term):
             varScale = varScale.getNumericValue(),
             bCoeff = bCoeff,
             newCoeff = newCoeff,
-            updatePyArray = self.updatePyArray[:],
-            ni = len(self.updatePyArray[:]))
-        
-	L.addAtDiagonal(self.updatePyArray)
+            diagCoeff = diagCoeff,
+            updatePyArray = updatePyArray[:],
+            ni = len(updatePyArray[:]),
+            dt = dt)
+
+	L.addAtDiagonal(updatePyArray)
 
         

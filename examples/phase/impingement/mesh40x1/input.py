@@ -94,7 +94,7 @@ with the test result the problem is iterated for `steps = 10` time
 steps.
 
    >>> for i in range(steps):        
-   ...     it.timestep()
+   ...     it.timestep(dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayshi for phase field
@@ -151,11 +151,9 @@ sharedPhaseThetaParameters = {
 
 phaseParameters = {
     'tau'                   : 0.1,
-    'time step duration'    : timeStepDuration
     }
 
 thetaParameters = {
-    'time step duration'    : timeStepDuration,
     'small value'           : 1e-6,
     'beta'                  : 1e5,
     'mu'                    : 1e3,
@@ -242,7 +240,7 @@ if __name__ == '__main__':
     thetaProductViewer.plot()
 
     for i in range(steps):
-        it.timestep()
+        it.timestep(dt = timeStepDuration)
         phaseViewer.plot()
         thetaProductViewer.plot()
 

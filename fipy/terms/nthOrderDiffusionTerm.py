@@ -257,7 +257,7 @@ class NthOrderDiffusionTerm(Term):
 	
 	return coefficientMatrix
 	
-    def buildMatrix(self, oldArray, coeffScale, varScale):
+    def buildMatrix(self, oldArray, coeffScale, varScale, dt = 1.):
         N = self.getMesh().getNumberOfCells()
         volumes = self.mesh.getCellVolumes()
         if self.order > 0:

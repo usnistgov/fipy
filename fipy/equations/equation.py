@@ -64,7 +64,7 @@ class Equation:
     def updateVar(self):
 	pass
 	
-    def solve(self):
+    def solve(self, dt = 1.):
 	pass
     
     def isConverged(self):

@@ -49,5 +49,5 @@ class SpSourceTerm(SourceTerm):
     for stability. Added to the matrix diagonal.
     """
     def __init__(self, sourceCoeff, mesh):
-	weight = {'b vector': 0, 'new value': 1, 'old value': 0}
+        weight = {'diagonal' : 1, 'b vector': 0, 'new value': 0, 'old value': 0}
 	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 

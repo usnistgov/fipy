@@ -71,7 +71,7 @@ class TransientVariable(CellVariable):
         pFunc = 1. + Numeric.exp(-expo.getNumericValue()) * (self.parameters['mu'] / epsilon - 1.)
 
         
-        self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration']
+        self.value = self.parameters['tau'] * phaseSq * pFunc
 
     def _calcValueInline(self):
         
@@ -83,7 +83,7 @@ class TransientVariable(CellVariable):
 
         expo = epsilon * beta * thetaGradMag(i);
         pFunc = 1. + exp(-expo) * (mu / epsilon - 1.);
-        value(i) = tau * phaseSq * pFunc / timeStepDuration;""",
+        value(i) = tau * phaseSq * pFunc;""",
                               phaseMod = 0.,
                               phase = self.phase.getNumericValue(),
                               smallValue = self.parameters['small value'],
@@ -95,7 +95,6 @@ class TransientVariable(CellVariable):
                               pFunc = 0.,
                               mu = self.parameters['mu'],
                               tau = self.parameters['tau'],
-                              timeStepDuration = self.parameters['time step duration'],
                               value = self.value.value,
                               ni = len(self.phase.getNumericValue())
                               )

@@ -57,15 +57,15 @@ class TemperatureEquation(MatrixEquation):
                  parameters = {}):
         
         mesh = var.getMesh()
-        dt = parameters['time step duration']
         latentHeat = parameters['latent heat']
         heatCapacity = parameters['heat capacity']
         phase = fields['phase']
         phaseOld =  phase.getOld()
-
+        dt = parameters['timeStepDuration']
+        
         terms = (
  
-	    TransientTerm(1. / dt, mesh),
+	    TransientTerm(1., mesh),
             
 	    ImplicitDiffusionTerm(parameters['temperature diffusion'],
                                   mesh,

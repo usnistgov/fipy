@@ -107,7 +107,7 @@ class PhaseEquation(MatrixEquation):
             sourceCoeff = ScSourceVariable(mPhi = self.mPhi, phase = self.var, anisotropy = anisotropy),
 	    mesh = mesh)
 	
-	transientCoeff = parameters['tau'] / parameters['time step duration']
+	transientCoeff = parameters['tau']
         
 	terms = (
 	    TransientTerm(transientCoeff, mesh),

@@ -69,9 +69,9 @@ class Iterator:
         self.equations = equations
 	self.timeStepDuration = timeStepDuration
 	
-    def sweep(self):
+    def sweep(self, dt):
 	for equation in self.equations:
-	    equation.solve()
+	    equation.solve(dt)
 	converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
 	for equation in self.equations:
 	    converged = converged and equation.isConverged()
@@ -96,11 +96,11 @@ class Iterator:
 	    
 
 	
-    def sweeps(self, maxSweeps = 1):
+    def sweeps(self, maxSweeps = 1, dt = 1.):
 	converged = 0
 	sweeping = 0
 	for sweep in range(maxSweeps):
-	    converged = self.sweep()
+	    converged = self.sweep(dt)
 	    
 	    if converged:
 		break
@@ -113,7 +113,7 @@ class Iterator:
 	    var = equation.getVar()
 	    var.updateOld()
 	    
-    def timestep(self, maxSweeps = 1):
+    def timestep(self, maxSweeps = 1, dt = 1.):
 	"""Iterate the solution.
 	
 	Arguments:
@@ -122,7 +122,7 @@ class Iterator:
 	"""
 	
 	self.advanceTimeStep()
-	self.sweeps(maxSweeps)
+	self.sweeps(maxSweeps, dt)
 
     def elapseTime(self, desiredTime, maxSweepsPerStep = 1):
 	elapsedTime = 0.

@@ -50,7 +50,8 @@ class TransientTerm(CellTerm):
 	weight = {
 	    'b vector':  0, 
 	    'new value': 1, 
-	    'old value': 1
+	    'old value': 1,
+            'diagonal': 0
 	}
 	self.coeff = tranCoeff * mesh.getCellVolumes()
 	CellTerm.__init__(self,weight,mesh) 

@@ -114,7 +114,7 @@ steps.
 
    >>> steps = 10
    >>> for i in range(steps):
-   ...     it.timestep()
+   ...     it.timestep(dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayshi for phase field
@@ -153,7 +153,6 @@ steps = 10
 
 phaseParameters = {
     'tau'                   : 3e-4,
-    'time step duration'    : timeStepDuration,
     'epsilon'               : 0.008,
     's'                     : 0.01,
     'alpha'                 : 0.015,
@@ -164,7 +163,7 @@ phaseParameters = {
     }
 
 temperatureParameters = {
-    'time step duration'    : timeStepDuration,
+    'timeStepDuration' : timeStepDuration,
     'temperature diffusion' : 2.25,
     'latent heat'           : 1.,
     'heat capacity'         : 1.
@@ -258,7 +257,7 @@ if __name__ == '__main__':
     temperatureViewer.plot()
 
     for i in range(steps):
-        it.timestep()
+        it.timestep(dt = timeStepDuration)
         if i%10 == 0:
             phaseViewer.plot()
             temperatureViewer.plot()

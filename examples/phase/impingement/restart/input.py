@@ -48,7 +48,7 @@ In this example we solve the same set of equations as in
 is demonstrated. First do `steps / 2` time steps.
 
    >>> for i in range(steps / 2):        
-   ...     it.timestep()
+   ...     it.timestep(dt = timeStepDuration)
 
 Save the variables and recall them to test the mechanism
 
@@ -104,7 +104,7 @@ and the iterator:
 Do some more iterations:
 
    >>> for i in range(5):
-   ...     newIt.timestep()
+   ...     newIt.timestep(dt = timeStepDuration)
 
 and check the results:
 
@@ -157,11 +157,9 @@ sharedPhaseThetaParameters = {
 
 phaseParameters = {
     'tau'                   : 0.1,
-    'time step duration'    : timeStepDuration
     }
 
 thetaParameters = {
-    'time step duration'    : timeStepDuration,
     'small value'           : 1e-6,
     'beta'                  : 1e5,
     'mu'                    : 1e3,
@@ -266,7 +264,7 @@ if __name__ == '__main__':
     thetaProductViewer.plot()
 
     for i in range(steps):
-        it.timestep()
+        it.timestep(dt = timeStepDuration)
         phaseViewer.plot()
         thetaProductViewer.plot()
 

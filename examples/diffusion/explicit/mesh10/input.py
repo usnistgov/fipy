@@ -122,7 +122,7 @@ eq = ExplicitDiffusionEquation(
 it = Iterator((eq,))
 
 if __name__ == '__main__':
-    for step in steps:
+    for step in range(steps):
         it.timestep()
     viewer = Grid2DGistViewer(var)
     viewer.plot()

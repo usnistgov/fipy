@@ -50,5 +50,5 @@ class ScSourceTerm(SourceTerm):
     for stability. Added to the b vector.
     """
     def __init__(self, sourceCoeff, mesh):
-	weight = {'b vector': 1, 'new value': 0, 'old value': 0}
+        weight = {'b vector': 1, 'new value': 0, 'old value': 0, 'diagonal' : 0}
 	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 

@@ -52,7 +52,7 @@ class Term:
 	self.weight = weight
 	self.calcCoeffScale()
         
-    def buildMatrix(self, oldArray, coeffScale, varScale):
+    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
 	pass
 	
     def getMesh(self):

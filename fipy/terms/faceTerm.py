@@ -142,7 +142,7 @@ class FaceTerm(Term):
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
 
                  
-    def buildMatrix(self, oldArray, coeffScale, varScale):
+    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
 	"""Implicit portion considers
 	"""
 
