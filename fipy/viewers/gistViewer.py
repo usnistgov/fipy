@@ -54,7 +54,7 @@ class GistViewer:
     
     id=0
     
-    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp', grid = 1):
+    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp', grid = 1, limits = None, dpi = 75):
 	self.minVal = minVal
         self.maxVal = maxVal
 	self.title = title
@@ -62,15 +62,20 @@ class GistViewer:
 	GistViewer.id += 1
         self.palette = palette
         self.grid = grid
+        self.limits = limits
+        gist.window(self.id, wait = 1, dpi = dpi, display = '')
         
     def plot(self, minVal = None, maxVal = None, fileName = None):
 	array = self.getArray()
-
+        
         gist.window(self.id, wait = 1)
+##        gist.window(self.id, wait = 1, dpi = dpi)
 	gist.pltitle(self.title)
         gist.animate(1)
         gist.palette(self.palette)
 	gist.gridxy(self.grid)
+        if self.limits != None:
+            gist.limits(self.limits[0], self.limits[1], self.limits[2], self.limits[3])
 	
 	if minVal is None:
 	    if self.minVal is None:
@@ -80,14 +85,15 @@ class GistViewer:
                 
 	if maxVal is None:
 	    if self.maxVal is None:
-		maxVal = Numeric.minimum.reduce(array.flat)
+		maxVal = Numeric.maximum.reduce(array.flat)
 	    else:
 		maxVal = self.maxVal
-        
+
 	if maxVal == minVal:
 	    maxVal = minVal + 0.01
 
         gist.pli(array, cmin = minVal, cmax = maxVal)
+             
 	colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
 
         if fileName is not None:
