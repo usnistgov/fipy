@@ -177,7 +177,6 @@ eq = buildPhaseEquation(
    )
 
 if __name__ == '__main__':
-   it, phase = buildIterator()
    phaseViewer = Grid2DGistViewer(phase)
    phaseViewer.plot()
    for step in range(steps):
