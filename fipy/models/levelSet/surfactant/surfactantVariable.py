@@ -94,8 +94,13 @@ class SurfactantVariable(CellVariable):
         
         self.value = distanceVariable.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
 
+        self.distanceVariable = distanceVariable
+
     def getInterfaceValue(self):
-        return self * self.mesh.getCellVolumes() / distanceVariable.getCellInterfaceAreas()
+        areas = Numeric.where(self.distanceVariable.getCellInterfaceAreas() > 1e-20,
+                              self.distanceVariable.getCellInterfaceAreas(),
+                              1)
+        return self.value * self.mesh.getCellVolumes() / areas
         
 
 def _test(): 
