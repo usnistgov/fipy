@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 2/4/05 {3:38:10 PM} 
+ #                                last update: 4/1/05 {9:14:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1493,7 +1493,8 @@ def Scale(quantity, scaling):
     return dimensionless
  
 def _isVariable(var):
-    return '__variable__' in dir(var)
+    from fipy.variables.variable import Variable
+    return isinstance(var, Variable)
     
 # SI unit definitions
 

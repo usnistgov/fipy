@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/1/05 {11:14:19 AM} 
+ #                                last update: 4/1/05 {9:14:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,8 +73,6 @@ class Variable:
 	20
 	
     """
-    
-    __variable = True
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	"""
