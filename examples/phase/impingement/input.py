@@ -183,8 +183,8 @@ class ImpingementSystem:
 
         for i in range(self.steps):
             self.it.timestep(1)
-            self.phaseViewer.plot()
-            self.thetaViewer.plot()
+##            self.phaseViewer.plot()
+##            self.thetaViewer.plot()
 
 ##        self.thetaViewer.plot(fileName = 'theta.ps')
 
