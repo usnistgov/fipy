@@ -19,9 +19,6 @@ Release goals 0.1
 
 - Refactoring:
 
-  * Rename electochem
-  * Alter verbosity of gmsh in test cases.
-
 - Distribution:
 
   * Add fipy to sourceforge
