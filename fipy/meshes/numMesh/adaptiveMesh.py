@@ -72,7 +72,7 @@ def orderVertices(vertexCoords, vertices):
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
-    coordinates = Numeric.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
+    coordinates = Numeric.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
     angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, pi, 0) ## angles go from -pi / 2 to 3*pi / 2
     sortorder = Numeric.argsort(angles)
     return Numeric.take(vertices, sortorder)
