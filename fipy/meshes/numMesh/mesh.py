@@ -42,9 +42,185 @@
     Meshes contain cells, faces, and vertices.
 
     This is built for a non-mixed element mesh.
+
+    Test cases:
+    
+   >>> from fipy.meshes.grid2D import Grid2D
+   >>> from fipy.meshes.numMesh.grid3D import Grid3D
+   >>> from fipy.meshes.numMesh.tri2D import Tri2D
+   >>> basemesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+   >>> dilatedMesh = basemesh * (3, 2)
+   >>> print dilatedMesh.getVertexCoords().tolist()
+   [[0.0, 0.0], [3.0, 0.0], [6.0, 0.0], [0.0, 2.0], [3.0, 2.0], [6.0, 2.0], [0.0, 4.0], [3.0, 4.0], [6.0, 4.0]]
+
+   >>> translatedMesh = basemesh + (5, 10)
+   >>> print translatedMesh.getVertexCoords().tolist()
+   [[5.0, 10.0], [6.0, 10.0], [7.0, 10.0], [5.0, 11.0], [6.0, 11.0], [7.0, 11.0], [5.0, 12.0], [6.0, 12.0], [7.0, 12.0]]
+
+   >>> addedMesh = basemesh + (basemesh + (2, 0))
+   >>> print addedMesh.getVertexCoords().tolist()
+   [[0.0, 0.0], [1.0, 0.0], [2.0, 0.0], [0.0, 1.0], [1.0, 1.0], [2.0, 1.0], [0.0, 2.0], [1.0, 2.0], [2.0, 2.0], [3.0, 0.0], [4.0, 0.0], [3.0, 1.0], [4.0, 1.0], [3.0, 2.0], [4.0, 2.0]]
+
+   >>> print addedMesh.getCellFaceIDs()
+   [[ 0, 7, 2, 6,]
+    [ 1, 8, 3, 7,]
+    [ 2,10, 4, 9,]
+    [ 3,11, 5,10,]
+    [12,18,14, 8,]
+    [13,19,15,18,]
+    [14,20,16,11,]
+    [15,21,17,20,]]
+    
+   >>> print addedMesh.faceVertexIDs
+   [[ 1, 0,]
+    [ 2, 1,]
+    [ 3, 4,]
+    [ 4, 5,]
+    [ 6, 7,]
+    [ 7, 8,]
+    [ 0, 3,]
+    [ 4, 1,]
+    [ 5, 2,]
+    [ 3, 6,]
+    [ 7, 4,]
+    [ 8, 5,]
+    [ 9, 2,]
+    [10, 9,]
+    [ 5,11,]
+    [11,12,]
+    [ 8,13,]
+    [13,14,]
+    [11, 9,]
+    [12,10,]
+    [13,11,]
+    [14,12,]]
+   
+   >>> addedMesh = basemesh + (basemesh + (3, 0))
+   Traceback (most recent call last):
+   ...
+   MeshAdditionError: Vertices are not aligned
+
+   >>> addedMesh = basemesh + (basemesh + (2, 2))
+   Traceback (most recent call last):
+   ...
+   MeshAdditionError: Faces are not aligned
+
+   >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
+   >>> triMesh = triMesh + (2, 0)
+   >>> triAddedMesh = basemesh + triMesh
+   >>> print triAddedMesh.getVertexCoords().tolist()
+   [[0.0, 0.0], [1.0, 0.0], [2.0, 0.0], [0.0, 1.0], [1.0, 1.0], [2.0, 1.0], [0.0, 2.0], [1.0, 2.0], [2.0, 2.0], [3.0, 0.0], [4.0, 0.0], [3.0, 1.0], [4.0, 1.0], [2.5, 0.5], [3.5, 0.5]]
+
+   >>> print triAddedMesh.getCellFaceIDs()
+   [[0 ,7 ,2 ,6 ,]
+    [1 ,8 ,3 ,7 ,]
+    [2 ,10 ,4 ,9 ,]
+    [3 ,11 ,5 ,10 ,]
+    [16 ,20 ,24 ,-- ,]
+    [17 ,21 ,25 ,-- ,]
+    [14 ,22 ,24 ,-- ,]
+    [15 ,23 ,25 ,-- ,]
+    [8 ,18 ,22 ,-- ,]
+    [16 ,19 ,23 ,-- ,]
+    [12 ,18 ,20 ,-- ,]
+    [13 ,19 ,21 ,-- ,]]
+
+   >>> print triAddedMesh.faceVertexIDs
+   [[ 1, 0,]
+    [ 2, 1,]
+    [ 3, 4,]
+    [ 4, 5,]
+    [ 6, 7,]
+    [ 7, 8,]
+    [ 0, 3,]
+    [ 4, 1,]
+    [ 5, 2,]
+    [ 3, 6,]
+    [ 7, 4,]
+    [ 8, 5,]
+    [ 9, 2,]
+    [10, 9,]
+    [ 5,11,]
+    [11,12,]
+    [11, 9,]
+    [12,10,]
+    [13, 2,]
+    [14, 9,]
+    [ 9,13,]
+    [10,14,]
+    [13, 5,]
+    [14,11,]
+    [13,11,]
+    [14,12,]]
+
+   >>> ThreeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 2, ny = 2, nz = 2)
+   >>> ThreeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 1, ny = 1, nz = 1)
+   >>> ThreeDAddedMesh = ThreeDBaseMesh + (ThreeDSecondMesh + (2, 0, 0))
+   >>> print ThreeDAddedMesh.getVertexCoords().tolist()
+   [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0], [2.0, 1.0, 0.0], [0.0, 2.0, 0.0], [1.0, 2.0, 0.0], [2.0, 2.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 1.0], [2.0, 0.0, 1.0], [0.0, 1.0, 1.0], [1.0, 1.0, 1.0], [2.0, 1.0, 1.0], [0.0, 2.0, 1.0], [1.0, 2.0, 1.0], [2.0, 2.0, 1.0], [0.0, 0.0, 2.0], [1.0, 0.0, 2.0], [2.0, 0.0, 2.0], [0.0, 1.0, 2.0], [1.0, 1.0, 2.0], [2.0, 1.0, 2.0], [0.0, 2.0, 2.0], [1.0, 2.0, 2.0], [2.0, 2.0, 2.0], [3.0, 0.0, 0.0], [3.0, 1.0, 0.0], [3.0, 0.0, 1.0], [3.0, 1.0, 1.0]]
+
+   >>> print ThreeDAddedMesh.getCellFaceIDs()
+   [[24,25,12,14, 0, 4,]
+    [25,26,13,15, 1, 5,]
+    [27,28,14,16, 2, 6,]
+    [28,29,15,17, 3, 7,]
+    [30,31,18,20, 4, 8,]
+    [31,32,19,21, 5, 9,]
+    [33,34,20,22, 6,10,]
+    [34,35,21,23, 7,11,]
+    [26,40,38,39,36,37,]]
+
+   >>> print ThreeDAddedMesh.faceVertexIDs
+   [[ 0, 1, 4, 3,]
+    [ 1, 2, 5, 4,]
+    [ 3, 4, 7, 6,]
+    [ 4, 5, 8, 7,]
+    [ 9,10,13,12,]
+    [10,11,14,13,]
+    [12,13,16,15,]
+    [13,14,17,16,]
+    [18,19,22,21,]
+    [19,20,23,22,]
+    [21,22,25,24,]
+    [22,23,26,25,]
+    [ 0, 1,10, 9,]
+    [ 1, 2,11,10,]
+    [ 3, 4,13,12,]
+    [ 4, 5,14,13,]
+    [ 6, 7,16,15,]
+    [ 7, 8,17,16,]
+    [ 9,10,19,18,]
+    [10,11,20,19,]
+    [12,13,22,21,]
+    [13,14,23,22,]
+    [15,16,25,24,]
+    [16,17,26,25,]
+    [ 0, 3,12, 9,]
+    [ 1, 4,13,10,]
+    [ 2, 5,14,11,]
+    [ 3, 6,15,12,]
+    [ 4, 7,16,13,]
+    [ 5, 8,17,14,]
+    [ 9,12,21,18,]
+    [10,13,22,19,]
+    [11,14,23,20,]
+    [12,15,24,21,]
+    [13,16,25,22,]
+    [14,17,26,23,]
+    [ 2,27,28, 5,]
+    [11,29,30,14,]
+    [ 2,27,29,11,]
+    [ 5,28,30,14,]
+    [27,28,30,29,]]
+     
+   >>> InvalidMesh = ThreeDBaseMesh + basemesh
+   Traceback (most recent call last):
+   ...
+   MeshAdditionError: Dimensions do not match
 """
 
 
+__docformat__ = 'restructuredtext'
 
 import Numeric
 import MA
@@ -80,6 +256,135 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	
     """Topology methods"""
 
+    def __add__(self, other):
+        if(isinstance(other, Mesh)):
+            return self.meshAdd(other)
+        else:
+            return self.translate(other)
+
+    def __mul__(self, other):
+        return self.dilate(other)
+
+    def meshAdd(self, other):
+        a = self.getAddedMeshValues(other)
+        return Mesh(a[0], a[1], a[2])
+
+    def getAddedMeshValues(self, other):
+        """
+        Returns a tuple with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs, in that order.
+        """
+        
+        MeshAdditionError = "MeshAdditionError"
+        selfNumFaces = self.faceVertexIDs.shape[0]
+        selfNumCells = self.cellFaceIDs.shape[0]
+        selfNumVertices = self.vertexCoords.shape[0]
+        otherNumFaces = other.faceVertexIDs.shape[0]
+        otherNumCells = other.cellFaceIDs.shape[0]
+        otherNumVertices = other.vertexCoords.shape[0]
+        ## check dimensions
+        if(self.vertexCoords.shape[1] != other.vertexCoords.shape[1]):
+            raise MeshAdditionError, "Dimensions do not match"
+        else:
+            dimensions = self.vertexCoords.shape[1]
+        ## compute vertex correlates
+        vertexCorrelates = {}
+        for i in range(selfNumVertices):
+            for j in range(otherNumVertices):
+                diff = self.vertexCoords[i] - other.vertexCoords[j]
+                diff = Numeric.array(diff)
+                if (sum(diff ** 2) < 0.000000000000001):
+                    vertexCorrelates[j] = i
+        if (vertexCorrelates == {}):
+            raise MeshAdditionError, "Vertices are not aligned"
+        ## compute face correlates
+        faceCorrelates = {}
+        for i in range(otherNumFaces):
+            currFace = other.faceVertexIDs[i]
+            keepGoing = 1
+            currIndex = 0
+            for item in currFace:
+                if(vertexCorrelates.has_key(item)):
+                    currFace[currIndex] = vertexCorrelates[item]
+                    currIndex = currIndex + 1
+                else:
+                    keepGoing = 0
+            if(keepGoing == 1):
+                for j in range(selfNumFaces):
+                    if (self.equalExceptOrder(currFace, self.faceVertexIDs[j])):
+                        faceCorrelates[i] = j
+        if(faceCorrelates == {}):
+            raise MeshAdditionError, "Faces are not aligned"
+
+        faceIndicesToAdd = ()
+        for i in range(otherNumFaces):
+            if(not faceCorrelates.has_key(i)):
+                faceIndicesToAdd = faceIndicesToAdd + (i,)
+        vertexIndicesToAdd = ()
+        for i in range(otherNumVertices):
+            if(not vertexCorrelates.has_key(i)):
+                vertexIndicesToAdd = vertexIndicesToAdd + (i,)
+
+        ##compute the full face and vertex correlation list
+        a = selfNumFaces
+        for i in faceIndicesToAdd:
+            faceCorrelates[i] = a
+            a = a + 1
+        b = selfNumVertices
+        for i in vertexIndicesToAdd:
+            vertexCorrelates[i] = b
+            b = b + 1
+
+        ## compute what the cells are that we need to add
+        cellsToAdd = Numeric.ones((other.cellFaceIDs.shape[0], self.cellFaceIDs.shape[1]))
+        cellsToAdd = -1 * cellsToAdd
+        
+        for i in range(len(other.cellFaceIDs)):
+            for j in range(len(other.cellFaceIDs[i])):
+                cellsToAdd[i, j] = faceCorrelates[other.cellFaceIDs[i, j]]
+
+        cellsToAdd = MA.masked_values(cellsToAdd, -1)
+
+
+        ## compute what the faces are that we need to add
+        facesToAdd = Numeric.take(other.faceVertexIDs, faceIndicesToAdd)
+        for i in range(len(facesToAdd)):
+            for j in range(len(facesToAdd[i])):
+                facesToAdd[i, j] = vertexCorrelates[facesToAdd[i, j]]
+
+        ## compute what the vertices are that we need to add
+        verticesToAdd = Numeric.take(other.vertexCoords, vertexIndicesToAdd)
+
+        newMeshCells = MA.concatenate((self.cellFaceIDs, cellsToAdd))
+        newMeshFaces = Numeric.concatenate((self.faceVertexIDs, facesToAdd))
+        newMeshVertices = Numeric.concatenate((self.vertexCoords, verticesToAdd))
+        return (newMeshVertices, newMeshFaces, newMeshCells)
+
+    def equalExceptOrder(self, first, second):
+        """Determines if two lists contain the same set of elements, although they may be in different orders. Does not work if one list contains duplicates of an element.
+        """
+        res = 0
+        if (len(first) == len(second)):
+            res = 1
+        for i in first:
+            isthisin = 0
+            for j in second:
+                if (i == j):
+                    isthisin = 1
+            if(isthisin == 0):
+                res = 0
+        return res
+    
+
+    def translate(self, vector):
+        newCoords = self.vertexCoords + vector
+        newmesh = Mesh(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        return newmesh
+
+    def dilate(self, factor):
+        newCoords = self.vertexCoords * factor
+        newmesh = Mesh(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        return newmesh
+    
     def calcTopology(self):
         self.dim = len(self.vertexCoords[0])
         self.numberOfFaces = len(self.faceVertexIDs)
@@ -87,6 +392,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.calcFaceCellIDs()
 	
 	fipy.meshes.common.mesh.Mesh.calcTopology(self)
+
 
     """calc Topology methods"""
 
@@ -168,7 +474,8 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcFaceAreas(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
         substitute = Numeric.reshape(Numeric.repeat(faceVertexIDs[:,0],len(faceVertexIDs[0])), Numeric.shape(faceVertexIDs))
-        faceVertexIDs = Numeric.where(self.faceVertexIDs.mask(), substitute, faceVertexIDs)    
+        if (self.faceVertexIDs.mask()):
+            faceVertexIDs = Numeric.where(self.faceVertexIDs.mask(), substitute, faceVertexIDs)    
         faceVertexCoords = Numeric.take(self.vertexCoords, faceVertexIDs)
         faceOrigins = Numeric.repeat(faceVertexCoords[:,0], len(faceVertexIDs[0]))
         faceOrigins = Numeric.reshape(faceOrigins, MA.shape(faceVertexCoords))
@@ -284,4 +591,11 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
         
                       
-    
+### test test test    
+
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
