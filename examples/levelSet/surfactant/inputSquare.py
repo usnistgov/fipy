@@ -65,10 +65,9 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
+from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
@@ -115,13 +114,12 @@ surfactantEquation = SurfactantEquation(
         tolerance = 1e-10),
     boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0),))
 
-advectionEquation = AdvectionEquation(
+advectionEquation = HigherOrderAdvectionEquation(
     distanceVariable,
     advectionCoeff = velocity,
     solver = LinearPCGSolver(
         tolerance = 1.e-15, 
-        steps = 1000),
-    advectionTerm = HigherOrderAdvectionTerm)
+        steps = 1000))
 
 it = Iterator((surfactantEquation, advectionEquation))
 
