@@ -321,16 +321,25 @@
 
 \mainmatter
 
+%%%%%%%%%%%%%%%%
+% I. INTRODUCTION
+%%%%%%%%%%%%%%%%
+
 \part{Introduction}
 
 \settocdepth{chapter} 
+
 \parttoc
 
-\chapter{Introduction}
+% A. Technical Overview
 
-\input readme
+\chapter{Overview}
 
-\include{introduction}
+\inputencoding{latin1}
+
+\input readme  
+
+% B Installation
 
 \chapter{Installation}
 
@@ -338,9 +347,33 @@
 
 \input installation
 
+% C Implementation
+
+\chapter{Design and Implementation}
+
+\inputencoding{latin1}
+
+\input introduction
+
+% D Numerical
+
+\chapter{Numerical Methods}
+
 \inputencoding{ascii}
 
-\include{numerical/numerical}
+\input numerical/numerical
+
+% E Credits
+
+\chapter{Credits}
+
+\inputencoding{latin1}
+
+\input credits
+
+%%%%%%%%%%%%%%%%%
+% 2. EXAMPLES
+%%%%%%%%%%%%%%%%%
 
 \settocdepth{all} 
 

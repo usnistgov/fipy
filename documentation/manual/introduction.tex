@@ -1,7 +1,7 @@
 \section{Aims}
 
-The goal of the |FiPy| framework is to develop a highly customizable
-open source code available to the scientific community. |FiPy| allows
+The goal of the \FiPy{} framework is to develop a highly customizable
+open source code available to the scientific community. \FiPy{} allows
 users to select and customize modules from within the framework. Those
 modules can then be combined with an extremely powerful high level
 scripting language allowing the user full control over the solution
@@ -10,20 +10,20 @@ significant code reuse while accounting for the unique vagaries of
 each problem.
 
 The initial development of the framework has been undertaken in the
-Center for Theoretical and Computational Materials Science (CTCMS_),
-in the Materials Science and Engineering Laboratory (MSEL_) at the
-National Institute of Standards and Technology (NIST_). The framework
-is known as |FiPy| and is developed at the top level in the Python_
-programming language. Python_ enables the integration of low-level
+Center for Theoretical and Computational Materials Science (\CTCMS{}),
+in the Materials Science and Engineering Laboratory (\MSEL{}) at the
+National Institute of Standards and Technology (\NIST{}). The framework
+is known as \FiPy{} and is developed at the top level in the \Python{}
+programming language. \Python{} enables the integration of low-level
 high performance languages such as C and FORTRAN allowing for
-efficient optimization. Python_ also has a large repository of free
+efficient optimization. \Python{} also has a large repository of free
 numerical and scientific software that can be integrated into the
-|FiPy| framework. At NIST_, there is a significant ongoing effort to
-maximize the efficiency of |FiPy| with the use of third party software
+\FiPy{} framework. At \NIST{}, there is a significant ongoing effort to
+maximize the efficiency of \FiPy{} with the use of third party software
 and the judicious use of the C programming language embedded in
 standard core modules.
 
-The end goal of |FiPy| is to provide a realistic open source choice
+The end goal of \FiPy{} is to provide a realistic open source choice
 for solving coupled sets of equations. Once an efficient customizable
 framework is developed, the end goal will only be achieved with proper
 support for the community of users. Many previous scientific computing
@@ -39,7 +39,7 @@ The aims mentioned above can be summarized as follows:
 * Develop a highly efficient and customizable code.
 * Support the distribution of code to the end users.
 
-\section{Research Background}
+\section{Background}
 
 The equations that model the evolution of physical, chemical and
 biological systems often have a remarkably universal form. Indeed,
@@ -68,13 +68,10 @@ procedures. The philosophy of \FiPy{} is to enable unique
 customization while providing a library of efficient modules for
 common objects and data types.
 
-\section{\FiPy{} Philosophy}
+\section{Design}
 
-It is hard to estimate the future impact of a particular open source
-project. However, we believe that the core principles used in the
-development of \FiPy{} will enable it to have significant future
-growth within the scientific community. The core principles of \FiPy{}
-are outlined in some of the following sections.
+The core methods in the \FiPy{} design are outlined in the following
+sections.
 
 \subsection{Object Oriented Approach}
 
@@ -83,44 +80,39 @@ oriented programming mainly lies in encapsulation and
 inheritance. Encapsulation allows parts of the code to be separated
 into clearly defined independent modules that can be re-applied or
 extended in new ways. Inheritance allows code to be reused and new
-capabilities to be added without altering the original code. These are
-extremely powerful techniques.
+capabilities to be added without altering the original code.
 
 \subsection{Test Based Development}
 
 \FiPy{} has been developed with a large number of test cases. These test
 cases operate on two levels. The lower level tests operate on the core
-modules at the individual method level. Thus every method within the
-core installation has a test case. The high level test cases operate
-in conjunction with example test piece solutions and test global
-solution algorithms and the interaction of various modules. Thus at
-any stage in code development the test cases can be executed and
-errors can be identified.
+modules at the individual method level. The aim is that every method
+within the core installation has a test case. The high level test
+cases operate in conjunction with example test piece solutions and
+test global solution algorithms and the interaction of various
+modules. Thus at any stage in code development the test cases can be
+executed and errors can be identified.
 
 A test base is essential for the adoption of the code by new users and
-developers. Many numerical codes do not have test bases available with
-the code. This is a severe drawback in any prospective development
-making it difficult to alter the code without the reassurance that any
-code breakages will be clearly demonstrated with a broken test case. A
-test base also aids dissemination of the code by providing simple
-examples and knowledge of whether the code is working on a particular
-computer environment.
+developers. It provides reassurance that any code breakages will be
+clearly demonstrated with a broken test case. A test base also aids
+dissemination of the code by providing simple examples and knowledge
+of whether the code is working on a particular computer environment.
 
-\Python{} has modules (\doctest{}, \unittest{}) that automate the testing procedure.
+\Python{} has modules (\doctest{}, \unittest{}) that automate the
+testing procedure.
 
 \subsection{Documentation}
 
-FiPY has been developed with a continuously updated manual. The manual
-contains introductory material, installation procedures and
+\FiPy{} has been developed with a continuously updated manual. The
+manual contains introductory material, installation procedures and
 explanation of numerical algorithms. The manual also contains an
 automated description of each module and method. The automated
 description is derived from comments in the source code. Thus the
 manual will stay current as the code develops and encourage developers
 to comment the code. The same automated method is used to build
-descriptions of core examples making it each for a prospective user to
+descriptions of core examples making it easy for a prospective user to
 understand and start using the code.
-
-Many numerical codes do not have adequate documentation.
 
 \subsection{Numerical Approach}
 
@@ -136,11 +128,6 @@ are still undergoing constant development.
 \FiPy{} uses the well-known Finite Volume Method (FVM) to reduce the
 model equations to a form tractable to linear solvers.
 
-In general, both the LSM and PFM methods do not appear with standard
-FV solvers, usually the more standard Volume Of Fluid Method (VOFM) is
-used as an interface-tracking algorithm. Generally, VOFM is used for
-very different applications to the LSM and PFM.
-
 \subsection{Distribution}
 
 Clear distribution techniques and easy installation are required for
@@ -152,10 +139,6 @@ version of the code. This is useful to allow users access to the
 latest bug fixes. Also having a central code repository allows more
 developers to join the main project or select parts of the project.
 
-Most numerical software is not distributed via a code repository and
-thus makes obtaining the latest version of the software and bug fixes
-difficult.
-
 \subsection{Open Source}
 
 In recent years there has been a movement towards more open source
@@ -163,20 +146,7 @@ unrestrictive licenses especially within the scientific community. The
 \FiPy{} framework will be written with an open source license allowing
 users to develop with complete access to the source code and then
 either contribute back to the main source repository or freely
-distribute their new adapted version. Many members of the scientific
-community prefer to use an open source license due to the unrestricted
-access and ability to develop extensible codes. Specifically, the
-restrictions of non-open source licenses involve an inability to
-redistribute code, a lack of access to source code and the expense of
-maintaining licenses. Redistribution of code not only allows tools to
-be shared but also promotes communication of ideas. Access to source
-code is essential for developers and users to understand the function
-of a code and allow bugs to be fixed.
-
-\subsection{Pair Programming}
-
-\href{http://www.extremeprogramming.org/rules/pair.html}{Pair programming}
-is a good way to develop computer code.
+distribute their new adapted version. 
 
 \subsection{\Python{} Programming Language}
 
@@ -212,12 +182,6 @@ integration of C either as separate modules or encapsulated in
 in a number of freely available efficient numerical modules (\SciPy{},
 \Numeric{}) for \Python{} some of which are utilized in the \FiPy{}
 framework.
-
-\section{Contributions}
-
-\section{Sourceforgre}
-
-Mailing lists, bug tracking, 
 
 \section{Outstanding Issues}
 
