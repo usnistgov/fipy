@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/19/03 {3:00:32 PM} 
+                               last update: 12/22/03 {4:58:35 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -65,12 +65,6 @@ class PhaseEquation(MatrixEquation):
 	
 	self.parameters = parameters
 	
-# 	parameters['mPhi']  = PhaseMVariable(
-# 	    mesh = mesh,
-# 	    phi = parameters['phi'],
-# 	    temperature = parameters['temperature'])
-
-
 	self.phi = self.parameters['phi']
 	self.t = self.parameters['temperature']
 	
@@ -84,16 +78,10 @@ class PhaseEquation(MatrixEquation):
 	
         self.spTerm = SpSourceTerm(
 	    sourceCoeff = self.getSpSourceCoeff(),
-# 	    sourceCoeff = PhaseSpSourceVariable(
-# 		mesh = mesh, 
-# 		parameters = parameters),
 	    mesh = mesh)
 	    
         self.scTerm = ScSourceTerm(
             sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.phi,
-# 	    sourceCoeff = PhaseScSourceVariable(
-# 		mesh = mesh, 
-# 		parameters = parameters),
 	    mesh = mesh)
 	
 	transientCoeff = parameters['tau']

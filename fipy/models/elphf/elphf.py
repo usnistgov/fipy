@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/22/03 {3:45:22 PM} 
+ #                                last update: 12/22/03 {5:01:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -50,9 +50,6 @@ def makeIterator(mesh, fields, parameters, maxSweeps = 1):
     fields['solvent'] = 1.
     for component in fields['substitutionals']:
 	fields['solvent'] = fields['solvent'] - component#.getOld()    
-#     fields['solvent'] = SolventVariable(
-# 	mesh = mesh, 
-# 	substitutionals = fields['substitutionals'])
     for component in fields['substitutionals']:
 	eq = ConcentrationEquation(
 	    Cj = component,

@@ -5,7 +5,7 @@
 
  FILE: "matrixEquation.py"
                                    created: 11/12/03 {10:41:06 AM} 
-                               last update: 12/22/03 {3:46:48 PM} 
+                               last update: 12/22/03 {4:59:02 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -58,14 +58,13 @@ class MatrixEquation(Equation):
     def getB(self):
 	return self.b
 
-    def solve(self): #,dt):
+    def solve(self):
         array = self.var.getValue().copy()
 	oldSweepArray = array.copy()
 	N = len(array)
 	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
 	for term in self.terms:
-# 	    term.calculateCoeffGeom(dt)
 	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b)
 	self.solver.solve(self.L,array,self.b)
 	self.var[:] = array[:]

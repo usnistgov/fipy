@@ -5,7 +5,7 @@
 
  FILE: "sourceTerm.py"
                                    created: 11/28/03 {11:36:25 AM} 
-                               last update: 12/22/03 {4:25:53 PM} 
+                               last update: 12/22/03 {4:57:43 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,10 +44,5 @@ from cellTerm import CellTerm
 
 class SourceTerm(CellTerm):
     def __init__(self, sourceCoeff, weight, mesh):
-# 	self.sourceCoeff = sourceCoeff
 	self.coeff = sourceCoeff * mesh.getCellVolumes()
 	CellTerm.__init__(self, weight, mesh) 
-	    
-#     def calculateCoeffGeom(self, dt):
-# 	self.coeff = self.sourceCoeff * self.mesh.getCellVolumes()
-

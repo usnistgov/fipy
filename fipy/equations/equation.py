@@ -5,7 +5,7 @@
 
  FILE: "equation.py"
                                    created: 11/10/03 {2:45:34 PM} 
-                               last update: 12/22/03 {3:47:32 PM} 
+                               last update: 12/22/03 {5:00:53 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -61,13 +61,7 @@ class Equation:
     def updateVar(self):
 	pass
 	
-    def preSolve(self):
-	pass
-	
-    def postSolve(self):
-	pass
-	
-    def solve(self): #,dt):
+    def solve(self):
 	pass
     
     def isConverged(self):

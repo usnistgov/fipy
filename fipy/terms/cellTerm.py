@@ -5,7 +5,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 12/22/03 {3:04:12 PM} 
+                               last update: 12/22/03 {5:01:45 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -57,14 +57,3 @@ class CellTerm(Term):
 	b += (oldArray*self.oldCoeff)[:]
 	b += (Numeric.ones([N])*self.bCoeff)[:]
 	L.update_add_pyarray((Numeric.ones([N])*self.newCoeff)[:])
-	
-#         weight = self.weight  
-# 	b += (oldArray*self.coeff*weight['old value'])[:]
-# 	b += (Numeric.ones([N])*self.coeff*weight['b vector'])[:]
-# 	L.update_add_pyarray((Numeric.ones([N])*self.coeff*weight['new value'])[:])
-
-	
-
-        
-		
-		

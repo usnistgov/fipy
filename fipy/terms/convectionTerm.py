@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/22/03 {4:28:32 PM} 
+                               last update: 12/22/03 {4:57:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -46,22 +46,10 @@ import Numeric
 
 class ConvectionTerm(FaceTerm):
     def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
-# 	weight = {
-# 	    'implicit':{
-# 		'cell 1 diag':    -0.5, 
-# 		'cell 1 offdiag':  0.5, 
-# 		'cell 2 diag':     0.5, 
-# 		'cell 2 offdiag': -0.5
-# 	    }
-# 	}
 
 	if not isinstance(convCoeff, VectorFaceVariable):
 	    convCoeff = VectorFaceVariable(mesh = mesh, value = Numeric.array(convCoeff))
 
-# 	if type(convCoeff) in [type(1), type(1.), type(Numeric.array((1,)))]:
-# 	    self.convCoeff = Numeric.array(convCoeff)[Numeric.NewAxis,:]
-# 	else:
-# 	    self.convCoeff = convCoeff
 	self.diffusionTerm = diffusionTerm
 	
 	self.projectedCoefficients = convCoeff * mesh.getOrientedAreaProjections()
@@ -85,27 +73,3 @@ class ConvectionTerm(FaceTerm):
 	    }
 	}
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
-
-#     def getAlpha(self, P):
-# 	return Alpha(P)
-	    
-#     def calculateAlpha(self, P):
-# 	pass
-	
-#     def calculateCoeffGeom(self,dt):
-# # 	areas = self.mesh.getOrientedAreaProjections()
-# # 	self.coeff = Numeric.sum((self.convCoeff * areas)[:], 1)
-# 	self.coeff = Numeric.sum(self.projectedCoefficients[:], 1)
-# 	if self.diffusionTerm == None:
-# 	    diffCoeff = 1e-20
-# 	else:
-# 	    diffCoeff = self.diffusionTerm.getCoeff()
-# 	
-# 	P = -self.coeff / diffCoeff
-# 	
-# 	alpha = self.calculateAlpha(P)
-# 	
-# 	self.weight['implicit']['cell 1 diag'] = -alpha
-# 	self.weight['implicit']['cell 1 offdiag'] = -(1-alpha)
-# 	self.weight['implicit']['cell 2 diag'] = (1-alpha)
-# 	self.weight['implicit']['cell 2 offdiag'] = alpha

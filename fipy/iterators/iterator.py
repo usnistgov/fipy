@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 12/22/03 {3:42:50 PM} 
+ #                                last update: 12/22/03 {5:00:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,7 +56,7 @@ class Iterator:
         self.equations = equations
 	self.maxSweeps = maxSweeps
 	
-    def iterate(self,steps): #,stepDuration = 1.):
+    def iterate(self,steps):
 	"""Iterate the solution.
 	
 	Arguments:
@@ -75,12 +75,9 @@ class Iterator:
                 var.updateOld()
 	    for sweep in range(self.maxSweeps):
 		for equation in self.equations:
-		    equation.preSolve()	
-		for equation in self.equations:
-		    equation.solve() #stepDuration)
+		    equation.solve()
 		converged = 1 # Because Andy is too lazy to update to a Python written since the Eisenhower administration
 		for equation in self.equations:
-		    equation.postSolve()
 		    converged = converged and equation.isConverged()
 		if converged:
 		    break

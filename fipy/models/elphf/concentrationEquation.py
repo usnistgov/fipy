@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/22/03 {3:45:17 PM} 
+                               last update: 12/22/03 {5:01:14 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -67,11 +67,6 @@ class ConcentrationEquation(MatrixEquation):
 	    diffCoeff = diffusivity,
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
-	    
-# 	substitutionalSum = SubstitutionalSumVariable(
-# 	    mesh = mesh, 
-# 	    Cj = Cj, 
-# 	    substitutionals = fields['substitutionals'])
 	    
 	substitutionalSum = 0.
 	for component in [component for component in fields['substitutionals'] if component is not Cj]:
