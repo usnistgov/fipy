@@ -48,6 +48,7 @@ import models.test
 import tools.test
 import variables.test
 import meshes.numMesh.test
+import viewers.test
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -56,6 +57,7 @@ def suite():
     theSuite.addTest(tools.test.suite())
     theSuite.addTest(meshes.numMesh.test.suite())
     theSuite.addTest(variables.test.suite())
+    theSuite.addTest(viewers.test.suite())
     
     return theSuite
     
