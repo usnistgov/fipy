@@ -128,11 +128,12 @@ it = Iterator((KMEq, TMEq, TCEq, P3Eq, P2Eq, KCEq))
 if __name__ == '__main__':
 
     from gnuplot1DViewer import Gnuplot1DViewer
-    KMViewer = Gnuplot1DViewer((KMVar / KMVar.getCellVolumeAverage(), PN / PN.getCellVolumeAverage(), TMVar / TMVar.getCellVolumeAverage()), title = 'Gradient Stimulus: Profile', varTitles = ('KM', 'PN', 'TM'), xlabel = 'X', ylabel = 'Normalised concentrations')
+    KMViewer = Gnuplot1DViewer((KMVar / KMVar.getCellVolumeAverage(), PN / PN.getCellVolumeAverage(), TMVar / TMVar.getCellVolumeAverage()), title = 'Gradient Stimulus: Profile', varTitles = ('K_M', 'P_N', 'T_M'), xlabel = 'X', ylabel = 'Normalised concentrations')
 
+    KMViewer.plot(fileName = 'plot1D.ps')
+    raw_input('stopped')
 
     for i in range(100):
-        print i
         it.timestep(dt = 1.)
 
     import Numeric
