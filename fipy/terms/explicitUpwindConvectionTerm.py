@@ -39,7 +39,8 @@ from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     def getWeight(self, mesh):
 	weight = UpwindConvectionTerm.getWeight(self, mesh)
-	weight['explicit'] = weight['implicit']
-	del weight['implicit']
+        if 'implicit' in weight.keys():
+            weight['explicit'] = weight['implicit']
+            del weight['implicit']
 
 	return weight
