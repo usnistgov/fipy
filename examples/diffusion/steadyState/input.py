@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:58:39 AM} 
+ #                                last update: 3/5/04 {3:08:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,8 @@
 from fivol.profiler.profiler import Profiler
 from fivol.profiler.profiler import calibrate_profiler
  
-from fivol.meshes.grid2D import Grid2D
+## from fivol.meshes.grid2D import Grid2D
+from fivol.numMesh.grid2D import Grid2D
 from fivol.equations.diffusionEquation import DiffusionEquation
 from fivol.solvers.linearPCGSolver import LinearPCGSolver
 from fivol.boundaryConditions.fixedValue import FixedValue
@@ -58,7 +59,7 @@ def getParameters(nx ,ny):
     valueLeft = 0.
     valueRight = 1.
 
-    mesh = Grid2D(1.,1.,nx,ny)
+    mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
 
     var = CellVariable(
         name = "concentration",

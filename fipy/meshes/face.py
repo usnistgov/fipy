@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {12:02:56 PM} 
+ #                                last update: 3/5/04 {2:35:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,7 +66,7 @@ class Face:
 	"""
         self.vertices = vertices
 ##        self.cells = ()
-        self.cellsId = ()
+        self.cellsID = ()
         self.cellCenters = ()
 	self.id = id
 	self.center = self.calcCenter()
@@ -90,8 +90,8 @@ class Face:
 	"""Add cell to the list of Cells which lie on either side of this Face.
 	"""
 ##        self.cells += (cell,)
-        self.cellsId += (cell.getId(),)
-	if len(self.cellsId) == 1:
+        self.cellsID += (cell.getID(),)
+	if len(self.cellsID) == 1:
 	    self.orientation = orientation
 	else:
 	    self.orientation = -orientation
@@ -104,17 +104,17 @@ class Face:
 	"""
         return self.cells
 		
-    def getId(self):
+    def getID(self):
 	"""Return the id of this Face.
 	"""
 	return self.id
 
-    def getCellId(self, index = 0):
+    def getCellID(self, index = 0):
 	"""Return the id of the specified Cell on one side of this Face.
 	"""
-        if index == 1 and len(self.cellsId) == 1:
+        if index == 1 and len(self.cellsID) == 1:
             index = 0
-        return self.cellsId[index]
+        return self.cellsID[index]
 
 ##    def getCellId(self,index=0):
 ##        return self.cells[index].getId()
@@ -233,7 +233,7 @@ class Face:
 	If the Face is on a boundary and has only one bordering Cell,
 	the distance is from the Cell center to the Face center.
 	"""
-        if(len(self.cellsId)==2):
+        if(len(self.cellsID)==2):
             vec=self.cellCenters[0]-self.cellCenters[1]
         else:
             vec=self.center-self.cellCenters[0]        
@@ -255,7 +255,7 @@ class Face:
 
     def setFaceToCellDistances(self):
         faceToCellDistances = ()
-        for id in range(len(self.cellsId)):
+        for id in range(len(self.cellsID)):
             faceToCellDistances += (self.calcFaceToCellDistance(id),)
         self.faceToCellDistances = faceToCellDistances
         
@@ -268,10 +268,10 @@ class Face:
 ##        else:
 ##            return self.calcFaceToCellDistance(cell)
 
-    def getFaceToCellDistance(self, cellId = None):
-        if cellId == self.cellsId[0] or cellId == None:
+    def getFaceToCellDistance(self, cellID = None):
+        if cellID == self.cellsID[0] or cellID == None:
             return self.faceToCellDistances[0]
-        elif cellId == self.cellsId[1]:
+        elif cellID == self.cellsID[1]:
             return self.faceToCellDistances[1]
         else:
             raise Exception
@@ -302,7 +302,7 @@ class Face:
             print "cell not in face.cells"
             
         
-    def setId(self,id):
+    def setID(self,id):
 	"""Set the id of the Face.
 	"""
         self.id = id

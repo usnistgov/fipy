@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/16/04 {12:16:56 PM} 
+ #                                last update: 3/5/04 {4:15:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,10 +39,12 @@
 import Numeric
 import umath
 
-import fivol.variables.variable
-import fivol.tools.dimensions.physicalField
+import fivol.inline.inline as inline
 
 def _isPhysical(arr):
+    import fivol.variables.variable
+    import fivol.tools.dimensions.physicalField
+
     return isinstance(arr,fivol.variables.variable.Variable) \
 	or isinstance(arr,fivol.tools.dimensions.physicalField.PhysicalField)
 	
@@ -99,6 +101,8 @@ def arctan2(arr, other):
     if _isPhysical(arr):
 	return arr.arctan2(other)
     elif _isPhysical(other):
+	import fivol.tools.dimensions.physicalField
+
 	return physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.arctan2(arr,other)
@@ -115,3 +119,32 @@ def crossProd(v1,v2):
 			    v1n[:,2] * v2n[:,0] - v1n[:,0] * v2n[:,2],
 			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
     return Numeric.reshape(out, Numeric.shape(v1))
+
+def sqrtDot(a1, a2):
+    """Return array of square roots of vector dot-products
+    for arrays a1 and a2 of vectors v1 and v2
+    
+    Usually used with v1==v2 to return magnitude of v1.
+    """
+    ## We can't use Numeric.dot on an array of vectors
+##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
+##    return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
+    return inline.optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
+
+def _sqrtDotPy(a1, a2):
+    return sqrt(sum((a1*a2)[:],1))
+
+def _sqrtDotIn(a1, a2):
+    ni, nj = Numeric.shape(a1)
+    result = Numeric.zeros((ni,),'d')
+    inline.runInlineLoop1("""
+	int j;
+	result(i) = 0.;
+	for (j = 0; j < nj; j++)
+	{
+	    result(i) += a1(i,j) * a2(i,j);
+	}
+	result(i) = sqrt(result(i));
+    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
+    return result
+

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 2/23/04 {11:14:30 PM} 
+ #                                last update: 3/5/04 {2:37:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -208,7 +208,7 @@ class Grid2D(Mesh):
 	
 	id = 0
 	for face in faces:
-	    face.setId(id)
+	    face.setID(id)
 	    id += 1
 
 	self.refreshFaces(faces)

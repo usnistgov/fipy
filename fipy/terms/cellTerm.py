@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 1/16/04 {11:29:38 AM} 
+ #                                last update: 3/5/04 {2:15:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ class CellTerm(Term):
 	self.oldCoeff = self.coeff * weight['old value']
 	self.bCoeff = self.coeff * weight['b vector']
 	self.newCoeff = self.coeff * weight['new value']
-        self.updatePyArray = Numeric.zeros((len(self.mesh.getCells())),'d')
+        self.updatePyArray = Numeric.zeros((mesh.getNumberOfCells()),'d')
 	
     def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale):
         N = len(oldArray)

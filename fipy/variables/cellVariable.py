@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 2/20/04 {2:12:20 PM} 
+ #                                last update: 3/5/04 {11:27:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,7 @@ from fivol.variables.variable import Variable
 
 class CellVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
-	array = Numeric.zeros([len(mesh.getCells())],'d')
+	array = Numeric.zeros([mesh.getNumberOfCells()],'d')
 # 	array[:] = value
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)

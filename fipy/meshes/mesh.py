@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/3/04 {12:09:06 PM} 
+ #                                last update: 3/5/04 {2:51:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -73,17 +73,30 @@ class Mesh:
                 if func(cell, **args):
                     returnCells += (cell,)
             return returnCells
+	    
+    def getNumberOfCells(self):
+	return len(self.cells)
 
     def getFaces(self):
 	"""Return Faces of Mesh.
 	"""
         return self.faces
 
+    def getInteriorFaceIDs(self):
+	"""Return Face IDs of Mesh that are not on a Mesh boundary.
+	"""
+	return range(len(self.interiorFaces))
+	    
     def getInteriorFaces(self):
 	"""Return Faces of Mesh that are not on a Mesh boundary.
 	"""
         return self.interiorFaces
 
+    def getExteriorFaceIDs(self):
+	"""Return Face IDs of Mesh that are not on a Mesh boundary.
+	"""
+	return range(len(self.interiorFaces),len(self.faces))
+	
     def getExteriorFaces(self):
         """Return all exterior faces
         """
@@ -132,15 +145,11 @@ class Mesh:
 	self.scale = PhysicalField(value = scale)
         
     def getAdjacentCellIDs(self):
-	return (self.cellId1, self.cellId2)
+	return (self.cellID1, self.cellID2)
 	
     def calcAdjacentCellIDs(self):
-	N = len(self.faces)
-	self.cellId1 = Numeric.zeros(N)
-	self.cellId2 = Numeric.zeros(N)
-	for i in range(N):
-	    self.cellId1[i] = self.faces[i].getCellId(0)
-	    self.cellId2[i] = self.faces[i].getCellId(1)
+	self.cellID1 = [face.getCellID(0) for face in self.faces]
+	self.cellID2 = [face.getCellID(1) for face in self.faces]
 
     def getFaceOrientations(self):
         return self.faceOrientations

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/18/04 {11:37:27 AM} 
+ #                                last update: 3/5/04 {3:12:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -74,10 +74,10 @@ class FaceTerm(Term):
 	    }
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
-        L.update_add_pyarray_at_indices(self.implicit['cell 1 diag'][:self.interiorN] / coeffScale,id1,id1)
-        L.update_add_pyarray_at_indices(self.implicit['cell 1 offdiag'][:self.interiorN] / coeffScale,id1,id2)
-        L.update_add_pyarray_at_indices(self.implicit['cell 2 offdiag'][:self.interiorN] / coeffScale,id2,id1)
-        L.update_add_pyarray_at_indices(self.implicit['cell 2 diag'][:self.interiorN] / coeffScale,id2,id2)
+	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 diag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
+	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
+	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
+	L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 diag'], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
 
         for boundaryCondition in self.boundaryConditions:
             LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
@@ -142,8 +142,13 @@ class FaceTerm(Term):
         oldArrayId1 = array.take(oldArray, id1)
         oldArrayId2 = array.take(oldArray, id2)
 
-        fivol.tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
-        fivol.tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
+	cell1diag = Numeric.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
+	cell1offdiag = Numeric.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
+	cell2diag = Numeric.take(self.explicit['cell 2 diag'], self.mesh.getInteriorFaceIDs())
+	cell2offdiag = Numeric.take(self.explicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs())
+	
+	fivol.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:])/coeffScale)
+	fivol.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
 
                  
     def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
@@ -151,8 +156,8 @@ class FaceTerm(Term):
 	"""
 	
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	id1 = id1[:self.interiorN]
-	id2 = id2[:self.interiorN]
+	id1 = Numeric.take(id1, self.mesh.getInteriorFaceIDs())
+	id2 = Numeric.take(id2, self.mesh.getInteriorFaceIDs())
 	
         ## implicit
         if self.weight.has_key('implicit'):

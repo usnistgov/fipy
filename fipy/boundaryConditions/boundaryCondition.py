@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/16/04 {11:33:53 AM} 
+ #                                last update: 3/5/04 {3:51:11 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,12 +61,8 @@ class BoundaryCondition:
         self.faces = faces
         self.value = PhysicalField(value)
 	
-	N = len(self.faces)
-	self.faceIds = Numeric.zeros((N,))
-	self.adjacentCellIds = Numeric.zeros((N,))
-	for i in range(N):
-	    self.faceIds[i] = self.faces[i].getId()
-	    self.adjacentCellIds[i] = self.faces[i].getCellId()
+	self.faceIds = Numeric.array([face.getID() for face in self.faces])
+	self.adjacentCellIds = Numeric.array([face.getCellID() for face in self.faces])
 
     def getContribution(self,cell1dia,cell1off):
 	"""Return the effect of this boundary condition on the equation

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 1/16/04 {10:58:35 AM} 
+ #                                last update: 3/5/04 {2:36:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,7 +75,7 @@ class Cell:
 	for i in range(len(self.faces)):
 	    self.faces[i].addBoundingCell(self,faceOrientations[i])
 
-    def getId(self):
+    def getID(self):
 	"""Return the id of this Cell.
 	"""
         return self.id
@@ -127,7 +127,7 @@ class Cell:
 	
 	for i in range(len(self.faces)):
 	    face = self.faces[i]
-	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.getNormal() * self.faceOrientations[i]) + "\n"
+	    rep += "id = " + str(face.getID()) + ", normal = " + str(face.getNormal() * self.faceOrientations[i]) + "\n"
 	
 	rep += ">\n"
 	
@@ -138,7 +138,7 @@ class Cell:
 	"""
         return self.faces
 
-    def setId(self,id):
+    def setID(self,id):
 	"""Set the id of the Cell.
 	"""
         self.id = id
@@ -154,14 +154,14 @@ class Cell:
     def calcFaceIDs(self):
 	self.faceIDs = ()
 	for i in range(len(self.faces)):
-	    self.faceIDs += (self.faces[i].getId(),)
+	    self.faceIDs += (self.faces[i].getID(),)
 
     def getBoundingCells(self):
         boundingCells = ()
         for face in self.faces:
             faceCells = face.getCells()
             if len(faceCells) == 2:
-                if faceCells[0].getId() == self.id:
+                if faceCells[0].getID() == self.id:
                     boundingCells += (faceCells[1],)
                 else:
                     boundingCells += (faceCells[0],)
