@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 2/28/05 {4:24:40 PM} 
+ #                                last update: 3/7/05 {3:50:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,11 +121,11 @@ class Term:
             return SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
-        if not isinstance(other, Term):
-            return False
+        if self._otherIsZero(other):
+            return self
         else:
-            if self._otherIsZero(other):
-                return self
+            if not isinstance(other, Term):
+                return False
             else:
                 from fipy.terms.binaryTerm import EquationTerm
                 return EquationTerm(term1 = self, term2 = other)
