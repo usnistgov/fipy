@@ -53,7 +53,7 @@ class SpSourceVariable(CellVariable):
         self.mPhi = self._requires(mPhi)
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueIn, self._calcValuePy)
+        inline._optionalInline(self._calcValueIn, self._calcValuePy)
     
     def  _calcValuePy(self):
         s = self.parameters['s']
@@ -67,7 +67,7 @@ class SpSourceVariable(CellVariable):
 	self.value = spSourceCoeff
 
     def _calcValueIn(self):
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
             double tmp = 0.;
             if(mPhi(i) < 0.)
               tmp = 1.;

@@ -84,7 +84,7 @@ class FaceTerm(Term):
 
 	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
-        inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
+        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
 
         N = mesh.getNumberOfCells()
 	M = mesh._getMaxFacesPerCell()
@@ -117,7 +117,7 @@ class FaceTerm(Term):
 ##         cell2Diag = Numeric.resize(Numeric.array(weight['cell 2 diag']), (Nfac,))
 ##         cell2OffDiag = Numeric.resize(Numeric.array(weight['cell 2 offdiag']), (Nfac,))
 
-	inline.runInlineLoop1("""
+	inline._runInlineLoop1("""
 	    long int faceID = faceIDs(i);
 	    long int cellID1 = id1(i);
 	    long int cellID2 = id2(i);

@@ -56,7 +56,7 @@ class TransientVariable(CellVariable):
         self.theta = self._requires(theta)
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
 
     def _calcValuePy(self):
 
@@ -74,7 +74,7 @@ class TransientVariable(CellVariable):
 
     def _calcValueInline(self):
         
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
         phaseMod = phase(i);
         if(phaseMod < smallValue)
           phaseMod += smallValue;

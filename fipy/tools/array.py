@@ -227,7 +227,7 @@ def sqrtDot(a1, a2):
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
 ##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
-    return inline.optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
+    return inline._optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
 def _sqrtDotPy(a1, a2):
     return sqrt(dot(a1, a2))
@@ -256,7 +256,7 @@ def _sqrtDotIn(a1, a2):
         a2 = a2.getNumericValue()
     ni, nj = Numeric.shape(a1)
     result = Numeric.zeros((ni,),'d')
-    inline.runInline("""
+    inline._runInline("""
         int i;
         for (i = 0; i < ni; i++)
 	{

@@ -52,13 +52,13 @@ class ScSourceVariable(CellVariable):
         self.anisotropy = self._requires(anisotropy)
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueIn, self._calcValuePy)
+        inline._optionalInline(self._calcValueIn, self._calcValuePy)
     
     def _calcValuePy(self):
         self.value = (self.mPhi[:] > 0.) * self.mPhi[:] * self.phase[:] + self.anisotropy[:]
 
     def _calcValueIn(self):
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
             if (mPhi(i) > 0.)
                 value(i) = mPhi(i) * phase(i) + anisotropy(i);                
             else

@@ -55,7 +55,7 @@ class PhaseHalfAngleVariable(FaceVariable):
         self.theta = self._requires(theta)
         
     def _calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
 
     def _calcValuePy(self):
 	N = self.parameters['symmetry']
@@ -66,7 +66,7 @@ class PhaseHalfAngleVariable(FaceVariable):
         self.value = array.tan(z / 2.)
 
     def _calcValueInline(self):
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
         z = atan2(dphi(i,1), dphi(i,0));
         z = symmetry * (z - thetaFace(i));
         value(i) = tan(z / 2.);""",z = 0.,

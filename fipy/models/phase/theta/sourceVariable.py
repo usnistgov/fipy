@@ -68,11 +68,11 @@ class SourceVariable(CellVariable):
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
 
     def _calcValueInline(self):
 
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
         halfAngleSq = halfAngleVariable(i) * halfAngleVariable(i);
         beta = (1. - halfAngleSq) / (1. + halfAngleSq);
         dbeta = symmetry * 2. * halfAngleVariable(i) / (1. + halfAngleSq);

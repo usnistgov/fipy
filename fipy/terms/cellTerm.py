@@ -81,7 +81,7 @@ class CellTerm(Term):
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
         updatePyArray = Numeric.zeros((oldArray.getMesh().getNumberOfCells()),'d')
 
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
             b(i) += oldArray(i) * oldCoeff(i) / dt;
             b(i) += bCoeff(i);
             updatePyArray(i) += newCoeff(i) / dt;
@@ -105,7 +105,7 @@ class CellTerm(Term):
 	
 	coeffVectors = self._getCoeffVectors(var.getMesh())
 
-	inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+	inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 	
 	return (L, b)
 

@@ -3,13 +3,13 @@ import sys
 import Numeric 
 ##import weave
 
-def optionalInline(inlineFn, pythonFn, *args):
+def _optionalInline(inlineFn, pythonFn, *args):
     if '--inline' in sys.argv[1:]:
 	return inlineFn(*args)
     else:
 	return pythonFn(*args)
 	
-def runInline(code,**args):
+def _runInline(code,**args):
     import weave
 
 ##    from weave.blitz_tools import blitz_type_factories	
@@ -29,7 +29,7 @@ def runInline(code,**args):
 		 
 ##     print "out"
 			 
-def runInlineLoop3(code_in,**args):
+def _runInlineLoop3(code_in,**args):
     
     code="""
     int i,j,k;
@@ -45,9 +45,9 @@ def runInlineLoop3(code_in,**args):
      }
     """
     
-    return runInline(code, **args)
+    return _runInline(code, **args)
     
-def runInlineLoop2(code_in,**args):
+def _runInlineLoop2(code_in,**args):
     
     code="""
     int i,j;
@@ -60,9 +60,9 @@ def runInlineLoop2(code_in,**args):
      }
     """
     
-    return runInline(code, **args)
+    return _runInline(code, **args)
     
-def runInlineLoop1(code_in,**args):
+def _runInlineLoop1(code_in,**args):
     
     code="""
     int i;
@@ -72,9 +72,9 @@ def runInlineLoop1(code_in,**args):
      }
     """
     
-    return runInline(code, **args)
+    return _runInline(code, **args)
 
-def runInlineLoop(code_in,**args):
+def _runInlineLoop(code_in,**args):
     
     code="""
     int i,j,k;

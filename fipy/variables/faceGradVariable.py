@@ -47,7 +47,7 @@ class FaceGradVariable(VectorFaceVariable):
 	self.var = self._requires(var)
 
     def _calcValue(self):        
-	inline.optionalInline(self._calcValueInline, self._calcValuePy)
+	inline._optionalInline(self._calcValueInline, self._calcValuePy)
     
     def _calcValuePy(self):
     
@@ -86,7 +86,7 @@ class FaceGradVariable(VectorFaceVariable):
 	tangents1 = self.mesh._getFaceTangents1()
 	tangents2 = self.mesh._getFaceTangents2()
 
-	inline.runInlineLoop1("""
+	inline._runInlineLoop1("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
 

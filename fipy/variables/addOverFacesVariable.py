@@ -75,7 +75,7 @@ class AddOverFacesVariable(CellVariable):
         NCells = self.mesh.getNumberOfCells()
 	ids = self.mesh._getCellFaceIDs()
 
-        inline.runInline("""
+        inline._runInline("""
         int i;
         
         for(i = 0; i < numberOfCells; i++)
@@ -100,7 +100,7 @@ class AddOverFacesVariable(CellVariable):
 
     def _calcValue(self):
 
-        inline.optionalInline(self._calcValueIn, self._calcValuePy)
+        inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
 
 

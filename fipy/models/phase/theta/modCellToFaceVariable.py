@@ -47,7 +47,7 @@ class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
         
     def  _calcValueIn(self, alpha, id1, id2):
         
-	inline.runInline(self.modIn + """
+	inline._runInline(self.modIn + """
         int i;
         for(i = 0; i < ni; i++)
         {

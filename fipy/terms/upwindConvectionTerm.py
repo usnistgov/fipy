@@ -72,7 +72,7 @@ class UpwindConvectionTerm(ConvectionTerm):
 
 	def _calcValueIn(self, P):
 
-	    inline.runInlineLoop1("""
+	    inline._runInlineLoop1("""
 		alpha(i) = 0.5;
 		
 		if (P(i) > 0.) {
@@ -89,4 +89,4 @@ class UpwindConvectionTerm(ConvectionTerm):
 	def _calcValue(self):	    
 	    P  = self.P.getNumericValue()
 	    
-	    inline.optionalInline(self._calcValueIn, self._calcValuePy, P)
+	    inline._optionalInline(self._calcValueIn, self._calcValuePy, P)

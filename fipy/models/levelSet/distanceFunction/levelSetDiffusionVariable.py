@@ -92,7 +92,7 @@ class LevelSetDiffusionVariable(CellToFaceVariable):
                                    self.diffusionCoeff)
                                    
     def _calcValueIn(self, alpha, id1, id2):
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
 	    double	cell1 = var(id1(i));
 	    double	cell2 = var(id2(i));
 

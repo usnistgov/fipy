@@ -135,7 +135,7 @@ class AddOverFacesVariable(CellVariable):
 	ids = self.mesh._getCellFaceIDs()
 ##         ids = Numeric.reshape(ids,(NCells,self.mesh._getMaxFacesPerCell()))
 
-        inline.runInline("""
+        inline._runInline("""
         int i;
         
         for(i = 0; i < numberOfInteriorFaces; i++)
@@ -176,7 +176,7 @@ class AddOverFacesVariable(CellVariable):
 
     def _calcValue(self):
 
-        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
 
 
 

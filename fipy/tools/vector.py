@@ -79,7 +79,7 @@ def _putAddPy(vector, ids, additionVector, mask = None):
                 vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):
-    inline.runInlineLoop1("""
+    inline._runInlineLoop1("""
 	vector(ids(i)) += additionVector(i);
     """,
     vector = vector, ids = ids, additionVector = Numeric.array(additionVector),
@@ -89,7 +89,7 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
-    inline.optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
+    inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start = 0):
     """

@@ -54,10 +54,10 @@ class FFVariable(FaceVariable):
         self.parameters = parameters
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueIn, self._calcValuePy)
+        inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
     def _calcValueIn(self):
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
             double zsq = halfAngle(i) * halfAngle(i);
             double b = (1. - zsq) / (1. + zsq);
             double db = -N * 2. * halfAngle(i) / (1 + zsq);

@@ -90,7 +90,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 ##            print P.shape
 ##            print len(self.mesh.getCells())
 ##            raw_input()
-	    inline.runInlineLoop1("""
+	    inline._runInlineLoop1("""
 		if (fabs(P(i)) < eps) {
 		    P(i) = eps;
 		}
@@ -120,4 +120,4 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    eps = 1e-3
 	    P  = self.P.getNumericValue()
 	    
-	    inline.optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
+	    inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)

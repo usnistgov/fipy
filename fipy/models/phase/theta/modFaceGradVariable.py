@@ -52,7 +52,7 @@ class ModFaceGradVariable(FaceGradVariable):
 	tangents1 = self.mesh._getFaceTangents1()
 	tangents2 = self.mesh._getFaceTangents2()
 
-	inline.runInline(self.modIn + """
+	inline._runInline(self.modIn + """
         int i;
         for(i = 0; i < ni; i++)
         {

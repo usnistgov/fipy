@@ -51,7 +51,7 @@ class CellGradVariable(VectorCellVariable):
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
 
-	inline.runInlineLoop2("""
+	inline._runInlineLoop2("""
 	    val(i,j) = 0.;
 	    
 	    int k;
@@ -106,4 +106,4 @@ class CellGradVariable(VectorCellVariable):
 	orientations = self.mesh._getCellFaceOrientations()
 	volumes = self.mesh.getCellVolumes()
 
-	inline.optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)
+	inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

@@ -40,11 +40,25 @@ import os
 import gzip
 
 def write(data, fileName):
+    """
+    Pickle an object and write it to a file.
+
+    :Parameters:
+      - `data` : The object to be pickled.
+      - `fileName` : The name of the file to place the pickled object.
+    """
     fileStream = gzip.GzipFile(filename = fileName, mode = 'w', fileobj = None)
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
 def read(fileName = None):
+    """
+    Read a pickled object from a file. Returns the unpickled object.
+
+    :Parameters:
+      `fileName` : The name of the file to unpickle teh obkect from.
+
+    """
     fileStream = gzip.GzipFile(filename = fileName, mode = 'r', fileobj = None)
     data = cPickle.load(fileStream)
     fileStream.close()

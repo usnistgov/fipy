@@ -56,7 +56,7 @@ class DiffusionVariable(FaceVariable):
         self.theta = self._requires(theta)
 
     def _calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValuePy)
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
 
     def _calcValuePy(self):
 
@@ -73,7 +73,7 @@ class DiffusionVariable(FaceVariable):
     
     def _calcValueInline(self):
 
-        inline.runInlineLoop1("""
+        inline._runInlineLoop1("""
         phaseSq = phaseFace(i) * phaseFace(i);
         IGamma = gamma;
         if(gradMag(i) > 1. / gamma)

@@ -51,7 +51,7 @@ class HarmonicCellToFaceVariable(CellToFaceVariable):
 	self.value = Numeric.where(self.value > eps, cell1 * cell2 / self.value, 0.)
 	
     def _calcValueIn(self, alpha, id1, id2):
-	inline.runInlineLoop1("""
+	inline._runInlineLoop1("""
 	    double	cell1 = var(id1(i));
 	    double	cell2 = var(id2(i));
 	    double	tmp = ((cell2 - cell1) * alpha(i) + cell1);
