@@ -67,18 +67,17 @@ Do the tests:
    ...     sqr = Numeric.sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> val = evalCell(-dy / 2., -dx / 2., dx, dy)[0]
-   >>> eqn.solve()
    >>> v1 = evalCell(val, -3. * dx / 2., dx, dy)[0]
    >>> v2 = evalCell(-3. * dy / 2., val, dx, dy)[0]
    >>> v3 = evalCell(v2, v1, dx, dy)[0]
    >>> v4 = min(dx, dy) / 2 / Numeric.sqrt(2)
-   >>> Numeric.allclose(var, Numeric.array((
+   >>> arr = Numeric.array((
    ...     v3           , v2      , -3. * dy / 2.   , v2      , v3,
    ...     v1           , val     , -dy / 2.        , val     , v1           ,
    ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
    ...     v1           , val     , -dy / 2.        , val     , v1           ,
-   ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           )), 
-   ...     atol = 1e-10)
+   ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
+   >>> Numeric.allclose(var, arr, atol = 1e-10)
    1
 
 """
@@ -89,7 +88,6 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 
 dx = 0.5
@@ -102,20 +100,20 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
+initialArray = -Numeric.ones(nx * ny, 'd')
+positiveCells = mesh.getCells(filter = lambda cell: Lx / 3. < cell.getCenter()[0] < 2. * Lx / 3. and Ly / 3. < cell.getCenter()[1] < 2. * Ly / 3)
+for cell in positiveCells:
+    initialArray[cell.getID()] = 1
+
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = -1.
+    value = initialArray
     )
 
-positiveCells = mesh.getCells(filter = lambda cell: Lx / 3. < cell.getCenter()[0] < 2. * Lx / 3. and Ly / 3. < cell.getCenter()[1] < 2. * Ly / 3)
-var.setValue(1., positiveCells)
-
-eqn = DistanceEquation(var)
+var.calcDistanceFunction()
 
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
-    viewer.plot()
-    eqn.solve()
     viewer.plot()
     raw_input('finished')

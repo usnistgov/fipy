@@ -70,43 +70,34 @@ Construct the mesh.
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-Construct a `distanceVariable` object. This object is required by the
-`distanceEquation`.
+Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-   >>> var = DistanceVariable(name = 'level set variable',
-   ...                        mesh = mesh,
-   ...                        value = -1.)
-
-The domain must be divided into positive and negative regions.
-
+   >>> import Numeric
+   >>> initialArray = -Numeric.ones(nx * ny, 'd')
    >>> positiveCells = mesh.getCells(filter = lambda cell:
    ...                   (cell.getCenter()[0] - Lx / 2.)**2 +
    ...                   (cell.getCenter()[1] - Ly / 2.)**2 <
    ...                   (Lx / 4.)**2)
-   >>> var.setValue(1.,positiveCells)
-
-The `distanceEquation` is then constructed.
-
-   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-   >>> eqn = DistanceEquation(var)
-
-The problem can then be solved by executing the `solve()` method of the equation.
-
+   >>> for cell in positiveCells:
+   ...     initialArray[cell.getID()] = 1.
+   
+   >>> var = DistanceVariable(name = 'level set variable',
+   ...                        mesh = mesh,
+   ...                        value = initialArray)
+   >>> var.calcDistanceFunction()
+   
    >>> if __name__ == '__main__':
    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
    ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
    ...     viewer.plot()
-   ...     eqn.solve()
    ...     viewer.plot()
 
 The result can be tested with the following commands.
 
-   >>> eqn.solve()
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
-   >>> import Numeric
    >>> m1 = dY * dX / Numeric.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2

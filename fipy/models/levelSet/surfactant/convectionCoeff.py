@@ -63,11 +63,13 @@ class ConvectionCoeff(VectorFaceVariable):
         """
         
         Simple one dimensional test:
+
         
            >>> from fipy.variables.cellVariable import CellVariable
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
-           >>> distanceVar = CellVariable(mesh, value = (-.5, .5, 1.5))
+           >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+           >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
            >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2),'d')
            >>> answer[7,0] = -1
            >>> Numeric.allclose(ConvectionCoeff(distanceVar), answer)
@@ -76,7 +78,7 @@ class ConvectionCoeff(VectorFaceVariable):
         Change the dimensions:
 
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
-           >>> distanceVar = CellVariable(mesh, value = (-.25, .25, .75))
+           >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
            >>> answer[7,0] = -.5
            >>> Numeric.allclose(ConvectionCoeff(distanceVar), answer)
            1
@@ -84,7 +86,7 @@ class ConvectionCoeff(VectorFaceVariable):
         Two dimensional example:
 
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
-           >>> distanceVar = CellVariable(mesh, value = (-1.5, -.5, -.5, .5))
+           >>> distanceVar = DistanceVariable(mesh, value = (-1.5, -.5, -.5, .5))
            >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2),'d')
            >>> answer[2,1] = -.5
            >>> answer[3,1] = -1
@@ -96,7 +98,7 @@ class ConvectionCoeff(VectorFaceVariable):
         Larger grid:
 
            >>> mesh = Grid2D(nx = 3, ny = 3, dx = 1., dy = 1.)
-           >>> distanceVar = CellVariable(mesh, value = (1.5, .5 , 1.5,
+           >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5 , 1.5,
            ...                                           .5 , -.5, .5 ,
            ...                                           1.5, .5 , 1.5))
            >>> answer = Numeric.zeros((mesh.getNumberOfFaces(),2), 'd')

@@ -53,7 +53,6 @@ This example creates a trench with the following zero level set:
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
-   >>> disEqn.solve()
    >>> x = mesh.getCellCenters()[:,0]
    >>> y = mesh.getCellCenters()[:,1]
    >>> r1 =  -Numeric.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
@@ -81,8 +80,6 @@ Advect the interface and check the position.
    >>> Numeric.allclose(answer, solution, atol = 1e-1)
    1
  
-
-   
 """
 __docformat__ = 'restructuredtext'
 
@@ -90,7 +87,6 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
@@ -110,17 +106,19 @@ steps = 200
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
+values = -Numeric.ones(nx * ny, 'd')
+
+positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))
+for cell in positiveCells:
+    values[cell.getID()] = 1.
+
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = -1.
+    value = values
     )
 
-positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))
-
-var.setValue(1., positiveCells)
-
-disEqn = DistanceEquation(var)
+var.calcDistanceFunction()
 
 advEqn = AdvectionEquation(
     var,
@@ -134,12 +132,9 @@ it = Iterator((advEqn,))
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -.1, maxVal = .1)
 
-    disEqn.solve()
-
     viewer.plot()
 
     for step in range(steps):
-        
         it.timestep(dt = timeStepDuration)
         viewer.plot()
 

@@ -90,6 +90,7 @@ class SurfactantVariable(CellVariable):
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
+           >>> distanceVariable.markFresh()
            >>> surfactantVariable = SurfactantVariable(value = 1, 
            ...                                         distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, 
