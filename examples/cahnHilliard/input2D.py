@@ -64,16 +64,18 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import sys
 
-if 'efficiency_test' in sys.argv:
-    nx = int(Numeric.sqrt(numberOfElements))
-    ny = int(Numeric.sqrt(numberOfElements))
-    steps = 100
-else:
-    nx = 500
-    ny = 500
-    steps = 100
+nx = 500
+ny = 500
 
+identifier = 'numberOfElements='
 
+for s in sys.argv:
+    if identifier in s:
+        numberOfElements = int(s[len(identifier):])
+        nx = int(Numeric.sqrt(numberOfElements))
+        ny = int(Numeric.sqrt(numberOfElements))
+
+steps = 100
 dx = 2.
 dy = 2.
 
@@ -122,7 +124,8 @@ if __name__ == '__main__':
 
     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
-    viewer.plot()
+    if 'viewers=off' not in sys.argv:
+        viewer.plot()
     
     dexp=-5
 
@@ -132,16 +135,8 @@ if __name__ == '__main__':
         dexp += 0.01
         var.updateOld()
         eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-        viewer.plot()
+        if 'viewers=off' not in sys.argv:
+            viewer.plot()
         print 'step',step,'dt',dt
+            
         
-if 'efficiency_test' in sys.argv:
-    dexp=-5
-    for step in range(steps):
-        dt = Numeric.exp(dexp)
-        dt = min(10, dt)
-        dexp += 0.01
-        var.updateOld()
-        eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-
-

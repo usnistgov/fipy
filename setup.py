@@ -436,45 +436,46 @@ class copy_script(Command):
 class efficiency_test(Command):
     description = "run FiPy efficiency tests"
     
-    user_options = [ ('maximumElements=', None, 'An integer specifying the maximum number of elements to use for each efficiency test, the default is 1000'),
-                     ('minimumElements=', None, 'An integer specifying the minimum number of elements to use for each efficiency test, the default is 10'),
+    user_options = [ ('minimumelements=', None, 'minimum number of elements'),
                      ('factor=', None, 'factor by which the number of elements is increased'),
-                     ('inline', None, 'turn on inlining for the efficiency tests')]
+                     ('inline', None, 'turn on inlining for the efficiency tests'),
+                     ('maximumelements=', None, 'maximum number of elements')]
     
     def initialize_options(self):
-        self.maximumElements = 1000
-        self.minimumElements = 10
         self.factor = 2
         self.inline = False
+        self.maximumelements = 1000
+        self.minimumelements = 100
         
     def finalize_options(self):
-        self.maximumElements = int(self.maximumElements)
-        self.minimumElements = int(self.minimumElements)
         self.factor = int(self.factor)
+        self.maximumelements = int(self.maximumelements)
+        self.minimumelements = int(self.minimumelements)
         
     def run(self):
 
-        import imp
-        import hotshot, hotshot.stats
+        import time
+        import sys
 
-        for case in ['examples/cahnHilliard/input2D.py']:
+        file = open('efficicncyData.txt', 'w')
 
-            print 'case',case
-            numberOfElements = self.minimumElements
-            
-            while numberOfElements <= self.maximumElements:
-                ## The hotshot module
-                ## does not seem to take a file object and the code where it is created
-                ## is written in c (I think) so we can't override it. Hotshot is good
-                ## because (apparently) it is faster than the ordinary python profiler.
-                prof = hotshot.Profile('tmp.prof')
-                prof.start()
-                execfile(case, {} , {'numberOfElements' : numberOfElements})
-                prof.stop()
-                stats = hotshot.stats.load('tmp.prof')
-                print 'Elements: %i, CPU time: %.3f seconds' % (numberOfElements, stats.total_tt)
-                os.remove('tmp.prof')
+        sys.argv.append('viewers=off')
+
+        for case in ['examples/cahnHilliard/input2D.py',
+                     'examples/levelSet/electroChem/input.py']:
+
+            file.write('case:' + case + '\n')
+            numberOfElements = self.minimumelements
+            while numberOfElements <= self.maximumelements:
+                sys.argv.append('numberOfElements=' + str(numberOfElements))
+                t1 = time.clock()
+                execfile(case, globals())
+                t2 = time.clock()
+                sys.argv.remove('numberOfElements=' + str(numberOfElements))
+                file.write('Elements: %i, CPU time: %.3f seconds\n' % (numberOfElements, t2 - t1))
                 numberOfElements *= self.factor
+
+        file.close()
         
 f = open('README.txt', 'r') 
 long_description = '\n' + f.read() + '\n'
