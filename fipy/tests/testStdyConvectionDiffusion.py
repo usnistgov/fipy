@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/4/03 {10:24:04 PM} 
+ #                                last update: 12/5/03 {4:25:13 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -50,6 +50,8 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from variables.variable import Variable
+from terms.exponentialConvectionTerm import ExponentialConvectionTerm
+from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 import Numeric
 
 class TestSteadyConvectionDiffusion(unittest.TestCase):
@@ -79,6 +81,7 @@ class TestSteadyConvectionDiffusion(unittest.TestCase):
 		tolerance = 1.e-15, 
 		steps = 1000
 	    ),
+	    convectionScheme = self.convectionScheme,
 	    boundaryConditions=(
 		FixedValue(faces = self.mesh.getFacesLeft(),value = self.valueLeft),
 		FixedValue(faces = self.mesh.getFacesRight(),value = self.valueRight),
@@ -98,7 +101,6 @@ class TestSteadyConvectionDiffusion(unittest.TestCase):
     def testResult(self):
         self.it.iterate(steps = 1, timeStep = 1.)
         array = self.var.getArray()
-	print array
         (lx,ly) = self.mesh.getPhysicalShape()
         vl = self.valueLeft
         vr = self.valueRight
@@ -107,25 +109,69 @@ class TestSteadyConvectionDiffusion(unittest.TestCase):
             coords = cell.getCenter()
             id = cell.getId()
 	    x = coords[0]
-	    val = (1. - Numeric.exp(-self.convCoeff[0] * x / (self.diffCoeff * self.L))) / (1. - Numeric.exp(-self.convCoeff[0]  / (self.diffCoeff * self.L)))
+	    val = (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
             norm = abs(array[id] - val)        
-            self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
+            self.assertWithinTolerance(norm, 0.0, self.tolerance,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
             
 	    
-class  TestSteadyConvectionDiffusion1D(TestSteadyConvectionDiffusion):
-    """Steady-state 1D diffusion on a 100x1 mesh
+class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusion):
+    """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
+    """
+    def setUp(self):
+	self.L = 10.
+	self.nx = 1000
+	self.ny = 1
+	self.diffCoeff = 1.
+	self.convCoeff = (10.,0)
+	self.tolerance = 1e-10
+	self.convectionScheme = ExponentialConvectionTerm
+	TestSteadyConvectionDiffusion.setUp(self)
+
+class  TestSteadyConvectionDiffusion2DExponential(TestSteadyConvectionDiffusion):
+    """Steady-state 1D diffusion on a 10x10 mesh, with exponentional convection scheme
     """
     def setUp(self):
 	self.L = 10.
 	self.nx = 10
+	self.ny = 10
+	self.diffCoeff = 1.
+	self.convCoeff = (10.,0)
+	self.tolerance = 1e-10
+	self.convectionScheme = ExponentialConvectionTerm
+	TestSteadyConvectionDiffusion.setUp(self)
+	
+class  TestSteadyConvectionDiffusion1DExponentialBackwards(TestSteadyConvectionDiffusion):
+    """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme
+    """
+    def setUp(self):
+	self.L = 10.
+	self.nx = 1000
 	self.ny = 1
 	self.diffCoeff = 1.
-	self.convCoeff = (100.,0)
+	self.convCoeff = (-10.,0)
+	self.tolerance = 1e-10
+	self.convectionScheme = ExponentialConvectionTerm
 	TestSteadyConvectionDiffusion.setUp(self)
-
+	
+class  TestSteadyConvectionDiffusion1DPowerLaw(TestSteadyConvectionDiffusion):
+    """Steady-state 1D diffusion on a 100x1 mesh, with power law convection scheme
+    """
+    def setUp(self):
+	self.L = 10.
+	self.nx = 1000
+	self.ny = 1
+	self.diffCoeff = 1.
+	self.convCoeff = (10.,0)
+	self.tolerance = 1e-2
+	self.convectionScheme = PowerLawConvectionTerm
+	TestSteadyConvectionDiffusion.setUp(self)
+	
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1D))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponential))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DPowerLaw))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialBackwards))
+    theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion2DExponential))
     return theSuite
     
 if __name__ == '__main__':

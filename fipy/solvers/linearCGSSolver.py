@@ -5,7 +5,7 @@
 
  FILE: "linearCGSSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/4/03 {10:23:04 PM} 
+                               last update: 12/5/03 {4:19:36 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler

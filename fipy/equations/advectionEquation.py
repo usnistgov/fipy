@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "stdyConvDiffEquation.py"
+ FILE: "advectionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/5/03 {3:02:09 PM} 
+                               last update: 12/5/03 {3:55:03 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
