@@ -86,7 +86,7 @@ typed by you.
 
 .. warning::
 
-   Python_ is sensitive to indentation and care should be take to enter
+   Python_ is sensitive to indentation and care should be taken to enter
    text exactly as it appears in the examples.
 
 When references are made to file system paths, it is assumed that the
