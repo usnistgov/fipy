@@ -50,6 +50,7 @@ import mesh1D.tri2Dinput
 import mesh1D.input
 import mesh20x20.input
 import mesh20x20.tri2Dinput
+import mesh20x20.modifiedMeshInput
 import mesh50x50.input
 import mesh50x50.tri2Dinput
 import otherMeshes.grid3Dinput
@@ -64,6 +65,7 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(mesh50x50.input))
     theSuite.addTest(doctest.DocTestSuite(mesh50x50.tri2Dinput))
     theSuite.addTest(doctest.DocTestSuite(otherMeshes.grid3Dinput))
+    theSuite.addTest(doctest.DocTestSuite(mesh20x20.modifiedMeshInput))
     return theSuite
     
 if __name__ == '__main__':
