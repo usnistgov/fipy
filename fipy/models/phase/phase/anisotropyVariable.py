@@ -44,32 +44,64 @@
 import Numeric
 
 from fivol.variables.cellVariable import CellVariable
+from fivol.variables.faceVariable import FaceVariable
+from fivol.variables.vectorFaceVariable import VectorFaceVariable
+from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
 import toolsTmp
 
-class AnisotropyVariable(CellVariable):
-    def __init__(self, parameters = None, phase = None, halfAngle = None):
-        CellVariable.__init__(self, phase.getMesh())
-	self.parameters = parameters
-	self.phase = self.requires(phase)
+class FFVariable(FaceVariable):
+    def __init__(self, parameters = None, halfAngle = None):
+        FaceVariable.__init__(self, halfAngle.getMesh())
         self.halfAngle = self.requires(halfAngle)
-
+        self.parameters = parameters
+        
     def calcValue(self):
-	alpha = self.parameters['alpha']
+        alpha = self.parameters['alpha']
 	N = self.parameters['symmetry']
 	c2 = self.parameters['anisotropy']
-        dphi = self.phase.getFaceGrad()[:,:]
         
         zsq = self.halfAngle[:] * self.halfAngle[:]
 	b = (1. - zsq) / (1. + zsq)
 	db = -N * 2 * self.halfAngle[:] / (1 + zsq)
-        ff = alpha**2 * c2 * (1. + c2 * b) * db
+        self.value = alpha**2 * c2 * (1. + c2 * b) * db
 
-        dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
+class DPhiReverse(VectorFaceVariable):
+    def __init__(self, phase):
+        VectorFaceVariable.__init__(self, phase.getMesh())
+        self.phase = self.requires(phase)
+        
+    def calcValue(self):
+        dphi = self.phase.getFaceGrad()[:,:]
+        self.value = dphi[:,::-1] * Numeric.array((-1.,1))
+    
+class AnisotropyVariable(CellVariable):
+    def __init__(self, parameters = None, phase = None, halfAngle = None):
+        CellVariable.__init__(self, phase.getMesh())
+        self.requires(phase)
+        self.requires(halfAngle)
+        ff = FFVariable(parameters = parameters, halfAngle = halfAngle)
+        dPhiReverse = DPhiReverse(phase)
+        
+        self.AOF = AddOverFacesVariable(faceVariable = ff, faceGradient = dPhiReverse)
+        
+    def calcValue(self):
+        self.value = self.AOF.getNumericValue()
+##	alpha = self.parameters['alpha']
+##	N = self.parameters['symmetry']
+##	c2 = self.parameters['anisotropy']
+##        dphi = self.phase.getFaceGrad()[:,:]
+        
+##        zsq = self.halfAngle[:] * self.halfAngle[:]
+##	b = (1. - zsq) / (1. + zsq)
+##	db = -N * 2 * self.halfAngle[:] / (1 + zsq)
+##        ff = alpha**2 * c2 * (1. + c2 * b) * db
 
-        self.value = toolsTmp.addOverFaces(faceGradient = dphiReverse,
-                                        faceVariable = ff,
-                                        mesh = self.mesh,
-                                        NCells = len(self.value[:]))
+##        dphiReverse = dphi[:,::-1] * Numeric.array((-1.,1))
+
+##        self.value = toolsTmp.addOverFaces(faceGradient = dphiReverse,
+##                                        faceVariable = ff,
+##                                        mesh = self.mesh,
+##                                        NCells = len(self.value[:]))
         
 ##        contributions = Numeric.sum(self.mesh.getAreaProjections() * dphiReverse,1)
 
