@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 1/16/04 {11:19:17 AM} 
+ #                                last update: 1/30/04 {6:02:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,6 +49,8 @@ import Numeric
 from fivol.tools.dimensions.physicalField import PhysicalField
 import fivol.tools.array
 
+import fivol.inline.inline as inline
+
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.
     """
@@ -77,11 +79,21 @@ def arraySqrtDot(a1,a2):
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
     return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
 
+def _putAddPy(vector, ids, additionVector):
+    for i in range(len(ids)):
+	vector[ids[i]] += additionVector[i]
+
+def _putAddIn(vector, ids, additionVector):
+    inline.runInlineLoop1("""
+	vector(ids(i)) += additionVector(i);
+    """, 
+    vector = vector, ids = ids, additionVector = additionVector,
+    ni = len(ids))
+
 def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
 
-    for i in range(len(ids)):
-        vector[ids[i]] += additionVector[i]
+    inline.optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
