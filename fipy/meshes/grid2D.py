@@ -293,7 +293,8 @@ class Grid2D(Mesh):
     def getMaxFacesPerCell(self):
         return 4
 
-
+    def getMeshSpacing(self):
+        return Numeric.array((self.dx,self.dy))
                 
         
 

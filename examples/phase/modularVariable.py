@@ -35,12 +35,16 @@
 """
 
 from variables.cellVariable import CellVariable
+import Numeric
 
 class ModularVariable(CellVariable):
 
     def getGrad(self):
-        grad = CellVariable.getGrad(self)
-        grad = self.mod(grad)
+##        print CellVariable.getGrad(self)
+##        print self.mod(CellVariable.getGrad(self))
+##        raw_input()
+        gridSpacing = self.mesh.getMeshSpacing()
+        return self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing       
 
     def getFaceValue(self):
         alpha = self.mesh.getFaceToCellDistanceRatio()
@@ -53,6 +57,7 @@ class ModularVariable(CellVariable):
         dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	N = self.mod(Numeric.take(self[:], id2) - Numeric.take(self[:], id1))/dAP
+        
 	normals = self.mesh.getFaceNormals().copy()
 	normals *= Numeric.reshape(self.mesh.getFaceOrientations(),(len(normals),1))
 	tangents1 = self.mesh.getFaceTangents1()
@@ -73,9 +78,9 @@ class ModularVariable(CellVariable):
 
 	return normals * N + tangents1 * T1 + tangents2 * T2
     
-    def mod(u):
+    def mod(self, array):
         pi=Numeric.pi
-        return ((u+3*pi)%(2*pi)-pi)
+        return (array + 3. * pi) % (2 * pi) - pi
 
     
 	

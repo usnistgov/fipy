@@ -53,7 +53,7 @@ class CellVariable(Variable):
 	if hasOld:
 	    self.old = self.copy()
 	else:
-	    self.old = None
+            self.old = None
 
 
     def copy(self):

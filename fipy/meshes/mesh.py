@@ -287,3 +287,5 @@ class Mesh:
 	self.calcOrientedFaceNormals()
 	self.calcAreaProjections()
 	self.calcOrientedAreaProjections()
+
+        

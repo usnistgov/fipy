@@ -53,6 +53,7 @@ from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
+from phase.modularVariable import ModularVariable
 from variables.cellVariable import CellVariable
 import Numeric
 
@@ -93,7 +94,7 @@ class TestPhase(TestBase):
 	    
 	phaseParameters['phi'] = self.var
         
-        theta = CellVariable(
+        theta = ModularVariable(
             name = 'Theta',
             mesh = self.mesh,
             value = 1.,
