@@ -1,8 +1,0 @@
-include MANIFEST MANIFEST.in LICENSE.txt test.py
-
-recursive-include documentation/ CHANGES README BUGS TODOLIST *.txt
-recursive-include documentation/manual/ *.py *.txt *.html
-include documentation/manual/fipy.pdf
-include documentation/pycon2004/fipy.pdf
-
-recursive-include examples *.py

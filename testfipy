@@ -1,4 +1,0 @@
-#!/bin/sh
-
-./test.py --inline
-./test.py
