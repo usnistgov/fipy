@@ -61,13 +61,23 @@ where the free energy functional is given by,
 """
 __docformat__ = 'restructuredtext'
 
-L = 1000.
-nx = 500
-ny = 500
+import Numeric
+import sys
 
-steps = 1000
-dx = L / nx
-dy = L / ny
+if 'efficiency_test' in sys.argv:
+    nx = int(Numeric.sqrt(numberOfElements))
+    ny = int(Numeric.sqrt(numberOfElements))
+    steps = 100
+else:
+    nx = 500
+    ny = 500
+    steps = 100
+
+
+dx = 2.
+dy = 2.
+
+L = dx * nx
 
 asq = 1.0
 epsilon = 1
@@ -78,10 +88,9 @@ mesh = Grid2D(dx, dy, nx, ny)
 
 import random
 from fipy.variables.cellVariable import CellVariable
-var = CellVariable(
-    name = "phase field",
-    mesh = mesh,
-    value = [random.random() for x in range(nx * ny)])
+var = CellVariable(name = "phase field",
+                   mesh = mesh,
+                   value = [random.random() for x in range(nx * ny)])
 
 ##var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
 
@@ -110,22 +119,29 @@ BCs = (FixedFlux(mesh.getFacesRight(), 0),
        NthOrderBoundaryCondition(mesh.getFacesBottom(), 0, 3))
 
 if __name__ == '__main__':
+
     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
     viewer.plot()
+    
+    dexp=-5
 
-    dexp=1
-    import Numeric
     for step in range(steps):
         dt = Numeric.exp(dexp)
         dt = min(100, dt)
         dexp += 0.01
-        print 'step:',step,dt
         var.updateOld()
         eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-
         viewer.plot()
+        print 'step',step,'dt',dt
         
-    raw_input('finished')
+if 'efficiency_test' in sys.argv:
+    dexp=-5
+    for step in range(steps):
+        dt = Numeric.exp(dexp)
+        dt = min(10, dt)
+        dexp += 0.01
+        var.updateOld()
+        eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
 
 
