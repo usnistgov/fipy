@@ -48,11 +48,13 @@ import Gnuplot
 
 class GnuplotViewer:
     
-    def __init__(self, array, numberOfContours = 10, dx = 1., dy = 1.):
+    def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color'):
         self.array = array
-        self.numberOfContours = numberOfContours
         self.dx = dx
         self.dy = dy
+        self.maxVal = maxVal
+        self.minVal = minVal
+        self.palette = palette
 
     def plot(self, fileName = None):
         array = Numeric.array(self.array)
@@ -60,19 +62,9 @@ class GnuplotViewer:
         x = Numeric.arange(ny) * self.dy
         y = Numeric.arange(nx) * self.dx
         array = Numeric.transpose(array)
-        g = Gnuplot.Gnuplot(debug=1)
+        g = Gnuplot.Gnuplot()
         g('set data style lines')
-##        g('set contour base')
-##        g('set nosurface')
-##        g('set view map')
-        g('set cntrparam levels auto ' + str(self.numberOfContours))
-##        g('set view map')
-##        g('unset surface')
-##        g('set size ratio -1')
-##        g('unset xtics')
-##        g('unset ytics')
-##        g('set palette model RGB')
-##        g('set palette defined ( 0 0.05 0.05 0.2, 0.1 0 0 1, 0.25 0.7 0.85 0.9, 0.4 0 0.75 0, 0.5 1 1 0, 0.7 1 0 0, 0.9 0.6 0.6 0.6, 1 0.95 0.95 0.95 )')
+##        g('set cntrparam levels auto ' + str(self.numberOfContours))
         g('set view map')
         g('set samples 101')
         g('set isosamples 5, 5')
@@ -81,18 +73,33 @@ class GnuplotViewer:
         g('set noytics')
         g('set noztics')
         g('set noxtics')
-##        g('set cbrange [ -10.0000 : 10.0000 ] noreverse nowriteback')
         g('set pm3d at b')
-        g('set palette defined ( 0 0.05 0.05 0.2, 0.1 0 0 1, 0.25 0.7 0.85 0.9, 0.4 0 0.75 0, 0.5 1 1 0, 0.7 1 0 0, 0.9 0.6 0.6 0.6, 1 0.95 0.95 0.95 )')
-        g('set pm3d at b')
-        g.splot(Gnuplot.GridData(array, x, y))
+##        g('set palette color positive')
+        g('set palette ' + self.palette)
+        g('set size ratio -1')
+        
+        if self.maxVal is not None:
+            maxVal = self.maxVal
+        else:
+            argmax = Numeric.argmax(array.flat)
+            maxVal = array.flat[argmax]
 
-        if fileName is not None:
+        if self.minVal is not None:
+            minVal = self.minVal
+        else:
+            argmin = Numeric.argmin(array.flat)
+            minVal = array.flat[argmin]
 
-            if '.pdf' == fileName[-4:]:
-                g('set terminal pdf')
-                g('set output "' + fileName + '"')
-                g.splot(Gnuplot.GridData(array, x, y))
+        
 
-            if '.ps' == fileName[-3:]: 
-                g.hardcopy(fileName, enhanced=1, color=1)
+##        g('set zrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
+        g('set cbrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
+
+        if fileName is None:
+            g.splot(Gnuplot.GridData(array, x, y))
+        elif '.pdf' == fileName[-4:]:
+            g('set terminal pdf')
+            g('set output "' + fileName + '"')
+            g.splot(Gnuplot.GridData(array, x, y))
+        elif '.ps' == fileName[-3:]: 
+            g.hardcopy(fileName, enhanced=1, color=1)
