@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 11/2/04 {5:06:55 PM} { 2:45:36 PM}
+ #                                last update: 3/4/05 {4:28:18 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,72 +42,48 @@
  # ###################################################################
  ##
 
-import Numeric
-
 import os
-try:
-    import gist
-    import colorbar
-except:
-    print "Unable to load gist"
 
-class GistViewer:
+import Numeric
+import gist
+
+from fipy.viewers.viewer import Viewer
+
+class GistViewer(Viewer):
     
     id=0
     
-    def __init__(self, minVal = None, maxVal = None, title = '', palette = 'heat.gp', grid = 1, limits = None, dpi = 75):
+    def __init__(self, vars, limits = None, title = None, dpi = 75):
+        """
+        :Parameters:
+          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+                      will also use `ymin` and `ymax`, and so on. 
+                      All viewers will use `datamin` and `datamax`. 
+                      Any limit set to a (default) value of `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window
+          - `dpi`: the dot-per-inch resolution of the display
+        """
+        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        
+        self.mesh = self.vars[0].getMesh()
 
-	self.minVal = minVal
-        self.maxVal = maxVal
-	self.title = title
         self.id = GistViewer.id 
 	GistViewer.id += 1
-        self.palette = palette
-        self.grid = grid
-        self.limits = limits
+        
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
+
+    def getLimit(self, key):
+        limit = Viewer.getLimit(self, key = key)
+        if limit is None:
+            limit = 'e'
+            
+        return limit
         
-    def plot(self, minVal = None, maxVal = None, fileName = None):
-	array = self.getArray()
-        
-        gist.window(self.id, wait = 1)
-##        gist.window(self.id, wait = 1, dpi = dpi)
-	gist.pltitle(self.title)
-        gist.animate(1)
-        gist.palette(self.palette)
-	gist.gridxy(self.grid)
-        if self.limits != None:
-            gist.limits(self.limits[0], self.limits[1], self.limits[2], self.limits[3])
-	
-	if minVal is None:
-	    if self.minVal is None:
-		minVal = Numeric.minimum.reduce(array.flat)
-	    else:
-		minVal = self.minVal
-                
-	if maxVal is None:
-	    if self.maxVal is None:
-		maxVal = Numeric.maximum.reduce(array.flat)
-	    else:
-		maxVal = self.maxVal
-
-	if maxVal == minVal:
-	    maxVal = minVal + 0.01
-
-        self._plot(array, minVal, maxVal)
-             
-	colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
-
-        if fileName is not None:
-            gist.hcp_file(fileName)
-            gist.hcp()
-            gist.hcp_finish()
-
-        gist.fma()
-
-    def _plot(self, array, minVal, maxVal):
-        gist.pli(array, cmin = minVal, cmax = maxVal)
-
-    def getArray(self):
+    def plot(self):
         pass
+
+
         

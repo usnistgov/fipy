@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "gistViewer.py"
+ #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 9/3/04 {10:33:33 PM} 
+ #                                last update: 3/4/05 {6:07:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,22 +42,41 @@
  # ###################################################################
  ##
 
-import gist
+class Viewer:
+    def __init__(self, vars, limits = None, title = None):
+        """
+        :Parameters:
+          - `vars`: a `Variable` or tuple of `Variable` objects to plot
+          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+                      will also use `ymin` and `ymax`, and so on. 
+                      All viewers will use `datamin` and `datamax`. 
+                      Any limit set to a (default) value of `None` will autoscale.
+          - `title`: displayed at the top of the Viewer window
+        """
+        if type(vars) not in [type([]), type(())]:
+            vars = [vars]
+        self.vars = vars
+        
+        self.limits = limits
+        
+        if title is None and len(self.vars) == 1:
+            title = self.vars[0].getName()
+        else:
+            title = ''
 
-class gistViewer:
-    
-    id=0
-    
-    def __init__(self, var, minVal=0., maxVal=1.):
-	self.minVal = minVal
-        self.maxVal = maxVal
-        self.var = var
-        self.id = self.id + 1
-    
-    def plot(self):
-        gist.window(self.id, wait= 1)
-        gist.animate(1)
-        gist.palette('rainbow.gp')
-        gist.pli(self.var, cmin = self.minVal, cmax = self.maxVal)
-        colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
-        gist.fma()
+        self.title = title
+        
+    def setLimits(self, limits):
+        for key in limits.keys():
+            self.limits[key] = limits[key]
+        
+    def getLimit(self, key):
+        if self.limits and self.limits.has_key(key):
+            limit = self.limits[key]
+        else:
+            limit = None
+            
+        return limit
+
