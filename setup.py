@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/15/04 {11:43:01 AM} 
+ #                                last update: 10/16/04 {12:30:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -335,11 +335,16 @@ Jonathan Guyer <guyer@nist.gov>
 Jim Warren <jwarren@nist.gov>
 """
 
-setup(	name = "FiPy",
+f = open('LICENSE.txt', 'r') 
+license = '\n' + f.read() + '\n'
+f.close()
+
+dist = setup(	name = "FiPy",
 	version = "0.1",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
-	url = "http://ctcms.nist.gov",
+	url = "http://ctcms.nist.gov/fipy/",
+	license = license,
 	description = "A finite volume PDE solver in Python",
 	long_description = long_description,
 	cmdclass = {
@@ -355,15 +360,17 @@ setup(	name = "FiPy",
 			    'fipy.meshes.numMesh',
 			    'fipy.meshes.pyMesh',
 			'fipy.models',
+			    'fipy.models.cahnHilliard',
 			    'fipy.models.elphf',
 			    'fipy.models.levelSet',
 				'fipy.models.levelSet.advection',
 				'fipy.models.levelSet.distanceFunction',
+				'fipy.models.levelSet.electroChem',
+				'fipy.models.levelSet.surfactant',
 			    'fipy.models.phase',
 				'fipy.models.phase.phase',
 				'fipy.models.phase.temperature',
 				'fipy.models.phase.theta',
-                            'fipy.models.cahnHilliard',
 			'fipy.solvers',
 			'fipy.terms',
 			'fipy.tests',
@@ -374,3 +381,60 @@ setup(	name = "FiPy",
 			'fipy.viewers'
 	]
 )
+
+if 'install' in dist.commands:
+    req = []
+    
+    try:
+	import Numeric
+    except ImportError, exc:
+	req.append('Numeric')
+	
+    try:
+	import spmatrix
+    except ImportError, exc:
+	req.append('PySparse')
+	
+    try:
+	import pooky
+    except ImportError, exc:
+	req.append('pooky')
+	
+    if len(req) > 0:
+	print "!!!!!!"
+	print "The required module(s) " + str(req) + " cannot be loaded."
+	print "FiPy will not work properly until these modules are installed."
+
+    opt = []
+    
+    try:
+	import weave
+    except ImportError, exc:
+	opt.append('weave')
+	
+    try:
+	import gmsh
+    except ImportError, exc:
+	opt.append('gmsh')
+	
+    if len(opt) > 0:
+	print "------"
+	print "The optional module(s) " + str(opt) + " cannot be loaded."
+	print "FiPy will have improved capabilities if these modules are installed."
+	
+    try:
+	import gisty
+    except ImportError, exc:
+	print "------"
+	print "The Pygist package cannot be loaded."
+	print "If you choose not to install this package, be sure to create an " + \
+	"environment variable FIPY_NOGIST to allow the test suite to run to completion."
+	
+    try:
+	import pyx
+    except ImportError, exc:
+	print "------"
+	print "The PyX package cannot be loaded."
+	print "If you choose not to install this package, be sure to create an " + \
+	"environment variable FIPY_NOPYX to allow the test suite to run to completion."
+	

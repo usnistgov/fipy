@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/7/04 {10:08:00 AM} 
+ #                                last update: 10/15/04 {1:52:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -191,19 +191,19 @@ class Variable:
     def __getitem__(self, index):
         """    
         "Evaluate" the variable and return the specified element
-	
+        
             >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
             >>> print a[1,1]
             10.0 m
 
         It is an error to slice a Variable whose `value` is not sliceable
 
-	    >>> Variable(value = 3)[2]
-	    Traceback (most recent call last):
+            >>> Variable(value = 3)[2]
+            Traceback (most recent call last):
                   ...
-	    TypeError: unsubscriptable object
+            TypeError: unsubscriptable object
 
-	"""
+        """
 	return self.getValue()[index]
 	
     def __str__(self):

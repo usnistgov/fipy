@@ -1,5 +1,44 @@
 @import url("default.css");
 
+h1.title {
+  text-align: left;
+  font-family: Berkeley, Garamond , "Times New Roman", serif;
+  font-size: 200%;
+  font-weight: normal;
+  font-style: normal;
+}
+
+h2.subtitle {
+  text-align: left;
+  font-family: Berkeley, Garamond , "Times New Roman", serif;
+  font-size: 150%;
+  font-weight: normal;
+  font-style: normal;
+}
+
+div.section h1, h2, h3, h4 {
+    font-family: Berkeley, Garamond , "Times New Roman", serif;
+    font-weight: normal;
+    font-style: normal;
+}
+
+div.section h1 {
+    font-size: 150%;
+}
+
+div.section h2 {
+    font-size: 125%;
+}
+
+div.section h3 {
+    font-size: 100%;
+    font-weight: bold;
+}
+
+div.section h4 {
+    font-size: 100%;
+}
+
 body {
     margin: 0;
     color: black;
@@ -17,7 +56,7 @@ table td {
     border-width: 0;
 }
 
-a {
+a:link {
     color: #002E4F;
     text-decoration: underline;
 }
@@ -161,6 +200,13 @@ div#leftmenu th {
     font-weight: bold;
     height: 5ex;
 }
+
+div#leftmenu td, th {
+  padding-left: 0em ;
+  padding-right: 0em ;
+  vertical-align: middle 
+}
+
 
 div#footer {
     background: #C5DAE4;

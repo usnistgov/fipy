@@ -3,13 +3,7 @@ Overview
 ========
 
 |FiPy| is an object oriented, partial differential equation (PDE) solver,
-written in Python_
-
-.. raw:: latex
-
-   \cite{Python}
-
-, based on a standard finite volume (FV) approach.  The
+written in Python_ |citePython|, based on a standard finite volume (FV) approach.  The
 framework has been developed in the `Metallurgy Division`_ and Center for
 Theoretical and Computational Materials Science (CTCMS_), in the Materials
 Science and Engineering Laboratory (MSEL_) at the National Institute of
@@ -28,21 +22,9 @@ array calculations, sparse matrices and data rendering.
 The |FiPy| framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
 coupled elliptic, hyperbolic and parabolic PDEs.  Current models include
-phase field treatments
-
-.. raw:: latex
-
-   \cite{BoettingerReview:2002,McFaddenReview:2002}
-
-of polycrystalline, dendritic, and electrochemical
+phase field |citePhaseField| treatments of polycrystalline, dendritic, and electrochemical
 phase transformations as well as a level set treatment of the
-electrodeposition process
-
-.. raw:: latex
-
-   \cite{NIST:damascene:2001}
-
-.
+electrodeposition process |citeCEAC|.
 
 The latest information about |FiPy| can be found at
 http://www.ctcms.nist.gov/fipy/.
@@ -158,3 +140,15 @@ or a
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION.txt| replace:: |latexINSTALLATION.txt| |htmlINSTALLATION.txt|
 
+
+.. |citePython| raw:: latex
+
+   \cite{Python}
+
+.. |citePhaseField| raw:: latex
+
+   \cite{BoettingerReview:2002,McFaddenReview:2002}
+
+.. |citeCEAC| raw:: latex
+
+   \cite{NIST:damascene:2001}

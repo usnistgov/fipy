@@ -1,9 +1,11 @@
-include MANIFEST MANIFEST.in LICENSE.txt test.py INSTALLATION.txt README.txt CREDITS.txt TALKS.txt DISCLAIMER.txt
+include *.txt
+# include MANIFEST MANIFEST.in *.txt
 
-recursive-include documentation/ CHANGES README BUGS TODOLIST *.txt
-recursive-include documentation/manual/ *.py *.txt *.html
+recursive-include documentation/manual/ *.py *.txt
+recursive-include documentation/www/ *.html *.css *.gif *.png
 include documentation/manual/fipy.pdf
-include documentation/manual/api.pdf
+include documentation/manual/reference.pdf
 include documentation/pycon2004/fipy.pdf
 
-recursive-include examples *.py
+recursive-include examples *.py *.msh *.gz
+recursive-include fipy *.msh
