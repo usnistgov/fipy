@@ -68,4 +68,13 @@ def arraySqrtDot(a1,a2):
     """
     ## We can't use Numeric.dot on an array of vectors
     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
+
+def putAdd(vector, ids, additionVector):
+    """ This is a temporary replacement for Numeric.put as it was not doing
+    what we thought it was doing.
+    """
+
+    for i in range(len(ids)):
+        vector[ids[i]] += additionVector[i]
+    
     
