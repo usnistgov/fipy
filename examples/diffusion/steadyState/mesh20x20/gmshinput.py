@@ -55,8 +55,6 @@ Grid2D with each interior vertex moved in a random direction.
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.iterators.iterator import Iterator
@@ -107,22 +105,10 @@ def topSide(face):
     else:
         return 0
 
-eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
-                                             FixedValue(mesh.getFacesRight(), valueRight),
-                                             FixedFlux(mesh.getFacesTop(),0.),
-                                             FixedFlux(mesh.getFacesBottom(),0.)
-                                             )
-                       )
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-it = Iterator((eq,))
-
-it.timestep()
+ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
+                                                         FixedValue(mesh.getFacesRight(), valueRight)))
 
 if __name__ == '__main__':
     ##viewer.plot(resolution = 0.1)

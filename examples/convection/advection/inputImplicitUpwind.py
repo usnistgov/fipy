@@ -48,10 +48,7 @@ order implicit upwind scheme.
 import Numeric
      
 from fipy.meshes.grid2D import Grid2D
-from fipy.equations.advectionEquation import AdvectionEquation
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
@@ -65,8 +62,8 @@ nx = 400
 ny = 1
 dx = L / nx
 dy = L / ny
-cfl = 0.1
-velocity = -1.
+cfl = 0.01
+velocity = 1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 1000
 
@@ -87,21 +84,21 @@ boundaryConditions = (
     FixedFlux(mesh.getFacesBottom(), 0.)
     )
 
-eq = AdvectionEquation(
-    var = var,
-    convectionCoeff = (velocity, 0.),
-##     solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    solver = LinearLUSolver(tolerance = 1.e-15),
-    boundaryConditions = boundaryConditions
-    )
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
-it = Iterator((eq,))
+eq = TransientTerm() - PowerLawConvectionTerm(convCoeff = (velocity, 0.))
 
 if __name__ == '__main__':
     
     viewer = Gist1DViewer(vars=(var,))
+    viewer.plot()
+    raw_input("press key to continue")
     for step in range(steps):
-        it.timestep(dt = timeStepDuration)
+        eq.solve(var,
+                 dt = timeStepDuration,
+                 boundaryConditions = boundaryConditions,
+                 solver = LinearLUSolver(tolerance = 1.e-15))
         viewer.plot()
     viewer.plot()
     raw_input('finished')

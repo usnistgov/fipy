@@ -48,7 +48,6 @@ order explicit upwind scheme.
 import Numeric
      
 from fipy.meshes.grid2D import Grid2D
-from fipy.equations.advectionEquation import AdvectionEquation
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
@@ -86,21 +85,19 @@ boundaryConditions = (
     FixedFlux(mesh.getFacesBottom(), 0.)
     )
 
-eq = AdvectionEquation(
-    var = var,
-    convectionCoeff = (velocity, 0.),
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExplicitUpwindConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 
-it = Iterator((eq,))
+eq = TransientTerm() - ExplicitUpwindConvectionTerm(convCoeff = (velocity, 0.))
 
 if __name__ == '__main__':
     
     viewer = Gist1DViewer(vars=(var,))
     for step in range(steps):
-        it.timestep(dt = timeStepDuration)
+        eq.solve(var,
+                 dt = timeStepDuration,
+                 boundaryConditions = boundaryConditions,
+                 solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
         viewer.plot()
     viewer.plot()
     raw_input('finished')

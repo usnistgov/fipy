@@ -50,11 +50,7 @@ Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front
 
 from fipy.meshes.numMesh.grid3D import Grid3D
 import Numeric
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import Grid3DPyxViewer
 
@@ -82,24 +78,15 @@ viewer5 = Grid3DPyxViewer(var, zvalue = 5.0)
 viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
 viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
 
-eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueSides),
-                                             FixedValue(mesh.getFacesRight(),valueSides),
-                                             FixedValue(mesh.getFacesTop(),valueSides),
-                                             FixedValue(mesh.getFacesBottom(),valueSides),
-                                             FixedValue(mesh.getFacesFront(),valueFront),
-                                             FixedValue(mesh.getFacesBack(),valueBack),
-                                             )
-                       )
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-it = Iterator((eq,))
-
-it.timestep()
+ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueSides),
+                                                         FixedValue(mesh.getFacesRight(),valueSides),
+                                                         FixedValue(mesh.getFacesTop(),valueSides),
+                                                         FixedValue(mesh.getFacesBottom(),valueSides),
+                                                         FixedValue(mesh.getFacesFront(),valueFront),
+                                                         FixedValue(mesh.getFacesBack(),valueBack),
+                                                         ))
 
 if __name__ == '__main__':
     viewer1.plot(resolution = 0.2, xlabel = "X values (Z value = 1)", minval = valueFront, maxval = valueBack)

@@ -54,11 +54,8 @@ For more information, see the documentation for AdaptiveMesh.
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.diffusionEquation import DiffusionEquation
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
@@ -83,22 +80,10 @@ if __name__ == '__main__':
                            mesh = mesh,
                            value = valueLeft)
 
-        eq = DiffusionEquation(var,
-                               transientCoeff = 0., 
-                               diffusionCoeff = 1.,
-                               solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                        steps = 1000
-                                                        ),
-                               boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
-                                                     FixedValue(mesh.getFacesRight(), valueRight),
-                                                     FixedFlux(mesh.getFacesTop(),0.),
-                                                     FixedFlux(mesh.getFacesBottom(),0.)
-                                                     )
-                               )
+        from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-        it = Iterator((eq,))
-
-        it.timestep()
+        ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
+                                                                 FixedValue(mesh.getFacesRight(), valueRight)))
 
         varArray = Numeric.array(var)
         x = mesh.getCellCenters()[:,0]
