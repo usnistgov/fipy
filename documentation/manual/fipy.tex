@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 7/9/04 {5:43:47 PM} 
+ %                                last update: 7/28/04 {7:24:41 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -168,6 +168,8 @@
 
 \usepackage{tocvsec2}
 
+\input{version}
+
 \begin{document}
 
 \doparttoc
@@ -259,6 +261,8 @@
     \end{tabular}\par}%
     \vskip 1.5em%
   {\large \@date \par}%       % Set date in \large size.
+      \vskip 1.5em%
+  {\large Version~\Version \par}
 % \vfil\null
   \vspace*{\fill}%
 %   \raisebox{-5cm}{\fbox{\includegraphics[hiresbb,scale=1.5]{NIST_right2line}}}%
@@ -365,7 +369,6 @@
 
 \chapter{Level Set Examples}
 
-<<<<<<< fipy.tex
 \input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
 \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
@@ -374,19 +377,17 @@
 \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
 \newpage
-=======
-\include{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
-\include{examples/latex/examples.levelSet.distanceFunction.square.input-module}
-\include{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
-\include{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
-\include{examples/latex/examples.levelSet.advection.mesh1D.input-module}
-\include{examples/latex/examples.levelSet.advection.circle.input-module}
+\input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
+\newpage
+\input{examples/latex/examples.levelSet.advection.circle.input-module}
+\newpage
 
+\chapter{Electrochemistry Phase Field Examples}
 
-
-
-
->>>>>>> 1.23
+\input{examples/latex/examples.elphf.input1Dphase-module}
+\newpage
+\input{examples/latex/examples.elphf.input1D-module}
+\newpage
 
 \settocdepth{all} 
 

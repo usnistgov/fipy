@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 7/27/04 {7:32:30 PM} 
+ #                                last update: 7/28/04 {10:55:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -207,7 +207,9 @@ class build_docs (Command):
 	    for module in ['examples/diffusion/',
 			   'examples/convection/',
 			   'examples/phase/',
-			   'examples/levelSet/']:
+			   'examples/levelSet/',
+			   'examples/elphf/',
+			   ]:
 		self._epydocFiles(module = module, dir = dir, type = 'latex')
 
 
@@ -222,8 +224,15 @@ class build_docs (Command):
 	    try:
 		os.chdir(os.path.join('documentation','manual'))
 		
+		f = open('version.tex', 'w')
+		f.write("% This file is created automatically by:\n")
+		f.write("% 	python setup.py build_doc --manual\n\n")
+		f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
+		f.close()
+
 		self._translateTextFiles()
 
+		os.system("pdflatex fipy.tex")
 		os.system("pdflatex fipy.tex")
 	    except:
 		pass
