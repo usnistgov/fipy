@@ -163,23 +163,6 @@ class DistanceVariable(CellVariable):
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
-##    def getZeroCellFlag(self):
-##        """
-
-##        Returns a one on each cell that lies on the interface.
-
-##           >>> from fipy.meshes.grid2D import Grid2D
-##           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-##           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5, 0.5, 1.5))
-##           >>> answer = Numeric.array((1, 1, 1, 0))
-##           >>> Numeric.allclose(distanceVariable.getInterfaceFlag(), answer)
-##           1
-
-##        """
-
-        
-
-
     def getCellValueOverFaces(self):
         """
 
@@ -229,7 +212,31 @@ class DistanceVariable(CellVariable):
         
         return faceGrad / faceGradMag[:,Numeric.NewAxis] 
 
-def _test(): 
+    def getUpwindMag(self):
+        import MA
+        NCells = self.mesh.getNumberOfCells()
+        NCellFaces = self.mesh.getMaxFacesPerCell()
+        oldArray = Numeric.array(self)
+        cellValues = Numeric.repeat(oldArray[:,Numeric.NewAxis], NCellFaces, axis = 1)
+        
+        cellIDs = Numeric.repeat(Numeric.arange(NCells)[:,Numeric.NewAxis], NCellFaces, axis = 1)
+        cellToCellIDs = self.mesh.getCellToCellIDs()
+
+        cellToCellIDs = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs) 
+
+        adjacentValues = Numeric.take(oldArray, cellToCellIDs)
+
+        differences = self.getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs)
+
+        minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
+        maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
+
+        return (self > 0.) * minsq + (self < 0.) * maxsq
+        
+    def getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs):
+        return (adjacentValues - cellValues) / self.mesh.getCellToCellDistances()
+
+def _test():
     import doctest
     return doctest.testmod()
     
