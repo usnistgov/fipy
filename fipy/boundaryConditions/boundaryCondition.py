@@ -3,7 +3,7 @@
 ###################################################################
  Alpha - Core code development for Alpha
 
- FILE: "diffusionTerm.py"
+ FILE: "boundaryCondition.py"
                                    created: 11/13/03 {11:37:00 AM} 
                                last update: 11/14/03 {5:07:34 PM} 
  Author: Jonathan Guyer
@@ -21,19 +21,12 @@ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ###################################################################
 """
 
-import faceTerm
+class BoundaryCondition():
+    def __init__(self,faces):
+        self.faces=faces
 
-class DiffusionTerm(faceTerm.FaceTerm):
-    def __init__(self,equation,diffCoeff):
-	faceTerm.FaceTerm.__init__(self, stencil = (1,1), equation)
-	self.diffCoeff = diffCoeff
-	
-    def updateCoeff(self,dt):
-	faces = self.equation.mesh().faces()
-	self.coeff = Numeric.zeroes(len(faces),'d')
-	for face in faces:
-	    self.coeff[face.id()] = self.diffCoeff * face.area() / face.cellDistance()
-	
+        
+    
 	
 
 

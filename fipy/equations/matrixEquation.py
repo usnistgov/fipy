@@ -43,7 +43,15 @@ import spmatrix
 class MatrixEquation(equation.Equation):
     bandwidth = 5
     
-    def __init__(self,name,mesh,terms,solver):
+    def __init__(
+        self,
+        name,
+        mesh,
+        terms,
+        solver,
+        boundaryConditions=(,),
+        initialConditions=(,))
+        ):
 	self.mesh = mesh
 	equation.Equation.__init__(
 	    self,
@@ -51,6 +59,10 @@ class MatrixEquation(equation.Equation):
 	    var = Numeric.zeroes([len(mesh.cells())],'d'),
 	    terms,
 	    solver)
+
+         for initialCondition in initialConditions:
+            for cell in ic[0]:
+                self.var[cell.id()]=ic[1]
 	
     def L(self):
 	return self.L

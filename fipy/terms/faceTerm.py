@@ -48,20 +48,13 @@ class FaceTerm(term.Term):
 	var = self.equation.var()
 	N = var.size()
 	
-	for face in var.mesh().faces():
-	    if len(face.cells()) == 2:
-		id1 = face.cells()[0].id()
-		id2 = face.cells()[1].id()
-		self.equation.L()[id1,id1]+=self.coeff * self.stencil[1]
-		self.equation.L()[id1,id2]-=self.coeff * self.stencil[0]
-		self.equation.L()[id2,id1]-=self.coeff * self.stencil[0]
-		self.equation.L()[id2,id2]+=self.coeff * self.stencil[1]
-	    else if len(face.cells()) == 1:
-# 		do boundary conditions
-# 		for the moment this is zero flux
-		pass
-	    else:
-# 		cause catastrophic failure
-		pass
-		    
-		    
+	for face in equation.mesh().interior_faces():
+            id1 = face.cells()[0].id()
+            id2 = face.cells()[1].id()
+            self.equation.L()[id1,id1]+=self.coeff[face.id()] * self.stencil[1]
+            self.equation.L()[id1,id2]-=self.coeff[face.id()] * self.stencil[0]
+            self.equation.L()[id2,id1]-=self.coeff[face.id()] * self.stencil[0]
+            self.equation.L()[id2,id2]+=self.coeff[face.id()] * self.stencil[1]
+
+        for boundaryCondition in equation.boundaryConditions():            
+            boundaryCondition.update(self)

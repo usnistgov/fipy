@@ -39,9 +39,27 @@ import transientTerm
 import diffusionTerm
 
 class DiffusionEquation(matrixEquation.MatrixEquation):
-    def __init__(self,name,mesh,transientCoeff = 1.,diffusionCoeff = 1.,solver):
+    def __init__(self,
+                 name='default_name',
+                 mesh='None',
+                 transientCoeff = 1.,
+                 diffusionCoeff = 1.,
+                 solver='default_solver',
+                 boundaryConditions=(,),
+                 initialConditions=(,)):
 	terms = (
 	    transientTerm.TransientTerm(self,transientCoeff),
 	    diffusionTerm.DiffusionTerm(self,diffusionCoeff)
 	)
-	MatrixEquation.__init__(self,name,mesh,terms,solver)
+	MatrixEquation.__init__(
+            self,
+            name,
+            mesh,
+            terms,
+            solver,
+            boundaryConditions,
+            initialConditions)
+
+        
+        
+
