@@ -80,7 +80,6 @@ class TestTri2D(TestMeshBase):
                                     (9, 17, 29), (10, 18, 30), (11, 19, 31), (13, 20, 32), (14, 21, 33), (15, 22, 34),
                                     (0, 23, 17), (1, 24, 18), (2, 25, 19), (3, 26, 20), (4, 27, 21), (5, 28, 22)))
 
-
         self.externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
         self.internalFaces = Numeric.array((3, 4, 5, 10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40))
 
@@ -231,6 +230,9 @@ class TestTri2D(TestMeshBase):
 
     def testFacesRight(self):
 	self.assertArrayEqual(self.facesRight, [face.getID() for face in self.mesh.getFacesRight()])
+
+    def testCellNormals(self):
+        pass
 
 def suite():
     theSuite = unittest.TestSuite()
