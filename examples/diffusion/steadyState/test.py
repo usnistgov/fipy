@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {12:08:46 PM} 
+ #                                last update: 12/9/04 {8:12:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,33 +39,21 @@
  #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
-
  
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import doctest
-import mesh1D.tri2Dinput
-import mesh1D.input
-import mesh20x20.input
-import mesh20x20.tri2Dinput
-import mesh20x20.modifiedMeshInput
-import mesh50x50.input
-import mesh50x50.tri2Dinput
-import otherMeshes.grid3Dinput
-
-
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(doctest.DocTestSuite(mesh1D.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh20x20.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(mesh50x50.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh50x50.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(otherMeshes.grid3Dinput))
-    theSuite.addTest(doctest.DocTestSuite(mesh20x20.modifiedMeshInput))
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'mesh1D.tri2Dinput',
+            'mesh1D.input',
+            'mesh20x20.input',
+            'mesh20x20.tri2Dinput',
+            'mesh50x50.input',
+            'mesh50x50.tri2Dinput',
+            'otherMeshes.grid3Dinput',
+            'mesh20x20.modifiedMeshInput'
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

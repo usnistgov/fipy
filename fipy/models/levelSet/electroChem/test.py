@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 6/10/04 {9:57:27 AM} 
+ #                                last update: 12/9/04 {8:03:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,22 +40,15 @@
  # ###################################################################
  ##
 
-import doctest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-import unittest
-
-import metalIonSourceVariable
-import metalIonDiffusionEquation
-import depositionRateVariable
 
 def suite():
-    theSuite = unittest.TestSuite()
-
-    theSuite.addTest(doctest.DocTestSuite(metalIonSourceVariable))
-    theSuite.addTest(doctest.DocTestSuite(metalIonDiffusionEquation))
-    theSuite.addTest(doctest.DocTestSuite(depositionRateVariable))
-    
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'metalIonSourceVariable',
+            'metalIonDiffusionEquation',
+            'depositionRateVariable',
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

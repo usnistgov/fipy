@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 7/28/04 {11:18:34 AM} 
- #                                last update: 10/28/04 {3:54:46 PM} 
+ #                                last update: 12/9/04 {8:19:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,37 +41,24 @@
  # ###################################################################
  ##
 
+from fipy.tests.doctestPlus import LateImportDocTestSuite
+import fipy.tests.testProgram
+
 def suite():
-    import doctest
-    import unittest
-    
-    theSuite = unittest.TestSuite()
-
-    import diffusion.input1D
-    theSuite.addTest(doctest.DocTestSuite(diffusion.input1D))
-    import diffusion.input1Ddimensional
-    theSuite.addTest(doctest.DocTestSuite(diffusion.input1Ddimensional))
-    import diffusion.input2D
-    theSuite.addTest(doctest.DocTestSuite(diffusion.input2D))
-    import diffusion.input2Dcorner
-    theSuite.addTest(doctest.DocTestSuite(diffusion.input2Dcorner))
-    import phase.input1D
-    theSuite.addTest(doctest.DocTestSuite(phase.input1D))
-    import phaseDiffusion.input1Dbinary
-    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1Dbinary))
-    import phaseDiffusion.input1Dquaternary
-    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1Dquaternary))
-    import phaseDiffusion.input1DternaryAndElectrons
-    theSuite.addTest(doctest.DocTestSuite(phaseDiffusion.input1DternaryAndElectrons))
-    import poisson.input1DallCharge
-    theSuite.addTest(doctest.DocTestSuite(poisson.input1DallCharge))
-    import poisson.input1DleftCharge
-    theSuite.addTest(doctest.DocTestSuite(poisson.input1DleftCharge))
-    import poisson.input1DrightCharge
-    theSuite.addTest(doctest.DocTestSuite(poisson.input1DrightCharge))
-
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'diffusion.input1D',
+            'diffusion.input1Ddimensional',
+            'diffusion.input2D',
+            'diffusion.input2Dcorner',
+            'phase.input1D',
+            'phaseDiffusion.input1Dbinary',
+            'phaseDiffusion.input1Dquaternary',
+            'phaseDiffusion.input1DternaryAndElectrons',
+            'poisson.input1DallCharge',
+            'poisson.input1DleftCharge',
+            'poisson.input1DrightCharge'
+        ), base = __name__)
     
 if __name__ == '__main__':
-    import fipy.tests.testProgram
     fipy.tests.testProgram.main(defaultTest='suite')
+

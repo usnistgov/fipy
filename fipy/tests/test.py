@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:50 PM} { 2:26:30 PM}
+ #                                last update: 12/9/04 {8:56:09 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,25 +43,18 @@
 """Run all the test cases
 """
 
-import unittest
-
-import examples.test
-import fipy.meshes.numMesh.test
-import fipy.meshes.pyMesh.test
-import fipy.tools.test
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
-import fipy.variables.test
-import fipy.terms.test
 
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(examples.test.suite())
-    theSuite.addTest(fipy.tools.test.suite())
-    theSuite.addTest(fipy.meshes.numMesh.test.suite())
-    theSuite.addTest(fipy.meshes.pyMesh.test.suite())
-    theSuite.addTest(fipy.variables.test.suite())
-    theSuite.addTest(fipy.terms.test.suite())
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+            'examples.test',
+            'fipy.tools.test',
+            'fipy.meshes.numMesh.test',
+            'fipy.meshes.pyMesh.test',
+            'fipy.variables.test',
+            'fipy.terms.test',
+        ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariable.py"
  #                                    created: 2/20/04 {11:19:30 AM} 
- #                                last update: 9/3/04 {10:37:45 PM} 
+ #                                last update: 12/9/04 {6:14:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

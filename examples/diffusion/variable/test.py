@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:54 PM} 
+ #                                last update: 12/9/04 {8:13:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,26 +40,17 @@
  # ###################################################################
  ##
 
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-import doctest
-
-import mesh2x1.input
-import mesh10x1.input
-import mesh50x1.input
-import mesh10x1.tri2Dinput
-import mesh2x1.tri2Dinput
 
 def suite():
-    theSuite = unittest.TestSuite()
-    
-    theSuite.addTest(doctest.DocTestSuite(mesh2x1.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh2x1.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(mesh10x1.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh50x1.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh10x1.tri2Dinput))
-
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'mesh2x1.input',
+            'mesh2x1.tri2Dinput',
+            'mesh10x1.input',
+            'mesh50x1.input',
+            'mesh10x1.tri2Dinput'
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:59 PM} 
+ #                                last update: 12/9/04 {8:01:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,18 +42,14 @@
 """Test numeric implementation of the mesh
 """
 
-import doctest
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import pyxviewer
-import grid2DGistViewer
-
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(doctest.DocTestSuite(pyxviewer))
-    theSuite.addTest(doctest.DocTestSuite(grid2DGistViewer))
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'pyxviewer',
+            'grid2DGistViewer',
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {8:59:53 AM} 
+ #                                last update: 12/9/04 {8:15:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,24 +40,15 @@
  # ###################################################################
  ##
 
- 
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import doctest
-
-import mesh40x1.input
-import mesh20x20.input
-import restart.input
-
 def suite():
-    theSuite = unittest.TestSuite()
-
-    theSuite.addTest(doctest.DocTestSuite(mesh40x1.input))
-    theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
-    theSuite.addTest(doctest.DocTestSuite(restart.input))
-    
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'mesh40x1.input',
+            'mesh20x20.input',
+            'restart.input',
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

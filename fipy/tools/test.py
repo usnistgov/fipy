@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:39 PM} 
+ #                                last update: 12/9/04 {8:04:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,12 +41,15 @@
  ##
 
 import unittest
-import fipy.tests.testProgram
 import tempfile
+
 import fipy.tools.dump as dump
 import fipy.tools.dimensions.physicalField
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.theta.modularVariable import ModularVariable
+
+from fipy.tests.doctestPlus import LateImportDocTestSuite
+import fipy.tests.testProgram
 
 class TestDump(unittest.TestCase):
     def setUp(self, nx, ny):
@@ -79,16 +82,13 @@ class Test50by50(TestDump):
         TestDump.setUp(self, 50,50)
 
 def suite():
-    theSuite = unittest.TestSuite()
+    theSuite = LateImportDocTestSuite(docTestModuleNames = (
+            'sparseMatrix',
+            'dimensions.physicalField',
+        ), base = __name__)
+
     theSuite.addTest(unittest.makeSuite(Test10by10))
     theSuite.addTest(unittest.makeSuite(Test50by50))
-    
-    import doctest
-    
-    import sparseMatrix
-    theSuite.addTest(doctest.DocTestSuite(sparseMatrix))
-    import dimensions.physicalField
-    theSuite.addTest(doctest.DocTestSuite(dimensions.physicalField))
     
     return theSuite
     

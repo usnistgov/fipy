@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:30:57 PM} 
+ #                                last update: 12/9/04 {8:22:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,22 +41,14 @@
  # ###################################################################
  ##
 
- 
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import doctest
-
-import input
-import input2D
-
 def suite():
-    theSuite = unittest.TestSuite()
-
-    theSuite.addTest(doctest.DocTestSuite(input))
-    theSuite.addTest(doctest.DocTestSuite(input2D))
-
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'input',
+            'input2D',
+        ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:33:19 PM} { 2:26:30 PM}
+ #                                last update: 12/9/04 {9:02:36 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,31 +43,19 @@
 """Run all the test cases in examples/
 """
 
-import unittest
-
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
 
-
-import examples.convection.test
-import examples.diffusion.test
-import examples.elphf.test
-import examples.phase.test
-import examples.levelSet.test
-import examples.cahnHilliard.test
-import examples.chemotaxis.test
-
 def suite():
-    theSuite = unittest.TestSuite()
-    
-    theSuite.addTest(examples.convection.test.suite())
-    theSuite.addTest(examples.diffusion.test.suite())
-    theSuite.addTest(examples.phase.test.suite())
-    theSuite.addTest(examples.elphf.test.suite())
-    theSuite.addTest(examples.levelSet.test.suite())
-    theSuite.addTest(examples.chemotaxis.test.suite())  
-##    theSuite.addTest(examples.cahnHilliard.test.suite())  
-    
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+            'convection.test',
+            'diffusion.test',
+            'phase.test',
+            'elphf.test',
+            'levelSet.test',
+            'chemotaxis.test',  
+            'cahnHilliard.test',  
+        ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

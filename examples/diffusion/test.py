@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/7/04 {12:09:00 PM} { 2:26:30 PM}
+ #                                last update: 12/9/04 {9:05:48 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,24 +43,16 @@
 """Run all the test cases in examples/diffusion/
 """
 
-import unittest
-
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
 
-import examples.diffusion.steadyState.test
-import examples.diffusion.explicit.test
-import examples.diffusion.variable.test
-## import examples.diffusion.nthOrder.test
-
 def suite():
-    theSuite = unittest.TestSuite()
-    
-    theSuite.addTest(examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(examples.diffusion.explicit.test.suite())
-    theSuite.addTest(examples.diffusion.variable.test.suite())
-##    theSuite.addTest(examples.diffusion.nthOrder.test.suite())
-    
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+            'steadyState.test',
+            'explicit.test',
+            'variable.test',
+            'nthOrder.test',
+        ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')
