@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 6/3/04 {11:03:29 AM} 
+ #                                last update: 6/6/04 {1:30:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -93,6 +93,13 @@ class TestElPhF1D(TestElPhF):
     def setUp(self):
 	import input1D
 	TestElPhF.setUp(self, input1D)
+	
+	self.final['substitutionals'] = [[0.45],[0.45]]
+
+class TestElPhF1Ddimensional(TestElPhF):
+    def setUp(self):
+	import input1Ddimensional
+	TestElPhF.setUp(self, input1Ddimensional)
 	
 	self.final['substitutionals'] = [[0.45],[0.45]]
 
@@ -220,6 +227,7 @@ class TestElPhF1DpoissonRightCharge(TestElPhF):
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
+    theSuite.addTest(unittest.makeSuite(TestElPhF1Ddimensional))
     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
     theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
     theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
