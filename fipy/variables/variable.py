@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/22/03 {5:53:45 PM} 
+                               last update: 12/22/03 {10:49:21 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,6 +44,7 @@ from tools.dimensionalization import PhysicalField
 from Scientific.Physics.PhysicalQuantities import isPhysicalQuantity
 # from binaryOperatorVariable import BinaryOperatorVariable
 import Numeric
+import gc
 
 class Variable:
 # class Variable(PhysicalField):
@@ -87,6 +88,12 @@ class Variable:
 	
 	self.transposeVar = None
 	self.sumVar = {}
+	
+    def __del__(self):
+	print "__del__\n"
+	for var in self.requiredVariables:
+	    print var, gc.get_references(var), "\n"
+# 	    del var
 	
     def __getitem__(self, index): 
 	return self.getValue()[index]
@@ -136,6 +143,7 @@ class Variable:
 	if isinstance(var, Variable):
 	    self.requiredVariables.append(var)
 	    var.requiredBy(self)
+# 	    print gc.get_referrers(self), "\n"
 # 	    print self, "requires", self.requiredVariables
 	    self.markStale()
 	return var

@@ -3,9 +3,9 @@
 ###################################################################
  PFM - Python-based phase field solver
 
- FILE: "concentrationEquation.py"
+ FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/23/03 {3:20:50 PM} 
+                               last update: 12/23/03 {6:21:43 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,58 +44,54 @@ from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
 from substitutionalSumVariable import SubstitutionalSumVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
-from substitutionalConvectionCoeff import SubstitutionalConvectionCoeff
+from terms.scSourceTerm import ScSourceTerm
+from terms.spSourceTerm import SpSourceTerm
 import Numeric
 
-class ConcentrationEquation(MatrixEquation):
-    """
-    Diffusion equation is implicit.
-    """    
+class PhaseEquation(MatrixEquation):
     def __init__(self,
-                 Cj,
+                 phase,
 		 timeStepDuration,
 		 fields = {},
-                 diffusivity = 1.,
-		 convectionScheme =CentralDifferenceConvectionTerm, # PowerLawConvectionTerm,
+                 phaseMobility = 1.,
+		 phaseGradientEnergy = 1.,
                  solver='default_solver',
                  boundaryConditions=()):
 		     
-        mesh = Cj.getMesh()
+        mesh = phase.getMesh()
 	
 	diffusionTerm = ImplicitDiffusionTerm(
-	    diffCoeff = diffusivity,
+	    diffCoeff = phaseMobility * phaseGradientEnergy,
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
-	Cj.substitutionalSum = Cj.copy()
-	Cj.substitutionalSum.setValue(0.)
-	for component in [component for component in fields['substitutionals'] if component is not Cj]:
-	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
+	enthalpy = fields['solvent'].getStandardPotential()
+	barrier = fields['solvent'].getBarrierHeight()
+	
+	for component in fields['substitutionals']:
+	    enthalpy = enthalpy + component * component.getStandardPotential() #.getOld()
+	    barrier = barrier + component * component.getBarrierHeight() #.getOld()
 	    
-	denom = 1. - Cj.substitutionalSum.getFaceValue()
-	Cj.subsConvCoeff = diffusivity * Cj.substitutionalSum.getFaceGrad() /  denom.transpose()
-	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getFaceValue() / denom).transpose()
-	Cj.pConvCoeff = Cj.weightedDiffusivity * Cj.getStandardPotential() * fields['phase'].get_p().getFaceGrad() 
-# 	Cj.pConvCoeff = Cj.weightedDiffusivity * Cj.getStandardPotential() * 30 * fields['phase'].get_gFace().transpose() * fields['phase'].getFaceGrad()
-	Cj.gConvCoeff = Cj.weightedDiffusivity * Cj.getBarrierHeight() * fields['phase'].get_g().getFaceGrad() 
-		
-	convectionTerm = convectionScheme(
-	    convCoeff = Cj.subsConvCoeff + Cj.pConvCoeff + Cj.gConvCoeff, 
-	    mesh = mesh, 
-	    boundaryConditions = boundaryConditions,
-	    diffusionTerm = diffusionTerm)
-
+	self.mPhi = -phaseMobility * (30. * phase * (1. - phase) * enthalpy + (1. - 2 * phase) * barrier)
+	
+	self.spTerm = SpSourceTerm(
+	    sourceCoeff = self.mPhi * (phase - (self.mPhi < 0.)),
+	    mesh = mesh)
+	    
+	self.scTerm = ScSourceTerm(
+	    sourceCoeff = (self.mPhi > 0.) * self.mPhi * phase,
+	    mesh = mesh)
+	    
 	terms = (
 	    TransientTerm(tranCoeff = 1. / timeStepDuration,mesh = mesh),
 	    diffusionTerm,
-	    convectionTerm
+	    self.scTerm,
+	    self.spTerm
             )
 	    
 	MatrixEquation.__init__(
             self,
-            var = Cj,
+            var = phase,
             terms = terms,
             solver = solver,
             solutionTolerance = 1e-10)

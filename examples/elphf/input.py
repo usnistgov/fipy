@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/22/03 {3:49:31 PM} 
+ #                                last update: 12/22/03 {10:06:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -148,6 +148,7 @@ raw_input()
 
 for i in range(50):
     it.iterate(1)
+#     raw_input()
 #     it.iterate(1,10000.)
     
 #     print var1.getValue()

@@ -5,7 +5,7 @@
 
  FILE: "linearLUSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/15/03 {3:17:54 PM} 
+                               last update: 12/23/03 {3:47:00 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -51,9 +51,9 @@ class LinearLUSolver(Solver):
 	Solver.__init__(self, tolerance = 0., steps = 0)
 	
     def solve(self, L, x, b):
-#         print L
-#         print b
-        
+#         print "L: ", L
+#         print "b: ", b
+#         
         LU = superlu.factorize(L.to_csr(), diag_pivot_thresh = 0.)
         LU.solve(b, x)
         
