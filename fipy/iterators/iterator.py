@@ -62,6 +62,8 @@ class Iterator:
     
     def __init__(self,equations,timeStepDuration = None):
 	"""
+        Create an `Iterator`.
+        
 	:Parameters:
 	    
 	      - `equations`: list or tuple of equations to iterate over

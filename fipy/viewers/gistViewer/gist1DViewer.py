@@ -116,7 +116,7 @@ class Gist1DViewer(GistViewer):
 
     def plot(self):
         """
-        Plot the `CellVariable` ot list of `CellVariable`s as a y vs x plot.
+        Plot the `CellVariable` or list of `CellVariables` as a y vs x plot.
         """
 	import gist
 

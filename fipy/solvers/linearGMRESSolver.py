@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import sys
 
 import precon
@@ -48,7 +50,25 @@ import itsolvers
 from fipy.solvers.solver import Solver
 
 class LinearGMRESSolver(Solver):
-    def solve(self, L, x, b):
+    """
+    
+    The `LinearGMRESSolver` solves a linear system of equations using the
+    Generalised Minimal Residual method (GMRES) with jacobi
+    preconditioning. GMRES solves systems with a general non-symmetric
+    coefficient matrix.
+
+    The `LinearGMRESSolver` is a wrapper class for the the PySparse_
+    `itsolvers.gmres` and `precon.jacobi` method. Usage:
+
+    ::
+
+        solver = LinearGMRESSolver(tolerance = 1e-10, steps = 1000)
+
+    .. _PySparse: http://pysparse.sourceforge.net
+    
+    """
+    
+    def _solve(self, L, x, b):
 
 ## 	print "L: ", L
 ## 	print "b: ", b

@@ -96,7 +96,7 @@ class Term:
 	    solver = LinearPCGSolver()
 	    
 	array = var.getNumericValue()
-	solver.solve(matrix, array, RHSvector)
+	solver._solve(matrix, array, RHSvector)
 	var[:] = array
 	
 	self.residual = residual

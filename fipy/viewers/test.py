@@ -47,7 +47,6 @@ import fipy.tests.testProgram
 
 def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
-            'pyxviewer',
         ), base = __name__)
     
 if __name__ == '__main__':

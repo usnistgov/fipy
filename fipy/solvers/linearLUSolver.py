@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import sys
 
 import precon
@@ -51,10 +53,37 @@ from fipy.tools.sparseMatrix import SparseMatrix
 import Numeric
 
 class LinearLUSolver(Solver):
+    """
+    
+    The `LinearLUSolver` solves a system of equations using
+    LU-factorisation. This method solves systems with a general
+    non-symmetric coefficient matrix using partial pivoting.
+
+    The `LinearLUSolver` is a wrapper class for the the PySparse_
+    `superlu.factorize` method. Usage:
+
+    ::
+
+        solver = LinearLUSolver(tolerance = 1e-10, steps = 1000)
+
+    .. _PySparse: http://pysparse.sourceforge.net
+    
+    """
+
     def __init__(self, tolerance = 1e-10, steps = 10):
+        """
+        Creates a `LinearLUSolver`.
+
+        :Parameters:
+          - `tolerance` : The required error tolerance.
+          - `steps` : The number of LU decompositions to perform.
+            For large systems a number of steps is generally required.
+
+        """
+        
 	Solver.__init__(self, tolerance = tolerance, steps = steps)
 
-    def solve(self, L, x, b):
+    def _solve(self, L, x, b):
         LU = superlu.factorize(L.getMatrix().to_csr(), diag_pivot_thresh = 1., relax = 1)
         LU.solve(b, x)
 

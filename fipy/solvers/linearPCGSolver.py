@@ -41,6 +41,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import sys
 
 import precon
@@ -49,7 +51,25 @@ import itsolvers
 from fipy.solvers.solver import Solver
 
 class LinearPCGSolver(Solver):
-    def solve(self, L, x, b):
+    """
+    
+    The `LinearPCGSolver` solves a system of equations using the
+    Preconditioned Conjugate Gradient method (PCG) with SSOR
+    preconditioning. The PCG method solves systems with a symmetric
+    positive definite coefficient matrix.
+
+    The `LinearPCGSolver` is a wrapper class for the the PySparse_
+    `itsolvers.pcg` and `precon.ssor` method. Usage:
+
+    ::
+
+        solver = LinearPCGSolver(tolerance = 1e-10, steps = 1000)
+
+    .. _PySparse: http://pysparse.sourceforge.net
+    
+    """
+     
+    def _solve(self, L, x, b):
 ## 	print 'L:',L
 ## 	print 'x:',x
 ## 	print 'b:',b

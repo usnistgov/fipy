@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearLUSolver.py"
+ #  FILE: "linearScipyLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
  #                                last update: 9/3/04 {10:43:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -40,17 +40,43 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import Numeric
 import scipy.linalg
 
 from fipy.solvers.solver import Solver
 
-
 class LinearScipyLUSolver(Solver):
+    """
+    The `LinearScipyLUSolver` solves a system of equations using
+    LU-factorisation. This method solves systems of general
+    non-symmetric matrices with partial pivoting.
+
+    The `LinearScipyLUSolver` is a wrapper class for the the Scipy_
+    `scipy.linalg.lu_solve` method. Usage:
+
+    ::
+
+        solver = LinearScipyLUSolver(tolerance = 1e-10, steps = 1000)
+
+    .. _Scipy: http://www.scipy.org
+
+    """
+    
     def __init__(self, tolerance = 1e-10, steps = 10):
+        """
+        Creates a `LinearScipyLUSolver`.
+
+        :Parameters:
+          - `tolerance` : The required error tolerance.
+          - `steps` : The number of LU decompositions to perform.
+            For large systems a number of steps is generally required.
+
+        """
 	Solver.__init__(self, tolerance = tolerance, steps = steps)
 
-    def solve(self, L, x, b):
+    def _solve(self, L, x, b):
 
 ##        x[:] = scipy.linalg.solve(Numeric.array(L), b)
         LU = scipy.linalg.lu_factor(Numeric.array(L))

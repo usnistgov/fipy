@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import sys
 
 import precon
@@ -48,7 +50,27 @@ import itsolvers
 from fipy.solvers.solver import Solver
 
 class LinearCGSSolver(Solver):
-    def solve(self, L, x, b):
+
+    """
+
+    The `LinearCGSSolver` solves a linear system of equations using
+    the Conjugate Gradient Squared method (CGS), a variant of the
+    Biconjugate Gradient method (BiCG). CGS solves linear systems with
+    a general non-symmetric coefficient matrix.
+
+    The `LinearCGSSolver` is a wrapper class for the the PySparse_
+    `itsolvers.cgs` method. Usage:
+
+    ::
+
+        solver = LinearCGSSolver(tolerance = 1e-10, steps = 1000)
+
+    .. _PySparse: http://pysparse.sourceforge.net
+
+    
+    """
+    
+    def _solve(self, L, x, b):
 
 ## 	print "L: ", L
 ## 	print "b: ", b

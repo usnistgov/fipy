@@ -41,10 +41,24 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 class Solver:
+    """
+    The base `LinearXSolver` class.
+    """
+
     def __init__(self, tolerance = 1e-10, steps = 1000):
+        """
+        The `Solver` class should not be invoked directly.
+
+        :Parameters:
+          - `tolerance` : The required error tolerance.
+          - `steps` : The maximum number of iterative steps to perform.
+
+        """
 	self.tolerance = tolerance
 	self.steps = steps
 	
-    def solve(self, L, x, b):
+    def _solve(self, L, x, b):
 	pass
