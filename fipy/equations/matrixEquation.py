@@ -64,10 +64,12 @@ class MatrixEquation(Equation):
 	N = len(self.array)
 	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
-	coeffScale = self.terms[0].getCoeffScale()
+##	coeffScale = self.terms[0].getCoeffScale()
+##        print self.__class__.__name__,coeffScale
+##        print
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
-	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,coeffScale,varScale)
+	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,self.terms[0].getCoeffScale(),varScale)
 	    
     def postSolve(self, array):
 	pass

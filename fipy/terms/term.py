@@ -49,14 +49,18 @@ from fivol.tools.dimensions.physicalField import PhysicalField
 class Term:
     def __init__(self,weight):
 	self.weight = weight
-	
+	self.calcCoeffScale()
+        
     def buildMatrix(self,L,oldArray,b):
 	pass
 	
     def getCoeffScale(self):
-	if isinstance(self.coeff, PhysicalField) or isinstance(self.coeff, Variable):
-	    return PhysicalField(1, self.coeff.getUnit())
+##        self.calcCoeffScale()
+        return self.coeffScale
+
+    def calcCoeffScale(self):
+        if isinstance(self.coeff, PhysicalField) or isinstance(self.coeff, Variable):
+	    self.coeffScale = PhysicalField(1, self.coeff.getUnit())
 	else:
-	    return 1
-	    
+	    self.coeffScale = 1
     

@@ -57,14 +57,13 @@ class System4ParticlesProfile(System4Particles):
         for i in range(5):
             self.it.timestep(1)
             print "timestep: ",i        
-	    
+
         profile.stop()
-        
+
 	print 'finished run'
-	    
     
 if __name__ == '__main__':
-    system = System4ParticlesProfile(nx = 10, ny = 10)
+    system = System4ParticlesProfile(nx = 100, ny = 100)
     system.run()
     
     raw_input()

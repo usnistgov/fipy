@@ -140,7 +140,6 @@ class Grid2D(Mesh):
 	rowFaces,colFaces = self.createFaces(vertices)
 	cells = self.createCells(rowFaces,colFaces)
 	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
-        
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
     def createVertices(self):
@@ -295,20 +294,26 @@ class Grid2D(Mesh):
     def getPhysicalShape(self):
 	"""Return physical dimensions of Grid2D.
 	"""
-	return PhysicalField(value = (self.nx*self.dx*self.getScale(),self.ny*self.dy*self.getScale()))
+	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
     def getMaxFacesPerCell(self):
         return 4
 
     def getFaceAreas(self):
 	return Mesh.getFaceAreas(self) * self.getScale()
-	
+
     def getCellVolumes(self):
-	return Mesh.getCellVolumes(self) * self.getScale() * self.getScale()
-	
+        if self.getScale() == 1:
+            return Mesh.getCellVolumes(self)
+        else:
+            return Mesh.getCellVolumes(self) * self.getScale() * self.getScale()
+
     def getCellCenters(self):
-	return Mesh.getCellCenters(self) * self.getScale()
-	
+        if self.getScale() == 1:
+            return Mesh.getCellCenters(self)
+        else:
+            return Mesh.getCellCenters(self) * self.getScale()
+
     def getCellDistances(self):
 	return Mesh.getCellDistances(self) * self.getScale()
 	
@@ -316,4 +321,4 @@ class Grid2D(Mesh):
 	return Mesh.getFaceToCellDistances(self) * self.getScale()
 
     def getMeshSpacing(self):
-	return PhysicalField(value = (self.dx*self.getScale(),self.dy*self.getScale()))
+	return PhysicalField(value = (self.dx * self.getScale(),self.dy * self.getScale()))

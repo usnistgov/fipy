@@ -130,7 +130,7 @@ class Mesh:
 
     def setScale(self, scale):
 	self.scale = PhysicalField(value = scale)
-
+        
     def getAdjacentCellIDs(self):
 	return (self.cellId1, self.cellId2)
 	
@@ -250,8 +250,11 @@ class Mesh:
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
 	    
-    def getOrientedFaceNormals(self):
-	return self.getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
+    def getOrientedFaceNormals(self):        
+	return self.orientedFaceNormals
+
+    def calcOrientedFaceNormals(self):
+        self.orientedFaceNormals = self.getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
 	    
     def getAreaProjections(self):
 	return self.areaProjections
@@ -296,5 +299,5 @@ class Mesh:
 	self.calcFaceToCellDistanceRatio()
 	self.calcFaceNormals(faces)
         self.calcAreaProjections()
-
+        self.calcOrientedFaceNormals()
         
