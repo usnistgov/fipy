@@ -48,9 +48,9 @@ from fivol.viewers.gistViewer import GistViewer
 
 class NumpyGistViewer(GistViewer):
     
-    def __init__(self, array, minVal=0., maxVal=1.):
+    def __init__(self, array, minVal=0., maxVal=1., palette = 'heat.gp'):
         self.array = array
-        GistViewer.__init__(self, minVal, maxVal)
+        GistViewer.__init__(self, minVal, maxVal, palette = palette)
     
 
     def getArray(self):

@@ -103,7 +103,7 @@ class ImpingementSystem:
 ##        dy = 1.
 
         mesh = Grid2D(dx,dy,nx,ny)
-
+        self.mesh = mesh
         phase = CellVariable(
             name = 'PhaseField',
             mesh = mesh,

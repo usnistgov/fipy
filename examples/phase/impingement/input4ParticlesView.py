@@ -87,12 +87,16 @@ class System4Particles(ImpingementSystem):
         self.phaseViewer.plot()
         self.thetaViewer.plot()
         self.thetaProductViewer.plot()
-
+        
+        
     def dumpData(self, val):
         phaseFile = open('phase%i.txt' % val, 'w')
         thetaFile = open('theta%i.txt' % val, 'w')
-        phaseFile.write(str(self.phase.getNumericValue()))
-        thetaFile.write(str(self.thetaProd.getNumericValue()))
+        shape = self.mesh.getShape()
+        phaseArray = Numeric.reshape(self.phase.getNumericValue(),shape)
+        thetaArray = Numeric.reshape(self.theta.getNumericValue(),shape)
+        phaseFile.write(Numeric.array2string(phaseArray))
+        thetaFile.write(Numeric.array2string(thetaArray))
         phaseFile.close()
         thetaFile.close()
     
