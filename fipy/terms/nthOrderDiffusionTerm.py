@@ -111,14 +111,14 @@ x = 2, fixed value 1, fixed curvature 0
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
    >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print term.getCoefficientMatrix()
-    1.000000  -1.000000  
    -1.000000   1.000000  
+    1.000000  -1.000000  
    >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
    >>> print L
-    4.000000  -6.000000  
-   -4.000000  10.000000  
+   -4.000000   6.000000  
+    4.000000  -10.000000 
    >>> print b
-   [  1., 21.,]
+   [ -1.,-21.,]
 
 Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
 x = 2, fixed value 4, fixed 3rd order -1
@@ -130,14 +130,14 @@ x = 2, fixed value 4, fixed 3rd order -1
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
    >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print term.getCoefficientMatrix()
-    1.000000  -1.000000  
    -1.000000   1.000000  
+    1.000000  -1.000000  
    >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
    >>> print L
-    4.000000  -6.000000  
-   -2.000000   4.000000  
+   -4.000000   6.000000  
+    2.000000  -4.000000  
    >>> print b
-   [-3., 6.,]
+   [ 3.,-4.,]
 
 Test when dx = 0.5.
 
@@ -149,14 +149,14 @@ Test when dx = 0.5.
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
    >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print term.getCoefficientMatrix()
-    2.000000  -2.000000  
    -2.000000   2.000000  
+    2.000000  -2.000000  
    >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
    >>> print L
-    8.00e+01  -32.000000 
-   -32.000000 16.000000  
+   -8.00e+01  32.000000  
+   32.000000  -16.000000 
    >>> print b
-   [-8., 4.,]
+   [ 8.,-4.,]
 
 Test when dx = 0.25.
 
@@ -168,14 +168,14 @@ Test when dx = 0.25.
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
    >>> term = NthOrderDiffusionTerm((1., 1.), mesh, (bcLeft1, bcLeft2, bcRight1, bcRight2))
    >>> print term.getCoefficientMatrix()
-    4.000000  -4.000000  
    -4.000000   4.000000  
+    4.000000  -4.000000  
    >>> L,b = term.buildMatrix((0.,0.), 1., 1.)
    >>> print L
-    6.40e+02  -2.56e+02  
-   -2.56e+02   1.28e+02  
+   -6.40e+02   2.56e+02  
+    2.56e+02  -1.28e+02  
    >>> print b
-   [-24., 16.,]
+   [ 24.,-16.,]
    
    
 """
@@ -192,7 +192,7 @@ import fipy.tools.array as array
 import fipy.tools.vector
 
 class NthOrderDiffusionTerm(Term):
-    def __init__(self,coeffs,mesh,boundaryConditions):
+    def __init__(self, coeffs, mesh, boundaryConditions):
 
 	self.order = len(coeffs) * 2
 
@@ -203,9 +203,14 @@ class NthOrderDiffusionTerm(Term):
         
 	if len(coeffs) > 0:
 	    self.coeff = coeffs[0] * mesh.getFaceAreas() / mesh.getCellDistances()
+            ## Added to change the sign so that all terms are added to
+            ## the right hand side, without this the 4th order term is
+            ## added to the left side of the equation.
+            if self.order % 4 == 0:
+                self.coeff = -self.coeff
 	else:
 	    self.coeff = None
-	
+
 	self.boundaryConditions = []
         lowerBoundaryConditions = []
         for bc in boundaryConditions:
@@ -318,7 +323,7 @@ class NthOrderDiffusionTerm(Term):
 ##            fipy.tools.vector.putAdd(self.b, ids, bb/(coeffScale * varScale))
 
         return (L, b)
-
+        
 def _test(): 
     import doctest
     return doctest.testmod()
