@@ -178,7 +178,14 @@ div#Commerce {
     vertical-align: middle;
 }
 
+div#subfooter {
+    width: 100%;
+/*     vertical-align: middle; */
+}
+
 div#update {
+/*     position: relative; */
+/*     vertical-align: middle; */
     text-align: center;
     font-size: 70%;
     font-family: Arial,Helvetica,sans-serif;
@@ -187,4 +194,13 @@ div#update {
 
 div.credits {
     margin-top: 2ex;
+}
+
+div#validation {
+/*     float: right; */
+/*     position: absolute; */
+    vertical-align: top;
+    margin-top: -4.5ex;
+    text-align: right;
+/*     right: 10px; */
 }
