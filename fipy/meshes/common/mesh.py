@@ -273,6 +273,11 @@ class Mesh:
 
     def getCellNormals(self):
         return self.cellNormals
+
+    def getCellAreaProjections(self):
+        from fipy.meshes.numMesh.mesh import MAtake
+        cellAreas = MAtake(self.getFaceAreas(), self.cellFaceIDs)
+        return self.cellNormals * cellAreas[:, :, Numeric.NewAxis]
 	    
     """scaling"""
 
