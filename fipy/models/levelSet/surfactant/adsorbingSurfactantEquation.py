@@ -139,7 +139,25 @@ surface affinity than the other.
    >>> print var0.getInterfaceVar()[2] + var1.getInterfaceVar()[2]
    1.0
 
+The following test case is to fix a bug where setting the adosrbtion
+coefficient to zero leads to the solver not converging and an eventual
+failure.
+
+   >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), distanceVar = distanceVar)
+   >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
+
+   >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar = var0,
+   ...                                    distanceVar = distanceVar,
+   ...                                    bulkVar = bulkVar0,
+   ...                                    rateConstant = 0)
+
+   >>> eqn0.solve(var0, dt = dt)
+   >>> eqn0.solve(var0, dt = dt)
+   >>> Numeric.allclose(var0.getInterfaceVar()[2], 0)
+   1
+   
 """
+
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -234,10 +252,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         spMaxCoeff = SpMaxCoeff(distanceVar, vars)
         scMaxCoeff = ScMaxCoeff(distanceVar, vars)
 
-        self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff
+        self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 
     def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
-        for coeff in self.coeffs:            
+        for coeff in self.coeffs:
             coeff.updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
 
