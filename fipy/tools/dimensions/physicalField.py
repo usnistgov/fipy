@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 2/2/04 {3:25:20 PM} 
+ #                                last update: 2/17/04 {6:34:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -650,15 +650,16 @@ def _findUnit(unit):
     if type(unit) == type(''):
 	name = string.strip(unit)
 	if len(name) == 0:
-	    name = "m/m" # allow dimensionless quantities
-	unit = eval(name, _unit_table)
+	    unit = _unity
+	else:
+	    unit = eval(name, _unit_table)
         for cruft in ['__builtins__', '__args__']:
             try: del _unit_table[cruft]
             except: pass
 
     if not isinstance(unit,PhysicalUnit):
 	if unit == 1:
-	    unit = eval("m/m", _unit_table)
+	    unit = _unity
 	else:
 	    raise TypeError, str(unit) + ' is not a unit'
     return unit
@@ -933,6 +934,7 @@ _addUnit ('degC', PhysicalUnit (None, 1.0, kelvin.powers, 273.15))
 _addUnit ('degF', PhysicalUnit (None, 5./9., kelvin.powers, 459.67))
 del kelvin
 
+_unity = eval("m/m", _unit_table)
 
 # Some demonstration code. Run with "python -i PhysicalQuantities.py"
 # to have this available.

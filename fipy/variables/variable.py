@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 2/12/04 {2:08:04 PM} 
+ #                                last update: 2/17/04 {6:11:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -200,8 +200,6 @@ class Variable:
 		
 	    def calcValue(self):
 		self.value = self.getPhysicalFieldClass()(self.op(self.var.getValue()))
-# 		print "unOp value:", self.value.value
-# 		print "unOp unit:", self.value.unit
 		
 	    def __repr__(self):
 		return ("\n" + `self.op` + "(" + `self.var` + ") = " + `self.value`)
@@ -234,12 +232,6 @@ class Variable:
 		    val2 = self.var2
 		    
 		self.value = self.getPhysicalFieldClass()(self.op(self.var1.getValue(), val2))
-# 		print "\nbinOp class: ", self.__class__.__bases__[0]
-# 		print "binOp op:", self.op
-# 		print "binOp var1:", self.var1
-# 		print "binOp var2:", self.var2
-# 		print "binOp value:", self.value.value
-# 		print "binOp unit:", self.value.unit
 		
 	    def __repr__(self):
 		return ("\n" + `self.op` + "(\n\t" + `self.var1` + ",\n\t" + `self.var2` + "\n) = " + `self.getValue()`)

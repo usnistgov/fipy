@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/2/04 {11:09:35 PM} 
+ #                                last update: 2/17/04 {6:33:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,8 +54,8 @@ nx = 40
 dx = 1.
 L = nx * dx
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
+## fudge = calibrate_profiler(10000)
+## profile = Profiler('profile', fudge=fudge)
 
 mesh = Grid2D(
     dx = dx,
@@ -63,7 +63,7 @@ mesh = Grid2D(
     nx = nx,
     ny = 40)
 
-profile.stop()
+## profile.stop()
 
 parameters = {
     'time step duration': 10000,
