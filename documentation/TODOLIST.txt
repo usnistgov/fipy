@@ -19,13 +19,18 @@ Release Goals 0.2
 
   * Install and test with no write permissions.
   * Windows install.
+  * Get FiPy registered on:
+
+    - vaults of parnassus
+    - cfd online
+    - scipy links
    
 - Functionality:
 
   * Linear Algebra:
 
     - Iterative solver in place of superLU for non-symmetric matrices
-    
+      
   * Viewing variables on an unstructured mesh.
 
     - gnuplot
@@ -103,6 +108,7 @@ Long term Goals
 
     - Petc.
     - SciPy.
+    - matpy
 	
   * Look into pyrex as an alternative to inlining.
   * Laminar Fluid Flow module.
