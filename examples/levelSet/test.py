@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/15/04 {11:08:05 AM} 
+ #                                    created: 11/26/03 {3:23:47 PM}
+ #                                last update: 4/2/04 {4:11:17 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,29 +41,22 @@
  # ###################################################################
  ##
 
- 
+"""Run all the test cases in examples/
+"""
+
 import unittest
+
 import fipy.tests.testProgram
 
-import doctest
-
-import oneD.input
-import circle.input
-import square.input
-import interior.input
+import distanceFunction.test
 
 def suite():
     theSuite = unittest.TestSuite()
-
-    theSuite.addTest(doctest.DocTestSuite(oneD.input))
-    theSuite.addTest(doctest.DocTestSuite(circle.input))
-    theSuite.addTest(doctest.DocTestSuite(square.input))
-    theSuite.addTest(doctest.DocTestSuite(interior.input))
-        
-    return theSuite
     
+    theSuite.addTest(distanceFunction.test.suite())
+    
+    return theSuite
+
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')
 
-            
-            
