@@ -42,7 +42,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools.inline import inline
 
-class PowerLawConvectionTerm(ConvectionTerm):
+class UpwindConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
