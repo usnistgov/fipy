@@ -1,24 +1,73 @@
-\subsection{Discretisation}
+\section{Finite Volume Method}
 
 To use the FVM, the solution domain must first be divided into
-non-overlapping polyhedral Control Volumes (CV's). The values of the
-independent and dependent variables located at the centres of these
-CV's are assumed to be the average value across the whole CV.  The aim
-of the discretisation is to reduce the continuous general equation to
-a set of discrete linear equations which can then be solved to obtain
-the value of the dependent variable at each CV centre.  The first step
-in the discretisation of equation~\eqref{eqn:num:gen} using the FVM is
-to integrate over a control volume and then make appropriate
-approximations for fluxes across the boundary of each CV.  In this
-section each term in equation~\eqref{eqn:num:gen} will be examined
-separately. In the case of the convection and diffusion terms the
-divergence theorem is used to rewrite the volume integral in terms of
-area integrals over the surface of the CV.
-\begin{itemize}
-%
-%
-%
-\item The transient term,
+non-overlapping polyhedral elements or cells. A solution domain
+divided in such a way is generally known as a mesh (a \texttt{mesh} is
+also a \FiPy{} object). A mesh consists of vertices, faces and cells
+(see Figure~\ref{fig:meshcartoon}).  In the FVM the variables of
+interest are averaged over control volumes (CVs). The CVs are either
+defined by the cells or are centered on the vertices.
+
+\begin{figure}
+ \begin{center}
+ \resizebox{8cm}{!}{\includegraphics{numerical/meshcartoon.pdf}}
+ \caption{A mesh consists of cells, faces and vertices. For the
+ purposes of \FiPy{}, the divider between two cells is always known as
+ a face whatever the dimension of the problem of interest.}
+ \label{fig:meshcartoon} \end{center}
+\end{figure}
+
+\subsection{Cell Centered FVM (CC-FVM)}
+
+In the CC-FVM the CV's are formed by the mesh cells with the cell
+center 'storing' the average variable value in the CV, (see
+Figure~\ref{fig:vc-cc-fv}). The face fluxes are approximated using the
+variable values in the two adjacent cells surrounding the face. This
+low order approximation has the advantage of being efficient and
+requiring matrices of low band width (the band width is equal to the
+number of cell neighbors + 1) and thus low storage
+requirement. However, the mesh topology is restricted due to an
+orthogonality and conjuncanility requirement. The value at a face is
+assumed to be the average value over the face. On an unstructured mesh
+the face center may not lie on the line joining the CV centers, which
+will lead to an error in the face interpolation. \FiPy{} currently
+only uses the CC-FVM.
+
+\subsection{Vertex Centered FVM (VC-FVM)}
+
+In the VC-FVM the CV is centered around the vertices and the cells are
+divided into sub-control volumes that make up the main CVs, (see
+Figure~\ref{fig:vc-cc-fv}). The vertices 'store' the average variable
+values over the CVs. The CV faces are constructed within the cells
+rather than using the cell faces as in the CC-FVM. The face fluxes use
+all the vertex values from the cell where the face is located to
+calculate interpolations. For this reason, the VC-FVM is less
+efficient and requires more storage (a larger matrix band width) than
+the CC-FVM.  However, the mesh topology does not a have the same
+restrictions as the CC-FVM. It is planned for future releases of
+\FiPy{} to have both the CC-FVM and VC-FVM capabilities.
+
+\begin{figure}
+\begin{center}
+ \rotatebox{-90}{\resizebox{6cm}{!}{\includegraphics{numerical/vc-cc-fv.pdf}}}
+ \caption{CV structure for an unstructured mesh, (a) $\Omega_a$
+ represents a vertex-based CV and (b) $\Omega_1$, $\Omega_2$,
+ $\Omega_3$ and $\Omega_4$ represent cell centered CVs. }
+ \label{fig:vc-cc-fv}
+\end{center}
+\end{figure}
+
+\section{Discretization}
+
+The first step in the discretization of equation~\eqref{eqn:num:gen}
+using the FVM is to integrate over a control volume and then make
+appropriate approximations for fluxes across the boundary of each CV.
+In this section each term in equation~\eqref{eqn:num:gen} will be
+examined separately.
+
+\subsection{Transient Term}
+
+The transient term,
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
@@ -29,10 +78,10 @@ where the subscripts $P$ and superscripts $O$ represent the current
 and previous variable value at the CV respectively.
 The value, $V_P$, is the volume of
 the CV and $\Delta t$ is the time step size.
-%
-%
-%
-\item The convection term,
+
+\subsection{Convection Term}
+
+The convection term,
 \begin{eqnarray}
 \int_V \nabla.(\rho \vec{u} \phi) dV & = & \int_S (\vec{n}.\vec{u})\rho\phi dS \\
 & \simeq & \sum_{f} \rho_f (\vec{n}.\vec{u})_f \phi_f A_f
@@ -57,10 +106,10 @@ a first order approximation such that
 \end{equation}
 The value $\alpha_f$ is determined by the scheme which is used~\cite{croftphd}.
 First order schemes are discussed later in this chapter.
-%
-%
-%
-\item The diffusion term,
+
+\subsection{Diffusion Term}
+
+The diffusion term,
 \begin{eqnarray}
 \int_V \nabla.(\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n}.\nabla\phi) dS \\
 & \simeq & \sum_f \Gamma_f (\vec{n}.\nabla\phi)_f A_f
@@ -81,15 +130,15 @@ The estimation for the flux, $(\vec{n}.\nabla\phi)_f$ is obtained via,
 \begin{equation}
 (\vec{n}.\nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
 \end{equation}
-where the value of $d_{AP}$ is the distance between neighbouring cell centres.
+where the value of $d_{AP}$ is the distance between neighboring cell centers.
 This estimate relies on the orthogonality of the mesh, and becomes
 increasingly inaccurate as the non-orthogonality increases. Correction terms
 have been derived to improve this error, these have been described
 elsewhere~\cite{croftphd}.
-%
-%
-%
-\item The source term, 
+
+\subsection{Source Term}
+
+The source term, 
 \begin{equation}
 \int_V S_{\phi} dV \simeq S_\phi V_P.
 \label{eqn:num:sou}
@@ -100,10 +149,21 @@ a linear manner so equation~\eqref{eqn:num:sou} becomes,
 \begin{equation}
 V_P (S_C - S_P \phi_P)
 \end{equation}
-\end{itemize}
+
+\section{Linear Equations}
+
+The aim of the discretization is to reduce the continuous general
+equation to a set of discrete linear equations which can then be
+solved to obtain the value of the dependent variable at each CV
+center. This results in a sparse linear system that requires an
+efficient iterative scheme to solve. The integrative schemes available
+to \FiPy() are currently encapsulated in the pysparse suite of solvers
+that includes most common solves such as the congegant gradient
+technique and LU decomposition. There are plans to include other solver
+suites that are compatible with Python.
 
 Combining equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con}, \eqref{eqn:num:dif} and
-\eqref{eqn:num:sou} the complete discretisation for equation~\eqref{eqn:num:gen}
+\eqref{eqn:num:sou} the complete discretization for equation~\eqref{eqn:num:gen}
 can now be written for each CV as;
 \begin{eqnarray}
 \frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P^O)}{\Delta t}
@@ -118,8 +178,8 @@ V_P ( S_C - S_P \phi_P )
 \end{eqnarray}
 
 Equation~\eqref{eqn:num:dis} is now in the form of a set of linear combinations between
-each CV value and its neighbours values.
-The discretisation for the continuity equation is given by,
+each CV value and its neighbors values.
+The discretization for the continuity equation is given by,
 \begin{equation}
 \frac{(\rho_P V_P-\rho_P^O V_P^O)}{\Delta t}+\sum_f F_f = 0
 \label{eqn:num:cdi}
@@ -142,14 +202,6 @@ and diffusive conductance respectively and are given by,
 F_f & = & A_f \rho_f ( \vec{u}.\vec{n} )_f \\
 D_f & = & \frac{A_f \Gamma_f}{d_{AP}} 
 \end{eqnarray}
-
-An area of concern when using this discretisation is non-conjunctionality
-which occurs when extrapolating variables form cell centres to faces.
-The value at a face is assumed to be the average value over the face.
-On an unstructured mesh the face centre may not lie on the line joining
-the CV centres, which will lead to an error in the face extrapolation.
-To overcome this a correction has been introduced which is described
-elsewhere~\cite{croftphd}. 
 
 
 

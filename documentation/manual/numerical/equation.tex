@@ -1,41 +1,41 @@
 \section{General Conservation Equation}
 
-A general conservation equation solved using \FiPy{} can include any
+A general conservation equation, solved using \FiPy{}, can include any
 combination of the following terms,
-\begin{equation}
+\begin{equation}			
   \underbrace{
-    \frac{\partial (\rho \phi)}{\partial t}
+  \frac{\partial (\rho \phi)}{\partial t}
   }_{\text{transient}}
 =
 \underbrace{
+  \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
   \nabla \cdot \left( \vec{u} \phi \right)
 }_{\text{convection}}
 +
 \underbrace{
-  \nabla \cdot \left( \Gamma \nabla \phi \right) 
+  \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+  \nabla \cdot \left( \Gamma_1 \nabla \phi \right) 
 }_{\text{diffusion}}
 +
 \underbrace{
-  \nabla \cdot \left( \Gamma_2 \nabla 
-    \left( \nabla \cdot \left( \Gamma_1 \nabla \phi \right) \right) \right)
-}_{\text{4th order}}
+  \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+  \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
+}_{\text{n\textit{th} order}}
 +
 \underbrace{
-  L_n \phi
-}_{\text{nth order}}
-+
-\underbrace{
+  \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
   S_{\phi}
-}_{source}
+}_{\text{source}}
 \label{eqn:num:gen}
 \end{equation}
-where $\rho$, $\vec{u}$, $\Gamma_i$ represent coefficients in their
-respective terms. These coefficients can be arbitrary functions of any
-parameters or variables in the system. The variable $\phi$ represents
-the quantity that is being solved for by the equation. The operator
-$L_n$ is arbitrary where $n=2$ represents the diffusion term and $n=4$
-represents the fourth order term. Higher order diffusion type terms
-are possible using this operator.
+where $\rho$, $\vec{u}$ and $\Gamma_i$ represent coefficients in the
+transient, convection and diffusion terms respectively. These
+coefficients can be arbitrary functions of any parameters or variables
+in the system. The variable $\phi$, represents the unknown quantity in
+the equation. The exponent $n$, is arbitrary, where $n=2$ represents
+the diffusion term and $n=4$ represents a fourth order term. Higher
+order diffusion-type terms are possible using the n\textit{th} order
+operator.
 
 
 
