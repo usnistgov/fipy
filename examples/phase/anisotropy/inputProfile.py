@@ -51,11 +51,11 @@ class AnisotropyProfileSystem(AnisotropySystem):
 
     def run(self):
         fudge = calibrate_profiler(10000)
-        profile = Profiler('profile', fudge=fudge)
+        profile = Profiler('profile2', fudge=fudge)
         self.it.timestep(100)
         profile.stop()
         
 if __name__ == '__main__':
-    system = AnisotropyProfileSystem(n = 10)
+    system = AnisotropyProfileSystem(n = 100)
     system.run()
 
