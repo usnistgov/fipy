@@ -45,7 +45,7 @@
 import examples.diffusion.variable.test
 import examples.diffusion.steadyState.test
 import examples.diffusion.explicit.test
-import tests.testStdyConvectionDiffusion
+import examples.convection.test
 import examples.elphf.test
 import unittest
 import examples.phase.examples.missOrientation.test
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     theSuite.addTest(examples.diffusion.explicit.test.suite())
     theSuite.addTest(examples.diffusion.variable.test.suite())
     theSuite.addTest(examples.phase.examples.missOrientation.test.suite())
-    theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
+    theSuite.addTest(examples.convection.test.suite())
     theSuite.addTest(examples.elphf.test.suite())
     
     unittest.TextTestRunner(verbosity=2).run(theSuite)
