@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 1/25/04 {8:49:43 PM} 
+ #                                last update: 3/4/04 {2:31:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,6 +38,7 @@
 
 import unittest
 import Numeric
+import MA
 
 class TestBase(unittest.TestCase):
     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
@@ -46,15 +47,22 @@ class TestBase(unittest.TestCase):
 	if abs(first - second) > tol:
 	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
         
-    def assertEqual(self, first, second, msg = None):
-        if not first == second:
-            raise self.failureException, ( msg or '%s != %s' % (first, second))
+##     def assertEqual(self, first, second, msg = None):
+##         if not first == second:
+##             raise self.failureException, ( msg or '%s != %s' % (first, second))
         
+    def assertArrayEqual(self, first, second, msg=None):
+	"""Fail if the two objects are unequal by more than tol.
+	"""
+	
+	if not MA.allequal(first, second):
+	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
+	
     def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
         
-	if not Numeric.allclose(first, second, rtol, atol):
+	if not MA.allclose(first, second, rtol, atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
         
     def getTestValue(self, cell):
