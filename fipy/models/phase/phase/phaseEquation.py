@@ -50,10 +50,12 @@ from fivol.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fivol.terms.scSourceTerm import ScSourceTerm
 from fivol.terms.spSourceTerm import SpSourceTerm
 
+
 from phaseDiffusionVariable import PhaseDiffusionVariable
 from anisotropyVariable import AnisotropyVariable
 from spSourceVariable import SpSourceVariable
 from phaseHalfAngleVariable import PhaseHalfAngleVariable
+from scSourceVariable import ScSourceVariable
 
 class PhaseEquation(MatrixEquation):
 
@@ -102,7 +104,7 @@ class PhaseEquation(MatrixEquation):
         anisotropy = AnisotropyVariable(parameters = parameters, phase = self.var, halfAngle = self.halfAngle)
 
         self.scTerm = ScSourceTerm(
-            sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.var + anisotropy,
+            sourceCoeff = ScSourceVariable(mPhi = self.mPhi, phase = self.var, anisotropy = anisotropy),
 	    mesh = mesh)
 	
 	transientCoeff = parameters['tau'] / parameters['time step duration']

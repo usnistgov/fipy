@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "phaseHalfAngleVariable.py"
+ #  FILE: "scSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {12:02:15 PM}
+ #                                last update: 1/28/04 {4:20:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,41 +42,16 @@
  ##
 
 import Numeric
- 
-from fivol.inline import inline
-from fivol.variables.faceVariable import FaceVariable
 
-import fivol.tools.array as array
+from fivol.variables.cellVariable import CellVariable
 
-class PhaseHalfAngleVariable(FaceVariable):
-    def __init__(self, parameters = None, phase = None, theta = None):
-        FaceVariable.__init__(self, phase.getMesh())
-	self.parameters = parameters
-	self.phase = self.requires(phase)
-        self.theta = self.requires(theta)
-        
-    def calcValue(self):
-        inline.optionalInline(self._calcValueInline, self._calcValue)
-
-    def _calcValue(self):
-	N = self.parameters['symmetry']
-        dphi = self.phase.getFaceGrad()[:,:]
-        thetaFace = self.theta.getFaceValue()[:]
-
-	z = array.arctan2(dphi[:,1],dphi[:,0])
-        z = N * (z - thetaFace)
-        self.value = array.tan(z / 2.)
-
-    def _calcValueInline(self):
-        inline.runInlineLoop1("""
-        z = atan2(dphi(i,1), dphi(i,0));
-        z = symmetry * (z - thetaFace(i));
-        value(i) = tan(z / 2.);""",z = 0.,
-                              dphi = self.phase.getFaceGrad().getNumericValue(),
-                              symmetry = self.parameters['symmetry'],
-                              thetaFace = self.theta.getFaceValue().getNumericValue(),
-                              value = self.value.value,
-                              ni = len(self.value.value))                              
-            
-
+class ScSourceVariable(CellVariable):
+    def __init__(self, mPhi = None, phase = None, anisotropy = None):
+        CellVariable.__init__(self, mesh = phase.getMesh())
+        self.mPhi = self.requires(mPhi)
+        self.phase = self.requires(phase)
+        self.anisotropy = self.requires(anisotropy)
+    
+    def  calcValue(self):
+        self.value = (self.mPhi[:] > 0.) * self.mPhi[:] * self.phase[:] + self.anisotropy[:]
 
