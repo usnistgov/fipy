@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 10/19/04 {12:18:57 PM} 
+ #                                last update: 11/19/04 {10:28:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -270,10 +270,14 @@ class NthOrderDiffusionTerm(Term):
             boundaryB = Numeric.zeros(N,'d')
                 
             for boundaryCondition in self.boundaryConditions:
-                LL,bb,ids = boundaryCondition.getContribution(self.coeff,-self.coeff)
-                
-                coefficientMatrix.addAt(LL / coeffScale,ids,ids)
-                fipy.tools.vector.putAdd(boundaryB, ids, bb/(coeffScale * varScale))
+		LL,bb,ids1, ids2 = boundaryCondition.getContribution(self.coeff,-self.coeff)
+		
+		coefficientMatrix.addAt(LL['cell diag'] / coeffScale, ids1, ids1)
+		coefficientMatrix.addAt(LL['cell offdiag'] / coeffScale, ids1, ids2)
+		coefficientMatrix.addAt(LL['cell offdiag'] / coeffScale, ids2, ids1)
+		coefficientMatrix.addAt(LL['cell diag'] / coeffScale, ids2, ids2)
+		
+		fipy.tools.vector.putAdd(boundaryB, ids1, bb/(coeffScale * varScale))
                 
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(oldArray, coeffScale, varScale)

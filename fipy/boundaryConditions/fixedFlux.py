@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/19/04 {2:53:21 PM} 
+ #                                last update: 11/19/04 {10:32:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,7 +68,14 @@ class FixedFlux(BoundaryCondition):
 	  - `cell1dia`: *unused*
 	  - `cell1off`: *unused*
 	"""
-	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
+	zeros = Numeric.zeros((len(self.faces),),'d')
+	return ({
+		    'cell diag': zeros,
+		    'cell offdiag': zeros,
+		},
+		self.contribution, 
+		self.adjacentCellIds,
+		())
         
     def getDerivative(self, order):
 	if order == 1:

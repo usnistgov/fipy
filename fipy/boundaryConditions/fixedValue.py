@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/19/04 {2:51:49 PM}
+ #                                last update: 11/19/04 {10:34:15 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,6 +45,8 @@
 """
 __docformat__ = 'restructuredtext'
 
+import Numeric
+
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import array
 
@@ -52,8 +54,8 @@ class FixedValue(BoundaryCondition):
     def getContribution(self,cell1dia,cell1off):
 	"""Set boundary equal to value.
 	
-	A `tuple` of (`LL`, `bb`, `ids`) is calculated, to be added to the 
-	equation's (**L**, **b**) matrices at the cells specified by `ids`.
+	A `tuple` of ({`LL`}, `bb`, `idsDia`, `idsOff`) is calculated, to be added to the 
+	equation's (**L**, **b**) matrices at the cells specified by `idsDia`, `idsOff`.
 	
 	:Parameters:
 	    
@@ -61,9 +63,13 @@ class FixedValue(BoundaryCondition):
 	    exterior face	    
 	  - `cell1off`: contribution to **b**-vector by this exterior face
 	"""
-	return (array.take(cell1dia[:],self.faceIds),
+	return ({
+		    'cell diag': array.take(-cell1off[:],self.faceIds),
+		    'cell offdiag': Numeric.zeros((len(self.faces),),'d'),
+		},
 		array.take(-cell1off[:],self.faceIds)*self.value,
-		self.adjacentCellIds)
+		self.adjacentCellIds, 
+		())
 
 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/26/04 {1:15:55 PM} 
+ #                                last update: 11/19/04 {10:27:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,15 +84,20 @@ class FaceTerm(Term):
 	L.addAt(array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
 	
         for boundaryCondition in self.boundaryConditions:
-            LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
-                
-	    L.addAt(LL / coeffScale,ids,ids)
-            ## WARNING: the next line will not work if one cell has two faces on the same
-            ## boundary. Numeric.put will not add both values to the b array but over write
-            ## the first with the second. We really need a putAdd function rather than put.
-            ## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+	    LL, bb, ids1, ids2 = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
+## 	    print LLdia, bb, ids
 		
-            fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+	    L.addAt(LL['cell diag'] / coeffScale, ids1, ids1)
+	    L.addAt(LL['cell offdiag'] / coeffScale, ids1, ids2)
+	    L.addAt(LL['cell offdiag'] / coeffScale, ids2, ids1)
+	    L.addAt(LL['cell diag'] / coeffScale, ids2, ids2)
+	    
+	    ## WARNING: the next line will not work if one cell has two faces on the same
+	    ## boundary. Numeric.put will not add both values to the b array but over write
+	    ## the first with the second. We really need a putAdd function rather than put.
+	    ## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+		
+	    fipy.tools.vector.putAdd(b, ids1, bb/(coeffScale * varScale))
 
     def explicitBuildMatrix(self, oldArray, id1, id2, b, coeffScale, varScale):
 
@@ -100,10 +105,10 @@ class FaceTerm(Term):
         
         for boundaryCondition in self.boundaryConditions:
 
-            LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
-            oldArrayIds = array.take(oldArray, ids)
-            fipy.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
-            fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+	    LL, bb, ids1, ids2 = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
+	    oldArrayIds = array.take(oldArray, ids1)
+	    fipy.tools.vector.putAdd(b, ids1, -LL['cell diag'] * oldArrayIds/(coeffScale * varScale))
+	    fipy.tools.vector.putAdd(b, ids1, bb/(coeffScale * varScale))
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, coeffScale, varScale):
 
