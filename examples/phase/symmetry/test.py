@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:51:48 PM} 
+ #                                last update: 4/2/04 {4:06:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,9 +45,9 @@
 """
  
 import unittest
-import fivol.tests.testProgram
-from fivol.tests.testBase import TestBase
-from fivol.examples.phase.examples.symmetry.input import SymmetrySystem
+import fipy.tests.testProgram
+from fipy.tests.testBase import TestBase
+from fipy.examples.phase.examples.symmetry.input import SymmetrySystem
 
 class TestSymmetry(TestBase):
     def setUp(self, N = 20, L = 1.):
@@ -74,7 +74,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

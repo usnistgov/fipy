@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {2:35:36 PM} 
+ #                                last update: 4/2/04 {4:00:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
 
 import Numeric
 
-import fivol.tools.vector as vector
-from fivol.tools.dimensions.physicalField import PhysicalField
+import fipy.tools.vector as vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Face:
     """Face within a Mesh

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/1/04 {4:08:07 PM} 
+ #                                last update: 4/2/04 {4:06:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,9 +44,9 @@
 
 import Numeric
 
-import fivol.tools.dimensions.physicalField
+import fipy.tools.dimensions.physicalField
 
-import fivol.tools.array as array
+import fipy.tools.array as array
 
 class Variable:
     
@@ -107,7 +107,7 @@ class Variable:
         self.mag = None
 	
     def getPhysicalFieldClass(self):
-	return fivol.tools.dimensions.physicalField.PhysicalField
+	return fipy.tools.dimensions.physicalField.PhysicalField
 	
     def copy(self):
 	return Variable(self)
@@ -117,14 +117,14 @@ class Variable:
 	
     def getUnit(self):
 	value = self.getValue()
-	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.getUnit()
 	else:
 	    return "1"
 	
     def inBaseUnits(self):
 	value = self.getValue()
-	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.inBaseUnits()
 	else:
 	    return value
@@ -152,7 +152,7 @@ class Variable:
 	    
     def getNumericValue(self):
 	value = self.getValue()
-	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.getNumericValue()
 	else:
 	    return value

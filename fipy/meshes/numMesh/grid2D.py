@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/5/04 {2:29:02 PM} 
+ #                                last update: 4/2/04 {4:00:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,10 +46,10 @@
 
 import Numeric
 
-from fivol.meshes.mesh2D import Mesh2D
-from fivol.meshes.face import Face
-import fivol.tools.vector as vector
-from fivol.tools.dimensions.physicalField import PhysicalField
+from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.face import Face
+import fipy.tools.vector as vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh2D):
     """

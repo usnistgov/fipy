@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/1/04 {3:55:59 PM} 
+ #                                last update: 4/2/04 {4:05:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,17 +44,17 @@
 """
 
 import unittest
-import fivol.tests.testProgram
-import fivol.meshes.testGrid
-import fivol.meshes.testMesh
-import fivol.meshes.testMesh3D
+import fipy.tests.testProgram
+import fipy.meshes.testGrid
+import fipy.meshes.testMesh
+import fipy.meshes.testMesh3D
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fivol.meshes.testGrid.suite())
-    theSuite.addTest(fivol.meshes.testMesh.suite())
-    theSuite.addTest(fivol.meshes.testMesh3D.suite())
+    theSuite.addTest(fipy.meshes.testGrid.suite())
+    theSuite.addTest(fipy.meshes.testMesh.suite())
+    theSuite.addTest(fipy.meshes.testMesh3D.suite())
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 2/20/04 {11:15:32 AM} 
+ #                                last update: 4/2/04 {4:00:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,9 +38,9 @@
 
 import Numeric
 
-from fivol.variables.cellToFaceVariable import CellToFaceVariable
-from fivol.tools import array
-from fivol.inline import inline
+from fipy.variables.cellToFaceVariable import CellToFaceVariable
+from fipy.tools import array
+from fipy.inline import inline
 
 class ArithmeticCellToFaceVariable(CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):

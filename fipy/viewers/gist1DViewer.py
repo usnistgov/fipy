@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/24/04 {10:49:48 PM} 
+ #                                last update: 4/2/04 {4:06:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ import Numeric
  
 import gist
 
-from fivol.viewers.gistViewer import GistViewer
+from fipy.viewers.gistViewer import GistViewer
 
 class Gist1DViewer(GistViewer):
     

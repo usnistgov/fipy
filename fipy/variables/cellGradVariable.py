@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/20/04 {2:20:18 PM} 
+ #                                last update: 4/2/04 {4:00:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,10 +38,10 @@
  
 import Numeric
 
-from fivol.variables.vectorCellVariable import VectorCellVariable
-import fivol.tools.array
-from fivol.inline import inline
-from fivol.variables.faceGradContributionsVariable import FaceGradContributions
+from fipy.variables.vectorCellVariable import VectorCellVariable
+import fipy.tools.array
+from fipy.inline import inline
+from fipy.variables.faceGradContributionsVariable import FaceGradContributions
 import MA
 
 class CellGradVariable(VectorCellVariable):
@@ -62,11 +62,11 @@ class CellGradVariable(VectorCellVariable):
 		
 	    val(i, j) /= volumes(i);
 	""",val = self.value.value,
-            ids = fivol.tools.array.convertNumeric(ids),
-            orientations = fivol.tools.array.convertNumeric(orientations),
-            volumes = fivol.tools.array.convertNumeric(volumes),
-            areaProj = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
-            faceValues = fivol.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
+            ids = fipy.tools.array.convertNumeric(ids),
+            orientations = fipy.tools.array.convertNumeric(orientations),
+            volumes = fipy.tools.array.convertNumeric(volumes),
+            areaProj = fipy.tools.array.convertNumeric(self.mesh.getAreaProjections()),
+            faceValues = fipy.tools.array.convertNumeric(self.var.getArithmeticFaceValue()),
 	    ni = N, nj = self.mesh.getDim(), nk = M)
         
 ##    def _calcValueIn(self, N, M, ids, orientations, volumes):
@@ -86,12 +86,12 @@ class CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-	contributions = fivol.tools.array.take(self.faceGradientContributions[:],ids.flat)
+	contributions = fipy.tools.array.take(self.faceGradientContributions[:],ids.flat)
 
 ##        contributions = contributions.reshape((N,M,self.mesh.getDim()))
-        contributions = fivol.tools.array.reshape(contributions, (N, M, self.mesh.getDim()))
-        orientations = fivol.tools.array.reshape(orientations, (N, M, 1))
-        grad = fivol.tools.array.sum(orientations * contributions, 1)
+        contributions = fipy.tools.array.reshape(contributions, (N, M, self.mesh.getDim()))
+        orientations = fipy.tools.array.reshape(orientations, (N, M, 1))
+        grad = fipy.tools.array.sum(orientations * contributions, 1)
 ##        grad = (orientations*contributions).sum(1)
 
 	grad = grad / volumes[:,Numeric.NewAxis]

@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 3/5/04 {3:12:54 PM} 
+ #                                last update: 4/2/04 {4:02:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ import sys
 import precon
 import itsolvers
 
-from fivol.solvers.solver import Solver
+from fipy.solvers.solver import Solver
 
 class LinearPCGSolver(Solver):
     def __init__(self, tolerance, steps):

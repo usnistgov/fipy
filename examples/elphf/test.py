@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:12:09 PM} 
+ #                                last update: 4/2/04 {4:00:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,9 +48,9 @@ import unittest
 
 import Numeric
 
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 
-from fivol.tests.testBase import TestBase
+from fipy.tests.testBase import TestBase
 
 class TestElPhF(TestBase):
     """
@@ -233,7 +233,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

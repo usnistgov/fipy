@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 3/5/04 {4:15:00 PM} 
+ #                                last update: 4/2/04 {4:06:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,10 +46,10 @@
 
 import Numeric
 
-from fivol.tools.dimensions.physicalField import PhysicalField
-import fivol.tools.array
+from fipy.tools.dimensions.physicalField import PhysicalField
+import fipy.tools.array
 
-import fivol.inline.inline as inline
+import fipy.inline.inline as inline
 
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.
@@ -67,7 +67,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(v1.dot(v2))
     ## We can't use Numeric.dot on quantities with units
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return fivol.tools.array.sqrt(fivol.tools.array.sum(v1 * v2))
+    return fipy.tools.array.sqrt(fipy.tools.array.sum(v1 * v2))
 
 def _putAddPy(vector, ids, additionVector):
     for i in range(len(ids)):

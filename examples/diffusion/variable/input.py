@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:53:45 AM} 
+ #                                last update: 4/2/04 {4:06:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,14 +43,14 @@
 
 import Numeric
 
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.equations.diffusionEquation import DiffusionEquation
-from fivol.iterators.iterator import Iterator
-from fivol.meshes.grid2D import Grid2D
-from fivol.solvers.linearPCGSolver import LinearPCGSolver
-from fivol.variables.cellVariable import CellVariable
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.equations.diffusionEquation import DiffusionEquation
+from fipy.iterators.iterator import Iterator
+from fipy.meshes.grid2D import Grid2D
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.variables.cellVariable import CellVariable
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 
 def getParameters(nx ,ny):
 

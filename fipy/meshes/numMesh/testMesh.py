@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {11:14:15 AM} 
+ #                                last update: 4/2/04 {4:00:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,12 +44,12 @@
 """
  
 import unittest
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 import Numeric
 import MA
-from fivol.meshes.mesh2D import Mesh2D
-from fivol.meshes.testMeshBase import TestMeshBase
-import fivol.tools.dump as dump
+from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.testMeshBase import TestMeshBase
+import fipy.tools.dump as dump
 
 class TestMesh(TestMeshBase):
     def setUp(self):
@@ -178,4 +178,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

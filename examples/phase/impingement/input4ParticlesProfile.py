@@ -6,7 +6,7 @@
  # 
  #  FILE: "input4ParticlesProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/30/04 {6:15:35 PM}
+ #                                last update: 4/2/04 {4:00:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,10 +42,10 @@
  ##
 
 from __future__ import nested_scopes
-from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
+from fipy.examples.phase.examples.impingement.input4Particles import System4Particles
 import Numeric
-from fivol.profiler.profiler import calibrate_profiler
-from fivol.profiler.profiler import Profiler
+from fipy.profiler.profiler import calibrate_profiler
+from fipy.profiler.profiler import Profiler
 
 import sys
 

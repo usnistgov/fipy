@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/8/04 {4:08:17 PM} 
+ #                                last update: 4/2/04 {4:00:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,7 @@
 
 import Numeric
 
-from fivol.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Mesh:
     def __init__(self, cells, faces, interiorFaces, vertices):
@@ -312,9 +312,9 @@ class Mesh:
         self.calcOrientedFaceNormals()
         
     def getPointToCellDistances(self, point):
-	import fivol.tools.array
+	import fipy.tools.array
 	tmp = self.getCellCenters() - Numeric.array(point)
-	return fivol.tools.array.sqrtDot(tmp, tmp)
+	return fipy.tools.array.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
         d = self.getPointToCellDistances(point)

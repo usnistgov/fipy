@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:45:05 PM} 
+ #                                last update: 4/2/04 {4:01:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,9 +48,9 @@ import unittest
 
 import Numeric
 
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
-import fivol.tools.array as array
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
+import fipy.tools.array as array
 
 import input
 
@@ -124,7 +124,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

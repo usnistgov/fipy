@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 2/20/04 {11:13:09 AM} 
+ #                                last update: 4/2/04 {4:00:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,9 +38,9 @@
 
 import Numeric
 
-from fivol.variables.faceVariable import FaceVariable
-from fivol.tools import array
-from fivol.inline import inline
+from fipy.variables.faceVariable import FaceVariable
+from fipy.tools import array
+from fipy.inline import inline
 
 class CellToFaceVariable(FaceVariable):
     def __init__(self, var):

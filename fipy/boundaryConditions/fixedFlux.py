@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/16/04 {11:36:02 AM} 
+ #                                last update: 4/2/04 {4:00:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,7 +46,7 @@
 
 import Numeric
 
-from fivol.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 
 class FixedFlux(BoundaryCondition):
     """Fixed flux (Neumann) boundary condition

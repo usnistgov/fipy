@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:38:42 PM} 
+ #                                last update: 4/2/04 {4:00:29 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
  
 import unittest
 
-import fivol.tests.testProgram
-from fivol.tests.testBase import TestBase
+import fipy.tests.testProgram
+from fipy.tests.testBase import TestBase
 
 import input
 
@@ -98,7 +98,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
     
             
             

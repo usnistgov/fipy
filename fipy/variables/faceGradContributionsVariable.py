@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/20/04 {2:02:54 PM} 
+ #                                last update: 4/2/04 {4:02:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,7 +38,7 @@
  
 import Numeric
 
-from fivol.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.vectorCellVariable import VectorCellVariable
 
 class FaceGradContributions(VectorCellVariable):
     def __init__(self, var):

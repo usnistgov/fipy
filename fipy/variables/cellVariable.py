@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/9/04 {12:01:03 PM} 
+ #                                last update: 4/2/04 {4:05:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,8 +38,8 @@
 
 import Numeric
 
-from fivol.variables.variable import Variable
-import fivol.tools.array
+from fipy.variables.variable import Variable
+import fipy.tools.array
 
 class CellVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
@@ -85,7 +85,7 @@ class CellVariable(Variable):
 	if points == () and cells == ():
 	    return Variable.getValue(self)
 	elif cells != ():
-	    return fivol.tools.array.take(Variable.getValue(self), [cell.getID() for cell in cells])
+	    return fipy.tools.array.take(Variable.getValue(self), [cell.getID() for cell in cells])
 	else:
 	    return [self(point) for point in points]
 	
@@ -93,7 +93,7 @@ class CellVariable(Variable):
 	if cells == ():
 	    self[:] = value
 	else:
-## 	    return fivol.tools.array.put(self.getValue(), [cell.getID() for cell in cells], value)
+## 	    return fipy.tools.array.put(self.getValue(), [cell.getID() for cell in cells], value)
 ## 	    self.markStale()
 
 	    for cell in cells:

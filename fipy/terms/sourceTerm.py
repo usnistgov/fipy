@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 1/16/04 {11:48:47 AM} 
+ #                                last update: 4/2/04 {4:00:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-from fivol.terms.cellTerm import CellTerm
+from fipy.terms.cellTerm import CellTerm
 
 class SourceTerm(CellTerm):
     def __init__(self, sourceCoeff, weight, mesh):

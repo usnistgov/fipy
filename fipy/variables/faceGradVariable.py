@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 3/1/04 {3:47:51 PM}
+ #                                last update: 4/2/04 {4:00:55 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,9 +38,9 @@
 
 import Numeric
 
-from fivol.variables.vectorFaceVariable import VectorFaceVariable
-import fivol.tools.array
-from fivol.inline import inline
+from fipy.variables.vectorFaceVariable import VectorFaceVariable
+import fipy.tools.array
+from fipy.inline import inline
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var):
@@ -55,7 +55,7 @@ class FaceGradVariable(VectorFaceVariable):
         dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 ##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1)) / dAP
-	N = (fivol.tools.array.take(self.var,id2) - fivol.tools.array.take(self.var,id1)) / dAP
+	N = (fipy.tools.array.take(self.var,id2) - fipy.tools.array.take(self.var,id1)) / dAP
 	normals = self.mesh.getOrientedFaceNormals()
 	
 	tangents1 = self.mesh.getFaceTangents1()
@@ -64,12 +64,12 @@ class FaceGradVariable(VectorFaceVariable):
         
       
         
-	grad1 = fivol.tools.array.take(cellGrad,id1)
-	grad2 = fivol.tools.array.take(cellGrad,id2)
-	t1grad1 = fivol.tools.array.sum(tangents1*grad1,1)
-	t1grad2 = fivol.tools.array.sum(tangents1*grad2,1)
-	t2grad1 = fivol.tools.array.sum(tangents2*grad1,1)
-	t2grad2 = fivol.tools.array.sum(tangents2*grad2,1)
+	grad1 = fipy.tools.array.take(cellGrad,id1)
+	grad2 = fipy.tools.array.take(cellGrad,id2)
+	t1grad1 = fipy.tools.array.sum(tangents1*grad1,1)
+	t1grad2 = fipy.tools.array.sum(tangents1*grad2,1)
+	t2grad1 = fipy.tools.array.sum(tangents2*grad1,1)
+	t2grad2 = fipy.tools.array.sum(tangents2*grad2,1)
 	
 	T1 = (t1grad1 + t1grad2) / 2.
 	T2 = (t2grad1 + t2grad2) / 2.
@@ -113,7 +113,7 @@ class FaceGradVariable(VectorFaceVariable):
             normals = self.mesh.getOrientedFaceNormals(),
             id1 = id1,
             id2 = id2,
-	    dAP = fivol.tools.array.convertNumeric(self.mesh.getCellDistances()),
+	    dAP = fipy.tools.array.convertNumeric(self.mesh.getCellDistances()),
             var = self.var.getNumericValue(),
             val = self.value.value,
             ni = tangents1.shape[0],

@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 3/9/04 {11:29:49 AM} 
+ #                                last update: 4/2/04 {4:06:02 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,14 +39,14 @@
 import Numeric
 import umath
 import MA
-import fivol.inline.inline as inline
+import fipy.inline.inline as inline
 
 def _isPhysical(arr):
-    import fivol.variables.variable
-    import fivol.tools.dimensions.physicalField
+    import fipy.variables.variable
+    import fipy.tools.dimensions.physicalField
 
-    return isinstance(arr,fivol.variables.variable.Variable) \
-	or isinstance(arr,fivol.tools.dimensions.physicalField.PhysicalField)
+    return isinstance(arr,fipy.variables.variable.Variable) \
+	or isinstance(arr,fipy.tools.dimensions.physicalField.PhysicalField)
 
 def convertNumeric(arr):
     if _isPhysical(arr):
@@ -123,7 +123,7 @@ def arctan2(arr, other):
     if _isPhysical(arr):
 	return arr.arctan2(other)
     elif _isPhysical(other):
-	import fivol.tools.dimensions.physicalField
+	import fipy.tools.dimensions.physicalField
 
 	return physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
     elif type(arr) is type(Numeric.array((0))):
@@ -150,7 +150,7 @@ def sqrtDot(a1, a2):
     """
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
-##    return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
+##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
     return inline.optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
 def _sqrtDotPy(a1, a2):

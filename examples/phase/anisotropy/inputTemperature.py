@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {11:43:55 AM} { 5:14:21 PM}
+ #                                last update: 4/2/04 {4:06:53 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,17 +43,17 @@
 
 import Numeric
 
-from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.phase.type2MPhiVariable import Type2MPhiVariable
-from fivol.examples.phase.phase.phaseEquation import PhaseEquation
-from fivol.solvers.linearPCGSolver import LinearPCGSolver
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.iterators.iterator import Iterator
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
-from fivol.variables.cellVariable import CellVariable
-from fivol.examples.phase.theta.modularVariable import ModularVariable
-from fivol.examples.phase.temperature.temperatureEquation import TemperatureEquation
+from fipy.meshes.grid2D import Grid2D
+from fipy.examples.phase.phase.type2MPhiVariable import Type2MPhiVariable
+from fipy.examples.phase.phase.phaseEquation import PhaseEquation
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.iterators.iterator import Iterator
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.variables.cellVariable import CellVariable
+from fipy.examples.phase.theta.modularVariable import ModularVariable
+from fipy.examples.phase.temperature.temperatureEquation import TemperatureEquation
 
 class AnisotropySystem:
 

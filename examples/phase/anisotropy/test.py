@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:51:10 PM} 
+ #                                last update: 4/2/04 {4:02:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,10 +48,10 @@ import unittest
 import os
 import cPickle
 
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 
-import fivol.examples.phase.examples.anisotropy
+import fipy.examples.phase.examples.anisotropy
 
 from inputTemperature import AnisotropySystem
 
@@ -68,7 +68,7 @@ class TestAnisotropy(TestBase):
         self.var = parameters['var']
         
     def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fivol.examples.phase.examples.anisotropy.__path__[0],self.testFile),'r')
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(fipy.examples.phase.examples.anisotropy.__path__[0],self.testFile),'r')
 	
 	testData = cPickle.load(filestream)
 	filestream.close()
@@ -81,7 +81,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

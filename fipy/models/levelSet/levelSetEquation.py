@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:37:22 AM} 
+ #                                last update: 4/2/04 {4:02:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,8 @@
 
 import Numeric
 import MA
-from fivol.meshes.numMesh.mesh import MAtake
-from fivol.equations.equation import Equation
+from fipy.meshes.numMesh.mesh import MAtake
+from fipy.equations.equation import Equation
 
 class LevelSetEquation(Equation):
     """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 2/20/04 {5:08:35 PM} 
+ #                                last update: 4/2/04 {4:05:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,9 +44,9 @@
 import Numeric
 import spmatrix
 
-from fivol.equations.equation import Equation
-import fivol.tools.vector as vector
-from fivol.tools.dimensions.physicalField import PhysicalField
+from fipy.equations.equation import Equation
+import fipy.tools.vector as vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 class MatrixEquation(Equation):
     bandwidth = 5

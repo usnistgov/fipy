@@ -6,7 +6,7 @@
  # 
  #  FILE: "testMeshBase.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {1:54:20 PM} 
+ #                                last update: 4/2/04 {4:06:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,8 +44,8 @@
 """
  
 import unittest
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 import Numeric
 import MA
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/9/04 {12:02:05 PM} 
+ #                                last update: 4/2/04 {4:02:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,12 +43,12 @@
 
 import Numeric
 
-from fivol.profiler.profiler import Profiler
-from fivol.profiler.profiler import calibrate_profiler
+from fipy.profiler.profiler import Profiler
+from fipy.profiler.profiler import calibrate_profiler
 
-from fivol.meshes.grid2D import Grid2D
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
-from fivol.variables.cellVariable import CellVariable
+from fipy.meshes.grid2D import Grid2D
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.variables.cellVariable import CellVariable
 
 
 class SymmetrySystem:

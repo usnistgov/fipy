@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 3/8/04 {2:13:45 PM}
+ #                                last update: 4/2/04 {4:05:57 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,8 +38,8 @@
 
 import Numeric
 
-from fivol.variables.cellVariable import Variable
-import fivol.tools.array as array
+from fipy.variables.cellVariable import Variable
+import fipy.tools.array as array
 
 class MagVariable(Variable):
     def __init__(self, var):

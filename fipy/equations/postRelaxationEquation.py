@@ -6,7 +6,7 @@
  # 
  #  FILE: "postRelaxationEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/23/04 {10:25:38 AM} 
+ #                                last update: 4/2/04 {4:00:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-from fivol.equations.relaxationEquation import RelaxationEquation
+from fipy.equations.relaxationEquation import RelaxationEquation
 
 class PostRelaxationEquation(RelaxationEquation):
     def postSolve(self, residual):

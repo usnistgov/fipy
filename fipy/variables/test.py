@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/1/04 {3:55:59 PM} 
+ #                                last update: 4/2/04 {4:06:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,15 +44,15 @@
 """
 
 import unittest
-import fivol.tests.testProgram
-import fivol.variables.testInterpolation
-import fivol.variables.testPickle
+import fipy.tests.testProgram
+import fipy.variables.testInterpolation
+import fipy.variables.testPickle
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fivol.variables.testInterpolation.suite())
-    theSuite.addTest(fivol.variables.testPickle.suite())
+    theSuite.addTest(fipy.variables.testInterpolation.suite())
+    theSuite.addTest(fipy.variables.testPickle.suite())
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

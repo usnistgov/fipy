@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/5/04 {3:28:20 PM} 
+ #                                last update: 4/2/04 {4:06:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,16 +45,16 @@
 """
 
 import Numeric
-from fivol.meshes.mesh import Mesh
-import fivol.tools.array
-import fivol.tools.vector as vector
+from fipy.meshes.mesh import Mesh
+import fipy.tools.array
+import fipy.tools.vector as vector
 
 
 class Mesh2D(Mesh):
     def calcFaceAreas(self):
         faceVertexCoords = Numeric.take(self.vertexCoords, self.faceVertexIDs)
         tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
-        self.faceAreas = fivol.tools.array.sqrtDot(tangent, tangent)
+        self.faceAreas = fipy.tools.array.sqrtDot(tangent, tangent)
 
     def calcFaceNormals(self):
         faceVertexCoords = Numeric.take(self.vertexCoords, self.faceVertexIDs)
@@ -65,6 +65,6 @@ class Mesh2D(Mesh):
 
     def calcFaceTangents(self):
         tmp = Numeric.transpose(Numeric.array((-self.faceNormals[:,1], self.faceNormals[:,0])))
-        mag = fivol.tools.array.sqrtDot(tmp, tmp)
+        mag = fipy.tools.array.sqrtDot(tmp, tmp)
         self.tangents1 = tmp / mag[:,Numeric.NewAxis]
         self.tangents2 = Numeric.zeros(self.tangents1.shape, 'd')

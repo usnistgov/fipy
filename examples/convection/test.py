@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:43:18 PM} 
+ #                                last update: 4/2/04 {4:00:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,8 +45,8 @@ import unittest
 
 import Numeric
 
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 
 from exponential1DSystem import Exponential1DSystem
 from exponential2DSystem import Exponential2DSystem
@@ -152,7 +152,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

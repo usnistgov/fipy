@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 2/13/04 {10:59:35 AM} { 2:26:30 PM}
+ #                                last update: 4/2/04 {4:11:17 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,7 +46,7 @@
 
 import unittest
 
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 
 import examples.diffusion.test
 import examples.convection.test
@@ -66,5 +66,5 @@ def suite():
     return theSuite
 
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 

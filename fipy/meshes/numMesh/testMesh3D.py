@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {11:16:46 AM} 
+ #                                last update: 4/2/04 {4:06:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,14 +44,14 @@
 """
  
 import unittest
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 import Numeric
-from fivol.meshes.mesh import Mesh
+from fipy.meshes.mesh import Mesh
 import MA
 from mesh import Mesh
-from fivol.meshes.testMeshBase import TestMeshBase
-import fivol.tools.dump as dump
+from fipy.meshes.testMeshBase import TestMeshBase
+import fipy.tools.dump as dump
 
 class TestMesh3D(TestMeshBase):
 
@@ -136,10 +136,10 @@ class TestMesh3D(TestMeshBase):
     
         v1 = Numeric.take(self.vertices, self.faces[:,0])
         tmp = self.faceCenters - v1
-        self.tangents1 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
+        self.tangents1 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
         
-        tmp = fivol.tools.array.crossProd(self.tangents1, self.faceNormals)
-        self.tangents2 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
+        tmp = fipy.tools.array.crossProd(self.tangents1, self.faceNormals)
+        self.tangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
 
         self.cellToCellIDs = MA.masked_values(((-1, -1, -1, 1, -1, -1),
                                               (0, -1, -1, -1, -1, -1)), -1)
@@ -157,4 +157,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

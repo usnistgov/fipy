@@ -6,7 +6,7 @@
  # 
  #  FILE: "preRelaxationEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/23/04 {8:41:56 AM} 
+ #                                last update: 4/2/04 {4:00:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-from fivol.equations.relaxationEquation import RelaxationEquation
+from fipy.equations.relaxationEquation import RelaxationEquation
 
 class PreRelaxationEquation(RelaxationEquation):
     def buildMatrix(self):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:50:29 AM} 
+ #                                last update: 4/2/04 {4:00:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,9 +46,9 @@
 
 import Numeric
 
-from fivol.meshes.face import Face
-import fivol.tools.vector
-from fivol.tools.dimensions.physicalField import PhysicalField
+from fipy.meshes.face import Face
+import fipy.tools.vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Face2D(Face):
     """1D (edge) Face in a 2D Mesh
@@ -60,7 +60,7 @@ class Face2D(Face):
 	"""Area is length of vector between vertices.
 	"""
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
-        return fivol.tools.vector.sqrtDot(tangent,tangent)
+        return fipy.tools.vector.sqrtDot(tangent,tangent)
 	
     def calcNormal(self):
 	"""Normal is perpendicular to vector between vertices.
@@ -68,7 +68,7 @@ class Face2D(Face):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
  	norm = Numeric.array([-tangent[1],tangent[0]])
 ## 	norm = PhysicalField(value = [-tangent[1],tangent[0]])
-	norm /= fivol.tools.vector.sqrtDot(norm,norm)
+	norm /= fipy.tools.vector.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
 
@@ -76,7 +76,7 @@ class Face2D(Face):
 
     def calcTangent1(self):
 	norm = self.normal
-	mag = fivol.tools.vector.sqrtDot(norm,norm)
+	mag = fipy.tools.vector.sqrtDot(norm,norm)
 ## 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
 	tan1 = Numeric.array((-norm[1],norm[0]))
 ## 	tan1 = PhysicalField(value = (-norm[1],norm[0]))

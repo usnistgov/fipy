@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 2/20/04 {5:32:05 PM} 
+ #                                last update: 4/2/04 {4:05:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,14 +39,14 @@
 from __future__ import nested_scopes
  
 
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.solvers.linearCGSSolver import LinearCGSSolver
-from fivol.solvers.linearLUSolver import LinearLUSolver
-from fivol.solvers.linearGMRESSolver import LinearGMRESSolver
-from fivol.variables.variable import Variable
-from fivol.variables.cellVariable import CellVariable
-from fivol.tools.dimensions import physicalField
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.solvers.linearCGSSolver import LinearCGSSolver
+from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers.linearGMRESSolver import LinearGMRESSolver
+from fipy.variables.variable import Variable
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools.dimensions import physicalField
 
 from phaseVariable import PhaseVariable
 from componentVariable import ComponentVariable

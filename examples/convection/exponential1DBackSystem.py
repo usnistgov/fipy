@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponential1DBackSystem.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:52:23 AM} 
+ #                                last update: 4/2/04 {4:06:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,9 @@
  # ###################################################################
  ##
 
-from fivol.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
 
 from convectionDiffusionSystem import ConvectionDiffusionSystem
 

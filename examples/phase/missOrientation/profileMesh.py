@@ -6,7 +6,7 @@
  # 
  #  FILE: "profileMesh.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:39:32 AM} 
+ #                                last update: 4/2/04 {4:06:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,10 @@
  # ###################################################################
  ##
  
-import fivol.tools.dump as dump
-from fivol.meshes.grid2D import Grid2D
-from fivol.profiler.profiler import calibrate_profiler
-from fivol.profiler.profiler import Profiler
+import fipy.tools.dump as dump
+from fipy.meshes.grid2D import Grid2D
+from fipy.profiler.profiler import calibrate_profiler
+from fipy.profiler.profiler import Profiler
 
 def makeMesh(nx, ny):
    return Grid2D(1.,1.,nx,ny)

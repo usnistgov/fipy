@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 3/5/04 {10:54:30 AM} 
+ #                                last update: 4/2/04 {4:00:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,7 +39,7 @@
 import unittest
 import Numeric
 import MA
-import fivol.tools.array as array
+import fipy.tools.array as array
 
 class TestBase(unittest.TestCase):
     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):

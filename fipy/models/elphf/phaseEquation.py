@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/30/04 {5:06:28 PM} 
+ #                                last update: 4/2/04 {4:06:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,14 +43,14 @@
 
 import Numeric
 
-## from fivol.equations.matrixEquation import MatrixEquation
-from fivol.equations.preRelaxationEquation import PreRelaxationEquation
-from fivol.equations.postRelaxationEquation import PostRelaxationEquation
-from fivol.equations.relaxationEquation import RelaxationEquation
-from fivol.terms.transientTerm import TransientTerm
-from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fivol.terms.scSourceTerm import ScSourceTerm
-from fivol.terms.spSourceTerm import SpSourceTerm
+## from fipy.equations.matrixEquation import MatrixEquation
+from fipy.equations.preRelaxationEquation import PreRelaxationEquation
+from fipy.equations.postRelaxationEquation import PostRelaxationEquation
+from fipy.equations.relaxationEquation import RelaxationEquation
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy.terms.scSourceTerm import ScSourceTerm
+from fipy.terms.spSourceTerm import SpSourceTerm
 
 from substitutionalSumVariable import SubstitutionalSumVariable
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/5/04 {3:02:47 PM} 
+ #                                last update: 4/2/04 {4:05:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
  
 import unittest
 
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 
 from input import getParameters
 
@@ -111,7 +111,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 2/18/04 {3:09:14 PM} 
+ #                                last update: 4/2/04 {4:02:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
 
 import Numeric
 
-from fivol.iterators.iterator import Iterator
-from fivol.iterators.adaptiveIterator import AdaptiveIterator
+from fipy.iterators.iterator import Iterator
+from fipy.iterators.adaptiveIterator import AdaptiveIterator
 
 ## import sys
 

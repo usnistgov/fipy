@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 1/16/04 {12:04:14 PM} 
+ #                                last update: 4/2/04 {4:00:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -37,7 +37,7 @@
  ##
 
 
-from fivol.terms.diffusionTerm import DiffusionTerm
+from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions):

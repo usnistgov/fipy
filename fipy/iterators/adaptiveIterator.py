@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveIterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/23/04 {5:16:32 PM} 
+ #                                last update: 4/2/04 {4:06:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,8 +44,8 @@
 """Generic equation iterator
 """
 
-from fivol.iterators.iterator import Iterator
-from fivol.iterators.iterator import ConvergenceError
+from fipy.iterators.iterator import Iterator
+from fipy.iterators.iterator import ConvergenceError
 
 
 class AdaptiveIterator(Iterator):

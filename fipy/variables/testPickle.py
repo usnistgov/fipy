@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariable.py"
  #                                    created: 2/20/04 {11:19:30 AM} 
- #                                last update: 2/20/04 {12:21:35 PM} 
+ #                                last update: 4/2/04 {4:05:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -40,12 +40,12 @@ import unittest
 
 from Numeric import array
 
-import fivol.tests.testProgram
-from fivol.tests.testBase import TestBase
+import fipy.tests.testProgram
+from fipy.tests.testBase import TestBase
 import Numeric
-from fivol.meshes.grid2D import Grid2D
-from fivol.variables.cellVariable import CellVariable
-import fivol.tools.dump as dump
+from fipy.meshes.grid2D import Grid2D
+from fipy.variables.cellVariable import CellVariable
+import fipy.tools.dump as dump
 
 class TestVariablePickle(TestBase):
     def setUp(self):
@@ -73,5 +73,5 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 

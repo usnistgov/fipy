@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 2/20/04 {4:48:03 PM} 
+ #                                last update: 4/2/04 {4:00:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,7 +36,7 @@
  # ###################################################################
  ##
 
-from fivol.tools.dimensions import physicalField
+from fipy.tools.dimensions import physicalField
 
 from componentVariable import ComponentVariable
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "diffusionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:33:17 AM} 
+ #                                last update: 4/2/04 {4:00:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,9 @@
  # ###################################################################
  ##
 
-from fivol.equations.matrixEquation import MatrixEquation
-from fivol.terms.transientTerm import TransientTerm
-from fivol.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fipy.equations.matrixEquation import MatrixEquation
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 
 
 class ExplicitDiffusionEquation(MatrixEquation):

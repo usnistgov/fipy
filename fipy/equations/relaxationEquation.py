@@ -6,7 +6,7 @@
  # 
  #  FILE: "relaxationEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/24/04 {11:57:12 PM} 
+ #                                last update: 4/2/04 {4:02:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,7 @@
 
 import Numeric
 
-from fivol.equations.matrixEquation import MatrixEquation
+from fipy.equations.matrixEquation import MatrixEquation
 
 class RelaxationEquation(MatrixEquation):
     def __init__(

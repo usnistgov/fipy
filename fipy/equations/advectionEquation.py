@@ -7,7 +7,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:19:55 AM} 
+ #                                last update: 4/2/04 {4:00:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,9 @@
  # ###################################################################
  ##
 
-from fivol.equations.matrixEquation import MatrixEquation
-from fivol.terms.transientTerm import TransientTerm
-from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fipy.equations.matrixEquation import MatrixEquation
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
 class AdvectionEquation(MatrixEquation):
     def __init__(self,

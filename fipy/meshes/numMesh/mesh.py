@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/5/04 {4:18:00 PM} 
+ #                                last update: 4/2/04 {4:00:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,12 +47,12 @@
 import Numeric
 import MA
 
-from fivol.meshes.face import Face
-from fivol.meshes.cell import Cell
+from fipy.meshes.face import Face
+from fipy.meshes.cell import Cell
 
-import fivol.tools.array
-import fivol.tools.vector as vector
-from fivol.tools.dimensions.physicalField import PhysicalField
+import fipy.tools.array
+import fipy.tools.vector as vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 
 
 # Necessary because LLNL hires stupidheads
@@ -213,8 +213,8 @@ class Mesh:
         faceVertexCoords = faceVertexCoords - faceOrigins
         left = range(len(faceVertexIDs[0]))
         right = left[1:] + [left[0]]
-        cross = Numeric.sum(fivol.tools.array.crossProd(faceVertexCoords, Numeric.take(faceVertexCoords, right, 1)), 1)
-        self.faceAreas = fivol.tools.array.sqrtDot(cross, cross) / 2.
+        cross = Numeric.sum(fipy.tools.array.crossProd(faceVertexCoords, Numeric.take(faceVertexCoords, right, 1)), 1)
+        self.faceAreas = fipy.tools.array.sqrtDot(cross, cross) / 2.
 
     def calcFaceCenters(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
@@ -232,8 +232,8 @@ class Mesh:
         faceVertexCoords = Numeric.take(self.vertexCoords, faceVertexIDs)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
-        norm = fivol.tools.array.crossProd(t1, t2)
-        sqrtDot = fivol.tools.array.sqrtDot(norm, norm)
+        norm = fipy.tools.array.crossProd(t1, t2)
+        sqrtDot = fipy.tools.array.sqrtDot(norm, norm)
         norm[:,0] = norm[:,0] / sqrtDot
         norm[:,1] = norm[:,1] / sqrtDot
         norm[:,2] = norm[:,2] / sqrtDot
@@ -271,9 +271,9 @@ class Mesh:
     def calcFaceTangents(self):
         faceVertexCoord = Numeric.take(self.vertexCoords, self.faceVertexIDs[:,0])
         tmp = self.faceCenters - faceVertexCoord
-        self.tangents1 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]  
-        tmp = fivol.tools.array.crossProd(self.tangents1, self.faceNormals)
-        self.tangents2 = tmp / fivol.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
+        self.tangents1 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]  
+        tmp = fipy.tools.array.crossProd(self.tangents1, self.faceNormals)
+        self.tangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
         
         
     """
@@ -342,9 +342,9 @@ class Mesh:
     """
     
     def getPointToCellDistances(self, point):
-	import fivol.tools.array
+	import fipy.tools.array
 	tmp = self.getCellCenters() - Numeric.array(point)
-	return fivol.tools.array.sqrtDot(tmp, tmp)
+	return fipy.tools.array.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
         d = self.getPointToCellDistances(point)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:48:50 PM} { 2:24:25 PM}
+ #                                last update: 4/2/04 {4:00:51 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -40,16 +40,16 @@
  ##
 
 import unittest
-import fivol.tests.testProgram
-import fivol.examples.levelSet.examples.zeroCells.test
+import fipy.tests.testProgram
+import fipy.examples.levelSet.examples.zeroCells.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fivol.examples.levelSet.examples.zeroCells.test.suite())
+    theSuite.addTest(fipy.examples.levelSet.examples.zeroCells.test.suite())
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

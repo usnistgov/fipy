@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {12:00:06 PM}
+ #                                last update: 4/2/04 {4:05:58 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,7 @@
  ##
 
 from __future__ import nested_scopes
-from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
+from fipy.examples.phase.examples.impingement.input4Particles import System4Particles
 import Numeric
 import time
 

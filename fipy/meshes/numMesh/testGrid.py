@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/04 {1:37:39 PM} 
+ #                                last update: 4/2/04 {4:00:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,13 +44,13 @@
 """
  
 import unittest
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 import Numeric
-from fivol.meshes.grid2D import Grid2D
+from fipy.meshes.grid2D import Grid2D
 import MA
-from fivol.meshes.testMeshBase import TestMeshBase
-import fivol.tools.dump as dump
+from fipy.meshes.testMeshBase import TestMeshBase
+import fipy.tools.dump as dump
 
 class TestGrid(TestMeshBase):
     def setUp(self):
@@ -188,4 +188,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

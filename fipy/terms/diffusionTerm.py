@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/16/04 {11:27:50 AM} 
+ #                                last update: 4/2/04 {4:06:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,7 @@
 
 import Numeric
 
-from fivol.terms.faceTerm import FaceTerm
+from fipy.terms.faceTerm import FaceTerm
 
 class DiffusionTerm(FaceTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions, weight):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:37:28 PM} { 2:26:30 PM}
+ #                                last update: 4/2/04 {4:02:25 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,21 +46,21 @@
 
 import unittest
 
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 
-import fivol.examples.diffusion.steadyState.test
-import fivol.examples.diffusion.explicit.test
-import fivol.examples.diffusion.variable.test
+import fipy.examples.diffusion.steadyState.test
+import fipy.examples.diffusion.explicit.test
+import fipy.examples.diffusion.variable.test
 
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(fivol.examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(fivol.examples.diffusion.explicit.test.suite())
-    theSuite.addTest(fivol.examples.diffusion.variable.test.suite())
+    theSuite.addTest(fipy.examples.diffusion.steadyState.test.suite())
+    theSuite.addTest(fipy.examples.diffusion.explicit.test.suite())
+    theSuite.addTest(fipy.examples.diffusion.variable.test.suite())
     
     return theSuite
 
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 

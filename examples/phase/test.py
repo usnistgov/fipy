@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:54:05 PM} { 2:24:25 PM}
+ #                                last update: 4/2/04 {4:06:24 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -41,23 +41,23 @@
 
 import unittest
 
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 
-import fivol.examples.phase.examples.anisotropy.test
-import fivol.examples.phase.examples.impingement.test
-import fivol.examples.phase.examples.missOrientation.test
-import fivol.examples.phase.examples.symmetry.test
+import fipy.examples.phase.examples.anisotropy.test
+import fipy.examples.phase.examples.impingement.test
+import fipy.examples.phase.examples.missOrientation.test
+import fipy.examples.phase.examples.symmetry.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fivol.examples.phase.examples.anisotropy.test.suite())
-    theSuite.addTest(fivol.examples.phase.examples.impingement.test.suite())
-    theSuite.addTest(fivol.examples.phase.examples.missOrientation.test.suite())
-    theSuite.addTest(fivol.examples.phase.examples.symmetry.test.suite())
+    theSuite.addTest(fipy.examples.phase.examples.anisotropy.test.suite())
+    theSuite.addTest(fipy.examples.phase.examples.impingement.test.suite())
+    theSuite.addTest(fipy.examples.phase.examples.missOrientation.test.suite())
+    theSuite.addTest(fipy.examples.phase.examples.symmetry.test.suite())
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

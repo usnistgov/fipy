@@ -6,7 +6,7 @@
  # 
  #  FILE: "scSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 1/16/04 {10:50:21 AM} 
+ #                                last update: 4/2/04 {4:06:16 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,7 @@
  ##
 
 
-from fivol.terms.sourceTerm import SourceTerm
+from fipy.terms.sourceTerm import SourceTerm
 
 class ScSourceTerm(SourceTerm):
     """

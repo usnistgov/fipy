@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 3/30/04 {11:48:25 AM} 
+ #                                last update: 4/2/04 {4:00:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -90,7 +90,7 @@ import re, string, umath
 
 import Numeric
 
-import fivol.variables.variable
+import fipy.variables.variable
 
 from NumberDict import NumberDict
 
@@ -755,7 +755,7 @@ def AddConstant(name, constant):
     _unit_table[name] = constant
 
 def _isVariable(var):
-    return isinstance(var,fivol.variables.variable.Variable)
+    return isinstance(var,fipy.variables.variable.Variable)
     
 # SI unit definitions
 

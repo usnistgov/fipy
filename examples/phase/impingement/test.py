@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {2:49:13 PM}
+ #                                last update: 4/2/04 {4:00:11 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,13 +48,13 @@ import unittest
 import os
 import cPickle
 
-from fivol.tests.testBase import TestBase
-import fivol.tests.testProgram
+from fipy.tests.testBase import TestBase
+import fipy.tests.testProgram
 
-import fivol.examples.phase.examples.impingement
-from fivol.examples.phase.examples.impingement.input1D import System1D
-from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
-import fivol.tools.dump as dump
+import fipy.examples.phase.examples.impingement
+from fipy.examples.phase.examples.impingement.input1D import System1D
+from fipy.examples.phase.examples.impingement.input4Particles import System4Particles
+import fipy.tools.dump as dump
 
 class TestImpingement(TestBase):
     def setUp(self):
@@ -68,7 +68,7 @@ class TestImpingement(TestBase):
         self.var = parameters['theta']
         
     def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fivol.examples.phase.examples.impingement.__path__[0],self.testFile),'r')
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(fipy.examples.phase.examples.impingement.__path__[0],self.testFile),'r')
 	
 	testData = cPickle.load(filestream)
 	filestream.close()
@@ -111,7 +111,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
 
             
             

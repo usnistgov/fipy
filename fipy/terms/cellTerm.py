@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 3/5/04 {2:15:15 PM} 
+ #                                last update: 4/2/04 {4:00:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,8 @@
 
 import Numeric
 
-from fivol.terms.term import Term
-from fivol.inline import inline
+from fipy.terms.term import Term
+from fipy.inline import inline
 
 class CellTerm(Term):
     def __init__(self,weight,mesh):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {2:24:35 PM} 
+ #                                last update: 4/2/04 {4:06:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,14 +41,14 @@
  # ###################################################################
  ##
 
-from fivol.profiler.profiler import Profiler
-from fivol.profiler.profiler import calibrate_profiler
+from fipy.profiler.profiler import Profiler
+from fipy.profiler.profiler import calibrate_profiler
 
-from fivol.meshes.grid2D import Grid2D
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
-from fivol.iterators.iterator import Iterator
+from fipy.meshes.grid2D import Grid2D
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.iterators.iterator import Iterator
 
-import fivol.examples.elphf.elphf as elphf
+import fipy.examples.elphf.elphf as elphf
 
 nx = 40
 dx = 1.

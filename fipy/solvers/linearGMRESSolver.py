@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/16/04 {11:46:03 AM} 
+ #                                last update: 4/2/04 {4:00:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,7 +46,7 @@ import sys
 import precon
 import itsolvers
 
-from fivol.solvers.solver import Solver
+from fipy.solvers.solver import Solver
 
 class LinearGMRESSolver(Solver):
     def __init__(self, tolerance, steps):

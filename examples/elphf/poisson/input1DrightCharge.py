@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/16/04 {4:53:04 PM} 
+ #                                last update: 4/2/04 {4:02:13 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,10 @@
  # ###################################################################
  ##
 
-from fivol.profiler.profiler import Profiler
-from fivol.profiler.profiler import calibrate_profiler
+from fipy.profiler.profiler import Profiler
+from fipy.profiler.profiler import calibrate_profiler
 
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 
 import input1Dpoisson
 

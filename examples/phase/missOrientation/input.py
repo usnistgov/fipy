@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:39:32 AM} 
+ #                                last update: 4/2/04 {4:06:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,18 +43,18 @@
 
 from __future__ import nested_scopes
 
-from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fivol.examples.phase.phase.phaseEquation import PhaseEquation
-from fivol.solvers.linearPCGSolver import LinearPCGSolver
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.iterators.iterator import Iterator
-from fivol.examples.phase.theta.modularVariable import ModularVariable
-from fivol.variables.cellVariable import CellVariable
-from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
-import fivol.tools.dump as dump
-import fivol.examples.phase.examples.missOrientation
+from fipy.meshes.grid2D import Grid2D
+from fipy.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
+from fipy.examples.phase.phase.phaseEquation import PhaseEquation
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.iterators.iterator import Iterator
+from fipy.examples.phase.theta.modularVariable import ModularVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+import fipy.tools.dump as dump
+import fipy.examples.phase.examples.missOrientation
 
 class PhaseSystem:
    def __init__(self):
@@ -79,7 +79,7 @@ class PhaseSystem:
       dy = self.L / self.ny
 
 ##      fileName = 'grid2d.%f.%f.%i.%i' % (dx,dy,self.nx,self.ny)
-##      filePath = '%s/%s'%(fivol.examples.phase.examples.missOrientation.__path__[0],fileName)      
+##      filePath = '%s/%s'%(fipy.examples.phase.examples.missOrientation.__path__[0],fileName)      
 
 ##      try:
 ##     mesh = dump.read(filePath)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/20/04 {2:04:36 PM} 
+ #                                last update: 4/2/04 {4:06:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,8 @@
 
 import Numeric
 
-from fivol.terms.faceTerm import FaceTerm
-from fivol.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.terms.faceTerm import FaceTerm
+from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class ConvectionTerm(FaceTerm):
     def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/26/04 {6:25:33 PM} 
+ #                                last update: 4/2/04 {4:02:33 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,15 +41,15 @@
  # ###################################################################
  ##
 
-from fivol.meshes.grid2D import Grid2D
+from fipy.meshes.grid2D import Grid2D
 
-from fivol.boundaryConditions.fixedValue import FixedValue
-from fivol.boundaryConditions.fixedFlux import FixedFlux
-from fivol.iterators.iterator import Iterator
-from fivol.solvers.linearLUSolver import LinearLUSolver
-from fivol.variables.cellVariable import CellVariable
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.iterators.iterator import Iterator
+from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.variables.cellVariable import CellVariable
 
-import fivol.tools.dimensions.physicalField as physicalField
+import fipy.tools.dimensions.physicalField as physicalField
 
 from componentVariable import ComponentVariable
 from solventVariable import SolventVariable

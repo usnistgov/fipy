@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/20/04 {4:05:53 PM} 
+ #                                last update: 4/2/04 {4:06:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,14 +45,14 @@
 """
  
 import unittest
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 
-from fivol.examples.phase.theta.modularVariable import ModularVariable
+from fipy.examples.phase.theta.modularVariable import ModularVariable
 import Numeric
 from Numeric import pi
-from fivol.meshes.grid2D import Grid2D
-from fivol.tests.testBase import TestBase
-from fivol.examples.phase.theta.noModularVariable import NoModularVariable
+from fipy.meshes.grid2D import Grid2D
+from fipy.tests.testBase import TestBase
+from fipy.examples.phase.theta.noModularVariable import NoModularVariable
 
 class TestMod(TestBase):
     def setUp(self, value, dx = 1., dy = 1.):
@@ -144,4 +144,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')
