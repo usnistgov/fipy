@@ -62,8 +62,8 @@ where the free energy functional is given by,
 __docformat__ = 'restructuredtext'
 
 L = 1000.
-nx = 100
-ny = 100
+nx = 500
+ny = 500
 
 steps = 1000
 dx = L / nx
@@ -96,7 +96,8 @@ eqch = TransientTerm() - diffTerm2 - diffTerm4
 
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
-solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
+##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
+solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -113,12 +114,12 @@ if __name__ == '__main__':
     viewer = Grid2DGistViewer(var, minVal=0., maxVal=1.0, palette = 'rainbow.gp')
     viewer.plot()
 
-    dexp=-5
+    dexp=1
     import Numeric
     for step in range(steps):
         dt = Numeric.exp(dexp)
-        dt = min(10, dt)
-        dexp += 0.5
+        dt = min(100, dt)
+        dexp += 0.01
         print 'step:',step,dt
         var.updateOld()
         eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
