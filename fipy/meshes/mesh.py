@@ -68,9 +68,11 @@ class Mesh:
     def removeFace(self,face):
         rFaceId = face.getId()
         face = self.faces[-1]
+        print len(self.faces)
         face.setId(rFaceId)
         self.faces = self.faces[:-1]
-
+        print len(self.faces)
+        raw_input()
 
 
                 

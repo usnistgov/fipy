@@ -85,7 +85,6 @@ class Face:
 	    """
 	    cc = self.cells[0].center() - self.center()
 	else:
-            print len(self.cells)
 	    cc = self.cells[0].center() - self.cells[1].center()
 	if cell == None or cell == self.cells[0]:
 	    cc *= -1
