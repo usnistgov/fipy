@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 7/2/04 {2:18:00 PM} 
+ %                                last update: 7/6/04 {12:13:53 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -34,13 +34,19 @@
  % ###################################################################
  %%
 
-\documentclass{book}
+\documentclass[letterpaper]{book}
 
-\usepackage[text={7in,9in}]{geometry}
+\usepackage[text={7in,9.333in}]{geometry}
+
+\usepackage{crop}
 
 \usepackage{alltt, parskip, boxedminipage} % fancyheadings,  
 \usepackage{multirow, longtable, makeidx, amssymb} 
 \usepackage{amsmath} 
+
+\usepackage{minitoc}
+\setcounter{tocdepth}{1}
+\setcounter{parttocdepth}{1}
 
 \usepackage[ascii]{inputenc}
 
@@ -53,10 +59,12 @@
 \definecolor{redish}{rgb}{0.894,0.122,0.122}
 \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true]{hyperref}
+\usepackage[urlcolor=blue,linkcolor=blue,bookmarksopen, pdftex, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
 \usepackage{graphicx}
 % \usepackage{memhfixc}
 % \usepackage{nameref}
+
+\graphicspath{{../figures/}}
 
 % for reStructuredText
 \usepackage{shortvrb}
@@ -93,16 +101,79 @@
 \newcommand{\titlereference}[1]{\textsl{#1}}
 
 
-\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.74em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
+\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
 % \newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{bluish}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}}
 
 \newcommand{\FiPy}{\textsf{FiPy}}
 
-%\includeonly{installation}
+% \includeonly{installation}
+
+\makeatletter
+\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
+\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
+\renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
+\renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
+\renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
+
+\renewcommand\tableofcontents{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\contentsname\pdfbookmark[-1]{Contents}{contents}
+	\@mkboth{%
+	   \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+    \@starttoc{toc}%
+    \if@restonecol\twocolumn\fi
+    }
+
+\renewcommand\maketitle{\begin{titlepage}%
+\let\footnotesize\small
+\let\footnoterule\relax
+\let \footnote \thanks
+\null\vfil
+\vskip 20\p@
+\begin{flushright}%
+  {\Huge \@title \par}%
+  \vskip 3em%
+  {\large
+   \lineskip .75em%
+    \begin{tabular}[t]{r@{}}%
+      \@author
+    \end{tabular}\par}%
+    \vskip 1.5em%
+  {\large \@date \par}%       % Set date in \large size.
+\end{flushright}\par
+\@thanks
+\vfil\null
+\end{titlepage}%
+\setcounter{footnote}{0}%
+\global\let\thanks\relax
+\global\let\maketitle\relax
+\global\let\@thanks\@empty
+\global\let\@author\@empty
+\global\let\@date\@empty
+\global\let\@title\@empty
+\global\let\title\relax
+\global\let\author\relax
+\global\let\date\relax
+\global\let\and\relax
+}
+
+\makeatother
+
+\usepackage{layout}
 
 \begin{document}
 
+\doparttoc
+
+\crop[frame,axes]
+
 \frontmatter
+
+% \layout
 
 % \settypeblocksize{9in}{7in}{*}
 % \setlrmargins{*}{*}{*}
@@ -142,22 +213,75 @@
     \addtolength{\leftmargin}{\labelwidth}}}%
   {\end{list}}
 
-\title{
-\scalebox{5}{\logo} \\[2ex]
-FiPy\\
-{\large A Finite Volume PDE Solver Using Python} \\
-}
+\newsavebox{\NISTbox}
+\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.5]{NIST_right2line}}
+%\newlength{\photoheight}
+%\settoheight{\photoheight}{\usebox{\photobox}}
+%\newlength{\photowidth}
+%\settowidth{\photowidth}{\usebox{\photobox}}
 
-\author{Daniel Wheeler, Jonathan E. Guyer \& James A. Warren \\[2ex]
-Metallurgy Division, Materials Science and Engineering Laboratory\\
-National Institute of Standards and Technology}
+\makeatletter
+\newcommand*{\ps@mytitlepage}{%
+  \let\@oddhead\@empty
+  \renewcommand*{\@oddfoot}{%
+  \hfill\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}%\vspace*{-0.5in}}
+\makeatother
 
-\maketitle
+\makeatletter  
+\begin{titlepage}%
+\thispagestyle{mytitlepage}
+\let\footnotesize\small
+\let\footnoterule\relax
+\let \footnote \thanks
+% \begin{flushleft}
+%     \scalebox{10}{\logo}
+% \end{flushleft}
+% \null\vfil
+% \vskip 20\p@
+\begin{flushright}%
+  \scalebox{10}{\logo}\par
+%   \vspace*{\fill}
+  \vskip 3em%
+  {\Huge FiPy \\
+    \huge A Finite Volume PDE Solver Using Python \par}%
+  \vskip 3em%
+  {\large
+   \lineskip .75em%
+    \begin{tabular}[t]{r@{}}%
+	Daniel Wheeler \\
+	Jonathan E. Guyer \\ 
+	James A. Warren \\
+	\textit{Metallurgy Division} \\
+	\textit{Materials Science and Engineering Laboratory}
+    \end{tabular}\par}%
+    \vskip 1.5em%
+  {\large \@date \par}%       % Set date in \large size.
+% \vfil\null
+  \vspace*{\fill}%
+%   \raisebox{-5cm}{\fbox{\includegraphics[hiresbb,scale=1.5]{NIST_right2line}}}%
+\end{flushright}%
+\end{titlepage}%
+\makeatother
 
-\pdfbookmark[0]{Contents}{contents}
+% \title{
+% \scalebox{5}{\logo} \\[2ex]
+% \Huge FiPy \\
+% A Finite Volume PDE Solver Using Python \\
+% }
+% 
+% \author{Daniel Wheeler, Jonathan E. Guyer \& James A. Warren \\
+% Metallurgy Division, Materials Science and Engineering Laboratory\\
+% National Institute of Standards and Technology}
+% 
+% \maketitle
+
 \tableofcontents
 
 \mainmatter
+
+\part{Introduction}
+
+\parttoc
 
 \chapter{Installation}
 
@@ -171,23 +295,33 @@ National Institute of Standards and Technology}
 
 \include{numerical/numerical}
 
-\chapter{Examples}
+\part{Examples}
 
-\include{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
-\include{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
-\include{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
-\include{examples/latex/examples.diffusion.explicit.mesh10.input-module}
-\include{examples/latex/examples.diffusion.explicit.mesh50.input-module}
-\include{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
-\include{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
-\include{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
-\include{examples/latex/examples.diffusion.nthOrder.input2ndOrder1D-module}
-\include{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
+\parttoc
+
+\chapter{Diffusion Examples}
+
+\input{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
+\input{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
+\input{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
+\input{examples/latex/examples.diffusion.explicit.mesh10.input-module}
+\input{examples/latex/examples.diffusion.explicit.mesh50.input-module}
+\input{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
+\input{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
+\input{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
+\input{examples/latex/examples.diffusion.nthOrder.input2ndOrder1D-module}
+\input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
+
+\chapter{Convection Examples}
+
 \include{examples/latex/examples.convection.exponential1D.input-module}
 \include{examples/latex/examples.convection.exponential1DBack.input-module}
 \include{examples/latex/examples.convection.exponential1DSource.input-module}
 \include{examples/latex/examples.convection.exponential2D.input-module}
 \include{examples/latex/examples.convection.powerLaw1D.input-module}
+
+\chapter{Phase Field Examples}
+
 \include{examples/latex/examples.phase.anisotropy.input-module}
 \include{examples/latex/examples.phase.impingement.mesh40x1.input-module}
 \include{examples/latex/examples.phase.impingement.mesh20x20.input-module}
@@ -196,6 +330,9 @@ National Institute of Standards and Technology}
 \include{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
 \include{examples/latex/examples.phase.missOrientation.modCircle.input-module}
 \include{examples/latex/examples.phase.symmetry.input-module}
+
+\chapter{Level Set Examples}
+
 \include{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
 \include{examples/latex/examples.levelSet.distanceFunction.square.input-module}
 \include{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
@@ -214,7 +351,9 @@ National Institute of Standards and Technology}
  
 \appendix
 
-\chapter{APIs}
+\part{APIs}
+
+\parttoc
 
 \input api
 
@@ -224,7 +363,7 @@ National Institute of Standards and Technology}
 %%                                 Index                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\pdfbookmark[0]{Index}{index}
+\pdfbookmark[-1]{Index}{index}
 \printindex
 
 

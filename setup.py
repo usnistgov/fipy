@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 7/2/04 {2:17:37 PM} 
+ #                                last update: 7/6/04 {1:10:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -110,6 +110,10 @@ class build_docs (Command):
                 
                 if 'api.tex' in files:
                     files.remove('api.tex')
+		    
+		if 'fipy-module.tex' in files:
+		    files.remove('fipy-module.tex')
+
                 
                 ## Added because linux does not sort files in the same order
                 files.sort()
@@ -120,8 +124,35 @@ class build_docs (Command):
 ##                         files.remove(formattedModule)
 ##                         files.insert(0, formattedModule)
 
+		import re
+		mainModule = re.compile(r"(fipy\.[^.-]*)-module\.tex")
+		subModule = re.compile(r"(fipy(\.[^.-]*)+)-module\.tex")
                 for name in files:
-                    f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
+		    mainMatch = mainModule.match(name)
+		    if mainMatch:
+			f.write("\\chapter{Module " + mainMatch.group(1) + "}\n")
+			continue
+			
+		    subMatch = subModule.match(name)
+		    if subMatch:
+			module = open(os.path.join(root, name))
+			
+			# epydoc tends to prattle on and on with empty module pages, so 
+			# we eliminate all but those that actually contain something relevant.
+			functionLine = re.compile(r"\\subsection{(Functions|Variables|Class)")
+			keepIt = False
+			for line in module:
+			    if functionLine.search(line):
+				keepIt = True
+				break
+				
+			module.close
+			if not keepIt:
+			    continue
+			
+		    split = os.path.splitext(name)
+		    if split[1] == ".tex":
+			f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
 
             f.close()
         except:
