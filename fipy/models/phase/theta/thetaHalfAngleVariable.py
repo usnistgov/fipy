@@ -44,7 +44,7 @@
 import Numeric
 
 from fivol.variables.cellVariable import CellVariable
-from fivol.inline.inline import runInline
+##from fivol.inline.inline import runInline
 import fivol.tools.array as array
 
 class ThetaHalfAngleVariable(CellVariable):

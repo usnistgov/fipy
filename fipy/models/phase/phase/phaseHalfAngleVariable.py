@@ -43,7 +43,7 @@
 
 import Numeric
  
-from fivol.inline.inline import runInline
+##from fivol.inline.inline import runInline
 from fivol.variables.faceVariable import FaceVariable
 
 import fivol.tools.array as array

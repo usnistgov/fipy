@@ -40,8 +40,7 @@ import Numeric
 
 from fivol.variables.vectorFaceVariable import VectorFaceVariable
 import fivol.tools.array as array
-from fivol.inline.inline import optionalInline
-from fivol.inline.inline import runInline
+from fivol.inline.inline import inl
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var, mod = None):
@@ -74,8 +73,8 @@ class FaceGradVariable(VectorFaceVariable):
 	t1grad2 = Numeric.zeros(N.shape,'d')
 	t2grad1 = Numeric.zeros(N.shape,'d')
 	t2grad2 = Numeric.zeros(N.shape,'d')
-	
-	runInline("""
+
+	inl.runInline("""
 	t1grad1(i) += tangents1(i,j) * cellGrad(id1(i),j);
 	t1grad2(i) += tangents1(i,j) * cellGrad(id2(i),j);
 	t2grad1(i) += tangents2(i,j) * cellGrad(id1(i),j);
@@ -83,7 +82,7 @@ class FaceGradVariable(VectorFaceVariable):
 	
 	val(i,j) = normals(i,j) * N(i);
 	val(i,j) += tangents1(i,j) * (t1grad1(i) + t1grad2(i)) / 2.;
-	val(i,j) += tangents2(i,j) * (t2grad1(i) + t2grad2(i)) / 2.;	
+	val(i,j) += tangents2(i,j) * (t2grad1(i) + t2grad2(i)) / 2.;
 	""", 
 	t1grad1 = t1grad1, t1grad2 = t1grad2, 
 	t2grad1 = t2grad1,  t2grad2 = t2grad2, 
@@ -104,7 +103,7 @@ class FaceGradVariable(VectorFaceVariable):
 	tangents2 = self.mesh.getFaceTangents2()
 	cellGrad = self.var.getGrad()[:]
 	
-	optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
+	inl.optionalInline(self._calcValueIn, self._calcValuePy, normals, cellGrad, id1, id2, tangents1, tangents2, N)
 	
 ##    def calcValue(self):
 ##        id1, id2, N, normals = self.calcValue1()
