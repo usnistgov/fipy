@@ -235,10 +235,8 @@ class Grid2D(Mesh):
 			),
 		    ) 
 		    
-		    
 	self.calcCellVolumes(cells)
         self.calcCellFaceOrientations(cells)
-
 
 	return cells
 

@@ -65,23 +65,37 @@ class Face:
 	    'id' -- a unique identifier
 	"""
         self.vertices = vertices
-        self.cells = ()
+##        self.cells = ()
         self.cellsId = ()
+        self.cellCenters = ()
 	self.id = id
 	self.center = self.calcCenter()
         self.area = self.calcArea()
 	self.setNormal()
 	self.orientation = 1
             
+##    def addBoundingCell(self, cell, orientation):
+##	"""Add cell to the list of Cells which lie on either side of this Face.
+##	"""
+##        self.cells += (cell,)
+##        self.cellsId += (cell.getId(),)
+##	if len(self.cells) == 1:
+##	    self.orientation = orientation
+##	else:
+##	    self.orientation = -orientation	    
+##	self.setCellDistance()
+##	self.setFaceToCellDistances()
+
     def addBoundingCell(self, cell, orientation):
 	"""Add cell to the list of Cells which lie on either side of this Face.
 	"""
-        self.cells += (cell,)
+##        self.cells += (cell,)
         self.cellsId += (cell.getId(),)
-	if len(self.cells) == 1:
+	if len(self.cellsId) == 1:
 	    self.orientation = orientation
 	else:
-	    self.orientation = -orientation	    
+	    self.orientation = -orientation
+        self.cellCenters += (cell.getCenter(),)
 	self.setCellDistance()
 	self.setFaceToCellDistances()
         
@@ -189,10 +203,29 @@ class Face:
 	"""
         return self.cellDistance
 
+##    def setCellDistance(self):
+##	"""Assign the cached distance between adjacent cell centers.
+##	"""
+##        self.cellDistance = self.calcCellDistance()
+
+    
     def setCellDistance(self):
 	"""Assign the cached distance between adjacent cell centers.
 	"""
         self.cellDistance = self.calcCellDistance()
+
+
+##    def calcCellDistance(self):
+##	"""Calculate the distance between adjacent Cell centers.
+	
+##	If the Face is on a boundary and has only one bordering Cell,
+##	the distance is from the Cell center to the Face center.
+##	"""
+##        if(len(self.cells)==2):
+##            vec=self.cells[1].getCenter()-self.cells[0].getCenter()
+##        else:
+##            vec=self.center-self.cells[0].getCenter()        
+##        return vector.sqrtDot(vec,vec)
 
     def calcCellDistance(self):
 	"""Calculate the distance between adjacent Cell centers.
@@ -200,29 +233,49 @@ class Face:
 	If the Face is on a boundary and has only one bordering Cell,
 	the distance is from the Cell center to the Face center.
 	"""
-        if(len(self.cells)==2):
-            vec=self.cells[1].getCenter()-self.cells[0].getCenter()
+        if(len(self.cellsId)==2):
+            vec=self.cellCenters[0]-self.cellCenters[1]
         else:
-            vec=self.center-self.cells[0].getCenter()        
+            vec=self.center-self.cellCenters[0]        
         return vector.sqrtDot(vec,vec)
 
-    def calcFaceToCellDistance(self, cell):
-        vec=self.center-cell.getCenter()        
+##    def calcFaceToCellDistance(self, cell):
+##        vec=self.center-cell.getCenter()        
+##        return vector.sqrtDot(vec,vec)
+
+    def calcFaceToCellDistance(self, id):
+        vec=self.center - self.cellCenters[id]
         return vector.sqrtDot(vec,vec)
+
+##    def setFaceToCellDistances(self):
+##        faceToCellDistances = ()
+##        for cell in self.cells:
+##            faceToCellDistances += (self.calcFaceToCellDistance(cell),)
+##        self.faceToCellDistances = faceToCellDistances
 
     def setFaceToCellDistances(self):
         faceToCellDistances = ()
-        for cell in self.cells:
-            faceToCellDistances += (self.calcFaceToCellDistance(cell),)
+        for id in range(len(self.cellsId)):
+            faceToCellDistances += (self.calcFaceToCellDistance(id),)
         self.faceToCellDistances = faceToCellDistances
+        
 
-    def getFaceToCellDistance(self, cell = None):
-        if cell == self.cells[0] or cell == None:
+##    def getFaceToCellDistance(self, cell = None):
+##        if cell == self.cells[0] or cell == None:
+##            return self.faceToCellDistances[0]
+##        elif cell == self.cells[1]:
+##            return self.faceToCellDistances[1]
+##        else:
+##            return self.calcFaceToCellDistance(cell)
+
+    def getFaceToCellDistance(self, cellId = None):
+        if cellId == self.cellsId[0] or cellId == None:
             return self.faceToCellDistances[0]
-        elif cell == self.cells[1]:
+        elif cellId == self.cellsId[1]:
             return self.faceToCellDistances[1]
         else:
-            return self.calcFaceToCellDistance(cell)
+            raise Exception
+
 
 #     def __repr__(self):
 # 	"""Textual representation of Face.
@@ -253,7 +306,6 @@ class Face:
 	"""Set the id of the Face.
 	"""
         self.id = id
-            
             
     def getOrientation(self):
         return self.orientation
