@@ -42,7 +42,7 @@
 """Run all the test cases
 """
 
-import tests.testVariableDiffusion
+import examples.diffusion.variable.test
 import examples.diffusion.steadyState.test
 import examples.diffusion.explicit.test
 import tests.testPhase
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     
     theSuite.addTest(examples.diffusion.steadyState.test.suite())
     theSuite.addTest(examples.diffusion.explicit.test.suite())
-    theSuite.addTest(tests.testVariableDiffusion.suite())
+    theSuite.addTest(examples.diffusion.variable.test.suite())
     theSuite.addTest(tests.testPhase.suite())
     theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
     theSuite.addTest(examples.elphf.test.suite())
