@@ -215,13 +215,13 @@ class PyxViewer:
             minval = min(vallist)
         if(maxval == None):
             maxval = max(vallist)
-        if(minx = None):
+        if(minx == None):
             minx = min(xlist)
-        if(maxx = None):
+        if(maxx == None):
             maxx = max(xlist)
-        if(miny = None):
+        if(miny == None):
             miny = min(ylist)
-        if(maxy = None):
+        if(maxy == None):
             maxy = max(ylist)
         if(debug == 1):
             print vallist

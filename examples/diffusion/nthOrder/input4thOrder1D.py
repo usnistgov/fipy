@@ -89,7 +89,6 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.solvers.scipySolver import ScipySolver
 
 alpha1 = 2.
 alpha2 = 1.
