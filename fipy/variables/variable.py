@@ -83,10 +83,10 @@ class Variable:
 
 	self.value = array
 # 	PhysicalField.__init__(self, array, unit)
-		
+
 	self.stale = 1
 	self.markFresh()
-	
+        
 	self.transposeVar = None
 	self.sumVar = {}
 	
