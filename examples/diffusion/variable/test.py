@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/20/04 {11:05:45 AM} 
+ #                                last update: 2/13/04 {1:45:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,6 +49,8 @@ import unittest
 import Numeric
 
 from fivol.tests.testBase import TestBase
+import fivol.tests.testProgram
+
 import input
 
 class TestVariableDiffusion(TestBase):
@@ -112,14 +114,15 @@ class TestVariableDiffusion50x1(TestVariableDiffusion):
 
 def suite():
     theSuite = unittest.TestSuite()
+    
     theSuite.addTest(unittest.makeSuite(TestVariableDiffusion2x1))
     theSuite.addTest(unittest.makeSuite(TestVariableDiffusion10x1))
     theSuite.addTest(unittest.makeSuite(TestVariableDiffusion50x1))
+    
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')
 
             
             

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:47:39 AM} 
+ #                                last update: 2/13/04 {1:44:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,6 +47,7 @@
 import unittest
 
 from fivol.tests.testBase import TestBase
+import fivol.tests.testProgram
 
 from input import getParameters
 
@@ -102,14 +103,15 @@ class  Test1D(Test):
 
 def suite():
     theSuite = unittest.TestSuite()
+    
     theSuite.addTest(unittest.makeSuite(Test1D))
     theSuite.addTest(unittest.makeSuite(Test20x20))
     theSuite.addTest(unittest.makeSuite(Test50x50))
+    
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')
 
             
             

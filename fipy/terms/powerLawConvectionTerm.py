@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/27/04 {4:41:47 PM} 
+ #                                last update: 2/11/04 {5:48:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -40,16 +40,15 @@ from fivol.terms.convectionTerm import ConvectionTerm
 from fivol.variables.faceVariable import FaceVariable
 from fivol.tools.dimensions.physicalField import PhysicalField
 
+from fivol.inline import inline
+
 class PowerLawConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
 	    self.P = self.requires(P)
 	    
-	def calcValue(self):
-	    eps = 1e-3
-	    P  = self.P.getNumericValue()
-	    
+	def _calcValuePy(self, eps, P):
 	    P = Numeric.where(abs(P) < eps, eps, P)
 	    
 ## 	    print "P:", P
@@ -70,3 +69,36 @@ class PowerLawConvectionTerm(ConvectionTerm):
 ## 	    raw_input()
 	    
 	    self.value = PhysicalField(value = alpha)
+
+	def _calcValueIn(self, eps, P):
+	    inline.runInlineLoop1("""
+		if (fabs(P(i)) < eps) {
+		    P(i) = eps;
+		}
+		
+		alpha(i) = 0.5;
+		
+		if (P(i) > 10.) {
+		    alpha(i) = (P(i) - 1.) / P(i);
+		} else if (10. >= P(i) && P(i) > eps) {
+		    double	tmp = (1. - P(i) / 10.);
+		    double	tmpSqr = tmp * tmp;
+		    alpha(i) = ((P(i) - 1.) + tmpSqr*tmpSqr*tmp) / P(i);
+		} else if (eps >= P(i) && P(i) >= -10) {
+		    double	tmp = (1. + P(i) / 10.);
+		    double	tmpSqr = tmp * tmp;
+		    alpha(i) = (tmpSqr*tmpSqr*tmp - 1.) / P(i);
+		} else {	// P(i) < -10.
+		    alpha(i) = -1. / P(i);
+		}
+	    """,
+	    alpha = self.value.value, eps = eps, P = P,
+	    ni = len(self.mesh.getCells())
+	    )
+
+
+	def calcValue(self):	    
+	    eps = 1e-3
+	    P  = self.P.getNumericValue()
+	    
+	    inline.optionalInline(self._calcValueIn, self._calcValuePy, eps, P)

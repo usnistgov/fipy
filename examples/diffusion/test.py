@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "testExplicitDiffusion.py"
- #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 2/13/04 {1:38:42 PM} 
+ #  FILE: "test.py"
+ #                                    created: 11/26/03 {3:23:47 PM}
+ #                                last update: 2/13/04 {1:37:28 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,64 +41,26 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
+"""Run all the test cases
 """
- 
+
 import unittest
 
 import fivol.tests.testProgram
-from fivol.tests.testBase import TestBase
 
-import input
-
-class TestExplicitDiffusion(TestBase):
-    """Generic steady-state diffusion class
-    Same as TestSteadyStateDiffusion biut for explicit case
-    Constructs a mesh, variable, equation, and iterator based
-    on the mesh dimensions specified by the child class
-    """
-    def setUp(self):
-        parameters = input.getParameters(self.nx, self.ny)
-	self.steps = parameters['steps']
-	self.timeStep = parameters['timeStep']
-	self.tolerance = parameters['tolerance']
-        self.mesh = parameters['mesh']
-        self.var = parameters['var']
-        self.it = parameters['it']
-        self.valueLeft = parameters['valueLeft']
-        self.valueRight = parameters['valueRight']
-
-    def getTestValues(self):
-	(lx,ly) = self.mesh.getPhysicalShape()
-	vl = self.valueLeft
-	vr = self.valueRight
-	x = self.mesh.getCellCenters()[:,0]
-	return vl + (vr - vl) * x / lx
-	
-class  TestExplicitDiffusion10(TestExplicitDiffusion):
-    """Steady-state 1D diffusion on a 10x1 mesh
-    """
-    def setUp(self):
-	self.nx = 10
-	self.ny = 1
-	TestExplicitDiffusion.setUp(self)
-
-class  TestExplicitDiffusion50(TestExplicitDiffusion):
-    """Steady-state 1D diffusion on a 50x1 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 1
-	TestExplicitDiffusion.setUp(self)
+import fivol.examples.diffusion.steadyState.test
+import fivol.examples.diffusion.explicit.test
+import fivol.examples.diffusion.variable.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion10))
-    theSuite.addTest(unittest.makeSuite(TestExplicitDiffusion50))
-    return theSuite
     
+    theSuite.addTest(fivol.examples.diffusion.steadyState.test.suite())
+    theSuite.addTest(fivol.examples.diffusion.explicit.test.suite())
+    theSuite.addTest(fivol.examples.diffusion.variable.test.suite())
+    
+    return theSuite
+
 if __name__ == '__main__':
     fivol.tests.testProgram.main(defaultTest='suite')
-    
-            
-            
+

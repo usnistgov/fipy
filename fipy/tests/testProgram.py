@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-
-## 
+## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  PFM - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 2/13/04 {10:58:11 AM} { 2:26:30 PM}
+ #  FILE: "testSuite.py"
+ #                                    created: 2/12/04 {11:02:02 AM} 
+ #                                last update: 2/13/04 {10:57:38 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -30,31 +28,41 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-"""Run all the test cases
-"""
-
 import unittest
 
-import fivol.examples.test
-import fivol.tests.testProgram
+class TestProgram(unittest.TestProgram):
+    def parseArgs(self, argv):
+	import getopt
+	inline = 0
+	try:
+	    options, args = getopt.getopt(argv[1:], 'hHvq',
+					  ['help','verbose','quiet','inline'])
+	    for opt, value in options:
+		if opt in ('-h','-H','--help'):
+		    self.usageExit()
+		if opt in ('-q','--quiet'):
+		    self.verbosity = 0
+		if opt in ('-v','--verbose'):
+		    self.verbosity = 2
+		if opt in ('--inline',):
+		    inline = 1
+	    if len(args) == 0 and self.defaultTest is None:
+		self.test = self.testLoader.loadTestsFromModule(self.module)
+		return
+	    if len(args) > 0:
+		self.testNames = args
+	    else:
+		self.testNames = (self.defaultTest,)
+	    self.createTests()
+	    if inline:
+		argv[1:] = ['--inline']
+	except getopt.error, msg:
+	    self.usageExit(msg)
 
-def suite():
-    theSuite = unittest.TestSuite()
-    
-    theSuite.addTest(fivol.examples.test.suite())
-    
-    return theSuite
-
-if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+main = TestProgram

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:26:15 AM} 
+ #                                last update: 2/13/04 {1:43:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,6 +46,7 @@ import unittest
 import Numeric
 
 from fivol.tests.testBase import TestBase
+import fivol.tests.testProgram
 
 from exponential1DSystem import Exponential1DSystem
 from exponential2DSystem import Exponential2DSystem
@@ -140,17 +141,18 @@ class  TestSteadyConvectionDiffusion1DExponentialSc(TestSteadyConvectionDiffusio
 
 def suite():
     theSuite = unittest.TestSuite()
+    
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponential))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialUp))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DPowerLaw))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialBackwards))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion2DExponential))
     theSuite.addTest(unittest.makeSuite(TestSteadyConvectionDiffusion1DExponentialSc))
+    
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')
 
             
             

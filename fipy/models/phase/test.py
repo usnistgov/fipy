@@ -6,11 +6,9 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/13/04 {2:49:13 PM}
+ #                                last update: 2/13/04 {1:54:05 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,55 +39,19 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
- 
 import unittest
-import os
-import cPickle
 
-from fivol.tests.testBase import TestBase
 import fivol.tests.testProgram
 
-import fivol.examples.phase.examples.impingement
-from fivol.examples.phase.examples.impingement.input1D import System1D
-from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
+import fivol.examples.phase.examples.anisotropy.test
+import fivol.examples.phase.examples.impingement.test
+import fivol.examples.phase.examples.missOrientation.test
 
-class TestImpingement(TestBase):
-    def setUp(self):
-
-        parameters = self.system.getParameters()
-
-	self.steps = parameters['steps']
-	self.tolerance = 1e-10
-
-        self.it = parameters['it']
-        self.var = parameters['theta']
-        
-    def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fivol.examples.phase.examples.impingement.__path__[0],self.testFile),'r')
-	
-	testData = cPickle.load(filestream)
-	filestream.close()
-
-	return testData
-
-class Test1D(TestImpingement):
-    def setUp(self):
-        self.system = System1D()
-        self.testFile = 'testImpingement.gz'
-        TestImpingement.setUp(self)
-
-class Test4Particles(TestImpingement):
-    def setUp(self):
-        self.system = System4Particles()
-        self.testFile = '4ParticleData.gz'
-        TestImpingement.setUp(self)
-        
 def suite():
     theSuite = unittest.TestSuite()
-##    theSuite.addTest(unittest.makeSuite(Test1D))
-    theSuite.addTest(unittest.makeSuite(Test4Particles))
+    theSuite.addTest(fivol.examples.phase.examples.anisotropy.test.suite())
+    theSuite.addTest(fivol.examples.phase.examples.impingement.test.suite())
+    theSuite.addTest(fivol.examples.phase.examples.missOrientation.test.suite())
     return theSuite
     
 if __name__ == '__main__':

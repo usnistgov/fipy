@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/26/04 {10:15:46 PM} 
+ #                                last update: 2/13/04 {1:12:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,6 +47,8 @@
 import unittest
 
 import Numeric
+
+import fivol.tests.testProgram
 
 from fivol.tests.testBase import TestBase
 
@@ -231,8 +233,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')
 
             
             

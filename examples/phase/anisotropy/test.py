@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:40:31 AM} 
+ #                                last update: 2/13/04 {1:51:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,6 +49,8 @@ import os
 import cPickle
 
 from fivol.tests.testBase import TestBase
+import fivol.tests.testProgram
+
 import fivol.examples.phase.examples.anisotropy
 
 from inputTemperature import AnisotropySystem
@@ -79,8 +81,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')
 
             
             

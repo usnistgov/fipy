@@ -4,7 +4,7 @@ import Numeric
 ##import weave
 
 def optionalInline(inlineFn, pythonFn, *args):
-    if 'inline' in sys.argv:
+    if '--inline' in sys.argv[1:]:
 	return inlineFn(*args)
     else:
 	return pythonFn(*args)
