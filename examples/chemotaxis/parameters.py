@@ -47,20 +47,37 @@ Input file for parameters
 
 """
 
-parameters = { 'case 1' : { 'P3'          : 0.21974,
-                            'P2'          : 0.47202,
-                            'KC'          : 0.5,
-                            'chiK'        : 0.10559,
-                            'R'           : 0.0,
-                            'lambdaK'     : 2.5,
-                            'kappaK'      : 1.2,
-                            'KM'          : 0.031217,
-                            'TC'          : 0.55529,
-                            'chiT'        : 0.33730,
-                            'lambdaT'     : 30.0,
-                            'zetaT'       : 0.002801,
-                            'TM'          : 0.11045,
-                            'lambdaTstar' : 0.18627}
+parameters = { 'case 1' : { 'P3'             : 0.21974,
+                            'P2'             : 0.47202,
+                            'KC'             : 0.5,
+                            'chiK'           : 0.10559,
+                            'R'              : 0.0,
+                            'lambdaK'        : 2.5,
+                            'kappaK'         : 1.2,
+                            'KM'             : 0.031217,
+                            'TC'             : 0.55529,
+                            'chiT'           : 0.33730,
+                            'lambdaT'        : 30.0,
+                            'zetaT'          : 0.002801,
+                            'TM'             : 0.11045,
+                            'lambdaTstar'    : 0.18627,
+                            'kappam'         : 1.11,
+                            'kappac'         : 10.0,
+                            'zetaPITP'       : 0.025,
+                            'diffusionCoeff' : 0.01,
+                            'chi3'           : 1.,
+                            'kappa3'         : 0.05,
+                            'zeta3PITP'      : 0.025,
+                            'zeta3'          : 0.035,
+                            'lambda3'        : 80.0,
+                            'zeta3T'         : 0.2,
+                            'chi2'           : 0.08,
+                            'lambda2'        : 40.0,
+                            'zeta2T'         : 0.08,
+                            'alphaKstar'     : 0.8,
+                            'lambdaKstar'    : 0.049599,
+                            'kappaKstar'     : 0.001
+                            }
                }
                          
     
