@@ -103,7 +103,7 @@ class Gist1DViewer(GistViewer):
             
 	gist.logxy(self.xlog, self.ylog)
 
-    def plot(self, minVal=None, maxVal=None):
+    def plot(self):
 	import gist
 
 	gist.window(self.id, wait = 1, style = self.style)

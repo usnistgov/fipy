@@ -96,7 +96,7 @@ class Mesh2D(Mesh):
         a = self.getAddedMeshValues(other, smallNumber)
         return Mesh2D(a[0], a[1], a[2])
 
-    def getOrderedCellVertexIDs(self):
+    def _getOrderedCellVertexIDs(self):
         cellFaceVertexIDs = Numeric.take(self.faceVertexIDs, self.cellFaceIDs)
         cellVertexIDs = Numeric.reshape(cellFaceVertexIDs, (len(self.getCellCenters()), Numeric.size(cellFaceVertexIDs) / len(self.getCellCenters())))
         cellVertexIDs = Numeric.sort(cellVertexIDs)
@@ -106,7 +106,18 @@ class Mesh2D(Mesh):
             orderedCellVertexIDs[i, :] = orderVertices(self.getVertexCoords(), cellVertexIDs[i, :])
         return orderedCellVertexIDs
                                                      
-        
+    def getOrderedCellVertexIDs(self):
+        from fipy.meshes.numMesh.mesh import MAtake
+        NFac = self.getMaxFacesPerCell()
+        cellVertexIDs0 = MAtake(self.getFaceVertexIDs()[:,0], self.getCellFaceIDs().flat)
+        cellVertexIDs1 = MAtake(self.getFaceVertexIDs()[:,1], self.getCellFaceIDs().flat)
+        cellVertexIDs = MA.where(self.cellToFaceOrientations.flat > 0,
+                                 cellVertexIDs0,
+                                 cellVertexIDs1)
+
+        cellVertexIDs = MA.reshape(cellVertexIDs, (-1, NFac))
+        return cellVertexIDs
+    
     def getNonOrthogonality(self):
         exteriorFaceArray = Numeric.zeros((self.faceCellIDs.shape[0],))
         Numeric.put(exteriorFaceArray, self.getExteriorFaceIDs(), 1)

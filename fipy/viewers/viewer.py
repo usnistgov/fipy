@@ -58,16 +58,17 @@ class Viewer:
         if type(vars) not in [type([]), type(())]:
             vars = [vars]
         self.vars = vars
-        
+
         self.limits = limits
-        
-        if title is None and len(self.vars) == 1:
-            title = self.vars[0].getName()
-        else:
-            title = ''
+
+        if title is None:
+            if len(self.vars) == 1:
+                title = self.vars[0].getName()
+            else:
+                title = ''
 
         self.title = title
-        
+
     def setLimits(self, limits):
         for key in limits.keys():
             self.limits[key] = limits[key]
