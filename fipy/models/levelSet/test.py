@@ -48,6 +48,8 @@ import unittest
 import advection.advectionTerm
 import distanceFunction.distanceVariable
 import surfactant.surfactantVariable
+import distanceFunction.extensionEquation
+import distanceFunction.distanceEquation
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -55,6 +57,8 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(advection.advectionTerm))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceVariable))
     theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.extensionEquation))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceEquation))
     
     return theSuite
     
