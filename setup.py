@@ -432,7 +432,50 @@ class copy_script(Command):
 	f.close
 	
 	print "Script code exported from '%s' to '%s'"%(self.From, self.To)
+
+class efficiency_test(Command):
+    description = "run FiPy efficiency tests"
     
+    user_options = [ ('maximumElements=', None, 'An integer specifying the maximum number of elements to use for each efficiency test, the default is 1000'),
+                     ('minimumElements=', None, 'An integer specifying the minimum number of elements to use for each efficiency test, the default is 10'),
+                     ('factor=', None, 'factor by which the number of elements is increased'),
+                     ('inline', None, 'turn on inlining for the efficiency tests')]
+    
+    def initialize_options(self):
+        self.maximumElements = 1000
+        self.minimumElements = 10
+        self.factor = 2
+        self.inline = False
+        
+    def finalize_options(self):
+        self.maximumElements = int(self.maximumElements)
+        self.minimumElements = int(self.minimumElements)
+        self.factor = int(self.factor)
+        
+    def run(self):
+
+        import imp
+        import hotshot, hotshot.stats
+
+        for case in ['examples/cahnHilliard/input2D.py']:
+
+            print 'case',case
+            numberOfElements = self.minimumElements
+            
+            while numberOfElements <= self.maximumElements:
+                ## The hotshot module
+                ## does not seem to take a file object and the code where it is created
+                ## is written in c (I think) so we can't override it. Hotshot is good
+                ## because (apparently) it is faster than the ordinary python profiler.
+                prof = hotshot.Profile('tmp.prof')
+                prof.start()
+                execfile(case)
+                prof.stop()
+                stats = hotshot.stats.load('tmp.prof')
+                print 'Elements: %i, CPU time: %.3f seconds' % (numberOfElements, stats.total_tt)
+                os.remove('tmp.prof')
+                numberOfElements *= self.factor
+        
 f = open('README.txt', 'r') 
 long_description = '\n' + f.read() + '\n'
 f.close()
@@ -453,6 +496,7 @@ dist = setup(	name = "FiPy",
 	    'build_docs':build_docs,
 	    'test':test,
 	    'copy_script': copy_script,
+            'efficiency_test': efficiency_test
 	},
 	packages = ['fipy', 
 			'fipy.boundaryConditions',
