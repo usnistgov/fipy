@@ -47,8 +47,7 @@ These examples can be used in at least four ways:
      To obtain a copy of an example, containing just the script instructions,
      type::
 
-       $ python setup.py copy_script --From examples/something/input.py \\
-                           --To <wherever you like>
+       $ python setup.py copy_script --From x.py --To y.py
 
      
 In addition to those presented in this manual, there are dozens of other
