@@ -128,6 +128,7 @@ if __name__ == '__main__':
         viewer.plot()
     
     dexp=-5
+    import os
 
     for step in range(steps):
         dt = Numeric.exp(dexp)
@@ -137,6 +138,6 @@ if __name__ == '__main__':
         eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
         if 'viewers=off' not in sys.argv:
             viewer.plot()
-        print 'step',step,'dt',dt
+##        print 'step',step,'dt',dt
             
         
