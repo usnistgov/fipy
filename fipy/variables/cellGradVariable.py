@@ -35,12 +35,13 @@
  # ###################################################################
  ##
  
-import Numeric
+import Numeric, MA
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
 import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.variables.faceGradContributionsVariable import FaceGradContributions
+
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -49,6 +50,7 @@ class CellGradVariable(VectorCellVariable):
         self.faceGradientContributions = FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
+
 	inline.runInlineLoop2("""
 	    val(i,j) = 0.;
 	    
@@ -60,8 +62,8 @@ class CellGradVariable(VectorCellVariable):
 		
 	    val(i, j) /= volumes(i);
 	""",val = self._getArray(),
-            ids = Numeric.array(ids),
-            orientations = Numeric.array(orientations),
+            ids = Numeric.array(MA.filled(ids, 0)),
+            orientations = Numeric.array(MA.filled(orientations, 0)),
             volumes = Numeric.array(volumes),
             areaProj = Numeric.array(self.mesh.getAreaProjections()),
             faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
