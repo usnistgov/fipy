@@ -165,6 +165,19 @@ class TestMesh(TestMeshBase):
                                                (2, 7, -1, 4),
                                                (-1, 7, 2, -1),
                                                (6, -1, 5, -1)), -1)
+
+        d1 = Numeric.sqrt((5. * dx / 6.)**2 + (dy / 6.)**2)
+        d2 = Numeric.sqrt((dx / 6.)**2 + (dy / 6.)**2)
+        
+        self.cellToCellDistances = MA.masked_values(((dy / 2., dx, dy, dx / 2.),
+                                                     (dy / 2., dx, dy, dx),
+                                                     (dy / 2., d1, dy, dx),
+                                                     (dy, dx, dy / 2., dx / 2.),
+                                                     (dy, dx, dy / 2., dx),
+                                                     (dy, d1, dy / 2., dx),
+                                                     (d2, 2. * dy / 3., d1, -1),
+                                                     (2. * dy / 3., d2, d1, -1)), -1)
+
 class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)

@@ -67,7 +67,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(v1.dot(v2))
     ## We can't use Numeric.dot on quantities with units
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return fipy.tools.array.sqrt(fipy.tools.array.sum(v1 * v2))
+    return fipy.tools.array.sqrt(abs(fipy.tools.array.sum(v1 * v2)))
 
 def _putAddPy(vector, ids, additionVector):
     for i in range(len(ids)):

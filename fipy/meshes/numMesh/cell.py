@@ -42,6 +42,7 @@
  ##
 
 import Numeric
+import fipy.tools.vector as vector
 
 class Cell:
     def __init__(self, mesh, id):
@@ -53,94 +54,25 @@ class Cell:
 
     def getCenter(self):
         return self.mesh.getCellCenters()[self.id]
+
+    def getCellToCellDistances(self):
+        return self.mesh.getCellToCellDistances()[self.id]
+
+    def getCellToCellIDs(self):
+        return self.mesh.getCellToCellIDs()[self.id]
+
+    def __cmp__(self, cell):
+        return cmp(self.id, cell.getID())
+
+    def getMesh(self):
+        return self.mesh
+
+    def getNormal(self, index):
+        dis = self.getCellToCellDistances()[index]
+        adjCellID = self.getCellToCellIDs()[index]
+        vec = self.getCenter() - self.mesh.getCellCenters()[adjCellID]
+        return vec / dis
     
-##    def getFaceOrientations(self):
-##	return self.faceOrientations
-	
-##    def calcVolume(self):
-##	"""Calculate the volume of the Cell.
-	
-##	Sums the projected volumes of the faces.  
-	
-##	Projected volume of a face is a right-prism bounded by its center
-##	and the y-z plane, whose cross-section is the projection of the face
-##	on the y-z plane.
-##	"""
-##	vol = 0.
-##	for i in range(len(self.faces)):
-##	    face = self.faces[i]
-##	    vol += face.getCenter()[0] * face.getArea() * face.getNormal()[0] * self.faceOrientations[i][0]
-##	return vol
 
-##    def getVolume(self):
-##	"""Return the volume of the Cell.
-##	"""
-##        return self.volume
-
-##    def getCenter(self):
-##	"""Return the coordinates of the Cell center.
-##	"""
-##        return self.center
-
-##    def calcCenter(self):
-##	"""Calculate the coordinates of the Cell center.
-	
-##	Cell center is the average of the bounding Face centers.
-	
-##	**Is this right? Seems to give too much weight to small faces.**
-##	"""
-##        ctr = self.faces[0].getCenter().copy()
-##        for face in self.faces[1:]:
-##            ctr += face.getCenter()
-##        return ctr/float(len(self.faces))
-            
-##    def __repr__(self):
-##	"""Textual representation of Cell.
-##	"""
-##	rep = "<id = " + str(self.id) + ", volume = " + str(self.getVolume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
-	
-##	for i in range(len(self.faces)):
-##	    face = self.faces[i]
-##	    rep += "id = " + str(face.getID()) + ", normal = " + str(face.getNormal() * self.faceOrientations[i]) + "\n"
-	
-##	rep += ">\n"
-	
-##	return rep
-
-##    def getFaces(self):
-##	"""Return the faces bounding the Cell.
-##	"""
-##        return self.faces
-
-##    def setID(self,id):
-##	"""Set the id of the Cell.
-##	"""
-##        self.id = id
-    
-##    def getFaceIDs(self):
-##	return self.faceIDs
-	
-###    def calcFaceIDs(self):
-###	self.faceIDs = Numeric.zeros(len(self.faces))
-###	for i in range(len(self.faces)):
-###	    self.faceIDs[i] = self.faces[i].getId()
-            
-##    def calcFaceIDs(self):
-##	self.faceIDs = ()
-##	for i in range(len(self.faces)):
-##	    self.faceIDs += (self.faces[i].getID(),)
-
-##    def getBoundingCells(self):
-##        boundingCells = ()
-##        faceIDs = self.mesh.getCellFaceIDs()[self.id]
-##        for faceID in faceIDs:
-##            faceCells = face.getCells()
-##            if len(faceCells) == 2:
-##                if faceCells[0].getID() == self.id:
-##                    boundingCells += (faceCells[1],)
-##                else:
-##                    boundingCells += (faceCells[0],)
-
-##        return boundingCells
                 
                 

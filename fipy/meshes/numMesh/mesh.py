@@ -197,6 +197,7 @@ class Mesh:
         self.calcAreaProjections()
         self.calcFaceTangents()
         self.calcFaceToCellDistanceRatio()
+        self.calcCellToCellDistances()
 ##        self.setScale()
 
     """
@@ -274,8 +275,13 @@ class Mesh:
         self.tangents1 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]  
         tmp = fipy.tools.array.crossProd(self.tangents1, self.faceNormals)
         self.tangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
-        
-        
+
+    def calcCellToCellDistances(self):
+##        print self.getCellDistances()
+##        print self.getCellFaceIDs()
+        self.cellToCellDistances = MAtake(self.getCellDistances(), self.getCellFaceIDs())
+##        print self.cellToCellDistances
+##        raw_input()
     """
     get geometry methods
     """
@@ -319,6 +325,9 @@ class Mesh:
 
     def getFaceTangents2(self):
         return self.tangents2
+
+    def getCellToCellDistances(self):
+        return self.cellToCellDistances
     
     """
     scaling

@@ -6,9 +6,11 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:00:51 PM} { 2:24:25 PM}
+ #                                last update: 4/2/04 {4:05:54 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -39,13 +41,22 @@
  # ###################################################################
  ##
 
+"""Test steady-state diffusion solutions
+"""
+
 import unittest
 import fipy.tests.testProgram
-import examples.levelSet.zeroCells.test
+import square.test
+import circle.test
+import oneD.test
+import interior.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(examples.levelSet.zeroCells.test.suite())
+    theSuite.addTest(square.test.suite())
+    theSuite.addTest(circle.test.suite())
+    theSuite.addTest(oneD.test.suite())
+    theSuite.addTest(interior.test.suite())
     return theSuite
     
 if __name__ == '__main__':

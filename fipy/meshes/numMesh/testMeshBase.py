@@ -100,6 +100,9 @@ class TestMeshBase(TestBase):
     def testCellToCellIDs(self):
         self.assertArrayEqual(self.cellToCellIDs, self.mesh.getCellToCellIDs())
 
+    def testCellToCellDistances(self):
+        self.assertArrayWithinTolerance(self.cellToCellDistances, self.mesh.getCellToCellDistances())
+        
     def testResult(self):
         pass
 

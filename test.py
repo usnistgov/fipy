@@ -55,7 +55,6 @@ import fipy.variables.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    
     theSuite.addTest(examples.test.suite())
     theSuite.addTest(fipy.tools.test.suite())
     theSuite.addTest(fipy.meshes.numMesh.test.suite())

@@ -113,22 +113,29 @@ class TestMesh3D(TestMeshBase):
 
 	self.cellCenters = Numeric.array(((dx/2.,dy/2.,dz/2.), (dx+dx/3.,dy/3.,dz/2.)))
 
+        d1 = Numeric.sqrt((dx / 3.)**2 + (dy / 6.)**2)
+        d2 = Numeric.sqrt((dx / 6.)**2 + (dy / 3.)**2)
+        d3 = Numeric.sqrt((dx / 6.)**2 + (dy / 6.)**2)
+        d4 = Numeric.sqrt((5 * dx / 6.)**2 + (dy / 6.)**2)
+
         self.faceToCellDistances = MA.masked_values(((dz / 2., -1),
                                                     (dz / 2., -1),
                                                     (dx / 2., -1),
-                                                    (dx / 2., Numeric.sqrt((dx / 3.)**2 + (dy / 6.)**2)),
+                                                    (dx / 2., d1),
                                                     (dy / 2., -1),
                                                     (dy / 2., -1),
                                                     (dz / 2., -1),
                                                     (dz / 2., -1),
-                                                    (Numeric.sqrt((dx / 6.)**2 + (dy / 3.)**2), -1),
-                                                    (Numeric.sqrt((dx / 6.)**2 + (dy / 6.)**2), -1)), -1)
+                                                    (d2, -1),
+                                                    (d3, -1)), -1)
+
+
                                                     
 	self.cellDistances = Numeric.array((dz / 2., dz / 2., dx / 2.,
-					    Numeric.sqrt((dx / 3. + dx / 2.)**2 + (dy / 6.)**2),
+                                            d4,
 					    dy / 2., dy / 2., dz / 2., dz / 2.,
-					    Numeric.sqrt((dx / 6.)**2 + (dy / 3.)**2),
-					    Numeric.sqrt((dx / 6.)**2 + (dy / 6.)**2)))
+					    d2,
+					    d3))
 
         self.faceToCellDistanceRatios = self.faceToCellDistances[:,0] / self.cellDistances
 
@@ -142,7 +149,10 @@ class TestMesh3D(TestMeshBase):
         self.tangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
 
         self.cellToCellIDs = MA.masked_values(((-1, -1, -1, 1, -1, -1),
-                                              (0, -1, -1, -1, -1, -1)), -1)
+                                               (0, -1, -1, -1, -1, -1)), -1)
+
+        self.cellToCellDistances = MA.masked_values(((dz / 2., dz / 2., dx / 2., d4, dy / 2., dy / 2.),
+                                                      (d4, -1, -1, -1, -1, -1)), -1)
 
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):

@@ -154,7 +154,7 @@ def sqrtDot(a1, a2):
     return inline.optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
 def _sqrtDotPy(a1, a2):
-    return sqrt(sum((a1*a2)[:],1))
+    return sqrt(abs(sum((a1*a2)[:],1)))
 
 ##def _sqrtDotIn(a1, a2):
 ##    ni, nj = Numeric.shape(a1)
