@@ -74,14 +74,14 @@ The following is a test case:
    >>> c = 0.2
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
    >>> distanceVar = DistanceVariable(mesh = mesh, value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
-   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), distanceVariable = distanceVar)
+   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), distanceVar = distanceVar)
    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
    >>> eqn = AdsorbingSurfactantEquation(var, distanceVar, bulkVar, k)
    >>> eqn.solve(dt = dt)
    >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
    >>> Numeric.allclose(var.getInterfaceValue(), Numeric.array((0, 0, answer, 0, 0)))
    1
-   
+
 """
 
 import Numeric
@@ -93,10 +93,10 @@ from fipy.terms.scSourceTerm import ScSourceTerm
 
  
 class AdsorptionCoeff(CellVariable):
-    def __init__(self, distanceVariable, bulkVar, rateConstant):
-        CellVariable.__init__(self, mesh = distanceVariable.getMesh())
+    def __init__(self, distanceVar, bulkVar, rateConstant):
+        CellVariable.__init__(self, mesh = distanceVar.getMesh())
 
-        self.distanceVariable = self.requires(distanceVariable)
+        self.distanceVar = self.requires(distanceVar)
         self.bulkVar = self.requires(bulkVar)
         self.rateConstant = rateConstant
         self.dt = 0
@@ -110,11 +110,11 @@ class AdsorptionCoeff(CellVariable):
 
 class SpAdsorptionCoeff(AdsorptionCoeff):
     def multiplier(self):
-        return self.distanceVariable.getCellInterfaceFlag()
+        return self.distanceVar.getCellInterfaceFlag()
     
 class ScAdsorptionCoeff(AdsorptionCoeff):
     def multiplier(self):
-        return self.distanceVariable.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
+        return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
  
 class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
