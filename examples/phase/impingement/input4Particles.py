@@ -44,6 +44,7 @@
 from __future__ import nested_scopes
 from fivol.examples.phase.examples.impingement.input import ImpingementSystem
 import Numeric
+import time
 
 class System4Particles(ImpingementSystem):
     def __init__(self, nx= 20, ny = 20, steps = 10):
