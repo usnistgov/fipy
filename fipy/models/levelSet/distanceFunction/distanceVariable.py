@@ -167,7 +167,7 @@ minimum distance functions will take the following form.
     and in 3D,
 
     $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left(
-    \vec{t} \times \vec{u} \right) \left| $$
+    \vec{t} \times \vec{u} \right) \right| $$
 
     where the vectors $\vec{s}$, $\vec{t}$ and $\vec{u}$ represent the
     vectors from the cell of interest to the neighboring cell.
