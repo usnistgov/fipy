@@ -158,6 +158,14 @@ class TestMesh3D(TestMeshBase):
 
         self.exteriorCellIDs = Numeric.array((0, 1))
 
+        xnor = Numeric.array((1, 0, 0))
+        ynor = Numeric.array((0, 1, 0))
+        znor = Numeric.array((0, 0, 1))
+        nor =  Numeric.array((dy, dx, 0)) / Numeric.sqrt(dx**2 + dy**2)
+        
+        self.cellNormals = MA.masked_values( ( (-znor, znor, -xnor, xnor, -ynor, ynor),
+                                            (-xnor, -znor, znor, -ynor, nor, (-1000, -1000, -1000) ) ), -1000)
+
 class TestMesh3DPickle(TestMesh3D):
     def setUp(self):
         TestMesh3D.setUp(self)

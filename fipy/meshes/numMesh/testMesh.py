@@ -182,6 +182,18 @@ class TestMesh(TestMeshBase):
 
         self.exteriorCellIDs = Numeric.array((0, 1, 2, 3, 4, 5, 6, 7))
 
+        nx = dy / Numeric.sqrt(dx**2 + dy**2)
+        ny = dx / Numeric.sqrt(dx**2 + dy**2)
+
+        self.cellNormals = MA.masked_values( ( (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (0, -1), (1, 0), (0, 1), (-1, 0) ),
+                                            (  (nx, -ny), (0, 1), (-1, 0), (-1000, -1000) ),
+                                            (  (0, -1), (nx, ny), (-1, 0), (-1000, -1000) ) ), -1000 )
+ 
 class TestMeshPickle(TestMesh):
     def setUp(self):
         TestMesh.setUp(self)
