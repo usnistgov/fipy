@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:37:57 PM}
+ #                                last update: 10/6/04 {3:18:15 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 In this example we solve a coupled phase and orientation equation. It
 is a 1D problem that simulates the wet boundary that forms between
@@ -49,44 +49,48 @@ grains of different orientations. The phase equation is given by:
 
 .. raw:: latex
 
-    $$ \\tau_{\\phi} \\frac{\\partial \\phi}{\\partial t} = \\alpha^2 \\nabla^2 \\phi + \\phi ( 1 - \\phi ) m_1 ( \\phi , T) - 2 s \\phi | \\nabla \\theta | - \\epsilon^2 \\phi | \\nabla \\theta |^2 $$
+    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
+    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
 
 where
 
 .. raw:: latex
 
-    $$ m_1(\\phi, T) = \\phi - \\frac{1}{2} - T \\phi ( 1 - \\phi ) $$
+    $$ m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
 
 an the orientation equation is given by,
 
 .. raw:: latex
 
-    $$ P(\\epsilon | \\nabla \\theta |) \\tau_{\\theta} \\phi^2 \\frac{\\partial \\theta}{\\partial t} = \\nabla \\cdot \\left[ \\phi^2 \\left( \\frac{s}{| \\nabla \\theta |} + \\epsilon^2 \\right) \\nabla \\theta \\right] $$
+    $$ P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
+    \frac{\partial \theta}{\partial t} 
+    = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
+    + \epsilon^2 \right) \nabla \theta \right] $$
 
 where
 
 .. raw:: latex
 
-    $$ P(w) = 1 - \\exp{(-\\beta w)} + \\frac{\\mu}{\\epsilon} \\exp{(-\\beta w)} $$
+    $$ P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)} $$
 
 The initial conditions for this problem are set such that
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\text{for} \;\; 0 \\le x \\le L_x $$
+    \begin{align*}
+    \phi &= 1 && \text{for $0 \le x \le L_x$} \\
+\intertext{and}
+    \theta &= \begin{cases}
+    1 & \text{for $0 \le x < L_x / 2$,} \\
+    0 & \text{for $L_x / 2 \ge x \le L_x$.}
+    \end{align*}
 
-and
-
-.. raw:: latex
-
-    $$ \\theta = 1 \;\; \\text{for} \;\; 0 \\le x < L_x / 2 $$
-    $$ \\theta = 0 \;\; \\text{for} \;\; L_x / 2 \ge x \\le L_x $$
-
-Further details of the numerical method for this problem can be found
-in Extending Phase Field Models of Solidification to Polycrystalline
-Materials, J.A. Warren et al., Acta Materialia, 51 (2003) 6035-6058.
-Here the phase and orientation equations are solved with an explicit and
-implicit technique respectively.
+Further details of the numerical method for this problem can be found in
+"Extending Phase Field Models of Solidification to Polycrystalline
+Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+6035-6058.  Here the phase and orientation equations are solved with an
+explicit and implicit technique respectively.
 
 The `phaseEquation` requires an `mPhi` instantiator. Here we use
 `Type1MPhiVariable` as outlined in the above equations. To compare
@@ -104,7 +108,8 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh40x1
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh40x1.__path__[0], testFile),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh40x1.__path__[0], testFile)
+   >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

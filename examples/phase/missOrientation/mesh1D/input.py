@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:37:54 PM} 
+ #                                last update: 10/6/04 {3:48:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,34 +48,39 @@ missorientation present. The phase equation is given by:
 
 .. raw:: latex
 
-    $$ \\tau_{\\phi} \\frac{\\partial \\phi}{\\partial t} = \\alpha^2 \\nabla^2 \\phi + \\phi ( 1 - \\phi ) m_1 ( \\phi , T) - 2 s \\phi | \\nabla \\theta | - \\epsilon^2 \\phi | \\nabla \\theta |^2 $$
+    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
+    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
 
 where
 
 .. raw:: latex
 
-    $$ m_1(\\phi, T) = \\phi - \\frac{1}{2} - T \\phi ( 1 - \\phi ) $$
+    $$ m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
 
 The initial conditions are:
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\text{for} \;\; 0 \le x \le L $$
-    $$ \\theta = 1 \;\; \\text{for} \;\; 0 \le x \le L / 2 $$
-    $$ \\theta = 0 \;\; \\text{for} \;\; L / 2 \le x \le L $$
-    $$ T = 1 \;\; \\text{for} \;\; 0 \le x \le L $$
-    
+    \begin{align*}
+    \phi &= 1 && \text{for $0 \le x \le L$} \\
+    \theta &= \begin{cases}
+    1 & \text{for $0 \le x \le L/2$} \\
+    0 & \text{for $L/2 < x \le L$}
+    \end{cases} \\
+    T &= 1 && \text{for $0 \le x \le L$}
+    \end{align*}
 
-and boundary conditions:
+and boundary conditions
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\text{for} \;\; x = 0 \;\; \\text{and} \;\; x = L $$
+    $\phi = 1$ for $x = 0$ and $x = L$.
 
-Further details of the numerical method for this problem can be found
-in Extending Phase Field Models of Solidification to Polycrystalline
-Materials, J.A. Warren et al., Acta Materialia, 51 (2003) 6035-6058.
-Here the phase equation is solved with an explicit technique.
+Further details of the numerical method for this problem can be found in
+"Extending Phase Field Models of Solidification to Polycrystalline
+Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+6035-6058.  Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for `steps = 100` time steps.
 
@@ -89,7 +94,8 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.mesh1D
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.mesh1D.__path__[0],'test.gz'),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.mesh1D.__path__[0],'test.gz')
+   >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

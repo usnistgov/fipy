@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/5/04 {3:06:28 PM} 
+ #                                last update: 10/6/04 {12:53:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,12 +43,14 @@
 
 """
 
-This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D/input.py`. The difference in
-this example is that the solution method is explicit. The equation
-used is the `ExplicitDiffusionEquation`. In this case many steps have
-to be taken to reach equilibrium. The `timeStepDuration` parameter
-specifies the size of each time step and `steps` is the number of
+This input file again solves a 1D diffusion problem as in::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+The difference in this example is that the solution method is explicit.
+The equation used is the `ExplicitDiffusionEquation`.  In this case many
+steps have to be taken to reach equilibrium.  The `timeStepDuration`
+parameter specifies the size of each time step and `steps` is the number of
 time steps.
 
     >>> dx = 1.
@@ -71,7 +73,7 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), answer, rtol = 1e-3, atol = 1e-3)
+    >>> Numeric.allclose(var, answer, rtol = 1e-3, atol = 1e-3)
     1
 
 """

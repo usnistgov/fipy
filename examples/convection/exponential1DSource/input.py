@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/5/04 {3:10:44 PM} 
+ #                                last update: 10/6/04 {2:56:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,19 +43,21 @@
 
 """
 
-This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` but uses a constant source
-value such that,
+This example solves the steady-state convection-diffusion equation as described in::
+    
+    $ examples/diffusion/convection/exponential1D/input.py
+    
+but uses a constant source value such that
 
 .. raw:: latex
 
     $$ S_c = 1. $$
 
-Here the axes are reversed (`nx = 1`, `ny = 1000`) and
+Here, the axes are reversed (`nx = 1`, `ny = 1000`) and
 
 .. raw:: latex
 
-    $$ \\vec{u} = (0, 10) $$
+    $$ \\vec{u} = (0, 10). $$
 
 The analytical solution test for this problem is given by:
 
@@ -67,7 +69,7 @@ The analytical solution test for this problem is given by:
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-6, atol = 1e-6) 
+   >>> Numeric.allclose(analyticalArray, var, rtol = 1e-6, atol = 1e-6) 
    1
    
 """

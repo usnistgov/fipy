@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/5/04 {5:00:01 PM} 
+ #                                last update: 10/6/04 {4:10:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -40,15 +40,18 @@
  ##
 
 r"""
-The same idea as `input1DpoissonAllCharge.py`, but now with charge only on
-the left side of the domain
+The same idea as::
+    
+    $ examples/elphf/input1DpoissonAllCharge.py
+    
+but now with charge only on the left side of the domain
 
 .. raw:: latex
 
    $$ C_{\text{e}^{-}} =
    \begin{cases}
-       1& \text{for $x \le L/2$} \\
-       0& \text{for $x > L/2$}
+       1& \text{for $x \le L/2$,} \\
+       0& \text{for $x > L/2$.}
    \end{cases} $$
    
 We iterate one timestep to equilibrate
@@ -61,8 +64,8 @@ This problem has the analytical solution
 
    $$\psi(x) =
    \begin{cases}
-       \frac{x^2}{2} - x& \text{for $x \le L/2$} \\
-       -\frac{1}{2}& \text{for $x > L/2$}
+       \frac{x^2}{2} - x& \text{for $x \le L/2$,} \\
+       -\frac{1}{2}& \text{for $x > L/2$.}
    \end{cases} $$
 
 We verify that the correct equilibrium is attained

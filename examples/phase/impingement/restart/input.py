@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:38:39 PM}
+ #                                last update: 10/6/04 {3:27:04 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,9 +43,11 @@
 
 """
 
-In this example we solve the same set of equations as in
-`examples/phase/impingemnet/mesh20x20/input.py` but a restart method
-is demonstrated. First do `steps / 2` time steps.
+In this example we solve the same set of equations as in::
+    
+    $ examples/phase/impingemnet/mesh20x20/input.py
+    
+but a restart method is demonstrated.  First do `steps / 2` time steps.
 
    >>> for i in range(steps / 2):        
    ...     it.timestep(dt = timeStepDuration)
@@ -111,7 +113,8 @@ and check the results:
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh20x20
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh20x20.__path__[0], testFile),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+   >>> filestream=os.popen(gzfile, 'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:40:11 PM} 
+ #                                last update: 10/6/04 {2:14:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,16 +43,19 @@
 
 """
 
-This example is a 1D steady state diffusion test case as in
-`./examples/diffusion/variable/mesh2x1/input.py` with then
-number of cells set to `nx = 50`.
+This example is a 1D steady state diffusion test case as in::
+    
+    $ examples/diffusion/variable/mesh2x1/input.py
+    
+with then number of cells set to `nx = 50`.
 
 A simple analytical answer can be used to test the result:
 
    >>> x = mesh.getCellCenters()[:,0]
-   >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
+   >>> values = x + 18. * L / 4.
+   >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> Numeric.allclose(values, Numeric.array(var), atol = 1e-8, rtol = 1e-8)
+   >>> Numeric.allclose(values, var, atol = 1e-8, rtol = 1e-8)
    1
 
 """

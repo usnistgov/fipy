@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:51 PM} 
+ #                                last update: 10/6/04 {1:00:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,41 +41,39 @@
  # ###################################################################
  ##
 
-"""
-
+r"""
 This example is a 1D steady state diffusion test case with a diffusion
-coefficient that spatially varies such that:
-
-.. raw::latex
-
-    $$ \\frac{\\partial }{\\partial x} D \\frac{\\partial \\phi}{\\partial x} = 0 $$
-
-with boundary conditions:
+coefficient that spatially varies such that
 
 .. raw:: latex
 
-    $$ \\phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; D \\frac{\\partial \\phi}{\\partial x} = 1 \;\; \\text{at} x = L $$
+    $$ \frac{\partial }{\partial x} D \frac{\partial \phi}{\partial x} = 0, $$
+
+with boundary conditions
+
+.. raw:: latex
+
+    \begin{center}
+    $\phi = 0$ at $x = 0$ and $D \frac{\partial \phi}{\partial x} = 1$ at $x = L$.
+    \end{center}
 
 The diffusion coefficient varies with the following profile:
 
 .. raw:: latex
 
-    $$ D = 1 \;\; \\text{for} \;\; 0 < x < L / 2 $$
+   $$ D = \begin{cases}
+   1& \text{for $0 < x < L / 2$,} \\
+   0.1& \text{for $L / 2 \\ge x < 3 L / 4$,} \\
+   1& \text{for $3 L / 4 \\ge x < L$,}
+   \end{cases} $$
 
-.. raw:: latex
-
-    $$ D = 0.1 \;\; \\text{for} \;\; L / 2 \\ge x < 3 L / 4 $$
-
-.. raw:: latex
-
-    $$ D = 1 \;\; \\text{for} \;\; 3 L / 4 \\ge x < L $$
-
-where L is the length of the bar. In this example the diffusion coefficient is a numerical
-array that is passed to the diffusion equation. The diffusion coefficient exists on the faces
-of the cells and thus has to be the length of the faces. It is created in the following way:
+where `L` is the length of the bar.  In this example the diffusion
+coefficient is a numerical array that is passed to the diffusion equation.
+The diffusion coefficient exists on the faces of the cells and thus has to
+be the length of the faces.  It is created in the following way:
 
    >>> x = mesh.getFaceCenters()[:,0]
-   >>> middleFaces = Numeric.logical_or(x < L / 4.,x >= 3. * L / 4.)
+   >>> middleFaces = Numeric.logical_or(x < L / 4., x >= 3. * L / 4.)
    >>> diffCoeff = Numeric.where(middleFaces, 1., 0.1)
 
 The number of cells is only `nx = 2` here. Accurate answers to this
@@ -86,9 +84,10 @@ where `i` is an integer and of course for large `nCells`. In this example
 A simple analytical answer can be used to test the result:
 
    >>> x = mesh.getCellCenters()[:,0]
-   >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
+   >>> values = x + 18. * L / 4.
+   >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> Numeric.allclose(values, Numeric.array(var), atol = 1e-8, rtol = 1e-8)
+   >>> Numeric.allclose(values, var, atol = 1e-8, rtol = 1e-8)
    1
 
 """

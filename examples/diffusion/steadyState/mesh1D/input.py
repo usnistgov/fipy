@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/1/04 {3:56:38 PM} 
+ #                                last update: 10/6/04 {12:58:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,12 +41,14 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-To run this example from the base fipy directory type
-`./examples/diffusion/steadyState/mesh1D/input.py` at the command
-line.  A gist viewer object should appear and the word `finished` in
-the terminal.
+To run this example from the base fipy directory type::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+at the command line.  A display of the result should appear and the word 
+`finished` in the terminal.
 
 This example takes the user through assembling a simple
 problem with FiPy.  It describes a steady 1D diffusion problem with
@@ -54,25 +56,33 @@ fixed value boundary conditions such that,
 
 .. raw:: latex
 
-   $$ \\frac{\\partial (\\tau \\phi)}{\\partial t} = \\nabla \\cdot (D \\nabla \\phi) $$
+   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
 
-with initial conditions,
-
-.. raw:: latex
-
-   $$ \phi = 0 \;\; \\text{at} \;\; t = 0 \;\; $$
-
-boundary conditions,
+with initial conditions
 
 .. raw:: latex
 
-   $$ \phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; \phi = 1  \;\; \\text{at} \;\; x = 1 $$
+   \begin{center}
+   $\phi = 0$ at $t = 0$,
+   \end{center}
 
-and parameter values,
+boundary conditions
 
 .. raw:: latex
 
-   $$ \\tau = 0 \;\; \\text{and} \;\; D = 1 $$
+   $$ \phi =
+   \begin{cases}
+       0& \text{at $x = 0$,} \\
+       1& \text{at $x = 1$,}
+   \end{cases} $$
+
+and parameter values
+
+.. raw:: latex
+
+   \begin{center}
+   $\tau = 0$ and $D = 1$.
+   \end{center}
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
 object represents a rectangular structured grid. The parameters `dx` and
@@ -101,7 +111,7 @@ conditions are formed with a value and a set of faces over which they
 apply. For example here the exterior faces on the left of the domain
 are extracted by `mesh.getFacesLeft()`. These faces and a value
 (`valueLeft`) are passed to a `FixedValue` boundary condition. A fixed
-flux of zero is set on the top and bottom surfaces to simulate a 1
+flux of zero is set on the top and bottom surfaces to simulate a one
 dimensional problem. The `FixedFlux(someFaces, 0.)` is the default
 boundary condition if no boundary conditions are specified for exterior faces.
 
@@ -113,7 +123,7 @@ boundary condition if no boundary conditions are specified for exterior faces.
     ...                       FixedValue(mesh.getFacesLeft(),valueLeft))
 
 A solver is created and passed to the equation. This solver uses an
-iterative conjugant gradient method to solve implicitly at each time
+iterative conjugate gradient method to solve implicitly at each time
 step.
 
     >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -121,7 +131,7 @@ step.
 
 An equation is passed coefficient values, boundary conditions and
 a solver. The equation knows how to assemble and solve a system
-matrix. Here the `transientCoeff` is set to 0 thus
+matrix. Here the `transientCoeff` is set to 0, thus
 making the problem steady state.
 
     >>> from fipy.equations.diffusionEquation import DiffusionEquation
@@ -142,9 +152,9 @@ solution.
     
     >>> iterator.timestep()
     
-To test the solution, the analytical result is required. The x
-coordinates from the mesh are gathered and the length of the domain,
-`Lx`, is calculated.  An array, `analyticalArray`, is calculated to
+To test the solution, the analytical result is required. The `x`
+coordinates from the mesh are gathered and the length of the domain
+`Lx` is calculated.  An array, `analyticalArray`, is calculated to
 compare with the numerical result,
 
     >>> x = mesh.getCellCenters()[:,0]
@@ -152,11 +162,10 @@ compare with the numerical result,
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
 Finally the analytical and numerical results are compared with a
-tolerance of `1e-10`. The variable `var` is coerced to a `Numeric.array`
-for the comparison.
+tolerance of `1e-10`.
 
     >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
     
 A `Viewer` object allows a variable to be displayed. Here we are using  the Gist package

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/5/04 {3:07:45 PM} 
+ #                                last update: 10/6/04 {2:16:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,11 +44,13 @@
 """
 This tests this input
 
+    >>> print "Why is there no explanation of what this example is?"
     >>> it.timestep()
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> import Numeric
-    >>> Numeric.allclose(var.getNumericValue(), valueLeft + (valueRight - valueLeft) * x / Lx, rtol = 1e-10, atol = 1e-10)
+    >>> value = valueLeft + (valueRight - valueLeft) * x / Lx
+    >>> Numeric.allclose(var, value, rtol = 1e-10, atol = 1e-10)
     1
 
 """

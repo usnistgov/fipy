@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/5/04 {3:11:50 PM} 
+ #                                last update: 10/6/04 {2:59:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,9 +43,12 @@
 
 """
 
-This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` but uses the
-`PowerLawConvectionTerm` rather than the `ExponentialConvectionTerm` instatiator.
+This example solves the steady-state convection-diffusion equation as described in::
+    
+    $ examples/diffusion/convection/exponential1D/input.py
+    
+but uses the `PowerLawConvectionTerm` rather than the
+`ExponentialConvectionTerm` instatiator.
 
 The analytical solution test for this problem is given by:
 
@@ -57,11 +60,13 @@ The analytical solution test for this problem is given by:
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-2, atol = 1e-2) 
+   >>> Numeric.allclose(analyticalArray, var, rtol = 1e-2, atol = 1e-2) 
    1
    
 """
      
+__docformat__ = 'restructuredtext'
+
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
 from fipy.solvers.linearCGSSolver import LinearCGSSolver

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {4:58:45 PM} 
+ #                                last update: 10/6/04 {4:02:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -82,7 +82,8 @@ We verify that the correct equilibrium is attained
     >>> import Numeric
     
     >>> x = mesh.getCellCenters()[:,0]
-    >>> d = Numeric.sqrt(parameters['phase']['gradient energy'] / (parameters['solvent']['barrier height']))
+    >>> d = Numeric.sqrt(parameters['phase']['gradient energy'] \\
+    ...     / (parameters['solvent']['barrier height']))
     >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2.*d))) / 2.
 
     >>> fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:30:53 PM} 
+ #                                last update: 10/6/04 {12:46:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,22 +41,27 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-To run this example from the base fipy directory type
-`./examples/diffusion/steadyState/mesh1D/tri2Dinput.py` at the command
-line. A contour plot should appear and the word `finished` in the terminal.
+To run this example from the base fipy directory type::
+    
+    $ examples/diffusion/steadyState/mesh1D/tri2Dinput.py
+    
+at the command line.  A contour plot should appear and the word `finished`
+in the terminal.
 
-This example is similar to the example found in:
-`./examples/diffusion/steadyState/mesh1D/input.py`
-However the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
+This example is similar to the example found in::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+However, the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
 
-Here the iterator does one time step to implicitly find the steady state
+Here, the iterator does one time step to implicitly find the steady state
 solution.
     
     >>> iterator.timestep()
 
-To test the solution, the analytical result is required. The x
+To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain,
 `Lx`, is calculated.  An array, `analyticalArray`, is calculated to
 compare with the numerical result,
@@ -70,7 +75,7 @@ tolerance of `1e-10`. The variable `var` is coerced to a `Numeric.array`
 for the comparison.
 
     >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
 """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:41:35 PM}
+ #                                last update: 10/6/04 {3:25:26 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,18 +41,26 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-In this example we solve the same set of equations as in
-`examples/phase/impingement/mesh40x1/input.py` with different initial
-conditions and mesh size. The initial conditions are given by
+In this example we solve the same set of equations as in::
+    
+    $ examples/phase/impingement/mesh40x1/input.py
+    
+with different initial conditions and mesh size.  The initial conditions
+are given by
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\text{and} \;\; \\theta = \\frac{2 \\pi}{3} \;\; \\text{for} \;\; x^2 - y^2 < L / 2 $$
-    $$ \\phi = 1 \;\; \\text{and} \;\; \\theta = \\frac{-2 \\pi}{3} \;\; \\text{for} \;\; (x-L)^2 - y^2 < L / 2 $$
-    $$ \\phi = 1 \;\; \\text{and} \;\; \\theta = \\frac{-2 \\pi}{3}+0.3 \;\; \\text{for} \;\; x^2 - (y-L)^2 < L / 2 $$
-    $$ \\phi = 1 \;\; \\text{and} \;\; \\theta = \\frac{2 \\pi}{3} \;\; \\text{for} \;\; (x-L)^2 - (y-L)^2 < L / 2 $$
+    $ \phi = 1 $ and
+    
+    $$ \theta = \begin{cases}
+    \frac{2 \pi}{3} & \text{for $x^2 - y^2 < L / 2$,} \\
+    \frac{-2 \pi}{3} & \text{for $(x-L)^2 - y^2 < L / 2$,} \\
+    \frac{-2 \pi}{3}+0.3 & \text{for $x^2 - (y-L)^2 < L / 2$,} \\
+    \frac{2 \pi}{3} & \text{for $(x-L)^2 - (y-L)^2 < L / 2$.}
+    \end{cases} $$
+
 
 This defines four solid regions with different
 orientations. Solidification occurs and then boundary wetting occurs
@@ -69,7 +77,8 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh20x20
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh20x20.__path__[0], testFile),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+   >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

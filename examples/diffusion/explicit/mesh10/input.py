@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:37 PM} 
+ #                                last update: 10/6/04 {12:51:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,12 +43,14 @@
 
 """
 
-This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D/input.py`. The difference in
-this example is that the solution method is explicit. The equation
-used is the `ExplicitDiffusionEquation`. In this case many steps have
-to be taken to reach equilibrum. The `timeStepDuration` parameter
-specifies the size of each time step and `steps` is the number of
+This input file again solves a 1D diffusion problem as in::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+The difference in this example is that the solution method is explicit.
+The equation used is the `ExplicitDiffusionEquation`.  In this case many
+steps have to be taken to reach equilibrum.  The `timeStepDuration`
+parameter specifies the size of each time step and `steps` is the number of
 time steps.
 
     >>> dx = 1.
@@ -71,10 +73,11 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
+    >>> print "Why is this explicit array of values here?"
     >>> answer = Numeric.array([  2.04800000e-07,  6.34880000e-06,  9.13408000e-05,  8.10188800e-04,
     ...     4.96660480e-03,  2.23737856e-02,  7.69755136e-02,  2.07879578e-01,
     ...     4.50699674e-01,  8.01663386e-01,])
-    >>> Numeric.allclose(Numeric.array(var), answer, rtol = 1e-3, atol = 1e-3)
+    >>> Numeric.allclose(var, answer, rtol = 1e-3, atol = 1e-3)
     1
 
 """

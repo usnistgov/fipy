@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:33:37 PM} 
+ #                                last update: 10/6/04 {3:52:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,41 +41,46 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 In this example a phase equation is solved in 1 dimension with a
 missorientation present. The phase equation is given by:
 
 .. raw:: latex
 
-    $$ \\tau_{\\phi} \\frac{\\partial \\phi}{\\partial t} = \\alpha^2 \\nabla^2 \\phi + \\phi ( 1 - \\phi ) m_1 ( \\phi , T) - 2 s \\phi | \\nabla \\theta | - \\epsilon^2 \\phi | \\nabla \\theta |^2 $$
+    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
+    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
 
 where
 
 .. raw:: latex
 
-    $$ m_1(\\phi, T) = \\phi - \\frac{1}{2} - T \\phi ( 1 - \\phi ) $$
+    $$ m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
 
 The initial conditions are:
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\forall x $$
-    $$ \\theta = 2 \\pi / 3 \;\; \\text{for} \;\; (x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2 $$
-    $$ \\theta = -2 \\pi / 3 \;\; \\text{for} \;\; (x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2 $$
-    $$ T = 1 \;\; \\forall x $$
-    
+   \begin{align*}
+   \phi &= 1 && \forall x  \\
+   \theta &= \begin{cases}
+   2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
+   -2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
+   \end{cases} \\
+   T &= 1 && \forall x 
+   \end{align*}
 
-and boundary conditions:
+and boundary conditions
 
 .. raw:: latex
 
-    $$ \\phi = 1 \;\; \\text{for} \;\; x = 0 \;\; \\text{and} \;\; x = L $$
+   $\phi = 1$ for $x = 0$ and $x = L$.
 
-Further details of the numerical method for this problem can be found
-in Extending Phase Field Models of Solidification to Polycrystalline
-Materials, J.A. Warren et al., Acta Materialia, 51 (2003) 6035-6058.
-Here the phase equation is solved with an explicit technique.
+Further details of the numerical method for this problem can be found in
+"Extending Phase Field Models of Solidification to Polycrystalline
+Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+6035-6058.  Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for `steps = 100` time steps.
 
@@ -90,7 +95,8 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.modCircle
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.modCircle.__path__[0],'test.gz'),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.modCircle.__path__[0],'test.gz')
+   >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

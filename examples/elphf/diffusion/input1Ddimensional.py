@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {4:58:24 PM} 
+ #                                last update: 10/6/04 {4:08:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,10 @@
  ##
 
 """ 
-The same three-component diffusion problem as introduced in `input1D.py`,
+The same three-component diffusion problem as introduced in::
+    
+    $ examples/elphf/input1D.py
+    
 but with dimensional quantities
 
     >>> for step in range(40):
@@ -50,9 +53,11 @@ but with dimensional quantities
     
 Verify that the concentrations have become uniform
 
-    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3", atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3", \\
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3", atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3", \\
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
 """
 __docformat__ = 'restructuredtext'

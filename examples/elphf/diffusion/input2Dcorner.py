@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {5:00:22 PM} 
+ #                                last update: 10/6/04 {4:09:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,12 @@
  ##
 
 """ 
-The same three-component diffusion problem introduced in `input2D.py`,
+The same three-component diffusion problem introduced in::
+    
+    $ examples/elphf/input2D.py
+    
 but with the initial step in concentration occupying only one corner
-instead of half the domain
+instead of half the domain.
 
     >>> for step in range(40):
     ...     it.timestep(dt = parameters['time step duration'])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:33:30 PM} { 5:14:21 PM}
+ #                                last update: 10/6/04 {3:15:15 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 In this example we solve a coupled phase and temperature equation to
 model solidification and eventually dendritic growth. Dendritic growth will
@@ -56,31 +56,34 @@ The following equations are solved, phase equation:
 
 .. raw:: latex
 
-    $$ \\tau_{\\phi} \\frac{\\partial \\phi}{\\partial t} = \\alpha^2 \\nabla^2 \\phi + \\phi ( 1 - \\phi ) m_2 ( \\phi , T) - 2 s \\phi | \\nabla \\theta | - \\epsilon^2 \\phi | \\nabla \\theta |^2 $$
+    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
+    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_2 ( \phi , T) 
+    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
 
 where
 
 .. raw:: latex
 
-    $$ m_2(\\phi, T) = \\phi - \\frac{1}{2} - \\frac{ \\kappa_1 }{ \\pi } \\arctan \\left( \\kappa_2 T \\right) $$
+    $$ m_2(\phi, T) 
+    = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right) $$
     
 and the temperature equation is given by:
 
 .. raw:: latex
 
-    $$ \\frac{\\partial T}{\\partial t} = D_T \\nabla^2 T + \\frac{\\partial \\phi}{\\partial t} $$
+    $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t} $$
 
-Further details of the numerical method for this problem can be found
-in Extending Phase Field Models of Solidification to Polycrystalline
-Materials, J.A. Warren et al., Acta Materialia, 51 (2003) 6035-6058.
-Here the phase and temperature equations are solved with an explicit
-and implicit technique respectively.
+Further details of the numerical method for this problem can be found in
+"Extending Phase Field Models of Solidification to Polycrystalline
+Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+6035-6058.  Here the phase and temperature equations are solved with an
+explicit and implicit technique respectively.
 
 The parameters for these equations are given in `phaseParameters` and
 `temperatureParameters`. The variable `theta` represents the
 orientation of the crystal. Here it is constant and thus does not
 affect the solution. The `phase` variable is 0 for a liquid and 1 for
-a solid.  Here we build an example `phaseVar` invoking with a zero
+a solid.  Here we build an example `phaseVar`, initialized with a zero
 value,
 
    >>> phaseVar = CellVariable(
@@ -108,7 +111,7 @@ the required cells.
    >>> phaseVar.setValue(1.,interiorCells)
 
 The `phaseEquation` requires a `mPhi` instantiator. Here we use
-`Type2MPhiVariable` as outlined in the above equations.` To compare
+`Type2MPhiVariable` as outlined in the above equations. To compare
 with the test result the problem is iterated for `steps = 10` time
 steps.
 
@@ -124,7 +127,8 @@ data and compares it with the `phase` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.anisotropy
-   >>> filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0], testFile),'r')
+   >>> gzfile = 'gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0], testFile)
+   >>> filestream=os.popen(gzfile,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()

@@ -6,11 +6,9 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/5/04 {3:08:58 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #                                last update: 10/6/04 {2:27:06 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -41,29 +39,34 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example solves the steady-state convection-diffusion equation
 given by:
 
 .. raw:: latex
 
-     $$ \\nabla \\cdot \\left(D \\nabla \\phi + \\vec{u} \\phi \\right) + S_c = 0 $$
+     $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_c = 0 $$
 
 with boundary conditions given by:
 
 .. raw:: latex
 
-     $$ \\phi = 0 \;\; \\text{at} \;\; x = 0 \;\; \\text{and} \;\; \\phi = 1 \;\; \\text{at} \;\; x = L $$
+   $$ \phi = \begin{cases}
+   0& \text{at $x = 0$,} \\
+   1& \text{at $x = L$,}
+   \end{cases} $$ 
 
 and coefficients given by:
 
 .. raw:: latex
 
-     $$ D = 1, \;\; \\vec{u} = (10, 0) \;\; \\text{and} \;\; S_c = 0 $$     
+   \begin{center}
+   $D = 1$, $\vec{u} = (10, 0)$, and $S_c = 0$.     
+   \end{center}
 
 The coefficients are represented by `diffCoeff` and `convCoeff` in
-the python code. The `SteadyConvectionDiffusionScEquation` object is
+the Python code. The `SteadyConvectionDiffusionScEquation` object is
 used to create the equation.  It needs to be passed a convection term
 instantiator as follows:
 
@@ -95,7 +98,7 @@ The analytical solution test for this problem is given by:
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-10, atol = 1e-10)
+   >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
    1
 """
 __docformat__ = 'restructuredtext'

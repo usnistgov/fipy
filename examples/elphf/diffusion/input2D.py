@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/5/04 {5:00:53 PM} 
+ #                                last update: 10/6/04 {4:09:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,8 +42,11 @@
  ##
 
 """ 
-The same three-component diffusion problem as introduced in `input1D.py`,
-but in 2D
+The same three-component diffusion problem as introduced in::
+    
+    $ examples/elphf/input1D.py
+    
+but in 2D.
 
     >>> for step in range(40):
     ...     it.timestep(dt = parameters['time step duration'])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:40:16 PM} 
+ #                                last update: 10/6/04 {12:48:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,9 +46,11 @@
 
 """
 
-This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D/input.py`. The difference
-being that the mesh size is given by 
+This input file again solves a 1D diffusion problem as in::
+    
+    $ examples/diffusion/steadyState/mesh1D/input.py
+    
+The difference being that the mesh size is given by
 
     >>> nx = 20
     >>> ny = 20
@@ -59,7 +61,7 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
 """
