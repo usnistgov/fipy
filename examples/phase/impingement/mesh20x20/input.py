@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:02:27 PM}
+ #                                last update: 7/25/04 {8:03:39 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -148,7 +148,8 @@ phase = CellVariable(
 theta = ModularVariable(
     name = 'Theta',
     mesh = mesh,
-    value = -pi + 0.0001
+    value = -pi + 0.0001,
+    hasOld = 1
     )
 
 circleCenters = ((0., 0.), (Lx, 0.), (0., Ly), (Lx, Ly))
