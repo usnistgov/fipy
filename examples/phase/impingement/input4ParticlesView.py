@@ -80,13 +80,13 @@ class System4Particles(ImpingementSystem):
 
     def myPlot(self, val):
         print 'writing results', val
-        self.phaseViewer.plot(fileName = 'phase%i.ps' % val)
-        self.thetaViewer.plot(fileName = 'theta%i.ps' % val)
-##        self.thetaProductViewer.plot(minVal = -Numeric.pi, maxVal = 2. * Numeric.pi, fileName = 'hello.ps')
+        self.phaseViewer.plot()
+        self.thetaViewer.plot()
+        self.thetaProductViewer.plot(minVal = -Numeric.pi, maxVal = 2. * Numeric.pi)
         
 if __name__ == '__main__':
 
-    system = System4Particles(nx = 100, ny = 100, steps = 50, drivingForce = 1.)
+    system = System4Particles(nx = 100, ny = 100, steps = 5000, drivingForce = 2.)
     system.run()
 
     
