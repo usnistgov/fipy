@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/26/03 {11:13:20 AM} 
+ #                                last update: 11/30/03 {12:39:40 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -86,14 +86,14 @@ phase = Variable(
     name = 'PhaseField',
     mesh = mesh,
     value = 1.,
-    viewer = Grid2DGistViewer()
+    viewer = Grid2DGistViewer
     )
 
 theta = Variable(
     name = 'Theta',
     mesh = mesh,
     value = 1.,
-    viewer = Grid2DGistViewer(),
+    viewer = Grid2DGistViewer,
     hasOld = 0
     )
 
