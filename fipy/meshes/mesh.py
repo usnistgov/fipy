@@ -74,6 +74,9 @@ class Mesh:
         print len(self.faces)
         raw_input()
 
+    def getPhysicalShape(self):
+        pass
+
 
                 
     

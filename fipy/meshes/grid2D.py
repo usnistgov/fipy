@@ -187,3 +187,6 @@ class Grid2D(Mesh):
         
     def makeGridData(self,array):
         return Numeric.rehsape(array,self.getShape())
+
+    def getPhysicalShape(self):
+        return (self.nx*self.dx,self.ny*self.dy)

@@ -44,12 +44,13 @@ import Numeric
 
 class Variable:
     
-    def __init__(self, name, mesh, initialConditions, viewer):
+    def __init__(self, name, mesh, initialConditions, viewer = 'None'):
 	self.name = name
 	self.mesh = mesh
 	self.array = Numeric.zeros([len(mesh.getCells())],'d')
         self.viewer = viewer
-        self.viewer.setVar(self)
+        if viewer != 'None':
+            self.viewer.setVar(self)
         
         for initialCondition in initialConditions:
             initialCondition.setInitialCondition(self.array)
