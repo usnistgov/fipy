@@ -46,7 +46,7 @@ pyMesh and numMesh.
 Meshes contain cells, faces, and vertices.
 """
 
-import sets
+##import sets
 
 import Numeric
 
@@ -73,8 +73,13 @@ class Mesh:
 	pass
 	
     def calcInteriorCellIDs(self):
-	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
-	
+        pass
+##	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
+##        onesWhereInterior = Numeric.zeros(self.numberOfCells)
+##        Numeric.put(onesWhereInterior, self.exteriorCells, Numeric.zeros((len(self.exteriorCellIDs))))
+##        self.interiorCellIDs = Numeric.nonzero(onesWhereInterior)
+##        self.interiorCellIDs = (0,0)
+        
     def calcInteriorAndExteriorCellIDs(self):
 	self.calcExteriorCellIDs()
 	self.calcInteriorCellIDs()
