@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/22/04 {10:56:36 AM} 
+ #                                last update: 11/23/04 {5:48:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -57,6 +57,8 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	    raise "Incompatible numbers of faces"
 
 	BoundaryCondition.__init__(self, faces1 + faces2, 0)
+	
+	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
 
     def buildMatrix(self, Ncells, MaxFaces, cell1dia, cell1off, coeffScale):
 	"""Modify **L** to make `faces1` and `faces2` contiguous.
@@ -82,7 +84,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	offdiagonalContribution = array.take(cell1off[:],self.faceIds) / (2 * coeffScale)
 
 	LL.addAt(diagonalContribution, self.adjacentCellIds, self.adjacentCellIds)
-	LL.addAt(offdiagonalContribution, self.adjacentCellIds, self.adjacentCellIds[::-1])
+	LL.addAt(offdiagonalContribution, self.adjacentCellIds, self.offdiagonalCellIds)
 
 	return (LL, 0)
 	
