@@ -51,8 +51,8 @@ class ConvectionTerm(FaceTerm):
     def __init__(self, coeff = 1.0, diffusionTerm = None):
         """
         :Parameters:
-          - `coeff` : The term's coefficient value.
-          - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate its Peclet number.
+          - `coeff` : The `term`'s coefficient value.
+          - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
@@ -83,11 +83,11 @@ class ConvectionTerm(FaceTerm):
             if self.diffusionTerm == None:
                 diffCoeff = 1e-20
             else:
-                diffCoeff = self.diffusionTerm.getGeomCoeff(mesh)
+                diffCoeff = self.diffusionTerm._getGeomCoeff(mesh)
                 if diffCoeff == 0.:
                     diffCoeff = 1e-20
 
-            alpha = self.Alpha(-self.getGeomCoeff(mesh) / diffCoeff)
+            alpha = self.Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

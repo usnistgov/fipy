@@ -78,11 +78,11 @@ class Term:
 
     def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
         r"""
-        Builds and solves the `term`'s linear system once.
+        Builds and solves the `Term`'s linear system once.
         	
         :Parameters:
 
-           - `var` : The variable to be solved for. Provides the initial condition the old value and the holds the solution on completion.
+           - `var` : The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
            - `boundaryConditions` : A tuple of boundaryConditions.
            - `dt` : The time step size.
@@ -110,7 +110,7 @@ class Term:
 
     def __add__(self, other):
         """
-        Add a `term` to another `term`, number or variable.
+        Add a `Term` to another `Term`, number or variable.
 
            >>> Term(coeff = 1.) + 10.
            (Term(coeff = 1.0) + ExplicitSourceTerm(coeff = 10.0))
@@ -156,10 +156,8 @@ class Term:
         """
         Subtract a `Term`, number or variable from a `Term`.
 
-           >>> Term(coeff = 1.) - 10.
-           (Term(coeff = 1.0) - ExplicitSourceTerm(coeff = 10.0))
-           >>> Term(coeff = 1.) - Term(coeff = 2.)
-           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           >>> 10 - Term(coeff = 1.)
+           (ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
 
         """        
         if self._otherIsZero(other):
@@ -170,7 +168,7 @@ class Term:
         
     def __eq__(self, other):
         """
-        This method allows `term`s to be equated in a natural way. Note that the
+        This method allows `Term`s to be equated in a natural way. Note that the
         following does not return `False`.
 
            >>> Term(coeff = 1.) == Term(coeff = 2.)
@@ -208,7 +206,7 @@ class Term:
     def _calcGeomCoeff(self, mesh):
 	pass
 	
-    def getGeomCoeff(self, mesh):
+    def _getGeomCoeff(self, mesh):
 	if self.geomCoeff is None:
 	    self._calcGeomCoeff(mesh)
 	return self.geomCoeff

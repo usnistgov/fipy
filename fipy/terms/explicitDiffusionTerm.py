@@ -53,8 +53,8 @@ class ExplicitDiffusionTerm(DiffusionTerm):
        $$ \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
        \frac{\phi_A^\text{old}-\phi_P^\text{old}}{d_{AP}} A_f $$ where $\phi_A^\text{old}$ and
        $\phi_P^\text{old}$ are the old values of the variable. The term is
-       added to the equation's RHS vector and makes no contribution to
-       the equation's matrix.
+       added to the RHS vector and makes no contribution to
+       the solution matrix.
     """
     
     def _getWeight(self, mesh):

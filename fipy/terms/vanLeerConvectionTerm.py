@@ -74,7 +74,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	interiorFaceNormals = array.take(mesh.getOrientedFaceNormals(), interiorIDs)
 	
 	# Courant-Friedrichs-Levy number
-	interiorCFL = abs(array.take(self.getGeomCoeff(mesh), interiorIDs)) * dt
+	interiorCFL = abs(array.take(self._getGeomCoeff(mesh), interiorIDs)) * dt
 	
 	gradUpwind = (oldArray2 - oldArray1) / array.take(mesh.getCellDistances(), interiorIDs)
 	

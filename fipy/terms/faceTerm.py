@@ -54,7 +54,7 @@ class FaceTerm(Term):
         self.coeffMatrix = None
             
     def _getCoeffMatrix(self, mesh, weight):
-	coeff = self.getGeomCoeff(mesh)
+	coeff = self._getGeomCoeff(mesh)
         if self.coeffMatrix is None:
             self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
                                 'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
@@ -100,7 +100,7 @@ class FaceTerm(Term):
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
 
 	weight = self._getWeight(mesh)['explicit']
-        coeff = Numeric.array(self.getGeomCoeff(mesh))
+        coeff = Numeric.array(self._getGeomCoeff(mesh))
         Nfac = mesh.getNumberOfFaces()
 
         cell1Diag = Numeric.zeros((Nfac,),'d')

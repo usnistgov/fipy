@@ -55,7 +55,7 @@ class CellTerm(Term):
         self.coeffVectors = None
 
     def _calcCoeffVectors(self, mesh):
-	coeff = self.getGeomCoeff(mesh)
+	coeff = self._getGeomCoeff(mesh)
 	weight = self._getWeight(mesh)
 	
 	self.coeffVectors = {
