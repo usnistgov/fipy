@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/22/03 {11:14:04 AM} 
+ #                                last update:  01/05/04 { 2:28:39 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -100,9 +100,9 @@ class FaceTerm(Term):
         ## explicit
         if self.weight.has_key('explicit'):
             
-            oldArrayId1 = Numeric.take(oldArray,id1)
-            oldArrayId2 = Numeric.take(oldArray,id2)
-
+            oldArrayId1 = Numeric.take(oldArray, id1)
+            oldArrayId2 = Numeric.take(oldArray, id2)
+            
             tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:]))
             tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:]))
 
@@ -112,9 +112,8 @@ class FaceTerm(Term):
 ##		b[id2[i]] -= self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
 
             for boundaryCondition in self.boundaryConditions:
-                for face in boundaryCondition.getFaces():
-                    cellId = face.getCellId()
-                    faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,self.explicit['cell 1 diag'][faceId],self.explicit['cell 1 offdiag'][faceId])
-                    b[cellId] -= LL * oldArray[cellId]
-                    b[cellId] += bb
+
+                LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
+                oldArrayIds = Numeric.take(oldArray, ids)
+                tools.vector.putAdd(b, ids, -LL * oldArrayIds)
+                tools.vector.putAdd(b, ids, bb)
