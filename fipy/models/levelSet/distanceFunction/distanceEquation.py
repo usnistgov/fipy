@@ -82,16 +82,21 @@ import fipy.tools.vector as vector
 
 class DistanceEquation(Equation):
 
-    def __init__(self, var):
+    def __init__(self, var, terminationValue = 1e10):
         """
 
         The `var` argument must contain both positive and negative to
         define the zero level set.
+
+        The `terminationValue` represents the furthest distance from
+        the interface that the signed distance function will be
+        calculated.
         
         """
         
         self.mesh = var.getMesh()
-	
+	self.terminationValue = terminationValue
+        
 	Equation.__init__(
             self,
             var = var,
@@ -132,7 +137,8 @@ class DistanceEquation(Equation):
            ...     (-1, -1, -1, -1, 1, -1, -1, -1, -1))
            >>> DistanceEquation(var)._calcInterfaceValues()
            [0,1,0,1,1,1,0,1,0,]
-           >>> answer = Numeric.array((-1,-0.5,-1,-0.5,0.5,-0.5,-1,-0.5,-1))
+           >>> v = 0.5 * Numeric.sqrt(2) / 2
+           >>> answer = Numeric.array((-1,-0.5,-1,-0.5, v,-0.5,-1,-0.5,-1))
            >>> Numeric.allclose(answer, Numeric.array(var))
            1
 
@@ -142,7 +148,8 @@ class DistanceEquation(Equation):
            ...     (-1, -1, -1, -1, 1, -1, -1, -1, -1))
            >>> DistanceEquation(var)._calcInterfaceValues()
            [0,1,0,1,1,1,0,1,0,]
-           >>> answer = Numeric.array((-1,-1,-1,-0.25,0.25,-0.25,-1,-1,-1))
+           >>> v = 0.25 / Numeric.sqrt(2)
+           >>> answer = Numeric.array((-1,-1,-1,-0.25,v,-0.25,-1,-1,-1))
            >>> Numeric.allclose(answer, Numeric.array(var))
            1
 
@@ -158,20 +165,37 @@ class DistanceEquation(Equation):
         phiAdj = Numeric.take(self.var, cellToCellIDs)
         phi = Numeric.resize(Numeric.repeat(self.var, M),(N, M))
 
+        distance = MA.masked_values(abs(phi * dAP / (phi - phiAdj)) * cellZeroFlag, 0)
 
-        distance = MA.masked_values(phi * dAP / abs(phi - phiAdj) * cellZeroFlag, 0)
+        distance = MA.sort(distance, axis = 1)
 
-        argmins = MA.argmin(abs(distance), axis = 1)
+        s = distance[:,0]
+        t = distance[:,1]
 
-        argmins = Numeric.transpose(Numeric.array((Numeric.arange(N),argmins)))
+        sign = Numeric.array(-1 + 2 * (self.var > 0))
 
-        argmins = argmins[:,0] * M + argmins[:,1]
+        signedDistance = MA.where(s.mask(),
+                                 self.var,
+                                 MA.where(t.mask(),
+                                          sign * s,
+                                          sign * s * t / MA.sqrt(s**2 + t**2)))
 
-        distance = MA.take(distance.flat, argmins)
+##        argmins = MA.argmin(abs(distance), axis = 1)
+
+##        argmins = Numeric.transpose(Numeric.array((Numeric.arange(N),argmins)))
+
+##        argmins = argmins[:,0] * M + argmins[:,1]
+
+##        print 'distance before',distance
+
+##        distance = MA.take(distance.flat, argmins)
+
+##        print 'distance',distance
         
         cellFlag = Numeric.sum(cellZeroFlag, axis = 1)
 
-        self.var.setValue(MA.where(cellFlag > 0, distance, self.var))
+##        self.var.setValue(MA.where(cellFlag > 0, distance, self.var))
+        self.var.setValue(signedDistance)
         return Numeric.where(cellFlag > 0, 1, 0)
     
     def _calcLinear(self, phi, d, cellID, adjCellID):
@@ -240,7 +264,7 @@ class DistanceEquation(Equation):
            >>> eqn._calcInitialTrialValues(setValueFlag)
            [1,1,1,2,]
            >>> sqrt = Numeric.sqrt(2)
-           >>> Numeric.allclose(Numeric.array((-.5, .5, .5, .5 + 1 / sqrt)), Numeric.array(var))
+           >>> Numeric.allclose(Numeric.array((-.5 / sqrt, .5, .5, .5 + 1 / sqrt)), Numeric.array(var))
            1
 
            >>> mesh = Grid2D(dx = .5, dy = 2., nx = 3, ny = 3)
@@ -250,7 +274,8 @@ class DistanceEquation(Equation):
            >>> eqn._calcInitialTrialValues(setValueFlag)
            [2,1,2,1,1,1,2,1,2,]
            >>> v = -1.40771446
-           >>> Numeric.allclose(Numeric.array((v, -1, v, -.25, .25, -.25, v, -1, v)), Numeric.array(var), atol = 1e-6)
+           >>> v1 = 0.25 / Numeric.sqrt(2)
+           >>> Numeric.allclose(Numeric.array((v, -1, v, -.25, v1, -.25, v, -1, v)), Numeric.array(var), atol = 1e-6)
            1
         """
         N = self.mesh.getNumberOfCells()
@@ -345,7 +370,11 @@ class DistanceEquation(Equation):
         """
         trialCellIDs = list(Numeric.nonzero(Numeric.where(setValueFlag == 2, 1, 0)))
 
-        while len(trialCellIDs) > 0:
+        values = Numeric.take(self.var, trialCellIDs)
+        argmin = Numeric.argmin(abs(values))
+        cellID = trialCellIDs[argmin]
+
+        while len(trialCellIDs) > 0 and abs(self.var[cellID]) < self.terminationValue:
 
             values = Numeric.take(self.var, trialCellIDs)
             argmin = Numeric.argmin(abs(values))
