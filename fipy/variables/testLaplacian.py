@@ -36,7 +36,7 @@
  # ###################################################################
  ##
 
-import sets
+##import sets
 
 import unittest
 
@@ -59,20 +59,48 @@ class TestLaplacian(TestBase):
 	# boundary cells will be incorrect, so only look at interior
 	# we need to strip off as many exterior layers of cells as
 	# the order/2 of our Laplacian
-	
-	cellFaceIDs = self.mesh.getCellFaceIDs()
-	exteriorCellIDs = sets.Set(self.mesh.getExteriorCellIDs())
-	interiorCellIDs = sets.Set(self.mesh.getInteriorCellIDs())
-	
-	for order in range(self.order/2 - 1):
-	    exteriorFaceIDs = sets.Set(array.take(self.mesh.getCellFaceIDs(), list(exteriorCellIDs)).flat)
-	    neighboringCellIDs = sets.Set([cellID for cellID in interiorCellIDs if len(sets.Set(cellFaceIDs[cellID]) & exteriorFaceIDs) != 0])
-	    exteriorCellIDs |= neighboringCellIDs
-	    interiorCellIDs -= neighboringCellIDs
 
-	result = array.take(result, list(interiorCellIDs))
+        try:
+            import sets
 	
-	self.assertArrayWithinTolerance(result, self.answer, 1e-10)
+            cellFaceIDs = self.mesh.getCellFaceIDs()
+            exteriorCellIDs = sets.Set(self.mesh.getExteriorCellIDs())
+            interiorCellIDs = sets.Set(self.mesh.getInteriorCellIDs())
+	
+            for order in range(self.order/2 - 1):
+                exteriorFaceIDs = sets.Set(array.take(self.mesh.getCellFaceIDs(), list(exteriorCellIDs)).flat)
+                neighboringCellIDs = sets.Set([cellID for cellID in interiorCellIDs if len(sets.Set(cellFaceIDs[cellID]) & exteriorFaceIDs) != 0])
+                exteriorCellIDs |= neighboringCellIDs
+                interiorCellIDs -= neighboringCellIDs
+
+        except:
+            exteriorCellIDs = list(self.mesh.getExteriorCellIDs())
+            interiorCellIDs = list(self.mesh.getInteriorCellIDs())
+            cellToCellIDs = list(self.mesh.getCellToCellIDs())
+        
+            for order in range(self.order / 2 - 1):
+
+                newExteriorCellIDs = []
+                newInteriorCellIDs = []
+                
+                for cellID in interiorCellIDs:
+                    inNewExteriorCellIDs = 0
+
+                    for adjCellID in cellToCellIDs[cellID]:
+                        if adjCellID in exteriorCellIDs:
+                            inNewExteriorCellIDs = 1
+                
+                    if inNewExteriorCellIDs == 1:
+                        newExteriorCellIDs.append(cellID)
+                    else:
+                        newInteriorCellIDs.append(cellID)
+
+                exteriorCellIDs = newExteriorCellIDs
+                interiorCellIDs = newInteriorCellIDs
+
+        result = array.take(result, list(interiorCellIDs))
+                
+        self.assertArrayWithinTolerance(result, self.answer, 1e-10)
 
 class TestLaplacian2(TestLaplacian):
     def setUp(self):
