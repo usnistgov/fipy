@@ -105,7 +105,7 @@ class Mesh:
     def getCellsByID(self, ids = None):
 	pass
 	    
-    def getCells(self, ids = None, filter = None, **args):
+    def getCells(self, filter = None, ids = None, **args):
 	"""Return Cells of Mesh."""
 	cells = self.getCellsByID(ids)
 	

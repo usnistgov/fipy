@@ -46,67 +46,18 @@
  
 import unittest
 
-from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-from input import getParameters
-
-class Test(TestBase):
-    """Generic steady-state diffusion class
-    
-    	Constructs a mesh, variable, equation, and iterator based
-	on the mesh dimensions specified by the child class
-    """
-    def setUp(self):
-        parameters = getParameters(self.nx, self.ny)
-        
-	self.steps = parameters['steps']
-##	self.timeStep = parameters['timeStep']
-	self.tolerance = parameters['tolerance']
-        self.valueLeft = parameters['valueLeft']
-        self.valueRight = parameters['valueRight']
-        self.mesh = parameters['mesh']
-        self.var = parameters['var']
-##        self.eq = parameters['eq']
-        self.it = parameters['it']
-
-    def getTestValues(self):
-	(lx,ly) = self.mesh.getPhysicalShape()
-	vl = self.valueLeft
-	vr = self.valueRight
-	x = self.mesh.getCellCenters()[:,0]
-	return vl + (vr - vl) * x / lx
-	
-class Test20x20(Test):
-    """Steady-state 1D diffusion on a 20x20 mesh
-    """
-    def setUp(self):
-	self.nx = 20
-	self.ny = 20
-	Test.setUp(self)	    
-	
-class Test50x50(Test):
-    """Steady-state 1D diffusion on a 50x50 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 50
-	Test.setUp(self)	    
-
-class  Test1D(Test):
-    """Steady-state 1D diffusion on a 50x1 mesh
-    """
-    def setUp(self):
-	self.nx = 50
-	self.ny = 1
-	Test.setUp(self)
+import mesh1D.test
+import mesh20x20.test
+import mesh50x50.test
 
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(unittest.makeSuite(Test1D))
-    theSuite.addTest(unittest.makeSuite(Test20x20))
-    theSuite.addTest(unittest.makeSuite(Test50x50))
+    theSuite.addTest(mesh1D.test.suite())
+    theSuite.addTest(mesh20x20.test.suite())
+    theSuite.addTest(mesh50x50.test.suite())
     
     return theSuite
     
