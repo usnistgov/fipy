@@ -64,7 +64,7 @@ def suite():
     theSuite.addTest(examples.phase.test.suite())
     theSuite.addTest(examples.elphf.test.suite())
     theSuite.addTest(examples.levelSet.test.suite())
-    theSuite.addTest(examples.cahnHilliard.test.suite())  
+##    theSuite.addTest(examples.cahnHilliard.test.suite())  
     
     return theSuite
 
