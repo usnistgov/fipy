@@ -4,9 +4,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/5/03 {10:10:49 PM} 
+ #  FILE: "testSteadyStateDiffusion.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 12/24/03 {10:18:38 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,26 +39,35 @@
  # ###################################################################
  ##
 
-"""Run all the test cases
-"""
+from __future__ import nested_scopes
+import input
+from viewers.grid2DGistViewer import Grid2DGistViewer
 
-import examples.diffusion.variable.test
-import examples.diffusion.steadyState.test
-import examples.diffusion.explicit.test
-import tests.testStdyConvectionDiffusion
-import examples.elphf.test
-import unittest
-import examples.phase.examples.missOrientation.test
-
+def getParameters():
+    L = 1.5
+    func = lambda cell: cell.getCenter()[0] > L / 2.
+    
+    return {
+        'nx'           :  100,
+        'ny'           :  1,
+        'L'            :  L,
+        'theta value'  :  1.,
+        'theta func'   : func,
+        'theta func value' : 0.
+        }
+    
 if __name__ == '__main__':
-    theSuite = unittest.TestSuite()
+    localParameters = getParameters()
+    globalParameters = input.getParameters(localParameters)
     
-    theSuite.addTest(examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(examples.diffusion.explicit.test.suite())
-    theSuite.addTest(examples.diffusion.variable.test.suite())
-    theSuite.addTest(examples.phase.examples.missOrientation.test.suite())
-    theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
-    theSuite.addTest(examples.elphf.test.suite())
-    
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    it = globalParameters['it']
+    steps = globalParameters['steps']
+    var = globalParameters['var']
 
+    it.timestep(steps)
+
+    viewer = Grid2DGistViewer(var)
+
+    viewer.plot()
+    raw_input()
+            

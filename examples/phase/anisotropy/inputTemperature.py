@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/29/03 {2:45:17 PM} 
+ #                                last update: 12/29/03 {2:45:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,21 +41,8 @@
  # ###################################################################
  ##
 
-"""Phase Field Equation input file
-
-    Build a mesh, variable, and diffusion equation with fixed (zero) flux
-    boundary conditions at the top and bottom and fixed value boundary
-    conditions at the left and right.
-    
-    Iterates a solution and plots the result with gist.
-    
-    Iteration is profiled for performance.
-"""
-
-from __future__ import nested_scopes
-
 from meshes.grid2D import Grid2D
-from phaseEquation import PhaseEquation
+from type2PhaseEquation import Type2PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
@@ -65,29 +52,41 @@ from variables.cellVariable import CellVariable
 from modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
+from temperatureEquation import TemperatureEquation
 
 import Numeric
 
-phaseParameters={
-    'tau' :        0.1,
-    'epsilon' :    0.008,
-    's' :          0.01,
-    'alpha' :      0.015,
-    'c2':          0.0,
-    'anisotropy':  0.,
-    'symmetry':    4.
+##timeStepDuration = 0.02
+timeStepDuration = 1.
+
+phaseParameters = {
+    'tau'                   : 3e-4,
+    'time step duration'    : timeStepDuration,
+    'epsilon'               : 0.008,
+    's'                     : 0.01,
+    'alpha'                 : 0.015,
+    'c2'                    : 0.02,
+    'anisotropy'            : 0.0,
+    'symmetry'              : 4.,
+    'kappa 1'               : 0.9,
+    'kappa 2'               : 20.
     }
 
-interiorValue = -2. * Numeric.pi / 3.
-exteriorValue = 2. * Numeric.pi / 3.
-##exteriorValue = 0.
-##interiorValue = -1.
+temperatureParameters = {
+    'time step duration'    : timeStepDuration,
+    'temperature diffusion' : 2.25,
+    'latent heat'           : 1.,
+    'heat capacity'         : 1.
+    }
 
-L = 1.5
-nx = 10
-ny = 10
-dx = L / nx
-dy = L / ny
+
+##Length = 0.5
+Length = 20.
+nx = 20
+ny = 20
+dx = Length / nx
+dy = Length / ny
+
 
 mesh = Grid2D(dx,dy,nx,ny)
 print "built mesh"
@@ -95,51 +94,98 @@ print "built mesh"
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
-    value = 1.,
-    viewer = Grid2DGistViewer
+    value = 0.
     )
 
 theta = ModularVariable(
     name = 'Theta',
     mesh = mesh,
-    value = exteriorValue,
-    viewer = Grid2DGistViewer,
+    value = 0.,
     hasOld = 0
     )
 
-phaseParameters['phi'] = phase
-phaseParameters['theta'] = theta
-phaseParameters['temperature'] = 1.
+temperature = ModularVariable(
+    name = 'Theta',
+    mesh = mesh,
+    value = -0.5,
+    hasOld = 0
+    )
 
-interiorCells = mesh.getCells(lambda cell: cell.getCenter()[0] < L / 2.)
+phaseViewer = Grid2DGistViewer(var = phase)
+temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
 
-theta.setValue(interiorValue,interiorCells)
+phaseFields = {
+    'theta' : theta,
+    'temperature' : temperature
+    }
 
-print "building equation"
-eq = PhaseEquation(
+temperatureFields = {
+    'phase' : phase
+    }
+
+def circleCells(cell,L = Length):
+    x = cell.getCenter()
+    r = L / 4.
+    c = (L / 2., L / 2.)
+    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+        return 1
+    else:
+        return 0
+
+interiorCells = mesh.getCells(circleCells)
+
+phase.setValue(1.,interiorCells)
+
+print "building phase equation"
+
+phaseEq = Type2PhaseEquation(
     phase,
     solver = LinearPCGSolver(
 	tolerance = 1.e-15, 
 	steps = 1000
     ),
     boundaryConditions=(
-##    FixedValue(mesh.getExteriorFaces(), 1.),
     FixedFlux(mesh.getExteriorFaces(), 0.),
     ),
-    parameters = phaseParameters
+    parameters = phaseParameters,
+    fields = phaseFields
     )
 
-it = Iterator((eq,))
+temperatureEq = TemperatureEquation(
+    phase,
+    solver = LinearPCGSolver(
+	tolerance = 1.e-15, 
+	steps = 1000
+    ),
+    boundaryConditions=(
+    FixedFlux(mesh.getExteriorFaces(), 0.),
+    ),
+    parameters = temperatureParameters,
+    fields = temperatureFields
+    )
+
+it = Iterator((phaseEq, temperatureEq))
 
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
+phaseViewer.plot()
+temperatureViewer.plot()
+raw_input()
+
 print "solving"
-it.timestep(steps = 100, dt = 0.02)
+phaseViewer.plot()
+temperatureViewer.plot()
+raw_input()
+for i in range(10):
+<<<<<<< inputTemperature.py
+    it.iterate(1)
+=======
+    it.timestep(steps = 10)
+>>>>>>> 1.4
+    phaseViewer.plot()
+    temperatureViewer.plot()
+    raw_input()
 # profile.stop()
-
-phase.plot()
-
-print phase
 
 raw_input()
 
