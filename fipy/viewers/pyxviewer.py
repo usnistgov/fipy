@@ -251,7 +251,10 @@ class PyxViewer:
         xarr = Numeric.fromfunction(lambda x, y: minx + ((x+0.5) * resolution), (xsize, ysize))
         yarr = Numeric.fromfunction(lambda x, y: miny + ((y+0.5) * resolution), (xsize, ysize)) 
         valarr = self.getValueMatrix(minx, maxx, miny, maxy, resolution)
-        
+        if(debug == 1):
+            print xarr
+            print yarr
+            print valarr
         ## This section takes the values above and generates the list to put into the pyx.graph.plot method.
         ## If maxval and minval are not given, generate them.
         xlist = Numeric.reshape(xarr, (Numeric.size(xarr),))
@@ -316,7 +319,7 @@ class PyxViewer:
     def getValueMatrix(self, minx, maxx, miny, maxy, resolution):
         self.generateArray() 
         xsize = ((maxx - minx) / resolution) - 0.5
-        ysize = ((maxx - minx) / resolution) - 0.5
+        ysize = ((maxy - miny) / resolution) - 0.5
         if (xsize == int(xsize)):
             xsize = int(xsize)
         else:
