@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "gist1DViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/24/04 {10:49:48 PM} 
+ #  FILE: "relaxationEquation.py"
+ #                                    created: 11/12/03 {10:41:06 AM} 
+ #                                last update: 1/24/04 {11:57:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -30,8 +30,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  #  Description: 
  # 
@@ -39,46 +37,34 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
 import Numeric
- 
-import gist
 
-from fivol.viewers.gistViewer import GistViewer
+from fivol.equations.matrixEquation import MatrixEquation
 
-class Gist1DViewer(GistViewer):
-    
-    def __init__(self, vars = None, title = None, minVal=None, maxVal=None, xlog = 0, ylog = 0, style = "work.gs"):
-        self.vars = list(vars)
-	self.xlog = xlog
-	self.ylog = ylog
-	self.style = style
-	if title is None and len(self.vars) == 1:
-	    title = self.vars[0].name
-	else:
-	    title = ''
-        GistViewer.__init__(self, minVal, maxVal, title = title)
+class RelaxationEquation(MatrixEquation):
+    def __init__(
+	self,
+	var,
+	terms,
+	solver,
+	solutionTolerance = 1e-4,
+	relaxation = 1.):
 
-    def getArrays(self):
-	arrays = ()
-	for var in self.vars:
-	    arrays += var.getNumericValue(),
-	return arrays
+	self.relaxation = relaxation
+	MatrixEquation.__init__(self, var, terms, solver, solutionTolerance)
 	
-    def plotArrays(self):
-## 	gist.plsys(0)
-	for array in self.getArrays():
-	    gist.plg(array)
-	gist.logxy(self.xlog, self.ylog)
-
-    def plot(self, minVal=None, maxVal=None):
-	gist.window(self.id, wait= 1, style = self.style)
-	gist.pltitle(self.title)
-	gist.animate(1)
-
-	self.plotArrays()
-	    
-	gist.fma()
+    def postSolve(self, residual):
+## 	self.relaxation *= (self.solutionTolerance/abs(residual))**0.2
+	self.relaxation = (self.solutionTolerance/abs(residual))**0.2
+## 	self.relaxation = self.solutionTolerance/abs(residual)
+	self.relaxation = Numeric.where(self.relaxation > 1., 1., self.relaxation)
+	self.relaxation = Numeric.where(self.relaxation < 1e-12, 1e-12, self.relaxation)
+## 	self.relaxation = min(1.5,self.relaxation)
+## 	self.relaxation = max(1e-3,self.relaxation)
+	
+    def getRelaxation(self):
+	return self.relaxation

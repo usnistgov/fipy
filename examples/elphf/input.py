@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/20/04 {4:26:41 PM} 
+ #                                last update: 1/24/04 {10:54:11 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,13 +60,16 @@ from fivol.profiler.profiler import calibrate_profiler
 from fivol.meshes.grid2D import Grid2D
 from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 from fivol.viewers.gist1DViewer import Gist1DViewer
+from fivol.viewers.gist1DResidualViewer import Gist1DResidualViewer
 
 from fivol.tools.dimensions.physicalField import PhysicalField
 
 import elphf
 
-nx = 100
-dx = "0.003 nm"
+from elphfIterator import ElPhFIterator
+
+nx = 1200
+dx = "0.0025 nm"
 # L = nx * dx
 
 mesh = Grid2D(
@@ -76,11 +79,11 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': "1e-12 s",
-    'substitutional molar volume': "1.8e-5 m**3/mol",
+    'time step duration': "1e-9 s",
+    'substitutional molar volume': "1.80000006366754e-05 m**3/mol",
     'phase': {
 	'name': "xi",
-	'mobility': "1e-2 m**3/J/s",
+	'mobility': "1 m**3/J/s",
 	'gradient energy': "3.6e-11 J/m",
 	'value': 1.
     },
@@ -127,35 +130,32 @@ parameters['substitutionals'] = (
 
 fields = elphf.makeFields(mesh = mesh, parameters = parameters)
 
-setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/4.)
+setCells = mesh.getCells(lambda cell: cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2.)
 fields['phase'].setValue(0.,setCells)
 fields['interstitials'][0].setValue("0.000111111503177394 MOLARVOLUME*mol/l", setCells)
-fields['substitutionals'][0].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
-fields['substitutionals'][1].setValue("0.249944439430068 MOLARVOLUME*mol/l", setCells)
+fields['substitutionals'][0].setValue("0.249944439430068 MOLARVOLUME*mol/l", setCells)
+fields['substitutionals'][1].setValue("0.249999982581341 MOLARVOLUME*mol/l", setCells)
 
 phaseViewer = Gist1DViewer(vars = (fields['phase'],))
 potentialViewer = Gist1DViewer(vars = (fields['potential'],))
-concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']), ylog = 1)
-    
-it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters, viewers = (phaseViewer, potentialViewer, concViewer))
+concViewer = Gist1DViewer(vars = list(fields['substitutionals']) + list(fields['interstitials']) + [fields['solvent']], ylog = 1)
 
-## for field in fields['all']:
-##     field.viewer = Grid2DGistViewer(var = field)
-## viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+equations, timeStepDuration = elphf.makeEquations(
+    mesh = mesh, 
+    fields = fields, 
+    parameters = parameters
+)
 
-def view(fields):
-    fields['phase'].viewer.plot(minVal = 0., maxVal = 1.)
-    fields['potential'].viewer.plot()
-    concViewer.plot(minVal = 0., maxVal = 1.)
-##     for field in fields['substitutionals']:
-## 	field.viewer.plot(minVal = 0., maxVal = 1.)
-##     for field in fields['interstitials']:
-## 	field.viewer.plot()
+chargeViewer = Gist1DViewer(vars = (fields['charge'],))
 
-phaseViewer.plot()
-potentialViewer.plot()
-concViewer.plot()
-## view(fields)
+viewers = (phaseViewer, potentialViewer, concViewer,chargeViewer)
+	
+it = ElPhFIterator(equations = equations, timeStepDuration = timeStepDuration, viewers = viewers)
+
+desiredTime = timeStepDuration.getValue()
+
+for viewer in viewers:
+    viewer.plot()
 
 raw_input()
 
@@ -170,14 +170,19 @@ raw_input()
 
 
 for i in range(50):
-    it.timestep(steps = 1, maxSweeps = 200)
+    try:
+	it.elapseTime(desiredTime = desiredTime, maxSweepsPerStep = 100)
+## 	it.timestep(steps = 1, maxSweeps = 5)
+    except KeyboardInterrupt:
+	break
+    except Exception, e:
+	print "Error:", e
+    except:
+	print "Not converged"
+	
+    print "***** timestep", i, "******"
     
-##     view(fields)
-
-##     for viewer in viewers:
-## 	viewer.plot()
-
-    raw_input()
+raw_input()
     
 # profile.stop()
 	

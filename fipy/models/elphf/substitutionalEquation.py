@@ -7,7 +7,7 @@
  # 
  #  FILE: "substitutionalEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:04:19 AM} 
+ #                                last update: 1/23/04 {12:02:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

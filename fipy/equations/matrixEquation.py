@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/20/04 {3:25:12 PM} 
+ #                                last update: 1/23/04 {5:56:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,23 +60,82 @@ class MatrixEquation(Equation):
     def getB(self):
 	return self.b
 
-    def solve(self):
-	array = self.var.getNumericValue()
-	oldSweepArray = array.copy()
-	N = len(array)
+    def buildMatrix(self):
+	N = len(self.array)
 	self.L = spmatrix.ll_mat(N,N,self.bandwidth)
 	self.b = Numeric.zeros((N),'d')
 	coeffScale = self.terms[0].getCoeffScale()
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
 	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,coeffScale,varScale)
-	self.solver.solve(self.L,array,self.b)
-	self.var[:] = array * (1. - self.relaxation) + oldSweepArray * self.relaxation #[:]
+	    
+    def postSolve(self, array):
+	pass
 	
-	residual = oldSweepArray.copy()
-	self.L.matvec(oldSweepArray,residual)
-	residual -= self.b 
-	self.residual = vector.sqrtDot(residual,residual)
-##         print self,'residual: ',residual
-	self.converged = self.residual < self.solutionTolerance
+    def getResidual(self):
+	Lx = self.oldSweepArray.copy()
+	self.L.matvec(self.oldSweepArray,Lx)
+	
+	residual = Lx - self.b
+	
+	denom = Numeric.where(Lx == 0, self.b, Lx)
+	denom = Numeric.where(denom == 0, 1, denom)
+	
+	residual /= denom
+		
+	return abs(residual) + self.solutionTolerance * 1e-10
+	    
+    def getResidual2(self):
+	Lx = self.oldSweepArray.copy()
+	self.L.matvec(self.oldSweepArray,Lx)
+	
+	# prevent divide-by-zero
+## 	epsilon = 1e-60
+## 	b = Numeric.where(self.b == 0, epsilon, self.b)
+## 	residual = Numeric.where(residual == 0, b, residual)
+## 	b = Numeric.where(abs(self.b) < epsilon, epsilon, self.b)
+## 	residual = Numeric.where(abs(residual) < epsilon, b, residual)
+## 	residual = Numeric.where(residual == 0, epsilon, residual)
+## 	b = Numeric.where(self.b == 0, epsilon, self.b)
+## 	print self
+## 	print "L.x:", residual 
+## 	print "b:", b
+## 	print "b/L.x:", b / residual
+## 	residual = 1. - b / residual
+## 	residual = Numeric.where(residual == 0, residual - self.b, 1. - self.b / residual)
+## 	residual = Numeric.where(residual != epsilon, 1. - b / residual, -b)
+	
+	residual = Lx - self.b
+	residual = vector.sqrtDot(residual,residual)
+	
+## 	denom = Numeric.where(Lx == 0, self.b, Lx)
+## 	denom = Numeric.where(denom == 0, 1., denom)
+## 	
+## 	residual /= denom
+## 	
+## 	residual = vector.sqrtDot(residual,residual)
+	
+	Lx = vector.sqrtDot(Lx,Lx)
+	if Lx != 0:
+	    residual /= Lx
+	else:
+	    b = vector.sqrtDot(self.b,self.b)
+	    if b != 0:
+		residual /= b
+	    else:
+		residual = 0
+		
+	return residual
+
+    def solve(self):
+	self.array = self.var.getNumericValue()
+	self.oldSweepArray = self.array.copy()
+	self.buildMatrix()
+	self.solver.solve(self.L,self.array,self.b)
+	residual = self.getResidual()
+	self.postSolve(residual)
+	self.var[:] = self.array
+	
+	self.residual = residual
+	self.converged = Numeric.alltrue(self.residual < self.solutionTolerance)
 	

@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/20/04 {4:06:28 PM} 
+ #                                last update: 1/23/04 {5:45:43 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,16 +46,28 @@
 
 import sys
 
+class ConvergenceError(ArithmeticError):
+    def __init__(self, equations):
+	self.equations = equations
+	
+    def __str__(self):
+	s = '\n'
+	for equation in self.equations:
+	    s += str(equation) + ' has residual = ' + str(equation.getResidual()) + '\n'
+	return s
+
 class Iterator:
     """Generic equation iterator
     """
     
-    def __init__(self,equations):
+    def __init__(self,equations,timeStepDuration = None):
 	"""Arguments:
 	    
 	    'equations' -- list or tuple of equations to iterate over
+	    'timeStepDuration' -- duration of each timestep (Variable)
 	"""
         self.equations = equations
+	self.timeStepDuration = timeStepDuration
 	
     def sweep(self):
 	for equation in self.equations:
@@ -94,35 +106,26 @@ class Iterator:
 		break
 		
 	if maxSweeps > 1 and not converged:
-	    class ConvergenceError(ArithmeticError):
-		def __init__(self, equations):
-		    self.equations = equations
-		    
-		def __str__(self):
-		    s = '\n'
-		    for equation in self.equations:
-			s += str(equation) + ' has residual = ' + str(equation.getResidual()) + '\n'
-		    return s
-	    
 	    raise ConvergenceError(self.equations)
 	
     def advanceTimeStep(self):
 	for equation in self.equations:
 	    var = equation.getVar()
 	    var.updateOld()
-
-    def timestep(self, steps = 1, maxSweeps = 1):
+	    
+    def timestep(self, maxSweeps = 1):
 	"""Iterate the solution.
 	
 	Arguments:
 	    
-	    'steps' -- number of iteration time steps
-	    
-	    'timeStep' -- duration of each time step
+	    'maxSweeps' -- maximum number of sweeps to reach convergence
 	"""
 	
-	converged = 0
-	for step in range(steps):
-	    self.advanceTimeStep()
-	    self.sweeps(maxSweeps)
+	self.advanceTimeStep()
+	self.sweeps(maxSweeps)
 
+    def elapseTime(self, desiredTime, maxSweepsPerStep = 1):
+	elapsedTime = 0.
+	while elapsedTime < desiredTime:
+	    self.timestep(maxSweeps = maxSweepsPerStep)
+	    elapsedTime += self.timeStepDuration

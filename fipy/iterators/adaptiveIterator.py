@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "gist1DViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/24/04 {10:49:48 PM} 
+ #  FILE: "adaptiveIterator.py"
+ #                                    created: 11/10/03 {2:47:38 PM} 
+ #                                last update: 1/23/04 {5:16:32 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -30,8 +30,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  #  Description: 
  # 
@@ -43,42 +41,44 @@
  # ###################################################################
  ##
 
-import Numeric
- 
-import gist
+"""Generic equation iterator
+"""
 
-from fivol.viewers.gistViewer import GistViewer
+from fivol.iterators.iterator import Iterator
+from fivol.iterators.iterator import ConvergenceError
 
-class Gist1DViewer(GistViewer):
+
+class AdaptiveIterator(Iterator):
+    """Adaptive time-stepping equation iterator
+    """
     
-    def __init__(self, vars = None, title = None, minVal=None, maxVal=None, xlog = 0, ylog = 0, style = "work.gs"):
-        self.vars = list(vars)
-	self.xlog = xlog
-	self.ylog = ylog
-	self.style = style
-	if title is None and len(self.vars) == 1:
-	    title = self.vars[0].name
-	else:
-	    title = ''
-        GistViewer.__init__(self, minVal, maxVal, title = title)
-
-    def getArrays(self):
-	arrays = ()
-	for var in self.vars:
-	    arrays += var.getNumericValue(),
-	return arrays
-	
-    def plotArrays(self):
-## 	gist.plsys(0)
-	for array in self.getArrays():
-	    gist.plg(array)
-	gist.logxy(self.xlog, self.ylog)
-
-    def plot(self, minVal=None, maxVal=None):
-	gist.window(self.id, wait= 1, style = self.style)
-	gist.pltitle(self.title)
-	gist.animate(1)
-
-	self.plotArrays()
+    def resetTimeStep(self):
+	for equation in self.equations:
+	    var = equation.getVar()
+	    var.resetToOld()
 	    
-	gist.fma()
+    def elapseTime(self, desiredTime, maxSweepsPerStep = 1):
+	elapsedTime = 0.
+	while elapsedTime < desiredTime:
+	    print "t:", elapsedTime, "dt:", self.timeStepDuration
+	    try:
+		self.advanceTimeStep()
+		self.sweeps(maxSweepsPerStep)
+		elapsedTime += self.timeStepDuration.getValue()
+	    except ConvergenceError, e:
+		print "ConvergenceError"
+		self.resetTimeStep()
+	    except KeyboardInterrupt:
+		print "KeyboardInterrupt"
+		break
+	    except Exception, e:
+		print "Error:",e
+	    except:
+		print "what's the error?"
+		
+		
+	    # adjust timestep
+	    factors = [(equation.getSolutionTolerance()/equation.getResidual())**0.2 for equation in self.equations]
+	    self.timeStepDuration.setValue(self.timeStepDuration.getValue() * min(factors))
+		
+

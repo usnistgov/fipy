@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/20/04 {3:20:20 PM} 
+ #                                last update: 1/25/04 {12:01:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,10 @@
 
 import Numeric
 
-from fivol.equations.matrixEquation import MatrixEquation
+## from fivol.equations.matrixEquation import MatrixEquation
+from fivol.equations.preRelaxationEquation import PreRelaxationEquation
+from fivol.equations.postRelaxationEquation import PostRelaxationEquation
+from fivol.equations.relaxationEquation import RelaxationEquation
 from fivol.terms.transientTerm import TransientTerm
 from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fivol.terms.scSourceTerm import ScSourceTerm
@@ -51,7 +54,7 @@ from fivol.terms.spSourceTerm import SpSourceTerm
 
 from substitutionalSumVariable import SubstitutionalSumVariable
 
-class PhaseEquation(MatrixEquation):
+class PhaseEquation(PreRelaxationEquation):
     def __init__(self,
                  phase,
 		 timeStepDuration,
@@ -92,13 +95,13 @@ class PhaseEquation(MatrixEquation):
 	    diffusionTerm,
 	    self.scTerm,
 	    self.spTerm
-            )
+	)
 	    
-	MatrixEquation.__init__(
+	PreRelaxationEquation.__init__(
             self,
             var = phase,
             terms = terms,
             solver = solver,
-	    relaxation = relaxation,
-            solutionTolerance = solutionTolerance)
+	    solutionTolerance = solutionTolerance,
+	    relaxation = relaxation)
 

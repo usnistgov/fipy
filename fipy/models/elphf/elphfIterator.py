@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "gist1DViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/24/04 {10:49:48 PM} 
+ #  FILE: "iterator.py"
+ #                                    created: 11/10/03 {2:47:38 PM} 
+ #                                last update: 1/24/04 {11:13:29 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -30,8 +30,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  #  Description: 
  # 
@@ -43,42 +41,45 @@
  # ###################################################################
  ##
 
+"""Generic equation iterator
+"""
+
 import Numeric
- 
-import gist
 
-from fivol.viewers.gistViewer import GistViewer
+from fivol.iterators.iterator import Iterator
+from fivol.iterators.adaptiveIterator import AdaptiveIterator
 
-class Gist1DViewer(GistViewer):
-    
-    def __init__(self, vars = None, title = None, minVal=None, maxVal=None, xlog = 0, ylog = 0, style = "work.gs"):
-        self.vars = list(vars)
-	self.xlog = xlog
-	self.ylog = ylog
-	self.style = style
-	if title is None and len(self.vars) == 1:
-	    title = self.vars[0].name
-	else:
-	    title = ''
-        GistViewer.__init__(self, minVal, maxVal, title = title)
+## import sys
 
-    def getArrays(self):
-	arrays = ()
-	for var in self.vars:
-	    arrays += var.getNumericValue(),
-	return arrays
-	
-    def plotArrays(self):
-## 	gist.plsys(0)
-	for array in self.getArrays():
-	    gist.plg(array)
-	gist.logxy(self.xlog, self.ylog)
-
-    def plot(self, minVal=None, maxVal=None):
-	gist.window(self.id, wait= 1, style = self.style)
-	gist.pltitle(self.title)
-	gist.animate(1)
-
-	self.plotArrays()
+class ElPhFIterator(Iterator):
+    def __init__(self,equations,timeStepDuration = None,viewers = ()):
+	"""Arguments:
 	    
-	gist.fma()
+	    'equations' -- list or tuple of equations to iterate over
+	"""
+	Iterator.__init__(self, equations, timeStepDuration)
+	self.viewers = viewers
+	
+    def sweep(self):
+	converged = Iterator.sweep(self)
+	
+## 	if not converged:
+	print '\n'
+	for equation in self.equations:
+	    residual = equation.getResidual()
+	    print str(equation) + ' has residual = ' \
+	    + str(Numeric.sqrt(Numeric.dot(residual,residual))/len(residual)) \
+	    + ' with relaxation = ' \
+	    + str(Numeric.sqrt(Numeric.dot(equation.relaxation,equation.relaxation))/len(equation.relaxation))
+	print '\n'
+	for viewer in self.viewers:
+	    viewer.plot()
+
+## 		if (sweep + 1) % 10 == 0:
+## 		    sys.stdout.write('|')
+## 		else:
+## 		    sys.stdout.write('.')
+## 		sys.stdout.flush()
+	    
+	return converged
+	

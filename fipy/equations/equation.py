@@ -6,7 +6,7 @@
  # 
  #  FILE: "equation.py"
  #                                    created: 11/10/03 {2:45:34 PM} 
- #                                last update: 1/20/04 {3:22:50 PM} 
+ #                                last update: 1/24/04 {12:40:02 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,17 +47,16 @@ class Equation:
         var,
         terms,
         solver,
-	relaxation = 0.,
 	solutionTolerance = 1e-4):
 
 	self.var = var
         self.terms = terms
 	self.solver = solver
 	
-	self.relaxation = relaxation
 	self.solutionTolerance = solutionTolerance
 	self.converged = 1
-	self.residual = 0
+	self.residual = var.getNumericValue().copy()
+	self.residual[:] = solutionTolerance
 
     def getVar(self):
         return self.var 
@@ -73,3 +72,6 @@ class Equation:
 
     def getResidual(self):
 	return self.residual
+	
+    def getSolutionTolerance(self):
+	return self.solutionTolerance

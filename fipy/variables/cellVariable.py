@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/16/04 {12:00:24 PM} 
+ #                                last update: 1/23/04 {4:29:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -118,3 +118,6 @@ class CellVariable(Variable):
 	if self.old is not None:
 	    self.old.setValue(self.value)
 	    
+    def resetToOld(self):
+	if self.old is not None:
+	    self.setValue(self.old.value)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/20/04 {3:19:44 PM} 
+ #                                last update: 1/24/04 {11:59:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,13 +42,16 @@
  ##
 
 
-from fivol.equations.matrixEquation import MatrixEquation
+## from fivol.equations.matrixEquation import MatrixEquation
+from fivol.equations.preRelaxationEquation import PreRelaxationEquation
+from fivol.equations.postRelaxationEquation import PostRelaxationEquation
+from fivol.equations.relaxationEquation import RelaxationEquation
 from fivol.terms.transientTerm import TransientTerm
 from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from fivol.terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 
-class ConcentrationEquation(MatrixEquation):
+class ConcentrationEquation(RelaxationEquation):
     def __init__(self,
                  Cj,
 		 timeStepDuration,
@@ -76,15 +79,15 @@ class ConcentrationEquation(MatrixEquation):
 	    TransientTerm(tranCoeff = 1. / timeStepDuration,mesh = mesh),
 	    diffusionTerm,
 	    convectionTerm
-            )
+	)
 	    
-	MatrixEquation.__init__(
+	RelaxationEquation.__init__(
             self,
             var = Cj,
             terms = terms,
             solver = solver,
-	    relaxation = relaxation,
-            solutionTolerance = solutionTolerance)
+	    solutionTolerance = solutionTolerance,
+	    relaxation = relaxation)
 	    
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:

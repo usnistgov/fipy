@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/20/04 {3:19:37 PM} 
+ #                                last update: 1/24/04 {11:59:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,10 @@
  ##
 
 
-import Numeric
-
-from fivol.equations.matrixEquation import MatrixEquation
+## from fivol.equations.matrixEquation import MatrixEquation
+from fivol.equations.preRelaxationEquation import PreRelaxationEquation
+from fivol.equations.postRelaxationEquation import PostRelaxationEquation
+from fivol.equations.relaxationEquation import RelaxationEquation
 from fivol.terms.transientTerm import TransientTerm
 from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fivol.terms.scSourceTerm import ScSourceTerm
@@ -54,14 +55,14 @@ from fivol.tools.dimensions import physicalField
 
 from substitutionalSumVariable import SubstitutionalSumVariable
 
-class PoissonEquation(MatrixEquation):
+class PoissonEquation(PreRelaxationEquation):
     def __init__(self,
                  potential,
 		 parameters,
 		 fields = {},
                  solver='default_solver',
-		 relaxation = 0.,
 		 solutionTolerance = 1e-10,
+		 relaxation = 1.,
                  boundaryConditions=()):
 		     
         mesh = potential.getMesh()
@@ -69,7 +70,7 @@ class PoissonEquation(MatrixEquation):
 	dielectric = physicalField.PhysicalField(value = "eps0 / (Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME))")
 	# LENGTH, ENERGY, or MOLARVOLUME might not have correct units
 	# in simple problems
-	dielectric /= physicalField.PhysicalField(value = 1, unit = dielectric.getUnit())
+	dielectric /= physicalField.PhysicalField(value = 1, unit = dielectric.inBaseUnits().getUnit())
 	dielectric *= physicalField.Scale(parameters['dielectric'], "eps0") 
 	
 	diffusionTerm = ImplicitDiffusionTerm(
@@ -79,8 +80,8 @@ class PoissonEquation(MatrixEquation):
 	    
 	fields['charge'] = fields['solvent'].getValence()
 	for component in list(fields['interstitials']) + list(fields['substitutionals']):
-	    fields['charge'] = fields['charge'] + component * component.getValence() #.getOld()
-	    
+	    fields['charge'] = fields['charge'] + self.getConcentration(component) * component.getValence() #.getOld()
+	
 ## 	charge = charge * "1 Faraday/MOLARVOLUME"
 	
 	self.scTerm = ScSourceTerm(
@@ -90,13 +91,17 @@ class PoissonEquation(MatrixEquation):
 	terms = (
 	    diffusionTerm,
 	    self.scTerm
-            )
+	)
 	    
-	MatrixEquation.__init__(
+	PreRelaxationEquation.__init__(
             self,
             var = potential,
             terms = terms,
             solver = solver,
-	    relaxation = relaxation,
-            solutionTolerance = solutionTolerance)
+	    solutionTolerance = solutionTolerance,
+	    relaxation = relaxation)
+	    
+    def getConcentration(self, component):
+	return component
+	
 
