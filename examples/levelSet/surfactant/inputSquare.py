@@ -43,22 +43,15 @@
 
 """
 
-This example follows the advection of a trench as in example
-`examples/levelSet/advection/input.py`. In this example there is
-a surfactant on the interface. We wish to 
-
+This example advects a 2 by 2 initially square region outwards.
+The example checks for global conservation of surfactant.
 
 Advect the interface and check the position.
 
+   >>> initialSurfactant = Numeric.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-
-   >>> distanceMoved = timeStepDuration * steps * velocity
-   >>> answer = answer - distanceMoved
-   >>> solution = Numeric.array(distanceVariable)
-   >>> answer = Numeric.where(answer < 0., 0., answer)
-   >>> solution = Numeric.where(solution < 0., 0., solution)
-   >>> Numeric.allclose(answer, solution, atol = 1e-1)
+   >>> Numeric.allclose(initialSurfactant, Numeric.sum(surfactantVariable[:]))
    1
  
 
@@ -70,10 +63,11 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.models.levelSet.surfactant.conservativeSurfactantEquation import ConservativeSurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -85,7 +79,7 @@ dx = 0.1
 velocity = 1.
 cfl = 0.1
 distanceToTravel = L / 5.
-boxSize = .5
+boxSize = .2
 
 nx = int(L / dx)
 ny = int(L / dx)
@@ -96,16 +90,9 @@ timeStepDuration = cfl * dx / velocity
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-distanceVariable = CellVariable(
-    name = 'level set variable',
+distanceVariable = DistanceVariable(
     mesh = mesh,
     value = 1.
-    )
-
-surfactantVariable = CellVariable(
-    name = 'surfactant variable',
-    mesh = mesh,
-    value = 0.
     )
 
 x0 = (L - boxSize) / 2
@@ -113,9 +100,13 @@ x1 = (L + boxSize) / 2
 
 distanceVariable.setValue(-1., mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1))
 
-surfactantVariable.setValue(1., mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1))
-
 distanceEquation = DistanceFunctionEquation(distanceVariable)
+distanceEquation.solve()
+
+surfactantVariable = SurfactantVariable(
+    distanceVariable = distanceVariable,
+    value = 1.
+    )
 
 surfactantEquation = ConservativeSurfactantEquation(
     surfactantVariable,
