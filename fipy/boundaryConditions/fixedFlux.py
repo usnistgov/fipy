@@ -68,7 +68,7 @@ class FixedFlux(BoundaryCondition):
 	  - `cell1dia`: *unused*
 	  - `cell1off`: *unused*
 	"""
-	return (Numeric.zeros((len(self.faces),),'d'), self.contribution, self.adjacentCellIds)
+	return (Numeric.zeros((len(self.faces),),'d'), -self.contribution, self.adjacentCellIds)
         
     def getDerivative(self, order):
 	if order == 1:
