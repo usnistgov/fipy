@@ -45,11 +45,14 @@ class Face:
     def __init__(self, vertices, id):
         self.vertices = vertices
         self.cells = ()
+        self.cellsId = ()
 	self.id = id
 	self.center = self.calcCenter()
+        self.area = self.calcArea()
             
     def addBoundingCell(self, cell):
         self.cells += (cell,)
+        self.cellsId += (cell.getId(), )
         
     def getCells(self):
         return self.cells
@@ -57,8 +60,12 @@ class Face:
     def getId(self):
 	return self.id
 
-    def getCellId(self,index=0):
-        return self.cells[index].getId()
+    def getCellId(self, index = 0):
+        return self.cellsId[index]
+
+##    def getCellId(self,index=0):
+##        return self.cells[index].getId()
+    
 	
     def calcCenter(self):
 	ctr = self.vertices[0].getCoordinates().copy()
@@ -68,8 +75,11 @@ class Face:
 
     def getCenter(self):
 	return self.center
+
+    def getArea(self):
+        return self.area
     
-    def area(self):
+    def calcArea(self):
 	a=0.
 	p1 = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[2:-1]:
@@ -118,7 +128,13 @@ class Face:
 	
 	return self.orientNormal(norm, cell)
 
-    def cellDistance(self):
+    def getCellDistance(self):
+        return self.cellDistance
+
+    def setCellDistance(self):
+        self.cellDistance = self.calcCellDistance()
+
+    def calcCellDistance(self):
         if(len(self.cells)==2):
             vec=self.cells[1].getCenter()-self.cells[0].getCenter()
         else:

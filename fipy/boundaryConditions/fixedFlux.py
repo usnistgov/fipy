@@ -47,7 +47,7 @@ class FixedFlux(BoundaryCondition):
         BoundaryCondition.__init__(self,faces,value)
 
     def update(self,face,coeff,stencil):
-        return (0, self.value * face.area())
+        return (0, self.value * face.getArea())
 
         
     

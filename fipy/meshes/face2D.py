@@ -46,7 +46,7 @@ class Face2D(Face):
     def __init__(self, vertices, id):
         Face.__init__(self,vertices,id)
 	
-    def area(self):
+    def calcArea(self):
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
         return tools.sqrtDot(tangent,tangent)
 	

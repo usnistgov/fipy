@@ -52,7 +52,7 @@ class DiffusionTerm(FaceTerm):
     def updateCoeff(self,dt):
 	self.coeff = Numeric.zeros(len(self.faces),'d')
 	for face in self.faces:
-	    self.coeff[face.getId()] = self.diffCoeff * face.area() / face.cellDistance()
+	    self.coeff[face.getId()] = self.diffCoeff * face.getArea() / face.getCellDistance()
 	
 	
 

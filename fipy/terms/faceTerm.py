@@ -53,7 +53,7 @@ class FaceTerm(Term):
         self.faces = faces
         self.interiorFaces = interiorFaces
         self.boundaryConditions = boundaryConditions
-	
+        
     def buildMatrix(self,L,array,b):
 	for face in self.interiorFaces:
             id1 = face.getCellId(0)

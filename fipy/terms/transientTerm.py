@@ -52,6 +52,6 @@ class TransientTerm(CellTerm):
     def updateCoeff(self,dt):
 	self.coeff = Numeric.zeros((len(self.cells)),'d')
 	for cell in self.cells:
-	    self.coeff[cell.getId()] = self.tranCoeff * cell.volume() / dt
+	    self.coeff[cell.getId()] = self.tranCoeff * cell.getVolume() / dt
 	
 

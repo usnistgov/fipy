@@ -53,15 +53,21 @@ class Cell:
 ## normal goes from cell 1 to cell 2.
         for face in self.faces:
             face.setNormal()
+            face.setCellDistance()
+        self.volume = self.calcVolume()
+        
 
     def getId(self):
         return self.id
 	
-    def volume(self):
+    def calcVolume(self):
 	vol = 0.
 	for face in self.faces:
-	    vol += face.getCenter()[0] * face.area() * face.getNormal(self)[0]
+	    vol += face.getCenter()[0] * face.getArea() * face.getNormal(self)[0]
 	return vol
+
+    def getVolume(self):
+        return self.volume
 
     def getCenter(self):
         return self.center
