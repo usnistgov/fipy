@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 11/24/03 {10:16:58 AM} 
+ #                                last update: 11/30/03 {12:48:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -72,6 +72,7 @@ class Iterator:
             for equation in self.equations:
                 var = equation.getVar()
                 var.updateOld()
+		var.refresh()
 	    for equation in self.equations:
 		equation.preSolve()	
 	    for equation in self.equations:
