@@ -68,7 +68,7 @@ import Gnuplot
 
 class GnuplotViewer:
     
-    def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color'):
+    def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color', legend = True):
         """
 
         Argument list:
@@ -85,6 +85,8 @@ class GnuplotViewer:
 
         `palette` - The color scheme. Other choices might be `color
         negative` or `gray`. This is completely configurable.
+
+        `legend` - Whether to display the legend.
         
         """
         
@@ -94,7 +96,8 @@ class GnuplotViewer:
         self.maxVal = maxVal
         self.minVal = minVal
         self.palette = palette
-
+        self.legend = legend
+        
     def gnuplotCommands(self, g):
         g('set data style lines')
         g('set view map')
@@ -108,6 +111,7 @@ class GnuplotViewer:
         g('set pm3d at b')
         g('set palette ' + self.palette)
         g('set size ratio -1')
+##        g('set size square')
         return g
 
     def plot(self, fileName = None):
@@ -152,6 +156,10 @@ class GnuplotViewer:
 ##        g('set zrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
         g('set cbrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
 
+        if not self.legend:
+            g('unset colorbox')
+            g('unset border')
+                
         if fileName is None:
             g.splot(Gnuplot.GridData(array, x, y))
         elif '.pdf' == fileName[-4:]:
