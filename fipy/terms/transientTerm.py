@@ -3,11 +3,10 @@
 ####################################################################
 # PFM - Python-based phase field solver
 #
-# FILE: "mesh.py"
-#                                   created: 11/10/03 {2:44:42 PM} 
-#                               last update: 11/12/03 {10:09:47 AM} 
+# FILE: "transientTerm.py"
+#                                   created: 11/12/03 {11:35:45 AM} 
+#                               last update: 11/12/03 {11:38:20 AM} 
 # Author: Jonathan Guyer
-# Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
 #   mail: NIST
 #    www: http://ctcms.nist.gov/
@@ -35,9 +34,11 @@
 #----
 """
 
-class Mesh:
-	def __init__(self, cells, faces, vertices):
-		self.cells = cells
-		self.faces = faces
-		self.vertices = vertices
-		
+import cellTerm
+
+class TransientTerm(cellTerm.CellTerm):
+	def __init__(self,equation,coeff):
+		cellTerm.CellTerm.__init__(self, stencil = (0,1,1), equation) 
+		self.coeff = coeff
+
+

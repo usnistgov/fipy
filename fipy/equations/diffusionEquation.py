@@ -3,9 +3,9 @@
 ####################################################################
 # PFM - Python-based phase field solver
 #
-# FILE: "mesh.py"
-#                                   created: 11/10/03 {2:44:42 PM} 
-#                               last update: 11/12/03 {10:09:47 AM} 
+# FILE: "diffusionEquation.py"
+#                                   created: 11/12/03 {10:35:33 AM} 
+#                               last update: 11/12/03 {10:53:53 AM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -34,10 +34,9 @@
 ####################################################################
 #----
 """
+import matrixEquation
 
-class Mesh:
-	def __init__(self, cells, faces, vertices):
-		self.cells = cells
-		self.faces = faces
-		self.vertices = vertices
-		
+class DiffusionEquation(matrixEquation.MatrixEquation):
+	def __init__(self,var):
+		terms = (term.Transient(),term.Diffusion())
+		MatrixEquation.__init__(self,var,terms)

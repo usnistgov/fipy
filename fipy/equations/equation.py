@@ -5,8 +5,9 @@
 #
 # FILE: "equation.py"
 #                                   created: 11/10/03 {2:45:34 PM} 
-#                               last update: 11/10/03 {2:45:43 PM} 
+#                               last update: 11/12/03 {10:57:06 AM} 
 # Author: Jonathan Guyer
+# Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
 #   mail: NIST
 #    www: http://ctcms.nist.gov/
@@ -35,12 +36,11 @@
 """
 
 class Equation:
-    def __init__(terms,vars,mesh):
-        self.terms=terms
-        self.vars=vars
-        self.var=variable.Variable(mesh)
+    def __init__(self,var,terms):
+	self.var = var
+        self.terms = terms
             
-    def update_coeffs():
+    def updateCoeffs(self):
         for term in self.terms:
-            self.update_coeff(self.vars)
+            term.updateCoeff(self.var)
     

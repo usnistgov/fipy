@@ -1,10 +1,11 @@
+"""
 #-----*-Pyth-*-
 ####################################################################
 # PFM - Python-based phase field solver
 #
 # FILE: "variable.py"
 #                                   created: 11/10/03 {3:13:28 PM} 
-#                               last update: 11/10/03 {3:15:38 PM} 
+#                               last update: 11/12/03 {11:34:47 AM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -31,5 +32,9 @@
 # 
 ####################################################################
 #----
+"""
 
+class Variable:
+	def __init__(self):
+		pass
 

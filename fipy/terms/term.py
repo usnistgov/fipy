@@ -3,9 +3,9 @@
 ####################################################################
 # PFM - Python-based phase field solver
 #
-# FILE: "mesh.py"
-#                                   created: 11/10/03 {2:44:42 PM} 
-#                               last update: 11/12/03 {10:09:47 AM} 
+# FILE: "term.py"
+#                                   created: 11/12/03 {10:54:17 AM} 
+#                               last update: 11/12/03 {11:01:46 AM} 
 # Author: Jonathan Guyer
 # Author: Daniel Wheeler
 # E-mail: guyer@nist.gov
@@ -35,9 +35,13 @@
 #----
 """
 
-class Mesh:
-	def __init__(self, cells, faces, vertices):
-		self.cells = cells
-		self.faces = faces
-		self.vertices = vertices
+class Term:
+	def __init__(self,stencil):
+		self.stencil = stencil
 		
+	def updateCoeff(self,var):
+		pass
+		
+	def updateMatrix(self,L,b,var):
+		pass
+
