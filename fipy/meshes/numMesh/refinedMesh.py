@@ -116,7 +116,7 @@ class RefinedMesh2D(Mesh2D):
         newNumVertices = baseNumVertices + len(nodeList)
         newVertexCoords = Numeric.concatenate((baseMesh.getVertexCoords(), Numeric.take(baseMesh.getCellCenters(), nodeList)))
         ## calculate new face vertex IDs
-        cellVertexIDs = baseMesh.getOrderedCellVertexIDs()
+        cellVertexIDs = baseMesh._getOrderedCellVertexIDs()
         maxVerticesPerCell = cellVertexIDs.shape[1]
         refinedCellVertexIDs = Numeric.take(cellVertexIDs, nodeList)
         firstVerticesInAddedFaces = Numeric.repeat(Numeric.arange(baseNumVertices, newNumVertices), maxVerticesPerCell * Numeric.ones(len(nodeList)))
