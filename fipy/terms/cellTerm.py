@@ -44,30 +44,58 @@
 import Numeric
 
 from fivol.terms.term import Term
+from fivol.inline import inline
 
 class CellTerm(Term):
     def __init__(self,weight,mesh):
 	Term.__init__(self,weight)
         self.mesh = mesh
 	
-	self.oldCoeff = self.coeff*weight['old value']
-	self.bCoeff = self.coeff*weight['b vector']
-	self.newCoeff = self.coeff*weight['new value']
+	self.oldCoeff = self.coeff * weight['old value']
+	self.bCoeff = self.coeff * weight['b vector']
+	self.newCoeff = self.coeff * weight['new value']
+        self.updatePyArray = Numeric.zeros((len(self.mesh.getCells())),'d')
 	
-    def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
-	N = len(oldArray)
+    def _buildMatrixPy(self, L, oldArray, b, coeffScale, varScale):
+        N = len(oldArray)
+	b += oldArray * self.oldCoeff[:] / (coeffScale * varScale)
+	b += Numeric.ones([N]) * self.bCoeff[:] / (coeffScale)
+	L.update_add_pyarray(Numeric.ones([N]) * self.newCoeff[:]/coeffScale)
 
-	coeffScale = coeffScale * varScale
-
-##        print self.__class__
-##        print oldArray[0]
-##        print self.oldCoeff[:]
-##        print coeffScale
-##        print  varScale
-        
-	b += oldArray*self.oldCoeff[:]/(coeffScale * varScale)
-	b += Numeric.ones([N])*self.bCoeff[:]/(coeffScale)
-	L.update_add_pyarray(Numeric.ones([N])*self.newCoeff[:]/coeffScale)
+    def buildMatrix(self, L, oldArray, b, coeffScale, varScale):
+        coeffScale = coeffScale * varScale
+        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale)
 
     def _buildMatrixIn(self, L, oldArray, b, coeffScale, varScale):
-        inline.optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, oldArray, b, coeffScale, varScale)
+
+        if type(self.oldCoeff) is type(Numeric.zeros((2),'d')):
+            oldCoeff = self.oldCoeff
+            bCoeff = self.bCoeff
+            newCoeff = self.newCoeff
+        else:
+            oldCoeff = self.oldCoeff.getNumericValue()
+            bCoeff = self.bCoeff.getNumericValue()
+            newCoeff = self.newCoeff.getNumericValue()
+
+        if type(coeffScale) in (type(Numeric.zeros((2),'d')),type(1)):
+            cScale = coeffScale
+        else:
+            cScale = coeffScale.getNumericValue()
+                
+        inline.runInlineLoop1("""
+            b(i) += oldArray(i) * oldCoeff(i) / coeffScale / varScale;
+            b(i) += bCoeff(i) / coeffScale;
+            updatePyArray(i) = newCoeff(i) / coeffScale;
+        """,b = b[:],
+            oldArray = oldArray.getNumericValue(),
+            oldCoeff = oldCoeff,
+            coeffScale = cScale,
+            varScale = varScale.getNumericValue(),
+            bCoeff = bCoeff,
+            newCoeff = newCoeff,
+            updatePyArray = self.updatePyArray[:],
+            ni = len(self.updatePyArray[:]))
+        
+        L.update_add_pyarray(self.updatePyArray)
+
+        
