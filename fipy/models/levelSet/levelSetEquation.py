@@ -111,11 +111,10 @@ class LevelSetEquation(Equation):
 ##                        boundingCell = (cell,)
 ##            boundingCells += boundingCell
 
-    def getMinimumCell(cells):
-        values = 
-            
+    def getMinimumCell(cells, var):
+        minVal = var(cells[0].getId())
+        for cell in cells[1:]:
+            minVal = min(minVal, var(cell.getId()))
 
-            
-                    
-                
-    
+        return minVal
+        
