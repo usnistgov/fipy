@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {5:18:16 PM} 
+ #                                last update: 12/5/03 {9:40:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -83,29 +83,29 @@ class TestPhase(TestBase):
         dx = self.L/nx
         dy = self.L/ny
         
-        mesh = Grid2D(dx,dy,nx,ny)
+        self.mesh = Grid2D(dx,dy,nx,ny)
         
-        self.phase = Variable(
+        self.var = Variable(
             name = 'PhaseField',
-            mesh = mesh,
+            mesh = self.mesh,
             value = 1.
             )
         
         theta = Variable(
             name = 'Theta',
-            mesh = mesh,
+            mesh = self.mesh,
             value = 1.,
             hasOld = 0
             )
         
         func = self.func
 
-        rightCells = mesh.getCells(func)
+        rightCells = self.mesh.getCells(func)
         
         theta.setValue(0.,rightCells)
 
         eq = PhaseEquation(
-            self.phase,
+            self.var,
             theta = theta,
             temperature = 1.,
             solver = LinearPCGSolver(
@@ -113,43 +113,21 @@ class TestPhase(TestBase):
             steps = 1000
             ),
             boundaryConditions=(
-            FixedValue(mesh.getFacesLeft(),valueLeft),
-            FixedValue(mesh.getFacesRight(),valueRight)),
+            FixedValue(self.mesh.getFacesLeft(),valueLeft),
+            FixedValue(self.mesh.getFacesRight(),valueRight)),
             parameters = phaseParameters
             )
         
         self.it = Iterator((eq,))
 	
+    def getTestValues(self):
 	filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
 	
-	self.testData = cPickle.load(filestream)
+	testData = cPickle.load(filestream)
 	filestream.close()
 
-	self.testData = Numeric.reshape(self.testData,(len(self.phase.getArray()),))
-
-    def getTestValue(self, cell):
-	return self.testData[cell.getId()]
-
-#     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-#         """Fail if the two objects are unequal by more than tol.
-#         """
-#         if abs(first - second) > tol:
-#             raise self.failureException, (msg or '%s !~ %s' % (first, second))
-#         
-#     def testResult(self):
-#         self.it.iterate(100,0.02)
-#         array = self.phase.getArray()
-# 
-#         filestream=os.popen('gunzip --fast -c < %s/%s'%(tests.__path__[0],self.testFile),'r')
-#         
-#         testArray=cPickle.load(filestream)
-#         filestream.close()
-# 
-#         testArray = Numeric.reshape(testArray,(len(array),))
-# 
-#         for i in range(len(array)):
-#             norm = abs(array[i] - testArray[i])        
-#             self.assertWithinTolerance(norm, 0.0, 1e-7,("cell(%g)'s value of %g differs from %g by %g" % (i,array[i],testArray[i],norm)))
+# 	testData = Numeric.reshape(testData,Numeric.shape(self.var.getArray()))
+	return testData
 
 class TestPhase1D(TestPhase):
     def setUp(self):
@@ -184,7 +162,7 @@ class TestPhaseCircle(TestPhase):
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestPhase1D))
-#     theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
+    theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     return theSuite
     
 if __name__ == '__main__':

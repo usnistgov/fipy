@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {5:12:20 PM} 
+ #                                last update: 12/5/03 {9:48:11 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -92,14 +92,13 @@ class TestSteadyStateDiffusion(TestBase):
 
         self.it = Iterator((self.eq,))
 
-    def getTestValue(self, cell):
+    def getTestValues(self):
 	(lx,ly) = self.mesh.getPhysicalShape()
 	vl = self.valueLeft
 	vr = self.valueRight
-	val = vl + (vr - vl) * cell.getCenter()[0] / lx
+	x = self.mesh.getCellCenters()[:,0]
+	return vl + (vr - vl) * x / lx
 	
-	return val
-	    
 class TestSteadyStateDiffusion20x20(TestSteadyStateDiffusion):
     """Steady-state 1D diffusion on a 20x20 mesh
     """

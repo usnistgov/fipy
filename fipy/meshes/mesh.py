@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/4/03 {10:09:36 AM} 
+ #                                last update: 12/5/03 {9:45:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,6 +51,10 @@ class Mesh:
         self.vertices = vertices
         self.interiorFaces = interiorFaces
         self.dim = len(self.vertices[0].getCoordinates())
+	
+	self.calcCellFaceIDs(cells)
+	self.calcCellCenters(cells)
+	self.calcFaceTangents(faces)
 	
 	self.calcAdjacentCellIDs()
 
@@ -183,6 +187,15 @@ class Mesh:
 	for i in range(N):
 	    self.cellVolumes[i] = cells[i].getVolume()	    
 	    
+    def getCellCenters(self):
+	return self.cellCenters
+	
+    def calcCellCenters(self,cells):
+	N = len(cells)
+	self.cellCenters = Numeric.zeros((N,self.dim),'d')
+	for i in range(N):
+	    self.cellCenters[i] = cells[i].getCenter()	    
+	
     def getCellDistances(self):
 	return self.cellDistances
 	

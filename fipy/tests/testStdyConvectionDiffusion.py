@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {5:12:38 PM} 
+ #                                last update: 12/5/03 {9:49:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -95,34 +95,9 @@ class TestSteadyConvectionDiffusion(TestBase):
 
         self.it = Iterator((self.eq,))
 
-    def getTestValue(self, cell):
-	x = cell.getCenter()[0]
-	val = (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
-	
-	return val
-	
-	
-#     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-#         """Fail if the two objects are unequal by more than tol.
-#         """
-#         if abs(first - second) > tol:
-#             raise self.failureException, (msg or '%s !~ %s' % (first, second))
-        
-#     def testResult(self):
-#         self.it.iterate(steps = 1, timeStep = 1.)
-#         array = self.var.getArray()
-#         (lx,ly) = self.mesh.getPhysicalShape()
-#         vl = self.valueLeft
-#         vr = self.valueRight
-# 
-#         for cell in self.mesh.getCells():
-#             coords = cell.getCenter()
-#             id = cell.getId()
-# 	    x = coords[0]
-# 	    val = (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
-#             norm = abs(array[id] - val)        
-#             self.assertWithinTolerance(norm, 0.0, self.tolerance,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
-            
+    def getTestValues(self):
+	x = self.mesh.getCellCenters()[:,0]
+	return (1. - Numeric.exp(-self.convCoeff[0] * x / self.diffCoeff)) / (1. - Numeric.exp(-self.convCoeff[0] * self.L / self.diffCoeff))
 	    
 class  TestSteadyConvectionDiffusion1DExponential(TestSteadyConvectionDiffusion):
     """Steady-state 1D diffusion on a 100x1 mesh, with exponentional convection scheme

@@ -4,7 +4,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/5/03 {5:12:02 PM} 
+ #                                last update: 12/5/03 {9:41:26 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -34,24 +34,34 @@
 
 
 import unittest
+import Numeric
 
 class TestBase(unittest.TestCase):
-    def getTestValue(self, cell):
-	pass
-	
     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
 	if abs(first - second) > tol:
 	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
+
+    def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
+	"""Fail if the two objects are unequal by more than tol.
+	"""
+	if not Numeric.allclose(first, second, rtol, atol):
+	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
 	    
+    def getTestValue(self, cell):
+	pass
+	
+    def getTestValues(self):
+	values = self.var.getArray().copy()
+	for cell in self.mesh.getCells():
+	    id = cell.getId()
+	    values[id] = self.getTestValue(cell)
+	return values
+	
     def testResult(self):
 	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
 	array = self.var.getArray()
-
-	for cell in self.mesh.getCells():
-	    id = cell.getId()
-	    val = self.getTestValue(cell.getCenter())
-	    norm = abs(array[id] - val)
-	    self.assertWithinTolerance(norm, 0.0, self.tolerance,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
-
+	values = self.getTestValues()
+	values = Numeric.reshape(values, Numeric.shape(array))
+	self.assertArrayWithinTolerance(array, values, self.tolerance)

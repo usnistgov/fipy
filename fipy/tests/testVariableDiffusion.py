@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/5/03 {5:13:12 PM} 
+ #                                last update: 12/5/03 {9:53:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -125,16 +125,13 @@ class TestVariableDiffusion(TestBase):
 
         self.it = Iterator((self.eq,))
 
-    def getTestValue(self, cell):
-	x = cell.getCenter()[0]
+    def getTestValues(self):
+	x = self.mesh.getCellCenters()[:,0]
 	L = self.Lx
-	if x < L / 4.:
-	    return x
-	elif x< 3. * L / 4.:
-	    return 10 * x - 9. * L / 4.
-	else:
-	    return x + 18. * L / 4.
-
+	values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
+	values = Numeric.where(     x < L / 4.,                    x,           values)
+	return values
+	    
 class TestVariableDiffusion2x1(TestVariableDiffusion):
     """Variable 1D diffusion on a 1x2 mesh
     """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 11/29/03 {9:08:49 PM} 
+ #                                last update: 12/5/03 {10:10:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,18 +46,17 @@ import tests.testVariableDiffusion
 import tests.testSteadyStateDiffusion
 import tests.testExplicitDiffusion
 import tests.testPhase
+import tests.testStdyConvectionDiffusion
 import unittest
 
 if __name__ == '__main__':
-    theSuite = tests.testSteadyStateDiffusion.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    theSuite = unittest.TestSuite()
     
-    theSuite = tests.testExplicitDiffusion.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    theSuite.addTest(tests.testSteadyStateDiffusion.suite())
+    theSuite.addTest(tests.testExplicitDiffusion.suite())
+    theSuite.addTest(tests.testVariableDiffusion.suite())
+    theSuite.addTest(tests.testPhase.suite())
+    theSuite.addTest(tests.testStdyConvectionDiffusion.suite())
     
-    theSuite = tests.testVariableDiffusion.suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 
-    theSuite = tests.testPhase.suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
-    

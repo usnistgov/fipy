@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 12/3/03 {10:45:16 AM} 
+ #                                last update: 12/5/03 {9:46:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -134,8 +134,6 @@ class Grid2D(Mesh):
 	rowFaces,colFaces = self.createFaces(vertices)
 	cells = self.createCells(rowFaces,colFaces)
 	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
-	self.calcCellFaceIDs(cells)
-	self.calcFaceTangents(faces)
         
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
