@@ -214,7 +214,7 @@ commands::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
-and then::
+and press enter at the password prompt, then::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout fipy
 
@@ -234,7 +234,7 @@ PySparse_ via a separate anonymous CVS download::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
-and then::
+and press enter at the password prompt, then::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
 
