@@ -73,7 +73,7 @@ class System4Particles(ImpingementSystem):
 
     def run(self):
         
-        for j in range(250):
+        for j in range(1000):
 
             self.it.timestep(1)
             
@@ -104,7 +104,7 @@ class System4Particles(ImpingementSystem):
     
 if __name__ == '__main__':
 
-    system = System4Particles(nx = 100, ny = 100, steps = 5, drivingForce = 5.)
+    system = System4Particles(nx = 200, ny = 200, steps = 5, drivingForce = 5.)
     system.run()
 
     
