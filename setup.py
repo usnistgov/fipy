@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/11/05 {2:46:11 PM} 
+ #                                last update: 3/11/05 {5:05:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -318,18 +318,15 @@ class build_docs (Command):
 	    os.system('chgrp -R pfm documentation/manual/fipy.pdf')
 	    
 	    print "linking manuals to website..."
-	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/')
-	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/')
+	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
+	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
 	    
 	    print "setting group and ownership of tarballs..."
 	    os.system('chmod -R g+w dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
 	    os.system('chgrp -R pfm dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
-	    os.system('chmod -R g+w ../pysparse/dist/pysparse-FiPy.tar.gz')
-	    os.system('chgrp -R pfm ../pysparse/dist/pysparse-FiPy.tar.gz')
 	    
 	    print "linking tarballs to website..."
 	    os.system('ln -sf ../../../dist/FiPy-%s.tar.gz documentation/www/download/'%self.distribution.metadata.get_version())
-	    os.system('ln -sf ../../../../pysparse/dist/pysparse-FiPy.tar.gz documentation/www/download/')
 
 	    print "setting group and ownership of web pages..."
 	    os.system('chgrp -R pfm documentation/www/')
@@ -589,7 +586,6 @@ dist = setup(	name = "FiPy",
 			    'fipy.meshes.numMesh',
 			    'fipy.meshes.pyMesh',
 			'fipy.models',
-			    'fipy.models.cahnHilliard',
 			    'fipy.models.elphf',
 			    'fipy.models.levelSet',
 				'fipy.models.levelSet.advection',
