@@ -125,8 +125,8 @@ class GnuplotViewer:
         ## prepare the array
         array =  Numeric.array(self.array)
         (nx, ny) = array.shape
-        x = Numeric.arange(ny) * self.dy
-        y = Numeric.arange(nx) * self.dx
+        y = Numeric.arange(ny) * self.dy
+        x = Numeric.arange(nx) * self.dx
 ##         array = Numeric.transpose(array)
 
         ## issue the gnuplot commands
@@ -167,7 +167,6 @@ class GnuplotViewer:
 		g('set output "' + fileName + '"')
 		g.splot(Gnuplot.GridData(array, x, y))
 	    elif '.ps' == ext:
-		
 		g.splot(Gnuplot.GridData(array, x, y))
 		g.hardcopy(fileName, enhanced=1, color=1, fontsize = 10)
 		
