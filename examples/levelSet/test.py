@@ -50,6 +50,7 @@ import fipy.tests.testProgram
 
 import distanceFunction.test
 import advection.test
+import surfactant.test
 
 
 def suite():
@@ -57,6 +58,7 @@ def suite():
     
     theSuite.addTest(distanceFunction.test.suite())
     theSuite.addTest(advection.test.suite())
+    theSuite.addTest(surfactant.test.suite())
     
     return theSuite
 
