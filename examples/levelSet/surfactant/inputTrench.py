@@ -170,16 +170,16 @@ if __name__ == '__main__':
 ##    from fipy.tools.profiler.profiler import Profiler
 ##    fudge = calibrate_profiler(10000)
 ##    profile = Profiler('profile.txt', fudge=fudge)
-    from fipy.viewers.gist1DViewer import Gist1DViewer
-    totalTime = 0
+##    from fipy.viewers.gist1DViewer import Gist1DViewer
+##    totalTime = 0
 
-    import fipy.tools.dump as dump
+##    import fipy.tools.dump as dump
 
-    stringCenterHeights = dump.read('centerHeights')
+##    stringCenterHeights = dump.read('centerHeights')
     
-    centerHeights = [[0,0]]
-    centerView = Gist1DViewer(vars = (centerHeights, stringCenterHeights), title = 'Center Height')
-
+##    centerHeights = [[0,0]]
+##    centerView = Gist1DViewer(vars = (centerHeights, stringCenterHeights), title = 'Center Height')
+    totalTime = 0
     argmax = Numeric.argmax(velocity)
     timeStepDuration = cfl * dx / velocity[argmax]
     for step in range(steps):
@@ -205,9 +205,9 @@ if __name__ == '__main__':
         velocityViewer.plot()
         levelSetViewer.plot()
         
-        centerHeights.append([totalTime, calcCenterHeight(distanceVariable) - 0.25])
+##        centerHeights.append([totalTime, calcCenterHeight(distanceVariable) - 0.25])
 
-        centerView.plot()
+##        centerView.plot()
 
 
     
