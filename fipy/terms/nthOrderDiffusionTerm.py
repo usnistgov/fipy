@@ -157,9 +157,9 @@ Test when dx = 0.5.
     2.000000  -2.000000  
    >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
    ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print L
-    8.00e+01  -32.000000 
-   -32.000000 16.000000  
+   >>> ans = Numeric.array(((8e+01, -32),(-32, 16)))
+   >>> print Numeric.allclose(Numeric.array(L), ans)
+   1
    >>> print b
    [-8., 4.,]
 
@@ -177,9 +177,9 @@ Test when dx = 0.25.
     4.000000  -4.000000  
    >>> L,b = term.buildMatrix(var = CellVariable(mesh = mesh), 
    ...                        boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
-   >>> print L
-    6.40e+02  -2.56e+02  
-   -2.56e+02   1.28e+02  
+   >>> ans = Numeric.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
+   >>> print Numeric.allclose(Numeric.array(L), ans)
+   1
    >>> print b
    [-24., 16.,]
    
