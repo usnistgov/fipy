@@ -74,13 +74,13 @@ If the `AdvectionEquation` is build with the `HigherOrderAdvectionTerm` the resu
 is more accurate,
 
    >>> var.setValue(initialArray)
-   >>> advEqn = AdvectionEquation(
+   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
+   >>> advEqn = HigherOrderAdvectionEquation(
    ...     var,
    ...     advectionCoeff = velocity,
    ...     solver = LinearPCGSolver(
    ...         tolerance = 1.e-15, 
-   ...         steps = 1000),
-   ...     advectionTerm = HigherOrderAdvectionTerm)
+   ...         steps = 1000))
    >>> it = Iterator((advEqn,))
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
@@ -99,7 +99,6 @@ from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVaria
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 
 L = 1.
 nx = 25

@@ -110,15 +110,13 @@ var = DistanceVariable(
     value = -1.
     )
 
-viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
-
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] - Lx / 2.)**2 + (cell.getCenter()[1] - Ly / 2.)**2 < (Lx / 4.)**2)
 var.setValue(1.,positiveCells)
 
 eqn = DistanceEquation(var)
 
 if __name__ == '__main__':
-
+    viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
     viewer.plot()
 
     eqn.solve()
