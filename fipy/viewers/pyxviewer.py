@@ -63,9 +63,9 @@ miny, maxy - The minimum and maximum values of Y to appear on the plot. By defau
 
 minval, maxval - The minimum and maximum values on the color scale. A value of minval will appear completely blue and a value of maxval will appear completely red. If no values are specified, minval will default to the lowest value of the variable over the area to be plotted and maxval will default to the highest value of the variable over the area to be plotted.
 
-resolution - The distance between the centers of adjacent plot cells. Lower values will result in higher quality images. If no value is specified, the resolution will be set such that there will be approximately 1,000 plot cells.
+resolution - The distance between the centers of adjacent plot cells. Lower values will result in higher quality images. If no value is specified, the resolution will be set such that there will be approximately 10,000 plot cells.
 
-filename - The name of the file to store the resulting image in. An extension is not needed here - the .eps extension will automatically be added. If no filename is specified, the image will be stored inthe file `temp.eps` so it can be viewed.
+filename - The name of the file to store the resulting image in. An extension is not needed here - the .eps extension will automatically be added. If no filename is specified, the image will be stored in the file `temp.eps` so it can be viewed.
 
 viewcmd - The OS command used to access your graphics viewer. If specified, the graphics viewer will be automatically opened
 to view your plot. Default is 'gv'.
@@ -78,6 +78,12 @@ valuelabel - The label to use for the value of the variable on the scale. Defaul
 
 gridcorrect - The amount, in multiples of the resolution, that adjacent plot cells overlap. This overlap eliminates the 'grid effect'. If you still
 see a grid of white space, increase this value. Default value is 0.3.
+
+graphheight - The physical height of the graph. Default is 12.
+
+graphwidth - The physical width of the graph. Default is 12.
+
+mask - Used to 'blank out' specified areas of the graph, useful if you have a mesh whose boundaries do not form a rectangle. The format for mask is an N-by-4 array, where N is the number of different rectangles you want to blank out. Each row represents a separate blanked-out rectangle: the first two numbers being the X and Y coordinates of the lower left hand corner of said rectangle, and the last two being the X and Y coordinates of the upper right hand corner. For example, mask = [[0, 0, 3, 2], [7, 8, 10, 10]] indicates that the area inside the rectangle with lower left corner (0, 0) and upper left corner (3, 2) should be blanked out, as should the area inside the rectangle with lower left coordinate (7, 8) and upper left coordinate (10, 10).
 
 The following are keyword arguments in the __init__() method: (Note that these work for PyxViewer only, not Grid2DPyxViewer)
 
@@ -208,7 +214,7 @@ class PyxViewer:
 
 ## ------------------------------------------------------------------------------------
 
-    def plot(self, returnlist = 0, debug=0, minx=None, maxx=None, miny=None, maxy=None, minval=None, maxval=None, resolution = None, filename = None, viewcmd = "gv", xlabel = "X values", ylabel = "Y values", valuelabel = None, gridcorrect = 0.3):
+    def plot(self, returnlist = 0, debug=0, minx=None, maxx=None, miny=None, maxy=None, minval=None, maxval=None, resolution = None, filename = None, viewcmd = "gv", xlabel = "X values", ylabel = "Y values", valuelabel = None, mask = None, gridcorrect = 0.3, graphheight = 12, graphwidth = 12):
         
         ## initialize variables
         
@@ -230,7 +236,7 @@ class PyxViewer:
         ## If a resolution is given, use that.
         
         if(resolution == None):
-            resolution = ((((maxx - minx)*(maxy - miny))/1000.0) ** 0.5)
+            resolution = ((((maxx - minx)*(maxy - miny))/10000.0) ** 0.5)
 
         ## calculate the number of points to plot in the X direction (xsize) and the Y direction (ysize). The total number of points plotted
         ## will be equal to (xsize * ysize).
@@ -286,12 +292,12 @@ class PyxViewer:
         ## Create the graph and plot it.
         if(filename != None):
             mycanvas = pyx.canvas.canvas()
-            mygraph = pyx.graph.graphxy(height = 12, width = 12, xpos = 0, ypos = 0, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
+            mygraph = pyx.graph.graphxy(height = graphheight, width = graphwidth, xpos = 0, ypos = 0, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
             mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
             mycanvas.stroke(mygraph)
             if(valuelabel == None):
                 valuelabel = self.var.name
-            scalegraph = pyx.graph.graphxy(height = 12, width = 1, xpos = 14, ypos = 0, y = pyx.graph.axis.linear(min = minval, max = maxval, title = valuelabel))
+            scalegraph = pyx.graph.graphxy(height = 12, width = 1, xpos = graphwidth + 2, ypos = 0, y = pyx.graph.axis.linear(min = minval, max = maxval, title = valuelabel))
             scaleminx = Numeric.zeros((100,))
             scalemaxx = Numeric.ones((100,))
             scaleminy = Numeric.fromfunction(lambda num: minval + (maxval - minval)*(num / 100.0), (100,))
@@ -302,6 +308,18 @@ class PyxViewer:
             scalelist = scalearray.tolist()
             scalegraph.plot(pyx.graph.data.list(scalelist, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
             mycanvas.stroke(scalegraph)
+            ## do the mask
+            if(mask != None):
+                ## the following two functions convert "grid" coordinates (the coordinate system used by the variables and mesh) to "display" coordinates (the coordinates used by the canvas)
+                xgridtodisplay = lambda x: min(((x - minx)/(maxx - minx)) * graphwidth, graphwidth) 
+                ygridtodisplay = lambda y: min(((y - miny)/(maxy - miny)) * graphheight, graphheight)
+                for element in mask:
+                    lowx = xgridtodisplay(element[0])
+                    lowy = ygridtodisplay(element[1])
+                    highx = xgridtodisplay(element[2])
+                    highy = ygridtodisplay(element[3])
+                    blankpart = pyx.path.rect(lowx, lowy, (highx - lowx), (highy - lowy))
+                    mycanvas.stroke(blankpart, [pyx.deco.filled([pyx.color.grey(0.95)])])
             mycanvas.writeEPSfile(filename)
             if(viewcmd != None):
                 os.system(viewcmd + " " + filename + ".eps &")
