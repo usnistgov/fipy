@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/25/04 {9:01:07 PM} 
+ #                                last update: 11/30/04 {11:40:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,8 +108,8 @@ class FaceTerm(Term):
 	    b += bb / varScale
 	    
 ## 	    print boundaryCondition
-## 	    print L
-## 	    print b
+## 	print L
+## 	print b
 	    
     def explicitBuildMatrix(self, oldArray, id1, id2, b, coeffScale, varScale):
 

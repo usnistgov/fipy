@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/16/04 {11:48:01 AM} 
+ #                                last update: 11/24/04 {8:36:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -225,12 +225,12 @@ def _test():
 
 if __name__ == "__main__":
     baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile', fudge=fudge)
+##     fudge = calibrate_profiler(10000)
+##     profile = Profiler('profile', fudge=fudge)
     var = CellVariable(mesh = baseMesh,
                        value = 0.025 - (0.005 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)),
                        name = "characteristic lengths")
     newMesh = AdaptiveMesh2D(var)
-    profile.stop()
+##     profile.stop()
     _test()
 
