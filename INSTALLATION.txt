@@ -6,12 +6,32 @@ The |FiPy| finite volume PDE solver relies on several third-party
 packages. [*]_ It is best to obtain and install those first, before
 attempting to install |FiPy|.
 
+If you do not have administrative privileges on your computer, or if for
+any reason you don't want to tamper with your existing Python_
+installation, most packages (including |FiPy|) will allow you to install to
+an alternate location (we have not been able to get this to work with the
+Numeric_ package).  Instead of installing these packages with::
+
+    python setup.py install
+
+you would use::
+
+    python setup.py install --home=<dir>
+
+where ``<dir>`` is the desired installation directory (usually '``~``' to
+indicate your home directory).  You will then need to append
+``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
+Python_ document `Installing Python Modules`_ for more information.
+
 ..  [*] Certain commercial firms and trade names are identified in this
-    document in order to specifiy the installation procedure adequately.
+    document in order to specify the installation procedure adequately.
     Such identification is not intended to imply recommendation or
     endorsement by the National Institute of Standards and Technology, nor
     is it intended to imply that related products are necessarily the best 
     available for the purpose.
+
+.. _Installing Python Modules: http://docs.python.org/inst/alt-install-windows.html
+
 
 -------------
 Prerequisites
@@ -25,7 +45,7 @@ All other aspects should function on any platform that has a recent Python_
 installation.
 
 |FiPy| has been developed and tested on `Mac OS X`_ 10.3 and higher and
-on ???  runing Debian Linux blah blah. We welcome reports of compatibility 
+on ???  running Debian_ Linux blah blah. We welcome reports of compatibility 
 with other systems, along with any steps necessary to install. 
 
 .. _Mac OS X: http://www.apple.com/macosx/
@@ -46,7 +66,7 @@ systems, which you can check by opening a terminal and typing ``python``,
 
     [dogbert:~] guyer% python
     Python 2.3 (#1, Sep 13 2003, 00:49:11) 
-    [GCC 3.3 20030304 (Apple Computer, Inc. build 1495)] on darwin
+    ...
     Type "help", "copyright", "credits" or "license" for more information.
     >>> 
 
@@ -68,6 +88,19 @@ this time.
 .. _Numeric:  http://www.numpy.org
 .. _Numarray: http://www.stsci.edu/resources/software_hardware/numarray
 
+spmatrix
+--------
+
+The |FiPy| distribution includes a customized version of `Roman Geus`_'
+spmatrix_ package. Install it according to its instructions.
+
+.. _Roman Geus:
+.. _spmatrix:
+
+
+Recommended Packages
+====================
+
 weave
 -----
 
@@ -79,10 +112,10 @@ of C language inlining, via the weave_ module of the SciPy_ package.
 .. _weave: http://ww.scipy.org/documentation/weave/
 .. _SciPy: http://ww.scipy.org/
 
-Recommended Packages
-====================
+gmsh
+----
 
-One or more of the following packages is required to view results.
+http://www.geuz.org/gmsh/
 
 Pygist
 ------
@@ -94,6 +127,9 @@ succeeded in building the native Pygist_ viewer on `Mac OS X`_ and
 recommend building the package with the ``--x11`` option described in the
 documentation.
 
+If you choose not to install this package, you should create an environment
+variable ``FIPY_NOGIST`` to allow the test suite to run to completion.
+
 .. _Pygist: http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 PyX
@@ -102,7 +138,10 @@ PyX
 http://pyx.sourceforge.net/
 
 PyX_ allows the production of publication quality graphics with |TeX|
-labels.
+labels. If available, |FiPy| can use this package to view or print results.
+
+If you choose not to install this package, you should create an environment
+variable ``FIPY_NOPYX`` to allow the test suite to run to completion.
 
 .. _PyX: http://pyx.sourceforge.net/
 
@@ -112,45 +151,38 @@ Obtaining |FiPy|
 
 These instructions will need to be made more general for a public
 distribution but, for the moment, the source for |FiPy| can be obtained via
-CVS::
+CVS (ssh access to the CTCMS computers is required).  Set the shell
+variable `CVS_RSH` to `ssh` and then execute the following shell command::
 
-    ssh_agent
-    ssh_add
-    CVSROOT=dromio.nist.gov:/users/wd15/pkg/python/repository
-    export CVSROOT
-    CVS_RSH=ssh
-    export CVS_RSH
-    cvs checkout fipy
+    cvs -d dromio.nist.gov:/users/wd15/pkg/python/repository checkout fipy
+
+--------------
+Testing |FiPy|
+--------------
+
+From the ``fipy/`` directory, you can verify that |FiPy| works properly by
+by executing ``python setup.py test``.  Depending on the packages you chose
+to install in `Recommended Packages`_, be sure to set the appropriate
+environment variables.  You can expect a few errors if you did not install
+all of the recommended packages.
+
+If you chose to install the `weave`_ package, you should rerun the tests
+with ``python setup.py test --inline``.  A few tests will fail the first
+time as a result of the messages output in the course of caching the
+compiled inline code, but a repeat test should have no failures.
 
 -----------------
 Installing |FiPy|
 -----------------
 
-Installing spmatrix
-===================
+Once you are confident that all of the requisite packages have been
+installed properly and |FiPy| passes its tests, you can install it by
+typing ``python setup.py install`` at the commandline.
 
-|FiPy| uses a customized version of `Roman Geus`_' spmatrix_ package.  Due to
-a peculiar bug in its ``setup.py`` script, ``python setup.py install`` may
-not work correctly on the first execution, but will generate an error
-regarding ``/usr/bin/ld: undefined symbols``.  If you receive this error,
-copy the preceding command beginning with ``gcc`` (it can be several lines)
-and paste it at the command-line to re-execute it.  Then execute ``python
-setup.py install`` again.  You will need to repeat this sequence four
-times.
-
-.. _Roman Geus:
-.. _spmatrix:
-
-Installing and testing |FiPy|
-=============================
-
-From the ``fipy/`` directory, execute ``python setup.py install``. Once the
-installation is complete, you can verify that it has installed properly by 
-executing ``python setup.py test`` and ``python setup.py test --inline``.
 
 .. |FiPy| raw:: latex
 
-          \FiPy{}
+	  \FiPy{}
 
 .. |TeX| raw:: latex
 
