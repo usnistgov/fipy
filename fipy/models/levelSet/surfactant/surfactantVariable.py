@@ -58,7 +58,7 @@ class SurfactantVariable(CellVariable):
 
     """
     
-    def __init__(self, value = 0., distanceVariable = None, name = 'surfactant variable'):
+    def __init__(self, value = 0., distanceVar = None, name = 'surfactant variable'):
         """
 
         A simple 1D test:
@@ -66,8 +66,8 @@ class SurfactantVariable(CellVariable):
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 1)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-1.5, -0.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVariable = distanceVariable)
+           >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-1.5, -0.5, 0.5, 941.5))
+           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, (0, 0., 1., 0))
            1
 
@@ -77,7 +77,7 @@ class SurfactantVariable(CellVariable):
            >>> distanceVariable = DistanceVariable(mesh = mesh, value = (1.5, 0.5, 1.5,
            ...                                                          0.5,-0.5, 0.5,
            ...                                                          1.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVariable = distanceVariable)
+           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
            1
 
@@ -85,21 +85,20 @@ class SurfactantVariable(CellVariable):
 
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVariable = distanceVariable)
+           >>> surfactantVariable = SurfactantVariable(value = 1, distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, (0, Numeric.sqrt(2), Numeric.sqrt(2), 0))
            1
            
         """
         
-        CellVariable.__init__(self, mesh = distanceVariable.getMesh(), name = name)
+        CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name)
 
-        
-        self.value = distanceVariable.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
+        self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
 
-        self.distanceVariable = distanceVariable
+        self.distanceVar = distanceVar
 
     def getInterfaceValue(self):
-        areas = self.distanceVariable.getCellInterfaceAreas()        
+        areas = self.distanceVar.getCellInterfaceAreas()        
         areas = Numeric.where(areas > 1e-20, areas, 1)
         value = Numeric.array(self) * self.mesh.getCellVolumes() / areas
         return value
