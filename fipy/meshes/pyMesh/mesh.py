@@ -78,6 +78,9 @@ class Mesh:
     def getNumberOfCells(self):
 	return len(self.cells)
 
+    def getNumberOfFaces(self):
+        return len(self.faces)
+
     def getFaces(self):
 	"""Return Faces of Mesh.
 	"""
