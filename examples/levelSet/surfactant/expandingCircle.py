@@ -65,6 +65,7 @@ conservation of surfactant:
    >>> totalTime = 0
    >>> for step in range(steps):
    ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+   ...     distanceVariable.extendVariable(velocity)
    ...     argmax = Numeric.argmax(velocity)
    ...     timeStepDuration = cfl * dx / velocity[argmax]
    ...     it.timestep(dt = timeStepDuration)
@@ -110,7 +111,6 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.models.levelSet.distanceFunction.extensionEquation import ExtensionEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
@@ -165,11 +165,7 @@ surfactantEquation = SurfactantEquation(
         tolerance = 1e-10),
     boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0.), ))
 
-extensionEquation = ExtensionEquation(
-    distanceVariable,
-    velocity)
-
-it = Iterator((extensionEquation, advectionEquation, surfactantEquation))
+it = Iterator((advectionEquation, surfactantEquation))
 
 if __name__ == '__main__':
     
@@ -185,7 +181,7 @@ if __name__ == '__main__':
     for step in range(steps):
         print 'step',step
         velocity.setValue(surfactantVariable.getInterfaceVar() * k)
-
+        distanceVariable.extendVariable(velocity)
         argmax = Numeric.argmax(velocity)
         timeStepDuration = cfl * dx / velocity[argmax]
         

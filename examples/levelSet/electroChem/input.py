@@ -142,10 +142,9 @@ A `distanceVariable` object,
     $\phi$, is  required to store  the  position of the interface  (at
     $\phi$  =  0).
 
-A `distanceEquation` object is used to solve the `distanceVariable` so
-that it has the value of a distance function (i.e.  holds the distance
-at any point in the mesh from the electrolyte/metal interface).  The
-`distanceEquation` object solves the equation
+The `distanceVariable` calculates its value so that it is a a distance
+function (i.e.  holds the distance at any point in the mesh from the
+electrolyte/metal interface).
 
 .. raw:: latex
 
@@ -154,12 +153,6 @@ at any point in the mesh from the electrolyte/metal interface).  The
     Firstly, create the $\phi$
 
 variable:
-
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable            
-   >>> distanceVar = DistanceVariable(
-   ...    name = 'distance variable',
-   ...    mesh = mesh,
-   ...    value = -1.)
 
 This is initially set to -1 everywhere. The electrolyte region will be
 the positive region of the domain while the metal region will be
@@ -185,22 +178,22 @@ Get the positive cells by passing the function,
 
    >>> electrolyteCells = mesh.getCells(electrolyteFunc)
 
-and set those cells to have a positive value
-   
-   >>> distanceVar.setValue(1., electrolyteCells)
+Create an initial array,
 
-Next set up the `distanceEquation` and solve to set
+   >>> import Numeric
+   >>> values = -Numeric.ones(mesh.getNumberOfCells(), 'd')
+   >>> for cell in electrolyteCells:
+   ...     values[cell.getID()] = 1
 
-.. raw:: latex
-
-    $\phi$
-
-to be a distance function.
-
-   >>> terminationValue = numberOfCellsInNarrowBand / 2 * cellSize
-   >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
-   >>> distanceEquation = DistanceEquation(distanceVar, terminationValue = terminationValue)
-   >>> distanceEquation.solve(terminationValue = 1e+10)
+   >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize / 3
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable        
+   >>> distanceVar = DistanceVariable(
+   ...    name = 'distance variable',
+   ...    mesh = mesh,
+   ...    value = values,
+   ...    narrowBandWidth = 1e+10)
+   >>> distanceVar.calcDistanceFunction()
+   >>> distanceVar.setNarrowBandWidth(narrowBandWidth)
 
 The `distanceVariable` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -274,7 +267,6 @@ The commands needed to build this equation are,
    >>> expoConstant = -transferCoefficient * faradaysConstant / gasConstant / temperature
    >>> tmp = acceleratorDependenceCurrentDensity * acceleratorVar.getInterfaceVar()
    >>> exchangeCurrentDensity = constantCurrentDensity + tmp
-   >>> import Numeric
    >>> expo = Numeric.exp(expoConstant * overpotential)
    >>> currentDensity = exchangeCurrentDensity * metalVar / bulkMetalConcentration * expo
    >>> depositionRateVariable = currentDensity * atomicVolume / charge / faradaysConstant
@@ -336,22 +328,6 @@ and is set up with the following commands:
    >>> advectionEquation = HigherOrderAdvectionEquation(
    ...     distanceVar,
    ...     advectionCoeff = extensionVelocityVariable)
-
-The `extensionEquation` extends the interface velocity 
-
-.. raw:: latex
-
-    $v$ to
-    $v_\text{ext}$ throughout the whole domain using
-    $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
-
-The `extensionEquation` is set up with the following commands.
-
-   >>> from fipy.models.levelSet.distanceFunction.extensionEquation import ExtensionEquation        
-   >>> extensionEquation = ExtensionEquation(
-   ...     distanceVar,
-   ...     extensionVelocityVariable,
-   ...     terminationValue = terminationValue)
 
 The diffusion of metal ions from the far field to the interface is
 governed by,
@@ -441,8 +417,7 @@ The equations are now given to an `Iterator` object in the order that
 they will be solved.
 
    >>> from fipy.iterators.iterator import Iterator
-   >>> iterator = Iterator((extensionEquation,
-   ...                      advectionEquation,
+   >>> iterator = Iterator((advectionEquation,
    ...                      surfactantEquation,
    ...                      metalEquation,
    ...                      bulkAcceleratorEquation))
@@ -464,6 +439,12 @@ viewers.
    ...            dpi = 100,
    ...            resolution = resolution),
    ...        Grid2DGistViewer(
+   ...            var = extensionVelocityVariable,
+   ...            grid = 0,
+   ...            limits = (0, cells, 0, cells),
+   ...            dpi = 100,
+   ...            resolution = resolution),
+   ...        Grid2DGistViewer(
    ...            var = acceleratorVar.getInterfaceVar(),
    ...            grid = 0,
    ...            limits = (0, cells, 0, cells),
@@ -474,19 +455,41 @@ The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
 distance function.
 
-   >>> levelSetUpdateFrequency = int(0.8 * terminationValue / cellSize / cflNumber)
+   >>> levelSetUpdateFrequency = int(0.8 * narrowBandWidth / cellSize / cflNumber / 2)
 
 The following loop runs for `numberOfSteps` time steps. The time step
 is calculated with the CFL number and the maximum extension velocity.
 
+.. raw:: latex
+
+    $v$ to
+    $v_\text{ext}$ throughout the whole domain using
+    $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
+    
+   >>> def getDiffData(file, step, var):
+   ...     import fipy.tools.dump as dump
+   ...     vin = dump.read(file + str(step) + '.gz')
+   ...     v = abs(var - vin)
+   ...     argmax = Numeric.argmax(v)
+   ...     print 'step',step,' argmax ',argmax,' difference ',v[argmax],' value ',var[argmax]
+
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
    ...     for step in range(numberOfSteps):
+   ...         print 'step',step
+   ...
    ...         if step % levelSetUpdateFrequency == 0:
-   ...             distanceEquation.solve()
+   ...             print 'updateing distance function'
+   ...             distanceVar.calcDistanceFunction()
+   ...
    ...         extensionVelocityVariable.setValue(Numeric.array(depositionRateVariable))
+
    ...         argmax = Numeric.argmax(extensionVelocityVariable)
-   ...         iterator.timestep(dt = cflNumber * cellSize / extensionVelocityVariable[argmax])
+   ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+   ...
+   ...         distanceVar.extendVariable(extensionVelocityVariable)
+   ...
+   ...         iterator.timestep(dt = dt)
    ...         for viewer in viewers:
    ...             viewer.plot()
    ...     raw_input('finished')
@@ -496,6 +499,7 @@ simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
 
    >>> for i in range(5):
+   ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     iterator.timestep(dt = 0.1)
 
    >>> import os

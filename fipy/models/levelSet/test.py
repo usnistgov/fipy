@@ -45,11 +45,11 @@ import fipy.tests.testProgram
 import unittest
 
 import advection.advectionTerm
+import advection.higherOrderAdvectionTerm
 import distanceFunction.distanceVariable
 import surfactant.surfactantVariable
 import surfactant.adsorbingSurfactantEquation
-import distanceFunction.extensionEquation
-import distanceFunction.distanceEquation
+import surfactant.convectionCoeff
 import distanceFunction.levelSetDiffusionVariable
 import electroChem.test
 
@@ -57,12 +57,12 @@ def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(advection.advectionTerm))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceVariable))
+    theSuite.addTest(doctest.DocTestSuite(advection.higherOrderAdvectionTerm))
     theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.extensionEquation))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceEquation))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.levelSetDiffusionVariable))
+    theSuite.addTest(doctest.DocTestSuite(surfactant.convectionCoeff))
     theSuite.addTest(doctest.DocTestSuite(surfactant.adsorbingSurfactantEquation))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceVariable))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.levelSetDiffusionVariable))
     theSuite.addTest(electroChem.test.suite())
     return theSuite
     

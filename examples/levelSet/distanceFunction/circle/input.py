@@ -85,7 +85,8 @@ Construct a `distanceVariable` object.
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
    ...                        value = initialArray)
-
+   >>> var.calcDistanceFunction()
+   
    >>> if __name__ == '__main__':
    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
    ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 10/19/04 {4:38:29 PM} 
+ #                                last update: 10/19/04 {4:38:29 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,6 +64,7 @@ Here we will define a few test cases. Firstly a 1D test case
    >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
    >>> from distanceVariable import DistanceVariable
    >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> var.calcDistanceFunction()
    >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
    >>> Numeric.allclose(answer, var)
    1
@@ -73,8 +74,51 @@ A 1D test case with very small dimensions.
    >>> dx = 1e-10
    >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
    >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> var.calcDistanceFunction()
    >>> answer = Numeric.arange(8) * dx - 3.5 * dx
    >>> Numeric.allclose(answer, var)
+   1
+
+The `extendVariable` method solves the following equation for a given
+extensionVariable.
+
+.. raw:: latex
+
+    $$ \\nabla u \\cdot \\nabla \\phi = 0 $$
+
+using the fast marching method with an initial condition defined at
+the zero level set. Essentially the equation solves a fake distance
+function to march out the velocity from the interface.
+
+   >>> from fipy.variables.cellVariable import CellVariable
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1))
+   >>> var.calcDistanceFunction()
+   >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
+   >>> tmp = 1 / Numeric.sqrt(2)
+   >>> Numeric.allclose(var, (-tmp / 2, 0.5, 0.5, 0.5 + tmp))
+   1
+   >>> var.extendVariable(extensionVar)
+   >>> Numeric.allclose(extensionVar, (1.25, .5, 2, 1.25))
+   1
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
+   ...                                               1, 1, 1,
+   ...                                               1, 1, 1))
+   >>> var.calcDistanceFunction()
+   >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, -1,
+   ...                                                    2, -1, -1,
+   ...                                                   -1, -1, -1))
+
+   >>> v1 = 0.5 + tmp
+   >>> v2 = 1.5
+   >>> tmp1 = (v1 + v2) / 2 + Numeric.sqrt(2. - (v1 - v2)**2) / 2
+   >>> tmp2 = tmp1 + 1 / Numeric.sqrt(2)
+   >>> Numeric.allclose(var, (-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
+   1
+   >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
+   >>> var.extendVariable(extensionVar)
+   >>> Numeric.allclose(answer, extensionVar, atol = 1e-5)
    1
 
 
@@ -113,8 +157,20 @@ class DistanceVariable(CellVariable):
         self.markStale()
         self.narrowBandWidth = narrowBandWidth
 
-    def _calcValue(self):
+    def setNarrowBandWidth(self, narrowBandWidth):
+        self.narrowBandWidth = narrowBandWidth
 
+    def extendVariable(self, extensionVariable):
+        self.tmpValue = self.value.copy()
+        self._calcDistanceFunction(extensionVariable)
+        self.value = self.tmpValue
+
+    def calcDistanceFunction(self):
+        self._calcDistanceFunction()
+        self.markFresh()
+    
+    def _calcDistanceFunction(self, extensionVariable = None):
+            
         ## calculate interface values
 
         cellToCellIDs = self.mesh.getCellToCellIDs()
@@ -133,8 +189,29 @@ class DistanceVariable(CellVariable):
 
         self.value = signedDistance
 
-        ## calculate initial trial values
+        ## calculate interface flag
         interfaceFlag = Numeric.sum(Numeric.logical_not(distances.mask()), 1) > 0
+
+        ## spread the extensionVariable to the whole interface
+        flag = True
+        if extensionVariable is None:
+            extensionVariable = Numeric.zeros(self.mesh.getNumberOfCells(), 'd')
+            flag = False
+            
+        ext = Numeric.zeros(self.mesh.getNumberOfCells(), 'd')
+        positiveInterfaceFlag = Numeric.where(self.value > 0, interfaceFlag, 0)
+        negativeInterfaceIDs = Numeric.nonzero(Numeric.where(self.value < 0, interfaceFlag, 0))
+
+        for id in negativeInterfaceIDs:
+            tmp, extensionVariable[id] = self._calcTrialValue(id, positiveInterfaceFlag, extensionVariable)
+
+        if flag:
+            self.value = self.tmpValue.copy()
+
+
+
+
+        ## evaluate the trialIDs
         adjInterfaceFlag = MAtake(interfaceFlag, cellToCellIDs)
         hasAdjInterface = Numeric.sum(adjInterfaceFlag.filled(), 1) > 0
         trialFlag = Numeric.logical_and(Numeric.logical_not(interfaceFlag), hasAdjInterface) 
@@ -142,26 +219,29 @@ class DistanceVariable(CellVariable):
         evaluatedFlag = interfaceFlag
         
         for id in trialIDs:
-            self.value[id] = self._calcTrialValue(id, evaluatedFlag)
-            
-        while len(trialIDs) > 0:
+            self.value[id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
+
+        while len(trialIDs):
 
             id = trialIDs[Numeric.argmin(abs(Numeric.take(self.value, trialIDs)))]
             trialIDs.remove(id)
             evaluatedFlag[id] = 1
-            if abs(self.value[id]) > self.narrowBandWidth / 2:
-                break
 
             for adjID in cellToCellIDs[id].filled(fill_value = -1):
                 if adjID != -1:
                     if not evaluatedFlag[adjID]:
-                        self.value[adjID] = self._calcTrialValue(adjID, evaluatedFlag)
+                        self.value[adjID], extensionVariable[adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
                         if adjID not in trialIDs:
                             trialIDs.append(adjID)
 
+            if abs(self.value[id]) > self.narrowBandWidth / 2:
+                break
+
         self.value = Numeric.array(self.value)
 
-    def _calcTrialValue(self, id, evaluatedFlag):
+        
+
+    def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.mesh.getCellToCellIDs()[id]
         adjEvaluatedFlag = MAtake(evaluatedFlag, adjIDs)
         adjValues = MA.masked_array(MAtake(self.value, adjIDs), MA.logical_not(adjEvaluatedFlag))
@@ -169,13 +249,14 @@ class DistanceVariable(CellVariable):
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.mesh.getCellToCellDistances()[id, indices[0]]
         v0 = self.value[adjIDs[indices[0]]]
-
+        e0 = extensionVariable[adjIDs[indices[0]]]
+                              
         N = Numeric.sum(Numeric.logical_not(adjValues.mask()))
 
         if N == 0:
             raise Error 
         elif N == 1:
-            return v0 + sign * d0
+            return v0 + sign * d0, e0
         else:
             d1 = self.mesh.getCellToCellDistances()[id, indices[1]]
             n0 = self.mesh.getCellNormals()[id, indices[0]]
@@ -189,8 +270,24 @@ class DistanceVariable(CellVariable):
             top = -v0 * (dotProd - d1**2) - v1 * (dotProd - d0**2)
             sqrt = crossProd**2 *(dsq - (v0 - v1)**2)
             sqrt = Numeric.sqrt(max(sqrt, 0))
+
+            dis = (top + sign * sqrt) / dsq
+
+            ## extension variable
+
+            e1 = extensionVariable[adjIDs[indices[1]]]
+            a0 = self.mesh.getCellAreas()[id, indices[0]]
+            a1 = self.mesh.getCellAreas()[id, indices[1]]
             
-            return (top + sign * sqrt) / dsq
+            if self.value[id] > 0:
+                phi = max(dis, 0)
+            else:
+                phi = min(dis, 0)
+
+            n0grad = a0 * abs(v0 - phi) / d0
+            n1grad = a1 * abs(v1 - phi) / d1
+
+            return dis, (e0 * n0grad + e1 * n1grad) / (n0grad + n1grad)
 
     def getCellInterfaceAreas(self):
         """

@@ -47,6 +47,7 @@ The example checks for global conservation of surfactant.
 
 Advect the interface and check the position.
 
+   >>> distanceVariable.calcDistanceFunction()
    >>> initialSurfactant = Numeric.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
@@ -102,6 +103,7 @@ distanceVariable = DistanceVariable(
     value = values
     )
 
+
 surfactantVariable = SurfactantVariable(
     distanceVar = distanceVariable,
     value = 1.
@@ -128,7 +130,7 @@ if __name__ == '__main__':
     surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 2.)
 
 
-    distanceEquation.solve()
+    distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
         print Numeric.sum(surfactantVariable)

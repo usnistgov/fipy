@@ -92,7 +92,8 @@ Construct a `distanceVariable` object. This object is required by the
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
    ...                        value = values)
-
+   >>> var.calcDistanceFunction()
+   
 The `advectionEquation` is constructed.
 
    >>> from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation

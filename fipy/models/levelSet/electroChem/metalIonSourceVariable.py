@@ -54,9 +54,10 @@ diffusion as the interface advances. The source is given by,
 Here is a test,
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = 1, dy = 1, nx = 2, ny = 2)
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
    >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
+   >>> distance.markFresh()
    >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
    >>> arr = Numeric.array(MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
    >>> sqrt = Numeric.sqrt(2)

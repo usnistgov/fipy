@@ -77,7 +77,8 @@ Construct a `distanceVariable` object.
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
    ...                        value = (1,1,1,1,1,-1,-1,-1,-1,-1))
-
+   >>> var.calcDistanceFunction()
+   
 The problem can then be solved by executing the `solve()` method of the equation.
 
    >>> if __name__ == '__main__':

@@ -118,6 +118,8 @@ var = DistanceVariable(
     value = values
     )
 
+var.calcDistanceFunction()
+
 advEqn = AdvectionEquation(
     var,
     advectionCoeff = velocity,

@@ -105,6 +105,8 @@ var = DistanceVariable(
     value = initialArray
     )
 
+var.calcDistanceFunction()
+
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
     viewer.plot()
