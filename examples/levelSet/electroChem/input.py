@@ -50,10 +50,9 @@ r"""
     parameters used are roughly those that have been previously
     published~\cite{NIST:damascene:2003}.
 
-To run this example from the base fipy directory type
+To run this example from the base fipy directory type::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
-
 
 .. raw:: latex
 
