@@ -45,19 +45,20 @@ import fipy.tests.testProgram
 import doctest
 
 import mesh2x1.input
-##import mesh10x1.input
-##import mesh50x1.input
-##import mesh10x1.tri2Dinput
-##import mesh2x1.tri2Dinput
+import mesh10x1.input
+import mesh50x1.input
+import mesh10x1.tri2Dinput
+import mesh2x1.tri2Dinput
 
 def suite():
     theSuite = unittest.TestSuite()
     
     theSuite.addTest(doctest.DocTestSuite(mesh2x1.input))
-##    theSuite.addTest(doctest.DocTestSuite(mesh2x1.tri2Dinput))
-##    theSuite.addTest(doctest.DocTestSuite(mesh10x1.input))
-##    theSuite.addTest(doctest.DocTestSuite(mesh50x1.input))
-##    theSuite.addTest(doctest.DocTestSuite(mesh10x1.tri2Dinput))
+    theSuite.addTest(doctest.DocTestSuite(mesh2x1.tri2Dinput))
+    theSuite.addTest(doctest.DocTestSuite(mesh10x1.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh50x1.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh10x1.tri2Dinput))
+
     return theSuite
     
 if __name__ == '__main__':

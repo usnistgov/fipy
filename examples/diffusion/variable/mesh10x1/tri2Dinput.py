@@ -47,11 +47,11 @@ This example is a 1D steady state diffusion test case as in
 number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
-
+   >>> ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[:,0]
    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> Numeric.allclose(values, Numeric.array(var), atol = 1e-8, rtol = 1e-8)
+   >>> var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """
@@ -60,12 +60,10 @@ import Numeric
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.iterators.iterator import Iterator
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 10
 ny = 1
@@ -90,27 +88,11 @@ x = mesh.getFaceCenters()[:,0]
 middleFaces = Numeric.logical_or(x < L / 4.,x >= 3. * L / 4.)
 diffCoeff = Numeric.where(middleFaces, 1., 0.1)
 
-eq = DiffusionEquation(
-    var,
-    transientCoeff = 0. / timeStepDuration, 
-    diffusionCoeff = diffCoeff,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedFlux(mesh.getFacesRight(),fluxRight),
-    FixedFlux(mesh.getFacesTop(),0.),
-    FixedFlux(mesh.getFacesBottom(),0.)
-    )
-    )
-
-it = Iterator((eq,))
-
-it.timestep()
+boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
+                    FixedFlux(mesh.getFacesRight(),fluxRight))
 
 if __name__ == '__main__':
+    ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
     viewer = PyxViewer(var)
     viewer.plot()
     raw_input('finished')

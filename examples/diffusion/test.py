@@ -58,7 +58,7 @@ def suite():
     theSuite.addTest(examples.diffusion.steadyState.test.suite())
     theSuite.addTest(examples.diffusion.explicit.test.suite())
     theSuite.addTest(examples.diffusion.variable.test.suite())
-##     theSuite.addTest(examples.diffusion.nthOrder.test.suite())
+##    theSuite.addTest(examples.diffusion.nthOrder.test.suite())
     
     return theSuite
 
