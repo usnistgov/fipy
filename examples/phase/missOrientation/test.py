@@ -53,8 +53,8 @@ from fivol.tests.testBase import TestBase
 from input1D import Phase1DSystem
 from inputCircle import CircleSystem
 from inputModularCircle import ModularCircleSystem
-
 import fivol.examples.phase.examples.missOrientation
+import testLevel2
 
 class TestPhase(TestBase):
     def setUp(self):
@@ -97,6 +97,7 @@ def suite():
     theSuite.addTest(unittest.makeSuite(TestPhase1D))
     theSuite.addTest(unittest.makeSuite(TestPhaseCircle))
     theSuite.addTest(unittest.makeSuite(TestPhaseCircleModular))
+    theSuite.addTest(testLevel2.suite())
     return theSuite
     
 if __name__ == '__main__':

@@ -86,12 +86,11 @@ class Test4Particles(TestImpingement):
         
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(Test1D))
+##    theSuite.addTest(unittest.makeSuite(Test1D))
     theSuite.addTest(unittest.makeSuite(Test4Particles))
     return theSuite
     
 if __name__ == '__main__':
-##    fivol.inline.inline.readInlineArgs()    
     theSuite = suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 

@@ -42,22 +42,14 @@ from fivol.variables.faceVariable import FaceVariable
 import fivol.tools.array
 
 class CellToFaceVariable(FaceVariable):
-    def __init__(self, var, mod = None):
+    def __init__(self, var):
 	FaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
 
-	if mod is None:
-	    self.mod = lambda argument: argument
-	else:
-	    self.mod = mod
-
     def calcValue(self):
-##        print 'in celltoface'
-##        print self.mod(Numeric.pi+0.1)
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	cell1 = fivol.tools.array.take(self.var,id1)
 	cell2 = fivol.tools.array.take(self.var,id2)
-
-	self.value = self.mod(cell1 - cell2) * alpha + cell2
+	self.value = (cell1 - cell2) * alpha + cell2
 

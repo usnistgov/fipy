@@ -53,6 +53,7 @@ from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable
 from transientVariable import TransientVariable
 from thetaHalfAngleVariable import ThetaHalfAngleVariable
+from noModularVariable import NoModularVariable
 
 class ThetaEquation(MatrixEquation):
 

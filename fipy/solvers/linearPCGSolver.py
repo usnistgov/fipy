@@ -54,7 +54,7 @@ class LinearPCGSolver(Solver):
 	Solver.__init__(self, tolerance, steps)
 	
     def solve(self, L, x, b):
-        
+        print L
 	A = L.to_sss()
 
 	Assor=precon.ssor(A)

@@ -46,14 +46,16 @@ class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self.requires(var)
-	    
-##    def _calcValue(self, normals, cellGrad, id1, id2, tangents1, tangents2, N):
+
+    def calcValue(self):        
+	inline.optionalInline(self._calcValueInline, self._calcValue)
+    
     def _calcValue(self):
     
         dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
-	
+##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1)) / dAP
+	N = (array.take(self.var,id2) - array.take(self.var,id1)) / dAP
 	normals = self.mesh.getOrientedFaceNormals()
 	
 	tangents1 = self.mesh.getFaceTangents1()
@@ -78,21 +80,16 @@ class FaceGradVariable(VectorFaceVariable):
 
     def _calcValueInline(self):
         
-        dAP = self.mesh.getCellDistances()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
-	
-	normals = self.mesh.getOrientedFaceNormals()
-	
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-	cellGrad = self.var.getGrad().getNumericValue()
         
 	inline.runInlineLoop1("""
 	int j;
-	double t1grad1, t1grad2, t2grad1, t2grad2;
-	
-	t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0;
+	double t1grad1, t1grad2, t2grad1, t2grad2, N;
+
+	N = (var(id2(i)) - var(id1(i))) / dAP;
+
+	t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
+
 	for (j = 0; j < nj; j++) {
 	    t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
 	    t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
@@ -101,66 +98,18 @@ class FaceGradVariable(VectorFaceVariable):
 	}
 	
 	for (j = 0; j < nj; j++) {
-	    val(i,j) = normals(i,j) * N(i);
+	    val(i,j) = normals(i,j) * N;
 	    val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
 	    val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
-	}
-	""", 
-	tangents1 = tangents1, tangents2 = tangents2,
-	cellGrad = cellGrad, normals = normals, N = N, 
-	id1 = id1, id2 = id2,
-	val = self.value.value,
-	ni = tangents1.shape[0], nj = tangents1.shape[1])
+        }""",tangents1 = mesh.getFaceTangents1(),
+                              tangents2 = self.mesh.getFaceTangents2(),
+                              cellGrad = self.var.getGrad().getNumericValue(),
+                              normals = self.mesh.getOrientedFaceNormals(),
+                              id1 = id1,
+                              id2 = id2,
+                              dAP = self.mesh.getCellDistances(),
+                              val = self.value.value,
+                              ni = tangents1.shape[0],
+                              nj = tangents1.shape[1])
+
     
-    def mod(self, argument):
-        return argument
-    
-    def calcValue(self):        
-##	dAP = self.mesh.getCellDistances()
-##	id1, id2 = self.mesh.getAdjacentCellIDs()
-##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1))/dAP
-	
-##	normals = self.mesh.getOrientedFaceNormals()
-	
-##	tangents1 = self.mesh.getFaceTangents1()
-##	tangents2 = self.mesh.getFaceTangents2()
-##	cellGrad = self.var.getGrad().getNumericValue()
-	inline.optionalInline(self._calcValueInline, self._calcValue)
-	
-	
-##    def calcValue(self):
-##        id1, id2, N, normals = self.calcValue1()
-##        T1, T2, tangents1, tangents2 = self.calcValue2(id1, id2)
-##        self.calcValue3(N, normals, T1, T2, tangents1, tangents2)
-
-##    def calcValue1(self):
-##	dAP = self.mesh.getCellDistances()
-##	id1, id2 = self.mesh.getAdjacentCellIDs()
-##	value = self.var[:]
-##	N = self.mod(Numeric.take(value, id2) - Numeric.take(value, id1))/dAP
-##	normals = self.mesh.getOrientedFaceNormals()
-
-##        return id1, id2, N, normals
-    
-##    def calcValue2(self, id1, id2):
-##	tangents1 = self.mesh.getFaceTangents1()
-##	tangents2 = self.mesh.getFaceTangents2()
-##	cellGrad = self.var.getGrad()
-##	grad1 = Numeric.take(cellGrad[:], id1)
-##	grad2 = Numeric.take(cellGrad[:], id2)
-##	t1grad1 = Numeric.sum(tangents1*grad1,1)
-##	t1grad2 = Numeric.sum(tangents1*grad2,1)
-##	t2grad1 = Numeric.sum(tangents2*grad1,1)
-##	t2grad2 = Numeric.sum(tangents2*grad2,1)
-##	T1 = (t1grad1 + t1grad2) / 2.
-##	T2 = (t2grad1 + t2grad2) / 2.
-
-##        return T1, T2, tangents1, tangents2
-
-##    def calcValue3(self, N, normals, T1, T2, tangents1, tangents2):
-	
-##	N = Numeric.reshape(N, (len(normals),1)) 
-##	T1 = Numeric.reshape(T1, (len(normals),1)) 
-##	T2 = Numeric.reshape(T2, (len(normals),1)) 
-
-##	self.value = normals * N + tangents1 * T1 + tangents2 * T2

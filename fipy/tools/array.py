@@ -49,6 +49,7 @@ def _isPhysical(arr):
 def take(arr, ids):
     if _isPhysical(arr):
 	return arr.take(ids)
+    
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.take(arr, ids)
     else:

@@ -41,11 +41,15 @@ import Numeric
 from fivol.variables.faceGradVariable import FaceGradVariable
 
 class ModFaceGradVariable(FaceGradVariable):
-    def __init__(self, var, modFunc):
+    def __init__(self, var, modFunc, modFuncInl):
 	FaceGradVariable.__init__(self, var)
 	self.var = self.requires(var)
         self.modFunc = modFunc
+        self.modFuncInl = modFuncInl
     
     def mod(self, argument):
         return self.modFunc(argument)
+
+    def inlineMod(self):
+        return self.modFuncInl
     

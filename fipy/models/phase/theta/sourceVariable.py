@@ -46,6 +46,7 @@ import Numeric
 from fivol.variables.cellVariable import CellVariable
 from fivol.inline import inline
 from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
+from noModularVariable import NoModularVariable
 
 class SourceVariable(CellVariable):
 
@@ -57,13 +58,15 @@ class SourceVariable(CellVariable):
                  parameters = None):
 
         CellVariable.__init__(self, theta.getMesh(), hasOld = 0)
-
+        
         self.parameters = parameters
         self.phase = self.requires(phase)
         self.theta = self.requires(theta)
         self.diffCoeff = self.requires(diffCoeff)
         self.halfAngleVariable = self.requires(halfAngleVariable)
-        thetaGradDiff = self.theta.getFaceGrad() - self.theta.getFaceGradNoMod()
+        self.thetaNoMod = NoModularVariable(self.theta)
+        
+        thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 
     def calcValue(self):

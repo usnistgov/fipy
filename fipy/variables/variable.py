@@ -343,7 +343,7 @@ class Variable:
 	return self.sumVar[index]
 	
     def take(self, ids):
-	return array.take(self.getValue(),ids)
+	return array.take(self.getValue(), ids)
 
     def getMag(self):
         if self.mag is None:

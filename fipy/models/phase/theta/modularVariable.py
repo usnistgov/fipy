@@ -36,50 +36,31 @@
  # ###################################################################
  ##
 
-import Numeric
+from Numeric import pi
 
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.cellGradVariable import CellGradVariable
 from fivol.variables.cellToFaceVariable import CellToFaceVariable
 from fivol.variables.faceGradVariable import FaceGradVariable
 from fivol.examples.phase.theta.modFaceGradVariable import ModFaceGradVariable
+from fivol.examples.phase.theta.modPhysicalField import ModPhysicalField
 
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
-        self.mod = lambda array, pi=Numeric.pi: (array + 3. * pi) % (2 * pi) - pi
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
-        self.faceGradNoMod = None
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)        
+        
+    def getPhysicalFieldClass(self):
+	return ModPhysicalField
+
+    def updateOld(self):
+        if self.old != None:
+	    self.old.setValue(self.value.mod(self.value))
 
     def getGrad(self):
 	if self.grad is None:
 	    gridSpacing = self.mesh.getMeshSpacing()
-	    self.grad = self.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
+	    self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
 
 	return self.grad
 
-    def getFaceValue(self):
-	if self.faceValue is None:
-	    self.faceValue = CellToFaceVariable(self, self.mod)
-
-	return self.faceValue
-
-    def getFaceGrad(self):
-	if self.faceGrad is None:
-	    self.faceGrad = ModFaceGradVariable(self, self.mod)
-
-	return self.faceGrad
-
-    def getFaceGradNoMod(self):
-        if self.faceGradNoMod is None:
-	    self.faceGradNoMod = FaceGradVariable(self)
-
-	return self.faceGradNoMod
-    
-    def updateOld(self):
-        if self.old != None:
-            self.value = self.mod(self.value)
-	    self.old.setValue(self.value)
-    
-	
-
-
+        

@@ -47,7 +47,7 @@ import input
 from input import PhaseSystem
 
 class Phase1DSystem(PhaseSystem):
-    def __init__(self):        
+    def __init__(self):
         self.L = 1.5
         self.func = lambda cell: cell.getCenter()[0] > self.L / 2.
         self.nx = 100
