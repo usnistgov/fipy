@@ -165,8 +165,11 @@ class DistanceEquation(Equation):
 
         self.var.setValue(MA.where(cellFlag > 0, distance, self.var))
         return Numeric.where(cellFlag > 0, 1, 0)
-
-    def _calcQuadratic(self, phi1, phi2, n1, n2, d1, d2):
+    
+    def _calcLinear(self, phi, d, cellID, adjCellID):
+        return (phi + d, phi - d)
+    
+    def _calcQuadratic(self, phi1, phi2, n1, n2, d1, d2, area1, area2, cellID, adjCellID1, adjCellID2):
         """
 
         Calculates the distance function from two neighbouring values.
@@ -181,19 +184,19 @@ class DistanceEquation(Equation):
            >>> n1 = Numeric.array((1,0))
            >>> n2 = Numeric.array((0,1))
            >>> answer = Numeric.array((1 + 1/ sqrt, 1 - 1 / sqrt))
-           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, 1, 1))
+           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, 1, 1, 0, 0, 0, 0, 0))
            1
            >>> n1 = Numeric.array((-1,-1)) / sqrt
            >>> n2 = Numeric.array((1,-1)) / sqrt
            >>> d = 1
            >>> answer = Numeric.array((1 + d, 1 - d))
-           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, d * sqrt, d * sqrt))
+           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, d * sqrt, d * sqrt, 0, 0, 0, 0, 0))
            1
            >>> n1 = Numeric.array((0,-1))
            >>> n2 = Numeric.array((-1,-1)) / sqrt
            >>> d = 0.3
            >>> answer = Numeric.array((1 + d, 1 - d))
-           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, d, d * sqrt))
+           >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, d, d * sqrt, 0, 0, 0, 0, 0))
            1
            
         """
@@ -275,20 +278,24 @@ class DistanceEquation(Equation):
         values = MA.take(values, argsort)
         dAP = Numeric.take(self.mesh.getCellToCellDistances()[cellID], argsort)
         normals = Numeric.take(self.mesh.getCellNormals()[cellID], argsort)
+        areas = Numeric.take(self.mesh.getCellAreas()[cellID], argsort)
 
         sign = -1
         if self.var[cellID] > 0:
             sign = 1
-
 
         NSetValues = len(values.mask()) - Numeric.sum(values.mask())
 
         if NSetValues == 0:
             raise Error
         elif NSetValues == 1:
-            return values[0] + sign * dAP[0]
+            lin = self._calcLinear(values[0], dAP[0], cellID, cellToCellIDs[argsort[0]])
+            if sign > 0:
+                return lin[0]
+            else:
+                return lin[1]
         elif NSetValues >= 2:
-            quad = self._calcQuadratic(values[0], values[1], normals[0], normals[1], dAP[0], dAP[1])
+            quad = self._calcQuadratic(values[0], values[1], normals[0], normals[1], dAP[0], dAP[1], areas[0], areas[1], cellID, cellToCellIDs[argsort[0]], cellToCellIDs[argsort[1]])
             if sign > 0:
                 return quad[0]
             else:
@@ -336,12 +343,6 @@ class DistanceEquation(Equation):
             cellToCellIDs = self.mesh.getCellToCellIDsFilled()[cellID]
             for adjCellID in cellToCellIDs:
                 if setValueFlag[adjCellID] != 1:
-##                    print 'setValueFlag',setValueFlag
-##                    print 'cellID',cellID
-##                    print 'adjCellID',adjCellID
-##                    print 'setValueFlag[adjCellID]',setValueFlag[adjCellID]
-##                    print self._calcTrialValue(adjCellID, setValueFlag)
-##                    print 'self._calcTrialValue(adjCellID, setValueFlag)',self._calcTrialValue(adjCellID, setValueFlag)
                     self.var[adjCellID] = self._calcTrialValue(adjCellID, setValueFlag)
                     if setValueFlag[adjCellID] == 0:
                         setValueFlag[adjCellID] = 2
@@ -360,181 +361,4 @@ if __name__ == "__main__":
 
 
 
-##    def resetCells(self):
-##        self.array = self.initialArray.copy()
-##        self.evaluatedFlag = Numeric.zeros(len(self.cells))
-##        self.trialFlag = Numeric.zeros(len(self.cells))
-
-##    def iterateOverRemainingCells(self, trialCellIDs):
-##        while len(trialCellIDs) > 0:
-##            cellID = self.getMinAbsCellID(trialCellIDs)
-##            cell = self.cells[cellID]
-##            self.evaluatedFlag[cell.getID()] = 1
-##            trialCellIDs.remove(cellID)
-##            for adjCellID in cell.getCellToCellIDs():
-##                if type(adjCellID) is type(1): 
-##                    if not self.evaluatedFlag[adjCellID]:
-##                        self.array[adjCellID] = self.getCellValue(self.cells[adjCellID])
-##                        if not self.trialFlag[adjCellID]:
-##                            trialCellIDs.append(adjCellID)
-##                            self.trialFlag[adjCellID] = 1
-        
-##    def setInitialEvaluatedCells(self):
-##        tmpArray = self.array.copy()
-
-##        for cell in self.cells:
-##            possibleValues = ()
-
-##            for index in range(len(cell.getCellToCellIDs())):
-##                adjCellID = cell.getCellToCellIDs()[index]
-##                if type(adjCellID) is type(1):
-##                    val = self.array[cell.getID()]
-##                    adjVal = self.array[adjCellID]
-
-##                    if val * adjVal < 0.0:
-##                        dAP = cell.getCellToCellDistances()[index]
-                        
-##                        possibleValues += (val * dAP / abs(adjVal - val),)
-
-##                        self.evaluatedFlag[cell.getID()] = 1
-            
-##            if self.evaluatedFlag[cell.getID()] == 1:
-##                if self.array[cell.getID()] > 0.:
-##                    tmpArray[cell.getID()] = min(possibleValues)
-##                else:
-##                    tmpArray[cell.getID()] = max(possibleValues)
-
-##        self.array = tmpArray
-
-##    def getInitialTrialCells(self):
-##        trialCellIDs = []
-##        for cell in self.cells:
-##            if self.evaluatedFlag[cell.getID()]:
-##                for adjCellID in cell.getCellToCellIDs():
-##                    if type(adjCellID) is type(1):
-##                        if not self.evaluatedFlag[adjCellID]:
-##                            if not self.trialFlag[adjCellID]:
-##                                self.trialFlag[adjCellID] = 1
-##                                trialCellIDs.append(adjCellID)
-##                                self.array[adjCellID] = self.getCellValue(self.cells[adjCellID])
-
-##        return trialCellIDs
-
-##    def getAdjacentEvaluatedIndices(self, cell):
-##        adjIndices = []
-##        for index in range(len(cell.getCellToCellIDs())):
-##            id = cell.getCellToCellIDs()[index]
-##            if type(id) is type(1):
-##                if self.evaluatedFlag[id]:
-##                    adjIndices.append(index)
-##        return adjIndices
-
-##    def getCellValue(self, cell):
-##        adjIndices = self.getAdjacentEvaluatedIndices(cell)
-
-##        if len(adjIndices) == 0:
-##            raise Exception
-##        elif len(adjIndices) == 1:
-##            return self.evaluateOneCell(cell, adjIndices)
-##        elif len(adjIndices) == 2:
-##            return self.evaluateTwoCells(cell, adjIndices)
-##        elif len(adjIndices) == 3:
-##            return self.evaluateThreeCells(cell, adjIndices)
-##        elif len(adjIndices) == 4:
-##            return self.evaluateFourCells(cell, adjIndices)
-##        else:
-##            raise Exception
-        
-##    def getMinCellID(self, cellIDs):
-##        minCellID = cellIDs[0]
-##        for cellID in cellIDs[1:]:
-##            if self.array[cellID] < self.array[minCellID]:
-##                minCellID = cellID
-
-##        return minCellID
-
-##    def getMaxCellID(self, cellIDs):
-##        maxCellID = cellIDs[0]
-##        for cellID in cellIDs[1:]:
-##            if self.array[cellID] > self.array[maxCellID]:
-##                maxCellID = cellID
-
-##        return maxCellID
-
-##    def getMinAbsCellID(self, cellIDs):
-##        numCellIDs = Numeric.array(cellIDs)
-##        arr = Numeric.take(self.array, numCellIDs)
-
-##        return numCellIDs[Numeric.argsort(Numeric.absolute(arr))[0]]
-
-####        minCellID = cells[0]
-####        for cell in cells[1:]:
-####            if abs(self.array[cell.getID()]) < abs(self.array[minCell.getID()]):
-####                minCell = cell
-
-####        return minCell
-            
-##    def evaluateOneCell(self, cell, indices):
-##        dAP = cell.getCellToCellDistances()[indices[0]]
-##        phiP = self.array[cell.getID()]
-##        phiA = self.array[cell.getCellToCellIDs()[indices[0]]]
-##        if phiP > 0.0:
-##            return phiA + dAP
-##        else:
-##            return phiA - dAP
-
-##    def evaluateTwoCells(self, cell, indices):
-##        n0 = cell.getNormal(indices[0])
-##        n1 = cell.getNormal(indices[1])
-##        if vector.sqrtDot(n0, n1) > 0.99:
-##            vals = (self.evaluateOneCell(cell, (indices[0],)), self.evaluateOneCell(cell, (indices[1],)))
-##            if self.array[cell.getID()] > 0.:
-##                return min(vals)
-##            else:
-##                return max(vals)
-##        else:
-##            return self._evaluateTwoCells(cell, indices[0], indices[1])
-
-##    def evaluateThreeCells(self, cell, indices):
-##        if self.array[cell.getID()] < 0.:
-##            cellIDs = MA.take(cell.getCellToCellIDs(), indices)
-##            minCellID = self.getMinCellID(cellIDs)
-##            filledList = list(MA.filled(cell.getCellToCellIDs(), value = -1))
-##            indices.remove(filledList.index(minCellID))
-##            return self.evaluateTwoCells(cell, indices)
-##        else:
-##            cellIDs = MA.take(cell.getCellToCellIDs(), indices)
-##            maxCellID = self.getMaxCellID(cellIDs)
-##            filledList = list(MA.filled(cell.getCellToCellIDs(), value = -1))
-##            indices.remove(filledList.index(maxCellID))
-##            return self.evaluateTwoCells(cell, indices)
-
-##    def evaluateFourCells(self, cell, indices):
-
-##        if self.array[cell.getID()] < 0.:
-##            cellIDs = Numeric.take(cell.getCellToCellIDs(), indices)
-##            minCellID = self.getMinCellID(cellIDs)
-##            indices.remove(list(cell.getCellToCellIDs()).index(minCellID))
-##            return self.evaluateThreeCells(cell, indices)
-##        else:
-##            cellIDs = Numeric.take(cell.getCellToCellIDs(), indices)
-##            maxCellID = self.getMaxCellID(cellIDs)
-##            indices.remove(list(cell.getCellToCellIDs()).index(maxCellID))
-##            return self.evaluateThreeCells(cell, indices)
-
-##    def _evaluateTwoCells(self, cell, index1, index2):
-##        d1 = cell.getCellToCellDistances()[index1]
-##        d2 = cell.getCellToCellDistances()[index2]
-##        phi = self.array[cell.getID()]
-##        phi1 = self.array[cell.getCellToCellIDs()[index1]]
-##        phi2 = self.array[cell.getCellToCellIDs()[index2]]
-##        aa = d1**2 + d2**2
-##        bb = -2 * (phi1 * d2**2 + phi2 * d1**2)
-##        cc = phi1**2 * d2**2 + phi2**2 * d1**2 - d1**2 * d2**2
-##        sqr = Numeric.sqrt(bb**2 - 4 * aa * cc)
-##        if phi > 0.:
-##            return (-bb + sqr) / 2. / aa
-##        else:
-##            return (-bb - sqr) / 2. / aa
-        
 
