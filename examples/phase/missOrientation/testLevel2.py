@@ -109,6 +109,13 @@ class TestModFaceGradNoMod(TestMod):
         self.answer = array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx - array(((-4. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (0., 0.), (0., 0.))) / dx
         self.diff = self.theta.getFaceGrad() - thetaNoMod.getFaceGrad()
         self.result = self.diff.getNumericValue()
+
+class TestModFaceGradNoMod1(TestModFaceGradNoMod):
+    def setUp(self):
+        TestModFaceGradNoMod.setUp(self)
+        self.theta.setValue(array((0., -2 * pi / 3.)))
+        self.answer = array(((0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.)))
+        self.result =  self.diff.getNumericValue()
         
 def suite():
     theSuite = unittest.TestSuite()
@@ -118,11 +125,9 @@ def suite():
     theSuite.addTest(unittest.makeSuite(TestModNoMod))
     theSuite.addTest(unittest.makeSuite(TestModFaceGrad))
     theSuite.addTest(unittest.makeSuite(TestModFaceGradNoMod))
+    theSuite.addTest(unittest.makeSuite(TestModFaceGradNoMod1))
     return theSuite
     
 if __name__ == '__main__':
     theSuite = suite()
     unittest.TextTestRunner(verbosity=2).run(theSuite)
-
-            
-            

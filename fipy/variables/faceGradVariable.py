@@ -62,6 +62,8 @@ class FaceGradVariable(VectorFaceVariable):
 	tangents2 = self.mesh.getFaceTangents2()
 	cellGrad = self.var.getGrad().getNumericValue()
         
+      
+        
 	grad1 = array.take(cellGrad,id1)
 	grad2 = array.take(cellGrad,id2)
 	t1grad1 = array.sum(tangents1*grad1,1)
@@ -79,20 +81,20 @@ class FaceGradVariable(VectorFaceVariable):
 	self.value = normals * N + tangents1 * T1 + tangents2 * T2
 
     def _calcValueInline(self):
-        
+
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	
 	tangents1 = self.mesh.getFaceTangents1()
 	tangents2 = self.mesh.getFaceTangents2()
 
 	inline.runInlineLoop1("""
-	    int j;
-	    double t1grad1, t1grad2, t2grad1, t2grad2, N;
+            int j;
+            double t1grad1, t1grad2, t2grad1, t2grad2, N;
 
 	    N = (var(id2(i)) - var(id1(i))) / dAP(i);
 
 	    t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
-
+            
 	    for (j = 0; j < nj; j++) {
 		t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
 		t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
@@ -105,16 +107,17 @@ class FaceGradVariable(VectorFaceVariable):
 		val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
 		val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
 	    }
-	""",tangents1 = tangents1,
-	  tangents2 = tangents2,
-	  cellGrad = self.var.getGrad().getNumericValue(),
-	  normals = self.mesh.getOrientedFaceNormals(),
-	  id1 = id1,
-	  id2 = id2,
-	  dAP = self.mesh.getCellDistances().getNumericValue(),
-	  var = self.var.getNumericValue(),
-	  val = self.value.value,
-	  ni = tangents1.shape[0],
-	  nj = tangents1.shape[1])
+        """,tangents1 = tangents1,
+            tangents2 = tangents2,
+            cellGrad = self.var.getGrad().getNumericValue(),
+            normals = self.mesh.getOrientedFaceNormals(),
+            id1 = id1,
+            id2 = id2,
+            dAP = self.mesh.getCellDistances().getNumericValue(),
+            var = self.var.getNumericValue(),
+            val = self.value.value,
+            ni = tangents1.shape[0],
+            nj = tangents1.shape[1])
+
 
     

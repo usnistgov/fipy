@@ -70,8 +70,9 @@ class TransientVariable(CellVariable):
         expo = (expo < 100.) * (expo - 100.) + 100.
         pFunc = 1. + Numeric.exp(-expo.getNumericValue()) * (self.parameters['mu'] / epsilon - 1.)
 
+        
         self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration']
-    
+
     def _calcValueInline(self):
 
         inline.runInlineLoop1("""

@@ -64,8 +64,7 @@ class SourceVariable(CellVariable):
         self.theta = self.requires(theta)
         self.diffCoeff = self.requires(diffCoeff)
         self.halfAngleVariable = self.requires(halfAngleVariable)
-        self.thetaNoMod = NoModularVariable(self.theta)
-        
+        self.thetaNoMod = NoModularVariable(self.theta)        
         thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 
@@ -73,6 +72,7 @@ class SourceVariable(CellVariable):
         inline.optionalInline(self._calcValueInline, self._calcValue)
 
     def _calcValueInline(self):
+
         inline.runInlineLoop1("""
         halfAngleSq = halfAngleVariable(i) * halfAngleVariable(i);
         beta = (1. - halfAngleSq) / (1. + halfAngleSq);
@@ -89,9 +89,6 @@ class SourceVariable(CellVariable):
                               phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
                               ni = len(self.phase.getNumericValue()))
                               
-                              
-
-                              
     def _calcValue(self):
 
         mesh = self.theta.getMesh()
@@ -102,6 +99,5 @@ class SourceVariable(CellVariable):
         dbeta = self.parameters['symmetry'] * 2. * self.halfAngleVariable[:] / (1. + halfAngleSq)
 
         self.value = self.AOFVariable[:] + self.parameters['alpha']**2 * c2 * dbeta * self.phase.getGrad().getMag()[:] * (1. + c2 * beta)
-        
-    
+
 

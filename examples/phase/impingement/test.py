@@ -88,7 +88,7 @@ class Test4Particles(TestImpingement):
         
 def suite():
     theSuite = unittest.TestSuite()
-##    theSuite.addTest(unittest.makeSuite(Test1D))
+    theSuite.addTest(unittest.makeSuite(Test1D))
     theSuite.addTest(unittest.makeSuite(Test4Particles))
     return theSuite
     

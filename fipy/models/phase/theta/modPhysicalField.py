@@ -70,7 +70,7 @@ from Numeric import pi
 class ModPhysicalField(PhysicalField):
 
     def mod(self, argument):
-        return (argument + 3 * pi) % (2. * pi) - pi
+        return (argument + 3. * pi) % (2. * pi) - pi
 
     def __sub__(self, other):
         if isinstance(other, ModPhysicalField):

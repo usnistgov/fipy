@@ -40,27 +40,45 @@ from Numeric import pi
 
 from fivol.variables.cellVariable import CellVariable
 from fivol.variables.cellGradVariable import CellGradVariable
-from fivol.variables.cellToFaceVariable import CellToFaceVariable
-from fivol.variables.faceGradVariable import FaceGradVariable
-from fivol.examples.phase.theta.modFaceGradVariable import ModFaceGradVariable
+from modCellToFaceVariable import ModCellToFaceVariable
 from fivol.examples.phase.theta.modPhysicalField import ModPhysicalField
+
 
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)        
+        self.mod = """
+        # define pi 3.141592653589793
+        # define mod(x) (fmod(x + 3 * pi, 2 * pi) - pi)
+        """
+        self.faceValue = None
+        self.grad = None
         
     def getPhysicalFieldClass(self):
 	return ModPhysicalField
 
     def updateOld(self):
+        self.value.value = self.value.mod(self.value)
         if self.old != None:
-	    self.old.setValue(self.value.mod(self.value))
+	    self.old.setValue(self.value.value)
 
     def getGrad(self):
 	if self.grad is None:
 	    gridSpacing = self.mesh.getMeshSpacing()
-	    self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
+            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
 
 	return self.grad
 
-        
+    def getFaceValue(self):
+	if self.faceValue is None:
+	    from modCellToFaceVariable import ModCellToFaceVariable
+	    self.faceValue = ModCellToFaceVariable(self, self.mod)
+
+	return self.faceValue
+
+    def getFaceGrad(self):
+	if self.faceGrad is None:
+	    from modFaceGradVariable import ModFaceGradVariable
+	    self.faceGrad = ModFaceGradVariable(self, self.mod)
+
+	return self.faceGrad

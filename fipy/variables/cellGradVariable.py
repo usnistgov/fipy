@@ -66,9 +66,6 @@ class CellGradVariable(VectorCellVariable):
 	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-## 	print "self.var:",self.var.__class__
-## 	print 'getFaceValue:',self.var.getFaceValue()[:]
-## 	raw_input()
 
 	contributions = array.take(self.faceGradientContributions[:],ids.flat)
 	contributions = contributions.reshape((N,M,self.mesh.getDim()))
@@ -78,7 +75,7 @@ class CellGradVariable(VectorCellVariable):
 	grad = grad / volumes[:,Numeric.NewAxis]
 
 	self.value = grad
-	    
+
     def calcValue(self):
 	N = len(self.mesh.getCells())
 	M = self.mesh.getMaxFacesPerCell()

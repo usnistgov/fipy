@@ -121,13 +121,3 @@ class PhaseEquation(MatrixEquation):
             var,
             terms,
             solver)
-
-    def getSpSourceCoeff(self):
-        s = self.parameters['s']
-	epsilon = self.parameters['epsilon']
-	thetaMag = self.thetaOld.getGrad().getMag()
-        
-        spSourceCoeff = self.mPhi * (self.var - (self.mPhi < 0.)) 
-	spSourceCoeff += (2*s + epsilon**2 * thetaMag) * thetaMag
-	
-	return spSourceCoeff

@@ -95,8 +95,8 @@ class ImpingementSystem:
         dx = Lx / nx
         dy = Ly / ny
 
-##        Lx = 10
-##        Ly = 10
+##        Lx = 5.
+##        Ly = 5.
 ##        nx = 10
 ##        ny = 10
 ##        dx = 1.
@@ -141,7 +141,7 @@ class ImpingementSystem:
             var = theta,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 
-            steps = 1000
+            steps = 2000
             ),
             boundaryConditions=(
             FixedFlux(mesh.getExteriorFaces(), 0.),
@@ -177,15 +177,15 @@ class ImpingementSystem:
         return self.parameters
 
     def run(self):
-        self.phaseViewer.plot(fileName = 'phase.ps')
-        raw_input('written file, press key to continue')
-        self.thetaViewer.plot()
+##        self.phaseViewer.plot(fileName = 'phase.ps')
+##        raw_input('written file, press key to continue')
+##        self.thetaViewer.plot()
 
         for i in range(self.steps):
             self.it.timestep(1)
             self.phaseViewer.plot()
             self.thetaViewer.plot()
 
-        self.thetaViewer.plot(fileName = 'theta.ps')
+##        self.thetaViewer.plot(fileName = 'theta.ps')
 
 

@@ -57,9 +57,8 @@ class LinearPCGSolver(Solver):
 	A = L.to_sss()
 
 	Assor=precon.ssor(A)
-        
- 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
 
+ 	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
 ##        print info, iter, relres
 
 	if (info != 0):

@@ -47,7 +47,6 @@ import Numeric
 
 class System4Particles(ImpingementSystem):
     def __init__(self, nx= 20, ny = 20):
-
         def make_circle(a,b,r,val):
             for i in range(n):
                 for j in range(n):
@@ -82,17 +81,18 @@ class System4Particles(ImpingementSystem):
         pi = Numeric.pi
     
         initialConditions = (
-            { 'phase value' : 0., 'theta value' : -pi + 0.001,        'func' : getAllCells },
-            { 'phase value' : 1., 'theta value' : 2 * pi / 3.,        'func' : bottomLeftCells },
-            { 'phase value' : 1., 'theta value' : -2 * pi / 3.,       'func' : bottomRightCells },
-            { 'phase value' : 1., 'theta value' : -2 * pi / 3. + 0.3, 'func' : topLeftCells },
-            { 'phase value' : 1., 'theta value' : 2 * pi / 3.,        'func' : topRightCells }
+            { 'phase value' : 0., 'theta value' : -pi + 0.0001,        'func' : getAllCells },
+            { 'phase value' : 1., 'theta value' : 2. * pi / 3.,        'func' : bottomLeftCells },
+            { 'phase value' : 1., 'theta value' : -2. * pi / 3.,       'func' : bottomRightCells },
+            { 'phase value' : 1., 'theta value' : -2. * pi / 3. + 0.3, 'func' : topLeftCells },
+            { 'phase value' : 1., 'theta value' : 2. * pi / 3.,        'func' : topRightCells }
             )
 
         ImpingementSystem.__init__(self, nx = nx, ny = ny, initialConditions = initialConditions, steps = 10, drivingForce = 10.)
 
 if __name__ == '__main__':
-    system = System4Particles(nx = 100, ny = 100)
+    system = System4Particles(nx = 20, ny = 20)
     system.run()
     raw_input()
+
 

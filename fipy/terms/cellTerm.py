@@ -59,6 +59,12 @@ class CellTerm(Term):
 
 	coeffScale = coeffScale * varScale
 
+##        print self.__class__
+##        print oldArray[0]
+##        print self.oldCoeff[:]
+##        print coeffScale
+##        print  varScale
+        
 	b += oldArray*self.oldCoeff[:]/(coeffScale * varScale)
 	b += Numeric.ones([N])*self.bCoeff[:]/(coeffScale)
 	L.update_add_pyarray(Numeric.ones([N])*self.newCoeff[:]/coeffScale)
