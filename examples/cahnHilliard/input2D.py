@@ -68,7 +68,7 @@ nx = 500
 ny = 500
 
 identifier = 'numberOfElements='
-
+   
 for s in sys.argv:
     if identifier in s:
         numberOfElements = int(s[len(identifier):])
@@ -76,6 +76,7 @@ for s in sys.argv:
         ny = int(Numeric.sqrt(numberOfElements))
 
 steps = 100
+
 dx = 2.
 dy = 2.
 
@@ -138,6 +139,6 @@ if __name__ == '__main__':
         eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
         if 'viewers=off' not in sys.argv:
             viewer.plot()
-##        print 'step',step,'dt',dt
+            print 'step',step,'dt',dt
             
         
