@@ -49,98 +49,54 @@ from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class FaceTerm(Term):
-    def __init__(self,weight,mesh,boundaryConditions):
-	Term.__init__(self, mesh = mesh, weight = weight)
-        self.interiorN = len(self.mesh.getInteriorFaces())
-        self.boundaryConditions = boundaryConditions
-
-	if self.weight.has_key('implicit'):
-	    weight = self.weight['implicit']
-	    self.implicit = {
-		'cell 1 diag': self.coeff * weight['cell 1 diag'],
-		'cell 1 offdiag': self.coeff * weight['cell 1 offdiag'],
-		'cell 2 diag': self.coeff * weight['cell 2 diag'],
-		'cell 2 offdiag': self.coeff * weight['cell 2 offdiag']
-	    }
-
-	if self.weight.has_key('explicit'):
-	    weight = self.weight['explicit']
-	    self.explicit = {
-		'cell 1 diag': self.coeff * weight['cell 1 diag'],
-		'cell 1 offdiag': self.coeff * weight['cell 1 offdiag'],
-		'cell 2 diag': self.coeff * weight['cell 2 diag'],
-		'cell 2 offdiag': self.coeff * weight['cell 2 offdiag']
-	    }
-	    
-## 	import fipy.terms.convectionTerm
-## 	if isinstance(self, fipy.terms.convectionTerm.ConvectionTerm):
-## 	    from fipy.viewers.gist1DViewer import Gist1DViewer
-## 	    self.coeffViewer = Gist1DViewer(vars = (self.coeff,), title = "stupid")
-            
-    def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
-## 	print self
-## 	print "before all"
-## 	print L
-## 	print b
-
-	L.addAt(array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
-	L.addAt(array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
-	L.addAt(array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
-	L.addAt(array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
+    def __init__(self,):
+	Term.__init__(self)
 	
-	N = self.getMesh().getNumberOfCells()
-	M = self.getMesh().getMaxFacesPerCell()
-	
-## 	print self
-## 	print "before BCs"
-## 	print L
-## 	print b
-	
-        for boundaryCondition in self.boundaryConditions:
-## 	    print self.implicit['cell 1 diag']
-## 	    print self.implicit['cell 1 offdiag']
-## 	    print self.implicit['cell 2 offdiag']
-## 	    print self.implicit['cell 2 diag']
-	    
-	    LL, bb = boundaryCondition.buildMatrix(N, M, self.implicit, coeffScale)
-	    
-	    L += LL
-	    b += bb / varScale
-	    
-## 	    print boundaryCondition
-## 	print L
-## 	print b
-	    
-    def explicitBuildMatrix(self, oldArray, id1, id2, b, coeffScale, varScale):
+    def getCoeffMatrix(self, mesh, weight):
+	coeff = self.getCoeff(mesh)
+	return {
+	    'cell 1 diag': coeff * weight['cell 1 diag'],
+	    'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
+	    'cell 2 diag': coeff * weight['cell 2 diag'],
+	    'cell 2 offdiag': coeff * weight['cell 2 offdiag']
+	}
 
-        inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffScale, varScale)
-
-	N = self.getMesh().getNumberOfCells()
-	M = self.getMesh().getMaxFacesPerCell()
+    def implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
+	coeffMatrix = self.getCoeffMatrix(mesh, weight)
 	
-## 	print self
-## 	print "before BCs"
-## ## 	print L
-## 	print b
+	interiorFaceIDs = mesh.getInteriorFaceIDs()
 	
-        for boundaryCondition in self.boundaryConditions:
-	    LL, bb = boundaryCondition.buildMatrix(N, M, self.explicit, coeffScale)
-	    
-## 	    print boundaryCondition
-	    
-	    if LL != 0:
-## 		print LL
-		b -= LL.takeDiagonal() * oldArray / varScale
-	    b += bb / varScale
-	    
-## 	    print L
-## 	    print b
+	L.addAt(array.take(coeffMatrix['cell 1 diag'], interiorFaceIDs),    id1, id1)
+	L.addAt(array.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs), id1, id2)
+	L.addAt(array.take(coeffMatrix['cell 2 offdiag'], interiorFaceIDs), id2, id1)
+	L.addAt(array.take(coeffMatrix['cell 2 diag'], interiorFaceIDs),    id2, id2)
 
-    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, coeffScale, varScale):
+        N = mesh.getNumberOfCells()
+	M = mesh.getMaxFacesPerCell()
 
-        weight = self.weight['explicit']
-        coeff = Numeric.array(self.coeff)
-        Nfac = self.mesh.getNumberOfFaces()
+        for boundaryCondition in boundaryConditions:
+            LL, bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
+            L += LL
+            b += bb
+
+    def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
+	coeffMatrix = self.getCoeffMatrix(mesh, weight)
+        inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
+        N = mesh.getNumberOfCells()
+	M = mesh.getMaxFacesPerCell()
+        for boundaryCondition in boundaryConditions:
+
+            LL,bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
+
+            if LL != 0:
+		b -= LL.takeDiagonal() * oldArray
+	    b += bb
+
+    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
+
+	weight = self.getWeight(mesh)['explicit']
+        coeff = Numeric.array(self.getCoeff(mesh))
+        Nfac = mesh.getNumberOfFaces()
 
         cell1Diag = Numeric.resize(Numeric.array(weight['cell 1 diag']), (Nfac,))
         cell1OffDiag = Numeric.resize(Numeric.array(weight['cell 1 offdiag']), (Nfac,))
@@ -156,7 +112,7 @@ class FaceTerm(Term):
 	 
 	    b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1 + cell1OffDiag(faceID) * oldArrayId2);
 	    b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2 + cell2OffDiag(faceID) * oldArrayId1);
-	""",oldArray = Numeric.array(oldArray) / coeffScale,
+	""",oldArray = Numeric.array(oldArray),
 	    id1 = id1,
 	    id2 = id2,
 	    b = b,
@@ -165,90 +121,46 @@ class FaceTerm(Term):
 	    cell2Diag = cell2Diag,
 	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
-	    faceIDs = self.mesh.getInteriorFaceIDs(),
-	    ni = len(self.mesh.getInteriorFaceIDs()))
+	    faceIDs = mesh.getInteriorFaceIDs(),
+	    ni = len(mesh.getInteriorFaceIDs()))
 
-    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffScale, varScale):
-        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2)
+    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, dt):
+        oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2, dt)
 
-	cell1diag = array.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
-	cell1offdiag = array.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
-	cell2diag = array.take(self.explicit['cell 2 diag'], self.mesh.getInteriorFaceIDs())
-	cell2offdiag = array.take(self.explicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs())
+	interiorFaceIDs = mesh.getInteriorFaceIDs()
 	
-	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:])/coeffScale)
-	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
+	cell1diag = array.take(coeffMatrix['cell 1 diag'], interiorFaceIDs)
+	cell1offdiag = array.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs)
+	cell2diag = array.take(coeffMatrix['cell 2 diag'], interiorFaceIDs)
+	cell2offdiag = array.take(coeffMatrix['cell 2 offdiag'], interiorFaceIDs)
+	
+	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
+	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
 
-    def getOldAdjacentValues(self, oldArray, id1, id2):
+    def getOldAdjacentValues(self, oldArray, id1, id2, dt):
 	return array.take(oldArray, id1), array.take(oldArray, id2)
 
-    def buildMatrix(self, oldArray, coeffScale, varScale, dt):
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	"""Implicit portion considers
 	"""
 
-## 	print self, "coeff:\n", self.coeff
+	mesh = var.getMesh()
 	
-## 	import fipy.terms.convectionTerm
-## 	if isinstance(self, fipy.terms.convectionTerm.ConvectionTerm):
-## 	    self.coeffViewer.plot()
-
-	self.dt = dt
+	id1, id2 = mesh.getAdjacentCellIDs()
+	id1 = array.take(id1, mesh.getInteriorFaceIDs())
+	id2 = array.take(id2, mesh.getInteriorFaceIDs())
 	
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	id1 = array.take(id1, self.mesh.getInteriorFaceIDs())
-	id2 = array.take(id2, self.mesh.getInteriorFaceIDs())
-	
-        N = len(oldArray)
+        N = len(var)
         b = Numeric.zeros((N),'d')
         L = SparseMatrix(size = N)
-        
-        ## implicit
-        if self.weight.has_key('implicit'):
-	    self.implicitBuildMatrix(L, coeffScale, id1, id2, b, varScale)
 
-        if self.weight.has_key('explicit'):
-            self.explicitBuildMatrix(oldArray, id1, id2, b, coeffScale, varScale)
+	weight = self.getWeight(mesh)
+	
+        if weight.has_key('implicit'):
+	    self.implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
+
+        if weight.has_key('explicit'):
+            self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
             
         return (L, b)
 
-##    def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
-##	"""Implicit portion considers
-##	"""
-	
-##	id1, id2 = self.mesh.getAdjacentCellIDs()
-##	id1 = id1[:self.interiorN]
-##	id2 = id2[:self.interiorN]
-	
-##        ## implicit
-##        if self.weight.has_key('implicit'):
-	    
-##            L.update_add_pyarray_at_indices(self.implicit['cell 1 diag'][:self.interiorN] / coeffScale,id1,id1)
-##            L.update_add_pyarray_at_indices(self.implicit['cell 1 offdiag'][:self.interiorN] / coeffScale,id1,id2)
-##            L.update_add_pyarray_at_indices(self.implicit['cell 2 offdiag'][:self.interiorN] / coeffScale,id2,id1)
-##            L.update_add_pyarray_at_indices(self.implicit['cell 2 diag'][:self.interiorN] / coeffScale,id2,id2)
-                
-##	    for boundaryCondition in self.boundaryConditions:
-##		LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
-                
-##		L.update_add_pyarray_at_indices(LL/coeffScale,ids,ids)
-##                ## WARNING: the next line will not work if one cell has two faces on the same
-##                ## boundary. Numeric.put will not add both values to the b array but over write
-##                ## the first with the second. We really need a putAdd function rather than put.
-##		## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
-		
-##                fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
-
-##        if self.weight.has_key('explicit'):
-
-##	    oldArrayId1 = array.take(oldArray, id1)
-##	    oldArrayId2 = array.take(oldArray, id2)
-
-##            fipy.tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
-##            fipy.tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
-
-##            for boundaryCondition in self.boundaryConditions:
-
-##                LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
-##                oldArrayIds = array.take(oldArray, ids)
-##                fipy.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
-##                fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))

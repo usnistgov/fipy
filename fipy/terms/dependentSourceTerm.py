@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "equation.py"
- #                                    created: 11/10/03 {2:45:34 PM} 
- #                                last update: 9/3/04 {10:35:31 PM} 
+ #  FILE: "dependentSourceTerm.py"
+ #                                    created: 11/28/03 {11:36:25 AM} 
+ #                                last update: 12/7/04 {3:10:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,52 +36,23 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
-class Equation:
-    def __init__(
-        self,
-        var,
-        terms,
-        solver,
-	solutionTolerance = 1e-4):
+from fipy.terms.sourceTerm import SourceTerm
 
-	self.var = var
-        self.terms = terms
-	self.solver = solver
-	
-	self.solutionTolerance = solutionTolerance
-	self.converged = 1
-	self.residual = var.getNumericValue().copy()
-	self.residual[:] = solutionTolerance
+class DependentSourceTerm(SourceTerm):
+    """
+    Source term that is linearly dependent on the solution variable. 
+    This term in general should be positive for stability. 
+    Added to the matrix diagonal.
+    """
+    def getWeight(self, mesh):
+	return {
+	    'diagonal' : 1, 
+	    'b vector':  0, 
+	    'new value': 0, 
+	    'old value': 0
+	}
 
-    def getVar(self):
-        return self.var 
-
-    def updateVar(self):
-	pass
-	
-    def solve(self, dt = 1.):
-	pass
-    
-    def isConverged(self):
-	return self.converged
-
-    def getResidual(self):
-	return self.residual
-	
-    def getSolutionTolerance(self):
-	return self.solutionTolerance
-	
-    def getFigureOfMerit(self):
-	FOM = min(self.getSolutionTolerance() / self.getResidual())
-	for term in self.terms:
-	    termFOM = term.getFigureOfMerit()
-	    if termFOM:
-		FOM = min(FOM, termFOM)
-	    
-	print self, FOM
-	
-	return FOM

@@ -52,9 +52,8 @@ from fipy.tools import array
 from fipy.tools import vector
 from fipy.tools.sparseMatrix import SparseMatrix
 
-
 class FixedValue(BoundaryCondition):
-    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
+    def buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Set boundary equal to value.
 	
 	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
@@ -70,10 +69,10 @@ class FixedValue(BoundaryCondition):
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
-	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds) / coeffScale, self.adjacentCellIds, self.adjacentCellIds)
+	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self.getValue() / coeffScale)
+	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self.getValue())
 
 	return (LL, bb)
 	

@@ -1,15 +1,12 @@
-#!/usr/bin/env python
-
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "test.py"
- #                                    created: 7/28/04 {11:18:34 AM} 
- #                                last update: 12/9/04 {8:19:02 PM} 
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
+ #  FILE: "equationFactory.py"
+ #                                    created: 12/8/04 {4:46:00 PM} 
+ #                                last update: 12/8/04 {4:47:12 PM} 
+ #  Author: Jonathan Guyer
+ #  E-mail: guyer@nist.gov
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -18,7 +15,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this document is not subject to copyright
- # protection and is in the public domain.  test.py
+ # protection and is in the public domain.  equationFactory.py
  # is an experimental work.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
@@ -29,7 +26,8 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  #  Description: 
  # 
@@ -37,28 +35,9 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2004-07-28 JEG 1.0 original
+ #  2004-12-08 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import LateImportDocTestSuite
-import fipy.tests.testProgram
-
-def suite():
-    return LateImportDocTestSuite(docTestModuleNames = (
-            'diffusion.input1D',
-            'diffusion.input1Ddimensional',
-            'diffusion.input2D',
-            'diffusion.input2Dcorner',
-            'phase.input1D',
-            'phaseDiffusion.input1Dbinary',
-            'phaseDiffusion.input1Dquaternary',
-            'phaseDiffusion.input1DternaryAndElectrons',
-            'poisson.input1DallCharge',
-            'poisson.input1DleftCharge',
-            'poisson.input1DrightCharge'
-        ), base = __name__)
-    
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
-
+class EquationFactory:
+    pass

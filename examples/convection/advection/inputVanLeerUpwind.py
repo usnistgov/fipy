@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:53 PM} 
+ #                                last update: 12/7/04 {5:02:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,34 +48,29 @@ order explicit upwind scheme.
 import Numeric
      
 from fipy.meshes.grid2D import Grid2D
-from fipy.equations.advectionEquation import AdvectionEquation
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.gist1DViewer import Gist1DViewer
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
 
 valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 1000
-ny = 1
 dx = L / nx
-dy = L / ny
 cfl = 0.1
 velocity = -1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 10000
 
-mesh = Grid2D(dx, dy, nx, ny)
+mesh = Grid2D(dx = dx, nx = nx)
 
-startingArray = Numeric.zeros(nx * ny, 'd')
+startingArray = Numeric.zeros(nx, 'd')
 startingArray[nx/4:nx/2] = 1. 
 
-var = CellVariable(
+var1 = CellVariable(
     name = "advection variable",
     mesh = mesh,
     value = startingArray)
@@ -87,34 +82,24 @@ var2 = CellVariable(
 
 boundaryConditions = (
     FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight),
-    FixedFlux(mesh.getFacesTop(), 0.),
-    FixedFlux(mesh.getFacesBottom(), 0.)
+    FixedValue(mesh.getFacesRight(), valueRight)
     )
 
-eq = AdvectionEquation(
-    var = var,
-    convectionCoeff = (velocity, 0.),
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = VanLeerConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-
-eq2 = AdvectionEquation(
-    var = var2,
-    convectionCoeff = (velocity, 0.),
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExplicitUpwindConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-    
-it = Iterator((eq,eq2))
+from fipy.terms.transientTerm import TransientTerm
+eq1 = TransientTerm() - VanLeerConvectionTerm(convCoeff = (velocity, 0.))
+eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(convCoeff = (velocity, 0.))
 
 if __name__ == '__main__':
     
-    viewer = Gist1DViewer(vars=(var,var2))
+    viewer = Gist1DViewer(vars=(var1,var2))
+    
     for step in range(steps):
-        it.timestep(dt = timeStepDuration)
+	eq1.solve(var = var1, 
+		  boundaryConditions = boundaryConditions, 
+		  solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+	eq2.solve(var = var2, 
+		  boundaryConditions = boundaryConditions, 
+		  solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
         viewer.plot()
-    viewer.plot()
+	
     raw_input('finished')

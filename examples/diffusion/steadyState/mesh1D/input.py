@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 11/3/04 {6:08:17 PM} 
+ #                                last update: 12/7/04 {10:21:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,11 +84,9 @@ object represents a rectangular structured grid. The parameters `dx` and
 `dy` refer to the grid spacing (set to unity here).
 
     >>> nx = 50
-    >>> ny = 1
     >>> dx = 1.
-    >>> dy = 1.
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+    >>> mesh = Grid2D(nx = nx, dx = dx)
 
 The solution of all equations in FiPy requires a variable. These variables store
 values on various parts of the mesh. In this case we need a
@@ -111,53 +109,20 @@ dimensional problem. The `FixedFlux(someFaces, 0.)` is the default
 boundary condition if no boundary conditions are specified for exterior faces.
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> boundaryConditions = (FixedFlux(mesh.getFacesTop(),0.),
-    ...                       FixedFlux(mesh.getFacesBottom(),0.),
-    ...                       FixedValue(mesh.getFacesRight(),valueRight),
+    >>> boundaryConditions = (FixedValue(mesh.getFacesRight(),valueRight),
     ...                       FixedValue(mesh.getFacesLeft(),valueLeft))
 
-A solver is created and passed to the equation. This solver uses an
-iterative conjugate gradient method to solve implicitly at each time
-step.
 
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-    >>> solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
-
-An equation is passed coefficient values, boundary conditions and
-a solver. The equation knows how to assemble and solve a system
-matrix. The `DiffusionEquation` object in FiPy represents a general 
-transient diffusion equation
+The steady-state diffusion equation
 
 .. raw:: latex
 
-   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi). $$
-   
-We solve this equation in steady state by setting
+   $$ \nabla \cdot (D \nabla \phi) = 0 $$
 
-.. raw:: latex
+is represented in \FiPy{} by an `ImplicitDiffusionTerm` object.
 
-   $\tau = 0$,
-
-which is accomplished by setting the `transientCoeff` parameter to 0:
-
-    >>> from fipy.equations.diffusionEquation import DiffusionEquation
-    >>> eq = DiffusionEquation(var,
-    ...                        transientCoeff = 0.,
-    ...                        diffusionCoeff = 1.,
-    ...                        solver = solver,
-    ...                        boundaryConditions = boundaryConditions)
-
-The `Iterator` object takes a `Tuple` of equations and solves to a
-required tolerance for the given equations at each time step.
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> iterator = Iterator((eq,))
-
-Here the iterator does one time step to implicitly find the steady state
-solution.
-    
-    >>> iterator.timestep()
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> ImplicitDiffusionTerm().solve(var = var, boundaryConditions = boundaryConditions)
     
 To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain
@@ -171,8 +136,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`.
 
-    >>> import Numeric
-    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
     
 A `Viewer` object allows a variable to be displayed. Here we are using
@@ -181,7 +145,7 @@ the results are viewed:
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+    ...     viewer = Grid2DGistViewer(var, minVal = 0., maxVal = 1.)
     ...     viewer.plot()
 
 ..
@@ -194,50 +158,31 @@ either "``>>>``" or "``...``", and then delete those prefixes from the
 remaining lines, leaving::
     
     nx = 50
-    ny = 1
     dx = 1.
-    dy = 1.
     from fipy.meshes.grid2D import Grid2D
-    mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-
+    mesh = Grid2D(nx = nx, dx = dx)
+    
     valueLeft = 0
     valueRight = 1
     from fipy.variables.cellVariable import CellVariable
     var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
-
+    
     from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.boundaryConditions.fixedFlux import FixedFlux
-    boundaryConditions = (FixedFlux(mesh.getFacesTop(),0.),
-			  FixedFlux(mesh.getFacesBottom(),0.),
-			  FixedValue(mesh.getFacesRight(),valueRight),
+    boundaryConditions = (FixedValue(mesh.getFacesRight(),valueRight),
 			  FixedValue(mesh.getFacesLeft(),valueLeft))
 
-    from fipy.solvers.linearPCGSolver import LinearPCGSolver
-    solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
-
-    from fipy.equations.diffusionEquation import DiffusionEquation
-    eq = DiffusionEquation(var,
-			   transientCoeff = 0.,
-			   diffusionCoeff = 1.,
-			   solver = solver,
-			   boundaryConditions = boundaryConditions)
-
-    from fipy.iterators.iterator import Iterator
-    iterator = Iterator((eq,))
-
-    iterator.timestep()
+    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    ImplicitDiffusionTerm().solve(var = var, boundaryConditions = boundaryConditions)
     
     x = mesh.getCellCenters()[:,0]
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-
-    import Numeric
-    Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
     
-    from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+    var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     
     if __name__ == '__main__':
+	from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+	viewer = Grid2DGistViewer(var, minVal = 0., maxVal = 1.)
 	viewer.plot()
 	
 Your own scripts will tend to look like this, although you can always write

@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 10/26/04 {1:24:11 PM} 
+ #                                last update: 12/7/04 {2:48:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,39 +46,38 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class ConvectionTerm(FaceTerm):
-    def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = None):
-
-	if not isinstance(convCoeff, VectorFaceVariable):
-	    convCoeff = VectorFaceVariable(mesh = mesh, value = convCoeff)
-
+    def __init__(self, convCoeff, diffusionTerm = None):
+	self.convCoeff = convCoeff
 	self.diffusionTerm = diffusionTerm
 	
-	self.projectedCoefficients = convCoeff * mesh.getOrientedAreaProjections()
+	FaceTerm.__init__(self)
 	
-	self.coeff = self.projectedCoefficients.sum(1)
+    def calcCoeff(self, mesh):
+	if not isinstance(self.convCoeff, VectorFaceVariable):
+	    self.convCoeff = VectorFaceVariable(mesh = mesh, value = self.convCoeff)
+
+	projectedCoefficients = self.convCoeff * mesh.getOrientedAreaProjections()
 	
+	self.coeff = projectedCoefficients.sum(1)
+	
+    def getWeight(self, mesh):
 	if self.diffusionTerm == None:
 	    diffCoeff = 1e-20
 	else:
-	    diffCoeff = self.diffusionTerm.getCoeff()
+	    diffCoeff = self.diffusionTerm.getCoeff(mesh)
 	    if diffCoeff == 0.:
 		diffCoeff = 1e-20
-
-	P = -self.coeff / diffCoeff
+	
+	P = -self.getCoeff(mesh) / diffCoeff
 	
 	alpha = self.Alpha(P)
 
-	weight = self.getWeight(alpha)
-	
-	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
-	
-    def getWeight(self, alpha):
 	return {
 	    'implicit':{
-		'cell 1 diag':    -alpha,
-		'cell 1 offdiag': -(1-alpha),
-		'cell 2 diag':     (1-alpha),
-		'cell 2 offdiag':  alpha
+		'cell 1 diag':     alpha,
+		'cell 1 offdiag':  (1-alpha),
+		'cell 2 diag':    -(1-alpha),
+		'cell 2 offdiag': -alpha
 	    }
 	}
 

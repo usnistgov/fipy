@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:43:01 PM} 
+ #                                last update: 12/9/04 {8:11:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,29 +42,23 @@
 """Test numeric implementation of the mesh
 """
 
-import unittest
-import doctest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-import fipy.meshes.numMesh.testGrid
-import fipy.meshes.numMesh.testMesh
-import fipy.meshes.numMesh.testMesh3D
-import fipy.meshes.numMesh.testTri2D
-import fipy.meshes.numMesh.mesh
-import fipy.meshes.numMesh.gmshImport
-import fipy.meshes.numMesh.adaptiveMesh
-import fipy.meshes.numMesh.refinedMesh
 
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(fipy.meshes.numMesh.testGrid.suite())
-    theSuite.addTest(fipy.meshes.numMesh.testMesh.suite())
-    theSuite.addTest(fipy.meshes.numMesh.testMesh3D.suite())
-    theSuite.addTest(fipy.meshes.numMesh.testTri2D.suite())
-    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.mesh))
-    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.gmshImport))
-    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.adaptiveMesh))
-    theSuite.addTest(doctest.DocTestSuite(fipy.meshes.numMesh.refinedMesh))
-    return theSuite
+    return LateImportDocTestSuite(
+        testModuleNames = (
+            'fipy.meshes.numMesh.testGrid',
+            'fipy.meshes.numMesh.testMesh',
+            'fipy.meshes.numMesh.testMesh3D',
+            'fipy.meshes.numMesh.testTri2D',
+        ),
+        docTestModuleNames = (
+            'fipy.meshes.numMesh.mesh',
+            'fipy.meshes.numMesh.gmshImport',
+            'fipy.meshes.numMesh.adaptiveMesh',
+            'fipy.meshes.numMesh.refinedMesh',
+        ))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 9/3/04 {10:35:50 PM} 
+ #                                last update: 12/7/04 {3:07:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,6 +43,10 @@
 from fipy.terms.cellTerm import CellTerm
 
 class SourceTerm(CellTerm):
-    def __init__(self, sourceCoeff, weight, mesh):
-	self.coeff = sourceCoeff * mesh.getCellVolumes()
-	CellTerm.__init__(self, weight, mesh) 
+    def __init__(self, sourceCoeff = 0.):
+	self.sourceCoeff = sourceCoeff
+	CellTerm.__init__(self) 
+	
+    def calcCoeff(self, mesh):
+	self.coeff = self.sourceCoeff * mesh.getCellVolumes()
+

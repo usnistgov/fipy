@@ -70,7 +70,8 @@ for the initial position of the interface:
 Advect the interface and check the position.
 
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     var.updateOld()
+   ...     advEqn.solve(var, dt = timeStepDuration)
 
    >>> distanceMoved = timeStepDuration * steps * velocity
    >>> answer = answer - distanceMoved
@@ -88,9 +89,7 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
 
 height = 0.5
 Lx = 0.4
@@ -120,22 +119,16 @@ var = DistanceVariable(
 
 var.calcDistanceFunction()
 
-advEqn = AdvectionEquation(
-    var,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
-
-it = Iterator((advEqn,))
-
+advEqn = buildAdvectionEquation(velocity)
+                        
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -.1, maxVal = .1)
 
     viewer.plot()
 
     for step in range(steps):
-        it.timestep(dt = timeStepDuration)
+        var.updateOld()
+        advEqn.solve(var, dt = timeStepDuration)
         viewer.plot()
 
     raw_input('finished')

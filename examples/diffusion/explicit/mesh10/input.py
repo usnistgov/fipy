@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:45:46 AM} 
+ #                                last update: 12/7/04 {2:52:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,11 +49,9 @@ the difference being that this transient example is solved explicitly.
 We create a 1D mesh:
     
     >>> nx = 100
-    >>> ny = 1
     >>> dx = 1.
-    >>> dy = 1.
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx, dy, nx, ny)
+    >>> mesh = Grid2D(dx = dx, nx = nx)
 
 and we initialize a `CellVariable` to `initialValue`:
     
@@ -69,14 +67,10 @@ The transient equation
 
 .. raw:: latex
 
-   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
+   $$ \frac{\partial (\tau \phi)}{\partial t} - \nabla \cdot (D \nabla \phi) = 0 $$
 
-is represented by the `ExplicitDiffusionEquation`, which includes a
-`TransientTerm`.  The coefficient of the `TransientTerm` depends on the
-desired time step.
+is represented by a `TransientTerm` and an `ExplicitDiffusionTerm`.
 
-    >>> timeStepDuration = 0.1
-    
 We take the diffusion coefficient 
 
 .. raw:: latex
@@ -87,34 +81,25 @@ We take the diffusion coefficient
 
    >>> diffusionCoeff = 1.
     
-We build the equation with an appropriate solver and boundary conditions:
+We build the equation:
 
-    >>> from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> eq = TransientTerm() - ExplicitDiffusionTerm(diffCoeff = diffusionCoeff)
+    
+and the boundary conditions:
+    
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> eq = ExplicitDiffusionEquation(var,
-    ...                                transientCoeff = 1. / timeStepDuration, 
-    ...                                diffusionCoeff = diffusionCoeff,
-    ...                                solver = LinearPCGSolver(tolerance = 1.e-15, 
-    ...                                                         steps = 1000
-    ...                                ),
-    ...                                boundaryConditions=(
-    ...                                    FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...                                    FixedFlux(mesh.getFacesRight(),0),
-    ...                                    FixedFlux(mesh.getFacesTop(),0.),
-    ...                                    FixedFlux(mesh.getFacesBottom(),0.)
-    ...                                )
-    ... )
+    >>> boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
 
 In this case, many steps have to be taken to reach equilibrium.  A loop is
 required to execute the necessary time steps:
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
+    
+    >>> timeStepDuration = 0.1
     >>> steps = 100
     >>> for step in range(steps):
-    ...     it.timestep()
+    ...     var.updateOld()     
+    ...     eq.solve(var = var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given
 by
@@ -132,14 +117,14 @@ The result is tested against the expected profile:
     >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
     >>> import scipy
     >>> analyticalArray = scipy.special.erf(epsi/2)
-    >>> Numeric.allclose(var, analyticalArray, atol = 2e-3)
+    >>> var.allclose(analyticalArray, atol = 2e-3)
     1
     
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-    ...     viewer = Grid2DGistViewer(var)
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer((var,))
     ...     viewer.plot()
 """
  

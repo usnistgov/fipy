@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:47:34 PM} 
+ #                                last update: 12/10/04 {5:15:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,18 +40,93 @@
  # ###################################################################
  ##
 
-""" 
-The same three-component diffusion problem introduced in::
-    
-    $ examples/elphf/input2D.py
-    
-but with the initial step in concentration occupying only one corner
-instead of half the domain.
+r""" 
+The same three-component diffusion problem introduced in
+`examples/elphf/diffusion/input2D.py`, but with the initial step in
+concentration occupying only one corner instead of half the domain.
 
-    >>> for step in range(40):
-    ...     it.timestep(dt = parameters['time step duration'])
-    
-Verify that the concentrations have become uniform
+We create a mesh
+
+    >>> nx = 40
+    >>> dx = 1.
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
+
+Again, the parameters are
+
+    >>> parameters = {
+    ...     'time step duration': 10000,
+    ...     'solvent': {
+    ...         'standard potential': 0.,
+    ...         'barrier height': 0.
+    ...     }
+    ... }
+
+    >>> parameters['substitutionals'] = (
+    ...     {
+    ...         'name': "c1",
+    ...         'diffusivity': 1.,
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     },
+    ...     {
+    ...         'name': "c2",
+    ...         'diffusivity': 1.,
+    ...         'standard potential': 1.,
+    ...         'barrier height': 1.
+    ...     }
+    ... )
+
+We again use ElPhF to create the variable fields
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, 
+    ...                           parameters = parameters)
+
+and we separate the solution domain into two different concentration regimes
+
+    >>> def cornerFunc(cell):
+    ...     center = cell.getCenter()
+    ...     return (center[0] > L/2) and (center[1] > L/2) 
+        
+    >>> setCells = mesh.getCells(filter = cornerFunc)
+    >>> fields['substitutionals'][0].setValue(0.3)
+    >>> fields['substitutionals'][0].setValue(0.6,setCells)
+    >>> fields['substitutionals'][1].setValue(0.6)
+    >>> fields['substitutionals'][1].setValue(0.3,setCells)
+
+We use ElPhF to create the governing equations for the fields
+
+    >>> elphf.makeEquations(fields = fields, 
+    ...                     parameters = parameters)
+
+If we are running interactively, we create viewers to see the results 
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    ...     for viewer in viewers:
+    ...         viewer.plot()
+
+Now, we iterate the problem to equilibrium, plotting as we go
+
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> solver = LinearLUSolver()
+
+    >>> for i in range(40):
+    ...     for field in fields['substitutionals']:
+    ...         field.updateOld()
+    ...     for field in fields['substitutionals']:
+    ...         field.equation.solve(var = field, 
+    ...                              dt = parameters['time step duration'],
+    ...                              solver = solver)
+    ...     if __name__ == '__main__':
+    ...         for viewer in viewers:
+    ...             viewer.plot()
+
+Since there is nothing to maintain the concentration separation in this problem, 
+we verify that the concentrations have become uniform
 
     >>> fields['substitutionals'][0].allclose(0.375, rtol = 1e-7, atol = 1e-7)
     1
@@ -60,86 +135,8 @@ Verify that the concentrations have become uniform
 """
 __docformat__ = 'restructuredtext'
 
-## from fipy.tools.profiler.profiler import Profiler
-## from fipy.tools.profiler.profiler import calibrate_profiler
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.iterators.iterator import Iterator
-
-import fipy.models.elphf.elphf as elphf
-
-nx = 40
-dx = 1.
-L = nx * dx
-
-mesh = Grid2D(
-    dx = dx,
-    dy = 1.,
-    nx = nx,
-    ny = 40)
-    
-parameters = {
-    'time step duration': 10000,
-    'solvent': {
-	'standard potential': 0.,
-	'barrier height': 0.
-    }
-}
-
-parameters['substitutionals'] = (
-    {
-	'name': "c1",
-	'diffusivity': 1.,
-	'standard potential': 1.,
-	'barrier height': 1.
-    },
-    {
-	'name': "c2",
-	'diffusivity': 1.,
-	'standard potential': 1.,
-	'barrier height': 1.
-    }
-)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-def cornerFunc(cell):
-    center = cell.getCenter()
-    return (center[0] > L/2) and (center[1] > L/2) 
-    
-setCells = mesh.getCells(filter = cornerFunc)
-fields['substitutionals'][0].setValue(0.3)
-fields['substitutionals'][0].setValue(0.6,setCells)
-fields['substitutionals'][1].setValue(0.6)
-fields['substitutionals'][1].setValue(0.3,setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
-
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
-
-    for viewer in viewers:
-	viewer.plot()
-	
-    raw_input("press <return> to start...")
-
-    # fudge = calibrate_profiler(10000)
-    # profile = Profiler('profile', fudge=fudge)
-
-    for i in range(50):
-	it.timestep(1)
-	
-	for viewer in viewers:
-	    viewer.plot()
-	
-    # profile.stop()
-	    
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    
     raw_input("finished")
-

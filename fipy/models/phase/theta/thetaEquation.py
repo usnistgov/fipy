@@ -41,12 +41,8 @@
  # ###################################################################
  ##
 
-import Numeric
-
-from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
 
 from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable
@@ -54,30 +50,25 @@ from transientVariable import TransientVariable
 from thetaHalfAngleVariable import ThetaHalfAngleVariable
 from noModularVariable import NoModularVariable
 
-class ThetaEquation(MatrixEquation):
+def buildThetaEquation(phase = None,
+                       theta = None,
+                       parameters = {}):
 
-    def __init__(self, var = None, solver = 'default_solver', boundaryConditions = (), fields = {}, parameters = {}):
-        
-        mesh = var.getMesh()
+        transientCoeff = TransientVariable(phase = phase, theta = theta, parameters = parameters)
 
-        phase = fields['phase']
-           
-        transientCoeff = TransientVariable(phase = phase, theta = var, parameters = parameters)
-        diffusionCoeff = DiffusionVariable(phase = phase, theta = var, parameters = parameters)
-        halfAngleVariable = ThetaHalfAngleVariable(phase = phase, theta = var, parameters = parameters)
+        diffusionCoeff = DiffusionVariable(phase = phase, theta = theta, parameters = parameters)
+
+        halfAngleVariable = ThetaHalfAngleVariable(phase = phase, theta = theta, parameters = parameters)
         
         sourceCoeff = SourceVariable(phase = phase,
-                                     theta = var,
+                                     theta = theta,
                                      diffCoeff = diffusionCoeff,
                                      halfAngleVariable = halfAngleVariable,
                                      parameters = parameters)
         	
-        transientTerm = TransientTerm(transientCoeff, mesh)
-        diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff, mesh, boundaryConditions)
-        
-        scSourceTerm = ScSourceTerm(sourceCoeff, mesh)
-        
-	terms = (transientTerm, diffusionTerm, scSourceTerm)
+        transientTerm = TransientTerm(transientCoeff)
+        diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff)
 
-	MatrixEquation.__init__(self, var, terms, solver)
+        return transientTerm - diffusionTerm - sourceCoeff
+
 

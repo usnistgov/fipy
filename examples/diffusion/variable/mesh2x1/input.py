@@ -81,12 +81,12 @@ where `i` is an integer and of course for large `nCells`. In this example
 `nx = 2`.
 
 A simple analytical answer can be used to test the result:
-
+   >>> ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[:,0]
    >>> values = x + 18. * L / 4.
    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
    >>> values = Numeric.where(x < L / 4., x, values)
-   >>> Numeric.allclose(values, var, atol = 1e-8, rtol = 1e-8)
+   >>> var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """
@@ -96,12 +96,11 @@ import Numeric
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.iterators.iterator import Iterator
 from fipy.meshes.grid2D import Grid2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 2
 ny = 1
@@ -126,27 +125,11 @@ x = mesh.getFaceCenters()[:,0]
 middleFaces = Numeric.logical_or(x < L / 4.,x >= 3. * L / 4.)
 diffCoeff = Numeric.where(middleFaces, 1., 0.1)
 
-eq = DiffusionEquation(
-    var,
-    transientCoeff = 0. / timeStepDuration, 
-    diffusionCoeff = diffCoeff,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedFlux(mesh.getFacesRight(),fluxRight),
-    FixedFlux(mesh.getFacesTop(),0.),
-    FixedFlux(mesh.getFacesBottom(),0.)
-    )
-    )
-
-it = Iterator((eq,))
-
-it.timestep()
+boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
+                    FixedFlux(mesh.getFacesRight(),fluxRight))
 
 if __name__ == '__main__':
+    ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
     viewer = Grid2DGistViewer(var, maxVal = L + 18. * L / 4.)
     viewer.plot()
     raw_input('finished')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:29 PM} 
+ #                                last update: 12/9/04 {8:11:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,28 +42,26 @@
 """Test numeric implementation of the mesh
 """
 
-import unittest
-import doctest
-
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
+
 import fipy.variables.testInterpolation
 import fipy.variables.testLaplacian
 import fipy.variables.testPickle
-import fipy.variables.vectorCellVariable
-import fipy.variables.cellVolumeAverageVariable
-import fipy.variables.variable
-import fipy.variables.cellVariable
 
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(fipy.variables.testInterpolation.suite())
-    theSuite.addTest(fipy.variables.testLaplacian.suite())
-    theSuite.addTest(fipy.variables.testPickle.suite())
-    theSuite.addTest(doctest.DocTestSuite(fipy.variables.vectorCellVariable))
-    theSuite.addTest(doctest.DocTestSuite(fipy.variables.cellVolumeAverageVariable))
-    theSuite.addTest(doctest.DocTestSuite(fipy.variables.variable))
-    theSuite.addTest(doctest.DocTestSuite(fipy.variables.cellVariable))
-    return theSuite
+    return LateImportDocTestSuite(
+        testModuleNames = (
+            'fipy.variables.testInterpolation',
+            'fipy.variables.testLaplacian',
+            'fipy.variables.testPickle',
+        ),
+        docTestModuleNames = (
+            'fipy.variables.vectorCellVariable',
+            'fipy.variables.cellVolumeAverageVariable',
+            'fipy.variables.variable',
+            'fipy.variables.cellVariable',
+        ))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

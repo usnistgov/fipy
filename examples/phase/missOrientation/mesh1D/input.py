@@ -86,7 +86,8 @@ Here the phase equation is solved with an explicit technique.
 The solution is allowed to evolve for `steps = 100` time steps.
 
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     phase.updateOld()
+   ...     eq.solve(phase, dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
@@ -102,9 +103,8 @@ data and compares it with the `theta` variable.
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
    >>> import Numeric
-   >>> phase = Numeric.array(phase)
-   >>> testData = Numeric.reshape(testData, phase.shape)
-   >>> Numeric.allclose(phase, testData, rtol = 1e-10, atol = 1e-10)
+   >>> testData = Numeric.reshape(testData, Numeric.array(phase).shape)
+   >>> phase.allclose(testData)
    1
    
 """
@@ -112,11 +112,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fipy.models.phase.phase.phaseEquation import PhaseEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.models.phase.theta.modularVariable import ModularVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
@@ -161,31 +156,23 @@ theta = ModularVariable(
 rightCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L / 2.)
 
 theta.setValue(0., rightCells)
-      
-fields = {
-   'temperature' : 1.,
-   'theta' : theta
-   }            
-      
-eq = PhaseEquation(
-   phase,
+
+temperature = 1.
+
+from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+eq = buildPhaseEquation(
+   phase = phase,
    mPhi = Type1MPhiVariable,
-   solver = LinearPCGSolver(
-   tolerance = 1.e-15, 
-   steps = 1000
-   ),
-   boundaryConditions=(),
-   fields = fields,
+   temperature = temperature,
+   theta = theta,
    parameters = phaseParameters
    )
 
-it = Iterator((eq,))
-
 if __name__ == '__main__':
-
    phaseViewer = Grid2DGistViewer(phase)
    phaseViewer.plot()
    for step in range(steps):
-      it.timestep(dt = timeStepDuration)
+      phase.updateOld()
+      eq.solve(phase, dt = timeStepDuration)
       phaseViewer.plot()
    raw_input('finished')

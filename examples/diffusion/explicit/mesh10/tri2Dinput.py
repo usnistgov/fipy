@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:33:35 PM} 
+ #                                last update: 12/13/04 {10:53:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,8 +47,8 @@ This input file again solves a 1D diffusion problem as in
 this example is that the solution method is explicit. The equation
 used is the `ExplicitDiffusionEquation`. In this case many steps have
 to be taken to reach equilibrum. The `timeStepDuration` parameter
-specifies the size of each time step and `steps` is the number of
-time steps.
+specifies the size of each time step and `steps` is the number of time
+steps.
 
     >>> dx = 1.
     >>> dy = 1.
@@ -56,21 +56,21 @@ time steps.
     >>> ny = 1
     >>> valueLeft = 0.
     >>> valueRight = 1.
-    >>> timeStepDuration = 0.2
+    >>> timeStepDuration = 0.02
     >>> steps = 10
 
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     it.timestep()
+    ...     eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     
 The result is again tested in the same way:
 
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), answer, rtol = 1e-3, atol = 1e-3)
+    >>> ##var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
+    >>> var.allclose(answer)
     1
 
 """
@@ -78,13 +78,12 @@ The result is again tested in the same way:
 import Numeric
 
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fipy.terms.transientTerm import TransientTerm
 
 dx = 1.
 dy = 1.
@@ -93,7 +92,6 @@ ny = 1
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.02
-steps = 10
 
 mesh = Tri2D(dx, dy, nx, ny)
 
@@ -102,38 +100,29 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-eq = ExplicitDiffusionEquation(
-    var,
-    transientCoeff = 1. / timeStepDuration, 
-    diffusionCoeff = 1.,
-    solver = LinearLUSolver(
-    tolerance = 1.e-6, 
-    steps = 100
-    ),
-    boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedValue(mesh.getFacesRight(),valueRight),
-    FixedFlux(mesh.getFacesTop(),0.),
-    FixedFlux(mesh.getFacesBottom(),0.)
-    )
-    )
+eq = TransientTerm() - ExplicitDiffusionTerm()
 
-it = Iterator((eq,))
+solver = LinearLUSolver(tolerance = 1.e-6, steps = 100)
+
+boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
+                    FixedValue(mesh.getFacesRight(),valueRight))
 
 answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
-        7.05111362e-02,  7.81376523e-01,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  4.99169535e-05,  1.49682805e-02,  3.82262622e-01,
-        0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  4.06838361e-06,
-        3.67632029e-03,  1.82227062e-01,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-        0.00000000e+00,  4.99169535e-05,  1.49682805e-02,  3.82262622e-01]) 
+                          0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
+                          7.05111362e-02,  7.81376523e-01,  0.00000000e+00,  0.00000000e+00,
+                          0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+                          0.00000000e+00,  4.99169535e-05,  1.49682805e-02,  3.82262622e-01,
+                          0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+                          0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  4.06838361e-06,
+                          3.67632029e-03,  1.82227062e-01,  0.00000000e+00,  0.00000000e+00,
+                          0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+                          0.00000000e+00,  4.99169535e-05,  1.49682805e-02,  3.82262622e-01]) 
 
 if __name__ == '__main__':
+    steps = 1000
+    
     for step in range(steps):
-        it.timestep()
+        eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
     viewer = PyxViewer(var)
     viewer.plot()

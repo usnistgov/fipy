@@ -62,30 +62,28 @@ time steps.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     it.timestep()
+    ...     var.updateOld()
+    ...     eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     
 The result is again tested in the same way:
 
     >>> Lx = (2 * nx * dx)
     >>> x = bigMesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), answer, rtol = 0.001, atol = 0.001)
+    >>> ## var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
+    >>> var.allclose(answer)
     1
 
 """
 
-
-
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.explicitDiffusionEquation import ExplicitDiffusionEquation
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fipy.terms.transientTerm import TransientTerm
+
 import Numeric
 
 dx = 1.
@@ -95,7 +93,7 @@ ny = 2
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.005
-steps = 10
+steps = 10000
 
 gridMesh = Grid2D(dx, dy, nx, ny)
 triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
@@ -136,24 +134,11 @@ var = CellVariable(
     mesh = bigMesh,
     value = valueLeft)
 
+eqn = TransientTerm() - ExplicitDiffusionTerm()
 
-eq = ExplicitDiffusionEquation(
-    var,
-    transientCoeff = 1. / timeStepDuration, 
-    diffusionCoeff = 1.,
-    solver = LinearPCGSolver(
-    tolerance = 1.e-15, 
-    steps = 1000
-    ),
-    boundaryConditions=(
-    FixedValue(bigMesh.getFacesWithFilter(leftSide), valueLeft),
-    FixedValue(bigMesh.getFacesWithFilter(inMiddle), (valueLeft + valueRight) * 0.5),
-    FixedValue(bigMesh.getFacesWithFilter(rightSide), valueRight),
-    FixedFlux(bigMesh.getFacesWithFilter(allOthers), 0.)
-    )
-    )
-
-it = Iterator((eq,))
+boundaryConditions=(FixedValue(bigMesh.getFacesWithFilter(leftSide), valueLeft),
+                    FixedValue(bigMesh.getFacesWithFilter(inMiddle), (valueLeft + valueRight) * 0.5),
+                    FixedValue(bigMesh.getFacesWithFilter(rightSide), valueRight))
 
 answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
         5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,
@@ -174,7 +159,8 @@ answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.1
 if __name__ == '__main__':
     viewer = PyxViewer(var)
     for step in range(steps):
-        it.timestep()
+        var.updateOld()        
+        eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
         if(not (step % 100)):
             print (step / 100)
     print var

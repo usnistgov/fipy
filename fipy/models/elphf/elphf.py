@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 9/3/04 {10:33:26 PM} 
+ #                                last update: 12/8/04 {5:27:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,16 +35,6 @@
  # ###################################################################
  ##
 
-from __future__ import nested_scopes
- 
-
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.solvers.linearGMRESSolver import LinearGMRESSolver
-from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
-from fipy.variables.variable import Variable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools.dimensions import physicalField
 
@@ -53,11 +43,10 @@ from componentVariable import ComponentVariable
 from substitutionalVariable import SubstitutionalVariable
 from solventVariable import SolventVariable
  
-from phaseEquation import PhaseEquation
-from poissonEquation import PoissonEquation
-from semiImplicitPoissonEquation import SemiImplicitPoissonEquation
-from substitutionalEquation import SubstitutionalEquation
-from interstitialEquation import InterstitialEquation
+from phaseEquation import factory as phaseFactory
+from poissonEquation import factory as poissonFactory
+from substitutionalEquation import factory as substitutionalFactory
+from interstitialEquation import factory as interstitialFactory
 
 constant = {}
 
@@ -195,121 +184,19 @@ def makeFields(mesh, parameters):
     if addSolventToAll:
 	fields['all'] += [fields['solvent']]
 	
+    fields['charge'] = fields['solvent'].getValence()
+    for component in list(fields['interstitials']) + list(fields['substitutionals']):
+	fields['charge'] = fields['charge'] + component * component.getValence() #.getOld()
+
     return fields
 
-
-def makeEquations(mesh, fields, parameters, phaseRelaxation = 1., solutionTolerance = 1e-6):
-    relaxation = 1
-##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
-    
-##     flux = 0 * (fields['potential'][0] / mesh.getPhysicalShape()[0] ) * "1 eps0"
-    flux = 0
-    equations = (PoissonEquation(
-	    potential = fields['potential'],
-	    parameters = parameters['potential'],
-	    fields = fields,
-	    solver = LinearLUSolver(),
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation,
-	    boundaryConditions=(
-# 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
-# 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
-		FixedValue(faces = mesh.getFacesLeft(),value = 0 * fields['potential'][0]),
-		FixedFlux(faces = mesh.getFacesRight(),value = flux), # "0 eps0*V/m"
-		FixedFlux(faces = mesh.getFacesTop(),value = flux),
-		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
-	    )
-	),
-    )
-    
-##     gradientEnergy = physicalField.PhysicalField(parameters['phase']['gradient energy'])
-##     mobility = physicalField.PhysicalField(parameters['phase']['mobility'])
-##     flux = 0 * (fields['phase'][0] / mesh.getPhysicalShape()[0] ) * gradientEnergy * mobility
-    flux = 0
-    equations += (PhaseEquation(
-	phase = fields['phase'],
-	fields = fields,
-## 	phaseMobility = mobility,
-## 	phaseGradientEnergy = gradientEnergy,
- 	phaseMobility = physicalField.Scale(parameters['phase']['mobility'], constant['MOLARVOLUME'] / (constant['ENERGY'] * constant['TIME'])),
- 	phaseGradientEnergy = physicalField.Scale(parameters['phase']['gradient energy'], constant['LENGTH']**2 * constant['ENERGY'] / constant['MOLARVOLUME']),
-## 	solver = LinearLUSolver(),
-	solver = LinearCGSSolver(
-	     tolerance = 1.e-15, 
-	     steps = 1000
-	),
-	solutionTolerance = solutionTolerance,
-	relaxation = relaxation,
-	boundaryConditions=(
-# 	    FixedValue(faces = mesh.getFacesLeft(),value = 1.),
-# 	    FixedValue(faces = mesh.getFacesRight(),value = 0.),
-	    FixedFlux(faces = mesh.getFacesLeft(),value = flux),
-	    FixedFlux(faces = mesh.getFacesRight(),value = flux),
-	    FixedFlux(faces = mesh.getFacesTop(),value = flux),
-	    FixedFlux(faces = mesh.getFacesBottom(),value = flux)
-	)
-    ),)
+def makeEquations(fields, parameters):
+    fields['potential'].equation = poissonFactory.make(fields, parameters['potential'])
+    fields['phase'].equation = phaseFactory.make(fields, parameters)
     
     for component in fields['substitutionals']:
-## 	flux = 0 * (component[0] / mesh.getPhysicalShape()[0] ) * component.diffusivity
-	flux = 0
-	eq = SubstitutionalEquation(
-	    Cj = component,
-	    fields = fields,
-	    solver = LinearLUSolver(),
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation,
-	    phaseRelaxation = phaseRelaxation,
-## 	    convectionScheme = VanLeerConvectionTerm,
-## 	    
-##  	    solver = LinearGMRESSolver(
-##  		 tolerance = 1.e-15, 
-##  		 steps = 1000
-##  	    ),
-## 	    solver = LinearCGSSolver(
-## 		 tolerance = 1.e-15, 
-## 		 steps = 1000
-## 	    ),
-	    boundaryConditions=(
-# 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
-# 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
-		FixedFlux(faces = mesh.getFacesLeft(),value = flux), # "0. m/s"
-		FixedFlux(faces = mesh.getFacesRight(),value = flux),
-		FixedFlux(faces = mesh.getFacesTop(),value = flux),
-		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
-	    )
-	)
-	equations += (eq,)
-	
+	component.equation = substitutionalFactory.make(component, fields)
+
     for component in fields['interstitials']:
-## 	flux = 0 * (component[0] / mesh.getPhysicalShape()[0] ) * component.diffusivity
-	flux = 0
-	eq = InterstitialEquation(
-	    Cj = component,
-	    fields = fields,
-	    solver = LinearLUSolver(),
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation,
-	    phaseRelaxation = phaseRelaxation,
-## 	    convectionScheme = VanLeerConvectionTerm,
-##  	    solver = LinearGMRESSolver(
-##  		 tolerance = 1.e-15, 
-##  		 steps = 1000
-##  	    ),
-## 	    solver = LinearCGSSolver(
-## 		 tolerance = 1.e-15, 
-## 		 steps = 1000
-## 	    ),
-	    boundaryConditions=(
-# 		FixedValue(faces = mesh.getFacesLeft(),value = parameters['valueLeft']),
-# 		FixedValue(faces = mesh.getFacesRight(),value = parameters['valueRight']),
-		FixedFlux(faces = mesh.getFacesLeft(),value = flux), # "0. m/s"
-		FixedFlux(faces = mesh.getFacesRight(),value = flux),
-		FixedFlux(faces = mesh.getFacesTop(),value = flux),
-		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
-	    )
-	)
-	equations += (eq,)
-	
-    return equations
+	component.equation = interstitialFactory.make(component, fields)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/3/04 {10:40:05 PM} 
+ #                                last update: 12/7/04 {4:27:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,7 +68,7 @@ class Grid3D(Mesh):
     """
     Creates a 3D grid mesh.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = 1, nz = 1):
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1):
         self.nx = nx
         self.ny = ny
 	self.nz = nz

@@ -61,7 +61,7 @@ class FixedFlux(BoundaryCondition):
 	for i in range(N):
 	    self.contribution[i] = self.value * self.faces[i].getArea()
 	
-    def buildMatrix(self, Ncells, MaxFaces, coeff, coeffScale):
+    def buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Leave **L** unchanged and add gradient to **b**
 	
 	:Parameters:
@@ -70,11 +70,12 @@ class FixedFlux(BoundaryCondition):
 	  - `coeff`:    *unused*
 	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
+
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, self.contribution / coeffScale)
+	vector.putAdd(bb, self.adjacentCellIds, -self.contribution)
 	
 	return (0, bb)
-        
+
     def getDerivative(self, order):
 	if order == 1:
 	    return FixedValue(self.faces, self.value)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 9/3/04 {10:30:13 PM} 
+ #                                last update: 12/7/04 {12:02:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,17 +40,22 @@
  # ###################################################################
  ##
 
-import Numeric
-
 from fipy.terms.cellTerm import CellTerm
 
 class TransientTerm(CellTerm):
-    def __init__(self,tranCoeff,mesh):
-	weight = {
+    def __init__(self, tranCoeff = 1.):
+	self.tranCoeff = tranCoeff
+	CellTerm.__init__(self) 
+	
+    def getWeight(self, mesh):
+	return {
 	    'b vector':  0, 
 	    'new value': 1, 
 	    'old value': 1,
             'diagonal': 0
 	}
-	self.coeff = tranCoeff * mesh.getCellVolumes()
-	CellTerm.__init__(self,weight,mesh) 
+	
+    def calcCoeff(self, mesh):
+	self.coeff = self.tranCoeff * mesh.getCellVolumes()
+	
+

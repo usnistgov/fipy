@@ -156,11 +156,6 @@ The left and right halves of the domain are given different orientations
     ...     )
     >>> theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
 
-For both equations, zero flux boundary conditions apply to the exterior of the mesh
-
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
-
 The `phase` equation requires a `mPhi` instantiator to represent
 
 .. raw:: latex
@@ -171,44 +166,24 @@ above
 
     >>> from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
 
-The `phase` equation is solved with an iterative conjugate gradient solver 
-
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
 and requires access to the `theta` and `temperature` variables
 
-    >>> from fipy.models.phase.phase.phaseEquation import PhaseEquation
-    >>> phaseEq = PhaseEquation(
-    ...     phase,
+    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+    >>> phaseEq = buildPhaseEquation(
+    ...     phase = phase,
     ...     mPhi = Type1MPhiVariable,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15,
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions=(boundaryCondition,),
     ...     parameters = phaseParameters,
-    ...     fields = {
-    ...         'theta' : theta,
-    ...         'temperature' : temperature
-    ...     }
-    ...     )
+    ...     theta = theta,
+    ...     temperature = temperature)
 
 The `theta` equation is also solved with an iterative conjugate gradient solver  
 and requires access to the `phase` variable
 
-    >>> from fipy.models.phase.theta.thetaEquation import ThetaEquation
-    >>> thetaEq = ThetaEquation(
-    ...     var = theta,
-    ...     solver = LinearPCGSolver(
-    ... 	    tolerance = 1.e-15, 
-    ... 	    steps = 2000
-    ...     ),
-    ...     boundaryConditions = (boundaryCondition,),
+    >>> from fipy.models.phase.theta.thetaEquation import buildThetaEquation
+    >>> thetaEq = buildThetaEquation(
+    ...     theta = theta,
     ...     parameters = thetaParameters,
-    ...     fields = {
-    ...         'phase' : phase
-    ...     }
-    ...     )
+    ...     phase = phase)
 
 If the example is run interactively, we create viewers for the phase and 
 orientation variables. Rather than viewing the raw orientation, which is not 
@@ -227,11 +202,12 @@ meaningful in the liquid phase, we weight the orientation by the phase
 
 we iterate the solution in time, plotting as we go if running interactively,
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((thetaEq, phaseEq))
     >>> steps = 10
     >>> for i in range(steps):
-    ...     it.timestep(dt = timeStepDuration)
+    ...     theta.updateOld()
+    ...     phase.updateOld()
+    ...     thetaEq.solve(theta, dt = timeStepDuration)
+    ...     phaseEq.solve(phase, dt = timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ... 	thetaProductViewer.plot()
@@ -251,9 +227,8 @@ data and compares it with the `theta` variable.
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
    >>> import Numeric
-   >>> theta =  Numeric.array(theta)
-   >>> testData = Numeric.reshape(testData, theta.shape)
-   >>> Numeric.allclose(theta, testData, rtol = 1e-10, atol = 1e-10)
+   >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
+   >>> theta.allclose(testData)
    1
 """
 __docformat__ = 'restructuredtext'

@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/26/04 {2:02:20 PM} 
+ #                                last update: 12/8/04 {5:23:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,56 +40,20 @@
  # ###################################################################
  ##
 
-import Numeric
-
-## from fipy.equations.matrixEquation import MatrixEquation
-from fipy.equations.preRelaxationEquation import PreRelaxationEquation
-from fipy.equations.postRelaxationEquation import PostRelaxationEquation
-from fipy.equations.relaxationEquation import RelaxationEquation
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from fipy.terms.centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 
-class ConcentrationEquation(RelaxationEquation):
-    def __init__(self,
-                 Cj,
-		 fields = {},
-		 convectionScheme = PowerLawConvectionTerm,
-                 solver='default_solver',
-		 relaxation = 0.,
-		 phaseRelaxation = 1.,
-		 solutionTolerance = 1e-10,
-                 boundaryConditions=()):
-		     
-	self.phaseRelaxation = phaseRelaxation
-		     
-        mesh = Cj.getMesh()
-	
-	diffusionTerm = ImplicitDiffusionTerm(
-	    diffCoeff = Cj.getDiffusivity(),
-	    mesh = mesh,
-	    boundaryConditions = boundaryConditions)
-        
-	convectionTerm = convectionScheme(
-	    convCoeff = self.getConvectionCoeff(Cj, fields),
-	    mesh = mesh, 
-	    boundaryConditions = boundaryConditions,
-	    diffusionTerm = diffusionTerm)
-	    
-	terms = (
-	    TransientTerm(tranCoeff = 1., mesh = mesh),
-	    diffusionTerm,
-	    convectionTerm
-	)
-	
-	RelaxationEquation.__init__(
-            self,
-            var = Cj,
-            terms = terms,
-            solver = solver,
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation)
+from equationFactory import EquationFactory
+
+class ConcentrationEquationFactory(EquationFactory):
+    def make(self, Cj, fields, convectionScheme = PowerLawConvectionTerm):
+				    
+	diffusionTerm = ImplicitDiffusionTerm(diffCoeff = Cj.getDiffusivity())
+
+	return TransientTerm() - diffusionTerm \
+	    - convectionScheme(convCoeff = self.getConvectionCoeff(Cj, fields), 
+			       diffusionTerm = diffusionTerm)
 	    
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):
 	if diffusivity is None:
@@ -103,8 +67,7 @@ class ConcentrationEquation(RelaxationEquation):
 ## 	Cj.electromigrationCoeff = diffusivity * "1 Faraday" * Cj.getValence() * fields['potential'].getFaceGrad() 
 	Cj.electromigrationCoeff = diffusivity * Cj.getValence() * fields['potential'].getFaceGrad() 
 	
-## 	self.phaseRelaxation
-	
 ## 	return (Cj.pConvCoeff + Cj.gConvCoeff) + Cj.electromigrationCoeff
 	return (Cj.pConvCoeff + Cj.gConvCoeff) * fields['phase'].getFaceGrad() + Cj.electromigrationCoeff
 
+factory = ConcentrationEquationFactory()

@@ -46,7 +46,7 @@ To run this example from the base fipy directory type::
     
     $ examples/diffusion/steadyState/mesh1D/tri2Dinput.py
     
-at the command line.  A contour plot should appear and the word `finished`
+at the command line. A contour plot should appear and the word `finished`
 in the terminal.
 
 This example is similar to the example found in::
@@ -55,10 +55,10 @@ This example is similar to the example found in::
     
 However, the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
 
-Here, the iterator does one time step to implicitly find the steady state
+Here, one time step is execcuted to implicitly find the steady state
 solution.
-    
-    >>> iterator.timestep()
+
+    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
 
 To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain,
@@ -72,8 +72,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`. 
 
-    >>> import Numeric
-    >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(analyticalArray)
     1
 
 """
@@ -82,19 +81,14 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.equations.diffusionEquation import DiffusionEquation
-from fipy.iterators.iterator import Iterator
 from fipy.viewers.pyxviewer import PyxViewer
 from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 50
-ny = 1
 dx = 1.
-dy = 1.
 
-mesh = Tri2D(dx = dx, dy = dy, nx = nx, ny = ny)
+mesh = Tri2D(dx = dx, nx = nx)
 
 valueLeft = 0
 valueRight = 1
@@ -102,15 +96,10 @@ var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
 viewer = PyxViewer(var)
 
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight), FixedFlux(mesh.getFacesTop(),0.), FixedFlux(mesh.getFacesBottom(),0.))
-
-solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
-
-eq = DiffusionEquation(var, transientCoeff = 0., diffusionCoeff = 1., solver = solver, boundaryConditions = boundaryConditions)
-
-iterator = Iterator((eq,))
+boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
-    iterator.timestep()
+    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer.plot()
     raw_input("finished")

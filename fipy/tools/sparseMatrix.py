@@ -1,4 +1,4 @@
-4#!/usr/bin/env python
+#!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
@@ -124,11 +124,35 @@ class SparseMatrix:
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
+             
+            >>> print L + 0
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
+            
+            >>> print L + 3
+            Traceback (most recent call last):
+            ...
+            AttributeError: 'int' object has no attribute 'getMatrix'
         """
-	return self._add(other)
+
+	if other is 0:
+	    return self
+	else:
+	    L = self.matrix.copy()
+	    L.shift(1, other.getMatrix())
+	    return SparseMatrix(matrix = L)
+	
+    __radd__ = __add__
 
     def __sub__(self, other):
-	return self._add(other, -1)
+
+	if other is 0:
+	    return -self
+	else:
+	    L = self.matrix.copy()
+	    L.shift(-1, other.getMatrix())
+	    return SparseMatrix(matrix = L)
 
     def __iadd__(self, other):
 	return self._iadd(self.getMatrix(), other)

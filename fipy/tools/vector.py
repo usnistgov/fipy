@@ -80,8 +80,8 @@ def _putAddPy(vector, ids, additionVector, mask = None):
 def _putAddIn(vector, ids, additionVector):
     inline.runInlineLoop1("""
 	vector(ids(i)) += additionVector(i);
-    """, 
-    vector = vector, ids = ids, additionVector = additionVector,
+    """,
+    vector = vector, ids = ids, additionVector = Numeric.array(additionVector),
     ni = len(ids))
 
 def putAdd(vector, ids, additionVector):

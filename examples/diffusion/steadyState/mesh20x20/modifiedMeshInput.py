@@ -51,11 +51,11 @@ being that it uses a triangular mesh loaded in using the GmshImporter.
 
 The result is again tested in the same way:
 
+    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, atol = 0.025)
+    >>> var.allclose(analyticalArray, atol = 0.025)
     1
 
 Note that this test case will only work if you run it by running the
@@ -65,21 +65,24 @@ in it will not be able to find the mesh file.
 """
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.equations.diffusionEquation import DiffusionEquation
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.pyxviewer import PyxViewer
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+
 import sys
 import Numeric
 
 valueLeft = 0.
 valueRight = 1.
 
-mesh = GmshImporter2D("%s/%s" % (sys.__dict__['path'][0], "examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh"))
+import examples.diffusion.steadyState.mesh20x20
+import os.path
+mesh = GmshImporter2D(os.path.join(examples.diffusion.steadyState.mesh20x20.__path__[0], 'modifiedMesh.msh'))
+
+##    "%s/%s" % (sys.__dict__['path'][0], "examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh"))
 
 var = CellVariable(name = "solution variable",
                    mesh = mesh,
@@ -115,24 +118,13 @@ def topSide(face):
     else:
         return 0
 
-eq = DiffusionEquation(var,
-                       transientCoeff = 0., 
-                       diffusionCoeff = 1.,
-                       solver = LinearPCGSolver(tolerance = 1.e-15, 
-                                                steps = 1000
-                                                ),
-                       boundaryConditions = (FixedValue(mesh.getFacesWithFilter(leftSide), valueLeft),
-                                             FixedValue(mesh.getFacesWithFilter(rightSide), valueRight),
-                                             FixedFlux(mesh.getFacesWithFilter(topSide),0.),
-                                             FixedFlux(mesh.getFacesWithFilter(bottomSide),0.)
-                                             )
-                       )
 
-it = Iterator((eq,))
-
-it.timestep()
+boundaryConditions = (FixedValue(mesh.getFacesWithFilter(leftSide), valueLeft),
+                      FixedValue(mesh.getFacesWithFilter(rightSide), valueRight))
+                      
 
 if __name__ == '__main__':
+    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer.plot(resolution = 0.05)
     varArray = Numeric.array(var)
     x = mesh.getCellCenters()[:,0]

@@ -40,32 +40,21 @@
  # ###################################################################
  ##
 
-import unittest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import doctest
-
-import exponential1D.input
-import exponential1D.tri2Dinput
-import exponential2D.input
-import exponential1DSource.tri2Dinput
-import exponential1DBack.input
-import powerLaw1D.input
-import exponential1DSource.input
-import exponential2D.tri2Dinput
-
 def suite():
-    theSuite = unittest.TestSuite()
-
-    theSuite.addTest(doctest.DocTestSuite(exponential1D.input))
-    theSuite.addTest(doctest.DocTestSuite(exponential1D.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(exponential2D.input))
-    theSuite.addTest(doctest.DocTestSuite(exponential1DBack.input))
-    theSuite.addTest(doctest.DocTestSuite(powerLaw1D.input))
-    theSuite.addTest(doctest.DocTestSuite(exponential1DSource.input))
-    theSuite.addTest(doctest.DocTestSuite(exponential2D.tri2Dinput))
-    theSuite.addTest(doctest.DocTestSuite(exponential1DSource.tri2Dinput))
-    return theSuite
+    return LateImportDocTestSuite(docTestModuleNames = (
+            'exponential1D.input',
+            'exponential1D.tri2Dinput',
+            'exponential2D.input',
+            'exponential1DBack.input',
+            'powerLaw1D.input',
+            'exponential1DSource.input',
+            'exponential2D.tri2Dinput',
+            'exponential1DSource.tri2Dinput',
+            'powerLaw1D.tri2Dinput'
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

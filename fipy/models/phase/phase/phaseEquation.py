@@ -41,14 +41,9 @@
  # ###################################################################
  ##
 
-import Numeric
-
-from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.terms.spSourceTerm import SpSourceTerm
-
+from fipy.terms.dependentSourceTerm import DependentSourceTerm
 
 from phaseDiffusionVariable import PhaseDiffusionVariable
 from anisotropyVariable import AnisotropyVariable
@@ -56,67 +51,35 @@ from spSourceVariable import SpSourceVariable
 from phaseHalfAngleVariable import PhaseHalfAngleVariable
 from scSourceVariable import ScSourceVariable
 
-class PhaseEquation(MatrixEquation):
+def buildPhaseEquation(phase = None, theta = None, temperature = None, parameters = {}, mPhi = None):
 
-    def __init__(self,
-                 var,
-                 solver = 'default_solver',
-                 boundaryConditions = (),
-                 fields = {},
-                 parameters = {},
-                 mPhi = 0.):
-        
-        mesh = var.getMesh()
-	
-	self.parameters = parameters
-
-	self.var = var
-	self.temp = fields['temperature']
-##        self.thetaOld = fields['theta']
-        self.thetaOld = fields['theta'].getOld()
+    thetaOld = theta.getOld()
         	
-	self.mPhi = mPhi(phase = self.var, temperature = self.temp, parameters = parameters)
+    mPhiVar = mPhi(phase = phase, temperature = temperature, parameters = parameters)
 
-        self.halfAngle = PhaseHalfAngleVariable(
-            parameters = self.parameters,
-            phase = self.var,
-            theta = self.thetaOld
-            )
+    halfAngle = PhaseHalfAngleVariable(
+        parameters = parameters,
+        phase = phase,
+        theta = thetaOld
+        )
 
-        self.diffTerm = ExplicitDiffusionTerm(
-	    diffCoeff = PhaseDiffusionVariable(
-            parameters = self.parameters,
-            halfAngle = self.halfAngle
-            ),
-	    mesh = mesh,
-	    boundaryConditions = boundaryConditions
-            )
+    diffTerm = ExplicitDiffusionTerm(
+        diffCoeff = PhaseDiffusionVariable(parameters = parameters,
+                                           halfAngle = halfAngle))
 	
-        self.spTerm = SpSourceTerm(
-            sourceCoeff = SpSourceVariable(
-            theta = self.thetaOld,
-            mPhi = self.mPhi,
-            phase = self.var,
-            parameters = self.parameters),
-	    mesh = mesh)
+    spTerm = DependentSourceTerm(
+        sourceCoeff = SpSourceVariable(theta = thetaOld,
+                                       mPhi = mPhiVar,
+                                       phase = phase,
+                                       parameters = parameters))
 
-        anisotropy = AnisotropyVariable(parameters = parameters, phase = self.var, halfAngle = self.halfAngle)
+    anisotropy = AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
 
-        self.scTerm = ScSourceTerm(
-            sourceCoeff = ScSourceVariable(mPhi = self.mPhi, phase = self.var, anisotropy = anisotropy),
-	    mesh = mesh)
-	
-	transientCoeff = parameters['tau']
-        
-	terms = (
-	    TransientTerm(transientCoeff, mesh),
-	    self.diffTerm,
-            self.scTerm,
-            self.spTerm
-	)
+    sourceCoeff = ScSourceVariable(mPhi = mPhiVar,
+                                   phase = phase,
+                                   anisotropy = anisotropy)
 
-	MatrixEquation.__init__(
-            self,
-            var,
-            terms,
-            solver)
+    transientCoeff = parameters['tau']
+    
+
+    return TransientTerm(tranCoeff = transientCoeff) - diffTerm  + spTerm - sourceCoeff

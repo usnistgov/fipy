@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2Dinput.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:30:51 PM} 
+ #                                last update: 12/7/04 {4:12:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,73 +45,61 @@
 This example solves the steady-state convection-diffusion equation as described in
 `./examples/diffusion/convection/exponential1D/inpuy.py` with `nx = 10` and `ny = 10`.
 
+    >>> L = 10.
+    >>> nx = 10
+    >>> ny = 10
+    >>> from fipy.meshes.numMesh.tri2D import Tri2D
+    >>> mesh = Tri2D(L / nx, L / ny, nx, ny)
+
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "concentration",
+    ...                    mesh = mesh,
+    ...                    value = valueLeft)
+
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
+    ...     FixedValue(mesh.getFacesRight(), valueRight),
+    ... )
+
+    >>> diffCoeff = 1.
+    >>> convCoeff = (10.,0.)
+    
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+
+    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+
+    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> eq.solve(var = var,
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+    
 The analytical solution test for this problem is given by:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
-   >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
    >>> import Numeric
    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, Numeric.array(var), rtol = 1e-10, atol = 1e-10) 
+   >>> analyticalArray = CC / DD
+   >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
    1
    
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers.pyxviewer import PyxViewer
+   ...     viewer = PyxViewer(var)
+   ...     viewer.plot(resolution = 0.05)
 """
-
+__docformat__ = 'restructuredtext'
      
-from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.viewers.pyxviewer import PyxViewer
-from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-
-valueLeft = 0.
-valueRight = 1.
-L = 10.
-nx = 10
-ny = 10
-diffCoeff = 1.
-convCoeff = (10.,0.)
-sourceCoeff = 0.
-
-mesh = Tri2D(L / nx, L / ny, nx, ny)
-
-var = CellVariable(
-    name = "concentration",
-    mesh = mesh,
-    value = valueLeft)
-
-boundaryConditions = (
-    FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight),
-    FixedFlux(mesh.getFacesTop(), 0.),
-    FixedFlux(mesh.getFacesBottom(), 0.)
-    )
-
-        
-eq = SteadyConvectionDiffusionScEquation(
-    var = var,
-    diffusionCoeff = diffCoeff,
-    convectionCoeff = convCoeff,
-    sourceCoeff = sourceCoeff,
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExponentialConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-
-it = Iterator((eq,))
-
-it.timestep()
-
 if __name__ == '__main__':
-    viewer = PyxViewer(var)
-    ##print var
-    viewer.plot(resolution = 0.05)
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    
     raw_input('finished')
+    

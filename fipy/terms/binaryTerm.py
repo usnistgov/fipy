@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "doctestPlus.py"
- #                                    created: 10/27/04 {9:14:53 AM} 
- #                                last update: 12/9/04 {8:28:45 PM} 
+ #  FILE: "binaryTerm.py"
+ #                                    created: 11/9/04 {11:51:08 AM} 
+ #                                last update: 12/13/04 {2:10:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -18,7 +18,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this document is not subject to copyright
- # protection and is in the public domain.  doctest.py <2>
+ # protection and is in the public domain.  summationTerm.py
  # is an experimental work.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
@@ -37,28 +37,42 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2004-10-27 JEG 1.0 original
+ #  2004-11-09 JEG 1.0 original
  # ###################################################################
  ##
 
-import sys
-import doctest
+from fipy.terms.term import Term
+from fipy.terms.independentSourceTerm import IndependentSourceTerm
 
-from lateImportTest import LateImportTestCase, LateImportTestSuite
+class BinaryTerm(Term):
+    def __init__(self, term1, term2):
+	if isinstance(term1, Term):
+	    if not isinstance(term2, Term):
+		term2 = IndependentSourceTerm(sourceCoeff = term2)
+	elif isinstance(term2, Term):
+	    term1 = IndependentSourceTerm(sourceCoeff = term1)
+	else:
+	    raise "No terms!"
+	
+	self.term1 = term1
+	self.term2 = term2
+	    
+	Term.__init__(self)
+	
+    def buildMatrix(self, var, boundaryConditions, dt):
+	matrix, RHSvector = self.term1.buildMatrix(var, boundaryConditions, dt = dt)
+	
+	termMatrix, termRHSvector = self.term2.buildMatrix(var, boundaryConditions, dt = dt)
 
-def getScript(name = '__main__'):
-    return doctest.testsource(sys.modules.get(name), "")
-    
-class LateImportDocTestCase(LateImportTestCase):
-    def getTestSuite(self, module):
-        return doctest.DocTestSuite(module)    
+	matrix = self.operator()(matrix,termMatrix)
+	RHSvector = self.operator()(RHSvector,termRHSvector)
+	
+	return (matrix, RHSvector)
 
-class LateImportDocTestSuite(LateImportTestSuite):
-    def __init__(self, testModuleNames = (), docTestModuleNames = (), base = '__main__'):
-        LateImportTestSuite.__init__(self, testModuleNames = testModuleNames, base = base)
-        self.addDocTestModules(moduleNames = docTestModuleNames, base = base)
-    
-    def addDocTestModules(self, moduleNames = (), base = '__main__'):
-        for moduleName in moduleNames:
-            self.addTestModule(moduleName = moduleName, base = base, testClass = LateImportDocTestCase)
-
+class AdditionTerm(BinaryTerm):
+    def operator(self):
+	return lambda a,b: a + b
+	
+class SubtractionTerm(BinaryTerm):
+    def operator(self):
+	return lambda a,b: a - b

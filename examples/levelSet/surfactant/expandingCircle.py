@@ -68,9 +68,11 @@ conservation of surfactant:
    ...     distanceVariable.extendVariable(velocity)
    ...     argmax = Numeric.argmax(velocity)
    ...     timeStepDuration = cfl * dx / velocity[argmax]
-   ...     it.timestep(dt = timeStepDuration)
+   ...     distanceVariable.updateOld()
+   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
+   ...     surfactantEquation.solve(surfactantVariable)
    ...     totalTime += timeStepDuration
-   >>> surfactantEquation.solve()
+   >>> surfactantEquation.solve(surfactantVariable)
    >>> surfactantAfter = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
    >>> Numeric.allclose(surfactantBefore, surfactantAfter)
    1
@@ -112,13 +114,9 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
+from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 
 L = 1.
@@ -151,21 +149,11 @@ velocity = CellVariable(
     value = 1.,
     )
 
-advectionEquation = HigherOrderAdvectionEquation(
-    distanceVariable,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
+advectionEquation = buildHigherOrderAdvectionEquation(
+    advectionCoeff = velocity)
 
 surfactantEquation = SurfactantEquation(
-    surfactantVariable,
-    distanceVariable,
-    solver = LinearLUSolver(
-        tolerance = 1e-10),
-    boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0.), ))
-
-it = Iterator((advectionEquation, surfactantEquation))
+    distanceVar = distanceVariable)
 
 if __name__ == '__main__':
     
@@ -184,9 +172,10 @@ if __name__ == '__main__':
         distanceVariable.extendVariable(velocity)
         argmax = Numeric.argmax(velocity)
         timeStepDuration = cfl * dx / velocity[argmax]
+        distanceVariable.updateOld()
+        advectionEquation.solve(distanceVariable, dt = timeStepDuration)
+        surfactantEquation.solve(surfactantVariable)
         
-        it.timestep(dt = timeStepDuration)
-
         totalTime += timeStepDuration
         
         velocityViewer.plot()

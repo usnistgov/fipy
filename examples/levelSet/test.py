@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:37:36 PM} { 2:26:30 PM}
+ #                                last update: 12/9/04 {8:46:03 PM} { 2:26:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,24 +43,16 @@
 """Run all the test cases in examples/
 """
 
-import unittest
-
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
 
-import distanceFunction.test
-import advection.test
-import surfactant.test
-import electroChem.test
-
 def suite():
-    theSuite = unittest.TestSuite()
-    
-    theSuite.addTest(distanceFunction.test.suite())
-    theSuite.addTest(advection.test.suite())
-    theSuite.addTest(surfactant.test.suite())
-    theSuite.addTest(electroChem.test.suite())
-    
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+            'distanceFunction.test',
+            'advection.test',
+            'surfactant.test',
+            'electroChem.test',
+        ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

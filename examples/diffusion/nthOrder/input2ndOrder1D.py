@@ -82,49 +82,32 @@ The order
 
    $n$
    
-of the `NthOrderDiffusionEquation` is determined by twice 
-the number of diffusion coefficients it is created with, so a single 
-diffusion coefficient ``(1.,)`` gives 
+of the `NthOrderDiffusionTerm` is determined by twice the number of
+diffusion coefficients it is created with, so a single diffusion
+coefficient ``(1.,)`` gives
 
 .. raw:: latex
 
    $n = 2$.
    
-The diffusion equation is again solved with an iterative conjugate
-gradient solver. We apply Dirichlet boundary conditions to the left and
-right and Neumann boundary conditions to the top and bottom.
+We apply Dirichlet boundary conditions to the left and right and
+Neumann boundary conditions to the top and bottom.
    
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-    >>> eq = NthOrderDiffusionEquation(
-    ...     var,
-    ...     transientCoeff = 0., 
-    ...     diffusionCoeff = (1.,),
-    ...     solver = LinearPCGSolver(tolerance = 1.e-15, 
-    ...                              steps = 1000
-    ...     ),
-    ...     boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...                           FixedValue(mesh.getFacesRight(),valueRight),
-    ...                           FixedFlux(mesh.getFacesTop(),0.),
-    ...                           FixedFlux(mesh.getFacesBottom(),0.)
-    ...                           )
-    ... )
+    >>> BCs = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...        FixedValue(mesh.getFacesRight(),valueRight))
 
 We iterate one timestep to equilibrium:
-    
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
+
+    >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
+    >>> NthOrderDiffusionTerm(coeffs = (1.,)).solve(var, boundaryConditions = BCs)
     
 The result is tested against the expected linear diffusion profile:
     
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
-    >>> import Numeric
     >>> value = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> Numeric.allclose(var, value, rtol = 1e-10, atol = 1e-10)
+    >>> var.allclose(value)
     1
 
 If the problem is run interactively, we can view the result:
@@ -135,10 +118,6 @@ If the problem is run interactively, we can view the result:
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
-
-##from fipy.tools.profiler.profiler import Profiler
-##from fipy.tools.profiler.profiler import calibrate_profiler
- 
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

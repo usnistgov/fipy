@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 11/1/04 {11:02:14 AM}
+ #                                last update: 11/11/04 {11:37:04 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,6 +77,7 @@ where the orientation varies.
 The parameters for this example are
 
     >>> timeStepDuration = 0.02
+    >>> steps = 10
     >>> phaseParameters = {
     ...    'tau'                   : 0.1,
     ...    'time step duration'    : timeStepDuration
@@ -146,11 +147,6 @@ with appropriate orientations
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 
-For both equations, zero flux boundary conditions apply to the exterior of the mesh
-
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
-    
 The `phase` equation requires a `mPhi` instantiator to represent
 
 .. raw:: latex
@@ -161,48 +157,29 @@ above
 
     >>> from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
 
-The `phase` equation is solved with an iterative conjugate gradient solver 
-
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
 and requires access to the `theta` and `temperature` variables
 
-    >>> from fipy.models.phase.phase.phaseEquation import PhaseEquation
-    >>> phaseEq = PhaseEquation(
-    ...     phase,
+    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+    >>> phaseEq = buildPhaseEquation(
     ...     mPhi = Type1MPhiVariable,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15,
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions=(boundaryCondition,),
-    ...     parameters = phaseParameters,
-    ...     fields = {
-    ...         'theta' : theta,
-    ...         'temperature' : temperature
-    ...     }
-    ...     )
+    ...     phase = phase,
+    ...     theta = theta,
+    ...     temperature = temperature,
+    ...     parameters = phaseParameters)
 
 The `theta` equation is also solved with an iterative conjugate gradient solver  
 and requires access to the `phase` variable
 
-    >>> from fipy.models.phase.theta.thetaEquation import ThetaEquation
-    >>> thetaEq = ThetaEquation(
-    ...     var = theta,
-    ...     solver = LinearPCGSolver(
-    ... 	    tolerance = 1.e-15, 
-    ... 	    steps = 2000
-    ...     ),
-    ...     boundaryConditions = (boundaryCondition,),
+    >>> from fipy.models.phase.theta.thetaEquation import buildThetaEquation
+    >>> thetaEq = buildThetaEquation(
+    ...     theta = theta,
     ...     parameters = thetaParameters,
-    ...     fields = {
-    ...         'phase' : phase
-    ...     }
-    ...     )
+    ...     phase = phase)
     
-If the example is run interactively, we create viewers for the phase and 
-orientation variables. Rather than viewing the raw orientation, which is not 
-meaningful in the liquid phase, we weight the orientation by the phase
+If the example is run interactively, we create viewers for the phase
+and orientation variables. Rather than viewing the raw orientation,
+which is not meaningful in the liquid phase, we weight the orientation
+by the phase
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
@@ -215,8 +192,8 @@ meaningful in the liquid phase, we weight the orientation by the phase
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 
-The solution will be tested against data that was created with 
-``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
+The solution will be tested against data that was created with ``steps
+= 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 
@@ -232,12 +209,6 @@ data and compares it with the `theta` variable.
     >>> import Numeric
     >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
 
-Finally, we create an iterator
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((thetaEq, phaseEq))
-    >>> steps = 10
-    
 The preceding initialization steps are used in the next few examples.
 """
 __docformat__ = 'restructuredtext'
@@ -249,3 +220,5 @@ def script():
     """
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.getScript(__name__)
+
+

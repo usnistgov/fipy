@@ -49,14 +49,17 @@ We initialize the system by running the base script
 We iterate the solution in time, plotting as we go if running interactively,
 
     >>> for i in range(steps):
-    ...     it.timestep(dt = timeStepDuration)
+    ...     theta.updateOld()
+    ...     phase.updateOld()
+    ...     thetaEq.solve(theta, dt = timeStepDuration)
+    ...     phaseEq.solve(phase, dt = timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ... 	thetaProductViewer.plot()
 
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> theta.allclose(testData, rtol = 1e-10, atol = 1e-10)
+    >>> theta.allclose(testData)
     1
 """
 __docformat__ = 'restructuredtext'

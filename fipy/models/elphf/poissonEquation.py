@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/1/04 {11:33:36 AM} 
+ #                                last update: 12/8/04 {5:12:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,91 +40,44 @@
  # ###################################################################
  ##
 
+r"""
+Represents the Poisson equation
+
+.. raw:: latex
+
+   \[ 
+       \underbrace{
+	   \nabla\cdot\left(\epsilon\nabla\phi\right) 
+       }_{\text{diffusion}}
+       +
+       \underbrace{
+	   \rho
+       }_{\text{source}}
+       = 0
+   \]
+
+   where \( \phi \) is the electrostatic potential, 
+   \( \epsilon \) is the dielectric constant
+   \( \rho \equiv \sum_{j=1}^n z_j C_j \), is the total charge,
+   \( C_j \) is the concentration of the \( j^\text{th} \)
+   species, and \( z_j \) is the valence of that species.
+""" 
 __docformat__ = 'restructuredtext'
 
-import Numeric
- 
-## from fipy.equations.matrixEquation import MatrixEquation
-from fipy.equations.preRelaxationEquation import PreRelaxationEquation
-from fipy.equations.postRelaxationEquation import PostRelaxationEquation
-from fipy.equations.relaxationEquation import RelaxationEquation
-from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.terms.spSourceTerm import SpSourceTerm
-
 from fipy.tools.dimensions import physicalField
 
-class PoissonEquation(RelaxationEquation):
-    r"""
-    Represents the Poisson equation
-    
-    .. raw:: latex
-    
-       \[ 
-	   \underbrace{
-	       \nabla\cdot\left(\epsilon\nabla\phi\right) 
-	   }_{\text{diffusion}}
-	   +
-	   \underbrace{
-	       \rho
-	   }_{\text{source}}
-	   = 0
-       \]
+from equationFactory import EquationFactory
 
-       where \( \phi \) is the electrostatic potential, 
-       \( \epsilon \) is the dielectric constant
-       \( \rho \equiv \sum_{j=1}^n z_j C_j \), is the total charge,
-       \( C_j \) is the concentration of the \( j^\text{th} \)
-       species, and \( z_j \) is the valence of that species.
-    """
-    def __init__(self,
-                 potential,
-		 parameters,
-		 fields = {},
-                 solver='default_solver',
-		 solutionTolerance = 1e-10,
-		 relaxation = 1.,
-                 boundaryConditions=()):
-		     
-        mesh = potential.getMesh()
-	
-	from elphf import constant as k
-	
-	permittivity = physicalField.Scale(parameters['permittivity'], k['Faraday']**2 * k['LENGTH']**2 / (k['ENERGY'] * k['MOLARVOLUME'])) 
-	
-	diffusionTerm = ImplicitDiffusionTerm(
-	    diffCoeff = permittivity,
-	    mesh = mesh,
-	    boundaryConditions = boundaryConditions)
-	    
-	fields['charge'] = fields['solvent'].getValence()
-	for component in list(fields['interstitials']) + list(fields['substitutionals']):
-	    fields['charge'] = fields['charge'] + self.getConcentration(component) * component.getValence() #.getOld()
-	
-## 	charge = charge * "1 Faraday/MOLARVOLUME"
-	
-	self.scTerm = ScSourceTerm(
-	    sourceCoeff = fields['charge'],
-	    mesh = mesh)
-	    
-	terms = (
-	    diffusionTerm,
-	    self.scTerm
-	)
-	    
-	RelaxationEquation.__init__(
-            self,
-            var = potential,
-            terms = terms,
-            solver = solver,
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation)
-	    
-    def getConcentration(self, component):
-	return component
-	
-##     def getResidual(self):
-## 	return Numeric.array((1e-16,))
-	
+class PoissonEquationFactory(EquationFactory):
+    def make(self, fields, parameters):
+	from elphf import constant
 
+	permittivity = physicalField.Scale(parameters['permittivity'], 
+					   constant['Faraday']**2 * constant['LENGTH']**2 
+					   / (constant['ENERGY'] * constant['MOLARVOLUME'])) 
+
+	return ImplicitDiffusionTerm(diffCoeff = permittivity) + fields['charge']
+
+factory = PoissonEquationFactory()
+						   

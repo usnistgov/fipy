@@ -55,9 +55,9 @@ solidification, and eventually dendritic growth, from a circular seed in a 2D me
 >>> from fipy.meshes.grid2D import Grid2D
 >>> mesh = Grid2D(dx,dy,nx,ny)
     
-Dendritic growth will not be observed with this small test system. If you wish to see 
-dendritic growth reset the following parameters: ``numberOfCells = 200``, ``steps = 10000``, 
-``radius = Length / 80``.
+Dendritic growth will not be observed with this small test system. If
+you wish to see dendritic growth reset the following parameters:
+``numberOfCells = 200``, ``steps = 10000``, ``radius = Length / 80``.
 
 The governing equation for the phase field is given by:
 
@@ -84,8 +84,8 @@ and the governing equation for temperature is given by:
     "Extending Phase Field Models of Solidification to Polycrystalline
     Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
 
-Here the phase and temperature equations are solved with an explicit and implicit technique, 
-respectively.
+Here the phase and temperature equations are solved with an explicit
+and implicit technique, respectively.
 
 The parameters for these equations are 
 
@@ -107,8 +107,8 @@ The parameters for these equations are
     ...     'heat capacity'         : 1.
     ...     }
 
-The variable `theta` represents the orientation of the crystal. In this example, 
-it is constant and thus does not affect the solution. 
+The variable `theta` represents the orientation of the crystal. In
+this example, it is constant and thus does not affect the solution.
 
     >>> from fipy.models.phase.theta.modularVariable import ModularVariable
     >>> theta = ModularVariable(
@@ -116,8 +116,8 @@ it is constant and thus does not affect the solution.
     ...     mesh = mesh
     ...     )
 
-The `phase` variable is `0` for a liquid and `1` for a solid.  Here we build an 
-example `phase` variable, initialized as a liquid,
+The `phase` variable is `0` for a liquid and `1` for a solid.  Here we
+build an example `phase` variable, initialized as a liquid,
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
@@ -126,10 +126,10 @@ example `phase` variable, initialized as a liquid,
     ...     value = 0.,
     ...     hasOld = 1)
 
-The `hasOld` flag keeps the old value of the variable. This is necessary for a 
-transient solution. In this example we wish to set up an interior region that 
-is solid. A value of `1` is assigned to the `phase` variable on a patch defined 
-by the method:
+The `hasOld` flag keeps the old value of the variable. This is
+necessary for a transient solution. In this example we wish to set up
+an interior region that is solid. A value of `1` is assigned to the
+`phase` variable on a patch defined by the method:
 
     >>> def circleCells(cell,L = Length):
     ...     x = cell.getCenter()
@@ -140,8 +140,8 @@ by the method:
     ...     else:
     ...         return 0
    
-This method is passed to `mesh.getCells(filter = circleCells)` which filters out
-the required cells.
+This method is passed to `mesh.getCells(filter = circleCells)` which
+filters out the required cells.
    
     >>> interiorCells = mesh.getCells(filter = circleCells)           
     >>> phase.setValue(1.,interiorCells)
@@ -155,13 +155,6 @@ The temperature field is initialized to a value of `-0.4` throughout:
     ...     hasOld = 1
     ...     )
 	
-..
-
-For both equations, zero flux boundary conditions apply to the exterior of the mesh
-
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> boundaryCondition = FixedFlux(mesh.getExteriorFaces(), 0.)
-
 The `phase` equation requires a `mPhi` instantiator to represent
 
 .. raw:: latex
@@ -172,47 +165,29 @@ above
 
     >>> from fipy.models.phase.phase.type2MPhiVariable import Type2MPhiVariable
 
-The `phase` equation is solved with an iterative conjugate gradient solver 
-
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+The `phase` equation is solved with an iterative conjugate gradient
+solver
 
 and requires access to the `theta` and `temperature` variables
 
-    >>> from fipy.models.phase.phase.phaseEquation import PhaseEquation
-    >>> phaseEq = PhaseEquation(
-    ...     phase,
+    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+    >>> phaseEq = buildPhaseEquation(
     ...     mPhi = Type2MPhiVariable,
-    ...         solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15,
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions=(boundaryCondition,),
     ...     parameters = phaseParameters,
-    ...     fields = {
-    ...         'theta' : theta,
-    ...         'temperature' : temperature
-    ...     }
-    ...     )
+    ...     theta = theta,
+    ...     temperature = temperature,
+    ...     phase = phase)
 	
-The `temperature` equation is also solved with an iterative conjugate gradient solver  
-and requires access to the `phase` variable
+The `temperature` equation is also solved with an iterative conjugate
+gradient solver and requires access to the `phase` variable
 
-    >>> from fipy.models.phase.temperature.temperatureEquation import TemperatureEquation
-    >>> temperatureEq = TemperatureEquation(
-    ...     temperature,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15, 
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions=(boundaryCondition,),
+    >>> from fipy.models.phase.temperature.temperatureEquation import buildTemperatureEquation
+    >>> temperatureEq = buildTemperatureEquation(
     ...     parameters = temperatureParameters,
-    ...     fields = {
-    ...         'phase' : phase
-    ...     }
-    ...     )
+    ...     phase = phase)
 
-If we are running this example interactively, we create viewers for the phase 
-and temperature fields
+If we are running this example interactively, we create viewers for
+the phase and temperature fields
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
@@ -224,19 +199,20 @@ and temperature fields
 
 we iterate the solution in time, plotting as we go if running interactively,
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((phaseEq, temperatureEq))
     >>> steps = 10
     >>> for i in range(steps):
-    ...     it.timestep(dt = timeStepDuration)
+    ...     phase.updateOld()
+    ...     temperature.updateOld()
+    ...     phaseEq.solve(phase, dt = timeStepDuration)
+    ...     temperatureEq.solve(temperature, dt = timeStepDuration)
     ...     if i%10 == 0 and __name__ == '__main__':
     ...         phaseViewer.plot()
     ...         temperatureViewer.plot()
 
-The solution is compared with test data. The test data was created for ``steps = 10``
-with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file ``test.gz`` extracts the
-data and compares it with the `phase` variable.
+The solution is compared with test data. The test data was created for
+``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase
+field modeling. The following code opens the file ``test.gz`` extracts
+the data and compares it with the `phase` variable.
 
    >>> import os
    >>> testFile = 'test.gz'

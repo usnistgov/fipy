@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:40:08 PM} 
+ #                                last update: 12/9/04 {8:54:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,30 +40,24 @@
  # ###################################################################
  ##
 
-import doctest
+from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-import unittest
-
-import advection.advectionTerm
-import advection.higherOrderAdvectionTerm
-import distanceFunction.distanceVariable
-import surfactant.surfactantVariable
-import surfactant.adsorbingSurfactantEquation
-import surfactant.convectionCoeff
-import distanceFunction.levelSetDiffusionVariable
-import electroChem.test
 
 def suite():
-    theSuite = unittest.TestSuite()
+    theSuite = LateImportDocTestSuite(
+        testModuleNames = (
+            'electroChem.test',
+        ),
+        docTestModuleNames = (
+            'advection.advectionTerm',
+            'advection.higherOrderAdvectionTerm',
+            'distanceFunction.distanceVariable',
+            'surfactant.surfactantVariable',
+            'distanceFunction.levelSetDiffusionVariable',
+            'surfactant.adsorbingSurfactantEquation',
+            'surfactant.convectionCoeff'
+        ), base = __name__)
 
-    theSuite.addTest(doctest.DocTestSuite(advection.advectionTerm))
-    theSuite.addTest(doctest.DocTestSuite(advection.higherOrderAdvectionTerm))
-    theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
-    theSuite.addTest(doctest.DocTestSuite(surfactant.convectionCoeff))
-    theSuite.addTest(doctest.DocTestSuite(surfactant.adsorbingSurfactantEquation))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceVariable))
-    theSuite.addTest(doctest.DocTestSuite(distanceFunction.levelSetDiffusionVariable))
-    theSuite.addTest(electroChem.test.suite())
     return theSuite
     
 if __name__ == '__main__':

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/13/04 {12:09:07 PM} 
+ #                                last update: 12/7/04 {4:06:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,81 +43,68 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in::
-    
-    $ examples/diffusion/convection/exponential1D/input.py
-    
-but with
+`examples/diffusion/convection/exponential1D/input.py` but with
 
 .. raw:: latex
 
     $ \\vec{u} = (-10, 0)$.
 
+..
+
+    >>> L = 10.
+    >>> nx = 1000
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = L / nx, nx = nx)
+
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "concentration",
+    ...                    mesh = mesh,
+    ...                    value = valueLeft)
+
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
+    ...     FixedValue(mesh.getFacesRight(), valueRight),
+    ... )
+
+    >>> diffCoeff = 1.
+    >>> convCoeff = (-10.,0.)
+    
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+
+    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+
+    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> eq.solve(var = var,
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+
 We test the solution against the analytical result:
 
-   >>> axis = 0
-   >>> x = mesh.getCellCenters()[:,axis]
-   >>> AA = -sourceCoeff * x / convCoeff[axis]
-   >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-   >>> import Numeric
-   >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = AA + BB * CC / DD
-   >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10) 
-   1
+    >>> axis = 0
+    >>> x = mesh.getCellCenters()[:,axis]
+    >>> import Numeric
+    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> analyticalArray = CC / DD
+    >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
+    1
    
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
      
-from fipy.meshes.grid2D import Grid2D
-from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-
-valueLeft = 0.
-valueRight = 1.
-L = 10.
-nx = 1000
-ny = 1
-diffCoeff = 1.
-convCoeff = (-10.,0.)
-sourceCoeff = 0.
-
-mesh = Grid2D(L / nx, L / ny, nx, ny)
-
-var = CellVariable(
-    name = "concentration",
-    mesh = mesh,
-    value = valueLeft)
-
-boundaryConditions = (
-    FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight),
-    FixedFlux(mesh.getFacesTop(), 0.),
-    FixedFlux(mesh.getFacesBottom(), 0.)
-    )
-
-        
-eq = SteadyConvectionDiffusionScEquation(
-    var = var,
-    diffusionCoeff = diffCoeff,
-    convectionCoeff = convCoeff,
-    sourceCoeff = sourceCoeff,
-    solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-    convectionScheme = ExponentialConvectionTerm,
-    boundaryConditions = boundaryConditions
-    )
-
-it = Iterator((eq,))
-
-it.timestep()
-
 if __name__ == '__main__':
-    viewer = Grid2DGistViewer(var)
-    viewer.plot()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
+    
     raw_input('finished')
+    

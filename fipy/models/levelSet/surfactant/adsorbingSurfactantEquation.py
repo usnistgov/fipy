@@ -74,13 +74,16 @@ The following is a test case:
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
    >>> distanceVar = DistanceVariable(mesh = mesh, 
    ...                                value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
-   >>> var = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
-   ...                          distanceVar = distanceVar)
+   >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
+   ...                                    distanceVar = distanceVar)
    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
-   >>> eqn = AdsorbingSurfactantEquation(var, distanceVar, bulkVar, k)
-   >>> eqn.solve(dt = dt)
+   >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
+   ...                                   distanceVar = distanceVar,
+   ...                                   bulkVar = bulkVar,
+   ...                                   rateConstant = k)
+   >>> eqn.solve(surfactantVar, dt = dt)
    >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-   >>> Numeric.allclose(var.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
+   >>> Numeric.allclose(surfactantVar.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
    1
 
 The following test case is for two surfactant variables. One has more
@@ -106,18 +109,23 @@ surface affinity than the other.
    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), distanceVar = distanceVar)
    >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
    >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
-   >>> eqn0 = AdsorbingSurfactantEquation(var0, distanceVar = distanceVar,
-   ...                                          bulkVar = bulkVar0,
-   ...                                          rateConstant = k0)
-   >>> eqn1 = AdsorbingSurfactantEquation(var1, distanceVar = distanceVar,
-   ...                                          bulkVar = bulkVar1,
-   ...                                          rateConstant = k1,
-   ...                                          otherVar = var0,
-   ...                                          otherBulkVar = bulkVar0,
-   ...                                          otherRateConstant = k0)
+
+   >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar = var0,
+   ...                                    distanceVar = distanceVar,
+   ...                                    bulkVar = bulkVar0,
+   ...                                    rateConstant = k0)
+
+   >>> eqn1 = AdsorbingSurfactantEquation(surfactantVar = var1,
+   ...                                    distanceVar = distanceVar,
+   ...                                    bulkVar = bulkVar1,
+   ...                                    rateConstant = k1,
+   ...                                    otherVar = var0,
+   ...                                    otherBulkVar = bulkVar0,
+   ...                                    otherRateConstant = k0)
+
    >>> for step in range(totalSteps):
-   ...     eqn0.solve(dt = dt)
-   ...     eqn1.solve(dt = dt)
+   ...     eqn0.solve(var0, dt = dt)
+   ...     eqn1.solve(var1, dt = dt)
    >>> answer0 = 1 - Numeric.exp(-k0 * c0 * dt * totalSteps)
    >>> answer1 = (1 - Numeric.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
    >>> Numeric.allclose(var0.getInterfaceVar(), Numeric.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
@@ -126,8 +134,8 @@ surface affinity than the other.
    1
    >>> dt = 0.1
    >>> for step in range(10):
-   ...     eqn0.solve(dt = dt)
-   ...     eqn1.solve(dt = dt)
+   ...     eqn0.solve(var0, dt = dt)
+   ...     eqn1.solve(var1, dt = dt)
    >>> print var0.getInterfaceVar()[2] + var1.getInterfaceVar()[2]
    1.0
 
@@ -138,9 +146,9 @@ import Numeric
 
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
-from fipy.terms.spSourceTerm import SpSourceTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
- 
+from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.solvers.linearLUSolver import LinearLUSolver
+
 class AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
@@ -193,53 +201,46 @@ class ScMaxCoeff(MaxCoeff):
             
 class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
-                 var,
+                 surfactantVar = None,
                  distanceVar = None,
                  bulkVar = None,
                  rateConstant = None,
                  otherVar = None,
                  otherBulkVar = None,
                  otherRateConstant = None):
-        
-        SurfactantEquation.__init__(self, var, distanceVar)
+
+        SurfactantEquation.__init__(self, distanceVar = distanceVar)
 
         spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
         scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
 
-        self.coeffs = (spCoeff, scCoeff)
+        self.eq += DependentSourceTerm(spCoeff) - scCoeff
 
-        self.terms += (
-            SpSourceTerm(spCoeff, self.var.getMesh()),
-            ScSourceTerm(scCoeff, self.var.getMesh())
-            )
+        self.coeffs = (scCoeff, spCoeff)
 
         if otherVar is not None:
             otherSpCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
             otherScCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
 
-            self.terms += (
-                SpSourceTerm(otherSpCoeff, self.var.getMesh()),
-                ScSourceTerm(otherScCoeff, self.var.getMesh())
-                )
+            self.eq += DependentSourceTerm(otherSpCoeff) - otherScCoeff
 
-            self.coeffs += (otherScCoeff, )
-            self.coeffs += (otherSpCoeff, )
+            self.coeffs += (otherScCoeff,)
+            self.coeffs += (otherSpCoeff,)
 
-            vars = (var, otherVar)
+            vars = (surfactantVar, otherVar)
         else:
-            vars = (var,)
+            vars = (surfactantVar,)
 
-        self.terms += (
-            SpSourceTerm(SpMaxCoeff(distanceVar, vars), self.var.getMesh()),
-            ScSourceTerm(ScMaxCoeff(distanceVar, vars), self.var.getMesh())
-            )
+        spMaxCoeff = SpMaxCoeff(distanceVar, vars)
+        scMaxCoeff = ScMaxCoeff(distanceVar, vars)
 
-    def solve(self, dt):
-        self.dt = dt
+        self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff
+
+    def solve(self, var, dt):
         for coeff in self.coeffs:            
             coeff.updateDt(dt)
-        SurfactantEquation.solve(self, dt)
-        
+        SurfactantEquation.solve(self, var)
+            
 def _test(): 
     import doctest
     return doctest.testmod()

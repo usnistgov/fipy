@@ -92,20 +92,18 @@ and initialize the solution variable to `valueLeft`:
     ...     mesh = mesh,
     ...     value = valueLeft)
 
-   
-In this example, the diffusion
-coefficient is a numerical array that is passed to the diffusion equation.
-The diffusion coefficient exists on the faces of the cells and thus has to
-be the length of the faces.  It is created in the following way:
+In this example, the diffusion coefficient is a numerical array that
+is passed to the `ImplicitDiffusionTerm`.  The diffusion coefficient
+exists on the faces of the cells and thus has to be the length of the
+faces.  It is created in the following way:
 
     >>> x = mesh.getFaceCenters()[:,0]
     >>> import Numeric
     >>> outerFaces = Numeric.logical_or(x < L / 4., x >= 3. * L / 4.)
     >>> diffCoeff = Numeric.where(outerFaces, 1., 0.1)
 
-We seek a steady-state solution, so the `transientCoeff` of the `DiffusionEquation` 
-is set to zero. For boundary conditions, we have no-flux conditions top and bottom, 
-a fixed value of `valueLeft` to the left, and a fixed flux of 
+For boundary conditions, we have no-flux conditions top and bottom, a
+fixed value of `valueLeft` to the left, and a fixed flux of
 
     >>> fluxRight = 1.
     
@@ -113,30 +111,14 @@ to the right:
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-    >>> from fipy.equations.diffusionEquation import DiffusionEquation
-    >>> eq = DiffusionEquation(
-    ...     var,
-    ...     transientCoeff = 0., 
-    ...     diffusionCoeff = diffCoeff,
-    ...     solver = LinearPCGSolver(
-    ...         tolerance = 1.e-15, 
-    ...         steps = 1000
-    ...     ),
-    ...     boundaryConditions=(
-    ...         FixedValue(mesh.getFacesLeft(),valueLeft),
-    ...         FixedFlux(mesh.getFacesRight(),fluxRight),
-    ...         FixedFlux(mesh.getFacesTop(),0.),
-    ...         FixedFlux(mesh.getFacesBottom(),0.)
-    ...     )
-    ... )
+    >>> boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
+    ...                       FixedFlux(mesh.getFacesRight(),fluxRight))
 
 We iterate one time step to implicitly find the steady state
 solution:
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
 
 A simple analytical answer can be used to test the result:
     
@@ -154,7 +136,7 @@ or
     >>> values = x + 18. * L / 4.
     >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
     >>> values = Numeric.where(x < L / 4., x, values)
-    >>> Numeric.allclose(values, var, atol = 1e-8, rtol = 1e-8)
+    >>> var.allclose(values, atol = 1e-8, rtol = 1e-8)
     1
    
 If the problem is run interactively, we can view the result:

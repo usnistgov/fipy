@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/6/04 {4:10:40 PM} 
+ #                                last update: 12/10/04 {1:56:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,11 +41,38 @@
  ##
 
 r"""
-The same idea as::
+The same idea as `examples/elphf/input1DpoissonAllCharge.py`, again on a 1D mesh
+
+    >>> nx = 200
+    >>> dx = 0.01
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, nx = nx)
     
-    $ examples/elphf/input1DpoissonAllCharge.py
-    
-but now with charge only on the left side of the domain
+but now with charge only on the left side of the domain.
+
+    >>> parameters = {
+    ...     'potential': {
+    ...         'name': "psi",
+    ...         'permittivity': 1.,
+    ...     },
+    ...     'interstitials': (
+    ...         {
+    ...             'name': "e-",
+    ...             'valence': -1,
+    ...             'diffusivity': 0
+    ...         },
+    ...     )
+    ... }
+
+We again let the ElPhF module construct the appropriate fields
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, 
+    ...                           parameters = parameters)
+
+We segregate the charge to the left side of the domain by setting the
+concentration of electrons to
 
 .. raw:: latex
 
@@ -55,9 +82,21 @@ but now with charge only on the left side of the domain
        0& \text{for $x > L/2$.}
    \end{cases} $$
    
-We iterate one timestep to equilibrate
+..
 
-    >>> it.timestep()
+    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
+    >>> fields['interstitials'][0].setValue(1.)
+    >>> fields['interstitials'][0].setValue(0.,setCells)
+
+and iterate one implicit timestep to equilibrate the electrostatic potential
+
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
+    
+    >>> from fipy.models.elphf.poissonEquation import factory
+    >>> poisson = factory.make(fields, parameters['potential'])
+    >>> poisson.solve(var = fields['potential'], 
+    ...               boundaryConditions = bcs)
 
 This problem has the analytical solution
 
@@ -78,62 +117,20 @@ We verify that the correct equilibrium is attained
 
     >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
     1
+    
+If we are running the example interactively, we view the result
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
  
-from fipy.meshes.grid2D import Grid2D
-from fipy.iterators.iterator import Iterator
-from fipy.viewers.gist1DViewer import Gist1DViewer
-
-import fipy.models.elphf.elphf as elphf
-
-nx = 200
-dx = 0.01
-L = nx * dx
-
-parameters = {
-    'potential': {
-	'name': "psi",
-	'permittivity': 1.
-    },
-    'interstitials': (
-	{
-	    'name': "e-",
-	    'valence': -1
-	},
-    )
-}
-
-mesh = Grid2D(
-    dx = dx,
-    dy = dx,
-    nx = nx,
-    ny = 1)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
-fields['interstitials'][0].setValue(1.)
-fields['interstitials'][0].setValue(0.,setCells)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
-
-    viewer.plot()
-	
-    raw_input("press <return> to start...")
-
-    it.timestep()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     
-    viewer.plot()
-	    
     raw_input("finished")
 

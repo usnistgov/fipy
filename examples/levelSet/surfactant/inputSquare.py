@@ -50,7 +50,10 @@ Advect the interface and check the position.
    >>> distanceVariable.calcDistanceFunction()
    >>> initialSurfactant = Numeric.sum(surfactantVariable)
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     surfactantVariable.updateOld()
+   ...     distanceVariable.updateOld()
+   ...     surfactantEquation.solve(surfactantVariable)
+   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    >>> Numeric.allclose(initialSurfactant, Numeric.sum(surfactantVariable[:]))
    1
  
@@ -64,13 +67,9 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import HigherOrderAdvectionEquation
+from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.iterators.iterator import Iterator
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
 
 L = 1.
 dx = 0.1
@@ -110,20 +109,11 @@ surfactantVariable = SurfactantVariable(
     )
 
 surfactantEquation = SurfactantEquation(
-    surfactantVariable,
-    distanceVariable,
-    solver = LinearLUSolver(
-        tolerance = 1e-10),
-    boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0),))
+    distanceVar = distanceVariable)
 
-advectionEquation = HigherOrderAdvectionEquation(
-    distanceVariable,
-    advectionCoeff = velocity,
-    solver = LinearPCGSolver(
-        tolerance = 1.e-15, 
-        steps = 1000))
 
-it = Iterator((surfactantEquation, advectionEquation))
+advectionEquation = buildHigherOrderAdvectionEquation(
+    advectionCoeff = velocity)
 
 if __name__ == '__main__':
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.001, maxVal = .001)
@@ -134,12 +124,14 @@ if __name__ == '__main__':
 
     for step in range(steps):
         print Numeric.sum(surfactantVariable)
-        it.timestep(dt = timeStepDuration)
-        
+        surfactantVariable.updateOld()
+        distanceVariable.updateOld()
+        surfactantEquation.solve(surfactantVariable)
+        advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         distanceViewer.plot()
         surfactantViewer.plot()
 
-    surfactantEquation.solve()
+    surfactantEquation.solve(surfactantVariable)
 
     distanceViewer.plot()
     surfactantViewer.plot()

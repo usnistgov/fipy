@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:43:08 PM} 
+ #                                last update: 12/13/04 {2:35:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,25 +40,18 @@
  # ###################################################################
  ##
 
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
-import unittest
-
-import models.test
-import tools.test
-import variables.test
-import meshes.numMesh.test
-import viewers.test
 
 def suite():
-    theSuite = unittest.TestSuite()
-
-    theSuite.addTest(models.test.suite())
-    theSuite.addTest(tools.test.suite())
-    theSuite.addTest(meshes.numMesh.test.suite())
-    theSuite.addTest(variables.test.suite())
-    theSuite.addTest(viewers.test.suite())
-    
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+        'models.test',
+        'terms.test',
+        'tools.test',
+        'meshes.numMesh.test',
+        'variables.test',
+        'viewers.test',
+    ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

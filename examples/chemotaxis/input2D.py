@@ -48,7 +48,10 @@ Input file for chemotaxis modeling.
 Here are some test cases for the model.
 
     >>> for i in range(300):
-    ...     it.timestep(dt = 0.1)
+    ...     for var, eqn in eqs:
+    ...         var.updateOld()
+    ...     for var, eqn in eqs:
+    ...         eqn.solve(var, dt = 0.1)
     >>> import Numeric
     >>> accuracy = 1e-2
     >>> Numeric.allclose(KMVar, params['KM'], atol = accuracy)
@@ -69,11 +72,9 @@ Here are some test cases for the model.
 from parameters import parameters
 from fipy.meshes.grid2D import Grid2D
 from fipy.variables.cellVariable import CellVariable
-from fipy.equations.sourceEquation import SourceEquation
-from fipy.equations.diffusionEquationWithSource import DiffusionEquationWithSource
-from fipy.iterators.iterator import Iterator
-from fipy.variables.variable import Variable
-from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 params = parameters['case 2']
 
@@ -96,35 +97,33 @@ RVar = CellVariable(mesh = mesh, value = params['R'], hasOld = 1)
 
 PN = P3Var + P2Var
 
-KMEq = SourceEquation(KMVar,
-                      scCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.getCellVolumeAverage()),
-                      spCoeff = params['lambdaK'] / (1 + PN / params['kappaK']))
-TMEq = SourceEquation(TMVar,
-                      scCoeff = params['chiT'] * (1 - TCVar - TMVar.getCellVolumeAverage()),
-                      spCoeff = params['lambdaT'] * (KMVar + params['zetaT']))
+KMscCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.getCellVolumeAverage())
+KMspCoeff = params['lambdaK'] / (1 + PN / params['kappaK'])
+KMEq = TransientTerm() - KMscCoeff + DependentSourceTerm(KMspCoeff)
 
-TCEq = SourceEquation(TCVar,
-                      scCoeff = params['lambdaT'] * (TMVar * KMVar).getCellVolumeAverage(),
-                      spCoeff = params['lambdaTstar'])
+TMscCoeff = params['chiT'] * (1 - TCVar - TMVar.getCellVolumeAverage())
+TMspCoeff = params['lambdaT'] * (KMVar + params['zetaT'])
+TMEq = TransientTerm() - TMscCoeff + DependentSourceTerm(TMspCoeff)
+
+TCscCoeff = params['lambdaT'] * (TMVar * KMVar).getCellVolumeAverage()
+TCspCoeff = params['lambdaTstar']
+TCEq = TransientTerm() - TCscCoeff + DependentSourceTerm(TCspCoeff) 
 
 PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kappac'] + 1) + params['zetaPITP']
 
-P3Eq = DiffusionEquationWithSource(P3Var,
-                                   diffusionCoeff = params['diffusionCoeff'],
-                                   scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3'],
-                                   spCoeff = params['lambda3'] * (TMVar + params['zeta3T']))
+P3spCoeff = params['lambda3'] * (TMVar + params['zeta3T'])
+P3scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3']
+P3Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P3scCoeff + DependentSourceTerm(P3spCoeff)
 
-P2Eq = DiffusionEquationWithSource(P2Var,
-                                   diffusionCoeff = params['diffusionCoeff'],
-                                   scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var,
-                                   spCoeff = params['lambda2'] * (TMVar + params['zeta2T']))
+P2scCoeff = scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var
+P2spCoeff = params['lambda2'] * (TMVar + params['zeta2T'])
+P2Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P2scCoeff + DependentSourceTerm(P2spCoeff)
 
-KCEq = SourceEquation(KCVar,
-                      scCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage(),
-                      spCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar))
+KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage()
+KCspCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)
+KCEq = TransientTerm() - KCscCoeff + DependentSourceTerm(KCspCoeff) 
 
-
-it = Iterator((KMEq, TMEq, TCEq, P3Eq, P2Eq, KCEq))
+eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq), (KCVar, KCEq))
 
 if __name__ == '__main__':
 
@@ -141,7 +140,10 @@ if __name__ == '__main__':
 
     for i in range(100):
         print i
-        it.timestep(dt = 1.)
+        for var, eqn in eqs:
+            var.updateOld()
+        for var, eqn in eqs:
+            eqn.solve(var, dt = 1.)
 
     import Numeric
 
@@ -151,7 +153,10 @@ if __name__ == '__main__':
     RVar[:] = L / Numeric.sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     
     for i in range(100):
-        it.timestep(dt = 0.1)
+        for var, eqn in eqs:
+            var.updateOld()
+        for var, eqn in eqs:
+            eqn.solve(var, dt = 1.)
 
     PNArray[:] = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
     PNViewer.plot('PN.pdf')

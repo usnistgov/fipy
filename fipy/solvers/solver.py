@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 9/3/04 {10:28:58 PM} 
+ #                                last update: 12/6/04 {4:31:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
  ##
 
 class Solver:
-    def __init__(self, tolerance, steps):
+    def __init__(self, tolerance = 1e-10, steps = 1000):
 	self.tolerance = tolerance
 	self.steps = steps
 	

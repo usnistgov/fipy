@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonAllCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/5/04 {4:59:47 PM} 
+ #                                last update: 12/10/04 {1:56:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,35 +41,56 @@
  ##
 
 r"""
-A simple 1D Poisson problem to test the `PoissonEquation` element of
-ElPhF.
+The same idea as `examples/elphf/input1DpoissonAllCharge.py`, again on a 1D mesh
 
-The dimensionless Poisson equation is
+    >>> nx = 200
+    >>> dx = 0.01
+    >>> L = nx * dx
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, nx = nx)
+
+but now with charge uniform charge throughout the domain.
+
+    >>> parameters = {
+    ...     'potential': {
+    ...         'name': "psi",
+    ...         'permittivity': 1.,
+    ...     },
+    ...     'interstitials': (
+    ...         {
+    ...             'name': "e-",
+    ...             'valence': -1,
+    ...             'diffusivity': 0
+    ...         },
+    ...     )
+    ... }
+
+We again let the ElPhF module construct the appropriate fields
+
+    >>> import fipy.models.elphf.elphf as elphf
+    >>> fields = elphf.makeFields(mesh = mesh, 
+    ...                           parameters = parameters)
+
+We obtain a uniform charge distribution by setting a uniform concentration
+of electrons
 
 .. raw:: latex
 
-   $$ \nabla\cdot\left(\epsilon\nabla\psi\right) = \rho = \sum_{j=1}^N z_j C_j$$
+   $C_{\text{e}^{-}} = 1$.
 
-where 
+..
 
-.. raw:: latex
+    >>> fields['interstitials'][0].setValue(1.)
 
-   $\psi$ is the electrostatic potential,
-   $\epsilon$  is the permittivity,
-   $\rho$ is the charge density,
-   $C_j$ is the concentration of the $j$th component, and
-   $z_j$ is the valence of the $j$th component.
-   
-We test a uniform distribution of electrons with charge
+and iterate one implicit timestep to equilibrate the electrostatic potential
 
-.. raw:: latex
-  
-   $\rho = -1$ by setting $z_j = -1$ and $C_{\text{e}^{-}} = 1$ 
-   and we let the permittivity $\epsilon = 1$.
-   
-We iterate one timestep to equilibrate
-
-    >>> it.timestep()
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
+    
+    >>> from fipy.models.elphf.poissonEquation import factory
+    >>> poisson = factory.make(fields, parameters['potential'])
+    >>> poisson.solve(var = fields['potential'], 
+    ...               boundaryConditions = bcs)
 
 This problem has the analytical solution
 
@@ -84,60 +105,19 @@ We verify that the correct equilibrium is attained
 
     >>> fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
     1
+    
+If we are running the example interactively, we view the result
+
+    >>> if __name__ == '__main__':
+    ...     from fipy.viewers.gist1DViewer import Gist1DViewer
+    ...     viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
  
-from fipy.meshes.grid2D import Grid2D
-from fipy.iterators.iterator import Iterator
-from fipy.viewers.gist1DViewer import Gist1DViewer
-
-import fipy.models.elphf.elphf as elphf
-
-nx = 200
-dx = 0.01
-L = nx * dx
-
-parameters = {
-    'potential': {
-	'name': "psi",
-	'permittivity': 1.
-    },
-    'interstitials': (
-	{
-	    'name': "e-",
-	    'valence': -1
-	},
-    )
-}
-
-mesh = Grid2D(
-    dx = dx,
-    dy = dx,
-    nx = nx,
-    ny = 1)
-
-fields = elphf.makeFields(mesh = mesh, parameters = parameters)
-
-fields['interstitials'][0].setValue(1.)
-
-equations = elphf.makeEquations(
-    mesh = mesh, 
-    fields = fields, 
-    parameters = parameters
-)
-
-it = Iterator(equations = equations)
-
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = (fields['charge'], fields['potential']))
-
-    viewer.plot()
-	
-    raw_input("press <return> to start...")
-
-    it.timestep()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript())
     
-    viewer.plot()
-	    
     raw_input("finished")
 

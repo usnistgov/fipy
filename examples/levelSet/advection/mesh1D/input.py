@@ -96,13 +96,8 @@ Construct a `distanceVariable` object. This object is required by the
    
 The `advectionEquation` is constructed.
 
-   >>> from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-   >>> advEqn = AdvectionEquation(var, advectionCoeff = velocity)
-
-An `Iterator` object is constructed.
-
-   >>> from fipy.iterators.iterator import Iterator
-   >>> it = Iterator((advEqn,))
+   >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+   >>> advEqn = buildAdvectionEquation(advectionCoeff = velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
@@ -111,13 +106,16 @@ The problem can then be solved by executing a serious of time steps.
    ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -10., maxVal = 10.)
    ...     viewer.plot()
    ...     for step in range(steps):
-   ...         it.timestep(dt = timeStepDuration)
+   ...         var.updateOld()
+   ...         advEqn.solve(var, dt = timeStepDuration)
    ...         viewer.plot()
 
 The result can be tested with the following code:
 
    >>> for step in range(steps):
-   ...     it.timestep(dt = timeStepDuration)
+   ...     var.updateOld()
+   ...     advEqn.solve(var, dt = timeStepDuration)
+   >>> import Numeric
    >>> x = Numeric.array(mesh.getCellCenters()[:,0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity

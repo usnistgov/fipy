@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:52 PM} { 2:24:25 PM}
+ #                                last update: 12/9/04 {8:47:13 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,22 +39,16 @@
  # ###################################################################
  ##
 
-import unittest
-
+from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
 
-import examples.phase.anisotropy.test
-import examples.phase.impingement.test
-import examples.phase.missOrientation.test
-import examples.phase.symmetry.test
-
 def suite():
-    theSuite = unittest.TestSuite()
-    theSuite.addTest(examples.phase.anisotropy.test.suite())
-    theSuite.addTest(examples.phase.impingement.test.suite())
-    theSuite.addTest(examples.phase.missOrientation.test.suite())
-    theSuite.addTest(examples.phase.symmetry.test.suite())
-    return theSuite
+    return LateImportTestSuite(testModuleNames = (
+            'examples.phase.anisotropy.test',
+            'examples.phase.impingement.test',
+            'examples.phase.missOrientation.test',
+            'examples.phase.symmetry.test',
+        ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='suite')

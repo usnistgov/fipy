@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/27/04 {9:53:39 AM} 
+ #                                last update: 12/10/04 {4:53:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,11 +71,9 @@ We solve the problem on a 1D mesh
 
     >>> nx = 40
     >>> dx = 1.
-    >>> ny = 1
-    >>> dy = 1
     >>> L = nx * dx
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+    >>> mesh = Grid2D(dx = dx, nx = nx)
 
 The parameters for this problem are
 
@@ -108,7 +106,8 @@ specified simply by providing a `Tuple` of species parameters
 We use ElPhF to create the variable fields
 
     >>> import fipy.models.elphf.elphf as elphf
-    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
+    >>> fields = elphf.makeFields(mesh = mesh, 
+    ...                           parameters = parameters)
     
 and we separate the solution domain into two different concentration regimes
     
@@ -118,12 +117,10 @@ and we separate the solution domain into two different concentration regimes
     >>> fields['substitutionals'][1].setValue(0.6)
     >>> fields['substitutionals'][1].setValue(0.3,setCells)
 
-We use ElPhF again to create the governing equations for the fields
+We use ElPhF to create the governing equations for the fields
 
-    >>> equations = elphf.makeEquations(mesh = mesh, 
-    ...                                 fields = fields, 
-    ...                                 parameters = parameters
-    ... )
+    >>> elphf.makeEquations(fields = fields, 
+    ...                     parameters = parameters)
     
 If we are running interactively, we create a viewer to see the results 
 
@@ -137,10 +134,16 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator(equations = equations)
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> solver = LinearLUSolver()
+    
     >>> for i in range(40):
-    ...     it.timestep(dt = parameters['time step duration'])
+    ...     for field in fields['substitutionals']:
+    ...         field.updateOld()
+    ...     for field in fields['substitutionals']:
+    ...         field.equation.solve(var = field, 
+    ...                              dt = parameters['time step duration'],
+    ...                              solver = solver)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
 

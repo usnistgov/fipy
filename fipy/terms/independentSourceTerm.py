@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "scSourceTerm.py"
+ #  FILE: "independentSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 9/3/04 {10:43:09 PM} 
+ #                                last update: 12/7/04 {3:06:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,11 +43,18 @@
 
 from fipy.terms.sourceTerm import SourceTerm
 
-class ScSourceTerm(SourceTerm):
+class IndependentSourceTerm(SourceTerm):
     """
-    Sc source term. This term in general should be positive
-    for stability. Added to the b vector.
+    Source term that does not depend on the solution variable. 
+    Subtracted from the b vector.
     """
-    def __init__(self, sourceCoeff, mesh):
-        weight = {'b vector': 1, 'new value': 0, 'old value': 0, 'diagonal' : 0}
-	SourceTerm.__init__(self, sourceCoeff, weight, mesh) 
+	
+    def getWeight(self, mesh):
+	return {
+	    'b vector': -1, 
+	    'new value': 0, 
+	    'old value': 0, 
+	    'diagonal' : 0
+	}
+	
+
