@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 9/3/04 {10:40:02 PM} 
+ #                                last update: 4/2/05 {1:55:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -243,3 +243,16 @@ def max(arr):
         return arr.max()
     else:
         return _max(arr)
+
+        
+# Necessary because LLNL hires stupidheads
+def MAtake(array, indices, fill = 0, axis = 0):
+    tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
+    if indices.mask() is not None and tmp.shape != indices.mask().shape:
+        mask = MA.repeat(indices.mask()[...,Numeric.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
+        if tmp.mask() is not None:
+            mask = Numeric.logical_or(tmp.mask(), mask)
+    else:
+        mask = indices.mask()
+    return MA.array(data = tmp, mask = mask)
+
