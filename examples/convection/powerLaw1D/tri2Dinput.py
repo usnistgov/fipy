@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:49:42 PM} 
+ #                                last update: 2/18/05 {3:08:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,10 +69,10 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> convCoeff = (10.,0.)
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
 
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> eq = diffTerm + PowerLawConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+    >>> eq = diffTerm + PowerLawConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
 
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,

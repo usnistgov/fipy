@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 12/13/04 {2:59:34 PM} 
+ #                                last update: 2/18/05 {2:19:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class CellTerm(Term):
 	Term.__init__(self)
 
     def calcCoeffVectors(self, mesh):
-	coeff = self.getCoeff(mesh)
+	coeff = self.getGeomCoeff(mesh)
 	weight = self.getWeight(mesh)
 	
 	self.coeffVectors = {

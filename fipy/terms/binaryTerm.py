@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 2/18/05 {10:39:41 AM} 
+ #                                last update: 2/18/05 {2:56:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,9 +48,9 @@ class BinaryTerm(Term):
     def __init__(self, term1, term2):
 	if isinstance(term1, Term):
 	    if not isinstance(term2, Term):
-		term2 = ExplicitSourceTerm(sourceCoeff = term2)
+		term2 = ExplicitSourceTerm(coeff = term2)
 	elif isinstance(term2, Term):
-	    term1 = ExplicitSourceTerm(sourceCoeff = term1)
+	    term1 = ExplicitSourceTerm(coeff = term1)
 	else:
 	    raise "No terms!"
 	

@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 12/7/04 {2:48:52 PM} 
+ #                                last update: 2/18/05 {3:01:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,19 +46,19 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class ConvectionTerm(FaceTerm):
-    def __init__(self, convCoeff, diffusionTerm = None):
-	self.convCoeff = convCoeff
+    def __init__(self, coeff, diffusionTerm = None):
+	self.coeff = coeff
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
 	FaceTerm.__init__(self)
 	
-    def calcCoeff(self, mesh):
-	if not isinstance(self.convCoeff, VectorFaceVariable):
-	    self.convCoeff = VectorFaceVariable(mesh = mesh, value = self.convCoeff)
+    def calcGeomCoeff(self, mesh):
+	if not isinstance(self.coeff, VectorFaceVariable):
+	    self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
 
-	projectedCoefficients = self.convCoeff * mesh.getOrientedAreaProjections()
+	projectedCoefficients = self.coeff * mesh.getOrientedAreaProjections()
 	
-	self.coeff = projectedCoefficients.sum(1)
+	self.geomCoeff = projectedCoefficients.sum(1)
 	
     def getWeight(self, mesh):
 
@@ -68,11 +68,11 @@ class ConvectionTerm(FaceTerm):
             if self.diffusionTerm == None:
                 diffCoeff = 1e-20
             else:
-                diffCoeff = self.diffusionTerm.getCoeff(mesh)
+                diffCoeff = self.diffusionTerm.getGeomCoeff(mesh)
                 if diffCoeff == 0.:
                     diffCoeff = 1e-20
 
-            alpha = self.Alpha(-self.getCoeff(mesh) / diffCoeff)
+            alpha = self.Alpha(-self.getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

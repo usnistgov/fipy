@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 12/8/04 {5:12:52 PM} 
+ #                                last update: 2/18/05 {3:06:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ class PoissonEquationFactory(EquationFactory):
 					   constant['Faraday']**2 * constant['LENGTH']**2 
 					   / (constant['ENERGY'] * constant['MOLARVOLUME'])) 
 
-	return ImplicitDiffusionTerm(diffCoeff = permittivity) + fields['charge']
+	return ImplicitDiffusionTerm(coeff = permittivity) + fields['charge']
 
 factory = PoissonEquationFactory()
 						   

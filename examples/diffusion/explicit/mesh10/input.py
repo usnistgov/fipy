@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/7/04 {2:52:06 PM} 
+ #                                last update: 2/18/05 {3:13:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,7 +85,7 @@ We build the equation:
 
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> eq = TransientTerm() - ExplicitDiffusionTerm(diffCoeff = diffusionCoeff)
+    >>> eq = TransientTerm() - ExplicitDiffusionTerm(coeff = diffusionCoeff)
     
 and the boundary conditions:
     

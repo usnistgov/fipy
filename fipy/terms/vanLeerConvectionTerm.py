@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerConvectionTerm.py"
  #                                    created: 7/14/04 {4:42:01 PM} 
- #                                last update: 12/7/04 {5:18:07 PM} 
+ #                                last update: 2/18/05 {2:19:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	interiorFaceNormals = array.take(mesh.getOrientedFaceNormals(), interiorIDs)
 	
 	# Courant-Friedrichs-Levy number
-	interiorCFL = abs(array.take(self.coeff, interiorIDs)) * dt
+	interiorCFL = abs(array.take(self.getGeomCoeff(mesh), interiorIDs)) * dt
 	
 	gradUpwind = (oldArray2 - oldArray1) / array.take(mesh.getCellDistances(), interiorIDs)
 	

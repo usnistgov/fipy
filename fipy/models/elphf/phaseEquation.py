@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/18/05 {10:41:27 AM} 
+ #                                last update: 2/18/05 {3:17:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,9 +112,9 @@ class PhaseEquationFactory(EquationFactory):
 	mPhi = -(30. * fields['phase'] * (1. - fields['phase']) * enthalpy \
 	    + 2 * (1. - 2 * fields['phase']) * barrier)
 
-	return TransientTerm(tranCoeff = 1. / phaseMobility) \
-	    - ImplicitDiffusionTerm(diffCoeff = phaseGradientEnergy) \
-	    + ImplicitSourceTerm(sourceCoeff = mPhi * (fields['phase'] - (mPhi < 0.))) \
+	return TransientTerm(coeff = 1. / phaseMobility) \
+	    - ImplicitDiffusionTerm(coeff = phaseGradientEnergy) \
+	    + ImplicitSourceTerm(coeff = mPhi * (fields['phase'] - (mPhi < 0.))) \
             - (mPhi > 0.) * mPhi * fields['phase']
 
 factory = PhaseEquationFactory()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:05:21 PM} 
+ #                                last update: 2/18/05 {3:05:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,10 +100,10 @@ used to create the equation.  It needs to be passed a convection term
 instantiator as follows:
 
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-   >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+   >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
    
    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-   >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+   >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in the numerical section of the manual. Essentially

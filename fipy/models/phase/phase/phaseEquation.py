@@ -7,7 +7,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 2/18/05 {10:41:41 AM} 
+ #                                last update: 2/18/05 {3:17:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,11 +64,11 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
         )
 
     diffTerm = ExplicitDiffusionTerm(
-        diffCoeff = PhaseDiffusionVariable(parameters = parameters,
+        coeff = PhaseDiffusionVariable(parameters = parameters,
                                            halfAngle = halfAngle))
 	
     spTerm = ImplicitSourceTerm(
-        sourceCoeff = SpSourceVariable(theta = thetaOld,
+        coeff = SpSourceVariable(theta = thetaOld,
                                        mPhi = mPhiVar,
                                        phase = phase,
                                        parameters = parameters))
@@ -82,4 +82,4 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
     transientCoeff = parameters['tau']
     
 
-    return TransientTerm(tranCoeff = transientCoeff) - diffTerm  + spTerm - sourceCoeff
+    return TransientTerm(coeff = transientCoeff) - diffTerm  + spTerm - sourceCoeff

@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:37:34 PM} 
+ #                                last update: 2/18/05 {2:19:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,7 +121,7 @@ class AdvectionTerm(Term):
 
     def __init__(self, coeff = None):
         Term.__init__(self)
-        self.coeff = coeff
+        self.geomCoeff = coeff
         
     def buildMatrix(self, var, boundaryCondtions = (), dt = None):
 
@@ -146,7 +146,7 @@ class AdvectionTerm(Term):
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
 
-        coeff = Numeric.array(self.coeff)
+        coeff = Numeric.array(self.getGeomCoeff(mesh))
 
         coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:49:50 AM} 
+ #                                last update: 2/18/05 {3:05:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,7 +118,7 @@ We iterate one time step to implicitly find the steady state
 solution:
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
 
 A simple analytical answer can be used to test the result:
     

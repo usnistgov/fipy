@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {5:02:17 PM} 
+ #                                last update: 2/18/05 {3:01:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,8 +86,8 @@ boundaryConditions = (
     )
 
 from fipy.terms.transientTerm import TransientTerm
-eq1 = TransientTerm() - VanLeerConvectionTerm(convCoeff = (velocity, 0.))
-eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(convCoeff = (velocity, 0.))
+eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (velocity, 0.))
+eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity, 0.))
 
 if __name__ == '__main__':
     

@@ -7,7 +7,7 @@
  # 
  #  FILE: "SurfactantEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:40:02 PM} 
+ #                                last update: 2/18/05 {3:17:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,7 @@ class SurfactantEquation:
 
     def __init__(self, distanceVar = None):
 
-        transientTerm = TransientTerm(tranCoeff = 1)
+        transientTerm = TransientTerm(coeff = 1)
 
         convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar))
 

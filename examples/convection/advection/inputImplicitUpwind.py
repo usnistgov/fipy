@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputImpicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:55 PM} 
+ #                                last update: 2/18/05 {3:02:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ boundaryConditions = (
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
-eq = TransientTerm() - PowerLawConvectionTerm(convCoeff = (velocity, 0.))
+eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity, 0.))
 
 if __name__ == '__main__':
     

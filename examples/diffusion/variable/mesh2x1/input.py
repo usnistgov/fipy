@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/7/04 {12:52:52 PM} 
+ #                                last update: 2/18/05 {3:05:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,7 +81,7 @@ where `i` is an integer and of course for large `nCells`. In this example
 `nx = 2`.
 
 A simple analytical answer can be used to test the result:
-   >>> ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+   >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[:,0]
    >>> values = x + 18. * L / 4.
    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
@@ -129,7 +129,7 @@ boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedFlux(mesh.getFacesRight(),fluxRight))
 
 if __name__ == '__main__':
-    ImplicitDiffusionTerm(diffCoeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+    ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
     viewer = Grid2DGistViewer(var, maxVal = L + 18. * L / 4.)
     viewer.plot()
     raw_input('finished')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "concentrationEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 12/8/04 {5:23:27 PM} 
+ #                                last update: 2/18/05 {3:06:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,10 +49,10 @@ from equationFactory import EquationFactory
 class ConcentrationEquationFactory(EquationFactory):
     def make(self, Cj, fields, convectionScheme = PowerLawConvectionTerm):
 				    
-	diffusionTerm = ImplicitDiffusionTerm(diffCoeff = Cj.getDiffusivity())
+	diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.getDiffusivity())
 
 	return TransientTerm() - diffusionTerm \
-	    - convectionScheme(convCoeff = self.getConvectionCoeff(Cj, fields), 
+	    - convectionScheme(coeff = self.getConvectionCoeff(Cj, fields), 
 			       diffusionTerm = diffusionTerm)
 	    
     def getConvectionCoeff(self, Cj, fields, diffusivity = None):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 2/3/05 {4:45:05 PM} 
+ #                                last update: 2/18/05 {2:20:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ Test, 2nd order, 1 dimension, fixed flux of zero both ends.
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(1., 1., 2, 1)
    >>> term = NthOrderDiffusionTerm(coeffs = (1,))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
     1.000000  -1.000000  
@@ -91,7 +91,7 @@ Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
    >>> bcLeft = FixedFlux(mesh.getFacesLeft(), 3.)
    >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
    >>> term = NthOrderDiffusionTerm(coeffs = (1.,))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
     1.000000  -1.000000  
@@ -111,7 +111,7 @@ x = 2, fixed value 1, fixed curvature 0
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
    >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
     1.000000  -1.000000  
@@ -131,7 +131,7 @@ x = 2, fixed value 4, fixed 3rd order -1
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
    >>> term = NthOrderDiffusionTerm(coeffs = (-1., 1.))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
     1.000000  -1.000000  
    -1.000000   1.000000  
@@ -151,7 +151,7 @@ Test when dx = 0.5.
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
    >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -2.000000   2.000000  
     2.000000  -2.000000  
@@ -171,7 +171,7 @@ Test when dx = 0.25.
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
    >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
-   >>> coeff = term.getCoeff(mesh)
+   >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -4.000000   4.000000  
     4.000000  -4.000000  
@@ -225,11 +225,11 @@ class NthOrderDiffusionTerm(Term):
                 
         return higherOrderBCs, lowerOrderBCs
                 
-    def calcCoeff(self, mesh):
+    def calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-            self.coeff = -self.nthCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
+            self.geomCoeff = -self.nthCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
         else:
-            self.coeff = None
+            self.geomCoeff = None
         
     def getCoefficientMatrix(self, mesh, coeff):
 	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh.getMaxFacesPerCell())
@@ -281,7 +281,7 @@ class NthOrderDiffusionTerm(Term):
         volumes = mesh.getCellVolumes()
         if self.order > 0:
 
-            coeff = self.getCoeff(mesh)
+            coeff = self.getGeomCoeff(mesh)
             
 ##            if coefficientMatrix is None:
             coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
@@ -292,8 +292,8 @@ class NthOrderDiffusionTerm(Term):
             M = mesh.getMaxFacesPerCell()
 
             coeffs = {
-		'cell 1 diag':     self.coeff,
-		'cell 1 offdiag': -self.coeff
+		'cell 1 diag':     coeff,
+		'cell 1 offdiag': -coeff
 	    }
 	    
 	    coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']

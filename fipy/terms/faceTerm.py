@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/4/05 {3:16:12 PM} 
+ #                                last update: 2/18/05 {3:14:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,12 +49,12 @@ from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
 class FaceTerm(Term):
-    def __init__(self,):
+    def __init__(self):
 	Term.__init__(self)
         self.coeffMatrix = None
             
     def getCoeffMatrix(self, mesh, weight):
-	coeff = self.getCoeff(mesh)
+	coeff = self.getGeomCoeff(mesh)
         if self.coeffMatrix is None:
             self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
                                 'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
@@ -100,7 +100,7 @@ class FaceTerm(Term):
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
 
 	weight = self.getWeight(mesh)['explicit']
-        coeff = Numeric.array(self.getCoeff(mesh))
+        coeff = Numeric.array(self.getGeomCoeff(mesh))
         Nfac = mesh.getNumberOfFaces()
 
         cell1Diag = Numeric.zeros((Nfac,),'d')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2Dinput.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/7/04 {4:12:32 PM} 
+ #                                last update: 2/18/05 {3:06:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,10 +69,10 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> convCoeff = (10.,0.)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
 
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = diffTerm + ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm)
+    >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
 
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,

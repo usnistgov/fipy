@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 12/15/04 {4:55:11 PM} 
+ #                                last update: 2/18/05 {2:20:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
     def __init__(self):
-	self.coeff = None
+	self.geomCoeff = None
         
     def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	pass
@@ -101,13 +101,13 @@ class Term:
 	from fipy.terms.binaryTerm import SubtractionTerm
 	return SubtractionTerm(term1 = other, term2 = self)
 
-    def calcCoeff(self, mesh):
+    def calcGeomCoeff(self, mesh):
 	pass
 	
-    def getCoeff(self, mesh):
-	if self.coeff is None:
-	    self.calcCoeff(mesh)
-	return self.coeff
+    def getGeomCoeff(self, mesh):
+	if self.geomCoeff is None:
+	    self.calcGeomCoeff(mesh)
+	return self.geomCoeff
 	
     def getWeight(self, mesh):
 	pass

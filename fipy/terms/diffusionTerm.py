@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 12/6/04 {3:38:19 PM} 
+ #                                last update: 2/18/05 {3:08:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,9 +45,9 @@ import Numeric
 from fipy.terms.faceTerm import FaceTerm
 
 class DiffusionTerm(FaceTerm):
-    def __init__(self, diffCoeff = 1.):
-	self.diffCoeff = diffCoeff
+    def __init__(self, coeff = 1.):
+	self.coeff = coeff
 	FaceTerm.__init__(self)
 
-    def calcCoeff(self, mesh):
-	self.coeff = self.diffCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
+    def calcGeomCoeff(self, mesh):
+	self.geomCoeff = self.coeff * mesh.getFaceAreas() / mesh.getCellDistances()

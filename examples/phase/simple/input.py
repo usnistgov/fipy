@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {12:20:46 PM} 
+ #                                last update: 2/18/05 {3:06:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -168,7 +168,7 @@ We treate the diffusion term
 implicitly, 
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffusionTerm = ImplicitDiffusionTerm(diffCoeff = kappa)
+    >>> diffusionTerm = ImplicitDiffusionTerm(coeff = kappa)
 
 The source term is
 
@@ -311,7 +311,7 @@ not converge very well (can we explain why not?).  One choice is that used by Ry
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
-    >>> implicitSource = ImplicitSourceTerm(sourceCoeff = S1)
+    >>> implicitSource = ImplicitSourceTerm(coeff = S1)
     >>> eq = diffusionTerm + S0 + implicitSource
     
 .. note:: Because `mPhi` is a variable field, the quantities `(mPhi > 0)`
@@ -372,7 +372,7 @@ or
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
     >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
-    >>> implicitSource = ImplicitSourceTerm(sourceCoeff = S1 * (S1 < 0))
+    >>> implicitSource = ImplicitSourceTerm(coeff = S1 * (S1 < 0))
     >>> eq = diffusionTerm + S0 + implicitSource
     
 Using this scheme, where the coefficient of the implicit source term is

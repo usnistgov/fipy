@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/13/04 {11:32:47 AM} 
+ #                                last update: 2/18/05 {3:08:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,10 +83,10 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> sourceCoeff = 1.
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(diffCoeff = diffCoeff)
+    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
 
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = -sourceCoeff - diffTerm - ExponentialConvectionTerm(convCoeff = convCoeff, diffusionTerm = diffTerm) 
+    >>> eq = -sourceCoeff - diffTerm - ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm) 
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
 
