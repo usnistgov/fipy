@@ -53,6 +53,7 @@ import fivol.examples.diffusion.explicit.test
 import fivol.examples.convection.test
 import fivol.examples.elphf.test
 import fivol.examples.phase.examples.test
+import fivol.examples.levelSet.examples.test
 
 if __name__ == '__main__':
     theSuite = unittest.TestSuite()
@@ -63,6 +64,7 @@ if __name__ == '__main__':
     theSuite.addTest(fivol.examples.convection.test.suite())
     theSuite.addTest(fivol.examples.phase.examples.test.suite())
     theSuite.addTest(fivol.examples.elphf.test.suite())
+    theSuite.addTest(fivol.examples.levelSet.examples.test.suite())
     
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 
