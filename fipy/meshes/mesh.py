@@ -1,3 +1,4 @@
+
 """
 #-----*-Pyth-*-
 ####################################################################
@@ -36,6 +37,7 @@
 """
 
 class Mesh:
-	def __init__(self):
-	    pass
-		
+    def __init__(self, cells, faces, vertices):
+        self.cells=cells
+        self.faces=faces
+        self.vertices=vertices

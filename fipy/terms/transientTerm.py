@@ -38,12 +38,13 @@ import cellTerm
 
 class TransientTerm(cellTerm.CellTerm):
     def __init__(self,equation,tranCoeff):
-	cellTerm.CellTerm.__init__(self, stencil = (0,1,1), equation) 
+        stencil = (0,1,1)
+	cellTerm.CellTerm.__init__(self, stencil , equation) 
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):
 	cells = self.equation.mesh().cells()
-	self.coeff = Numeric.zeroes([len(cells),'d')
+	self.coeff = Numeric.zeroes((len(cells)),'d')
 	for cell in cells:
 	    self.coeff[cell.id()] = self.tranCoeff * cell.volume() / dt
 	

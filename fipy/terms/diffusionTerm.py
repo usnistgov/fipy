@@ -25,7 +25,8 @@ import faceTerm
 
 class DiffusionTerm(faceTerm.FaceTerm):
     def __init__(self,equation,diffCoeff):
-	faceTerm.FaceTerm.__init__(self, stencil = (1,1), equation)
+        stencil = (1,1)
+	faceTerm.FaceTerm.__init__(self, stencil , equation)
 	self.diffCoeff = diffCoeff
 	
     def updateCoeff(self,dt):

@@ -49,20 +49,23 @@ class MatrixEquation(equation.Equation):
         mesh,
         terms,
         solver,
-        boundaryConditions=(,),
-        initialConditions=(,))
+        boundaryConditions,
+        initialConditions
         ):
 	self.mesh = mesh
+        var = Numeric.zeroes([len(mesh.cells())],'d')
 	equation.Equation.__init__(
 	    self,
 	    name,
-	    var = Numeric.zeroes([len(mesh.cells())],'d'),
+	    var,
 	    terms,
 	    solver)
+        print initialConditions
 
-         for initialCondition in initialConditions:
-            for cell in ic[0]:
-                self.var[cell.id()]=ic[1]
+        for initialCondition in initialConditions:
+            initialCondition.setInitialCondition(self.var)
+            initialCondition.setInitialCondition(self.varOld)
+            
 	
     def L(self):
 	return self.L

@@ -21,10 +21,11 @@ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ###################################################################
 """
 
-class BoundaryCondition():
-    def __init__(self,faces):
-        self.faces=faces
-
+class BoundaryCondition:
+    def __init__(self,faces,value):
+        self.faces = faces
+        self.value = value
+    
         
     
 	

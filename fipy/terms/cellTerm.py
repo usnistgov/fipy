@@ -47,9 +47,11 @@ class CellTerm(term.Term):
     def buildMatrix(self):
 	var = self.equation.var()
 	N = var.size()
-	self.equation.b() += var.old()*self.coeff*self.stencil[2]
-	self.equation.b() += Numeric.ones([N])*self.coeff*self.stencil[0]
-	self.equation.L().update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
+        b=self.equation.b()
+        L=self.equation.L()
+	b += self.varOld*self.coeff*self.stencil[2]
+	b += Numeric.ones([N])*self.coeff*self.stencil[0]
+	L.update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
 	
 		
 		

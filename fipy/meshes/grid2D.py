@@ -1,10 +1,11 @@
+"""
 #-----*-Pyth-*-
 ####################################################################
 # PFM - Python-based phase field solver
 #
 # FILE: "grid2D.py"
 #                                   created: 11/10/03 {3:30:42 PM} 
-#                               last update: 11/13/03 {11:16:39 AM} 
+#                               last update: 11/13/03 {11:22:42 AM} 
 # Author: Jonathan Guyer
 # E-mail: guyer@nist.gov
 #   mail: NIST
@@ -31,54 +32,84 @@
 # 
 ####################################################################
 #----
-
+"""
 import mesh
 import vertex
 import face
 import cell
 
 class Grid2D(mesh.Mesh):
+    """
+    NUMBERING SYSTEM
+    ----------------
+
+    CELLS
+    -----
+    nx=5
+    ny=3
+    
+    *************************************
+    *      *      *       *      *      *
+    * 10   * 11   * 12    * 13   * 14   *
+    *************************************
+    *      *      *       *      *      *
+    * 5    * 6    * 7     * 8    * 9    *
+    *************************************
+    *      *      *       *      *      *
+    * 0    * 1    * 2     * 3    * 4    *
+    *************************************
+
+    FACES
+    -----
+    ***15******16*****17******18****19***
+    *      *      *       *      *      *
+    32    33      34      35     36     37
+    ***10******11*****12******13*****14**
+    *      *      *       *      *      *
+    26     27     28      29     30     31
+    ***5*******6******7*******8******9***
+    *      *      *       *      *      *
+    20     21     22      23     24     25
+    ***0*******1******2*******3******4***
+
+    VERTICES
+    --------
+
+    18*****19*****20******21*****22****23
+    *      *      *       *      *      *
+    *      *      *       *      *      *
+    12*****13*****14******15*****16****17
+    *      *      *       *      *      *
+    *      *      *       *      *      *
+    6******7******8*******9******10****11
+    *      *      *       *      *      *
+    *      *      *       *      *      *
+    0******1******2*******3******4******5
+    """
+    
     def __init__(self, dx, dy, nx, ny):
-	self.vertices = self.createVertices(dx, dy, nx, ny)
-	self.faceVertices,self.faceCells = self.createFaces(vertices, nx, ny)
-	self.cells = self.createCells(faces, nx, ny)
+	vertices = self.createVertices(dx, dy, nx, ny)
+	faces = self.createFaces(vertices, nx, ny)
+	cells = self.createCells(faces, nx, ny)
 	
-	mesh.Mesh.__init__(self)
+	mesh.Mesh.__init__(self, cells, faces, vertices)
 		
     def createVertices(self, dx, dy, nx, ny):
-	vertices = Numeric.zeroes([(nx+1) * (ny+1),2],'d')
+	vertices = ()
 	for j in range(ny+1):
 	    for	i in range(nx+1):
-		vertices[i + (j * (nx+1)),0] = i * dx
-		vertices[i + (j * (nx+1)),1] = j * dy
-	return vertices
+		vertices += (vertex.Vertex((i * dx, j * dy)),)
+        return vertices	
 		    
     def createFaces(self, vertices, nx, ny):
-	numFaces = (nx + 1) * ny + (ny + 1) * nx
-	faceVertices = Numeric.zeroes([numFaces,2])
-	faceCells = Numeric.zeroes([numFaces,2])
-
+	faces = ()
 	for j in range(ny+1):
 	    for i in range(nx):
-		faceVertices[i +  (j * nx),0] = i + (j * nx)
-		faceVertices[i +  (j * nx),1] = i + 1 + (j * nx)
-		
-	for j in range(ny):
-	    for i in range(nx):
-		faceCells[i +  (j * nx),0] = i + (j * nx)
-		faceCells[i +  ((j+1) * nx),1] = i + (j * nx)
-		
-	for i in range(nx):
-	    faceCells[i,0] =
-	    faceCells[i + (ny+1) * nx,1] = 
-		
-	numHorzFaces = nx * (ny + 1)
+		faces += (face.Face((vertices[i + j * nx],vertices[i + 1 + j * nx])),)
 	for j in range(ny):
 	    for i in range(nx+1):
-		faceVertices[numHorzFaces + (i * ny) + j,0] = (i * ny) + j
-		faceVertices[numHorzFaces + (i * ny) + j,1] = (i * ny) + j + 1
-		
-	return (faceVertices,faceCells)
+		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1])),)
+	return faces
 	
     def createCells(self, faces, nx, ny):
 	cells = ()
@@ -89,15 +120,24 @@ class Grid2D(mesh.Mesh):
 			faces[nx * (ny + 1) + i + j * (nx + 1)],
 			faces[nx * (ny + 1) + i + 1 + j * (nx + 1)])),)
 	return cells
-	
-    def facesCellIDs(self):
-	self.facesCellIDs = Numeric.zeroes([len(self.faces),2])
-	for i in range(len(self.faces)):
-	    self.facesCellIDs[i,0] = self.faces[i].cells()[0].id()
-	    self.facesCellIDs[i,1] = self.faces[i].cells()[1].id()
-	
-    def cellsFaceIDs(self):
-	pass
-	
-	
-		
+
+    def getFacesLeft(self):
+        facesLeft = ()
+        for i in range(ny):
+            facesLeft += self.faces[nx * (ny + 1) + (nx + 1) * i]
+        return facesLeft
+        
+    def getFacesRight(self):
+        facesRight = ()
+        for i in range( ny):
+            facesRight += self.faces[nx * (ny + 1) + (nx + 1) * (i + 1)]
+        return facesRight
+
+    def getFacesTop(self):
+        return self.faces[nx*ny:nx*ny+nx]
+
+    def getFacesBottom(self):
+        return self.faces[0:nx]
+                       
+        
+        

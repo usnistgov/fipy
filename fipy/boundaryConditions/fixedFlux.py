@@ -3,9 +3,9 @@
 ###################################################################
  Alpha - Core code development for Alpha
 
- FILE: "linearPCGSolver.py"
-                                   created: 11/14/03 {3:56:49 PM} 
-                               last update: 11/14/03 {4:08:41 PM} 
+ FILE: "fixedValue.py"
+                                   created: 11/13/03 {11:37:00 AM} 
+                               last update: 11/14/03 {5:07:34 PM} 
  Author: Jonathan Guyer
  E-mail: jguyer@his.com
    mail: Alpha Cabal
@@ -21,20 +21,18 @@ of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ###################################################################
 """
 
-import solver
+import boundaryCondition
 
-class LinearPCGSolver(solver.Solver):
-    def __init__(self, tolerance, steps):
-	solver.Solver.__init__(self, tolerance, steps)
+class FixedFlux(boundaryCondition.BoundaryCondition):
+    def __init__(self,faces,value):
+        boundaryCondition.BoundaryCondition.__init__(self,faces,value)
+
+    def update(self,term):
+        for face in self.faces:
+            id = face.cells().id()            
+            term.equation.b()[id] += self.value * face.area()
+        
+    
 	
-    def solve(self, L, x, b):
-	A = self.L.to_sss()
-	
-	Assor=precon.ssor(A)
-	
-	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
-	
-## 	print info, iter, relres
-	    
-	if (info != 0):
-	    print >> sys.stderr, 'cg not converged'
+
+
