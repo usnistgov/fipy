@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/26/03 {11:10:03 AM} 
+ #                                last update: 11/30/03 {12:54:18 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -134,6 +134,7 @@ class Grid2D(Mesh):
 	rowFaces,colFaces = self.createFaces(vertices)
 	cells = self.createCells(rowFaces,colFaces)
 	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
+	self.calcCellFaceIDs(cells)
 	
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
@@ -207,6 +208,9 @@ class Grid2D(Mesh):
 	
 	self.calcFaceAreas(faces)
 	self.calcCellDistances(faces)
+	self.calcFaceToCellDistances(faces)
+	self.calcFaceNormals(faces)
+	self.calcAreaProjections()
 	
 	return (faces, interiorFaces)
 	
@@ -221,16 +225,19 @@ class Grid2D(Mesh):
                 id = j * nx + i
 		cells += (
 		    Cell(
-		    (rowFaces[j][i],
-		    rowFaces[j+1][i],
-		    colFaces[j][i],
-		    colFaces[j][i+1]),id
-		    ),
+			faces = (rowFaces[j][i],
+				rowFaces[j+1][i],
+				colFaces[j][i],
+				colFaces[j][i+1]),
+			faceOrientations = (-1,1,1,-1),
+			id = id
+			),
 		    ) 
 		    
 		    
 	self.calcCellVolumes(cells)
-		    
+	self.calcCellFaceIDs(cells)	
+
 	return cells
 
     def createInteriorFaces(self,faces):
@@ -314,3 +321,41 @@ class Grid2D(Mesh):
 	for i in range(N):
 	    self.cellDistances[i] = faces[i].getCellDistance()
 	
+    def getFaceToCellDistances(self):
+	return self.faceToCellDistances
+	
+    def calcFaceToCellDistances(self,faces):
+	N = len(faces)
+	self.faceToCellDistances = Numeric.zeros((N),'d')
+	for i in range(N):
+	    self.faceToCellDistances[i] = faces[i].getFaceToCellDistance()
+
+    def getFaceNormals(self):
+	return self.faceNormals
+	
+    def calcFaceNormals(self, faces):
+	N = len(faces)
+	dim = len(faces[0].getCenter())
+	self.faceNormals = Numeric.zeros((N,dim),'d')
+	for i in range(N):
+	    self.faceNormals[i] = faces[i].calcNormal()
+	    
+    def getFaceAreas(self):
+	return self.faceAreas
+	
+    def calcFaceAreas(self, faces):
+	N = len(faces)
+	self.faceAreas = Numeric.zeros(N,'d')
+	for i in range(N):
+	    self.faceAreas[i] = faces[i].getArea()
+	    
+    def calcCellFaceIDs(self, cells):
+	for cell in cells:
+	    cell.calcFaceIDs()
+	    
+    def getAreaProjections(self):
+	return self.areaProjections
+	
+    def calcAreaProjections(self):
+	N = len(self.faceNormals)
+	self.areaProjections = self.faceNormals * Numeric.reshape(self.faceAreas,(N,1))
