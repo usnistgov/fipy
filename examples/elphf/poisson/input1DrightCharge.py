@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 10/27/04 {9:54:08 AM} 
+ #                                last update: 10/28/04 {10:41:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ The dimensionless Poisson equation is
 
 .. raw:: latex
 
-   $$ \nabla\cdot\left(\epsilon\nabla\psi\right) = \rho = \sum_{j=1}^n z_j C_j$$
+   $$ \nabla\cdot\left(\epsilon\nabla\psi\right) = -\rho = -\sum_{j=1}^n z_j C_j$$
 
 where 
 
