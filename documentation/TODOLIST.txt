@@ -2,20 +2,6 @@
 Future Work
 -----------
 
-Release goals 0.1
------------------
-
-- Documentation:
-
-  * Add more explanation to the level set examples:
-
-    - level set introduction
-
-- Distribution:
-
-  * Create tarball v 0.1
-  * email
-
 Release Goals 0.2
 -----------------
 
