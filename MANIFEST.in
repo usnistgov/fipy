@@ -1,4 +1,4 @@
-include MANIFEST MANIFEST.in LICENSE.txt test.py INSTALLATION.txt
+include MANIFEST MANIFEST.in LICENSE.txt test.py INSTALLATION.txt README.txt CREDITS.txt TALKS.txt
 
 recursive-include documentation/ CHANGES README BUGS TODOLIST *.txt
 recursive-include documentation/manual/ *.py *.txt *.html
