@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 3/10/05 {3:39:29 PM} 
+ #                                last update: 3/10/05 {3:53:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,9 +58,11 @@ class TSVViewer(Viewer):
     
     def __init__(self, vars, limits = None, title = None):
         """
-        "Views" one or more variables in tab-separated-value format
+        "Views" one or more variables in tab-separated-value format.
         
-        File contents will be:
+        Output is a list of coordinates and variable values at each cell center.
+        
+        File contents will be, e.g.:
             
         ----
             
@@ -78,6 +80,8 @@ class TSVViewer(Viewer):
         replaced with `nan`.
         
         All variables must have the same mesh.
+        
+        It tries to do something reasonable with VectorCellVariable objects.
         
         :Parameters:
           - `vars`: a `Variable` or tuple of `Variable` objects to plot
