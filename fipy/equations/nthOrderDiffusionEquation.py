@@ -57,7 +57,7 @@ class NthOrderDiffusionEquation(MatrixEquation):
                  boundaryConditions=()):
         mesh = var.getMesh()
 	terms = (
-	    TransientTerm(transientCoeff,mesh),
+	    TransientTerm(-transientCoeff,mesh),
 	    NthOrderDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
             )
 	MatrixEquation.__init__(
