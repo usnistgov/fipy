@@ -57,8 +57,7 @@ class SpSourceVariable(CellVariable):
         s = self.parameters['s']
 	epsilon = self.parameters['epsilon']
         thetaMag = self.theta.getGrad().getMag()[:]
-        
-        spSourceCoeff = self.mPhi[:] * (self.phase[:] - (self.mPhi[:] < 0.)) 
+
+        spSourceCoeff = self.mPhi[:] * (self.phase[:] - (self.mPhi[:] < 0.))
         spSourceCoeff += (2*s + epsilon**2 * thetaMag) * thetaMag
-	
 	self.value = spSourceCoeff

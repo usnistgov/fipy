@@ -59,13 +59,13 @@ class TransientVariable(CellVariable):
 
         smallValue = self.parameters['small value']
         epsilon = self.parameters['epsilon']
-        
+
         phaseMod = self.phase[:] + ( self.phase[:] < smallValue ) * smallValue
         phaseSq = phaseMod * phaseMod
         expo = epsilon * self.parameters['beta'] * self.theta.getGrad().getMag()[:]
         expo = (expo < 100.) * (expo - 100.) + 100.
-        pFunc = 1. + Numeric.exp(- expo) * (self.parameters['mu'] / epsilon - 1.)
+        pFunc = 1. + Numeric.exp(-expo.getNumericValue()) * (self.parameters['mu'] / epsilon - 1.)
 
-        self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration'] 
+        self.value = self.parameters['tau'] * phaseSq * pFunc / self.parameters['time step duration']
     
 

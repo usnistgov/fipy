@@ -79,7 +79,6 @@ class ModularVariable(CellVariable):
         if self.old != None:
             self.value = self.mod(self.value)
 	    self.old.setValue(self.value)
-
     
 	
 
