@@ -47,8 +47,9 @@
 """
 
 This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D/input.py`. In order to test the non-orthogonality error,
-this uses a SkewedGrid2D, which is a Grid2D with each interior vertex moved in a random direction.
+`./examples/diffusion/steadyState/mesh1D/input.py`. In order to test
+the non-orthogonality error, this uses a SkewedGrid2D, which is a
+Grid2D with each interior vertex moved in a random direction.
 
 """
 

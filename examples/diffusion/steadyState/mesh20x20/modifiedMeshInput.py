@@ -59,8 +59,9 @@ The result is again tested in the same way:
     >>> Numeric.allclose(Numeric.array(var), analyticalArray, atol = 0.025)
     1
 
-Note that this test case will only work if you run it by running the main FiPy
-test suite. If you run it directly from the directory it is in it will not be able to find the mesh file.
+Note that this test case will only work if you run it by running the
+main FiPy test suite. If you run it directly from the directory it is
+in it will not be able to find the mesh file.
 
 """
 
