@@ -43,9 +43,14 @@
 
 """
 
-This example takes the user through assembling a simple problem with
-FiPy.  It describes a steady 1D diffusion problem with fixed value
-boundary conditions such that,
+To run this example from the base fipy directory type
+`./examples/diffusion/steadyState/mesh1D/input.py` at the command
+line.  A gist viewer object should appear and the word `finished` in
+the terminal.
+
+This example takes the user through assembling a simple
+problem with FiPy.  It describes a steady 1D diffusion problem with
+fixed value boundary conditions such that,
 
 .. raw:: latex
 
@@ -70,7 +75,8 @@ and parameter values,
    $$ \\tau = 0 \;\; \\text{and} \;\; D = 1 $$
 
 The first step is to create a mesh with 50 elements. The `Grid2D`
-object represents a cubic structured grid.
+object represents a cubic structured grid. The parameters `dx` and
+`dy` refer to the grid spacing (set to unity here).
 
     >>> nx = 50
     >>> ny = 1
@@ -90,17 +96,30 @@ centers. The boundary conditions are given by `valueLeft = 0` and
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
 
+A `Viewer` object allows a variable to be displayed. Here we are using  the Gist package
+to view the field. The Gist viewer is constructed in the following way:
+
+    >>> from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
+    >>> viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+
+The viewer will plot the variable with the `viewer.plot()` command.
+
 Boundary conditions are given to the equation via a tuple. Boundary
 conditions are formed with a value and a set of faces over which they
 apply. For example here the exterior faces on the left of the domain
 are extracted by `mesh.getFacesLeft()`. These faces and a value
 (`valueLeft`) are passed to a `FixedValue` boundary condition. A fixed
 flux of zero is set on the top and bottom surfaces to simulate a 1
-dimensional problem.
+dimensional problem. The `FixedFlux(someFaces, 0.)` is the default
+boundary condition if no boundary conditions are specified for exterior faces.
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight), FixedFlux(mesh.getFacesTop(),0.), FixedFlux(mesh.getFacesBottom(),0.))
+    >>> bcTop = FixedFlux(mesh.getFacesTop(),0.)
+    >>> bcBottom = FixedFlux(mesh.getFacesBottom(),0.)
+    >>> bcRight = FixedValue(mesh.getFacesRight(),valueRight)
+    >>> bcLeft = FixedValue(mesh.getFacesLeft(),valueLeft)
+    >>> boundaryConditions = (bcLeft, bcRight , bcTop, bcBottom)
 
 A solver is created and passed to the equation. This solver uses an
 iterative conjugant gradient method to solve implicitly at each time
@@ -109,10 +128,10 @@ step.
     >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
     >>> solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
 
-An equation knows how to assemble the solution matrix from the
-parameters and boundary conditions and how to solve the solution
-matrix with the solver. The `transientCoeff` is set to 0 thus
-making the problem steady state. The `diffusionCoeff` is set to 1.
+An equation is passed coefficient values, boundary conditions and
+a solver. The equation knows how to assemble and solve a system
+matrix. Here the `transientCoeff` is set to 0 thus
+making the problem steady state.
 
     >>> from fipy.equations.diffusionEquation import DiffusionEquation
     >>> eq = DiffusionEquation(var, transientCoeff = 0., diffusionCoeff = 1., solver = solver, boundaryConditions = boundaryConditions)
@@ -149,7 +168,37 @@ for the comparison.
 
 __docformat__ = 'restructuredtext'
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+from fipy.meshes.grid2D import Grid2D
+from fipy.variables.cellVariable import CellVariable
+from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.equations.diffusionEquation import DiffusionEquation
+from fipy.iterators.iterator import Iterator
+from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 
+nx = 50
+ny = 1
+dx = 1.
+dy = 1.
+
+mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+
+valueLeft = 0
+valueRight = 1
+var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
+
+viewer = Grid2DGistViewer(var, minVal =0., maxVal = 1.)
+
+boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight), FixedFlux(mesh.getFacesTop(),0.), FixedFlux(mesh.getFacesBottom(),0.))
+
+solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
+
+eq = DiffusionEquation(var, transientCoeff = 0., diffusionCoeff = 1., solver = solver, boundaryConditions = boundaryConditions)
+
+iterator = Iterator((eq,))
+
+if __name__ == '__main__':
+    iterator.timestep()
+    viewer.plot()
+    raw_input("finished")

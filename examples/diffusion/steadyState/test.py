@@ -45,26 +45,22 @@
 """
  
 import unittest
-
 import fipy.tests.testProgram
 
-##import mesh1D.test
-import mesh20x20.test
-import mesh50x50.test
+import doctest
+
+import mesh1D.input
+import mesh20x20.input
+import mesh50x50.input
+
+
 
 def suite():
     theSuite = unittest.TestSuite()
-    
-    import doctest
-    
-    import mesh1D.input
+
     theSuite.addTest(doctest.DocTestSuite(mesh1D.input))
-##    import mesh1D.inputNthOrder
-##    theSuite.addTest(doctest.DocTestSuite(mesh1D.inputNthOrder))
-    
-##     theSuite.addTest(mesh1D.test.suite())
-    theSuite.addTest(mesh20x20.test.suite())
-    theSuite.addTest(mesh50x50.test.suite())
+    theSuite.addTest(doctest.DocTestSuite(mesh20x20.input))
+    theSuite.addTest(doctest.DocTestSuite(mesh50x50.input))
     
     return theSuite
     

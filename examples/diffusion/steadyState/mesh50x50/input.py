@@ -41,9 +41,26 @@
  # ###################################################################
  ##
 
-##from fipy.tools.profiler.profiler import Profiler
-##from fipy.tools.profiler.profiler import calibrate_profiler
- 
+"""
+
+This input file again solves a 1D diffusion problem as in
+`./examples/diffusion/steadyState/mesh1D/input.py`. The difference
+being that the mesh size is given by 
+
+    >>> nx = 50
+    >>> ny = 50
+
+The result is again tested in the same way:
+
+    >>> Lx = nx * dx
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+    >>> import Numeric
+    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-10, atol = 1e-10)
+    1
+
+"""
+
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.diffusionEquation import DiffusionEquation
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
@@ -64,7 +81,7 @@ valueRight = 1.
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-var = CellVariable(name = "concentration",
+var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
@@ -85,19 +102,8 @@ eq = DiffusionEquation(var,
 
 it = Iterator((eq,))
 
-def run():
-    it.timestep()
-    return var.getNumericValue()
-
-def testResult():
-    Lx = nx * dx
-    x = mesh.getCellCenters()[:,0]
-    return valueLeft + (valueRight - valueLeft) * x / Lx
+it.timestep()
 
 if __name__ == '__main__':
-
-    run()
-    
     viewer.plot()
-
     raw_input("finished")
