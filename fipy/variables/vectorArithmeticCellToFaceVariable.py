@@ -56,7 +56,7 @@ class VectorArithmeticCellToFaceVariable(VectorCellToFaceVariable):
 	    val(i,j) = (var(id1(i),j) - cell2) * alpha(i) + cell2;
 	""",
 	var = self.var.getNumericValue(),
-	val = self.value.value, 
+	val = self._getArray(),
 	alpha = alpha,
 	id1 = id1, id2 = id2,
 	ni = self.mesh.getNumberOfFaces(),
