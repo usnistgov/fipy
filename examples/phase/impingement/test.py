@@ -85,7 +85,7 @@ class Test4Particles(TestImpingement):
         self.system = System4Particles(nx = 20, ny = 20, drivingForce = 10.)
         self.testFile = '4ParticleData.gz'
         TestImpingement.setUp(self)
-        
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test1D))
