@@ -60,7 +60,7 @@ from fivol.examples.phase.theta.thetaEquation import ThetaEquation
 
 class ImpingementSystem:
 
-    def __init__(self, nx = 100, ny = 100, steps = 10, drivingForce = 1.):
+    def __init__(self, nx = 100, ny = 100, steps = 10, drivingForce = 1., restartData = None):
         timeStepDuration = 0.02
         self.steps = steps
 
@@ -102,38 +102,40 @@ class ImpingementSystem:
 ##        dx = 1.
 ##        dy = 1.
 
-        mesh = Grid2D(dx,dy,nx,ny)
-        self.mesh = mesh
-        phase = CellVariable(
-            name = 'PhaseField',
-            mesh = mesh,
-            value = 0.
-            )
+        if restartData == None:
+            self.mesh = Grid2D(dx,dy,nx,ny)
         
-        theta = ModularVariable(
-            name = 'Theta',
-            mesh = mesh,
-            value = 0.
-            )
+            self.phase = CellVariable(
+                name = 'PhaseField',
+                mesh = self.mesh,
+                value = 0.
+                )
 
-        
+            self.theta = ModularVariable(
+                name = 'Theta',
+                mesh = self.mesh,
+                value = 0.
+                )
+            self.initialConditions(Lx = Lx, Ly = Ly)
+        else:
+            self.mesh = restartData['mesh']
+            self.phase = restartData['phase']
+            self.theta = restartData['theta']
 
         pi = Numeric.pi
-        self.theta = theta
-        self.phase = phase
-        self.thetaProd = -pi + phase * (theta + pi)
+        self.thetaProd = -pi + self.phase * (self.theta + pi)
         
-        self.phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
-        self.thetaViewer = Grid2DGistViewer(var = theta , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
+        self.phaseViewer = Grid2DGistViewer(var = self.phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
+        self.thetaViewer = Grid2DGistViewer(var = self.theta , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
         self.thetaProductViewer = Grid2DGistViewer(var = self.thetaProd , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
         
         phaseFields = {
-            'theta' : theta,
+            'theta' : self.theta,
             'temperature' : drivingForce
             }
         
         thetaFields = {
-            'phase' : phase
+            'phase' : self.phase
             }
 
         
@@ -144,30 +146,31 @@ class ImpingementSystem:
 ##            cells = mesh.getCells(funcIn)
 ##            phase.setValue(initialCondition['phase value'],cells)
 ##            theta.setValue(initialCondition['theta value'],cells)
-        self.initialConditions(mesh = mesh, phase = phase, theta = theta, Lx = Lx, Ly = Ly)
+##        if restartData == None:
+##            self.initialConditions(mesh = mesh, phase = phase, theta = theta, Lx = Lx, Ly = Ly)
 
         thetaEq = ThetaEquation(
-            var = theta,
+            var = self.theta,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 
             steps = 2000
             ),
-            boundaryConditions=(
-            FixedFlux(mesh.getExteriorFaces(), 0.),
+            boundaryConditions = (
+            FixedFlux(self.mesh.getExteriorFaces(), 0.),
             ),
             parameters = thetaParameters,
             fields = thetaFields
             )
         
         phaseEq = PhaseEquation(
-            var = phase,
+            var = self.phase,
             mPhi = Type1MPhiVariable,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 
             steps = 1000
             ),
-            boundaryConditions=(
-            FixedFlux(mesh.getExteriorFaces(), 0.),
+            boundaryConditions = (
+            FixedFlux(self.mesh.getExteriorFaces(), 0.),
             ),
             parameters = phaseParameters,
             fields = phaseFields
@@ -177,14 +180,21 @@ class ImpingementSystem:
 
         self.parameters = {
             'it' : self.it,
-            'phase' : phase,
-            'theta' : theta,
-            'steps' : self.steps
+            'phase' : self.phase,
+            'theta' : self.theta,
+            'steps' : self.steps,
             }
 
     def getParameters(self):
         return self.parameters
 
+    def getDumpData(self):
+        return {
+            'phase' : self.phase,
+            'theta' : self.theta,
+            'mesh' : self.mesh
+            }
+    
     def initialConditions(self, phase = None, theta = None, mesh = None, Lx = None, Ly = None):
         pass
     

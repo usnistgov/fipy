@@ -47,7 +47,7 @@ import Numeric
 
 class System4Particles(ImpingementSystem):
 
-    def initialConditions(self, mesh = None, phase = None, theta = None, Lx = None, Ly = None):
+    def initialConditions(self, Lx = None, Ly = None):
         pi = Numeric.pi
         def circle(cell, a = 0., b = 0., r = 1.):
             x = cell.getCenter()[0]
@@ -55,23 +55,22 @@ class System4Particles(ImpingementSystem):
             if ((x - a)**2 + (y - b)**2) < r**2:
                 return 1.
 
-        cells = mesh.getCells()
-        phase.setValue(0., cells)
-        theta.setValue(-pi + 0.0001, cells)
+        cells = self.mesh.getCells()
+        self.phase.setValue(0., cells)
+        self.theta.setValue(-pi + 0.0001, cells)
 
         circleCenters = ((0., 0.), (Lx, 0.), (0., Ly), (Lx, Ly))
         thetaValue = (2. * pi / 3., -2. * pi / 3., -2. * pi / 3. + 0.3, 2. * pi / 3.)
         for i in range(4):
             aa = circleCenters[i][0]
             bb = circleCenters[i][1]
-            cells = mesh.getCells(circle, a = aa, b = bb, r = Lx / 2)
-            phase.setValue(1., cells)
-            theta.setValue(thetaValue[i],cells)
+            cells = self.mesh.getCells(circle, a = aa, b = bb, r = Lx / 2)
+            self.phase.setValue(1., cells)
+            self.theta.setValue(thetaValue[i],cells)
 
         
-
 if __name__ == '__main__':
-
+    n = 100
     system = System4Particles(nx = n, ny = n, steps = 100, drivingForce = 10.)
     system.run()
 
