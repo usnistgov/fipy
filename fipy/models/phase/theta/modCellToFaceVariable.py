@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "faceGradVariable.py"
- #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 2/2/04 {2:52:19 PM}
+ #  FILE: "modCellToFaceVariable.py"
+ #                                    created: 12/18/03 {2:23:41 PM} 
+ #                                last update: 2/17/04 {5:58:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,49 +38,20 @@
 
 import Numeric
 
-from fivol.variables.faceGradVariable import FaceGradVariable
 from fivol.inline import inline
+from fivol.variables.cellToFaceVariable import CellToFaceVariable
 
-class ModFaceGradVariable(FaceGradVariable):
-    def __init__(self, var, mod = None):
-	FaceGradVariable.__init__(self, var)
+class ModCellToFaceVariable(CellToFaceVariable):
+    def __init__(self, var = None, mod = None):
+        CellToFaceVariable.__init__(self,var)
         self.mod = mod
-        
-    def _calcValueInline(self):
 
-	id1, id2 = self.mesh.getAdjacentCellIDs()
-	
-	tangents1 = self.mesh.getFaceTangents1()
-	tangents2 = self.mesh.getFaceTangents2()
-
+    def  _calcValueIn(self, alpha, id1, id2):
 	inline.runInlineLoop1(self.mod + """
-            int j;
-            double t1grad1, t1grad2, t2grad1, t2grad2, N;
-
-	    N = mod(var(id2(i)) - var(id1(i))) / dAP(i);
-
-	    t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
-            
-	    for (j = 0; j < nj; j++) {
-		t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
-		t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
-		t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
-		t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
-	    }
-	    
-	    for (j = 0; j < nj; j++) {
-		val(i,j) = normals(i,j) * N;
-		val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-		val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
-	    }
-        """,tangents1 = tangents1,
-            tangents2 = tangents2,
-            cellGrad = self.var.getGrad().getNumericValue(),
-            normals = self.mesh.getOrientedFaceNormals(),
-            id1 = id1,
-            id2 = id2,
-            dAP = self.mesh.getCellDistances().getNumericValue(),
-            var = self.var.getNumericValue(),
-            val = self.value.value,
-            ni = tangents1.shape[0],
-            nj = tangents1.shape[1])
+        double	cell2 = var(id2(i));
+        val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
+	""",var = self.var.getNumericValue(),
+            val = self.value.value, 
+            alpha = alpha,
+            id1 = id1, id2 = id2,
+            ni = len(self.mesh.getFaces()))
