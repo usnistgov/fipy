@@ -47,7 +47,6 @@ import unittest
 
 import metalIonSourceVariable
 import metalIonDiffusionEquation
-import metalIonDiffusionVariable
 import depositionRateVariable
 
 def suite():
@@ -55,7 +54,6 @@ def suite():
 
     theSuite.addTest(doctest.DocTestSuite(metalIonSourceVariable))
     theSuite.addTest(doctest.DocTestSuite(metalIonDiffusionEquation))
-    theSuite.addTest(doctest.DocTestSuite(metalIonDiffusionVariable))
     theSuite.addTest(doctest.DocTestSuite(depositionRateVariable))
     
     return theSuite
