@@ -50,6 +50,7 @@ import distanceFunction.distanceVariable
 import surfactant.surfactantVariable
 import distanceFunction.extensionEquation
 import distanceFunction.distanceEquation
+import distanceFunction.levelSetDiffusionVariable
 import electroChem.test
 
 def suite():
@@ -60,6 +61,7 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.extensionEquation))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceEquation))
+    theSuite.addTest(doctest.DocTestSuite(distanceFunction.levelSetDiffusionVariable))
     theSuite.addTest(electroChem.test.suite())
     return theSuite
     
