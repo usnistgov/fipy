@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 

@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}

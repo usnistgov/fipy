@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 

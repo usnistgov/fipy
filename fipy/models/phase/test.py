@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -43,17 +43,17 @@ import unittest
 
 import fipy.tests.testProgram
 
-import fipy.examples.phase.examples.anisotropy.test
-import fipy.examples.phase.examples.impingement.test
-import fipy.examples.phase.examples.missOrientation.test
-import fipy.examples.phase.examples.symmetry.test
+import examples.phase.anisotropy.test
+import examples.phase.impingement.test
+import examples.phase.missOrientation.test
+import examples.phase.symmetry.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fipy.examples.phase.examples.anisotropy.test.suite())
-    theSuite.addTest(fipy.examples.phase.examples.impingement.test.suite())
-    theSuite.addTest(fipy.examples.phase.examples.missOrientation.test.suite())
-    theSuite.addTest(fipy.examples.phase.examples.symmetry.test.suite())
+    theSuite.addTest(examples.phase.anisotropy.test.suite())
+    theSuite.addTest(examples.phase.impingement.test.suite())
+    theSuite.addTest(examples.phase.missOrientation.test.suite())
+    theSuite.addTest(examples.phase.symmetry.test.suite())
     return theSuite
     
 if __name__ == '__main__':

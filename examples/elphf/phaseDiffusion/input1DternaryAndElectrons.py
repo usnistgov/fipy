@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:06:12 PM} 
+ #                                last update: 4/2/04 {4:45:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,14 +43,14 @@
 
 import Numeric
 
-from fipy.profiler.profiler import Profiler
-from fipy.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.iterators.iterator import Iterator
 
-import elphf
+import fipy.models.elphf.elphf as elphf
 
 nx = 400
 dx = 0.01

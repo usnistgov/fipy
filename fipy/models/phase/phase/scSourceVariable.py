@@ -42,8 +42,8 @@
  ##
 
 import Numeric
-from fivol.inline import inline
-from fivol.variables.cellVariable import CellVariable
+from fipy.tools.inline import inline
+from fipy.variables.cellVariable import CellVariable
 
 class ScSourceVariable(CellVariable):
     def __init__(self, mPhi = None, phase = None, anisotropy = None):

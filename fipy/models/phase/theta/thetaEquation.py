@@ -44,10 +44,10 @@
 
 import Numeric
 
-from fivol.equations.matrixEquation import MatrixEquation
-from fivol.terms.transientTerm import TransientTerm
-from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fivol.terms.scSourceTerm import ScSourceTerm
+from fipy.equations.matrixEquation import MatrixEquation
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy.terms.scSourceTerm import ScSourceTerm
 
 from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable

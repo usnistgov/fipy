@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
@@ -46,7 +46,7 @@
 
 import unittest
 
-import fipy.examples.test
+import examples.test
 import fipy.meshes.test
 import fipy.tools.test
 import fipy.tests.testProgram
@@ -55,7 +55,7 @@ import fipy.variables.test
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(fipy.examples.test.suite())
+    theSuite.addTest(examples.test.suite())
     theSuite.addTest(fipy.tools.test.suite())
     theSuite.addTest(fipy.meshes.test.suite())
     theSuite.addTest(fipy.variables.test.suite())

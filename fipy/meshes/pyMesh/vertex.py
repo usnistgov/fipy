@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "vertex.py"
  #                                    created: 11/10/03 {3:24:06 PM} 

@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
@@ -40,7 +40,7 @@ import Numeric
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 import fipy.tools.array
-from fipy.inline import inline
+from fipy.tools.inline import inline
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var):

@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -51,7 +51,7 @@ import cPickle
 from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-import fipy.examples.phase.examples.anisotropy
+import examples.phase.anisotropy
 
 from inputTemperature import AnisotropySystem
 
@@ -68,7 +68,7 @@ class TestAnisotropy(TestBase):
         self.var = parameters['var']
         
     def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fipy.examples.phase.examples.anisotropy.__path__[0],self.testFile),'r')
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.anisotropy.__path__[0],self.testFile),'r')
 	
 	testData = cPickle.load(filestream)
 	filestream.close()

@@ -42,7 +42,7 @@
  ##
 
 from phaseEquation import PhaseEquation
-from fivol.variables.cellVariable import CellVariable
+from fipy.variables.cellVariable import CellVariable
 import Numeric
 
 class MPhiVariable(CellVariable):

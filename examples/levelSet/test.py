@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -41,11 +41,11 @@
 
 import unittest
 import fipy.tests.testProgram
-import fipy.examples.levelSet.examples.zeroCells.test
+import examples.levelSet.zeroCells.test
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(fipy.examples.levelSet.examples.zeroCells.test.suite())
+    theSuite.addTest(examples.levelSet.zeroCells.test.suite())
     return theSuite
     
 if __name__ == '__main__':

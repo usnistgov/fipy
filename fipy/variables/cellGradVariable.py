@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
@@ -40,7 +40,7 @@ import Numeric
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
 import fipy.tools.array
-from fipy.inline import inline
+from fipy.tools.inline import inline
 from fipy.variables.faceGradContributionsVariable import FaceGradContributions
 import MA
 

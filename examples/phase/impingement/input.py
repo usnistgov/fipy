@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
@@ -46,17 +46,17 @@ from __future__ import nested_scopes
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fipy.examples.phase.phase.phaseEquation import PhaseEquation
+from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
+from fipy.models.phase.phase.phaseEquation import PhaseEquation
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.iterators.iterator import Iterator
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.examples.phase.theta.modularVariable import ModularVariable
-from fipy.examples.phase.temperature.temperatureEquation import TemperatureEquation
-from fipy.examples.phase.theta.thetaEquation import ThetaEquation
+from fipy.models.phase.theta.modularVariable import ModularVariable
+from fipy.models.phase.temperature.temperatureEquation import TemperatureEquation
+from fipy.models.phase.theta.thetaEquation import ThetaEquation
 
 class ImpingementSystem:
 

@@ -64,7 +64,7 @@
  # ###################################################################
  ##
 
-from fivol.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.dimensions.physicalField import PhysicalField
 from Numeric import pi
 
 class ModPhysicalField(PhysicalField):

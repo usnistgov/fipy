@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
@@ -41,8 +41,8 @@
  # ###################################################################
  ##
 
-from fipy.profiler.profiler import Profiler
-from fipy.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
  
 from fipy.meshes.grid2D import Grid2D
 from fipy.equations.diffusionEquation import DiffusionEquation

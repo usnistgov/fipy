@@ -43,9 +43,9 @@
 
 import Numeric
 
-from fivol.variables.cellVariable import CellVariable
-##from fivol.inline.inline import runInline
-import fivol.tools.array as array
+from fipy.variables.cellVariable import CellVariable
+##from fipy.tools.inline.inline import runInline
+import fipy.tools.array as array
 
 class ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):

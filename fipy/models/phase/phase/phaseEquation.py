@@ -44,11 +44,11 @@
 
 import Numeric
 
-from fivol.equations.matrixEquation import MatrixEquation
-from fivol.terms.transientTerm import TransientTerm
-from fivol.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fivol.terms.scSourceTerm import ScSourceTerm
-from fivol.terms.spSourceTerm import SpSourceTerm
+from fipy.equations.matrixEquation import MatrixEquation
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fipy.terms.scSourceTerm import ScSourceTerm
+from fipy.terms.spSourceTerm import SpSourceTerm
 
 
 from phaseDiffusionVariable import PhaseDiffusionVariable

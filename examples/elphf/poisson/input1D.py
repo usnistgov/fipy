@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/2/04 {4:02:33 PM} 
+ #                                last update: 4/2/04 {4:46:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,9 +51,9 @@ from fipy.variables.cellVariable import CellVariable
 
 import fipy.tools.dimensions.physicalField as physicalField
 
-from componentVariable import ComponentVariable
-from solventVariable import SolventVariable
-from poissonEquation import PoissonEquation
+from fipy.models.elphf.componentVariable import ComponentVariable
+from fipy.models.elphf.solventVariable import SolventVariable
+from fipy.models.elphf.poissonEquation import PoissonEquation
 
 nx = 200
 dx = 0.01

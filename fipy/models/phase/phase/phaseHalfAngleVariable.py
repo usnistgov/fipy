@@ -43,10 +43,10 @@
 
 import Numeric
  
-from fivol.inline import inline
-from fivol.variables.faceVariable import FaceVariable
+from fipy.tools.inline import inline
+from fipy.variables.faceVariable import FaceVariable
 
-import fivol.tools.array as array
+import fipy.tools.array as array
 
 class PhaseHalfAngleVariable(FaceVariable):
     def __init__(self, parameters = None, phase = None, theta = None):

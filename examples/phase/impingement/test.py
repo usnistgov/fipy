@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -51,9 +51,9 @@ import cPickle
 from fipy.tests.testBase import TestBase
 import fipy.tests.testProgram
 
-import fipy.examples.phase.examples.impingement
-from fipy.examples.phase.examples.impingement.input1D import System1D
-from fipy.examples.phase.examples.impingement.input4Particles import System4Particles
+import examples.phase.impingement
+from examples.phase.impingement.input1D import System1D
+from examples.phase.impingement.input4Particles import System4Particles
 import fipy.tools.dump as dump
 
 class TestImpingement(TestBase):
@@ -68,7 +68,7 @@ class TestImpingement(TestBase):
         self.var = parameters['theta']
         
     def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fipy.examples.phase.examples.impingement.__path__[0],self.testFile),'r')
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.impingement.__path__[0],self.testFile),'r')
 	
 	testData = cPickle.load(filestream)
 	filestream.close()

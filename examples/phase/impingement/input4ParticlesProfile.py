@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input4ParticlesProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
@@ -42,10 +42,10 @@
  ##
 
 from __future__ import nested_scopes
-from fipy.examples.phase.examples.impingement.input4Particles import System4Particles
+from examples.phase.impingement.input4Particles import System4Particles
 import Numeric
-from fipy.profiler.profiler import calibrate_profiler
-from fipy.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
 
 import sys
 

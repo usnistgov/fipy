@@ -43,8 +43,8 @@
 
 import Numeric
 
-from fivol.inline import inline
-from fivol.variables.faceVariable import FaceVariable
+from fipy.tools.inline import inline
+from fipy.variables.faceVariable import FaceVariable
 
 class DiffusionVariable(FaceVariable):
 

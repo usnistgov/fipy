@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -54,7 +54,7 @@ import fipy.tests.testProgram
 from input1D import Phase1DSystem
 from inputCircle import CircleSystem
 from inputModularCircle import ModularCircleSystem
-import fipy.examples.phase.examples.missOrientation
+import examples.phase.missOrientation
 import testLevel2
 
 class TestPhase(TestBase):
@@ -68,7 +68,7 @@ class TestPhase(TestBase):
         self.var = parameters['var']
         
     def getTestValues(self):
-	filestream=os.popen('gunzip --fast -c < %s/%s'%(fipy.examples.phase.examples.missOrientation.__path__[0],self.testFile),'r')
+	filestream=os.popen('gunzip --fast -c < %s/%s'%(examples.phase.missOrientation.__path__[0],self.testFile),'r')
 	testData = cPickle.load(filestream)
 	filestream.close()
 	return testData

@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
@@ -49,7 +49,7 @@ import Numeric
 from fipy.tools.dimensions.physicalField import PhysicalField
 import fipy.tools.array
 
-import fipy.inline.inline as inline
+import fipy.tools.inline.inline as inline
 
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.

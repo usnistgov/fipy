@@ -38,8 +38,8 @@
 
 import Numeric
 
-from fivol.inline import inline
-from fivol.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
+from fipy.tools.inline import inline
+from fipy.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 
 class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
     def __init__(self, var, mod):

@@ -43,9 +43,9 @@
 
 import Numeric
 
-from fivol.variables.cellVariable import CellVariable
-from fivol.inline import inline
-from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools.inline import inline
+from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
 from noModularVariable import NoModularVariable
 
 class SourceVariable(CellVariable):

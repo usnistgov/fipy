@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
@@ -48,16 +48,16 @@ import unittest
 
 import fipy.tests.testProgram
 
-import fipy.examples.diffusion.steadyState.test
-import fipy.examples.diffusion.explicit.test
-import fipy.examples.diffusion.variable.test
+import examples.diffusion.steadyState.test
+import examples.diffusion.explicit.test
+import examples.diffusion.variable.test
 
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(fipy.examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(fipy.examples.diffusion.explicit.test.suite())
-    theSuite.addTest(fipy.examples.diffusion.variable.test.suite())
+    theSuite.addTest(examples.diffusion.steadyState.test.suite())
+    theSuite.addTest(examples.diffusion.explicit.test.suite())
+    theSuite.addTest(examples.diffusion.variable.test.suite())
     
     return theSuite
 

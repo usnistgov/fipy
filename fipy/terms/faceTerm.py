@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
@@ -46,7 +46,7 @@ import Numeric
 from fipy.terms.term import Term
 import fipy.tools.vector
 import fipy.tools.array
-from fipy.inline import inline
+from fipy.tools.inline import inline
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):

@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -45,11 +45,11 @@
 """
  
 import unittest
-import fivol.tests.testProgram
+import fipy.tests.testProgram
 import tempfile
-import fivol.tools.dump as dump
-from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.theta.modularVariable import ModularVariable
+import fipy.tools.dump as dump
+from fipy.meshes.grid2D import Grid2D
+from fipy.models.phase.theta.modularVariable import ModularVariable
 
 class TestDump(unittest.TestCase):
     def setUp(self, nx, ny):
@@ -88,4 +88,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fivol.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='suite')

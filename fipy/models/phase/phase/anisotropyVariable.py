@@ -42,11 +42,11 @@
  ##
 
 import Numeric
-from fivol.inline import inline
-from fivol.variables.cellVariable import CellVariable
-from fivol.variables.faceVariable import FaceVariable
-from fivol.variables.vectorFaceVariable import VectorFaceVariable
-from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
+from fipy.tools.inline import inline
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
 
 class FFVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):

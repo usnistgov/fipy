@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -47,7 +47,7 @@
 import unittest
 import fipy.tests.testProgram
 from fipy.tests.testBase import TestBase
-from fipy.examples.phase.examples.symmetry.input import SymmetrySystem
+from examples.phase.symmetry.input import SymmetrySystem
 
 class TestSymmetry(TestBase):
     def setUp(self, N = 20, L = 1.):

@@ -44,7 +44,7 @@
 from phaseEquation import PhaseEquation
 from mPhiVariable import MPhiVariable
 import Numeric
-import fivol.tools.array as array
+import fipy.tools.array as array
 
 class Type2MPhiVariable(MPhiVariable):
     def calcValue(self):        

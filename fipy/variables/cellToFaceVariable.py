@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
@@ -40,7 +40,7 @@ import Numeric
 
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import array
-from fipy.inline import inline
+from fipy.tools.inline import inline
 
 class CellToFaceVariable(FaceVariable):
     def __init__(self, var):

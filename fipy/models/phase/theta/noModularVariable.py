@@ -36,7 +36,7 @@
  # ###################################################################
  ##
 
-from fivol.variables.cellVariable import CellVariable
+from fipy.variables.cellVariable import CellVariable
 
 class NoModularVariable(CellVariable):
     def __init__(self, modVar):

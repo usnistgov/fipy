@@ -42,8 +42,8 @@
  ##
 
 import Numeric
-from fivol.inline import inline
-from fivol.variables.cellVariable import CellVariable
+from fipy.tools.inline import inline
+from fipy.variables.cellVariable import CellVariable
 
 class SpSourceVariable(CellVariable):
     def __init__(self, theta = None, mPhi = None, phase = None, parameters = None):

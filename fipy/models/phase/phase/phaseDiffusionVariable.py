@@ -43,7 +43,7 @@
 
 import Numeric
 
-from fivol.variables.faceVariable import FaceVariable
+from fipy.variables.faceVariable import FaceVariable
 
 class PhaseDiffusionVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):

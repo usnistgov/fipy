@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
@@ -44,7 +44,7 @@
 import Numeric
 
 from fipy.terms.term import Term
-from fipy.inline import inline
+from fipy.tools.inline import inline
 
 class CellTerm(Term):
     def __init__(self,weight,mesh):

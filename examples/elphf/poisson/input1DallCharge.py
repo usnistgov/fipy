@@ -41,8 +41,8 @@
  # ###################################################################
  ##
 
-from fipy.profiler.profiler import Profiler
-from fipy.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
 
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 

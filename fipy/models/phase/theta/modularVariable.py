@@ -38,11 +38,11 @@
 
 from Numeric import pi
 
-from fivol.variables.cellVariable import CellVariable
-from fivol.variables.cellGradVariable import CellGradVariable
-from fivol.examples.phase.theta.modCellGradVariable import ModCellGradVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.cellGradVariable import CellGradVariable
+from fipy.models.phase.theta.modCellGradVariable import ModCellGradVariable
 from modCellToFaceVariable import ModCellToFaceVariable
-from fivol.examples.phase.theta.modPhysicalField import ModPhysicalField
+from fipy.models.phase.theta.modPhysicalField import ModPhysicalField
 
 
 class ModularVariable(CellVariable):

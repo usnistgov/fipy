@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -44,17 +44,17 @@
 from __future__ import nested_scopes
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fipy.examples.phase.phase.phaseEquation import PhaseEquation
+from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
+from fipy.models.phase.phase.phaseEquation import PhaseEquation
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.iterators.iterator import Iterator
-from fipy.examples.phase.theta.modularVariable import ModularVariable
+from fipy.models.phase.theta.modularVariable import ModularVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 import fipy.tools.dump as dump
-import fipy.examples.phase.examples.missOrientation
+import examples.phase.missOrientation
 
 class PhaseSystem:
    def __init__(self):
@@ -79,7 +79,7 @@ class PhaseSystem:
       dy = self.L / self.ny
 
 ##      fileName = 'grid2d.%f.%f.%i.%i' % (dx,dy,self.nx,self.ny)
-##      filePath = '%s/%s'%(fipy.examples.phase.examples.missOrientation.__path__[0],fileName)      
+##      filePath = '%s/%s'%(examples.phase.missOrientation.__path__[0],fileName)      
 
 ##      try:
 ##     mesh = dump.read(filePath)

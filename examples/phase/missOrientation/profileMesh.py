@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "profileMesh.py"
  #                                    created: 11/10/03 {3:23:47 PM}
@@ -43,8 +43,8 @@
  
 import fipy.tools.dump as dump
 from fipy.meshes.grid2D import Grid2D
-from fipy.profiler.profiler import calibrate_profiler
-from fipy.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
 
 def makeMesh(nx, ny):
    return Grid2D(1.,1.,nx,ny)

@@ -2,7 +2,7 @@
 
 ## 
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "inputProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
@@ -43,8 +43,8 @@
 
 import Numeric
 
-from fipy.profiler.profiler import Profiler
-from fipy.profiler.profiler import calibrate_profiler
+from fipy.tools.profiler.profiler import Profiler
+from fipy.tools.profiler.profiler import calibrate_profiler
 
 from inputTemperature import AnisotropySystem
 

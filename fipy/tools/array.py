@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PyFiVol - Python-based finite volume PDE solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
@@ -39,7 +39,7 @@
 import Numeric
 import umath
 import MA
-import fipy.inline.inline as inline
+import fipy.tools.inline.inline as inline
 
 def _isPhysical(arr):
     import fipy.variables.variable

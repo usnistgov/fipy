@@ -42,9 +42,9 @@
  ##
 
 import Numeric
-from fivol.inline import inline
+from fipy.tools.inline import inline
 
-from fivol.variables.cellVariable import CellVariable
+from fipy.variables.cellVariable import CellVariable
 
 class TransientVariable(CellVariable):
 
