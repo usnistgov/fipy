@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/3/04 {11:53:00 AM} 
+ #                                last update: 11/3/04 {11:58:42 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -319,7 +319,7 @@ class build_docs (Command):
 	    os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
 
 	    print "activating web pages..."
-	    os.system(os.environ['FIPY_WWWACTIVATE']
+	    os.system(os.environ['FIPY_WWWACTIVATE'])
 
                 
     # run()
