@@ -223,9 +223,9 @@ data and compares it with the `theta` variable.
     >>> import os
     >>> testFile = 'test.gz'
     >>> import examples.phase.impingement.mesh20x20
-    >>> gzfile = 'gunzip --fast -c < %s/%s'
-    >>> gzfile = gzfile%(examples.phase.impingement.mesh20x20.__path__[0], testFile)
-    >>> filestream=os.popen(gzfile,'r')
+    >>> import gzip
+    >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+    >>> filestream = gzip.open(filepath,'r')
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
