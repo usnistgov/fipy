@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 2/20/04 {4:05:53 PM} 
+ #                                last update: 6/5/04 {8:28:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,6 +48,7 @@ import unittest
 import fipy.tests.testProgram
 import tempfile
 import fipy.tools.dump as dump
+import fipy.tools.dimensions.physicalField
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.theta.modularVariable import ModularVariable
 
@@ -85,6 +86,7 @@ def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test10by10))
     theSuite.addTest(unittest.makeSuite(Test50by50))
+    theSuite.addTest(fipy.tools.dimensions.physicalField.suite())
     return theSuite
     
 if __name__ == '__main__':
