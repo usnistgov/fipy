@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:52:04 AM} 
+ #                                last update: 1/16/04 {5:05:15 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,15 +44,11 @@
 """Test steady-state diffusion solutions
 """
  
-from __future__ import nested_scopes
-
 import unittest
 
 import Numeric
 
-from tests.testBase import TestBase
-
-import elphf
+from fivol.tests.testBase import TestBase
 
 class TestElPhF(TestBase):
     """
@@ -130,7 +126,7 @@ class TestElPhF1Dphase(TestElPhF):
 	d = Numeric.sqrt(field['gradient energy'] / (self.parameters['solvent']['barrier height']))
 	final = (1. - Numeric.tanh(x/(2.*d))) / 2.
 	
-	self.assertArrayWithinTolerance(field.getNumericValue(), final, self.tolerance)
+	self.assertArrayWithinTolerance(field['var'].getNumericValue(), final, self.tolerance)
 	
 class TestElPhF1DphaseBinary(TestElPhF):
     def setUp(self):

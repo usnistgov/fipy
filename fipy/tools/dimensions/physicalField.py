@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/16/04 {10:55:48 AM} 
+ #                                last update: 1/16/04 {12:19:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -84,13 +84,13 @@ guarantee for the correctness of all entries in the unit
 table, so use this at your own risk!
 """
 
-import inspect
-
 import re, string, umath
-from NumberDict import NumberDict
+
 import Numeric
 
-import variables.variable
+import fivol.variables.variable
+
+from NumberDict import NumberDict
 
 # Class definitions
 
@@ -168,7 +168,7 @@ class PhysicalField:
  		`self.unit.name()` + ')')
 
     def _sum(self, other, sign1, sign2):
-	if isinstance(other,variables.variable.Variable):
+	if _isVariable(other):
 	    return other * sign2 + self.__class__(value = sign1 * self.value, unit = self.unit)
 	if type(other) is type(''):
 	    other = PhysicalField(value = other)
@@ -196,7 +196,7 @@ class PhysicalField:
 	return self._sum(other, -1, 1)
 
     def __mul__(self, other):
-	if isinstance(other,variables.variable.Variable):
+	if _isVariable(other):
 	    return other.__mul__(self)
 	if type(other) is type(''):
 	    other = PhysicalField(value = other)
@@ -212,7 +212,7 @@ class PhysicalField:
     __rmul__ = __mul__
 
     def __div__(self, other):
-	if isinstance(other,variables.variable.Variable):
+	if _isVariable(other):
 	    return other.__rdiv__(self)
 	if type(other) is type(''):
 	    other = self.__class__(value = other)
@@ -228,7 +228,7 @@ class PhysicalField:
 	    return self.__class__(value = value, unit = unit)
 
     def __rdiv__(self, other):
-	if isinstance(other,variables.variable.Variable):
+	if _isVariable(other):
 	    return other.__div__(self)
 	if type(other) is type(''):
 	    other = PhysicalField(value = other)
@@ -244,7 +244,7 @@ class PhysicalField:
 	    return self.__class__(value = value, unit = unit)
 
     def __mod__(self, other):
-	if isinstance(other,variables.variable.Variable):
+	if _isVariable(other):
 	    return other.__mod__(self)
 	if type(other) is type(''):
 	    other = self.__class__(value = other)
@@ -290,23 +290,6 @@ class PhysicalField:
 ## 	else:
 ## 	    raise TypeError, 'Quantity has dimensions ' + str(self.unit) + '. Cannot be converted to type(float).'
 
-##     def __array__ (self, t = None):
-## 	"Special hook for Numeric. Converts to Numeric if possible."
-## 	if self.unit.isDimensionless():
-## 	    if t: 
-## 		print "__array__.t"
-## 		return self.value.astype(t)
-## 	    else:
-## ## 		print "__array__.notT"
-## ## 		for frame in inspect.stack(inspect.currentframe()):
-## ## 		    print inspect.getframeinfo(frame)
-## ## 		raw_input()
-## 		print self.value
-## 		return self.value
-## 	else:
-## 	    print "__array__.can't"
-## 	    raise TypeError, 'Quantity has dimensions ' + str(self.unit) + '. Cannot be converted to type(array).'
-			
     def _inMyUnits(self, other):
 	if not isinstance(other,PhysicalField):
 	    if type(other) is type(''):
@@ -739,6 +722,9 @@ def AddConstant(name, constant):
 	constant.setName(name)
     _unit_table[name] = constant
 
+def _isVariable(var):
+    return isinstance(var,fivol.variables.variable.Variable)
+    
 # SI unit definitions
 
 _base_names = ['m', 'kg', 's', 'A', 'K', 'mol', 'cd', 'rad', 'sr']

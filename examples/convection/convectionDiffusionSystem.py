@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:51:25 AM} 
+ #                                last update: 1/16/04 {11:20:17 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,14 +41,14 @@
  # ###################################################################
  ##
 
-from meshes.grid2D import Grid2D
-from equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
-from solvers.linearCGSSolver import LinearCGSSolver
-from iterators.iterator import Iterator
-from variables.cellVariable import CellVariable
-from terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from terms.scSourceTerm import ScSourceTerm
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.meshes.grid2D import Grid2D
+from fivol.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
+from fivol.solvers.linearCGSSolver import LinearCGSSolver
+from fivol.iterators.iterator import Iterator
+from fivol.variables.cellVariable import CellVariable
+from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
 class ConvectionDiffusionSystem:
 

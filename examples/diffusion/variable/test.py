@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:51:49 AM} 
+ #                                last update: 1/16/04 {11:21:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,8 +45,10 @@
 """
  
 import unittest
-from tests.testBase import TestBase
+
 import Numeric
+
+from fivol.tests.testBase import TestBase
 import input
 
 class TestVariableDiffusion(TestBase):

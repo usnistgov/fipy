@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/16/04 {11:01:15 AM}
+ #                                last update: 1/16/04 {11:58:17 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,8 +44,9 @@
 """Fixed value (Dirichlet) boundary condition
 """
 
-from boundaryCondition import BoundaryCondition
 import Numeric
+
+from fivol.boundaryConditions.boundaryCondition import BoundaryCondition
 
 class FixedValue(BoundaryCondition):
     """Fixed value (Dirichlet) boundary condition

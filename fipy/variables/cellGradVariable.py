@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/16/04 {10:54:23 AM} 
+ #                                last update: 1/16/04 {11:35:46 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,8 +38,8 @@
  
 import Numeric
 
-from vectorCellVariable import VectorCellVariable
-import tools.array
+from fivol.variables.vectorCellVariable import VectorCellVariable
+import fivol.tools.array
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -53,7 +53,7 @@ class CellGradVariable(VectorCellVariable):
 	
 	ids = self.mesh.getCellFaceIDs()
 
-	contributions = tools.array.take(self.faceGradientContributions[:],ids)
+	contributions = fivol.tools.array.take(self.faceGradientContributions[:],ids)
 	contributions = contributions.reshape((N,M,self.mesh.getDim()))
 
 	orientations = self.mesh.getCellFaceOrientations()

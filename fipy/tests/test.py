@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:00:55 AM} { 2:26:30 PM}
+ #                                last update: 1/16/04 {11:57:01 AM} { 2:26:30 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,23 +44,24 @@
 """Run all the test cases
 """
 
-import examples.diffusion.variable.test
-import examples.diffusion.steadyState.test
-import examples.diffusion.explicit.test
-import examples.convection.test
-import examples.elphf.test
 import unittest
-import examples.phase.examples.test
+
+import fivol.examples.diffusion.variable.test
+import fivol.examples.diffusion.steadyState.test
+import fivol.examples.diffusion.explicit.test
+import fivol.examples.convection.test
+import fivol.examples.elphf.test
+import fivol.examples.phase.examples.test
 
 if __name__ == '__main__':
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(examples.diffusion.steadyState.test.suite())
-    theSuite.addTest(examples.diffusion.explicit.test.suite())
-    theSuite.addTest(examples.diffusion.variable.test.suite())
-    theSuite.addTest(examples.convection.test.suite())
-    theSuite.addTest(examples.phase.examples.test.suite())
-    theSuite.addTest(examples.elphf.test.suite())
+    theSuite.addTest(fivol.examples.diffusion.steadyState.test.suite())
+    theSuite.addTest(fivol.examples.diffusion.explicit.test.suite())
+    theSuite.addTest(fivol.examples.diffusion.variable.test.suite())
+    theSuite.addTest(fivol.examples.convection.test.suite())
+    theSuite.addTest(fivol.examples.phase.examples.test.suite())
+    theSuite.addTest(fivol.examples.elphf.test.suite())
     
     unittest.TextTestRunner(verbosity=2).run(theSuite)
 

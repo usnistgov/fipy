@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/16/04 {10:56:14 AM} 
+ #                                last update: 1/16/04 {11:43:16 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,11 +41,13 @@
  # ###################################################################
  ##
 
-from solver import Solver
+import sys
+
 import precon
 import itsolvers
 import superlu
-import sys
+
+from fivol.solvers.solver import Solver
 
 class LinearLUSolver(Solver):
     def __init__(self):

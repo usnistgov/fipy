@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 1/16/04 {10:57:14 AM} 
+ #                                last update: 1/16/04 {11:45:47 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
-from variable import Variable
 import Numeric
+
+from fivol.variables.variable import Variable
 
 class VectorCellVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):

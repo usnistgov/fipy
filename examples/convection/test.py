@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:52:17 AM} 
+ #                                last update: 1/16/04 {11:26:15 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,8 +42,11 @@
  ##
  
 import unittest
-from tests.testBase import TestBase
+
 import Numeric
+
+from fivol.tests.testBase import TestBase
+
 from exponential1DSystem import Exponential1DSystem
 from exponential2DSystem import Exponential2DSystem
 from exponential1DBackSystem import Exponential1DBackSystem

@@ -6,7 +6,7 @@
  # 
  #  FILE: "transposeVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 1/16/04 {10:56:20 AM} 
+ #                                last update: 1/16/04 {11:43:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
-from vectorFaceVariable import VectorFaceVariable
 import Numeric
+
+from fivol.variables.vectorFaceVariable import VectorFaceVariable
 
 class TransposeVariable(VectorFaceVariable):
     def __init__(self, var):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:52:47 AM} 
+ #                                last update: 1/16/04 {11:29:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,11 @@
  # ###################################################################
  ##
 
-from terms.exponentialConvectionTerm import ExponentialConvectionTerm
+from fivol.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+
 from convectionDiffusionSystem import ConvectionDiffusionSystem
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
 
 class Exponential2DSystem(ConvectionDiffusionSystem):
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:01:36 AM}
+ #                                last update: 1/16/04 {11:59:24 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,11 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
-from examples.phase.phase.tools import addOverFaces
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
+from fivol.examples.phase.phase.toolsTmp import addOverFaces
+
 class SourceVariable(CellVariable):
 
     def __init__(self,

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:51:45 AM} 
+ #                                last update: 1/16/04 {11:21:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,9 +42,10 @@
  ##
 
 from __future__ import nested_scopes
-from input import PhaseSystem
 
 import Numeric
+
+from input import PhaseSystem
 
 class ModularCircleSystem(PhaseSystem):
     def __init__(self):        

@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/16/04 {10:54:06 AM} 
+ #                                last update: 1/16/04 {11:35:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,8 @@
 
 import Numeric
 
-from variables.variable import Variable
-from tools.dimensions.physicalField import PhysicalField
+from fivol.variables.variable import Variable
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class Term:
     def __init__(self,weight):

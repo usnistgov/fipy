@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 1/16/04 {10:52:32 AM} 
+ #                                last update: 1/16/04 {11:27:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,11 +46,11 @@
 
 import Numeric
 
-from mesh import Mesh
-from vertex import Vertex
-from face2D import Face2D
-from cell import Cell
-from tools.dimensions.physicalField import PhysicalField
+from fivol.meshes.mesh import Mesh
+from fivol.meshes.vertex import Vertex
+from fivol.meshes.face2D import Face2D
+from fivol.meshes.cell import Cell
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh):
     """2D rectangular Mesh

@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:54:39 AM} 
+ #                                last update: 1/16/04 {11:37:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from equations.Equation import Equation
 import Numeric
+
+from fivol.equations.Equation import Equation
 
 class LevelSetEquation(Equation):
     """

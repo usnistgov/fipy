@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:00:15 AM} 
+ #                                last update: 1/16/04 {11:54:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,12 +43,13 @@
 
 import Numeric
 
-from equations.matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
+from fivol.terms.spSourceTerm import SpSourceTerm
+
 from substitutionalSumVariable import SubstitutionalSumVariable
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.scSourceTerm import ScSourceTerm
-from terms.spSourceTerm import SpSourceTerm
 
 class PhaseEquation(MatrixEquation):
     def __init__(self,

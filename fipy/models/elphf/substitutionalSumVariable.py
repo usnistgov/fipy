@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalSumVariable.py"
  #                                    created: 12/9/03 {3:02:52 PM} 
- #                                last update: 1/16/04 {10:54:10 AM} 
+ #                                last update: 1/16/04 {11:35:25 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
 
 class SubstitutionalSumVariable(CellVariable):
     def __init__(self,mesh,Cj,substitutionals):

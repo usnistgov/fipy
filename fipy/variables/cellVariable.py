@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/16/04 {11:02:07 AM} 
+ #                                last update: 1/16/04 {12:00:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
-from variable import Variable
 import Numeric
+
+from fivol.variables.variable import Variable
 
 class CellVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):

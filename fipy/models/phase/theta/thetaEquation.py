@@ -6,7 +6,7 @@
  # 
  #  FILE: "thetaEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:57:24 AM} { 4:13:57 PM}
+ #                                last update: 1/16/04 {11:46:48 AM} { 4:13:57 PM}
  # 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -42,15 +42,17 @@
  # ###################################################################
  ##
 
-from equations.matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.scSourceTerm import ScSourceTerm
+import Numeric
+
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
+
 from sourceVariable import SourceVariable
 from diffusionVariable import DiffusionVariable
 from transientVariable import TransientVariable
 from thetaHalfAngleVariable import ThetaHalfAngleVariable
-import Numeric
 
 class ThetaEquation(MatrixEquation):
 

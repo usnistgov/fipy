@@ -6,7 +6,7 @@
  # 
  #  FILE: "ThetaHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:51:16 AM} { 4:14:24 PM}
+ #                                last update: 1/16/04 {11:19:34 AM} { 4:14:24 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,10 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
-from inline.inline import runInline
+
+from fivol.variables.cellVariable import CellVariable
+from fivol.inline.inline import runInline
 
 class ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):

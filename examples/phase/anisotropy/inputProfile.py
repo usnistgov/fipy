@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputProfile.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {11:00:34 AM} { 5:16:00 PM}
+ #                                last update: 1/16/04 {11:54:43 AM} { 5:16:00 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,11 +41,12 @@
  # ###################################################################
  ##
 
-from profiler.profiler import Profiler
-from profiler.profiler import calibrate_profiler
-from inputTemperature import AnisotropySystem
-
 import Numeric
+
+from fivol.profiler.profiler import Profiler
+from fivol.profiler.profiler import calibrate_profiler
+
+from inputTemperature import AnisotropySystem
 
 class AnisotropyProfileSystem(AnisotropySystem):
 

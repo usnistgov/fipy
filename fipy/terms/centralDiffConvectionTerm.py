@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/16/04 {10:51:28 AM} 
+ #                                last update: 1/16/04 {11:20:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,8 @@
  # ###################################################################
  ##
 
-from convectionTerm import ConvectionTerm
-from variables.faceVariable import FaceVariable
+from fivol.terms.convectionTerm import ConvectionTerm
+from fivol.variables.faceVariable import FaceVariable
 
 class CentralDifferenceConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):

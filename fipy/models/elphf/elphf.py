@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/16/04 {10:59:03 AM} 
+ #                                last update: 1/16/04 {11:51:22 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -37,7 +37,16 @@
  ##
 
  
-from variables.cellVariable import CellVariable
+
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fivol.iterators.iterator import Iterator
+from fivol.solvers.linearCGSSolver import LinearCGSSolver
+from fivol.solvers.linearLUSolver import LinearLUSolver
+from fivol.solvers.linearGMRESSolver import LinearGMRESSolver
+from fivol.variables.cellVariable import CellVariable
+from fivol.tools.dimensions import physicalField
+
 from phaseVariable import PhaseVariable
 from componentVariable import ComponentVariable
 from substitutionalVariable import SubstitutionalVariable
@@ -47,15 +56,6 @@ from phaseEquation import PhaseEquation
 from poissonEquation import PoissonEquation
 from substitutionalEquation import SubstitutionalEquation
 from interstitialEquation import InterstitialEquation
-
-from solvers.linearCGSSolver import LinearCGSSolver
-from solvers.linearLUSolver import LinearLUSolver
-from solvers.linearGMRESSolver import LinearGMRESSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-
-from tools.dimensions import physicalField
 
 def addScales(mesh, parameters):
     

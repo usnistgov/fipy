@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:02:22 AM} 
+ #                                last update: 1/16/04 {4:28:42 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,14 +44,15 @@
 
 import Numeric
 
-from equations.matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from substitutionalSumVariable import SubstitutionalSumVariable
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.scSourceTerm import ScSourceTerm
-from terms.spSourceTerm import SpSourceTerm
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
+from fivol.terms.spSourceTerm import SpSourceTerm
 
-from tools.dimensions import physicalField
+from fivol.tools.dimensions import physicalField
+
+from substitutionalSumVariable import SubstitutionalSumVariable
 
 class PoissonEquation(MatrixEquation):
     def __init__(self,
@@ -64,8 +65,11 @@ class PoissonEquation(MatrixEquation):
 		     
         mesh = potential.getMesh()
 	
-	dielectric = physicalField.Scale(parameters['dielectric'], "eps0") 
-	dielectric *= physicalField.PhysicalField(value = "eps0 / (Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME))")
+	dielectric = physicalField.PhysicalField(value = "eps0 / (Faraday**2 * LENGTH**2 / (ENERGY * MOLARVOLUME))")
+	# LENGTH, ENERGY, or MOLARVOLUME might not have correct units
+	# in simple problems
+	dielectric /= physicalField.PhysicalField(value = 1, unit = dielectric.getUnit())
+	dielectric *= physicalField.Scale(parameters['dielectric'], "eps0") 
 	
 	diffusionTerm = ImplicitDiffusionTerm(
 	    diffCoeff = dielectric,

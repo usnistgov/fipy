@@ -6,7 +6,7 @@
  # 
  #  FILE: "temperatureEquation.py"
  #                                    created: 12/17/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:00:39 AM} 
+ #                                last update: 1/16/04 {11:55:00 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,11 +41,12 @@
  # ###################################################################
  ##
 
-from equations.matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.scSourceTerm import ScSourceTerm
 import Numeric
+
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
 
 class TemperatureEquation(MatrixEquation):
     def __init__(self,

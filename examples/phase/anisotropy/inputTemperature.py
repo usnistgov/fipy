@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {10:56:25 AM} { 5:14:21 PM}
+ #                                last update: 1/16/04 {11:43:55 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,18 +41,18 @@
  # ###################################################################
  ##
 
-from meshes.grid2D import Grid2D
-from examples.phase.phase.type2PhaseEquation import Type2PhaseEquation
-from solvers.linearPCGSolver import LinearPCGSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-from viewers.grid2DGistViewer import Grid2DGistViewer
-from variables.cellVariable import CellVariable
-from examples.phase.theta.modularVariable import ModularVariable
-from examples.phase.temperature.temperatureEquation import TemperatureEquation
-
 import Numeric
+
+from fivol.meshes.grid2D import Grid2D
+from fivol.examples.phase.phase.type2PhaseEquation import Type2PhaseEquation
+from fivol.solvers.linearPCGSolver import LinearPCGSolver
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fivol.iterators.iterator import Iterator
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.variables.cellVariable import CellVariable
+from fivol.examples.phase.theta.modularVariable import ModularVariable
+from fivol.examples.phase.temperature.temperatureEquation import TemperatureEquation
 
 class AnisotropySystem:
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "stdyConvDiffScEquation.py"
  #                                    created: 12/6/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:55:27 AM} 
+ #                                last update: 1/16/04 {11:40:58 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,11 +42,11 @@
  # ###################################################################
  ##
 
-from matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from terms.scSourceTerm import ScSourceTerm
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
 
 class SteadyConvectionDiffusionScEquation(MatrixEquation):
     """

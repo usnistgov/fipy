@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:52:07 AM} 
+ #                                last update: 1/16/04 {11:24:11 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,11 @@
  # ###################################################################
  ##
 
-from terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fivol.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+
 from convectionDiffusionSystem import ConvectionDiffusionSystem
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
 
 class Power1DSystem(ConvectionDiffusionSystem):
 

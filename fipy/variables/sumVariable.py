@@ -6,7 +6,7 @@
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 1/16/04 {10:51:06 AM} 
+ #                                last update: 1/16/04 {11:18:46 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
-from variable import Variable
 import Numeric
+
+from fivol.variables.variable import Variable
 
 class SumVariable(Variable):
     def __init__(self, var, index):

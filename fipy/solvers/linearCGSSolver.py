@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/16/04 {11:04:29 AM} 
+ #                                last update: 1/16/04 {12:06:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,12 @@
  # ###################################################################
  ##
 
-from solver import Solver
+import sys
+
 import precon
 import itsolvers
-import sys
+
+from fivol.solvers.solver import Solver
 
 class LinearCGSSolver(Solver):
     def __init__(self, tolerance, steps):

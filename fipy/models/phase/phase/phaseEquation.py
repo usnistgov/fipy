@@ -7,7 +7,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:59:30 AM} 
+ #                                last update: 1/16/04 {11:51:58 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,16 +42,18 @@
  # ###################################################################
  ##
 
-from equations.matrixEquation import MatrixEquation
-from terms.transientTerm import TransientTerm
-from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from terms.scSourceTerm import ScSourceTerm
-from terms.spSourceTerm import SpSourceTerm
+import Numeric
+
+from fivol.equations.matrixEquation import MatrixEquation
+from fivol.terms.transientTerm import TransientTerm
+from fivol.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+from fivol.terms.scSourceTerm import ScSourceTerm
+from fivol.terms.spSourceTerm import SpSourceTerm
+
 from phaseDiffusionVariable import PhaseDiffusionVariable
 from anisotropyVariable import AnisotropyVariable
 from spSourceVariable import SpSourceVariable
 from phaseHalfAngleVariable import PhaseHalfAngleVariable
-import Numeric
 
 class PhaseEquation(MatrixEquation):
 

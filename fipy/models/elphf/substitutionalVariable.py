@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/16/04 {10:53:44 AM} 
+ #                                last update: 1/16/04 {11:32:58 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,9 @@
  # ###################################################################
  ##
 
+from fivol.tools.dimensions import physicalField
+
 from componentVariable import ComponentVariable
-from tools.dimensions import physicalField
 
 class SubstitutionalVariable(ComponentVariable):
     def __init__(self, mesh, parameters, systemParameters, value=0., hasOld = 1):

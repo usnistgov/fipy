@@ -6,7 +6,7 @@
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:52:00 AM} { 2:35:45 PM}
+ #                                last update: 1/16/04 {11:22:22 AM} { 2:35:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
 import toolsTmp
 
 class AnisotropyVariable(CellVariable):

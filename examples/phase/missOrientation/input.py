@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:55:13 AM} 
+ #                                last update: 1/16/04 {11:39:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,15 +43,15 @@
 
 from __future__ import nested_scopes
 
-from meshes.grid2D import Grid2D
-from examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
-from solvers.linearPCGSolver import LinearPCGSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-from examples.phase.theta.modularVariable import ModularVariable
-from variables.cellVariable import CellVariable
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.meshes.grid2D import Grid2D
+from fivol.examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
+from fivol.solvers.linearPCGSolver import LinearPCGSolver
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fivol.iterators.iterator import Iterator
+from fivol.examples.phase.theta.modularVariable import ModularVariable
+from fivol.variables.cellVariable import CellVariable
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
 class PhaseSystem:
    def __init__(self):

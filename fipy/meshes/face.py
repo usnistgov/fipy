@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:03:07 AM} 
+ #                                last update: 1/16/04 {12:02:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
 
 import Numeric
 
-import tools.vector
-from tools.dimensions.physicalField import PhysicalField
+import fivol.tools.vector as vector
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class Face:
     """Face within a Mesh
@@ -135,7 +135,7 @@ class Face:
 	p1 = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[2:-1]:
 	    p2=vertex.getCoordinates().copy()
-	    a += tools.vector.crossProd(p1,p2)
+	    a += vector.crossProd(p1,p2)
 	    p1 = p2
 	return abs(a/2.)
         
@@ -163,8 +163,8 @@ class Face:
 	"""
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
-	norm = tools.vector.crossProd(t1,t2)
-	norm /= tools.vector.sqrtDot(norm,norm)
+	norm = vector.crossProd(t1,t2)
+	norm /= vector.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
 	
@@ -204,11 +204,11 @@ class Face:
             vec=self.cells[1].getCenter()-self.cells[0].getCenter()
         else:
             vec=self.center-self.cells[0].getCenter()        
-        return tools.vector.sqrtDot(vec,vec)
+        return vector.sqrtDot(vec,vec)
 
     def calcFaceToCellDistance(self, cell):
         vec=self.center-cell.getCenter()        
-        return tools.vector.sqrtDot(vec,vec)
+        return vector.sqrtDot(vec,vec)
 
     def setFaceToCellDistances(self):
         faceToCellDistances = ()

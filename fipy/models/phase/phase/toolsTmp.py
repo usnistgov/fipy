@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:01:09 AM}
+ #                                last update: 1/16/04 {11:57:58 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,12 +43,12 @@
 
 import Numeric
 
-import tools.array
+import fivol.tools.array as array
 
 def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells = None):
     
 ##     contributions = Numeric.sum(mesh.getAreaProjections() * faceGradient,1)
-    contributions = tools.array.sum(mesh.getAreaProjections() * faceGradient,1)
+    contributions = array.sum(mesh.getAreaProjections() * faceGradient,1)
     
     contributions = contributions * faceVariable
     
@@ -60,18 +60,18 @@ def addOverFaces(faceGradient = None, faceVariable = None, mesh = None, NCells =
     ids = mesh.getCellFaceIDs()
     
 ##     contributions = Numeric.take(contributions, ids)
-    contributions = tools.array.take(contributions, ids)
+    contributions = array.take(contributions, ids)
     
 ##     NMaxFac = mesh.getMaxFacesPerCell()
     
 ##     contributions = Numeric.reshape(contributions,(NCells,-1))
-    contributions = tools.array.reshape(contributions,(NCells,-1))
+    contributions = array.reshape(contributions,(NCells,-1))
     
 ##     orientations = Numeric.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
-    orientations = tools.array.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
+    orientations = array.reshape(mesh.getCellFaceOrientations(),(NCells,-1))
     
 ##     return Numeric.sum(orientations*contributions,1) / mesh.getCellVolumes()
-    return tools.array.sum(orientations*contributions,1) / mesh.getCellVolumes()
+    return array.sum(orientations*contributions,1) / mesh.getCellVolumes()
         
 
         

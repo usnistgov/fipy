@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/16/04 {10:54:00 AM} 
+ #                                last update: 1/16/04 {11:34:00 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -44,7 +44,7 @@
 
 import Numeric
 
-from tools.dimensions.physicalField import PhysicalField
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class Mesh:
     def __init__(self, cells, faces, interiorFaces, vertices):

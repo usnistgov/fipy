@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 1/16/04 {10:52:14 AM} 
+ #                                last update: 1/16/04 {9:20:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,13 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
+from fivol.variables.cellGradVariable import CellGradVariable
+from fivol.variables.cellToFaceVariable import CellToFaceVariable
+from fivol.variables.faceGradVariable import FaceGradVariable
+from fivol.variables.faceGradVariable import FaceGradVariable
 
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
@@ -47,7 +52,6 @@ class ModularVariable(CellVariable):
 
     def getGrad(self):
 	if self.grad is None:
-	    from variables.cellGradVariable import CellGradVariable
 	    gridSpacing = self.mesh.getMeshSpacing()
 	    self.grad = self.mod(CellGradVariable(self) * gridSpacing) / gridSpacing 
 	
@@ -55,21 +59,18 @@ class ModularVariable(CellVariable):
 
     def getFaceValue(self):
 	if self.faceValue is None:
-	    from variables.cellToFaceVariable import CellToFaceVariable
 	    self.faceValue = CellToFaceVariable(self, self.mod)
 
 	return self.faceValue
 
     def getFaceGrad(self):
 	if self.faceGrad is None:
-	    from variables.faceGradVariable import FaceGradVariable
 	    self.faceGrad = FaceGradVariable(self, self.mod)
 
 	return self.faceGrad
 
     def getFaceGradNoMod(self):
         if self.faceGrad is None:
-	    from variables.faceGradVariable import FaceGradVariable
 	    self.faceGrad = FaceGradVariable(self)
 
 	return self.faceGrad

@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/16/04 {11:00:24 AM} 
+ #                                last update: 1/16/04 {11:54:25 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,8 +36,8 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
-from tools.dimensions import physicalField
+from fivol.variables.cellVariable import CellVariable
+from fivol.tools.dimensions import physicalField
 
 class ComponentVariable(CellVariable):
     def __init__(self, mesh, parameters, value=0., hasOld = 1):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:03:40 AM} 
+ #                                last update: 1/16/04 {12:04:29 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,6 +42,7 @@
  ##
 
 from __future__ import nested_scopes
+
 import input
 from input import PhaseSystem
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2PhaseEquation.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {11:03:20 AM} 
+ #                                last update: 1/16/04 {12:03:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,7 +43,7 @@
 
 import Numeric
 
-import tools.array
+import fivol.tools.array as array
 
 from phaseEquation import PhaseEquation
 
@@ -63,7 +63,7 @@ class Type2PhaseEquation(PhaseEquation):
         kappa2 = parameters['kappa 2']
         pi = Numeric.pi
         
-        mPhi = var - 0.5 - kappa1 / pi * tools.array.arctan(kappa2 * temp)
+        mPhi = var - 0.5 - kappa1 / pi * array.arctan(kappa2 * temp)
 
         PhaseEquation.__init__(self,
                                var = var,

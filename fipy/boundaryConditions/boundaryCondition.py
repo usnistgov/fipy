@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/16/04 {10:53:56 AM} 
+ #                                last update: 1/16/04 {11:33:53 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,7 +46,7 @@
 
 import Numeric
 
-from tools.dimensions.physicalField import PhysicalField
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class BoundaryCondition:
     def __init__(self,faces,value):

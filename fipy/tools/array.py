@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/16/04 {10:54:52 AM} 
+ #                                last update: 1/16/04 {12:16:56 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,11 +39,15 @@
 import Numeric
 import umath
 
-import variables.variable
-import tools.dimensions.physicalField
+import fivol.variables.variable
+import fivol.tools.dimensions.physicalField
 
+def _isPhysical(arr):
+    return isinstance(arr,fivol.variables.variable.Variable) \
+	or isinstance(arr,fivol.tools.dimensions.physicalField.PhysicalField)
+	
 def take(arr, ids):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.take(ids)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.take(arr, ids)
@@ -51,7 +55,7 @@ def take(arr, ids):
 	raise TypeError, 'cannot take from object ' + str(arr)
     
 def reshape(arr, shape):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.reshape(shape)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.reshape(arr, shape)
@@ -59,7 +63,7 @@ def reshape(arr, shape):
 	raise TypeError, 'cannot reshape object ' + str(arr)
 	
 def sum(arr, index = 0):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.sum(index)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.sum(arr, index)
@@ -67,7 +71,7 @@ def sum(arr, index = 0):
 	raise TypeError, 'cannot sum object ' + str(arr)
 
 def sqrt(arr):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.sqrt()
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.sqrt(arr)
@@ -75,7 +79,7 @@ def sqrt(arr):
 	return umath.sqrt(arr)
 	
 def tan(arr):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.tan()
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.tan(arr)
@@ -83,7 +87,7 @@ def tan(arr):
 	return umath.tan(arr)
 
 def arctan(arr):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.arctan()
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.arctan(arr)
@@ -91,10 +95,10 @@ def arctan(arr):
 	return umath.arctan(arr)
 		
 def arctan2(arr, other):
-    if isinstance(arr,variables.variable.Variable) or isinstance(arr,tools.dimensions.physicalField.PhysicalField):
+    if _isPhysical(arr):
 	return arr.arctan2(other)
-    elif isinstance(other,variables.variable.Variable) or isinstance(other,tools.dimensions.physicalField.PhysicalField):
-	return tools.dimensions.physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
+    elif _isPhysical(other):
+	return physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
     elif type(arr) is type(Numeric.array((0))):
 	return Numeric.arctan2(arr,other)
     else:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseDiffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:51:56 AM} 
+ #                                last update: 1/16/04 {11:21:52 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,7 @@
 
 import Numeric
 
-from variables.faceVariable import FaceVariable
-import tools.array
+from fivol.variables.faceVariable import FaceVariable
 
 class PhaseDiffusionVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):

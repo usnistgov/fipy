@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 1/16/04 {10:58:03 AM}
+ #                                last update: 1/16/04 {11:48:32 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,9 +36,10 @@
  # ###################################################################
  ##
 
-from cellVariable import Variable
-import tools
 import Numeric
+
+from fivol.variables.cellVariable import Variable
+import fivol.tools.vector as vector
 
 class MagVariable(Variable):
     def __init__(self, var):
@@ -46,4 +47,4 @@ class MagVariable(Variable):
 	self.var = self.requires(var)
 	
     def calcValue(self):
-	self.value =  tools.vector.arraySqrtDot(self.var,self.var)
+	self.value =  vector.arraySqrtDot(self.var,self.var)

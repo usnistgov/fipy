@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 1/16/04 {10:53:51 AM} 
+ #                                last update: 1/16/04 {11:33:43 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -38,8 +38,8 @@
 
 import Numeric
 
-from faceVariable import FaceVariable
-import tools.array
+from fivol.variables.faceVariable import FaceVariable
+import fivol.tools.array
 
 class CellToFaceVariable(FaceVariable):
     def __init__(self, var, mod = None):
@@ -53,8 +53,8 @@ class CellToFaceVariable(FaceVariable):
     def calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	cell1 = tools.array.take(self.var,id1)
-	cell2 = tools.array.take(self.var,id2)
+	cell1 = fivol.tools.array.take(self.var,id1)
+	cell2 = fivol.tools.array.take(self.var,id2)
 	
 	self.value = self.mod(cell1 - cell2) * alpha + cell2
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:57:44 AM}
+ #                                last update: 1/16/04 {11:47:27 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
 
 class DiffusionVariable(CellVariable):
 

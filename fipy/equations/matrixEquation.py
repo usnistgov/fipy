@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 1/16/04 {11:03:25 AM} 
+ #                                last update: 1/16/04 {4:24:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,12 +41,12 @@
  # ###################################################################
  ##
 
-from equation import Equation
 import Numeric
 import spmatrix
-import tools.vector
 
-from tools.dimensions.physicalField import PhysicalField
+from fivol.equations.equation import Equation
+import fivol.tools.vector as vector
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class MatrixEquation(Equation):
     bandwidth = 5
@@ -74,9 +74,10 @@ class MatrixEquation(Equation):
 	self.var[:] = array#[:]
 	
 	residual = oldSweepArray.copy()
-	self.L.matvec(oldSweepArray,residual)
+## 	self.L.matvec(oldSweepArray,residual)
+	self.L.matvec(array,residual)
 	residual -= self.b 
-	self.residual = tools.vector.sqrtDot(residual,residual)
+	self.residual = vector.sqrtDot(residual,residual)
 ##         print self,'residual: ',residual
 	self.converged = self.residual < self.solutionTolerance
 	

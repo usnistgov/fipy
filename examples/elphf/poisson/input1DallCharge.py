@@ -4,9 +4,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "input1Dpoisson.py"
+ #  FILE: "input1DpoissonAllCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/15/04 {6:59:40 PM} 
+ #                                last update: 1/16/04 {4:53:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,10 +41,10 @@
  # ###################################################################
  ##
 
-from profiler.profiler import Profiler
-from profiler.profiler import calibrate_profiler
+from fivol.profiler.profiler import Profiler
+from fivol.profiler.profiler import calibrate_profiler
 
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
 import input1Dpoisson
 

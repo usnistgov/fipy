@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Dpoisson.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/15/04 {6:51:31 PM} 
+ #                                last update: 1/16/04 {5:04:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,16 +41,19 @@
  # ###################################################################
  ##
 
-from meshes.grid2D import Grid2D
+from fivol.meshes.grid2D import Grid2D
 
-from variables.cellVariable import CellVariable
-from solventVariable import SolventVariable
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fivol.iterators.iterator import Iterator
+from fivol.solvers.linearLUSolver import LinearLUSolver
+from fivol.variables.cellVariable import CellVariable
+
+import fivol.tools.dimensions.physicalField as physicalField
+
 from componentVariable import ComponentVariable
+from solventVariable import SolventVariable
 from poissonEquation import PoissonEquation
-from solvers.linearLUSolver import LinearLUSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
 
 nx = 200
 dx = 0.01
@@ -104,6 +107,12 @@ fields['interstitials'] = (ComponentVariable(
 )
 fields['all'] += [fields['interstitials'][0]]
 
+physicalField.AddConstant(name = 'Rgas', constant = 'Nav*kB')
+physicalField.AddConstant(name = 'Faraday', constant = 'Nav*e')
+physicalField.AddConstant(name = 'LENGTH', constant = 1)
+physicalField.AddConstant(name = 'ENERGY', constant = 1)
+physicalField.AddConstant(name = 'MOLARVOLUME', constant = 1)
+    
 poisson = PoissonEquation(
     potential = fields['potential'],
     parameters = {

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {11:01:51 AM}
+ #                                last update: 1/16/04 {12:00:06 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,19 +41,21 @@
  # ###################################################################
  ##
 
-from meshes.grid2D import Grid2D
-from examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
-from solvers.linearPCGSolver import LinearPCGSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-from viewers.grid2DGistViewer import Grid2DGistViewer
-from variables.cellVariable import CellVariable
-from examples.phase.theta.modularVariable import ModularVariable
-from examples.phase.temperature.temperatureEquation import TemperatureEquation
-from examples.phase.theta.thetaEquation import ThetaEquation
 from __future__ import nested_scopes
+
 import Numeric
+
+from fivol.meshes.grid2D import Grid2D
+from fivol.examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
+from fivol.solvers.linearPCGSolver import LinearPCGSolver
+from fivol.boundaryConditions.fixedValue import FixedValue
+from fivol.boundaryConditions.fixedFlux import FixedFlux
+from fivol.iterators.iterator import Iterator
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.variables.cellVariable import CellVariable
+from fivol.examples.phase.theta.modularVariable import ModularVariable
+from fivol.examples.phase.temperature.temperatureEquation import TemperatureEquation
+from fivol.examples.phase.theta.thetaEquation import ThetaEquation
 
 class ThetaSystem:
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/16/04 {11:03:57 AM} 
+ #                                last update: 1/16/04 {12:04:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,7 +36,7 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
+from fivol.variables.cellVariable import CellVariable
 
 class PhaseVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., hasOld = 1):

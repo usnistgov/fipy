@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 1/16/04 {10:51:11 AM} 
+ #                                last update: 1/16/04 {11:19:17 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,8 @@
 
 import Numeric
 
-from tools.dimensions.physicalField import PhysicalField
-import tools.array
+from fivol.tools.dimensions.physicalField import PhysicalField
+import fivol.tools.array
 
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.
@@ -65,7 +65,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(v1.dot(v2))
     ## We can't use Numeric.dot on quantities with units
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return tools.array.sqrt(tools.array.sum(v1*v2))
+    return fivol.tools.array.sqrt(fivol.tools.array.sum(v1*v2))
 
 def arraySqrtDot(a1,a2):
     """Return array of square roots of vector dot-products
@@ -75,7 +75,7 @@ def arraySqrtDot(a1,a2):
     """
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
-    return tools.array.sqrt(tools.array.sum((a1*a2)[:],1))
+    return fivol.tools.array.sqrt(fivol.tools.array.sum((a1*a2)[:],1))
 
 def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing

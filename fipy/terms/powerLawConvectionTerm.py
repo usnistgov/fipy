@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/16/04 {10:56:04 AM} 
+ #                                last update: 1/16/04 {11:42:44 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -34,10 +34,11 @@
  # ###################################################################
  ##
 
-from convectionTerm import ConvectionTerm
-from variables.faceVariable import FaceVariable
 import Numeric
-from tools.dimensions.physicalField import PhysicalField
+
+from fivol.terms.convectionTerm import ConvectionTerm
+from fivol.variables.faceVariable import FaceVariable
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 class PowerLawConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):

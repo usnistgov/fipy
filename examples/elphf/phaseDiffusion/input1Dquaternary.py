@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {10:55:44 AM} 
+ #                                last update: 1/16/04 {11:41:23 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,13 +43,13 @@
 
 import Numeric
 
-from profiler.profiler import Profiler
-from profiler.profiler import calibrate_profiler
+from fivol.profiler.profiler import Profiler
+from fivol.profiler.profiler import calibrate_profiler
 
-from meshes.grid2D import Grid2D
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.meshes.grid2D import Grid2D
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
-import elphf
+import fivol.examples.elphf.elphf as elphf
 
 nx = 400
 dx = 0.01

@@ -6,7 +6,7 @@
  # 
  #  FILE: "spSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:53:01 AM} 
+ #                                last update: 1/16/04 {11:29:49 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
 
 class SpSourceVariable(CellVariable):
     def __init__(self, theta = None, mPhi = None, phase = None, parameters = None):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {11:02:13 AM} 
+ #                                last update: 1/16/04 {12:00:40 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,13 +54,13 @@
 
 import Numeric
 
-from profiler.profiler import Profiler
-from profiler.profiler import calibrate_profiler
+from fivol.profiler.profiler import Profiler
+from fivol.profiler.profiler import calibrate_profiler
 
-from meshes.grid2D import Grid2D
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.meshes.grid2D import Grid2D
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
-from tools.dimensions.physicalField import PhysicalField
+from fivol.tools.dimensions.physicalField import PhysicalField
 
 import elphf
 

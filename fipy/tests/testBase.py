@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 1/16/04 {10:53:35 AM} 
+ #                                last update: 1/16/04 {2:54:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -37,6 +37,7 @@
  ##
 
 import unittest
+
 import Numeric
 
 class TestBase(unittest.TestCase):
@@ -63,7 +64,7 @@ class TestBase(unittest.TestCase):
 	return values
 	
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	self.it.timestep(steps = self.steps) #, maxSweeps = 10)
 	array = self.var.getNumericValue()
 	values = self.getTestValues()
 	values = Numeric.reshape(values, Numeric.shape(array))

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/16/04 {11:04:06 AM} 
+ #                                last update: 1/16/04 {4:47:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,9 @@
 
 
 import Numeric
-import tools.dimensions.physicalField
-import tools.array
+
+import fivol.tools.dimensions.physicalField
+import fivol.tools.array as array
 
 class Variable:
     
@@ -77,7 +78,7 @@ class Variable:
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
-	self.value = tools.dimensions.physicalField.PhysicalField(value = value, unit = unit, array = array)
+	self.value = fivol.tools.dimensions.physicalField.PhysicalField(value = value, unit = unit, array = array)
 		
 	self.mesh = mesh
 	self.name = name
@@ -97,14 +98,14 @@ class Variable:
 	
     def getUnit(self):
 	value = self.getValue()
-	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
 	    return value.getUnit()
 	else:
-	    return ""
+	    return "1"
 	
     def inBaseUnits(self):
 	value = self.getValue()
-	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
 	    return value.inBaseUnits()
 	else:
 	    return value
@@ -132,7 +133,7 @@ class Variable:
 	    
     def getNumericValue(self):
 	value = self.getValue()
-	if isinstance(value,tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value,fivol.tools.dimensions.physicalField.PhysicalField):
 	    return value.value
 	else:
 	    return value
@@ -190,7 +191,7 @@ class Variable:
 		self.requires(self.var)
 		
 	    def calcValue(self):
-		self.value = tools.dimensions.physicalField.PhysicalField(self.op(self.var.getValue()))
+		self.value = fivol.tools.dimensions.physicalField.PhysicalField(self.op(self.var.getValue()))
 # 		print "unOp value:", self.value.value
 # 		print "unOp unit:", self.value.unit
 		
@@ -224,7 +225,7 @@ class Variable:
 		else:
 		    val2 = self.var2
 		    
-		self.value = tools.dimensions.physicalField.PhysicalField(self.op(self.var1.getValue(), val2))
+		self.value = fivol.tools.dimensions.physicalField.PhysicalField(self.op(self.var1.getValue(), val2))
 # 		print "\nbinOp class: ", self.__class__.__bases__[0]
 # 		print "binOp op:", self.op
 # 		print "binOp var1:", self.var1
@@ -302,22 +303,22 @@ class Variable:
 	return float(self.value)
 	
     def sqrt(self):
-	return self.getUnaryOperatorVariable(lambda a: tools.array.sqrt(a))
+	return self.getUnaryOperatorVariable(lambda a: array.sqrt(a))
 	
     def tan(self):
-	return self.getUnaryOperatorVariable(lambda a: tools.array.tan(a))
+	return self.getUnaryOperatorVariable(lambda a: array.tan(a))
 
     def arctan(self):
-	return self.getUnaryOperatorVariable(lambda a: tools.array.arctan(a))
+	return self.getUnaryOperatorVariable(lambda a: array.arctan(a))
 
     def sin(self):
-	return self.getUnaryOperatorVariable(lambda a: tools.array.sin(a))
+	return self.getUnaryOperatorVariable(lambda a: array.sin(a))
 		
     def cos(self):
-	return self.getUnaryOperatorVariable(lambda a: tools.array.cos(a))
+	return self.getUnaryOperatorVariable(lambda a: array.cos(a))
 		
     def dot(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: tools.array.dot(a,b))
+	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b))
 	    
     def transpose(self):
 	if self.transposeVar is None:
@@ -334,7 +335,7 @@ class Variable:
 	return self.sumVar[index]
 	
     def take(self, ids):
-	return tools.array.take(self.getValue(),ids)
+	return array.take(self.getValue(),ids)
 
     def getMag(self):
         if self.mag is None:

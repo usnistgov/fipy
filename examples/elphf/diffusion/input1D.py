@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {10:53:09 AM} 
+ #                                last update: 1/16/04 {3:43:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,13 +41,13 @@
  # ###################################################################
  ##
 
-from profiler.profiler import Profiler
-from profiler.profiler import calibrate_profiler
+from fivol.profiler.profiler import Profiler
+from fivol.profiler.profiler import calibrate_profiler
 
-from meshes.grid2D import Grid2D
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.meshes.grid2D import Grid2D
+from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
 
-import elphf
+import fivol.examples.elphf.elphf as elphf
 
 nx = 40
 dx = 1.
@@ -61,7 +61,7 @@ mesh = Grid2D(
     
 parameters = {
     'time step duration': 10000,
-    'substitutional molar volume': 1,
+##     'substitutional molar volume': 1,
     'phase': {
 	'name': "xi",
 	'mobility': 1.,

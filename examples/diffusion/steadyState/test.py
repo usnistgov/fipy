@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/16/04 {10:57:50 AM} 
+ #                                last update: 1/16/04 {11:47:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,9 @@
 """
  
 import unittest
-from tests.testBase import TestBase
+
+from fivol.tests.testBase import TestBase
+
 from input import getParameters
 
 class Test(TestBase):

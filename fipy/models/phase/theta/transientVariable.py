@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {10:56:08 AM}
+ #                                last update: 1/16/04 {11:42:55 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from variables.cellVariable import CellVariable
 import Numeric
+
+from fivol.variables.cellVariable import CellVariable
 
 class TransientVariable(CellVariable):
 

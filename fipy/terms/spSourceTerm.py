@@ -6,7 +6,7 @@
  # 
  #  FILE: "spSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 1/16/04 {10:54:44 AM} 
+ #                                last update: 1/16/04 {11:37:29 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-from sourceTerm import SourceTerm
+from fivol.terms.sourceTerm import SourceTerm
 
 class SpSourceTerm(SourceTerm):
     """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 1/16/04 {10:57:28 AM} 
+ #                                last update: 1/16/04 {11:47:02 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,8 +41,9 @@
  # ###################################################################
  ##
 
-from cellTerm import CellTerm
 import Numeric
+
+from fivol.terms.cellTerm import CellTerm
 
 class TransientTerm(CellTerm):
     def __init__(self,tranCoeff,mesh):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "hybridConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/16/04 {10:59:53 AM} 
+ #                                last update: 1/16/04 {11:52:38 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,9 +36,10 @@
  # ###################################################################
  ##
 
-from convectionTerm import ConvectionTerm
-from variables.faceVariable import FaceVariable
 import Numeric
+
+from fivol.terms.convectionTerm import ConvectionTerm
+from fivol.variables.faceVariable import FaceVariable
 
 class HybridConvectionTerm(ConvectionTerm):
     class Alpha(FaceVariable):
