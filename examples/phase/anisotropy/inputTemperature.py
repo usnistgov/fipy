@@ -42,150 +42,155 @@
  ##
 
 from meshes.grid2D import Grid2D
-from type2PhaseEquation import Type2PhaseEquation
+from examples.phase.phase.type2PhaseEquation import Type2PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from viewers.grid2DGistViewer import Grid2DGistViewer
 from variables.cellVariable import CellVariable
-from modularVariable import ModularVariable
+from examples.phase.theta.modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
-from temperatureEquation import TemperatureEquation
+from examples.phase.temperature.temperatureEquation import TemperatureEquation
 
 import Numeric
 
-##timeStepDuration = 0.02
-timeStepDuration = 1.
+class AnisotropySystem:
 
-phaseParameters = {
-    'tau'                   : 3e-4,
-    'time step duration'    : timeStepDuration,
-    'epsilon'               : 0.008,
-    's'                     : 0.01,
-    'alpha'                 : 0.015,
-    'c2'                    : 0.02,
-    'anisotropy'            : 0.0,
-    'symmetry'              : 4.,
-    'kappa 1'               : 0.9,
-    'kappa 2'               : 20.
-    }
+    def __init__(self):
+        timeStepDuration = 5e-5
+        self.steps = 10
 
-temperatureParameters = {
-    'time step duration'    : timeStepDuration,
-    'temperature diffusion' : 2.25,
-    'latent heat'           : 1.,
-    'heat capacity'         : 1.
-    }
+        phaseParameters = {
+            'tau'                   : 3e-4,
+            'time step duration'    : timeStepDuration,
+            'epsilon'               : 0.008,
+            's'                     : 0.01,
+            'alpha'                 : 0.015,
+            'anisotropy'            : 0.02,
+            'symmetry'              : 4.,
+            'kappa 1'               : 0.9,
+            'kappa 2'               : 20.
+            }
 
-
-##Length = 0.5
-Length = 20.
-nx = 20
-ny = 20
-dx = Length / nx
-dy = Length / ny
+        temperatureParameters = {
+            'time step duration'    : timeStepDuration,
+            'temperature diffusion' : 2.25,
+            'latent heat'           : 1.,
+            'heat capacity'         : 1.
+            }
 
 
-mesh = Grid2D(dx,dy,nx,ny)
-print "built mesh"
+        Length = 40. * 2.5 / 100
+        nx = 40
+        ny = 40
+        dx = Length / nx
+        dy = Length / ny
 
-phase = CellVariable(
-    name = 'PhaseField',
-    mesh = mesh,
-    value = 0.
-    )
 
-theta = ModularVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = 0.,
-    hasOld = 0
-    )
+        mesh = Grid2D(dx,dy,nx,ny)
 
-temperature = ModularVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = -0.5,
-    hasOld = 0
-    )
+        phase = CellVariable(
+            name = 'PhaseField',
+            mesh = mesh,
+            value = 0.
+            )
+        
+        theta = ModularVariable(
+            name = 'Theta',
+            mesh = mesh,
+            value = 0.,
+            hasOld = 0
+            )
+        
+        temperature = ModularVariable(
+            name = 'Theta',
+            mesh = mesh,
+            value = -0.4
+            )
 
-phaseViewer = Grid2DGistViewer(var = phase)
-temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
+        self.phaseViewer = Grid2DGistViewer(var = phase)
+        self.temperatureViewer = Grid2DGistViewer(var = temperature, minVal = -0.5, maxVal =0.5)
+        
+        phaseFields = {
+            'theta' : theta,
+            'temperature' : temperature
+            }
+        
+        temperatureFields = {
+            'phase' : phase
+            }
+        
+        def circleCells(cell,L = Length):
+            x = cell.getCenter()
+            r = L / 4.
+            c = (L / 2., L / 2.)
+            if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
+                return 1
+            else:
+                return 0
+            
+        interiorCells = mesh.getCells(circleCells)
+            
+        phase.setValue(1.,interiorCells)
+        
+        phaseEq = Type2PhaseEquation(
+            phase,
+            solver = LinearPCGSolver(
+            tolerance = 1.e-15, 
+            steps = 1000
+            ),
+            boundaryConditions=(
+            FixedFlux(mesh.getExteriorFaces(), 0.),
+            ),
+            parameters = phaseParameters,
+            fields = phaseFields
+            )
+        
+        temperatureEq = TemperatureEquation(
+            temperature,
+            solver = LinearPCGSolver(
+            tolerance = 1.e-15, 
+            steps = 1000
+            ),
+            boundaryConditions=(
+            FixedFlux(mesh.getExteriorFaces(), 0.),
+            ),
+            parameters = temperatureParameters,
+            fields = temperatureFields
+            )
 
-phaseFields = {
-    'theta' : theta,
-    'temperature' : temperature
-    }
+        self.it = Iterator((phaseEq, temperatureEq))
 
-temperatureFields = {
-    'phase' : phase
-    }
+        self.parameters = {
+            'it' : self.it,
+            'var' : phase,
+            'steps' : self.steps
+            }
 
-def circleCells(cell,L = Length):
-    x = cell.getCenter()
-    r = L / 4.
-    c = (L / 2., L / 2.)
-    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
-        return 1
-    else:
-        return 0
+    def getParameters(self):
+        return self.parameters
 
-interiorCells = mesh.getCells(circleCells)
+    def run(self):
+        self.phaseViewer.plot()
+        self.temperatureViewer.plot()
 
-phase.setValue(1.,interiorCells)
+        for i in range(self.steps):
+            self.it.timestep(1)
+            self.phaseViewer.plot()
+            self.temperatureViewer.plot()
+##            raw_input()
 
-print "building phase equation"
+    def runProfile():
+        fudge = calibrate_profiler(10000)
+        profile = Profiler('profile', fudge=fudge)        
+        it.timestep(steps = 100)
+        profile.stop()
+        
 
-phaseEq = Type2PhaseEquation(
-    phase,
-    solver = LinearPCGSolver(
-	tolerance = 1.e-15, 
-	steps = 1000
-    ),
-    boundaryConditions=(
-    FixedFlux(mesh.getExteriorFaces(), 0.),
-    ),
-    parameters = phaseParameters,
-    fields = phaseFields
-    )
-
-temperatureEq = TemperatureEquation(
-    phase,
-    solver = LinearPCGSolver(
-	tolerance = 1.e-15, 
-	steps = 1000
-    ),
-    boundaryConditions=(
-    FixedFlux(mesh.getExteriorFaces(), 0.),
-    ),
-    parameters = temperatureParameters,
-    fields = temperatureFields
-    )
-
-it = Iterator((phaseEq, temperatureEq))
-
-# fudge = calibrate_profiler(10000)
-# profile = Profiler('profile', fudge=fudge)
-phaseViewer.plot()
-temperatureViewer.plot()
-raw_input()
-
-print "solving"
-phaseViewer.plot()
-temperatureViewer.plot()
-raw_input()
-for i in range(10):
-<<<<<<< inputTemperature.py
-    it.iterate(1)
-=======
-    it.timestep(steps = 10)
->>>>>>> 1.4
-    phaseViewer.plot()
-    temperatureViewer.plot()
+if __name__ == '__main__':
+    system = AnisotropySystem()
+    system.run()
     raw_input()
-# profile.stop()
-
-raw_input()
 
