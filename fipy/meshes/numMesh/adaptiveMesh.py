@@ -214,6 +214,7 @@ class AdaptiveMesh2D(Mesh2D):
         dg = DataGetter()
 	vertexCoords, faceVertexIDs, cellFaceIDs = dg.getData(meshFile, dimensions = 2)
         Mesh2D.__init__(self, vertexCoords, faceVertexIDs, cellFaceIDs)
+        os.close(f)
 	os.remove(geomFile)
 	os.remove(bgFile)
 	os.remove(meshFile)

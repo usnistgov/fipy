@@ -177,6 +177,7 @@ class TestMesh3DPickle(TestMesh3D):
 	(f, fileName) = tempfile.mkstemp('.gz')
 	pickledMesh = dump.write(self.mesh, fileName)
 	self.mesh = dump.read(fileName)
+        os.close(f)
 	os.remove(fileName)
 
 def suite():
