@@ -77,7 +77,7 @@ valueLeft=1.
 valueRight=1.
 
 L = 1.5
-nx = 10
+nx = 100
 dx = L/nx
 
 mesh = Grid2D(dx,1.,nx,1)

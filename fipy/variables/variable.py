@@ -136,7 +136,7 @@ class Variable:
 	alpha[:,0] = dFP / dAP
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	return Numeric.take(cellGrad, id1) * alpha + Numeric.take(cellGrad, id2) * (1 - alpha)
-    
+
     def getGradientMagnitude(self):
 	grad = self.getGradient()
 	return Numeric.sqrt(Numeric.sum(grad*grad,1))
