@@ -228,7 +228,7 @@ and press enter at the password prompt, then::
 Further information about CVS_ can be found in |documentation:CVS.txt| and
 at http://sourceforge.net/cvs/?group_id=118428.
 
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.tar.gz
+.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.1.tar.gz
 
 Manual
 ======
