@@ -71,3 +71,10 @@ class Cell:
 	rep += ">\n"
 	
 	return rep
+
+    def getFaces(self):
+        return self.faces
+
+    def setId(self,id):
+        self.id = id
+    

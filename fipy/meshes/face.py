@@ -85,6 +85,7 @@ class Face:
 	    """
 	    cc = self.cells[0].center() - self.center()
 	else:
+            print len(self.cells)
 	    cc = self.cells[0].center() - self.cells[1].center()
 	if cell == None or cell == self.cells[0]:
 	    cc *= -1
@@ -111,3 +112,20 @@ class Face:
 
     def __repr__(self):
 	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal(self.cells[0])) + ", vertices = " + str(self.vertices) + ">\n"
+
+
+    def removeBoundingCell(self,cell):
+        if cell in self.cells:
+            if cell == self.cells[0]:
+                self.cells = self.cells[:-1]
+            else:
+                self.cells = self.cells[1:]
+        else:
+            print "error in removeBoundingCell:"
+            print "cell not in face.cells"
+            
+        
+    def setId(self,id):
+        self.id = id
+            
+            

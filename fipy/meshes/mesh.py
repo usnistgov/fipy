@@ -54,3 +54,24 @@ class Mesh:
 
     def makeGridData(self,array):
         pass
+
+    def removeCell(self,cell):
+        rCellId = cell.getId()
+        for face in cell.getFaces():
+            face.removeBoundingCell(cell)
+            if face.cells == ():
+                self.removeFace(face)
+        cell = self.cells[-1]
+        cell.setId(rCellId)
+        self.cells = self.cells[:-1]
+
+    def removeFace(self,face):
+        rFaceId = face.getId()
+        face = self.faces[-1]
+        face.setId(rFaceId)
+        self.faces = self.faces[:-1]
+
+
+
+                
+    
