@@ -124,7 +124,12 @@ surface affinity than the other.
    1
    >>> Numeric.allclose(var1.getInterfaceVar(), Numeric.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
    1
-
+   >>> dt = 0.1
+   >>> for step in range(10):
+   ...     eqn0.solve(dt = dt)
+   ...     eqn1.solve(dt = dt)
+   >>> print var0.getInterfaceVar()[2] + var1.getInterfaceVar()[2]
+   1.0
 
 """
 __docformat__ = 'restructuredtext'
@@ -158,8 +163,34 @@ class AdsorptionCoeffInterfaceFlag(AdsorptionCoeff):
     
 class AdsorptionCoeffAreaOverVolume(AdsorptionCoeff):
     def multiplier(self):
-        return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes() 
- 
+        return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+
+class MaxCoeff(CellVariable):
+    def __init__(self, distanceVar, vars = ()):
+        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        self.vars = vars
+        for var in self.vars:
+            self.requires(var)
+        self.distanceVar = self.requires(distanceVar)
+
+    def _calcMax(self):
+        total = 0
+        for var in self.vars:
+            total += var.getInterfaceVar()
+        return Numeric.array(total > 1) * self.distanceVar.getCellInterfaceFlag()
+
+class SpMaxCoeff(MaxCoeff):
+    def _calcValue(self):
+        self.value = 1e20 * self._calcMax()
+
+class ScMaxCoeff(MaxCoeff):
+    def _calcValue(self):
+        val = self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+        for var in self.vars[1:]:
+            val -= self.distanceVar.getCellInterfaceFlag() * Numeric.array(var)
+
+        self.value = 1e20 * self._calcMax() * val
+            
 class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
                  var,
@@ -193,6 +224,15 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
             self.coeffs += (otherScCoeff, )
             self.coeffs += (otherSpCoeff, )
+
+            vars = (var, otherVar)
+        else:
+            vars = (var,)
+
+        self.terms += (
+            SpSourceTerm(SpMaxCoeff(distanceVar, vars), self.var.getMesh()),
+            ScSourceTerm(ScMaxCoeff(distanceVar, vars), self.var.getMesh())
+            )
 
     def solve(self, dt):
         self.dt = dt
