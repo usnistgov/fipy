@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/9/03 {1:19:32 PM} 
+ #                                last update: 12/10/03 {2:28:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -62,7 +62,7 @@ class TestBase(unittest.TestCase):
 	return values
 	
     def testResult(self):
-	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
+	self.it.iterate(steps = self.steps, stepDuration = self.timeStep)
 	array = self.var.getValue()
 	values = self.getTestValues()
 	values = Numeric.reshape(values, Numeric.shape(array))
