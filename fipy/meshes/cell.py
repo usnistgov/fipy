@@ -7,7 +7,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 11/30/03 {12:22:57 AM} 
+ #                                last update: 12/1/03 {3:50:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -71,18 +71,10 @@ class Cell:
 	self.faceOrientations = Numeric.array(faceOrientations)
 	self.faceOrientations = Numeric.reshape(faceOrientations,(len(faces),1))
         self.id = id
-        for face in self.faces:
-            face.addBoundingCell(self)
-        self.center = self.calcCenter()
-## can not calculate cell distances until this point
-## the face needs to know its cells in order to
-## calculate the distances. 
-        for face in self.faces:
-#             face.setNormals()
-            face.setCellDistance()
-            face.setFaceToCellDistances()
-        self.volume = self.calcVolume()
-        
+	self.center = self.calcCenter()
+	self.volume = self.calcVolume()
+	for i in range(len(self.faces)):
+	    self.faces[i].addBoundingCell(self,faceOrientations[i])
 
     def getId(self):
 	"""Return the id of this Cell.

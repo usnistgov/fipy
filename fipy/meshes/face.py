@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/30/03 {12:27:01 AM} 
+ #                                last update: 12/1/03 {3:55:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -70,11 +70,15 @@ class Face:
         self.area = self.calcArea()
 	self.setNormal()
             
-    def addBoundingCell(self, cell):
+    def addBoundingCell(self, cell, orientation):
 	"""Add cell to the list of Cells which lie on either side of this Face.
 	"""
         self.cells += (cell,)
-        self.cellsId += (cell.getId(), )
+        self.cellsId += (cell.getId(),)
+	self.orientation = -orientation
+	self.setCellDistance()
+	self.setFaceToCellDistances()
+
         
     def getCells(self):
 	"""Return the Cells which lie on either side of this Face.
@@ -156,9 +160,22 @@ class Face:
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
 	norm = tools.crossProd(t1,t2)
 	norm /= tools.sqrtDot(norm,norm)
+	norm *= self.orientation
 	
 	return norm
+	
+    def calcTangent1(self):
+	norm = self.normal
+	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
+	tan1 = Numeric.array((-norm[1],norm[0],0))
+	return tan1/mag
 
+    def calcTangent2(self):
+	norm = self.normal
+	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
+	tan2 = Numeric.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
+	return tan2/mag
+	    
     def getCellDistance(self):
 	"""Return the distance between adjacent cell centers.
 	"""

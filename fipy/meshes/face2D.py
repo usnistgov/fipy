@@ -6,7 +6,7 @@
  # 
  #  FILE: "face2D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/30/03 {12:52:53 AM} 
+ #                                last update: 12/1/03 {3:54:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -66,6 +66,13 @@ class Face2D(Face):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	norm = Numeric.array([-tangent[1],tangent[0]])
 	norm /= tools.sqrtDot(norm,norm)
+	norm *= self.orientation
 
 	return norm
 
+    def calcTangent1(self):
+	norm = self.normal
+	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
+	tan1 = Numeric.array((-norm[1],norm[0]))
+	return tan1/mag
+	    

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/30/03 {12:54:18 AM} 
+ #                                last update: 12/1/03 {3:54:27 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -339,6 +339,15 @@ class Grid2D(Mesh):
 	self.faceNormals = Numeric.zeros((N,dim),'d')
 	for i in range(N):
 	    self.faceNormals[i] = faces[i].calcNormal()
+	    
+    def calcFaceTangents(self, faces):
+	N = len(faces)
+	dim = len(faces[0].getCenter())
+	self.faceTangents1 = Numeric.zeros((N,dim),'d')
+	self.faceTangents2 = Numeric.zeros((N,dim),'d')
+	for i in range(N):
+	    self.faceTangents1[i] = faces[i].calcTangent1()
+	    self.faceTangents2[i] = faces[i].calcTangent2()
 	    
     def getFaceAreas(self):
 	return self.faceAreas

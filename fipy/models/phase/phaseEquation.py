@@ -5,7 +5,7 @@
 
  FILE: "phaseEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/29/03 {9:45:27 PM} 
+                               last update: 12/1/03 {3:15:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -46,6 +46,9 @@ from terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from terms.scSourceTerm import ScSourceTerm
 from terms.spSourceTerm import SpSourceTerm
 from variables.variable import Variable
+from operators.faceValueOperator import FaceValueOperator
+from operators.faceGradientOperator import FaceGradientOperator
+from operators.gradientMagnitudeOperator import GradientMagnitudeOperator
 import Numeric
 
 class PhaseEquation(MatrixEquation):
@@ -72,7 +75,7 @@ class PhaseEquation(MatrixEquation):
         self.diffTerm = ExplicitDiffusionTerm(0.,mesh,boundaryConditions)
         self.spTerm = SpSourceTerm(0.,mesh)
         self.scTerm = ScSourceTerm(0.,mesh)
-
+	
 	terms = (
 	    TransientTerm(transientCoeff,mesh),
 	    self.diffTerm,
@@ -86,6 +89,10 @@ class PhaseEquation(MatrixEquation):
             terms,
             solver)
 
+	self.faceGradPhi = FaceGradientOperator(self.var)
+	self.thetaFaceValues = FaceValueOperator(self.theta)
+	self.oldThetaGradMag = GradientMagnitudeOperator(self.theta.getOld())
+
     def preSolve(self):
         self.updateDiffusion()
         self.updateSource()
@@ -95,10 +102,10 @@ class PhaseEquation(MatrixEquation):
         N = self.parameters['symmetry']
         c2 = self.parameters['anisotropy']
 
-        dphi = self.var.getFaceGradient()
+	dphi = self.faceGradPhi.getArray()
         self.dphi = dphi
         z = Numeric.arctan2(dphi[:,1],dphi[:,0])
-        z = N * (z - self.theta.getFaceValues())
+        z = N * (z - self.thetaFaceValues.getArray())
         z = Numeric.tan(z / 2.)
         z = z * z;
         z = (1. - z) / (1. + z);
@@ -120,7 +127,7 @@ class PhaseEquation(MatrixEquation):
     
         ## theta source terms
 
-        thetaMag = self.theta.getOld().getGradientMagnitude()
+        thetaMag = self.oldThetaGradMag.getArray()
         s = self.parameters['s']
         epsilon = self.parameters['epsilon']
 

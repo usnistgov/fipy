@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/30/03 {12:39:40 AM} 
+ #                                last update: 12/1/03 {3:02:51 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -123,10 +123,10 @@ eq = PhaseEquation(
 
 it = Iterator((eq,))
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
-it.iterate(10,0.02)
-profile.stop()
+# fudge = calibrate_profiler(10000)
+# profile = Profiler('profile', fudge=fudge)
+it.iterate(100,0.02)
+# profile.stop()
 
 print phase.getArray()
 
