@@ -98,10 +98,18 @@ class DistanceEquation(Equation):
             terms = (),
             solver = None)
 
+        self._calcNumericQuantities()
+
     def solve(self):
         setValueFlag = self._calcInterfaceValues()
         setValueFlag = self._calcInitialTrialValues(setValueFlag)
         self._calcRemainingValues(setValueFlag)
+        
+    def _calcNumericQuantities(self):
+        self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
+        self.cellToCellDistances = Numeric.array(self.mesh.getCellToCellDistances())
+        self.cellNormals = Numeric.array(self.mesh.getCellNormals())
+        self.cellAreas = Numeric.array(self.mesh.getCellAreas())
 
     def _calcInterfaceValues(self):
         """
@@ -268,24 +276,28 @@ class DistanceEquation(Equation):
 
     def _calcTrialValue(self, cellID, setValueFlag):
 
-        cellToCellIDs = self.mesh.getCellToCellIDsFilled()[cellID]
-        dAP = self.mesh.getCellToCellDistances()[cellID]
+        cellToCellIDs = self.cellToCellIDs[cellID]
+        dAP = self.cellToCellDistances[cellID]
+
         phiAdj = Numeric.take(self.var, cellToCellIDs)
-        values = MA.array(phiAdj, mask = (Numeric.take(setValueFlag, cellToCellIDs)!=1))
 
-        argsort = MA.argsort(abs(values))
+        mask = (Numeric.take(setValueFlag, cellToCellIDs)!=1)
+        values = Numeric.where(mask, 1e10, phiAdj)
+        
+        argsort = Numeric.argsort(Numeric.absolute(values))
 
-        values = MA.take(values, argsort)
-        dAP = Numeric.take(self.mesh.getCellToCellDistances()[cellID], argsort)
-        normals = Numeric.take(self.mesh.getCellNormals()[cellID], argsort)
-        areas = Numeric.take(self.mesh.getCellAreas()[cellID], argsort)
+        values = Numeric.take(values, argsort)
+        dAP = Numeric.take(self.cellToCellDistances[cellID], argsort)
+        normals = Numeric.take(self.cellNormals[cellID], argsort)
+        areas = Numeric.take(self.cellAreas[cellID], argsort)
 
         sign = -1
         if self.var[cellID] > 0:
             sign = 1
 
-        NSetValues = len(values.mask()) - Numeric.sum(values.mask())
+        NSetValues = len(mask) - Numeric.sum(mask)
 
+        
         if NSetValues == 0:
             raise Error
         elif NSetValues == 1:
