@@ -72,6 +72,7 @@ class Mesh:
 	self.calcCellToFaceOrientations()
 	self.calcAdjacentCellIDs()
 	self.calcCellToCellIDs()
+        self.calcCellToCellIDsFilled()
        
     """calc topology methods"""
 	
@@ -101,6 +102,13 @@ class Mesh:
 
     def calcCellToCellIDs(self):
 	pass
+
+    def calcCellToCellIDsFilled(self):
+        N = self.getNumberOfCells()
+        M = self.getMaxFacesPerCell()
+        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
+        cellToCellIDs = self.getCellToCellIDs()
+        self.cellToCellIDsFilled = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs)
 
     
     """get topology methods"""
@@ -170,6 +178,9 @@ class Mesh:
 
     def getCellToCellIDs(self):
         return self.cellToCellIDs
+
+    def getCellToCellIDsFilled(self):
+        return self.cellToCellIDsFilled
 	
     """geometry methods"""
     
@@ -183,8 +194,8 @@ class Mesh:
 	self.calcCellDistances()        
 	self.calcFaceTangents()
 	self.calcCellToCellDistances()
-	
 	self.calcScaledGeometry()
+        self.calcCellAreas()
        
     """calc geometry methods"""
     
@@ -227,13 +238,9 @@ class Mesh:
     def calcCellToCellDistances(self):
 	pass
 
-    def getCellToCellIDsFilled(self):
-        N = self.getNumberOfCells()
-        M = self.getMaxFacesPerCell()
-        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
-        cellToCellIDs = self.getCellToCellIDs()
-        return MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs)
-
+    def calcCellAreas(self):
+        from fipy.meshes.numMesh.mesh import MAtake
+        self.cellAreas =  MAtake(self.getFaceAreas(), self.cellFaceIDs)
     
     """get geometry methods"""
         
@@ -283,8 +290,7 @@ class Mesh:
         return self.cellNormals
 
     def getCellAreas(self):
-        from fipy.meshes.numMesh.mesh import MAtake
-        return MAtake(self.getFaceAreas(), self.cellFaceIDs)
+        return self.cellAreas
 
     def getCellAreaProjections(self):
         return self.cellNormals * self.getCellAreas()[:, :, Numeric.NewAxis]
