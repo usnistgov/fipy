@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 10/19/04 {4:38:29 PM}
+ #                                last update: 12/15/04 {5:16:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -151,13 +151,13 @@ minimum distance functions will take the following form.
 
 .. raw:: latex
 
-    $$ X_{\text{min}} = \frac{\left| \vec{s} \cross \vec{t} \right|}
+    $$ X_{\text{min}} = \frac{\left| \vec{s} \times \vec{t} \right|}
     {\left| \vec{s} - \vec{t} \right|} $$
 
     and in 3D,
 
     $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left(
-    \vec{t} \cross \vec{u} \right) \left| $$
+    \vec{t} \times \vec{u} \right) \left| $$
 
     where the vectors $\vec{s}$, $\vec{t}$ and $\vec{u}$ represent the
     vectors from the cell of interest to the neighboring cell.
