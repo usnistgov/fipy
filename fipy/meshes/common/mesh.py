@@ -49,6 +49,7 @@ Meshes contain cells, faces, and vertices.
 ##import sets
 
 import Numeric
+import MA
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -225,6 +226,13 @@ class Mesh:
 
     def calcCellToCellDistances(self):
 	pass
+
+    def getCellToCellIDsFilled(self):
+        N = self.getNumberOfCells()
+        M = self.getMaxFacesPerCell()
+        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
+        cellToCellIDs = self.getCellToCellIDs()
+        return MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs)
 
     
     """get geometry methods"""
