@@ -447,14 +447,17 @@ class efficiency_test(Command):
         self.inline = False
         self.maximumelements = 1000
         self.minimumelements = 100
-        self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py']
+        self.case = None
         
     def finalize_options(self):
         self.factor = int(self.factor)
         self.maximumelements = int(self.maximumelements)
         self.minimumelements = int(self.minimumelements)
-        self.cases = [self.case]
-            
+        if self.case is None:
+            self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py']
+        else:
+            self.cases = [self.case]
+
     def run(self):
 
         import time
@@ -465,6 +468,7 @@ class efficiency_test(Command):
         
         file = open('efficiencyData.txt', 'w')
 
+        sys.argv = sys.argv[:1]
         sys.argv.append('--numberOfSteps=100')
 
         class GetMemoryThread(threading.Thread):
@@ -494,7 +498,7 @@ class efficiency_test(Command):
         for case in self.cases:
             
             runTimeEstimate = 10.
-            file.write('case:' + case + '\n')
+            print 'case:' + case + '\n'
             numberOfElements = self.minimumelements
 
             exceptionFlag = False
@@ -507,12 +511,18 @@ class efficiency_test(Command):
                 thread.start()
                 t1 = time.clock()
 
-                try:
-                    execfile(case)
-
-                except:
-                    file.write('Exception executing ' + case + '\n')
-                    exceptionFlag = True
+                import imp
+                import fipy.tests.doctestPlus
+                
+                mod = imp.load_source("copy_script_module", case)
+                mod.run()
+                
+##                execfile(case)
+##                try:
+##                    execfile(case)
+##                except:
+##                    print 'Exception executing ' + case + '\n'
+##                    exceptionFlag = True
                     
                 t2 = time.clock()
                 thread.join()
@@ -522,13 +532,11 @@ class efficiency_test(Command):
                 os.remove(fileName)
                 os.close(f)
                 sys.argv.remove('--numberOfElements=' + str(numberOfElements))
-                file.write('Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB\n' % (numberOfElements, t2 - t1, memUsage))
+                print 'Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB\n' % (numberOfElements, t2 - t1, memUsage)
                 
                 numberOfElements *= self.factor
                 runTimeEstimate = (t2 - t1) * self.factor
                                         
-        file.close()
-        
 f = open('README.txt', 'r') 
 long_description = '\n' + f.read() + '\n'
 f.close()

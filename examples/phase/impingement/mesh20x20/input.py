@@ -64,8 +64,12 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
+def run():
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript(__name__))
+
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
-    
     raw_input("finished")
+

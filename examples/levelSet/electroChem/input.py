@@ -179,7 +179,7 @@ region (positive region).
    >>> trenchHeight = bottomHeight + trenchDepth
    >>> trenchWidth = trenchDepth / aspectRatio
    >>> sideWidth = (trenchSpacing - trenchWidth) / 2
-   >>> def electrolyteFunc(cell):
+   >>> def electrolyteFunc(cell, trenchHeight = trenchHeight, bottomHeight = bottomHeight, sideWidth = sideWidth):
    ...     x,y = cell.getCenter()    
    ...     if y > trenchHeight:
    ...         return 1
@@ -523,3 +523,6 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
 
+def run():
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus.getScript(__name__))

@@ -60,7 +60,7 @@ with different initial conditions and a 2D mesh:
     >>> nx = int(Numeric.sqrt(options.numberOfElements))
     >>> ny = nx
     >>> Lx = 2.5 * nx / 100.
-    >>> Ly = 2.5 * ny / 100.            
+    >>> Ly = 2.5 * ny / 100.
     >>> dx = Lx / nx
     >>> dy = Ly / ny
     >>> from fipy.meshes.grid2D import Grid2D
@@ -139,7 +139,7 @@ oriented liquid phase
 Four different solid circular domains are created at each corner of the domain 
 with appropriate orientations
 
-    >>> def cornerCircle(cell):
+    >>> def cornerCircle(cell, a = 1., b = 1., Lx = Lx, Ly = Ly):
     ...     x = cell.getCenter()[0]
     ...     y = cell.getCenter()[1]
     ...     if ((x - a)**2 + (y - b)**2) < (Lx / 2.)**2:
@@ -151,7 +151,7 @@ with appropriate orientations
     ...                          (Lx, 0., -2. * pi / 3.), 
     ...                          (0., Ly, -2. * pi / 3. + 0.3), 
     ...                          (Lx, Ly,  2. * pi / 3.)):
-    ...     cells = mesh.getCells(filter = cornerCircle)
+    ...     cells = mesh.getCells(filter = cornerCircle, a = a, b = b)
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 

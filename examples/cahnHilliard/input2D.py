@@ -139,4 +139,5 @@ for step in range(steps):
         viewer.plot()
         print 'step',step,'dt',dt
             
-        
+def run():
+    pass
