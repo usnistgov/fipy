@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 11/1/04 {11:47:38 AM} 
+ #                                last update: 2/26/05 {9:31:58 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,7 +100,7 @@ Neumann boundary conditions to the top and bottom.
 We iterate one timestep to equilibrium:
 
     >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
-    >>> NthOrderDiffusionTerm(coeffs = (1.,)).solve(var, boundaryConditions = BCs)
+    >>> NthOrderDiffusionTerm(coeff = (1.,)).solve(var, boundaryConditions = BCs)
     
 The result is tested against the expected linear diffusion profile:
     
