@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 1/13/04 {1:00:35 PM} 
+ #                                last update: 1/16/04 {10:51:49 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 12/31/03 {11:18:14 AM} 
+ #                                last update: 1/16/04 {10:58:35 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

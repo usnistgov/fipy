@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/13/04 {1:05:11 PM} 
+ #                                last update: 1/16/04 {10:54:06 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/8/04 {10:59:50 PM} 
+ #                                last update: 1/16/04 {10:54:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

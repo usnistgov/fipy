@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/15/04 {10:40:12 AM} 
+ #                                last update: 1/16/04 {10:56:14 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

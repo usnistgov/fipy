@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "scSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 1/13/04 {1:05:23 PM} 
+ #                                last update: 1/16/04 {10:50:21 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -42,7 +42,7 @@
  ##
 
 
-from sourceTerm import SourceTerm
+from fivol.terms.sourceTerm import SourceTerm
 
 class ScSourceTerm(SourceTerm):
     """

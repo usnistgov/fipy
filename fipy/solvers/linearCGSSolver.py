@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/13/04 {11:50:46 AM} 
+ #                                last update: 1/16/04 {11:04:29 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/13/04 {1:10:23 PM} 
+ #                                last update: 1/16/04 {10:50:16 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -43,8 +43,9 @@
  # ###################################################################
  ##
 
-from gistViewer import GistViewer
 import Numeric
+ 
+from fivol.viewers.gistViewer import GistViewer
 
 class Grid2DGistViewer(GistViewer):
     

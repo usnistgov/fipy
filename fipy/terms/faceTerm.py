@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/13/04 {10:19:31 AM} 
+ #                                last update: 1/16/04 {10:50:25 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,9 +41,10 @@
  # ###################################################################
  ##
  
-from term import Term
 import Numeric
-import tools.vector
+
+from fivol.terms.term import Term
+import fivol.tools.vector
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
@@ -94,7 +95,7 @@ class FaceTerm(Term):
                 ## boundary. Numeric.put will not add both values to the b array but over write
                 ## the first with the second. We really need a putAdd function rather than put.
 		## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
-                tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+                fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
 		
         ## explicit
@@ -103,8 +104,8 @@ class FaceTerm(Term):
             oldArrayId1 = Numeric.take(oldArray, id1)
             oldArrayId2 = Numeric.take(oldArray, id2)
             
-            tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
-            tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
+            fivol.tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:])/coeffScale)
+            fivol.tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:])/coeffScale)
 
 ##            for i in range(self.interiorN):
 
@@ -115,6 +116,6 @@ class FaceTerm(Term):
 
                 LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
                 oldArrayIds = Numeric.take(oldArray, ids)
-                tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
-                tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
+                fivol.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
+                fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 

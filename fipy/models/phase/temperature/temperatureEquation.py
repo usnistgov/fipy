@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "temperatureEquation.py"
  #                                    created: 12/17/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {12:02:09 PM} 
+ #                                last update: 1/16/04 {11:00:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

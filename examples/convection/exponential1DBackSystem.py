@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "testStdyConvectionDiffusion.py"
+ #  FILE: "exponential1DBackSystem.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/13/04 {11:59:30 AM} 
+ #                                last update: 1/16/04 {10:59:47 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "diffusionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/13/04 {11:54:05 AM} 
+ #                                last update: 1/16/04 {10:58:49 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

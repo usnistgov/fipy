@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 1/13/04 {1:01:01 PM} 
+ #                                last update: 1/16/04 {10:50:39 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,7 @@
 """
  
 import unittest
-from tests.testBase import TestBase
+from fivol.tests.testBase import TestBase
 import input
 
 class TestExplicitDiffusion(TestBase):

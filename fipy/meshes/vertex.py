@@ -2,11 +2,11 @@
 
 ## 
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "vertex.py"
  #                                    created: 11/10/03 {3:24:06 PM} 
- #                                last update: 1/4/04 {10:45:33 AM} 
+ #                                last update: 1/16/04 {10:57:37 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

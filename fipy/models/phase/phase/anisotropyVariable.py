@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/14/04 {4:44:33 PM} { 2:35:45 PM}
+ #                                last update: 1/16/04 {10:52:00 AM} { 2:35:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

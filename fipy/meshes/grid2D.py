@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 1/14/04 {2:45:38 PM} 
+ #                                last update: 1/16/04 {10:52:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -2,11 +2,11 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  PFM - Python-based phase field solver
+ #  PyFiVol - Python-based finite volume PDE solver
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 1/13/04 {11:42:28 AM} 
+ #                                last update: 1/16/04 {11:03:31 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
