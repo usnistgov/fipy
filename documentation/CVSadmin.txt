@@ -126,7 +126,7 @@ Fix the code::
 Again, merge n.m.q+1 changes back to main trunk::
 
     $ cd ../trunk
-    $ cvs up -j version-n_m_q -j branch-version-n_m
+    $ cvs up -j version-n_m_q -j branch-version-n_m_q+1
     $ cvs ci -m "merged n.m.q+1"
     $ cvs tag merge-version-n_m_q+1
 
