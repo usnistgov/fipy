@@ -159,7 +159,7 @@ class build_docs (Command):
         
         os.chdir(savedir)
 
-    def _LatexWriter(self):
+    def getLatexWriter(self):
 	from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
 	from docutils import languages
 
@@ -188,21 +188,12 @@ class build_docs (Command):
 
         return  IncludedLaTeXWriter()
 
-    def _htmlWriter(self):
-        from docutils.writers.html4css1 import Writer as htmlWriter
-        return htmlWriter()
-    
-    def _translateTextFiles(self, type = 'latex', source_dir = '.', destination_dir = '.', files = []):
+    def _translateTextFiles(self, source_dir = '.', destination_dir = '.', files = [], writer = None, settings = {}, ext = '.tex'):
 	from docutils import core
-
-        if type == 'html':
-            writer = self._htmlWriter()
-        elif type == 'latex':
-            writer = self._LaTeXWriter()
 
         for file in files:
 
-            destination_path = os.path.join(destination_dir, string.lower(file) + '.' + type)
+            destination_path = os.path.join(destination_dir, string.lower(file) + ext)
             source_path = os.path.join(source_dir, file + '.txt')
 
             core.publish_file(source_path= source_path,
@@ -210,9 +201,7 @@ class build_docs (Command):
                               reader_name = 'standalone',
                               parser_name = 'restructuredtext',
                               writer = writer,
-                              settings_overrides = {'use_latex_toc': True,
-                                                    'footnote_references': 'superscript'
-                                                    })
+                              settings_overrides = settings)
 
 ##    def _translateTextFiles(self):
 ##	from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
@@ -267,7 +256,9 @@ class build_docs (Command):
     def run (self):
 
         restructuredTextFiles = ['INSTALLATION',
-                                 'README']
+                                 'README',
+                                 'CREDITS',
+                                 'TALKS']
         
 	if self.latex:
 	    self._buildTeXAPIs()
@@ -291,46 +282,62 @@ class build_docs (Command):
 	if self.manual:
 	    savedir = os.getcwd()
 	    
-	    try:
-		os.chdir(os.path.join('documentation','manual'))
+##	    try:
+            os.chdir(os.path.join('documentation','manual'))
 		
-		f = open('version.tex', 'w')
-		f.write("% This file is created automatically by:\n")
-		f.write("% 	python setup.py build_doc --manual\n\n")
-		f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
-		f.close()
+            f = open('version.tex', 'w')
+            f.write("% This file is created automatically by:\n")
+            f.write("% 	python setup.py build_doc --manual\n\n")
+            f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
+            f.close()
+            
+            writer = self.getLatexWriter()
+            
+            self._translateTextFiles(files = restructuredTextFiles,
+                                     source_dir = '../..',
+                                     writer = writer,
+                                     settings ={'use_latex_toc': True,
+                                                'footnote_references': 'superscript'})
 
-##		self._translateTextFiles()
-                self._translateTextFiles(files = restructuredTextFiles, source_dir = '../..')
 
-		os.system("pdflatex fipy.tex")
-		os.system("pdflatex fipy.tex")
-	    except:
-		pass
+            os.system("pdflatex fipy.tex")
+            os.system("pdflatex fipy.tex")
+##	    except:
+##		pass
 	    os.chdir(savedir)
 
         if self.webpage:
             dir = os.path.join('documentation', 'www')
-            self._translateTextFiles(files = restructuredTextFiles, type = 'html', destination_dir = dir)
+
+            from docutils.writers.html4css1 import Writer as HtmlWriter
+
+            self._translateTextFiles(files = restructuredTextFiles,
+                                     destination_dir = dir,
+                                     writer = HtmlWriter(),
+                                     settings = {'initial_header_level' : 3,
+                                                 'stylesheet' : 'ctcms.css'},
+                                     ext = '.html')
 
             headObj = open(os.path.join(dir, 'head.html'))
             tailObj = open(os.path.join(dir, 'tail.html'))
 
-            s0 = headObj.read()
-            s2 = tailObj.read()
+            head = headObj.read()
+            tail = tailObj.read()
 
             for file in restructuredTextFiles:
+
                 file = os.path.join(dir, string.lower(file))
+
                 fileObj = open(file + '.html', 'r')
-                s1 = fileObj.read()
+                middle = fileObj.read()
                 fileObj.close()
                 os.remove(file + '.html')
+
                 fileObj = open(string.lower(file) + '.html', 'w')
-                fileObj.write(s0 + s1 + s2)
+                fileObj.write(head + middle + tail)
                 fileObj.close()
 
             import shutil
-
             shutil.move(os.path.join(dir, 'readme.html'), os.path.join(dir, 'index.html'))
 
                 
