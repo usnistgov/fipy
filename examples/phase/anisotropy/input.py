@@ -179,13 +179,13 @@ it = Iterator((phaseEq, temperatureEq))
 
 if __name__ == '__main__':
     
-    self.phaseViewer.plot()
-    self.temperatureViewer.plot()
+    phaseViewer.plot()
+    temperatureViewer.plot()
 
-    for i in range(self.steps):
-        self.it.timestep()
-        self.phaseViewer.plot()
-        self.temperatureViewer.plot()
+    for i in range(steps):
+        it.timestep()
+        phaseViewer.plot()
+        temperatureViewer.plot()
 
     raw_input('finished')
 
