@@ -50,9 +50,10 @@ Prerequisites
 Operating System
 ================
 
-|FiPy| has been developed and tested on the Unix operating systems `Mac OS
-X`_ 10.3 and `Debian Linux`_ 3.0.  We welcome reports of compatibility with
-other systems, along with any steps necessary to install.
+|FiPy| has been developed and tested on the following operating
+systems, `Mac OS X`_ 10.3, `Debian Linux`_ 3.0, `Windows XP`_ and
+`Windows 2000`_.  We welcome reports of compatibility with other
+systems, along with any steps necessary to install.
 
 The only elements of |FiPy| that are likely to be platform-dependent are
 the viewers.  All other aspects should function on any platform that has a
@@ -60,6 +61,8 @@ recent Python_ installation.
 
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Debian Linux:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _Windows XP: http://www.microsoft.com/windowsxp/default.mspx
+.. _Windows 2000: http://www.microsoft.com/windows2000/
 
 Required Packages
 =================
@@ -117,23 +120,34 @@ supported at this time.
 PySparse
 --------
 
-|FiPy| requires a customized version of `Roman Geus`_' PySparse_ package.
+|FiPy| requires `Roman Geus`_' PySparse_ package.
 
-You can either `download the PySparse archive`_ or check it out via anonymous CVS download::
+You can either `download the PySparse archive`_ or check it out via
+anonymous CVS download::
 
-    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse login
 
 and press enter at the password prompt, then::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout pysparse
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse checkout pysparse
 
 From within the ``pysparse`` base directory, follow its included
 instructions for building PySparse_ for your platform.
 
+.. note::
+
+   In order to compile PySparse_ on the `Mac OS X`_ platform
+   successfully, an empty 'malloc.h' file must be created in the
+   'Include' directory of the PySparse_ installation.
+
+.. note::
+
+   Windows users should consult the INSTALL file in the base PySparse_
+   directory for specialist instructions.
+
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/pyfemax/pysparse.html
 .. _download the PySparse archive: http://www.ctcms.nist.gov/fipy/download/pysparse-FiPy.tar.gz
-
 
 Recommended Packages
 ====================
@@ -228,7 +242,7 @@ and press enter at the password prompt, then::
 Further information about CVS_ can be found in |documentation:CVS.txt| and
 at http://sourceforge.net/cvs/?group_id=118428.
 
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.1.tar.gz
+.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.tar.gz
 
 Manual
 ======
