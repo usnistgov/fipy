@@ -58,7 +58,6 @@ class GistViewer:
         gist.window(self.id, wait= 1)
         gist.animate(1)
         gist.palette('rainbow.gp')
-        print self.getArray()
         gist.pli(self.getArray(), cmin = self.minVal, cmax = self.maxVal)
         colorbar.color_bar(self.minVal, self.maxVal, ncol=240, zlabel='fred')
         gist.fma()

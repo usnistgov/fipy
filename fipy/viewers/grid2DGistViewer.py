@@ -55,4 +55,5 @@ class Grid2DGistViewer(GistViewer):
         self.var = var
 
     def getArray(self):
-        return Numeric.reshape(self.var.getArray(),self.var.getMesh().getShape())
+        nx,ny = self.var.getMesh().getShape()
+        return Numeric.reshape(self.var.getArray(),(ny,nx))

@@ -47,10 +47,10 @@ class Face:
         self.cells = ()
 	self.id = id
 	self.center = self.calcCenter()
-        
+            
     def addBoundingCell(self, cell):
         self.cells += (cell,)
-
+        
     def getCells(self):
         return self.cells
 		
@@ -67,18 +67,13 @@ class Face:
 	return ctr / float(len(self.vertices))
 
     def getCenter(self):
-##        return self.calcCenter()
-#        print self.id
-#        print self.center
-#        print self
-#        raw_input()
 	return self.center
     
     def area(self):
 	a=0.
-	p1 = self.vertices[0].getCoordinates()
+	p1 = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[2:-1]:
-	    p2=vertex.getCoordinates()
+	    p2=vertex.getCoordinates().copy()
 	    a += tools.crossProd(p1,p2)
 	    p1 = p2
 	return abs(a/2.)
@@ -94,20 +89,28 @@ class Face:
 	    
 	    center-to-center vector is from face center to cell center
 	    """
-	    cc = self.cells[0].center() - self.center
+	    cc = self.cells[0].getCenter() - self.center
 	else:
-	    cc = self.cells[0].center() - self.cells[1].center()
+	    cc = self.cells[0].getCenter() - self.cells[1].getCenter()
             
-	if cell == None or cell == self.cells[0]:
+	if cell == 'None' or cell == self.cells[0]:
 	    cc *= -1
             
 	if Numeric.dot(cc,norm) < 0:
 	    norm *= -1
 	    
 	return norm
+
+    def getNormal(self, cell = 'None'):
+        if cell == self.cells[0] or cell == 'None':
+            return self.normal
+        else:
+            return -self.normal
+
+    def setNormal(self):
+        self.normal = self.calcNormal(self.cells[0])
 	
-	
-    def normal(self, cell = None):	
+    def calcNormal(self, cell = 'None'):
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
 	norm = tools.crossProd(t1,t2)
@@ -117,9 +120,9 @@ class Face:
 
     def cellDistance(self):
         if(len(self.cells)==2):
-            vec=self.cells[1].center()-self.cells[0].center()
+            vec=self.cells[1].getCenter()-self.cells[0].getCenter()
         else:
-            vec=self.center-self.cells[0].center()        
+            vec=self.center-self.cells[0].getCenter()        
         return tools.sqrtDot(vec,vec)
 
     def __repr__(self):

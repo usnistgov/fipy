@@ -96,12 +96,12 @@ class TestSteadyStateDiffusion(unittest.TestCase):
         vr = self.valueRight
 
         for cell in self.mesh.getCells():
-            coords = cell.center()
+            coords = cell.getCenter()
             id = cell.getId()
             val = vl + (vr - vl) * coords[0] / lx
             norm = abs(array[id] - val)        
             self.assertWithinTolerance(norm, 0.0, 1e-8,("cell(%g)'s value of %g differs from %g by %g" % (id,array[id],val,norm)))
-
+            
 	    
 class TestSteadyStateDiffusion20x20(TestSteadyStateDiffusion):
     def setUp(self):
@@ -114,12 +114,18 @@ class TestSteadyStateDiffusion50x50(TestSteadyStateDiffusion):
 	self.nx = 50
 	self.ny = 50
 	TestSteadyStateDiffusion.setUp(self)	    
-	
+
+class  TestSteadyStateDiffusion1D(TestSteadyStateDiffusion):
+    def setUp(self):
+	self.nx = 50
+	self.ny = 1
+	TestSteadyStateDiffusion.setUp(self)	    
 	
 def suite():
+    suite1D = unittest.makeSuite(TestSteadyStateDiffusion1D, 'test')
     suite20 = unittest.makeSuite(TestSteadyStateDiffusion20x20, 'test')
     suite50 = unittest.makeSuite(TestSteadyStateDiffusion50x50, 'test')
-    alltests = unittest.TestSuite((suite20,suite50))
+    alltests = unittest.TestSuite((suite1D,suite20,suite50))
     return alltests
     
 if __name__ == '__main__':

@@ -46,6 +46,13 @@ class Cell:
         self.id = id
         for face in self.faces:
             face.addBoundingCell(self)
+        self.center = self.calcCenter()
+## can not calculate face normals untill this point
+## the face needs to know it's cells in order to
+## calculate the normal orientation. Initially the
+## normal goes from cell 1 to cell 2.
+        for face in self.faces:
+            face.setNormal()
 
     def getId(self):
         return self.id
@@ -53,20 +60,23 @@ class Cell:
     def volume(self):
 	vol = 0.
 	for face in self.faces:
-	    vol += face.getCenter()[0] * face.area() * face.normal(self)[0]
+	    vol += face.getCenter()[0] * face.area() * face.getNormal(self)[0]
 	return vol
 
-    def center(self):
+    def getCenter(self):
+        return self.center
+
+    def calcCenter(self):
         ctr = self.faces[0].getCenter().copy()
         for face in self.faces[1:]:
             ctr += face.getCenter()
         return ctr/float(len(self.faces))
             
     def __repr__(self):
-	rep = "<id = " + str(self.id) + ", volume = " + str(self.volume()) + ", center = " + str(self.center()) + ", faces = \n" 
+	rep = "<id = " + str(self.id) + ", volume = " + str(self.volume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
 	
 	for face in self.faces:
-	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.normal(self)) + "\n"
+	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.getNormal(self)) + "\n"
 	
 	rep += ">\n"
 	

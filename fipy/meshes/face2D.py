@@ -50,7 +50,7 @@ class Face2D(Face):
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
         return tools.sqrtDot(tangent,tangent)
 	
-    def normal(self, cell = None):
+    def calcNormal(self, cell = 'None'):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	norm = Numeric.array([-tangent[1],tangent[0]])
 	norm /= tools.sqrtDot(norm,norm)
