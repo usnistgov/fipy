@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/3/04 {1:21:10 PM} 
+ #                                last update: 2/3/04 {3:31:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,7 +59,7 @@ class CellGradVariable(VectorCellVariable):
 	    
 	    int k;
 	    for (k = 0; k < nk; k++) {
-		val(i,j) += orientations(i, k) * faceGradientContributions(ids(i,k), j);
+		val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
 	    }
 		
 	    val(i,j) /= volumes(i);
