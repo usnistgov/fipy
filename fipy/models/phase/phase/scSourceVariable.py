@@ -6,7 +6,7 @@
  # 
  #  FILE: "scSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/28/04 {4:20:21 PM} 
+ #                                last update: 7/24/04 {9:01:50 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,7 +52,7 @@ class ScSourceVariable(CellVariable):
         self.phase = self.requires(phase)
         self.anisotropy = self.requires(anisotropy)
 
-    def calcValue(self):
+    def _calcValue(self):
         inline.optionalInline(self._calcValueIn, self._calcValuePy)
     
     def _calcValuePy(self):
@@ -67,5 +67,5 @@ class ScSourceVariable(CellVariable):
         """,mPhi = self.mPhi.getNumericValue(),
             phase = self.phase.getNumericValue(),
             anisotropy = self.anisotropy.getNumericValue(),
-            value = self.value.value,
-            ni = len(self.value.value))
+            value = self._getArray(),
+            ni = len(self._getArray()))

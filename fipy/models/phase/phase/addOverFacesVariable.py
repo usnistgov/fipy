@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 6/3/04 {4:03:34 PM}
+ #                                last update: 7/24/04 {9:01:24 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,7 +59,7 @@ class AddOverFacesVariable(CellVariable):
         self.faceGradient = self.requires(faceGradient)
         self.faceVariable = self.requires(faceVariable)
 
-    def _calcValue(self):
+    def _calcValuePy(self):
 
         contributions = fipy.tools.array.sum(self.mesh.getAreaProjections() * self.faceGradient[:],1)   
         contributions = contributions * self.faceVariable[:]
@@ -123,13 +123,13 @@ class AddOverFacesVariable(CellVariable):
               faceGradient = self.faceGradient.getNumericValue()[:],
               faceVariable = self.faceVariable.getNumericValue()[:],
               ids = Numeric.array(ids),
-              value = self.value.value,
+              value = self._getArray(),
               orientations = Numeric.array(self.mesh.getCellFaceOrientations()),
               cellVolume = Numeric.array(self.mesh.getCellVolumes()))
 
-    def calcValue(self):
+    def _calcValue(self):
 
-        inline.optionalInline(self._calcValueInline, self._calcValue)
+        inline.optionalInline(self._calcValueInline, self._calcValuePy)
 
 
 
