@@ -46,12 +46,14 @@ import fivol.tests.testProgram
 import fivol.examples.phase.examples.anisotropy.test
 import fivol.examples.phase.examples.impingement.test
 import fivol.examples.phase.examples.missOrientation.test
+import fivol.examples.phase.examples.symmetry.test
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(fivol.examples.phase.examples.anisotropy.test.suite())
     theSuite.addTest(fivol.examples.phase.examples.impingement.test.suite())
     theSuite.addTest(fivol.examples.phase.examples.missOrientation.test.suite())
+    theSuite.addTest(fivol.examples.phase.examples.symmetry.test.suite())
     return theSuite
     
 if __name__ == '__main__':
