@@ -67,7 +67,7 @@ from parameters import parameters
 controlParameters = parameters['control parameters']
 geometryParameters = parameters['geometry parameters']
 experimentalParameters = parameters['experimental parameters']
-    
+
 yCells = controlParameters["cells below trench"] + int((geometryParameters["trench depth"] + geometryParameters["boundary layer depth"]) / controlParameters["cell size"])
 xCells = int((geometryParameters["trench spacing"] / 2) / controlParameters["cell size"])
 
@@ -93,7 +93,7 @@ def electrolyteFunc(cell):
     else:
         return 1
             
-distanceVariable = DistanceVariable(
+distanceVar = DistanceVariable(
     name = 'distance variable',
     mesh = mesh,
     value = -1.
@@ -101,15 +101,15 @@ distanceVariable = DistanceVariable(
 
 electrolyteCells = mesh.getCells(electrolyteFunc)
 
-distanceVariable.setValue(1., electrolyteCells)
+distanceVar.setValue(1., electrolyteCells)
 terminationValue = controlParameters["number of cells in narrow band"] / 2 * controlParameters['cell size']
-distanceEquation = DistanceEquation(distanceVariable, terminationValue = terminationValue)
+distanceEquation = DistanceEquation(distanceVar, terminationValue = terminationValue)
 distanceEquation.solve(terminationValue = 1e+10)
         
 acceleratorVariable = SurfactantVariable(
     name = "accelerator variable",
     value = experimentalParameters["initial accelerator coverage"],
-    distanceVariable = distanceVariable
+    distanceVar = distanceVar
     )
         
 metalIonVariable = CellVariable(
@@ -139,23 +139,23 @@ rateConstant = constant + overPotentialDependence * overPotential**3
 
 surfactantEquation = AdsorbingSurfactantEquation(
     acceleratorVariable,
-    distanceVariable,
+    distanceVar,
     experimentalParameters['bulk accelerator concentration'],
     rateConstant
     )
 
 advectionEquation = HigherOrderAdvectionEquation(
-    distanceVariable,
+    distanceVar,
     advectionCoeff = extensionVelocityVariable)
         
 extensionEquation = ExtensionEquation(
-    distanceVariable,
+    distanceVar,
     extensionVelocityVariable,
     terminationValue = terminationValue)
         
 metalIonEquation = MetalIonDiffusionEquation(
     metalIonVariable,
-    distanceVariable = distanceVariable,
+    distanceVar = distanceVar,
     depositionRate = depositionRateVariable,
     diffusionCoeff = parameters['metal ion properties']['diffusion coefficient'],
     metalIonAtomicVolume = parameters['metal ion properties']['atomic volume'],
@@ -179,7 +179,7 @@ class SurfactantPlotVariable(CellVariable):
 
 accMod = SurfactantPlotVariable(acceleratorVariable)
 
-metalIonPlotVar = (distanceVariable < 0) *  experimentalParameters['bulk metal ion concentration'] + metalIonVariable * (distanceVariable > 0 )
+metalIonPlotVar = (distanceVar < 0) *  experimentalParameters['bulk metal ion concentration'] + metalIonVariable * (distanceVar > 0 )
 
 res = 3
 cells = yCells * 2**(res-1)
@@ -200,7 +200,7 @@ viewers = (
                      limits = (0, cells, 0, cells),
                      dpi = 75),
 
-    Grid2DGistViewer(var = distanceVariable,
+    Grid2DGistViewer(var = distanceVar,
                      palette = 'heat.gp',
                      minVal = -1e-8,
                      maxVal = 1e-8,
@@ -252,14 +252,14 @@ if __name__ == '__main__':
         
         step += 1
 
-##        dumpVars = (
-##            viewers[0].getArray(),
-##            viewers[1].getArray(),
-##            viewers[2].getArray()
-##            )
+        dumpVars = (
+            viewers[0].getArray(),
+            viewers[1].getArray(),
+            viewers[2].getArray()
+            )
 
         filename = 'dump' + str(step)
 
-        dump.write(dumpVars, filename)
+##        dump.write(dumpVars, filename)
             
     raw_input('finished')

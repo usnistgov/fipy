@@ -103,7 +103,7 @@ distanceEquation = DistanceEquation(distanceVariable)
 distanceEquation.solve()
 
 surfactantVariable = SurfactantVariable(
-    distanceVariable = distanceVariable,
+    distanceVar = distanceVariable,
     value = 1.
     )
 

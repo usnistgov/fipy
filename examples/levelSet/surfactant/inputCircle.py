@@ -127,7 +127,7 @@ initialSurfactantValue =  1.
 
 surfactantVariable = SurfactantVariable(
     value = initialSurfactantValue,
-    distanceVariable = distanceVariable
+    distanceVar = distanceVariable
     )
 
 advectionEquation = HigherOrderAdvectionEquation(

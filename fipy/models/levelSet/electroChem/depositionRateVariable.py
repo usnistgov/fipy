@@ -93,7 +93,7 @@ Here is a small test,
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
    >>> distanceVariable = DistanceVariable(mesh = mesh, value = (-0.5, 0.5))
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-   >>> acceleratorVariable = SurfactantVariable(distanceVariable = distanceVariable, value = (0, 1))
+   >>> acceleratorVariable = SurfactantVariable(distanceVar = distanceVariable, value = (0, 1))
    >>> print DepositionRateVariable(metalIonVariable = 278., acceleratorVariable = acceleratorVariable, parameters = parameters)
    [  3.21448659e-09,  5.59567934e-07,]
    >>> print DepositionRateVariable(metalIonVariable = parameters['experimental parameters']['bulk metal ion concentration'] / 2, acceleratorVariable = acceleratorVariable, parameters = parameters)

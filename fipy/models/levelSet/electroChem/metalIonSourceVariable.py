@@ -74,7 +74,7 @@ from fipy.variables.cellVariable import CellVariable
 
 class MetalIonSourceVariable(CellVariable):
 
-    def __init__(self, ionVar = None, distanceVariable = None, depositionRate = None, metalIonAtomicVolume = None):
+    def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonAtomicVolume = None):
         """
 
         The following arguments are required to instatiate a
@@ -82,7 +82,7 @@ class MetalIonSourceVariable(CellVariable):
 
         `ionVar` - A `CellVariable`.
 
-        `distanceVariable` - A `DistanceVariable` object.
+        `distanceVar` - A `DistanceVariable` object.
 
         `depositionRate` - Either a `CellVariable` or a float.
 
@@ -90,15 +90,15 @@ class MetalIonSourceVariable(CellVariable):
        
         """
         
-        CellVariable.__init__(self, distanceVariable.getMesh(), hasOld = 0)
+        CellVariable.__init__(self, distanceVar.getMesh(), hasOld = 0)
         self.ionVar = self.requires(ionVar)
-        self.distanceVariable = self.requires(distanceVariable)
+        self.distanceVar = self.requires(distanceVar)
         self.depositionRate = self.requires(depositionRate)
         self.metalIonAtomicVolume = metalIonAtomicVolume
         
     def _calcValue(self):
         ionVar = Numeric.where(self.ionVar > 1e-20, self.ionVar, 1e-20)
-        self.value = Numeric.array(self.depositionRate) * self.distanceVariable.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonAtomicVolume) / ionVar
+        self.value = Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonAtomicVolume) / ionVar
         
 def _test(): 
     import doctest
