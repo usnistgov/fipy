@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/4/04 {2:52:10 PM} 
+ #                                last update: 7/26/04 {11:58:10 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,34 +51,31 @@ import fipy.tools.array as array
 class Variable:
     
     """
-    Lazily evaluated physical field or quantity with units
-
-    Constructor:
-
-	- Variable(|mesh|, |value|, |unit|), where |value| is a number of
-	arbitrary type and |unit| is a string containing the unit name.
-
-	- PhysicalField(|mesh|, |string|), where |string| contains both the
-	value and the unit.  This form is provided to make interactive use
-	more convenient.
-
-    Variable instances allow addition, subtraction,
-    multiplication, and division with each other as well as
-    multiplication, division, and exponentiation with numbers.
-    Addition and subtraction check that the units of the two operands
-    are compatible and return the result in the units of the first
-    operand. A limited set of mathematical functions (from module
-    Numeric) is applicable as well:
-
-    sqrt -- equivalent to exponentiation with 0.5.
-
-    sin, cos, tan -- applicable only to objects whose unit is compatible
-    with 'rad'.  
+    Lazily evaluated quantity with units. 
+    
+    Using a Variable in a mathematical expression will create an automatic
+    dependency Variable, e.g.,
+    
+	>>> a = Variable(value = 3)
+	>>> b = 4 * a
+	>>> b
+	(Variable(value = 3) * 4)
+	>>> b()
+	12
+	
+    Changes to the value of a Variable will automatically trigger changes in any dependent Variables
+    
+	>>> a.setValue(5)
+	>>> b
+	(Variable(value = 5) * 4)
+	>>> b()
+	20
+	
     """
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	"""
-	Create a variable.
+	Create a Variable.
 	
 	:Parameters:
 	  - `value`: the initial value
@@ -86,19 +83,32 @@ class Variable:
 	  - `array`: the storage array for the variable
 	  - `name`: the user-readable name of the variable
 	  - `mesh`: the mesh that defines the geometry of this variable
+	  
+	    >>> Variable(value = 3)
+	    Variable(value = 3)
+	    >>> Variable(value = 3, unit = "m")
+	    Variable(value = PhysicalField(3,'m'))
+	    >>> Variable(value = 3, unit = "m", array = Numeric.zeros((3,2)))
+	    Variable(value = PhysicalField([[3,3,]
+	     [3,3,]
+	     [3,3,]],'m'))
+
 	"""
 	
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
-	self.value = self.getPhysicalFieldClass()(value = value, unit = unit, array = array)
-## 	self.value = value
-## 	if array is not None:
-## 	    array[:] = self.value
-## 	    self.value = array
-		
-	self.mesh = mesh
+	if isinstance(value, Variable):
+	    name = value.name
+	    mesh = value.mesh
+	    value = value.getValue()
+	    unit = None
+	    array = None
+	    
+	self._setValue(value = value, unit = unit, array = array)
+	
 	self.name = name
+	self.mesh = mesh
 		
 	self.stale = 1
 	self.markFresh()
@@ -109,56 +119,171 @@ class Variable:
 	self.laplacian = {}
         self.mag = None
 	
-    def __array__(self, t = None):
-	return Numeric.array(self.getValue(), t)
-	
-    def getPhysicalFieldClass(self):
-	return fipy.tools.dimensions.physicalField.PhysicalField
-	
-    def copy(self):
-	return Variable(self)
-	
     def getMesh(self):
 	return self.mesh
 	
+    def __array__(self, t = None):
+	"""
+	Attempt to convert the Variable to a Numeric `array` object
+	
+	    >>> v = Variable(value = [2,3])
+	    >>> Numeric.array(v)
+	    [ 2., 3.,]
+	    
+	It is an error to convert a dimensional Variable to a 
+	Numeric `array`
+	
+            >>> v = Variable(value = [2,3], unit = "m")
+            >>> Numeric.array(v)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+
+	"""
+	return Numeric.array(self.getValue(), t)
+	
+    def copy(self):
+	"""
+	Make an duplicate of the Variable
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = a.copy()
+	    >>> b
+	    Variable(value = 3)
+
+	The duplicate will not reflect changes made to the original
+	
+	    >>> a.setValue(5)
+	    >>> b
+	    Variable(value = 3)
+	"""
+	return Variable(value = self)
+	
     def getUnit(self):
+	"""
+	Return the unit object of `self`.
+	
+	    >>> Variable(value = "1 m").getUnit()
+	    <PhysicalUnit m>
+	"""
 	value = self.getValue()
-	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.getUnit()
 	else:
 	    return "1"
 	
     def inBaseUnits(self):
+	"""
+	Return the value of the Variable with all units reduced to 
+	their base SI elements.
+	
+	    >>> e = Variable(value = "2.7 Hartree*Nav")
+	    >>> print e.inBaseUnits()
+	    7088849.77818 kg*m**2/s**2/mol
+	"""
 	value = self.getValue()
-	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.inBaseUnits()
 	else:
 	    return value
 
     def __getitem__(self, index): 
+	"""
+	"Evaluate" the variable and return the specified element
+	
+	    >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
+	    >>> print a[1,1]
+	    10.0 m
+	    
+	It is an error to slice a Variable whose `value` is not sliceable
+	
+	    >>> Variable(value = 3)[2]
+	    Traceback (most recent call last):
+		...
+	    TypeError: unsubscriptable object
+	"""
 	return self.getValue()[index]
 	
     def __str__(self):
 	return str(self.getValue())
 	    
     def __repr__(self):
-	return (self.__class__.__name__ + '("' + self.name + '",' + `self.getValue()` + ')')
+	s = self.__class__.__name__ + '('
+	if len(self.name) > 0:
+	    s += 'name = "' + self.name + '", '
+	s += 'value = ' + `self.getValue()`
+	if self.mesh:
+	    s += ', mesh = ' + `self.mesh`
+	s += ')'
+	return s
 	
     def __setitem__(self, index, value):
 	self.value[index] = value
 	self.markFresh()
+	
+    def __call__(self):
+	"""
+	"Evaluate" the Variable and return its value
+	
+	    >>> a = Variable(value = 3)
+	    >>> a()
+	    3
+	    >>> b = a + 4
+	    >>> b
+	    (Variable(value = 3) + 4)
+	    >>> b()
+	    7
+	"""
+	return self.getValue()
 		
     def getValue(self):
+	"""
+	"Evaluate" the Variable and return its value (longhand)
+	
+	    >>> a = Variable(value = 3)
+	    >>> a.getValue()
+	    3
+	    >>> b = a + 4
+	    >>> b
+	    (Variable(value = 3) + 4)
+	    >>> b.getValue()
+	    7
+	"""
 	self.refresh()
 	return self.value
-	
-    def setValue(self,value):
-	self.value = value
+
+    def _setValue(self, value, unit = None, array = None):
+	PF = fipy.tools.dimensions.physicalField.PhysicalField
+	if not isinstance(value, PF) and (unit or type(value) is type('')):
+	    self.value = PF(value = value, unit = unit, array = array)
+	elif array is not None:
+	    array[:] = value
+	    self.value = array
+	else:
+	    self.value = value
+	    
+	if isinstance(self.value, PF) and self.value.getUnit().isDimensionless():
+	    self.value = self.value.getNumericValue()
+
+    def setValue(self, value, unit = None, array = None):
+	self._setValue(value = value, unit = unit, array = array)
 	self.markFresh()
+	
+    def _setNumericValue(self, value):
+	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
+	    self.value.value = value
+	else:
+	    self.value = value
+	
+    def _getArray(self):
+	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
+	    return self.value._getArray()
+	else:
+	    return self.value
 	    
     def getNumericValue(self):
 	value = self.getValue()
-	if isinstance(value,fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.getNumericValue()
 	else:
 	    return value
@@ -167,10 +292,10 @@ class Variable:
 	if self.stale:           
 	    for required in self.requiredVariables:
 		required.refresh()
-	    self.calcValue()
+	    self._calcValue()
 	    self.markFresh()
 		    
-    def calcValue(self):
+    def _calcValue(self):
 	pass
 	
     def markFresh(self):
@@ -198,62 +323,109 @@ class Variable:
     def getVariableClass(self):
 	return Variable
 	
-    def getUnaryOperatorVariable(self, op):
-        parentClass = self.getVariableClass()
+    def getOperatorVariableClass(self):
+	parentClass = self.getVariableClass()
 
-	class unOp(parentClass):
+	class OperatorVariable(parentClass):
 	    def __init__(self, op, var, mesh = None):
 		if mesh is None:
-		    mesh = var.getMesh()
+		    mesh = var[0].getMesh()
 		self.op = op
 		self.var = var
-		# this horrendous hack is necessary because older Pythons
-		# (2.1) don't know the value of 'parentClass' at this
-		# point.  Since we're good and dog-fearing people, we don't
-		# ever, ever, ever do multiple inheritance, so we know
-		# there is only one base class.
-		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-		self.requires(self.var)
-		
-	    def calcValue(self):
-		self.value = self.getPhysicalFieldClass()(self.op(self.var.getValue()))
-		
-	    def __repr__(self):
-		return ("\n" + `self.op` + "(" + `self.var` + ") = " + `self.value`)
-		
-	return unOp(op, self)
-	    
-    def getBinaryOperatorVariable(self, op, var2):
-	parentClass = self.getVariableClass()
-	
-	class binOp(parentClass):
-	    def __init__(self, op, var1, var2, mesh = None):
-		if mesh is None:
-		    mesh = var1.getMesh()
-		self.op = op
-		self.var1 = var1
-		self.var2 = var2
-		# this horrendous hack is necessary because older Pythons
-		# (2.1) don't know the value of 'parentClass' at this
-		# point.  Since we're good and dog-fearing people, we don't
-		# ever, ever, ever do multiple inheritance, so we know
-		# there is only one base class.
-		self.__class__.__bases__[0].__init__(self, mesh = mesh)
-		self.requires(self.var1)
-		self.requires(self.var2)
-
-	    def calcValue(self):
-		if isinstance(self.var2, Variable):
-		    val2 = self.var2.getValue()
-		else:
-		    val2 = self.var2
+		parentClass.__init__(self, value = var[0], mesh = mesh)
+		for aVar in self.var:
+		    self.requires(aVar)
 		    
-		self.value = self.getPhysicalFieldClass()(self.op(self.var1.getValue(), val2))
-		
 	    def __repr__(self):
-		return ("\n" + `self.op` + "(\n\t" + `self.var1` + ",\n\t" + `self.var2` + "\n) = " + `self.getValue()`)
+		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
 		
-	return binOp(op, self, var2)
+		def _getIndex():
+		    return bytecodes.pop(0) + bytecodes.pop(0) * 256
+		
+		stack = []
+		    
+		unop = {
+		    10: "+", 11: "-", 12: "not ", 15: "~"
+		}
+		
+		binop = {
+		    19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
+			    62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
+		}
+		
+		while len(bytecodes) > 0:
+		    bytecode = bytecodes.pop(0)
+		    
+		    if bytecode == 13:
+			# UNARY_CONVERT
+			stack.append("`" + stack.pop() + "`")
+		    elif bytecode == 25:	
+			# BINARY_SUBSCR
+			stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+		    elif bytecode == 83:	
+			# RETURN_VALUE
+			return stack.pop()
+		    elif bytecode == 105:
+			# LOAD_ATTR
+			stack.append(stack.pop() + "." + self.op.func_code.co_names[_getIndex()])
+		    elif bytecode == 106:
+			# COMPARE_OP
+			import dis
+			stack.append(stack.pop(-2) + " " + dis.cmp_op[_getIndex()] + " " + stack.pop())
+		    elif bytecode == 116:
+			# LOAD_GLOBAL
+			stack.append(self.op.func_code.co_names[_getIndex()])
+		    elif bytecode == 124:	
+			# LOAD_FAST
+			stack.append(repr(self.var[_getIndex()]))
+		    elif bytecode == 131:
+			# CALL_FUNCTION
+			args = []
+			for j in range(bytecodes.pop(1)):
+			    # keyword parameters
+			    args.insert(0, stack.pop(-2) + " = " + stack.pop())
+			for j in range(bytecodes.pop(0)):
+			    # positional parameters
+			    args.insert(0, stack.pop())
+			stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+		    elif unop.has_key(bytecode):
+			stack.append(unop[bytecode] + stack.pop())
+		    elif binop.has_key(bytecode):
+			stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+		    else:
+			raise SyntaxError, "Unknown bytecode: " + `bytecode` + " in " + `[ord(byte) for byte in self.op.func_code.co_code]`
+
+	    def copy(self):
+	       return self.__class__(
+		   op = self.op,
+		   var = self.var,
+		   mesh = self.getMesh())
+
+	return OperatorVariable
+	
+    def getUnaryOperatorVariable(self, op):
+	class unOp(self.getOperatorVariableClass()):
+	    def _calcValue(self):
+		self._setValue(value = self.op(self.var[0].getValue())) 
+		
+	return unOp(op, [self])
+	    
+    def getBinaryOperatorVariable(self, op, other):
+	operatorClass = self.getOperatorVariableClass()
+	
+	class binOp(operatorClass):
+	    def _calcValue(self):
+		if isinstance(self.var[1], Variable):
+		    val1 = self.var[1].getValue()
+		else:
+		    val1 = self.var[1]
+		    
+		self._setValue(value = self.op(self.var[0].getValue(), val1)) 
+	
+	    def __repr__(self):
+		return "(" + operatorClass.__repr__(self) + ")"
+		
+	return binOp(op, [self, other])
 	
     def __add__(self, other):
 	return self.getBinaryOperatorVariable(lambda a,b: a+b, other)
@@ -296,21 +468,104 @@ class Variable:
 	return self.getUnaryOperatorVariable(lambda a: abs(a))
 
     def __lt__(self,other):
+	"""
+	Test if a Variable is less than another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a < 4)
+	    >>> b
+	    (Variable(value = 3) < 4)
+	    >>> b()
+	    1
+	    >>> a.setValue(4)
+	    >>> b()
+	    0
+	    
+	Python automatically reverses the arguments when necessary
+	
+	    >>> 4 > Variable(value = 3)
+	    (Variable(value = 3) < 4)
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a<b, other)
 
     def __le__(self,other):
+	"""
+	Test if a Variable is less than or equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a <= 4)
+	    >>> b
+	    (Variable(value = 3) <= 4)
+	    >>> b()
+	    1
+	    >>> a.setValue(4)
+	    >>> b()
+	    1
+	    >>> a.setValue(5)
+	    >>> b()
+	    0
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a<=b, other)
 	
     def __eq__(self,other):
+	"""
+	Test if a Variable is equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a == 4)
+	    >>> b
+	    (Variable(value = 3) == 4)
+	    >>> b()
+	    0
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a==b, other)
 	
     def __ne__(self,other):
+	"""
+	Test if a Variable is not equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a != 4)
+	    >>> b
+	    (Variable(value = 3) != 4)
+	    >>> b()
+	    1
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a!=b, other)
 	
     def __gt__(self,other):
+	"""
+	Test if a Variable is greater than another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a > 4)
+	    >>> b
+	    (Variable(value = 3) > 4)
+	    >>> b()
+	    0
+	    >>> a.setValue(5)
+	    >>> b()
+	    1
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a>b, other)
 	
     def __ge__(self,other):
+	"""
+	Test if a Variable is greater than or equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a >= 4)
+	    >>> b
+	    (Variable(value = 3) >= 4)
+	    >>> b()
+	    0
+	    >>> a.setValue(4)
+	    >>> b()
+	    1
+	    >>> a.setValue(5)
+	    >>> b()
+	    1
+	"""
 	return self.getBinaryOperatorVariable(lambda a,b: a>=b, other)
 
     def __len__(self):
@@ -361,3 +616,9 @@ class Variable:
 	    
 	return self.mag
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
