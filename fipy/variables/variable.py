@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/29/04 {6:02:31 PM} 
+ #                                last update: 8/27/04 {4:52:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -72,6 +72,8 @@ class Variable:
 	20
 	
     """
+    
+    __variable__ = True
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	"""
@@ -254,7 +256,7 @@ class Variable:
 
     def _setValue(self, value, unit = None, array = None):
 	PF = fipy.tools.dimensions.physicalField.PhysicalField
-	if not isinstance(value, PF) and (unit or type(value) is type('')):
+	if not isinstance(value, PF) and (unit is not None or type(value) is type('')):
 	    self.value = PF(value = value, unit = unit, array = array)
 	elif array is not None:
 	    array[:] = value
@@ -323,8 +325,9 @@ class Variable:
     def getVariableClass(self):
 	return Variable
 	
-    def getOperatorVariableClass(self):
-	parentClass = self.getVariableClass()
+    def getOperatorVariableClass(self, parentClass = None):
+	if parentClass is None:
+	    parentClass = self.getVariableClass()
 
 	class OperatorVariable(parentClass):
 	    def __init__(self, op, var, mesh = None):
@@ -403,15 +406,15 @@ class Variable:
 
 	return OperatorVariable
 	
-    def getUnaryOperatorVariable(self, op):
-	class unOp(self.getOperatorVariableClass()):
+    def getUnaryOperatorVariable(self, op, parentClass = None):
+	class unOp(self.getOperatorVariableClass(parentClass)):
 	    def _calcValue(self):
 		self._setValue(value = self.op(self.var[0].getValue())) 
 		
 	return unOp(op, [self])
 	    
-    def getBinaryOperatorVariable(self, op, other):
-	operatorClass = self.getOperatorVariableClass()
+    def getBinaryOperatorVariable(self, op, other, parentClass = None):
+	operatorClass = self.getOperatorVariableClass(parentClass)
 	
 	class binOp(operatorClass):
 	    def _calcValue(self):
@@ -592,7 +595,7 @@ class Variable:
 	return self.getUnaryOperatorVariable(lambda a: array.cos(a))
 		
     def dot(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b))
+	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)
 	    
     def transpose(self):
 	if self.transposeVar is None:
@@ -616,8 +619,10 @@ class Variable:
 
     def getMag(self):
         if self.mag is None:
-	    from magVariable import MagVariable
-	    self.mag = MagVariable(self)
+	    self.mag = self.dot(self).sqrt()
+	    
+## 	    from magVariable import MagVariable
+## 	    self.mag = MagVariable(self)
 	    
 	return self.mag
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 4/2/04 {4:05:59 PM} 
+ #                                last update: 8/26/04 {4:42:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,6 +39,9 @@
 import Numeric
 
 from fipy.variables.variable import Variable
+from fipy.variables.cellVariable import CellVariable
+
+import fipy.tools.array as array
 
 class VectorCellVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
@@ -70,6 +73,9 @@ class VectorCellVariable(Variable):
     def getVariableClass(self):
 	return VectorCellVariable
 
+    def dot(self, other):
+	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other, parentClass = CellVariable)
+	
 
 def _test(): 
     import doctest
