@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/24/04 {10:54:11 PM} 
+ #                                last update: 2/18/04 {3:41:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,8 +68,8 @@ import elphf
 
 from elphfIterator import ElPhFIterator
 
-nx = 1200
-dx = "0.0025 nm"
+nx = 24000
+dx = "0.000125 nm"
 # L = nx * dx
 
 mesh = Grid2D(

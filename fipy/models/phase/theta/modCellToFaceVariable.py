@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 2/17/04 {5:58:17 PM} 
+ #                                last update: 2/19/04 {11:08:28 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,6 +36,8 @@
  # ###################################################################
  ##
 
+import sys
+
 import Numeric
 
 from fivol.inline import inline
@@ -51,17 +53,14 @@ class ModCellToFaceVariable(CellToFaceVariable):
         int i;
         for(i = 0; i < ni; i++)
         {
-        double cell2 = var(id2(i));
-        double tmp = var(id1(i)) - cell2;
-        double pi = 3.141592653589793;
-        if (tmp > pi)
-            tmp = tmp - 2. * pi;
-        else if (tmp < - pi)
-            tmp = tmp + 2. * pi;
-        val(i) = tmp * alpha(i) + cell2;
+	    double cell2 = var(id2(i));
+	    double tmp = var(id1(i)) - cell2;
+	    double pi = 3.141592653589793;
+	    tmp = fmod(tmp + 3. * pi, 2. * pi) - pi;
+	    val(i) = tmp * alpha(i) + cell2;
         }
 	""",var = self.var.getNumericValue(),
-            val = self.value.value[:], 
+            val = self.value.value, 
             alpha = alpha,
             id1 = id1, id2 = id2,
             ni = len(self.mesh.getFaces()))

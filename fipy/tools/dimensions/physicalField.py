@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 2/17/04 {6:34:05 PM} 
+ #                                last update: 2/19/04 {11:05:42 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -197,7 +197,7 @@ class PhysicalField:
 	    otherValue = other.value
 	    if type(other.value) is type(Numeric.array((0))) and other.value.typecode() is 'b':
 		otherValue = 1. * other.value
-		
+
 	    new_value = sign1(selfValue) + \
 			sign2(otherValue)*other.unit.conversionFactorTo(self.unit)
 	return self.__class__(value = new_value, unit = self.unit)
@@ -223,7 +223,10 @@ class PhysicalField:
 	value = self.value*other.value
 	unit = self.unit*other.unit
 	if unit.isDimensionless():
-	    return value*unit.factor
+	    if unit.factor != 1:
+		return value * unit.factor
+	    else:
+		return value
 	else:
 	    return self.__class__(value = value, unit = unit)
 
@@ -409,7 +412,10 @@ class PhysicalField:
 	
     # Contributed by Berthold Hoellmann
     def inBaseUnits(self):
-        new_value = self.value * self.unit.factor
+	if self.unit.factor != 1:
+	    new_value = self.value * self.unit.factor
+	else:
+	    new_value = self.value
         num = ''
         denom = ''
         for i in xrange(9):
@@ -501,6 +507,8 @@ class PhysicalUnit:
     __str__ = __repr__
 
     def __cmp__(self, other):
+	if not isinstance(other,PhysicalUnit):
+	    raise TypeError, 'What are you doing, dumbass?'
 	if self.powers != other.powers:
 	    raise TypeError, 'Incompatible units'
 	return cmp(self.factor, other.factor)

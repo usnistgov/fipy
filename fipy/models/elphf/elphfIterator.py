@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 1/24/04 {11:13:29 PM} 
+ #                                last update: 2/18/04 {3:09:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
