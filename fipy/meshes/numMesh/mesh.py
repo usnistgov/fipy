@@ -468,7 +468,8 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcGeometry(self):
 	self.calcFaceCenters()
 	fipy.meshes.common.mesh.Mesh.calcGeometry(self)
-
+        self.calcCellNormals()
+        
     """calc geometry methods"""
 
     def calcFaceAreas(self):
@@ -554,6 +555,13 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcCellToCellDistances(self):
         self.cellToCellDistances = MAtake(self.cellDistances, self.getCellFaceIDs())
 
+    def calcCellNormals(self):
+        cellNormals = MAtake(self.getFaceNormals(), self.getCellFaceIDs())
+        cellFaceCellIDs = MAtake(self.faceCellIDs[:,0], self.cellFaceIDs)
+        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(self.getNumberOfCells()), self.getMaxFacesPerCell()), cellFaceCellIDs.shape)
+        direction = (cellFaceCellIDs == cellIDs) * 2 - 1
+        self.cellNormals =  direction[:,:,Numeric.NewAxis] * cellNormals
+                         
     """get geometry methods"""
 
     def getFaceCenters(self):
