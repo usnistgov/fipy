@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/28/04 {9:18:18 PM} 
+ #                                last update: 8/27/04 {5:07:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -88,8 +88,6 @@ import re, string, umath
 
 import Numeric
 import MA
-
-import fipy.variables.variable
 
 from NumberDict import NumberDict
 
@@ -1448,10 +1446,10 @@ def Scale(quantity, scaling):
         TypeError: <PhysicalUnit s> and <PhysicalUnit m> are incompatible
     """
     
-    quantity = AnyQuantity(quantity)
+    quantity = PhysicalField(quantity)
 
-    if isinstance(quantity,PhysicalField) and not quantity.unit.isDimensionless():
-        scaling = AnyQuantity(scaling)
+    if not quantity.getUnit().isDimensionless():
+        scaling = PhysicalField(scaling)
         # normalize quantity to scaling
         # error will be thrown if incompatible
         dimensionless = quantity / scaling
@@ -1460,88 +1458,15 @@ def Scale(quantity, scaling):
         # Automatically throws an error if it's not a number.
         dimensionless = quantity
                 
-    if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
+    if isinstance(dimensionless,PhysicalField) and not dimensionless.getUnit().isDimensionless():
         raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
         + `scaling.inBaseUnits().unit` \
         + ' are incompatible'
         
     return dimensionless
  
-
-def NonDimOrUnits(quantity, units):
-    """
-    Return `quantity` if it is dimensionless, 
-    
-	>>> print NonDimOrUnits(PhysicalField("2. m/m"), "mm")
-	2.0 1
-	>>> print NonDimOrUnits(PhysicalField(2.), "mm")
-	2.0 1
-    
-    otherwise convert it to `units` and return it
-    
-	>>> print NonDimOrUnits(PhysicalField("1. inch"), "mm")
-	25.4 mm
-	
-    It is an error if the units are incompatible
-    
-        >>> print NonDimOrUnits(PhysicalField("1. s"), "mm")
-        Traceback (most recent call last):
-            ...
-        TypeError: Incompatible units
-    """
-    quantity = AnyQuantity(quantity)
-    if isinstance(quantity,PhysicalField) and not quantity.unit.isDimensionless():
-        quantity.convertToUnit(units)
-    return quantity
-        
-def AnyQuantity(quantity):
-    """ normalize 'quantity'.
-    
-    'quantity' can be a PhysicalField, a value-unit string convertable to
-    a PhysicalField, or a dimensionless number.
-    """
-    
-    if type(quantity) == type(''):
-        # input is string, so construct a PhysicalQuantity
-        quantity = PhysicalField(quantity)
-        
-##     if not isinstance(quantity,PhysicalField):
-##         # Assume quantity is a dimensionless number and return it.
-##         # Automatically throws an error if it's not a number.
-##         quantity = float(quantity)
-        
-    return quantity
-
-def AddConstant(name, constant):
-    """
-    Add `constant` to the table of available units
-    
-	>>> print PhysicalField("1. faraday")
-	Traceback (most recent call last):
-	    ...
-	NameError: name 'faraday' is not defined
-	>>> AddConstant('faraday', 'Nav*e')
-	>>> b = PhysicalField("1. faraday")
-	>>> print b
-	1.0 faraday
-	>>> print b.inBaseUnits()
-	96485.308989 A*s/mol
-    """
-##     if _unit_table.has_key(name):
-##      raise KeyError, 'Constant ' + name + ' already defined'
-    if isinstance(constant,PhysicalField):
-        constant = PhysicalUnit(constant.unit.names, constant.value, constant.unit.powers, constant.unit.offset)
-    elif type(constant) == type(''):
-        constant = eval(constant, _unit_table)
-        for cruft in ['__builtins__', '__args__']:
-            try: del _unit_table[cruft]
-            except: pass
-    if isinstance(constant,PhysicalUnit):
-        constant.setName(name)
-    _unit_table[name] = constant
-
 def _isVariable(var):
-    return isinstance(var,fipy.variables.variable.Variable)
+    return '__variable__' in dir(var)
     
 # SI unit definitions
 
