@@ -1,7 +1,7 @@
 import sys
 
 import Numeric 
-import weave
+##import weave
 
 def optionalInline(inlineFn, pythonFn, *args):
     if 'inline' in sys.argv:
@@ -10,11 +10,17 @@ def optionalInline(inlineFn, pythonFn, *args):
 	return pythonFn(*args)
 	
 def runInline(code,**args):
-    
+    import weave
+
+##    from weave.blitz_tools import blitz_type_factories	
+
     weave.inline(code,
 		 args.keys(),
 		 local_dict=args,
+##		 type_factories = blitz_type_factories,
+##		 type_converters = weave_type_factories,
 		 type_converters=weave.converters.blitz,
+##		 type_converters=weave.weave_type_Factories
 		 compiler = 'gcc',
 		 extra_compile_args =['-O3'])
 			 
