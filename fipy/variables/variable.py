@@ -93,23 +93,23 @@ class Variable:
 # 	else:
 # 	    return None
 	    
-    def __lt__(self,other):
-	return self.getValue() < other
+#    def __lt__(self,other):
+#	return self.getValue() < other
 
-    def __le__(self,other):
-	return self.getValue() <= other
+#    def __le__(self,other):
+#	return self.getValue() <= other
 	
-    def __eq__(self,other):
-	return self.getValue() == other
+#    def __eq__(self,other):
+#	return self.getValue() == other
 	
-    def __ne__(self,other):
-	return self.getValue() != other
+#    def __ne__(self,other):
+#	return self.getValue() != other
 	
-    def __gt__(self,other):
-	return self.getValue() > other
+##    def __gt__(self,other):
+##	return self.getValue() > other
 	
-    def __ge__(self,other):
-	return self.getValue() >= other
+##    def __ge__(self,other):
+##	return self.getValue() >= other
 	
     def __getitem__(self, index): 
 	return self.getValue()[index]
@@ -194,8 +194,9 @@ class Variable:
 	    
     def getBinaryOperatorVariable(self, op, var2):
 	parentClass = self.getVariableClass()
+
 	class binOp(parentClass):
-	    def __init__(self, op, var1, var2, mesh = None):
+	    def __init__(self, op, var1, var2, mesh = None, parentClass = None):
 		if mesh is None:
 		    mesh = var1.getMesh()
 		# this horrendous hack is necessary because older Python's
@@ -219,7 +220,7 @@ class Variable:
 # 	    def __repr__(self):
 # 		return (`self.op` + "(" + `self.var1` + "," + `self.var2` + ") = " + `self.value`)
 		
-	return binOp(op, self, var2)
+	return binOp(op, self, var2, parentClass = parentClass)
 	
     def __add__(self, other):
 	return self.getBinaryOperatorVariable(Numeric.add, other)
@@ -266,10 +267,28 @@ class Variable:
     def __abs__(self):
 	return self.getUnaryOperatorVariable(Numeric.fabs)
 	
+    def __lt__(self,other):
+	return self.getBinaryOperatorVariable(Numeric.less, other)
+
+    def __le__(self,other):
+        return self.getBinaryOperatorVariable(Numeric.less_equal, other)
+	
+    def __eq__(self,other):
+        return self.getBinaryOperatorVariable(Numeric.equal, other)
+	
+    def __ne__(self,other):
+        return self.getBinaryOperatorVariable(Numeric.not_equal, other)
+	
+    def __gt__(self,other):
+        return self.getBinaryOperatorVariable(Numeric.greater, other)
+	
+    def __ge__(self,other):
+        return self.getBinaryOperatorVariable(Numeric.greater_equal, other)
+
     def tan(self):
 	return self.getUnaryOperatorVariable(Numeric.tan)
 	
     def transpose(self):
 	from transposeVariable import TransposeVariable
 	return TransposeVariable(self)
-	
+
