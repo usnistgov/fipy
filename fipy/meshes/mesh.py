@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/16/04 {11:34:00 AM} 
+ #                                last update: 2/2/04 {4:32:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -180,6 +180,7 @@ class Mesh:
             cell = cells[i]
             ids = cell.getFaceIDs()
             self.cellFaceIDs += ids
+	self.cellFaceIDs = Numeric.array(self.cellFaceIDs)
         
     def getFaceAreas(self):
 	return self.faceAreas

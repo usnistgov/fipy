@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/31/04 {12:12:12 AM} 
+ #                                last update: 2/2/04 {3:25:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -405,7 +405,7 @@ class PhysicalField:
 	return self.unit
 	
     def getNumericValue(self):
-	return self.value
+	return self.inBaseUnits().value
 	
     # Contributed by Berthold Hoellmann
     def inBaseUnits(self):

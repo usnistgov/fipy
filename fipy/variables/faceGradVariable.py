@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/30/04 {6:01:16 PM}
+ #                                last update: 2/2/04 {2:52:19 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,8 +39,8 @@
 import Numeric
 
 from fivol.variables.vectorFaceVariable import VectorFaceVariable
-import fivol.tools.array as array
-import fivol.inline.inline as inline
+from fivol.tools import array
+from fivol.inline import inline
 
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var, mod = None):

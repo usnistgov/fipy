@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/16/04 {11:35:46 AM} 
+ #                                last update: 2/2/04 {4:41:39 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,7 +39,8 @@
 import Numeric
 
 from fivol.variables.vectorCellVariable import VectorCellVariable
-import fivol.tools.array
+from fivol.tools import array
+from fivol.inline import inline
 
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var):
@@ -52,24 +53,44 @@ class CellGradVariable(VectorCellVariable):
 ##        raw_input()
 	self.faceGradientContributions = self.mesh.getAreaProjections() * self.var.getFaceValue().transpose()
         
+    def _calcValueIn(self, N, M, ids, orientations, volumes):
+	inline.runInlineLoop2("""
+	double grad = 0.;
+	int k;
+	for (k = 0; k < nk; k++) {
+	    grad += orientations(i, k) * faceGradientContributions(ids(i * nk + k), j);
+	}
+	    
+	grad /= volumes(i);
+	
+	val(i,j) = grad;
+	""",
+	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
+	faceGradientContributions = self.faceGradientContributions.getNumericValue(),
+	ni = N, nj = self.mesh.getDim(), nk = M
+	)
+	    
+    def _calcValuePy(self, N, M, ids, orientations, volumes):
+## 	print "self.var:",self.var.__class__
+## 	print 'getFaceValue:',self.var.getFaceValue()[:]
+## 	raw_input()
+	
+	contributions = array.take(self.faceGradientContributions[:],ids)
+	contributions = contributions.reshape((N,M,self.mesh.getDim()))
+
+	grad = (orientations*contributions).sum(1)
+	
+	grad = grad/volumes[:,Numeric.NewAxis]
+
+	self.value = grad
+	    
     def calcValue(self):
-	N = len(self.var[:])
+	N = len(self.mesh.getCells())
 	M = self.mesh.getMaxFacesPerCell()
 	
 	ids = self.mesh.getCellFaceIDs()
 
-##        print "self.var:",self.var.__class__
-##        print 'getFaceValue:',self.var.getFaceValue()[:]
-##        raw_input()
-	contributions = fivol.tools.array.take(self.faceGradientContributions[:],ids)
-	contributions = contributions.reshape((N,M,self.mesh.getDim()))
-
 	orientations = self.mesh.getCellFaceOrientations()
-
-	grad = (orientations*contributions).sum(1)
-	
 	volumes = self.mesh.getCellVolumes()
 
-	grad = grad/volumes[:,Numeric.NewAxis]
-
-	self.value = grad
+	inline.optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)
