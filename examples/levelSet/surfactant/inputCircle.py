@@ -63,15 +63,24 @@ Also a surfactant is present of the interface, governed by the equation:
 The result can be tested with the following code:
 
 
+   >>> surfactantBefore = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-   >>> ids = Numeric.nonzero(Numeric.logical_and(distanceVariable > 0., distanceVariable < dx / 2.))
-   >>> surfactantValues = Numeric.take(surfactantVariable, ids)
-   >>> cellCenters = Numeric.take(mesh.getCellCenters(), ids)
-   >>> finalRadius = Numeric.sqrt((cellCenters[:,0]- L / 2)**2 + (cellCenters[:,1] - L / 2)**2)
-   >>> answer =  initialRadius / finalRadius
-   >>> Numeric.allclose(answer, Numeric.array(surfactantValues), rtol = 0.03)
+   >>> surfactantEquation.solve()
+   >>> surfactantAfter = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> Numeric.allclose(surfactantBefore, surfactantAfter)
    1
+   >>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
+   >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
+   >>> coverage = surfactantVariable * mesh.getCellVolumes() / areas
+   >>> error = 0.
+   >>> size = 0
+   >>> for i in range(len(coverage)):
+   ...     if coverage[i] > 1e-3:
+   ...         error += (coverage[i] / answer - 1.)**2
+   ...         size += 1            
+   >>> print Numeric.sqrt(error / size)
+   0.00813776069241
 
 """
 
@@ -79,11 +88,12 @@ import Numeric
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.distanceFunction.distanceFunctionEquation import DistanceFunctionEquation
+from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
+from fipy.models.levelSet.surfactant.conservativeSurfactantEquation import ConservativeSurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
@@ -104,24 +114,21 @@ steps = int(distanceToTravel / dx / cfl)
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
-distanceVariable = CellVariable(
+distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = 1.
     )
 
 cellRadius = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
-
-
-initialSurfactantValue =  Numeric.where(initialRadius / cellRadius < 2., initialRadius / cellRadius, 2.)
-
-surfactantVariable = CellVariable(
-    name = 'surfactant variable',
-    mesh = mesh,
-    value = initialSurfactantValue
-    )
-
 distanceVariable.setValue(cellRadius - initialRadius)
+
+initialSurfactantValue =  1.
+
+surfactantVariable = SurfactantVariable(
+    value = initialSurfactantValue,
+    distanceVariable = distanceVariable
+    )
 
 advectionEquation = AdvectionEquation(
     distanceVariable,
@@ -131,7 +138,7 @@ advectionEquation = AdvectionEquation(
         steps = 1000),
     advectionTerm = HigherOrderAdvectionTerm)
 
-surfactantEquation = SurfactantEquation(
+surfactantEquation = ConservativeSurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(
@@ -143,16 +150,34 @@ it = Iterator((surfactantEquation, advectionEquation))
 if __name__ == '__main__':
     
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -initialRadius, maxVal = initialRadius)
-    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = -1., maxVal = 1.)
+    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = -1., maxVal = 100.)
     distanceViewer.plot()
     surfactantViewer.plot()
+
+    print 'total surfactant before:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())
     
     for step in range(steps):
         it.timestep(dt = timeStepDuration)
-##        array = Numeric.array(distanceVariable)
-##        array = array - timeStepDuration * velocity
-##        distanceVariable.setValue(array)
         distanceViewer.plot()
         surfactantViewer.plot()
-    print 'surfactantVariable',surfactantVariable
+    surfactantEquation.solve()
+
+
+    print 'total surfactant after:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+
+    areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
+    answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
+    coverage = surfactantVariable * mesh.getCellVolumes() / areas
+
+    error = 0.
+    size = 0
+    for i in range(len(coverage)):
+        if coverage[i] > 1e-3:
+            error += (coverage[i] / answer - 1.)**2
+            size += 1
+            
+    error = Numeric.sqrt(error / size)
+    
+    print 'error:', error
+    
     raw_input('finished')
