@@ -155,6 +155,55 @@ failure.
    >>> eqn0.solve(var0, dt = dt)
    >>> Numeric.allclose(var0.getInterfaceVar()[2], 0)
    1
+
+The following test case is to fix a bug that allos the accelerator to
+become negative.
+
+   >>> nx = 5
+   >>> ny = 5
+   >>> mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
+   >>> values = Numeric.ones(mesh.getNumberOfCells(), 'd')
+   >>> values[0:nx] = -1
+   >>> for i in range(ny):
+   ...     values[i * nx] = -1
+
+   >>> disVar = DistanceVariable(mesh = mesh, value = values)
+   >>> disVar.calcDistanceFunction()
+
+   >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
+   >>> accVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
+
+   >>> levEq = AdsorbingSurfactantEquation(levVar,
+   ...                                     distanceVar = disVar,
+   ...                                     bulkVar = 0,
+   ...                                     rateConstant = 0)
+
+   >>> accEq = AdsorbingSurfactantEquation(accVar,
+   ...                                     distanceVar = disVar,
+   ...                                     bulkVar = 0,
+   ...                                     rateConstant = 0,
+   ...                                     otherVar = levVar,
+   ...                                     otherBulkVar = 0,
+   ...                                     otherRateConstant = 0)
+
+   >>> extVar = CellVariable(mesh = mesh, value = accVar.getInterfaceVar())
+
+   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
+   >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff = extVar)
+
+   >>> dt = 0.1
+
+   >>> for i in range(50):
+   ...     disVar.calcDistanceFunction()
+   ...     extVar.setValue(Numeric.array(accVar.getInterfaceVar()))
+   ...     disVar.extendVariable(extVar)
+   ...     disVar.updateOld()
+   ...     advEq.solve(disVar, dt = dt)
+   ...     levEq.solve(levVar, dt = dt)
+   ...     accEq.solve(accVar, dt = dt)
+
+   >>> Numeric.sum(accVar < -1e-10) == 0
+   True
    
 """
 
@@ -165,7 +214,7 @@ import Numeric
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.dependentSourceTerm import DependentSourceTerm
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 class AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -215,7 +264,7 @@ class ScMaxCoeff(MaxCoeff):
         for var in self.vars[1:]:
             val -= self.distanceVar.getCellInterfaceFlag() * Numeric.array(var)
 
-        self.value = 1e20 * self._calcMax() * val
+        self.value = 1e20 * self._calcMax() * Numeric.where(val < 0, 0, val)
 
 class AdsorbingSurfactantEquation(SurfactantEquation):
     def __init__(self,
@@ -254,7 +303,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 
-    def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
         for coeff in self.coeffs:
             coeff.updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
