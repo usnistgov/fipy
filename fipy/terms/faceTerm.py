@@ -110,10 +110,19 @@ class FaceTerm(Term):
 # 	    cell2dia = self.coeff*weight['cell 2 diag']
 
             for i in range(self.interiorN):
+                if id1[i] == 92 or id2[i] == 92:
+
+                    print "adding to b vector in face term"
+                    print self.explicit['cell 1 diag'][i] * oldArray[id1[i]] + self.explicit['cell 1 offdiag'][i] * oldArray[id2[i]]
+                    self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
+
+
+
 		b[id1[i]] -= self.explicit['cell 1 diag'][i] * oldArray[id1[i]] + self.explicit['cell 1 offdiag'][i] * oldArray[id2[i]]
 		b[id2[i]] -= self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
 #                 b[id1[i]] -= cell1dia[i] * oldArray[id1[i]] + cell1off[i] * oldArray[id2[i]]
 #                 b[id2[i]] -= cell2dia[i] * oldArray[id2[i]] + cell2off[i] * oldArray[id1[i]]
+
 
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():

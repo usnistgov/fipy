@@ -54,6 +54,12 @@ class CellTerm(Term):
     def buildMatrix(self,L,oldArray,b):
 	N = len(oldArray)
 
+##        print self.__class__
+##        print "b addition in cell term"
+##        print oldArray*self.oldCoeff[:]
+##        raw_input()
+
+
 	b += oldArray*self.oldCoeff[:]
 	b += Numeric.ones([N])*self.bCoeff[:]
 	L.update_add_pyarray(Numeric.ones([N])*self.newCoeff[:])
