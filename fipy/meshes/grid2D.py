@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/24/03 {7:29:24 PM} 
+ #                                last update: 11/25/03 {9:37:19 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -134,7 +134,6 @@ class Grid2D(Mesh):
 	rowFaces,colFaces = self.createFaces(vertices)
 	cells = self.createCells(rowFaces,colFaces)
 	faces,interiorFaces = self.reorderFaces(rowFaces,colFaces)
-#         interiorFaces = self.createInteriorFaces(faces)
 	
 	Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
@@ -152,38 +151,16 @@ class Grid2D(Mesh):
         return vertices	
 		    
     def createFaces(self, vertices):
-	"""Return list of Faces bounded by vertices.
+	"""Return 'tuples' of 'Faces' bounded by 'Vertices'. 
+	
+	First 'tuple' are the 'Faces' that separate rows of 'Cells'.  Second
+	'tuple' are the 'Faces' that separate columns of 'Cells'.  These
+	initial lists are layed out for efficiency of composing and indexing
+	into the lists to compose 'Cells'.  They will subsequently be
+	reordered for efficiency of computations.
 	"""
         nx=self.nx
         ny=self.ny
-	faces = ()
-# 	# create interior row faces
-# 	for j in range(ny-1):
-# 	    for i in range(nx):
-# 		faces += (Face2D((vertices[i + (j + 1) * (nx + 1)],vertices[i + 1 + (j + 1) * (nx + 1)]),id),)
-# 		id += 1
-# 	
-# 	# create interior column faces
-# 	for j in range(ny):
-# 	    for i in range(nx-1):
-# 		faces += (Face2D((vertices[i + 1 + j * (nx + 1)],vertices[i + 1 + (j + 1) * (nx + 1)]),id),)
-# 		id += 1
-# 
-# 	# create exterior row faces
-# 	for i in range(nx):
-# 	    faces += (Face2D((vertices[i],vertices[i + 1]),id),)
-# 	    id += 1
-# 	for i in range(nx):
-# 	    faces += (Face2D((vertices[i + ny * (nx + 1)],vertices[i + 1 + ny * (nx + 1)]),id),)
-# 	    id += 1
-# 	
-# 	# create exterior column faces
-# 	for j in range(ny):
-# 	    faces += (Face2D((vertices[j * (nx + 1)],vertices[(j + 1) * (nx + 1)]),id),)
-# 	    id += 1
-# 	for j in range(ny):
-# 	    faces += (Face2D((vertices[nx + j * (nx + 1)],vertices[nx + (j + 1) * (nx + 1)]),id),)
-# 	    id += 1
 
 	id = 0
 	rowFaces = ()
@@ -203,28 +180,19 @@ class Grid2D(Mesh):
 	return (rowFaces,colFaces)
 	
     def reorderFaces(self,rowFaces,colFaces):
-	def flatten(T):
-	    """Stolen (with small modification) from 
-	    <http://mail.python.org/pipermail/tutor/2001-April/005025.html>
-	    """
-	    def isTuple(x): return type(x) == type(())
-	    
-	    if not isTuple(T): return (T,)
-	    elif len(T) == 0: return ()
-	    else: return flatten(T[0]) + flatten(T[1:]) 
+	"""Return a 'tuple' of faces ordered for best efficiency.
+	
+	Composed from 'rowFaces' and 'colFaces' such that all interior faces
+	are listed contiguously, rows then columns, followed by all boundary
+	faces, rows then columns.
+	"""
+	interiorFaces = ()
 
-# 	print "rowFaces: ", rowFaces[1:-1]
-# 	print "colFaces: ", colFaces[:][1:-1]
-	
-	faces = ()
-	
-	faces = rowFaces[1:-1]
+	for rowFace in rowFaces[1:-1]:
+	    interiorFaces += rowFace
 	for colFace in colFaces:
-	    faces += colFace[1:-1]
-	faces = flatten(faces)
-	interiorFaces = faces
-	
-# 	print "interiorFaces: ", interiorFaces
+	    interiorFaces += colFace[1:-1]
+	faces = interiorFaces
 	
 	faces += rowFaces[0] + rowFaces[-1]
 	for colFace in colFaces:
@@ -232,16 +200,10 @@ class Grid2D(Mesh):
 	for colFace in colFaces:
 	    faces += (colFace[-1],)
 	
-# 	print "faces: ", faces
-	
 	id = 0
 	for face in faces:
 	    face.setId(id)
 	    id += 1
-	    
-# 	print "faces: ", faces
-# 	print "interiorFaces: ", interiorFaces
-	
 	
 	return (faces, interiorFaces)
 	
@@ -264,25 +226,6 @@ class Grid2D(Mesh):
 		    )                
 	return cells
 
-#     def createCells(self, faces):
-# 	"""Return list of Cells.
-# 	"""
-#         nx=self.nx
-#         ny=self.ny
-# 	cells = ()
-# 	for j in range(ny):
-# 	    for i in range(nx):
-#                 id = j * nx + i
-# 		cells += (
-#                     Cell(
-#                     (faces[i + j * nx],
-#                     faces[i + (j+1) * nx],
-#                     faces[nx * (ny + 1) + i + j * (nx + 1)],
-#                     faces[nx * (ny + 1) + i + 1 + j * (nx + 1)]),id
-#                     ),
-#                     )                
-# 	return cells
-
     def createInteriorFaces(self,faces):
 	"""Return list of faces that are not on boundary of Grid2D.
 	"""
@@ -292,70 +235,35 @@ class Grid2D(Mesh):
                 interiorFaces += (face,)
         return interiorFaces
 
-#     def getFacesLeft(self):
-# 	"""Return list of faces on left boundary of Grid2D.
-# 	"""
-#         nx=self.nx
-#         ny=self.ny
-#         facesLeft = ()
-#         for i in range(ny):
-#             facesLeft += (self.faces[nx * (ny + 1) + (nx + 1) * i],)
-#         return facesLeft
-
     def getFacesLeft(self):
 	"""Return list of faces on left boundary of Grid2D.
 	"""
 	nx=self.nx
 	ny=self.ny
-	numInt = len(self.interiorFaces)
-	return self.faces[numInt + 2 * nx:numInt + 2 * nx + ny]
+	start = len(self.interiorFaces) + 2 * nx
+	return self.faces[start:start + ny]
 	
-#     def getFacesRight(self):
-# 	"""Return list of faces on right boundary of Grid2D.
-# 	"""
-#         nx=self.nx
-#         ny=self.ny
-#         facesRight = ()
-#         for i in range( ny):
-#             facesRight += (self.faces[nx * (ny + 1) + (nx + 1) * (i + 1) - 1],)
-#         return facesRight
-
     def getFacesRight(self):
 	"""Return list of faces on right boundary of Grid2D.
 	"""
 	nx=self.nx
 	ny=self.ny
-	numInt = len(self.interiorFaces)
-	return self.faces[numInt + 2 * nx + ny:numInt + 2 * nx + 2 * ny]
+	start = len(self.interiorFaces) + 2 * nx + ny
+	return self.faces[start:start + ny]
 	
-#     def getFacesTop(self):
-# 	"""Return list of faces on top boundary of Grid2D.
-# 	"""
-#         nx=self.nx
-#         ny=self.ny
-#         return self.faces[nx*ny:nx*ny+nx]
-
     def getFacesTop(self):
 	"""Return list of faces on top boundary of Grid2D.
 	"""
 	nx=self.nx
-	ny=self.ny
-	numInt = len(self.interiorFaces)
-	return self.faces[numInt + nx:numInt + 2 * nx]
+	start = len(self.interiorFaces) + nx
+	return self.faces[start:start + nx]
 	
-#     def getFacesBottom(self):
-# 	"""Return list of faces on bottom boundary of Grid2D.
-# 	"""
-#         nx=self.nx
-#         return self.faces[0:nx]
-                       
     def getFacesBottom(self):
 	"""Return list of faces on bottom boundary of Grid2D.
 	"""
 	nx=self.nx
-	ny=self.ny
-	numInt = len(self.interiorFaces)
-	return self.faces[numInt:numInt + nx]
+	start = len(self.interiorFaces)
+	return self.faces[start:start + nx]
 	    
     def getShape(self):
 	"""Return cell dimensions 'Grid2D'.
