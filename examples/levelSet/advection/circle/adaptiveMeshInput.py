@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveMeshInput.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/2/04 {4:01:07 PM} { 1:23:41 PM}
+ #                                last update: 8/26/04 {2:07:00 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,8 @@ This example first imposes a circular distance function:
 
 .. raw:: latex
 
-    $$ \\phi \\left( x, y \\right) = \\left[ \\left( x - \\frac{ L }{ 2 } \\right)^2 + \\left( y - \\frac{ L }{ 2 } \\right)^2 \\right]^{1/2} - \\frac{L}{4} $$ 
+    $$ \\phi \\left( x, y \\right) = \\left[ \\left( x - \\frac{ L }{ 2 } \\right)^2 
+         + \\left( y - \\frac{ L }{ 2 } \\right)^2 \\right]^{1/2} - \\frac{L}{4} $$ 
 
 then the variable is advected with,
 
@@ -57,18 +58,27 @@ then the variable is advected with,
 
 The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
 
-This example demonstrates the use of the AdaptiveMesh2D and ReMeshedCellVariable class to dynamically modify the mesh based on the variable value.
-This is done as follows:
+This example demonstrates the use of the AdaptiveMesh2D and
+ReMeshedCellVariable class to dynamically modify the mesh based on the
+variable value.  This is done as follows:
 
 First, have the iterator time step
 
-Then, create an \"adaptation variable\" with a mesh equal to the previous mesh and nodal values equal to the target sizes of the mesh elements at the corresponding points. In this example, we would like the mesh to be finer (lower characteristic lengths) where phi is close to zero so we use a characterisitc length equal to (3(phi ** 2)) + 0.03
+Then, create an \"adaptation variable\" with a mesh equal to the previous
+mesh and nodal values equal to the target sizes of the mesh elements at the
+corresponding points.  In this example, we would like the mesh to be finer
+(lower characteristic lengths) where phi is close to zero so we use a
+characterisitc length equal to (3(phi ** 2)) + 0.03
 
 Then, create a new mesh by passing the adaptVar to AdaptiveMesh2D
 
-Then, we need to tell the variable that its mesh is being changed. To do this, create a ReMeshedCellVariable, which takes as its arguments an old variable and a new mesh and returns a vvariable that has the old variable's values mapped onto the new mesh
+Then, we need to tell the variable that its mesh is being changed.  To do
+this, create a ReMeshedCellVariable, which takes as its arguments an old
+variable and a new mesh and returns a vvariable that has the old variable's
+values mapped onto the new mesh
 
-Then, re-initialize the equation with the new variable and the iterator with the new equation
+Then, re-initialize the equation with the new variable and the iterator
+with the new equation
 
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
@@ -88,7 +98,10 @@ Then, re-initialize the equation with the new variable and the iterator with the
    ...         steps = 1000))
    ...     it = Iterator((advectionEquation,))
    
-We now determine the accuracy of the results. To do so, we determine whether the values that are closest to zero really do occur on the circle that they are supposed to. For this test, all of the 10 values that are closest to zero must occur near the designated circle.
+We now determine the accuracy of the results.  To do so, we determine
+whether the values that are closest to zero really do occur on the circle
+that they are supposed to.  For this test, all of the 10 values that are
+closest to zero must occur near the designated circle.
 
    >>> distancesFromCenter = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
    >>> targetDistance = (timeStepDuration * steps * velocity) + radius
