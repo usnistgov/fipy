@@ -273,7 +273,19 @@ class build_docs (Command):
 
         if self.upload:
 
-            os.system("rsync -C -rltD documentation/www/ lurch:/u/WWW/wd15/fipy/")
+            wwwdocs = ['documentation/www/',
+                       'documentation/manual/reference.pdf',
+                       'documentation/manual/fipy.pdf']
+
+            wwwhost = 'lurch:/u/WWW/wd15/fipy/'
+
+            for doc in wwwdocs:
+                os.system('chgrp -R pfm ' + doc)
+                os.system('chmod -R g+w ' + doc)
+                os.system('rsync -pCrg ' + doc + " " + wwwhost)
+
+            print "Be sure to run updatewww on lurch to make webpages accessible"
+            
                 
     # run()
 
