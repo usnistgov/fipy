@@ -82,8 +82,8 @@ size.
 
 The discretization for the convection term is given by,
 \begin{eqnarray}
-\int_V \nabla.(\vec{u} \phi) dV & = & \int_S (\vec{n}.\vec{u})\phi dS \\
-& \simeq & \sum_{f} (\vec{n}.\vec{u})_f \phi_f A_f
+\int_V \nabla \cdot (\vec{u} \phi) dV & = & \int_S (\vec{n} \cdot \vec{u})\phi dS \\
+& \simeq & \sum_{f} (\vec{n} \cdot \vec{u})_f \phi_f A_f
 \label{eqn:num:con}
 \end{eqnarray}
 where $\sum_{f}$ denotes the summation over the faces of a CV and
@@ -102,13 +102,13 @@ this chapter.
 
 The discretization for the diffusion term is given by,
 \begin{eqnarray}
-\int_V \nabla.(\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n}.\nabla\phi) dS \\
-& \simeq & \sum_f \Gamma_f (\vec{n}.\nabla\phi)_f A_f
+\int_V \nabla \cdot (\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n} \cdot \nabla\phi) dS \\
+& \simeq & \sum_f \Gamma_f (\vec{n} \cdot \nabla\phi)_f A_f
 \label{eqn:num:dif}
 \end{eqnarray}
-The estimation for the flux, $(\vec{n}.\nabla\phi)_f$ is obtained via,
+The estimation for the flux, $(\vec{n} \cdot \nabla\phi)_f$ is obtained via,
 \begin{equation}
-(\vec{n}.\nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
+(\vec{n} \cdot \nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
 \end{equation}
 where the value of $d_{AP}$ is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and
@@ -149,7 +149,7 @@ each CV as,
 \begin{eqnarray}
 \frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P)}{\Delta t}
 &=&
-\sum_{f} (\vec{n}.\vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
+\sum_{f} (\vec{n} \cdot \vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
 \\
 &+&
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
@@ -174,7 +174,7 @@ b_p & = & S_C + \frac{\rho_P^O V_P \phi_P^O}{\Delta t}
 The face coefficients, $F_f$ and $D_f$, represent the convective strength
 and diffusive conductance respectively, and are given by,
 \begin{eqnarray}
-F_f & = & A_f \rho_f ( \vec{u}.\vec{n} )_f \\
+F_f & = & A_f \rho_f ( \vec{u} \cdot \vec{n} )_f \\
 D_f & = & \frac{A_f \Gamma_f}{d_{AP}} 
 \end{eqnarray}
 

@@ -32,10 +32,17 @@ where $\rho$, $\vec{u}$ and $\Gamma_i$ represent coefficients in the
 transient, convection and diffusion terms respectively. These
 coefficients can be arbitrary functions of any parameters or variables
 in the system. The variable $\phi$, represents the unknown quantity in
-the equation. The exponent, $n$, is arbitrary, where $n=2$ represents
-the diffusion term and $n=4$ represents a fourth order term. Higher
-order diffusion-type terms are possible using the n\textit{th} order
-operator.
+the equation. The n\textit{th} order term can represent any higher
+order diffusion-type term depending on the exponent $n$. For example,
+the n\textit{th} order term can represent a diffusion term when the
+exponent $n = 1$ or a Cahn-Hilliard term when $n = 2$. A Cahn-Hilliard
+term has the following form,
+\begin{equation}
+  \nabla \cdot \left( \Gamma_1 \nabla \left[ 
+  \nabla \cdot \left( \Gamma_2 \nabla \phi \right) \right] \right)
+  \label{eqn:cahn-hilliard}
+\end{equation}
+Higher order terms are also possible for $n > 2$.
 
 
 
