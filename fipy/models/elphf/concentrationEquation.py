@@ -43,12 +43,9 @@ they have been modified.
 from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
 from substitutionalSumVariable import SubstitutionalSumVariable
-from weightedDiffusivityVariable import WeightedDiffusivityVariable
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from substitutionalConvectionCoeff import SubstitutionalConvectionCoeff
-from pConvectionCoeff import pConvectionCoeff
-from gConvectionCoeff import gConvectionCoeff
 import Numeric
 
 class ConcentrationEquation(MatrixEquation):
