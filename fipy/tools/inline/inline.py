@@ -4,28 +4,28 @@ import Numeric
 import weave
 from weave import converters
 
-doingInline = 0
+##doingInline = 0
 
-def doInline():
-    global doingInline
-    doingInline = 1
+##def doInline():
+##    global doingInline
+##    doingInline = 1
     
-def dontInline():
-    global doingInline
-    doingInline = 0
-
+##def dontInline():
+##    global doingInline
+##    doingInline = 0
+    
 def optionalInline(inlineFn, pythonFn, *args):
-    global doingInline
-    if doingInline:
+##    global doingInline
+    if 'inline' in sys.argv:
 	return inlineFn(*args)
     else:
 	return pythonFn(*args)
 	
-def readInlineArgs():
-    if "inline" in sys.argv:
-	doInline()
-    else:
-	dontInline()
+##def readInlineArgs():
+##    if "inline" in sys.argv:
+##	doInline()
+##    else:
+##	dontInline()
 
 def runInline(code,**args):
     
@@ -78,8 +78,6 @@ def runInlineLoop1(code_in,**args):
     """ + code_in + """
      }
     """
-    
-    print code
     
     return runInline(code, **args)
 
