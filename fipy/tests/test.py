@@ -50,7 +50,7 @@ import fivol.examples.test
 import fivol.meshes.test
 import fivol.tools.test
 import fivol.tests.testProgram
-import fivol.tests.testVariable
+import fivol.variable.test
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -58,7 +58,7 @@ def suite():
     theSuite.addTest(fivol.examples.test.suite())
     theSuite.addTest(fivol.tools.test.suite())
     theSuite.addTest(fivol.meshes.test.suite())
-    theSuite.addTest(fivol.tests.testVariable.suite())
+    theSuite.addTest(fivol.variables.test.suite())
     return theSuite
 
 if __name__ == '__main__':
