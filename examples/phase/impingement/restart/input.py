@@ -81,6 +81,7 @@ and then recall them to test the data pickling mechanism
 We clean up the temporary dump file
 
     >>> import os
+    >>> os.close(f)
     >>> os.remove(fileName)
 
 We rebuild the equations:
