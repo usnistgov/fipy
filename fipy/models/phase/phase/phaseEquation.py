@@ -90,7 +90,7 @@ class PhaseEquation(MatrixEquation):
 	    mesh = mesh)
 	    
         self.scTerm = ScSourceTerm(
-	    sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.phi,
+            sourceCoeff = (self.mPhi > 0.) * self.mPhi * self.phi,
 # 	    sourceCoeff = PhaseScSourceVariable(
 # 		mesh = mesh, 
 # 		parameters = parameters),
@@ -128,7 +128,7 @@ class PhaseEquation(MatrixEquation):
 
 
     def getSpSourceCoeff(self):
-	spSourceCoeff = self.mPhi * (self.phi - (self.mPhi < 0.)) 
+        spSourceCoeff = self.mPhi * (self.phi - (self.mPhi < 0.)) 
 
 	theta = self.parameters['theta'].getOld()
 	thetaMag = theta.getGrad().getMag()
