@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/10/03 {9:57:32 AM} 
+ #                                last update: 12/22/03 {4:28:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST

@@ -5,7 +5,7 @@
  # 
  #  FILE: "CellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/19/03 {4:04:46 PM} 
+ #                                last update: 12/22/03 {10:33:47 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -113,12 +113,12 @@ class CellVariable(Variable):
 	return self.faceGrad
 
     def getOld(self):
-	if self.old == None:
+	if self.old is None:
 	    return self
 	else:
 	    return self.old
 
     def updateOld(self):
-	if self.old != None:
+	if self.old is not None:
 	    self.old.setValue(self.value)
 	    

@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 12/19/03 {3:53:20 PM} 
+                               last update: 12/22/03 {3:45:17 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -54,6 +54,7 @@ class ConcentrationEquation(MatrixEquation):
     """    
     def __init__(self,
                  Cj,
+		 timeStepDuration,
 		 fields = {},
                  diffusivity = 1.,
 		 convectionScheme = PowerLawConvectionTerm,
@@ -67,10 +68,14 @@ class ConcentrationEquation(MatrixEquation):
 	    mesh = mesh,
 	    boundaryConditions = boundaryConditions)
 	    
-	substitutionalSum = SubstitutionalSumVariable(
-	    mesh = mesh, 
-	    Cj = Cj, 
-	    substitutionals = fields['substitutionals'])
+# 	substitutionalSum = SubstitutionalSumVariable(
+# 	    mesh = mesh, 
+# 	    Cj = Cj, 
+# 	    substitutionals = fields['substitutionals'])
+	    
+	substitutionalSum = 0.
+	for component in [component for component in fields['substitutionals'] if component is not Cj]:
+	    substitutionalSum = substitutionalSum + component#.getOld()
 	    
 	denom = 1. - substitutionalSum.getFaceValue()
 	subsConvCoeff = diffusivity * substitutionalSum.getFaceGrad() /  denom.transpose()
@@ -85,7 +90,7 @@ class ConcentrationEquation(MatrixEquation):
 	    diffusionTerm = diffusionTerm)
 
 	terms = (
-	    TransientTerm(tranCoeff = 1.,mesh = mesh),
+	    TransientTerm(tranCoeff = 1. / timeStepDuration,mesh = mesh),
 	    diffusionTerm,
 	    convectionTerm
             )

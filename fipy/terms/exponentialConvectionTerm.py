@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/5/03 {3:16:51 PM} 
+ #                                last update: 12/22/03 {3:16:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,14 +33,30 @@
  ##
 
 from convectionTerm import ConvectionTerm
+from variables.faceVariable import FaceVariable
 import Numeric
 
 class ExponentialConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	eps = 1e-3
-	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
-	alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
-	alpha = Numeric.where(Numeric.logical_and(Numeric.absolute(P) > eps, P <= 101.), ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
-	
-	return alpha
+    class Alpha(FaceVariable):
+	def __init__(self, P):
+	    FaceVariable.__init__(self, P.getMesh())
+	    self.P = self.requires(P)
+	    
+	def calcValue(self):
+	    eps = 1e-3
+	    P  = self.P[:]
+
+	    P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+	    alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
+	    alpha = Numeric.where(Numeric.logical_and(Numeric.absolute(P) > eps, P <= 101.), ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
+
+	    self.value = alpha
+	    
+#     def calculateAlpha(self, P):
+# 	eps = 1e-3
+# 	P = Numeric.where(Numeric.absolute(P) < eps, eps, P)
+# 	alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
+# 	alpha = Numeric.where(Numeric.logical_and(Numeric.absolute(P) > eps, P <= 101.), ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
+# 	
+# 	return alpha
 

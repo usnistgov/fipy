@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/19/03 {4:08:46 PM} 
+ #                                last update: 12/22/03 {4:36:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -67,7 +67,7 @@ class TestPhase(TestBase):
 	self.tolerance = 1e-10
 
         phaseParameters={
-            'tau' :        0.1,
+            'tau' :        0.1 / self.timeStep,
             'epsilon' :    0.008,
             's' :          0.01,
             'alpha' :      0.015,

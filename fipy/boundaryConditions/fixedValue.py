@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/8/03 {2:00:35 PM} 
+ #                                last update: 12/22/03 {10:27:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -73,8 +73,8 @@ class FixedValue(BoundaryCondition):
 	    
 	    'cell1off' -- contribution to b-vector by this exterior face
 	"""
-	return (Numeric.take(cell1dia,self.faceIds),
-		Numeric.take(-cell1off,self.faceIds)*self.value,
+	return (Numeric.take(cell1dia[:],self.faceIds),
+		Numeric.take(-cell1off[:],self.faceIds)*self.value,
 		self.adjacentCellIds)
 
 

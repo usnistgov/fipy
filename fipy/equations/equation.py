@@ -5,7 +5,7 @@
 
  FILE: "equation.py"
                                    created: 11/10/03 {2:45:34 PM} 
-                               last update: 12/10/03 {11:16:37 AM} 
+                               last update: 12/22/03 {3:47:32 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -67,7 +67,7 @@ class Equation:
     def postSolve(self):
 	pass
 	
-    def solve(self,dt):
+    def solve(self): #,dt):
 	pass
     
     def isConverged(self):

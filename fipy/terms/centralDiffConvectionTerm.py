@@ -4,7 +4,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/5/03 {2:54:03 PM} 
+ #                                last update: 12/22/03 {3:16:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,8 +33,14 @@
  ##
 
 from convectionTerm import ConvectionTerm
+from variables.faceVariable import FaceVariable
 
 class CentralDifferenceConvectionTerm(ConvectionTerm):
-    def calculateAlpha(self, P):
-	return 0.5
+    class Alpha(FaceVariable):
+	def __init__(self, P):
+	    FaceVariable.__init__(self, P.getMesh())
+	    self.value = 0.5
+	    
+#     def calculateAlpha(self, P):
+# 	return 0.5
 

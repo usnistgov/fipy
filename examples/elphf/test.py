@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/19/03 {4:30:57 PM} 
+ #                                last update: 12/22/03 {4:04:04 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -104,13 +104,14 @@ class TestElPhF(TestBase):
 	}
 	
 	parameters = {
-	    'diffusivity': 1.
+	    'diffusivity': 1.,
+	    'time step duration': self.timeStep
 	}
 
 	self.it = elphf.makeIterator(mesh = self.mesh, fields = fields, parameters = parameters)
 	
     def testResult(self):
-	self.it.iterate(steps = self.steps, stepDuration = self.timeStep)
+	self.it.iterate(steps = self.steps)
 	
 	array = self.var1.getValue()
 	self.assertArrayWithinTolerance(array, self.val1, self.tolerance)	

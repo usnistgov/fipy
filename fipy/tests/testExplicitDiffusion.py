@@ -6,7 +6,7 @@
  # 
  #  FILE: "testExplicitDiffusion.py"
  #                                    created: 11/27/03 {3:23:47 PM}
- #                                last update: 12/10/03 {9:56:55 AM} 
+ #                                last update: 12/22/03 {3:53:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -76,7 +76,7 @@ class TestExplicitDiffusion(TestBase):
 
         self.eq = ExplicitDiffusionEquation(
             self.var,
-            transientCoeff = 1., 
+            transientCoeff = 1. / self.timeStep, 
             diffusionCoeff = 1.,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 

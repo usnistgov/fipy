@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/19/03 {10:15:26 AM} 
+ #                                last update: 12/22/03 {3:49:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,6 +61,8 @@ from viewers.grid2DGistViewer import Grid2DGistViewer
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
+import Numeric
+
 # valueLeft="0.3 mol/l"
 # valueRight="0.4 mol/l"
 # valueOther="0.2 mol/l"
@@ -68,7 +70,7 @@ valueLeft=0.3
 valueRight=0.4
 valueOther=0.2
 
-nx = 4
+nx = 40
 dx = 1.
 L = nx * dx
 
@@ -87,37 +89,37 @@ phase = PhaseVariable(
     
 var1 = ComponentVariable(
     name = "c1",
-    standardPotential = 1.,
+    standardPotential = Numeric.log(.3/.4) - Numeric.log(.1/.2),
     barrierHeight = 0.1,
     mesh = mesh,
-    value = valueLeft,
+    value = .35,
     viewer = Grid2DGistViewer
     )
 
 var2 = ComponentVariable(
     name = "c2",
-    standardPotential = 1.,
+    standardPotential = Numeric.log(.4/.3) - Numeric.log(.1/.2),
     barrierHeight = 0.1,
     mesh = mesh,
-    value = valueRight,
+    value = .35,
     viewer = Grid2DGistViewer
     )
    
 var3 = ComponentVariable(
     name = "c3",
-    standardPotential = 1.,
+    standardPotential = Numeric.log(.2/.1) - Numeric.log(.1/.2),
     barrierHeight = 0.1,
     mesh = mesh,
-    value = valueOther,
+    value = .15,
     viewer = Grid2DGistViewer
     )
    
 rightCells = mesh.getCells(lambda center: center[0] > L/2.)
 
-# phase.setValue(0.,rightCells)
-var1.setValue(valueRight,rightCells)
-var2.setValue(valueLeft,rightCells)
-var3.setValue(0.1,rightCells)
+phase.setValue(0.,rightCells)
+# var1.setValue(valueRight,rightCells)
+# var2.setValue(valueLeft,rightCells)
+# var3.setValue(0.1,rightCells)
     
 fields = {
     'phase': phase,
@@ -125,7 +127,8 @@ fields = {
 }
 
 parameters = {
-    'diffusivity': 1.
+    'diffusivity': 1.,
+    'time step duration': 10000.
 }
 
 it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
@@ -143,15 +146,16 @@ raw_input()
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
 
-for i in range(5):
-    it.iterate(1,10000.)
+for i in range(50):
+    it.iterate(1)
+#     it.iterate(1,10000.)
     
 #     print var1.getValue()
 #     print var2.getValue()
     
-    var1.plot()
-    var2.plot()
-    var3.plot()
+#     var1.plot()
+#     var2.plot()
+#     var3.plot()
 
 print var1
 print var2

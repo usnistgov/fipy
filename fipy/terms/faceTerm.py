@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/19/03 {3:59:51 PM} 
+ #                                last update: 12/22/03 {11:14:04 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,6 +51,24 @@ class FaceTerm(Term):
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 	
+	if self.weight.has_key('implicit'):
+	    weight = self.weight['implicit']
+	    self.implicit = {
+		'cell 1 diag': self.coeff*weight['cell 1 diag'],
+		'cell 1 offdiag': self.coeff*weight['cell 1 offdiag'],
+		'cell 2 diag': self.coeff*weight['cell 2 diag'],
+		'cell 2 offdiag': self.coeff*weight['cell 2 offdiag']
+	    }
+	    
+	if self.weight.has_key('explicit'):
+	    weight = self.weight['explicit']
+	    self.explicit = {
+		'cell 1 diag': self.coeff*weight['cell 1 diag'],
+		'cell 1 offdiag': self.coeff*weight['cell 1 offdiag'],
+		'cell 2 diag': self.coeff*weight['cell 2 diag'],
+		'cell 2 offdiag': self.coeff*weight['cell 2 offdiag']
+	    }
+	    
     def buildMatrix(self,L,oldArray,b):
 	"""Implicit portion considers
 	"""
@@ -61,38 +79,46 @@ class FaceTerm(Term):
 	
         ## implicit
         if self.weight.has_key('implicit'):
-	    weight = self.weight['implicit']
- 	    cell1dia = self.coeff*weight['cell 1 diag']
-	    cell1off = self.coeff*weight['cell 1 offdiag']
-	    cell2dia = self.coeff*weight['cell 2 diag']
-	    cell2off = self.coeff*weight['cell 2 offdiag']
+# 	    weight = self.weight['implicit']
+#  	    cell1dia = self.coeff[:]*weight['cell 1 diag']
+# 	    cell1off = self.coeff[:]*weight['cell 1 offdiag']
+# 	    cell2dia = self.coeff[:]*weight['cell 2 diag']
+# 	    cell2off = self.coeff[:]*weight['cell 2 offdiag']
 	    
-	    L.update_add_something(cell1dia[:self.interiorN],id1,id1)
-	    L.update_add_something(cell1off[:self.interiorN],id1,id2)
-	    L.update_add_something(cell2off[:self.interiorN],id2,id1)
-	    L.update_add_something(cell2dia[:self.interiorN],id2,id2)
+# 	    L.update_add_something(cell1dia[:self.interiorN],id1,id1)
+# 	    L.update_add_something(cell1off[:self.interiorN],id1,id2)
+# 	    L.update_add_something(cell2off[:self.interiorN],id2,id1)
+# 	    L.update_add_something(cell2dia[:self.interiorN],id2,id2)
+	    
+	    L.update_add_something(self.implicit['cell 1 diag'][:self.interiorN],id1,id1)
+	    L.update_add_something(self.implicit['cell 1 offdiag'][:self.interiorN],id1,id2)
+	    L.update_add_something(self.implicit['cell 2 offdiag'][:self.interiorN],id2,id1)
+	    L.update_add_something(self.implicit['cell 2 diag'][:self.interiorN],id2,id2)
 	    
 	    for boundaryCondition in self.boundaryConditions:
-		LL,bb,ids = boundaryCondition.getContribution(cell1dia,cell1off)
+		LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
+# 		LL,bb,ids = boundaryCondition.getContribution(cell1dia,cell1off)
 		L.update_add_something(LL,ids,ids)
 		Numeric.put(b,ids,Numeric.take(b,ids)+bb)
 		
         ## explicit
         if self.weight.has_key('explicit'):
-	    weight = self.weight['explicit']
-	    cell1dia = self.coeff*weight['cell 1 diag']
-	    cell1off = self.coeff*weight['cell 1 offdiag']
-	    cell2off = self.coeff*weight['cell 2 offdiag']
-	    cell2dia = self.coeff*weight['cell 2 diag']
+# 	    weight = self.weight['explicit']
+# 	    cell1dia = self.coeff*weight['cell 1 diag']
+# 	    cell1off = self.coeff*weight['cell 1 offdiag']
+# 	    cell2off = self.coeff*weight['cell 2 offdiag']
+# 	    cell2dia = self.coeff*weight['cell 2 diag']
 
             for i in range(self.interiorN):
-                b[id1[i]] -= cell1dia[i] * oldArray[id1[i]] + cell1off[i] * oldArray[id2[i]]
-                b[id2[i]] -= cell2dia[i] * oldArray[id2[i]] + cell2off[i] * oldArray[id1[i]]
+		b[id1[i]] -= self.explicit['cell 1 diag'][i] * oldArray[id1[i]] + self.explicit['cell 1 offdiag'][i] * oldArray[id2[i]]
+		b[id2[i]] -= self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
+#                 b[id1[i]] -= cell1dia[i] * oldArray[id1[i]] + cell1off[i] * oldArray[id2[i]]
+#                 b[id2[i]] -= cell2dia[i] * oldArray[id2[i]] + cell2off[i] * oldArray[id1[i]]
 
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
                     faceId = face.getId()
-                    LL,bb = boundaryCondition.update(face,cell1dia[faceId],cell1off[faceId])
+                    LL,bb = boundaryCondition.update(face,self.explicit['cell 1 diag'][faceId],self.explicit['cell 1 offdiag'][faceId])
                     b[cellId] -= LL * oldArray[cellId]
                     b[cellId] += bb

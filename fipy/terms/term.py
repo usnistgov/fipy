@@ -5,7 +5,7 @@
 
  FILE: "term.py"
                                    created: 11/12/03 {10:54:37 AM} 
-                               last update: 12/9/03 {1:48:07 PM} 
+                               last update: 12/22/03 {3:24:37 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,10 +45,9 @@ import Numeric
 class Term:
     def __init__(self,weight):
 	self.weight = weight
-	self.coeff = 1.
 	
-    def calculateCoeffGeom(self,dt):
-	pass
+#     def calculateCoeffGeom(self,dt):
+# 	pass
 	    
     def buildMatrix(self,L,oldArray,b):
 	pass

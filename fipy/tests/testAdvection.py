@@ -6,7 +6,7 @@
  # 
  #  FILE: "testAdvection.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/10/03 {9:56:51 AM} 
+ #                                last update: 12/22/03 {3:52:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -78,7 +78,7 @@ class TestAdvection(TestBase):
 
 	self.eq = AdvectionEquation(
 	    var = self.var,
-	    transientCoeff = self.tranCoeff,
+	    transientCoeff = self.tranCoeff / self.timeStep,
 	    convectionCoeff = self.convCoeff,
 	    solver = LinearCGSSolver(
 		tolerance = 1.e-15, 

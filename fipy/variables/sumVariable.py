@@ -2,9 +2,9 @@
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "hybridConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/22/03 {3:16:40 PM} 
+ #  FILE: "sumVariable.py"
+ #                                    created: 12/19/03 {3:48:05 PM} 
+ #                                last update: 12/22/03 {11:27:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -32,30 +32,14 @@
  # ###################################################################
  ##
 
-from convectionTerm import ConvectionTerm
-from variables.faceVariable import FaceVariable
+from variable import Variable
 import Numeric
 
-class HybridConvectionTerm(ConvectionTerm):
-    class Alpha(FaceVariable):
-	def __init__(self, P):
-	    FaceVariable.__init__(self, P.getMesh())
-	    self.P = self.requires(P)
-	    
-	def calcValue(self):
-	    eps = 1e-3
-	    P  = self.P[:]
+class SumVariable(Variable):
+    def __init__(self, var, index):
+	Variable.__init__(self, var.getMesh())
+	self.var = self.requires(var)
+	self.index = index
 
-	    alpha = Numeric.where(                                 P > 2., (P - 1) / P,    0.)
-	    alpha = Numeric.where( Numeric.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-	    alpha = Numeric.where(                               -2. >  P,      -1 / P, alpha)
-
-	    self.value = alpha
-	    
-#     def calculateAlpha(self, P):
-# 	alpha = Numeric.where(                                 P > 2., (P - 1) / P,    0.)
-# 	alpha = Numeric.where( Numeric.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-# 	alpha = Numeric.where(                               -2. >  P,      -1 / P, alpha)
-# 	
-# 	return alpha
-
+    def calcValue(self):
+	self.value = Numeric.sum(self.var[:],self.index)

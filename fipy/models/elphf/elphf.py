@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 12/18/03 {8:40:41 AM} 
+ #                                last update: 12/22/03 {3:45:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -46,12 +46,17 @@ from iterators.iterator import Iterator
 
 def makeIterator(mesh, fields, parameters, maxSweeps = 1):
     equations = ()
-    fields['solvent'] = SolventVariable(
-	mesh = mesh, 
-	substitutionals = fields['substitutionals'])
+    
+    fields['solvent'] = 1.
+    for component in fields['substitutionals']:
+	fields['solvent'] = fields['solvent'] - component#.getOld()    
+#     fields['solvent'] = SolventVariable(
+# 	mesh = mesh, 
+# 	substitutionals = fields['substitutionals'])
     for component in fields['substitutionals']:
 	eq = ConcentrationEquation(
 	    Cj = component,
+	    timeStepDuration = parameters['time step duration'],
 	    fields = fields,
 	    diffusivity = parameters['diffusivity'],
 	    solver = LinearLUSolver(),

@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/8/03 {5:17:54 PM} 
+                               last update: 12/22/03 {2:59:41 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,11 +45,15 @@ import Numeric
 
 class DiffusionTerm(FaceTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions, weight):
-	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
-	self.diffCoeff = diffCoeff
+	self.coeff = diffCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
 	
-    def calculateCoeffGeom(self,dt):
-	self.coeff = self.diffCoeff * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
+	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
+# 	self.diffCoeff = diffCoeff
+	
+	
+#     def calculateCoeffGeom(self,dt):
+# 	pass
+# 	self.coeff = self.diffCoeff[:] * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
 
     def getCoeff(self):
 	return self.coeff
