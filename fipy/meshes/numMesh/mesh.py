@@ -461,6 +461,11 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	if ids is None:
 	    ids = range(self.numberOfCells) 
 	return [Cell(self, id) for id in ids]
+    
+    def getFacesByID(self, ids = None):
+	if ids is None:
+	    ids = range(self.numberOfFaces) 
+	return [Face(self, id) for id in ids]
 	
     def getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
