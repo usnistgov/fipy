@@ -116,7 +116,7 @@ class FaceTerm(Term):
 	 
 	    b(cellID1) += -coeff(faceID) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2);
 	    b(cellID2) += -coeff(faceID) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1);
-	""",oldArray = oldArray / coeffScale,
+	""",oldArray = Numeric.array(oldArray) / coeffScale,
 	    id1 = id1,
 	    id2 = id2,
 	    b = b,
