@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/16/04 {12:58:40 PM} 
+ #                                last update: 2/2/05 {5:08:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -175,6 +175,10 @@ class build_docs (Command):
         for file in files:
 
             destination_path = os.path.join(destination_dir, string.lower(file) + ext)
+            try:
+                os.makedirs(os.path.dirname(destination_path))
+            except:
+                pass
             source_path = os.path.join(source_dir, file + '.txt')
 
             core.publish_file(source_path= source_path,
@@ -183,6 +187,9 @@ class build_docs (Command):
                               parser_name = 'restructuredtext',
                               writer = writer,
                               settings_overrides = settings)
+                              
+            # mark modification time of output file as mod time of reST file
+            os.utime(destination_path, (os.path.getatime(source_path), os.path.getmtime(source_path)))
 
     def run (self):
 	f = open(os.path.join('documentation','VERSION.txt'), 'w')
@@ -267,29 +274,39 @@ class build_docs (Command):
 	    os.chdir(savedir)
 
         if self.webpage:
+            import tempfile
+            tmp = tempfile.mkdtemp()
             dir = os.path.join('documentation', 'www')
 
 	    from utils.includedHTMLWriter import IncludedHTMLWriter
 	    
+            print "main files"
             self._translateTextFiles(files = mainRestructuredTextFiles,
-                                     destination_dir = dir,
+                                     destination_dir = tmp,
                                      writer = IncludedHTMLWriter(),
                                      settings = {'initial_header_level' : 3,
-                                                 'stylesheet' : 'ctcms.css',
 						 'xml_declaration' : 0},
                                      ext = '.html')
 
+            print "secondary files"
 	    self._translateTextFiles(files = secondaryRestructuredTextFiles,
 	                             source_dir = "documentation",
-				     destination_dir = dir,
+				     destination_dir = tmp,
 				     writer = IncludedHTMLWriter(),
 				     settings = {'initial_header_level' : 3,
-						 'stylesheet' : 'ctcms.css',
 						 'xml_declaration' : 0},
 				     ext = '.html')
 
             import shutil
-            shutil.move(os.path.join(dir, 'readme.html'), os.path.join(dir, 'index.html'))
+            for f in ['menu.html', 'meta.html', 'logo.html']:
+                shutil.copyfile(os.path.join(dir, f), os.path.join(tmp, f))
+            shutil.move(os.path.join(tmp, 'readme.html'), os.path.join(tmp, 'index.html'))
+            
+            print "merging files"
+            os.system("/Library/WebServer/Documents/CSS/ctcmsWeb.py %s %s" % (tmp, dir))
+            
+            print "removing directories"
+            os.removedirs(tmp)
 
         if self.upload:
 
@@ -546,7 +563,10 @@ f = open('LICENSE.txt', 'r')
 license = '\n' + f.read() + '\n'
 f.close()
 
+import py2app
+
 dist = setup(	name = "FiPy",
+	app = [os.path.join('examples','levelSet','electroChem','input.py')],
 	version = "0.2",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
@@ -562,7 +582,6 @@ dist = setup(	name = "FiPy",
 	},
 	packages = ['fipy', 
 			'fipy.boundaryConditions',
-			'fipy.equations',
 			'fipy.iterators',
 			'fipy.meshes',
 			    'fipy.meshes.common',
