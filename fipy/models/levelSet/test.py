@@ -50,6 +50,9 @@ import distanceFunction.distanceVariable
 import surfactant.surfactantVariable
 import distanceFunction.extensionEquation
 import distanceFunction.distanceEquation
+##import diffusion.metalIonDiffusionEquation
+import diffusion.metalIonSourceVariable
+import diffusion.metalIonDiffusionVariable
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -59,7 +62,9 @@ def suite():
     theSuite.addTest(doctest.DocTestSuite(surfactant.surfactantVariable))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.extensionEquation))
     theSuite.addTest(doctest.DocTestSuite(distanceFunction.distanceEquation))
-    
+##    theSuite.addTest(doctest.DocTestSuite(diffusion.metalIonDiffusionEquation))
+    theSuite.addTest(doctest.DocTestSuite(diffusion.metalIonSourceVariable))
+    theSuite.addTest(doctest.DocTestSuite(diffusion.metalIonDiffusionVariable))
     return theSuite
     
 if __name__ == '__main__':
