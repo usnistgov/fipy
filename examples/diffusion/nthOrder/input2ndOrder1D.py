@@ -42,9 +42,10 @@
  ##
 
 """
-This tests this input
 
-    >>> print "Why is there no explanation of what this example is?"
+This is a simple test case for the `NthOrderDiffusionEquation` for the
+case of ordinary diffusion when `N=2`.
+
     >>> it.timestep()
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
