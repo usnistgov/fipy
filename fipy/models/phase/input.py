@@ -66,7 +66,7 @@ from profiler.profiler import calibrate_profiler
 
 import Numeric
 
-phaseParameters={
+parameters={
     'tau' :        0.1,
     'epsilon' :    0.008,
     's' :          0.01,
@@ -105,9 +105,7 @@ theta = ModularVariable(
     hasOld = 0
     )
 
-phaseParameters['phi'] = phase
-phaseParameters['theta'] = theta
-phaseParameters['temperature'] = 1.
+fields = { 'phi' : phase, 'theta' : theta, 'temperature' : 1.
 
 def leftCells(x,L = Length):
     if x[0] < L / 2.:
