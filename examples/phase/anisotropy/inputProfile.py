@@ -51,7 +51,7 @@ class AnisotropyProfileSystem(AnisotropySystem):
 
     def run(self):
         fudge = calibrate_profiler(10000)
-        profile = Profiler('profile2', fudge=fudge)
+        profile = Profiler('profile_Inline', fudge=fudge)
         self.it.timestep(100)
         profile.stop()
         
