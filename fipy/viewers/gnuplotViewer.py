@@ -43,12 +43,51 @@
  # ###################################################################
  ##
 
+"""
+
+The `GnuplotViewer` plots a 2D Numeric array using a front end python
+wrapper available to download (Gnuplot.py_).
+
+.. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+
+If one would like more specific styles for a plot, it is probably best
+to create an inherited class and change the `gnuplotCommands` method.
+
+Different style script demos_ are available at the Gnuplot_ site.
+
+.. _Gnuplot: http://gnuplot.sourceforge.net/
+.. _demos: http://gnuplot.sourceforge.net/demo/
+
+`GnuplotViewer` requires Gnuplot_ version 4.0.
+
+"""
+__docformat__ = 'restructuredtext'
+
 import Numeric
 import Gnuplot
 
 class GnuplotViewer:
     
     def __init__(self, array, dx = 1., dy = 1., maxVal = None, minVal = None, palette = 'color'):
+        """
+
+        Argument list:
+
+        `array` - A 2D Numeric array
+
+        `dx` - The unit size is the x-direction.
+
+        `dy` - The unit size in the y-direction.
+
+        `maxVal` - The maximum value to appear on the legend
+
+        `maxVal` - The minimum value to appear on the legend.
+
+        `palette` - The color scheme. Other choices might be `color
+        negative` or `gray`. This is completely configurable.
+        
+        """
+        
         self.array = array
         self.dx = dx
         self.dy = dy
@@ -56,15 +95,8 @@ class GnuplotViewer:
         self.minVal = minVal
         self.palette = palette
 
-    def plot(self, fileName = None):
-        array = Numeric.array(self.array)
-        (nx, ny) = array.shape
-        x = Numeric.arange(ny) * self.dy
-        y = Numeric.arange(nx) * self.dx
-        array = Numeric.transpose(array)
-        g = Gnuplot.Gnuplot()
+    def gnuplotCommands(self, g):
         g('set data style lines')
-##        g('set cntrparam levels auto ' + str(self.numberOfContours))
         g('set view map')
         g('set samples 101')
         g('set isosamples 5, 5')
@@ -74,9 +106,34 @@ class GnuplotViewer:
         g('set noztics')
         g('set noxtics')
         g('set pm3d at b')
-##        g('set palette color positive')
         g('set palette ' + self.palette)
         g('set size ratio -1')
+        return g
+
+    def plot(self, fileName = None):
+        """
+
+        Argument list:
+
+        `fileName` - If no file name is passed a plot appears on the
+        screen.  If `*.ps` or `*.pdf` is passed, a postscript or PDF
+        file is produced and nothing appears on the screen.
+
+        """
+        
+        ## prepare the array
+        array =  Numeric.array(self.array)
+        (nx, ny) = array.shape
+        x = Numeric.arange(ny) * self.dy
+        y = Numeric.arange(nx) * self.dx
+        array = Numeric.transpose(array)
+
+        ## issue the gnuplot commands
+
+        g = Gnuplot.Gnuplot()
+        g = self.gnuplotCommands(g)
+
+        ## obtain the max and min values
         
         if self.maxVal is not None:
             maxVal = self.maxVal
@@ -90,7 +147,7 @@ class GnuplotViewer:
             argmin = Numeric.argmin(array.flat)
             minVal = array.flat[argmin]
 
-        
+        ## write to the screen or a file.
 
 ##        g('set zrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
         g('set cbrange [ ' + str(minVal) + ' : ' + str(maxVal) + ' ]')
