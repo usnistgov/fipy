@@ -52,7 +52,7 @@ import tests
 import Numeric
 
 from meshes.grid2D import Grid2D
-from examples.phase.type1PhaseEquation import Type1PhaseEquation
+from examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
 from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
