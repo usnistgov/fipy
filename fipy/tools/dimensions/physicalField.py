@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 2/19/04 {11:05:42 AM} 
+ #                                last update: 3/9/04 {11:33:18 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -482,6 +482,9 @@ class PhysicalField:
 	    
     def take(self, ids):
 	return self.__class__(value = Numeric.take(self.value, ids), unit = self.unit)
+	
+    def put(self, ids, values):
+	Numeric.put(self.value, ids, self._inMyUnits(values).value)
 	
     def reshape(self, shape):
 	return self.__class__(value = Numeric.reshape(self.value, shape), unit = self.unit)

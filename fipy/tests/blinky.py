@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/8/04 {4:47:23 PM} 
+ #                                last update: 3/9/04 {12:02:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -78,9 +78,6 @@ if __name__ == '__main__':
     raw_input()
     
 
-    # fudge = calibrate_profiler(10000)
-    # profile = Profiler('profile', fudge=fudge)
-
 ##     def bottomRight(cell, cornerCell):
 ## 	return L - cell.getCenter()[0] == cornerCell.getCenter()[1] and cell.getCenter()[1] == cornerCell.getCenter()[1]
 	
@@ -100,13 +97,23 @@ if __name__ == '__main__':
 ##     
 ##     print (var[i[0]] * var[i[1]] * (d[i[0]] + d[i[1]])) / (var[i[0]] * d[i[0]] + var[i[1]] * d[i[1]])
 ##     
-##     print var(pt)
+    print var.getValue(cells = bottomLeft)
 ##     
 ##     print bottomRight
     
+    fudge = calibrate_profiler(10000)
+    profile = Profiler('profile', fudge=fudge)
+
+##     var.setValue(var.getValue(points = [(L - cell.getCenter()[0], cell.getCenter()[1]) for cell in bottomRight]), bottomRight)
+##     var.setValue(var.getValue(points = [(cell.getCenter()[0], L - cell.getCenter()[1]) for cell in topLeft]), topLeft)
+##     var.setValue(var.getValue(points = [(L - cell.getCenter()[0], L - cell.getCenter()[1]) for cell in topRight]), topRight)
+
     [var.setValue(var((L - cell.getCenter()[0], cell.getCenter()[1])), [cell]) for cell in bottomRight]
     [var.setValue(var((cell.getCenter()[0], L - cell.getCenter()[1])), [cell]) for cell in topLeft]
     [var.setValue(var((L - cell.getCenter()[0], L - cell.getCenter()[1])), [cell]) for cell in topRight]
+    
+    profile.stop()
+    
 ##     for cell in bottomRight:
 ## 	var.setValue(var((L - cell.getCenter()[0], cell.getCenter()[1])), [cell]) 
 
@@ -117,5 +124,4 @@ if __name__ == '__main__':
 	
     raw_input()
     
-    # profile.stop()
 

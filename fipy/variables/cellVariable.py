@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/8/04 {2:04:54 PM} 
+ #                                last update: 3/9/04 {12:01:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,6 +39,7 @@
 import Numeric
 
 from fivol.variables.variable import Variable
+import fivol.tools.array
 
 class CellVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
@@ -74,16 +75,27 @@ class CellVariable(Variable):
     def getGridArray(self):
 	return self.mesh.makeGridData(self.value)
 	
+    def __call__(self, point, order = 0):
+	d = self.mesh.getPointToCellDistances(point)
+	i = Numeric.argsort(d)
+	return self[i[0]]
+## 	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
+	
+    def getValue(self, points = (), cells = ()):
+	if points == () and cells == ():
+	    return Variable.getValue(self)
+	elif cells != ():
+	    return fivol.tools.array.take(Variable.getValue(self), [cell.getID() for cell in cells])
+	else:
+	    return [self(point) for point in points]
+	
     def setValue(self,value,cells = ()):
 	if cells == ():
 	    self[:] = value
-# 	    if type(value) == type(Numeric.array((1.))):
-# 		self[:] = value[:]
-# 	    elif type(value) in [type(1.),type(1)]:
-# 		self[:] = value
-# 	    else:
-# 		raise TypeError, str(value) + " is not numeric or a Numeric.array"
 	else:
+## 	    return fivol.tools.array.put(self.getValue(), [cell.getID() for cell in cells], value)
+## 	    self.markStale()
+
 	    for cell in cells:
 		self[cell.getID()] = value
 	

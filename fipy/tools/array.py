@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 3/5/04 {4:15:23 PM} 
+ #                                last update: 3/9/04 {11:29:49 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,6 +56,15 @@ def take(arr, ids):
 	return Numeric.take(arr, ids)
     else:
 	raise TypeError, 'cannot take from object ' + str(arr)
+    
+def put(arr, ids, values):
+    if _isPhysical(arr):
+	return arr.put(ids, values)
+    
+    elif type(arr) is type(Numeric.array((0))):
+	return Numeric.put(arr, ids, values)
+    else:
+	raise TypeError, 'cannot put in object ' + str(arr)
     
 def reshape(arr, shape):
     if _isPhysical(arr):

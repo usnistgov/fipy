@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/8/04 {4:34:51 PM} 
+ #                                last update: 3/9/04 {11:12:13 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -131,14 +131,9 @@ class Variable:
 	self.value[index] = value
 	self.markFresh()
 		
-    def __call__(self, point):
-	d = self.mesh.getPointToCellDistances(point)
-	i = Numeric.argsort(d)
-	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
-	
     def getValue(self):
 	self.refresh()
-        return self.value
+	return self.value
 	
     def setValue(self,value):
 	self.value = value
