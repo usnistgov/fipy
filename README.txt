@@ -29,20 +29,15 @@ the electrodeposition process |citeCEAC|.
 The latest information about |FiPy| can be found at
 http://www.ctcms.nist.gov/fipy/.
 
---------
-Download
---------
+-------------------------
+Download and Installation
+-------------------------
 
-|FiPy| is available for download via CVS_ or as a `compressed
-archive`_.  |FiPy| can be redistributed and/or modified freely, provided
-that any derivative works bear some notice that they are derived from it,
-and any modified versions bear some notice that they have been modified.
-
-------------
-Installation
-------------
-
-Please refer to |INSTALLATION.txt|.
+Please refer to |INSTALLATION.txt| for details on download and
+installation. |FiPy| can be redistributed and/or modified
+freely, provided that any derivative works bear some notice that they
+are derived from it, and any modified versions bear some notice that
+they have been modified.
 
 -------
 Support
