@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveMeshInput.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:43:23 PM} { 1:23:41 PM}
+ #                                last update: 4/1/05 {11:23:31 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ then the variable is advected with,
 The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
 
 This example demonstrates the use of the AdaptiveMesh2D and
-ReMeshedCellVariable class to dynamically modify the mesh based on the
+_ReMeshedCellVariable class to dynamically modify the mesh based on the
 variable value.  This is done as follows:
 
 First, have the iterator time step
@@ -72,7 +72,7 @@ characterisitc length equal to (3(phi ** 2)) + 0.03
 Then, create a new mesh by passing the adaptVar to AdaptiveMesh2D
 
 Then, we need to tell the variable that its mesh is being changed.  To do
-this, create a ReMeshedCellVariable, which takes as its arguments an old
+this, create a _ReMeshedCellVariable, which takes as its arguments an old
 variable and a new mesh and returns a vvariable that has the old variable's
 values mapped onto the new mesh
 
@@ -86,7 +86,7 @@ with the new equation
    ...         value = (3*(Numeric.array(distanceVariable) * Numeric.array(distanceVariable))) + 0.03,
    ...         mesh = mesh)
    ...     newMesh = AdaptiveMesh2D(adaptVar)
-   ...     newVariable = ReMeshedCellVariable(distanceVariable, newMesh)
+   ...     newVariable = _ReMeshedCellVariable(distanceVariable, newMesh)
    ...     distanceVariable = newVariable
    ...     mesh = newMesh
    ...     advectionEquation = AdvectionEquation(
@@ -116,7 +116,7 @@ import Numeric
 import os   
 from fipy.meshes.numMesh.tri2D import Tri2D
 import fipy.viewers
-from fipy.variables.cellVariable import CellVariable, ReMeshedCellVariable
+from fipy.variables.cellVariable import CellVariable, _ReMeshedCellVariable
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
 from fipy.iterators.iterator import Iterator
@@ -173,7 +173,7 @@ if __name__ == '__main__':
             value = (3 * (Numeric.array(distanceVariable) * Numeric.array(distanceVariable))) + 0.03,
             mesh = mesh)
         newMesh = AdaptiveMesh2D(adaptVar)
-        newVariable = ReMeshedCellVariable(distanceVariable, newMesh)
+        newVariable = _ReMeshedCellVariable(distanceVariable, newMesh)
         distanceVariable = newVariable
         mesh = newMesh
         advectionEquation = AdvectionEquation(

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:32:00 PM} 
+ #                                last update: 4/1/05 {5:19:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     errorViewer.plot()
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
-                               value = mesh.getNonOrthogonality())
+                               value = mesh._getNonOrthogonality())
     NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
     NOViewer.plot()
     raw_input("finished")

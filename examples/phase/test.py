@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/9/04 {9:07:11 PM} { 2:24:25 PM}
+ #                                last update: 4/1/05 {2:50:25 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -42,7 +42,7 @@
 from fipy.tests.lateImportTest import LateImportTestSuite
 import fipy.tests.testProgram
 
-def suite():
+def _suite():
     return LateImportTestSuite(testModuleNames = (
             'simple.test',
             'anisotropy.test',
@@ -52,7 +52,7 @@ def suite():
         ), base = __name__)
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
 
             
             

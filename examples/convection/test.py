@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/13/04 {2:20:24 PM} 
+ #                                last update: 4/1/05 {2:47:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'exponential1D.input',
             'exponential1D.tri2Dinput',
@@ -57,7 +57,7 @@ def suite():
         ), base = __name__)
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
 
             
             

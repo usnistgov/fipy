@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:31:19 PM} 
+ #                                last update: 4/1/05 {5:19:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,10 +124,10 @@ if __name__ == '__main__':
     ##errorViewer.plot(resolution = 0.1)
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
-                               value = mesh.getNonOrthogonality())
+                               value = mesh._getNonOrthogonality())
     NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
     ##NOViewer.plot(resolution = 0.1)
-    nonOrthoArray = mesh.getNonOrthogonality()
+    nonOrthoArray = mesh._getNonOrthogonality()
     displaylist = Numeric.concatenate(([nonOrthoArray], [errorArray]))
     displaylist = Numeric.transpose(displaylist)
     g = pyx.graph.graphxy(width = 8, x = pyx.graph.axis.linear(title = "Non-Orthogonality"), y = pyx.graph.axis.linear(title = "Error"))

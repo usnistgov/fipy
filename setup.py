@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/31/05 {9:41:28 AM} 
+ #                                last update: 4/1/05 {2:48:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -392,11 +392,11 @@ class test(Command):
 	
 	if self.doModules:
 	    import fipy.test
-	    theSuite.addTest(fipy.test.suite())
+	    theSuite.addTest(fipy.test._suite())
 	
 	if self.doExamples:
 	    import examples.test
-	    theSuite.addTest(examples.test.suite())
+	    theSuite.addTest(examples.test._suite())
 	
 	testRunner = unittest.TextTestRunner(verbosity=self.verbosity)
 	result = testRunner.run(theSuite)

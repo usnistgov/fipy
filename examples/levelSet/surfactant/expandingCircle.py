@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 3/4/05 {6:56:51 PM} { 1:23:41 PM}
+ #                                last update: 4/1/05 {10:54:02 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -132,8 +132,6 @@ distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
     value = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius)
-
-distanceVariable.markFresh()
 
 initialSurfactantValue =  1.
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "orthoerror.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:41 PM} 
+ #                                last update: 4/1/05 {5:19:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         x = mesh.getCellCenters()[:,0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
-        nonOrthoArray = mesh.getNonOrthogonality()
+        nonOrthoArray = mesh._getNonOrthogonality()
         RMSError = (Numeric.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
         RMSNonOrtho = (Numeric.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
         displaylist = displaylist + [[RMSNonOrtho, RMSError]]

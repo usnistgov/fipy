@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 7/28/04 {11:18:34 AM} 
- #                                last update: 12/9/04 {8:19:02 PM} 
+ #                                last update: 4/1/05 {2:47:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'diffusion.input1D',
             'diffusion.input1Ddimensional',
@@ -60,5 +60,5 @@ def suite():
         ), base = __name__)
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
 

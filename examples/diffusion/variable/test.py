@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/9/04 {8:13:51 PM} 
+ #                                last update: 4/1/05 {2:47:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(docTestModuleNames = (
             'mesh2x1.input',
             'mesh2x1.tri2Dinput',
@@ -53,7 +53,7 @@ def suite():
         ), base = __name__)
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
 
             
             

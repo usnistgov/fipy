@@ -4,7 +4,7 @@
  # 
  #  FILE: "lateImportTest.py"
  #                                    created: 12/9/04 {8:26:13 PM} 
- #                                last update: 12/9/04 {8:27:22 PM} 
+ #                                last update: 4/1/05 {2:48:40 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -61,7 +61,7 @@ class LateImportTestCase(unittest.TestCase):
         self.suite.addTest(self.getTestSuite(module = module))
         
     def getTestSuite(self, module):
-        return module.suite()
+        return module._suite()
         
     def runTest(self):
         return

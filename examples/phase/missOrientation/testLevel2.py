@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:14:39 PM} 
+ #                                last update: 4/1/05 {2:51:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,7 +133,7 @@ class TestModFaceGradNoMod1(TestModFaceGradNoMod):
         self.result =  self.diff.getNumericValue()
         self.reorderResult()
         
-def suite():
+def _suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestModSubtract))
     theSuite.addTest(unittest.makeSuite(TestModCellToFace))
@@ -145,4 +145,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
