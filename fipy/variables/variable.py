@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 11/20/03 {11:09:15 AM} 
+                               last update: 11/20/03 {4:17:21 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,16 +44,15 @@ import Numeric
 
 class Variable:
     
-    def __init__(self, name, mesh, initialConditions, viewer = 'None'):
+    def __init__(self, name, mesh, value=0.,viewer = 'None'):
 	self.name = name
 	self.mesh = mesh
 	self.array = Numeric.zeros([len(mesh.getCells())],'d')
         self.viewer = viewer
         if viewer != 'None':
             self.viewer.setVar(self)
-        
-        for initialCondition in initialConditions:
-            initialCondition.setInitialCondition(self.array)
+	    
+	self.setValue(value)
 
     def plot(self):
         self.viewer.plot()
@@ -66,6 +65,11 @@ class Variable:
 
     def getGridArray(self):
         return self.mesh.makeGridData(self.array)
+	
+    def setValue(self,value,cells = ()):
+	if cells == ():
+	    cells = self.mesh.getCells()
+	    
 
 
 
