@@ -196,6 +196,16 @@ class build_docs (Command):
 			      'footnote_references': 'superscript'
 			  })
 
+        core.publish_file(source_path='../../README.txt',
+			  destination_path='readme.tex',
+			  reader_name='standalone',
+			  parser_name='restructuredtext',
+			  writer=IncludedLaTeXWriter(),
+			  settings_overrides = {
+			      'use_latex_toc': True,
+			      'footnote_references': 'superscript'
+			  })
+
 
     def run (self):
 	if self.latex:
