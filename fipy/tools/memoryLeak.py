@@ -6,7 +6,7 @@
  # 
  #  FILE: "memoryLeak.py"
  #                                    created: 8/18/04 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:35:57 PM} { 1:23:41 PM}
+ #                                last update: 9/10/04 {4:30:10 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,9 +68,9 @@ def get_refcounts():
     pairs.reverse()
     return pairs
 
-def print_top_100():
-    for n, c in get_refcounts()[:100]:
+def print_top_N(n = 100):
+    for n, c in get_refcounts()[:n]:
         print '%10d %s' % (n, c.__name__)
 
 if __name__ == '__main__':
-    print_top_100()
+    print_top_N()
