@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/29/03 {2:45:50 PM} 
+ #                                last update: 01/05/04 { 5:16:00 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,18 +41,8 @@
  # ###################################################################
  ##
 
-from meshes.grid2D import Grid2D
-from examples.phase.phase.type2PhaseEquation import Type2PhaseEquation
-from solvers.linearPCGSolver import LinearPCGSolver
-from boundaryConditions.fixedValue import FixedValue
-from boundaryConditions.fixedFlux import FixedFlux
-from iterators.iterator import Iterator
-from viewers.grid2DGistViewer import Grid2DGistViewer
-from variables.cellVariable import CellVariable
-from examples.phase.theta.modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
-from examples.phase.temperature.temperatureEquation import TemperatureEquation
 from inputTemperature import AnisotropySystem
 
 import Numeric
