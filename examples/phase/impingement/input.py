@@ -57,11 +57,10 @@ from fivol.examples.phase.theta.modularVariable import ModularVariable
 from fivol.examples.phase.temperature.temperatureEquation import TemperatureEquation
 from fivol.examples.phase.theta.thetaEquation import ThetaEquation
 
-class ThetaSystem:
+class ImpingementSystem:
 
-    def __init__(self, nx = 40, ny = 40, initialConditions = None):
+    def __init__(self, nx = 100, ny = 100, initialConditions = None):
         timeStepDuration = 0.02
-        timeStepDuration = 1.
         self.steps = 10
 
         sharedPhaseThetaParameters = {
@@ -74,9 +73,7 @@ class ThetaSystem:
 
         phaseParameters = {
             'tau'                   : 0.1,
-            'time step duration'    : timeStepDuration,
-            'kappa 1'               : 0.9,
-            'kappa 2'               : 20.
+            'time step duration'    : timeStepDuration
             }
 
         thetaParameters = {
@@ -84,7 +81,7 @@ class ThetaSystem:
             'small value'           : 1e-6,
             'beta'                  : 1e5,
             'mu'                    : 1e3,
-            'tau'                   : 3e-5,
+            'tau'                   : 0.01,
             'gamma'                 : 1e3 
             }
 
@@ -92,14 +89,11 @@ class ThetaSystem:
             phaseParameters[key] = sharedPhaseThetaParameters[key]
             thetaParameters[key] = sharedPhaseThetaParameters[key]
             
-##        Lx = 2.5 * nx / 100.
-##        Ly = 2.5 * ny / 100.            
-##        dx = Lx / nx
-##        dy = Ly / ny
-        dx = 1.
-        dy = 1.
-        Lx = 10.
-        Ly = 10.
+        Lx = 2.5 * nx / 100.
+        Ly = 2.5 * ny / 100.            
+        dx = Lx / nx
+        dy = Ly / ny
+
         mesh = Grid2D(dx,dy,nx,ny)
 
         phase = CellVariable(
@@ -111,8 +105,7 @@ class ThetaSystem:
         theta = ModularVariable(
             name = 'Theta',
             mesh = mesh,
-            value = 0.,
-            hasOld = 0
+            value = 0.
             )
         
         self.phaseViewer = Grid2DGistViewer(var = phase)
@@ -120,7 +113,7 @@ class ThetaSystem:
         
         phaseFields = {
             'theta' : theta,
-            'temperature' : -0.4
+            'temperature' : 1.
             }
         
         thetaFields = {
@@ -134,6 +127,19 @@ class ThetaSystem:
             cells = mesh.getCells(funcIn)
             phase.setValue(initialCondition['phase value'],cells)
             theta.setValue(initialCondition['theta value'],cells)
+            
+        thetaEq = ThetaEquation(
+            var = theta,
+            solver = LinearPCGSolver(
+            tolerance = 1.e-15, 
+            steps = 1000
+            ),
+            boundaryConditions=(
+            FixedFlux(mesh.getExteriorFaces(), 0.),
+            ),
+            parameters = thetaParameters,
+            fields = thetaFields
+            )
         
         phaseEq = Type1PhaseEquation(
             var = phase,
@@ -148,20 +154,7 @@ class ThetaSystem:
             fields = phaseFields
             )
         
-        thetaEq = ThetaEquation(
-            var = theta,
-            solver = LinearPCGSolver(
-            tolerance = 1.e-15, 
-            steps = 1000
-            ),
-            boundaryConditions=(
-            FixedFlux(mesh.getExteriorFaces(), 0.),
-            ),
-            parameters = thetaParameters,
-            fields = thetaFields
-            )
-
-        self.it = Iterator((phaseEq, thetaEq))
+        self.it = Iterator((thetaEq, phaseEq))
 
         self.parameters = {
             'it' : self.it,
@@ -176,7 +169,7 @@ class ThetaSystem:
     def run(self):
         self.phaseViewer.plot()
         self.thetaViewer.plot()
-        raw_input()
+##        raw_input()
         for i in range(self.steps):
             self.it.timestep(1)
             self.phaseViewer.plot()
@@ -195,7 +188,7 @@ if __name__ == '__main__':
         { 'phase value' : 1., 'theta value' : 0., 'func' : getRightCells }        
         )
     
-    system = ThetaSystem(nx = 10, ny = 1,  initialConditions = initialConditions)
+    system = ImpingementSystem(nx = 40, ny = 1,  initialConditions = initialConditions)
     system.run()
     raw_input()
 
