@@ -82,6 +82,11 @@ class ModularVariable(CellVariable):
         pi=Numeric.pi
         return (array + 3. * pi) % (2 * pi) - pi
 
+    def updateOld(self):
+        if self.old != None:
+            self.value = self.mod(self.value)
+	    self.old.setValue(self.value)
+
     
 	
 

@@ -60,8 +60,10 @@ from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from viewers.grid2DGistViewer import Grid2DGistViewer
 from variables.cellVariable import CellVariable
+from phase.modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
+import Numeric
 
 phaseParameters={
     'tau' :        0.1,
@@ -73,52 +75,58 @@ phaseParameters={
     'symmetry':    4.
     }
 
-valueLeft=1.
-valueRight=1.
+interiorValue = Numeric.pi
+exteriorValue = Numeric.pi / 2.
 
-L = 10
-nx = 10
-dx = L/nx
-dx = 1.
+L = 1.5
+nx = 100
+ny = 100
+dx = L / nx
+dy = L / ny
 
-mesh = Grid2D(dx,1.,nx,1)
+mesh = Grid2D(dx,dy,nx,ny)
 
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
-    value = 1.,
+    value = exteriorValue,
     viewer = Grid2DGistViewer
     )
 
-theta = CellVariable(
+theta = ModularVariable(
     name = 'Theta',
     mesh = mesh,
-    value = 1.,
+    value = Numeric.pi,
     viewer = Grid2DGistViewer,
     hasOld = 0
     )
 
-def func(x):
-    if x[0] > L / 2.:
+phaseParameters['phi'] = phase
+phaseParameters['theta'] = theta
+phaseParameters['temperature'] = 1.
+
+
+def func(x,L=L):
+    r = L / 4.
+    c = (L / 2., L / 2.)
+    if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
         return 1
     else:
         return 0
 
-rightCells = mesh.getCells(func)
+interiorCells = mesh.getCells(func)
 
-theta.setValue(0.,rightCells)
+theta.setValue(interiorValue,interiorCells)
 
 eq = PhaseEquation(
     phase,
-    theta = theta,
-    temperature = 1.,
     solver = LinearPCGSolver(
 	tolerance = 1.e-15, 
 	steps = 1000
     ),
     boundaryConditions=(
-    FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedValue(mesh.getFacesRight(),valueRight)),
+    FixedValue(mesh.getExteriorFaces(), exteriorValue),
+    ),
     parameters = phaseParameters
     )
 
@@ -126,10 +134,8 @@ it = Iterator((eq,))
 
 # fudge = calibrate_profiler(10000)
 # profile = Profiler('profile', fudge=fudge)
-it.iterate(10,0.02)
+it.iterate(100,0.02)
 # profile.stop()
-
-print phase.getArray()
 
 phase.plot()
 
