@@ -127,6 +127,16 @@ size.
 
 Build the mesh:
 
+   >>> identifier = 'numberOfElements='
+   >>> import sys
+   >>> import Numeric
+   >>> for s in sys.argv:
+   ...     if identifier in s:
+   ...         numberOfElements = int(s[len(identifier):])
+   ...         pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
+   ...         sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / numberOfElements
+   ...         cellSize = pos + Numeric.sqrt(pos**2 + sqr)
+
    >>> yCells = cellsBelowTrench + int((trenchDepth + boundaryLayerDepth) / cellSize)
    >>> xCells = int(trenchSpacing / 2 / cellSize)
    >>> from fipy.meshes.grid2D import Grid2D
@@ -180,7 +190,6 @@ Get the positive cells by passing the function,
 
 Create an initial array,
 
-   >>> import Numeric
    >>> values = -Numeric.ones(mesh.getNumberOfCells(), 'd')
    >>> for cell in electrolyteCells:
    ...     values[cell.getID()] = 1
@@ -450,12 +459,12 @@ is calculated with the CFL number and the maximum extension velocity.
     $v_\text{ext}$ throughout the whole domain using
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
 
-.. 
+..
 
    >>> if __name__ == '__main__':
    ...     viewers = buildViewers()
+   ...
    ...     for step in range(numberOfSteps):
-   ...         print 'step',step
    ...
    ...         if step % levelSetUpdateFrequency == 0:
    ...             distanceVar.calcDistanceFunction()
@@ -475,8 +484,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
    ...         bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
    ...         for viewer in viewers:
-   ...             viewer.plot()
-   ...     raw_input('finished')
+   ...             if 'viewers=off' not in sys.argv:
+   ...                 viewer.plot()
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
@@ -503,7 +512,8 @@ to tell if something has changed or been broken.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-
+   >>> if len(testData) != len(Numeric.array(acceleratorVar)):
+   ...     testData = Numeric.resize(testData, Numeric.array(acceleratorVar).shape)
    >>> Numeric.allclose(Numeric.array(acceleratorVar), testData)
    1
           
@@ -513,4 +523,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus.getScript())
-    raw_input("finished")
+
