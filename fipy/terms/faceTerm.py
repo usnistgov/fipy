@@ -43,6 +43,7 @@
  
 from term import Term
 import Numeric
+import tools.vector
 
 class FaceTerm(Term):
     def __init__(self,weight,mesh,boundaryConditions):
@@ -87,17 +88,28 @@ class FaceTerm(Term):
 	    
 	    for boundaryCondition in self.boundaryConditions:
 		LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
-
+                
 		L.update_add_something(LL,ids,ids)
-		Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+                ## WARNING: the next line will not work if one cell has two faces on the same
+                ## boundary. Numeric.put will not add both values to the b array but over write
+                ## the first with the second. We really need a putAdd function rather than put.
+		## Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+                tools.vector.putAdd(b, ids, bb)
+
 		
         ## explicit
         if self.weight.has_key('explicit'):
+            
+            oldArrayId1 = Numeric.take(oldArray,id1)
+            oldArrayId2 = Numeric.take(oldArray,id2)
 
-            for i in range(self.interiorN):
+            tools.vector.putAdd(b, id1, -(self.explicit['cell 1 diag'][:self.interiorN] * oldArrayId1[:] + self.explicit['cell 1 offdiag'][:self.interiorN] * oldArrayId2[:]))
+            tools.vector.putAdd(b, id2, -(self.explicit['cell 2 diag'][:self.interiorN] * oldArrayId2[:] + self.explicit['cell 2 offdiag'][:self.interiorN] * oldArrayId1[:]))
 
-		b[id1[i]] -= self.explicit['cell 1 diag'][i] * oldArray[id1[i]] + self.explicit['cell 1 offdiag'][i] * oldArray[id2[i]]
-		b[id2[i]] -= self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
+##            for i in range(self.interiorN):
+
+##		b[id1[i]] -= self.explicit['cell 1 diag'][i] * oldArray[id1[i]] + self.explicit['cell 1 offdiag'][i] * oldArray[id2[i]]
+##		b[id2[i]] -= self.explicit['cell 2 diag'][i] * oldArray[id2[i]] + self.explicit['cell 2 offdiag'][i] * oldArray[id1[i]]
 
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
