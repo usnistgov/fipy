@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/7/04 {2:02:16 PM} 
+ #                                last update: 6/7/04 {2:08:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -80,10 +80,9 @@ class build_docs (Command):
 		for name in dirs: 
 		    os.rmdir(os.path.join(root, name)) 
 	    os.rmdir(dir)
-	finally:
+	except:
 	    pass
 	    
-	os.makedirs(os.path.join('documentation', 'manual', 'api'))
 	os.makedirs(dir)
 	os.system("epydoc --" + type + " --output " + dir + " --name FiPy --docformat restructuredtext fipy/")
 	
@@ -102,7 +101,7 @@ class build_docs (Command):
 		    for name in files: 
 			f.write("\\include{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n")
 		f.close()
-	    finally:
+	    except:
 		pass
 	    os.chdir(savedir)
 
@@ -115,7 +114,7 @@ class build_docs (Command):
 	    try:
 		os.chdir(os.path.join('documentation','manual'))
 		os.system("pdflatex fipy.tex")
-	    finally:
+	    except:
 		pass
 	    os.chdir(savedir)
 
