@@ -5,7 +5,7 @@
 
  FILE: "variable.py"
                                    created: 11/10/03 {3:15:38 PM} 
-                               last update: 12/1/03 {3:58:38 PM} 
+                               last update: 12/9/03 {2:39:10 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -45,112 +45,26 @@ import Numeric
 
 class Variable:
     
-    def __init__(self, name, mesh, value=0.,viewer = 'None', hasOld = 1):
-	self.fields = {}
-	
-	self.name = name
+    def __init__(self, mesh, name = '', value=0.):
 	self.mesh = mesh
-	self.array = Numeric.zeros([len(mesh.getCells())],'d')
-        if viewer != 'None':
-	    self.viewer = viewer(var = self)
+	self.name = name
+	self.value = value
+	    
+    def __coerce__(self,other):
+	if type(other) in [type(Numeric.array((1.))),type(1.0),type(1),type(True)]:
+	    return (self.getValue(),other)
 	else:
-	    self.viewer = 'None'
-	    
-	self.setValue(value)
+	    return None
+	
+    def __getitem__(self, index): 
+	return self.getValue()[index]
 
-        if hasOld:
-            self.old = Variable(name + "_old", mesh, value = self.getArray(), viewer = viewer, hasOld = 0)
-        else:
-            self.old = 'None'
-
-    def plot(self):
-	if self.viewer != 'None':
-	    self.viewer.plot()
-        
+    def __setitem__(self, index, value): 
+	self.value[index] = value
+		
     def getMesh(self):
-        return self.mesh
+	return self.mesh
 
-    def getArray(self):
-        return self.array
+    def getValue(self):
+        return self.value
 
-    def getGridArray(self):
-        return self.mesh.makeGridData(self.array)
-	
-    def setValue(self,value,cells = ()):
-	if cells == ():
-            self.array[:] = value
-        else:
-            for cell in cells:
-                self.array[cell.getId()] = value
-	self.refresh()
-
-    def refresh(self):
-	if self.fields.has_key('faceValues'):
-	    self.calcFaceValues()
-	if self.fields.has_key('gradient'):
-	    self.calcGradient()
-	
-#     def getFaceValue(self,face):
-# 	return self.getFaceValues()[face.getId()]
-	    
-#     def getFaceValues(self):
-# 	if not self.fields.has_key('faceValues'):
-# 	    self.calcFaceValues()
-# 	return self.fields['faceValues']
-
-#     def calcFaceValues(self):
-# 	dAP = self.mesh.getCellDistances()
-# 	dFP = self.mesh.getFaceToCellDistances()
-# 	alpha = dFP / dAP
-# 	id1, id2 = self.mesh.getAdjacentCellIDs()
-# 	self.fields['faceValues'] = Numeric.take(self.array, id1) * alpha + Numeric.take(self.array, id2) * (1 - alpha)
-	    
-#     def calcFaceGradientContributions(self):
-# 	areas = self.mesh.getAreaProjections()
-# 	faceValues = Numeric.reshape(self.getFaceValues(), (len(areas),1)) 
-# 	
-# 	self.faceGradientContributions = areas * faceValues
-#     
-#     def getCellGradient(self,cell):
-# 	contributions = Numeric.take(self.faceGradientContributions, cell.getFaceIDs())
-# 	
-# 	return Numeric.sum(cell.getFaceOrientations() * contributions) / cell.getVolume()
-	
-#     def getGradient(self):
-# 	if not self.fields.has_key('gradient'):
-# 	    self.calcGradient()
-# 	return self.fields['gradient']
-	    
-#     def calcGradient(self):
-# 	self.calcFaceGradientContributions()
-#         grad = Numeric.zeros((len(self.array),self.mesh.getDim()),'d')
-#         for cell in self.mesh.getCells():
-#             grad[cell.getId()] = self.getCellGradient(cell)
-# 	self.fields['gradient'] = grad
-
-#     def getFaceGradient(self):
-# 	cellGrad = self.getGradient()
-# 	alpha = Numeric.zeros((len(self.mesh.getFaces()),1),'d')
-# 	dAP = self.mesh.getCellDistances()
-# 	dFP = self.mesh.getFaceToCellDistances()
-# 	alpha[:,0] = dFP / dAP
-# 	id1, id2 = self.mesh.getAdjacentCellIDs()
-# 	return Numeric.take(cellGrad, id1) * alpha + Numeric.take(cellGrad, id2) * (1 - alpha)
-    
-#     def getGradientMagnitude(self):
-# 	grad = self.getGradient()
-# 	# We can't use Numeric.dot on an array of vectors
-# 	return Numeric.sqrt(Numeric.sum(grad*grad,1))
-	
-    def getOld(self):
-        if self.old == 'None':
-            return self
-        else:
-            return self.old
-
-    def updateOld(self):
-        if self.old != 'None':
-            self.old.setValue(self.array)
-
-    
-    

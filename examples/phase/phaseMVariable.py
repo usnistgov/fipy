@@ -1,12 +1,10 @@
-
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testBase.py"
- #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/9/03 {1:19:32 PM} 
+ #  FILE: "phaseMVariable.py"
+ #                                    created: 12/8/03 {5:47:27 PM} 
+ #                                last update: 12/9/03 {2:25:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,37 +31,18 @@
  #  
  # ###################################################################
  ##
-"""
 
-import unittest
-import Numeric
+from variables.cellVariable import CellVariable
 
-class TestBase(unittest.TestCase):
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if abs(first - second) > tol:
-	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
-
-    def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if not Numeric.allclose(first, second, rtol, atol):
-	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
-	    
-    def getTestValue(self, cell):
-	pass
+class PhaseMVariable(CellVariable):
+    def __init__(self, mesh, phi, temperature):
+	self.phi = phi
+	self.temperature = temperature
+	CellVariable.__init__(self,name = "Mphi", mesh = mesh, hasOld = False)
 	
-    def getTestValues(self):
-	values = self.var.getValue().copy()
-	for cell in self.mesh.getCells():
-	    id = cell.getId()
-	    values[id] = self.getTestValue(cell)
-	return values
-	
-    def testResult(self):
-	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
-	array = self.var.getValue()
-	values = self.getTestValues()
-	values = Numeric.reshape(values, Numeric.shape(array))
-	self.assertArrayWithinTolerance(array, values, self.tolerance)
+    def getValue(self):
+	phi = self.phi
+	t = self.temperature
+	return phi - 0.5 + t * phi * (1 - phi)
+
+

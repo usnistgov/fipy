@@ -1,12 +1,10 @@
-
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testBase.py"
- #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/9/03 {1:19:32 PM} 
+ #  FILE: "substitutionalConvectionTerm.py"
+ #                                    created: 12/9/03 {3:16:28 PM} 
+ #                                last update: 12/9/03 {3:18:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,37 +31,5 @@
  #  
  # ###################################################################
  ##
-"""
 
-import unittest
-import Numeric
-
-class TestBase(unittest.TestCase):
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if abs(first - second) > tol:
-	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
-
-    def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if not Numeric.allclose(first, second, rtol, atol):
-	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
-	    
-    def getTestValue(self, cell):
-	pass
-	
-    def getTestValues(self):
-	values = self.var.getValue().copy()
-	for cell in self.mesh.getCells():
-	    id = cell.getId()
-	    values[id] = self.getTestValue(cell)
-	return values
-	
-    def testResult(self):
-	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
-	array = self.var.getValue()
-	values = self.getTestValues()
-	values = Numeric.reshape(values, Numeric.shape(array))
-	self.assertArrayWithinTolerance(array, values, self.tolerance)
+class SubstitutionalConvectionTerm():

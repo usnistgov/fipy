@@ -1,12 +1,10 @@
-
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testBase.py"
- #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/9/03 {1:19:32 PM} 
+ #  FILE: "substitutionalConvectionCoeff.py"
+ #                                    created: 12/9/03 {3:32:09 PM} 
+ #                                last update: 12/9/03 {4:12:44 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,37 +31,21 @@
  #  
  # ###################################################################
  ##
-"""
 
-import unittest
+from variables.vectorFaceVariable import VectorFaceVariable
+from substitutionalSumVariable import SubstitutionalSumVariable
 import Numeric
 
-class TestBase(unittest.TestCase):
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if abs(first - second) > tol:
-	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
-
-    def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if not Numeric.allclose(first, second, rtol, atol):
-	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
+class SubstitutionalConvectionCoeff(VectorFaceVariable):
+    def __init__(self,mesh,diffusivity,Cj,substitutionals):
+	VectorFaceVariable.__init__(self,mesh,Cj.name + "_convection")
+	self.Dj = diffusivity
+	self.substitutionalSum = SubstitutionalSumVariable(
+	    mesh = mesh, 
+	    Cj = Cj, 
+	    substitutionals = substitutionals)
 	    
-    def getTestValue(self, cell):
-	pass
-	
-    def getTestValues(self):
-	values = self.var.getValue().copy()
-	for cell in self.mesh.getCells():
-	    id = cell.getId()
-	    values[id] = self.getTestValue(cell)
-	return values
-	
-    def testResult(self):
-	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
-	array = self.var.getValue()
-	values = self.getTestValues()
-	values = Numeric.reshape(values, Numeric.shape(array))
-	self.assertArrayWithinTolerance(array, values, self.tolerance)
+    def getValue(self):
+	num = self.Dj * self.substitutionalSum.getFaceGrad() 
+	den = (1. - self.substitutionalSum.getFaceValue())
+	return num / Numeric.reshape(den,(len(num),1))

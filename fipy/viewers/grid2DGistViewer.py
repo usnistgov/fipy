@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 11/27/03 {10:05:37 AM} 
+                               last update: 12/9/03 {4:23:56 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -56,4 +56,4 @@ class Grid2DGistViewer(GistViewer):
 
     def getArray(self):
         nx,ny = self.var.getMesh().getShape()
-        return Numeric.reshape(self.var.getArray(),(ny,nx))
+        return Numeric.reshape(self.var.getValue(),(ny,nx))

@@ -1,12 +1,10 @@
-
-"""
 ## -*-Pyth-*-
  # ###################################################################
  #  PFM - Python-based phase field solver
  # 
- #  FILE: "testBase.py"
- #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 12/9/03 {1:19:32 PM} 
+ #  FILE: "phaseScSourceVariable.py"
+ #                                    created: 12/8/03 {4:44:40 PM} 
+ #                                last update: 12/9/03 {2:25:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -33,37 +31,34 @@
  #  
  # ###################################################################
  ##
-"""
 
-import unittest
-import Numeric
+from variables.cellVariable import CellVariable
 
-class TestBase(unittest.TestCase):
-    def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if abs(first - second) > tol:
-	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
-
-    def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if not Numeric.allclose(first, second, rtol, atol):
-	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
-	    
-    def getTestValue(self, cell):
-	pass
+class PhaseScSourceVariable(CellVariable):
+    def __init__(self,mesh,parameters):
+	self.parameters = parameters
+	CellVariable.__init__(self,name = "ScSource", mesh = mesh, hasOld = False)
 	
-    def getTestValues(self):
-	values = self.var.getValue().copy()
-	for cell in self.mesh.getCells():
-	    id = cell.getId()
-	    values[id] = self.getTestValue(cell)
-	return values
-	
-    def testResult(self):
-	self.it.iterate(steps = self.steps, timeStep = self.timeStep)
-	array = self.var.getValue()
-	values = self.getTestValues()
-	values = Numeric.reshape(values, Numeric.shape(array))
-	self.assertArrayWithinTolerance(array, values, self.tolerance)
+    def getValue(self):
+	phi = self.parameters['phi']
+	m = self.parameters['mPhi']
+
+	## driving force double well
+
+	sc = (m > 0.) * m * phi
+    
+	## theta source terms
+
+#         ## anisotropy
+# 
+# ##        z = Numeric.atan2(self.dphi[:,1],self.dphi[:,0]);
+# ##        z = N * (z-self.theta);
+# ##        z = tan(0.5 * z);
+# ##        zsq = z * z;
+# ##        b = (1-zsq) / (1+zsq);
+# ##        db = -N * 2. *z / (1+zsq);
+# ##        ff = alphasq * c2 * (1.+c2 * b) * db
+#         
+# ##        sc + = phaseTools.add_over_faces_inline(self.ff,-self.dphi[:,1],self.dphi[:,0],mesh)
+
+	return sc

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSteadyStateDiffusion.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {9:40:38 PM} 
+ #                                last update: 12/9/03 {2:42:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -53,7 +53,7 @@ from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 import Numeric
 
 class TestPhase(TestBase):
@@ -85,38 +85,43 @@ class TestPhase(TestBase):
         
         self.mesh = Grid2D(dx,dy,nx,ny)
         
-        self.var = Variable(
+        self.var = CellVariable(
             name = 'PhaseField',
             mesh = self.mesh,
             value = 1.
             )
+	    
+	phaseParameters['phi'] = self.var
         
-        theta = Variable(
+        theta = CellVariable(
             name = 'Theta',
             mesh = self.mesh,
             value = 1.,
             hasOld = 0
             )
-        
+	    
         func = self.func
 
         rightCells = self.mesh.getCells(func)
         
         theta.setValue(0.,rightCells)
 
+	phaseParameters['theta'] = theta
+	
+	phaseParameters['temperature'] = 1.
+	
         eq = PhaseEquation(
             self.var,
-            theta = theta,
-            temperature = 1.,
             solver = LinearPCGSolver(
-            tolerance = 1.e-15, 
-            steps = 1000
+		tolerance = 1.e-15, 
+		steps = 1000
             ),
             boundaryConditions=(
-            FixedValue(self.mesh.getFacesLeft(),valueLeft),
-            FixedValue(self.mesh.getFacesRight(),valueRight)),
+		FixedValue(self.mesh.getFacesLeft(),valueLeft),
+		FixedValue(self.mesh.getFacesRight(),valueRight)
+	    ),
             parameters = phaseParameters
-            )
+	)
         
         self.it = Iterator((eq,))
 	
@@ -126,7 +131,6 @@ class TestPhase(TestBase):
 	testData = cPickle.load(filestream)
 	filestream.close()
 
-# 	testData = Numeric.reshape(testData,Numeric.shape(self.var.getArray()))
 	return testData
 
 class TestPhase1D(TestPhase):

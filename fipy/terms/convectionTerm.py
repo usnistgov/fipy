@@ -5,7 +5,7 @@
 
  FILE: "convectionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/5/03 {4:19:31 PM} 
+                               last update: 12/9/03 {4:22:50 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,14 +48,17 @@ class ConvectionTerm(FaceTerm):
     def __init__(self, convCoeff, mesh, boundaryConditions, diffusionTerm = 'None'):
 	weight = {'implicit':{'cell 1 diag': -0.5, 'cell 1 offdiag': 0.5, 'cell 2 diag': 0.5, 'cell 2 offdiag': -0.5}}
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
-	self.convCoeff = Numeric.array(convCoeff)
-	self.convCoeff = Numeric.reshape(self.convCoeff, (1,) + Numeric.shape(self.convCoeff))
+	if type(convCoeff) in [type(1), type(1.), type(Numeric.array((1,)))]:
+	    self.convCoeff = Numeric.array(convCoeff)
+	    self.convCoeff = Numeric.reshape(self.convCoeff, (1,) + Numeric.shape(self.convCoeff))
+	else:
+	    self.convCoeff = convCoeff
 	self.diffusionTerm = diffusionTerm
 	
     def calculateAlpha(self, P):
 	pass
 	
-    def updateCoeff(self,dt):
+    def calculateCoeffGeom(self,dt):
 	areas = self.mesh.getOrientedAreaProjections()
 	self.coeff = Numeric.sum(self.convCoeff * areas, 1)
 	if self.diffusionTerm == 'None':
@@ -67,20 +70,7 @@ class ConvectionTerm(FaceTerm):
 	
 	alpha = self.calculateAlpha(P)
 	
-# 	print "P: ", P
-# 	print "alpha: ", alpha
-	
 	self.weight['implicit']['cell 1 diag'] = -alpha
 	self.weight['implicit']['cell 1 offdiag'] = -(1-alpha)
 	self.weight['implicit']['cell 2 diag'] = (1-alpha)
 	self.weight['implicit']['cell 2 offdiag'] = alpha
-
-    def setConvCoeff(self,convCoeff):
-        """
-        Added to allow the convection coefficient to be updated
-        in the equation module
-        """
-        self.convCoeff = convCoeff
-	
-
-

@@ -5,7 +5,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/8/03 {2:31:38 PM} 
+ #                                last update: 12/9/03 {5:08:30 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -51,18 +51,6 @@ class FaceTerm(Term):
         self.interiorN = len(self.mesh.getInteriorFaces())
         self.boundaryConditions = boundaryConditions
 	
-    def buildMatrix1(self,L,cell1dia,cell1off,cell2dia,cell2off,id1,id2):
-	L.update_add_something(cell1dia[:self.interiorN],id1,id1)
-	L.update_add_something(cell1off[:self.interiorN],id1,id2)
-	L.update_add_something(cell2off[:self.interiorN],id2,id1)
-	L.update_add_something(cell2dia[:self.interiorN],id2,id2)
-
-    def buildMatrix2(self,L,b,cell1dia,cell1off):
-	    for boundaryCondition in self.boundaryConditions:
-		LL,bb,ids = boundaryCondition.getContribution(cell1dia,cell1off)
-		L.update_add_something(LL,ids,ids)
-		Numeric.put(b,ids,Numeric.take(b,ids)+bb)
-	
     def buildMatrix(self,L,array,b):
 	"""Implicit portion considers
 	"""
@@ -73,24 +61,23 @@ class FaceTerm(Term):
 	
         ## implicit
         if self.weight.has_key('implicit'):
+	    print self.__class__
 	    weight = self.weight['implicit']
+	    print weight
  	    cell1dia = self.coeff*weight['cell 1 diag']
 	    cell1off = self.coeff*weight['cell 1 offdiag']
 	    cell2dia = self.coeff*weight['cell 2 diag']
 	    cell2off = self.coeff*weight['cell 2 offdiag']
 	    
-	    self.buildMatrix1(L,cell1dia,cell1off,cell2dia,cell2off,id1,id2)
-		
-# 	    L.update_add_something(cell1dia[:self.interiorN],id1,id1)
-# 	    L.update_add_something(cell1off[:self.interiorN],id1,id2)
-# 	    L.update_add_something(cell2off[:self.interiorN],id2,id1)
-# 	    L.update_add_something(cell2dia[:self.interiorN],id2,id2)
+	    L.update_add_something(cell1dia[:self.interiorN],id1,id1)
+	    L.update_add_something(cell1off[:self.interiorN],id1,id2)
+	    L.update_add_something(cell2off[:self.interiorN],id2,id1)
+	    L.update_add_something(cell2dia[:self.interiorN],id2,id2)
 	    
-	    self.buildMatrix2(L,b,cell1dia,cell1off)
-# 	    for boundaryCondition in self.boundaryConditions:
-# 		LL,bb,ids = boundaryCondition.getContribution(cell1dia,cell1off)
-# 		L.update_add_something(LL,ids,ids)
-# 		Numeric.put(b,ids,Numeric.take(b,ids)+bb)
+	    for boundaryCondition in self.boundaryConditions:
+		LL,bb,ids = boundaryCondition.getContribution(cell1dia,cell1off)
+		L.update_add_something(LL,ids,ids)
+		Numeric.put(b,ids,Numeric.take(b,ids)+bb)
 		
         ## explicit
         if self.weight.has_key('explicit'):

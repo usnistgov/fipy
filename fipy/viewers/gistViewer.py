@@ -5,7 +5,7 @@
 
  FILE: "gistViewer.py"
                                    created: 11/10/03 {2:48:25 PM} 
-                               last update: 11/27/03 {10:19:52 AM} 
+                               last update: 12/9/03 {4:28:02 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -52,7 +52,8 @@ class GistViewer:
     def __init__(self, minVal=0., maxVal=1.):
 	self.minVal = minVal
         self.maxVal = maxVal
-        self.id = self.id + 1
+        self.id = GistViewer.id 
+	GistViewer.id += 1
     
     def plot(self):
         gist.window(self.id, wait= 1)

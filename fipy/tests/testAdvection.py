@@ -6,7 +6,7 @@
  # 
  #  FILE: "testAdvection.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 12/5/03 {4:53:50 PM} 
+ #                                last update: 12/9/03 {2:25:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -50,7 +50,7 @@ from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 from terms.exponentialConvectionTerm import ExponentialConvectionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 import Numeric
@@ -70,7 +70,7 @@ class TestAdvection(TestBase):
 
         self.mesh = Grid2D(self.L/self.nx,1.,self.nx,self.ny)
         
-        self.var = Variable(
+        self.var = CellVariable(
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,

@@ -5,7 +5,7 @@
 
  FILE: "cellTerm.py"
                                    created: 11/12/03 {11:00:54 AM} 
-                               last update: 12/3/03 {4:01:18 PM} 
+                               last update: 12/9/03 {4:57:30 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler

@@ -5,7 +5,7 @@
 
  FILE: "concentrationEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/28/03 {6:13:06 PM} 
+                               last update: 12/9/03 {4:08:06 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -40,25 +40,48 @@ they have been modified.
 ###################################################################
 """
 
-from matrixEquation import MatrixEquation
+from equations.matrixEquation import MatrixEquation
 from terms.transientTerm import TransientTerm
 from terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from substitutionalConvectionCoeff import SubstitutionalConvectionCoeff
 
-class DiffusionEquation(MatrixEquation):
+class ConcentrationEquation(MatrixEquation):
     """
     Diffusion equation is implicit.
     """    
     def __init__(self,
                  var,
-                 transientCoeff = 1.,
-                 diffusionCoeff = 1.,
+                 diffusivity = 1.,
+		 convectionScheme = PowerLawConvectionTerm,
                  solver='default_solver',
-                 boundaryConditions=()):
+                 boundaryConditions=(),
+		 parameters = {}):
+		     
         mesh = var.getMesh()
+	
+	diffusionTerm = ImplicitDiffusionTerm(
+	    diffCoeff = diffusivity,
+	    mesh = mesh,
+	    boundaryConditions = boundaryConditions)
+	    
+	convectionTerm = convectionScheme(
+	    convCoeff = SubstitutionalConvectionCoeff(
+	    	mesh = mesh,
+		diffusivity = diffusivity,
+		Cj = var,
+		substitutionals = parameters['substitutionals']), 
+	    mesh = mesh, 
+	    boundaryConditions = boundaryConditions,
+	    diffusionTerm = diffusionTerm)
+
+	    
 	terms = (
-	    TransientTerm(transientCoeff,mesh),
-	    ImplicitDiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
+	    TransientTerm(tranCoeff = 1.,mesh = mesh),
+	    diffusionTerm,
+	    convectionTerm
             )
+	    
 	MatrixEquation.__init__(
             self,
             var,

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/30/03 {10:30:37 AM} 
+ #                                last update: 12/9/03 {4:51:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,10 +53,10 @@
 """
 
 from meshes.grid2D import Grid2D
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 from viewers.grid2DGistViewer import Grid2DGistViewer
-from equations.diffusionEquation import DiffusionEquation
-from solvers.linearPCGSolver import LinearPCGSolver
+from concentrationEquation import ConcentrationEquation
+from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
@@ -64,35 +64,37 @@ from iterators.iterator import Iterator
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
-valueLeft=1.
-valueRight=0.
+valueLeft=0.3
+valueRight=0.6
 
 mesh = Grid2D(
     dx = 1.,
     dy = 1.,
-    nx = 100,
-    ny = 100)
+    nx = 4,
+    ny = 1)
 
-var1 = Variable(
+var1 = CellVariable(
     name = "c1",
     mesh = mesh,
     value = valueLeft,
     viewer = Grid2DGistViewer
     )
 
-var2 = Variable(
+var2 = CellVariable(
     name = "c2",
     mesh = mesh,
     value = valueLeft,
     viewer = Grid2DGistViewer
     )
     
+parameters = {
+    'substitutionals': (var1,var2)
+}
+
 eq1 = ConcentrationEquation(
     var = var1,
-    concentrations = (var2,),
-    transientCoeff = 0., 
-    diffusionCoeff = 1.,
-    solver = LinearPCGSolver(
+    diffusivity = 1.,
+    solver = LinearCGSSolver(
 	tolerance = 1.e-15, 
 	steps = 1000
     ),
@@ -101,34 +103,41 @@ eq1 = ConcentrationEquation(
 	FixedValue(faces = mesh.getFacesRight(),value = valueRight),
 	FixedFlux(faces = mesh.getFacesTop(),value = 0.),
 	FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-    )
+    ),
+    parameters = parameters
 )
 
 eq2 = ConcentrationEquation(
     var = var2,
-    concentrations = (var1,),
-    transientCoeff = 0., 
-    diffusionCoeff = 1.,
-    solver = LinearPCGSolver(
+    diffusivity = 1.,
+    solver = LinearCGSSolver(
 	tolerance = 1.e-15, 
 	steps = 1000
     ),
     boundaryConditions=(
-	FixedValue(faces = mesh.getFacesLeft(),value = valueLeft),
-	FixedValue(faces = mesh.getFacesRight(),value = valueRight),
+	FixedValue(faces = mesh.getFacesLeft(),value = valueRight),
+	FixedValue(faces = mesh.getFacesRight(),value = valueLeft),
 	FixedFlux(faces = mesh.getFacesTop(),value = 0.),
 	FixedFlux(faces = mesh.getFacesBottom(),value = 0.)
-    )
+    ),
+    parameters = parameters
 )
 
 it = Iterator((eq1,eq2))
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
-it.iterate(1,10000.)
-profile.stop()
+for i in range(2):
+    # fudge = calibrate_profiler(10000)
+    # profile = Profiler('profile', fudge=fudge)
+    it.iterate(1,10000.)
+    # profile.stop()
 
-var.plot()
+    print var1.getValue()
+    print var2.getValue()
+
+var1.plot()
+var2.plot()
+
+
 
 raw_input()
 

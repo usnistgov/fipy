@@ -5,7 +5,7 @@
 
  FILE: "transientTerm.py"
                                    created: 11/12/03 {11:36:25 AM} 
-                               last update: 12/3/03 {3:06:03 PM} 
+                               last update: 12/8/03 {3:57:08 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -49,7 +49,7 @@ class TransientTerm(CellTerm):
 	CellTerm.__init__(self,weight,mesh) 
 	self.tranCoeff = tranCoeff
 	    
-    def updateCoeff(self,dt):
+    def calculateCoeffGeom(self,dt):
 	self.coeff = self.tranCoeff * self.mesh.getCellVolumes() / dt
 	
 

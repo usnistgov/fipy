@@ -5,7 +5,7 @@
 
  FILE: "linearCGSSolver.py"
                                    created: 11/14/03 {3:56:49 PM} 
-                               last update: 12/5/03 {4:19:36 PM} 
+                               last update: 12/9/03 {4:51:32 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -51,8 +51,8 @@ class LinearCGSSolver(Solver):
 	
     def solve(self, L, x, b):
 
-# 	print "L: ", L
-# 	print "b: ", b
+	print "L: ", L
+	print "b: ", b
 # 	print "x: ", x
 	
 	A = L.to_csr()

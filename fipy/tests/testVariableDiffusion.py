@@ -6,7 +6,7 @@
  # 
  #  FILE: "testVariableDiffusion.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 12/5/03 {9:53:36 PM} 
+ #                                last update: 12/9/03 {2:24:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -50,7 +50,7 @@ from solvers.linearPCGSolver import LinearPCGSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 import Numeric
 
 class TestVariableDiffusion(TestBase):
@@ -87,7 +87,7 @@ class TestVariableDiffusion(TestBase):
 
         self.mesh = Grid2D(dx,dy,self.nx,self.ny)
         
-        self.var = Variable(
+        self.var = CellVariable(
             name = "diffusion",
             mesh = self.mesh,
 	    value = self.valueLeft,

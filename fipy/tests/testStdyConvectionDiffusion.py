@@ -6,7 +6,7 @@
  # 
  #  FILE: "testStdyConvectionDiffusion.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 12/8/03 {11:50:06 AM} 
+ #                                last update: 12/9/03 {2:25:19 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -50,7 +50,7 @@ from solvers.linearCGSSolver import LinearCGSSolver
 from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 from terms.exponentialConvectionTerm import ExponentialConvectionTerm
 from terms.powerLawConvectionTerm import PowerLawConvectionTerm
 from terms.scSourceTerm import ScSourceTerm
@@ -68,7 +68,7 @@ class TestSteadyConvectionDiffusionSc(TestBase):
 
         self.mesh = Grid2D(self.L/self.nx,self.L/self.ny,self.nx,self.ny)
         
-        self.var = Variable(
+        self.var = CellVariable(
             name = "concentration",
             mesh = self.mesh,
 	    value = self.valueLeft,

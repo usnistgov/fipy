@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 12/3/03 {4:36:57 PM} 
+ #                                last update: 12/9/03 {2:25:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,7 +59,7 @@ from boundaryConditions.fixedValue import FixedValue
 from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from viewers.grid2DGistViewer import Grid2DGistViewer
-from variables.variable import Variable
+from variables.cellVariable import CellVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
 
@@ -83,14 +83,14 @@ dx = 1.
 
 mesh = Grid2D(dx,1.,nx,1)
 
-phase = Variable(
+phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
     value = 1.,
     viewer = Grid2DGistViewer
     )
 
-theta = Variable(
+theta = CellVariable(
     name = 'Theta',
     mesh = mesh,
     value = 1.,

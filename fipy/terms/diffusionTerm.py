@@ -5,7 +5,7 @@
 
  FILE: "diffusionTerm.py"
                                    created: 11/13/03 {11:39:03 AM} 
-                               last update: 12/4/03 {11:17:58 AM} 
+                               last update: 12/8/03 {5:17:54 PM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -48,16 +48,9 @@ class DiffusionTerm(FaceTerm):
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
 	self.diffCoeff = diffCoeff
 	
-    def updateCoeff(self,dt):
+    def calculateCoeffGeom(self,dt):
 	self.coeff = self.diffCoeff * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
 
-    def setDiffCoeff(self,diffCoeff):
-        """
-        Added to allow the diffusion coefficient to be updated
-        in the equation module
-        """
-        self.diffCoeff = diffCoeff
-	
     def getCoeff(self):
 	return self.coeff
 	
