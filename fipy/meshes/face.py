@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 11/24/03 {6:07:36 PM} 
+ #                                last update: 11/24/03 {10:17:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -208,15 +208,15 @@ class Face:
             vec=self.center-self.cells[0].getCenter()        
         return tools.sqrtDot(vec,vec)
 
-    def __repr__(self):
-	"""Textual representation of Face.
-	"""
-	return "<id = " + str(self.id) + ">"
-# 	+ ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
 #     def __repr__(self):
 # 	"""Textual representation of Face.
 # 	"""
-# 	return "<id = " + str(self.id) + ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
+# 	return "<id = " + str(self.id) + ">"
+# 	+ ", area = " + str(self.area()) + ", normal = " + str(self.normal()) + ", vertices = " + str(self.vertices) + ", centers = " + str(self.center) + ">\n"
+    def __repr__(self):
+	"""Textual representation of Face.
+	"""
+	return "<id = " + str(self.id) + ", area = " + str(self.area) + ", normal = " + str(self.normal) + ", vertices = " + str(self.vertices) + ", center = " + str(self.center) + ">\n"
 
     def removeBoundingCell(self,cell):
 	"""Remove cell from the list of bounding Cells.

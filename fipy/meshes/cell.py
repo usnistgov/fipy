@@ -7,7 +7,7 @@
  # 
  #  FILE: "cell.py"
  #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 11/24/03 {10:25:57 AM} 
+ #                                last update: 11/24/03 {10:11:10 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -119,7 +119,7 @@ class Cell:
     def __repr__(self):
 	"""Textual representation of Cell.
 	"""
-	rep = "<id = " + str(self.id) + ", volume = " + str(self.volume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
+	rep = "<id = " + str(self.id) + ", volume = " + str(self.getVolume()) + ", center = " + str(self.getCenter()) + ", faces = \n" 
 	
 	for face in self.faces:
 	    rep += "id = " + str(face.getId()) + ", normal = " + str(face.getNormal(self)) + "\n"
