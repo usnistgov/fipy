@@ -218,8 +218,7 @@ for i in range(len(thetaValues)):
 
 thetaProd = -pi + phase * (theta + pi)
         
-phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
-thetaProductViewer = Grid2DGistViewer(var = thetaProd , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
+
         
 phaseFields = {
     'theta' : theta,
@@ -260,6 +259,9 @@ phaseEq = PhaseEquation(
 it = Iterator((thetaEq, phaseEq))
 
 if __name__ == '__main__':
+
+    phaseViewer = Grid2DGistViewer(var = phase, palette = 'rainbow.gp', minVal = 0., maxVal = 1., grid = 0)
+    thetaProductViewer = Grid2DGistViewer(var = thetaProd , palette = 'rainbow.gp', minVal = -pi, maxVal = pi, grid = 0)
     
     phaseViewer.plot()
     thetaProductViewer.plot()
