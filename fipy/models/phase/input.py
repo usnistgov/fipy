@@ -41,7 +41,7 @@
  # ###################################################################
  ##
 
-"""Diffusion equation input file
+"""Phase Field Equation input file
 
     Build a mesh, variable, and diffusion equation with fixed (zero) flux
     boundary conditions at the top and bottom and fixed value boundary
@@ -60,9 +60,10 @@ from boundaryConditions.fixedFlux import FixedFlux
 from iterators.iterator import Iterator
 from viewers.grid2DGistViewer import Grid2DGistViewer
 from variables.cellVariable import CellVariable
-from phase.modularVariable import ModularVariable
+from modularVariable import ModularVariable
 from profiler.profiler import Profiler
 from profiler.profiler import calibrate_profiler
+
 import Numeric
 
 phaseParameters={
@@ -75,21 +76,24 @@ phaseParameters={
     'symmetry':    4.
     }
 
-interiorValue = -Numeric.pi
-exteriorValue = Numeric.pi / 2.
+interiorValue = -2. * Numeric.pi / 3.
+exteriorValue = 2. * Numeric.pi / 3.
+##exteriorValue = 0.
+##interiorValue = -1.
 
-L = 1.5
-nx = 100
-ny = 100
-dx = L / nx
-dy = L / ny
+Length = 1.5
+nx = 10
+ny = 10
+dx = Length / nx
+dy = Length / ny
 
 mesh = Grid2D(dx,dy,nx,ny)
 print "built mesh"
+
 phase = CellVariable(
     name = 'PhaseField',
     mesh = mesh,
-    value = exteriorValue,
+    value = 1.,
     viewer = Grid2DGistViewer
     )
 
@@ -105,8 +109,13 @@ phaseParameters['phi'] = phase
 phaseParameters['theta'] = theta
 phaseParameters['temperature'] = 1.
 
+def leftCells(x,L = Length):
+    if x[0] < L / 2.:
+        return 1
+    else:
+        return 0
 
-def func(x,L=L):
+def circleCells(x,L = Length):
     r = L / 4.
     c = (L / 2., L / 2.)
     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
@@ -114,7 +123,7 @@ def func(x,L=L):
     else:
         return 0
 
-interiorCells = mesh.getCells(func)
+interiorCells = mesh.getCells(circleCells)
 
 theta.setValue(interiorValue,interiorCells)
 
@@ -126,7 +135,8 @@ eq = PhaseEquation(
 	steps = 1000
     ),
     boundaryConditions=(
-    FixedValue(mesh.getExteriorFaces(), exteriorValue),
+##    FixedValue(mesh.getExteriorFaces(), 1.),
+    FixedFlux(mesh.getExteriorFaces(), 0.),
     ),
     parameters = phaseParameters
     )
@@ -140,6 +150,8 @@ it.iterate(100,0.02)
 # profile.stop()
 
 phase.plot()
+
+print phase
 
 raw_input()
 

@@ -51,9 +51,9 @@ class LinearPCGSolver(Solver):
 	
     def solve(self, L, x, b):
 
-# 	print "L: ", L
-# 	print "b: ", b
-# 	print "x: ", x
+## 	print "L: ", L
+## 	print "b: ", b
+## 	print "x: ", x
 	
 	A = L.to_sss()
 	
@@ -62,7 +62,6 @@ class LinearPCGSolver(Solver):
 	
  	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
 ##        print info, iter, relres
-    
 # 	y = x.copy()
 # 	L.matvec(x,y)
 # 	print "L * x: ", y

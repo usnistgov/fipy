@@ -88,7 +88,7 @@ class FaceTerm(Term):
             for i in range(self.interiorN):
                 b[id1[i]] -= cell1dia[i] * oldArray[id1[i]] + cell1off[i] * oldArray[id2[i]]
                 b[id2[i]] -= cell2dia[i] * oldArray[id2[i]] + cell2off[i] * oldArray[id1[i]]
-	
+
             for boundaryCondition in self.boundaryConditions:
                 for face in boundaryCondition.getFaces():
                     cellId = face.getCellId()
@@ -96,4 +96,3 @@ class FaceTerm(Term):
                     LL,bb = boundaryCondition.update(face,cell1dia[faceId],cell1off[faceId])
                     b[cellId] -= LL * oldArray[cellId]
                     b[cellId] += bb
-        

@@ -50,11 +50,12 @@ class CellTerm(Term):
 	
     def buildMatrix(self,L,oldArray,b):
 	N = len(oldArray)
-        weight = self.weight
+        weight = self.weight        
 	b += oldArray*self.coeff*weight['old value']
 	b += Numeric.ones([N])*self.coeff*weight['b vector']
 	L.update_add_pyarray(Numeric.ones([N])*self.coeff*weight['new value'])
 	
-		
+
+        
 		
 		

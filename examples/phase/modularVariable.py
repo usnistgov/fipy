@@ -41,7 +41,12 @@ class ModularVariable(CellVariable):
 
     def getGrad(self):
         gridSpacing = self.mesh.getMeshSpacing()
-        return self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing       
+##        print "CellVariable.getGrad(self)"
+##        print CellVariable.getGrad(self)
+##        print "self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing"
+##        print self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing
+##        raw_input()
+        return self.mod(CellVariable.getGrad(self) * gridSpacing) / gridSpacing 
 
     def getFaceValue(self):
         alpha = self.mesh.getFaceToCellDistanceRatio()
