@@ -62,6 +62,7 @@ time steps.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
+    ...     var.updateOld()
     ...     eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     
 The result is again tested in the same way:
@@ -69,8 +70,8 @@ The result is again tested in the same way:
     >>> Lx = (2 * nx * dx)
     >>> x = bigMesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
-    >>> var.allclose(answer, rtol = 0.001, atol = 0.001)
+    >>> ## var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
+    >>> var.allclose(answer)
     1
 
 """
@@ -92,7 +93,7 @@ ny = 2
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.005
-steps = 10
+steps = 10000
 
 gridMesh = Grid2D(dx, dy, nx, ny)
 triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
@@ -158,6 +159,7 @@ answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.1
 if __name__ == '__main__':
     viewer = PyxViewer(var)
     for step in range(steps):
+        var.updateOld()        
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
         if(not (step % 100)):
             print (step / 100)

@@ -46,9 +46,9 @@ To run this example from the base fipy directory type
 `./examples/phase/simple/input.py` at the command line.  A gist viewer
 object should appear and the word `finished` in the terminal.
 
-This example takes the user through assembling a simple problem with FiPy.
-It describes a steady 1D phase field problem with fixed value boundary
-conditions such that,
+This example takes the user through assembling a simple problem with
+FiPy.  It describes a steady 1D phase field problem with fixed value
+boundary conditions such that,
 
 .. raw:: latex
 
@@ -56,7 +56,8 @@ conditions such that,
    = -\frac{\partial f}{\partial \phi} 
    + \kappa_\phi \nabla^2\phi$$.
 
-For solidification problems, the Helmholtz free energy is frequently given by
+For solidification problems, the Helmholtz free energy is frequently
+given by
 
 .. raw:: latex
 
@@ -106,6 +107,8 @@ coordinates from the mesh are gathered and the length of the domain,
 `Lx`, is calculated.  An array, `analyticalArray`, is calculated to
 compare with the numerical result,
 
+    >>> for i in range(20):
+    ...     eq.solve(phase)
     >>> x = mesh.getCellCenters()[:,0]
     >>> import Numeric
     >>> analyticalArray = 0.5*(1 - Numeric.tanh((x - L/2)/(2*Numeric.sqrt(kappa/W))))
@@ -121,16 +124,9 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.equations.matrixEquation import MatrixEquation
-from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.scSourceTerm import ScSourceTerm
-from fipy.terms.spSourceTerm import SpSourceTerm
-from fipy.iterators.iterator import Iterator
+from fipy.terms.dependentSourceTerm import DependentSourceTerm
 from fipy.meshes.grid2D import Grid2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.gist1DViewer import Gist1DViewer
 
@@ -164,53 +160,19 @@ setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
 phase.setValue(valueLeft)
 phase.setValue(valueRight,setCells)
 
-boundaryConditions = ()
-## boundaryConditions=(
-##     FixedValue(mesh.getFacesLeft(),valueLeft),
-##     FixedValue(mesh.getFacesRight(),valueRight),
-##     FixedFlux(mesh.getFacesTop(),0.),
-##     FixedFlux(mesh.getFacesBottom(),0.)
-## )
+diffusionTerm = ImplicitDiffusionTerm(diffCoeff = kappa)
 
-diffusionTerm = ImplicitDiffusionTerm(
-    diffCoeff = kappa,
-    mesh = mesh,
-    boundaryConditions = boundaryConditions,
-    )
-    
 mPhi = -(30. * phase * (1. - phase) * enthalpy + (1. - 2 * phase) * W)
 
-spTerm = SpSourceTerm(
-    sourceCoeff = mPhi * (phase - (mPhi < 0.)),
-    mesh = mesh)
-    
-scTerm = ScSourceTerm(
-    sourceCoeff = (mPhi > 0.) * mPhi * phase,
-    mesh = mesh)
-    
-terms = (
-##     TransientTerm(tranCoeff = 1., mesh = mesh),
-    diffusionTerm,
-    scTerm,
-    spTerm
-)
-    
-eq = MatrixEquation(
-    var = phase,
-    terms = terms,
-    solver = LinearPCGSolver(
-	tolerance = 1.e-15, 
-	steps = 1000
-    ),
-    solutionTolerance = 1e-7
-)
+spTerm = DependentSourceTerm(sourceCoeff = mPhi * (phase - (mPhi < 0.)))
 
-it = Iterator((eq,))
+sourceCoeff = (mPhi > 0.) * mPhi * phase
 
-it.timestep(maxSweeps = 20)
-
+eq = spTerm - sourceCoeff - diffusionTerm
+    
 if __name__ == '__main__':
-    viewer = Gist1DViewer(vars = (phase,))
-    
+    for i in range(20):
+        eq.solve(phase)
+    viewer = Gist1DViewer(vars = (phase,))    
     viewer.plot()
     raw_input('finished')

@@ -40,9 +40,7 @@
  # ###################################################################
  ##
 
-from phaseEquation import PhaseEquation
 from fipy.variables.cellVariable import CellVariable
-import Numeric
 
 class MPhiVariable(CellVariable):
     def __init__(self, phase = None, temperature = None, parameters = None):

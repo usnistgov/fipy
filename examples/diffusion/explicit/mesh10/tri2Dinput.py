@@ -62,6 +62,7 @@ steps.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
+    ...     var.updateOld()
     ...     eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     
 The result is again tested in the same way:
@@ -69,7 +70,8 @@ The result is again tested in the same way:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> var.allclose(answer, rtol = 1e-3, atol = 1e-3)
+    >>> ##var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
+    >>> var.allclose(answer)
     1
 
 """
@@ -120,6 +122,7 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
 
 if __name__ == '__main__':
     for step in range(steps):
+        var.updateOld()    
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
     viewer = PyxViewer(var)

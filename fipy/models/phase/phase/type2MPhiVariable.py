@@ -40,7 +40,6 @@
  # ###################################################################
  ##
 
-from phaseEquation import PhaseEquation
 from mPhiVariable import MPhiVariable
 import Numeric
 import fipy.tools.array as array

@@ -47,12 +47,13 @@ This input file again solves a 1D diffusion problem as in::
     $ examples/diffusion/steadyState/mesh1D/input.py
     
 The difference in this example is that the solution method is explicit.
-The equation used is the `ExplicitDiffusionEquation`.  In this case many
+The equation used is the `ExplicitDiffusionEquation`. In this case many
 steps have to be taken to reach equilibrium.
 
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
+    ...     var.updateOld()
     ...     eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
 
 The result is again tested in the same way:
@@ -61,7 +62,8 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
-    >>> var.allclose(answer, rtol = 1e-3, atol = 1e-3)
+    >>> ## var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
+    >>> var.allclose(answer)
     1
 
 """
@@ -115,6 +117,7 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
 
 if __name__ == '__main__':
     for step in range(steps):
+        var.updateOld()
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     viewer = Grid2DGistViewer(var)
     viewer.plot()
