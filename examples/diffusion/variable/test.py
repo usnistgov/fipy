@@ -50,6 +50,7 @@ import Numeric
 
 from fivol.tests.testBase import TestBase
 import fivol.tests.testProgram
+import fivol.tools.array as array
 
 import input
 
@@ -82,8 +83,8 @@ class TestVariableDiffusion(TestBase):
 
     def getTestValues(self):
 	x = self.mesh.getCellCenters()[:,0]
-	x = x.getNumericValue()
-	L = self.Lx        
+	x = array.convertNumeric(x)
+	L = self.Lx
 	values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
 	values = Numeric.where(     x < L / 4.,                    x,           values)
 	return values

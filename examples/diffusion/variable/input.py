@@ -65,7 +65,7 @@ def getParameters(nx ,ny):
     dy = Ly
 
     mesh = Grid2D(dx, dy, nx, ny)
-
+    
     var = CellVariable(
         name = "concentration",
         mesh = mesh,

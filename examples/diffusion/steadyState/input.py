@@ -44,8 +44,7 @@
 from fivol.profiler.profiler import Profiler
 from fivol.profiler.profiler import calibrate_profiler
  
-## from fivol.meshes.grid2D import Grid2D
-from fivol.numMesh.grid2D import Grid2D
+from fivol.meshes.grid2D import Grid2D
 from fivol.equations.diffusionEquation import DiffusionEquation
 from fivol.solvers.linearPCGSolver import LinearPCGSolver
 from fivol.boundaryConditions.fixedValue import FixedValue
