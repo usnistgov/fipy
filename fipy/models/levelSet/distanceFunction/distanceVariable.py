@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 12/15/04 {5:16:58 PM}
+ #                                last update: 4/2/05 {1:58:26 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -178,14 +178,14 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import MA
 
-from fipy.meshes.numMesh.mesh import MAtake
+from fipy.tools.array import MAtake
 from fipy.variables.cellVariable import CellVariable
 import fipy.tools.array
 
 class DistanceVariable(CellVariable):
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 1, narrowBandWidth = 1e+10):
         CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
-        self.markStale()
+        self._markStale()
         self.narrowBandWidth = narrowBandWidth
 
         self.cellToCellDistances = Numeric.array(MA.array(self.mesh.getCellToCellDistances()).filled(0))
@@ -202,7 +202,7 @@ class DistanceVariable(CellVariable):
 
     def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
         self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
-        self.markFresh()
+        self._markFresh()
     
     def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False):
 
@@ -395,7 +395,6 @@ class DistanceVariable(CellVariable):
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> distanceVariable.markFresh()
            >>> Numeric.allclose(distanceVariable.getCellInterfaceAreas(), 
            ...                  (0, Numeric.sqrt(2) / 4,  Numeric.sqrt(2) / 4, 0))
            1
@@ -413,7 +412,6 @@ class DistanceVariable(CellVariable):
            >>> rad = Numeric.sqrt((mesh.getCellCenters()[:,0] - .5)**2 
            ...                    + (mesh.getCellCenters()[:,1] - .5)**2) - r
            >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-           >>> distanceVariable.markFresh()
            >>> print Numeric.sum(distanceVariable.getCellInterfaceAreas())
            1.57984690073
            
@@ -438,7 +436,6 @@ class DistanceVariable(CellVariable):
            ...                         ((0, 0), (0, 0), (0, 0), (v, v)),
            ...                         ((v, v), (0, 0), (0, 0), (0, 0)), 
            ...                         ((0, 0), (0, 0), (0, 0), (0, 0))))
-           >>> distanceVariable.markFresh()
            >>> Numeric.allclose(distanceVariable.getCellInterfaceNormals(), answer)
            1
            
@@ -450,7 +447,7 @@ class DistanceVariable(CellVariable):
 
         valueOverFaces = Numeric.resize(Numeric.repeat(self.getCellValueOverFaces(), dim), (N, M, dim))
 
-        from fipy.meshes.numMesh.mesh import MAtake
+        from fipy.tools.array import MAtake
         interfaceNormals = MAtake(self.getInterfaceNormals(), self.mesh.getCellFaceIDs())
         import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
@@ -470,7 +467,6 @@ class DistanceVariable(CellVariable):
            ...                         (0, 0), (0, 0),
            ...                         (0, 0), (v, v), (0, 0),
            ...                         (0, 0), (0, 0), (0, 0)))
-           >>> distanceVariable.markFresh()
            >>> Numeric.allclose(distanceVariable.getInterfaceNormals(), answer)
            1
            
@@ -515,7 +511,7 @@ class DistanceVariable(CellVariable):
 
         """
 
-        from fipy.meshes.numMesh.mesh import MAtake
+        from fipy.tools.array import MAtake
         
         flag = MAtake(self.getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
 
@@ -557,7 +553,6 @@ class DistanceVariable(CellVariable):
            >>> v = 1 / Numeric.sqrt(2)
            >>> answer = Numeric.array(((0, 0), (0, 0), (v, v), (v, v), (0, 0), (0, 0),
            ...                         (0, 0), (v, v), (0, 0), (0, 0), (v, v), (0, 0)))
-           >>> distanceVariable.markFresh()
            >>> Numeric.allclose(distanceVariable.getLevelSetNormals(), answer)
            1
         """

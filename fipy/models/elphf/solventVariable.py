@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 9/3/04 {10:43:23 PM} 
+ #                                last update: 4/1/05 {11:02:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ class SolventVariable(ComponentVariable):
 	for component in substitutionals:
 	    self.concentration = self.concentration - component
 
-	self.requires(self.concentration)
+	self._requires(self.concentration)
 	
 	self.value = self.concentration[:]
 	

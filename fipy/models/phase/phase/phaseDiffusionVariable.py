@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseDiffusionVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:38:53 PM} 
+ #                                last update: 4/1/05 {11:02:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ class PhaseDiffusionVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):
         FaceVariable.__init__(self, halfAngle.getMesh())
 	self.parameters = parameters
-	self.halfAngle = self.requires(halfAngle)
+	self.halfAngle = self._requires(halfAngle)
 
     def _calcValue(self):
 	alpha = self.parameters['alpha']

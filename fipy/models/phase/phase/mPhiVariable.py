@@ -6,7 +6,7 @@
  # 
  #  FILE: "type1MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:35:56 PM} 
+ #                                last update: 4/1/05 {11:02:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,8 +48,8 @@ class MPhiVariable(CellVariable):
         if type(temperature) is (type(0.) or type(0)):
             self.temperature = (temperature,)
         else:
-            self.temperature = self.requires(temperature)
-        self.phase = self.requires(phase)
+            self.temperature = self._requires(temperature)
+        self.phase = self._requires(phase)
         self.parameters = parameters
 
 

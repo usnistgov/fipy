@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 2/18/05 {10:44:37 AM} 
+ #                                last update: 4/1/05 {11:02:33 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -220,8 +220,8 @@ class AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
 
-        self.distanceVar = self.requires(distanceVar)
-        self.bulkVar = self.requires(bulkVar)
+        self.distanceVar = self._requires(distanceVar)
+        self.bulkVar = self._requires(bulkVar)
         self.rateConstant = rateConstant
         self.dt = 0
 
@@ -230,7 +230,7 @@ class AdsorptionCoeff(CellVariable):
 
     def updateDt(self, dt):
         self.dt = dt
-        self.markStale()
+        self._markStale()
 
 class AdsorptionCoeffInterfaceFlag(AdsorptionCoeff):
     def multiplier(self):
@@ -245,8 +245,8 @@ class MaxCoeff(CellVariable):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
         self.vars = vars
         for var in self.vars:
-            self.requires(var)
-        self.distanceVar = self.requires(distanceVar)
+            self._requires(var)
+        self.distanceVar = self._requires(distanceVar)
 
     def _calcMax(self):
         total = 0

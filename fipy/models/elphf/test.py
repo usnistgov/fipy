@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:38:49 PM} 
+ #                                last update: 4/1/05 {2:50:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -216,7 +216,7 @@ class TestElPhF1DpoissonRightCharge(TestElPhF):
 	
 	self.assertArrayWithinTolerance(self.fields['potential'].getNumericValue(), final, self.tolerance)
 
-def suite():
+def _suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
@@ -232,7 +232,7 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')
 
             
             

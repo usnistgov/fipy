@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:43:04 PM}
+ #                                last update: 4/1/05 {11:02:19 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,10 +58,10 @@ class AddOverFacesVariable(CellVariable):
 
         CellVariable.__init__(self, faceVariable.getMesh(), hasOld = 0)
 
-        self.xGrad = self.requires(xGrad)
-        self.yGrad = self.requires(yGrad)
-        self.faceGradient = self.requires(faceGradient)
-        self.faceVariable = self.requires(faceVariable)
+        self.xGrad = self._requires(xGrad)
+        self.yGrad = self._requires(yGrad)
+        self.faceGradient = self._requires(faceGradient)
+        self.faceVariable = self._requires(faceVariable)
 
     def _calcValuePy(self):
         if self.faceGradient is None:

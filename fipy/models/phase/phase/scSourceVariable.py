@@ -6,7 +6,7 @@
  # 
  #  FILE: "scSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:43:24 PM} 
+ #                                last update: 4/1/05 {11:02:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,9 +47,9 @@ from fipy.variables.cellVariable import CellVariable
 class ScSourceVariable(CellVariable):
     def __init__(self, mPhi = None, phase = None, anisotropy = None):
         CellVariable.__init__(self, mesh = phase.getMesh())
-        self.mPhi = self.requires(mPhi)
-        self.phase = self.requires(phase)
-        self.anisotropy = self.requires(anisotropy)
+        self.mPhi = self._requires(mPhi)
+        self.phase = self._requires(phase)
+        self.anisotropy = self._requires(anisotropy)
 
     def _calcValue(self):
         inline.optionalInline(self._calcValueIn, self._calcValuePy)

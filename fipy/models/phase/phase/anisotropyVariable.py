@@ -6,7 +6,7 @@
  # 
  #  FILE: "anisotropyVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:35:34 PM} { 2:35:45 PM}
+ #                                last update: 4/1/05 {11:02:40 AM} { 2:35:45 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,7 @@ from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
 class FFVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):
         FaceVariable.__init__(self, halfAngle.getMesh())
-        self.halfAngle = self.requires(halfAngle)
+        self.halfAngle = self._requires(halfAngle)
         self.parameters = parameters
 
     def _calcValue(self):
@@ -82,7 +82,7 @@ class FFVariable(FaceVariable):
 class DPhiReverse(VectorFaceVariable):
     def __init__(self, phase):
         VectorFaceVariable.__init__(self, phase.getMesh())
-        self.phase = self.requires(phase)
+        self.phase = self._requires(phase)
 
     def _calcValue(self):
         dPhi = self.phase.getFaceGrad()[:,:]
@@ -93,8 +93,8 @@ class DPhiReverse(VectorFaceVariable):
 class AnisotropyVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, halfAngle = None):
         CellVariable.__init__(self, phase.getMesh())
-        self.requires(phase)
-        self.requires(halfAngle)
+        self._requires(phase)
+        self._requires(halfAngle)
         ff = FFVariable(parameters = parameters, halfAngle = halfAngle)
         dPhiReverse = DPhiReverse(phase)
         

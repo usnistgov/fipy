@@ -6,7 +6,7 @@
  # 
  #  FILE: "depositionRateVariable.py"
  #                                    created: 8/26/04 {10:39:23 AM} 
- #                                last update: 3/7/05 {5:38:49 PM} 
+ #                                last update: 4/1/05 {11:02:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -134,9 +134,9 @@ class DepositionRateVariable(CellVariable):
         
         CellVariable.__init__(self, acceleratorVariable.getMesh(), hasOld = 0, name = name)
 
-        self.metalIonVariable = self.requires(metalIonVariable)
+        self.metalIonVariable = self._requires(metalIonVariable)
 
-        self.acceleratorVariable = self.requires(acceleratorVariable)
+        self.acceleratorVariable = self._requires(acceleratorVariable)
 
         self.parameters = parameters
 
@@ -177,7 +177,7 @@ class DepositionRateVariable(CellVariable):
         return self.expoConstant
 
     def setOverpotential(self, overpotential):
-        self.markStale()
+        self._markStale()
         self.overpotential = overpotential
 
 def _test():

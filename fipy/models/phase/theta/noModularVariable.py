@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 9/3/04 {10:35:41 PM} 
+ #                                last update: 4/1/05 {11:02:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@ from fipy.variables.cellVariable import CellVariable
 class NoModularVariable(CellVariable):
     def __init__(self, modVar):
 	CellVariable.__init__(self, mesh = modVar.getMesh(), value = modVar.getNumericValue(), hasOld = 0)        
-        self.modVar = self.requires(modVar)
+        self.modVar = self._requires(modVar)
         
     def _calcValue(self):
         self.value = self.modVar.getNumericValue()

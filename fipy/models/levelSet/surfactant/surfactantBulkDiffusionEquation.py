@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantBulkDiffusionEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 2/18/05 {10:44:12 AM} 
+ #                                last update: 4/1/05 {11:02:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -80,7 +80,7 @@ from fipy.variables.cellVariable import CellVariable
 class AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
-        self.distanceVar = self.requires(distanceVar)
+        self.distanceVar = self._requires(distanceVar)
         self.rateConstant = rateConstant
 
     def _calcValue(self):
@@ -89,8 +89,8 @@ class AdsorptionCoeff(CellVariable):
 class ScAdsorptionCoeff(AdsorptionCoeff):
     def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
         AdsorptionCoeff.__init__(self, rateConstant = rateConstant, distanceVar = distanceVar)
-        self.bulkVar = self.requires(bulkVar)
-        self.surfactantVar = self.requires(surfactantVar)
+        self.bulkVar = self._requires(bulkVar)
+        self.surfactantVar = self._requires(surfactantVar)
     
     def _calcValue(self):
         AdsorptionCoeff._calcValue(self)

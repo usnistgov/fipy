@@ -6,7 +6,7 @@
  # 
  #  FILE: "spSourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:33:21 PM} 
+ #                                last update: 4/1/05 {11:02:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,10 @@ from fipy.variables.cellVariable import CellVariable
 class SpSourceVariable(CellVariable):
     def __init__(self, theta = None, mPhi = None, phase = None, parameters = None):
         CellVariable.__init__(self, mesh = theta.getMesh())
-        self.theta = self.requires(theta)
-        self.phase = self.requires(phase)                                   
+        self.theta = self._requires(theta)
+        self.phase = self._requires(phase)                                   
         self.parameters = parameters
-        self.mPhi = self.requires(mPhi)
+        self.mPhi = self._requires(mPhi)
 
     def _calcValue(self):
         inline.optionalInline(self._calcValueIn, self._calcValuePy)

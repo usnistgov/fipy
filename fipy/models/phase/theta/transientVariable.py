@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:40:01 PM}
+ #                                last update: 4/1/05 {11:02:26 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,8 +52,8 @@ class TransientVariable(CellVariable):
         CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 
         self.parameters = parameters
-        self.phase = self.requires(phase)
-        self.theta = self.requires(theta)
+        self.phase = self._requires(phase)
+        self.theta = self._requires(theta)
 
     def _calcValue(self):
         inline.optionalInline(self._calcValueInline, self._calcValuePy)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 3/8/05 {4:11:34 PM} 
+ #                                last update: 4/2/05 {1:58:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -209,7 +209,7 @@ class HigherOrderAdvectionTerm(AdvectionTerm):
         dAP = mesh.getCellToCellDistances()
         
 ##        adjacentGradient = Numeric.take(oldArray.getGrad(), cellToCellIDs)
-        from fipy.meshes.numMesh.mesh import MAtake
+        from fipy.tools.array import MAtake
         adjacentGradient = MAtake(oldArray.getGrad(), mesh.getCellToCellIDs())
         adjacentNormalGradient = array.dot(adjacentGradient, mesh.getCellNormals(), axis = 2)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient

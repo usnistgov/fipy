@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 3/7/05 {5:22:25 PM} 
+ #                                last update: 4/2/05 {1:58:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,7 +113,7 @@ class ConvectionCoeff(VectorFaceVariable):
         """
         
         VectorFaceVariable.__init__(self, distanceVar.getMesh(), name = 'surfactant convection')
-        self.distanceVar = self.requires(distanceVar)
+        self.distanceVar = self._requires(distanceVar)
 
     def _calcValue(self):
 
@@ -124,7 +124,7 @@ class ConvectionCoeff(VectorFaceVariable):
      
         faceNormalAreas = self.distanceVar.getLevelSetNormals() * self.mesh.getFaceAreas()[:,Numeric.NewAxis]
 
-        from fipy.meshes.numMesh.mesh import MAtake
+        from fipy.tools.array import MAtake
         cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh.getCellFaceIDs()).filled(fill_value = 0))
         norms = Numeric.array(MA.array(self.mesh.getCellNormals()).filled(fill_value = 0))
         

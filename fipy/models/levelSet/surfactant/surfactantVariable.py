@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 3/7/05 {5:22:02 PM} 
+ #                                last update: 4/1/05 {11:02:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,7 +91,6 @@ class SurfactantVariable(CellVariable):
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> distanceVariable.markFresh()
            >>> surfactantVariable = SurfactantVariable(value = 1, 
            ...                                         distanceVar = distanceVariable)
            >>> Numeric.allclose(surfactantVariable, 
@@ -104,7 +103,7 @@ class SurfactantVariable(CellVariable):
 
         self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
 
-        self.distanceVar = self.requires(distanceVar)
+        self.distanceVar = self._requires(distanceVar)
         self.interfaceSurfactantVariable = None
 
     def getInterfaceVar(self):
@@ -119,7 +118,7 @@ class SurfactantVariable(CellVariable):
 class InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
         CellVariable.__init__(self, name = surfactantVar.name + "_interface", mesh = surfactantVar.getMesh())
-        self.surfactantVar = self.requires(surfactantVar)
+        self.surfactantVar = self._requires(surfactantVar)
 
     def _calcValue(self):
         areas = self.surfactantVar.getDistanceVar().getCellInterfaceAreas()        

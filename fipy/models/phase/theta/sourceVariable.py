@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:38:57 PM}
+ #                                last update: 4/1/05 {11:02:58 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,10 +59,10 @@ class SourceVariable(CellVariable):
         CellVariable.__init__(self, theta.getMesh(), hasOld = 0)
         
         self.parameters = parameters
-        self.phase = self.requires(phase)
-        self.theta = self.requires(theta)
-        self.diffCoeff = self.requires(diffCoeff)
-        self.halfAngleVariable = self.requires(halfAngleVariable)
+        self.phase = self._requires(phase)
+        self.theta = self._requires(theta)
+        self.diffCoeff = self._requires(diffCoeff)
+        self.halfAngleVariable = self._requires(halfAngleVariable)
         self.thetaNoMod = NoModularVariable(self.theta)        
         thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)

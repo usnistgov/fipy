@@ -6,7 +6,7 @@
  # 
  #  FILE: "ThetaHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:43:29 PM} { 4:14:24 PM}
+ #                                last update: 4/1/05 {11:02:41 AM} { 4:14:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,8 +50,8 @@ class ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
         CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 	self.parameters = parameters
-	self.phase = self.requires(phase)
-        self.theta = self.requires(theta)
+	self.phase = self._requires(phase)
+        self.theta = self._requires(theta)
 
     def _calcValue(self):
 	N = self.parameters['symmetry']
