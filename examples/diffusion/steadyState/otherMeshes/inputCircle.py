@@ -83,7 +83,7 @@ The temporary file created above is used by gmsh to mesh the
 geometrically defined region.
 
    >>> (f, meshName) = tempfile.mkstemp('.msh')
-   >>> os.system('gmsh ' + geomName + ' -2 -v 0 -o ' + meshName)
+   >>> os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
    0
    >>> os.close(f)
    >>> os.remove(geomName)
