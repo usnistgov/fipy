@@ -6,7 +6,7 @@
  # 
  #  FILE: "matrixEquation.py"
  #                                    created: 11/12/03 {10:41:06 AM} 
- #                                last update: 5/17/04 {4:14:00 PM} 
+ #                                last update: 6/3/04 {1:13:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,7 +62,7 @@ class MatrixEquation(Equation):
 ##   gobeldegook
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
-	    term.buildMatrix(self.matrix, self.var.getOld().getValue(), self.b, self.terms[0].getCoeffScale(), varScale)
+	    term.buildMatrix(L = self.matrix, oldArray = self.var.getOld().getValue(), b = self.b, coeffScale = self.terms[0].getCoeffScale(), varScale = varScale)
 	    
     def postSolve(self, array):
 	pass

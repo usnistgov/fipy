@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/2/04 {4:00:35 PM} 
+ #                                last update: 6/2/04 {4:57:58 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,14 +60,25 @@ class Grid2D(Mesh2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1):
         self.nx = nx
         self.ny = ny
-        self.dx = dx
-        self.dy = dy
+	
+	self.dx = PhysicalField(value = dx)
+	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+	self.dx /= scale
+	
+	self.dy = PhysicalField(value = dy)
+	if self.dy.getUnit().isDimensionless():
+	    self.dy = dy
+	else:
+	    self.dy /= scale
+	
         self.numberOfVertices = (self.nx + 1) * (self. ny + 1)
 	
 	vertices = self.createVertices()
         faces = self.createFaces()
         cells = self.createCells()
         Mesh2D.__init__(self, vertices, faces, cells)
+	
+	self.setScale(value = scale)
         
     def createVertices(self):
         x = Numeric.arange(self.nx + 1) * self.dx
@@ -136,7 +147,7 @@ class Grid2D(Mesh2D):
 	return [Face(self, id) for id in Numeric.arange(self.nx)]
         
     def getScale(self):
-	return 1
+	return self.scale['length']
 	
     def getPhysicalShape(self):
 	"""Return physical dimensions of Grid2D.

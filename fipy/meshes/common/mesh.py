@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/6/04 {4:14:31 PM} 
+ #                                last update: 6/3/04 {3:14:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,8 +50,16 @@ Meshes contain cells, faces, and vertices.
 
 import Numeric
 
+from fipy.tools.dimensions.physicalField import PhysicalField
+
 class Mesh:
     def __init__(self):
+	self.scale = {
+	    'length': 1.,
+	    'area': 1.,
+	    'volume': 1.
+	}
+	
 	self.calcTopology()
 	self.calcGeometry()
     
@@ -163,13 +171,10 @@ class Mesh:
 	self.calcCellCenters()
 	self.calcFaceToCellDistances()
 	self.calcCellDistances()        
-	self.calcAreaProjections()
-	self.calcOrientedAreaProjections()
 	self.calcFaceTangents()
-	self.calcFaceToCellDistanceRatio()
-	self.calcFaceAspectRatios()
 	self.calcCellToCellDistances()
-##        self.setScale()
+	
+	self.calcScaledGeometry()
        
     """calc geometry methods"""
     
@@ -216,22 +221,22 @@ class Mesh:
     """get geometry methods"""
         
     def getFaceAreas(self):
-        return self.faceAreas
+        return self.scaledFaceAreas
 
     def getFaceNormals(self):
         return self.faceNormals
 	
     def getCellVolumes(self):
-	return self.cellVolumes
+	return self.scaledCellVolumes
 
     def getCellCenters(self):
-	return self.cellCenters
+	return self.scaledCellCenters
 
     def getFaceToCellDistances(self):
-        return self.faceToCellDistances
+        return self.scaledFaceToCellDistances
 
     def getCellDistances(self):
-        return self.cellDistances
+        return self.scaledCellDistances
 
     def getFaceToCellDistanceRatio(self):
         return self.faceToCellDistanceRatio
@@ -255,27 +260,37 @@ class Mesh:
 	return self.faceAspectRatios
     
     def getCellToCellDistances(self):
-	return self.cellToCellDistances
+	return self.scaledCellToCellDistances
 	    
     """scaling"""
 
     def setScale(self, value = 1.):
-        self.scale = 1.
-    
-##    def setScale(self):
-##	self.scale = PhysicalField(value = 1.)
-##        self.faceAreas = self.faceAreas * self.scale**2
-##        self.faceCenters = self.faceCenters * self.scale
-##        self.cellVolumes = self.cellVolumes * self.scale**3
-##        self.cellCenters = self.cellCenters * self.scale
-##        self.faceToCellDistances = self.faceToCellDistances * self.scale
-##        self.cellDistances = self.cellDistances * self.scale
-##        self.areaProjections = self.areaProjections * self.scale**2
+        self.scale['length'] = PhysicalField(value = value)
+	self.calcHigherOrderScalings()
+	self.calcScaledGeometry()
 
+    def calcHigherOrderScalings(self):
+	self.scale['area'] = self.scale['length']**2
+	self.scale['volume'] = self.scale['length']**3
+
+    def calcScaledGeometry(self):
+	self.scaledFaceAreas = self.scale['area'] * self.faceAreas
+	self.scaledCellVolumes = self.scale['volume'] * self.cellVolumes
+	self.scaledCellCenters = self.scale['length'] * self.cellCenters
+	
+	self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
+	self.scaledCellDistances = self.scale['length'] * self.cellDistances
+	self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
+	
+	self.calcAreaProjections()
+	self.calcOrientedAreaProjections()
+	self.calcFaceToCellDistanceRatio()
+	self.calcFaceAspectRatios()
+	
     """point to cell distances"""
     
     def getPointToCellDistances(self, point):
-	tmp = self.getCellCenters() - Numeric.array(point)
+	tmp = self.getCellCenters() - PhysicalField(point)
 	
 	import fipy.tools.array
 	return fipy.tools.array.sqrtDot(tmp, tmp)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/04 {4:02:15 PM} 
+ #                                last update: 6/3/04 {2:53:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

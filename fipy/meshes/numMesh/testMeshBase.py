@@ -6,7 +6,7 @@
  # 
  #  FILE: "testMeshBase.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 5/6/04 {3:53:11 PM} 
+ #                                last update: 6/3/04 {3:32:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/6/04 {3:52:20 PM} 
+ #                                last update: 6/3/04 {2:46:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -207,3 +207,4 @@ def allclose(first, second, atol, rtol):
 	return second.allclose(other = first, atol = atol, rtol = rtol)
     else:
 	return MA.allclose(first, second, atol = atol, rtol = rtol)
+

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/17/04 {4:16:29 PM} 
+ #                                last update: 6/3/04 {1:22:12 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,11 +41,9 @@
  # ###################################################################
  ##
  
-import Numeric
-
 from fipy.terms.term import Term
 import fipy.tools.vector
-import fipy.tools.array
+import fipy.tools.array as array
 from fipy.tools.inline import inline
 
 class FaceTerm(Term):
@@ -74,10 +72,10 @@ class FaceTerm(Term):
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
 
-	L.addAt(fipy.tools.array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
-	L.addAt(fipy.tools.array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
-	L.addAt(fipy.tools.array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
-	L.addAt(fipy.tools.array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
+	L.addAt(array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
+	L.addAt(array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
+	L.addAt(array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
+	L.addAt(array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
 	
         for boundaryCondition in self.boundaryConditions:
             LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
@@ -97,7 +95,7 @@ class FaceTerm(Term):
         for boundaryCondition in self.boundaryConditions:
 
             LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
-            oldArrayIds = fipy.tools.array.take(oldArray, ids)
+            oldArrayIds = array.take(oldArray, ids)
             fipy.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
             fipy.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
@@ -106,37 +104,36 @@ class FaceTerm(Term):
         weight = self.weight['explicit']
         coeff = fipy.tools.array.convertNumeric(self.coeff)
 
-        inline.runInlineLoop1("""
-            long int faceID = faceIDs(i);
-            long int cellID1 = id1(i);
-            long int cellID2 = id2(i);
-            double oldArrayId1 = oldArray(cellID1);
-            double oldArrayId2 = oldArray(cellID2);
-         
-            b(cellID1) += -coeff(faceID) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2) / coeffScale;
-            b(cellID2) += -coeff(faceID) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1) / coeffScale;
-        """,oldArray = oldArray.getNumericValue(),
-            id1 = id1,
-            id2 = id2,
-            b = b,
-            coeffScale = coeffScale,
-            cell1Diag = weight['cell 1 diag'],
-            cell1OffDiag = weight['cell 1 offdiag'],
-            cell2Diag = weight['cell 2 diag'],
-            cell2OffDiag = weight['cell 2 offdiag'],
-            coeff = coeff,
-            faceIDs = self.mesh.getInteriorFaceIDs(),
-            ni = len(self.mesh.getInteriorFaceIDs()))
-        
+	inline.runInlineLoop1("""
+	    long int faceID = faceIDs(i);
+	    long int cellID1 = id1(i);
+	    long int cellID2 = id2(i);
+	    double oldArrayId1 = oldArray(cellID1);
+	    double oldArrayId2 = oldArray(cellID2);
+	 
+	    b(cellID1) += -coeff(faceID) * (cell1Diag * oldArrayId1 + cell1OffDiag * oldArrayId2);
+	    b(cellID2) += -coeff(faceID) * (cell2Diag * oldArrayId2 + cell2OffDiag * oldArrayId1);
+	""",oldArray = oldArray / coeffScale,
+	    id1 = id1,
+	    id2 = id2,
+	    b = b,
+	    cell1Diag = weight['cell 1 diag'],
+	    cell1OffDiag = weight['cell 1 offdiag'],
+	    cell2Diag = weight['cell 2 diag'],
+	    cell2OffDiag = weight['cell 2 offdiag'],
+	    coeff = coeff,
+	    faceIDs = self.mesh.getInteriorFaceIDs(),
+	    ni = len(self.mesh.getInteriorFaceIDs()))
+
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffScale, varScale):
 
-        oldArrayId1 = fipy.tools.array.take(oldArray, id1)
-        oldArrayId2 = fipy.tools.array.take(oldArray, id2)
+        oldArrayId1 = array.take(oldArray, id1)
+        oldArrayId2 = array.take(oldArray, id2)
 
-	cell1diag = Numeric.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
-	cell1offdiag = Numeric.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
-	cell2diag = Numeric.take(self.explicit['cell 2 diag'], self.mesh.getInteriorFaceIDs())
-	cell2offdiag = Numeric.take(self.explicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs())
+	cell1diag = array.take(self.explicit['cell 1 diag'], self.mesh.getInteriorFaceIDs())
+	cell1offdiag = array.take(self.explicit['cell 1 offdiag'], self.mesh.getInteriorFaceIDs())
+	cell2diag = array.take(self.explicit['cell 2 diag'], self.mesh.getInteriorFaceIDs())
+	cell2offdiag = array.take(self.explicit['cell 2 offdiag'], self.mesh.getInteriorFaceIDs())
 	
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:])/coeffScale)
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:])/coeffScale)
@@ -147,8 +144,8 @@ class FaceTerm(Term):
 	"""
 
 	id1, id2 = self.mesh.getAdjacentCellIDs()
-	id1 = Numeric.take(id1, self.mesh.getInteriorFaceIDs())
-	id2 = Numeric.take(id2, self.mesh.getInteriorFaceIDs())
+	id1 = array.take(id1, self.mesh.getInteriorFaceIDs())
+	id2 = array.take(id2, self.mesh.getInteriorFaceIDs())
 	
         ## implicit
         if self.weight.has_key('implicit'):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 4/2/04 {4:05:56 PM} 
+ #                                last update: 6/2/04 {6:15:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -168,6 +168,7 @@ def makeFields(mesh, parameters):
 	    component['var'].parameters = component
 	    fields['substitutionals'] += (component['var'],)
 	    fields['all'] += [component['var']]
+	    
 	addSolventToAll = 1
 
     parameters['solvent']['var'] = SolventVariable(

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:00:59 PM} 
+ #                                last update: 6/3/04 {11:03:29 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

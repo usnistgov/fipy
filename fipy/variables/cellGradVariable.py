@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 5/7/04 {9:11:08 PM} 
+ #                                last update: 6/3/04 {3:50:42 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -91,7 +91,7 @@ class CellGradVariable(VectorCellVariable):
 ##        contributions = contributions.reshape((N,M,self.mesh.getDim()))
         contributions = fipy.tools.array.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = fipy.tools.array.reshape(orientations, (N, M, 1))
-        grad = fipy.tools.array.sum(orientations * contributions, 1)
+	grad = fipy.tools.array.sum(orientations * contributions, 1)
 ##        grad = (orientations*contributions).sum(1)
 
 	grad = grad / volumes[:,Numeric.NewAxis]

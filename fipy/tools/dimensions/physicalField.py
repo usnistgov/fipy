@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 5/6/04 {3:52:47 PM} 
+ #                                last update: 6/3/04 {3:31:21 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -89,6 +89,7 @@ table, so use this at your own risk!
 import re, string, umath
 
 import Numeric
+import MA
 
 import fipy.variables.variable
 
@@ -326,6 +327,18 @@ class PhysicalField:
     def __getitem__(self, index): 
 	return PhysicalField(self.value[index],self.unit)
 	
+    def __array__(self, t = None):
+	if self.unit.isDimensionlessOrAngle():
+	    return Numeric.array(self.value, t)
+	else:
+	    raise TypeError, 'Not possible to create a Numeric array from a PhysicalField with dimensions'
+	
+    def __float__(self):
+	if self.unit.isDimensionlessOrAngle():
+	    return float(self.value)
+	else:
+	    raise TypeError, 'Not possible to convert a PhysicalField with dimensions to float'
+		    
     def __setitem__(self, index, value):
 	if type(value) is type(''):
 	    value = PhysicalField(value)
@@ -496,7 +509,7 @@ class PhysicalField:
 	
     def allclose(self, other, atol, rtol):
 	other = self._inMyUnits(other)
-	return Numeric.allclose(self.value, other.value, atol = atol, rtol = rtol)
+	return MA.allclose(self.value, other.value, atol = atol, rtol = rtol)
 
 class PhysicalUnit:
 

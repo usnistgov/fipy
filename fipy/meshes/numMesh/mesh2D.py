@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/5/04 {7:29:17 PM} 
+ #                                last update: 6/2/04 {3:56:32 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,3 +68,7 @@ class Mesh2D(Mesh):
         mag = fipy.tools.array.sqrtDot(tmp, tmp)
         self.faceTangents1 = tmp / mag[:,Numeric.NewAxis]
         self.faceTangents2 = Numeric.zeros(self.faceTangents1.shape, 'd')
+
+    def calcHigherOrderScalings(self):
+	self.scale['area'] = self.scale['length']
+	self.scale['volume'] = self.scale['length']**2

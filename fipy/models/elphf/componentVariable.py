@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 4/2/04 {4:02:32 PM} 
+ #                                last update: 6/2/04 {6:22:39 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,19 +36,21 @@
  # ###################################################################
  ##
 
-from fipy.variables.cellVariable import CellVariable
+## from fipy.variables.cellVariable import CellVariable
 from fipy.tools.dimensions import physicalField
 
-class ComponentVariable(CellVariable):
+from scaledCellVariable import ScaledCellVariable
+
+class ComponentVariable(ScaledCellVariable):
     def __init__(self, mesh, parameters, value=0., hasOld = 1):
 	if parameters.has_key('name'):
 	    name = parameters['name']
 	else:
 	    name = ''
 # 	value = physicalField.PhysicalField(value)
-	value = physicalField.Scale(value, "MOLARVOLUME**-1")
+## 	value = physicalField.Scale(value, "MOLARVOLUME**-1")
 	self.parameters = parameters
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
+	ScaledCellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld, scale = "MOLARVOLUME**-1")
 ## 	self.standardPotential = physicalField.PhysicalField(parameters['standard potential'])
 ## 	self.barrierHeight = physicalField.PhysicalField(parameters['barrier height'])
  	self.standardPotential = physicalField.Scale(parameters['standard potential'], "ENERGY")

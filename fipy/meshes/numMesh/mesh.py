@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/13/04 {1:37:41 PM} 
+ #                                last update: 6/2/04 {4:32:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -225,6 +225,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcFaceToCellDistanceRatio(self):
         dAP = self.getCellDistances()
         dFP = self.getFaceToCellDistances()[:,0]
+	
 	self.faceToCellDistanceRatio = MA.filled(dFP / dAP)
 
     def calcAreaProjections(self):
@@ -241,7 +242,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.faceTangents2 = tmp / fipy.tools.array.sqrtDot(tmp, tmp)[:,Numeric.NewAxis]
         
     def calcCellToCellDistances(self):
-        self.cellToCellDistances = MAtake(self.getCellDistances(), self.getCellFaceIDs())
+        self.cellToCellDistances = MAtake(self.cellDistances, self.getCellFaceIDs())
 
     """get geometry methods"""
 
