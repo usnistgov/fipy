@@ -145,20 +145,25 @@ class SparseMatrix:
             >>> L2 = SparseIdentityMatrix(size = 3)
             >>> L2.put((4.38,12357.2,1.1), (2,1,0), (1,0,2))
             
-            >>> print L1 * L2
-             1.24e+05  23.140000   3.000000  
-             3.88e+04   3.141593      ---    
-             2.500000      ---     2.750000  
+            >>> tmp = Numeric.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+            ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
+            ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
+
+            >>> Numeric.allclose(Numeric.array(L1 * L2), tmp)
+            1
              
         or a sparse matrix by a vector
-        
-            >>> print L1 * Numeric.array((1,2,3),'d') 
-            [ 29.        ,  6.28318531,  2.5       ,]
+
+            >>> tmp = Numeric.array((29., 6.28318531, 2.5))       
+            >>> Numeric.allclose(L1 * Numeric.array((1,2,3),'d'), tmp)
+            1
             
         or a vector by a sparse matrix
-        
-            >>> print Numeric.array((1,2,3),'d') * L1
-            [  7.5       , 16.28318531,  3.        ,]
+
+            >>> tmp = Numeric.array((7.5, 16.28318531,  3.))  
+            >>> Numeric.allclose(Numeric.array((1,2,3),'d') * L1, tmp)
+            1
+            
         """
 
         if type(other) == type(self):
