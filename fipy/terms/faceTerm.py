@@ -51,15 +51,16 @@ from fipy.tools.sparseMatrix import SparseMatrix
 class FaceTerm(Term):
     def __init__(self,):
 	Term.__init__(self)
-	
+        self.coeffMatrix = None
+            
     def getCoeffMatrix(self, mesh, weight):
 	coeff = self.getCoeff(mesh)
-	return {
-	    'cell 1 diag': coeff * weight['cell 1 diag'],
-	    'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
-	    'cell 2 diag': coeff * weight['cell 2 diag'],
-	    'cell 2 offdiag': coeff * weight['cell 2 offdiag']
-	}
+        if self.coeffMatrix is None:
+            self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
+                                'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
+                                'cell 2 diag': coeff * weight['cell 2 diag'],
+                                'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
+        return self.coeffMatrix
 
     def implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
 	coeffMatrix = self.getCoeffMatrix(mesh, weight)
@@ -80,13 +81,14 @@ class FaceTerm(Term):
             b += bb
 
     def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
-        
+
 	coeffMatrix = self.getCoeffMatrix(mesh, weight)
 
         inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
 
         N = mesh.getNumberOfCells()
 	M = mesh.getMaxFacesPerCell()
+
         for boundaryCondition in boundaryConditions:
 
             LL,bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
@@ -131,12 +133,12 @@ class FaceTerm(Term):
         oldArrayId1, oldArrayId2 = self.getOldAdjacentValues(oldArray, id1, id2, dt)
 
 	interiorFaceIDs = mesh.getInteriorFaceIDs()
-	
+
 	cell1diag = array.take(coeffMatrix['cell 1 diag'], interiorFaceIDs)
 	cell1offdiag = array.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs)
 	cell2diag = array.take(coeffMatrix['cell 2 diag'], interiorFaceIDs)
 	cell2offdiag = array.take(coeffMatrix['cell 2 offdiag'], interiorFaceIDs)
-	
+
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
 
@@ -158,7 +160,7 @@ class FaceTerm(Term):
         L = SparseMatrix(size = N)
 
 	weight = self.getWeight(mesh)
-	
+
         if weight.has_key('implicit'):
 	    self.implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
 
