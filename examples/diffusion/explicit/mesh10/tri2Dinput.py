@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/13/04 {10:53:05 AM} 
+ #                                last update: 2/28/05 {4:29:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,7 +100,7 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-eq = TransientTerm() - ExplicitDiffusionTerm()
+eq = TransientTerm() == ExplicitDiffusionTerm()
 
 solver = LinearLUSolver(tolerance = 1.e-6, steps = 100)
 

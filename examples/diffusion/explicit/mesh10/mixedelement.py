@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:39:58 PM} 
+ #                                last update: 2/28/05 {4:28:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -134,7 +134,7 @@ var = CellVariable(
     mesh = bigMesh,
     value = valueLeft)
 
-eqn = TransientTerm() - ExplicitDiffusionTerm()
+eqn = TransientTerm() == ExplicitDiffusionTerm()
 
 boundaryConditions=(FixedValue(bigMesh.getFacesWithFilter(leftSide), valueLeft),
                     FixedValue(bigMesh.getFacesWithFilter(inMiddle), (valueLeft + valueRight) * 0.5),

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/18/05 {3:13:20 PM} 
+ #                                last update: 2/28/05 {4:28:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,7 +67,7 @@ The transient equation
 
 .. raw:: latex
 
-   $$ \frac{\partial (\tau \phi)}{\partial t} - \nabla \cdot (D \nabla \phi) = 0 $$
+   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
 
 is represented by a `TransientTerm` and an `ExplicitDiffusionTerm`.
 
@@ -85,7 +85,7 @@ We build the equation:
 
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> eq = TransientTerm() - ExplicitDiffusionTerm(coeff = diffusionCoeff)
+    >>> eq = TransientTerm() == ExplicitDiffusionTerm(coeff = diffusionCoeff)
     
 and the boundary conditions:
     

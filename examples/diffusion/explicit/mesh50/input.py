@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/13/04 {12:03:50 PM} 
+ #                                last update: 3/4/05 {8:38:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,6 @@ import Numeric
 from fipy.meshes.grid2D import Grid2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
 
@@ -119,7 +118,9 @@ if __name__ == '__main__':
     for step in range(steps):
         var.updateOld()
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
-    viewer = Grid2DGistViewer(var)
+        
+    import fipy.viewers
+    viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     raw_input('finished')
 
