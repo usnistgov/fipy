@@ -43,7 +43,7 @@
 """
 
 import tests.testVariableDiffusion
-import tests.testSteadyStateDiffusion
+import examples.diffusion.steadyState.test
 import tests.testExplicitDiffusion
 import tests.testPhase
 import tests.testStdyConvectionDiffusion
@@ -53,7 +53,7 @@ import unittest
 if __name__ == '__main__':
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(tests.testSteadyStateDiffusion.suite())
+    theSuite.addTest(examples.diffusion.steadyState.test.suite())
     theSuite.addTest(tests.testExplicitDiffusion.suite())
     theSuite.addTest(tests.testVariableDiffusion.suite())
     theSuite.addTest(tests.testPhase.suite())
