@@ -273,7 +273,8 @@ class NthOrderDiffusionTerm(Term):
         return coefficientMatrix, boundaryB
 
 
-    def buildMatrix(self, var, boundaryConditions = (), dt = 1., coefficientMatrix = None):
+##    def buildMatrix(self, var, boundaryConditions = (), dt = 1., coefficientMatrix = None):
+    def buildMatrix(self, var, boundaryConditions = (), dt = 1.):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -282,8 +283,8 @@ class NthOrderDiffusionTerm(Term):
 
             coeff = self.getCoeff(mesh)
             
-            if coefficientMatrix is None:
-                coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
+##            if coefficientMatrix is None:
+            coefficientMatrix = self.getCoefficientMatrix(mesh, coeff)
 
             boundaryB = Numeric.zeros(N,'d')
                 
@@ -307,8 +308,8 @@ class NthOrderDiffusionTerm(Term):
                 
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm.buildMatrix(var = var, 
                                                                                 boundaryConditions = lowerOrderBCs, 
-                                                                                dt = dt,
-                                                                                coefficientMatrix = coefficientMatrix)
+                                                                                dt = dt)
+##                                                                              coefficientMatrix = coefficientMatrix)
             lowerOrderb = lowerOrderb / volumes
             volMatrix = SparseMatrix(size = N)
             volMatrix.addAtDiagonal(1. / volumes )
