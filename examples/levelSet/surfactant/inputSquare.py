@@ -66,7 +66,7 @@ from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import AdvectionEquation
-from fipy.models.levelSet.surfactant.conservativeSurfactantEquation import ConservativeSurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 from fipy.iterators.iterator import Iterator
@@ -108,7 +108,7 @@ surfactantVariable = SurfactantVariable(
     value = 1.
     )
 
-surfactantEquation = ConservativeSurfactantEquation(
+surfactantEquation = SurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(
