@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/21/03 {3:28:12 PM} 
+ #                                last update: 11/26/03 {10:30:38 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -96,6 +96,8 @@ class Mesh:
 	"""
         pass
 
+    def getFaceAreas(self):
+	pass
 
                 
     

@@ -5,7 +5,7 @@
 
  FILE: "diffusionEquation.py"
                                    created: 11/12/03 {10:39:23 AM} 
-                               last update: 11/20/03 {4:52:49 PM} 
+                               last update: 11/26/03 {10:25:42 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -55,8 +55,8 @@ class DiffusionEquation(MatrixEquation):
                  boundaryConditions=()):
         mesh = var.getMesh()
 	terms = (
-	    TransientTerm(transientCoeff,mesh.getCells()),
-	    DiffusionTerm(diffusionCoeff,mesh.getFaces(),mesh.getInteriorFaces(),boundaryConditions)
+	    TransientTerm(transientCoeff,mesh),
+	    DiffusionTerm(diffusionCoeff,mesh,boundaryConditions)
             )
 	MatrixEquation.__init__(
             self,

@@ -5,7 +5,7 @@
 
  FILE: "transientTerm.py"
                                    created: 11/12/03 {11:36:25 AM} 
-                               last update: 11/20/03 {11:08:20 AM} 
+                               last update: 11/26/03 {10:37:31 AM} 
  Author: Jonathan Guyer
  E-mail: guyer@nist.gov
  Author: Daniel Wheeler
@@ -44,14 +44,15 @@ from cellTerm import CellTerm
 import Numeric
 
 class TransientTerm(CellTerm):
-    def __init__(self,tranCoeff,cells):
+    def __init__(self,tranCoeff,mesh):
         stencil = (0,1,1)
-	CellTerm.__init__(self,stencil,cells) 
+	CellTerm.__init__(self,stencil,mesh) 
 	self.tranCoeff = tranCoeff
 	    
     def updateCoeff(self,dt):
-	self.coeff = Numeric.zeros((len(self.cells)),'d')
-	for cell in self.cells:
-	    self.coeff[cell.getId()] = self.tranCoeff * cell.getVolume() / dt
+# 	self.coeff = Numeric.zeros((len(self.cells)),'d')
+	self.coeff = self.tranCoeff * self.mesh.getCellVolumes() / dt
+# 	for cell in self.cells:
+# 	    self.coeff[cell.getId()] = self.tranCoeff * cell.getVolume() / dt
 	
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/25/03 {9:50:44 AM} 
+ #                                last update: 11/26/03 {10:42:11 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -205,6 +205,8 @@ class Grid2D(Mesh):
 	    face.setId(id)
 	    id += 1
 	
+	self.calcFaceAreas(faces)
+	
 	return (faces, interiorFaces)
 	
     def createCells(self,rowFaces,colFaces):
@@ -223,7 +225,11 @@ class Grid2D(Mesh):
 		    colFaces[j][i],
 		    colFaces[j][i+1]),id
 		    ),
-		    )                
+		    ) 
+		    
+		    
+	self.calcCellVolumes(cells)
+		    
 	return cells
 
     def createInteriorFaces(self,faces):
@@ -279,3 +285,21 @@ class Grid2D(Mesh):
 	"""Return physical dimensions of Grid2D.
 	"""
         return (self.nx*self.dx,self.ny*self.dy)
+
+    def getFaceAreas(self):
+	return self.faceAreas
+	
+    def calcFaceAreas(self,faces):
+	N = len(faces)
+	self.faceAreas = Numeric.zeros((N),'d')
+	for i in range(N):
+	    self.faceAreas[i] = faces[i].getArea()
+	    
+    def getCellVolumes(self):
+	return self.cellVolumes
+	
+    def calcCellVolumes(self,cells):
+	N = len(cells)
+	self.cellVolumes = Numeric.zeros((N),'d')
+	for i in range(N):
+	    self.cellVolumes[i] = cells[i].getVolume()	    
