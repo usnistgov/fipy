@@ -51,6 +51,9 @@ import fipy.variables.testInterpolation
 import fipy.variables.testLaplacian
 import fipy.variables.testPickle
 import fipy.variables.vectorCellVariable
+import fipy.variables.cellVolumeAverageVariable
+import fipy.variables.variable
+import fipy.variables.cellVariable
 
 def suite():
     theSuite = unittest.TestSuite()
@@ -58,6 +61,9 @@ def suite():
     theSuite.addTest(fipy.variables.testLaplacian.suite())
     theSuite.addTest(fipy.variables.testPickle.suite())
     theSuite.addTest(doctest.DocTestSuite(fipy.variables.vectorCellVariable))
+    theSuite.addTest(doctest.DocTestSuite(fipy.variables.cellVolumeAverageVariable))
+    theSuite.addTest(doctest.DocTestSuite(fipy.variables.variable))
+    theSuite.addTest(doctest.DocTestSuite(fipy.variables.cellVariable))
     return theSuite
     
 if __name__ == '__main__':
