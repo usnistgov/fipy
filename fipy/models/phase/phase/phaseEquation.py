@@ -71,6 +71,7 @@ class PhaseEquation(MatrixEquation):
 
 	self.var = var
 	self.temp = fields['temperature']
+##        self.thetaOld = fields['theta']
         self.thetaOld = fields['theta'].getOld()
         	
 	self.mPhi = mPhi
