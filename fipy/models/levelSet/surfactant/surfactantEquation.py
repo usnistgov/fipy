@@ -62,7 +62,9 @@ class SurfactantEquation(MatrixEquation):
 		     
 	mesh = var.getMesh()
 
-        transientCoeff = Numeric.where(distanceVar < 0., 1e10, 0.)
+        transientCoeff = (distanceVar < 0.) * 1e10
+
+##        Numeric.where(distanceVar < 0., 1e10, 0.)
 
 	transientTerm = TransientTerm(transientCoeff,mesh)
 	convectionTerm = UpwindConvectionTerm(ConvectionCoeff(distanceVar), mesh, boundaryConditions)
@@ -85,11 +87,66 @@ class ConvectionCoeff(VectorFaceVariable):
         self.distanceVar = self.requires(distanceVar)
         
     def _calcValue(self):
+        v1 = self._calcValue1()
+        self.value = v1
+##        v2 = self._calcValue2()
+##        id1 = self.mesh.getAdjacentCellIDs()[0]
+##        faceCellNormals = Numeric.take(cellNormal, id1)
         
+        
+    def _calcValue3(self):
+         ## interior faces
+        faceGrad = self.distanceVar.getFaceGrad()
+        faceGradMag = Numeric.array(faceGrad.getMag())
+        faceGrad = Numeric.array(faceGrad)
+        faceGradMag = Numeric.where(faceGradMag < 1e-10, 1e-10, faceGradMag)
+        self.value = -faceGrad / faceGradMag[:, Numeric.NewAxis]
+
+        ## exterior faces
+        id1 = self.mesh.getAdjacentCellIDs()[0]
+        cellGradMag = self.distanceVar.getGrad().getMag()
+        cellGradMag = Numeric.where(cellGradMag < 1e-10, 1e-10, cellGradMag)
+        cellNormal = self.distanceVar.getGrad() / cellGradMag[:, Numeric.NewAxis]
+        faceCellNormals = Numeric.take(cellNormal, id1)
+        mask = (self.mesh.getFaceCellIDs()[:,1]).mask()
+        shape = Numeric.shape(faceCellNormals)
+        mask = Numeric.reshape(Numeric.repeat(mask, shape[1]), shape)
+        return Numeric.where(mask, -faceCellNormals, self.value)
+
+    def _calcValue2(self):    
         faceGrad = self.distanceVar.getGrad().getArithmeticFaceValue()
         faceGradMag = Numeric.where(faceGrad.getMag() > 1e-10,
                                     faceGrad.getMag(),
                                     1e-10)
         faceGrad = Numeric.array(faceGrad)
-        self.value = -faceGrad / faceGradMag[:,Numeric.NewAxis]
+        return -faceGrad / faceGradMag[:,Numeric.NewAxis]
 
+    def _calcValue1(self):
+        id1, id2 = self.mesh.getAdjacentCellIDs()
+        epsilon = 1e-10
+
+        cellGrad = self.distanceVar.getGrad()
+        cellGradMag = cellGrad.getMag()
+        cellGradMag = (cellGradMag < 1e-10) * 1e-10 + cellGradMag
+        
+        cellNormal = cellGrad / cellGradMag[:,Numeric.NewAxis]
+
+        faceNormal1 = array.take(cellNormal, id1)
+        faceNormal2 = array.take(cellNormal, id2)
+        var1 = array.take(self.distanceVar, id1)
+        var2 = array.take(self.distanceVar, id2)
+        shape = Numeric.shape(faceNormal1)
+        var1 = Numeric.reshape(Numeric.repeat(var1, shape[1]), shape)
+        var2 = Numeric.reshape(Numeric.repeat(var2, shape[1]), shape)
+
+        f1 = array.dot(self.mesh.getFaceNormals(), faceNormal1)
+        f2 = array.dot(self.mesh.getFaceNormals(), faceNormal2)
+        shape = faceNormal1.shape
+        f1 = Numeric.reshape(Numeric.repeat(f1, shape[1]), shape)
+        f2 = Numeric.reshape(Numeric.repeat(f2, shape[1]), shape)
+
+        return -Numeric.where(f1 * f2 > 0.,
+                              Numeric.where(var2 > var1,
+                                            faceNormal1,
+                                            faceNormal2),
+                              (faceNormal1 + faceNormal2) / 2)
