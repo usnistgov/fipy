@@ -40,22 +40,26 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 Here we solve the level set equation in one dimension. The level set
-equation is generally to solve a variable to be a distance function
-such that,
+equation solves a variable so that its value at any point in the
+domain is the distance from the zero level set. This can be
+represented succinctly in the following equation with a boundary
+condition at the zero level set such that,
 
 .. raw:: latex
 
-    $$ | \\nabla \\phi | = 1 $$
+    $$ \frac{\partial \phi}{\partial x} = 1 $$
 
-with a boundary condition,
-    
+with the boundary condition,
+
+.. raw:: latex
+
     $\phi = 0$ at $x = L / 2$.
 
-The solution to this problem in FiPy will be demonstrated
-Set up the parameters:
+The solution to this problem will be demonstrated in the following
+script. Firstly, setup the parameters.
 
    >>> dx = 0.5
    >>> dy = 2.
@@ -63,44 +67,44 @@ Set up the parameters:
    >>> ny = 1
    >>> L = nx * dx
 
-Construct the mesh:
+Construct the mesh.
 
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-Construct a 'distanceVariable' object. This object is required by the
-distanceEquation in order to solve.
+Construct a `distanceVariable` object. This object is required by the
+`distanceEquation`.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-   >>> var = DistanceVariable(
-   ...     name = 'level set variable',
-   ...     mesh = mesh,
-   ...     value = -1.)
+   >>> var = DistanceVariable(name = 'level set variable',
+   ...                        mesh = mesh,
+   ...                        value = -1.)
 
-The positive and negative parts of the domain must be set.
+The domain must be divided into positive and negative regions.
 
    >>> positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] < L / 2.)
    >>> var.setValue(1.,positiveCells)
 
-A distanceEquation is constructed.
+The `distanceEquation` is then constructed.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
    >>> eqn = DistanceEquation(var)
 
-The problem can be executed with the following commands.
+The problem can then be solved by executing the `solve()` method of the equation.
 
    >>> if __name__ == '__main__':
    ...     from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
-   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp', minVal = -5., maxVal = 5.)
+   ...     viewer = Grid2DGistViewer(var = var, palette = 'rainbow.gp',
+   ...                               minVal = -5., maxVal = 5.)
    ...     viewer.plot()
    ...     eqn.solve()
    ...     viewer.plot()
 
-The result can be tested.
+The result can be tested with the following commands.
 
    >>> eqn.solve()
    >>> import Numeric
-   >>> Numeric.allclose(var, \\
+   >>> Numeric.allclose(var,
    ...     Numeric.array((9. * dx / 2., 7. * dx / 2., 5. * dx / 2., 
    ...     3. * dx / 2., dx / 2., -dx / 2., -3. * dx / 2., -5. * dx / 2., 
    ...     -7. * dx / 2., -9. * dx / 2.)))
