@@ -44,7 +44,7 @@
 import Numeric
 
 from fivol.variables.cellVariable import CellVariable
-import fivol.inline.inline
+from fivol.inline import inline
 from fivol.examples.phase.phase.addOverFacesVariable import AddOverFacesVariable
 
 class SourceVariable(CellVariable):
@@ -65,46 +65,34 @@ class SourceVariable(CellVariable):
         self.halfAngleVariable = self.requires(halfAngleVariable)
         thetaGradDiff = self.theta.getFaceGrad() - self.theta.getFaceGradNoMod()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
-        
+
     def calcValue(self):
+        inline.optionalInline(self._calcValueInline, self._calcValue)
+
+    def _calcValueInline(self):
+        inline.runInlineLoop1("""
+        halfAngleSq = halfAngleVariable(i) * halfAngleVariable(i);
+        beta = (1. - halfAngleSq) / (1. + halfAngleSq);
+        dbeta = symmetry * 2. * halfAngleVariable(i) / (1. + halfAngleSq);
+        value(i) = AOFVariable(i) + alpha * alpha * c2 * dbeta * phaseGradMag(i) * (1. + c2 * beta);""",halfAngleSq = 0.,
+                              halfAngleVariable =  self.halfAngleVariable.getNumericValue(),
+                              beta = 0.,
+                              dbeta = 0.,
+                              symmetry = self.parameters['symmetry'],
+                              value = self.value.value,
+                              AOFVariable = self.AOFVariable.getNumericValue(),
+                              alpha = self.parameters['alpha'],
+                              c2 = self.parameters['anisotropy'],
+                              phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
+                              ni = len(self.phase.getNumericValue()))
+                              
+                              
+
+                              
+    def _calcValue(self):
 
         mesh = self.theta.getMesh()
         c2 = self.parameters['anisotropy']
-
-##        thetaGradDiff = self.theta.getFaceGrad()[:] - self.theta.getFaceGradNoMod()[:]
-        
-##        correctionTerm = addOverFaces(faceGradient = thetaGradDiff,
-##                                      faceVariable = self.diffCoeff[:],
-##                                      mesh = mesh,
-##                                      NCells = len(self.phase[:]))
-
-##        print self.value.value.shape
-##        print correctionTerm[:].shape
-##        print self.halfAngleVariable[:].shape
-##        print self.phase.getGrad().getMag()[:].value[:].shape
-
-##        fivol.inline.inline.runInline(
-##            """
-##            havSq = hav(i) * hav(i);
-##            beta = (1. - havSq) / (1. + havSq);
-##            dbeta = sym * 2. * hav(i) / (1. - havSq);
-##            value(i) = corr(i) + alpha * alpha * c2 * dbeta * phaseGradMag(i) * (1. + c2 * beta);
-##            """,
-##            hav = self.halfAngleVariable[:],
-##            havSq = 0.,
-##            beta = 0.,
-##            sym = self.parameters['symmetry'],
-##            dbeta = 0.,
-##            corr = correctionTerm[:],
-##            alpha = self.parameters['alpha'],
-##            c2 = c2,
-##            phaseGradMag = self.phase.getGrad().getMag().getNumericValue(),
-##            value = self.value.value,
-##            ni = len(self.value.value),
-##            nj = 0,
-##            nk = 0)
-            
-            
 
         halfAngleSq = self.halfAngleVariable[:] * self.halfAngleVariable[:]
         beta = (1. - halfAngleSq) / (1. + halfAngleSq)

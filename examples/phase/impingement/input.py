@@ -46,7 +46,8 @@ from __future__ import nested_scopes
 import Numeric
 
 from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
+from fivol.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
+from fivol.examples.phase.phase.phaseEquation import PhaseEquation
 from fivol.solvers.linearPCGSolver import LinearPCGSolver
 from fivol.boundaryConditions.fixedValue import FixedValue
 from fivol.boundaryConditions.fixedFlux import FixedFlux
@@ -149,8 +150,9 @@ class ImpingementSystem:
             fields = thetaFields
             )
         
-        phaseEq = Type1PhaseEquation(
+        phaseEq = PhaseEquation(
             var = phase,
+            mPhi = Type1MPhiVariable,
             solver = LinearPCGSolver(
             tolerance = 1.e-15, 
             steps = 1000

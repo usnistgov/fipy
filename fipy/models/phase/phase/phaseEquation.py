@@ -74,7 +74,7 @@ class PhaseEquation(MatrixEquation):
 ##        self.thetaOld = fields['theta']
         self.thetaOld = fields['theta'].getOld()
         	
-	self.mPhi = mPhi
+	self.mPhi = mPhi(phase = self.var, temperature = self.temp, parameters = parameters)
 
         self.halfAngle = PhaseHalfAngleVariable(
             parameters = self.parameters,

@@ -44,7 +44,8 @@
 import Numeric
 
 from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.phase.type2PhaseEquation import Type2PhaseEquation
+from fivol.examples.phase.phase.type2MPhiVariable import Type2MPhiVariable
+from fivol.examples.phase.phase.phaseEquation import PhaseEquation
 from fivol.solvers.linearPCGSolver import LinearPCGSolver
 from fivol.boundaryConditions.fixedValue import FixedValue
 from fivol.boundaryConditions.fixedFlux import FixedFlux
@@ -135,10 +136,11 @@ class AnisotropySystem:
             
         phase.setValue(1.,interiorCells)
         
-        phaseEq = Type2PhaseEquation(
+        phaseEq = PhaseEquation(
             phase,
+            mPhi = Type2MPhiVariable,
             solver = LinearPCGSolver(
-            tolerance = 1.e-15, 
+            tolerance = 1.e-15,
             steps = 1000
             ),
             boundaryConditions=(

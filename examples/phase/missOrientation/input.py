@@ -44,7 +44,8 @@
 from __future__ import nested_scopes
 
 from fivol.meshes.grid2D import Grid2D
-from fivol.examples.phase.phase.type1PhaseEquation import Type1PhaseEquation
+from fivol.examples.phase.phase.type1MPhiVariable import Type1MPhiVariable
+from fivol.examples.phase.phase.phaseEquation import PhaseEquation
 from fivol.solvers.linearPCGSolver import LinearPCGSolver
 from fivol.boundaryConditions.fixedValue import FixedValue
 from fivol.boundaryConditions.fixedFlux import FixedFlux
@@ -99,8 +100,9 @@ class PhaseSystem:
          'theta' : theta
          }            
       
-      eq = Type1PhaseEquation(
+      eq = PhaseEquation(
          self.var,
+         mPhi = Type1MPhiVariable,
          solver = LinearPCGSolver(
          tolerance = 1.e-15, 
          steps = 1000
