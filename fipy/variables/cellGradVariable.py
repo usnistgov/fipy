@@ -99,7 +99,7 @@ class CellGradVariable(VectorCellVariable):
 	self.value = grad
 
     def calcValue(self):
-	N = len(self.mesh.getCells())
+	N = self.mesh.getNumberOfCells()
 	M = self.mesh.getMaxFacesPerCell()
 	
 	ids = self.mesh.getCellFaceIDs()

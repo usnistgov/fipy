@@ -51,8 +51,10 @@ def _isPhysical(arr):
 def convertNumeric(arr):
     if _isPhysical(arr):
         return arr.getNumericValue()
+    elif type(arr) is type(MA.array((0))):
+        return Numeric.array(arr)
     else:
-        return Numeric.array(arr[:])
+        return arr
 
 def take(arr, ids):
     if _isPhysical(arr):

@@ -45,7 +45,7 @@ import Numeric
 
 from fivol.terms.term import Term
 import fivol.tools.vector
-import fivol.tools.array as array
+import fivol.tools.array
 from fivol.inline import inline
 
 class FaceTerm(Term):
@@ -74,15 +74,16 @@ class FaceTerm(Term):
 	    }
             
     def implicitBuildMatrix(self, L, coeffScale, id1, id2, b, varScale):
-        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
-        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
-        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
-        L.update_add_pyarray_at_indices(Numeric.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
+
+        L.update_add_pyarray_at_indices(fivol.tools.array.take(self.implicit['cell 1 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id1)
+        L.update_add_pyarray_at_indices(fivol.tools.array.take(self.implicit['cell 1 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id1,id2)
+        L.update_add_pyarray_at_indices(fivol.tools.array.take(self.implicit['cell 2 offdiag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id1)
+        L.update_add_pyarray_at_indices(fivol.tools.array.take(self.implicit['cell 2 diag'][:], self.mesh.getInteriorFaceIDs()) / coeffScale,id2,id2)
 
         for boundaryCondition in self.boundaryConditions:
             LL,bb,ids = boundaryCondition.getContribution(self.implicit['cell 1 diag'],self.implicit['cell 1 offdiag'])
                 
-            L.update_add_pyarray_at_indices(LL/coeffScale,ids,ids)
+            L.update_add_pyarray_at_indices(LL / coeffScale,ids,ids)
             ## WARNING: the next line will not work if one cell has two faces on the same
             ## boundary. Numeric.put will not add both values to the b array but over write
             ## the first with the second. We really need a putAdd function rather than put.
@@ -97,7 +98,7 @@ class FaceTerm(Term):
         for boundaryCondition in self.boundaryConditions:
 
             LL,bb,ids = boundaryCondition.getContribution(self.explicit['cell 1 diag'],self.explicit['cell 1 offdiag'])
-            oldArrayIds = array.take(oldArray, ids)
+            oldArrayIds = fivol.tools.array.take(oldArray, ids)
             fivol.tools.vector.putAdd(b, ids, -LL * oldArrayIds/(coeffScale * varScale))
             fivol.tools.vector.putAdd(b, ids, bb/(coeffScale * varScale))
 
@@ -145,6 +146,8 @@ class FaceTerm(Term):
     def buildMatrix(self,L,oldArray,b,coeffScale,varScale):
 	"""Implicit portion considers
 	"""
+
+
 	
 	id1, id2 = self.mesh.getAdjacentCellIDs()
 	id1 = Numeric.take(id1, self.mesh.getInteriorFaceIDs())

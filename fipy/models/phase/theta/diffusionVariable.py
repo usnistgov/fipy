@@ -86,7 +86,8 @@ class DiffusionVariable(FaceVariable):
                               gamma = self.parameters['gamma'],
                               IGamma = 0.,
                               s = self.parameters['s'],
-                              epsilon = self.parameters['epsilon'],                                                         value = self.value.value,
-                              ni = len(self.mesh.getFaces()))
+                              epsilon = self.parameters['epsilon'],
+                              value = self.value.value,
+                              ni = self.mesh.getNumberOfFaces())
                               
                               

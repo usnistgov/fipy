@@ -75,7 +75,7 @@ class Mesh:
         self.cellFaceIDs = MA.array(cellFaceIDs)
 
         self.updateMesh()
-        
+
     def updateMesh(self):
         self.calcTopology()
         self.calcGeometry()
@@ -91,6 +91,7 @@ class Mesh:
         self.calcFaceCellIDs()
         self.calcInteriorAndExteriorFaceIDs()
         self.calcCellToFaceOrientations()
+        self.calcAdjacentCellIDs()
 ##        self.calcDim()
         
     """
@@ -118,6 +119,9 @@ class Mesh:
     def calcCellToFaceOrientations(self):
 	tmp = MAtake(self.faceCellIDs[:,0], self.cellFaceIDs)
 	self.cellToFaceOrientations = (tmp == MA.indices(tmp.shape)[0]) * 2 - 1
+
+    def calcAdjacentCellIDs(self):
+        self.adjacentCellIDs = (MA.filled(self.faceCellIDs[:,0]), MA.filled(MA.where(self.faceCellIDs[:,1].mask(), self.faceCellIDs[:,0], self.faceCellIDs[:,1])))
     """
     get Topology methods
     """
@@ -147,7 +151,7 @@ class Mesh:
 	return len(self.cellFaceIDs)
 	
     def getAdjacentCellIDs(self):
-	return (MA.filled(self.faceCellIDs[:,0]), MA.filled(MA.where(self.faceCellIDs[:,1].mask(), self.faceCellIDs[:,0], self.faceCellIDs[:,1])))
+        return self.adjacentCellIDs
 
     def getDim(self):
         return self.dim
@@ -165,6 +169,9 @@ class Mesh:
 
     def getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
+
+    def getNumberOfFaces(self):
+        return self.numberOfFaces
 
     """
     Geometry methods

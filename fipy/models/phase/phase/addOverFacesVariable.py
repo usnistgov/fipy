@@ -71,7 +71,7 @@ class AddOverFacesVariable(CellVariable):
         
         contributions = fivol.tools.array.take(contributions[:], ids.flat)
 
-        NCells = len(self.mesh.getCells())
+        NCells = self.mesh.getNumberOfCells()
 
         contributions = fivol.tools.array.reshape(contributions,(NCells,-1))
         
@@ -83,7 +83,7 @@ class AddOverFacesVariable(CellVariable):
         
     def _calcValueInline(self):
 
-        NCells = len(self.mesh.getCells())
+        NCells = self.mesh.getNumberOfCells()
 	ids = self.mesh.getCellFaceIDs()
 ##         ids = Numeric.reshape(ids,(NCells,self.mesh.getMaxFacesPerCell()))
 
@@ -117,7 +117,7 @@ class AddOverFacesVariable(CellVariable):
               numberOfCellFaces = self.mesh.getMaxFacesPerCell(),
               numberOfCells = NCells,
               interiorFaceIDs = self.mesh.getInteriorFaceIDs(),
-              contributions =  Numeric.zeros((len(self.mesh.getFaces())),'d'),
+              contributions =  Numeric.zeros((self.mesh.getNumberOfFaces()),'d'),
               areaProjections = fivol.tools.array.convertNumeric(self.mesh.getAreaProjections()),
               faceGradient = self.faceGradient.getNumericValue()[:],
               faceVariable = self.faceVariable.getNumericValue()[:],

@@ -70,7 +70,7 @@ class MatrixEquation(Equation):
 ##   gobeldegook
 	varScale = PhysicalField(1, self.var.getUnit())
 	for term in self.terms:
-	    term.buildMatrix(self.L,self.var.getOld().getValue(),self.b,self.terms[0].getCoeffScale(),varScale)
+	    term.buildMatrix(self.L, self.var.getOld().getValue(), self.b, self.terms[0].getCoeffScale() , varScale)
 	    
     def postSolve(self, array):
 	pass

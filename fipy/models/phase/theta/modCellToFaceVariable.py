@@ -59,4 +59,4 @@ class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
             val = self.value.value, 
             alpha = alpha,
             id1 = id1, id2 = id2,
-            ni = len(self.mesh.getFaces()))
+            ni = self.mesh.getNumberOfFaces())

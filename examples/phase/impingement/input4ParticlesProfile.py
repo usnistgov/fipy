@@ -64,7 +64,7 @@ class System4ParticlesProfile(System4Particles):
 	print 'finished run'
     
 if __name__ == '__main__':
-    system = System4ParticlesProfile(nx = 100, ny = 100)
+    system = System4ParticlesProfile(nx = 50, ny = 50)
     system.run()
     
     raw_input()
