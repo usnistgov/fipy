@@ -49,12 +49,14 @@ import doctest
 
 import inputCircle
 import inputSquare
+import expandingCircle
 
 def suite():
     theSuite = unittest.TestSuite()
 
     theSuite.addTest(doctest.DocTestSuite(inputCircle))
     theSuite.addTest(doctest.DocTestSuite(inputSquare))
+    theSuite.addTest(doctest.DocTestSuite(expandingCircle))
 
     return theSuite
 
