@@ -1,0 +1,164 @@
+\subsection{Discretisation}
+
+To use the FVM, the solution domain must first be divided into
+non-overlapping polyhedral Control Volumes (CV's). The values of the
+independent and dependent variables located at the centres of these
+CV's are assumed to be the average value across the whole CV.  The aim
+of the discretisation is to reduce the continuous general equation to
+a set of discrete linear equations which can then be solved to obtain
+the value of the dependent variable at each CV centre.  The first step
+in the discretisation of equation~\eqref{eqn:num:gen} using the FVM is
+to integrate over a control volume and then make appropriate
+approximations for fluxes across the boundary of each CV.  In this
+section each term in equation~\eqref{eqn:num:gen} will be examined
+separately. In the case of the convection and diffusion terms the
+divergence theorem is used to rewrite the volume integral in terms of
+area integrals over the surface of the CV.
+\begin{itemize}
+%
+%
+%
+\item The transient term,
+\begin{equation}
+\int_V \frac{\partial (\rho \phi)}{\partial t} dV
+\simeq
+\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P^O)}{\Delta t}
+\label{eqn:num:tra}
+\end{equation}
+where the subscripts $P$ and superscripts $O$ represent the current
+and previous variable value at the CV respectively.
+The value, $V_P$, is the volume of
+the CV and $\Delta t$ is the time step size.
+%
+%
+%
+\item The convection term,
+\begin{eqnarray}
+\int_V \nabla.(\rho \vec{u} \phi) dV & = & \int_S (\vec{n}.\vec{u})\rho\phi dS \\
+& \simeq & \sum_{f} \rho_f (\vec{n}.\vec{u})_f \phi_f A_f
+\label{eqn:num:con}
+\end{eqnarray}
+where $\sum_{f}$ denotes the summation over the faces of a CV and $A_f$ is
+the area of each face.
+The face density, $\rho_f$, is calculated using up-winding such that,
+\begin{eqnarray}
+\rho_f=\rho_P & \mbox{if} & (\vec{n}.\vec{u})_f \ge 0 \\
+\rho_f=\rho_A & \mbox{if} & (\vec{n}.\vec{u})_f < 0 
+\end{eqnarray}
+where the subscript $A$ denotes the adjacent element.
+The face velocity, $(\vec{n}.\vec{u})_f$ is calculated using the
+Rhie-Chow~\cite{rhie}
+interpolation method which will be described later in this chapter. The
+vector $\vec{n}$ is the normal to the face pointing out of the CV.
+The value of $\phi_f$ must depend on $\phi_A$ and $\phi_P$ when using
+a first order approximation such that 
+\begin{equation}
+\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A
+\end{equation}
+The value $\alpha_f$ is determined by the scheme which is used~\cite{croftphd}.
+First order schemes are discussed later in this chapter.
+%
+%
+%
+\item The diffusion term,
+\begin{eqnarray}
+\int_V \nabla.(\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n}.\nabla\phi) dS \\
+& \simeq & \sum_f \Gamma_f (\vec{n}.\nabla\phi)_f A_f
+\label{eqn:num:dif}
+\end{eqnarray}
+The value of the diffusion coefficient $\Gamma_f$ is estimated using
+the harmonic mean~\cite{patankar}
+given by,
+\begin{equation}
+\Gamma_f = \frac{\Gamma_A\Gamma_P}{\alpha_f \Gamma_P + (1-\alpha_f) \Gamma_A}
+\end{equation}
+The arithmetic mean is not used here because it over estimates the flux
+when there are large differences between $\Gamma_A$ and $\Gamma_P$.
+For example if either $\Gamma_P$ or $\Gamma_A$ are zero it
+would be necessary for $\Gamma_f$ to be zero. If an arithmetic mean
+is used this condition can not be satisfied.
+The estimation for the flux, $(\vec{n}.\nabla\phi)_f$ is obtained via,
+\begin{equation}
+(\vec{n}.\nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
+\end{equation}
+where the value of $d_{AP}$ is the distance between neighbouring cell centres.
+This estimate relies on the orthogonality of the mesh, and becomes
+increasingly inaccurate as the non-orthogonality increases. Correction terms
+have been derived to improve this error, these have been described
+elsewhere~\cite{croftphd}.
+%
+%
+%
+\item The source term, 
+\begin{equation}
+\int_V S_{\phi} dV \simeq S_\phi V_P.
+\label{eqn:num:sou}
+\end{equation}
+If $S_\phi$ has dependence on $\phi$ then by including this dependence
+stability will be increased. The dependence can only be included in
+a linear manner so equation~\eqref{eqn:num:sou} becomes,
+\begin{equation}
+V_P (S_C - S_P \phi_P)
+\end{equation}
+\end{itemize}
+
+Combining equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con}, \eqref{eqn:num:dif} and
+\eqref{eqn:num:sou} the complete discretisation for equation~\eqref{eqn:num:gen}
+can now be written for each CV as;
+\begin{eqnarray}
+\frac{(\rho_{P} \phi_{P} V_P- \rho_P^O \phi_P^O V_P^O)}{\Delta t}
+&+&
+\sum_{f} \rho_f (\vec{n}.\vec{u})_f A_f (\alpha_f \phi_P +(1-\alpha_f)\phi_A)
+\\
+&=&
+\sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
++ 
+V_P ( S_C - S_P \phi_P )
+\label{eqn:num:dis}
+\end{eqnarray}
+
+Equation~\eqref{eqn:num:dis} is now in the form of a set of linear combinations between
+each CV value and its neighbours values.
+The discretisation for the continuity equation is given by,
+\begin{equation}
+\frac{(\rho_P V_P-\rho_P^O V_P^O)}{\Delta t}+\sum_f F_f = 0
+\label{eqn:num:cdi}
+\end{equation}
+Thus equation~\eqref{eqn:num:dis} using equation~\eqref{eqn:num:cdi} can be rewritten
+in the following form,
+\begin{equation}
+a_P \phi_P = \sum_f a_{nb} \phi_{nb} + b_P
+\label{eqn:num:dap}
+\end{equation}
+where
+\begin{eqnarray}
+a_P & = & V_P S_P + \frac{\rho_P^O V_P^O}{\Delta t} + \sum_f a_{nb} \\
+a_{nb} & = & ( \alpha_f - 1 ) F_f + D_f \\
+b_p & = & S_C + \frac{\rho_P^O V_P^O \phi_P^O}{\Delta t} 
+\end{eqnarray}
+The face coefficients $F_f$ and $D_f$ represent the convective strength
+and diffusive conductance respectively and are given by,
+\begin{eqnarray}
+F_f & = & A_f \rho_f ( \vec{u}.\vec{n} )_f \\
+D_f & = & \frac{A_f \Gamma_f}{d_{AP}} 
+\end{eqnarray}
+
+An area of concern when using this discretisation is non-conjunctionality
+which occurs when extrapolating variables form cell centres to faces.
+The value at a face is assumed to be the average value over the face.
+On an unstructured mesh the face centre may not lie on the line joining
+the CV centres, which will lead to an error in the face extrapolation.
+To overcome this a correction has been introduced which is described
+elsewhere~\cite{croftphd}. 
+
+
+
+
+
+
+
+
+
+
+
+
