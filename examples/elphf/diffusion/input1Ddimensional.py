@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:29:51 PM} 
+ #                                last update: 10/5/04 {4:58:24 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     viewer.plot()
 	
-    raw_input()
+    raw_input("press <return> to start...")
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
@@ -145,5 +145,5 @@ if __name__ == '__main__':
 	
     # profile.stop()
 	    
-    raw_input()
+    raw_input("finished")
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:37:59 PM} 
+ #                                last update: 10/5/04 {4:55:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -157,23 +157,24 @@ equations = elphf.makeEquations(
 it = Iterator(equations = equations)
 
 if __name__ == '__main__':
-    viewers = [Grid2DGistViewer(var = field) for field in fields['all']]
+    phaseViewer = Gist1DViewer(vars = (fields['phase'],))
+    concViewer = Gist1DViewer(vars = fields['substitutionals'] + fields['interstitials'])
 
-    for viewer in viewers:
-	viewer.plot()
+    phaseViewer.plot()
+    concViewer.plot()
 	
-    raw_input()
+    raw_input("press <return> to start...")
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
 
-    for i in range(500):
+    for i in range(50):
 	it.timestep(1)
 	
-	for viewer in viewers:
-	    viewer.plot()
+	phaseViewer.plot()
+	concViewer.plot()
 	
     # profile.stop()
 	    
-    raw_input()
+    raw_input("finished")
 

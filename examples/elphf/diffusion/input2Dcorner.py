@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2Dcorner.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:35:32 PM} 
+ #                                last update: 10/5/04 {5:00:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     for viewer in viewers:
 	viewer.plot()
 	
-    raw_input()
+    raw_input("press <return> to start...")
 
     # fudge = calibrate_profiler(10000)
     # profile = Profiler('profile', fudge=fudge)
@@ -139,5 +139,5 @@ if __name__ == '__main__':
 	
     # profile.stop()
 	    
-    raw_input()
+    raw_input("finished")
 

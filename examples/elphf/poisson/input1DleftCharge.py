@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonLeftCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 9/3/04 {10:41:34 PM} 
+ #                                last update: 10/5/04 {5:00:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -125,11 +125,11 @@ if __name__ == '__main__':
 
     viewer.plot()
 	
-    raw_input()
+    raw_input("press <return> to start...")
 
     it.timestep()
     
     viewer.plot()
 	    
-    raw_input()
+    raw_input("finished")
 

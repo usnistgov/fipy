@@ -33,8 +33,6 @@ Release goals 0.1
 
   * Rename elctochem
 
-  * Make sure examples and docs are compatible, check viewers.
-
 - Distribution:
 
   * Clean install on Mac
@@ -84,6 +82,8 @@ Release Goals 0.2
   * Pass modified pysparse to Roman and ask for improved functionality.
 
   * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
+
+  * Better ``__repr__`` for FiPy objects.
 
 - Refactoring:
 

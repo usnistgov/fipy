@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:30:50 PM} 
+ #                                last update: 10/5/04 {3:10:05 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -117,6 +117,5 @@ it.timestep()
 
 if __name__ == '__main__':
     viewer = Grid2DGistViewer(var)
-    print var
     viewer.plot()
     raw_input('finished')

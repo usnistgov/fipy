@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:35:29 PM} 
+ #                                last update: 10/5/04 {3:06:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -140,7 +140,7 @@ answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.0
 if __name__ == '__main__':
     for step in range(steps):
         it.timestep()
-    print var
+##     print var
     viewer = Grid2DGistViewer(var)
     viewer.plot()
     raw_input('finished')
