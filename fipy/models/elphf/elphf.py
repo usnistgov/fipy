@@ -187,7 +187,7 @@ def makeFields(mesh, parameters):
 
 
 def makeEquations(mesh, fields, parameters):
-    relaxation = 1
+    relaxation = 0
     solutionTolerance = 1e-6
     timeStepDuration = Variable(value = physicalField.Scale(parameters['time step duration'], "TIME"))
 ##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
