@@ -16,18 +16,11 @@ Release goals 0.1
   * Manual and web site WERBed.
   * Review Process.
   * Class diagram and explanation
-  * Why is there an explicit Numarray of values in 
-    ``examples/diffusion/explicit/mesh10/input.py``?
-  * Give some explanation of ``examples/diffusion/nthOrder/input2ndOrder1D.py``
   * Rename ``examples/cahnHilliard/cahnHilliardTanh1D.py`` to
     ``examples/cahnHilliard/inputTanh1D.py``, or something.  Let's be
     consistent that ``examples/*/*input*.py`` are files that users can run.
 
 - Refactoring:
-
-  * Stop FiPy writing temporary files during test case execution:
-
-    - Use python temporary file system.
 
   * Rename electochem
   * Alter verbosity of gmsh in test cases.
