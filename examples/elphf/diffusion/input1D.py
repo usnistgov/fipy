@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {2:21:59 PM} 
+ #                                last update: 3/23/04 {9:00:15 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     #     it.advanceTimeStep
 
 
-    for i in range(50):
+    for i in range(1):
 	it.timestep(1)
     #     raw_input()
 	
