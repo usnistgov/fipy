@@ -60,10 +60,10 @@ class TemperatureEquation(MatrixEquation):
         heatCapacity = parameters['heat capacity']
         phase = fields['phase']
         phaseOld =  phase.getOld()
-	
-        terms = (
 
-	    TransientTerm(1. /dt, mesh),
+        terms = (
+ 
+	    TransientTerm(1. / dt, mesh),
             
 	    ImplicitDiffusionTerm(parameters['temperature diffusion'],
                                   mesh,

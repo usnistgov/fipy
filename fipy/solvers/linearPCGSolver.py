@@ -55,8 +55,8 @@ class LinearPCGSolver(Solver):
 	
 	Assor=precon.ssor(A)
 	
-	
  	info, iter, relres = itsolvers.pcg(A,b,x,self.tolerance,self.steps,Assor)
+
 ##        print info, iter, relres
 # 	y = x.copy()
 # 	L.matvec(x,y)

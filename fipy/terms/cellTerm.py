@@ -50,15 +50,9 @@ class CellTerm(Term):
 	self.oldCoeff = self.coeff*weight['old value']
 	self.bCoeff = self.coeff*weight['b vector']
 	self.newCoeff = self.coeff*weight['new value']
-	
+
     def buildMatrix(self,L,oldArray,b):
 	N = len(oldArray)
-
-##        print self.__class__
-##        print "b addition in cell term"
-##        print oldArray*self.oldCoeff[:]
-##        raw_input()
-
 
 	b += oldArray*self.oldCoeff[:]
 	b += Numeric.ones([N])*self.bCoeff[:]

@@ -46,14 +46,7 @@ import Numeric
 class DiffusionTerm(FaceTerm):
     def __init__(self, diffCoeff, mesh, boundaryConditions, weight):
 	self.coeff = diffCoeff * mesh.getFaceAreas() / mesh.getCellDistances()
-	
 	FaceTerm.__init__(self,weight,mesh,boundaryConditions)
-# 	self.diffCoeff = diffCoeff
-	
-	
-#     def calculateCoeffGeom(self,dt):
-# 	pass
-# 	self.coeff = self.diffCoeff[:] * self.mesh.getFaceAreas() / self.mesh.getCellDistances()
 
     def getCoeff(self):
 	return self.coeff
