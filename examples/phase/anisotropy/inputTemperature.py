@@ -58,7 +58,7 @@ import Numeric
 
 class AnisotropySystem:
 
-    def __init__(self):
+    def __init__(self, n = 40):
         timeStepDuration = 5e-5
         self.steps = 10
 
@@ -82,9 +82,9 @@ class AnisotropySystem:
             }
 
 
-        Length = 40. * 2.5 / 100
-        nx = 40
-        ny = 40
+        Length = n * 2.5 / 100.
+        nx = n
+        ny = n
         dx = Length / nx
         dy = Length / ny
 
@@ -180,14 +180,6 @@ class AnisotropySystem:
             self.it.timestep(1)
             self.phaseViewer.plot()
             self.temperatureViewer.plot()
-##            raw_input()
-
-    def runProfile():
-        fudge = calibrate_profiler(10000)
-        profile = Profiler('profile', fudge=fudge)        
-        it.timestep(steps = 100)
-        profile.stop()
-        
 
 if __name__ == '__main__':
     system = AnisotropySystem()
