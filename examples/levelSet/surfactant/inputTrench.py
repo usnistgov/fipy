@@ -86,7 +86,7 @@ from fipy.models.levelSet.distanceFunction.extensionEquation import ExtensionEqu
 Lx = .5
 Ly = 1.
 
-dx = 0.01
+dx = 0.005
 cfl = 0.5
 
 nx = int(Lx / dx)
@@ -106,7 +106,9 @@ positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 3 * Ly / 4) or
 
 distanceVariable.setValue(1., positiveCells)
 
-distanceEquation = DistanceEquation(distanceVariable)
+distanceEquation = DistanceEquation(distanceVariable, terminationValue = 6 * dx)
+
+distanceEquation.solve()
 
 surfactantVariable = SurfactantVariable(
     value = 1,
@@ -137,46 +139,77 @@ advectionEquation = AdvectionEquation(
 extensionEquation = ExtensionEquation(
     distanceVariable,
     velocity,
-    terminationValue = 8 * dx)
+    terminationValue = 6 * dx)
 
 it = Iterator((extensionEquation, advectionEquation, surfactantEquation))
 
+faces = mesh.getFacesRight()
+faceIDs = [face.getID() for face in faces]
+cellIDs = Numeric.take(mesh.getFaceCellIDs()[:,0], faceIDs)
+
+def calcCenterHeight(phi):
+    for cellID in cellIDs:
+        if phi[cellID] < 0 and phi[cellID + nx] > 0:
+            return float(mesh.getCellCenters()[cellID, 1] - phi[cellID])
+
+
 if __name__ == '__main__':
+
     distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.001, maxVal = .001)
     levelSetViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -.5, maxVal = .5)
     surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 200.)
     velocityViewer = Grid2DGistViewer(var = velocity, palette = 'rainbow.gp', minVal = 0., maxVal = 2.)
     levelSetGradMag = Grid2DGistViewer(var = distanceVariable.getGrad().getMag(), palette = 'rainbow.gp', minVal = .5, maxVal = 1.5)
 
-    
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()
-    
-    distanceEquation.solve()
+
 
 ##    from fipy.tools.profiler.profiler import calibrate_profiler
 ##    from fipy.tools.profiler.profiler import Profiler
 ##    fudge = calibrate_profiler(10000)
 ##    profile = Profiler('profile.txt', fudge=fudge)
+    from fipy.viewers.gist1DViewer import Gist1DViewer
+    totalTime = 0
 
+    import fipy.tools.dump as dump
+
+    stringCenterHeights = dump.read('centerHeights')
+    
+    centerHeights = [[0,0]]
+    centerView = Gist1DViewer(vars = (centerHeights, stringCenterHeights), title = 'Center Height')
+
+    argmax = Numeric.argmax(velocity)
+    timeStepDuration = cfl * dx / velocity[argmax]
     for step in range(steps):
         print 'step',step
 
-        if step % 5 == 0:
+        if step % 10 == 0:
             distanceEquation.solve()
-        
-        
+
         velocity.setValue(surfactantVariable.getInterfaceValue())
+
         argmax = Numeric.argmax(velocity)
         timeStepDuration = cfl * dx / velocity[argmax]
+        totalTime += timeStepDuration
         it.timestep(dt = timeStepDuration)
-
+        
+##        import fipy.tools.memoryLeak as memoryLeak
+##        memoryLeak.print_top_100()
+##        raw_input("press key to continue")
 ##    profile.stop()
 
         distanceViewer.plot()
         surfactantViewer.plot()
         velocityViewer.plot()
         levelSetViewer.plot()
+        
+        centerHeights.append([totalTime, calcCenterHeight(distanceVariable) - 0.25])
 
+        centerView.plot()
+
+
+    
+        
     raw_input('finished')
