@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:55:05 AM}
+ #                                last update: 2/26/05 {9:02:27 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -125,8 +125,8 @@ we create the Cahn-Hilliard equation:
 
     >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> diffTerm2 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff * doubleWellDerivative,))
-    >>> diffTerm4 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff, -epsilon**2))
+    >>> diffTerm2 = NthOrderDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
+    >>> diffTerm4 = NthOrderDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
     >>> eqch = TransientTerm() - diffTerm2 - diffTerm4
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver

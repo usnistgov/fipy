@@ -7,7 +7,7 @@
  # 
  #  FILE: "cahnHilliardEquation.py"
  #                                    created: 7/2/04 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:40:23 PM} 
+ #                                last update: 2/26/05 {9:01:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,8 +94,8 @@ def buildCahnHilliardEquation(var = None,
 
     tranTerm = TransientTerm(transientCoeff)
 
-    diffTerm2 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff * doubleWellDerivative,))
+    diffTerm2 = NthOrderDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
 
-    diffTerm4 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff, -parameters['epsilon']**2))
+    diffTerm4 = NthOrderDiffusionTerm(coeff = (diffusionCoeff, -parameters['epsilon']**2))
 
     return tranTerm - diffTerm2 - diffTerm4

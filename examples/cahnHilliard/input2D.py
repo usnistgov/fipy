@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:41:38 PM}
+ #                                last update: 2/26/05 {9:02:18 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -98,8 +98,8 @@ doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
 from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
-diffTerm2 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff * doubleWellDerivative,))
-diffTerm4 = NthOrderDiffusionTerm(coeffs = (diffusionCoeff, -epsilon**2))
+diffTerm2 = NthOrderDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
+diffTerm4 = NthOrderDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
 from fipy.solvers.linearPCGSolver import LinearPCGSolver

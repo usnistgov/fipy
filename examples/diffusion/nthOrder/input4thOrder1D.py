@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/27/04 {9:50:16 AM} 
+ #                                last update: 2/26/05 {9:00:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,7 +103,7 @@ We initialize the steady-state equation and use the `LinearLUSolver` for stabili
 We perform one implicit timestep to achieve steady state
     
     >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
-    >>> eq = NthOrderDiffusionTerm(coeffs = (1, 1))
+    >>> eq = NthOrderDiffusionTerm(coeff = (1, 1))
     >>> eq.solve(var,
     ...          boundaryConditions = BCs,
     ...          solver = LinearLUSolver(tolerance = 1e-11))

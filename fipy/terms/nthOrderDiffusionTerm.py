@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 2/25/05 {5:34:52 PM} 
+ #                                last update: 2/26/05 {9:02:57 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,7 +71,7 @@ Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(1., 1., 2, 1)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1,))
+   >>> term = NthOrderDiffusionTerm(coeff = (1,))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
@@ -90,7 +90,7 @@ Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> bcLeft = FixedFlux(mesh.getFacesLeft(), 3.)
    >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1.,))
+   >>> term = NthOrderDiffusionTerm(coeff = (1.,))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
@@ -110,7 +110,7 @@ x = 2, fixed value 1, fixed curvature 0
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2)
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> term = NthOrderDiffusionTerm(coeff = (1., 1.))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -1.000000   1.000000  
@@ -130,7 +130,7 @@ x = 2, fixed value 4, fixed 3rd order -1
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 2., 2)
    >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
-   >>> term = NthOrderDiffusionTerm(coeffs = (-1., 1.))
+   >>> term = NthOrderDiffusionTerm(coeff = (-1., 1.))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
     1.000000  -1.000000  
@@ -150,7 +150,7 @@ Test when dx = 0.5.
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> term = NthOrderDiffusionTerm(coeff = (1., 1.))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -2.000000   2.000000  
@@ -170,7 +170,7 @@ Test when dx = 0.25.
    >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
    >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
    >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
-   >>> term = NthOrderDiffusionTerm(coeffs = (1., 1.))
+   >>> term = NthOrderDiffusionTerm(coeff = (1., 1.))
    >>> coeff = term.getGeomCoeff(mesh)
    >>> print term.getCoefficientMatrix(mesh, coeff)
    -4.000000   4.000000  
