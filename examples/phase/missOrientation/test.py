@@ -46,18 +46,16 @@ import unittest
 import os
 import cPickle
 from tests.testBase import TestBase
-import input
-import input1D
+from input1D import Phase1DSystem
+from inputCircle import CircleSystem
+from inputModularCircle import ModularCircleSystem
 import examples.phase.examples.missOrientation
-import inputCircle
-import inputModularCircle
 
 class TestPhase(TestBase):
     def setUp(self):
-        parameters = input.getParameters(self.localParameters)
+        parameters = self.system.getParameters()
 
-	self.steps = 100
-	self.timeStep = 0.02
+	self.steps = parameters['steps']
 	self.tolerance = 1e-10
 
         self.it = parameters['it']
@@ -73,19 +71,19 @@ class TestPhase(TestBase):
 
 class TestPhase1D(TestPhase):
     def setUp(self):
-        self.localParameters = input1D.getParameters()
+        self.system = Phase1DSystem()
         self.testFile = 'testPhaseData.gz'
         TestPhase.setUp(self)
 
 class TestPhaseCircle(TestPhase):
     def setUp(self):
-        self.localParameters = inputCircle.getParameters()
+        self.system = CircleSystem()
         self.testFile = 'testCirclePhaseData.gz'
         TestPhase.setUp(self)
-
+        
 class TestPhaseCircleModular(TestPhase):
     def setUp(self):
-        self.localParameters = inputModularCircle.getParameters()
+        self.system = ModularCircleSystem()
 	self.testFile = 'testModularCircleData.gz'
         TestPhase.setUp(self)
 

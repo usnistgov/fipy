@@ -40,38 +40,23 @@
  ##
 
 from __future__ import nested_scopes
-import input
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from input import PhaseSystem
 
-def getParameters():
-    L = 1.5
-    def func(cell):
-        r = L / 4.
-        c = (L / 2., L / 2.)
-        x = cell.getCenter()
-        return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
-    
-    return {
-        'nx'           :  100,
-        'ny'           :  100,
-        'L'            :  L,
-        'theta value'  :  1.,
-        'theta func'   : func,
-        'theta func value' : 0.
-        }
+class CircleSystem(PhaseSystem):
+    def __init__(self):        
+        self.L = 1.5
+        def func(cell):
+            r = self.L / 4.
+            c = (self.L / 2., self.L / 2.)
+            x = cell.getCenter()
+            return (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2
+        self.func = func
+        self.nx = 100
+        self.ny = 100
+        self.thetaValue = 1.
+        self.thetaFuncValue = 0.
+        PhaseSystem.__init__(self)
     
 if __name__ == '__main__':
-    localParameters = getParameters()
-    globalParameters = input.getParameters(localParameters)
-    
-    it = globalParameters['it']
-    steps = globalParameters['steps']
-    var = globalParameters['var']
-
-    it.timestep(steps)
-
-    viewer = Grid2DGistViewer(var)
-
-    viewer.plot()
-    raw_input()
-            
+    system = CircleSystem()
+    system.run()

@@ -41,33 +41,18 @@
 
 from __future__ import nested_scopes
 import input
-from viewers.grid2DGistViewer import Grid2DGistViewer
+from input import PhaseSystem
 
-def getParameters():
-    L = 1.5
-    func = lambda cell: cell.getCenter()[0] > L / 2.
-    
-    return {
-        'nx'           :  100,
-        'ny'           :  1,
-        'L'            :  L,
-        'theta value'  :  1.,
-        'theta func'   : func,
-        'theta func value' : 0.
-        }
+class Phase1DSystem(PhaseSystem):
+    def __init__(self):        
+        self.L = 1.5
+        self.func = lambda cell: cell.getCenter()[0] > self.L / 2.
+        self.nx = 100
+        self.ny = 1
+        self.thetaValue = 1.
+        self.thetaFuncValue = 0.
+        PhaseSystem.__init__(self)
     
 if __name__ == '__main__':
-    localParameters = getParameters()
-    globalParameters = input.getParameters(localParameters)
-    
-    it = globalParameters['it']
-    steps = globalParameters['steps']
-    var = globalParameters['var']
-
-    it.timestep(steps)
-
-    viewer = Grid2DGistViewer(var)
-
-    viewer.plot()
-    raw_input()
-            
+    system = Phase1DSystem()
+    system.run()
