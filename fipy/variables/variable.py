@@ -92,7 +92,7 @@ class Variable:
         alpha = dFP / dAP
         id1 = face.getCellId(0)
         id2 = face.getCellId(1)
-        return self.array[id1] * alpha + self.array[id2] * (1 - alpha)
+        return self.array[id2] * alpha + self.array[id1] * (1 - alpha)
 
     def getCellGradient(self,cell):
         grad = Numeric.zeros(self.mesh.getDim(),'d')
@@ -115,7 +115,7 @@ class Variable:
             alpha = dFP / dAP
             id1 = face.getCellId(0)
             id2 = face.getCellId(1)
-            faceGrad[face.getId()] = cellGrad[id1] * alpha + cellGrad[id2] * (1 - alpha)
+            faceGrad[face.getId()] = cellGrad[id2] * alpha + cellGrad[id1] * (1 - alpha)
         return faceGrad
 
     def getCellGradientMagnitude(self,cell):

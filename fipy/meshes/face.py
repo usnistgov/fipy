@@ -210,11 +210,23 @@ class Face:
             vec=self.center-self.cells[0].getCenter()        
         return tools.sqrtDot(vec,vec)
 
-    def getFaceToCellDistance(self,indx = 0):
-        if indx == 1 and len(self.cells) == 1:
-            indx = 0
-        vec=self.center-self.cells[indx].getCenter()        
+    def calcFaceToCellDistance(self, cell):
+        vec=self.center-cell.getCenter()        
         return tools.sqrtDot(vec,vec)
+
+    def setFaceToCellDistances(self):
+        faceToCellDistances = ()
+        for cell in self.cells:
+            faceToCellDistances += (self.calcFaceToCellDistance(cell),)
+        self.faceToCellDistances = faceToCellDistances
+
+    def getFaceToCellDistance(self, cell = 'None'):
+        if cell == self.cells[0] or cell == 'None':
+            return self.faceToCellDistances[0]
+        elif cell == self.cells[1]:
+            return self.faceToCellDistances[1]
+        else:
+            return self.calcFaceToCellDistance(cell)
 
 #     def __repr__(self):
 # 	"""Textual representation of Face.

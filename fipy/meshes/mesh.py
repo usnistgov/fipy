@@ -48,6 +48,7 @@ class Mesh:
         self.vertices = vertices
         self.interiorFaces = interiorFaces
         self.dim = len(self.vertices[0].getCoordinates())
+        
 
     def getCells(self,func = 'None'):
 	"""Return Cells of Mesh.
@@ -110,5 +111,5 @@ class Mesh:
     def getFaceAreas(self):
 	pass
 
-                
+            
     

@@ -72,6 +72,7 @@ class Cell:
         for face in self.faces:
             face.setNormal()
             face.setCellDistance()
+            face.setFaceToCellDistances()
         self.volume = self.calcVolume()
         
 
