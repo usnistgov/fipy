@@ -342,3 +342,22 @@ class Mesh:
         i = Numeric.argsort(d)
         return Cell(self, i[0])
     
+
+## pickling
+
+##    self.__getinitargs__(self):
+##        return (self.vertexCoords, self.faceVertexIDs, self.cellFaceIDs)
+    
+
+    def __getstate__(self):
+        dict = {
+            'vertexCoords' : self.vertexCoords,            
+            'faceVertexIDs' : self.faceVertexIDs,
+            'cellFaceIDs' : self.cellFaceIDs }
+        return dict
+
+    def __setstate__(self, dict):
+        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
+        
+                      
+    

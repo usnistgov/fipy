@@ -149,3 +149,17 @@ class Grid2D(Mesh2D):
     def getShape(self):
         return (self.nx, self.ny)
     
+
+## pickling
+
+    def __getstate__(self):
+        dict = {
+            'dx' : self.dx,            
+            'dy' : self.dy,
+            'nx' : self.nx,
+            'ny' : self.ny}
+        return dict
+
+    def __setstate__(self, dict):
+        self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])
+

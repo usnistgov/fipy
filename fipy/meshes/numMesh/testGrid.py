@@ -50,6 +50,7 @@ import Numeric
 from fivol.meshes.grid2D import Grid2D
 import MA
 from fivol.meshes.testMeshBase import TestMeshBase
+import fivol.tools.dump as dump
 
 class TestGrid(TestMeshBase):
     def setUp(self):
@@ -167,9 +168,16 @@ class TestGrid(TestMeshBase):
     def testFacesRight(self):
 	self.assertArrayEqual(self.facesRight, [face.getID() for face in self.mesh.getFacesRight()])
 
+class TestGridPickle(TestGrid):
+    def setUp(self):
+        TestGrid.setUp(self)
+        pickledMesh = dump.write(self.mesh, 'pickledMesh')
+        self.mesh = dump.read('pickledMesh')
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestGrid))
+    theSuite.addTest(unittest.makeSuite(TestGridPickle))
     return theSuite
     
 if __name__ == '__main__':

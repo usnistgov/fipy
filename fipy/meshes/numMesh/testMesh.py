@@ -49,6 +49,7 @@ import Numeric
 import MA
 from fivol.meshes.mesh2D import Mesh2D
 from fivol.meshes.testMeshBase import TestMeshBase
+import fivol.tools.dump as dump
 
 class TestMesh(TestMeshBase):
     def setUp(self):
@@ -156,9 +157,17 @@ class TestMesh(TestMeshBase):
                                         (0., -0.), (0., 0.), (0., 0.), (0., 0.),
                                         (0., 0), (0., 0),(0., 0)))
 
+
+class TestMeshPickle(TestMesh):
+    def setUp(self):
+        TestMesh.setUp(self)
+        pickledMesh = dump.write(self.mesh, 'pickledMesh')
+##        self.mesh = dump.read('pickledMesh')
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(TestMesh))
+    theSuite.addTest(unittest.makeSuite(TestMeshPickle))
     return theSuite
     
 if __name__ == '__main__':
