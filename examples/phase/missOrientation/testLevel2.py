@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {11:45:32 AM} 
+ #                                last update: 2/20/04 {4:05:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,6 +45,8 @@
 """
  
 import unittest
+import fivol.tests.testProgram
+
 from fivol.examples.phase.theta.modularVariable import ModularVariable
 from Numeric import pi
 from Numeric import array
@@ -75,7 +77,7 @@ class TestModCellToFace(TestMod):
     def setUp(self):
         TestMod.setUp(self, array((2. * pi / 3., -2. * pi / 3.)))
         self.answer = array((-pi, 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3.))
-        self.result = self.theta.getFaceValue().getNumericValue()
+        self.result = self.theta.getArithmeticFaceValue().getNumericValue()
 
 class TestModCellGrad(TestMod):
     def setUp(self):
@@ -129,5 +131,4 @@ def suite():
     return theSuite
     
 if __name__ == '__main__':
-    theSuite = suite()
-    unittest.TextTestRunner(verbosity=2).run(theSuite)
+    fivol.tests.testProgram.main(defaultTest='suite')

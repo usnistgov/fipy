@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/18/04 {3:41:44 PM} 
+ #                                last update: 2/20/04 {1:56:42 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,8 +68,8 @@ import elphf
 
 from elphfIterator import ElPhFIterator
 
-nx = 24000
-dx = "0.000125 nm"
+nx = 1200
+dx = "0.0025 nm"
 # L = nx * dx
 
 mesh = Grid2D(
@@ -79,7 +79,7 @@ mesh = Grid2D(
     ny = 1)
     
 parameters = {
-    'time step duration': "1e-9 s",
+    'time step duration': "1e-12 s",
     'substitutional molar volume': "1.80000006366754e-05 m**3/mol",
     'phase': {
 	'name': "xi",

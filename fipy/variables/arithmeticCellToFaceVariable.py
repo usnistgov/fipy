@@ -4,9 +4,9 @@
  # ###################################################################
  #  PyFiVol - Python-based finite volume PDE solver
  # 
- #  FILE: "cellGradVariable.py"
- #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/20/04 {2:02:54 PM} 
+ #  FILE: "arithmeticCellToFaceVariable.py"
+ #                                    created: 2/20/04 {11:14:05 AM} 
+ #                                last update: 2/20/04 {11:15:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -35,20 +35,29 @@
  #  
  # ###################################################################
  ##
- 
+
 import Numeric
 
-from fivol.variables.vectorCellVariable import VectorCellVariable
+from fivol.variables.cellToFaceVariable import CellToFaceVariable
+from fivol.tools import array
+from fivol.inline import inline
 
-class FaceGradContributions(VectorCellVariable):
-    def __init__(self, var):
-        VectorCellVariable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
+class ArithmeticCellToFaceVariable(CellToFaceVariable):
+    def _calcValuePy(self, alpha, id1, id2):
+	cell1 = array.take(self.var,id1)
+	cell2 = array.take(self.var,id2)
+	self.value = (cell1 - cell2) * alpha + cell2
+	
+    def _calcValueIn(self, alpha, id1, id2):
+	inline.runInlineLoop1("""
+	    double	cell2 = var(id2(i));
+	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
+	""",
+	var = self.var.getNumericValue(),
+	val = self.value.value, 
+	alpha = alpha,
+	id1 = id1, id2 = id2,
+	ni = len(self.mesh.getFaces())
+	)
 
-    def calcValue(self):
-        self.calcValue1()
-
-    def calcValue1(self):
-        self.value = self.mesh.getAreaProjections() * self.var.getArithmeticFaceValue().transpose().getNumericValue()
-    
-
+	

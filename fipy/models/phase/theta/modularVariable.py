@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 1/16/04 {9:20:28 PM} 
+ #                                last update: 2/20/04 {2:11:23 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ from fivol.examples.phase.theta.modPhysicalField import ModPhysicalField
 class ModularVariable(CellVariable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 1):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
-        self.faceValue = None
+        self.arithmeticFaceValue = None
         self.grad = None
         self.mod = """
         # define pi 3.141592653589793
@@ -69,12 +69,12 @@ class ModularVariable(CellVariable):
 
 	return self.grad
 
-    def getFaceValue(self):
-	if self.faceValue is None:
+    def getArithmeticFaceValue(self):
+	if self.arithmeticFaceValue is None:
 	    from modCellToFaceVariable import ModCellToFaceVariable
-	    self.faceValue = ModCellToFaceVariable(self, self.mod)
+	    self.arithmeticFaceValue = ModCellToFaceVariable(self, self.mod)
 
- 	return self.faceValue
+ 	return self.arithmeticFaceValue
 
     def getFaceGrad(self):
 	if self.faceGrad is None:

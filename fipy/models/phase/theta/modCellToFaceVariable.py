@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 2/19/04 {11:08:28 AM} 
+ #                                last update: 2/20/04 {3:29:09 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,16 +36,14 @@
  # ###################################################################
  ##
 
-import sys
-
 import Numeric
 
 from fivol.inline import inline
-from fivol.variables.cellToFaceVariable import CellToFaceVariable
+from fivol.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 
-class ModCellToFaceVariable(CellToFaceVariable):
+class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
     def __init__(self, var, mod):
-        CellToFaceVariable.__init__(self,var)
+	ArithmeticCellToFaceVariable.__init__(self,var)
         self.mod = mod
         
     def  _calcValueIn(self, alpha, id1, id2):

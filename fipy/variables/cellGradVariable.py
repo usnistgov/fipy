@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 2/3/04 {3:31:53 PM} 
+ #                                last update: 2/20/04 {2:20:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -64,7 +64,7 @@ class CellGradVariable(VectorCellVariable):
 	""",
 	val = self.value.value, ids = ids, orientations = orientations, volumes = volumes,
         areaProj = self.mesh.getAreaProjections().getNumericValue(),
-        faceValues = self.var.getFaceValue().getNumericValue(),
+        faceValues = self.var.getArithmeticFaceValue().getNumericValue(),
 	ni = N, nj = self.mesh.getDim(), nk = M
 	)
         

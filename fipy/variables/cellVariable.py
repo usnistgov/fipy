@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/26/04 {10:07:22 PM} 
+ #                                last update: 2/20/04 {2:12:20 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,7 +52,7 @@ class CellVariable(Variable):
 	else:
             self.old = None
 	    
-	self.faceValue = self.grad = self.faceGrad = None
+	self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = None
 	
     def getVariableClass(self):
 	return CellVariable
@@ -94,12 +94,19 @@ class CellVariable(Variable):
         
 	return self.grad
 
-    def getFaceValue(self):
-	if self.faceValue is None:
-	    from cellToFaceVariable import CellToFaceVariable
-	    self.faceValue = CellToFaceVariable(self)
+    def getArithmeticFaceValue(self):
+	if self.arithmeticFaceValue is None:
+	    from arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
+	    self.arithmeticFaceValue = ArithmeticCellToFaceVariable(self)
 
-	return self.faceValue
+	return self.arithmeticFaceValue
+
+    def getHarmonicFaceValue(self):
+	if self.harmonicFaceValue is None:
+	    from harmonicCellToFaceVariable import HarmonicCellToFaceVariable
+	    self.harmonicFaceValue = HarmonicCellToFaceVariable(self)
+
+	return self.harmonicFaceValue
 
     def getFaceGrad(self):
 	if self.faceGrad is None:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "elphf.py"
  #                                    created: 12/12/03 {10:41:56 PM} 
- #                                last update: 1/26/04 {6:21:39 PM} 
+ #                                last update: 2/19/04 {11:49:17 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -192,11 +192,31 @@ def makeEquations(mesh, fields, parameters):
     timeStepDuration = Variable(value = physicalField.Scale(parameters['time step duration'], "TIME"))
 ##     timeStepDuration = physicalField.PhysicalField(parameters['time step duration'])
     
+##     flux = 0 * (fields['potential'][0] / mesh.getPhysicalShape()[0] ) * "1 eps0"
+    flux = 0
+    equations = (PoissonEquation(
+	    potential = fields['potential'],
+	    parameters = parameters['potential'],
+	    fields = fields,
+	    solver = LinearLUSolver(),
+	    solutionTolerance = solutionTolerance,
+	    relaxation = relaxation,
+	    boundaryConditions=(
+# 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
+# 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
+		FixedValue(faces = mesh.getFacesLeft(),value = 0 * fields['potential'][0]),
+		FixedFlux(faces = mesh.getFacesRight(),value = flux), # "0 eps0*V/m"
+		FixedFlux(faces = mesh.getFacesTop(),value = flux),
+		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
+	    )
+	),
+    )
+    
 ##     gradientEnergy = physicalField.PhysicalField(parameters['phase']['gradient energy'])
 ##     mobility = physicalField.PhysicalField(parameters['phase']['mobility'])
 ##     flux = 0 * (fields['phase'][0] / mesh.getPhysicalShape()[0] ) * gradientEnergy * mobility
     flux = 0
-    equations = (PhaseEquation(
+    equations += (PhaseEquation(
 	phase = fields['phase'],
 	timeStepDuration = timeStepDuration,
 	fields = fields,
@@ -216,26 +236,6 @@ def makeEquations(mesh, fields, parameters):
 	    FixedFlux(faces = mesh.getFacesBottom(),value = flux)
 	)
     ),)
-    
-##     flux = 0 * (fields['potential'][0] / mesh.getPhysicalShape()[0] ) * "1 eps0"
-    flux = 0
-    equations += (PoissonEquation(
-	    potential = fields['potential'],
-	    parameters = parameters['potential'],
-	    fields = fields,
-	    solver = LinearLUSolver(),
-	    solutionTolerance = solutionTolerance,
-	    relaxation = relaxation,
-	    boundaryConditions=(
-# 		FixedValue(faces = mesh.getFacesLeft(),value = 1.),
-# 		FixedValue(faces = mesh.getFacesRight(),value = 0.),
-		FixedValue(faces = mesh.getFacesLeft(),value = 0 * fields['potential'][0]),
-		FixedFlux(faces = mesh.getFacesRight(),value = flux), # "0 eps0*V/m"
-		FixedFlux(faces = mesh.getFacesTop(),value = flux),
-		FixedFlux(faces = mesh.getFacesBottom(),value = flux)
-	    )
-	),
-    )
     
     for component in fields['substitutionals']:
 ## 	flux = 0 * (component[0] / mesh.getPhysicalShape()[0] ) * component.diffusivity

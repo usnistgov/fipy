@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/26/04 {2:25:42 PM} 
+ #                                last update: 2/20/04 {4:53:14 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -117,7 +117,7 @@ if __name__ == '__main__':
 	
 	for viewer in viewers:
 	    viewer.plot()
-	
+
     # profile.stop()
 	    
     raw_input()

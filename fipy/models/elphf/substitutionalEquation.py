@@ -7,7 +7,7 @@
  # 
  #  FILE: "substitutionalEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/23/04 {12:02:03 PM} 
+ #                                last update: 2/20/04 {5:11:27 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,12 +52,12 @@ class SubstitutionalEquation(ConcentrationEquation):
 	for component in [component for component in fields['substitutionals'] if component is not Cj]:
 	    Cj.substitutionalSum = Cj.substitutionalSum + component#.getOld()
 
-	denom = 1. - Cj.substitutionalSum.getFaceValue()
+	denom = 1. - Cj.substitutionalSum.getArithmeticFaceValue()
 	if diffusivity is None:
 	    diffusivity = Cj.getDiffusivity()
 	    
 	Cj.subsConvCoeff = diffusivity * Cj.substitutionalSum.getFaceGrad() / denom.transpose()
-	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getFaceValue() / denom).transpose()
+	Cj.weightedDiffusivity = (diffusivity * fields['solvent'].getArithmeticFaceValue() / denom).transpose()
 
 	return Cj.subsConvCoeff + ConcentrationEquation.getConvectionCoeff(self, Cj = Cj, fields = fields, diffusivity = Cj.weightedDiffusivity)
 	

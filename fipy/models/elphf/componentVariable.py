@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/26/04 {2:05:00 PM} 
+ #                                last update: 2/20/04 {4:50:45 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

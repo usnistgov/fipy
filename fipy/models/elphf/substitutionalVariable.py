@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/26/04 {2:05:11 PM} 
+ #                                last update: 2/20/04 {4:48:03 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

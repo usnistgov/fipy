@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 1/26/04 {2:12:18 PM} 
+ #                                last update: 2/20/04 {4:50:25 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -56,6 +56,6 @@ class SolventVariable(ComponentVariable):
 	self.requires(self.concentration)
 	
 	self.value = self.concentration[:]
-	    
+	
     def calcValue(self):
 	self.value = self.concentration[:]

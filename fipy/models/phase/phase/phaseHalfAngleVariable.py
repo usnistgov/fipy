@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/16/04 {12:02:15 PM}
+ #                                last update: 2/20/04 {2:05:01 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -61,7 +61,7 @@ class PhaseHalfAngleVariable(FaceVariable):
     def _calcValue(self):
 	N = self.parameters['symmetry']
         dphi = self.phase.getFaceGrad()[:,:]
-        thetaFace = self.theta.getFaceValue()[:]
+        thetaFace = self.theta.getArithmeticFaceValue()[:]
 
 	z = array.arctan2(dphi[:,1],dphi[:,0])
         z = N * (z - thetaFace)
@@ -74,7 +74,7 @@ class PhaseHalfAngleVariable(FaceVariable):
         value(i) = tan(z / 2.);""",z = 0.,
                               dphi = self.phase.getFaceGrad().getNumericValue(),
                               symmetry = self.parameters['symmetry'],
-                              thetaFace = self.theta.getFaceValue().getNumericValue(),
+                              thetaFace = self.theta.getArithmeticFaceValue().getNumericValue(),
                               value = self.value.value,
                               ni = len(self.value.value))                              
             
