@@ -169,24 +169,6 @@ metalIonEquation = MetalIonDiffusionEquation(
 
 iterator = Iterator((extensionEquation, advectionEquation, surfactantEquation, metalIonEquation))
 
-class Heavi(CellVariable):
-    def __init__(self, var, depth):
-        CellVariable.__init__(self, mesh = var.getMesh())
-        self.var = self.requires(var)
-        self.depth = depth
-        
-    def _calcValue(self):
-        phi = Numeric.array(self.var)
-        self.value = Numeric.where(phi > self.depth,
-                                   0,
-                                   Numeric.where(phi < self.depth,
-                                                 1,
-                                                 Numeric.cos(Numeric.pi *
-                                                             (phi + self.depth) /
-                                                             (2 * self.depth))
-                                                 )
-                                   )
-        
 class SurfactantPlotVariable(CellVariable):
     def __init__(self, var = None, name = 'surfactant'):
         CellVariable.__init__(self, mesh = var.getMesh(), name = name)
@@ -196,7 +178,6 @@ class SurfactantPlotVariable(CellVariable):
         self.value = Numeric.array(self.var.getInterfaceValue())
 
 accMod = SurfactantPlotVariable(acceleratorVariable)
-heavi = Heavi(distanceVariable, controlParameters['cell size'] * 3 / 2)
 
 metalIonPlotVar = (distanceVariable < 0) *  experimentalParameters['bulk metal ion concentration'] + metalIonVariable * (distanceVariable > 0 )
 
@@ -204,11 +185,29 @@ res = 3
 cells = yCells * 2**(res-1)
 
 viewers = (
-##      Grid2DGistViewer(var = distanceVariable, minVal = -1e-20, maxVal = 1e-20, palette = 'rainbow.gp'),
-    Grid2DGistViewer(var = metalIonPlotVar, palette = 'rainbow.gp', maxVal = experimentalParameters['bulk metal ion concentration'], resolution = res, grid = 0, limits = (0, cells, 0, cells), dpi = 100),
+    Grid2DGistViewer(var = metalIonPlotVar,
+                     palette = 'rainbow.gp',
+                     maxVal = experimentalParameters['bulk metal ion concentration'],
+                     resolution = res,
+                     grid = 0,
+                     limits = (0, cells, 0, cells),
+                     dpi = 100),
     
-    Grid2DGistViewer(var = accMod, palette = 'heat.gp', grid = 0, resolution = res, limits = (0, cells, 0, cells), dpi = 75),
-    Grid2DGistViewer(var = distanceVariable, palette = 'heat.gp', minVal = -1e-8, maxVal = 1e-8, resolution = res, grid = 0, limits = (0, cells, 0, cells), dpi = 100)
+    Grid2DGistViewer(var = accMod,
+                     palette = 'heat.gp',
+                     grid = 0,
+                     resolution = res,
+                     limits = (0, cells, 0, cells),
+                     dpi = 75),
+
+    Grid2DGistViewer(var = distanceVariable,
+                     palette = 'heat.gp',
+                     minVal = -1e-8,
+                     maxVal = 1e-8,
+                     resolution = res,
+                     grid = 0,
+                     limits = (0, cells, 0, cells),
+                     dpi = 100)
             )
 
             
@@ -253,11 +252,11 @@ if __name__ == '__main__':
         
         step += 1
 
-        dumpVars = (
-            viewers[0].getArray(),
-            viewers[1].getArray(),
-            viewers[2].getArray()
-            )
+##        dumpVars = (
+##            viewers[0].getArray(),
+##            viewers[1].getArray(),
+##            viewers[2].getArray()
+##            )
 
         filename = 'dump' + str(step)
 
