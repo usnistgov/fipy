@@ -47,20 +47,11 @@ This input file again solves a 1D diffusion problem as in::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
     
-The difference in this example is that the solution method is explicit.
-The equation used is the `ExplicitDiffusionEquation`.  In this case many
-steps have to be taken to reach equilibrum.  The `timeStepDuration`
-parameter specifies the size of each time step and `steps` is the number of
-time steps.
-
-    >>> dx = 1.
-    >>> dy = 1.
-    >>> nx = 10
-    >>> ny = 1
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
-    >>> timeStepDuration = 0.2
-    >>> steps = 10
+The difference in this example is that the solution method is
+explicit.  The equation used is the `ExplicitDiffusionEquation`.  In
+this case many steps have to be taken to reach equilibrum.  The
+`timeStepDuration` parameter specifies the size of each time step and
+`steps` is the number of time steps.
 
 A loop is required to execute the necessary time steps:
 
@@ -71,13 +62,15 @@ The result is again tested in the same way:
 
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
-    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+    >>> t = timeStepDuration * steps
     >>> import Numeric
-    >>> print "Why is this explicit array of values here?"
-    >>> answer = Numeric.array([  2.04800000e-07,  6.34880000e-06,  9.13408000e-05,  8.10188800e-04,
-    ...     4.96660480e-03,  2.23737856e-02,  7.69755136e-02,  2.07879578e-01,
-    ...     4.50699674e-01,  8.01663386e-01,])
-    >>> Numeric.allclose(var, answer, rtol = 1e-3, atol = 1e-3)
+    >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
+    >>> import scipy
+    >>> analyticalArray = scipy.special.erf(epsi/2)
+
+The steady state solution is given by 
+
+    >>> Numeric.allclose(var[0:10], analyticalArray[0:10], atol = 2e-3)
     1
 
 """
@@ -96,31 +89,32 @@ from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
 
 dx = 1.
 dy = 1.
-nx = 10
+nx = 100
 ny = 1
 valueLeft = 0.
-valueRight = 1.
-timeStepDuration = 0.2
-steps = 10
+initialValue = 1.
+timeStepDuration = 0.1
+steps = 100
+diffusionCoeff = 1.0
 
 mesh = Grid2D(dx, dy, nx, ny)
 
 var = CellVariable(
     name = "concentration",
     mesh = mesh,
-    value = valueLeft)
+    value = 1.)
 
 eq = ExplicitDiffusionEquation(
     var,
     transientCoeff = 1. / timeStepDuration, 
-    diffusionCoeff = 1.,
+    diffusionCoeff = diffusionCoeff,
     solver = LinearPCGSolver(
     tolerance = 1.e-15, 
     steps = 1000
     ),
     boundaryConditions=(
     FixedValue(mesh.getFacesLeft(),valueLeft),
-    FixedValue(mesh.getFacesRight(),valueRight),
+    FixedFlux(mesh.getFacesRight(),0),
     FixedFlux(mesh.getFacesTop(),0.),
     FixedFlux(mesh.getFacesBottom(),0.)
     )
