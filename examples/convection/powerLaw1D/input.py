@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/7/04 {1:00:10 PM} 
+ #                                last update: 10/13/04 {2:52:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,7 +50,7 @@ This example solves the steady-state convection-diffusion equation as described 
 but uses the `PowerLawConvectionTerm` rather than the
 `ExponentialConvectionTerm` instantiator.
 
-The analytical solution test for this problem is given by:
+We test the solution against the analytical result:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[:,axis]

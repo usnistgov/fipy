@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {9:21:39 AM} { 1:23:41 PM}
+ #                                last update: 10/13/04 {3:21:41 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -48,15 +48,15 @@ given by:
 
 .. raw:: latex
 
-    \begin{align*}
-    | \nabla \phi | &= 1 && \\
+    \begin{alignat*}{2}
+    | \nabla \phi | &= 1 &\qquad& \\
     \phi &= 0 && \text{at} \qquad \begin{cases}
 	x = \left( L / 3, 2 L / 3 \right) 
 	& \text{for $L / 3 \le y \le 2 L / 3$} \\
 	y = \left( L / 3, 2 L / 3 \right) 
 	& \text{for $L / 3 \le x \le 2 L / 3$}
     \end{cases}
-    \end{align*}
+    \end{alignat*}
     
 
 Do the tests:
@@ -78,7 +78,8 @@ Do the tests:
    ...                    v1           , val     , -dy / 2.        , val     , v1           ,
    ...                    -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
    ...                    v1           , val     , -dy / 2.        , val     , v1           ,
-   ...                    v3           , v2      , -3. * dy / 2.   , v2      , v3           )), atol = 1e-10)
+   ...                    v3           , v2      , -3. * dy / 2.   , v2      , v3           )), 
+   ...     atol = 1e-10)
    1
 
 """

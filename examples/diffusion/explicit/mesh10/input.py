@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {12:51:47 PM} 
+ #                                last update: 10/13/04 {12:02:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,9 +49,7 @@ This input file again solves a 1D diffusion problem as in::
     
 The difference in this example is that the solution method is
 explicit.  The equation used is the `ExplicitDiffusionEquation`.  In
-this case many steps have to be taken to reach equilibrum.  The
-`timeStepDuration` parameter specifies the size of each time step and
-`steps` is the number of time steps.
+this case many steps have to be taken to reach equilibrum.
 
 A loop is required to execute the necessary time steps:
 
@@ -66,10 +64,10 @@ The result is again tested in the same way:
     >>> import Numeric
     >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
     >>> import scipy
+
+The steady state solution is given by: 
+
     >>> analyticalArray = scipy.special.erf(epsi/2)
-
-The steady state solution is given by 
-
     >>> Numeric.allclose(var[0:10], analyticalArray[0:10], atol = 2e-3)
     1
 

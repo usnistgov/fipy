@@ -40,14 +40,13 @@ Prerequisites
 Operating System
 ================
 
-The only elements of |FiPy| that may be platform-dependent are the
-viewers.  All other aspects should function on any platform that has a
-recent Python_ installation.
-
 |FiPy| has been developed and tested on the Unix operating systems `Mac OS
-X`_ 10.3 and Debian_ Linux running on blah blah.  We welcome reports of
-compatibility with other systems, along with any steps necessary to
-install.
+X`_ 10.3 and Debian_ Linux 3.0.  We welcome reports of compatibility with
+other systems, along with any steps necessary to install.
+
+The only elements of |FiPy| that are likely to be platform-dependent are
+the viewers.  All other aspects should function on any platform that has a
+recent Python_ installation.
 
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Debian:   http://www.debian.org/
@@ -72,7 +71,10 @@ systems, which you can check by opening a terminal and typing
     >>> 
 
 If necessary, you can download_ and install it for your platform.
-|FiPy| requires at least version 2.3 of Python_.
+
+.. note::
+
+   |FiPy| requires at least version 2.3 of Python_.
 
 .. _Python:   http://www.python.org/
 .. _download: http://www.python.org/download/
@@ -133,6 +135,8 @@ gmsh
 ----
 
 http://www.geuz.org/gmsh/
+
+It is possible to create irregular meshes with this package.
 
 Viewers
 -------
@@ -196,7 +200,17 @@ and then::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout fipy
 
-Further CVS_ information can be found at http://sourceforge.net/cvs/?group_id=118428.
+Further information about CVS_ can be found at
+http://sourceforge.net/cvs/?group_id=118428.
+
+The following sections use variants on the command::
+
+    $ python setup.py
+
+In addition to the specific commands given here, further information about
+the ``setup.py`` script is available by typing::
+
+    $ python setup.py --help
 
 .. _compressed archive:   http://sourceforge.net/project/showfiles.php?group_id=118428
 
@@ -214,7 +228,8 @@ base directory::
 
     $ python setup.py build_docs --latex --manual
 
-The epydoc_ package is required in order to build the manual.
+The epydoc_ package and a command-line pdfTeX installation are required in
+order to build the manual.
 
 .. _download the latest manual:  http://sourceforge.net/docman/?group_id=118428
 .. _epydoc:                      http://epydoc.sourceforge.net/
@@ -260,6 +275,11 @@ at the command line.  Alternatively, you may choose not to formally install
    when upgrades to |FiPy| become available (upgrades via CVS_ will handle
    this issue automatically).
 
+If you wish to develop |FiPy| scripts outside of the distribution
+directory, but choose not to formally install |FiPy|, you will need to
+ensure that the |FiPy| distribution directory is appened to your
+``PYTHONPATH`` environment variable.
+
 ------------
 Using |FiPy|
 ------------
@@ -274,8 +294,9 @@ at the command line, which should produce a graphical display of the
 solution. 
 
 With judicious use of the weave_ package, we have been able to obtain
-significantly improved performance.  You can invoke this faster code by
-passing the ``--inline`` option at the command line, *i.e.*::
+significantly improved performance, while keeping the code as clear as
+possible.  You can invoke this faster code by passing the ``--inline``
+option at the command line, *i.e.*::
 
     $ examples/diffusion/steadyState/mesh1D/input.py --inline
 

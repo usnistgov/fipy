@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:37:44 PM} { 1:23:41 PM}
+ #                                last update: 10/13/04 {3:27:42 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,24 +41,24 @@
  # ###################################################################
  ##
 
-"""
-This example first solves the distance function Equation in one dimension:
+r"""
+This example first solves the distance function `Equation` in one dimension:
 
 .. raw:: latex
 
-    $$ |\\nabla \\phi| = 1 $$
+    $$ |\nabla \phi| = 1 $$
 
 with
 
 .. raw:: latex
 
-    $$ \\phi = 0 \;\; \\text{at} \;\; x = L / 5 $$
+    $\phi = 0$ at $x = L / 5$.
 
-then the variable is advected with,
+The variable is advected with,
 
 .. raw:: latex
 
-    $$ \\frac{ \\partial \\phi } { \\partial t} + \\vec{u} \\cdot \\nabla \\phi = 0 $$
+    $$ \frac{ \partial \phi } { \partial t} + \vec{u} \cdot \nabla \phi = 0 $$
 
 The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
 

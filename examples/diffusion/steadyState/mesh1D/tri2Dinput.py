@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {12:46:45 PM} 
+ #                                last update: 10/13/04 {11:59:32 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -71,8 +71,7 @@ compare with the numerical result,
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
 Finally the analytical and numerical results are compared with a
-tolerance of `1e-10`. The variable `var` is coerced to a `Numeric.array`
-for the comparison.
+tolerance of `1e-10`. 
 
     >>> import Numeric
     >>> Numeric.allclose(var, analyticalArray, rtol = 1e-10, atol = 1e-10)

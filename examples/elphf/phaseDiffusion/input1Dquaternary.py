@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DphaseQuaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:46:04 PM} 
+ #                                last update: 10/13/04 {3:17:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -63,7 +63,7 @@ we confirm that the far-field phases have remained separated
     1
     
 and that the concentration fields has appropriately segregated into into
-their respective phases
+their respective phases.
 
     >>> ends = Numeric.take(fields['substitutionals'][0], (0,-1))
     >>> Numeric.allclose(ends, (0.4, 0.3), rtol = 2e-3, atol = 2e-3)

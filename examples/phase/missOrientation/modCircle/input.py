@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/7/04 {8:29:21 AM} 
+ #                                last update: 10/13/04 {3:11:01 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -63,12 +63,12 @@ The initial conditions are:
 .. raw:: latex
 
    \begin{align*}
-   \phi &= 1 && \forall x  \\
+   \phi &= 1 \qquad \forall x  \\
    \theta &= \begin{cases}
    2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
    -2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
    \end{cases} \\
-   T &= 1 && \forall x 
+   T &= 1 \qquad \forall x 
    \end{align*}
 
 and boundary conditions

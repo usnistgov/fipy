@@ -4,7 +4,8 @@ Examples
 
 These examples can be used in at least four ways:
 
-- Each example can be invoked individually to see its output::
+- Each example can be invoked individually to demonstrate an 
+  application of |FiPy|::
 
     $ examples/something/input.py
 

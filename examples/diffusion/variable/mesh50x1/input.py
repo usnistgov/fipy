@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:14:46 PM} 
+ #                                last update: 10/13/04 {12:05:48 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,7 +47,7 @@ This example is a 1D steady state diffusion test case as in::
     
     $ examples/diffusion/variable/mesh2x1/input.py
     
-with then number of cells set to `nx = 50`.
+with the number of cells set to `nx = 50`.
 
 A simple analytical answer can be used to test the result:
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/7/04 {12:59:37 PM} 
+ #                                last update: 10/13/04 {2:51:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -59,7 +59,7 @@ Here, the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     $ \\vec{u} = (0, 10)$.
 
-The analytical solution test for this problem is given by:
+We test the solution against the analytical result:
 
    >>> axis = 1
    >>> x = mesh.getCellCenters()[:,axis]

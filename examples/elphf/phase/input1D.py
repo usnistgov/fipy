@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {7:50:41 AM} 
+ #                                last update: 10/13/04 {3:13:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -77,7 +77,7 @@ where the interfacial thickness is given by
 
    $$ d = \sqrt{\frac{\kappa_{\xi}}{W}} $$
    
-We verify that the correct equilibrium is attained
+We verify that the correct equilibrium solution is attained
 
     >>> import Numeric
     

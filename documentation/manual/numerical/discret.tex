@@ -115,7 +115,7 @@ where the value of $d_{AP}$ is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and
 becomes increasingly inaccurate as the non-orthogonality increases.
 Correction terms have been derived to improve this error but are not
-currently included in \FiPy{}.
+currently included in \FiPy{}~\cite{croftphd}.
 
 \subsection{Source Term}
 
@@ -137,7 +137,7 @@ The aim of the discretization is to reduce the continuous general
 equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
-scheme to solve. The iterative schemes available to \FiPy() are
+scheme to solve. The iterative schemes available to \FiPy{} are
 currently encapsulated in the \href{#id5}{spmatrix} suite of solvers
 and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {12:48:54 PM} 
+ #                                last update: 10/13/04 {12:00:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -50,10 +50,7 @@ This input file again solves a 1D diffusion problem as in::
     
     $ examples/diffusion/steadyState/mesh1D/input.py
     
-The difference being that the mesh size is given by
-
-    >>> nx = 20
-    >>> ny = 20
+The difference being that the mesh is two dimensional.
 
 The result is again tested in the same way:
 

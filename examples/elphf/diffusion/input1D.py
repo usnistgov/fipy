@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/6/04 {4:31:19 PM} 
+ #                                last update: 10/13/04 {3:14:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -41,7 +41,7 @@
 
 """
 A simple 1D three-component diffusion problem to test the
-`ConcentrationEquation` element of ElPhF
+`ConcentrationEquation` element of ElPhF. We iterate to equilibrium:
 
     >>> for step in range(40):
     ...     it.timestep(dt = parameters['time step duration'])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {8:23:02 AM} { 5:14:21 PM}
+ #                                last update: 10/13/04 {3:01:30 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,13 +46,10 @@ r"""
 In this example we solve a coupled phase and temperature equation to
 model solidification and eventually dendritic growth. Dendritic growth will
 not be observed with this small test system. If you wish to see dendritic growth
-reset the following parameters:
+reset the following parameters: ``numberOfCells = 200``, ``steps = 10000``, 
+``radius = Length / 80``.
 
-   >>> numberOfCells = 200
-   >>> steps = 10000
-   >>> radius = Length / 80.
-
-The following equations are solved, phase equation:
+The governing equation for the phase field is given by:
 
 .. raw:: latex
 
@@ -67,7 +64,7 @@ where
     $$ m_2(\phi, T) 
     = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right) $$
     
-and the temperature equation is given by:
+and the governing equation for temperature is given by:
 
 .. raw:: latex
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/7/04 {12:58:28 PM} 
+ #                                last update: 10/13/04 {12:09:07 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,7 +53,7 @@ but with
 
     $ \\vec{u} = (-10, 0)$.
 
-The analytical solution test for this problem is given by:
+We test the solution against the analytical result:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[:,axis]

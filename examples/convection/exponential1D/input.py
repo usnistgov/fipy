@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/7/04 {12:54:07 PM} 
+ #                                last update: 10/13/04 {12:07:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
@@ -86,7 +86,7 @@ the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will both
 handle most types of convection diffusion cases with the
 `PowerLawConvectionTerm` being more efficient.
 
-The analytical solution test for this problem is given by:
+We test the solution against the analytical result:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[:,axis]

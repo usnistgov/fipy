@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/7/04 {8:29:01 AM} 
+ #                                last update: 10/13/04 {3:10:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -63,12 +63,12 @@ The initial conditions are:
 .. raw:: latex
 
     \begin{align*}
-    \phi &= 1 && \text{for $0 \le x \le L$} \\
+    \phi &= 1 \qquad \text{for $0 \le x \le L$} \\
     \theta &= \begin{cases}
     1 & \text{for $0 \le x \le L/2$} \\
     0 & \text{for $L/2 < x \le L$}
     \end{cases} \\
-    T &= 1 && \text{for $0 \le x \le L$}
+    T &= 1 \qquad \text{for $0 \le x \le L$}
     \end{align*}
 
 and boundary conditions

@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/7/04 {5:07:16 PM} 
+ %                                last update: 10/13/04 {4:41:05 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -37,8 +37,6 @@
 \documentclass[tocAsPDFpart]{fipy}
 
 \begin{document}
-
-\bibliographystyle{unsrt_no_title}
 
 \doparttoc
 
@@ -115,12 +113,12 @@ and the Center for Theoretical and Computational Materials Science
 
 % TODO List
 
-\chapter{Future Work}
-\label{chap:ToDo}
-
-\inputencoding{latin1}
-
-\input todolist
+% \chapter{Future Work}
+% \label{chap:ToDo}
+% 
+% \inputencoding{latin1}
+% 
+% \input todolist
 
 %%%%%%%%%%%%%%%%%
 % 2. EXAMPLES
@@ -136,7 +134,7 @@ and the Center for Theoretical and Computational Materials Science
 \settocdepth{chapter} 
 \parttoc
 
-\chapter{Usage}
+% \chapter{Usage}
 \input{examples/readme}
 
 \chapter{Diffusion Examples}
@@ -202,8 +200,6 @@ al.}, \textit{Acta Materialia}, \textbf{51} (2003) 6035--6058.
 \input{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
 \newpage
 \input{examples/latex/examples.phase.missOrientation.modCircle.input-module}
-\newpage
-\input{examples/latex/examples.phase.symmetry.input-module}
 \newpage
 
 \section*{Electrochemistry Examples}
@@ -285,6 +281,8 @@ I: Equilibrium'' and ``II: Kinetics'', J. E. Guyer \emph{et al.},
 
 \input credits
 
+% \bibliographystyle{unsrt_no_title}
+\bibliographystyle{unsrt}
 \bibliography{refs}
 
 \end{document}

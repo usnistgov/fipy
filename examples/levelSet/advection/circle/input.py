@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/3/04 {10:29:56 PM} { 1:23:41 PM}
+ #                                last update: 10/13/04 {3:28:48 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,18 +41,18 @@
  # ###################################################################
  ##
 
-"""
+r"""
 This example first imposes a circular distance function:
 
 .. raw:: latex
 
-    $$ \\phi \\left( x, y \\right) = \\left[ \\left( x - \\frac{ L }{ 2 } \\right)^2 + \\left( y - \\frac{ L }{ 2 } \\right)^2 \\right]^{1/2} - \\frac{L}{4} $$ 
+    $$ \phi \left( x, y \right) = \left[ \left( x - \frac{ L }{ 2 } \right)^2 + \left( y - \frac{ L }{ 2 } \right)^2 \right]^{1/2} - \frac{L}{4} $$ 
 
-then the variable is advected with,
+The variable is advected with,
 
 .. raw:: latex
 
-    $$ \\frac{ \\partial \\phi } { \\partial t } + \\vec{u} \\cdot \\nabla \\phi = 0 $$
+    $$ \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0 $$
 
 The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
 
@@ -70,7 +70,7 @@ The result can be tested with the following code:
    >>> Numeric.allclose(answer, solution, atol = 4.7e-3)
    1
 
-If the `AdvectionEquation` is build with the `HigherOrderAdvectionTerm` the result
+If the `AdvectionEquation` is built with the `HigherOrderAdvectionTerm` the result
 is more accurate,
 
    >>> var.setValue(initialArray)

@@ -26,6 +26,9 @@ phase field treatments of polycrystalline, dendritic, and electrochemical
 phase transformations as well as a level set treatment of the
 electrodeposition process.
 
+The latest information about |FiPy| can be found at
+http://www.ctcms.nist.gov/fipy/
+
 --------
 Download
 --------
@@ -45,14 +48,18 @@ Please refer to |INSTALLATION.txt|.
 Support
 -------
 
-The developers are committed to supporting the project.  Please use the
-`tracking system`_ for bugs, support requests, feature requests and patch
+|FiPy| is being actively developed and supported.  Please use the `tracking
+system`_ for bugs, support requests, feature requests and patch
 submissions.  A `discussion forum`_ is also available.  We are also seeking
-collaborative efforts on this project.  Please get involved.
+collaborative efforts on this project.
 
 ------------------------
 Conventions and Notation
 ------------------------
+
+|FiPy| is driven by Python_ script files than you can view or modify in any
+text editor.  |FiPy| sessions are invoked from a command-line shell, such
+as ``tcsh`` or ``bash``.
 
 Throughout, text to by typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::
@@ -62,7 +69,7 @@ Commands to be issued from an interactive shell will appear::
 where you would enter the text ("``like this``") following the shell prompt,
 denoted by "``$``".
 
-Text of the form::
+Text blocks of the form::
 
     >>> a = 3 * 4
     >>> a
@@ -72,7 +79,7 @@ Text of the form::
     ...
     a is twelve
 
-is intended to indicate an interactive session in the Python_ interpreter.
+are intended to indicate an interactive session in the Python_ interpreter.
 We will refer to these as "interactive sessions" or as "doctest blocks".
 The text "``>>>``" at the beginning of a line denotes the *primary prompt*,
 calling for input of a Python_ command.  The text "``...``" denotes the
@@ -102,8 +109,8 @@ the form::
 
     examples.diffusion.steadyState.mesh1D.input
 
-are in the Python_ module notation and correspond to the equivalent path
-given above.
+are in the Python_ module notation and correspond to the equivalent POSIX
+path given above.
 
 We may at times use a 
 

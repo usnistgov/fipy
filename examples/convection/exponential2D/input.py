@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 10/6/04 {2:58:05 PM} 
+ #                                last update: 10/13/04 {2:52:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,7 +49,7 @@ This example solves the steady-state convection-diffusion equation as described 
     
 with `nx = 10` and `ny = 10`.
 
-The analytical solution test for this problem is given by:
+We test the solution against the analytical result:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[:,axis]

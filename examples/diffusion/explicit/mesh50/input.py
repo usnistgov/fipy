@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 10/6/04 {12:53:44 PM} 
+ #                                last update: 10/13/04 {12:03:50 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -49,18 +49,7 @@ This input file again solves a 1D diffusion problem as in::
     
 The difference in this example is that the solution method is explicit.
 The equation used is the `ExplicitDiffusionEquation`.  In this case many
-steps have to be taken to reach equilibrium.  The `timeStepDuration`
-parameter specifies the size of each time step and `steps` is the number of
-time steps.
-
-    >>> dx = 1.
-    >>> dy = 1.
-    >>> nx = 50
-    >>> ny = 1
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
-    >>> timeStepDuration = 0.2
-    >>> steps = 10
+steps have to be taken to reach equilibrium.
 
 A loop is required to execute the necessary time steps:
 

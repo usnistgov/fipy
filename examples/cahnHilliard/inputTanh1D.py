@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:29:57 PM}
+ #                                last update: 10/13/04 {3:36:58 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -42,25 +42,27 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example solves the Cahn-Hilliard equation given by:
 
 .. raw:: latex
 
-    $$ \\frac{\\partial \\phi}{\\partial t} = \\nabla \\cdot D \\nabla \\left( \\frac{\\partial f}{\\partial \\phi} - \\epsilon^2 \\nabla^2 \\phi \\right) $$
+    $$ \frac{\partial \phi}{\partial t} = \nabla \cdot D 
+	\nabla \left( \frac{\partial f}{\partial \phi} 
+	    - \epsilon^2 \nabla^2 \phi \right) $$
 
 where the free energy functional is given by,
 
 .. raw:: latex
 
-    $$ f = \\frac{a^2}{2} \\phi^2 (1 - \\phi)^2 $$
+    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2 $$
 
 The solution to the 1D problem over an infinite domain is given by,
 
 .. raw:: latex
 
-    $$ \\phi(x) = \\frac{1}{1 + \exp{\\left(-\\frac{a}{\\epsilon} x \\right)}} $$
+    $$ \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}} $$
 
 Evolve the solution to equilibrium,
 
@@ -70,17 +72,18 @@ Evolve the solution to equilibrium,
 Calculate the answer,
 
    >>> a = Numeric.sqrt(parameters['asq'])
-   >>> answer = 1 / (1 + Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
+   >>> answer = 1 / (1 + 
+   ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0] - L / 2) / parameters['epsilon']))
 
 Compare with the numerical solution,
 
-   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-2)
+   >>> Numeric.allclose(var, answer, atol = 1e-2)
    1
-   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-3)
+   >>> Numeric.allclose(var, answer, atol = 1e-3)
    1
-   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-4)
+   >>> Numeric.allclose(var, answer, atol = 1e-4)
    0
-   >>> Numeric.allclose(Numeric.array(var), answer, atol = 1e-5)
+   >>> Numeric.allclose(var, answer, atol = 1e-5)
    0
 """
 __docformat__ = 'restructuredtext'
