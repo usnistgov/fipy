@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {8:23:02 AM} { 5:14:21 PM}
+ #                                last update: 2/18/05 {10:43:39 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -73,7 +73,7 @@ from parameters import parameters
 from fipy.meshes.grid2D import Grid2D
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 params = parameters['case 2']
@@ -98,29 +98,29 @@ PN = P3Var + P2Var
 
 KMscCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.getCellVolumeAverage())
 KMspCoeff = params['lambdaK'] / (1 + PN / params['kappaK'])
-KMEq = TransientTerm() - KMscCoeff + DependentSourceTerm(KMspCoeff)
+KMEq = TransientTerm() - KMscCoeff + ImplicitSourceTerm(KMspCoeff)
 
 TMscCoeff = params['chiT'] * (1 - TCVar - TMVar.getCellVolumeAverage())
 TMspCoeff = params['lambdaT'] * (KMVar + params['zetaT'])
-TMEq = TransientTerm() - TMscCoeff + DependentSourceTerm(TMspCoeff)
+TMEq = TransientTerm() - TMscCoeff + ImplicitSourceTerm(TMspCoeff)
 
 TCscCoeff = params['lambdaT'] * (TMVar * KMVar).getCellVolumeAverage()
 TCspCoeff = params['lambdaTstar']
-TCEq = TransientTerm() - TCscCoeff + DependentSourceTerm(TCspCoeff) 
+TCEq = TransientTerm() - TCscCoeff + ImplicitSourceTerm(TCspCoeff) 
 
 PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kappac'] + 1) + params['zetaPITP']
 
 P3spCoeff = params['lambda3'] * (TMVar + params['zeta3T'])
 P3scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3']
-P3Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P3scCoeff + DependentSourceTerm(P3spCoeff)
+P3Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P3scCoeff + ImplicitSourceTerm(P3spCoeff)
 
 P2scCoeff = scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var
 P2spCoeff = params['lambda2'] * (TMVar + params['zeta2T'])
-P2Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P2scCoeff + DependentSourceTerm(P2spCoeff)
+P2Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P2scCoeff + ImplicitSourceTerm(P2spCoeff)
 
 KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage()
 KCspCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)
-KCEq = TransientTerm() - KCscCoeff + DependentSourceTerm(KCspCoeff) 
+KCEq = TransientTerm() - KCscCoeff + ImplicitSourceTerm(KCspCoeff) 
 
 eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq), (KCVar, KCEq))
 

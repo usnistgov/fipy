@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 12/13/04 {2:10:04 PM} 
+ #                                last update: 2/18/05 {10:39:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,15 +42,15 @@
  ##
 
 from fipy.terms.term import Term
-from fipy.terms.independentSourceTerm import IndependentSourceTerm
+from fipy.terms.explicitSourceTerm import ExplicitSourceTerm
 
 class BinaryTerm(Term):
     def __init__(self, term1, term2):
 	if isinstance(term1, Term):
 	    if not isinstance(term2, Term):
-		term2 = IndependentSourceTerm(sourceCoeff = term2)
+		term2 = ExplicitSourceTerm(sourceCoeff = term2)
 	elif isinstance(term2, Term):
-	    term1 = IndependentSourceTerm(sourceCoeff = term1)
+	    term1 = ExplicitSourceTerm(sourceCoeff = term1)
 	else:
 	    raise "No terms!"
 	

@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 8/18/04 {4:00:40 PM} 
+ #                                last update: 2/18/05 {10:45:02 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,7 +115,7 @@ This is the test case,
 __docformat__ = 'restructuredtext'
 
 
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import buildLevelSetDiffusionEquation
 from metalIonSourceVariable import MetalIonSourceVariable
 
@@ -152,7 +152,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
                                    depositionRate = depositionRate,
                                    metalIonAtomicVolume = metalIonAtomicVolume)
 
-    return eq + DependentSourceTerm(coeff)
+    return eq + ImplicitSourceTerm(coeff)
 
 def _test(): 
     import doctest

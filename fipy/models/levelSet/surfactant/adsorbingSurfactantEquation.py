@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 10/19/04 {1:14:04 PM} 
+ #                                last update: 2/18/05 {10:44:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -213,7 +213,7 @@ import Numeric
 
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 class AdsorptionCoeff(CellVariable):
@@ -282,7 +282,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
         scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
 
-        self.eq += DependentSourceTerm(spCoeff) - scCoeff
+        self.eq += ImplicitSourceTerm(spCoeff) - scCoeff
 
         self.coeffs = (scCoeff, spCoeff)
 
@@ -290,7 +290,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             otherSpCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
             otherScCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
 
-            self.eq += DependentSourceTerm(otherSpCoeff) - otherScCoeff
+            self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
 
             self.coeffs += (otherScCoeff,)
             self.coeffs += (otherSpCoeff,)
@@ -302,10 +302,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         spMaxCoeff = SpMaxCoeff(distanceVar, vars)
         scMaxCoeff = ScMaxCoeff(distanceVar, vars)
 
-        self.eq += DependentSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
+        self.eq += ImplicitSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 
         if consumptionCoeff is not None:
-            self.eq += DependentSourceTerm(consumptionCoeff)
+            self.eq += ImplicitSourceTerm(consumptionCoeff)
 
     def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
         for coeff in self.coeffs:

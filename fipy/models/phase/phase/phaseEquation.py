@@ -7,7 +7,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:35:49 PM} 
+ #                                last update: 2/18/05 {10:41:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
 from phaseDiffusionVariable import PhaseDiffusionVariable
 from anisotropyVariable import AnisotropyVariable
@@ -67,7 +67,7 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
         diffCoeff = PhaseDiffusionVariable(parameters = parameters,
                                            halfAngle = halfAngle))
 	
-    spTerm = DependentSourceTerm(
+    spTerm = ImplicitSourceTerm(
         sourceCoeff = SpSourceVariable(theta = thetaOld,
                                        mPhi = mPhiVar,
                                        phase = phase,

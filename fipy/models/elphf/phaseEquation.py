@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 12/10/04 {4:39:40 PM} 
+ #                                last update: 2/18/05 {10:41:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,7 +86,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.tools.dimensions import physicalField
 
 from equationFactory import EquationFactory
@@ -114,7 +114,7 @@ class PhaseEquationFactory(EquationFactory):
 
 	return TransientTerm(tranCoeff = 1. / phaseMobility) \
 	    - ImplicitDiffusionTerm(diffCoeff = phaseGradientEnergy) \
-	    + DependentSourceTerm(sourceCoeff = mPhi * (fields['phase'] - (mPhi < 0.))) \
+	    + ImplicitSourceTerm(sourceCoeff = mPhi * (fields['phase'] - (mPhi < 0.))) \
             - (mPhi > 0.) * mPhi * fields['phase']
 
 factory = PhaseEquationFactory()

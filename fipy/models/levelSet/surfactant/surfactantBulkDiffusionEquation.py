@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantBulkDiffusionEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 8/31/04 {4:00:40 PM} 
+ #                                last update: 2/18/05 {10:44:12 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import buildLevelSetDiffusionEquation
-from fipy.terms.dependentSourceTerm import DependentSourceTerm
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
 class AdsorptionCoeff(CellVariable):
@@ -127,7 +127,7 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
 
         """
         
-        spSourceTerm = DependentSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
+        spSourceTerm = ImplicitSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
                                                     distanceVar = distanceVar))
 
         coeff = ScAdsorptionCoeff(bulkVar = bulkVar,
