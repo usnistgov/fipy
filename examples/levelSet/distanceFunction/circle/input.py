@@ -56,27 +56,28 @@ Do the tests:
    >>> eqn.solve()
    >>> dY = dy / 2.
    >>> dX = dx / 2.
-   >>> mm = min (dX, dY)     
+   >>> mm = min (dX, dY)
+   >>> m1 = dY * dX / Numeric.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
    ...     sqr = Numeric.sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
-   >>> v1 = evalCell(-dY, -mm, dx, dy)[0] 
-   >>> v2 = evalCell(-mm, -dX, dx, dy)[0]
-   >>> v3 = evalCell(mm,  mm,  dx, dy)[1]
+   >>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
+   >>> v2 = evalCell(-m1, -dX, dx, dy)[0]
+   >>> v3 = evalCell(m1,  m1,  dx, dy)[1]
    >>> v4 = evalCell(v3, dY, dx, dy)[1]
    >>> v5 = evalCell(dX, v3, dx, dy)[1]
    >>> import MA
    >>> trialValues = MA.masked_values((-1000,  -1000  , -1000  ,  -1000  ,  -1000  ,  -1000  , -1000  ,  -1000  ,  -1000  , -1000  , -1000,
    ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -3*dY  ,  -3*dY  , -3*dY  ,  -1000  ,  -1000  , -1000  , -1000,
    ...                                 -1000,  -1000  , -1000  ,  v1     ,  -dY    ,  -dY    , -dY    ,  v1     ,  -1000  , -1000  , -1000,
-   ...                                 -1000,  -1000  , v2     ,  -mm    ,  mm     ,  dY     , mm     ,  -mm    ,  v2     , -1000  , -1000,
-   ...                                 -1000,  -dX*3  , -dX    ,  mm     ,   v3    ,  v4     , v3     ,  mm     ,  -dX    , -dX*3  , -1000,
+   ...                                 -1000,  -1000  , v2     ,  -m1    ,  m1     ,  dY     , m1     ,  -m1    ,  v2     , -1000  , -1000,
+   ...                                 -1000,  -dX*3  , -dX    ,  m1     ,   v3    ,  v4     , v3     ,  m1     ,  -dX    , -dX*3  , -1000,
    ...                                 -1000,  -dX*3  , -dX    ,  dX     ,  v5     ,  -1000  , v5     ,  dX     ,  -dX    , -dX*3  , -1000,
-   ...                                 -1000,  -dX*3  , -dX    ,  mm     ,  v3     ,  v4     , v3     ,  mm     ,  -dX    , -dX*3  , -1000,
-   ...                                 -1000,  -1000  , v2     ,  -mm    ,  mm     ,  dY     , mm     ,  -mm    ,  v2     , -1000  , -1000,
+   ...                                 -1000,  -dX*3  , -dX    ,  m1     ,  v3     ,  v4     , v3     ,  m1     ,  -dX    , -dX*3  , -1000,
+   ...                                 -1000,  -1000  , v2     ,  -m1    ,  m1     ,  dY     , m1     ,  -m1    ,  v2     , -1000  , -1000,
    ...                                 -1000,  -1000  , -1000  ,  v1     ,  -dY    ,  -dY    , -dY    ,  v1     ,  -1000  , -1000  , -1000,
    ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -3*dY  ,  -3*dY  , -3*dY  ,  -1000  ,  -1000  , -1000  , -1000,
    ...                                 -1000,  -1000  , -1000  ,  -1000  ,  -1000  ,  -1000  , -1000  ,  -1000  ,  -1000  , -1000  , -1000), -1000)
