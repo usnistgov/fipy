@@ -236,7 +236,7 @@ and then::
 Further information about CVS_ can be found at
 http://sourceforge.net/cvs/?group_id=118428.
 
-.. _compressed archive:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=118428
+.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.tar.gz
 
 PySparse
 ========
@@ -265,7 +265,7 @@ Manual
 .. raw:: html
 
    The manual can be found in 
-   <tt class="literal"><span class="pre">documentation/manual/fipy.pdf</span></tt>
+   <tt class="literal"><span class="pre">download/fipy.pdf</span></tt>
 
 You can `download the latest manual`_ or, if you have obtained |FiPy| via
 CVS_, a fresh copy can be built by issuing the following command in the
@@ -276,8 +276,8 @@ base directory::
 The epydoc_ package and a command-line pdfTeX installation are required in
 order to build the manual.
 
-.. _download the latest manual:  http://sourceforge.net/docman/?group_id=118428
-.. _epydoc:                      http://epydoc.sourceforge.net/
+.. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/fipy.pdf
+.. _epydoc:                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://epydoc.sourceforge.net/
 
 --------------
 Testing |FiPy|

@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/27/04 {4:23:27 PM} 
+ #                                last update: 10/29/04 {4:23:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -273,18 +273,18 @@ class build_docs (Command):
 
         if self.upload:
 
-            wwwdocs = ['documentation/www/',
-                       'documentation/manual/reference.pdf',
-                       'documentation/manual/fipy.pdf']
-
             wwwhost = 'lurch:/u/WWW/wd15/fipy/'
 
-            for doc in wwwdocs:
-                os.system('chgrp -R pfm ' + doc)
-                os.system('chmod -R g+w ' + doc)
-                os.system('rsync -pCrg ' + doc + " " + wwwhost)
+	    os.system('chgrp -R pfm documentation/manual/fipy.pdf')
+	    os.system('chmod -R g+w documentation/manual/reference.pdf')
+	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/')
+	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/')
+	    
+	    os.system('chgrp -R pfm documentation/www/')
+	    os.system('chmod -R g+w documentation/www/')
+	    os.system('rsync -aLC -e ssh %s %s'%('documentation/www/',wwwhost))
 
-            print "Be sure to run updatewww on lurch to make webpages accessible"
+            print "\nBe sure to run updatewww on lurch to make webpages accessible"
             
                 
     # run()

@@ -131,7 +131,7 @@ or a
 .. _NIST:                 http://www.nist.gov/
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _CVS:                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
-.. _compressed archive:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=118428
+.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.tar.gz
 .. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/tracker/?group_id=118428
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 
