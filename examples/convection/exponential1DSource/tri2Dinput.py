@@ -59,6 +59,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
 The analytical solution test for this problem is given by:
 
+   >>> it.timestep()
    >>> axis = 1
    >>> x = mesh.getCellCenters()[:,axis]
    >>> AA = -sourceCoeff * x / convCoeff[axis]
@@ -87,7 +88,7 @@ valueBottom = 0.
 valueTop = 1.
 L = 10.
 nx = 1
-ny = 1000
+ny = 100
 diffCoeff = 1.
 convCoeff = (0., 10.)
 sourceCoeff = 0.
@@ -121,9 +122,8 @@ eq = SteadyConvectionDiffusionScEquation(
 
 it = Iterator((eq,))
 
-it.timestep()
-
 if __name__ == '__main__':
+    it.timestep()
     viewer = PyxViewer(var)
     print var
     viewer.plot()

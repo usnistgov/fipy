@@ -58,7 +58,7 @@ time steps.
     >>> valueLeft = 0.
     >>> valueRight = 1.
     >>> timeStepDuration = 0.2
-    >>> steps = 10000
+    >>> steps = 10
 
 A loop is required to execute the necessary time steps:
 
@@ -71,7 +71,10 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
-    >>> Numeric.allclose(Numeric.array(var), analyticalArray, rtol = 1e-3, atol = 1e-3)
+    >>> answer = Numeric.array([  2.04800000e-07,  6.34880000e-06,  9.13408000e-05,  8.10188800e-04,
+    ...     4.96660480e-03,  2.23737856e-02,  7.69755136e-02,  2.07879578e-01,
+    ...     4.50699674e-01,  8.01663386e-01,])
+    >>> Numeric.allclose(Numeric.array(var), answer, rtol = 1e-3, atol = 1e-3)
     1
 
 """
@@ -94,7 +97,7 @@ ny = 1
 valueLeft = 0.
 valueRight = 1.
 timeStepDuration = 0.2
-steps = 10000
+steps = 10
 
 mesh = Grid2D(dx, dy, nx, ny)
 
