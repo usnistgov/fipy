@@ -83,11 +83,9 @@ class TestVariableDiffusion(TestBase):
     def getTestValues(self):
 	x = self.mesh.getCellCenters()[:,0]
 	x = x.getNumericValue()
-	L = self.Lx
-        
+	L = self.Lx        
 	values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
 	values = Numeric.where(     x < L / 4.,                    x,           values)
-        print 'values:',values.typecode()
 	return values
 	    
 class TestVariableDiffusion2x1(TestVariableDiffusion):
