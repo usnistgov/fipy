@@ -54,22 +54,31 @@ then the variable is advected with,
 
     $$ \\frac{ \\partial \\phi } { \\partial t } + \\vec{u} \\cdot \\nabla \\phi = 0 $$
 
-The scheme used in the `AdvectionTerm` preserves the `distanceVariable` as a distance function.
+Also a surfactant is present of the interface, governed by the equation:
+
+.. raw:: latex
+
+    $$ \\frac{d \\theta}{d t} = J v \\theta $$
 
 The result can be tested with the following code:
 
 
    >>> for step in range(steps):
    ...     it.timestep(dt = timeStepDuration)
-   
-   >>> x = Numeric.array(mesh.getCellCenters())
-   >>> distanceTravelled = timeStepDuration * steps * velocity
-   >>> answer = initialArray - distanceTravelled
-   >>> answer = Numeric.where(answer < 0., -1001., answer)
-   >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(distanceVariable))
-   >>> Numeric.allclose(answer, solution, atol = 2.5e-3)
+   >>> ids = Numeric.nonzero(Numeric.logical_and(distanceVariable > 0., distanceVariable < dx / 2.))
+   >>> surfactantValues = Numeric.take(surfactantVariable, ids)
+   >>> cellCenters = Numeric.take(mesh.getCellCenters(), ids)
+   >>> finalRadius = Numeric.sqrt((cellCenters[:,0]- L / 2)**2 + (cellCenters[:,1] - L / 2)**2)
+   >>> answer =  initialRadius / finalRadius
+   >>> 
+   >>> diff =  Numeric.absolute(answer - Numeric.array(surfactantValues))
+   >>> argmax = Numeric.argmax(diff)
+   >>> print diff[argmax]
+   >>> print diff / answer
+   >>> print finalRadius
+   >>> Numeric.allclose(answer, Numeric.array(surfactantValues))
    1
-   
+
 """
 
 import Numeric
@@ -83,15 +92,16 @@ from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquatio
 from fipy.iterators.iterator import Iterator
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.boundaryConditions.fixedValue import FixedValue
 
 
 L = 1.
-nx = 4
+nx = 50
 velocity = 1.
 cfl = 0.1
 velocity = 1.
 distanceToTravel = L / 10.
-radius = L / 4.
+initialRadius = L / 4.
 
 dx = L / nx
 timeStepDuration = cfl * dx / velocity
@@ -105,15 +115,18 @@ distanceVariable = CellVariable(
     value = 1.
     )
 
+cellRadius = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
+
+
+initialSurfactantValue =  Numeric.where(initialRadius / cellRadius < 2., initialRadius / cellRadius, 2.)
+
 surfactantVariable = CellVariable(
     name = 'surfactant variable',
     mesh = mesh,
-    value = 1.
+    value = initialSurfactantValue
     )
 
-initialArray = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - radius
-
-distanceVariable.setValue(initialArray)
+distanceVariable.setValue(cellRadius - initialRadius)
 
 advectionEquation = AdvectionEquation(
     distanceVariable,
@@ -126,19 +139,24 @@ surfactantEquation = SurfactantEquation(
     surfactantVariable,
     distanceVariable,
     solver = LinearLUSolver(
-        tolerance = 1e-10))
+        tolerance = 1e-10),
+    boundaryConditions = (FixedValue(mesh.getExteriorFaces(), 0.), ))
 
-it = Iterator((surfactantEquation, advectionEquation,))
+it = Iterator((surfactantEquation, advectionEquation))
 
 if __name__ == '__main__':
     
-    distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -radius, maxVal = radius)
-    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = 0., maxVal = 1.)
+    distanceViewer = Grid2DGistViewer(var = distanceVariable, palette = 'rainbow.gp', minVal = -initialRadius, maxVal = initlaRadius)
+    surfactantViewer = Grid2DGistViewer(var = surfactantVariable, palette = 'rainbow.gp', minVal = -1., maxVal = 1.)
     distanceViewer.plot()
+    surfactantViewer.plot()
     
     for step in range(steps):
-        
         it.timestep(dt = timeStepDuration)
+##        array = Numeric.array(distanceVariable)
+##        array = array - timeStepDuration * velocity
+##        distanceVariable.setValue(array)
         distanceViewer.plot()
-
+        surfactantViewer.plot()
+    print 'surfactantVariable',surfactantVariable
     raw_input('finished')
