@@ -16,6 +16,8 @@ Release Goals 1.0
   
     - 1000*1000 example for efficiency discussion.
 
+  * Document updating an 0.1 example to work with 0.2
+
 - Distribution
 
   * Install and test with no write permissions.
@@ -80,7 +82,7 @@ Release Goals 1.0
       * Spectral MATLAB CH problem
       * FemLab
       * DiffPack
-      * FebLego?
+      * FemLego?
 
 - Efficiency
 

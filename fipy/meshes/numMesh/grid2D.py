@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 12/7/04 {4:27:48 PM} 
+ #                                last update: 3/7/05 {8:41:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ import Numeric
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.face import Face
-import fipy.tools.vector as vector
+from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh2D):
@@ -88,8 +88,8 @@ class Grid2D(Mesh2D):
     
     def createFaces(self):
         """
-        v1, v2 refer to the cells.
-        Horizontel faces are first
+        v1, v2 refer to the vertices.
+        Horizontal faces are first
         """
         v1 = Numeric.arange(self.numberOfVertices)
         v2 = v1 + 1
@@ -115,7 +115,7 @@ class Grid2D(Mesh2D):
     def createCells(self):
         """
         cells = (f1, f2, f3, f4) going anticlock wise.
-        f1 etx refer to the faces
+        f1 etc. refer to the faces
         """
         self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
         self.numberOfFaces = self.numberOfHorizontalFaces + self.ny * (self.nx + 1)
