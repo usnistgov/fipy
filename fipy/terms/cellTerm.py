@@ -35,6 +35,7 @@
 #----
 """
 
+import Numeric
 import term
 
 class CellTerm(term.Term):
@@ -45,11 +46,12 @@ class CellTerm(term.Term):
 	term.Term.__init__(self,stencil,equation)
 	
     def buildMatrix(self):
-	var = self.equation.var()
-	N = var.size()
-        b=self.equation.b()
-        L=self.equation.L()
-	b += self.varOld*self.coeff*self.stencil[2]
+	var = self.equation.getVar()
+	N = len(var)
+        b = self.equation.getB()
+        L = self.equation.getL()
+        stencil = self.stencil
+	b += var*self.coeff*self.stencil[2]
 	b += Numeric.ones([N])*self.coeff*self.stencil[0]
 	L.update_add_pyarray(Numeric.ones([N])*self.coeff*stencil[1])
 	

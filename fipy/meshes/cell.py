@@ -1,3 +1,4 @@
+"""
 #-----*-Pyth-*-
 ####################################################################
 # PFM - Python-based phase field solver
@@ -31,13 +32,15 @@
 # 
 ####################################################################
 #----
+"""	
 
 class Cell:
-	def __init__(self, faces):
-		self.faces = faces
-		for face in self.faces:
-			face.addBoundingCell(self)
-			
-# 	def bindToFaces(self):
-# 	    for face in self.faces:
-# 		    face.addBoundingCell(self)
+    def __init__(self, faces, id):
+        self.faces = faces
+        self.id = id
+        for face in self.faces:
+            face.addBoundingCell(self)
+
+    def getId(self):
+        return self.id
+

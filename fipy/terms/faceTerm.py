@@ -45,10 +45,12 @@ class FaceTerm(term.Term):
 	term.Term.__init__(self,stencil,equation)
 	
     def buildMatrix(self):
-	var = self.equation.var()
-	N = var.size()
+	var = self.equation.getVar()
+	N = len(var)
+
+        mesh = self.equation.getMesh()
 	
-	for face in equation.mesh().interior_faces():
+	for face in mesh.interior_faces():
             id1 = face.cells()[0].id()
             id2 = face.cells()[1].id()
             self.equation.L()[id1,id1]+=self.coeff[face.id()] * self.stencil[1]

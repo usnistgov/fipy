@@ -56,6 +56,6 @@ class Equation:
     def postSolve(self):
 	pass
 	
-    def solve(self):
+    def solve(self,dt):
 	pass
     

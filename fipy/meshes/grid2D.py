@@ -88,20 +88,31 @@ class Grid2D(mesh.Mesh):
     """
     
     def __init__(self, dx, dy, nx, ny):
-	vertices = self.createVertices(dx, dy, nx, ny)
-	faces = self.createFaces(vertices, nx, ny)
-	cells = self.createCells(faces, nx, ny)
+        self.nx=nx
+        self.ny=ny
+        self.dx=dx
+        self.dy=dy
+	vertices = self.createVertices()
+	faces = self.createFaces(vertices)
+	cells = self.createCells(faces)
+        interiorFaces = self.createInteriorFaces(faces)
 	
-	mesh.Mesh.__init__(self, cells, faces, vertices)
+	mesh.Mesh.__init__(self, cells, faces, interiorFaces, vertices)
 		
-    def createVertices(self, dx, dy, nx, ny):
+    def createVertices(self):
 	vertices = ()
+        ny=self.ny
+        nx=self.nx
+        dx=self.dx
+        dy=self.dy
 	for j in range(ny+1):
 	    for	i in range(nx+1):
 		vertices += (vertex.Vertex((i * dx, j * dy)),)
         return vertices	
 		    
-    def createFaces(self, vertices, nx, ny):
+    def createFaces(self, vertices):
+        nx=self.nx
+        ny=self.ny
 	faces = ()
 	for j in range(ny+1):
 	    for i in range(nx):
@@ -111,32 +122,53 @@ class Grid2D(mesh.Mesh):
 		faces += (face.Face((vertices[i * ny + j],vertices[i * ny + j + 1])),)
 	return faces
 	
-    def createCells(self, faces, nx, ny):
+    def createCells(self, faces):
+        nx=self.nx
+        ny=self.ny
 	cells = ()
 	for j in range(ny):
 	    for i in range(nx):
-		cells += (cell.Cell((faces[i + j * nx],
-			faces[i + (j+1) * nx],
-			faces[nx * (ny + 1) + i + j * (nx + 1)],
-			faces[nx * (ny + 1) + i + 1 + j * (nx + 1)])),)
+                id = j * nx + i
+		cells += (
+                    cell.Cell(
+                    (faces[i + j * nx],
+                    faces[i + (j+1) * nx],
+                    faces[nx * (ny + 1) + i + j * (nx + 1)],
+                    faces[nx * (ny + 1) + i + 1 + j * (nx + 1)]),id
+                    ),
+                    )                
 	return cells
 
+    def createInteriorFaces(self,faces):
+        interiorFaces = ()
+        for face in faces:
+            if len(face.getCells()) == 1:
+                interiorFaces += (face,)
+        return interiorFaces
+
     def getFacesLeft(self):
+        nx=self.nx
+        ny=self.ny
         facesLeft = ()
         for i in range(ny):
-            facesLeft += self.faces[nx * (ny + 1) + (nx + 1) * i]
+            facesLeft += (self.faces[nx * (ny + 1) + (nx + 1) * i],)
         return facesLeft
         
     def getFacesRight(self):
+        nx=self.nx
+        ny=self.ny
         facesRight = ()
         for i in range( ny):
-            facesRight += self.faces[nx * (ny + 1) + (nx + 1) * (i + 1)]
+            facesRight += (self.faces[nx * (ny + 1) + (nx + 1) * (i + 1) - 1],)
         return facesRight
 
     def getFacesTop(self):
+        nx=self.nx
+        ny=self.ny
         return self.faces[nx*ny:nx*ny+nx]
 
     def getFacesBottom(self):
+        nx=self.nx
         return self.faces[0:nx]
                        
         

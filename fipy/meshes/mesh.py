@@ -37,7 +37,18 @@
 """
 
 class Mesh:
-    def __init__(self, cells, faces, vertices):
+    def __init__(self, cells, faces, interiorFaces, vertices):
         self.cells=cells
         self.faces=faces
         self.vertices=vertices
+        self.InteriorFaces
+
+    def getCells(self):
+        return self.cells
+
+    def getFaces(self):
+        return faces
+
+    def getInteriorFaces():
+        return interiorFaces
+    

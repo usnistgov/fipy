@@ -53,7 +53,8 @@ class MatrixEquation(equation.Equation):
         initialConditions
         ):
 	self.mesh = mesh
-        var = Numeric.zeroes([len(mesh.cells())],'d')
+        var = Numeric.zeros([len(mesh.getCells())],'d')
+
 	equation.Equation.__init__(
 	    self,
 	    name,
@@ -64,18 +65,22 @@ class MatrixEquation(equation.Equation):
 
         for initialCondition in initialConditions:
             initialCondition.setInitialCondition(self.var)
-            initialCondition.setInitialCondition(self.varOld)
-            
+
+    def getVar(self):
+        return self.var    
 	
-    def L(self):
+    def getL(self):
 	return self.L
 	
-    def b(self):
+    def getB(self):
 	return self.b
-	    
-    def solve(self):
-	N = var.size()
-	self.L = spmatrix.ll_mat_sym(N,self.bandwidth*N)
+
+    def getMesh(self):
+        return self.mesh
+    
+    def solve(self,dt):
+	N = len(self.mesh.getCells())
+	self.L = spmatrix.ll_mat(N,self.bandwidth*N)
 	self.b = Numeric.zeros((N),'d')
 	for term in self.terms:
 	    term.buildMatrix()

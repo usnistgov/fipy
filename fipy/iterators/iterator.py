@@ -1,3 +1,4 @@
+"""
 #-----*-Pyth-*-
 ####################################################################
 # PFM - Python-based phase field solver
@@ -31,11 +32,11 @@
 # 
 ####################################################################
 #----
-
+"""
 
 class Iterator:
     def __init__(self,equations):
-	self.equation = equations
+        self.equations = equations
 	
     def iterate(self,n,dt):
 	for i in range(n):
