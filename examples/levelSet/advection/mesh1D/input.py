@@ -82,11 +82,13 @@ Construct a `distanceVariable` object. This object is required by the
 
    >>> import Numeric
    >>> values = -Numeric.ones(nx, 'd')
-   >>> cells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > interfacePosition)
+   >>> cells = mesh.getCells(
+   ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)
    >>> for cell in cells:
    ...    values[cell.getID()] = 1
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+   ...     import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
    ...                        value = values)
@@ -94,14 +96,16 @@ Construct a `distanceVariable` object. This object is required by the
    
 The `advectionEquation` is constructed.
 
-   >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+   >>> from fipy.models.levelSet.advection.advectionEquation import \
+   ...     buildAdvectionEquation
    >>> advEqn = buildAdvectionEquation(advectionCoeff = velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
    ...     import fipy.viewers
-   ...     viewer = fipy.viewer.make(vars = var, limits = {'datamin': -10., 'datamax': 10.})
+   ...     viewer = fipy.viewer.make(vars = var,
+   ...         limits = {'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

@@ -85,12 +85,14 @@ Initialise the `distanceVariable` to be a circular distance function.
 
    >>> import Numeric
    >>> initialArray = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
-   ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - radius
+   ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - \
+   ...                             radius
    >>> var.setValue(initialArray)
 
 The `advectionEquation` is constructed.
    
-   >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+   >>> from fipy.models.levelSet.advection.advectionEquation import \
+   ...     buildAdvectionEquation
    >>> advEqn = buildAdvectionEquation(
    ...     advectionCoeff = velocity)
 
@@ -99,7 +101,7 @@ The problem can then be solved by executing a serious of time steps.
    >>> if __name__ == '__main__':
    ...     import fipy.viewers
    ...     viewer = fipy.viewers.make(vars = var, 
-   ...                                limits = {'datamin': -radius, 'datamax': radius})
+   ...         limits = {'datamin': -radius, 'datamax': radius})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()
@@ -123,7 +125,8 @@ If the `AdvectionEquation` is built with the `HigherOrderAdvectionTerm` the resu
 is more accurate,
 
    >>> var.setValue(initialArray)
-   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
+   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
+   ...     import buildHigherOrderAdvectionEquation
    >>> advEqn = buildHigherOrderAdvectionEquation(
    ...     advectionCoeff = velocity)
    >>> for step in range(steps):

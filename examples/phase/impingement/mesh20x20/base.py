@@ -50,8 +50,10 @@ with different initial conditions and a 2D mesh:
 
     >>> from fipy.tools.parser import parse
 
-    >>> numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
-    >>> numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
+    >>> numberOfElements = parse('--numberOfElements', action = 'store',
+    ...                          type = 'int', default = 400)
+    >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
+    ...                       type = 'int', default = 10)
 
     >>> steps = numberOfSteps
     >>> import Numeric

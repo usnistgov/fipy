@@ -54,9 +54,9 @@ boundary conditions such that,
 .. raw:: latex
 
    \begin{equation}
-   \frac{1}{M_\phi}\frac{\partial \phi}{\partial t} 
-   + \frac{\partial f}{\partial \phi}
-   - \kappa_\phi \nabla^2\phi = 0.
+   \frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
+   + \kappa_\phi \nabla^2\phi
+   - \frac{\partial f}{\partial \phi}
    \label{eq-phase:simple}
    \end{equation}
 
@@ -314,7 +314,7 @@ Kobayashi:
     >>> eq = diffusionTerm + S0 + implicitSource
     
 .. note:: Because `mPhi` is a variable field, the quantities `(mPhi > 0)`
-   and `(mPhi > 0)` evaluate to variable *fields* of ones and zeroes, instead of 
+   and `(mPhi < 0)` evaluate to variable *fields* of ones and zeroes, instead of 
    simple boolean values.
 
 This expression converges to the same value given by the explicit

@@ -154,7 +154,8 @@ The left and right halves of the domain are given different orientations
     ...     value = 1.,
     ...     hasOld = 1
     ...     )
-    >>> theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
+    >>> theta.setValue(0., mesh.getCells(
+    ...    filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
 
 The `phase` equation requires a `mPhi` instantiator to represent
 
@@ -221,7 +222,8 @@ data and compares it with the `theta` variable.
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh40x1
    >>> import gzip
-   >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0], testFile)
+   >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0],
+   ...                         testFile)
    >>> filestream = gzip.open(filepath,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)

@@ -45,15 +45,15 @@ r"""
 In this example we solve a coupled phase and temperature equation to model 
 solidification, and eventually dendritic growth, from a circular seed in a 2D mesh:
     
->>> numberOfCells = 40
->>> Length = numberOfCells * 2.5 / 100.
->>> nx = numberOfCells
->>> ny = numberOfCells
->>> dx = Length / nx
->>> dy = Length / ny
->>> radius = Length / 4.
->>> from fipy.meshes.grid2D import Grid2D
->>> mesh = Grid2D(dx,dy,nx,ny)
+    >>> numberOfCells = 40
+    >>> Length = numberOfCells * 2.5 / 100.
+    >>> nx = numberOfCells
+    >>> ny = numberOfCells
+    >>> dx = Length / nx
+    >>> dy = Length / ny
+    >>> radius = Length / 4.
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx,dy,nx,ny)
     
 Dendritic growth will not be observed with this small test system. If
 you wish to see dendritic growth reset the following parameters:
@@ -128,7 +128,7 @@ an interior region that is solid. A value of `1` is assigned to the
     >>> def circleCells(cell,L = Length):
     ...     x = cell.getCenter()
     ...     r = radius
-    ...     c = (Length / 2., Length / 2.)
+    ...     c = (L / 2., L / 2.)
     ...     if (x[0] - c[0])**2 + (x[1] - c[1])**2 < r**2:
     ...         return 1
     ...     else:
@@ -156,7 +156,8 @@ variables.
 
     >>> import Numeric
     >>> import fipy.tools.array
-    >>> mVar = phase - 0.5 - kappa1 / Numeric.pi * fipy.tools.array.arctan(kappa2 * temperature)
+    >>> mVar = phase - 0.5 - kappa1 / Numeric.pi * \
+    ...     fipy.tools.array.arctan(kappa2 * temperature)
 
 .. raw:: latex
 
@@ -207,8 +208,8 @@ below.
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
-    ...                                 ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
-    ...                                 ((mVar > 0.) * mVar * phase + anisotropySource)
+    ...     ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
+    ...     ((mVar > 0.) * mVar * phase + anisotropySource)
 
 The temperature equation is built in the following way,
 
@@ -223,7 +224,7 @@ the phase and temperature fields
     ...     import fipy.viewers
     ...     phaseViewer = fipy.viewers.make(vars = phase)
     ...     temperatureViewer = fipy.viewers.make(vars = temperature, 
-    ...                                           limits = {'datamin': -0.5, 'datamax': 0.5})
+    ...         limits = {'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 

@@ -128,8 +128,10 @@ Build the mesh:
 
    >>> from fipy.tools.parser import parse
 
-   >>> numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = -1)
-   >>> numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 5)
+   >>> numberOfElements = parse('--numberOfElements', action = 'store',
+   ...     type = 'int', default = -1)
+   >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
+   ...     type = 'int', default = 5)
 
    >>> import Numeric
    >>> if numberOfElements != -1:
@@ -176,7 +178,8 @@ region (positive region).
    >>> trenchHeight = bottomHeight + trenchDepth
    >>> trenchWidth = trenchDepth / aspectRatio
    >>> sideWidth = (trenchSpacing - trenchWidth) / 2
-   >>> def electrolyteFunc(cell, trenchHeight = trenchHeight, bottomHeight = bottomHeight, sideWidth = sideWidth):
+   >>> def electrolyteFunc(cell, trenchHeight = trenchHeight,
+   ...     bottomHeight = bottomHeight, sideWidth = sideWidth):
    ...     x,y = cell.getCenter()    
    ...     if y > trenchHeight:
    ...         return 1
@@ -198,7 +201,8 @@ Create an initial array,
    ...     values[cell.getID()] = 1
 
    >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable        
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import \
+   ...     DistanceVariable        
    >>> distanceVar = DistanceVariable(
    ...    name = 'distance variable',
    ...    mesh = mesh,
@@ -215,7 +219,8 @@ variables need to be created that govern the concentrations of various species.
 
 This variable influences the deposition rate.
 
-   >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+   >>> from fipy.models.levelSet.surfactant.surfactantVariable import \
+   ...     SurfactantVariable
    >>> acceleratorVar = SurfactantVariable(
    ...     name = "accelerator variable",
    ...     value = initialAcceleratorCoverage,
@@ -491,7 +496,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     advectionEquation.solve(distanceVar, dt = dt) 
    ...     surfactantEquation.solve(acceleratorVar, dt = dt)
    ...     metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
-   ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt, boundaryConditions = acceleratorBCs)
+   ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt,
+   ...                                   boundaryConditions = acceleratorBCs)
    ...
    ...     if __name__ == '__main__':
    ...         for viewer in viewers:
