@@ -250,9 +250,9 @@ class PyxViewer:
         if(filename != None):
             mycanvas = pyx.canvas.canvas()
             mygraph = pyx.graph.graphxy(height = 12, width = 12, xpos = 0, ypos = 0, x = pyx.graph.axis.linear(min = minx, max = maxx, title = xlabel), y = pyx.graph.axis.linear(min = miny, max = maxy, title = ylabel))
-            print displayinput
+            ##print displayinput
             mygraph.plot(pyx.graph.data.list(displayinput, xmin = 1, xmax = 2, ymin = 3, ymax = 4, color = 5), pyx.graph.style.rect(thepalette))
-            print displayinput
+            ##print displayinput
             mycanvas.stroke(mygraph)
             if(valuelabel == None):
                 valuelabel = self.var.name
