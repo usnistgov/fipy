@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 10/28/04 {3:11:56 PM} 
+ %                                last update: 11/1/04 {8:28:27 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -241,8 +241,8 @@ for the phase field \( \xi \)
     }_{\text{source}}
 \]
 
-a set, for \( j = 2\ldots n-1 \), of diffusion equations for
-the concentrations \( C_j \) of the substitutional elements
+a set of diffusion equations for the concentrations \( C_j \), for \(
+j = 2,\ldots, n-1 \), of the substitutional elements
 
 \begin{align*}
     \underbrace{
@@ -327,15 +327,19 @@ and Poisson's equation for the electrostatic potential \( \psi \)
     = 0
 \]
 
-\( M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the
-phase field gradient energy coefficient, \( p'(\xi) =
-30\xi^2\left(1-\xi\right)^2 \), \( g'(\xi) =
-2\xi\left(1-\xi\right)\left(1-2\xi\right) \), 
-
-\( D_{j} \) is the self diffusivity of the \( j^{\text{th}} \)
-component, 
-
-and \( \rho \equiv \sum_{j=1}^n z_j C_j \) is the charge.
+\( M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the phase
+field gradient energy coefficient, \( p'(\xi) =
+30\xi^2\left(1-\xi\right)^2 \), and \( g'(\xi) =
+2\xi\left(1-\xi\right)\left(1-2\xi\right) \).  For a given species \(
+j \), \( \Delta\mu_j^{\circ} \) is the standard chemical potential
+difference between the electrode and electrolyte for a pure material,
+\( W_j \) is the magnitude of the energy barrier in the double-well
+free energy function, \( z_j \) is the valence, and \( D_{j} \) is the
+self diffusivity.  \( \Delta\mu_{jn}^{\circ} \), \( W_{jn} \), and \(
+z_{jn} \) are the differences of the respective quantities \(
+\Delta\mu_{j}^{\circ} \), \( W_{j} \), and \( z_{j} \) between
+substitutional species \( j \) and the solvent species \( n \).  The
+total charge is denoted by \( \rho \equiv \sum_{j=1}^n z_j C_j \).
 
 The module \verb+fipy.models.elphf+ has been developed to solve this
 coupled set of equations.  Although unresolved stiffnesses make the
