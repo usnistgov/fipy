@@ -46,17 +46,17 @@ from fivol.examples.phase.examples.impingement.input import ImpingementSystem
 
 class System1D(ImpingementSystem):
 
-    def initialConditions(self, mesh = None, phase = None, theta = None, Lx = None, Ly = None):
+    def initialConditions(self, Lx = None, Ly = None):
 
-        cells = mesh.getCells()
-        phase.setValue(1., cells)
-        theta.setValue(1., cells)
+        cells = self.mesh.getCells()
+        self.phase.setValue(1., cells)
+        self.theta.setValue(1., cells)
 
         def getRightCells(cell, Lx = None):
             if cell.getCenter()[0] > Lx / 2.:
                 return 1
             
-        theta.setValue(0., mesh.getCells(getRightCells, Lx = Lx))
+        self.theta.setValue(0., self.mesh.getCells(getRightCells, Lx = Lx))
         
 if __name__ == '__main__':
     system = System1D(nx = 40, ny = 1)

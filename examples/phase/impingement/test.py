@@ -54,6 +54,7 @@ import fivol.tests.testProgram
 import fivol.examples.phase.examples.impingement
 from fivol.examples.phase.examples.impingement.input1D import System1D
 from fivol.examples.phase.examples.impingement.input4Particles import System4Particles
+import fivol.tools.dump as dump
 
 class TestImpingement(TestBase):
     def setUp(self):
@@ -86,10 +87,27 @@ class Test4Particles(TestImpingement):
         self.testFile = '4ParticleData.gz'
         TestImpingement.setUp(self)
 
+class Test4ParticlesRestart(TestImpingement):
+    def setUp(self):
+        self.testFile = '4ParticleData.gz'
+        self.system = System4Particles(nx = 20, ny = 20, steps = 5, drivingForce = 10.)
+        TestImpingement.setUp(self)
+        for step in range(self.steps):
+	    self.it.timestep()
+
+        ## dump data
+        dump.write(self.system.getDumpData(), 'restartData')
+
+        ## run another bunch of steps
+        restartData = dump.read('restartData')
+        system = System4Particles(steps = 5, drivingForce = 10., restartData = restartData)
+        TestImpingement.setUp(self)
+
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test1D))
     theSuite.addTest(unittest.makeSuite(Test4Particles))
+    theSuite.addTest(unittest.makeSuite(Test4ParticlesRestart))
     return theSuite
     
 if __name__ == '__main__':
