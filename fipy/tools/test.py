@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 6/5/04 {8:28:24 PM} 
+ #                                last update: 6/10/04 {9:57:27 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -86,7 +86,14 @@ def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(unittest.makeSuite(Test10by10))
     theSuite.addTest(unittest.makeSuite(Test50by50))
-    theSuite.addTest(fipy.tools.dimensions.physicalField.suite())
+    
+    import doctest
+    
+    import sparseMatrix
+    theSuite.addTest(doctest.DocTestSuite(sparseMatrix))
+    import dimensions.physicalField
+    theSuite.addTest(doctest.DocTestSuite(dimensions.physicalField))
+    
     return theSuite
     
 if __name__ == '__main__':
