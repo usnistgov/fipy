@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 3/7/05 {4:53:31 PM} 
+ #                                last update: 3/10/05 {4:56:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example tests 1D adsorption onto an interface and subsequent
 depletion from the bulk. The governing equations are given by,
@@ -51,19 +51,19 @@ depletion from the bulk. The governing equations are given by,
 
 .. raw:: latex
 
-    $$ D c_x = \\Gamma k c (1 - \\theta) \;\; \\text{at} \;\; x = 0 $$
+    $$ D c_x = \Gamma k c (1 - \theta) \;\; \text{at} \;\; x = 0 $$
 
 and
 
 .. raw:: latex
 
-    $$ c = c^{\infty} \;\; \\text{at} \;\; x = L $$
+    $$ c = c^{\infty} \;\; \text{at} \;\; x = L $$
 
 and on the interface
 
 .. raw:: latex
 
-    $$ D c_x = -k c (1 - \\theta) \;\; \\text{at} \;\; x = 0$$
+    $$ D c_x = -k c (1 - \theta) \;\; \text{at} \;\; x = 0$$
 
 There is a dimensionless number, M, that goverens whether the system
 is in an interface limited (M>>1) or diffusion limited (M<<1)
@@ -72,7 +72,7 @@ dimensionless number is given by:
 
 .. raw:: latex
 
-    $$ M = \\frac{D}{L^2 k cinf} $$
+    $$ M = \frac{D}{L^2 k cinf} $$
 
 
 The test solution provided here is for the case of interface limited
@@ -80,13 +80,13 @@ kinetics. The analytical solutions are given by,
 
 .. raw:: latex
 
-    $$ -D \ln \left( 1 - \\theta \right) + k L \Gamma_0 \\theta = \frac{k D c^{\\infty} t}{\Gamma_0} $$
+    $$ -D \ln \left( 1 - \theta \right) + k L \Gamma_0 \theta = \frac{k D c^{\infty} t}{\Gamma_0} $$
 
 and
 
 .. raw:: latex
 
-    $$ c(x) = \\frac{c^{\\infty} \left[ k \Gamma_0 (1 - \\theta) x / D \right]}{1 + k \Gamma_0 (1 - \\theta) L / D$$
+    $$ c(x) = \frac{c^{\infty} \left[ k \Gamma_0 (1 - \theta) x / D \right]}{1 + k \Gamma_0 (1 - \theta) L / D$$
 
 Make sure the dimensionless parameter is large enough
 

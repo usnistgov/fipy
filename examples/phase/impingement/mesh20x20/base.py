@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 3/7/05 {1:31:55 PM}
+ #                                last update: 3/10/05 {5:12:29 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -223,16 +223,6 @@ data and compares it with the `theta` variable.
 The preceding initialization steps are used in the next few examples.
 """
 __docformat__ = 'restructuredtext'
-
-import optparse
-
-class MyOptionParser(optparse.OptionParser):
-    def error(self, msg):
-        if 'no such option' in msg:
-            pass
-        else:
-            optparse.OptionParser(self, msg)
-
 
 def script():
     """

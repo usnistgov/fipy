@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 6/7/04 {2:33:34 PM} 
- #                                last update: 12/9/04 {8:58:10 PM} 
+ #                                last update: 3/11/05 {11:48:49 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import nthOrderDiffusionTerm
+## import nthOrderDiffusionTerm
 
 def suite():
     return LateImportDocTestSuite(docTestModuleNames = (

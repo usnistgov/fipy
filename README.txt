@@ -128,6 +128,14 @@ or a
 
    to indicate something that could cause serious problems.
 
+-------------------------
+What's new in version 1.0
+-------------------------
+
+The main elements that have been changed are
+
+- `Equation` objects no longer exist. PDEs are constructed from `Term` 
+  objects. 
 
 .. _MSEL:                 http://www.msel.nist.gov/
 .. _CTCMS:                http://www.ctcms.nist.gov/

@@ -2,21 +2,29 @@
 Future Work
 -----------
 
+Release Goals 1.0a1
+-------------------
+
+- Documentation:
+
+  * Review all for accuracy/consistency.
+
+- Distribution
+
+  * Python 2.4
+
 Release Goals 1.0
 -----------------
 
 - Documentation:
 
   * Review all for accuracy/consistency.
-  * Refer to Roman's pysparse distro.
   * Include some examples on the web page.
   * Include some pictures of simulations in the documentation.
   * Efficiency and --inline discussion.
   * Examples:
   
     - 1000*1000 example for efficiency discussion.
-
-  * Document updating an 0.1 example to work with 0.2
 
 - Distribution
 
@@ -57,13 +65,10 @@ Release Goals 1.0
 
   * Better ``__repr__`` for FiPy objects.
 
-  * Create Grid1D as trivial decendant of Grid2D.
-
 - Refactoring:
 
   * Viewers:
 
-    - Create base viewing class.
     - Use viewers in scipy that are similar to gist and remove gist (?).
     - Refactor PyX viewer.
 

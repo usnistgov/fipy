@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 3/10/05 {3:53:36 PM} 
+ #                                last update: 3/10/05 {4:38:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,18 +62,14 @@ class TSVViewer(Viewer):
         
         Output is a list of coordinates and variable values at each cell center.
         
-        File contents will be, e.g.:
+        File contents will be, e.g.::
             
-        ----
-            
-        title
-        x\ty\t...\tvar0\tvar2\t...\n
-        0.0\t0.0\t...\t3.14\t1.41\t...\n
-        1.0\t0.0\t...\t2.72\t0.866\t...\n
-        :
-        :
-        
-        ----
+          title
+          x	y	...	var0	var2	...
+          0.0	0.0	...	3.14	1.41	...
+          1.0	0.0	...	2.72	0.866	...
+          :
+          :
         
         Any cell centers that lie outside the `limits` provided will not be included.
         Any values that lie outside the `datamin` or `datamax` of  `limits` will be 
@@ -86,11 +82,11 @@ class TSVViewer(Viewer):
         :Parameters:
           - `vars`: a `Variable` or tuple of `Variable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-                      `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-                      A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-                      will also use `ymin` and `ymax`, and so on. 
-                      All viewers will use `datamin` and `datamax`. 
-                      Any limit set to a (default) value of `None` will autoscale.
+            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
+            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            will also use `ymin` and `ymax`, and so on. 
+            All viewers will use `datamin` and `datamax`. 
+            Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer output
         """
         Viewer.__init__(self, vars = vars, limits = limits, title = title)

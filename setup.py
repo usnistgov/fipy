@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/7/05 {2:15:07 PM} 
+ #                                last update: 3/11/05 {2:46:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -215,7 +215,8 @@ class build_docs (Command):
 	    if self.guide:
 		dir = os.path.join('documentation', 'manual', 'examples')
 		self._initializeDirectory(dir = dir, type = 'latex')
-		for module in ['examples/diffusion/',
+		for module in ['examples/update0_1to1_0.py',
+                               'examples/diffusion/',
 			       'examples/convection/',
 			       'examples/phase/',
 			       'examples/levelSet/',

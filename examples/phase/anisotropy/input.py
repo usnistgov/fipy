@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:51:38 PM} { 5:14:21 PM}
+ #                                last update: 3/10/05 {4:27:27 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -151,8 +151,9 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 .. raw:: latex
   
-   The $m(\phi, T)$ is created from the `phase` and `temperature`
-variables.
+   The $m(\phi, T)$ is created from the `phase` and `temperature` variables.
+
+..
 
     >>> import Numeric
     >>> import fipy.tools.array
@@ -161,8 +162,9 @@ variables.
 
 .. raw:: latex
 
-    The following section of code builds up the $A$ and $D$
-coefficients.
+    The following section of code builds up the $A$ and $D$ coefficients.
+
+..
 
     >>> dPhiy = phase.getFaceGrad().getIndexAsFaceVariable(1)
     >>> dPhix = phase.getFaceGrad().getIndexAsFaceVariable(0)
@@ -198,8 +200,9 @@ coefficients.
     $$ \sum_f \vec{ n }_f  \cdot \left[ A \nabla \xi \right]_f \frac { S_f } { V_P } $$
 
     where $S_f$ is the area of a face. The above quantity is
-    represented by the `AddOverFacesVariable` given
-below.
+    represented by the `AddOverFacesVariable` given below.
+    
+..
     
     >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
     >>> anisotropySource = AddOverFacesVariable(faceVariable = A, xGrad = -dPhiy, yGrad = dPhix)

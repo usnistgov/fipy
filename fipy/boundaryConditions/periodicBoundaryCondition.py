@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicBoundaryCondition.py"
  #                                    created: 11/18/04 {4:31:51 PM} 
- #                                last update: 11/30/04 {7:05:23 PM} 
+ #                                last update: 3/10/05 {4:38:27 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -81,15 +81,9 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	Term's (**L**, **b**) matrices.
 	
 	:Parameters:
-	    
 	  - `Ncells`:   Size of matrices
 	  - `MaxFaces`: bandwidth of **L**
 	  - `coeff`: contributions to **L** by this exterior face
-## 	  - `cell1dia`: contribution to adjacent cell diagonal by this 
-## 	    exterior face	    
-## 	  - `cell1off`: contribution to this cell diagonal by adjacent 
-## 	    exterior face
-	  - `coeffScale`: dimensionality of the coefficient matrix
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)

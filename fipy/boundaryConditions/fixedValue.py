@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/15/04 {4:52:11 PM}
+ #                                last update: 3/10/05 {4:41:12 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,11 +60,10 @@ class FixedValue(BoundaryCondition):
 	Term's (**L**, **b**) matrices.
 	
 	:Parameters:
-	    
 	  - `Ncells`:   Size of matrices
 	  - `MaxFaces`: bandwidth of **L**
 	  - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
-	                this exterior face
+            this exterior face
 	"""
 	
 	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
