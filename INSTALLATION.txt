@@ -49,7 +49,7 @@ on ???  running Debian_ Linux blah blah. We welcome reports of compatibility
 with other systems, along with any steps necessary to install. 
 
 .. _Mac OS X: http://www.apple.com/macosx/
-.. _Debian:   ???
+.. _Debian:   http://www.debian.org/
 
 Required Packages
 =================
