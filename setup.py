@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/7/04 {4:21:15 PM} 
+ #                                last update: 10/15/04 {11:43:01 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -194,17 +194,20 @@ class build_docs (Command):
 				 'examples/README']
         
 	if self.latex:
-	    self._buildTeXAPIs()
-	    dir = os.path.join('documentation', 'manual', 'examples')
-	    self._initializeDirectory(dir = dir, type = 'latex')
-	    for module in ['examples/diffusion/',
-			   'examples/convection/',
-			   'examples/phase/',
-			   'examples/levelSet/',
-			   'examples/elphf/',
-                           'examples/cahnHilliard/'
-			   ]:
-		self._epydocFiles(module = module, dir = dir, type = 'latex')
+	    if self.apis:
+		self._buildTeXAPIs()
+		
+	    if self.guide:
+		dir = os.path.join('documentation', 'manual', 'examples')
+		self._initializeDirectory(dir = dir, type = 'latex')
+		for module in ['examples/diffusion/',
+			       'examples/convection/',
+			       'examples/phase/',
+			       'examples/levelSet/',
+			       'examples/elphf/',
+			       'examples/cahnHilliard/'
+			       ]:
+		    self._epydocFiles(module = module, dir = dir, type = 'latex')
 
 
 	if self.html:
@@ -237,6 +240,7 @@ class build_docs (Command):
 		os.system("pdflatex fipy")
                 os.system("bibtex fipy")
 		os.system("makeindex fipy")
+		os.system("pdflatex fipy")
 		os.system("pdflatex fipy")
 		
 	    if self.apis:

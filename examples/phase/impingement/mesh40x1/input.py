@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/7/04 {8:27:01 AM}
+ #                                last update: 10/15/04 {11:46:16 AM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -87,10 +87,12 @@ The initial conditions for this problem are set such that
     \end{cases}
     $$
 
-Further details of the numerical method for this problem can be found in
-"Extending Phase Field Models of Solidification to Polycrystalline
-Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-6035-6058.  Here the phase and orientation equations are solved with an
+.. Further details of the numerical method for this problem can be found in
+   "Extending Phase Field Models of Solidification to Polycrystalline
+   Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+   6035-6058.  
+
+Here the phase and orientation equations are solved with an
 explicit and implicit technique respectively.
 
 The `phaseEquation` requires an `mPhi` instantiator. Here we use

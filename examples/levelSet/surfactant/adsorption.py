@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 ## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 10/6/04 {5:40:45 PM} 
+ #                                last update: 10/15/04 {9:19:01 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler

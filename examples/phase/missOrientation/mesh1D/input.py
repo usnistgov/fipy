@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/13/04 {3:10:28 PM} 
+ #                                last update: 10/15/04 {11:47:56 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -77,10 +77,12 @@ and boundary conditions
 
     $\phi = 1$ for $x = 0$ and $x = L$.
 
-Further details of the numerical method for this problem can be found in
-"Extending Phase Field Models of Solidification to Polycrystalline
-Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-6035-6058.  Here the phase equation is solved with an explicit technique.
+.. Further details of the numerical method for this problem can be found in
+   "Extending Phase Field Models of Solidification to Polycrystalline
+   Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+   6035-6058.  
+   
+Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for `steps = 100` time steps.
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 10/13/04 {3:01:30 PM} { 5:14:21 PM}
+ #                                last update: 10/15/04 {9:25:07 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -70,11 +70,11 @@ and the governing equation for temperature is given by:
 
     $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t} $$
 
-Further details of the numerical method for this problem can be found in
-"Extending Phase Field Models of Solidification to Polycrystalline
-Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-6035-6058.  Here the phase and temperature equations are solved with an
-explicit and implicit technique respectively.
+..  Further details of the numerical method for this problem can be found in
+    "Extending Phase Field Models of Solidification to Polycrystalline
+    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
+
+Here the phase and temperature equations are solved with an explicit and implicit technique respectively.
 
 The parameters for these equations are given in `phaseParameters` and
 `temperatureParameters`. The variable `theta` represents the
