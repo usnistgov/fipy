@@ -240,6 +240,8 @@ def MAtake(array, indices, fill = 0, axis = 0):
     tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
     if indices.mask() is not None and tmp.shape != indices.mask().shape:
 	mask = MA.repeat(indices.mask()[...,Numeric.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
+        if tmp.mask() is not None:
+            mask = Numeric.logical_or(tmp.mask(), mask)
     else:
 	mask = indices.mask()
     return MA.array(data = tmp, mask = mask)
@@ -249,27 +251,27 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
 
         self.vertexCoords = vertexCoords
-        self.faceVertexIDs = MA.array(faceVertexIDs)        
+        self.faceVertexIDs = MA.array(faceVertexIDs)
         self.cellFaceIDs = MA.array(cellFaceIDs)
 
 	fipy.meshes.common.mesh.Mesh.__init__(self)
 	
     """Topology methods"""
 
-    def __add__(self, other):
+    def __add__(self, other, smallNumber = 1e-15):
         if(isinstance(other, Mesh)):
-            return self.meshAdd(other)
+            return self.meshAdd(other, smallNumber)
         else:
             return self.translate(other)
 
     def __mul__(self, other):
         return self.dilate(other)
 
-    def meshAdd(self, other):
-        a = self.getAddedMeshValues(other)
+    def meshAdd(self, other, smallNumber):
+        a = self.getAddedMeshValues(other, smallNumber)
         return Mesh(a[0], a[1], a[2])
 
-    def getAddedMeshValues(self, other):
+    def getAddedMeshValues(self, other, smallNumber):
         """
         Returns a tuple with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs, in that order.
         """
@@ -292,7 +294,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             for j in range(otherNumVertices):
                 diff = self.vertexCoords[i] - other.vertexCoords[j]
                 diff = Numeric.array(diff)
-                if (sum(diff ** 2) < 0.000000000000001):
+                if (sum(diff ** 2) < smallNumber):
                     vertexCorrelates[j] = i
         if (vertexCorrelates == {}):
             raise MeshAdditionError, "Vertices are not aligned"
@@ -434,7 +436,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcAdjacentCellIDs(self):
         self.adjacentCellIDs = (MA.filled(self.faceCellIDs[:,0]), MA.filled(MA.where(self.faceCellIDs[:,1].mask(), self.faceCellIDs[:,0], self.faceCellIDs[:,1])))
 
-    def calcCellToCellIDs(self):
+    def calcCellToCellIDs(self):        
         self.cellToCellIDs = MAtake(self.faceCellIDs, self.cellFaceIDs)
         self.cellToCellIDs = MA.where(self.cellToFaceOrientations == 1, self.cellToCellIDs[:,:,1], self.cellToCellIDs[:,:,0])
 
@@ -517,7 +519,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	tmp = self.faceCenters[:,0] * self.faceAreas * self.faceNormals[:,0]
 	tmp = MAtake(tmp, self.cellFaceIDs) * self.cellToFaceOrientations
         self.cellVolumes = MA.filled(MA.sum(tmp, 1))
-	
+        
     def calcCellCenters(self):
 	tmp = MAtake(self.faceCenters, self.cellFaceIDs)
 	self.cellCenters = MA.filled(MA.average(tmp, 1))
