@@ -41,6 +41,7 @@ import Numeric
 from fipy.variables.variable import Variable
 import fipy.tools.array
 
+        
 class CellVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
 	array = Numeric.zeros([mesh.getNumberOfCells()],'d')
@@ -58,6 +59,11 @@ class CellVariable(Variable):
     def getVariableClass(self):
 	return CellVariable
 
+##    def setMesh(self, newMesh):
+##        newValues = self.getValue(points = newMesh.getCellCenters())
+##        self.mesh = newMesh
+##        self.setValue(newValues)
+        
     def copy(self):
 
         return self.__class__(
@@ -76,10 +82,8 @@ class CellVariable(Variable):
 	return self.mesh.makeGridData(self.value)
 	
     def __call__(self, point = None, order = 0):
-	if point:
-	    d = self.mesh.getPointToCellDistances(point)
-	    i = Numeric.argsort(d)
-	    return self[i[0]]
+	if point != None:
+	    return self[self.getMesh().getNearestCellID(point)]
 	else:
 	    return Variable.__call__(self)
 ## 	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
@@ -170,8 +174,8 @@ class CellVariable(Variable):
 	if self.old is not None:
 	    self.setValue(self.old.value)
 
-## pickling
-
+##pickling
+            
     def __getstate__(self):
 
         dict = {
@@ -193,3 +197,8 @@ class CellVariable(Variable):
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
 
+
+class ReMeshedCellVariable(CellVariable):
+    def __init__(self, oldVar, newMesh):
+        newValues = oldVar.getValue(points = newMesh.getCellCenters())
+        CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
