@@ -111,6 +111,7 @@ Test cases:
 __docformat__ = 'restructuredtext'
 
 import Numeric
+import MA
 import mesh
 import mesh2D
 from fipy.tools.profiler.profiler import Profiler
@@ -143,7 +144,7 @@ class DataGetter:
         a = inFile.readline() ## skip the $NOD
 
     ## get the vertex coordinates
-        nodeToVertexIDs = {}
+        nodeToVertexIDdict = {}
         numVertices = int(inFile.readline())
         vertexCoords = Numeric.zeros((numVertices, dimensions))
         vertexCoords = vertexCoords.astype(Numeric.Float)
@@ -153,11 +154,15 @@ class DataGetter:
             currLineArray[0] = int(currLineArray[0])
             for j in range(1, (dimensions + 1)):
                 currLineArray[j] = float(currLineArray[j])
-                nodeToVertexIDs[currLineArray[0]] = i
+                nodeToVertexIDdict[currLineArray[0]] = i
             vertexCoords[i] = currLineArray[1:(dimensions + 1)]
 
         self.vertexCoords = vertexCoords
         self.inFile = inFile
+        maxNode = max(nodeToVertexIDdict.keys())
+        nodeToVertexIDs = Numeric.zeros((maxNode + 1,))
+        for i in nodeToVertexIDdict.keys():
+            nodeToVertexIDs[i] = nodeToVertexIDdict[i]
         self.nodeToVertexIDs = nodeToVertexIDs
 
     def computeCellVertexIDs(self):
@@ -168,28 +173,22 @@ class DataGetter:
     
     ## get the elements
     ## note: all we care about are the three-dimensional elements (cells).
-    ## note: so far this only supports tetrahedral meshes.
+    ## note: so far this only supports tetrahedral and triangular meshes.
         a = inFile.readline() ## skip the $ENDNOD
         a = inFile.readline() ## skip the $ELM
         numElements = int(inFile.readline())
         numCells = 0
-        cellNodeIDs = []
+        maxLength = (6 + dimensions)
+        elementArray = Numeric.zeros((numElements, maxLength))
         for i in range(numElements):
-            currLine = inFile.readline()
-            currLineArray = currLine.split()
-            for j in range(len(currLineArray)):
-                currLineArray[j] = int(currLineArray[j])
-            if(currLineArray[1] == ((2 * dimensions) - 2)): ## when dimensions = 2, mesh type must equal 2 (triangle), when dimensions = 3, element type must equal 4 (tetrahedron)
-                cellNodeIDs = cellNodeIDs + [currLineArray[5:]]
-                numCells = numCells + 1
-            
-        cellVertexIDs = Numeric.zeros((numCells, (dimensions + 1)))
-        for i in range(numCells):
-            for j in range(dimensions + 1):
-                cellVertexIDs[i][j] = self.nodeToVertexIDs[cellNodeIDs[i][j]]
-
+            currLineArrayInt = [int(x) for x in inFile.readline().split()]
+            elementArray[i, :len(currLineArrayInt)] = currLineArrayInt
+        validElementArray = Numeric.compress(elementArray[:, 1] == ((2 * dimensions) - 2), elementArray, 0)
+        cellNodeIDs = validElementArray[:, 5:]
+        cellVertexIDs = Numeric.take(self.nodeToVertexIDs, cellNodeIDs)        
         self.cellVertexIDs = cellVertexIDs
-        self.numCells = numCells
+        self.numCells = len(cellVertexIDs)
+
 
     def computeBaseFaceVertexIDs(self):
         
@@ -233,12 +232,11 @@ class DataGetter:
 
     def computeCellFaceIDs(self):
 
-        cellFaceIDs = []
-        for cell in self.cellFaceVertexIDs:
-            addList = []
-            for face in cell:
-                addList = addList + [self.faceStrToFaceIDs[listToString(face)]]
-            cellFaceIDs = cellFaceIDs + [addList]
+        cellFaceIDs = Numeric.zeros(self.cellFaceVertexIDs.shape[:2])
+        for i in range(len(self.cellFaceVertexIDs)):
+            cell = self.cellFaceVertexIDs[i]
+            for j in range(len(cell)):
+                cellFaceIDs[i, j] = self.faceStrToFaceIDs[listToString(self.cellFaceVertexIDs[i, j])]
         self.cellFaceIDs = cellFaceIDs
             
 class GmshImporter2D(mesh2D.Mesh2D):
@@ -271,6 +269,9 @@ def _test():
 if __name__ == "__main__":
     ##fudge = calibrate_profiler(10000)
     ##profile = Profiler('profile', fudge=fudge)
-    ##newmesh = GmshImporter3D('ultrafine.msh')
+    ##newmesh = GmshImporter3D('untitled.msh')
     ##profile.stop()
+
+    newmesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
+    
     _test()
