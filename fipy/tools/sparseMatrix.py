@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 5/17/04 {4:22:56 PM} 
+ #                                last update: 6/3/04 {4:52:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -137,7 +137,7 @@ class SparseMatrix:
 	self.put(vector, ids, ids)
 
     def take(self, id1, id2):
-	vector = Numeric.zeros(veclen, 'd')
+	vector = Numeric.zeros(len(id1), 'd')
 	self.matrix.take(vector, id1, id2)
         return vector
 
