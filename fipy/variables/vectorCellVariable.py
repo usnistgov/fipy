@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 3/7/05 {5:19:46 PM} 
+ #                                last update: 4/1/05 {10:50:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,12 +71,18 @@ class VectorCellVariable(Variable):
 
 	return self.arithmeticFaceValue
 	
-    def getVariableClass(self):
+    def _getVariableClass(self):
 	return VectorCellVariable
 
     def dot(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other, parentClass = CellVariable)
-	
+	return self._getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other, parentClass = CellVariable)
+
+    def getDivergence(self):
+        if not hasattr(self, 'divergence'):
+            from fipy.variables.vectorFaceDifferenceVariable import VectorFaceDifferenceVariable
+            self.divergence = VectorFaceDifferenceVariable(self).getMag()
+            
+        return self.divergence
 
 def _test(): 
     import doctest

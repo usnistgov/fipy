@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:33:25 PM}
+ #                                last update: 4/1/05 {11:02:23 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class AddOverFacesVariable(CellVariable):
 
         CellVariable.__init__(self, mesh, hasOld = 0)
     
-        self.faceVariable = self.requires(faceVariable)
+        self.faceVariable = self._requires(faceVariable)
 
     def _calcValuePy(self):
         ids = self.mesh.getCellFaceIDs()

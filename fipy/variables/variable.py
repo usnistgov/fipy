@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/24/05 {5:51:09 PM} 
+ #                                last update: 4/1/05 {11:14:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ class Variable:
 	
     """
     
-    __variable__ = True
+    __variable = True
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	"""
@@ -113,7 +113,7 @@ class Variable:
 	self.mesh = mesh
 		
 	self.stale = 1
-	self.markFresh()
+	self._markFresh()
         
 	self.transposeVar = None
 	self.sumVar = {}
@@ -225,7 +225,7 @@ class Variable:
 	
     def __setitem__(self, index, value):
 	self.value[index] = value
-	self.markFresh()
+	self._markFresh()
 	
     def __call__(self):
 	"""
@@ -255,7 +255,7 @@ class Variable:
 	    >>> b.getValue()
 	    7
 	"""
-	self.refresh()
+	self._refresh()
 	return self.value
 
     def _setValue(self, value, unit = None, array = None):
@@ -273,7 +273,7 @@ class Variable:
 
     def setValue(self, value, unit = None, array = None):
 	self._setValue(value = value, unit = unit, array = array)
-	self.markFresh()
+	self._markFresh()
 	
     def _setNumericValue(self, value):
 	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
@@ -294,44 +294,44 @@ class Variable:
 	else:
 	    return value
 	
-    def refresh(self):
+    def _refresh(self):
 	if self.stale:           
 	    for required in self.requiredVariables:
-		required.refresh()
+		required._refresh()
 	    self._calcValue()
-	    self.markFresh()
+	    self._markFresh()
 		    
     def _calcValue(self):
 	pass
 	
-    def _markStale(self):
+    def __markStale(self):
         import weakref
         remainingSubscribedVariables = []
         for subscriber in self.subscribedVariables:
             try:
-                subscriber.markStale() 
+                subscriber._markStale() 
                 remainingSubscribedVariables.append(subscriber)
             except weakref.ReferenceError:
                 pass
         self.subscribedVariables = remainingSubscribedVariables
 
-    def markFresh(self):
+    def _markFresh(self):
 	self.stale = 0
-        self._markStale()
+        self.__markStale()
 
-    def markStale(self):
+    def _markStale(self):
 	if not self.stale:
 	    self.stale = 1
-            self._markStale()
+            self.__markStale()
 	    
-    def requires(self, var):
+    def _requires(self, var):
 	if isinstance(var, Variable):
 	    self.requiredVariables.append(var)
-	    var.requiredBy(self)
-	    self.markStale()
+	    var._requiredBy(self)
+	    self._markStale()
 	return var
 	    
-    def requiredBy(self, var):
+    def _requiredBy(self, var):
 	assert isinstance(var, Variable)
         
         # we retain a weak reference to avoid a memory leak 
@@ -340,12 +340,12 @@ class Variable:
         import weakref
 	self.subscribedVariables.append(weakref.proxy(var))
 	
-    def getVariableClass(self):
+    def _getVariableClass(self):
 	return Variable
 	
-    def getOperatorVariableClass(self, parentClass = None):
+    def _getOperatorVariableClass(self, parentClass = None):
 	if parentClass is None:
-	    parentClass = self.getVariableClass()
+	    parentClass = self._getVariableClass()
 
 	class OperatorVariable(parentClass):
 	    def __init__(self, op, var, mesh = None):
@@ -355,7 +355,7 @@ class Variable:
 		self.var = var
 		parentClass.__init__(self, value = var[0], mesh = mesh)
 		for aVar in self.var:
-		    self.requires(aVar)
+		    self._requires(aVar)
 		    
 	    def __repr__(self):
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
@@ -424,15 +424,15 @@ class Variable:
 
 	return OperatorVariable
 	
-    def getUnaryOperatorVariable(self, op, parentClass = None):
-	class unOp(self.getOperatorVariableClass(parentClass)):
+    def _getUnaryOperatorVariable(self, op, parentClass = None):
+	class unOp(self._getOperatorVariableClass(parentClass)):
 	    def _calcValue(self):
 		self._setValue(value = self.op(self.var[0].getValue())) 
 		
 	return unOp(op, [self])
 	    
-    def getBinaryOperatorVariable(self, op, other, parentClass = None):
-	operatorClass = self.getOperatorVariableClass(parentClass)
+    def _getBinaryOperatorVariable(self, op, other, parentClass = None):
+	operatorClass = self._getOperatorVariableClass(parentClass)
 	
 	class binOp(operatorClass):
 	    def _calcValue(self):
@@ -455,7 +455,7 @@ class Variable:
         if isinstance(other, Term):
             return other + self
         else:
-            return self.getBinaryOperatorVariable(lambda a,b: a+b, other)
+            return self._getBinaryOperatorVariable(lambda a,b: a+b, other)
 	
     __radd__ = __add__
 
@@ -464,39 +464,39 @@ class Variable:
         if isinstance(other, Term):
             return -other + self
         else:
-            return self.getBinaryOperatorVariable(lambda a,b: a-b, other)
+            return self._getBinaryOperatorVariable(lambda a,b: a-b, other)
 	
     def __rsub__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: b-a, other)
+	return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
 	    
     def __mul__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a*b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
 	
     __rmul__ = __mul__
 	    
     def __mod__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a%b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
 	    
     def __pow__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a**b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a**b, other)
 	    
     def __rpow__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: b**a, other)
+	return self._getBinaryOperatorVariable(lambda a,b: b**a, other)
 	    
     def __div__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: a/b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
 	
     def __rdiv__(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: b/a, other)
+	return self._getBinaryOperatorVariable(lambda a,b: b/a, other)
 	    
     def __neg__(self):
-	return self.getUnaryOperatorVariable(lambda a: -a)
+	return self._getUnaryOperatorVariable(lambda a: -a)
 	
     def __pos__(self):
 	return self
 	
     def __abs__(self):
-	return self.getUnaryOperatorVariable(lambda a: abs(a))
+	return self._getUnaryOperatorVariable(lambda a: abs(a))
 
     def __lt__(self,other):
 	"""
@@ -517,7 +517,7 @@ class Variable:
 	    >>> 4 > Variable(value = 3)
 	    (Variable(value = 3) < 4)
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a<b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
 
     def __le__(self,other):
 	"""
@@ -536,7 +536,7 @@ class Variable:
 	    >>> b()
 	    0
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a<=b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
 	
     def __eq__(self,other):
 	"""
@@ -549,7 +549,7 @@ class Variable:
 	    >>> b()
 	    0
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a==b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a==b, other)
 	
     def __ne__(self,other):
 	"""
@@ -562,7 +562,7 @@ class Variable:
 	    >>> b()
 	    1
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a!=b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a!=b, other)
 	
     def __gt__(self,other):
 	"""
@@ -578,7 +578,7 @@ class Variable:
 	    >>> b()
 	    1
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a>b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
 	
     def __ge__(self,other):
 	"""
@@ -597,10 +597,10 @@ class Variable:
 	    >>> b()
 	    1
 	"""
-	return self.getBinaryOperatorVariable(lambda a,b: a>=b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
 
     def __and__(self, other):
-        return self.getBinaryOperatorVariable(lambda a,b: a & b, other)
+        return self._getBinaryOperatorVariable(lambda a,b: a & b, other)
         
     def __len__(self):
 	return len(self.value)
@@ -609,34 +609,34 @@ class Variable:
 	return float(self.value)
 	
     def sqrt(self):
-	return self.getUnaryOperatorVariable(lambda a: array.sqrt(a))
+	return self._getUnaryOperatorVariable(lambda a: array.sqrt(a))
 	
     def tan(self):
-	return self.getUnaryOperatorVariable(lambda a: array.tan(a))
+	return self._getUnaryOperatorVariable(lambda a: array.tan(a))
 
     def arctan(self):
-	return self.getUnaryOperatorVariable(lambda a: array.arctan(a))
+	return self._getUnaryOperatorVariable(lambda a: array.arctan(a))
 
     def exp(self):
-	return self.getUnaryOperatorVariable(lambda a: array.exp(a))
+	return self._getUnaryOperatorVariable(lambda a: array.exp(a))
 
     def sin(self):
-	return self.getUnaryOperatorVariable(lambda a: array.sin(a))
+	return self._getUnaryOperatorVariable(lambda a: array.sin(a))
 		
     def cos(self):
-	return self.getUnaryOperatorVariable(lambda a: array.cos(a))
+	return self._getUnaryOperatorVariable(lambda a: array.cos(a))
 
     def arctan2(self, other):
-        return self.getBinaryOperatorVariable(lambda a,b: array.arctan2(a,b), other)
+        return self._getBinaryOperatorVariable(lambda a,b: array.arctan2(a,b), other)
 		
     def dot(self, other):
-	return self.getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)
+	return self._getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)
 
     def min(self):
-        return self.getUnaryOperatorVariable(lambda a: array._min(a), parentClass = Variable)
+        return self._getUnaryOperatorVariable(lambda a: array._min(a), parentClass = Variable)
         
     def max(self):
-        return self.getUnaryOperatorVariable(lambda a: array._max(a), parentClass = Variable)
+        return self._getUnaryOperatorVariable(lambda a: array._max(a), parentClass = Variable)
         
     def transpose(self):
 	if self.transposeVar is None:

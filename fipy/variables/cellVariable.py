@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/17/05 {11:14:20 AM} 
+ #                                last update: 4/1/05 {4:15:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,32 @@ import fipy.tools.array
 
         
 class CellVariable(Variable):
+    """
+    Represents the field of values of a variable on a `Mesh`.
+    
+    A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
+        
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
+        
+        >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
+        >>> var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+
+        >>> import tempfile
+        >>> import os
+        >>> from fipy.tools import dump
+        
+        >>> (f, fileName) = tempfile.mkstemp('.gz')
+        >>> dump.write(var, fileName)
+        >>> unPickledVar = dump.read(fileName)
+        
+        >>> var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
+        1
+        
+        >>> os.close(f)
+        >>> os.remove(fileName)
+    """
+    
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
 	array = Numeric.zeros([mesh.getNumberOfCells()],'d')
 # 	array[:] = value
@@ -57,7 +83,7 @@ class CellVariable(Variable):
 	    
 	self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = self.volumeAverage = None
 	
-    def getVariableClass(self):
+    def _getVariableClass(self):
 	return CellVariable
 
 ##    def setMesh(self, newMesh):
@@ -73,15 +99,6 @@ class CellVariable(Variable):
 	    value = self.getValue(),
 	    hasOld = 0)
 	    
-##	return CellVariable(
-##	    mesh = self.mesh, 
-##	    name = self.name + "_old", 
-##	    value = self.getValue(),
-##	    hasOld = 0)
-
-    def getGridArray(self):
-	return self.mesh.makeGridData(self.value)
-	
     def __call__(self, point = None, order = 0):
 	if point != None:
 	    return self[self.getMesh().getNearestCellID(point)]
@@ -102,22 +119,27 @@ class CellVariable(Variable):
 	    self[:] = value
 	else:
 ## 	    return fipy.tools.array.put(self.getValue(), [cell.getID() for cell in cells], value)
-## 	    self.markStale()
+## 	    self._markStale()
 
 	    for cell in cells:
 		self[cell.getID()] = value
 
     def getCellVolumeAverage(self):
-
-        """
-
-        Here is a test case for the volume average
+        r"""
+        Return the cell-volume-weighted average of the `CellVariable`:
+            
+        .. raw:: latex
+        
+           \[ <\phi>_\text{vol} 
+           = \frac{\sum_\text{cells} \phi_\text{cell} V_\text{cell}}
+               {\sum_\text{cells} V_\text{cell}} \]
+        
+        ..
 
             >>> from fipy.meshes.grid2D import Grid2D
             >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
             >>> print CellVariable(value = (1, 2, 6), mesh = mesh).getCellVolumeAverage()
             3.0
-        
         """
 
 	if self.volumeAverage is None:
@@ -127,6 +149,15 @@ class CellVariable(Variable):
 	return self.volumeAverage
 
     def getGrad(self):
+        r"""
+        Return
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorCellVariable` (first-order gradient).
+        """
 	if self.grad is None:
 	    from cellGradVariable import CellGradVariable
 	    self.grad = CellGradVariable(var = self, name = "%s_grad" % self.getName())
@@ -134,6 +165,38 @@ class CellVariable(Variable):
 	return self.grad
 
     def getArithmeticFaceValue(self):
+        r"""
+        Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
+        of the adjacent cells:
+            
+        .. raw:: latex
+        
+           \[ \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2 \]
+           
+        ..
+        
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(dx = (1., 1.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> answer = (var[0] - var[1]) / 2. + var[1]
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+            
+            >>> mesh = Grid1D(dx = (2., 4.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> answer = (var[0] - var[1]) / 4. + var[1]
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> mesh = Grid1D(dx = (10., 100.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> answer = (var[0] - var[1]) / 20. + var[1]
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+        """
 	if self.arithmeticFaceValue is None:
 	    from arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
 	    self.arithmeticFaceValue = ArithmeticCellToFaceVariable(self)
@@ -141,6 +204,38 @@ class CellVariable(Variable):
 	return self.arithmeticFaceValue
 
     def getHarmonicFaceValue(self):
+        r"""
+        Returns a `FaceVariable` whose value corresponds to the harmonic interpolation
+        of the adjacent cells:
+            
+        .. raw:: latex
+        
+           \[ \phi_f = \frac{\phi_1 \phi_2}{(\phi_2 - \phi_1) \frac{d_{f2}}{d_{12}} + \phi_1} \]
+           
+        ..
+        
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(dx = (1., 1.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> answer = var[0] * var[1] / ((var[1] - var[0]) / 2. + var[0])
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+            
+            >>> mesh = Grid1D(dx = (2., 4.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> answer = var[0] * var[1] / ((var[1] - var[0]) / 4. + var[0])
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> mesh = Grid1D(dx = (10., 100.))
+            >>> var = CellVariable(mesh = mesh, value = (1, 2))
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> anwswer = var[0] * var[1] / ((var[1] - var[0]) / 20. + var[0])
+            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            1
+        """
 	if self.harmonicFaceValue is None:
 	    from harmonicCellToFaceVariable import HarmonicCellToFaceVariable
 	    self.harmonicFaceValue = HarmonicCellToFaceVariable(self)
@@ -148,6 +243,15 @@ class CellVariable(Variable):
 	return self.harmonicFaceValue
 
     def getFaceGrad(self):
+        r"""
+        Return
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorFaceVariable` (second-order gradient).
+        """
 	if self.faceGrad is None:
 	    from faceGradVariable import FaceGradVariable
 	    self.faceGrad = FaceGradVariable(self)
@@ -155,29 +259,39 @@ class CellVariable(Variable):
 	return self.faceGrad
 
     def getOld(self):
+        """
+        Return the values of the `CellVariable` from the previous solution sweep.
+        """
 	if self.old is None:
 	    return self
 	else:
 	    return self.old
 
     def updateOld(self):
+        """
+        Set the values of the previous solution sweep to the current values.
+        """
 	if self.old is not None:
 	    self.old.setValue(self.value)
 	    
-    def resetToOld(self):
+    def _resetToOld(self):
 	if self.old is not None:
 	    self.setValue(self.old.value)
 	    
-    def remesh(self, mesh):
+    def _remesh(self, mesh):
 	self.value = Numeric.array(self.getValue(points = mesh.getCellCenters()))
 	if self.old is not None:
-	    self.old.remesh(mesh)
+	    self.old._remesh(mesh)
 	self.mesh = mesh
 	self.markFresh()
 
 ##pickling
             
     def __getstate__(self):
+        """
+        Used internally to collect the necessary information to ``pickle`` the 
+        `CellVariable` to persistent storage.
+        """
 
         dict = {
             'mesh' : self.mesh,
@@ -189,6 +303,10 @@ class CellVariable(Variable):
         return dict
 
     def __setstate__(self, dict):
+        """
+        Used internally to create a new `CellVariable` from ``pickled`` 
+        persistent storage.
+        """
 
         hasOld = 0
         if dict['old'] is not None:
@@ -199,7 +317,7 @@ class CellVariable(Variable):
             self.old.setValue(dict['old'].getValue())
 
 
-class ReMeshedCellVariable(CellVariable):
+class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())

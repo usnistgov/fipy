@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 9/3/04 {10:41:42 PM} 
+ #                                last update: 4/1/05 {10:56:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,7 @@ class FaceVariable(Variable):
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-    def getVariableClass(self):
+    def _getVariableClass(self):
 	return FaceVariable
 
     def transpose(self):

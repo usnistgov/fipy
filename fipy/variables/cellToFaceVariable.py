@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 9/3/04 {10:30:18 PM} 
+ #                                last update: 4/1/05 {11:03:11 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ from fipy.tools.inline import inline
 class CellToFaceVariable(FaceVariable):
     def __init__(self, var):
 	FaceVariable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
+	self.var = self._requires(var)
 
     def _calcValue(self):
 	alpha = self.mesh.getFaceToCellDistanceRatio()

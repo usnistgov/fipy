@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 3/10/05 {3:19:36 PM} 
+ #                                last update: 4/1/05 {11:02:49 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ from fipy.variables.faceGradContributionsVariable import FaceGradContributions
 class CellGradVariable(VectorCellVariable):
     def __init__(self, var, name = ''):
 	VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
-	self.var = self.requires(var)
+	self.var = self._requires(var)
         self.faceGradientContributions = FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):

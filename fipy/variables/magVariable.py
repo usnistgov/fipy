@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 9/3/04 {10:43:05 PM}
+ #                                last update: 4/1/05 {11:02:24 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ class MagVariable(Variable):
     def __init__(self, var):
 
         Variable.__init__(self, mesh = var.getMesh())
-        self.var = self.requires(var)
+        self.var = self._requires(var)
         self.result = Numeric.zeros((len(var)),'d')
         
     def _calcValue(self):

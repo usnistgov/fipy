@@ -6,7 +6,7 @@
  # 
  #  FILE: "transposeVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 9/3/04 {10:30:14 PM} 
+ #                                last update: 4/1/05 {11:03:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@ from fipy.variables.vectorFaceVariable import VectorFaceVariable
 class TransposeVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
+	self.var = self._requires(var)
 
     def _calcValue(self):
 	self.value = self.var[:,Numeric.NewAxis]

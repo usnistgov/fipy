@@ -6,7 +6,7 @@
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 9/3/04 {10:35:35 PM} 
+ #                                last update: 4/1/05 {11:02:42 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@ import fipy.tools.array as array
 class SumVariable(Variable):
     def __init__(self, var, index):
 	Variable.__init__(self, mesh = var.getMesh())
-	self.var = self.requires(var)
+	self.var = self._requires(var)
 	self.index = index
 
     def _calcValue(self):

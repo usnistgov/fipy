@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 3/17/05 {10:02:17 AM} 
+ #                                last update: 4/1/05 {11:02:57 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ class VectorFaceVariable(Variable):
 
         self.indexAsFaceVar = {}
 
-    def getVariableClass(self):
+    def _getVariableClass(self):
 	return VectorFaceVariable
 
     def getIndexAsFaceVariable(self, index):
@@ -60,7 +60,7 @@ class VectorFaceVariable(Variable):
             class ItemAsVariable(FaceVariable):
                 def __init__(self, var, index):
                     FaceVariable.__init__(self, mesh = var.getMesh())
-                    self.var = self.requires(var)
+                    self.var = self._requires(var)
 
                 def _calcValue(self):
                     self.value = Numeric.array(self.var[:, index])

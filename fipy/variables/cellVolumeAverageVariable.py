@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVolumeAverageVariable.py"
  #                                    created: 10/7/04 {2:28:00 PM} 
- #                                last update: 10/19/04 {12:21:43 PM} 
+ #                                last update: 4/1/05 {3:12:31 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -36,12 +36,6 @@
  # ###################################################################
  ##
 
-"""
-
-Takes a `CellVariable` and evaluates its volume average over all the
-cells.
-
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -50,8 +44,8 @@ from fipy.variables.variable import Variable
 
 class CellVolumeAverageVariable(Variable):
     """
-    
-    Here is a simple test case:
+    Takes a `CellVariable` and evaluates its volume average over all the
+    cells.
 
         >>> from fipy.meshes.grid2D import Grid2D
         >>> mesh = Grid2D(nx = 2, ny = 2, dx = 2., dy = 5.)
@@ -63,7 +57,7 @@ class CellVolumeAverageVariable(Variable):
     """
     def __init__(self, var):
 	Variable.__init__(self, unit = var.getUnit())
-	self.var = self.requires(var)
+	self.var = self._requires(var)
 
     def _calcValue(self):
         self.value = Numeric.sum(self.var * self.var.getMesh().getCellVolumes())

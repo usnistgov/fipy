@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/29/05 {2:37:56 PM} 
+ #                                last update: 4/1/05 {2:50:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,14 +46,9 @@ from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
 
 import fipy.variables.testInterpolation
-import fipy.variables.testPickle
 
-def suite():
+def _suite():
     return LateImportDocTestSuite(
-        testModuleNames = (
-            'fipy.variables.testInterpolation',
-            'fipy.variables.testPickle',
-        ),
         docTestModuleNames = (
             'fipy.variables.vectorCellVariable',
             'fipy.variables.cellVolumeAverageVariable',
@@ -62,4 +57,4 @@ def suite():
         ))
     
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='suite')
+    fipy.tests.testProgram.main(defaultTest='_suite')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 3/8/05 {4:45:30 PM}
+ #                                last update: 4/1/05 {11:03:15 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ from fipy.tools.inline import inline
 class FaceGradVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
-	self.var = self.requires(var)
+	self.var = self._requires(var)
 
     def _calcValue(self):        
 	inline.optionalInline(self._calcValueInline, self._calcValuePy)
