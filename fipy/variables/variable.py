@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 2/17/04 {6:11:43 PM} 
+ #                                last update: 3/8/04 {3:45:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -131,6 +131,9 @@ class Variable:
 	self.value[index] = value
 	self.markFresh()
 		
+    def __call__(self, coords):
+	
+	
     def getValue(self):
 	self.refresh()
         return self.value

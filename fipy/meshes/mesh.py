@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/5/04 {2:51:30 PM} 
+ #                                last update: 3/8/04 {2:06:47 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -68,11 +68,12 @@ class Mesh:
         if func == None:
             return self.cells
         else:        
-            returnCells = ()
-            for cell in self.cells:
-                if func(cell, **args):
-                    returnCells += (cell,)
-            return returnCells
+	    return [cell for cell in self.cells if func(cell, **args)]
+##             returnCells = ()
+##             for cell in self.cells:
+##                 if func(cell, **args):
+##                     returnCells += (cell,)
+##             return returnCells
 	    
     def getNumberOfCells(self):
 	return len(self.cells)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 1/16/04 {11:48:32 AM}
+ #                                last update: 3/8/04 {2:13:45 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,7 +39,7 @@
 import Numeric
 
 from fivol.variables.cellVariable import Variable
-import fivol.tools.vector as vector
+import fivol.tools.array as array
 
 class MagVariable(Variable):
     def __init__(self, var):
@@ -49,5 +49,5 @@ class MagVariable(Variable):
         self.result = Numeric.zeros((len(var)),'d')
         
     def calcValue(self):
-        self.value.value = vector.arraySqrtDot(self.var.getNumericValue(), self.var.getNumericValue(), self.result)
+        self.value.value = array.sqrtDot(self.var.getNumericValue(), self.var.getNumericValue())
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/5/04 {11:27:22 AM} 
+ #                                last update: 3/8/04 {2:04:54 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -85,7 +85,7 @@ class CellVariable(Variable):
 # 		raise TypeError, str(value) + " is not numeric or a Numeric.array"
 	else:
 	    for cell in cells:
-		self[cell.getId()] = value
+		self[cell.getID()] = value
 	
     def getGrad(self):
 	if self.grad is None:
