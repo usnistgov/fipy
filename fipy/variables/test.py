@@ -44,16 +44,20 @@
 """
 
 import unittest
+import doctest
+
 import fipy.tests.testProgram
 import fipy.variables.testInterpolation
 import fipy.variables.testLaplacian
 import fipy.variables.testPickle
+import fipy.variables.vectorCellVariable
 
 def suite():
     theSuite = unittest.TestSuite()
     theSuite.addTest(fipy.variables.testInterpolation.suite())
     theSuite.addTest(fipy.variables.testLaplacian.suite())
     theSuite.addTest(fipy.variables.testPickle.suite())
+    theSuite.addTest(doctest.DocTestSuite(fipy.variables.vectorCellVariable))
     return theSuite
     
 if __name__ == '__main__':
