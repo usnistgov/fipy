@@ -65,11 +65,18 @@ __docformat__ = 'restructuredtext'
 from fipy.equations.matrixEquation import MatrixEquation
 from fipy.terms.transientTerm import TransientTerm
 from advectionTerm import AdvectionTerm
-
+from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 class AdvectionEquation(MatrixEquation):
 
-    def __init__(self, var = None, advectionCoeff = None, solver = None, advectionTerm = AdvectionTerm):
+    def __init__(self,
+                 var = None,
+                 advectionCoeff = None,
+                 solver = None,
+                 advectionTerm = AdvectionTerm):
+
+        if solver == None:
+            solver = LinearPCGSolver(tolerance = 1.e-15, steps = 1000)
         
         mesh = var.getMesh()
 
