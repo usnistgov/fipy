@@ -97,7 +97,10 @@ class DistanceVariable(CellVariable):
            
         """
 
-        return Numeric.sum(abs(array.dot(self.getCellInterfaceNormals(), self.mesh.getCellAreaProjections(), axis = 2)), axis = 1)
+        normals = Numeric.array(self.getCellInterfaceNormals().filled(fill_value = 0))
+        areas = Numeric.array(self.mesh.getCellAreaProjections().filled(fill_value = 0))
+        
+        return Numeric.sum(abs(array.dot(normals, areas, axis = 2)), axis = 1)
 
     def getCellInterfaceNormals(self):
         """
@@ -120,8 +123,11 @@ class DistanceVariable(CellVariable):
         dim = self.mesh.getDim()
 
         valueOverFaces = Numeric.resize(Numeric.repeat(self.getCellValueOverFaces(), dim), (N, M, dim))
-        interfaceNormals = Numeric.take(self.getInterfaceNormals(), self.mesh.getCellFaceIDs())
-        return Numeric.where(valueOverFaces < 0, 0, interfaceNormals)
+
+        from fipy.meshes.numMesh.mesh import MAtake
+        interfaceNormals = MAtake(self.getInterfaceNormals(), self.mesh.getCellFaceIDs())
+        import MA
+        return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
     def getInterfaceNormals(self):
         """
@@ -179,7 +185,9 @@ class DistanceVariable(CellVariable):
 
         """
 
-        flag = Numeric.take(self.getInterfaceFlag(), self.mesh.getCellFaceIDs())
+        from fipy.meshes.numMesh.mesh import MAtake
+        
+        flag = MAtake(self.getInterfaceFlag(), self.mesh.getCellFaceIDs()).filled(fill_value = 0)
 
         flag = Numeric.sum(flag, axis = 1)
         
