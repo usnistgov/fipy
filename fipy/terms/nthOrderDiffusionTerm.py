@@ -296,14 +296,14 @@ class NthOrderDiffusionTerm(Term):
 ##             if iseven:
 ##                 boundaryB = -boundaryB
 
-            print self
-            print coefficientMatrix
-            print "lowerOrderb:",lowerOrderb
-            print "boundaryB:",boundaryB
+##            print self
+##            print coefficientMatrix
+##            print "lowerOrderb:",lowerOrderb
+##            print "boundaryB:",boundaryB
             
             b = coefficientMatrix * lowerOrderb + boundaryB
             
-            print "b:",b
+##            print "b:",b
         else:
             N = mesh.getNumberOfCells()
             L = SparseMatrix(size = N)

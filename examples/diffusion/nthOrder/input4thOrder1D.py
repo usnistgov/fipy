@@ -91,35 +91,22 @@ or
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
     ...     import NthOrderBoundaryCondition
-    >>> boundaryConditions=(
-    ...     FixedValue(mesh.getFacesLeft(), alpha1),
-    ...     FixedFlux(mesh.getFacesRight(), alpha2),
-    ...     NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
-    ...     NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3))
+    >>> BCs = (FixedValue(mesh.getFacesLeft(), alpha1),
+    ...        FixedFlux(mesh.getFacesRight(), alpha2),
+    ...        NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
+    ...        NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3))
 
 We initialize the steady-state equation and use the `LinearLUSolver` for stability. 
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
 
-By assigning two diffusion coefficients
-
-    >>> diffusionCoeff = (-1., 1.)
-    
-we obtain a fourth-order diffusion equation
-    
-    >>> from fipy.equations.nthOrderDiffusionEquation import NthOrderDiffusionEquation
-    >>> eq = NthOrderDiffusionEquation(
-    ...         var,
-    ...         transientCoeff = 0.0, 
-    ...         diffusionCoeff = diffusionCoeff,
-    ...         solver = LinearLUSolver(tolerance = 1e-11),
-    ...         boundaryConditions=boundaryConditions)
-
 We perform one implicit timestep to achieve steady state
-
-    >>> from fipy.iterators.iterator import Iterator
-    >>> it = Iterator((eq,))
-    >>> it.timestep()
+    
+    >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
+    >>> eq = NthOrderDiffusionTerm(coeffs = (1, 1))
+    >>> eq.solve(var,
+    ...          boundaryConditions = BCs,
+    ...          solver = LinearLUSolver(tolerance = 1e-11))
 
 The analytical solution is:
 
