@@ -4,6 +4,12 @@ from weave import converters
 
 doingInline = 0
 
+def readInlineArgs(argList):
+    if "inline" in argList:
+	doInline()
+    else:
+	dontInline()
+
 def doInline():
     doingInline = 1
     
