@@ -41,6 +41,29 @@
  # ###################################################################
  ##
 
+"""
+
+   >>> testResult = Numeric.zeros((N / 2, N / 2), 'd')
+   >>> bottomRight = Numeric.zeros((N / 2, N / 2), 'd')
+   >>> topLeft = Numeric.zeros((N / 2, N / 2), 'd')
+   >>> topRight = Numeric.zeros((N / 2, N / 2), 'd')
+   >>> for j in range(N / 2):
+   ...     for i in range(N / 2):
+   ...         x = dx * (i + 0.5)
+   ...         y = dx * (j + 0.5)
+   ...         testResult[i, j] = x * y
+   ...         bottomRight[i,j] = var((L - x, y)).getNumericValue()
+   ...         topLeft[i,j] = var((x, L - y)).getNumericValue()
+   ...         topRight[i,j] = var((L - x, L - y)).getNumericValue()
+   >>> Numeric.allclose(testResult, bottomRight, atol = 1e-10)
+   1
+   >>> Numeric.allclose(testResult,topLeft, atol = 1e-10)
+   1
+   >>> Numeric.allclose(testResult,topRight, atol = 1e-10)
+   1
+   
+"""
+
 import Numeric
 
 from fipy.meshes.grid2D import Grid2D
@@ -49,10 +72,12 @@ from fipy.variables.cellVariable import CellVariable
 
 N = 20
 L = 1.
+dx = L / N
+dy = L / N
 
 mesh = Grid2D(
-    dx = L / N,
-    dy = L / N,
+    dx = dx,
+    dy = dy,
     nx = N,
     ny = N)
 
@@ -76,38 +101,21 @@ for cell in bottomLeftCells:
     topRightCells += (mesh.getNearestCell((L - x , L - y)),)
     topLeftCells += (mesh.getNearestCell((x , L - y)),)
     
-    self.orderedCells = (bottomRightCells, topRightCells, topLeftCells)
-    self.symmetryCells = bottomLeftCells
+    orderedCells = (bottomRightCells, topRightCells, topLeftCells)
+    symmetryCells = bottomLeftCells
         
 viewer = Grid2DGistViewer(var = var, minVal = 0, maxVal = L * L)
 
-def plot(self):
-    self.viewer.plot()
-        
-    def run(self):
-        for cellSet in self.orderedCells:
-            for i in range(len(cellSet)):
-                id = self.symmetryCells[i].getID()
-                idOther = cellSet[i].getID()
-                self.var[idOther] = self.var[id]
-
-    def getVar(self):
-        return self.var
+for cellSet in orderedCells:
+    for i in range(len(cellSet)):
+        id = symmetryCells[i].getID()
+        idOther = cellSet[i].getID()
+        var[idOther] = var[id]
 
 if __name__ == '__main__':
 
-    self.viewer.plot()
+    viewer.plot()
     raw_input('finished')
-    
-    system = SymmetrySystem(N = 100)
-    system.plot()
-    raw_input('press key to continue')
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile.txt', fudge=fudge)
-    system.run()
-    profile.stop()
-    system.plot()
-    raw_input('press key to continue')
     
 
 

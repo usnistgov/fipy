@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/04 {4:06:08 PM} 
+ #                                    created: 12/29/03 {3:23:47 PM}
+ #                                last update: 6/15/04 {11:08:05 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,36 +41,19 @@
  # ###################################################################
  ##
 
-"""Test steady-state diffusion solutions
-"""
  
 import unittest
 import fipy.tests.testProgram
-from fipy.tests.testBase import TestBase
-from examples.phase.symmetry.input import SymmetrySystem
 
-class TestSymmetry(TestBase):
-    def setUp(self, N = 20, L = 1.):
-        self.N = N
-        self.L = L
-        self.system = SymmetrySystem(N = self.N, L = self.L)
-        
-    def testResult(self):
-        var = self.system.getVar()
-        self.system.run()
-        dx = self.L / self.N
-        for j in range(self.N / 2):
-            for i in range(self.N / 2):
-                x = dx * (i + 0.5)
-                y = dx * (j + 0.5)
-                value = x * y
-                self.assertWithinTolerance(value, var((self.L - x, y)).getNumericValue(), tol = 1e-10)
-                self.assertWithinTolerance(value, var((x, self.L - y)).getNumericValue(), tol = 1e-10)
-                self.assertWithinTolerance(value, var((self.L - x, self.L - y)).getNumericValue(), tol = 1e-10)
+import doctest
+
+import input
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestSymmetry))
+
+    theSuite.addTest(doctest.DocTestSuite(input))
+        
     return theSuite
     
 if __name__ == '__main__':
