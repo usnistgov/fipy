@@ -123,12 +123,69 @@ class DistanceVariable(CellVariable):
     def calcInterfaceValue(self, id, adjIDs, allAdjIDs):
         distances = ()
         val = self.value[adjID]
+        sign = -1
+        if val > 0:
+            sign = 1
 
-        for adjID in adjIDs:            
+
+        
+        for adjID in adjIDs:
             index = list(allAdjIDs).index(adjID)
             dAP = self.mesh.getCellDistances()[id][index]
-            s += (val * dAP / abs(val - self.value[adjID]),)
+            normal = self.mesh.getCellToCellNormals()[id][index]
+            distances += (abs(val * dAP / (val - self.value[adjID])),)
+            normals = += (normal,)
 
-        for i in len(adjIDs):
-            for j in len(adjIDs - 1):
+        indices = Numeric.argsort(distances)
+
+        if len(adjIDs) == 1:
+            return s * sign
+        if len(adjIDs) == 2:
+            return array.cross(
+
+    def calcInterfaceValues(self, interfaceIDs):
+        r"""
+
+        interfaceIDs - is a set of all the interface IDs
+        
+
+
+        To caclulate minimum distance in 2D use,
+
+        .. raw:: latex
+
+            $$ X_{\text{min}} = \frac{\left| \vec{s} \cross \vec{t} \right|} {\left| \vec{s} - \vec{t} \right|} $$
+
+            and in 3D,
+
+            $$ X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left( \vec{t} \cross \vec{u} \right) \left| $$
+
+            where the vectors $\vec{s}$, $\vec{t}$ amd $\vec{u}$ represent the vectors from the cell of intest to the neighbouring cell.
+
+        """
+        __docformat__ = `restructuedtext`
+
+        interfaceAdjIDs = Numeric.take(adjCellIDs, interfcaeIDs)
+        interfaceIDs = 
+        
+        numInterfaceIDs = Numeric.array(negativeInterfaceIDs)
+        numInterfaceIDs = Numeric.array(negativeInterfaceIDs
+
+        ids = list(interfaceIDs)
+        values = Numeric.take(self.values, ids)
+        dAP = Numeric.take(self.mesh.getCellToCellDistances, ids)
+        
+        distances = 
+
+
+            
+            
+
+
+
+
+
+            
+            
+        
                 
