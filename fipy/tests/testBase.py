@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 3/4/04 {2:31:12 PM} 
+ #                                last update: 3/5/04 {10:54:30 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,13 +62,7 @@ class TestBase(unittest.TestCase):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
         
-	if not MA.allclose(first, second, rtol, atol):
-            print first
-            print second
-            print first - second
-            print rtol,' ',atol
-            print MA.allclose(first, second, rtol, atol)
-            
+	if not MA.allclose(first, second, rtol = rtol, atol = atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
         
     def getTestValue(self, cell):
