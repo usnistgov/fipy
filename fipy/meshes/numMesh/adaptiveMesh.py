@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/2/04 {4:32:37 PM} 
+ #                                last update: 8/26/04 {4:53:35 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -39,12 +39,23 @@
 
 """
 
-The AdaptiveMesh classes allow meshes to be created \"on-the-fly\" using a variable specified by the user. The AdaptiveMesh classes use Gmsh, a free open-source meshing utility (http://www.geuz.org/gmsh)To do this, pass in a variable to the initializer function that has a mesh with the same boundaries (though not necessarily the same interior geometry) as the mesh you want to create and values that are equal to the approximate mesh sizes you want at any given point. For example, if you want the mesh to be finer in areas where a concentration gradient is steeper, create a variable whose value is equal to some constant times the reciprocal of the concentration gradient and pass it to the initializer. The following will create a mesh that is finer toward the upper right hand corner:
+The AdaptiveMesh classes allow meshes to be created \"on-the-fly\" using a
+variable specified by the user.  The AdaptiveMesh classes use Gmsh, a free
+open-source meshing utility (http://www.geuz.org/gmsh)To do this, pass in a
+variable to the initializer function that has a mesh with the same
+boundaries (though not necessarily the same interior geometry) as the mesh
+you want to create and values that are equal to the approximate mesh sizes
+you want at any given point.  For example, if you want the mesh to be finer
+in areas where a concentration gradient is steeper, create a variable whose
+value is equal to some constant times the reciprocal of the concentration
+gradient and pass it to the initializer.  The following will create a mesh
+that is finer toward the upper right hand corner:
 
    >>> baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
    >>> var = CellVariable(mesh = baseMesh, value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), name = \"characteristic lengths\")
 
-Since the value of var is smaller in the upper right hand corner, the mesh will be finer there. To create the mesh, do this:
+Since the value of var is smaller in the upper right hand corner, the mesh
+will be finer there.  To create the mesh, do this:
 
    >>> newMesh = AdaptiveMesh2D(var)
 
@@ -68,12 +79,11 @@ def removeDuplicates(list):
     return dict.keys()
 
 def orderVertices(vertexCoords, vertices):
-    pi = 3.1415926535
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
     coordinates = Numeric.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
-    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, Numeric.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
     sortorder = Numeric.argsort(angles)
     return Numeric.take(vertices, sortorder)
 
@@ -183,7 +193,7 @@ class AdaptiveMesh2D(Mesh2D):
         bgmeshFile.close()
 
     def finalInit(self):
-        os.system("gmsh temp.geo -bgm tempbgmesh.pos -2 -v 0")
+        os.system("gmsh temp.geo -bgm tempbgmesh.pos -format msh -2") ##  -v 0
         dg = DataGetter()
         args = dg.getData("temp.msh", dimensions = 2)
         Mesh2D.__init__(self, args[0], args[1], args[2])
@@ -192,7 +202,7 @@ def _test():
     import doctest
     return doctest.testmod()
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     baseMesh = Tri2D(nx = 2, ny = 2, dx = 1.0, dy = 1.0)
     fudge = calibrate_profiler(10000)
     profile = Profiler('profile', fudge=fudge)

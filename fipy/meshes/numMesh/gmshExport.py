@@ -27,12 +27,11 @@ def getElementType(vertices, dimensions):
         raise MeshExportError, "Element type unsupported by Gmsh"
 
 def orderVertices(vertexCoords, vertices):
-    pi = 3.1415926535
     coordinates = Numeric.take(vertexCoords, vertices)
     centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
     coordinates = Numeric.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
-    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, Numeric.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
     sortorder = Numeric.argsort(angles)
     return Numeric.take(vertices, sortorder)
     
@@ -86,7 +85,7 @@ def exportAsMesh(mesh, filename):
             outFile.write(' ')
             outFile.write(str(a + 1))
         outFile.write("\n")
-    outFile.write("$ENDNOD")
+    outFile.write("$ENDNOD\n")
     outFile.close()
 
 if __name__ == "__main__":
