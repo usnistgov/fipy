@@ -530,6 +530,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def calcCellDistances(self):
 	tmp = MAtake(self.cellCenters, self.faceCellIDs)
 	tmp = tmp[:,1] - tmp[:,0]
+        self.cellDistanceVectors = tmp
 	tmp = MA.sqrt(MA.sum(tmp * tmp,1))
 	self.cellDistances = MA.filled(MA.where(tmp.mask(), self.faceToCellDistances[:,0], tmp))
 
