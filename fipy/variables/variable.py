@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/19/04 {4:23:01 PM} 
+ #                                last update: 12/20/04 {3:11:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -324,7 +324,12 @@ class Variable:
 	    
     def requiredBy(self, var):
 	assert isinstance(var, Variable)
-	self.subscribedVariables.append(var)
+        
+        # we retain a weak reference to avoid a memory leak 
+        # due to circular references between the subscriber
+        # and the subscribee
+        import weakref
+	self.subscribedVariables.append(weakref.proxy(var))
 	
     def getVariableClass(self):
 	return Variable
