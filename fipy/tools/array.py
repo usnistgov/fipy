@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/7/04 {8:50:20 AM} 
+ #                                last update: 7/26/04 {2:34:53 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -138,9 +138,10 @@ def crossProd(v1,v2):
 
 def dot(a1, a2, axis = 1):
     """
-    Jon you can remove this when you add your better version
-    I needed this for some level set stuff (and please add an axis
-    argument to yours...thanks
+    return array of vector dot-products of v1 and v2
+    for arrays a1 and a2 of vectors v1 and v2
+    
+    We can't use Numeric.dot on an array of vectors
     """
     return sum((a1*a2)[:], axis)
 
@@ -156,7 +157,7 @@ def sqrtDot(a1, a2):
     return inline.optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
 def _sqrtDotPy(a1, a2):
-    return sqrt(abs(sum((a1*a2)[:],1)))
+    return sqrt(dot(a1, a2))
 
 ##def _sqrtDotIn(a1, a2):
 ##    ni, nj = Numeric.shape(a1)
@@ -173,9 +174,12 @@ def _sqrtDotPy(a1, a2):
 ##    return result
 
 def _sqrtDotIn(a1, a2):
+    unit1 = unit2 = 1
     if _isPhysical(a1):
+	unit1 = a1.inBaseUnits().getUnit()
         a1 = a1.getNumericValue()
     if _isPhysical(a2):
+	unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
     ni, nj = Numeric.shape(a1)
     result = Numeric.zeros((ni,),'d')
@@ -191,7 +195,10 @@ def _sqrtDotIn(a1, a2):
             }
             result(i) = sqrt(result(i));
         }
-    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
+    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj)
+    if unit1 != 1 or unit2 != 1:
+	from fipy.tools.dimensions.physicalField import PhysicalField
+	result = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
     return result
 
 def allequal(first, second):
