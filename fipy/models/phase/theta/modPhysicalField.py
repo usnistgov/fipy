@@ -65,16 +65,17 @@
  ##
 
 from fipy.tools.dimensions.physicalField import PhysicalField
-from Numeric import pi
+
+import Numeric
 
 class ModPhysicalField(PhysicalField):
 
     def mod(self, argument):
-        return (argument + 3. * pi) % (2. * pi) - pi
+        return Numeric.fmod(argument + 3. * Numeric.pi, 2. * Numeric.pi) - Numeric.pi
 
     def __sub__(self, other):
         if isinstance(other, ModPhysicalField):
-            return self.__class__(value = self.mod(argument = self.value - other.value), unit = self.unit)
+            return self.__class__(value = self.mod(self.value - other.value), unit = self.unit)
         else:
             return self._sum(other, sign2 = lambda b: -b)
     

@@ -79,13 +79,18 @@ class TestModSubtract(TestMod):
         self.thetaOther = ModularVariable(
             mesh = self.theta.getMesh(),
             value = 2. * pi / 3.)
+##        print self.thetaOther
+##        print self.theta
+##        print "going into the subtraction"
+##        print self.thetaOther - self.theta
+##        raw_input()
         self.result = (self.thetaOther - self.theta).getNumericValue()
         self.answer = self.theta.getNumericValue()
 
 class TestModCellToFace(TestModFace):
     def setUp(self):
-        TestMod.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3.)))
-        self.answer = Numeric.array((-pi, 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3.))
+        TestMod.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3. )))
+        self.answer = Numeric.array((-pi, 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3. ))
         self.result = self.theta.getArithmeticFaceValue().getNumericValue()
         self.reorderResult()
         

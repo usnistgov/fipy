@@ -48,7 +48,7 @@ import unittest
 
 import fipy.tests.testProgram
 
-import mesh1D.test
+##import mesh1D.test
 import mesh20x20.test
 import mesh50x50.test
 

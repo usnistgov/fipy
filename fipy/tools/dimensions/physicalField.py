@@ -764,9 +764,9 @@ class PhysicalField:
         """
         Return the sinus of the PhysicalField
         
-            >>> PhysicalField(Numeric.pi/6,"rad").sin()
+            >>> print PhysicalField(Numeric.pi/6,"rad").sin()
             0.5
-            >>> PhysicalField(30.,"deg").sin()
+            >>> print PhysicalField(30.,"deg").sin()
             0.5
         
         The units of the PhysicalField must be an angle

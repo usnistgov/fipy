@@ -48,8 +48,9 @@ import unittest
 
 import fipy.tests.testProgram
 
-import examples.diffusion.test
+
 import examples.convection.test
+import examples.diffusion.test
 import examples.elphf.test
 import examples.phase.test
 import examples.levelSet.test
@@ -57,8 +58,8 @@ import examples.levelSet.test
 def suite():
     theSuite = unittest.TestSuite()
     
-    theSuite.addTest(examples.diffusion.test.suite())
     theSuite.addTest(examples.convection.test.suite())
+    theSuite.addTest(examples.diffusion.test.suite())
     theSuite.addTest(examples.phase.test.suite())
     theSuite.addTest(examples.elphf.test.suite())
     theSuite.addTest(examples.levelSet.test.suite())  
