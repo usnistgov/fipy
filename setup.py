@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/30/04 {12:00:09 PM} 
+ #                                last update: 7/2/04 {2:17:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren <jwarren@nist.gov>
@@ -35,39 +35,13 @@
  # ###################################################################
  ##
 
-from distutils.core import setup
 import glob
 import os
 import string
+
+from distutils.core import setup
 from distutils.core import Command
 
-from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
-from docutils import languages
-
-class NotStupidLaTeXTranslator(LaTeXTranslator):
-    pass
-
-class IncludedLaTeXWriter(LaTeXWriter):
-    def write(self, document, destination):
-	self.document = document
-	self.language = languages.get_language(
-	    document.settings.language_code)
-	self.destination = destination
-	self.translate()
-	output = self.destination.write(''.join(self.body))
-	return output
-	
-    def translate(self):
-	visitor = NotStupidLaTeXTranslator(self.document)
-	self.document.walkabout(visitor)
-	self.output = visitor.astext()
-	self.head_prefix = visitor.head_prefix
-	self.head = visitor.head
-	self.body_prefix = visitor.body_prefix
-	self.body = visitor.body
-	self.body_suffix = visitor.body_suffix
-
-	
 class build_docs (Command):
 
     description = "build the FiPy api documentation"
@@ -155,6 +129,46 @@ class build_docs (Command):
         
         os.chdir(savedir)
 
+    def _translateTextFiles(self):
+	from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
+	from docutils import languages
+
+	class NotStupidLaTeXTranslator(LaTeXTranslator):
+	    pass
+
+	class IncludedLaTeXWriter(LaTeXWriter):
+	    def write(self, document, destination):
+		self.document = document
+		self.language = languages.get_language(
+		    document.settings.language_code)
+		self.destination = destination
+		self.translate()
+		output = self.destination.write(''.join(self.body))
+		return output
+		
+	    def translate(self):
+		visitor = NotStupidLaTeXTranslator(self.document)
+		self.document.walkabout(visitor)
+		self.output = visitor.astext()
+		self.head_prefix = visitor.head_prefix
+		self.head = visitor.head
+		self.body_prefix = visitor.body_prefix
+		self.body = visitor.body
+		self.body_suffix = visitor.body_suffix
+
+	from docutils import core
+
+	core.publish_file(source_path='../../INSTALLATION.txt',
+			  destination_path='installation.tex',
+			  reader_name='standalone',
+			  parser_name='restructuredtext',
+			  writer=IncludedLaTeXWriter(),
+			  settings_overrides = {
+			      'use_latex_toc': True,
+			      'footnote_references': 'superscript'
+			  })
+
+
     def run (self):
 	if self.latex:
 	    self._buildTeXAPIs()
@@ -175,25 +189,15 @@ class build_docs (Command):
 	if self.manual:
 	    savedir = os.getcwd()
 	    
-## 	    try:
-	    os.chdir(os.path.join('documentation','manual'))
-	    
-	    from docutils import core
+	    try:
+		os.chdir(os.path.join('documentation','manual'))
+		
+		self._translateTextFiles()
 
-	    core.publish_file(source_path='../../INSTALLATION.txt',
-			      destination_path='installation.tex',
-			      reader_name='standalone',
-			      parser_name='restructuredtext',
-			      writer=IncludedLaTeXWriter(),
-			      settings_overrides = {
-				  'use_latex_toc': True,
-				  'footnote_references': 'superscript'
-			      })
-
-	    os.system("pdflatex fipy.tex")
-## 	    except:
-## 		pass
-## 	    os.chdir(savedir)
+		os.system("pdflatex fipy.tex")
+	    except:
+		pass
+	    os.chdir(savedir)
 
     # run()
 
