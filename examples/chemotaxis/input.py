@@ -50,13 +50,18 @@ Here are some test cases for the model.
     >>> for i in range(300):
     ...     it.timestep(dt = 0.1)
     >>> import Numeric
-    >>> Numeric.allclose(KMVar, params['KM'], atol = 1e-5)
+    >>> accuracy = 1e-2
+    >>> Numeric.allclose(KMVar, params['KM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TMVar, params['TM'], atol = 1e-4)
+    >>> Numeric.allclose(TMVar, params['TM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TCVar, params['TC'], atol = 1e-4)
+    >>> Numeric.allclose(TCVar, params['TC'], atol = accuracy)
     1
-    >>> Numeric.allclose(P2Var, params['P2'], atol = 1e-4)
+    >>> Numeric.allclose(P2Var, params['P2'], atol = accuracy)
+    1
+    >>> Numeric.allclose(P3Var, params['P3'], atol = accuracy)
+    1
+    >>> Numeric.allclose(KCVar, params['KC'], atol = accuracy)
     1
 
 """
@@ -67,24 +72,32 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.equations.sourceEquation import SourceEquation
 from fipy.equations.diffusionEquationWithSource import DiffusionEquationWithSource
 from fipy.iterators.iterator import Iterator
+from fipy.variables.variable import Variable
+from fipy.boundaryConditions.fixedValue import FixedValue
 
-params = parameters['case 1']
+params = parameters['case 2']
 
-mesh = Grid2D(nx = 10, ny = 1, dx = 1., dy = 1.)
+nx = 50
+dx = 1.
+L = nx * dx
 
-KMVar = CellVariable(mesh = mesh, value = 0.2)
-KCVar = CellVariable(mesh = mesh, value = params['KC'])
-TMVar = CellVariable(mesh = mesh, value = 0.2)
-TCVar = CellVariable(mesh = mesh, value = 0.4)
-P3Var = CellVariable(mesh = mesh, value = params['P3'])
-P2Var = CellVariable(mesh = mesh, value = 0.4)
+mesh = Grid2D(nx = nx, ny = 1, dx = dx, dy = 1.)
+
+shift = 1.
+
+KMVar = CellVariable(mesh = mesh, value = params['KM'] * shift, hasOld = 1)
+KCVar = CellVariable(mesh = mesh, value = params['KC'] * shift, hasOld = 1)
+TMVar = CellVariable(mesh = mesh, value = params['TM'] * shift, hasOld = 1)
+TCVar = CellVariable(mesh = mesh, value = params['TC'] * shift, hasOld = 1)
+P3Var = CellVariable(mesh = mesh, value = params['P3'] * shift, hasOld = 1)
+P2Var = CellVariable(mesh = mesh, value = params['P2'] * shift, hasOld = 1)
+RVar = CellVariable(mesh = mesh, value = params['R'], hasOld = 1)
 
 PN = P3Var + P2Var
 
 KMEq = SourceEquation(KMVar,
-                      scCoeff = params['chiK'] * (params['R'] + 1) * (1 - KCVar - KMVar.getCellVolumeAverage()),
+                      scCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.getCellVolumeAverage()),
                       spCoeff = params['lambdaK'] / (1 + PN / params['kappaK']))
-
 TMEq = SourceEquation(TMVar,
                       scCoeff = params['chiT'] * (1 - TCVar - TMVar.getCellVolumeAverage()),
                       spCoeff = params['lambdaT'] * (KMVar + params['zetaT']))
@@ -93,44 +106,46 @@ TCEq = SourceEquation(TCVar,
                       scCoeff = params['lambdaT'] * (TMVar * KMVar).getCellVolumeAverage(),
                       spCoeff = params['lambdaTstar'])
 
-##PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kappac'] + 1) + params['zetaPITP']
+PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kappac'] + 1) + params['zetaPITP']
 
-##P3Eq = DiffusionEquationWithSource(P3Var,
-##                                   diffusionCoeff = params['diffusionCoeff'],
-##                                   scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3'],
-##                                   spCoeff = params['lambda3'] * (TMVar + params['zeta3T']))
+P3Eq = DiffusionEquationWithSource(P3Var,
+                                   diffusionCoeff = params['diffusionCoeff'],
+                                   scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3'],
+                                   spCoeff = params['lambda3'] * (TMVar + params['zeta3T']))
 
 P2Eq = DiffusionEquationWithSource(P2Var,
                                    diffusionCoeff = params['diffusionCoeff'],
                                    scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var,
                                    spCoeff = params['lambda2'] * (TMVar + params['zeta2T']))
 
-tmp1 = KMVar / (1 + PN / params['kappaK'])
-tmp1 = tmp1.getCellVolumeAverage()
-
-tmp2 = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)**2
-sc = -tmp2 * KCVar**2
-sp = tmp2 * params['kappaKstar']
-
 KCEq = SourceEquation(KCVar,
-                      scCoeff = params['alphaKstar'] * params['lambdaKstar'] * tmp1 + sc,
-                      spCoeff = sp)
+                      scCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage(),
+                      spCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar))
 
 
-##KCEq = SourceEquation(KCVar,
-##                      scCoeff = params['alphaKstar'] * params['lambdaKstar'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage(),
-##                      spCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar))
-
-
-it = Iterator((KMEq, TMEq, TCEq, P2Eq))
-
-
+it = Iterator((KMEq, TMEq, TCEq, P3Eq, P2Eq, KCEq))
 
 if __name__ == '__main__':
 
-    for i in range(200):
-        it.timestep(dt = 0.1)
+    from gnuplot1DViewer import Gnuplot1DViewer
+    KMViewer = Gnuplot1DViewer((KMVar / KMVar.getCellVolumeAverage(), PN / PN.getCellVolumeAverage(), TMVar / TMVar.getCellVolumeAverage()), title = 'Gradient Stimulus: Profile', varTitles = ('KM', 'PN', 'TM'), xlabel = 'X', ylabel = 'Normalised concentrations')
 
-    print KMVar, TMVar, TCVar, P2Var, KCVar
-                      
-                                                  
+
+    for i in range(100):
+        print i
+        it.timestep(dt = 1.)
+
+    import Numeric
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * Numeric.cos((2 * Numeric.pi * mesh.getCellCenters()[:,0]) / L)
+
+    for i in range(100):
+        it.timestep(dt = 0.1)
+        KMViewer.plot()
+
+    KMViewer.plot(fileName = 'plot1D.ps')
+
+    raw_input("finished")
+
+    
+
+
