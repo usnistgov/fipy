@@ -41,7 +41,7 @@
  ##
 
 r"""
-In this problem, we demonstrate the use of the `NthOrderDiffusionEquation` class 
+In this problem, we demonstrate the use of the `NthOrderDiffusionTerm` class 
 in the simple case of steady state 1D diffusion, which was introduced in
 ``examples/diffusion/steadyState/mesh1D/input.py``,
 to solve
@@ -50,7 +50,7 @@ to solve
 
    $$ \nabla \cdot (D \nabla \phi) = 0. $$
 
-This examples shows that the `NthOrderDiffusionEquation` is equivalent to the `DiffusionEquation` when 
+This examples shows that the `NthOrderDiffusionTerm` is equivalent to the `ImplicitDiffusionTerm` when 
 
 .. raw:: latex
 

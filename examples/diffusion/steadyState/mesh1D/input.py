@@ -99,14 +99,14 @@ centers. The boundary conditions are given by `valueLeft = 0` and
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
 
-Boundary conditions are given to the equation via a `Tuple` (list). Boundary
-conditions are formed with a value and a set of faces over which they
-apply. For example here the exterior faces on the left of the domain
-are extracted by `mesh.getFacesLeft()`. These faces and a value
-(`valueLeft`) are passed to a `FixedValue` boundary condition. A fixed
-flux of zero is set on the top and bottom surfaces to simulate a one
-dimensional problem. The `FixedFlux(someFaces, 0.)` is the default
-boundary condition if no boundary conditions are specified for exterior faces.
+Boundary conditions are given to the equation via a `Tuple`
+(list). Boundary conditions are formed with a value and a set of faces
+over which they apply. For example here the exterior faces on the left
+of the domain are extracted by `mesh.getFacesLeft()`. These faces and
+a value (`valueLeft`) are passed to a `FixedValue` boundary
+condition. Note that the `FixedFlux(someFaces, 0.)` is the default
+boundary condition if no boundary conditions are specified for
+exterior faces.
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (FixedValue(mesh.getFacesRight(),valueRight),
@@ -118,8 +118,7 @@ The steady-state diffusion equation
 .. raw:: latex
 
    $$ \nabla \cdot (D \nabla \phi) = 0 $$
-
-is represented in \FiPy{} by an `ImplicitDiffusionTerm` object.
+   is represented in \FiPy{} by an `ImplicitDiffusionTerm` object.
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> ImplicitDiffusionTerm().solve(var = var, boundaryConditions = boundaryConditions)
@@ -139,9 +138,8 @@ tolerance of `1e-10`.
     >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1
 
-A `Viewer` object allows a variable to be displayed. Here we are using
-the Gist package to view the field. The Gist viewer is constructed and
-the results are viewed:
+The function 'fipy.viewers.make()' returns a suitable viewer depending
+on available viewers and the dimension of the mesh.
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers

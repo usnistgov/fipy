@@ -44,7 +44,7 @@
 r"""
 
 This example demonstrates how to solve a simple diffusion problem on a
-non-standard mesh with varying boundary conditions. The gmsh package
+non-standard mesh with varying boundary conditions. The gmsh_ package
 is used to create the mesh. Firstly, define some parameters for the
 creation of the mesh,
 
@@ -55,7 +55,11 @@ The `cellSize` is the preferred edge length of each mesh element and
 the `radius` is the radius of the circular mesh domain. In the
 following code section a file is created with the geometry that
 describes the mesh. For details of how to write such geometry files
-for gmsh, see the gmsh manual.
+for gmsh_, see the gmsh_ manual_.
+
+.. _gmsh: http://www.geuz.org/gmsh/
+
+.. _manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
    >>> lines = [ 'cellSize = ' + str(cellSize) + ';\n',
    ...           'radius = ' + str(radius) + ';\n',

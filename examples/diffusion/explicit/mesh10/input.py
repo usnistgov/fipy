@@ -63,11 +63,11 @@ and we initialize a `CellVariable` to `initialValue`:
     ...     mesh = mesh,
     ...     value = initialValue)
 
-The transient equation 
+The transient diffusion equation 
 
 .. raw:: latex
 
-   $$ \frac{\partial (\tau \phi)}{\partial t} = \nabla \cdot (D \nabla \phi) $$
+   $$ \frac{\partial \phi}{\partial t} = \nabla \cdot (D \nabla \phi) $$
 
 is represented by a `TransientTerm` and an `ExplicitDiffusionTerm`.
 

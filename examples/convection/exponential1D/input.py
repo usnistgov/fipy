@@ -94,9 +94,10 @@ The solution variable is initialized to `valueLeft`:
     ...     mesh = mesh,
     ...     value = valueLeft)
 
-The `SteadyConvectionDiffusionScEquation` object is
-used to create the equation.  It needs to be passed a convection term
-instantiator as follows:
+The equation is created with the `ImplicitDiffusionTerm` and
+`ExponentialConvectionTerm`, the scheme used by the convection term
+needs to calculate a Peclet number and thus the diffusion term
+instance must be passed to the convection term.
 
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)

@@ -102,7 +102,9 @@ We define the convection-diffusion equation with source
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
-    >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm) + sourceCoeff
+    >>> eq = diffTerm + \
+    ... ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm) + \
+    ... sourceCoeff
     
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> eq.solve(var = var, 
