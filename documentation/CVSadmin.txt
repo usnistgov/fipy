@@ -75,6 +75,11 @@ Refactoring complete::
 
 **Now cease all work on branch-refactoring_etc**
 
+Optionally (must do in directory above branch directory)
+
+    $ cd branch-refactoring_etc/..
+    $ cvs -d :ext:USERNAME@cvs.sourceforge.net:/cvsroot/fipy release branch-refactoring_etc 
+
 --------
 Versions
 --------
