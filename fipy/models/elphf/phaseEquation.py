@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/25/04 {12:01:19 AM} 
+ #                                last update: 1/26/04 {2:37:38 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -54,7 +54,7 @@ from fivol.terms.spSourceTerm import SpSourceTerm
 
 from substitutionalSumVariable import SubstitutionalSumVariable
 
-class PhaseEquation(PreRelaxationEquation):
+class PhaseEquation(RelaxationEquation):
     def __init__(self,
                  phase,
 		 timeStepDuration,
@@ -97,7 +97,7 @@ class PhaseEquation(PreRelaxationEquation):
 	    self.spTerm
 	)
 	    
-	PreRelaxationEquation.__init__(
+	RelaxationEquation.__init__(
             self,
             var = phase,
             terms = terms,

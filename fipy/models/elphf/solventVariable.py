@@ -6,7 +6,7 @@
  # 
  #  FILE: "solventVariable.py"
  #                                    created: 12/23/03 {4:51:16 PM} 
- #                                last update: 1/16/04 {10:55:21 AM} 
+ #                                last update: 1/26/04 {2:12:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,7 +45,8 @@ class SolventVariable(ComponentVariable):
 	ComponentVariable.__init__(
 	    self, 
 	    mesh = mesh,
-	    parameters = parameters
+	    parameters = parameters,
+	    hasOld = 0
 	    )
 	    
 	self.concentration =  Numeric.ones((len(mesh.getCells())),'d')

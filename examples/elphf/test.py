@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/16/04 {5:05:15 PM} 
+ #                                last update: 1/26/04 {2:39:22 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -75,7 +75,8 @@ class TestElPhF(TestBase):
 	self.assertWithinTolerance(field[-1], final[-1], self.tolerance)	
 
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	for step in range(self.steps):
+	    self.it.timestep()
 
 	self.assertFieldWithinTolerance(self.fields['phase'], self.final['phase'])	
 	self.assertFieldWithinTolerance(self.fields['potential'], self.final['potential'])	
@@ -116,7 +117,8 @@ class TestElPhF1Dphase(TestElPhF):
 	self.steps = 10
 	
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	for step in range(self.steps):
+	    self.it.timestep()
 
 	field  = self.parameters['phase']
     
@@ -167,7 +169,8 @@ class TestElPhF1DpoissonAllCharge(TestElPhF):
 	self.tolerance = 2e-5
 	
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	for step in range(self.steps):
+	    self.it.timestep()
 
 	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
 	x += 0.5
@@ -184,7 +187,8 @@ class TestElPhF1DpoissonLeftCharge(TestElPhF):
 	self.tolerance = 2e-5
 	
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	for step in range(self.steps):
+	    self.it.timestep()
 
 	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
 	x += 0.5
@@ -201,7 +205,8 @@ class TestElPhF1DpoissonRightCharge(TestElPhF):
 	self.tolerance = 2e-5
 	
     def testResult(self):
-	self.it.timestep(steps = self.steps)
+	for step in range(self.steps):
+	    self.it.timestep()
 
 	x = Numeric.arange(float(self.parameters['mesh']['nx'])) 
 	x += 0.5
@@ -212,13 +217,13 @@ class TestElPhF1DpoissonRightCharge(TestElPhF):
 
 def suite():
     theSuite = unittest.TestSuite()
-    theSuite.addTest(unittest.makeSuite(TestElPhF1D))
-    theSuite.addTest(unittest.makeSuite(TestElPhF2D))
-    theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
-    theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
-    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
-    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
-    theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseTernaryAndElectrons))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF1D))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF2D))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF2Dcorner))    
+##     theSuite.addTest(unittest.makeSuite(TestElPhF1Dphase))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseBinary))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseQuaternary))
+##     theSuite.addTest(unittest.makeSuite(TestElPhF1DphaseTernaryAndElectrons))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonAllCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonLeftCharge))
     theSuite.addTest(unittest.makeSuite(TestElPhF1DpoissonRightCharge))

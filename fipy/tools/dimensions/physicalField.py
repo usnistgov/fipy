@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/20/04 {11:27:15 AM} 
+ #                                last update: 1/26/04 {2:10:17 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -669,7 +669,7 @@ def Scale(quantity, scaling):
     
     quantity = AnyQuantity(quantity)
 
-    if isinstance(quantity,PhysicalField):
+    if isinstance(quantity,PhysicalField) and not quantity.unit.isDimensionless():
 	scaling = AnyQuantity(scaling)
 	# normalize quantity to scaling
 	# error will be thrown if incompatible
@@ -679,7 +679,7 @@ def Scale(quantity, scaling):
 	# Automatically throws an error if it's not a number.
 	dimensionless = quantity
 		
-    if isinstance(dimensionless,PhysicalField):
+    if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
 	raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
 	+ `scaling.inBaseUnits().unit` \
 	+ ' are incompatible'

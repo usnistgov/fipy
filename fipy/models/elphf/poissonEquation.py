@@ -6,7 +6,7 @@
  # 
  #  FILE: "poissonEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 1/24/04 {11:59:37 PM} 
+ #                                last update: 1/26/04 {2:37:49 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -55,7 +55,7 @@ from fivol.tools.dimensions import physicalField
 
 from substitutionalSumVariable import SubstitutionalSumVariable
 
-class PoissonEquation(PreRelaxationEquation):
+class PoissonEquation(RelaxationEquation):
     def __init__(self,
                  potential,
 		 parameters,
@@ -93,7 +93,7 @@ class PoissonEquation(PreRelaxationEquation):
 	    self.scTerm
 	)
 	    
-	PreRelaxationEquation.__init__(
+	RelaxationEquation.__init__(
             self,
             var = potential,
             terms = terms,

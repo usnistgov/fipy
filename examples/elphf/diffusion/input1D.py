@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/16/04 {3:43:50 PM} 
+ #                                last update: 1/26/04 {2:21:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -46,8 +46,11 @@ from fivol.profiler.profiler import calibrate_profiler
 
 from fivol.meshes.grid2D import Grid2D
 from fivol.viewers.grid2DGistViewer import Grid2DGistViewer
+from fivol.iterators.iterator import Iterator
 
 import fivol.examples.elphf.elphf as elphf
+
+## from elphfIterator import ElPhFIterator
 
 nx = 40
 dx = 1.
@@ -98,7 +101,13 @@ fields['substitutionals'][0].setValue(0.6,setCells)
 fields['substitutionals'][1].setValue(0.6)
 fields['substitutionals'][1].setValue(0.3,setCells)
 
-it = elphf.makeIterator(mesh = mesh, fields = fields, parameters = parameters)
+equations, timeStepDuration = elphf.makeEquations(
+    mesh = mesh, 
+    fields = fields, 
+    parameters = parameters
+)
+
+it = Iterator(equations = equations, timeStepDuration = timeStepDuration)
 
 if __name__ == '__main__':
     viewers = [Grid2DGistViewer(var = field) for field in fields['all']]

@@ -6,7 +6,7 @@
  # 
  #  FILE: "componentVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/20/04 {3:48:57 PM} 
+ #                                last update: 1/26/04 {2:05:00 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -47,8 +47,8 @@ class ComponentVariable(CellVariable):
 	    name = ''
 # 	value = physicalField.PhysicalField(value)
 	value = physicalField.Scale(value, "MOLARVOLUME**-1")
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 	self.parameters = parameters
+	CellVariable.__init__(self, mesh = mesh, name = name, value = value, hasOld = hasOld)
 ## 	self.standardPotential = physicalField.PhysicalField(parameters['standard potential'])
 ## 	self.barrierHeight = physicalField.PhysicalField(parameters['barrier height'])
  	self.standardPotential = physicalField.Scale(parameters['standard potential'], "ENERGY")
@@ -62,6 +62,13 @@ class ComponentVariable(CellVariable):
 ## 	    self.diffusivity = physicalField.PhysicalField(parameters['diffusivity'])
 	else:
 	    self.diffusivity = 0
+	    
+    def copy(self):
+	return self.__class__(
+	    mesh = self.mesh,
+	    parameters = self.parameters,
+	    value = self.getValue(),
+	    hasOld = 0)
 	
     def getStandardPotential(self):
 	return self.standardPotential

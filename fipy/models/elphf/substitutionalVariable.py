@@ -6,7 +6,7 @@
  # 
  #  FILE: "substitutionalVariable.py"
  #                                    created: 12/18/03 {12:18:05 AM} 
- #                                last update: 1/16/04 {11:32:58 AM} 
+ #                                last update: 1/26/04 {2:05:11 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -41,12 +41,21 @@ from fivol.tools.dimensions import physicalField
 from componentVariable import ComponentVariable
 
 class SubstitutionalVariable(ComponentVariable):
-    def __init__(self, mesh, parameters, systemParameters, value=0., hasOld = 1):
+    def __init__(self, mesh, parameters, solventParameters, name = '', value=0., hasOld = 1):
+	self.solventParameters = solventParameters
 	ComponentVariable.__init__(self, mesh = mesh, parameters = parameters, value = value, hasOld = hasOld)
-	self.solventParameters = systemParameters['solvent']
 ## 	self.standardPotential -= physicalField.PhysicalField(self.solventParameters['standard potential'])
 ## 	self.barrierHeight -= physicalField.PhysicalField(self.solventParameters['barrier height'])
 	self.standardPotential -= physicalField.Scale(self.solventParameters['standard potential'],"ENERGY")
 	self.barrierHeight -= physicalField.Scale(self.solventParameters['barrier height'],"ENERGY")
 	if self.solventParameters.has_key('valence'):
 	    self.valence -= self.solventParameters['valence']
+	    
+    def copy(self):
+	return self.__class__(
+	    mesh = self.mesh,
+	    parameters = self.parameters,
+	    solventParameters = self.solventParameters,
+	    value = self.getValue(),
+	    hasOld = 0)
+	
