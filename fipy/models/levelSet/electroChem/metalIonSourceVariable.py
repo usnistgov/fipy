@@ -97,7 +97,8 @@ class MetalIonSourceVariable(CellVariable):
         self.metalIonAtomicVolume = metalIonAtomicVolume
         
     def _calcValue(self):
-        ionVar = Numeric.where(self.ionVar > 1e-20, self.ionVar, 1e-20)
+        ionVar = Numeric.array(self.ionVar)
+        ionVar = Numeric.where(ionVar > 1e-20, ionVar, 1e-20)        
         self.value = Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonAtomicVolume) / ionVar
         
 def _test(): 

@@ -80,8 +80,11 @@ class FaceTerm(Term):
             b += bb
 
     def explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
+        
 	coeffMatrix = self.getCoeffMatrix(mesh, weight)
+
         inline.optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
+
         N = mesh.getNumberOfCells()
 	M = mesh.getMaxFacesPerCell()
         for boundaryCondition in boundaryConditions:
@@ -89,7 +92,7 @@ class FaceTerm(Term):
             LL,bb = boundaryCondition.buildMatrix(N, M, coeffMatrix)
 
             if LL != 0:
-		b -= LL.takeDiagonal() * oldArray
+		b -= LL.takeDiagonal() * Numeric.array(oldArray)
 	    b += bb
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
@@ -161,6 +164,6 @@ class FaceTerm(Term):
 
         if weight.has_key('explicit'):
             self.explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
-            
+
         return (L, b)
 
