@@ -71,6 +71,17 @@ Here we will define a few test cases. Firstly a 1D test case
    >>> Numeric.allclose(answer, Numeric.array(var))
    1
 
+A 1D test case with very small dimensions.
+
+   >>> dx = 1e-10
+   >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+   >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+   >>> eqn = DistanceEquation(var)
+   >>> eqn.solve()
+   >>> answer = Numeric.arange(8) * dx - 3.5 * dx
+   >>> Numeric.allclose(answer, Numeric.array(var))
+   1
+   
 """
 __docformat__ = 'restructuredtext'
 
@@ -105,11 +116,11 @@ class DistanceEquation(Equation):
 
         self._calcNumericQuantities()
 
-    def solve(self):
-        
+    def solve(self, terminationValue = None):
+
         setValueFlag = self._calcInterfaceValues()
         setValueFlag = self._calcInitialTrialValues(setValueFlag)
-        self._calcRemainingValues(setValueFlag)
+        self._calcRemainingValues(setValueFlag, terminationValue)
         
     def _calcNumericQuantities(self):
         self.cellToCellIDs = Numeric.array(self.mesh.getCellToCellIDsFilled())
@@ -154,6 +165,16 @@ class DistanceEquation(Equation):
            >>> Numeric.allclose(answer, Numeric.array(var))
            1
 
+           >>> dx = 1e-10
+           >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+           >>> var = DistanceVariable(mesh = mesh, value =
+           ...     (-1, -1, -1, -1, 1, 1, 1, 1))
+           >>> DistanceEquation(var)._calcInterfaceValues()
+           [0,0,0,1,1,0,0,0,]
+           >>> answer = Numeric.array((-1,-1,-1,-dx/2,dx/2,1,1,1))
+           >>> Numeric.allclose(answer, Numeric.array(var))
+           1
+           
         """
         
         N = self.mesh.getNumberOfCells()
@@ -166,7 +187,7 @@ class DistanceEquation(Equation):
         phiAdj = Numeric.take(self.var, cellToCellIDs)
         phi = Numeric.resize(Numeric.repeat(self.var, M),(N, M))
 
-        distance = MA.masked_values(abs(phi * dAP / (phi - phiAdj)) * cellZeroFlag, 0)
+        distance = MA.masked_array(abs(phi * dAP / (phi - phiAdj)) * cellZeroFlag, mask = Numeric.logical_not(cellZeroFlag))
 
         distance = MA.sort(distance, axis = 1)
 
@@ -176,26 +197,13 @@ class DistanceEquation(Equation):
         sign = -1 + 2 * (Numeric.array(self.var) > 0)
 
         signedDistance = MA.where(s.mask(),
-                                 self.var,
-                                 MA.where(t.mask(),
-                                          sign * s,
-                                          sign * s * t / MA.sqrt(s**2 + t**2)))
-
-##        argmins = MA.argmin(abs(distance), axis = 1)
-
-##        argmins = Numeric.transpose(Numeric.array((Numeric.arange(N),argmins)))
-
-##        argmins = argmins[:,0] * M + argmins[:,1]
-
-##        print 'distance before',distance
-
-##        distance = MA.take(distance.flat, argmins)
-
-##        print 'distance',distance
+                                  self.var,
+                                  MA.where(t.mask(),
+                                           sign * s,
+                                           sign * s * t / MA.sqrt(s**2 + t**2)))
         
         cellFlag = Numeric.sum(cellZeroFlag, axis = 1)
 
-##        self.var.setValue(MA.where(cellFlag > 0, distance, self.var))
         self.var.setValue(signedDistance)
 
         return Numeric.where(cellFlag > 0, 1, 0)
@@ -232,7 +240,12 @@ class DistanceEquation(Equation):
            >>> answer = Numeric.array((1 + d, 1 - d))
            >>> Numeric.allclose(answer, eqn._calcQuadratic(1, 1, n1, n2, d, d * sqrt, 0, 0, 0, 0, 0))
            1
-           
+           >>> n1 = Numeric.array((1,0))
+           >>> n2 = Numeric.array((0,1))
+           >>> answer = Numeric.array((5.5, 5.5))
+           >>> Numeric.allclose(answer, eqn._calcQuadratic(10, 1, n1, n2, 1, 1, 0, 0, 0, 0, 0))
+           1
+
         """
 
         dotProd = d1 * d2 * Numeric.dot(n1, n2)
@@ -240,10 +253,12 @@ class DistanceEquation(Equation):
         dsq = d1**2 + d2**2 - 2 * dotProd
 
         top = -phi1 * (dotProd - d2**2) - phi2 * (dotProd - d1**2)
-        sqrt = Numeric.sqrt(crossProd**2 *(dsq - (phi1 - phi2)**2))
-        
+        sqrt = crossProd**2 *(dsq - (phi1 - phi2)**2)
+        sqrt = Numeric.sqrt(max(sqrt, 0))
+##        sqrt = Numeric.sqrt(crossProd**2 *(dsq - (phi1 - phi2)**2))
+
         return Numeric.array(((top + sqrt) / dsq, (top - sqrt) / dsq))
-        
+
     def _calcInitialTrialValues(self, setValueFlag):
         """
 
@@ -340,7 +355,7 @@ class DistanceEquation(Equation):
             else:
                 return quad[1]
 
-    def _calcRemainingValues(self, setValueFlag):
+    def _calcRemainingValues(self, setValueFlag, terminationValue = None):
         """
         
         After the initial trial values have been evaluated this
@@ -376,7 +391,10 @@ class DistanceEquation(Equation):
         argmin = Numeric.argmin(abs(values))
         cellID = trialCellIDs[argmin]
 
-        while len(trialCellIDs) > 0 and abs(self.var[cellID]) < self.terminationValue:
+        if terminationValue == None:
+            terminationValue = self.terminationValue
+
+        while len(trialCellIDs) > 0 and abs(self.var[cellID]) < terminationValue:
 
             values = Numeric.take(self.var, trialCellIDs)
             argmin = Numeric.argmin(abs(values))
