@@ -122,7 +122,7 @@ KCEq = SourceEquation(KCVar,
 ##                      spCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar))
 
 
-it = Iterator((KMEq, TMEq, TCEq, P2Eq, KCEq))
+it = Iterator((KMEq, TMEq, TCEq, P2Eq))
 
 
 
