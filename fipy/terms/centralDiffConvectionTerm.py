@@ -37,10 +37,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.convectionTerm import _ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class CentralDifferenceConvectionTerm(ConvectionTerm):
+class CentralDifferenceConvectionTerm(_ConvectionTerm):
     r"""
 
     The discretization for the `CentralDifferenceConvectionTerm` is given by

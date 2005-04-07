@@ -40,11 +40,11 @@
  # ###################################################################
  ##
 
-from fipy.terms.cellTerm import CellTerm
+from fipy.terms.cellTerm import _CellTerm
 
-class SourceTerm(CellTerm):
+class _SourceTerm(_CellTerm):
     def __init__(self, coeff = 0.):
-	CellTerm.__init__(self, coeff = coeff) 
+	_CellTerm.__init__(self, coeff = coeff) 
 	
     def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()

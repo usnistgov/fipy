@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/7/05 {3:50:37 PM} 
+ #                                last update: 4/7/05 {11:35:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,7 +113,7 @@ class Term:
         Add a `Term` to another `Term`, number or variable.
 
            >>> Term(coeff = 1.) + 10.
-           (Term(coeff = 1.0) + ExplicitSourceTerm(coeff = 10.0))
+           (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = 10.0))
            >>> Term(coeff = 1.) + Term(coeff = 2.)
            (Term(coeff = 1.0) + Term(coeff = 2.0))
         """
@@ -121,8 +121,8 @@ class Term:
         if self._otherIsZero(other):
             return self
         else:
-            from fipy.terms.binaryTerm import AdditionTerm
-            return AdditionTerm(term1 = self, term2 = other)
+            from fipy.terms.binaryTerm import _AdditionTerm
+            return _AdditionTerm(term1 = self, term2 = other)
 	    
     __radd__ = __add__
     
@@ -141,7 +141,7 @@ class Term:
         Subtract a `Term` from a `Term`, number or variable.
 
            >>> Term(coeff = 1.) - 10.
-           (Term(coeff = 1.0) - ExplicitSourceTerm(coeff = 10.0))
+           (Term(coeff = 1.0) - _ExplicitSourceTerm(coeff = 10.0))
            >>> Term(coeff = 1.) - Term(coeff = 2.)
            (Term(coeff = 1.0) - Term(coeff = 2.0))
            
@@ -149,22 +149,22 @@ class Term:
         if self._otherIsZero(other):
             return self
         else:
-            from fipy.terms.binaryTerm import SubtractionTerm
-            return SubtractionTerm(term1 = self, term2 = other)
+            from fipy.terms.binaryTerm import _SubtractionTerm
+            return _SubtractionTerm(term1 = self, term2 = other)
 
     def __rsub__(self, other):
         """
         Subtract a `Term`, number or variable from a `Term`.
 
            >>> 10. - Term(coeff = 1.)
-           (ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
+           (_ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
 
         """        
         if self._otherIsZero(other):
             return self
         else:
-            from fipy.terms.binaryTerm import SubtractionTerm
-            return SubtractionTerm(term1 = other, term2 = self)
+            from fipy.terms.binaryTerm import _SubtractionTerm
+            return _SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
         """
@@ -185,12 +185,12 @@ class Term:
             if not isinstance(other, Term):
                 return False
             else:
-                from fipy.terms.binaryTerm import EquationTerm
-                return EquationTerm(term1 = self, term2 = other)
+                from fipy.terms.binaryTerm import _EquationTerm
+                return _EquationTerm(term1 = self, term2 = other)
 
                 # because of the semantics of comparisons in Python,
                 # the following test doesn't work
-                ##         if isinstance(self, EquationTerm) or isinstance(other, EquationTerm):
+                ##         if isinstance(self, _EquationTerm) or isinstance(other, _EquationTerm):
                 ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
 
     def __repr__(self):

@@ -37,9 +37,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.diffusionTerm import DiffusionTerm
+from fipy.terms.diffusionTerm import _DiffusionTerm
 
-class ImplicitDiffusionTerm(DiffusionTerm):
+class ImplicitDiffusionTerm(_DiffusionTerm):
     r"""
     The discretization for the `ImplicitDiffusionTerm` is given by
 

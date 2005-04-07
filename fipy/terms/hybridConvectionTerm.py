@@ -39,10 +39,10 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.convectionTerm import _ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class HybridConvectionTerm(ConvectionTerm):
+class HybridConvectionTerm(_ConvectionTerm):
     r"""
     The discretization for the `HybridConvectionTerm` is given by
 

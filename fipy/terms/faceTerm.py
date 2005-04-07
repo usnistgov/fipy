@@ -48,7 +48,7 @@ import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import SparseMatrix
 
-class FaceTerm(Term):
+class _FaceTerm(Term):
     def __init__(self, coeff = 1.):
 	Term.__init__(self, coeff = coeff)
         self.coeffMatrix = None

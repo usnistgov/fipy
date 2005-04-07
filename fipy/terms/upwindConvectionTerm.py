@@ -38,13 +38,13 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.convectionTerm import _ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools.inline import inline
 
-class UpwindConvectionTerm(ConvectionTerm):
+class UpwindConvectionTerm(_ConvectionTerm):
     r"""
     The discretization for the `UpwindConvectionTerm` is given by
 

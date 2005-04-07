@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.cellTerm import CellTerm
+from fipy.terms.cellTerm import _CellTerm
 
-class TransientTerm(CellTerm):
+class TransientTerm(_CellTerm):
     r"""
     The `TransientTerm` is discretized in the following way
     

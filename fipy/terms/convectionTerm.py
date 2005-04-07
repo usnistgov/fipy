@@ -44,28 +44,28 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.faceTerm import FaceTerm
+from fipy.terms.faceTerm import _FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
-class ConvectionTerm(FaceTerm):
+class _ConvectionTerm(_FaceTerm):
     def __init__(self, coeff = 1.0, diffusionTerm = None):
         """
         `Convection Term` should not be called directly.
         
         :Parameters:
           - `coeff` : The `term`'s coefficient value.
-          - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
+          - `diffusionTerm` : If a `_DiffusionTerm` is given, the `_ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
-	FaceTerm.__init__(self, coeff = coeff)
+	_FaceTerm.__init__(self, coeff = coeff)
 	
     def __neg__(self):
         """
         Negate the term.
 
-           >>> -ConvectionTerm(coeff = 1.0)
-           ConvectionTerm(coeff = -1.0)
+           >>> -_ConvectionTerm(coeff = 1.0)
+           _ConvectionTerm(coeff = -1.0)
         """
         return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
 

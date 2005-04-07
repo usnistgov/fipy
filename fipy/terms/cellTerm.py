@@ -49,7 +49,7 @@ from fipy.tools.inline import inline
 
 from fipy.tools.sparseMatrix import SparseMatrix
 
-class CellTerm(Term):
+class _CellTerm(Term):
     def __init__(self, coeff = 1.):
 	Term.__init__(self, coeff = coeff)
         self.coeffVectors = None

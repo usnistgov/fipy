@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.terms.sourceTerm import _SourceTerm
 
-class ImplicitSourceTerm(SourceTerm):
+class ImplicitSourceTerm(_SourceTerm):
     r"""
 
     The `ImplicitSourceTerm` discretisation is given by

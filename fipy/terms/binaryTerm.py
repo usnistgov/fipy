@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 2/26/05 {9:35:40 PM} 
+ #                                last update: 4/7/05 {11:33:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,16 +42,16 @@
  ##
 
 from fipy.terms.term import Term
-from fipy.terms.explicitSourceTerm import ExplicitSourceTerm
+from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-class BinaryTerm(Term):
+class _BinaryTerm(Term):
     def __init__(self, term1, term2):
 
 	if isinstance(term1, Term):
 	    if not isinstance(term2, Term):
-		term2 = ExplicitSourceTerm(coeff = term2)
+		term2 = _ExplicitSourceTerm(coeff = term2)
 	elif isinstance(term2, Term):
-	    term1 = ExplicitSourceTerm(coeff = term1)
+	    term1 = _ExplicitSourceTerm(coeff = term1)
 	else:
 	    raise "No terms!"
 	
@@ -70,21 +70,21 @@ class BinaryTerm(Term):
 	
 	return (matrix, RHSvector)
 
-class AdditionTerm(BinaryTerm):
+class _AdditionTerm(_BinaryTerm):
     def __repr__(self):
         return "(%s + %s)" % (repr(self.term1), repr(self.term2))
         
     def _operator(self):
 	return lambda a,b: a + b
 	
-class SubtractionTerm(BinaryTerm):
+class _SubtractionTerm(_BinaryTerm):
     def __repr__(self):
         return "(%s - %s)" % (repr(self.term1), repr(self.term2))
         
     def _operator(self):
 	return lambda a,b: a - b
 
-class EquationTerm(SubtractionTerm):
+class _EquationTerm(_SubtractionTerm):
     def __repr__(self):
         return "(%s == %s)" % (repr(self.term1), repr(self.term2))
         

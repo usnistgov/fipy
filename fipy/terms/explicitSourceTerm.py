@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 2/18/05 {10:40:08 AM} 
+ #                                last update: 4/7/05 {11:34:42 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,12 +42,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.terms.sourceTerm import _SourceTerm
 
-class ExplicitSourceTerm(SourceTerm):
+class _ExplicitSourceTerm(_SourceTerm):
     r"""
 
-    The `ExplicitSourceTerm` discretisation is given by
+    The `_ExplicitSourceTerm` discretisation is given by
 
     .. raw:: latex
 
