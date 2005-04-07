@@ -143,8 +143,8 @@ class CellVariable(Variable):
         """
 
 	if self.volumeAverage is None:
-	    from cellVolumeAverageVariable import CellVolumeAverageVariable
-	    self.volumeAverage = CellVolumeAverageVariable(self)
+	    from cellVolumeAverageVariable import _CellVolumeAverageVariable
+	    self.volumeAverage = _CellVolumeAverageVariable(self)
         
 	return self.volumeAverage
 
@@ -159,8 +159,8 @@ class CellVariable(Variable):
         as a `VectorCellVariable` (first-order gradient).
         """
 	if self.grad is None:
-	    from cellGradVariable import CellGradVariable
-	    self.grad = CellGradVariable(var = self, name = "%s_grad" % self.getName())
+	    from cellGradVariable import _CellGradVariable
+	    self.grad = _CellGradVariable(var = self, name = "%s_grad" % self.getName())
         
 	return self.grad
 
@@ -198,8 +198,8 @@ class CellVariable(Variable):
             1
         """
 	if self.arithmeticFaceValue is None:
-	    from arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
-	    self.arithmeticFaceValue = ArithmeticCellToFaceVariable(self)
+	    from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
+	    self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
 	return self.arithmeticFaceValue
 
@@ -237,8 +237,8 @@ class CellVariable(Variable):
             1
         """
 	if self.harmonicFaceValue is None:
-	    from harmonicCellToFaceVariable import HarmonicCellToFaceVariable
-	    self.harmonicFaceValue = HarmonicCellToFaceVariable(self)
+	    from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
+	    self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
 	return self.harmonicFaceValue
 
@@ -253,8 +253,8 @@ class CellVariable(Variable):
         as a `VectorFaceVariable` (second-order gradient).
         """
 	if self.faceGrad is None:
-	    from faceGradVariable import FaceGradVariable
-	    self.faceGrad = FaceGradVariable(self)
+	    from faceGradVariable import _FaceGradVariable
+	    self.faceGrad = _FaceGradVariable(self)
 
 	return self.faceGrad
 

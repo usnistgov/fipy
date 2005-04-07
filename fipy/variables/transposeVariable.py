@@ -39,7 +39,7 @@ import Numeric
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
-class TransposeVariable(VectorFaceVariable):
+class _TransposeVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self._requires(var)

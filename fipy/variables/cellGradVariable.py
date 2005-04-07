@@ -40,14 +40,14 @@ import Numeric, MA
 from fipy.variables.vectorCellVariable import VectorCellVariable
 import fipy.tools.array as array
 from fipy.tools.inline import inline
-from fipy.variables.faceGradContributionsVariable import FaceGradContributions
+from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
-class CellGradVariable(VectorCellVariable):
+class _CellGradVariable(VectorCellVariable):
     def __init__(self, var, name = ''):
 	VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
 	self.var = self._requires(var)
-        self.faceGradientContributions = FaceGradContributions(self.var)
+        self.faceGradientContributions = _FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
 

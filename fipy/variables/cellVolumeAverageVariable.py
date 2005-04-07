@@ -42,7 +42,7 @@ import Numeric
 
 from fipy.variables.variable import Variable
 
-class CellVolumeAverageVariable(Variable):
+class _CellVolumeAverageVariable(Variable):
     """
     Takes a `CellVariable` and evaluates its volume average over all the
     cells.
@@ -51,7 +51,7 @@ class CellVolumeAverageVariable(Variable):
         >>> mesh = Grid2D(nx = 2, ny = 2, dx = 2., dy = 5.)
         >>> from fipy.variables.cellVariable import CellVariable 
         >>> var = CellVariable(value = (1, 2, 3 ,4), mesh = mesh)
-        >>> print CellVolumeAverageVariable(var)
+        >>> print _CellVolumeAverageVariable(var)
         2.5
         
     """

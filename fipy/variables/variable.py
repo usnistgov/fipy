@@ -637,15 +637,15 @@ class Variable:
         
     def transpose(self):
 	if self.transposeVar is None:
-	    from transposeVariable import TransposeVariable
-	    self.transposeVar = TransposeVariable(self)
+	    from transposeVariable import _TransposeVariable
+	    self.transposeVar = _TransposeVariable(self)
 	
 	return self.transposeVar
 
     def sum(self, index = 0):
 	if not self.sumVar.has_key(index):
-	    from sumVariable import SumVariable
-	    self.sumVar[index] = SumVariable(self, index)
+	    from sumVariable import _SumVariable
+	    self.sumVar[index] = _SumVariable(self, index)
 	
 	return self.sumVar[index]
 	
@@ -665,8 +665,8 @@ class Variable:
         if self.mag is None:
 	    self.mag = self.dot(self).sqrt()
 	    
-## 	    from magVariable import MagVariable
-## 	    self.mag = MagVariable(self)
+## 	    from magVariable import _MagVariable
+## 	    self.mag = _MagVariable(self)
 	    
 	return self.mag
 

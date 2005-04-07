@@ -37,11 +37,11 @@
 
 import Numeric
 
-from fipy.variables.cellToFaceVariable import CellToFaceVariable
+from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import array
 from fipy.tools.inline import inline
 
-class ArithmeticCellToFaceVariable(CellToFaceVariable):
+class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
 	cell1 = array.take(self.var,id1)
 	cell2 = array.take(self.var,id2)

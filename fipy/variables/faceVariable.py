@@ -50,8 +50,8 @@ class FaceVariable(Variable):
 
     def transpose(self):
 	if self.transposeVar is None:
-	    from transposeVariable import TransposeVariable
-	    self.transposeVar = TransposeVariable(self)
+	    from transposeVariable import _TransposeVariable
+	    self.transposeVar = _TransposeVariable(self)
 	
 	return self.transposeVar
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellToFaceVariable.py"
  #                                    created: 7/26/04 {2:23:41 PM} 
- #                                last update: 4/2/05 {7:30:53 PM} 
+ #                                last update: 4/7/05 {2:49:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,7 +41,7 @@ from fipy.variables.vectorFaceVariable import VectorFaceVariable
 from fipy.tools import array
 from fipy.tools.inline import inline
 
-class VectorCellToFaceVariable(VectorFaceVariable):
+class _VectorCellToFaceVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self._requires(var)

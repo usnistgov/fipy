@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 4/2/05 {7:26:20 PM}
+ #                                last update: 4/7/05 {2:36:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ import fipy.tools.array as array
 import fipy.tools.inline.inline as inline
 from fipy.variables.cellVariable import CellVariable
 
-class AddOverFacesVariable(CellVariable):
+class _AddOverFacesVariable(CellVariable):
     def __init__(self, faceVariable, mesh = None):
         if not mesh:
             mesh = faceVariable.getMesh()

@@ -72,8 +72,8 @@ class VectorCellVariable(Variable):
         """
         
 	if self.arithmeticFaceValue is None:
-	    from vectorArithmeticCellToFaceVariable import VectorArithmeticCellToFaceVariable
-	    self.arithmeticFaceValue = VectorArithmeticCellToFaceVariable(self)
+	    from vectorArithmeticCellToFaceVariable import _VectorArithmeticCellToFaceVariable
+	    self.arithmeticFaceValue = _VectorArithmeticCellToFaceVariable(self)
 
 	return self.arithmeticFaceValue
 	
@@ -85,8 +85,8 @@ class VectorCellVariable(Variable):
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
-            from fipy.variables.vectorFaceDifferenceVariable import VectorFaceDifferenceVariable
-            self.divergence = VectorFaceDifferenceVariable(self).getMag()
+            from fipy.variables.vectorFaceDifferenceVariable import _VectorFaceDifferenceVariable
+            self.divergence = _VectorFaceDifferenceVariable(self).getMag()
             
         return self.divergence
 

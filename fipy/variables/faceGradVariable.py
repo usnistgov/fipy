@@ -41,7 +41,7 @@ from fipy.variables.vectorFaceVariable import VectorFaceVariable
 from fipy.tools import array
 from fipy.tools.inline import inline
 
-class FaceGradVariable(VectorFaceVariable):
+class _FaceGradVariable(VectorFaceVariable):
     def __init__(self, var):
 	VectorFaceVariable.__init__(self, var.getMesh())
 	self.var = self._requires(var)

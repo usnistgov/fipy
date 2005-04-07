@@ -40,7 +40,7 @@ import Numeric
 from fipy.variables.variable import Variable
 import fipy.tools.array as array
 
-class SumVariable(Variable):
+class _SumVariable(Variable):
     def __init__(self, var, index):
 	Variable.__init__(self, mesh = var.getMesh())
 	self.var = self._requires(var)

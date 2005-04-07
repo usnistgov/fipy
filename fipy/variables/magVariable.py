@@ -40,7 +40,7 @@ import Numeric
 from fipy.variables.cellVariable import Variable
 import fipy.tools.array as array
 
-class MagVariable(Variable):
+class _MagVariable(Variable):
     def __init__(self, var):
 
         Variable.__init__(self, mesh = var.getMesh())

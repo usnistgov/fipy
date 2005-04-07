@@ -37,7 +37,7 @@
  
 from fipy.variables.vectorCellVariable import VectorCellVariable
 
-class FaceGradContributions(VectorCellVariable):
+class _FaceGradContributions(VectorCellVariable):
     def __init__(self, var):
         VectorCellVariable.__init__(self, var.getMesh())
 	self.var = self._requires(var)

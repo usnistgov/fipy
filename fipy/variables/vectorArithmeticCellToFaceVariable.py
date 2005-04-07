@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorArithmeticCellToFaceVariable.py"
  #                                    created: 7/26/04 {11:14:05 AM} 
- #                                last update: 9/3/04 {10:35:37 PM} 
+ #                                last update: 4/7/05 {2:48:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,11 +37,11 @@
 
 import Numeric
 
-from fipy.variables.vectorCellToFaceVariable import VectorCellToFaceVariable
+from fipy.variables.vectorCellToFaceVariable import _VectorCellToFaceVariable
 from fipy.tools import array
 from fipy.tools.inline import inline
 
-class VectorArithmeticCellToFaceVariable(VectorCellToFaceVariable):
+class _VectorArithmeticCellToFaceVariable(_VectorCellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
 	cell1 = array.take(self.var,id1)
 	cell2 = array.take(self.var,id2)

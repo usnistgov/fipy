@@ -41,7 +41,7 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import array
 from fipy.tools.inline import inline
 
-class CellToFaceVariable(FaceVariable):
+class _CellToFaceVariable(FaceVariable):
     def __init__(self, var):
 	FaceVariable.__init__(self, var.getMesh())
 	self.var = self._requires(var)
