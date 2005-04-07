@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:13:45 PM} 
+ #                                last update: 4/7/05 {4:34:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,7 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.cellVariable import CellVariable
 from fipy.boundaryConditions.fixedValue import FixedValue
 import fipy.viewers
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.tri2D import Tri2D
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 50

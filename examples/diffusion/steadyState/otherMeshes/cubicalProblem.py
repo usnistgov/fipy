@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/3/04 {10:37:39 PM} 
+ #                                last update: 4/7/05 {4:28:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front
    
 """
 
-from fipy.meshes.numMesh.grid3D import Grid3D
+from fipy.meshes.grid3D import Grid3D
 import Numeric
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable

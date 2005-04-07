@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/6/05 {5:46:57 PM} 
+ #                                last update: 4/7/05 {4:28:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,7 +85,7 @@ refers to the grid spacing (set to unity here).
 
     >>> nx = 50
     >>> dx = 1.
-    >>> from fipy.meshes.numMesh.grid1D import Grid1D
+    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(nx = nx, dx = dx)
 
 The solution of all equations in FiPy requires a variable. These variables store

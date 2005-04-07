@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:55:15 PM} 
+ #                                last update: 4/7/05 {4:36:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,7 +60,7 @@ import Numeric
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.tri2D import Tri2D
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm

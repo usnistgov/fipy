@@ -37,12 +37,12 @@
 
 import Numeric
 
-from fipy.variables.faceGradVariable import FaceGradVariable
+from fipy.variables.faceGradVariable import _FaceGradVariable
 from fipy.tools.inline import inline
 
-class ModFaceGradVariable(FaceGradVariable):
+class ModFaceGradVariable(_FaceGradVariable):
     def __init__(self, var, modIn):
-	FaceGradVariable.__init__(self, var)
+	_FaceGradVariable.__init__(self, var)
         self.modIn = modIn
         
     def _calcValueInline(self):

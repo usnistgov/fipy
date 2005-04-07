@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:56:03 PM} 
+ #                                last update: 4/7/05 {4:42:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,7 +68,7 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
-from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+from fipy.meshes.gmshImport import GmshImporter2D
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 import sys

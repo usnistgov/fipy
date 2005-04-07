@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/6/05 {4:20:28 PM} 
+ #                                last update: 4/7/05 {4:33:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> L = 10.
     >>> nx = 1
     >>> ny = 1000
-    >>> from fipy.meshes.numMesh.tri2D import Tri2D
+    >>> from fipy.meshes.tri2D import Tri2D
     >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
     
     >>> valueBottom = 0.

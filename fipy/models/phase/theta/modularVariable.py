@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.cellVariable import CellVariable
-from fipy.variables.cellGradVariable import CellGradVariable
+from fipy.variables.cellGradVariable import _CellGradVariable
 from fipy.models.phase.theta.modCellGradVariable import ModCellGradVariable
 from modCellToFaceVariable import ModCellToFaceVariable
 from fipy.models.phase.theta.modPhysicalField import ModPhysicalField
@@ -99,7 +99,7 @@ class ModularVariable(CellVariable):
         """
 	if self.grad is None:
 ##	    gridSpacing = self.mesh._getMeshSpacing()
-##            self.grad = self.value.mod(CellGradVariable(self) * gridSpacing) / gridSpacing
+##            self.grad = self.value.mod(_CellGradVariable(self) * gridSpacing) / gridSpacing
             self.grad = ModCellGradVariable(self, self._modIn, self.value.mod)
 
 	return self.grad

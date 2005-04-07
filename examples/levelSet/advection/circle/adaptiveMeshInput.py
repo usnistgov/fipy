@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveMeshInput.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/1/05 {11:23:31 AM} { 1:23:41 PM}
+ #                                last update: 4/7/05 {4:39:35 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -114,7 +114,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 import os   
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.tri2D import Tri2D
 import fipy.viewers
 from fipy.variables.cellVariable import CellVariable, _ReMeshedCellVariable
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation
@@ -124,8 +124,8 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.models.levelSet.advection.higherOrderAdvectionTerm import HigherOrderAdvectionTerm
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
-from fipy.meshes.numMesh.adaptiveMesh import AdaptiveMesh2D
-from fipy.meshes.numMesh.gmshExport import exportAsMesh
+from fipy.meshes.adaptiveMesh import AdaptiveMesh2D
+from fipy.meshes.gmshExport import exportAsMesh
 
 ##fudge = calibrate_profiler(10000)
 ##profile = Profiler('profile', fudge=fudge)

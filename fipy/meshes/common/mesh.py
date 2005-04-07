@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/3/05 {12:36:06 PM} 
+ #                                last update: 4/7/05 {4:34:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -125,7 +125,7 @@ class Mesh:
              
         Different `Mesh` classes can be concatenated
          
-            >>> from fipy.meshes.numMesh.tri2D import Tri2D
+            >>> from fipy.meshes.tri2D import Tri2D
             >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + (2, 0)
             >>> triAddedMesh = baseMesh + triMesh
@@ -154,7 +154,7 @@ class Mesh:
 
         `Mesh` concatenation is not limited to 2D meshes
         
-            >>> from fipy.meshes.numMesh.grid3D import Grid3D
+            >>> from fipy.meshes.grid3D import Grid3D
             >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 2, ny = 2, nz = 2)
             >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 1, ny = 1, nz = 1)
             >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + (2, 0, 0))

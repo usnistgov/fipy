@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:55:48 PM} 
+ #                                last update: 4/7/05 {4:39:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ The result is again tested in the same way:
 """
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.tri2D import Tri2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers

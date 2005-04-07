@@ -73,7 +73,7 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
       - `ionVar` : The species concentration variable.    
       - `distanceVar` : A `DistanceVariable` object.
       - `transientCoeff` : The coefficient for the `TransientTerm`
-      - `diffusionCoeff` : The coefficient for the `DiffusionTerm`
+      - `diffusionCoeff` : The coefficient for the `_DiffusionTerm`
 
     """
 

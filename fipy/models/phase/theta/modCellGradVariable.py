@@ -37,12 +37,12 @@
  
 import Numeric
 
-from fipy.variables.cellGradVariable import CellGradVariable
+from fipy.variables.cellGradVariable import _CellGradVariable
 from fipy.tools.inline import inline
 
-class ModCellGradVariable(CellGradVariable):
+class ModCellGradVariable(_CellGradVariable):
     def __init__(self, var, modIn, modPy):
-        CellGradVariable.__init__(self, var)
+        _CellGradVariable.__init__(self, var)
         self.modIn = modIn
         self.modPy = modPy
         
@@ -70,7 +70,7 @@ class ModCellGradVariable(CellGradVariable):
         gridSpacing = Numeric.array(self.mesh._getMeshSpacing()))
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
+        _CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._getMeshSpacing()
 	self.value = self.modPy(self.value * gridSpacing) / gridSpacing
 

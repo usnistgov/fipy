@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshExport.py"
  #                                    created: 8/12/04 {10:21:00 AM} 
- #                                last update: 4/1/05 {4:28:51 PM} 
+ #                                last update: 4/7/05 {4:36:07 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -133,8 +133,8 @@ def exportAsMesh(mesh, filename):
 
 if __name__ == "__main__":
     from fipy.meshes.grid2D import Grid2D
-    from fipy.meshes.numMesh.tri2D import Tri2D
-    from fipy.meshes.numMesh.grid3D import Grid3D
+    from fipy.meshes.tri2D import Tri2D
+    from fipy.meshes.grid3D import Grid3D
     import os
     ##a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
     ##exportAsMesh(a, "temp.msh")

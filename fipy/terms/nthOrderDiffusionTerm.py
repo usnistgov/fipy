@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 4/4/05 {3:03:23 PM} 
+ #                                last update: 4/7/05 {2:37:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,10 +48,7 @@ import Numeric
 
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import SparseMatrix
-from fipy.tools.sparseMatrix import SparseIdentityMatrix
-from fipy.variables.addOverFacesVariable import AddOverFacesVariable
 import fipy.tools.array as array
-import fipy.tools.vector
 
 class NthOrderDiffusionTerm(Term):
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {5:19:40 PM} 
+ #                                last update: 4/7/05 {4:35:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,14 +58,14 @@ import Numeric
 import pyx
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.skewedGrid2D import SkewedGrid2D
+from fipy.meshes.tri2D import Tri2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
-from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+from fipy.meshes.gmshImport import GmshImporter2D
 
 valueLeft = 0.
 valueRight = 1.

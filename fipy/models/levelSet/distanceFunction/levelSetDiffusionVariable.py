@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetDiffusionVariable.py"
  #                                    created: 9/8/04 {10:39:23 AM} 
- #                                last update: 3/8/05 {3:47:32 PM} 
+ #                                last update: 4/7/05 {5:07:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,10 +44,10 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.variables.cellToFaceVariable import CellToFaceVariable
+from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.inline import inline
 
-class _LevelSetDiffusionVariable(CellToFaceVariable):
+class _LevelSetDiffusionVariable(_CellToFaceVariable):
     """
 
     This variable sets it's face value to zero if either of the
@@ -79,7 +79,7 @@ class _LevelSetDiffusionVariable(CellToFaceVariable):
           - `diffusionCoeff` : The `coeff` value.
 
         """
-        CellToFaceVariable.__init__(self, distanceVariable)
+        _CellToFaceVariable.__init__(self, distanceVariable)
         self.diffusionCoeff = diffusionCoeff
     
     def _calcValuePy(self, alpha, id1, id2):

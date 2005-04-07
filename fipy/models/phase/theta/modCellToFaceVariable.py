@@ -38,11 +38,11 @@
 import Numeric
 
 from fipy.tools.inline import inline
-from fipy.variables.arithmeticCellToFaceVariable import ArithmeticCellToFaceVariable
+from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
 
-class ModCellToFaceVariable(ArithmeticCellToFaceVariable):
+class ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
     def __init__(self, var, modIn):
-	ArithmeticCellToFaceVariable.__init__(self,var)
+	_ArithmeticCellToFaceVariable.__init__(self,var)
         self.modIn = modIn
         
     def  _calcValueIn(self, alpha, id1, id2):

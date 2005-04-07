@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:01:17 PM} { 1:23:41 PM}
+ #                                last update: 4/7/05 {4:50:24 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
    
-from fipy.meshes.numMesh.tri2D import Tri2D
+from fipy.meshes.tri2D import Tri2D
 import fipy.viewers
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.distanceFunction.distanceEquation import DistanceEquation

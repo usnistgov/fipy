@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/4/05 {3:13:27 PM} { 5:14:21 PM}
+ #                                last update: 4/7/05 {4:33:07 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -98,7 +98,7 @@ geometrically defined region.
 
 mesh using the `GmshImporter2D` object.
    
-   >>> from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+   >>> from fipy.meshes.gmshImport import GmshImporter2D
    >>> mesh = GmshImporter2D(meshName)
    >>> os.remove(meshName)
     

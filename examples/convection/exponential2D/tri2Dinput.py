@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2Dinput.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:14:00 PM} 
+ #                                last update: 4/7/05 {4:35:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> L = 10.
     >>> nx = 10
     >>> ny = 10
-    >>> from fipy.meshes.numMesh.tri2D import Tri2D
+    >>> from fipy.meshes.tri2D import Tri2D
     >>> mesh = Tri2D(L / nx, L / ny, nx, ny)
 
     >>> valueLeft = 0.
