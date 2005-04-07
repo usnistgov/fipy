@@ -57,12 +57,21 @@ class SparseMatrix:
     """
 
     def __init__(self, size = None, bandwidth = 0, matrix = None):
+        """
+        Creates a `SparseMatrix`.
+
+        :Parameters:
+          - `size` : The size N for an N by N matrix.
+          - `bandwidth` : The proposed band width of the matrix.
+          - `matrix` : The starting `spmatrix` id there is one.
+
+        """
         if matrix != None:
             self.matrix = matrix
         else:
             self.matrix = spmatrix.ll_mat(size, size, size * bandwidth)
                 
-    def getMatrix(self):
+    def _getMatrix(self):
         return self.matrix
     
     def copy(self):
@@ -105,7 +114,7 @@ class SparseMatrix:
 	
     def _iadd(self, L, other, sign = 1):
 	if other != 0:
-	    L.shift(sign, other.getMatrix())
+	    L.shift(sign, other._getMatrix())
 	
 	return self
 
@@ -133,14 +142,14 @@ class SparseMatrix:
             >>> print L + 3
             Traceback (most recent call last):
             ...
-            AttributeError: 'int' object has no attribute 'getMatrix'
+            AttributeError: 'int' object has no attribute '_getMatrix'
         """
 
 	if other is 0:
 	    return self
 	else:
 	    L = self.matrix.copy()
-	    L.shift(1, other.getMatrix())
+	    L.shift(1, other._getMatrix())
 	    return SparseMatrix(matrix = L)
 	
     __radd__ = __add__
@@ -151,14 +160,14 @@ class SparseMatrix:
 	    return -self
 	else:
 	    L = self.matrix.copy()
-	    L.shift(-1, other.getMatrix())
+	    L.shift(-1, other._getMatrix())
 	    return SparseMatrix(matrix = L)
 
     def __iadd__(self, other):
-	return self._iadd(self.getMatrix(), other)
+	return self._iadd(self._getMatrix(), other)
 	
     def _isub__(self, other):
-	return self._iadd(self.getMatrix(), other, -1)
+	return self._iadd(self._getMatrix(), other, -1)
 	
     def __mul__(self, other):
         """
@@ -191,7 +200,7 @@ class SparseMatrix:
         """
 
         if type(other) == type(self):
-            return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other.getMatrix()))
+            return SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
         elif type(1) == type(other) or type(1.) == type(other):
 	    N = self.matrix.shape[0]
 	    L = spmatrix.ll_mat(N, N)
@@ -227,7 +236,7 @@ class SparseMatrix:
 	return self
 	
 ##     def __eq__(self,other):
-## 	return self.matrix.__eq__(other.getMatrix())
+## 	return self.matrix.__eq__(other._getMatrix())
 
     def getShape(self):
         return self.matrix.shape

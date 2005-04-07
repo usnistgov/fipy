@@ -76,7 +76,7 @@ class LinearCGSSolver(Solver):
 ## 	print "b: ", b
 ## 	print "x: ", x
 	
-	A = L.getMatrix().to_csr()
+	A = L._getMatrix().to_csr()
 
         info, iter, relres = itsolvers.cgs(A,b,x,self.tolerance,self.steps)
         

@@ -40,61 +40,17 @@
  # ###################################################################
  ##
 
-import unittest
-import tempfile
-
-import fipy.tools.dump as dump
-import fipy.tools.dimensions.physicalField
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.phase.theta.modularVariable import ModularVariable
-
 from fipy.tests.doctestPlus import LateImportDocTestSuite
 import fipy.tests.testProgram
-
-class TestDump(unittest.TestCase):
-    def setUp(self, nx, ny):
-        mesh = Grid2D(1.23, 4.5, nx, ny)
-        theta = ModularVariable(
-            mesh = mesh,
-            value = 100.0)
-
-        self.data = (theta, mesh)
-        f, tempFile = tempfile.mkstemp('.gz')
-        dump.write(self.data, tempFile)
-        self.dataUnpickled = dump.read(tempFile)
-	
-	import os
-        os.close(f)
-	os.remove(tempFile)
-
-    def assertEqual(self, first, second, msg = None):
-        if first == second:
-            pass
-        else:
-            raise self.failureException, (msg or '\n%s\n!=\n%s' % (first, second))
-
-    def testResult(self):
-        self.assertEqual(self.data[0], self.dataUnpickled[1])
-        self.assertEqual(self.data[1].getCellCenters(), self.dataUnpickled[1].getCellCenters())
-
-class Test10by10(TestDump):
-    def setUp(self):
-        TestDump.setUp(self, 10, 10)
-
-class Test50by50(TestDump):
-    def setUp(self):
-        TestDump.setUp(self, 50,50)
 
 def _suite():
     theSuite = LateImportDocTestSuite(docTestModuleNames = (
             'sparseMatrix',
             'dimensions.physicalField',
             'array',
+            'dump',
         ), base = __name__)
 
-    theSuite.addTest(unittest.makeSuite(Test10by10))
-    theSuite.addTest(unittest.makeSuite(Test50by50))
-    
     return theSuite
     
 if __name__ == '__main__':

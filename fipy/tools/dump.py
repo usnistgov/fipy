@@ -49,6 +49,17 @@ def write(data, fileName):
     :Parameters:
       - `data` : The object to be pickled.
       - `fileName` : The name of the file to place the pickled object.
+
+    Test to check pickling and unpickling.
+
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> import tempfile
+        >>> f, tempFile = tempfile.mkstemp('.gz')
+        >>> write(Grid1D(nx = 2), tempFile)
+        >>> mesh = read(tempFile)
+        >>> print mesh.getNumberOfCells()
+        2
+        
     """
     fileStream = gzip.GzipFile(filename = fileName, mode = 'w', fileobj = None)
     cPickle.dump(data, fileStream, 0)
@@ -68,4 +79,9 @@ def read(fileName = None):
     fileStream.close()
     return data
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
     
+if __name__ == "__main__": 
+    _test()     
