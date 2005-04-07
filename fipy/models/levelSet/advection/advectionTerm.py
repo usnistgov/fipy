@@ -48,10 +48,10 @@ import MA
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import SparseMatrix
 
-class AdvectionTerm(Term):
+class _AdvectionTerm(Term):
     r"""
 
-    The `AdvectionTerm` object constructs the b vector contribution
+    The `_AdvectionTerm` object constructs the b vector contribution
     for the advection term given by
 
     .. raw:: latex
@@ -80,21 +80,21 @@ class AdvectionTerm(Term):
     Trivial test:
 
         >>> var = CellVariable(value = Numeric.zeros(3, 'd'), mesh = mesh)
-        >>> L, b = AdvectionTerm(0.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(0.)._buildMatrix(var)
         >>> Numeric.allclose(b, Numeric.zeros(3, 'd'), atol = 1e-10)
         1
    
     Less trivial test:
 
         >>> var = CellVariable(value = Numeric.arange(3), mesh = mesh)
-        >>> L, b = AdvectionTerm(1.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(1.)._buildMatrix(var)
         >>> Numeric.allclose(b, Numeric.array((0., -1., -1.)), atol = 1e-10)
         1
 
     Even less trivial
 
         >>> var = CellVariable(value = Numeric.arange(3), mesh = mesh)
-        >>> L, b = AdvectionTerm(-1.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var)
         >>> Numeric.allclose(b, Numeric.array((1., 1., 0.)), atol = 1e-10)
         1
 
@@ -103,7 +103,7 @@ class AdvectionTerm(Term):
 
         >>> vel = Numeric.array((-1, 2, -3))
         >>> var = CellVariable(value = Numeric.array((4,6,1)), mesh = mesh)
-        >>> L, b = AdvectionTerm(vel)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var)
         >>> Numeric.allclose(b, -vel * Numeric.array((2, Numeric.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
         1
 
@@ -113,7 +113,7 @@ class AdvectionTerm(Term):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
         >>> vel = Numeric.array((3, -5, -6, -3))
         >>> var = CellVariable(value = Numeric.array((3 , 1, 6, 7)), mesh = mesh)
-        >>> L, b = AdvectionTerm(vel)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var)
         >>> answer = -vel * Numeric.array((2, Numeric.sqrt(2**2 + 6**2), 1, 0))
         >>> Numeric.allclose(b, answer, atol = 1e-10)
         1

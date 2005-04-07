@@ -47,7 +47,7 @@ import Numeric
 from fipy.variables.cellToFaceVariable import CellToFaceVariable
 from fipy.tools.inline import inline
 
-class LevelSetDiffusionVariable(CellToFaceVariable):
+class _LevelSetDiffusionVariable(CellToFaceVariable):
     """
 
     This variable sets it's face value to zero if either of the
@@ -65,14 +65,14 @@ class LevelSetDiffusionVariable(CellToFaceVariable):
        >>> mesh = Grid2D(dx = 1., nx = 3)
        >>> from fipy.variables.cellVariable import CellVariable
        >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
-       >>> arr = Numeric.array(LevelSetDiffusionVariable(var, 1))
+       >>> arr = Numeric.array(_LevelSetDiffusionVariable(var, 1))
        >>> Numeric.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
        1
 
     """
     def __init__(self, distanceVariable = None, diffusionCoeff = None):
         """
-        Creates a `LevelSetDiffusionVariable`.
+        Creates a `_LevelSetDiffusionVariable`.
 
         :Parameters:
           - `distanceVariable` : A `DistanceVariable` object

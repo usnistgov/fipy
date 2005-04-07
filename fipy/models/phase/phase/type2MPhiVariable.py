@@ -42,11 +42,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from mPhiVariable import MPhiVariable
+from mPhiVariable import _MPhiVariable
 import Numeric
 import fipy.tools.array as array
 
-class Type2MPhiVariable(MPhiVariable):
+class Type2MPhiVariable(_MPhiVariable):
     r"""
     The `Type2MPhiVariable` is given by,
 

@@ -45,11 +45,11 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.tools import array
 from fipy.tools.sparseMatrix import SparseMatrix
 
-class PeriodicBoundaryCondition(BoundaryCondition):
+class PeriodicBoundaryCondition(_BoundaryCondition):
     r"""
     
     A `PeriodicBoundaryCondition` creates a periodic boundary across given
@@ -93,7 +93,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
 	self.adjacent1CellIds = Numeric.array([face.getCellID() for face in faces1])
 	self.adjacent2CellIds = Numeric.array([face.getCellID() for face in faces2])
 	
-## 	BoundaryCondition.__init__(self, faces1 + faces2, 0)
+## 	_BoundaryCondition.__init__(self, faces1 + faces2, 0)
 	
 ## 	self.offdiagonalCellIds = Numeric.array([face.getCellID() for face in faces2 + faces1])
 

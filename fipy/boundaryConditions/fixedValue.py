@@ -49,12 +49,12 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.tools import array
 from fipy.tools import vector
 from fipy.tools.sparseMatrix import SparseMatrix
 
-class FixedValue(BoundaryCondition):
+class FixedValue(_BoundaryCondition):
     r"""
     
     The `FixedValue` boundary condition adds a contribution,

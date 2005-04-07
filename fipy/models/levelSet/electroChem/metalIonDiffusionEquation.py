@@ -47,7 +47,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
-from metalIonSourceVariable import MetalIonSourceVariable
+from metalIonSourceVariable import _MetalIonSourceVariable
 
 def buildMetalIonDiffusionEquation(ionVar = None,
                                    distanceVar = None,
@@ -141,7 +141,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
                                         transientCoeff = transientCoeff,
                                         diffusionCoeff = diffusionCoeff)
     
-    coeff = MetalIonSourceVariable(ionVar = ionVar,
+    coeff = _MetalIonSourceVariable(ionVar = ionVar,
                                    distanceVar = distanceVar,
                                    depositionRate = depositionRate,
                                    metalIonAtomicVolume = metalIonAtomicVolume)

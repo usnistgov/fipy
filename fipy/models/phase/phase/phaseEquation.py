@@ -48,7 +48,7 @@ from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
 from phaseDiffusionVariable import PhaseDiffusionVariable
-from anisotropyVariable import AnisotropyVariable
+from anisotropyVariable import _AnisotropyVariable
 from spSourceVariable import SpSourceVariable
 from phaseHalfAngleVariable import PhaseHalfAngleVariable
 from scSourceVariable import ScSourceVariable
@@ -110,7 +110,7 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
                                        phase = phase,
                                        parameters = parameters))
 
-    anisotropy = AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
+    anisotropy = _AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
 
     sourceCoeff = ScSourceVariable(mPhi = mPhiVar,
                                    phase = phase,

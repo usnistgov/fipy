@@ -50,7 +50,7 @@ from surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
-class AdsorptionCoeff(CellVariable):
+class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
 
@@ -66,15 +66,15 @@ class AdsorptionCoeff(CellVariable):
         self.dt = dt
         self._markStale()
 
-class AdsorptionCoeffInterfaceFlag(AdsorptionCoeff):
+class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
     def _multiplier(self):
         return self.distanceVar._getCellInterfaceFlag()
     
-class AdsorptionCoeffAreaOverVolume(AdsorptionCoeff):
+class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
     def _multiplier(self):
         return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
 
-class MaxCoeff(CellVariable):
+class _MaxCoeff(CellVariable):
     def __init__(self, distanceVar, vars = ()):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
         self.vars = vars
@@ -88,11 +88,11 @@ class MaxCoeff(CellVariable):
             total += Numeric.array(var.getInterfaceVar())
         return Numeric.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
 
-class SpMaxCoeff(MaxCoeff):
+class _SpMaxCoeff(_MaxCoeff):
     def _calcValue(self):
         self.value = 1e20 * self._calcMax()
 
-class ScMaxCoeff(MaxCoeff):
+class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
         val = self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
         for var in self.vars[1:]:
@@ -278,16 +278,16 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         SurfactantEquation.__init__(self, distanceVar = distanceVar)
 
-        spCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
-        scCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
+        spCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
+        scCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
 
         self.eq += ImplicitSourceTerm(spCoeff) - scCoeff
 
         self.coeffs = (scCoeff, spCoeff)
 
         if otherVar is not None:
-            otherSpCoeff = AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
-            otherScCoeff = AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
+            otherSpCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
+            otherScCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
 
             self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
 
@@ -298,8 +298,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         else:
             vars = (surfactantVar,)
 
-        spMaxCoeff = SpMaxCoeff(distanceVar, vars)
-        scMaxCoeff = ScMaxCoeff(distanceVar, vars)
+        spMaxCoeff = _SpMaxCoeff(distanceVar, vars)
+        scMaxCoeff = _ScMaxCoeff(distanceVar, vars)
 
         self.eq += ImplicitSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 

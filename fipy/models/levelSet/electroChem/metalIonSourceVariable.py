@@ -46,10 +46,10 @@ import Numeric
 
 from fipy.variables.cellVariable import CellVariable
 
-class MetalIonSourceVariable(CellVariable):
+class _MetalIonSourceVariable(CellVariable):
     """
 
-    The `MetalIonSourceVariable` object evaluates the source
+    The `_MetalIonSourceVariable` object evaluates the source
     coefficient for the `MetalIonEquation`. The source only exists
     on the cells in front of the interface and simulates the loss
     of material from bulk diffusion as the interface advances. The
@@ -66,7 +66,7 @@ class MetalIonSourceVariable(CellVariable):
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
        >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
        >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
-       >>> arr = Numeric.array(MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
+       >>> arr = Numeric.array(_MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
        >>> sqrt = Numeric.sqrt(2)
        >>> Numeric.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
        1
@@ -74,7 +74,7 @@ class MetalIonSourceVariable(CellVariable):
     """
     def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonAtomicVolume = None):
         """
-        Creates a `MetalIonSourceVariable` object.
+        Creates a `_MetalIonSourceVariable` object.
 
         :Parameters:
           - `ionVar` : The metal ion concentration.

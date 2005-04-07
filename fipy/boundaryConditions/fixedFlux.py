@@ -45,11 +45,11 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
-class FixedFlux(BoundaryCondition):
+class FixedFlux(_BoundaryCondition):
     r"""
 
     The `FixedFlux` boundary condition adds a contribution, equivalent
@@ -78,7 +78,7 @@ class FixedFlux(BoundaryCondition):
 	    - `value` : The value to impose.
             
 	"""
-	BoundaryCondition.__init__(self,faces,value)
+	_BoundaryCondition.__init__(self,faces,value)
 	N = len(self.faces)
 	##self.contribution = Numeric.zeros((N,),'d')
 	# get units right
@@ -109,6 +109,6 @@ class FixedFlux(BoundaryCondition):
 	if order == 1:
 	    return FixedValue(self.faces, self.value)
 	else:
-	    return BoundaryCondition._getDerivative(self, order)
+	    return _BoundaryCondition._getDerivative(self, order)
 
 

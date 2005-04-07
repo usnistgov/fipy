@@ -110,20 +110,20 @@ class SurfactantVariable(CellVariable):
         """
         
         Returns the `SurfactantVariable` rendered as an
-        `InterfaceSurfactantVariable` which evaluates the
+        `_InterfaceSurfactantVariable` which evaluates the
         surfactant concentration on the surface rather than
         over the domain.
 
         """
         if self.interfaceSurfactantVariable is None:
-            self.interfaceSurfactantVariable = InterfaceSurfactantVariable(self)
+            self.interfaceSurfactantVariable = _InterfaceSurfactantVariable(self)
 
         return self.interfaceSurfactantVariable
 
     def _getDistanceVar(self):
         return self.distanceVar
     
-class InterfaceSurfactantVariable(CellVariable):
+class _InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
         CellVariable.__init__(self, name = surfactantVar.name + "_interface", mesh = surfactantVar.getMesh())
         self.surfactantVar = self._requires(surfactantVar)

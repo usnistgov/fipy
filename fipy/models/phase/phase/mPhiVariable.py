@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "type1MPhiVariable.py"
+ #  FILE: "mPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
  #                                last update: 4/1/05 {11:02:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -44,10 +44,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 
-class MPhiVariable(CellVariable):
+class _MPhiVariable(CellVariable):
     def __init__(self, phase = None, temperature = None, parameters = None):
         """
-        Base class for `MPhiVariable` objects
+        Base class for `_MPhiVariable` objects
 
         :Parameters:
           - `phase` : The phase field.

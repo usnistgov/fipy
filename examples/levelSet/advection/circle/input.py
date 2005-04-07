@@ -53,7 +53,7 @@ The variable is advected with,
 
     $$ \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0 $$
 
-The scheme used in the `AdvectionTerm` preserves the `var` as a
+The scheme used in the `_AdvectionTerm` preserves the `var` as a
 distance function.  The solution to this problem will be demonstrated
 in the following script. Firstly, setup the parameters.
 
@@ -121,7 +121,7 @@ The result can be tested with the following commands.
    >>> Numeric.allclose(answer, solution, atol = 4.7e-3)
    1
 
-If the `AdvectionEquation` is built with the `HigherOrderAdvectionTerm` the result
+If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
 is more accurate,
 
    >>> var.setValue(initialArray)

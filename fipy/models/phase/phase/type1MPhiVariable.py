@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from mPhiVariable import MPhiVariable
+from mPhiVariable import _MPhiVariable
 
-class Type1MPhiVariable(MPhiVariable):
+class Type1MPhiVariable(_MPhiVariable):
     r"""
     The `Type1MPhiVariable` is given by,
 

@@ -47,7 +47,7 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
 
-class FFVariable(FaceVariable):
+class _FFVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):
         FaceVariable.__init__(self, halfAngle.getMesh())
         self.halfAngle = self._requires(halfAngle)
@@ -79,7 +79,7 @@ class FFVariable(FaceVariable):
 	db = -N * 2 * self.halfAngle[:] / (1 + zsq)
         self.value = alpha**2 * c2 * (1. + c2 * b) * db
 
-class DPhiReverse(VectorFaceVariable):
+class _DPhiReverse(VectorFaceVariable):
     def __init__(self, phase):
         VectorFaceVariable.__init__(self, phase.getMesh())
         self.phase = self._requires(phase)
@@ -90,13 +90,13 @@ class DPhiReverse(VectorFaceVariable):
         self.value[:,0] = -dPhi[:,1]
         self.value[:,1] = dPhi[:,0]
 
-class AnisotropyVariable(CellVariable):
+class _AnisotropyVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, halfAngle = None):
         CellVariable.__init__(self, phase.getMesh())
         self._requires(phase)
         self._requires(halfAngle)
-        ff = FFVariable(parameters = parameters, halfAngle = halfAngle)
-        dPhiReverse = DPhiReverse(phase)
+        ff = _FFVariable(parameters = parameters, halfAngle = halfAngle)
+        dPhiReverse = _DPhiReverse(phase)
         
         self.AOF = AddOverFacesVariable(faceVariable = ff, faceGradient = dPhiReverse)
         

@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import LevelSetDiffusionVariable
+from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import _LevelSetDiffusionVariable
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
@@ -54,7 +54,7 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
     r"""
 
     The `LevelSetDiffusionEquation` solves the diffusion of a species in
-    conjunction with the level set equation. Essentially the spcies is
+    conjunction with the level set equation. Essentially the species is
     only transported in the electrolyte. The governing equation is given
     by,
 
@@ -77,7 +77,7 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
 
     """
 
-    diffusionCoeff = LevelSetDiffusionVariable(distanceVar,
+    diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
                                                diffusionCoeff)
         
     return TransientTerm(transientCoeff) - ImplicitDiffusionTerm(diffusionCoeff)

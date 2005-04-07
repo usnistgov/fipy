@@ -45,11 +45,11 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
 
-class NthOrderBoundaryCondition(BoundaryCondition):
+class NthOrderBoundaryCondition(_BoundaryCondition):
     """
 
     This boundary condition is generally used in conjunction with the
@@ -78,7 +78,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         """
         self.order = order
         self.derivative = {}
-        BoundaryCondition.__init__(self,faces,value)
+        _BoundaryCondition.__init__(self,faces,value)
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged

@@ -43,7 +43,7 @@
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from convectionCoeff import ConvectionCoeff
+from convectionCoeff import _ConvectionCoeff
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 
@@ -63,7 +63,7 @@ class SurfactantEquation:
 
         transientTerm = TransientTerm(coeff = 1)
 
-        convectionTerm = ExplicitUpwindConvectionTerm(ConvectionCoeff(distanceVar))
+        convectionTerm = ExplicitUpwindConvectionTerm(_ConvectionCoeff(distanceVar))
 
         self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm

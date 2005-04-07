@@ -48,7 +48,7 @@ from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _bui
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
-class AdsorptionCoeff(CellVariable):
+class _AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
         CellVariable.__init__(self, mesh = distanceVar.getMesh())
         self.distanceVar = self._requires(distanceVar)
@@ -57,14 +57,14 @@ class AdsorptionCoeff(CellVariable):
     def _calcValue(self):
         self.value = self.rateConstant * self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
 
-class ScAdsorptionCoeff(AdsorptionCoeff):
+class _ScAdsorptionCoeff(_AdsorptionCoeff):
     def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
-        AdsorptionCoeff.__init__(self, rateConstant = rateConstant, distanceVar = distanceVar)
+        _AdsorptionCoeff.__init__(self, rateConstant = rateConstant, distanceVar = distanceVar)
         self.bulkVar = self._requires(bulkVar)
         self.surfactantVar = self._requires(surfactantVar)
     
     def _calcValue(self):
-        AdsorptionCoeff._calcValue(self)
+        _AdsorptionCoeff._calcValue(self)
         bulk = Numeric.array(self.bulkVar)
         val = Numeric.array(self.value)
         self.value = val * bulk * Numeric.array(self.surfactantVar.getInterfaceVar())
@@ -114,10 +114,10 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
 
     """
         
-    spSourceTerm = ImplicitSourceTerm(AdsorptionCoeff(rateConstant = rateConstant,
+    spSourceTerm = ImplicitSourceTerm(_AdsorptionCoeff(rateConstant = rateConstant,
                                                       distanceVar = distanceVar))
 
-    coeff = ScAdsorptionCoeff(bulkVar = bulkVar,
+    coeff = _ScAdsorptionCoeff(bulkVar = bulkVar,
                               surfactantVar = surfactantVar,
                               rateConstant = rateConstant,
                               distanceVar = distanceVar)
@@ -128,7 +128,7 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          transientCoeff = transientCoeff)
 
     if otherSurfactantVar is not None:
-        otherCoeff = ScAdsorptionCoeff(bulkVar = bulkVar,
+        otherCoeff = _ScAdsorptionCoeff(bulkVar = bulkVar,
                                        surfactantVar = otherSurfactantVar,
                                        rateConstant = rateConstant,
                                        distanceVar = distanceVar)

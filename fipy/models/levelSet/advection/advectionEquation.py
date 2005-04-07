@@ -43,10 +43,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
-from advectionTerm import AdvectionTerm
+from advectionTerm import _AdvectionTerm
 
 def buildAdvectionEquation(advectionCoeff = None,
-                           advectionTerm = AdvectionTerm):
+                           advectionTerm = _AdvectionTerm):
     r"""
 
     The `buildAdvectionEquation` function constructs and returns an
@@ -56,7 +56,7 @@ def buildAdvectionEquation(advectionCoeff = None,
 
         $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0$$
 
-    This solution method for the `AdvectionTerm` is set up specifically to
+    This solution method for the `_AdvectionTerm` is set up specifically to
     evolve `var` while preserving `var` as a distance function. This
     equation is used in conjunction with the `DistanceFunction`
     object. Further details of the numerical method can be found in "Level

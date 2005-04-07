@@ -61,8 +61,6 @@ from fipy.meshes.grid2D import Grid2D
 import Numeric
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import Grid3DPyxViewer
-from fipy.viewers.pyxviewer import Grid2DPyxViewer
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 nx = 10
@@ -81,8 +79,6 @@ mesh = Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz)
 var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueBottomTop)
-
-viewer = Grid3DPyxViewer(var, zvalue = 1.0)
 
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeftRight),
                       FixedValue(mesh.getFacesRight(),valueLeftRight),
@@ -103,8 +99,6 @@ var2 = CellVariable(name = "solution variable 2D",
                     mesh = mesh2,
                     value = valueBottomTop)
 
-viewer2 = Grid2DPyxViewer(var2)
-
 boundaryConditions2 = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
                        FixedValue(mesh2.getFacesRight(),valueLeftRight),
                        FixedValue(mesh2.getFacesTop(),valueBottomTop),
@@ -113,6 +107,8 @@ boundaryConditions2 = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
 eqn = ImplicitDiffusionTerm()  
 
 if __name__ == '__main__':
-    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer.plot(resolution = 0.1)
+    eqn.solve(var2, boundaryConditions = boundaryConditions2)
+    from fipy.viewers import make
+    viewer = make(var2)
+    viewer.plot()
     raw_input("finished")

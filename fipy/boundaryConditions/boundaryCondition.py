@@ -46,7 +46,7 @@ import Numeric
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class BoundaryCondition:
+class _BoundaryCondition:
     """
     Generic boundary condition base class
     """
