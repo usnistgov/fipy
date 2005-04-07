@@ -42,19 +42,25 @@
  # ###################################################################
  ##
 
-"""
-
-Parser routine to parse arguments for example files. Must use
-'--blah=slomehting' otherwise will not be ablt to prune arguments'
-
-"""
+__docformat__ = 'restructuredtext'
 
 import optparse
 
 import sys
 
 def parse(larg, action = None, type = None, default = None):
+    """
+    This is a wrapper function for the python `optparse` module.
+    Unfortunately the `optparse` does not allow command line
+    arguments to be ignored. See the documentation for `optparse`
+    for more details. Returns the argument value.
 
+    :Parameters:
+      - `action` : `store` or `store_true` are possibilities
+      - `type` : Type of the argument. `int` or `float` are possibilities.
+      - `default` : Default value.
+        
+    """
     sarg = None
     tmpparser = optparse.OptionParser(option_list = [
         optparse.make_option(sarg, larg, action = action, type = type, dest = 'dest', default = default)],

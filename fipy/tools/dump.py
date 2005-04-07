@@ -35,13 +35,16 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 import cPickle
 import os
 import gzip
 
 def write(data, fileName):
     """
-    Pickle an object and write it to a file.
+    Pickle an object and write it to a file. Wrapper for
+    `cPickle.dump`.
 
     :Parameters:
       - `data` : The object to be pickled.
@@ -54,9 +57,10 @@ def write(data, fileName):
 def read(fileName = None):
     """
     Read a pickled object from a file. Returns the unpickled object.
+    Wrapper for `cPickle.load`.
 
     :Parameters:
-      `fileName` : The name of the file to unpickle teh obkect from.
+      - `fileName` : The name of the file to unpickle teh obkect from.
 
     """
     fileStream = gzip.GzipFile(filename = fileName, mode = 'r', fileobj = None)

@@ -58,8 +58,8 @@ class Gist2DViewer(GistViewer):
 
     ::
     
-       viewer = Gist2DViewer(var)
-       viewer.plot()
+        viewer = Gist2DViewer(var)
+        viewer.plot()
 
     """
     
@@ -68,18 +68,19 @@ class Gist2DViewer(GistViewer):
         Creates a `Gist2DViewer`.
         
         :Parameters:
-          - `vars`: a `CellVariable` object to plot (not a list or tuple).
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
+          - `vars` : A `CellVariable` object to plot (not a list or tuple).
+          - `limits` : A dictionary with possible keys `xmin`, `xmax`, 
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
             Viewer will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `palette`: The color scheme to use for the image plot. Default is 
+          - `title` : Displayed at the top of the Viewer window.
+          - `palette` : The color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
-          - `grid`: Whether to show the grid lines in the plot. Default is 1. 
-             Use 0 to switch them off.
+          - `grid` : Whether to show the grid lines in the plot. Default is 1. 
+            Use 0 to switch them off.
+            
         """
 
         GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)

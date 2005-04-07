@@ -52,7 +52,7 @@ object.
 import sys
 import types
 
-def get_refcounts(theClass = None):
+def _get_refcounts(theClass = None):
     d = {}
     sys.modules
     # collect all classes
@@ -69,8 +69,8 @@ def get_refcounts(theClass = None):
     pairs.reverse()
     return pairs
 
-def print_top_N(n = 100, theClass = None):
-    for n, c in get_refcounts(theClass)[:n]:
+def _print_top_N(n = 100, theClass = None):
+    for n, c in _get_refcounts(theClass)[:n]:
         print '%10d %s' % (n, c.__name__)
 
 if __name__ == '__main__':

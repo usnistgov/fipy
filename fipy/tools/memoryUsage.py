@@ -77,19 +77,19 @@ def _VmB(VmKey, pid = None):
     return float(v[1]) * _scale[v[2]]
 
 
-def memory(since=0.0, pid = None):
+def _memory(since=0.0, pid = None):
     '''Return memory usage in bytes.
     '''
     return _VmB('VmSize:', pid) - since
 
 
-def resident(since=0.0):
+def _resident(since=0.0):
     '''Return resident memory usage in bytes.
     '''
     return _VmB('VmRSS:') - since
 
 
-def stacksize(since=0.0):
+def _stacksize(since=0.0):
     '''Return stack size in bytes.
     '''
     return _VmB('VmStk:') - since
