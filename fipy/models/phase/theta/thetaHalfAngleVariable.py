@@ -46,7 +46,7 @@ from fipy.variables.cellVariable import CellVariable
 ##from fipy.tools.inline.inline import runInline
 import fipy.tools.array as array
 
-class ThetaHalfAngleVariable(CellVariable):
+class _ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
         CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
 	self.parameters = parameters

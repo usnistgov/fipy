@@ -45,7 +45,7 @@ from fipy.tools.inline import inline
 
 from fipy.variables.cellVariable import CellVariable
 
-class TransientVariable(CellVariable):
+class _TransientVariable(CellVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 

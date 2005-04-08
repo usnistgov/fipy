@@ -45,9 +45,9 @@ import Numeric
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools.inline import inline
 from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
-from noModularVariable import NoModularVariable
+from noModularVariable import _NoModularVariable
 
-class SourceVariable(CellVariable):
+class _SourceVariable(CellVariable):
 
     def __init__(self,
                  phase = None,
@@ -63,7 +63,7 @@ class SourceVariable(CellVariable):
         self.theta = self._requires(theta)
         self.diffCoeff = self._requires(diffCoeff)
         self.halfAngleVariable = self._requires(halfAngleVariable)
-        self.thetaNoMod = NoModularVariable(self.theta)        
+        self.thetaNoMod = _NoModularVariable(self.theta)        
         thetaGradDiff = self.theta.getFaceGrad() - self.thetaNoMod.getFaceGrad()
         self.AOFVariable = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = self.diffCoeff)
 

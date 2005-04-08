@@ -45,7 +45,7 @@ import Numeric
 from fipy.tools.inline import inline
 from fipy.variables.faceVariable import FaceVariable
 
-class DiffusionVariable(FaceVariable):
+class _DiffusionVariable(FaceVariable):
 
     def __init__(self, phase = None, theta = None, parameters = None):
 

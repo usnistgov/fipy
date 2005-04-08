@@ -44,7 +44,7 @@ import Numeric
 
 from fipy.variables.faceVariable import FaceVariable
 
-class PhaseDiffusionVariable(FaceVariable):
+class _PhaseDiffusionVariable(FaceVariable):
     def __init__(self, parameters = None, halfAngle = None):
         FaceVariable.__init__(self, halfAngle.getMesh())
 	self.parameters = parameters

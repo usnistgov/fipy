@@ -221,15 +221,10 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> testFile = 'test.gz'
    >>> import examples.phase.impingement.mesh40x1
-   >>> import gzip
    >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0],
    ...                         testFile)
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> import Numeric
-   >>> testData = Numeric.reshape(testData, Numeric.array(theta).shape)
+   >>> import fipy.tools.dump as dump
+   >>> testData = dump.read(filepath)
    >>> print theta.allclose(testData)
    1
 """

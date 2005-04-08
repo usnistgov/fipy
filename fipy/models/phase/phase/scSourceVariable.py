@@ -44,7 +44,7 @@ import Numeric
 from fipy.tools.inline import inline
 from fipy.variables.cellVariable import CellVariable
 
-class ScSourceVariable(CellVariable):
+class _ScSourceVariable(CellVariable):
     def __init__(self, mPhi = None, phase = None, anisotropy = None):
         CellVariable.__init__(self, mesh = phase.getMesh())
         self.mPhi = self._requires(mPhi)

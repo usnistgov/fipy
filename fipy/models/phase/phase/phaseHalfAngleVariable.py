@@ -47,7 +47,7 @@ from fipy.variables.faceVariable import FaceVariable
 
 import fipy.tools.array as array
 
-class PhaseHalfAngleVariable(FaceVariable):
+class _PhaseHalfAngleVariable(FaceVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
         FaceVariable.__init__(self, phase.getMesh())
 	self.parameters = parameters

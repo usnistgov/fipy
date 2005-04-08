@@ -40,7 +40,7 @@ import Numeric
 from fipy.variables.cellGradVariable import _CellGradVariable
 from fipy.tools.inline import inline
 
-class ModCellGradVariable(_CellGradVariable):
+class _ModCellGradVariable(_CellGradVariable):
     def __init__(self, var, modIn, modPy):
         _CellGradVariable.__init__(self, var)
         self.modIn = modIn

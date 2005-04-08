@@ -44,7 +44,7 @@ import Numeric
 from fipy.tools.inline import inline
 from fipy.variables.cellVariable import CellVariable
 
-class SpSourceVariable(CellVariable):
+class _SpSourceVariable(CellVariable):
     def __init__(self, theta = None, mPhi = None, phase = None, parameters = None):
         CellVariable.__init__(self, mesh = theta.getMesh())
         self.theta = self._requires(theta)

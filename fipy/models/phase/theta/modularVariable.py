@@ -40,10 +40,6 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.cellVariable import CellVariable
-from fipy.variables.cellGradVariable import _CellGradVariable
-from fipy.models.phase.theta.modCellGradVariable import ModCellGradVariable
-from modCellToFaceVariable import ModCellToFaceVariable
-from fipy.models.phase.theta.modPhysicalField import ModPhysicalField
 
 class ModularVariable(CellVariable):
     r"""
@@ -76,7 +72,8 @@ class ModularVariable(CellVariable):
     """
 
     def _setValue(self, value, unit = None, array = None):
-	self.value = ModPhysicalField(value = value, unit = unit, array = array)
+        from fipy.models.phase.theta.modPhysicalField import _ModPhysicalField
+	self.value = _ModPhysicalField(value = value, unit = unit, array = array)
 	
     def updateOld(self):
         """
@@ -98,9 +95,9 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
         """
 	if self.grad is None:
-##	    gridSpacing = self.mesh._getMeshSpacing()
-##            self.grad = self.value.mod(_CellGradVariable(self) * gridSpacing) / gridSpacing
-            self.grad = ModCellGradVariable(self, self._modIn, self.value.mod)
+
+            from fipy.models.phase.theta.modCellGradVariable import _ModCellGradVariable
+            self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
 
 	return self.grad
 
@@ -117,8 +114,8 @@ class ModularVariable(CellVariable):
            
         """
 	if self.arithmeticFaceValue is None:
-	    from modCellToFaceVariable import ModCellToFaceVariable
-	    self.arithmeticFaceValue = ModCellToFaceVariable(self, self._modIn)
+	    from modCellToFaceVariable import _ModCellToFaceVariable
+	    self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
  	return self.arithmeticFaceValue
 
@@ -134,7 +131,7 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
         """
 	if self.faceGrad is None:
-	    from modFaceGradVariable import ModFaceGradVariable
-	    self.faceGrad = ModFaceGradVariable(self, self._modIn)
+	    from modFaceGradVariable import _ModFaceGradVariable
+	    self.faceGrad = _ModFaceGradVariable(self, self._modIn)
 
 	return self.faceGrad

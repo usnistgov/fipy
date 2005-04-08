@@ -40,7 +40,7 @@ import Numeric
 from fipy.tools.inline import inline
 from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
 
-class ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
+class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
     def __init__(self, var, modIn):
 	_ArithmeticCellToFaceVariable.__init__(self,var)
         self.modIn = modIn

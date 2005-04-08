@@ -46,11 +46,10 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
-from sourceVariable import SourceVariable
-from diffusionVariable import DiffusionVariable
-from transientVariable import TransientVariable
-from thetaHalfAngleVariable import ThetaHalfAngleVariable
-from noModularVariable import NoModularVariable
+from sourceVariable import _SourceVariable
+from diffusionVariable import _DiffusionVariable
+from transientVariable import _TransientVariable
+from thetaHalfAngleVariable import _ThetaHalfAngleVariable
 
 def buildThetaEquation(phase = None,
                        theta = None,
@@ -77,13 +76,13 @@ def buildThetaEquation(phase = None,
 
 	"""
 
-        transientCoeff = TransientVariable(phase = phase, theta = theta, parameters = parameters)
+        transientCoeff = _TransientVariable(phase = phase, theta = theta, parameters = parameters)
 
-        diffusionCoeff = DiffusionVariable(phase = phase, theta = theta, parameters = parameters)
+        diffusionCoeff = _DiffusionVariable(phase = phase, theta = theta, parameters = parameters)
 
-        halfAngleVariable = ThetaHalfAngleVariable(phase = phase, theta = theta, parameters = parameters)
+        halfAngleVariable = _ThetaHalfAngleVariable(phase = phase, theta = theta, parameters = parameters)
         
-        sourceCoeff = SourceVariable(phase = phase,
+        sourceCoeff = _SourceVariable(phase = phase,
                                      theta = theta,
                                      diffCoeff = diffusionCoeff,
                                      halfAngleVariable = halfAngleVariable,

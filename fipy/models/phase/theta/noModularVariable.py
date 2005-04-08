@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "modularVariable.py"
+ #  FILE: "noModularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
  #                                last update: 4/1/05 {11:02:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -37,7 +37,7 @@
 
 from fipy.variables.cellVariable import CellVariable
 
-class NoModularVariable(CellVariable):
+class _NoModularVariable(CellVariable):
     def __init__(self, modVar):
 	CellVariable.__init__(self, mesh = modVar.getMesh(), value = modVar.getNumericValue(), hasOld = 0)        
         self.modVar = self._requires(modVar)

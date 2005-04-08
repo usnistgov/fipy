@@ -47,11 +47,11 @@ from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-from phaseDiffusionVariable import PhaseDiffusionVariable
+from phaseDiffusionVariable import _PhaseDiffusionVariable
 from anisotropyVariable import _AnisotropyVariable
-from spSourceVariable import SpSourceVariable
-from phaseHalfAngleVariable import PhaseHalfAngleVariable
-from scSourceVariable import ScSourceVariable
+from spSourceVariable import _SpSourceVariable
+from phaseHalfAngleVariable import _PhaseHalfAngleVariable
+from scSourceVariable import _ScSourceVariable
 
 def buildPhaseEquation(phase = None, theta = None, temperature = None, parameters = {}, mPhi = None):
     r"""
@@ -94,25 +94,25 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
         	
     mPhiVar = mPhi(phase = phase, temperature = temperature, parameters = parameters)
 
-    halfAngle = PhaseHalfAngleVariable(
+    halfAngle = _PhaseHalfAngleVariable(
         parameters = parameters,
         phase = phase,
         theta = thetaOld
         )
 
     diffTerm = ExplicitDiffusionTerm(
-        coeff = PhaseDiffusionVariable(parameters = parameters,
+        coeff = _PhaseDiffusionVariable(parameters = parameters,
                                            halfAngle = halfAngle))
 	
     spTerm = ImplicitSourceTerm(
-        coeff = SpSourceVariable(theta = thetaOld,
+        coeff = _SpSourceVariable(theta = thetaOld,
                                        mPhi = mPhiVar,
                                        phase = phase,
                                        parameters = parameters))
 
     anisotropy = _AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
 
-    sourceCoeff = ScSourceVariable(mPhi = mPhiVar,
+    sourceCoeff = _ScSourceVariable(mPhi = mPhiVar,
                                    phase = phase,
                                    anisotropy = anisotropy)
 

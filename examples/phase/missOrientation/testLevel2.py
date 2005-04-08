@@ -48,7 +48,7 @@ import Numeric
 from Numeric import pi
 from fipy.meshes.grid2D import Grid2D
 from fipy.tests.testBase import TestBase
-from fipy.models.phase.theta.noModularVariable import NoModularVariable
+from fipy.models.phase.theta.noModularVariable import _NoModularVariable
 
 class TestMod(TestBase):
     def setUp(self, value, dx = 1., dy = 1.):
@@ -100,7 +100,7 @@ class TestModCellGrad(TestMod):
 class TestModNoMod(TestMod):
     def setUp(self):
         TestMod.setUp(self, 1., dx = 1., dy = 1.)
-        thetaNoMod = NoModularVariable(self.theta)
+        thetaNoMod = _NoModularVariable(self.theta)
         self.answer = Numeric.array((0. , 0.))
         self.theta[:] = self.answer
         self.result = thetaNoMod.getNumericValue()
@@ -119,7 +119,7 @@ class TestModFaceGradNoMod(TestModFace):
         dx = 0.5
         dy = 0.5
         TestModFace.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3.)) , dx = dx, dy = dy)
-        thetaNoMod = NoModularVariable(self.theta)
+        thetaNoMod = _NoModularVariable(self.theta)
         self.answer = Numeric.array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx - Numeric.array(((-4. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (0., 0.), (0., 0.))) / dx
         self.diff = self.theta.getFaceGrad() - thetaNoMod.getFaceGrad()
         self.result = self.diff.getNumericValue()
