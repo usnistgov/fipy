@@ -75,8 +75,8 @@ class Gnuplot1DViewer(GnuplotViewer):
     """
     def _plot(self):
 
-        self.g('set yrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
-        self.g('set yrange [' + self.getLimit('datamin')  + ':' + self.getLimit('datamax') + ']')
+        self.g('set yrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
+        self.g('set yrange [' + self._getLimit('datamin')  + ':' + self._getLimit('datamax') + ']')
         
         tupleOfGnuplotData = ()
 

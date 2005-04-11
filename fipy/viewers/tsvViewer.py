@@ -163,8 +163,8 @@ class TSVViewer(Viewer):
             # omit any elements whose cell centers lie outside of the specified limits
             skip = False
             for axis in range(dim):
-                mini = self.getLimit("%smin" % self._axis[axis])
-                maxi = self.getLimit("%smax" % self._axis[axis])
+                mini = self._getLimit("%smin" % self._axis[axis])
+                maxi = self._getLimit("%smax" % self._axis[axis])
                 
                 if (mini and lineValues[axis] < mini) or (maxi and lineValues[axis] > maxi):
                     skip = True
@@ -175,8 +175,8 @@ class TSVViewer(Viewer):
 
             # replace any values that lie outside of the specified datalimits with 'nan'
             for valIndex in range(dim, len(lineValues)):
-                mini = self.getLimit("datamin")
-                maxi = self.getLimit("datamax")
+                mini = self._getLimit("datamin")
+                maxi = self._getLimit("datamax")
                 
                 if (mini and lineValues[valIndex] < mini) or (maxi and lineValues[valIndex] > maxi):
                     lineValues[valIndex] = float("NaN")

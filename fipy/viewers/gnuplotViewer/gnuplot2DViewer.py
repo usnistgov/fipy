@@ -100,7 +100,7 @@ class Gnuplot2DViewer(GnuplotViewer):
             
     def _plot(self):
 
-        self.g('set cbrange [' + self.getLimit('zmin')  + ':' + self.getLimit('zmax') + ']')
+        self.g('set cbrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
         self.g('set view map')
         self.g('set style data pm3d')
         self.g('set pm3d at st solid')
