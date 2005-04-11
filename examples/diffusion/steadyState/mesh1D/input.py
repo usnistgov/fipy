@@ -208,9 +208,9 @@ def script():
     invoked to initialize other scripts.
     """
     import fipy.tests.doctestPlus
-    return fipy.tests.doctestPlus.getScript(__name__)
+    return fipy.tests.doctestPlus._getScript(__name__)
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
     raw_input("finished")

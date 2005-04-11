@@ -193,7 +193,7 @@ if __name__ == '__main__':
     # profile = Profiler('profile', fudge=fudge)
 
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
 
     # profile.stop()
 	    

@@ -43,7 +43,7 @@
 
 __docformat__ = 'restructuredtext'
 
-class Solver:
+class _Solver:
     """
     The base `LinearXSolver` class.
     """

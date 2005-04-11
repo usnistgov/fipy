@@ -130,7 +130,7 @@ class Gist2DViewer(GistViewer):
         yCoords = Numeric.take(self.mesh.getVertexCoords()[:,1], vertexIDs.flat)
         gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
 
-        colorbar.color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
+        colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
 
         gist.fma()
 

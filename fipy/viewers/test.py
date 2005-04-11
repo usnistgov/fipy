@@ -42,11 +42,11 @@
 """Test numeric implementation of the mesh
 """
 
-from fipy.tests.doctestPlus import LateImportDocTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return LateImportDocTestSuite(docTestModuleNames = (
+    return _LateImportDocTestSuite(docTestModuleNames = (
         ), base = __name__)
     
 if __name__ == '__main__':

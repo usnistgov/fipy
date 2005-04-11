@@ -47,9 +47,9 @@ import sys
 import precon
 import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.solver import _Solver
 
-class LinearGMRESSolver(Solver):
+class LinearGMRESSolver(_Solver):
     """
     
     The `LinearGMRESSolver` solves a linear system of equations using the

@@ -40,13 +40,13 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import LateImportDocTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 import input
 
 def _suite():
-    return LateImportDocTestSuite(docTestModuleNames = (
+    return _LateImportDocTestSuite(docTestModuleNames = (
             'input',
         ), base = __name__)
     

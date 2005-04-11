@@ -95,10 +95,10 @@ __docformat__ = 'restructuredtext'
 
 def run():
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript(__name__))
+    exec(fipy.tests.doctestPlus._getScript(__name__))
 
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
     raw_input("finished")

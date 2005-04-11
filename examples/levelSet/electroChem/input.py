@@ -526,8 +526,8 @@ __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
 
 def run():
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript(__name__))
+    exec(fipy.tests.doctestPlus._getScript(__name__))

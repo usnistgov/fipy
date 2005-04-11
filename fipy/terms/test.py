@@ -41,12 +41,12 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import LateImportDocTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
 
-    return LateImportDocTestSuite(docTestModuleNames = (
+    return _LateImportDocTestSuite(docTestModuleNames = (
             'nthOrderDiffusionTerm',
             'term',
             'convectionTerm'

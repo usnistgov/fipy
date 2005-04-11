@@ -8,8 +8,8 @@ from arrayfns import *
 from gist import *
 from slice3 import *
 
-def nice_levels (z, n = 8) :
-   """nice_levels(z, n = 8) finds approximately n "nice values"
+def _nice_levels (z, n = 8) :
+   """_nice_levels(z, n = 8) finds approximately n "nice values"
    between min(z) and max(z) for axis labels. n defaults to eight.
    """
    zmax = max (ravel (z))
@@ -38,17 +38,17 @@ def nice_levels (z, n = 8) :
       array_set (levs, list, 0.0)
    return levs
 
-def color_bar (minz, maxz, split = 0, ncol = None, ymax=0.85, ymin=0.44, xmin0=0.62, xmax0=0.64, zlabel=None, fontsize=16, font='helvetica', color='black') :
+def _color_bar (minz, maxz, split = 0, ncol = None, ymax=0.85, ymin=0.44, xmin0=0.62, xmax0=0.64, zlabel=None, fontsize=16, font='helvetica', color='black') :
    """
-   color_bar (minz, maxz) plots a color bar to the right of the plot square
+   _color_bar (minz, maxz) plots a color bar to the right of the plot square
    labelled by the z values from minz to maxz.
 
    plf (z, y, x)
-   color_bar (z (min, min), z (max, max))
+   _color_bar (z (min, min), z (max, max))
 
    or
    plf (z, y, x, cmin = MINZ, cmax = MAXZ)
-   color_bar (MINZ, MAXZ)
+   _color_bar (MINZ, MAXZ)
 
    are typical usage
    """
@@ -68,7 +68,7 @@ def color_bar (minz, maxz, split = 0, ncol = None, ymax=0.85, ymin=0.44, xmin0=0
    pldj (array ( [xmin0, xmin0]), array ( [ymin, ymax]), array ( [xmax0, xmax0]),
          array ( [ymin, ymax]), color=color)
    plsys (1)
-   levs = nice_levels (array ( [minz, maxz]))
+   levs = _nice_levels (array ( [minz, maxz]))
    scales = []
    for i in range (len (levs)) :
       scales.append ( "% .5g" % levs [i])

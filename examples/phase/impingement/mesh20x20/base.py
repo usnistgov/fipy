@@ -230,6 +230,6 @@ def script():
     invoked to initialize other scripts.
     """
     import fipy.tests.doctestPlus
-    return fipy.tests.doctestPlus.getScript(__name__)
+    return fipy.tests.doctestPlus._getScript(__name__)
 
 

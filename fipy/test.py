@@ -40,11 +40,11 @@
  # ###################################################################
  ##
 
-from fipy.tests.lateImportTest import LateImportTestSuite
+from fipy.tests.lateImportTest import _LateImportTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return LateImportTestSuite(testModuleNames = (
+    return _LateImportTestSuite(testModuleNames = (
         'models.test',
         'terms.test',
         'tools.test',

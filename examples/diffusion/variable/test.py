@@ -40,11 +40,11 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import LateImportDocTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return LateImportDocTestSuite(docTestModuleNames = (
+    return _LateImportDocTestSuite(docTestModuleNames = (
             'mesh2x1.input',
             'mesh2x1.tri2Dinput',
             'mesh10x1.input',

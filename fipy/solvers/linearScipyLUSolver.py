@@ -45,9 +45,9 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import scipy.linalg
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.solver import _Solver
 
-class LinearScipyLUSolver(Solver):
+class LinearScipyLUSolver(_Solver):
     """
     
     The `LinearScipyLUSolver` solves a linear system of equations
@@ -75,7 +75,7 @@ class LinearScipyLUSolver(Solver):
             For large systems a number of steps is generally required.
 
         """
-	Solver.__init__(self, tolerance = tolerance, steps = steps)
+	_Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
 

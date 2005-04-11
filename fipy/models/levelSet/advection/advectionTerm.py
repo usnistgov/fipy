@@ -46,7 +46,7 @@ import Numeric
 import MA
 
 from fipy.terms.term import Term
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
 class _AdvectionTerm(Term):
     r"""
@@ -150,7 +150,7 @@ class _AdvectionTerm(Term):
 
         coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
 
-        return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
+        return (_SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()

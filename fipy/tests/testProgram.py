@@ -37,7 +37,7 @@
 
 import unittest
 
-class TestProgram(unittest.TestProgram):
+class _TestProgram(unittest.TestProgram):
     def parseArgs(self, argv):
 	import getopt
 ##	inline = 0
@@ -73,4 +73,4 @@ class TestProgram(unittest.TestProgram):
 	except getopt.error, msg:
 	    self.usageExit(msg)
 
-main = TestProgram
+main = _TestProgram

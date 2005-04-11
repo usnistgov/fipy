@@ -52,7 +52,7 @@ import Numeric
 from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.tools import array
 from fipy.tools import vector
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
 class FixedValue(_BoundaryCondition):
     r"""
@@ -91,7 +91,7 @@ class FixedValue(_BoundaryCondition):
             this exterior face
 	"""
 	
-	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
+	LL = _SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')

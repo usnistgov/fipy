@@ -47,7 +47,7 @@ import Numeric
 from fipy.terms.term import Term
 from fipy.tools.inline import inline
 
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
 class _CellTerm(Term):
     def __init__(self, coeff = 1.):
@@ -101,7 +101,7 @@ class _CellTerm(Term):
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	N = len(var)
 	b = Numeric.zeros((N),'d')
-	L = SparseMatrix(size = N)
+	L = _SparseMatrix(size = N)
 	
 	coeffVectors = self._getCoeffVectors(var.getMesh())
 

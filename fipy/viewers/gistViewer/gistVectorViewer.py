@@ -46,7 +46,7 @@ import Numeric
 
 from fipy.viewers.gistViewer import GistViewer
 
-class GistVectorViewer(GistViewer):
+class _GistVectorViewer(GistViewer):
     
     def __init__(self, var = None, title = '', grid = 1):
 	self.var = var

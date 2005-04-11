@@ -48,11 +48,11 @@ import precon
 import itsolvers
 import superlu
 
-from fipy.solvers.solver import Solver
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.solvers.solver import _Solver
+from fipy.tools.sparseMatrix import _SparseMatrix
 import Numeric
 
-class LinearLUSolver(Solver):
+class LinearLUSolver(_Solver):
     """
     
     The `LinearLUSolver` solves a linear system of equations using
@@ -81,7 +81,7 @@ class LinearLUSolver(Solver):
 
         """
         
-	Solver.__init__(self, tolerance = tolerance, steps = steps)
+	_Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
         LU = superlu.factorize(L._getMatrix().to_csr(), diag_pivot_thresh = 1., relax = 1)

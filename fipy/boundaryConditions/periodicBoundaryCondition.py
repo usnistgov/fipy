@@ -47,7 +47,7 @@ import Numeric
 
 from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
 from fipy.tools import array
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
 class PeriodicBoundaryCondition(_BoundaryCondition):
     r"""
@@ -110,7 +110,7 @@ class PeriodicBoundaryCondition(_BoundaryCondition):
 	  - `coeff`: contributions to **L** by this exterior face
 	"""
 	
-	LL = SparseMatrix(size = Ncells, bandwidth = MaxFaces)
+	LL = _SparseMatrix(size = Ncells, bandwidth = MaxFaces)
 
 	LL.addAt(array.take(coeff['cell 1 diag'][:] / 2., self.faceIds),self.adjacentCellIds,self.adjacentCellIds)
 	LL.addAt(array.take(coeff['cell 1 offdiag'][:] / 2., self.faceIds),self.adjacentCellIds,self.offdiagonalCellIds)

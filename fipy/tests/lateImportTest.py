@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
@@ -40,11 +42,11 @@
 
 import unittest
  
-class LateImportTestCase(unittest.TestCase):
+class _LateImportTestCase(unittest.TestCase):
     def __str__(self):
         return "import %s" % self.moduleName
 
-    def post__init__(self, moduleName, suite):
+    def _post__init__(self, moduleName, suite):
         self.moduleName = moduleName
         self.suite = suite
         
@@ -58,30 +60,31 @@ class LateImportTestCase(unittest.TestCase):
         for component in components[1:]:
             module = getattr(module, component)
             
-        self.suite.addTest(self.getTestSuite(module = module))
+        self.suite.addTest(self._getTestSuite(module = module))
         
-    def getTestSuite(self, module):
+    def _getTestSuite(self, module):
         return module._suite()
-        
+
     def runTest(self):
         return
-    
-class LateImportTestSuite(unittest.TestSuite):
+        
+class _LateImportTestSuite(unittest.TestSuite):
     def __init__(self, testModuleNames = (), base = '__main__'):
         unittest.TestSuite.__init__(self)
-        self.addTestModules(moduleNames = testModuleNames, base = base)
+        self._addTestModules(moduleNames = testModuleNames, base = base)
     
-    def addTestModules(self, moduleNames = (), base = '__main__'):
+    def _addTestModules(self, moduleNames = (), base = '__main__'):
         for moduleName in moduleNames:
-            self.addTestModule(moduleName = moduleName, base = base)
+            self._addTestModule(moduleName = moduleName, base = base)
 
-    def addTestModule(self, moduleName, base = '__main__', testClass = LateImportTestCase):
+    def _addTestModule(self, moduleName, base = '__main__', testClass = _LateImportTestCase):
         if base == '__main__':
             base = []
         else:
             base = base.split('.')[:-1]
 
         test = testClass()
-        test.post__init__(".".join(base + [moduleName]), self)
+        test._post__init__(".".join(base + [moduleName]), self)
         self.addTest(test)
+
 

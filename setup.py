@@ -130,36 +130,35 @@ class build_docs (Command):
                 ## Added because linux does not sort files in the same order
                 files.sort()
                 
-##                 for module in modules[::-1]:
-##                     formattedModule = string.replace(module,'/','.') + '-module.tex'
-##                     if formattedModule in files:
-##                         files.remove(formattedModule)
-##                         files.insert(0, formattedModule)
-
 		import re
 		mainModule = re.compile(r"(fipy\.[^.-]*)-module\.tex")
 		subModule = re.compile(r"(fipy(\.[^.-]*)+)-module\.tex")
                 for name in files:
 		    mainMatch = mainModule.match(name)
-		    if mainMatch:
-			f.write("\\chapter{Module " + mainMatch.group(1) + "}\n")
-			
-		    subMatch = subModule.match(name)
-		    if subMatch:
-			module = open(os.path.join(root, name))
-			
-			# epydoc tends to prattle on and on with empty module pages, so 
-			# we eliminate all but those that actually contain something relevant.
-			functionLine = re.compile(r"\\subsection{(Functions|Variables|Class)")
-			keepIt = False
+                    subMatch = subModule.match(name)
+
+                    def stringInModule(s):
+                        module = open(os.path.join(root, name))
+                        functionLine = re.compile(s)
+			flag = False
 			for line in module:
 			    if functionLine.search(line):
-				keepIt = True
+				flag = True
 				break
 				
 			module.close
-			if not keepIt:
-			    continue
+                        
+                        return flag
+
+                    if mainMatch and stringInModule(r"\\subsection{Modules") \
+                       and not stringInModule(r"no chapter heading"):
+			f.write("\\chapter{Module " + mainMatch.group(1) + "}\n")
+
+		    if subMatch:
+                        ## epydoc tends to prattle on and on with empty module pages, so 
+			## we eliminate all but those that actually contain something relevant.
+                        if not stringInModule(r"\\subsection{(Functions|Variables|Class)"):
+                            continue
 			
 		    split = os.path.splitext(name)
 		    if split[1] == ".tex":
@@ -449,7 +448,7 @@ class copy_script(Command):
 	import fipy.tests.doctestPlus
 	
 	mod = imp.load_source("copy_script_module", self.From)
-	script = fipy.tests.doctestPlus.getScript(name = "copy_script_module")
+	script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
 	
 	script = "## This script was derived from '%s'\n\n%s"%(self.From, script)
 	

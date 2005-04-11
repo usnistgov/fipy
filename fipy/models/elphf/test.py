@@ -49,9 +49,9 @@ import Numeric
 
 import fipy.tests.testProgram
 
-from fipy.tests.testBase import TestBase
+from fipy.tests.testBase import _TestBase
 
-class TestElPhF(TestBase):
+class TestElPhF(_TestBase):
     """
     Simple test case for the phase field equation.
     """

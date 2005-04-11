@@ -47,9 +47,9 @@ import sys
 import precon
 import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.solver import _Solver
 
-class LinearCGSSolver(Solver):
+class LinearCGSSolver(_Solver):
 
     """
 

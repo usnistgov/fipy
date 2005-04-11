@@ -51,9 +51,9 @@ import sys
 def parse(larg, action = None, type = None, default = None):
     """
     This is a wrapper function for the python `optparse` module.
-    Unfortunately the `optparse` does not allow command line
-    arguments to be ignored. See the documentation for `optparse`
-    for more details. Returns the argument value.
+    Unfortunately `optparse` does not allow command line arguments to
+    be ignored. See the documentation for `optparse` for more
+    details. Returns the argument value.
 
     :Parameters:
       - `action` : `store` or `store_true` are possibilities
@@ -64,7 +64,7 @@ def parse(larg, action = None, type = None, default = None):
     sarg = None
     tmpparser = optparse.OptionParser(option_list = [
         optparse.make_option(sarg, larg, action = action, type = type, dest = 'dest', default = default)],
-                                      conflict_handler = 'ignore')
+                                      conflict_handler = 'resolve')
     
 ##    optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'Nele', default = numberOfElements),
 ##    optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = numberOfSteps),

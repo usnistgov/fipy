@@ -154,7 +154,7 @@ if __name__ == '__main__':
 ##     from fipy.tools.profiler.profiler import calibrate_profiler
 
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
 
 ##     fudge = calibrate_profiler(10000)
 ##     profile = Profiler('profile', fudge=fudge)

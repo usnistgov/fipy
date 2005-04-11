@@ -40,43 +40,36 @@ import Numeric
 
 import fipy.tools.array as array
 
-class TestBase(unittest.TestCase):
+class _TestBase(unittest.TestCase):
     def assertWithinTolerance(self, first, second, tol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
 	if abs(first - second) > tol:
 	    raise self.failureException, (msg or '%s !~ %s' % (first, second))
         
-##     def assertEqual(self, first, second, msg = None):
-##         if not first == second:
-##             raise self.failureException, ( msg or '%s != %s' % (first, second))
-        
-    def assertArrayEqual(self, first, second, msg=None):
-	"""Fail if the two objects are unequal by more than tol.
-	"""
-	if not array.allequal(first, second):
-	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
-	
     def assertArrayWithinTolerance(self, first, second, atol = 1e-10, rtol = 1e-10, msg=None):
 	"""Fail if the two objects are unequal by more than tol.
 	"""
 	if not array.allclose(first, second, rtol = rtol, atol = atol):
 	    raise self.failureException, (msg or '\n%s\nis not\n%s' % (first, second))
 
-    def getTestValue(self, cell):
-	pass
-	
-    def getTestValues(self):
-	values = self.var.getNumericValue().copy()
-	for cell in self.mesh.getCells():
-	    id = cell.getID()
-	    values[id] = self.getTestValue(cell)
-	return values
-	
     def testResult(self):
-	for step in range(self.steps):
-	    self.it.timestep() #, maxSweeps = 10)
-	array = self.var.getNumericValue()
-	values = self.getTestValues()
-	values = Numeric.reshape(values, Numeric.shape(array))
-	self.assertArrayWithinTolerance(array, values, self.tolerance)
+        pass
+
+##    def getTestValue(self, cell):
+##	pass
+	
+##    def getTestValues(self):
+##	values = self.var.getNumericValue().copy()
+##	for cell in self.mesh.getCells():
+##	    id = cell.getID()
+##	    values[id] = self.getTestValue(cell)
+##	return values
+	
+##    def testResult(self):
+##	for step in range(self.steps):
+##	    self.it.timestep() #, maxSweeps = 10)
+##	array = self.var.getNumericValue()
+##	values = self.getTestValues()
+##	values = Numeric.reshape(values, Numeric.shape(array))
+##	self.assertArrayWithinTolerance(array, values, self.tolerance)

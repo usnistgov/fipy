@@ -47,7 +47,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.terms.term import Term
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 import fipy.tools.array as array
 
 class NthOrderDiffusionTerm(Term):
@@ -238,7 +238,7 @@ class NthOrderDiffusionTerm(Term):
             self.geomCoeff = None
         
     def _getCoefficientMatrix(self, mesh, coeff):
-	coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+	coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
 
 	interiorCoeff = Numeric.array(coeff)
         
@@ -317,7 +317,7 @@ class NthOrderDiffusionTerm(Term):
                                                                                  dt = dt)
 ##                                                                              coefficientMatrix = coefficientMatrix)
             lowerOrderb = lowerOrderb / volumes
-            volMatrix = SparseMatrix(size = N)
+            volMatrix = _SparseMatrix(size = N)
             volMatrix.addAtDiagonal(1. / volumes )
             lowerOrderL = volMatrix * lowerOrderL
     
@@ -327,7 +327,7 @@ class NthOrderDiffusionTerm(Term):
 
         else:
             N = mesh.getNumberOfCells()
-            L = SparseMatrix(size = N)
+            L = _SparseMatrix(size = N)
             L.addAtDiagonal(volumes)
         
             b = Numeric.zeros((N),'d')

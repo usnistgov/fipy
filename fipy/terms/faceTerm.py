@@ -46,7 +46,7 @@ from fipy.terms.term import Term
 import fipy.tools.vector
 import fipy.tools.array as array
 from fipy.tools.inline import inline
-from fipy.tools.sparseMatrix import SparseMatrix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
 class _FaceTerm(Term):
     def __init__(self, coeff = 1.):
@@ -166,7 +166,7 @@ class _FaceTerm(Term):
 	
         N = len(var)
         b = Numeric.zeros((N),'d')
-        L = SparseMatrix(size = N)
+        L = _SparseMatrix(size = N)
 
 	weight = self._getWeight(mesh)
 

@@ -44,9 +44,9 @@
 import sys
 import doctest
 
-from lateImportTest import LateImportTestCase, LateImportTestSuite
+from lateImportTest import _LateImportTestCase, _LateImportTestSuite
 
-def getScript(name = '__main__'):
+def _getScript(name = '__main__'):
     module = sys.modules.get(name)
     # the syntax of doctest changed substantially between Python 2.3 and 2.4
     # <http://sourceforge.net/tracker/index.php?func=detail&aid=1120348&group_id=118428&atid=681141>
@@ -60,16 +60,16 @@ def getScript(name = '__main__'):
         
     
     
-class LateImportDocTestCase(LateImportTestCase):
-    def getTestSuite(self, module):
+class _LateImportDocTestCase(_LateImportTestCase):
+    def _getTestSuite(self, module):
         return doctest.DocTestSuite(module)    
 
-class LateImportDocTestSuite(LateImportTestSuite):
+class _LateImportDocTestSuite(_LateImportTestSuite):
     def __init__(self, testModuleNames = (), docTestModuleNames = (), base = '__main__'):
-        LateImportTestSuite.__init__(self, testModuleNames = testModuleNames, base = base)
-        self.addDocTestModules(moduleNames = docTestModuleNames, base = base)
+        _LateImportTestSuite.__init__(self, testModuleNames = testModuleNames, base = base)
+        self._addDocTestModules(moduleNames = docTestModuleNames, base = base)
     
-    def addDocTestModules(self, moduleNames = (), base = '__main__'):
+    def _addDocTestModules(self, moduleNames = (), base = '__main__'):
         for moduleName in moduleNames:
-            self.addTestModule(moduleName = moduleName, base = base, testClass = LateImportDocTestCase)
+            self._addTestModule(moduleName = moduleName, base = base, testClass = _LateImportDocTestCase)
 

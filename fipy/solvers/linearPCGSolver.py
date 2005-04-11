@@ -48,9 +48,9 @@ import sys
 import precon
 import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.solver import _Solver
 
-class LinearPCGSolver(Solver):
+class LinearPCGSolver(_Solver):
     """
     
     The `LinearPCGSolver` solves a linear system of equations using the

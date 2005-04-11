@@ -47,10 +47,10 @@ from fipy.models.phase.theta.modularVariable import ModularVariable
 import Numeric
 from Numeric import pi
 from fipy.meshes.grid2D import Grid2D
-from fipy.tests.testBase import TestBase
+from fipy.tests.testBase import _TestBase
 from fipy.models.phase.theta.noModularVariable import _NoModularVariable
 
-class TestMod(TestBase):
+class TestMod(_TestBase):
     def setUp(self, value, dx = 1., dy = 1.):
         self.mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 1)
         self.theta = ModularVariable(
