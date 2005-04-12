@@ -54,11 +54,11 @@ class FixedFlux(_BoundaryCondition):
 
     The `FixedFlux` boundary condition adds a contribution, equivalent
     to a fixed flux (Neumann) , to the equation's RHS vector.  The
-    contribution, given by
+    contribution, given by `value`
 
     .. raw:: latex
 
-        $ \text{value} * A_{\text{face}} $ where $A_{\text{face}}$
+        $ * A_{\text{face}}, $ where $A_{\text{face}}$
 
     is the area of the face, is only added to entries corresponding to
     the specified faces. Usage:
@@ -74,8 +74,8 @@ class FixedFlux(_BoundaryCondition):
         Creates a `FixedFlux` object.
 	
 	:Parameters:
-	    - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
-	    - `value` : The value to impose.
+	    - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
+	    - `value`: The value to impose.
             
 	"""
 	_BoundaryCondition.__init__(self,faces,value)

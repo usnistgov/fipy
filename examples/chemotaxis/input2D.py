@@ -127,13 +127,13 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    from fipy.viewers.gnuplotViewer import GnuplotViewer
+    from fipy.viewers.gnuplotViewer import make
     import Numeric
     PNArray = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
-    PNViewer = GnuplotViewer(PNArray, maxVal = 2., minVal = 0., title = '')
+    PNViewer = make(PNArray, maxVal = 2., minVal = 0., title = '')
     
     KMArray = Numeric.reshape(KMVar / KMVar.getCellVolumeAverage(), (50, 50))
-    KMViewer = GnuplotViewer(KMArray, maxVal = 2., minVal = 0., title = '')
+    KMViewer = make(KMArray, maxVal = 2., minVal = 0., title = '')
     
     TMArray = Numeric.reshape(TMVar / TMVar.getCellVolumeAverage(), (50, 50))
     TMViewer = GnuplotViewer(TMArray, maxVal = 2., minVal = 0., title = '')

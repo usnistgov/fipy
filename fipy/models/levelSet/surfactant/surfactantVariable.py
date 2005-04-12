@@ -48,12 +48,12 @@ import Numeric
 class SurfactantVariable(CellVariable):
     """
 
-    `SurfactantVariable` initializes itself across the zero level set
-    interface using the delta function. The `value` argument
-    corresponds to the initial concentration of surfactant on the
-    interface (moles divided by area). The value held by the
-    `SurfactantVariable` is actually a volume density (moles divided by
-    volume).
+    The `SurfactantVariable` maintains a conserved volumetric
+    concentration on cells adjacent to, but in front of, the
+    interface. The `value` argument corresponds to the initial
+    concentration of surfactant on the interface (moles divided by
+    area). The value held by the `SurfactantVariable` is actually a
+    volume density (moles divided by volume).
 
     """
     
@@ -96,7 +96,12 @@ class SurfactantVariable(CellVariable):
            >>> Numeric.allclose(surfactantVariable, 
            ...                  (0, Numeric.sqrt(2), Numeric.sqrt(2), 0))
            1
-           
+
+        :Parameters:
+          - `value`: The initial value.
+          - `distanceVar`: A `DistanceVariable` object.
+          - `name`: The name of the variable.
+          
         """
         
         CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name)
@@ -110,9 +115,9 @@ class SurfactantVariable(CellVariable):
         """
         
         Returns the `SurfactantVariable` rendered as an
-        `_InterfaceSurfactantVariable` which evaluates the
-        surfactant concentration on the surface rather than
-        over the domain.
+        `_InterfaceSurfactantVariable` which evaluates the surfactant
+        concentration as an area concentration the interface rather
+        than a volumetric concentration.
 
         """
         if self.interfaceSurfactantVariable is None:

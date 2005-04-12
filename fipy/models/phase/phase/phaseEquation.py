@@ -80,10 +80,10 @@ def buildPhaseEquation(phase = None, theta = None, temperature = None, parameter
 
 
     :Parameters:
-      - `phase` : The phase field.
-      - `theta` : The crystal orientation.
-      - `temperature` : The system temperature.
-      - `parameters` : A dictionary that includes the following keys,
+      - `phase`: The phase field.
+      - `theta`: The crystal orientation.
+      - `temperature`: The system temperature.
+      - `parameters`: A dictionary that includes the following keys,
         `'tau'`, `'epsilon'`, `'s'`, `'anisotropy'`, `'alpha'`, `'symmetry'`, `'c2'`. 
         
     """

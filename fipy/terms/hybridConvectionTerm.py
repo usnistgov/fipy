@@ -56,6 +56,10 @@ class HybridConvectionTerm(_ConvectionTerm):
        For further details see Section 3.5 of the main \FiPy{}
        guide~\cite{FiPyGuide}.
 
+    Usage ::
+
+        HybridConvectionTerm(coeff = <VectorFaceVariable|Float>)
+
     """
 
     class Alpha(FaceVariable):

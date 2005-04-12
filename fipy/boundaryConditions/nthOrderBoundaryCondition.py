@@ -67,9 +67,9 @@ class NthOrderBoundaryCondition(_BoundaryCondition):
         Creates an `NthOrderBoundaryCondition`.
 
         :Parameters:
-          - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
-          - `value` : The value to impose.
-          - `order` : The order of the boundary condition. An `order` of `0`
+          - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
+          - `value`: The value to impose.
+          - `order`: The order of the boundary condition. An `order` of `0`
             corresponds to a `FixedValue` and an `order` of `1` corresponds to
             a `FixedFlux`. Even and odd orders behave like a `FixedValue` and a `FixedFlux` objects,
             respectively, but apply to higher order terms.

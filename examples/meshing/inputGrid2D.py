@@ -87,9 +87,10 @@ Obtain all the left exterior faces, this is equal to `ny`.
 One can view the mesh with the following code,
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers.mesh2DGistViewer import Mesh2DMeshViewer
-   ...     Mesh2DMeshViewer(mesh, grid = 0).plot()
-
+   ...     from fipy.viewers import make
+   ...     viewer = make(CellVariable(value = 0, mesh = mesh))
+   ...     viewer.plotMesh()
+   
 """
 __docformat__ = 'restructuredtext'
 

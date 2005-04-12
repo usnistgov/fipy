@@ -101,7 +101,7 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
 
     .. raw:: latex
 
-        $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta) \;\; \text{at} \;\; \phi = 0$$
+        $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta) \;\; \text{at} \;\; \phi = 0.$$
         
     :Parameters:
       - `bulkVar` : The bulk surfactant concentration variable.

@@ -189,12 +189,12 @@ class DistanceVariable(CellVariable):
         Creates a `distanceVariable` object.
 
         :Parameters:
-          - `mesh` : The mesh that defines the geometry of this variable.
-          - `name` : The name of the variable.
-	  - `value` : The initial value.
-	  - `unit` : the physical units of the variable
-          - `hasOld` : Whether the variable maintains an old value.
-          - `narrowBandWidth` : The width of the region about the zero level set
+          - `mesh`: The mesh that defines the geometry of this variable.
+          - `name`: The name of the variable.
+	  - `value`: The initial value.
+	  - `unit`: the physical units of the variable
+          - `hasOld`: Whether the variable maintains an old value.
+          - `narrowBandWidth`: The width of the region about the zero level set
             within which the distance function is evaluated.
 
         """
@@ -212,12 +212,12 @@ class DistanceVariable(CellVariable):
         """
         
         Takes a `cellVariable` and extends the variable from the zero
-        to the region encapuslated by the `narrowBandWidth`
+        to the region encapuslated by the `narrowBandWidth`.
 
         :Parameters:
-          - `extensionVariable` : The variable to extend from the zero
+          - `extensionVariable`: The variable to extend from the zero
             level set.
-          - `deleteIslands` : Sets the temporary level set value to
+          - `deleteIslands`: Sets the temporary level set value to
             zero in isolated cells.
 
         """
@@ -233,9 +233,9 @@ class DistanceVariable(CellVariable):
         Calculates the `distanceVariable` as a distance function.
 
         :Parameters:
-          - `narrowBandWidth` : The width of the region about the zero level set
+          - `narrowBandWidth`: The width of the region about the zero level set
             within which the distance function is evaluated.
-          - `deleteIslands` : Sets the temporary level set value to
+          - `deleteIslands`: Sets the temporary level set value to
             zero in isolated cells.
 
         """

@@ -49,9 +49,9 @@ import os
 import Numeric
 import gist
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class GistViewer(Viewer):
+class _GistViewer(_Viewer):
     
     id=0
     
@@ -71,17 +71,17 @@ class GistViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
           - `dpi`: the dot-per-inch resolution of the display
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.mesh = self.vars[0].getMesh()
 
-        self.id = GistViewer.id 
-	GistViewer.id += 1
+        self.id = _GistViewer.id 
+	_GistViewer.id += 1
         
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, key):
-        limit = Viewer._getLimit(self, key = key)
+        limit = _Viewer._getLimit(self, key = key)
         if limit is None:
             limit = 'e'
             

@@ -195,6 +195,13 @@ class NthOrderDiffusionTerm(Term):
     """
     
     def __init__(self, coeff):
+        """
+        Create an `NthOrderDiffusionTerm`.
+
+        :Parameters:
+          - `coeff`: `Tuple` or `list` of `FaceVariables` or numbers.
+
+        """
 
 	self.order = len(coeff) * 2
 

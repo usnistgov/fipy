@@ -44,7 +44,7 @@
 
 __docformat__ = 'restructuredtext'
 
-class Viewer:
+class _Viewer:
     def __init__(self, vars, limits = None, title = None):
         """
         The `Viewer` class should not be called directly.

@@ -71,8 +71,8 @@ class PeriodicBoundaryCondition(_BoundaryCondition):
         Creates a `PeriodicBoundaryCondition`.
 
         :Parameters:
-          - `faces1` : A `list` or `tuple` of faces.
-          - `faces2` : A `list` or `tuple` of faces.
+          - `faces1`: A `list` or `tuple` of faces.
+          - `faces2`: A `list` or `tuple` of faces.
 
         The faces in each list are matched in order.
         """

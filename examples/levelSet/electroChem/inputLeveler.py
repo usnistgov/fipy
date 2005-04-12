@@ -60,7 +60,7 @@ To run this example from the base fipy directory type::
     computer with a 2GHz Athlon CPU. The results of the simulation
 
 will be displayed and the word `finished` in the terminal at the
-end of the simulation. The Gist package is required to view the
+end of the simulation. The Gist or Gnuplot package is required to view the
 results as the simulation is being executed (see the installation
 
 .. raw:: latex
@@ -443,7 +443,6 @@ The function below is constructed to encapsulate the creation of the
 viewers.
 
    >>> def buildViewers():
-   ...    from fipy.viewers.grid2DGistViewer import Grid2DGistViewer
    ...    resolution = 3
    ...    cells = yCells * 2**(resolution-1)
    ...    return (

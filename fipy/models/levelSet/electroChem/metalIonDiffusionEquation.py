@@ -127,12 +127,12 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        1
 
     :Parameters:
-      - `ionVar` : The metal ion concentration variable.
-      - `distanceVar` : A `DistanceVariable` object.
-      - `depositionRate` : A float or a `CellVariable` representing the interface deposition rate.
-      - `transientCoeff` : The transient coefficient.
-      - `diffusionCoeff` : The diffusion coefficient
-      - `metalIonAtomicVolume` : Atomic volume of the metal ions.
+      - `ionVar`: The metal ion concentration variable.
+      - `distanceVar`: A `DistanceVariable` object.
+      - `depositionRate`: A float or a `CellVariable` representing the interface deposition rate.
+      - `transientCoeff`: The transient coefficient.
+      - `diffusionCoeff`: The diffusion coefficient
+      - `metalIonAtomicVolume`: Atomic volume of the metal ions.
 
     """
 

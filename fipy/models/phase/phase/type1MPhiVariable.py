@@ -52,6 +52,10 @@ class Type1MPhiVariable(_MPhiVariable):
 
         $$ \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
 
+    Usage ::
+
+        Type1MPhiVariable(phase = <CellVariable>, temperature = <CellVariable>)
+
     """
     
     def _calcValue(self):        

@@ -56,9 +56,10 @@ def parse(larg, action = None, type = None, default = None):
     details. Returns the argument value.
 
     :Parameters:
-      - `action` : `store` or `store_true` are possibilities
-      - `type` : Type of the argument. `int` or `float` are possibilities.
-      - `default` : Default value.
+      - `larg`: The argument to be parsed.
+      - `action`: `store` or `store_true` are possibilities
+      - `type`: Type of the argument. `int` or `float` are possibilities.
+      - `default`: Default value.
         
     """
     sarg = None

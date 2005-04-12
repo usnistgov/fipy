@@ -46,16 +46,18 @@ __docformat__ = 'restructuredtext'
 
 import Gnuplot
 
-from gnuplotViewer import GnuplotViewer
+from gnuplotViewer import _GnuplotViewer
 
-class Gnuplot1DViewer(GnuplotViewer):
+class Gnuplot1DViewer(_GnuplotViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     Usage
 
     ::
     
-       viewer = Gnuplot1DViewer(vars)
+       viewer = Gnuplot1DViewer(vars = (<CellVariable>, ... ),
+                                limits = {'xmin': .., 'xmax' : .., 'datamin' : .. 'datamax' : ..},
+                                title = 'myTitle')
        viewer.plot()
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python

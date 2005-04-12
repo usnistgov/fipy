@@ -1,6 +1,6 @@
 __docformat__ = 'restructuredtext'
 
-from gnuplotViewer import GnuplotViewer
+from gnuplotViewer import _GnuplotViewer
 
 def make(vars, title = None, limits = None):
     """

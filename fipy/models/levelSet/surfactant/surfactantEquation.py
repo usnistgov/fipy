@@ -41,6 +41,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import _ConvectionCoeff
@@ -60,7 +62,13 @@ class SurfactantEquation:
     """
 
     def __init__(self, distanceVar = None):
+        """
+        Creates a `SurfactantEquation` object.
 
+        :Parameters:
+          - `distanceVar`: The `DistanceVariable` that marks the interface.
+
+        """
         transientTerm = TransientTerm(coeff = 1)
 
         convectionTerm = ExplicitUpwindConvectionTerm(_ConvectionCoeff(distanceVar))
@@ -69,6 +77,16 @@ class SurfactantEquation:
         self.eq = transientTerm - convectionTerm
 
     def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
+        """
+        Builds and solves the `SurfactantEquation`'s linear system once.
+        	
+        :Parameters:
+           - `var` : A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `boundaryConditions` : A tuple of boundaryConditions.
+           - `dt` : The time step size.
+
+        """
         self.eq.solve(var,
                       boundaryConditions = self.bc + boundaryConditions,
                       solver = solver)

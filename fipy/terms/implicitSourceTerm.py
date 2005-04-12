@@ -56,6 +56,10 @@ class ImplicitSourceTerm(_SourceTerm):
     `coeff` value and in general should be negative to maintain
     stability.       
 
+    Usage ::
+
+        ImplicitSourceTerm(coeff = <CellVariable|Float>)
+
     """
     def _getWeight(self, mesh):
 	return {

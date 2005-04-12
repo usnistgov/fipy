@@ -216,7 +216,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> Numeric.allclose(var0.getInterfaceVar()[2], 0)
        1
 
-    The following test case is to fix a bug that allos the accelerator to
+    The following test case is to fix a bug that allows the accelerator to
     become negative.
 
        >>> nx = 5
@@ -275,6 +275,22 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                  otherBulkVar = None,
                  otherRateConstant = None,
                  consumptionCoeff = None):
+        """
+        Create a `AdsorbingSurfactantEquation` object.
+
+        :Parameters:
+          - `surfactantVar`: The `SurfactantVariable` to be solver for.
+          - `distanceVar`: The `DistanceVariable` that marks the interface.
+          - `bulkVar`: The value of the `surfactantVar` in the bulk.
+          - `rateConstant`: The adsorption rate of the `surfactantVar`.
+          - `otherVar`: Another `SurfactantVariable` with more surfacr affinity.
+          - `otherBulkVar`: The value of the `otherVar` in the bulk.
+          - `otherRateConstant`: The adsorption rate of the `otherVar`.
+          - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
+
+        """
+
+          
 
         SurfactantEquation.__init__(self, distanceVar = distanceVar)
 
@@ -307,6 +323,17 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             self.eq += ImplicitSourceTerm(consumptionCoeff)
 
     def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
+        """
+        Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
+        	
+        :Parameters:
+           - `var` : A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `boundaryConditions` : A tuple of boundaryConditions.
+           - `dt` : The time step size.
+           
+	"""
+                
         for coeff in self.coeffs:
             coeff._updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)

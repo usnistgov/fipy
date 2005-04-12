@@ -54,8 +54,8 @@ def buildTemperatureEquation(phase, parameters = {}):
         $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t}. $$
 
     :Parameters:
-      - `phase` : The phase field.
-      - `parameters` : A dictionary with keys `'latent heat'`, `'heat capacity'`,
+      - `phase`: The phase field.
+      - `parameters`: A dictionary with keys `'latent heat'`, `'heat capacity'`,
         `'timeStepDuration'` and `'temperature diffusion'`.
 
     """

@@ -56,6 +56,10 @@ class ExponentialConvectionTerm(_ConvectionTerm):
        For further details see Section 3.5 of the main \FiPy{}
        guide~\cite{FiPyGuide}.
 
+    Usage ::
+
+        ExponentialConvectionTerm(coeff = <VectorFaceVariable|Float>)
+
     """
     class Alpha(FaceVariable):
 	def __init__(self, P):

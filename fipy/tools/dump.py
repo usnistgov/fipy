@@ -47,8 +47,8 @@ def write(data, fileName):
     `cPickle.dump`.
 
     :Parameters:
-      - `data` : The object to be pickled.
-      - `fileName` : The name of the file to place the pickled object.
+      - `data`: The object to be pickled.
+      - `fileName`: The name of the file to place the pickled object.
 
     Test to check pickling and unpickling.
 
@@ -71,7 +71,7 @@ def read(fileName = None):
     Wrapper for `cPickle.load`.
 
     :Parameters:
-      - `fileName` : The name of the file to unpickle teh obkect from.
+      - `fileName`: The name of the file to unpickle the object from.
 
     """
     fileStream = gzip.GzipFile(filename = fileName, mode = 'r', fileobj = None)

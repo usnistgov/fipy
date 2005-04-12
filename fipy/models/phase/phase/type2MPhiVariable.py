@@ -54,6 +54,10 @@ class Type2MPhiVariable(_MPhiVariable):
 
         $$\phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
 
+    Usage ::
+
+        Type2MPhiVariable(phase = <CellVariable>, temperature = <CellVariable>, parameters = {'kappa1' : X, 'kappa2' : Y})
+
     """
     def _calcValue(self):        
         self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * array.arctan(self.parameters['kappa 2'] * self.temperature[:])

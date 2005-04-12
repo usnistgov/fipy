@@ -57,6 +57,10 @@ class UpwindConvectionTerm(_ConvectionTerm):
        $\alpha_f$ is calculated using the upwind convection scheme.
        For further details see Section 3.5 of the main \FiPy{}
        guide~\cite{FiPyGuide}.
+
+    Usage ::
+
+        UpwindConvectionTerm(coeff = <VectorFaceVariable|Float>)
     
     """
     

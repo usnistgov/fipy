@@ -55,6 +55,11 @@ class TransientTerm(_CellTerm):
        where $\rho$ is the
 
     `coeff` value.
+
+    Usage ::
+
+        TransientTerm(coeff = <CellVariable|Float>)
+        
     """
 
     def _getWeight(self, mesh):

@@ -53,8 +53,8 @@ class _Solver:
         The `Solver` class should not be invoked directly.
 
         :Parameters:
-          - `tolerance` : The required error tolerance.
-          - `steps` : The maximum number of iterative steps to perform.
+          - `tolerance`: The required error tolerance.
+          - `steps`: The maximum number of iterative steps to perform.
 
         """
 	self.tolerance = tolerance

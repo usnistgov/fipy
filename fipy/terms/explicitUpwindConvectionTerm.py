@@ -52,6 +52,10 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
        For further details see Section 3.5 of the main \FiPy{}
        guide~\cite{FiPyGuide}.
 
+    Usage ::
+
+        ExplicitUpwindConvectionTerm(coeff = <VectorFaceVariable|Float>)
+
     """
 
     def _getWeight(self, mesh):

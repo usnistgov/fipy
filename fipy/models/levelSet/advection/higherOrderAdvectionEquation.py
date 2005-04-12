@@ -54,10 +54,10 @@ def buildHigherOrderAdvectionEquation(advectionCoeff = None):
 
     .. raw:: latex
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0 $$
+        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0. $$
 
     :Parameters:
-      - `advectionCoeff` : The `coeff` to pass to the `_HigherOrderAdvectionTerm`
+      - `advectionCoeff`: The `coeff` to pass to the `_HigherOrderAdvectionTerm`
 
     """
     return buildAdvectionEquation(advectionCoeff = advectionCoeff, advectionTerm = _HigherOrderAdvectionTerm)

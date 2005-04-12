@@ -46,9 +46,9 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
  
-from fipy.viewers.gistViewer import GistViewer
+from fipy.viewers.gistViewer import _GistViewer
 
-class Gist1DViewer(GistViewer):
+class Gist1DViewer(_GistViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     Usage:
@@ -66,11 +66,11 @@ class Gist1DViewer(GistViewer):
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
+          - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
+            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.  A 1D
+            Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer will also
+            use `'ymin'` and `'ymax'`, and so on.  All viewers will use
+            `'datamin'` and `'datamax'`.  Any limit set to a (default) value of
             `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
           - `xlog`: set `True` to give logarithmic scaling of the x axis
@@ -78,7 +78,7 @@ class Gist1DViewer(GistViewer):
           - `style`: the Gist style file to use
 
         """
-        GistViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _GistViewer.__init__(self, vars = vars, limits = limits, title = title)
 	self.xlog = xlog
 	self.ylog = ylog
 	self.style = style
@@ -87,14 +87,14 @@ class Gist1DViewer(GistViewer):
         subs = {'ymin': 'datamin', 'ymax': 'datamax'}
         
         if subs.has_key(key):
-            limit = GistViewer._getLimit(self, key = subs[key])
+            limit = _GistViewer._getLimit(self, key = subs[key])
             if limit == 'e':
-                limit = GistViewer._getLimit(self, key = key)
+                limit = _GistViewer._getLimit(self, key = key)
         else:
-            limit = GistViewer._getLimit(self, key = key)
+            limit = _GistViewer._getLimit(self, key = key)
             if limit == 'e':
                 subs = {'datamin': 'ymin', 'datamax': 'ymax'}
-                limit = GistViewer._getLimit(self, key = key)
+                limit = _GistViewer._getLimit(self, key = key)
             
         return limit
 

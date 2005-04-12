@@ -55,6 +55,11 @@ class ExplicitDiffusionTerm(_DiffusionTerm):
        $\phi_P^\text{old}$ are the old values of the variable. The term is
        added to the RHS vector and makes no contribution to
        the solution matrix.
+
+    Usage ::
+
+        ExplicitDiffusionTerm(coeff = <FaceVariable|Float>)
+        
     """
     
     def _getWeight(self, mesh):

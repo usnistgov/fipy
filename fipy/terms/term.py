@@ -49,6 +49,14 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
     def __init__(self, coeff = 1.):
+        """
+        Create a `Term`.
+
+        :Parameters:
+          - `coeff`: The coefficient for the term. A `CellVariable` or number
+            for cell terms. A `FaceVariable` or number for face terms.
+
+        """  
         self.coeff = coeff
 	self.geomCoeff = None
         
@@ -82,11 +90,11 @@ class Term:
         	
         :Parameters:
 
-           - `var` : The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
-           - `boundaryConditions` : A tuple of boundaryConditions.
-           - `dt` : The time step size.
-           - `solutionTolerance` : A value that the residual must be less than so that `_isConverged()` returns `True`.
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `solutionTolerance`: A value that the residual must be less than so that `_isConverged()` returns `True`.
 	"""
         
  	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)

@@ -68,9 +68,9 @@ def buildThetaEquation(phase = None,
         
 
         :Parameters:
-	  - `phase` : The phase field.
-	  - `theta` : The crystal orientation.
-	  - `parameters` : A dictionary with keys `'small value'`, `'beta'`,
+	  - `phase`: The phase field.
+	  - `theta`: The crystal orientation.
+	  - `parameters`: A dictionary with keys `'small value'`, `'beta'`,
 	    `'mu'`, `'tau'`, `'gamma'`, `'epsilon'`, `'s'`, `'anisotropy'`, `'alpha'`,
 	    `'symmetry'`.
 

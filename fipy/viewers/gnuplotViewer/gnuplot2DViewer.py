@@ -50,10 +50,10 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import Gnuplot
 
-from gnuplotViewer import GnuplotViewer
+from gnuplotViewer import _GnuplotViewer
 from fipy.meshes.grid2D import Grid2D
 
-class Gnuplot2DViewer(GnuplotViewer):
+class Gnuplot2DViewer(_GnuplotViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
     Usage
@@ -83,17 +83,17 @@ class Gnuplot2DViewer(GnuplotViewer):
         Creates a `Gnuplot2DViewer`.
         
         :Parameters:
-          - `vars`: a `Variable` or tuple of `Variable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
+          - `vars`: A `CellVariable` object.
+          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
+            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.  A 1D
+            Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer will also
+            use `'ymin'` and `'ymax'`, and so on.  All viewers will use
+            `'datamin'` and `'datamax'`.  Any limit set to a (default) value of
             `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
 
         """
-        GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

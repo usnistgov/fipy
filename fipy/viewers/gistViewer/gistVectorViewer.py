@@ -44,13 +44,13 @@
 
 import Numeric
 
-from fipy.viewers.gistViewer import GistViewer
+from fipy.viewers.gistViewer import _GistViewer
 
-class _GistVectorViewer(GistViewer):
+class _GistVectorViewer(_GistViewer):
     
     def __init__(self, var = None, title = '', grid = 1):
 	self.var = var
-	GistViewer.__init__(self, title, grid)
+	_GistViewer.__init__(self, title, grid)
 	
     def plot(self, fileName = None):
 	import gist

@@ -46,9 +46,9 @@
 __docformat__ = 'restructuredtext'
 
 import Gnuplot
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class GnuplotViewer(Viewer):
+class _GnuplotViewer(_Viewer):
     """
 
     The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
@@ -84,12 +84,12 @@ class GnuplotViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
     def _getLimit(self, key):
-        limit = Viewer._getLimit(self, key)
+        limit = _Viewer._getLimit(self, key)
         if limit is None:
             return ''
         else:

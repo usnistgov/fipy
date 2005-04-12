@@ -80,10 +80,10 @@ class AddOverFacesVariable(CellVariable):
         Create an `AddOverFacesVariable`.
 
         :Parameters:
-          - `faceGradient` : The `VectorFaceVariable` object.
-          - `faceVariable` : The `FaceVariable` object.
-          - `xGrad` : Used as the x component of the `VectorFaceVariable` if `faceGradient` is `None`.
-          - `yGrad` : Used as the y component of the `VectorFaceVariable` if `faceGradient` is `None`.
+          - `faceGradient`: The `VectorFaceVariable` object.
+          - `faceVariable`: The `FaceVariable` object.
+          - `xGrad`: Used as the x component of the `VectorFaceVariable` if `faceGradient` is `None`.
+          - `yGrad`: Used as the y component of the `VectorFaceVariable` if `faceGradient` is `None`.
 
         """
 

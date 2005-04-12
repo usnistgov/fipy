@@ -54,7 +54,7 @@ def buildAdvectionEquation(advectionCoeff = None,
 
     .. raw:: latex
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0$$
+        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0.$$
 
     This solution method for the `_AdvectionTerm` is set up specifically to
     evolve `var` while preserving `var` as a distance function. This
@@ -65,8 +65,8 @@ def buildAdvectionEquation(advectionCoeff = None,
     `examples.levelSet.advection`
 
     :Parameters:
-      - `advectionCoeff` : The coeff to pass to the `advectionTerm`.
-      - `advectionTerm` : An advection term class.
+      - `advectionCoeff`: The coeff to pass to the `advectionTerm`.
+      - `advectionTerm`: An advection term class.
 
     """
 

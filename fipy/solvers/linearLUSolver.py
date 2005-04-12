@@ -75,8 +75,8 @@ class LinearLUSolver(_Solver):
         Creates a `LinearLUSolver`.
 
         :Parameters:
-          - `tolerance` : The required error tolerance.
-          - `steps` : The number of LU decompositions to perform.
+          - `tolerance`: The required error tolerance.
+          - `steps`: The number of LU decompositions to perform.
             For large systems a number of steps is generally required.
 
         """

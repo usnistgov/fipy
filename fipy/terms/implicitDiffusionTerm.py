@@ -49,6 +49,11 @@ class ImplicitDiffusionTerm(_DiffusionTerm):
        \frac{\phi_A-\phi_P}{d_{AP}} A_f. $$ The variable $\phi$ is
        evaluated implicitly as part of the solution
        routine.
+
+    Usage ::
+
+       ImplicitDiffusionTerm(coeff = <FaceVariable|Float>)
+       
     """
         
     def _getWeight(self, mesh):

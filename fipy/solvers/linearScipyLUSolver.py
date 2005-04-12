@@ -70,8 +70,8 @@ class LinearScipyLUSolver(_Solver):
         Creates a `LinearScipyLUSolver`.
 
         :Parameters:
-          - `tolerance` : The required error tolerance.
-          - `steps` : The number of LU decompositions to perform.
+          - `tolerance`: The required error tolerance.
+          - `steps`: The number of LU decompositions to perform.
             For large systems a number of steps is generally required.
 
         """

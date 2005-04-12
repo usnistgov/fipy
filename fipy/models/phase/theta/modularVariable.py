@@ -47,7 +47,7 @@ class ModularVariable(CellVariable):
 
     .. raw:: latex
 
-        $0$ and $\pi$
+        $0$ and $2\pi$
 
     """    
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
@@ -55,11 +55,11 @@ class ModularVariable(CellVariable):
         Creates a `ModularVariable` object.
 
         :Parameters:
-          - `mesh` : The mesh that defines the geometry of this variable.
-          - `name` : The user-readable name of the variable.
-	  - `value` : The initial value.
-	  - `unit` : The physical units of the variable.
-	  - `hasOld` : Whether a variable keeps its old variable.
+          - `mesh`: The mesh that defines the geometry of this variable.
+          - `name`: The user-readable name of the variable.
+	  - `value`: The initial value.
+	  - `unit`: The physical units of the variable.
+	  - `hasOld`: Whether a variable keeps its old variable.
 	
         """
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)

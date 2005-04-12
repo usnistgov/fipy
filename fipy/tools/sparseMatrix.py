@@ -50,10 +50,9 @@ class _SparseMatrix:
     
     """
     _SparseMatrix class wrapper for pysparse.
-    _SparseMatrix is always NxN
-    Allowing basic python operations __add__, __sub__ etc.
-    Facilitate matrix populating in an easy way
-    An example subcalls will be the identity matrix or the empty matrix.
+    _SparseMatrix is always NxN.
+    Allows basic python operations __add__, __sub__ etc.
+    Facilitate matrix populating in an easy way.
     """
 
     def __init__(self, size = None, bandwidth = 0, matrix = None):
@@ -61,9 +60,9 @@ class _SparseMatrix:
         Creates a `_SparseMatrix`.
 
         :Parameters:
-          - `size` : The size N for an N by N matrix.
-          - `bandwidth` : The proposed band width of the matrix.
-          - `matrix` : The starting `spmatrix` id there is one.
+          - `size`: The size N for an N by N matrix.
+          - `bandwidth`: The proposed band width of the matrix.
+          - `matrix`: The starting `spmatrix` id there is one.
 
         """
         if matrix != None:
