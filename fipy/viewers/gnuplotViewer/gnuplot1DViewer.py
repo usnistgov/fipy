@@ -45,6 +45,7 @@
 __docformat__ = 'restructuredtext'
 
 import Gnuplot
+import Numeric
 
 from gnuplotViewer import _GnuplotViewer
 
@@ -83,10 +84,10 @@ class Gnuplot1DViewer(_GnuplotViewer):
         tupleOfGnuplotData = ()
 
         for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(var.getMesh().getCellCenters()[:,0],
-                                               var[:],
-                                               title=var.getName(),
-                                               with='lines'),)
+            tupleOfGnuplotData += (Gnuplot.Data(Numeric.array(var.getMesh().getCellCenters()[:,0]),
+                                                var[:],
+                                                title=var.getName(),
+                                                with='lines'),)
 
         apply(self.g.plot, tupleOfGnuplotData)
     

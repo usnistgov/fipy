@@ -113,8 +113,9 @@ class Gnuplot2DViewer(_GnuplotViewer):
             nx, ny = N, N
             
         self.g('set dgrid3d %i, %i, 2' % (ny, nx))
-        
-        data = Gnuplot.Data(mesh.getCellCenters()[:,0], mesh.getCellCenters()[:,1], self.vars[0][:])
-        
-        self.g.splot(data)
 
+        data = Gnuplot.Data(Numeric.array(mesh.getCellCenters()[:,0]),
+                            Numeric.array(mesh.getCellCenters()[:,1]),
+                            self.vars[0][:])
+
+        self.g.splot(data)

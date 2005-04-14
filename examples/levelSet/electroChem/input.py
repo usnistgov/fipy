@@ -439,20 +439,9 @@ viewers.
    ...    return (
    ...        fipy.viewers.make(
    ...            vars = distanceVar,
-   ...            limits = {
-   ...                'xmin': 0,
-   ...                'xmax': cells,
-   ...                'ymin': 0,
-   ...                'xymax': cells,
-   ...                'datamin': -1e-8, 
-   ...                'datamax': 1e-8}),
+   ...            limits = { 'datamin' : -1e-9 , 'datamax' : 1e-9 }),
    ...        fipy.viewers.make(
-   ...            vars = acceleratorVar.getInterfaceVar(),
-   ...            limits = {
-   ...                'xmin': 0,
-   ...                'xmax': cells,
-   ...                'ymin': 0,
-   ...                'xymax': cells}))
+   ...            vars = acceleratorVar.getInterfaceVar()))
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -502,6 +491,9 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     if __name__ == '__main__':
    ...         for viewer in viewers:
    ...             viewer.plot()
+ 
+   >>> if __name__ == '__main__':
+   ...     raw_input('finished')
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
