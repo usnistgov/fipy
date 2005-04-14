@@ -10,9 +10,12 @@ import imp
 
 def make(vars, title = None, limits = None):
     r"""
-    Generic function for creating a `Viewer`. The `make` function
-    will search the module tree and return an instance of the first
-    `Viewer` it finds of the correct dimension.  Usage:
+    
+    Generic function for creating a `Viewer`. The `make` function will
+    search the module tree and return an instance of the first
+    `Viewer` it finds of the correct dimension. Setting the
+    `'FIPY_VIEWER'` environment variable to either `'gist'`,
+    `'gnuplot'` or `'tsv'` will specify the viewer.
 
     ::
 
@@ -29,27 +32,31 @@ def make(vars, title = None, limits = None):
         All viewers will use `'datamin'` and `'datamax'`.
         Any limit set to a (default) value of `None` will autoscale.
       - `title`: displayed at the top of the Viewer window
+      
     """
+    
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
     
-##     if os.environ.has_key('FiPy_%dD_ViewerClass' % dim):
-##         viewerClassNames = [os.environ['FiPy_%dD_ViewerClass' % dim]]
-##     else:
-    viewerPaths = []
+    if os.environ.has_key('FIPY_VIEWER'):
+        viewerClassNames = [os.environ['FIPY_VIEWER'] + 'Viewer']
+    else:
+        viewerPaths = []
     
-    for suffix, mode, moduleType in [("", "", imp.PKG_DIRECTORY)] + imp.get_suffixes():
-        if moduleType is not imp.PY_COMPILED:
-            for path in __path__:
-                viewerPaths += glob.glob(os.path.join(path, "*Viewer%s" % suffix))
+        for suffix, mode, moduleType in [("", "", imp.PKG_DIRECTORY)] + imp.get_suffixes():
+            if moduleType is not imp.PY_COMPILED:
+                for path in __path__:
+                    viewerPaths += glob.glob(os.path.join(path, "*Viewer%s" % suffix))
                 
-    viewerClassNames = []
-    for viewerPath in viewerPaths:
-        path, file = os.path.split(viewerPath)
-        className, ext = os.path.splitext(file)
-        viewerClassNames.append(className)
-        
+        viewerClassNames = []
+        for viewerPath in viewerPaths:
+            path, file = os.path.split(viewerPath)
+            className, ext = os.path.splitext(file)
+            viewerClassNames.append(className)
+
+
     errors = []
+
     for className in viewerClassNames:
         try:
             className = string.lower(className[0]) + className[1:]
