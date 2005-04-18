@@ -91,7 +91,7 @@ class _GnuplotViewer(_Viewer):
     def _getLimit(self, key):
         limit = _Viewer._getLimit(self, key)
         if limit is None:
-            return ''
+            return '*'
         else:
             return str(limit)
 
