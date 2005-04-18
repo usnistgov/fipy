@@ -99,11 +99,14 @@ class _GnuplotViewer(_Viewer):
         """
         Plot the `CellVariable` as a contour plot.
         """
-
-        self.g('set xrange [' + self._getLimit('xmin')  + ':' + self._getLimit('xmax') + ']')
-        self.g('set yrange [' + self._getLimit('ymin')  + ':' + self._getLimit('ymax') + ']')
-        self.g('set zrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
-        self.g('set cbrange [' + self._getLimit('datamin')  + ':' + self._getLimit('datamax') + ']')
+        for l  in ('x', 'y', 'z', 'cb'):
+            range = l + 'range'
+            if l == 'cb':
+                m = 'data'
+            else:
+                m = l
+            self.g('set ' + range + ' [*:*]')
+            self.g('set ' + range + ' [' + self._getLimit(m + 'min')  + ':' + self._getLimit(m + 'max') + ']')
 
         self._plot()
         if fileName is not None:
