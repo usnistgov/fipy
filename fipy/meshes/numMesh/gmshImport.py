@@ -144,9 +144,14 @@ gmsh to form a circular mesh.
    ...     file.close()
    ...     import os
    ...     os.close(f)
-   ...     (f, meshName) = tempfile.mkstemp('.msh')
+   ...     import sys
+   ...     if sys.platform == 'win32':
+   ...         meshName = 'tmp.msh'
+   ...     else:
+   ...         (f, meshName) = tempfile.mkstemp('.msh')
    ...     os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-   ...     os.close(f)
+   ...     if sys.platform != 'win32':
+   ...         os.close(f)
    ...     os.remove(geomName)
    ...     mesh = GmshImporter2D(meshName)
    ...     os.remove(meshName)

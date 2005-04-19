@@ -109,12 +109,16 @@ class AdaptiveMesh2D(GmshImporter2D):
         
         import os
         import tempfile
-        (f, meshFile) = tempfile.mkstemp('.msh')
+        import sys
+        if sys.platform == 'win32':
+            meshFile = 'tmp.msh'
+        else:
+            (f, meshFile) = tempfile.mkstemp('.msh')
         os.system("gmsh -v 0 %s -bgm %s -format msh -2 -o %s" % (geomFile, bgMesh, meshFile))
         
         GmshImporter2D.__init__(self, meshFile)
-
-        os.close(f)
+        if sys.platform != 'win32':
+            os.close(f)
         os.remove(geomFile)
         os.remove(bgMesh)
         os.remove(meshFile)

@@ -86,10 +86,15 @@ for gmsh_, see the gmsh_ manual_.
 The temporary file created above is used by gmsh to mesh the
 geometrically defined region.
 
-   >>> (f, meshName) = tempfile.mkstemp('.msh')
+   >>> import sys
+   >>> if sys.platform == 'win32':
+   ...     meshName = 'tmp.msh'
+   ... else:
+   ...     (f, meshName) = tempfile.mkstemp('.msh')
    >>> os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
    0
-   >>> os.close(f)
+   >>> if sys.platform != 'win32':
+   ...     os.close(f)
    >>> os.remove(geomName)
 
 .. raw:: latex
