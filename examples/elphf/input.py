@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/12/05 {1:01:59 PM} 
+ #                                last update: 4/15/05 {12:54:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,8 @@ This example adds two more components to
 one of which is another substitutional species and the other represents 
 electrons and diffuses interterstitially.
 
+Parameters from `2004/January/21/elphf0214`
+
 We start by defining a 1D mesh
 
     >>> from fipy.tools.dimensions.physicalField import PhysicalField as PF
@@ -55,19 +57,23 @@ We start by defining a 1D mesh
     >>> Faraday = PF("1 Nav*e")
 
     >>> import Numeric
-    >>> nx = 2000
-    >>> dx = PF("0.001 nm") * (1.001 - 1/Numeric.cosh(Numeric.arange(-10, 10, .01)))
+    >>> L = PF("3 nm")
+    >>> nx = 1200
+    >>> dx = L / nx
+    >>> # nx = 200
+    >>> # dx = PF("0.01 nm")
+    >>> ## dx = PF("0.001 nm") * (1.001 - 1/Numeric.cosh(Numeric.arange(-10, 10, .01)))
     >>> # L = nx * dx
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> # mesh = Grid1D(dx = dx, nx = nx)
-    >>> mesh = Grid1D(dx = dx)
+    >>> mesh = Grid1D(dx = dx, nx = nx)
+    >>> # mesh = Grid1D(dx = dx)
     >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> L = mesh.getCellCenters()[-1] - mesh.getCellCenters()[0]
+    >>> # L = mesh.getCellCenters()[-1] - mesh.getCellCenters()[0]
 
 
 We create the phase field
 
-    >>> timeStep = PF("1e-16 s")
+    >>> timeStep = PF("1e-12 s")
     
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
@@ -105,7 +111,7 @@ We create four components
 the solvent
 
     >>> import Numeric
-    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
+    >>> solvent = ComponentVariable(mesh = mesh, name = 'H2O', value = 1.)
     >>> CnStandardPotential = PF("34139.7265625 J/mol") / RT
     >>> CnBarrier = PF("3.6e5 J/mol") / RT
     >>> CnValence = 0
@@ -280,43 +286,83 @@ iterating to equilibrium
     
     >>> from fipy.viewers.tsvViewer import TSVViewer
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
-    >>> tsv.plot(file = "initial.tsv")
     
-    >>> dt = 1.
+    >>> dt = substitutionals[0].diffusivity
+    >>> # dt = 1.
     >>> elapsed = 0.
-    >>> for i in range(500):
+    >>> maxError = 1e-1
+    >>> SAFETY = 0.9
+    >>> ERRCON = 1.89e-4
+    >>> desiredTimestep = 1.
+    >>> thisTimeStep = 0.
+    >>> print "%3s: %20s | %20s | %20s | %20s" % ("i", "elapsed", "this", "next dt", "residual")
+    >>> residual = 0.
+    >>> for i in range(500): # iterate
+    ...     if thisTimeStep == 0.:
+    ...         tsv.plot(file = "%s.tsv" % str(elapsed * timeStep))
+    ...
     ...     for field in [phase, potential] + substitutionals + interstitials:
     ...         field.updateOld()
-    ...     for j in range(100):
-    ...         residual = 0.
     ...
-    ...         phase.equation.solve(var = phase, dt = dt)
-    ...         # print phase.name, max(phase.equation.residual)
-    ...         residual = max(max(phase.equation.residual), residual)
-    ...         phase.residual[:] = phase.equation.residual
+    ...     while 1:
+    ...         for j in range(3): # sweep
+    ...             print i, j, dt, residual
+    ...             # raw_input()
+    ...             residual = 0.
+    ...                 
+    ...             phase.equation.solve(var = phase, dt = dt)
+    ...             # print phase.name, max(phase.equation.residual)
+    ...             residual = max(max(phase.equation.residual), residual)
+    ...             phase.residual[:] = phase.equation.residual
+    ...    
+    ...             potential.equation.solve(var = potential, dt = dt, boundaryConditions = bcs)
+    ...             # print potential.name, max(potential.equation.residual)
+    ...             residual = max(max(potential.equation.residual), residual)
+    ...             potential.residual[:] = potential.equation.residual
+    ...    
+    ...             for Cj in substitutionals + interstitials:
+    ...                 Cj.equation.solve(var = Cj, 
+    ...                                   dt = dt,
+    ...                                   solver = solver)
+    ...                 # print Cj.name, max(Cj.equation.residual)
+    ...                 residual = max(max(Cj.equation.residual), residual)
+    ...                 Cj.residual[:] = Cj.equation.residual
+    ...    
+    ...             # print
+    ...             # phaseViewer.plot()
+    ...             # concViewer.plot()
+    ...             # potentialViewer.plot()
+    ...             # residualViewer.plot()
+    ...    
+    ...         residual /= maxError
+    ...         if residual <= 1.:
+    ...             break	# step succeeded
     ...
-    ...         potential.equation.solve(var = potential, dt = dt, boundaryConditions = bcs)
-    ...         # print potential.name, max(potential.equation.residual)
-    ...         residual = max(max(potential.equation.residual), residual)
-    ...         potential.residual[:] = potential.equation.residual
+    ...         dt = max(SAFETY * dt * residual**-0.2, 0.1 * dt)
+    ...         if thisTimeStep + dt == thisTimeStep:
+    ...             raise "step size underflow"
     ...
-    ...         for Cj in substitutionals + interstitials:
-    ...             Cj.equation.solve(var = Cj, 
-    ...                               dt = dt,
-    ...                               solver = solver)
-    ...             # print Cj.name, max(Cj.equation.residual)
-    ...             residual = max(max(Cj.equation.residual), residual)
-    ...             Cj.residual[:] = Cj.equation.residual
+    ...     thisTimeStep += dt
     ...
-    ...         # print
-    ...         residualViewer.plot()
+    ...     if residual > ERRCON:
+    ...         dt *= SAFETY * residual**-0.2
+    ...     else:
+    ...         dt *= 5.
+    ...    
+    ...     # dt *= (maxError / residual)**0.5
+    ...
+    ...     if thisTimeStep >= desiredTimestep:
+    ...         elapsed += thisTimeStep
+    ...         thisTimeStep = 0.
+    ...     else:
+    ...         dt = min(dt, desiredTimestep - thisTimeStep)
     ...         
-    ...     elapsed += dt
     ...     if __name__ == '__main__':    
     ...         phaseViewer.plot()
     ...         concViewer.plot()
     ...         potentialViewer.plot()
-    ...         print elapsed, residual
+    ...         print "%3d: %20s | %20s | %20s | %g" % (i, str(elapsed * timeStep), str(thisTimeStep * timeStep), str(dt * timeStep), residual)
+
 
 we confirm that the far-field phases have remained separated
 
@@ -355,7 +401,7 @@ if __name__ == '__main__':
     # profile = Profiler('profile', fudge=fudge)
 
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus.getScript())
+    exec(fipy.tests.doctestPlus._getScript())
 
     # profile.stop()
             
