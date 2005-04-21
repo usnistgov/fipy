@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "gnuplotViewer.py"
+ #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
  #                                last update: 4/5/05 {5:31:50 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -45,33 +45,24 @@
 
 __docformat__ = 'restructuredtext'
 
-import Gnuplot
+import pylab
 
 from fipy.viewers.viewer import _Viewer
 
-class _GnuplotViewer(_Viewer):
+class _MatplotlibViewer(_Viewer):
     """
 
-    The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
-    `Gnuplot2DViewer` It uses a front end python wrapper available to
-    download (Gnuplot.py_).
+    The `_MatplotlibViewer` is the base class for `Matplotlib1DViewer`
+    and `Matplotlib2DViewer` which both use the Matplotlib_ python
+    plotting package.
 
-    .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
-
-    Different style script demos_ are available at the Gnuplot_ site.
-
-    .. _Gnuplot: http://gnuplot.sourceforge.net/
-    .. _demos: http://gnuplot.sourceforge.net/demo/
-
-    .. note::
-    
-        `GnuplotViewer` requires Gnuplot_ version 4.0.
+    .. _Matplotlib: http://matplotlib.sourceforge.net/
 
    """    
     def __init__(self, vars, limits = None, title = None):
         """
-        The `GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
-        and `Gnuplot2DViewer` should be called.
+        The `_MatplotlibViewer` should not be called directly only `Matplotlib1DViewer`
+        and `Matplotlib2DViewer` should be called.
         
         :Parameters:
 
@@ -86,16 +77,10 @@ class _GnuplotViewer(_Viewer):
 
         """
         _Viewer.__init__(self, vars = vars, limits = limits, title = title)
-        self.g = Gnuplot.Gnuplot()
-        self.g('set title "' + self.title + '"')
-
-    def _getLimit(self, key):
-        limit = _Viewer._getLimit(self, key)
-        if limit is None:
-            return ''
-        else:
-            return str(limit)
-
+        pylab.ion()
+        fig = pylab.figure()
+        self.number = fig.number
+        
     def plot(self, fileName = None):
         """
         Plot the `CellVariable` as a contour plot.
@@ -104,12 +89,16 @@ class _GnuplotViewer(_Viewer):
           - `fileName`: The name of the file for hard copies.
           
         """
-        pairs = (('x', 'x'), ('y', 'y'), ('z', 'z'), ('cb', 'data'))
-        
-        for pair  in pairs:
-            self.g('set ' + pair[0] + 'range [' + self._getLimit(pair[1] + 'min')  + ':' + self._getLimit(pair[1] + 'max') + ']')
 
+        pylab.figure(num = self.number)
+        pylab.clf()
+        pylab.title(self.title)
+        
         self._plot()
+
+        pylab.xlim(xmin = self._getLimit('xmin'))
+        pylab.xlim(xmax = self._getLimit('xmax'))
+        
         if fileName is not None:
-            self.g.hardcopy(fileName)
+            pylab.savefig(fileName)
 

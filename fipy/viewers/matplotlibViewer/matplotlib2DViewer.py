@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "gnuplot1DViewer.py"
+ #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/5/05 {5:32:48 PM} { 2:45:36 PM}
+ #                                last update: 11/16/04 {10:15:25 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,43 +41,34 @@
  #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
-
+ 
 __docformat__ = 'restructuredtext'
 
+import pylab
 import Numeric
-import Gnuplot
+from matplotlibViewer import _MatplotlibViewer
 
-from gnuplotViewer import _GnuplotViewer
-from fipy.meshes.grid2D import Grid2D
-
-class Gnuplot2DViewer(_GnuplotViewer):
+class Matplotlib2DViewer(_MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
     Usage
 
     ::
     
-        viewer = Gnuplot2DViewer(var)
-        viewer.plot()
-       
-    The `Gnuplot2DViewer` plots a 2D `CellVariable` using a front end
-    python wrapper available to download (Gnuplot.py_).
+       viewer = Matplotlib2DViewer(var)
+       viewer.plot()
 
-    .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+    The `Matplotlib2DViewer` plots a 2D `CellVariable` using Matplotlib_.
 
-    Different style script demos_ are available at the Gnuplot_ site.
+    .. _Matplotlib: http://matplotlib.sourceforge.net/
 
-    .. _Gnuplot: http://gnuplot.sourceforge.net/
-    .. _demos: http://gnuplot.sourceforge.net/demo/
-
-    .. note::
-    
-        `GnuplotViewer` requires Gnuplot_ version 4.0.
 
     """
+
+
     def __init__(self, vars, limits = None, title = None):
         """
-        Creates a `Gnuplot2DViewer`.
+        Creates a `Matplotlib2DViewer`.
         
         :Parameters:
           - `vars`: A `CellVariable` object.
@@ -90,29 +81,47 @@ class Gnuplot2DViewer(_GnuplotViewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        _GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
         
         if len(self.vars) != 1:
-            raise IndexError, "A 2D Gnuplot viewer can only display one Variable"
-            
+            raise IndexError, "A 2D Matplotlib viewer can only display one Variable"
+
+        from fipy.meshes.grid2D import Grid2D
+        if not  isinstance(self.vars[0].getMesh(), Grid2D):
+            raise 'The mesh must be a Grid2D instance for the Matpoltlib2dViewer'
+
     def _plot(self):
 
-        self.g('set cbrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
-        self.g('set view map')
-        self.g('set style data pm3d')
-        self.g('set pm3d at st solid')
         mesh = self.vars[0].getMesh()
+        shape = mesh.getShape()
+        shape = (shape[1], shape[0])
+        X = Numeric.reshape(mesh.getCellCenters()[:,0], shape)
+        Y = Numeric.reshape(mesh.getCellCenters()[:,1], shape)
+        Z = Numeric.reshape(self.vars[0][:], shape)
 
-        if isinstance(mesh, Grid2D):
-            nx, ny = mesh.getShape()
-        else:
-            N = int(Numeric.sqrt(mesh.getNumberOfCells()))
-            nx, ny = N, N
-            
-        self.g('set dgrid3d %i, %i, 2' % (ny, nx))
+        minz = min(self.vars[0])
+        for limit in ('zmin', 'datamin'):
+            value = self._getLimit(limit)
+            if value is not None:
+                minz = max(min(self.vars[0]), value)
 
-        data = Gnuplot.Data(Numeric.array(mesh.getCellCenters()[:,0]),
-                            Numeric.array(mesh.getCellCenters()[:,1]),
-                            self.vars[0][:])
+        maxz = max(self.vars[0])
+        for limit in ('zmax', 'datamax'):
+            value = self._getLimit(limit)
+            if value is not None:
+                maxz = min(max(self.vars[0]), value)
 
-        self.g.splot(data)
+        numberOfContours = 10
+
+        diff = max(1e-5, maxz - minz)
+
+        V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
+
+        pylab.hot()
+        pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+        pylab.colorbar()
+        pylab.ylim(ymin = self._getLimit('ymin'))
+        pylab.ylim(ymax = self._getLimit('ymax'))
+
+
+        
