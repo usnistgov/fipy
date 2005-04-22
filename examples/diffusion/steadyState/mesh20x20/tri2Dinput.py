@@ -76,12 +76,11 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = fipy.viewers.make(vars = var)
-
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
                       FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     raw_input("finished")

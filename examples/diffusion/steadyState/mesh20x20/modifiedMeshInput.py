@@ -87,8 +87,6 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-viewer = fipy.viewers.make(vars = var)
-
 def leftSide(face):
     a = face.getCenter()[0]
     if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
@@ -124,6 +122,7 @@ boundaryConditions = (FixedValue(mesh.getFaces(leftSide), valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     varArray = Numeric.array(var)
     x = mesh.getCellCenters()[:,0]
