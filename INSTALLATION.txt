@@ -204,8 +204,9 @@ Gnuplot.py_ is a Python_ package that interfaces to gnuplot_, the
 popular open-source plotting program. It displays both 1D X-Y type
 plots and 2D contour plots for structured data but not for
 unstructured data or 3D data. It works on all common platforms and
-produces hard copies. As a general remark, the viewing quality in
-either Pygist_ or Matplotlib_ is preferable.
+produces hard copies. However, it sometimes breaks on Windows. As a
+general remark, the viewing quality using either Pygist_ or
+Matplotlib_ is preferable.
 
 .. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
 .. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
