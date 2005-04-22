@@ -155,15 +155,24 @@ Viewers
 =======
 
 |FiPy| will work perfectly well without them, but at least one of the
-following packages will be needed to allow viewing the results of |FiPy|
-calculations (Pygist_ is better supported than Gnuplot-py_):
+following packages will be required to view the results of |FiPy|
+calculations. |FiPy| will select the first viewer that is available
+from the list below.  If more than one is installed, specify a viewer
+by setting the FIPY_VIEWER environment variable to either 'gist',
+'gnuplot' or 'matplotlib'.
 
 Pygist
 ------
 
 http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
-The Pygist_ package can be used to display simulation results. 
+The Pygist_ package can be used to display simulation results. It
+displays both 1D X-Y type plots and 2D contour plots for both
+structured and unstructured data. It does not display 3D
+data. Although stated as working on Windows, it does not seem to do a
+good job of rendering on this platform. Pygist_ works fine on other
+common platforms. Don't use Pygist_ if you wish to produce hard
+copies, this facility doesn't work.
 
 .. note::
 
@@ -173,15 +182,33 @@ The Pygist_ package can be used to display simulation results.
 
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
+Matplotlib
+----------
+
+http://matplotlib.sourceforge.net
+
+Matplotlib_ is a Python_ package that displays publication quality
+results. It display both 1D X-Y type plots and 2D contour plots for
+structured data. It does not display unstructured 2D data or 3D data.
+It works on all common platforms and produces publication quality hard
+copies.
+
+.. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
+
 Gnuplot-py
 ----------
 
 http://gnuplot-py.sourceforge.net
 
-Gnuplot.py is a Python_ package that interfaces to gnuplot_, the
-popular open-source plotting program.
+Gnuplot.py_ is a Python_ package that interfaces to gnuplot_, the
+popular open-source plotting program. It displays both 1D X-Y type
+plots and 2D contour plots for structured data but not for
+unstructured data or 3D data. It works on all common platforms and
+produces hard copies. As a general remark, the viewing quality in
+either Pygist_ or Matplotlib_ is preferable.
 
 .. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
+.. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
 
 Recommended Packages
 ====================

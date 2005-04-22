@@ -90,6 +90,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         if not  isinstance(self.vars[0].getMesh(), Grid2D):
             raise 'The mesh must be a Grid2D instance for the Matpoltlib2dViewer'
 
+        self.colorbar = False
+        
     def _plot(self):
 
         mesh = self.vars[0].getMesh()
@@ -99,6 +101,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         Y = Numeric.reshape(mesh.getCellCenters()[:,1], shape)
         Z = Numeric.reshape(self.vars[0][:], shape)
 
+        
         minz = min(self.vars[0])
         for limit in ('zmin', 'datamin'):
             value = self._getLimit(limit)
@@ -112,14 +115,21 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                 maxz = min(max(self.vars[0]), value)
 
         numberOfContours = 10
-
-        diff = max(1e-5, maxz - minz)
-
+        smallNumber = 1e-8
+        diff = maxz - minz
+        
+        if diff < smallNumber:
+            diff = smallNumber
+            
         V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
-
+            
         pylab.hot()
         pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-        pylab.colorbar()
+
+        if self.colorbar is False:
+            pylab.colorbar()
+            self.colorbar = True
+            
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))
 

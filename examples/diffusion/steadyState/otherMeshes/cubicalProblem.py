@@ -48,11 +48,10 @@ Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front
    
 """
 
-from fipy.meshes.grid3D import Grid3D
+from fipy.meshes.numMesh.grid3D import Grid3D
 import Numeric
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import Grid3DPyxViewer
 
 nx = 10
 ny = 10
@@ -72,11 +71,11 @@ var = CellVariable(name = "variable",
                    mesh = mesh,
                    value = valueSides)
 
-viewer1 = Grid3DPyxViewer(var, zvalue = 1.0)
-viewer3 = Grid3DPyxViewer(var, zvalue = 3.0)
-viewer5 = Grid3DPyxViewer(var, zvalue = 5.0)
-viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
-viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
+##viewer1 = Grid3DPyxViewer(var, zvalue = 1.0)
+##viewer3 = Grid3DPyxViewer(var, zvalue = 3.0)
+##viewer5 = Grid3DPyxViewer(var, zvalue = 5.0)
+##viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
+##viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
 
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
@@ -89,13 +88,13 @@ ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFace
                                                          ))
 
 if __name__ == '__main__':
-    viewer1.plot(resolution = 0.2, xlabel = "X values (Z value = 1)", minval = valueFront, maxval = valueBack)
-    raw_input("press enter to continue")
-    viewer3.plot(resolution = 0.2, xlabel = "X values (Z value = 3)", minval = valueFront, maxval = valueBack)
-    raw_input("press enter to continue")
-    viewer5.plot(resolution = 0.2, xlabel = "X values (Z value = 5)", minval = valueFront, maxval = valueBack)
-    raw_input("press enter to continue")
-    viewer7.plot(resolution = 0.2, xlabel = "X values (Z value = 7)", minval = valueFront, maxval = valueBack)
-    raw_input("press enter to continue")
-    viewer9.plot(resolution = 0.2, xlabel = "X values (Z value = 9)", minval = valueFront, maxval = valueBack)
+    ##viewer1.plot(resolution = 0.2, xlabel = "X values (Z value = 1)", minval = valueFront, maxval = valueBack)
+    ##raw_input("press enter to continue")
+    ##viewer3.plot(resolution = 0.2, xlabel = "X values (Z value = 3)", minval = valueFront, maxval = valueBack)
+    ##raw_input("press enter to continue")
+    ##viewer5.plot(resolution = 0.2, xlabel = "X values (Z value = 5)", minval = valueFront, maxval = valueBack)
+    ##raw_input("press enter to continue")
+    ##viewer7.plot(resolution = 0.2, xlabel = "X values (Z value = 7)", minval = valueFront, maxval = valueBack)
+    ##raw_input("press enter to continue")
+    ##viewer9.plot(resolution = 0.2, xlabel = "X values (Z value = 9)", minval = valueFront, maxval = valueBack)
     raw_input("finished")

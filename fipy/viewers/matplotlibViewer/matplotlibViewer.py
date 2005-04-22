@@ -91,7 +91,7 @@ class _MatplotlibViewer(_Viewer):
         """
 
         pylab.figure(num = self.number)
-        pylab.clf()
+        ##pylab.clf()
         pylab.title(self.title)
         
         self._plot()

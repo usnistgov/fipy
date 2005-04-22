@@ -48,18 +48,13 @@ for each mesh and displays them in a graph, allowing the relationship of error t
 For more information, see the documentation for AdaptiveMesh.
 """
 
-##from fipy.tools.profiler.profiler import Profiler
-##from fipy.tools.profiler.profiler import calibrate_profiler
-
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
-from fipy.viewers.pyxviewer import PyxViewer
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
-import pyx
 import sys
 import os
 import Numeric
@@ -68,7 +63,9 @@ valueLeft = 0.
 valueRight = 1.
 
 meshList = []
-displaylist = []
+RMSNonOrthoList = []
+RMSErrorList = []
+
 for i in range(1, 501):
     meshList = meshList + [SkewedGrid2D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, rand = (0.001 * i))]
 
@@ -92,10 +89,13 @@ if __name__ == '__main__':
         nonOrthoArray = mesh._getNonOrthogonality()
         RMSError = (Numeric.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
         RMSNonOrtho = (Numeric.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
-        displaylist = displaylist + [[RMSNonOrtho, RMSError]]
-    g = pyx.graph.graphxy(width = 8, xpos = 2, ypos = 2, x = pyx.graph.axis.linear(title = "RMS Non-Orthogonality"), y = pyx.graph.axis.linear(title = "RMS Error"))
-    g.plot(pyx.graph.data.list(displaylist, addlinenumbers = 0, x=0, y=1), pyx.graph.style.symbol(size = "0.05 cm"))
-    g.writeEPSfile("orthoerrorgraph")
-    os.system("gv orthoerrorgraph.eps &")
-    raw_input("finished")
+
+        RMSNonOrthoList += [RMSNonOrtho]
+        RMSErrorList += [RMSError]
+
+    import pylab
+    pylab.plot(RMSNonOrthoList, RMSErrorList, 'ro')
+    pylab.show()
+
+
 
