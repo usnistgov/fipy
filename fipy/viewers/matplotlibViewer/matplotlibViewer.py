@@ -107,9 +107,7 @@ class _MatplotlibViewer(_Viewer):
         """
 
         pylab.figure(self.id)
-        ## Hack to use version 0.73.1
-        if not self.usingNewVersion:
-            pylab.clf()
+        pylab.clf()
         pylab.title(self.title)
         
         self._plot()
