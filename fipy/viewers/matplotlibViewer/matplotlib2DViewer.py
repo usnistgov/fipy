@@ -100,7 +100,6 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         X = Numeric.reshape(mesh.getCellCenters()[:,0], shape)
         Y = Numeric.reshape(mesh.getCellCenters()[:,1], shape)
         Z = Numeric.reshape(self.vars[0][:], shape)
-
         
         minz = min(self.vars[0])
         for limit in ('zmin', 'datamin'):
@@ -124,11 +123,12 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
             
         pylab.hot()
-        pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+        pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+        ##pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
 
-        if self.colorbar is False:
-            pylab.colorbar()
-            self.colorbar = True
+        ##if self.colorbar is False:
+        pylab.colorbar()
+        ##    self.colorbar = True
             
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))

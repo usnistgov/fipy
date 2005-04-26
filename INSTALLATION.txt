@@ -198,7 +198,7 @@ Matplotlib_ is a Python_ package that displays publication quality
 results. It display both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
 It works on all common platforms and produces publication quality hard
-copies. Verion 0.80 or higher is required. `Matplotlib Windows
+copies. Version 0.72.1 or higher is required. `Matplotlib Windows
 installers`_ are available.
 
 .. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net

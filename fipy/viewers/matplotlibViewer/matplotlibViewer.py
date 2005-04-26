@@ -58,7 +58,8 @@ class _MatplotlibViewer(_Viewer):
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
-   """    
+    """
+    id = 1
     def __init__(self, vars, limits = None, title = None):
         """
         The `_MatplotlibViewer` should not be called directly only `Matplotlib1DViewer`
@@ -78,8 +79,9 @@ class _MatplotlibViewer(_Viewer):
         """
         _Viewer.__init__(self, vars = vars, limits = limits, title = title)
         pylab.ion()
-        fig = pylab.figure()
-        self.number = fig.number
+        self.id = _MatplotlibViewer.id
+        _MatplotlibViewer.id += 1
+        fig = pylab.figure(self.id)
         
     def plot(self, fileName = None):
         """
@@ -90,8 +92,8 @@ class _MatplotlibViewer(_Viewer):
           
         """
 
-        pylab.figure(num = self.number)
-        ##pylab.clf()
+        pylab.figure(self.id)
+        pylab.clf()
         pylab.title(self.title)
         
         self._plot()
