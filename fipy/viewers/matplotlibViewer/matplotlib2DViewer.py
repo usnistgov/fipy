@@ -123,12 +123,14 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
             
         pylab.hot()
-        pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-        ##pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-
-        ##if self.colorbar is False:
-        pylab.colorbar()
-        ##    self.colorbar = True
+        if self.usingNewVersion:
+            pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+            if self.colorbar is False:
+                pylab.colorbar()
+                self.colorbar = True
+        else:
+            pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+            pylab.colorbar()
             
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))

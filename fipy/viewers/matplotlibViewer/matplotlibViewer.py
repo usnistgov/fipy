@@ -59,7 +59,15 @@ class _MatplotlibViewer(_Viewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
-    id = 1
+    ## required to support versions older than 0.8.
+    if 'contourf' in pylab.__dict__.keys():
+        usingNewVersion = True
+    else:
+        usingNewVersion = False
+
+    if not usingNewVersion:    
+        id = 1
+        
     def __init__(self, vars, limits = None, title = None):
         """
         The `_MatplotlibViewer` should not be called directly only `Matplotlib1DViewer`
@@ -78,11 +86,17 @@ class _MatplotlibViewer(_Viewer):
 
         """
         _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+
         pylab.ion()
-        self.id = _MatplotlibViewer.id
-        _MatplotlibViewer.id += 1
-        fig = pylab.figure(self.id)
-        
+
+        if self.usingNewVersion:
+            fig = pylab.figure()
+            self.id = fig.number
+        else:
+            self.id = _MatplotlibViewer.id
+            _MatplotlibViewer.id += 1
+            fig = pylab.figure(self.id)
+            
     def plot(self, fileName = None):
         """
         Plot the `CellVariable` as a contour plot.
@@ -93,7 +107,9 @@ class _MatplotlibViewer(_Viewer):
         """
 
         pylab.figure(self.id)
-        pylab.clf()
+        ## Hack to use version 0.73.1
+        if not self.usingNewVersion:
+            pylab.clf()
         pylab.title(self.title)
         
         self._plot()
