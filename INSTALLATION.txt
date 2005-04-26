@@ -55,9 +55,10 @@ systems, `Mac OS X`_ 10.3, `Debian Linux`_ 3.0, `Windows XP`_ and
 `Windows 2000`_.  We welcome reports of compatibility with other
 systems, along with any steps necessary to install.
 
-The only elements of |FiPy| that are likely to be platform-dependent are
-the viewers.  All other aspects should function on any platform that has a
-recent Python_ installation.
+The only elements of |FiPy| that are likely to be platform-dependent
+are the viewers, but at least one viewer will work on each platform.
+All other aspects should function on any platform that has a recent
+Python_ installation.
 
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Debian Linux:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
@@ -88,6 +89,7 @@ systems, which you can check by opening a terminal and typing
     >>> 
 
 If necessary, you can download_ and install it for your platform.
+`Python Windows installers`_ are available.
 
 .. note::
 
@@ -101,15 +103,17 @@ If necessary, you can download_ and install it for your platform.
 
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
+.. _Python Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 
 Numeric
 -------
 
 http://sourceforge.net/projects/numpy
 
-Obtain and install the Numeric_ package.  |FiPy| has been tested with
-version 23.1 of Numeric_.  The newer Numarray_ package is not
-supported at this time.
+Obtain and install the Numeric_ package. |FiPy| requires at least
+version 23.1 of Numeric_ but has not been tested with version 24. The
+newer Numarray_ package is not supported at this time. `Numeric
+Windows installers`_ are available.
 
 .. note:: 
 
@@ -119,9 +123,10 @@ supported at this time.
    ``<dir>/lib/python/Numeric`` to your ``PYTHONPATH`` environment
    variable.
 
-.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/projects/numpy
+.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 .. _Numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
 .. _peculiarity: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/mailman?fn=scipy-dev/2002-December/thread.html#1443
+.. _Numeric Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 
 PySparse
 --------
@@ -140,7 +145,8 @@ and press enter at the password prompt, then::
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse checkout pysparse
 
 From within the ``pysparse`` base directory, follow its included
-instructions for building PySparse_ for your platform.
+instructions for building PySparse_ for your platform. `PySparse Windows
+installers`_ are available.
 
 .. note::
 
@@ -149,7 +155,8 @@ instructions for building PySparse_ for your platform.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
-.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/projects/pysparse
+.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+.. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Viewers
 =======
@@ -191,9 +198,12 @@ Matplotlib_ is a Python_ package that displays publication quality
 results. It display both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
 It works on all common platforms and produces publication quality hard
-copies.
+copies. Verion 0.80 or higher is required. `Matplotlib Windows
+installers`_ are available.
 
 .. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
+.. _Matplotlib Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
+
 
 Gnuplot-py
 ----------
@@ -225,12 +235,13 @@ http://www.scipy.org/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
-SciPy_ package.
+SciPy_ package. `Scipy Windows installers`_ are available.
 
 In addition, a handful of test cases use functions from the SciPy_ library.
 
 .. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
 .. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
+.. _Scipy Windows installers:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/download/
 
 gmsh
 ----
@@ -245,8 +256,6 @@ It is possible to create irregular meshes with this package.
    is structured a bit differently than on other platforms.  To access the
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
-
-
 
 ----------------
 Obtaining |FiPy|
