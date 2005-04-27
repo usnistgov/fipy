@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/27/05 {4:37:23 PM} 
+ #                                last update: 4/27/05 {4:38:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -573,8 +573,9 @@ f.close()
 
 ## import py2app
 
+## app = [os.path.join('examples','levelSet','electroChem','input.py')],
+
 dist = setup(	name = "FiPy",
-	app = [os.path.join('examples','levelSet','electroChem','input.py')],
 	version = "1.0a2",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
