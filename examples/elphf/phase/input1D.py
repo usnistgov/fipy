@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/5/05 {8:11:02 PM} 
+ #                                last update: 4/10/05 {9:39:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,15 +41,41 @@
  ##
 
 r"""
-A simple 1D phase-field problem to test the `PhaseEquation` element of
-ElPhF.
+A simple 1D example to test the setup of the phase field equation.
+
+.. raw:: latex
+
+   We rearrange Eq.~\eqref{eq:elphf:phase} to
+   
+   \begin{equation*}
+       \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+       = 
+       \kappa_{\xi}\nabla^2 \xi
+       - 
+       \left[
+           p'(\xi) \Delta\mu_n^\circ
+           + g'(\xi) W_n
+       \right]
+       - 
+       \sum_{j=2}^{n-1} C_j \left[
+           p'(\xi) \Delta\mu_{jn}^\circ
+           + g'(\xi) W_{jn}
+       \right]
+       - 
+       C_{\text{e}^{-}} \left[
+           p'(\xi) \Delta\mu_{\text{e}^{-}}^\circ
+           + g'(\xi) W_{\text{e}^{-}}
+       \right]
+       +
+       \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+   \end{equation*}
 
 The single-component phase field governing equation can be represented as
 
 .. raw:: latex
 
-   $$ \frac{1}{M_\xi} \frac{\partial \xi}{\partial t} 
-   =  \kappa_\xi \nabla^2 \xi - 2\xi(1-\xi)(1-2\xi) W $$
+   \[ \frac{1}{M_\xi} \frac{\partial \xi}{\partial t} 
+   =  \kappa_\xi \nabla^2 \xi - 2\xi(1-\xi)(1-2\xi) W \]
 
 where 
 
@@ -69,39 +95,73 @@ We solve the problem on a 1D mesh
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
-Rather than rewriting the same code in every electrochemistry example, 
-we use the ElPhF module
+We create the phase field
 
-    >>> import fipy.models.elphf.elphf as elphf
-
-to build the approriate variable fields from
-
-    >>> parameters = {
-    ...     'time step duration': 10000,
-    ...     'phase': {
-    ... 	    'name': "xi",
-    ... 	    'mobility': float("infinity"),
-    ... 	    'gradient energy': 0.025,
-    ... 	    'value': 1.
-    ...     },
-    ...     'solvent': {
-    ... 	    'standard potential': 0.,
-    ... 	    'barrier height': 1.
-    ...     }
-    ... }
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> phase = CellVariable(mesh = mesh, name = 'xi')
+    >>> phase.mobility = float("infinity")
+    >>> phase.gradientEnergy = 0.025
     
-    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
+Although we are not interested in them for this problem, we create one field to represent the "solvent" component (1 everywhere) 
+
+    >>> class ComponentVariable(CellVariable):
+    ...     def copy(self):
+    ...         new = self.__class__(mesh = self.getMesh(), name = self.getName(), value = self.getValue())
+    ...         new.standardPotential = self.standardPotential
+    ...         new.barrier = self.barrier
+    ...         return new
+
+    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
+    >>> solvent.standardPotential = 0.
+    >>> solvent.barrier = 1.
+
+and one field to represent the electrostatic potential (0 everywhere)
+
+    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
+    >>> permittivityPrime = 0.
+    
+We'll have no substitutional species and no interstitial species in this first example
+
+    >>> substitutionals = []
+    >>> interstitials = []
+    
+    >>> for component in substitutionals:
+    ...     solvent -= component
+
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+    
+    >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
+    ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
+    ...     - (permittivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
+    
+    >>> enthalpy = solvent.standardPotential
+    >>> barrier = solvent.barrier
+    >>> for component in substitutionals + interstitials:
+    ...     enthalpy += component * component.standardPotential
+    ...     barrier += component * component.barrier
+          
+We linearize the source term in the same way as in `example.phase.simple.input1D`.
+
+    >>> mXi = -(30 * phase * (1. - phase) * enthalpy +  4 * (0.5 - phase) * barrier)
+    >>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
+    >>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
+    >>> S0 = mXi * phase * (1 - phase) - phase * S1 * (S1 < 0)
+
+    >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    
+.. note:: Adding a `Term` to an equation formed with `==` will add to the
+   left-hand side of the equation and subtracting a `Term` will add to the
+   right-hand side of the equation
 
 We separate the phase field into electrode and electrolyte regimes
 
     >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-    >>> fields['phase'].setValue(1.)
-    >>> fields['phase'].setValue(0.,setCells)
+    >>> phase.setValue(1.)
+    >>> phase.setValue(0.,setCells)
 
 We use the ElPhF module again to create governing equations from the fields
-
-    >>> elphf.makeEquations(fields = fields, 
-    ...                     parameters = parameters)
 
 Even though we are solving the steady-state problem
 
@@ -112,38 +172,50 @@ Even though we are solving the steady-state problem
 we still must sweep the solution several times to equilibrate
 
     >>> for step in range(10):
-    ...     fields['phase'].equation.solve(var = fields['phase'])
+    ...     phase.equation.solve(var = phase)
     
-We verify that the phase field has the expected analytical form
+Since we have only a single component, with , and the electrostatic
+potential is uniform, ... reduces to
+
+.. raw:: latex
+
+    \begin{equation*}
+        \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+        = \kappa_{\xi}\nabla^2 \xi
+        - g'(\xi) W_n
+    \end{equation*}
+    
+which we know from `examples.phase.simple.input1D` has the analytical
+solution
 
 .. raw:: latex
 
    $$ \xi(x) = \frac{1}{2}(1 - \tanh\frac{x - L/2}{2d}) $$
    
-where the interfacial thickness is given by
+with an interfacial thickness
 
 .. raw:: latex
 
-   $ d = \sqrt{\kappa_{\xi}/2W} $.
+   $ d = \sqrt{\kappa_{\xi}/2W_n} $.
    
 We verify that the correct equilibrium solution is attained
 
     >>> x = mesh.getCellCenters()[:,0]
     
     >>> import Numeric
-    >>> d = Numeric.sqrt(parameters['phase']['gradient energy']
-    ...     / (2 * parameters['solvent']['barrier height']))
+    >>> d = Numeric.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
     >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2 * d))) / 2.
 
-    >>> print fields['phase'].allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
     1
     
+
 If we are running interactively, we will want to see the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     from fipy.variables.cellVariable import CellVariable
-    ...     viewer = fipy.viewers.make(vars = (fields['phase'] - \
+    ...     viewer = fipy.viewers.make(vars = (phase - \
     ...         CellVariable(mesh = mesh, value = analyticalArray),))
     ...     viewer.plot()
 """

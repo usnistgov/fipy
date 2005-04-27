@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/5/05 {8:12:10 PM} 
+ #                                last update: 4/12/05 {10:21:58 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,8 +41,7 @@
  ##
 
 r"""
-A simple problem to test the `PoissonEquation` element of
-ElPhF on a 1D mesh
+A simple 1D example to test the setup of the Poisson equation.
 
     >>> nx = 200
     >>> dx = 0.01
@@ -54,13 +53,15 @@ The dimensionless Poisson equation is
 
 .. raw:: latex
 
-   $$ \nabla\cdot\left(\epsilon\nabla\psi\right) = -\rho = -\sum_{j=1}^n z_j C_j$$
+   \begin{equation*}
+   \nabla\cdot\left(\epsilon\nabla\phi\right) = -\rho = -\sum_{j=1}^n z_j C_j
+   \end{equation*}
 
 where 
 
 .. raw:: latex
 
-   $\psi$ is the electrostatic potential,
+   $\phi$ is the electrostatic potential,
    $\epsilon$  is the permittivity,
    $\rho$ is the charge density,
    $C_j$ is the concentration of the $j^\text{th}$ component, and
@@ -68,38 +69,41 @@ where
    
 ..
 
+We will be solving for the electrostatic potential
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
+    >>> permittivity = 1.
+
 We examine a fixed distribution of electrons
 
 .. raw:: latex
   
-   with $z_{\text{e}^{-}} = -1$ and and we let the permittivity $\epsilon = 1$.
+   with $z_{\text{e}^{-}} = -1$.
+
+..
+
+   >>> class ComponentVariable(CellVariable):
+   ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., barrier = 0., diffusivity = None, valence = 0, equation = None):
+   ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
+   ...         self.standardPotential = standardPotential
+   ...         self.barrier = barrier
+   ...         self.diffusivity = diffusivity
+   ...         self.valence = valence
+   ...         self.equation = equation
+   ...
+   ...     def copy(self):
+   ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
+   ...                               name = self.getName(), 
+   ...                               standardPotential = self.standardPotential, 
+   ...                               barrier = self.barrier, 
+   ...                               diffusivity = self.diffusivity,
+   ...                               valence = self.valence,
+   ...                               equation = self.equation)
    
-In the ElPhF construction, electrons are treated as interstitial elements, 
-which can diffuse freely without displacing other components
-
-    >>> parameters = {
-    ...     'potential': {
-    ...         'name': "psi",
-    ...         'permittivity': 1.,
-    ...     },
-    ...     'interstitials': (
-    ...         {
-    ...             'name': "e-",
-    ...             'valence': -1,
-    ...             'diffusivity': 0
-    ...         },
-    ...     )
-    ... }
-
-We have set the diffusivity of electrons to zero to keep them from moving due 
-to electromigration.
-
-We again let the ElPhF module construct the appropriate fields
-
-    >>> import fipy.models.elphf.elphf as elphf
-    >>> fields = elphf.makeFields(mesh = mesh, 
-    ...                           parameters = parameters)
-
+   >>> interstitials = [ComponentVariable(mesh = mesh, name = 'e-', valence = -1)]
+   >>> substitutionals = []
+   
 We segregate all of the electrons to one side of the domain
 
 .. raw:: latex
@@ -113,18 +117,23 @@ We segregate all of the electrons to one side of the domain
 ..
 
     >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
-    >>> fields['interstitials'][0].setValue(0.)
-    >>> fields['interstitials'][0].setValue(1.,setCells)
+    >>> interstitials[0].setValue(0.)
+    >>> interstitials[0].setValue(1.,setCells)
 
 and iterate one implicit timestep to equilibrate the electrostatic potential
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
     
-    >>> from fipy.models.elphf.poissonEquation import factory
-    >>> poisson = factory.make(fields, parameters['potential'])
-    >>> poisson.solve(var = fields['potential'], 
-    ...               boundaryConditions = bcs)
+    >>> charge = 0.
+    >>> for Cj in interstitials + substitutionals:
+    ...     charge += Cj * Cj.valence
+
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) + charge == 0
+    
+    >>> potential.equation.solve(var = potential, 
+    ...                          boundaryConditions = bcs)
     
 This problem has the analytical solution
 
@@ -141,16 +150,16 @@ We verify that the correct equilibrium is attained
     >>> x = mesh.getCellCenters()[:,0]
 
     >>> import Numeric
-    >>> analyticalArray = Numeric.where(x < 1, -x, ((x-1)**2)/2 - x)
+    >>> analyticalArray = Numeric.where(x < L/2, -x, ((x-1)**2)/2 - x)
 
-    >>> print fields['potential'].allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+    >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()
     1
     
 If we are running the example interactively, we view the result
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (fields['charge'], fields['potential']))
+    ...     viewer = fipy.viewers.make(vars = (charge, potential))
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

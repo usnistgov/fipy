@@ -3,23 +3,25 @@ electrochemical interfaces.  In a pair of papers, Guyer, Boettinger, Warren
 and McFadden \cite{ElPhFI,ElPhFII} have shown that an electrochemical
 interface can be modeled by an equation for the phase field \( \xi \)
 
-\[
-    \frac{\partial \xi}{\partial t}
+\begin{equation}
+    \label{eq:elphf:phase}
+    \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
     = 
-    M_{\xi}\kappa_{\xi}\nabla^2 \xi
+    \kappa_{\xi}\nabla^2 \xi
     - 
-    M_{\xi}\sum_{j=1}^{n} C_j \left[
+    \sum_{j=1}^{n} C_j \left[
 	p'(\xi) \Delta\mu_j^\circ
 	+ g'(\xi) W_j
     \right]
     +
-    M_{\xi}\frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
-\]
+    \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+\end{equation}
 
-a set of diffusion equations for the concentrations \( C_j \), for \(
-j = 2,\ldots, n-1 \), of the substitutional elements
+a set of diffusion equations for the concentrations \( C_j \), for the substitutional elements
+\( j = 2,\ldots, n-1 \)
 
-\begin{align*}
+\begin{align}
+    \label{eq:elphf:substitutional}
     \frac{\partial C_j}{\partial t}
     &= D_{j}\nabla^2 C_j \\
     & \qquad + 
@@ -35,12 +37,13 @@ j = 2,\ldots, n-1 \), of the substitutional elements
 	    +
 	    C_n z_{jn} \nabla \phi
 	\right\}
-\end{align*}
+\end{align}
 
 a diffusion equation for the concentration \( C_{\text{e}^{-}} \) of
 electrons
 
-\[
+\begin{equation}
+    \label{eq:elphf:interstitial}
     \frac{\partial C_{\text{e}^{-}}}{\partial t}
     = D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}} \\
     + D_{\text{e}^{-}}\nabla\cdot 
@@ -53,16 +56,17 @@ electrons
 	    +
 	    z_{\text{e}^{-}} \nabla \phi
 	\right\}
-\]
+\end{equation}
 
 and Poisson's equation for the electrostatic potential \( \phi \)
 
-\[ 
+\begin{equation}
+    \label{eq:elphf:Poisson}
     \nabla\cdot\left(\epsilon\nabla\phi\right) 
     +
     \rho
     = 0
-\]
+\end{equation}
 
 \( M_\xi \) is the phase field mobility, \( \kappa_\xi \) is the phase
 field gradient energy coefficient, \( p'(\xi) =
