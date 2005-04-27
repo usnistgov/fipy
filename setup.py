@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/1/05 {2:48:36 PM} 
+ #                                last update: 4/27/05 {4:37:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -648,7 +648,7 @@ if 'install' in dist.commands:
 
     opt = []
     
-    for pkg in ['weave', 'gmsh', 'gist', 'pyx']:
+    for pkg in ['weave', 'gist', 'pyx']:
 	try:
 	    __import__(pkg)
 	except ImportError, exc:
