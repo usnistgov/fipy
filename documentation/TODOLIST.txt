@@ -2,19 +2,8 @@
 Future Work
 -----------
 
-Release Goals 1.0a1
+Release Goals 1.0a2
 -------------------
-
-- Documentation:
-
-  * Review all for accuracy/consistency.
-
-- Distribution
-
-  * Python 2.4
-
-Release Goals 1.0
------------------
 
 - Documentation:
 
@@ -22,17 +11,19 @@ Release Goals 1.0
   * Include some examples on the web page.
   * Include some pictures of simulations in the documentation.
   * Efficiency and --inline discussion.
-  * Examples:
-  
-    - 1000*1000 example for efficiency discussion.
+
+- Functionality
+
+  * matplotlib viewer
 
 - Distribution
 
   * Install and test with no write permissions.
-  * Windows install.
-  * freeze or py2exe for CEAC stand-alone
 
-    - viewer? GPL or GLL for gnuplot?
+Release Goals 1.0
+-----------------
+
+- Distribution
 
   * Get FiPy registered on:
 
@@ -42,35 +33,9 @@ Release Goals 1.0
    
 - Functionality:
 
-  * Linear Algebra:
-
-    - Iterative solver in place of superLU for non-symmetric matrices
-      
-  * Viewing variables on an unstructured mesh.
-
-    - gnuplot
-
-  * Gnuplot-py:
-
-    - Viewing of variables for Grid2D objects.
-    - Justification:
-
-      * Gnuplot is available on Windows and it is standard on unix and linux platforms.
-      * Gnuplot-py is easy to install and is well supported.
-      * Gnuplot version 4.0 looks good for contour plots.
-      * Much faster than PyX. PyX is very slow for plotting large contour plots.
-      * The gist hardcopy functionality is mangled.
-
-  * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
-
   * Better ``__repr__`` for FiPy objects.
 
 - Refactoring:
-
-  * Viewers:
-
-    - Use viewers in scipy that are similar to gist and remove gist (?).
-    - Refactor PyX viewer.
 
   * Reduce memory requirements
 
@@ -89,12 +54,20 @@ Release Goals 1.0
       * DiffPack
       * FemLego?
 
-- Efficiency
-
-  * Cache mesh calculations
-
 Long term Goals
 ---------------
+
+- Documentation:
+
+  * Examples:
+  
+    - 1000*1000 example for efficiency discussion.
+
+- Distribution
+
+  * freeze or py2exe for CEAC stand-alone
+
+    - viewer? GPL or GLL for gnuplot?
 
 - Functionality:
 
@@ -110,6 +83,7 @@ Long term Goals
   * Look into pyrex as an alternative to inlining.
   * Laminar Fluid Flow module.
   * DX viewer.
+  * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
 
 - Refactoring:
 
@@ -137,6 +111,10 @@ Long term Goals
 
     - Lazy mesh array evaluations.
 
+  * Viewers:
+
+    - Use viewers in scipy that are similar to gist and remove gist (?).
+
 - Documentation:
 
   * Write a paper on FiPy.
@@ -145,6 +123,7 @@ Long term Goals
 - Efficiency
 
   * Automatic inlining
+  * Cache mesh calculations
   * Caching/building sparse matrices?
   * NthOrderDiffusionTerm 
 
