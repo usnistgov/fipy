@@ -668,7 +668,7 @@ class LatexFormatter:
             inhdoc = fdoc
         inherit_docs = (inhdoc is not fdoc)
 
-        str += '\\begin{EpydocFunction}%\n' 
+        str += '\\begin{EpydocFunction}'
         str += self._func_signature(self._hypertarget(fuid, fname), fdoc)
 
         if not inherit:
@@ -743,7 +743,7 @@ class LatexFormatter:
         return str
 
     def _func_signature(self, fname, fdoc, show_defaults=1):
-        str = '  \\begin{EpydocFunctionSignature}{%s}%%\n    ' % fname
+        str = '{%s}{' % fname
         
         params = self._params_to_latex(fdoc.parameters(), show_defaults)
         if fdoc.vararg():
@@ -756,7 +756,7 @@ class LatexFormatter:
             params.append('\\KWArg{%s}' % self._text_to_latex(fdoc.kwarg().name()))
         
         str += '%\n    \\and '.join(params)
-        str += '%\n  \\end{EpydocFunctionSignature}\n\n'
+        str += '}%\n'
         
         return str
     

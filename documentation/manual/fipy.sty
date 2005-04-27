@@ -308,14 +308,12 @@
 
 % no explicit box around functions, but keep them grouped 
 % (we could use a plain minipage)
-\renewenvironment{EpydocFunction}{%
-    \begin{cminipage}}%
-    {\end{cminipage}}
-       
-% format function signatures in large text, with long arguments 
-% aligned at open-(, and whole thing underlined to separate from 
-% rest of function documentation.
-\renewenvironment{EpydocFunctionSignature}[1]{%
+% \renewenvironment{EpydocFunction}{%
+%     \begin{cminipage}}%
+%     {\end{cminipage}}
+
+   
+\renewenvironment{EpydocFunction}[2]{%
     \renewcommand{\and}{, }%
     \newcommand{\VarArg}[1]{*\textit{##1}}%
     \newcommand{\GenericArg}{\textit{\ldots}}%
@@ -323,9 +321,41 @@
     \newcommand{\Param}[2][]{%
         \textit{##2}%
         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
-    \Large\raggedright\hangfrom{\ttfamily #1(}% 
-    }
-    {{\ttfamily)}\\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
+    {\raggedright\Large\hangfrom{\ttfamily #1(}{#2{\ttfamily)}}% 
+    \\*[-0.6ex]\rule{\textwidth}{0.5\fboxrule}}%
+    \nopagebreak\begin{list}{}{\setlength{\leftmargin}{\parindent}\item{}}}
+    {\end{list}}
+    
+% \newcommand{\@EpydocFunctionSignature}[2]{%
+%     \renewcommand{\and}{, }%
+%     \newcommand{\VarArg}[1]{*\textit{##1}}%
+%     \newcommand{\GenericArg}{\textit{\ldots}}%
+%     \newcommand{\KWArg}[1]{**\textit{##1}}%
+%     \newcommand{\Param}[2][]{%
+%         \textit{##2}%
+%         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+%     {\Large\raggedright\hangfrom{\ttfamily #1(}#2{\ttfamily)}}% 
+%     \\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
+% 
+% \renewenvironment{EpydocFunction}[2]{%
+%     \@EpydocFunctionSignature{#1}{#2}
+%     \begin{list}{}{}\item{}}
+%     {\end{list}}
+       
+% format function signatures in large text, with long arguments 
+% aligned at open-(, and whole thing underlined to separate from 
+% rest of function documentation.
+% \renewenvironment{EpydocFunctionSignature}[1]{%
+%     \renewcommand{\and}{, }%
+%     \newcommand{\VarArg}[1]{*\textit{##1}}%
+%     \newcommand{\GenericArg}{\textit{\ldots}}%
+%     \newcommand{\KWArg}[1]{**\textit{##1}}%
+%     \newcommand{\Param}[2][]{%
+%         \textit{##2}%
+%         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+%     \Large\raggedright\hangfrom{\ttfamily #1(}% 
+%     }
+%     {{\ttfamily)}\\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
 
 % indent on left
 \renewenvironment{EpydocDocstring}{%
@@ -337,6 +367,8 @@
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
     \begin{cminipage}[light-gray]\textbf{Parameters}\begin{quote}%
+    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+       \normalfont\bfseries ##1:}
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
@@ -350,7 +382,6 @@
 \renewenvironment{EpydocInheritanceList}{%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
        \normalfont\bfseries Inherited from ##1:}
-%     \renewcommand{\item}[1][]{\item[Inherited from ##1:]}%
     \raggedright\begin{description}}
     {\end{description}}
 

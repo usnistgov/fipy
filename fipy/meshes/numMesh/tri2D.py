@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 4/6/05 {5:17:47 PM} 
+ #                                last update: 4/21/05 {3:43:55 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -69,10 +69,10 @@ class Tri2D(Mesh2D):
         above, the vertices, cells and faces are numbered in the usual way.
         
         :Parameters:
-          - `dx`, `dy`: The X and Y dimensions of each 'box'. 
+          - `dx, dy`: The X and Y dimensions of each 'box'. 
             If `dx` <> `dy`, the line segments connecting the cell 
             centers will not be orthogonal to the faces.
-          - `nx`, `ny`: The number of boxes in the X direction and the Y direction. 
+          - `nx, ny`: The number of boxes in the X direction and the Y direction. 
             The total number of boxes will be equal to `nx * ny`, and the total 
             number of cells will be equal to `4 * nx * ny`.
         """

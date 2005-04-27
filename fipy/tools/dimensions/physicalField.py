@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/4/05 {1:45:45 PM} 
+ #                                last update: 4/21/05 {5:37:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -230,8 +230,11 @@ class PhysicalField:
             >>> PhysicalField(value = 3., unit = "eV")
             PhysicalField(3.0,'eV')
         """
-        return (self.__class__.__name__ + '(' + `self.value` + ',' + 
-                `self.unit.name()` + ')')
+        if self.unit is _unity:
+            return `self.value`
+        else:
+            return (self.__class__.__name__ + '(' + `self.value` + ',' + 
+                    `self.unit.name()` + ')')
 
     def _sum(self, other, sign1 = lambda a: a, sign2 = lambda b: b):
         # stupid Numeric bug

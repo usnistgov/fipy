@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 12/15/04 {4:53:56 PM} 
+ #                                last update: 4/21/05 {4:34:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,3 +94,5 @@ class _BoundaryCondition:
 	    return None
 
 
+    def __repr__(self):
+        return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)

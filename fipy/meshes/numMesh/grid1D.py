@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/4/05 {11:57:43 AM} 
+ #                                last update: 4/21/05 {4:46:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,8 +40,10 @@
  # ###################################################################
  ##
 
-"""1D rectangular Mesh
 """
+1D Mesh
+"""
+__docformat__ = 'restructuredtext'
 
 import Numeric
 
@@ -89,6 +91,9 @@ class Grid1D(Mesh1D):
         
         self.setScale(value = scale)
         
+    def __repr__(self):
+        return "%s(dx = %s, nx = %d)" % (self.__class__.__name__, `self.dx`, self.nx)
+
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         

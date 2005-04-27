@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/7/05 {4:34:11 PM} 
+ #                                last update: 4/21/05 {4:45:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -218,6 +218,9 @@ class Mesh:
 
         """
         pass
+        
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
         
     """topology methods"""
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/6/05 {4:41:53 PM} 
+ #                                last update: 4/21/05 {4:50:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -106,6 +106,10 @@ class Grid3D(Mesh):
 	
 	self.setScale(value = scale)
         
+    def __repr__(self):
+        return "%s(dx = %s, dy = %s, dz = %s, nx = %d, ny = %d, nz = %d)" \
+            % (self.__class__.__name__, `self.dx`, `self.dy`, `self.dz`, self.nx, self.ny, self.nz)
+
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         x = Numeric.resize(x, (self.numberOfVertices,))

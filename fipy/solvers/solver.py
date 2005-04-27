@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 12/6/04 {4:31:41 PM} 
+ #                                last update: 4/21/05 {3:48:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,3 +62,8 @@ class _Solver:
 	
     def _solve(self, L, x, b):
 	pass
+        
+    def __repr__(self):
+        return '%s(tolerance = %g, steps = %g)' \
+            % (self.__class__.__name__, self.tolerance, self.steps)
+

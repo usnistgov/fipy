@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/7/05 {4:29:00 PM} 
+ #                                last update: 4/21/05 {4:49:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,6 +84,10 @@ class Grid2D(Mesh2D):
 	
 	self.setScale(value = scale)
         
+    def __repr__(self):
+        return "%s(dx = %s, dy = %s, nx = %d, ny = %d)" \
+            % (self.__class__.__name__, `self.dx`, `self.dy`, self.nx, self.ny)
+            
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         x = Numeric.resize(x, (self.numberOfVertices,))
