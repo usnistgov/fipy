@@ -118,8 +118,7 @@ or
     >>> x = mesh.getCellCenters()[:,0]
     >>> answer = alpha4 / 6. * x**3 + alpha3 / 2. * x**2 
     >>> answer += (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1
-    >>> import Numeric
-    >>> Numeric.allclose(answer, var, atol = 1e-10)
+    >>> print var.allclose(answer, rtol = 1e-5)
     1
 
 If the problem is run interactively, we can view the result:
@@ -128,6 +127,7 @@ If the problem is run interactively, we can view the result:
     ...     import fipy.viewers
     ...     viewer = fipy.viewers.make(vars = var)
     ...     viewer.plot()
+
 """
 __docformat__ = 'restructuredtext'
 
