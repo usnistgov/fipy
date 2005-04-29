@@ -44,7 +44,8 @@
    >>> eq.solve(var,
    ...          boundaryConditions = BCs,
    ...          solver = solver)
-   >>> print var.allclose(mesh.getCellCenters(), rtol = 1e-5)
+
+   >>> print var.allclose(mesh.getCellCenters()[:,0], rtol = 1e-5)
    1
 
 """
