@@ -46,7 +46,8 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'input2ndOrder1D',
-            'input4thOrder1D'
+            'input4thOrder1D',
+            'input4thOrder-line'
         ), base = __name__)
     
 if __name__ == '__main__':
