@@ -156,12 +156,16 @@ class _SparseMatrix:
     def __sub__(self, other):
 
 	if other is 0:
-	    return -self
+	    return self
 	else:
 	    L = self.matrix.copy()
 	    L.shift(-1, other._getMatrix())
 	    return _SparseMatrix(matrix = L)
 
+    def __rsub__(self, other):
+        if other is 0:
+            return -self
+        
     def __iadd__(self, other):
 	return self._iadd(self._getMatrix(), other)
 	

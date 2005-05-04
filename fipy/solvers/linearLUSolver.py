@@ -84,21 +84,17 @@ class LinearLUSolver(_Solver):
 	_Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
-        LU = superlu.factorize(L._getMatrix().to_csr(), diag_pivot_thresh = 1., relax = 1)
-        LU.solve(b, x)
-
-        
         tol = self.tolerance + 1.
         step = 0
+
+        LU = superlu.factorize(L._getMatrix().to_csr())
 
         while tol > self.tolerance and step < self.steps:
 
             errorVector = L * x - b
             xError = Numeric.zeros(len(b),'d')
-            LU = superlu.factorize(L._getMatrix().to_csr())
             LU.solve(errorVector, xError)
             x[:] = x - xError
-
             arg = Numeric.argmax(Numeric.absolute(xError))
             tol = Numeric.absolute(xError)[arg]
             step += 1

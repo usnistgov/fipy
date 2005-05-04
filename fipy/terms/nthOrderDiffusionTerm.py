@@ -340,7 +340,13 @@ class NthOrderDiffusionTerm(Term):
             b = Numeric.zeros((N),'d')
             
         return (L, b)
-        
+
+class ExplicitNthOrderDiffusionTerm(NthOrderDiffusionTerm):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+        L, b = NthOrderDiffusionTerm._buildMatrix(self, var, boundaryConditions = boundaryConditions, dt = dt)
+        return (0, b - L * var[:])
+    
+
 def _test(): 
     import doctest
     return doctest.testmod()
