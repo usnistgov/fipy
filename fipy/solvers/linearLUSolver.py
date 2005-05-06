@@ -84,6 +84,12 @@ class LinearLUSolver(_Solver):
 	_Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
+        diag = L.takeDiagonal()
+        maxdiag = max(diag)
+
+        L = L * (1 / maxdiag)
+        b = b * (1 / maxdiag)
+
         tol = self.tolerance + 1.
         step = 0
 
