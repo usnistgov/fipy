@@ -52,25 +52,29 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid1D import Grid1D
-dx = 1.0
+
+Lx = 1.
 nx = 100000
+dx = Lx / nx
+
 mesh = Grid1D(dx = dx, nx = nx)
 
 import Numeric
 from fipy.variables.cellVariable import CellVariable
-var = CellVariable(mesh = mesh,
-                   value = Numeric.arange(nx) * dx + dx / 2.)
+var = CellVariable(mesh = mesh)
 
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
 from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
      
-eq = NthOrderDiffusionTerm((1.0,1.0))
+eq = NthOrderDiffusionTerm((1.0, 1.0))
+
 BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
-       NthOrderBoundaryCondition(mesh.getFacesRight(), nx * dx, 0),
+       NthOrderBoundaryCondition(mesh.getFacesRight(), Lx, 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
+
 solver = LinearLUSolver(steps = 10)
 
 if __name__ == '__main__':
