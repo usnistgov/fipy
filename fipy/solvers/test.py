@@ -46,6 +46,7 @@ import fipy.tests.testProgram
 def _suite():
     theSuite = _LateImportDocTestSuite(docTestModuleNames = (
             'linearScipyGMRESSolver',
+            'linearScipyCGSolver',
         ), base = __name__)
 
     return theSuite
