@@ -313,6 +313,13 @@ class _SparseMatrix:
 	
 	return Numeric.reshape(numMatrix, shape)
 
+    def matvec(self, x):
+        """
+        This method is required for scipy solvers.
+        """
+        return self * x
+    
+
 class _SparseIdentityMatrix(_SparseMatrix):
     """
     Represents a sparse identity matrix.

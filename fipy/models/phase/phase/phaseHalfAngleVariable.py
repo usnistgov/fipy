@@ -59,18 +59,30 @@ class _PhaseHalfAngleVariable(FaceVariable):
 
     def _calcValuePy(self):
 	N = self.parameters['symmetry']
-        dphi = self.phase.getFaceGrad()[:,:]
+        ##dphi = self.phase.getFaceGrad()[:,:]
         thetaFace = self.theta.getArithmeticFaceValue()[:]
-	z = array.arctan2(dphi[:,1],dphi[:,0])
+        
+        if self.getMesh().getDim() > 1:
+            z = array.arctan2(self.phase.getFaceGrad()[:,1], self.phase.getFaceGrad()[:,0])
+        else:
+            z = 0
+            
         z = N * (z - thetaFace)
         self.value = array.tan(z / 2.)
 
     def _calcValueInline(self):
+        dphi = Numeric.zeros((self.getMesh().getNumberOfCells(), self.getMesh.getDim()),'d')
+        dphi[:,0] = self.phase.getFaceGrad().getNumericValue()[:,0]
+        if self.getMesh().getDim() > 1:
+            dphi[:,1] = self.phase.getFaceGrad().getNumericValue()[:,1]
+        else:
+            dphi[:,1] = 0.
+            
         inline._runInlineLoop1("""
         z = atan2(dphi(i,1), dphi(i,0));
         z = symmetry * (z - thetaFace(i));
         value(i) = tan(z / 2.);""",z = 0.,
-                              dphi = self.phase.getFaceGrad().getNumericValue(),
+                              dphi = dphi,
                               symmetry = self.parameters['symmetry'],
                               thetaFace = self.theta.getArithmeticFaceValue().getNumericValue(),
                               value = self._getArray(),

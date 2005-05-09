@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearGMRESSolver.py"
+ #  FILE: "linearScipyGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
  #                                last update: 12/6/04 {4:32:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -44,47 +44,65 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-import precon
-import itsolvers
-
 from fipy.solvers.solver import _Solver
+import scipy.linalg.iterative
 
-class LinearGMRESSolver(_Solver):
+class LinearScipyGMRESSolver(_Solver):
     """
     
-    The `LinearGMRESSolver` solves a linear system of equations using the
-    Generalised Minimal Residual method (GMRES) with jacobi
-    preconditioning. GMRES solves systems with a general non-symmetric
-    coefficient matrix.
+    The `LinearScipyGMRESSolver` solves a linear system of equations
+    using the Generalised Minimal Residual method (GMRES) with no
+    GMRES solves systems with a general non-symmetric coefficient
+    matrix.
 
-    The `LinearGMRESSolver` is a wrapper class for the the PySparse_
-    `itsolvers.gmres` and `precon.jacobi` methods. Usage:
+    The `LinearScipyGMRESSolver` is a wrapper class for the the
+    Scipy_ `linalg.iterative.gmres` method. Usage
 
     ::
 
-        solver = LinearGMRESSolver(tolerance = 1e-10, steps = 1000)
+        solver = LinearScipyGMRESSolver(tolerance = 1e-10, steps = 1000)
 
-    .. _PySparse: http://pysparse.sourceforge.net
+    .. _Scipy: http://www.scipy.org
+
     
     """
     
     def _solve(self, L, x, b):
+        """
 
-## 	print "L: ", L
-## 	print "b: ", b
-## 	print "x: ", x
-	
-	A = L._getMatrix().to_csr()
-        
-        Assor=precon.jacobi(L._getMatrix())
-        
-        info, iter, relres = itsolvers.gmres(A,b,x,self.tolerance,self.steps,Assor)
-        
-## 	print info, iter, relres
-	
-## 	y = x.copy()
-## 	L.matvec(x,y)
-## 	print "L * x: ", y
-	
+        Tridiagonal test case,
+
+           >>> N = 10
+           >>> L = 1.
+           >>> dx = L / N
+           >>> import Numeric
+           >>> a = Numeric.zeros(N, 'd')
+           >>> a[:] = 2 / dx
+           >>> a[0] = 3 / dx
+           >>> a[-1] = 3 / dx
+           >>> from fipy.tools.sparseMatrix import _SparseMatrix
+           >>> A = _SparseMatrix(size = N)
+           >>> A.addAtDiagonal(a)
+           >>> ids = Numeric.arange(N - 1)
+           >>> A.addAt(-Numeric.ones(N - 1, 'd') / dx, ids, ids + 1)
+           >>> A.addAt(-Numeric.ones(N - 1, 'd') / dx, ids + 1, ids)
+           >>> b = Numeric.zeros(N, 'd')
+           >>> b[-1] = 2 / dx
+           >>> solver = LinearScipyGMRESSolver()
+           >>> x = Numeric.zeros(N, 'd')
+           >>> solver._solve(A, x, b)
+           >>> Numeric.allclose(x, Numeric.arange(N) * dx + dx / 2.)
+           1
+           
+        """
+        x[:], info = scipy.linalg.iterative.gmres(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.steps)
+
 	if (info != 0):
 	    print >> sys.stderr, 'gmres not converged'
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

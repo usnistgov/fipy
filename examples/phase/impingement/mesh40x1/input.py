@@ -51,8 +51,8 @@ dimensional grid
     >>> Ly = 2.5 * ny / 100.            
     >>> dx = Lx / nx
     >>> dy = Ly / ny
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx,dy,nx,ny)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx, nx)
 	
 This problem simulates the wet boundary that forms between grains of different 
 orientations. The phase equation is given by
@@ -169,13 +169,45 @@ above
 
 and requires access to the `theta` and `temperature` variables
 
-    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
-    >>> phaseEq = buildPhaseEquation(
-    ...     phase = phase,
-    ...     mPhi = Type1MPhiVariable,
-    ...     parameters = phaseParameters,
-    ...     theta = theta,
-    ...     temperature = temperature)
+    >>> ##from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
+    >>> ##phaseEq = buildPhaseEquation(
+    ... ##    phase = phase,
+    ... ##    mPhi = Type1MPhiVariable,
+    ... ##    parameters = phaseParameters,
+    ... ##    theta = theta,
+    ... ##    temperature = temperature)
+
+    >>> parameters = phaseParameters
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+
+    >>> from fipy.models.phase.phase.phaseDiffusionVariable import _PhaseDiffusionVariable
+    >>> from fipy.models.phase.phase.anisotropyVariable import _AnisotropyVariable
+    >>> from fipy.models.phase.phase.spSourceVariable import _SpSourceVariable
+    >>> from fipy.models.phase.phase.phaseHalfAngleVariable import _PhaseHalfAngleVariable
+    >>> from fipy.models.phase.phase.scSourceVariable import _ScSourceVariable
+
+    >>> ##from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
+    >>> ##mPhiVar = Type1MPhiVariable(phase = phase, temperature = temperature, parameters = parameters)
+
+    >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
+
+    >>> ##halfAngle = _PhaseHalfAngleVariable(parameters = parameters, phase = phase, theta = theta.getOld())
+    >>> import fipy.tools.array
+    >>> halfAngle = fipy.tools.array.tan(-parameters['symmetry'] *  theta.getArithmeticFaceValue())
+    
+    >>> ##diffTerm = ExplicitDiffusionTerm(coeff = _PhaseDiffusionVariable(parameters = parameters, halfAngle = halfAngle))
+    >>> diffTerm = ExplicitDiffusionTerm(coeff = parameters['alpha']**2)
+    >>> spTerm = ImplicitSourceTerm(coeff = _SpSourceVariable(theta = theta.getOld(), mPhi = mPhiVar, phase = phase, parameters = parameters))
+
+    >>> anisotropy = _AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
+
+    >>> sourceCoeff = _ScSourceVariable(mPhi = mPhiVar, phase = phase, anisotropy = anisotropy)
+
+    >>> transientCoeff = parameters['tau']
+
+    >>> phaseEq = TransientTerm(coeff = transientCoeff) - diffTerm  + spTerm - sourceCoeff
 
 The `theta` equation is also solved with an iterative conjugate gradient solver  
 and requires access to the `phase` variable
@@ -196,7 +228,8 @@ meaningful in the liquid phase, we weight the orientation by the phase
     ...                                     limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = fipy.viewers.make(vars = thetaProd, 
+    ...     thetaProductViewer = fipy.viewers.make(vars = thetaProd,
+    ...                                            title = 'theta viewer',
     ...                                            limits = {'datamin': -pi, 'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()

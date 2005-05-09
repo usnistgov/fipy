@@ -118,7 +118,7 @@ or
     >>> x = mesh.getCellCenters()[:,0]
     >>> answer = alpha4 / 6. * x**3 + alpha3 / 2. * x**2 
     >>> answer += (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1
-    >>> print var.allclose(answer, rtol = 1e-5)
+    >>> print var.allclose(answer, rtol = 1e-4)
     1
 
 If the problem is run interactively, we can view the result:

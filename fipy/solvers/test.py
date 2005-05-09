@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "ThetaHalfAngleVariable.py"
- #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:41 AM} { 4:14:24 PM}
+ #  FILE: "test.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 4/1/05 {2:49:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,31 +36,19 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
+ #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-from fipy.variables.cellVariable import CellVariable
-##from fipy.tools.inline.inline import runInline
-import fipy.tools.array as array
+def _suite():
+    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
+            'linearScipyGMRESSolver',
+        ), base = __name__)
 
-class _ThetaHalfAngleVariable(CellVariable):
-    def __init__(self, parameters = None, phase = None, theta = None):
-        CellVariable.__init__(self, phase.getMesh(), hasOld = 0)
-	self.parameters = parameters
-	self.phase = self._requires(phase)
-        self.theta = self._requires(theta)
-
-    def _calcValue(self):
-	N = self.parameters['symmetry']
-        
-        if self.getMesh().getDim() > 1:
-            z = array.arctan2(self.phase.getGrad()[:,1], self.phase.getGrad()[:,0])
-        else:
-            z = 0
-            
-        z = N * (z - self.theta[:])
-        self.value = array.tan(z / 2.)
-
+    return theSuite
+    
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')
