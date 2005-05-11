@@ -42,15 +42,12 @@
 
 r"""
 
-In this example we solve a coupled phase and orientation equation on a one 
-dimensional grid
+In this example we solve a coupled phase and orientation equation on a
+one dimensional grid.
 
     >>> nx = 40
-    >>> ny = 1
     >>> Lx = 2.5 * nx / 100.
-    >>> Ly = 2.5 * ny / 100.            
     >>> dx = Lx / nx
-    >>> dy = Ly / ny
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx, nx)
 	
@@ -108,29 +105,16 @@ explicit and implicit technique respectively.
 The parameters for these equations are
 
     >>> timeStepDuration = 0.02
-    >>> phaseParameters = {
-    ...    'tau'                   : 0.1,
-    ...     }
-    >>> thetaParameters = {
-    ...     'small value'           : 1e-6,
-    ...     'beta'                  : 1e5,
-    ...     'mu'                    : 1e3,
-    ...     'tau'                   : 0.01,
-    ...     'gamma'                 : 1e3 
-    ...     }
-
-with the shared parameters
-
-    >>> sharedPhaseThetaParameters = {
-    ...     'epsilon'               : 0.008,
-    ...     's'                     : 0.01,
-    ...     'anisotropy'            : 0.0,
-    ...     'alpha'                 : 0.015,
-    ...     'symmetry'              : 4.
-    ...     }
-    >>> for key in sharedPhaseThetaParameters.keys():
-    ...     phaseParameters[key] = sharedPhaseThetaParameters[key]
-    ...     thetaParameters[key] = sharedPhaseThetaParameters[key]
+    >>> phaseTransientCoeff = 0.1
+    >>> thetaSmallValue = 1e-6
+    >>> beta = 1e5
+    >>> mu = 1e3
+    >>> thetaTransientCoeff = 0.01
+    >>> gamma= 1e3
+    >>> epsilon = 0.008
+    >>> s = 0.01
+    >>> alpha = 0.015
+    >>> symmetry = 4.
 
 The system is held isothermal at
 
@@ -145,7 +129,22 @@ and is initially solid everywhere
     ...     value = 1.
     ...     )
 
-The left and right halves of the domain are given different orientations
+Because `theta`
+
+.. raw:: latex
+
+    is an $S^1$-valued variable (i.e. it maps to the circle) and thus
+    intrinsically has $2\pi$-peridocity,
+
+we must use `ModularVariable` instead of a `CellVariable`. A
+`ModularVariable` confines `theta` to
+
+.. raw:: latex
+
+    $-\pi < \theta \le \pi$ by adding or subtracting $2\pi$ where
+    necessary and by defining a new
+
+subtraction operator between two angles.
 
     >>> from fipy.models.phase.theta.modularVariable import ModularVariable
     >>> theta = ModularVariable(
@@ -154,82 +153,80 @@ The left and right halves of the domain are given different orientations
     ...     value = 1.,
     ...     hasOld = 1
     ...     )
+
+The left and right halves of the domain are given different orientations.
+    
     >>> theta.setValue(0., mesh.getCells(
     ...    filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
 
-The `phase` equation requires a `mPhi` instantiator to represent
+The `phase` equation is built in the following way.
 
-.. raw:: latex
-
-   $m_1(\phi, T)$
-
-above
-
-    >>> from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-
-and requires access to the `theta` and `temperature` variables
-
-    >>> ##from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
-    >>> ##phaseEq = buildPhaseEquation(
-    ... ##    phase = phase,
-    ... ##    mPhi = Type1MPhiVariable,
-    ... ##    parameters = phaseParameters,
-    ... ##    theta = theta,
-    ... ##    temperature = temperature)
-
-    >>> parameters = phaseParameters
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-    >>> from fipy.models.phase.phase.phaseDiffusionVariable import _PhaseDiffusionVariable
-    >>> from fipy.models.phase.phase.anisotropyVariable import _AnisotropyVariable
-    >>> from fipy.models.phase.phase.spSourceVariable import _SpSourceVariable
-    >>> from fipy.models.phase.phase.phaseHalfAngleVariable import _PhaseHalfAngleVariable
-    >>> from fipy.models.phase.phase.scSourceVariable import _ScSourceVariable
-
-    >>> ##from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-    >>> ##mPhiVar = Type1MPhiVariable(phase = phase, temperature = temperature, parameters = parameters)
-
     >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 
-    >>> ##halfAngle = _PhaseHalfAngleVariable(parameters = parameters, phase = phase, theta = theta.getOld())
+The source term is linearized in the manner demonstrated in
+`examples.phase.simple.input` (Kobayashi, semi-implicit).
+
+    >>> thetaMag = theta.getOld().getGrad().getMag()
+    >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
+    >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
+
+    >>> phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
+    >>> phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
+
+The `theta` equation is built in the following way. The details for
+this equation are fairly involved, see J.A. Warren *et al.*. The main
+detail is that a source must be added to correct for the
+discretization of `theta` on the circle.
+
+    >>> phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
+    >>> phaseModSq = phaseMod * phaseMod
+    >>> expo = epsilon * beta * theta.getGrad().getMag()
+    >>> expo = (expo < 100.) * (expo - 100.) + 100.
     >>> import fipy.tools.array
-    >>> halfAngle = fipy.tools.array.tan(-parameters['symmetry'] *  theta.getArithmeticFaceValue())
+    >>> pFunc = 1. + fipy.tools.array.exp(-expo) * (mu / epsilon - 1.)
+
+    >>> phaseFace = phase.getArithmeticFaceValue()
+    >>> phaseSq = phaseFace * phaseFace
+    >>> gradMag = theta.getFaceGrad().getMag()
+    >>> eps = 1. / gamma / 10.
+    >>> gradMag += (gradMag < eps) * eps
+    >>> IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
+    >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
+
+The source term requires the evaluation of the face gradient without the
+modular operators. Thus a new subclass of `CellVariable` is created that uses
+the value of the `ModularVariable` but does not use its operators.
+
+    >>> class NonModularTheta(CellVariable):
+    ...     def __init__(self, modVar):
+    ...         CellVariable.__init__(self, mesh = modVar.getMesh())
+    ...         self.modVar = self._requires(modVar)
+    ...     def _calcValue(self):
+    ...         self.value = self.modVar[:]
+        
+    >>> thetaNoMod = NonModularTheta(theta)
+    >>> thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
+    >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
+    >>> sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = diffusionCoeff)
     
-    >>> ##diffTerm = ExplicitDiffusionTerm(coeff = _PhaseDiffusionVariable(parameters = parameters, halfAngle = halfAngle))
-    >>> diffTerm = ExplicitDiffusionTerm(coeff = parameters['alpha']**2)
-    >>> spTerm = ImplicitSourceTerm(coeff = _SpSourceVariable(theta = theta.getOld(), mPhi = mPhiVar, phase = phase, parameters = parameters))
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
+    >>> thetaEq -= ImplicitDiffusionTerm(diffusionCoeff)
+    >>> thetaEq -= sourceCoeff
 
-    >>> anisotropy = _AnisotropyVariable(parameters = parameters, phase = phase, halfAngle = halfAngle)
-
-    >>> sourceCoeff = _ScSourceVariable(mPhi = mPhiVar, phase = phase, anisotropy = anisotropy)
-
-    >>> transientCoeff = parameters['tau']
-
-    >>> phaseEq = TransientTerm(coeff = transientCoeff) - diffTerm  + spTerm - sourceCoeff
-
-The `theta` equation is also solved with an iterative conjugate gradient solver  
-and requires access to the `phase` variable
-
-    >>> from fipy.models.phase.theta.thetaEquation import buildThetaEquation
-    >>> thetaEq = buildThetaEquation(
-    ...     theta = theta,
-    ...     parameters = thetaParameters,
-    ...     phase = phase)
-
-If the example is run interactively, we create viewers for the phase and 
-orientation variables. Rather than viewing the raw orientation, which is not 
-meaningful in the liquid phase, we weight the orientation by the phase
+If the example is run interactively, we create viewers for the phase
+and orientation variables.
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     phaseViewer = fipy.viewers.make(vars = phase, 
     ...                                     limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
-    ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = fipy.viewers.make(vars = thetaProd,
-    ...                                            title = 'theta viewer',
+    ...     thetaProductViewer = fipy.viewers.make(vars = theta,
     ...                                            limits = {'datamin': -pi, 'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
@@ -246,10 +243,10 @@ we iterate the solution in time, plotting as we go if running interactively,
     ...         phaseViewer.plot()
     ... 	thetaProductViewer.plot()
 
-The solution is compared with test data. The test data was created with 
-``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `test.gz` extracts the
-data and compares it with the `theta` variable.
+The solution is compared with test data. The test data was created
+with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for
+phase field modeling. The following code opens the file `test.gz`
+extracts the data and compares it with the `theta` variable.
 
    >>> import os
    >>> testFile = 'test.gz'

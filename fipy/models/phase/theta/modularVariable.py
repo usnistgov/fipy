@@ -47,7 +47,7 @@ class ModularVariable(CellVariable):
 
     .. raw:: latex
 
-        $0$ and $2\pi$
+        $-\pi$ and $\pi$
 
     """    
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):

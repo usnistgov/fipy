@@ -73,6 +73,7 @@ Long term Goals
 
   * Multigrid method.
   * Cell centered FVM.
+  * Multilevel preconditioners
   * Adaptive meshing.
   * Linear Algebra:
 
@@ -84,6 +85,10 @@ Long term Goals
   * Laminar Fluid Flow module.
   * DX viewer.
   * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
+  * Found group of solvers from sandia called Trilionos
+    http://software.sandia.gov/trilinos
+  * As a stop gap measure for 4th and 6th order terms, 
+    find an implementation of incomplete cholesky factorization.
 
 - Refactoring:
 
