@@ -114,7 +114,6 @@ The parameters for these equations are
     >>> epsilon = 0.008
     >>> s = 0.01
     >>> alpha = 0.015
-    >>> symmetry = 4.
 
 The system is held isothermal at
 

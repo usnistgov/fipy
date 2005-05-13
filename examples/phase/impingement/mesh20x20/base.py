@@ -155,25 +155,27 @@ with appropriate orientations
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 
-The `phase` equation requires a `mPhi` instantiator to represent
+The `phase` equation is built in the following way.
 
-.. raw:: latex
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-   $m_1(\phi, T)$
+    >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 
-above
+The source term is linearized in the manner demonstrated in
+`examples.phase.simple.input` (Kobayashi, semi-implicit).
 
-    >>> from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-
-and requires access to the `theta` and `temperature` variables
-
-    >>> from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
-    >>> phaseEq = buildPhaseEquation(
-    ...     mPhi = Type1MPhiVariable,
-    ...     phase = phase,
-    ...     theta = theta,
-    ...     temperature = temperature,
-    ...     parameters = phaseParameters)
+    >>> thetaMag = theta.getOld().getGrad().getMag()
+    >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
+    >>> parameters = phaseParameters
+    >>> s = parameters['s']
+    >>> epsilon = parameters['epsilon']
+    >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
+    >>> phaseTransientCoeff = parameters['tau']
+    >>> alpha = parameters['alpha']
+    >>> phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
+    >>> phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
 
 The `theta` equation is also solved with an iterative conjugate gradient solver  
 and requires access to the `phase` variable
