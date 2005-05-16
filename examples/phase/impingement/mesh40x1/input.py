@@ -196,9 +196,10 @@ discretization of `theta` on the circle.
     >>> IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
     >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
-The source term requires the evaluation of the face gradient without the
-modular operators. Thus a new subclass of `CellVariable` is created that uses
-the value of the `ModularVariable` but does not use its operators.
+The source term requires the evaluation of the face gradient without
+the modular operators. Thus a new subclass of `CellVariable` is
+created that uses the value of the `ModularVariable` but does not use
+its operators.
 
     >>> class NonModularTheta(CellVariable):
     ...     def __init__(self, modVar):
