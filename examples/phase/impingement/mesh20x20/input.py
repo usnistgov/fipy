@@ -138,65 +138,70 @@ the domain with appropriate orientations
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 
-The `phase` equation is built in the following way.
+The `phase` equation is built in the following way. The source term is
+linearized in the manner demonstrated in `examples.phase.simple.input`
+(Kobayashi, semi-implicit). Here we use a function to build the equation,
+so that it can be reused later.
 
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-    >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
+    >>> def buildPhaseEquation(phase, theta):
+    ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
+    ...     thetaMag = theta.getOld().getGrad().getMag()
+    ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
+    ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
+    ...     phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
+    ...     phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
+    ...     return phaseEq
 
-The source term is linearized in the manner demonstrated in
-`examples.phase.simple.input` (Kobayashi, semi-implicit).
-
-    >>> thetaMag = theta.getOld().getGrad().getMag()
-    >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
-    >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
-    >>> phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
-    >>> phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
+    >>> phaseEq = buildPhaseEquation(phase, theta)
 
 The `theta` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
-discretization of `theta` on the circle.
+discretization of `theta` on the circle.  The source term requires the
+evaluation of the face gradient without the modular operators. Thus a
+new subclass of `CellVariable` is created that uses the value of the
+`ModularVariable` but does not use its operators.
 
-    >>> phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
-    >>> phaseModSq = phaseMod * phaseMod
-    >>> expo = epsilon * beta * theta.getGrad().getMag()
-    >>> expo = (expo < 100.) * (expo - 100.) + 100.
-    >>> import fipy.tools.array
-    >>> pFunc = 1. + fipy.tools.array.exp(-expo) * (mu / epsilon - 1.)
+    >>> def buildThetaEquation(phase, theta):
+    ...
+    ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
+    ...     phaseModSq = phaseMod * phaseMod
+    ...     expo = epsilon * beta * theta.getGrad().getMag()
+    ...     expo = (expo < 100.) * (expo - 100.) + 100.
+    ...     import fipy.tools.array
+    ...     pFunc = 1. + fipy.tools.array.exp(-expo) * (mu / epsilon - 1.)
+    ...
+    ...     phaseFace = phase.getArithmeticFaceValue()
+    ...     phaseSq = phaseFace * phaseFace
+    ...     gradMag = theta.getFaceGrad().getMag()
+    ...     eps = 1. / gamma / 10.
+    ...     gradMag += (gradMag < eps) * eps
+    ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
+    ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
+    ...
+    ...     class NonModularTheta(CellVariable):
+    ...         def __init__(self, modVar):
+    ...             CellVariable.__init__(self, mesh = modVar.getMesh())
+    ...             self.modVar = self._requires(modVar)
+    ...         def _calcValue(self):
+    ...             self.value = self.modVar[:]
+    ...    
+    ...     thetaNoMod = NonModularTheta(theta)
+    ...     thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
+    ...     from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
+    ...     sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = diffusionCoeff)
+    ...
+    ...     transientTerm = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
+    ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    ...     diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff)
+    ...
+    ...     return transientTerm - diffusionTerm - sourceCoeff
 
-    >>> phaseFace = phase.getArithmeticFaceValue()
-    >>> phaseSq = phaseFace * phaseFace
-    >>> gradMag = theta.getFaceGrad().getMag()
-    >>> eps = 1. / gamma / 10.
-    >>> gradMag += (gradMag < eps) * eps
-    >>> IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
-    >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
-
-The source term requires the evaluation of the face gradient without
-the modular operators. Thus a new subclass of `CellVariable` is
-created that uses the value of the `ModularVariable` but does not use
-its operators.
-    
-    >>> class NonModularTheta(CellVariable):
-    ...     def __init__(self, modVar):
-    ...         CellVariable.__init__(self, mesh = modVar.getMesh())
-    ...         self.modVar = self._requires(modVar)
-    ...     def _calcValue(self):
-    ...         self.value = self.modVar[:]
-        
-    >>> thetaNoMod = NonModularTheta(theta)
-    >>> thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
-    >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
-    >>> sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = diffusionCoeff)
-
-    >>> transientTerm = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff)
-
-    >>> thetaEq = transientTerm - diffusionTerm - sourceCoeff
+    >>> thetaEq = buildThetaEquation(phase, theta)
 
 If the example is run interactively, we create viewers for the phase
 and orientation variables. Rather than viewing the raw orientation,
@@ -282,15 +287,15 @@ We save the variables to disk.
     >>> import fipy.tools.dump as dump
     >>> import tempfile
     >>> (f, fileName) = tempfile.mkstemp('.gz')
-    >>> dump.write({'phase' : phase, 'theta' : theta, 'thetaEq' : thetaEq, 'phaseEq' : phaseEq}, fileName)
+    >>> dump.write({'phase' : phase, 'theta' : theta}, fileName)
     
 and then recall them to test the data pickling mechanism
 
     >>> data = dump.read(fileName)
     >>> newPhase = data['phase']
     >>> newTheta = data['theta']
-    >>> newThetaEq = data['thetaEq']
-    >>> newPhaseEq = data['phaseEq']
+    >>> newThetaEq = buildThetaEquation(newPhase, newTheta)
+    >>> newPhaseEq = buildPhaseEquation(newPhase, newTheta)
 
 We clean up the temporary dump file
 
@@ -300,7 +305,7 @@ We clean up the temporary dump file
 
 and finish the iterations,
 
-    >>> for i in range(steps = steps / 2):
+    >>> for i in range(steps / 2):
     ...     newTheta.updateOld()
     ...     newPhase.updateOld()
     ...     newThetaEq.solve(newTheta, dt = timeStepDuration)
@@ -314,12 +319,9 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
-def script():
-    """
-    Return the documentation for this module as a script that can be
-    invoked to initialize other scripts.
-    """
+if __name__ == '__main__':
     import fipy.tests.doctestPlus
-    return fipy.tests.doctestPlus._getScript(__name__)
+    exec(fipy.tests.doctestPlus._getScript())
 
+    raw_input('finished')
 

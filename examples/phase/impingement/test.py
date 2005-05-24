@@ -47,7 +47,6 @@ def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'mesh40x1.input',
             'mesh20x20.input',
-            'restart.input',
         ), base = __name__)
     
 if __name__ == '__main__':
