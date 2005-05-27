@@ -207,7 +207,8 @@ class build_docs (Command):
 					  'TALKS',
 					  'TODOLIST',
 					  'MAIL',
-					  'CVS']
+					  'CVS',
+                                          'EFFICIENCY']
 
 	if self.latex:
 	    if self.apis:
