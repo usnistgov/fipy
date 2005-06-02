@@ -5,16 +5,29 @@ interface can be modeled by an equation for the phase field \( \xi \)
 
 \begin{equation}
     \label{eq:elphf:phase}
-    \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+    \underbrace{
+	\frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+	\vphantom{\sum_{j=1}^{n} C_j}
+    }_{\text{transient}}
     = 
-    \kappa_{\xi}\nabla^2 \xi
+    \underbrace{
+	\kappa_{\xi}\nabla^2 \xi
+	\vphantom{\sum_{j=1}^{n} C_j}
+    }_{\text{diffusion}}
     - 
-    \sum_{j=1}^{n} C_j \left[
-	p'(\xi) \Delta\mu_j^\circ
-	+ g'(\xi) W_j
-    \right]
-    +
-    \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+    \underbrace{
+	\overbrace{
+	    \sum_{j=1}^{n} C_j \left[
+		p'(\xi) \Delta\mu_j^\circ
+		+ g'(\xi) W_j
+	    \right]
+	}^{\text{phase transformation}}
+	+
+	\overbrace{
+	    \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+	    \vphantom{\sum_{j=1}^{n} C_j}
+	}^{\text{dielectric}}
+    }_{\text{source}}
 \end{equation}
 
 a set of diffusion equations for the concentrations \( C_j \), for the substitutional elements
@@ -22,21 +35,35 @@ a set of diffusion equations for the concentrations \( C_j \), for the substitut
 
 \begin{align}
     \label{eq:elphf:substitutional}
-    \frac{\partial C_j}{\partial t}
-    &= D_{j}\nabla^2 C_j \\
-    & \qquad + 
+   \underbrace{
+	\frac{\partial C_j}{\partial t}
+   }_{\text{transient}}
+    &= \underbrace{
+	D_{j}\nabla^2 C_j
+	\vphantom{\frac{\partial C_j}{\partial t}}
+    }_{\text{diffusion}} \\
+    & \qquad + \underbrace{
 	D_{j}\nabla\cdot 
 	\frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
 	\left\{
-	    \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
-	    + 
-	    C_n \left[
-		p'(\xi) \Delta\mu_{jn}^{\circ}
-		+ g'(\xi) W_{jn}
-	    \right] \nabla\xi
-	    +
-	    C_n z_{jn} \nabla \phi
+	    \overbrace{
+		\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+	    }^{\text{counter diffusion}}
+	   + 
+	   \overbrace{ 
+		C_n \left[
+		    p'(\xi) \Delta\mu_{jn}^{\circ}
+		    + g'(\xi) W_{jn}
+		\right] \nabla\xi
+		\vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+	   }^{\text{phase transformation}}
+	   +
+	   \overbrace{
+		C_n z_{jn} \nabla \phi
+		\vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+	   }^{\text{electromigration}}
 	\right\}
+    }_{\text{convection}}
 \end{align}
 
 a diffusion equation for the concentration \( C_{\text{e}^{-}} \) of
@@ -44,27 +71,53 @@ electrons
 
 \begin{equation}
     \label{eq:elphf:interstitial}
-    \frac{\partial C_{\text{e}^{-}}}{\partial t}
-    = D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}} \\
-    + D_{\text{e}^{-}}\nabla\cdot 
+    \underbrace{
+	\frac{\partial C_{\text{e}^{-}}}{\partial t}
+	\vphantom{\left\{
+	    \overbrace{
+		\left[p'(\xi)\right]
+	    }^{\text{phase transformation}}
+	\right\}}
+    }_{\text{transient}}
+    = \underbrace{
+	D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}} 
+	\vphantom{\left\{
+	    \overbrace{
+		\left[p'(\xi)\right]
+	    }^{\text{phase transformation}}
+	\right\}}
+    }_{\text{diffusion}} \\
+    + \underbrace{
+	D_{\text{e}^{-}}\nabla\cdot 
 	C_{\text{e}^{-}}
 	\left\{
-	    \left[
-		p'(\xi) \Delta\mu_{\text{e}^{-}}^{\circ}
-		+ g'(\xi) W_{\text{e}^{-}}
-	    \right] \nabla\xi
+	    \overbrace{
+		\left[
+		    p'(\xi) \Delta\mu_{\text{e}^{-}}^{\circ}
+		    + g'(\xi) W_{\text{e}^{-}}
+		\right] \nabla\xi
+	    }^{\text{phase transformation}}
 	    +
-	    z_{\text{e}^{-}} \nabla \phi
+	    \overbrace{
+		z_{\text{e}^{-}} \nabla \phi
+		\vphantom{\left[p'(\xi)\right]}
+	   }^{\text{electromigration}}
 	\right\}
+    }_{\text{convection}}
 \end{equation}
 
 and Poisson's equation for the electrostatic potential \( \phi \)
 
 \begin{equation}
     \label{eq:elphf:Poisson}
-    \nabla\cdot\left(\epsilon\nabla\phi\right) 
+    \underbrace{
+	\nabla\cdot\left(\epsilon\nabla\phi\right) 
+	\vphantom{\sum_{j=1}^n z_j C_j}
+    }_{\text{diffusion}}
     +
-    \rho
+    \underbrace{
+	\sum_{j=1}^n z_j C_j
+    }_{\text{source}}
     = 0
 \end{equation}
 
@@ -80,9 +133,8 @@ self diffusivity.  \( \Delta\mu_{jn}^{\circ} \), \( W_{jn} \), and \(
 z_{jn} \) are the differences of the respective quantities \(
 \Delta\mu_{j}^{\circ} \), \( W_{j} \), and \( z_{j} \) between
 substitutional species \( j \) and the solvent species \( n \).  The
-total charge is denoted by \( \rho \equiv \sum_{j=1}^n z_j C_j \).
+total charge is denoted by \( \sum_{j=1}^n z_j C_j \).
 
-The module \verb+fipy.models.elphf+ has been developed to solve this
-coupled set of equations.  Although unresolved stiffnesses make the
-full solution intractable in \FiPy{}, we can demonstrate the use of
-various parts of the \verb+elphf+ module.
+Although unresolved stiffnesses make the full solution of this coupled
+set of equations intractable in \FiPy{}, the following examples 
+demonstrate the setup and solution of various parts.
