@@ -83,7 +83,7 @@ include:
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
-.. _Mayavi:                 http://www.msel.nist.gov/
+.. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 
 .. |citeMoffat| replace:: |htmlMoffat| |latexMoffat|
 
