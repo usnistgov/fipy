@@ -47,11 +47,14 @@ A simple 1D example to test the setup of the phase field equation.
 
    We rearrange Eq.~\eqref{eq:elphf:phase} to
    
-   \begin{equation*}
+   \begin{align*}
        \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
-       = 
+       &= 
        \kappa_{\xi}\nabla^2 \xi
-       - 
+       +
+       \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+       \\
+       &\qquad - 
        \left[
            p'(\xi) \Delta\mu_n^\circ
            + g'(\xi) W_n
@@ -66,9 +69,7 @@ A simple 1D example to test the setup of the phase field equation.
            p'(\xi) \Delta\mu_{\text{e}^{-}}^\circ
            + g'(\xi) W_{\text{e}^{-}}
        \right]
-       +
-       \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
-   \end{equation*}
+   \end{align*}
 
 The single-component phase field governing equation can be represented as
 
@@ -106,7 +107,8 @@ Although we are not interested in them for this problem, we create one field to 
 
     >>> class ComponentVariable(CellVariable):
     ...     def copy(self):
-    ...         new = self.__class__(mesh = self.getMesh(), name = self.getName(), value = self.getValue())
+    ...         new = self.__class__(mesh = self.getMesh(), name = self.getName(), 
+    ...                              value = self.getValue())
     ...         new.standardPotential = self.standardPotential
     ...         new.barrier = self.barrier
     ...         return new

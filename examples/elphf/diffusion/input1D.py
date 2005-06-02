@@ -92,7 +92,8 @@ One component in this ternary system will be designated the "solvent"
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., barrier = 0., diffusivity = None, valence = 0, equation = None):
+    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
+    ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
     ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
     ...         self.standardPotential = standardPotential
     ...         self.barrier = barrier
@@ -167,11 +168,14 @@ We create one diffusion equation for each substitutional component
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
     ...     counterDiffusion = CkSum.getFaceGrad()
-    ...     phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() * phase.getFaceGrad()
+    ...     phaseTransformation = \
+    ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
+    ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() \
+    ...             * phase.getFaceGrad()
     ...     electromigration = Cj.valence * potential.getFaceGrad()
-    ...     convectionCoeff = counterDiffusion + \
-    ...         solvent.getHarmonicFaceValue().transpose() * (phaseTransformation + electromigration)
+    ...     convectionCoeff = counterDiffusion \
+    ...         + solvent.getHarmonicFaceValue().transpose() \
+    ...             * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum).transpose())
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)

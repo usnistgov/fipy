@@ -49,14 +49,11 @@ def _suite():
             'diffusion.input1D',
             'diffusion.input1Ddimensional',
             'diffusion.input2D',
-            'diffusion.input2Dcorner',
             'phase.input1D',
             'phaseDiffusion.input1Dbinary',
             'phaseDiffusion.input1Dquaternary',
             'phaseDiffusion.input1DternaryAndElectrons',
-            'poisson.input1DallCharge',
-            'poisson.input1DleftCharge',
-            'poisson.input1DrightCharge'
+            'poisson.input',
         ), base = __name__)
     
 if __name__ == '__main__':

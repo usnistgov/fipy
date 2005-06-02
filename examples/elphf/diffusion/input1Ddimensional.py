@@ -118,8 +118,9 @@ Now, we iterate the problem to equilibrium, plotting as we go
     ...         field.updateOld()
     ...     for field in fields['substitutionals']:
     ...         field.equation.solve(var = field, 
-    ...                              dt = 10000, # (scaling doesn't work) parameters['time step duration'],
+    ...                              dt = 10000, 
     ...                              solver = solver)
+    ...         # dt (scaling doesn't work) parameters['time step duration'],
     ...     if __name__ == '__main__':
     ...         viewer.plot()
 
