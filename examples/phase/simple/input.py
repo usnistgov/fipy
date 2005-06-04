@@ -55,7 +55,7 @@ boundary conditions such that,
 
    \begin{equation}
    \frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
-   + \kappa_\phi \nabla^2\phi
+   \kappa_\phi \nabla^2\phi
    - \frac{\partial f}{\partial \phi}
    \label{eq-phase:simple}
    \end{equation}
