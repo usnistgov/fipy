@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 4/6/05 {5:23:01 PM} 
+ #                                last update: 6/3/05 {12:01:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,7 +63,7 @@ Take the tangent of an array.
    >>> tan(Numeric.array((0,0,0)))
    [ 0., 0., 0.,]
    
-This module is building towards a `'Numerix'` module that will be the
+This module is building towards a '`Numerix`' module that will be the
 only place in the code where `Numeric` is imported.
 
 """

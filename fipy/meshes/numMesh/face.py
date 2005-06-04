@@ -43,14 +43,15 @@
 __docformat__ = 'restructuredtext'
 
 class Face:
-    """`Face` within a`Mesh`
+    """`Face` within a `Mesh`
 
     `Face` objects are bounded by `Vertex` objects. 
     `Face` objects separate `Cell` objects.
     """
     
     def __init__(self, mesh, id):
-	"""`Face` is initialized by `Mesh`
+	"""
+	`Face` is initialized by `Mesh`
 	
 	:Parameters:
 	    

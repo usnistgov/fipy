@@ -49,6 +49,8 @@ class AdaptiveIterator(Iterator):
     """
     def __init__(self,equations,timeStepDuration = None,viewers = ()):
 	"""
+	Create an `AdaptiveIterator`
+	
 	:Parameters:
 	    
 	  - `equations`: `list` or `tuple` of `Equation` objects to iterate over
