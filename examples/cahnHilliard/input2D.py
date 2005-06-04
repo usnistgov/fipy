@@ -42,28 +42,29 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example solves the Cahn-Hilliard equation given by:
 
 .. raw:: latex
 
-    $$ \\frac{\\partial \\phi}{\\partial t} = \\nabla \\cdot D \\nabla
-    \\left( \\frac{\\partial f}{\\partial \\phi} - \\epsilon^2
-    \\nabla^2 \\phi \\right) $$
+    $$ \frac{\partial \phi}{\partial t} = \nabla \cdot D \nabla
+    \left( \frac{\partial f}{\partial \phi} - \epsilon^2
+    \nabla^2 \phi \right) $$
 
 where the free energy functional is given by,
 
 .. raw:: latex
 
-    $$ f = \\frac{a^2}{2} \\phi^2 (1 - \\phi)^2 $$
+    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2 $$
 
 The equation is transformed into
 the following form,
 
 .. raw:: latex
 
-    $$ \\frac{\\partial \\phi}{\\partial t} = \\nabla \\cdot D \\frac{\\partial^2 f}{\\partial \\phi^2} \\nabla \\phi - \\nabla \\cdot D \\nabla \\epsilon^2 \\nabla^2 \\phi $$
+    $$ \frac{\partial \phi}{\partial t} 
+    = \nabla \cdot D \frac{\partial^2 f}{\partial \phi^2} \nabla \phi - \nabla \cdot D \nabla \epsilon^2 \nabla^2 \  phi $$
 
 This form of the equation allows the `CahnHilliardEquation` to be
 constructed from a transient term, a diffusion term, and a fourth
@@ -72,7 +73,7 @@ diffusion term does not always remain positive since,
 
 .. raw:: latex
 
-    $$ \\frac{\\partial^2 f}{\\partial \\phi^2} = a^2 (1 - 6 \\phi (1 - \\phi)) $$
+    $$ \frac{\partial^2 f}{\partial \phi^2} = a^2 (1 - 6 \phi (1 - \phi)) $$
 
 can be less than zero and thus unstable. The fourth order diffusion
 term acts to stabilize the problem.
@@ -154,7 +155,7 @@ for step in range(steps):
     if __name__ == '__main__':
         viewer.plot()
         print 'step',step,'dt',dt
-
+	
 def run():
     pass
             
