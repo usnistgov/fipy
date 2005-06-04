@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 7/28/04 {11:18:34 AM} 
- #                                last update: 4/1/05 {2:47:18 PM} 
+ #                                last update: 6/3/05 {4:24:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,10 +50,8 @@ def _suite():
             'diffusion.input1Ddimensional',
             'diffusion.input2D',
             'phase.input1D',
-            'phaseDiffusion.input1Dbinary',
-            'phaseDiffusion.input1Dquaternary',
-            'phaseDiffusion.input1DternaryAndElectrons',
-            'poisson.input',
+            'phaseDiffusion.input1D',
+            'poisson.input1D',
         ), base = __name__)
     
 if __name__ == '__main__':
