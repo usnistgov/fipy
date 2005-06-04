@@ -51,7 +51,8 @@ import Numeric
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
-MeshExportError = "MeshExportError"
+class MeshExportError(Exception):
+    pass
 
 def _getElementType(vertices, dimensions):
     if(vertices == 3 and dimensions == 2):
