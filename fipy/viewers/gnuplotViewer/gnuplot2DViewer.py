@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/5/05 {5:32:48 PM} { 2:45:36 PM}
+ #                                last update: 6/3/05 {12:11:23 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,11 +82,8 @@ class Gnuplot2DViewer(_GnuplotViewer):
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.  A 1D
-            Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer will also
-            use `'ymin'` and `'ymax'`, and so on.  All viewers will use
-            `'datamin'` and `'datamax'`.  Any limit set to a (default) value of
-            `None` will autoscale.
+            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+            a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
 
         """

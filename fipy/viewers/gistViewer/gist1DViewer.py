@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 4/5/05 {5:34:27 PM} 
+ #                                last update: 6/3/05 {1:04:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,10 +67,7 @@ class Gist1DViewer(_GistViewer):
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.  A 1D
-            Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer will also
-            use `'ymin'` and `'ymax'`, and so on.  All viewers will use
-            `'datamin'` and `'datamax'`.  Any limit set to a (default) value of
+            `'datamin'`, `'datamax'`. Any limit set to a (default) value of
             `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
           - `xlog`: set `True` to give logarithmic scaling of the x axis
