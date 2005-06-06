@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {8:04:11 PM} 
+ #                                last update: 6/6/05 {11:59:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -119,7 +119,7 @@ If we are running interactively, we'll want a viewer to see the results
     ...     viewer.plot()
     ...     raw_input("Initial condition. Press <return> to proceed...")
 
-.. image:: images/examples/phase/simple/step.pdf
+.. image:: examples/phase/simple/step.pdf
    :scale: 50
    :align: center
 
@@ -203,7 +203,7 @@ we obtain the surprising result that |phase| is zero everywhere.
     >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     0
 
-.. image:: images/examples/phase/simple/explicit.pdf
+.. image:: examples/phase/simple/explicit.pdf
    :scale: 50
    :align: center
 
@@ -245,7 +245,7 @@ transient term from
     >>> if __name__ == '__main__':
     ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
 
-.. image:: images/examples/phase/simple/relaxation.pdf
+.. image:: examples/phase/simple/relaxation.pdf
    :scale: 50
    :align: center
 
