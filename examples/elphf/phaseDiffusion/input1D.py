@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/3/05 {4:14:30 PM} 
+ #                                last update: 6/6/05 {4:32:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -225,12 +225,10 @@ If running interactively, we create viewers to display the results
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...
-    ...     phaseViewer = fipy.viewers.make(vars = phase)
-    ...     concViewer = fipy.viewers.make(vars = [solvent] + substitutionals \
+    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
     ...                                           + interstitials,
     ...                                   limits = {'datamin': 0, 'datamax': 1})
-    ...     phaseViewer.plot()
-    ...     concViewer.plot()
+    ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
 iterating to equilibrium
@@ -248,8 +246,11 @@ iterating to equilibrium
     ...                              dt = dt,
     ...                              solver = solver)
     ...     if __name__ == '__main__':    
-    ...         phaseViewer.plot()
-    ...         concViewer.plot()
+    ...         viewer.plot()
+
+.. image:: examples/elphf/phaseDiffusion/binary.pdf
+   :scale: 50
+   :align: center
 
 we confirm that the far-field phases have remained separated
 
@@ -295,13 +296,13 @@ These thermodynamic parameters are chosen to give a solid phase rich in the
 solvent and the first substitutional component and a liquid phase rich in
 the remaining two substitutional species.
 
-Again, if we're running interactively, we create a viewer for the concentration fields
+Again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     concViewer = fipy.viewers.make(vars = [solvent] + substitutionals \
+    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
     ...                                           + interstitials,
     ...                                   limits = {'datamin': 0, 'datamax': 1})
-    ...     concViewer.plot()
+    ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
 
@@ -336,8 +337,11 @@ and again iterate to equilibrium
     ...                              dt = dt,
     ...                              solver = solver)
     ...     if __name__ == '__main__':    
-    ...         phaseViewer.plot()
-    ...         concViewer.plot()
+    ...         viewer.plot()
+
+.. image:: examples/elphf/phaseDiffusion/quaternary.pdf
+   :scale: 50
+   :align: center
 
 We confirm that the far-field phases have remained separated
 
@@ -345,7 +349,7 @@ We confirm that the far-field phases have remained separated
     >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
-and that the concentration fields have appropriately segregated into into
+and that the concentration fields have appropriately segregated into 
 their respective phases
 
     >>> ends = Numeric.take(substitutionals[0], (0,-1))
@@ -392,13 +396,13 @@ and one interstitial
 These thermodynamic parameters are chosen to give a solid phase rich in interstitials
 and the solvent and a liquid phase rich in the two substitutional species.
 
-Again, if we're running interactively, we create a viewer for the concentration fields
+Once again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     concViewer = fipy.viewers.make(vars = [solvent] + substitutionals \
+    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
     ...                                           + interstitials,
     ...                                   limits = {'datamin': 0, 'datamax': 1})
-    ...     concViewer.plot()
+    ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
 
@@ -443,8 +447,11 @@ and again iterate to equilibrium
     ...                              dt = dt,
     ...                              solver = solver)
     ...     if __name__ == '__main__':    
-    ...         phaseViewer.plot()
-    ...         concViewer.plot()
+    ...         viewer.plot()
+
+.. image:: examples/elphf/phaseDiffusion/ternaryAndElectrons.pdf
+   :scale: 50
+   :align: center
 
 We once more confirm that the far-field phases have remained separated
 
@@ -452,7 +459,7 @@ We once more confirm that the far-field phases have remained separated
     >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
-and that the concentration fields have appropriately segregated into into
+and that the concentration fields have appropriately segregated into 
 their respective phases
 
     >>> ends = Numeric.take(interstitials[0], (0,-1))
