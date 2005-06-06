@@ -6,7 +6,7 @@
  # 
  #  FILE: "adaptiveIterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 4/4/05 {2:21:25 PM} 
+ #                                last update: 6/4/05 {9:03:11 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.iterators.iterator import Iterator
 from fipy.iterators.iterator import ConvergenceError
 
@@ -49,8 +51,6 @@ class AdaptiveIterator(Iterator):
     """
     def __init__(self,equations,timeStepDuration = None,viewers = ()):
 	"""
-	Create an `AdaptiveIterator`
-	
 	:Parameters:
 	    
 	  - `equations`: `list` or `tuple` of `Equation` objects to iterate over
