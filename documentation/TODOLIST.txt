@@ -2,25 +2,20 @@
 Future Work
 -----------
 
-Release Goals 1.0a2
+Release Goals 1.0a3
 -------------------
 
 - Documentation:
 
   * Review all for accuracy/consistency.
   * Include some examples on the web page.
-  * Include some pictures of simulations in the documentation.
-  * Efficiency and --inline discussion.
-
-- Functionality
-
-  * matplotlib viewer
+  * Add more figures to examples
 
 - Distribution
 
   * Install and test with no write permissions.
 
-Release Goals 1.0
+Release Goals 1.1
 -----------------
 
 - Distribution
@@ -31,10 +26,6 @@ Release Goals 1.0
     - cfd online
     - scipy links
    
-- Functionality:
-
-  * Better ``__repr__`` for FiPy objects.
-
 - Refactoring:
 
   * Reduce memory requirements
