@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/10/05 {9:39:37 AM} 
+ #                                last update: 6/7/05 {9:42:29 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -212,14 +212,18 @@ We verify that the correct equilibrium solution is attained
     1
     
 
-If we are running interactively, we will want to see the results
+If we are running interactively, we plot the error
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     from fipy.variables.cellVariable import CellVariable
     ...     viewer = fipy.viewers.make(vars = (phase - \
-    ...         CellVariable(mesh = mesh, value = analyticalArray),))
+    ...         CellVariable(name = "analytical", mesh = mesh, value = analyticalArray),))
     ...     viewer.plot()
+    
+.. image:: examples/elphf/phase/error.pdf
+   :scale: 50
+   :align: center
 """
 __docformat__ = 'restructuredtext'
 

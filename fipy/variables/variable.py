@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/6/05 {3:47:42 PM} 
+ #                                last update: 6/7/05 {10:01:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -353,10 +353,16 @@ class Variable:
 		self.op = op
 		self.var = var
 		parentClass.__init__(self, value = var[0], mesh = mesh)
+                self.name = ''
 		for aVar in self.var:
 		    self._requires(aVar)
 		    
-	    def __repr__(self):
+	    def _getRepresentation(self, style = "__repr__"):
+                """
+                :Parameters:
+                    
+                  - `style`: one of `'__repr__'`, `'name'`, `'TeX'`
+                """                
                 import opcode
                 
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
@@ -393,7 +399,14 @@ class Variable:
 		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
 			stack.append(self.op.func_code.co_names[_getIndex()])
 		    elif opcode.opname[bytecode] == 'LOAD_FAST':
-			stack.append(repr(self.var[_getIndex()]))
+                        if style == "__repr__":
+                            stack.append(repr(self.var[_getIndex()]))
+                        elif style == "name":
+                            stack.append(self.var[_getIndex()].getName())
+                        elif style == "TeX":
+                            raise Exception, "TeX style not yet implemented"
+                        else:
+                            raise SyntaxError, "Unknown style: %s" % style
 		    elif opcode.opname[bytecode] == 'CALL_FUNCTION':
 			args = []
 			for j in range(bytecodes.pop(1)):
@@ -413,6 +426,15 @@ class Variable:
 		    else:
 			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`)
 
+            def __repr__(self):
+                return self._getRepresentation()
+                
+            def getName(self):
+                name = parentClass.getName(self)
+                if len(name) == 0:
+                    name = self._getRepresentation(style = "name")
+                return name
+                
 	    def copy(self):
 	       return self.__class__(
 		   op = self.op,
