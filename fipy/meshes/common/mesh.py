@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/21/05 {4:45:11 PM} 
+ #                                last update: 6/7/05 {4:27:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -155,8 +155,10 @@ class Mesh:
         `Mesh` concatenation is not limited to 2D meshes
         
             >>> from fipy.meshes.grid3D import Grid3D
-            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 2, ny = 2, nz = 2)
-            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 1, ny = 1, nz = 1)
+            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+            ...                         nx = 2, ny = 2, nz = 2)
+            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+            ...                           nx = 1, ny = 1, nz = 1)
             >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + (2, 0, 0))
             >>> threeDAddedMesh.getCellCenters()
             [[ 0.5, 0.5, 0.5,]

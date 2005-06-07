@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/3/05 {12:31:41 AM} 
+ #                                last update: 6/7/05 {4:26:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,7 +83,8 @@ class AdaptiveMesh2D(GmshImporter2D):
        
        >>> from fipy.variables.cellVariable import CellVariable
        >>> var = CellVariable(mesh = baseMesh, 
-       ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), axis = 1)), 
+       ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), 
+       ...                                               axis = 1)), 
        ...     name = "characteristic lengths")
 
     Since the value of `var` is smaller in the upper right hand corner, the mesh
