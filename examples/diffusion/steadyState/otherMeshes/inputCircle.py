@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/7/05 {4:33:07 PM} { 5:14:21 PM}
+ #                                last update: 6/7/05 {1:01:35 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -140,7 +140,7 @@ Display the results if run as a script.
    ...     fipy.viewers.make(vars = var,
    ...         limits = {'datamin': -1.0, 'datamax': 1.0}).plot()
 
-.. image:: inputCircle.pdf
+.. image:: examples/diffusion/steadyState/otherMeshes/inputCircle.pdf
    :scale: 50
    :align: center
 

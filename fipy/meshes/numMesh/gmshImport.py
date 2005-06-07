@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 4/3/05 {12:26:33 AM}
+ #                                last update: 6/7/05 {1:22:02 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -78,13 +78,13 @@ non-orthogonality. The results are shown below.
 
 Results for 20x20 mesh:
 
-.. image:: images/orthoerrorgraph.pdf
+.. image:: fipy/meshes/numMesh/orthoerrorgraph.pdf
    :height: 100
    :width: 200
 
 Results for 10x10 mesh:
 
-.. image:: images/orthoerrorcoarsegraph.pdf
+.. image:: fipy/meshes/numMesh/orthoerrorcoarsegraph.pdf
 
 It is clear from the graphs that finer meshes decrease the error due
 to non-orthogonality, and that even with a reasonably coarse mesh the
