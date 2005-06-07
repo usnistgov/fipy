@@ -346,6 +346,11 @@ have no failures.
    or::
 
        $ export PYTHONPATH=.:${PYTHONPATH}
+       
+.. note::
+
+   The tests `examples.diffusion.nthOrder.input4thOrder-line` and
+   `examples.elphf.diffusion.input1Ddimensional` are expected to fail.
 
 -----------------
 Installing |FiPy|
