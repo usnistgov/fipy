@@ -48,7 +48,7 @@ signficant ones are:
   objects. ``Term`` objects can be added, subtracted, and equated to build up 
   an equation.
 
-- A true 1D grid class has been added: ``fipy.meshes.grid1D.Grid1D`.
+- A true 1D grid class has been added: ``fipy.meshes.grid1D.Grid1D``.
 
 - A generic "factory" method ``fipy.viewers.make()`` has been added that will 
   do a reasonable job of automatically creating a ``Viewer`` for the supplied 
@@ -78,7 +78,7 @@ signficant ones are:
 
      from fipy import Class
 
-  instead of
+  instead of::
 
      from fipy.some.deeply.nested.module import Class
 
