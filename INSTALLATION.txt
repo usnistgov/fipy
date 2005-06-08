@@ -179,27 +179,6 @@ from the list below.  If more than one is installed, specify a viewer
 by setting the FIPY_VIEWER environment variable to either 'gist',
 'gnuplot' or 'matplotlib'.
 
-Pygist
-------
-
-http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
-
-The Pygist_ package can be used to display simulation results. It
-displays both 1D X-Y type plots and 2D contour plots for both
-structured and unstructured data. It does not display 3D
-data. Although stated as working on Windows, it does not seem to do a
-good job of rendering on this platform. Pygist_ works fine on other
-common platforms. Don't use Pygist_ if you wish to produce hard
-copies, as this facility doesn't work.
-
-.. note::
-
-   If you experience difficulty building the native Pygist_ viewer on `Mac OS
-   X`_, you may wish to to build the package with the ``--x11`` option
-   described in its documentation.
-
-.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
-
 Matplotlib
 ----------
 
@@ -232,12 +211,34 @@ Matplotlib_ is preferable.
 .. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
 .. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
 
+Pygist
+------
+
+http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
+The Pygist_ package can be used to display simulation results. It
+displays both 1D X-Y type plots and 2D contour plots for both
+structured and unstructured data. It does not display 3D
+data. Although stated as working on Windows, it does not seem to do a
+good job of rendering on this platform. Pygist_ works fine on other
+common platforms. Don't use Pygist_ if you wish to produce hard
+copies, as this facility doesn't work.
+
+.. note::
+
+   If you experience difficulty building the native Pygist_ viewer on `Mac OS
+   X`_, you may wish to to build the package with the ``--x11`` option
+   described in its documentation.
+
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+
+
 Recommended Packages
 ====================
 
 .. note::
 
-   These packages are not required to run |FiPy|, but they can be helpful.
+   The following packages are not required to run |FiPy|, but they can be helpful.
 
 SciPy
 -----
@@ -356,7 +357,8 @@ have no failures.
 Installing |FiPy|
 -----------------
 
-Once you are confident that all of the requisite packages have been
+It is not necessary to formally install |FiPy|, but if you wish to do so
+and you are confident that all of the requisite packages have been
 installed properly and |FiPy| passes its tests, you can install it by
 typing::
 
@@ -382,20 +384,19 @@ Using |FiPy|
 ------------
 
 To see examples of problems that |FiPy| is capable of solving, you can
-run any of the scripts in |examples/|. All should have appropriate
-executable permissions, allowing you to type, *e.g.*::
+run any of the scripts in |examples/|. You to type, *e.g.*::
 
-    $ examples/diffusion/steadyState/mesh1D/input.py
+    $ python examples/diffusion/steadyState/mesh1D/input.py
 
 at the command line, which should produce a graphical display of the
 solution. 
 
 With judicious use of the weave_ package, we have been able to obtain
-significantly improved performance, while keeping the code as clear as
+significantly improved performance for some problems, while keeping the code as clear as
 possible.  You can invoke this faster code by passing the ``--inline``
 option at the command line, *i.e.*::
 
-    $ examples/diffusion/steadyState/mesh1D/input.py --inline
+    $ python examples/diffusion/steadyState/mesh1D/input.py --inline
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
