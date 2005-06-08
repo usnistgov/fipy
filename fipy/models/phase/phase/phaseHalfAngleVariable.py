@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 6/6/05 {12:26:12 PM}
+ #                                last update: 6/8/05 {3:53:49 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,7 +71,7 @@ class _PhaseHalfAngleVariable(FaceVariable):
         self.value = array.tan(z / 2.)
 
     def _calcValueInline(self):
-        dphi = Numeric.zeros((self.getMesh().getNumberOfCells(), self.getMesh().getDim()),'d')
+        dphi = Numeric.zeros((self.getMesh()._getNumberOfFaces(), self.getMesh().getDim()),'d')
         dphi[:,0] = self.phase.getFaceGrad().getNumericValue()[:,0]
         if self.getMesh().getDim() > 1:
             dphi[:,1] = self.phase.getFaceGrad().getNumericValue()[:,1]
