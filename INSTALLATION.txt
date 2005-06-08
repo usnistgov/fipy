@@ -349,8 +349,8 @@ have no failures.
        
 .. note::
 
-   The tests `examples.diffusion.nthOrder.input4thOrder-line` and
-   `examples.elphf.diffusion.input1Ddimensional` are expected to fail.
+   The tests ``examples.diffusion.nthOrder.input4thOrder-line`` and
+   ``examples.elphf.diffusion.input1Ddimensional`` are expected to fail.
 
 -----------------
 Installing |FiPy|

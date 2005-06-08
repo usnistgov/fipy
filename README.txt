@@ -44,23 +44,52 @@ What's new in version 1.0
 Numerous changes have been made since |FiPy| 0.1 was released, but the most 
 signficant ones are:
 
-- `Equation` objects no longer exist. PDEs are constructed from `Term` 
-  objects. `Term` objects can be added, subtracted, and equated to build up 
+- ``Equation`` objects no longer exist. PDEs are constructed from ``Term`` 
+  objects. ``Term`` objects can be added, subtracted, and equated to build up 
   an equation.
 
-- A true 1D grid class has been added: `fipy.meshes.grid1D.Grid1D`.
+- A true 1D grid class has been added: ``fipy.meshes.grid1D.Grid1D`.
 
-- A generic "factory" method `fipy.viewers.make()` has been added that will 
-  do a reasonable job of automatically creating a `Viewer` for the supplied 
-  `Variable` objects.
+- A generic "factory" method ``fipy.viewers.make()`` has been added that will 
+  do a reasonable job of automatically creating a ``Viewer`` for the supplied 
+  ``Variable`` objects. The ``FIPY_VIEWER`` environment variable allows you to 
+  specify your preferred viewer.
 
-- A simple `TSVViewer` has been added to allow display or export to a file of 
+- A simple ``TSVViewer`` has been added to allow display or export to a file of 
   your solution data.
+
+- Better examples.
+
+- A new viewer based on `matplotlib`_ has been added.
+
+- The `PyX` viewer has been removed.
+
+- Considerably simplified the public interface to FiPy.
+
+- Support for Python 2.4.
+
+- Improved layout of the manuals.
+
+- ``getLaplacian()`` method has been removed from ``CellVariable`` objects.
+  Instead, use ``getFaceGrad().getDivergence()``, which provides better 
+  control.
+
+- An ``import`` shorthand has been added that allows for::
+
+     from fipy import Class
+
+  instead of
+
+     from fipy.some.deeply.nested.module import Class
+
+  This system is still experimental. Please tell us if you find situations
+  that don't work.
 
 The syntax of |FiPy| 1.0 scripts is incompatible with earlier releases.  A 
 tutorial for updating your existing scripts can be found in 
 |examples/update0_1to1_0.py|.
 
+.. _matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
 
 -------------------------
 Download and Installation
