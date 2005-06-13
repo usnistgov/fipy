@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/6/05 {4:32:13 PM} 
+ #                                last update: 6/13/05 {3:25:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,8 +42,9 @@
 
 r"""
 
-    >>> import examples.diffusion.steadyState.mesh1D.input
-    >>> exec(examples.diffusion.steadyState.mesh1D.input.script())
+    >>> import fipy.tests.doctestPlus
+    >>> import examples.diffusion.steadyState.mesh1D.input as inputFixedBCs
+    >>> exec(fipy.tests.doctestPlus._getScript(inputFixedBCs.__name__))
     
 One can then solve the same problem as in
 `examples/diffusion/steadyState/mesh1D/input.py` but with periodic

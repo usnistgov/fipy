@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:28:25 PM} 
+ #                                last update: 6/13/05 {3:25:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -201,14 +201,6 @@ mixture of plain scripts and doctest documentation/tests.
 """
 
 __docformat__ = 'restructuredtext'
-
-def script():
-    """
-    Return the documentation for this module as a script that can be
-    invoked to initialize other scripts.
-    """
-    import fipy.tests.doctestPlus
-    return fipy.tests.doctestPlus._getScript(__name__)
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
