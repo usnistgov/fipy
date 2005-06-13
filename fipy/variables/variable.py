@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/7/05 {10:01:30 AM} 
+ #                                last update: 6/13/05 {5:16:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -367,7 +367,7 @@ class Variable:
                 
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
 		
-		def _getIndex():
+		def _popIndex():
 		    return bytecodes.pop(0) + bytecodes.pop(0) * 256
 		
 		stack = []
@@ -391,18 +391,22 @@ class Variable:
 		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
 			return stack.pop()
                     elif opcode.opname[bytecode] == 'LOAD_CONST':
-                        stack.append(self.op.func_code.co_consts[_getIndex()])
+                        stack.append(self.op.func_code.co_consts[_popIndex()])
 		    elif opcode.opname[bytecode] == 'LOAD_ATTR':
-			stack.append(stack.pop() + "." + self.op.func_code.co_names[_getIndex()])
+			stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
 		    elif opcode.opname[bytecode] == 'COMPARE_OP':
-			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_getIndex()] + " " + stack.pop())
+			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
 		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
-			stack.append(self.op.func_code.co_names[_getIndex()])
+			stack.append(self.op.func_code.co_names[_popIndex()])
 		    elif opcode.opname[bytecode] == 'LOAD_FAST':
                         if style == "__repr__":
-                            stack.append(repr(self.var[_getIndex()]))
+                            stack.append(repr(self.var[_popIndex()]))
                         elif style == "name":
-                            stack.append(self.var[_getIndex()].getName())
+                            v = self.var[_popIndex()]
+                            if isinstance(v, Variable):
+                                stack.append(v.getName())
+                            else:
+                                stack.append(repr(v))
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
                         else:
@@ -418,7 +422,7 @@ class Variable:
 			stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                     elif opcode.opname[bytecode] == 'LOAD_DEREF':
                         free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
-                        stack.append(free[_getIndex()])
+                        stack.append(free[_popIndex()])
 		    elif unop.has_key(bytecode):
 			stack.append(unop[bytecode] + stack.pop())
 		    elif binop.has_key(bytecode):
