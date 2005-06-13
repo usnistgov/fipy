@@ -53,12 +53,11 @@ r"""
 
 To run this example from the base fipy directory type::
     
-    $ examples/diffusion/steadyState/mesh1D/input.py
+    $ examples/levelSet/electroChem/input.py --numberOfElements=10000 --numberOfSteps=1000
 
 .. raw:: latex
 
-    at the command line. The simulation took about 5 minutes on a
-    computer with a 2GHz Athlon CPU. The results of the simulation
+    at the command line. The results of the simulation
 
 will be displayed and the word `finished` in the terminal at the
 end of the simulation. The Gist package is required to view the

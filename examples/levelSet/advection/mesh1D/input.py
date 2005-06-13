@@ -104,7 +104,7 @@ The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
    ...     import fipy.viewers
-   ...     viewer = fipy.viewer.make(vars = var,
+   ...     viewer = fipy.viewers.make(vars = var,
    ...         limits = {'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
