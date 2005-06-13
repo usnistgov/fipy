@@ -4,7 +4,7 @@
  # 
  #  FILE: "includedLaTeXWriter.py"
  #                                    created: 9/29/04 {11:38:07 AM} 
- #                                last update: 3/17/05 {11:56:23 AM} 
+ #                                last update: 6/13/05 {2:36:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@
  ##
 
 from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
-from docutils import languages
+from docutils import languages, nodes
 
 class NotStupidLaTeXTranslator(LaTeXTranslator):
     import re
@@ -67,24 +67,61 @@ class NotStupidLaTeXTranslator(LaTeXTranslator):
 	    href = externalMatch.group(1)
 	    
 	self.body.append('\\href{%s}{' % href)
+        
+    def visit_image(self, node):
+        """
+        reST isn't smart enough to direct different output formats to use different 
+        image file extensions: http://thread.gmane.org/gmane.text.docutils.user/1239
+        
+        For LaTeX output, we just strip off the file appendage, as the graphicx 
+        package is smart enough.
+        """
+        attrs = node.attributes
+        # Add image URI to dependency list, assuming that it's
+        # referring to a local file.
+        self.settings.record_dependencies.add(attrs['uri'])
+        import os
+        imageURI = os.path.splitext(attrs['uri'])[0]
+        print attrs['uri'], imageURI
+        pre = []                        # in reverse order
+        post = ['\\includegraphics{%s}' % imageURI]
+        inline = isinstance(node.parent, nodes.TextElement)
+        if attrs.has_key('scale'):
+            # Could also be done with ``scale`` option to
+            # ``\includegraphics``; doing it this way for consistency.
+            pre.append('\\scalebox{%f}{' % (attrs['scale'] / 100.0,))
+            post.append('}')
+        if attrs.has_key('align'):
+            align_prepost = {
+                # By default latex aligns the top of an image.
+                (1, 'top'): ('', ''),
+                (1, 'middle'): ('\\raisebox{-0.5\\height}{', '}'),
+                (1, 'bottom'): ('\\raisebox{-\\height}{', '}'),
+                (0, 'center'): ('{\\hfill', '\\hfill}'),
+                # These 2 don't exactly do the right thing.  The image should
+                # be floated alongside the paragraph.  See
+                # http://www.w3.org/TR/html4/struct/objects.html#adef-align-IMG
+                (0, 'left'): ('{', '\\hfill}'),
+                (0, 'right'): ('{\\hfill', '}'),}
+            try:
+                pre.append(align_prepost[inline, attrs['align']][0])
+                post.append(align_prepost[inline, attrs['align']][1])
+            except KeyError:
+                pass                    # XXX complain here?
+        if not inline:
+            pre.append('\n')
+            post.append('\n')
+        pre.reverse()
+        self.body.extend(pre + post)
+
 
 class IncludedLaTeXWriter(LaTeXWriter):
-    def write(self, document, destination):
-	self.document = document
-	self.language = languages.get_language(
-	    document.settings.language_code)
-	self.destination = destination
-	self.translate()
-	output = self.destination.write(''.join(self.body))
-	return output
-	
+    def __init__(self):
+        LaTeXWriter.__init__(self)
+        self.translator_class = NotStupidLaTeXTranslator
+
     def translate(self):
-	visitor = NotStupidLaTeXTranslator(self.document)
-	self.document.walkabout(visitor)
-	self.output = visitor.astext()
-	self.head_prefix = visitor.head_prefix
-	self.head = visitor.head
-	self.body_prefix = visitor.body_prefix
-	self.body = visitor.body
-	self.body_suffix = visitor.body_suffix
+        LaTeXWriter.translate(self)
+        self.output = ''.join(self.body)
+
 
