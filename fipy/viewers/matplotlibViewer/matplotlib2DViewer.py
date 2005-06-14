@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/04 {10:15:25 AM} { 2:45:36 PM}
+ #                                last update: 6/14/05 {3:41:01 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,11 +73,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.  A 1D
-            Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer will also
-            use `'ymin'` and `'ymax'`, and so on.  All viewers will use
-            `'datamin'` and `'datamax'`.  Any limit set to a (default) value of
-            `None` will autoscale.
+            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+            a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
 
         """
