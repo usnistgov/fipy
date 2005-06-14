@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 3/15/05 {10:57:54 AM} 
+ #                                last update: 6/3/05 {12:12:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -155,7 +155,9 @@ class TSVViewer(_Viewer):
             if isinstance(var, VectorCellVariable):
                 values = Numeric.concatenate((values, Numeric.array(var)), 1)
             else:
-                values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
+# 		this is brute force. Fix later
+#                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
+                values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
         
         for index in range(values.shape[0]):
             lineValues = values[index]
