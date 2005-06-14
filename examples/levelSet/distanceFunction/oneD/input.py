@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:53:22 PM} { 1:23:41 PM}
+ #                                last update: 6/13/05 {4:39:51 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,7 +73,8 @@ Construct the mesh.
 
 Construct a `distanceVariable` object.
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+   ...     import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
    ...                        value = (1,1,1,1,1,-1,-1,-1,-1,-1))
@@ -82,9 +83,9 @@ Construct a `distanceVariable` object.
 The problem can then be solved by executing the `solve()` method of the equation.
 
    >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var,
-   ...                                limits = {'datamin': -5., 'datamax': 5.})
+   ...     from fipy import viewers
+   ...     viewer = viewers.make(vars = var,
+   ...                           limits = {'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
 
 The result can be tested with the following commands.

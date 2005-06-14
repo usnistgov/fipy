@@ -291,6 +291,8 @@
 \definecolor{hazy-gray}{gray}{0.96}
 \definecolor{light-gray}{gray}{0.8}
 \definecolor{middle-gray}{gray}{0.55}
+\definecolor{hazy-yellow}{rgb}{1.0,1.0,0.8}
+\definecolor{hazy-red}{rgb}{1.0,0.8,0.8}
 
 \usepackage{calc}
 
@@ -436,3 +438,23 @@
 \newcommand\pymodule{\begingroup \urlstyle{py}\Url}
 \renewcommand\EpydocDottedName[1]{\texorpdfstring{\protect\pymodule{#1}}{#1}}
 
+\usepackage{booktabs}
+
+\newenvironment{reSTadmonition}[1][]{%
+    \begin{center}\begin{sffamily}%
+    \ifthenelse{\equal{#1}{}\OR\equal{#1}{Note}}{
+        \begin{cminipage}[light-gray]
+    }{%
+        \ifthenelse{\equal{#1}{Warning}}{%
+            \begin{cminipage}[hazy-yellow]
+        }{%
+            \ifthenelse{\equal{#1}{Danger}}{%
+                \begin{cminipage}[hazy-red]
+            }{%
+                \begin{cminipage}
+            }%
+        }%
+    }%
+    \ifthenelse{\equal{#1}{}}{}{\textbf{\large #1}\vspace{1ex}}%
+    \raggedright}
+    {\end{cminipage}\end{sffamily}\end{center}}

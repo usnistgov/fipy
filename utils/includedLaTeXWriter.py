@@ -4,7 +4,7 @@
  # 
  #  FILE: "includedLaTeXWriter.py"
  #                                    created: 9/29/04 {11:38:07 AM} 
- #                                last update: 6/13/05 {2:36:09 PM} 
+ #                                last update: 6/14/05 {5:06:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,6 +113,16 @@ class NotStupidLaTeXTranslator(LaTeXTranslator):
             post.append('\n')
         pre.reverse()
         self.body.extend(pre + post)
+
+    def visit_admonition(self, node, name=''):
+        self.body.append('\\begin{reSTadmonition}\n')
+        if name:
+            self.body.append('['+ self.language.labels[name] + ']');
+        self.body.append('\n')
+
+
+    def depart_admonition(self, node=None):
+        self.body.append('\\end{reSTadmonition}\n');
 
 
 class IncludedLaTeXWriter(LaTeXWriter):

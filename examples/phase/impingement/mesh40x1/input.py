@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/5/05 {8:05:24 PM}
+ #                                last update: 6/14/05 {9:22:07 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -173,8 +173,10 @@ The source term is linearized in the manner demonstrated in
     >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
     >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-    >>> phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
-    >>> phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
+    >>> phaseEq = TransientTerm(phaseTransientCoeff) \
+    ...           - ExplicitDiffusionTerm(alpha**2) \
+    ...           + ImplicitSourceTerm(implicitSource) \
+    ...           - (mPhiVar > 0) * mPhiVar * phase
 
 The `theta` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main
@@ -210,8 +212,10 @@ its operators.
         
     >>> thetaNoMod = NonModularTheta(theta)
     >>> thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
-    >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
-    >>> sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = diffusionCoeff)
+    >>> from fipy.models.phase.phase.addOverFacesVariable \
+    ...     import AddOverFacesVariable
+    >>> sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, 
+    ...                                    faceVariable = diffusionCoeff)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
@@ -222,12 +226,13 @@ If the example is run interactively, we create viewers for the phase
 and orientation variables.
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     phaseViewer = fipy.viewers.make(vars = phase, 
-    ...                                     limits = {'datamin': 0., 'datamax': 1.})
+    ...     from fipy import viewers
+    ...     phaseViewer = viewers.make(vars = phase, 
+    ...                                limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
-    ...     thetaProductViewer = fipy.viewers.make(vars = theta,
-    ...                                            limits = {'datamin': -pi, 'datamax': pi})
+    ...     thetaProductViewer = viewers.make(vars = theta,
+    ...                                       limits = {'datamin': -pi, 
+    ...                                                 'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/13/05 {3:25:21 PM} 
+ #                                last update: 6/14/05 {9:15:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -160,39 +160,46 @@ documentation, we would delete every line that does not begin with
 either "``>>>``" or "``...``", and then delete those prefixes from the
 remaining lines, leaving::
     
+    ## This script was derived from 
+    ## 'examples/diffusion/steadyState/mesh1D/input.py'
+
     nx = 50
     dx = 1.
-    from fipy.meshes.grid2D import Grid2D
-    mesh = Grid2D(nx = nx, dx = dx)
-    
+    from fipy.meshes.grid1D import Grid1D
+    mesh = Grid1D(nx = nx, dx = dx)
     valueLeft = 0
     valueRight = 1
     from fipy.variables.cellVariable import CellVariable
-    var = CellVariable(name = "solution variable", mesh = mesh, value = valueLeft)
-    
+    var = CellVariable(name = "solution variable", mesh = mesh,
+                                                   value = valueLeft)
+
     from fipy.boundaryConditions.fixedValue import FixedValue
     boundaryConditions = (FixedValue(mesh.getFacesRight(),valueRight),
-			  FixedValue(mesh.getFacesLeft(),valueLeft))
+                          FixedValue(mesh.getFacesLeft(),valueLeft))
 
     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    ImplicitDiffusionTerm().solve(var = var, boundaryConditions = boundaryConditions)
-    
+    ImplicitDiffusionTerm().solve(var = var,
+                                  boundaryConditions = boundaryConditions)
+
     x = mesh.getCellCenters()[:,0]
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    
-    print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
-    
+    var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10).getValue()
+    # Expect:
+    # 1
+    # 
     if __name__ == '__main__':
         import fipy.viewers
-        viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
+        viewer = fipy.viewers.make(vars = var,
+                                   limits = {'datamin': 0., 'datamax': 1.})
         viewer.plot()
-	
+        raw_input("press key to continue")
+
 Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script
 like this from one of the examples by typing::
     
-    $ python setup.py copy_script --From examples/.../input.py --To myInput.py
+    $ python setup.py copy_script --From .../input.py --To myInput.py
 
 at the command line.
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/10/05 {7:29:08 PM} 
+ #                                last update: 6/14/05 {10:10:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,9 +92,11 @@ One component in this ternary system will be designated the "solvent"
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
-    ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
-    ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
+    ...     def __init__(self, mesh, value = 0., name = '', 
+    ...                  standardPotential = 0., barrier = 0., 
+    ...                  diffusivity = None, valence = 0, equation = None):
+    ...         CellVariable.__init__(self, mesh = mesh, value = value, 
+    ...                               name = name)
     ...         self.standardPotential = standardPotential
     ...         self.barrier = barrier
     ...         self.diffusivity = diffusivity
@@ -102,9 +104,11 @@ One component in this ternary system will be designated the "solvent"
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
+    ...         return self.__class__(mesh = self.getMesh(), 
+    ...                               value = self.getValue(), 
     ...                               name = self.getName(), 
-    ...                               standardPotential = self.standardPotential, 
+    ...                               standardPotential = 
+    ...                                   self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
@@ -127,7 +131,8 @@ simply by providing a `Tuple` or `list` of components
     >>> for component in substitutionals:
     ...     solvent -= component
 
-Although we are not interested in them for this problem, we create one field to represent the "phase" (1 everywhere) 
+Although we are not interested in them for this problem, we create one
+field to represent the "phase" (1 everywhere)
 
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1.)
     
@@ -135,8 +140,8 @@ and one field to represent the electrostatic potential (0 everywhere)
 
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
 
-Althought it is constant in this problem, in later problems we will need the following 
-functions of the phase field
+Althought it is constant in this problem, in later problems we will need
+the following functions of the phase field
 
     >>> def pPrime(xi):
     ...     return 30. * (xi * (1 - xi))**2
@@ -170,8 +175,8 @@ We create one diffusion equation for each substitutional component
     ...     counterDiffusion = CkSum.getFaceGrad()
     ...     phaseTransformation = \
     ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
-    ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() \
-    ...             * phase.getFaceGrad()
+    ...         + gPrime(phase.getHarmonicFaceValue()) \
+    ...             * Cj.barrier).transpose() * phase.getFaceGrad()
     ...     electromigration = Cj.valence * potential.getFaceGrad()
     ...     convectionCoeff = counterDiffusion \
     ...         + solvent.getHarmonicFaceValue().transpose() \
@@ -180,7 +185,7 @@ We create one diffusion equation for each substitutional component
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                             diffusionTerm = diffusionTerm)
+  ...                                             diffusionTerm = diffusionTerm)
     ...                                            
     ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
 

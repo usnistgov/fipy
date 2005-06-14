@@ -153,7 +153,8 @@ anonymous CVS download::
 
 and press enter at the password prompt, then::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse checkout pysparse
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse \
+    >     checkout pysparse
 
 From within the ``pysparse`` base directory, follow its included
 instructions for building PySparse_ for your platform. `PySparse Windows
@@ -283,16 +284,19 @@ commands::
 and press enter at the password prompt, then to download |FiPy| 1.0 
 (recommended)::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout -r CURRENT fipy
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
+    >     checkout -r CURRENT fipy
 
 If you prefer, you can download |FiPy| 0.1 with::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout -r STABLE fipy
+    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
+    >     checkout -r STABLE fipy
 
 Further information about CVS_ can be found in |documentation:CVS.txt| and
-at http://sourceforge.net/cvs/?group_id=118428.
+in the `online CVS instructions`_.
 
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/
+.. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
+.. _online CVS instructions: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/cvs/?group_id=118428
 
 Manual
 ======

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:34:10 PM} { 1:23:41 PM}
+ #                                last update: 6/14/05 {10:45:18 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,8 @@ Construct the mesh.
 
 Construct a `distanceVariable` object.
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+   ...     import DistanceVariable
    >>> import Numeric
    >>> initialArray = -Numeric.ones(nx * ny, 'd')
    >>> positiveCells = mesh.getCells(filter = lambda cell:
@@ -88,8 +89,9 @@ Construct a `distanceVariable` object.
    >>> var.calcDistanceFunction()
    
    >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
+   ...     from fipy import viewers
+   ...     viewer = viewers.make(vars = var, 
+   ...                           limits = {'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
 
 The result can be tested with the following commands.
@@ -110,19 +112,20 @@ The result can be tested with the following commands.
    >>> v4 = evalCell(v3, dY, dx, dy)[1]
    >>> v5 = evalCell(dX, v3, dx, dy)[1]
    >>> import MA
+   >>> MASK = -1000
    >>> trialValues = MA.masked_values((
-   ...     -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-   ...     -1000, -1000, -1000, -1000, -3*dY, -3*dY, -3*dY, -1000, -1000, -1000, -1000,
-   ...     -1000, -1000, -1000, v1   , -dY  , -dY  , -dY  , v1   , -1000, -1000, -1000,
-   ...     -1000, -1000, v2   , -m1  , m1   , dY   , m1   , -m1  , v2   , -1000, -1000,
-   ...     -1000, -dX*3, -dX  , m1   ,  v3  , v4   , v3   , m1   , -dX  , -dX*3, -1000,
-   ...     -1000, -dX*3, -dX  , dX   , v5   , -1000, v5   , dX   , -dX  , -dX*3, -1000,
-   ...     -1000, -dX*3, -dX  , m1   , v3   , v4   , v3   , m1   , -dX  , -dX*3, -1000,
-   ...     -1000, -1000, v2   , -m1  , m1   , dY   , m1   , -m1  , v2   , -1000, -1000,
-   ...     -1000, -1000, -1000, v1   , -dY  , -dY  , -dY  , v1   , -1000, -1000, -1000,
-   ...     -1000, -1000, -1000, -1000, -3*dY, -3*dY, -3*dY, -1000, -1000, -1000, -1000,
-   ...     -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000), 
-   ...     -1000)
+   ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
+   ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+   ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
+   ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
+   ...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
+   ...     MASK, -dX*3,  -dX,   dX,   v5, MASK,   v5,   dX,  -dX,-dX*3, MASK,
+   ...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
+   ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
+   ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
+   ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+   ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
+   ...     MASK)
    >>> MA.allclose(var, trialValues)
    1
    

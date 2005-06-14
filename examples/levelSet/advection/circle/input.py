@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {2:04:28 PM} { 1:23:41 PM}
+ #                                last update: 6/13/05 {4:42:46 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,8 @@ Construct the mesh.
 
 Construct a `distanceVariable` object.
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+   ...     import DistanceVariable
    >>> var = DistanceVariable(
    ...     name = 'level set variable',
    ...     mesh = mesh,

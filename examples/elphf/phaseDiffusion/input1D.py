@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/7/05 {9:57:02 AM} 
+ #                                last update: 6/14/05 {10:39:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,9 +75,10 @@ We start with a binary substitutional system
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
-    ...                  barrier = 0., diffusivity = None, valence = 0, 
-    ...                  equation = None, hasOld = 1):
+    ...     def __init__(self, mesh, value = 0., name = '', 
+    ...                  standardPotential = 0., barrier = 0., 
+    ...                  diffusivity = None, valence = 0, equation = None, 
+    ...                  hasOld = 1):
     ...         self.standardPotential = standardPotential
     ...         self.barrier = barrier
     ...         self.diffusivity = diffusivity
@@ -87,9 +88,11 @@ We start with a binary substitutional system
     ...                               name = name, hasOld = hasOld)
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
+    ...         return self.__class__(mesh = self.getMesh(), 
+    ...                               value = self.getValue(), 
     ...                               name = self.getName(), 
-    ...                               standardPotential = self.standardPotential, 
+    ...                               standardPotential = 
+    ...                                   self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
@@ -102,12 +105,11 @@ consisting of the solvent
 
 and the solute
 
-    >>> import Numeric
-    >>> substitutionals = [ComponentVariable(mesh = mesh, name = 'C1',
-    ...                             diffusivity = 1.,
-    ...                             standardPotential = Numeric.log(.3/.7) \
-    ...                                                 - Numeric.log(.7/.3),
-    ...                             barrier = 0.)]
+    >>> from Numeric import log, take, allclose
+    >>> substitutionals = [
+    ...     ComponentVariable(mesh = mesh, name = 'C1',
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.3/.7) - log(.7/.3))]
     >>> interstitials = []
 
     >>> for component in substitutionals:
@@ -116,12 +118,12 @@ and the solute
 The thermodynamic parameters are chosen to give a solid phase rich 
 in the solute and a liquid phase rich in the solvent.
 
-.. warning: Addition and subtraction cause `solvent` to lose some crucial information
-   so we only append it after the fact.
+.. warning: Addition and subtraction cause `solvent` to lose some crucial 
+   information so we only append it after the fact.
 
 ..
 
-    >>> solvent.standardPotential = Numeric.log(.7/.3)
+    >>> solvent.standardPotential = log(.7/.3)
     >>> solvent.barrier = 1.
 
 We create the phase equation as in ``examples.elphf.phase.input1D``
@@ -138,14 +140,16 @@ and create the diffustion equations for the different species as in
     ...
     ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...         == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
-    ...         - (permitivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
+    ...         - (permitivityPrime / 2.) \
+    ...             * potential.getGrad().dot(potential.getGrad())
     ...     enthalpy = solvent.standardPotential
     ...     barrier = solvent.barrier
     ...     for component in substitutionals + interstitials:
     ...         enthalpy += component * component.standardPotential
     ...         barrier += component * component.barrier
     ...
-    ...     mXi = -(30 * phase * (1 - phase) * enthalpy +  4 * (0.5 - phase) * barrier)
+    ...     mXi = -(30 * phase * (1 - phase) * enthalpy 
+    ...             +  4 * (0.5 - phase) * barrier)
     ...     dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
     ...     S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
     ...     S0 = mXi * phase * (1 - phase) - phase * S1 * (S1 < 0)
@@ -168,19 +172,20 @@ and create the diffustion equations for the different species as in
     ...         convectionCoeff = counterDiffusion + \
     ...             solvent.getHarmonicFaceValue().transpose() \
     ...                 * (phaseTransformation + electromigration)
-    ...         convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum).transpose())
+    ...         convectionCoeff *= \
+    ...             (Cj.diffusivity / (1. - CkFaceSum).transpose())
     ...    
     ...         diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...         convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                                 diffusionTerm = diffusionTerm)
+    ...                                           diffusionTerm = diffusionTerm)
     ...                                                
     ...         Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
     ...
     ...     for Cj in interstitials:
     ...         phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) \
-    ...             * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() \
-    ...                 * phase.getFaceGrad()
+    ...             * Cj.standardPotential \
+    ...             + gPrime(phase.getHarmonicFaceValue()) \
+    ...                 * Cj.barrier).transpose() * phase.getFaceGrad()
     ...         electromigration = Cj.valence * potential.getFaceGrad()
     ...         convectionCoeff = Cj.diffusivity \
     ...             * (1 + Cj.getHarmonicFaceValue()).transpose() \
@@ -188,7 +193,7 @@ and create the diffustion equations for the different species as in
     ...    
     ...         diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...         convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                                 diffusionTerm = diffusionTerm)
+    ...                                           diffusionTerm = diffusionTerm)
     ...                                                
     ...         Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
     
@@ -223,11 +228,11 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
+    ...     from fipy import viewers
     ...
-    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
-    ...                                           + interstitials,
-    ...                                   limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = viewers.make(vars = [phase, solvent] \
+    ...                                  + substitutionals + interstitials,
+    ...                           limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
@@ -254,15 +259,15 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> ends = Numeric.take(phase, (0,-1))
-    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> ends = take(phase, (0,-1))
+    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the solute concentration field has appropriately segregated into 
 solute-rich and solute-poor phases.
 
-    >>> ends = Numeric.take(substitutionals[0], (0,-1))
-    >>> print Numeric.allclose(ends, (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+    >>> ends = take(substitutionals[0], (0,-1))
+    >>> print allclose(ends, (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
     1
 
 The same system of equations can model a quaternary substitutional system as 
@@ -275,21 +280,18 @@ and make three new solute species
 
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'C1',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.3/.4) - Numeric.log(.1/.2),
-    ...                       barrier = 0.),
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.3/.4) - log(.1/.2)),
     ...     ComponentVariable(mesh = mesh, name = 'C2',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.4/.3) - Numeric.log(.1/.2),
-    ...                       barrier = 0.),
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.4/.3) - log(.1/.2)),
     ...     ComponentVariable(mesh = mesh, name = 'C3',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.2/.1) - Numeric.log(.1/.2),
-    ...                       barrier = 0.)]
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.2/.1) - log(.1/.2))]
     
     >>> for component in substitutionals:
     ...     solvent -= component
-    >>> solvent.standardPotential = Numeric.log(.1/.2)
+    >>> solvent.standardPotential = log(.1/.2)
     >>> solvent.barrier = 1.
 
 These thermodynamic parameters are chosen to give a solid phase rich in the
@@ -299,9 +301,9 @@ the remaining two substitutional species.
 Again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
-    ...                                           + interstitials,
-    ...                                   limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = viewers.make(vars = [phase, solvent] \
+    ...                                  + substitutionals + interstitials,
+    ...                           limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -345,21 +347,21 @@ and again iterate to equilibrium
 
 We confirm that the far-field phases have remained separated
 
-    >>> ends = Numeric.take(phase, (0,-1))
-    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> ends = take(phase, (0,-1))
+    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
-    >>> ends = Numeric.take(substitutionals[0], (0,-1))
-    >>> Numeric.allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[0], (0,-1))
+    >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[1], (0,-1))
-    >>> Numeric.allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[1], (0,-1))
+    >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[2], (0,-1))
-    >>> Numeric.allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[2], (0,-1))
+    >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 
 Finally, we can represent a system that contains both substitutional and 
@@ -371,26 +373,23 @@ and two new solute species
 
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'C2',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.4/.3) - Numeric.log(.4/.6),
-    ...                       barrier = 0.),
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.4/.3) - log(.4/.6)),
     ...     ComponentVariable(mesh = mesh, name = 'C3',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.2/.1) - Numeric.log(.4/.6),
-    ...                       barrier = 0.)]
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.2/.1) - log(.4/.6))]
     
 and one interstitial
 
     >>> interstitials = [
     ...     ComponentVariable(mesh = mesh, name = 'C1',
-    ...                       diffusivity = 1.,
-    ...                       standardPotential = Numeric.log(.3/.4) - Numeric.log(1.3/1.4),
-    ...                       barrier = 0.)]
+    ...                       diffusivity = 1., barrier = 0.,
+    ...                       standardPotential = log(.3/.4) - log(1.3/1.4))]
 
 
     >>> for component in substitutionals:
     ...     solvent -= component
-    >>> solvent.standardPotential = Numeric.log(.4/.6) - Numeric.log(1.3/1.4)
+    >>> solvent.standardPotential = log(.4/.6) - log(1.3/1.4)
     >>> solvent.barrier = 1.
 
 These thermodynamic parameters are chosen to give a solid phase rich in interstitials
@@ -399,9 +398,9 @@ and the solvent and a liquid phase rich in the two substitutional species.
 Once again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = fipy.viewers.make(vars = [phase, solvent] + substitutionals \
-    ...                                           + interstitials,
-    ...                                   limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = viewers.make(vars = [phase, solvent] \
+    ...                                  + substitutionals + interstitials,
+    ...                           limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -455,21 +454,21 @@ and again iterate to equilibrium
 
 We once more confirm that the far-field phases have remained separated
 
-    >>> ends = Numeric.take(phase, (0,-1))
-    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> ends = take(phase, (0,-1))
+    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
-    >>> ends = Numeric.take(interstitials[0], (0,-1))
-    >>> Numeric.allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(interstitials[0], (0,-1))
+    >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[0], (0,-1))
-    >>> Numeric.allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[0], (0,-1))
+    >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[1], (0,-1))
-    >>> Numeric.allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[1], (0,-1))
+    >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
 __docformat__ = 'restructuredtext'

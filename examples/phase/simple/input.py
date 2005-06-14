@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/6/05 {11:59:52 AM} 
+ #                                last update: 6/14/05 {8:49:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -156,8 +156,8 @@ The analytical solution for this steady-state phase field problem, in an infinit
 or
 
     >>> x = mesh.getCellCenters()[:,0]
-    >>> import Numeric
-    >>> analyticalArray = 0.5*(1 - Numeric.tanh((x - L/2)/(2*Numeric.sqrt(kappa/W))))
+    >>> from Numeric import tanh, sqrt
+    >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
 We treate the diffusion term
 

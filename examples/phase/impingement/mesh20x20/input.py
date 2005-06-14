@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 3/10/05 {5:12:29 PM}
+ #                                last update: 6/14/05 {9:25:37 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -152,8 +152,10 @@ so that it can be reused later.
     ...     thetaMag = theta.getOld().getGrad().getMag()
     ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
     ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
-    ...     phaseEq = TransientTerm(phaseTransientCoeff) - ExplicitDiffusionTerm(alpha**2)
-    ...     phaseEq += ImplicitSourceTerm(implicitSource) - (mPhiVar > 0) * mPhiVar * phase
+    ...     phaseEq = TransientTerm(phaseTransientCoeff) \
+    ...               - ExplicitDiffusionTerm(alpha**2) \
+    ...               + ImplicitSourceTerm(implicitSource) \
+    ...               - (mPhiVar > 0) * mPhiVar * phase
     ...     return phaseEq
 
     >>> phaseEq = buildPhaseEquation(phase, theta)
@@ -192,10 +194,13 @@ new subclass of `CellVariable` is created that uses the value of the
     ...    
     ...     thetaNoMod = NonModularTheta(theta)
     ...     thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
-    ...     from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
-    ...     sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, faceVariable = diffusionCoeff)
+    ...     from fipy.models.phase.phase.addOverFacesVariable \
+    ...         import AddOverFacesVariable
+    ...     sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, 
+    ...                                        faceVariable = diffusionCoeff)
     ...
-    ...     transientTerm = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
+    ...     transientTerm = TransientTerm(thetaTransientCoeff 
+    ...                                   * phaseModSq * pFunc)
     ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     ...     diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff)
     ...
@@ -209,13 +214,14 @@ which is not meaningful in the liquid phase, we weight the orientation
 by the phase
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     phaseViewer = fipy.viewers.make(vars = phase, 
-    ...                                     limits = {'datamin': 0., 'datamax': 1.})
+    ...     from fipy import viewers
+    ...     phaseViewer = viewers.make(vars = phase, 
+    ...                                limits = {'datamin': 0., 'datamax': 1.})
     ...     from Numeric import pi
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = fipy.viewers.make(vars = thetaProd ,
-    ...                                            limits = {'datamin': -pi, 'datamax': pi})
+    ...     thetaProductViewer = viewers.make(vars = thetaProd ,
+    ...                                       limits = {'datamin': -pi, 
+    ...                                                 'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 
@@ -228,7 +234,8 @@ data and compares it with the `theta` variable.
     >>> testFile = 'test.gz'
     >>> import examples.phase.impingement.mesh20x20
     >>> import gzip
-    >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], testFile)
+    >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], 
+    ...                         testFile)
     >>> filestream = gzip.open(filepath,'r')
     >>> import cPickle
     >>> testData = cPickle.load(filestream)

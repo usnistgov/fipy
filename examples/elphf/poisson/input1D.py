@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 4/12/05 {10:21:58 AM} 
+ #                                last update: 6/14/05 {10:13:18 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,9 +84,11 @@ We examine a fixed distribution of electrons
 ..
 
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
-    ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
-    ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
+    ...     def __init__(self, mesh, value = 0., name = '', 
+    ...                  standardPotential = 0., barrier = 0., 
+    ...                  diffusivity = None, valence = 0, equation = None):
+    ...         CellVariable.__init__(self, mesh = mesh, 
+    ...                               value = value, name = name)
     ...         self.standardPotential = standardPotential
     ...         self.barrier = barrier
     ...         self.diffusivity = diffusivity
@@ -94,9 +96,11 @@ We examine a fixed distribution of electrons
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
+    ...         return self.__class__(mesh = self.getMesh(), 
+    ...                               value = self.getValue(), 
     ...                               name = self.getName(), 
-    ...                               standardPotential = self.standardPotential, 
+    ...                               standardPotential = 
+    ...                                   self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
@@ -107,7 +111,8 @@ simplify the following, but since we will in general be studying multiple
 components, we explicitly allow for multiple substitutional species and
 multiple interstitial species:
 
-    >>> interstitials = [ComponentVariable(mesh = mesh, name = 'e-', valence = -1)]
+    >>> interstitials = [
+    ...     ComponentVariable(mesh = mesh, name = 'e-', valence = -1)]
     >>> substitutionals = []
 
 Because Poisson's equation admits an infinite number of potential profiles,
@@ -121,7 +126,8 @@ we must constrain the solution by fixing the potential at one point:
     ...     charge += Cj * Cj.valence
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) + charge == 0
+    >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) \
+    ...                      + charge == 0
 
 First, we obtain a uniform charge distribution by setting a uniform concentration
 of electrons
@@ -173,7 +179,9 @@ Next, we segregate all of the electrons to right side of the domain
     
 ..
 
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2.)
+    >>> def rightCells(cell):
+    ...     return cell.getCenter()[0] > L/2.
+    >>> setCells = mesh.getCells(filter = rightCells)
     >>> interstitials[0].setValue(0.)
     >>> interstitials[0].setValue(1.,setCells)
 

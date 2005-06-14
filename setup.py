@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/27/05 {4:38:15 PM} 
+ #                                last update: 6/14/05 {4:47:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -254,13 +254,15 @@ class build_docs (Command):
                                      source_dir = '../..',
                                      writer = IncludedLaTeXWriter(),
                                      settings ={'use_latex_toc': True,
-                                                'footnote_references': 'superscript'})
+                                                'footnote_references': 'superscript',
+                                                'table_style': 'nolines'})
 
 	    self._translateTextFiles(files = secondaryRestructuredTextFiles,
 				     source_dir = '..',
 				     writer = IncludedLaTeXWriter(),
 				     settings ={'use_latex_toc': True,
-						'footnote_references': 'superscript'})
+						'footnote_references': 'superscript',
+                                                'table_style': 'booktabs'})
 
 
 	    if self.guide:
@@ -452,7 +454,7 @@ class copy_script(Command):
 	mod = imp.load_source("copy_script_module", self.From)
 	script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
 	
-	script = "## This script was derived from '%s'\n\n%s"%(self.From, script)
+	script = "## This script was derived from\r## '%s'\n\n%s"%(self.From, script)
 	
 	f = file(self.To, "w")
 	f.write(script)

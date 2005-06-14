@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 3/7/05 {1:46:33 PM} { 1:23:41 PM}
+ #                                last update: 6/14/05 {9:05:27 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -136,12 +136,14 @@ Build the mesh:
    >>> import Numeric
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
-   ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) / 2 / numberOfElements
+   ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
+   ...           / (2 * numberOfElements)
    ...     cellSize = pos + Numeric.sqrt(pos**2 + sqr)
    ... else:
    ...     cellSize = 0.1e-7
 
-   >>> yCells = cellsBelowTrench + int((trenchDepth + boundaryLayerDepth) / cellSize)
+   >>> yCells = cellsBelowTrench \
+   ...          + int((trenchDepth + boundaryLayerDepth) / cellSize)
    >>> xCells = int(trenchSpacing / 2 / cellSize)
 
    >>> from fipy.meshes.grid2D import Grid2D
@@ -280,12 +282,16 @@ The `depositionRateVariable` is given by the following equation.
 
 The commands needed to build this equation are,
 
-   >>> expoConstant = -transferCoefficient * faradaysConstant / gasConstant / temperature
-   >>> tmp = acceleratorDependenceCurrentDensity * acceleratorVar.getInterfaceVar()
+   >>> expoConstant = -transferCoefficient * faradaysConstant \
+   ...                / (gasConstant * temperature)
+   >>> tmp = acceleratorDependenceCurrentDensity \
+   ...       * acceleratorVar.getInterfaceVar()
    >>> exchangeCurrentDensity = constantCurrentDensity + tmp
    >>> expo = Numeric.exp(expoConstant * overpotential)
-   >>> currentDensity = exchangeCurrentDensity * metalVar / bulkMetalConcentration * expo
-   >>> depositionRateVariable = currentDensity * atomicVolume / charge / faradaysConstant
+   >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
+   ...                  / bulkMetalConcentration
+   >>> depositionRateVariable = currentDensity * atomicVolume \
+   ...                          / (charge * faradaysConstant)
 
 .. raw:: latex
 
@@ -325,7 +331,8 @@ in FiPy:
    ...     surfactantVar = acceleratorVar,
    ...     distanceVar = distanceVar,
    ...     bulkVar = bulkAcceleratorConcentration,
-   ...     rateConstant = rateConstant + overpotentialDependence * overpotential**3)
+   ...     rateConstant = rateConstant \
+   ...                    + overpotentialDependence * overpotential**3)
 
 .. raw:: latex
 
@@ -447,7 +454,8 @@ The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
 distance function.
 
-   >>> levelSetUpdateFrequency = int(0.8 * narrowBandWidth / cellSize / cflNumber / 2)
+   >>> levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
+   ...                               / (cellSize * cflNumber * 2))
 
 The following loop runs for `numberOfSteps` time steps. The time step
 is calculated with the CFL number and the maximum extension velocity.
@@ -469,7 +477,7 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         if step % levelSetUpdateFrequency == 0:
    ...             distanceVar.calcDistanceFunction()
    ...
-   ...         extensionVelocityVariable.setValue(Numeric.array(depositionRateVariable))
+   ...         extensionVelocityVariable.setValue(depositionRateVariable())
    ...
    ...         argmax = Numeric.argmax(extensionVelocityVariable)
    ...
@@ -484,7 +492,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...         dt = 0.1
    ...     advectionEquation.solve(distanceVar, dt = dt) 
    ...     surfactantEquation.solve(acceleratorVar, dt = dt)
-   ...     metalEquation.solve(metalVar, dt = dt, boundaryConditions = metalEquationBCs)
+   ...     metalEquation.solve(metalVar, dt = dt, 
+   ...                         boundaryConditions = metalEquationBCs)
    ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt,
    ...                                   boundaryConditions = acceleratorBCs)
    ...
@@ -503,13 +512,15 @@ to tell if something has changed or been broken.
    >>> testFile = 'test.gz'
    >>> import examples.levelSet.electroChem
    >>> import gzip
-   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], testFile)
+   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
+   ...                         testFile)
    >>> filestream = gzip.open(filepath,'r')
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
    >>> if len(testData) != len(Numeric.array(acceleratorVar)):
-   ...     testData = Numeric.resize(testData, Numeric.array(acceleratorVar).shape)
+   ...     testData = Numeric.resize(testData, 
+   ...                               Numeric.array(acceleratorVar).shape)
    >>> Numeric.allclose(Numeric.array(acceleratorVar), testData)
    1
           

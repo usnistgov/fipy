@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/7/05 {9:42:29 AM} 
+ #                                last update: 6/14/05 {9:29:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,11 +103,13 @@ We create the phase field
     >>> phase.mobility = float("infinity")
     >>> phase.gradientEnergy = 0.025
     
-Although we are not interested in them for this problem, we create one field to represent the "solvent" component (1 everywhere) 
+Although we are not interested in them for this problem, we create one field to 
+represent the "solvent" component (1 everywhere) 
 
     >>> class ComponentVariable(CellVariable):
     ...     def copy(self):
-    ...         new = self.__class__(mesh = self.getMesh(), name = self.getName(), 
+    ...         new = self.__class__(mesh = self.getMesh(), 
+    ...                              name = self.getName(), 
     ...                              value = self.getValue())
     ...         new.standardPotential = self.standardPotential
     ...         new.barrier = self.barrier
@@ -136,7 +138,8 @@ We'll have no substitutional species and no interstitial species in this first e
     
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permittivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
+    ...     - (permittivityPrime / 2.) \
+    ...        * potential.getGrad().dot(potential.getGrad())
     
     >>> enthalpy = solvent.standardPotential
     >>> barrier = solvent.barrier
@@ -146,7 +149,8 @@ We'll have no substitutional species and no interstitial species in this first e
           
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
-    >>> mXi = -(30 * phase * (1. - phase) * enthalpy +  4 * (0.5 - phase) * barrier)
+    >>> mXi = -(30 * phase * (1. - phase) * enthalpy \
+    ...         +  4 * (0.5 - phase) * barrier)
     >>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
     >>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
     >>> S0 = mXi * phase * (1 - phase) - phase * S1 * (S1 < 0)
@@ -218,7 +222,8 @@ If we are running interactively, we plot the error
     ...     import fipy.viewers
     ...     from fipy.variables.cellVariable import CellVariable
     ...     viewer = fipy.viewers.make(vars = (phase - \
-    ...         CellVariable(name = "analytical", mesh = mesh, value = analyticalArray),))
+    ...         CellVariable(name = "analytical", mesh = mesh, 
+    ...                      value = analyticalArray),))
     ...     viewer.plot()
     
 .. image:: examples/elphf/phase/error.pdf

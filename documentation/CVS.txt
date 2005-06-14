@@ -58,7 +58,8 @@ Any other tags will not generally by of interest to most users.
 A fresh copy of |FiPy| that is designated by a particular ``<tag>`` can be
 obtained with::
 
-   $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy checkout -r <tag> fipy
+   $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
+   >     checkout -r <tag> fipy
 
 An existing CVS checkout of |FiPy| can be shifted to a different state of
 development by issuing the command::

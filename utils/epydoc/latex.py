@@ -375,7 +375,6 @@ class LatexFormatter:
             str += self._section('Package %s' % self._dotted(uid.name()), 0, uid)
         else:
             str += self._section('Module %s' % self._dotted(uid.name()), 0, uid)
-        str += '    \\label{%s}\n' % self._uid_to_label(uid)
 
         # The module's description.
         if doc.descr():

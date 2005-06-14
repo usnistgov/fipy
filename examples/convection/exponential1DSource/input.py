@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:10:07 PM} 
+ #                                last update: 6/14/05 {8:48:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,11 +100,13 @@ The solution variable is initialized to `valueLeft`:
 We define the convection-diffusion equation with source
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> from fipy.terms.exponentialConvectionTerm \
+    ...     import ExponentialConvectionTerm
     >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
-    >>> eq = diffTerm + \
-    ... ExponentialConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm) + \
-    ... sourceCoeff
+    >>> eq = diffTerm \
+    ...      + ExponentialConvectionTerm(coeff = convCoeff, 
+    ...                                  diffusionTerm = diffTerm) \
+    ...      + sourceCoeff
     
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> eq.solve(var = var, 

@@ -13,7 +13,8 @@ translating sections of code that are used frequently into C.
 at |NIST|, to model grain growth and subsequent impingement. This
 problem can be executed by running::
 
-    $ python examples/phase/impingement/mesh20x20/input.py --numberOfElements=10000 --numberOfSteps=1000
+    $ examples/phase/impingement/mesh20x20/input.py \
+    > --numberOfElements=10000 --numberOfSteps=1000
 
 from the base |FiPy| directory. The in-house code was written by Ryo
 Kobayashi and is used to generate the results presented in
@@ -25,21 +26,17 @@ in kilobytes. The Kobayashi code is given the heading of FORTRAN while
 |FiPy| is run with and without inlining. The memory usage is for
 |FiPy| simulations without the ``--inline`` flag.
 
-  +----------+------------+-------------------------+-------------+--------------------+
-  | Elements | |FiPy| (s) | |FiPy| ``--inline`` (s) | FORTRAN (s) | |FiPy| memory (KB) |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 100      | 0.29       | 0.31                    | 0.05        | 30068              |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 400      | 0.45       | 0.24                    | 0.04        | 31260              |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 1600     | 1.18       | 0.60                    | 0.06        | 34280              |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 6400     | 5.47       | 2.02                    | 0.19        | 47864              |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 25600    | 27.2       | 9.63                    | 1.01        | 91872              |
-  +----------+------------+-------------------------+-------------+--------------------+
-  | 102400   | 115        | 42.37                   | 4.17        | 269332             |
-  +----------+------------+-------------------------+-------------+--------------------+
+   ========== ============ ================== ============= ============= 
+    Elements   |FiPy| (s)   |FiPy|             FORTRAN (s)   |FiPy|       
+                            ``--inline`` (s)                 memory (KB)  
+   ========== ============ ================== ============= ============= 
+       100       0.29        0.31              0.05           30068        
+       400       0.45        0.24              0.04           31260        
+      1600       1.18        0.60              0.06           34280        
+      6400       5.47        2.02              0.19           47864        
+     25600      27.2         9.63              1.01           91872        
+    102400     115          42.37              4.17          269332       
+   ========== ============ ================== ============= ============= 
 
 The plain Python_ version of |FiPy|, which uses ``Numeric`` for all
 array operations, is around 25 times slower than the FORTRAN

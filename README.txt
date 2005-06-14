@@ -71,8 +71,8 @@ signficant ones are:
 - Improved layout of the manuals.
 
 - ``getLaplacian()`` method has been removed from ``CellVariable`` objects.
-  Instead, use ``getFaceGrad().getDivergence()``, which provides better 
-  control.
+  You can obtain the same effect with ``getFaceGrad().getDivergence()``, 
+  which provides better control.
 
 - An ``import`` shorthand has been added that allows for::
 
@@ -80,7 +80,7 @@ signficant ones are:
 
   instead of::
 
-     from fipy.some.deeply.nested.module import Class
+     from fipy.some.deeply.nested.module.class import Class
 
   This system is still experimental. Please tell us if you find situations
   that don't work.

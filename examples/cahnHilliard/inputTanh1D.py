@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:20:52 PM}
+ #                                last update: 6/14/05 {10:13:54 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -73,7 +73,9 @@ and create the solution variable
     ...     name = "phase field",
     ...     mesh = mesh,
     ...     value = 1)
-    >>> var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
+    >>> def rightCells(cell):
+    ...     return cell.getCenter()[0] > L / 2
+    >>> var.setValue(1, cells = mesh.getCells(filter = rightCells))
 
 The boundary conditions for this problem are
 

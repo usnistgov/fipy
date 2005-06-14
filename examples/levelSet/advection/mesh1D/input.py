@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/8/05 {3:49:57 PM} { 1:23:41 PM}
+ #                                last update: 6/14/05 {8:55:15 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,7 +121,8 @@ The result can be tested with the following code:
    >>> x = Numeric.array(mesh.getCellCenters()[:,0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
-   >>> answer = Numeric.where(x < distanceTravelled, x[0] - interfacePosition, answer)
+   >>> answer = Numeric.where(x < distanceTravelled, 
+   ...                        x[0] - interfacePosition, answer)
    >>> Numeric.allclose(answer, var, atol = 1e-10)
    1
    

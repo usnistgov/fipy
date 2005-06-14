@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/10/05 {4:27:27 PM} { 5:14:21 PM}
+ #                                last update: 6/14/05 {9:18:58 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -204,8 +204,10 @@ The temperature field is initialized to a value of `-0.4` throughout:
     
 ..
     
-    >>> from fipy.models.phase.phase.addOverFacesVariable import AddOverFacesVariable
-    >>> anisotropySource = AddOverFacesVariable(faceVariable = A, xGrad = -dPhiy, yGrad = dPhix)
+    >>> from fipy.models.phase.phase.addOverFacesVariable \
+    ...     import AddOverFacesVariable
+    >>> anisotropySource = AddOverFacesVariable(faceVariable = A, 
+    ...                                         xGrad = -dPhiy, yGrad = dPhix)
     
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
@@ -217,8 +219,9 @@ The temperature field is initialized to a value of `-0.4` throughout:
 The temperature equation is built in the following way,
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> temperatureEq = TransientTerm() == ImplicitDiffusionTerm(tempDiffusionCoeff) + \
-    ...                                    (phase - phase.getOld()) / timeStepDuration
+    >>> temperatureEq = TransientTerm() == \
+    ...                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
+    ...                 (phase - phase.getOld()) / timeStepDuration
 
 If we are running this example interactively, we create viewers for
 the phase and temperature fields
