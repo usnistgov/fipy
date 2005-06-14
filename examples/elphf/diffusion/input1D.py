@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/14/05 {10:10:03 AM} 
+ #                                last update: 6/14/05 {7:51:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -185,7 +185,7 @@ We create one diffusion equation for each substitutional component
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-  ...                                             diffusionTerm = diffusionTerm)
+    ...                                           diffusionTerm = diffusionTerm)
     ...                                            
     ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
 
