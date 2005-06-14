@@ -68,8 +68,8 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-   >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+   >>> from fipy.meshes.grid1D import Grid1D
+   >>> mesh = Grid1D(dx = dx, nx = nx)
 
 Construct a `distanceVariable` object.
 

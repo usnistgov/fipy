@@ -71,8 +71,8 @@ class DistanceVariable(CellVariable):
 
     Here we will define a few test cases. Firstly a 1D test case
 
-       >>> from fipy.meshes.grid2D import Grid2D
-       >>> mesh = Grid2D(dx = .5, dy = .2, nx = 8, ny = 1)
+       >>> from fipy.meshes.grid1D import Grid1D
+       >>> mesh = Grid1D(dx = .5, nx = 8)
        >>> from distanceVariable import DistanceVariable
        >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
        >>> var.calcDistanceFunction()
@@ -83,7 +83,7 @@ class DistanceVariable(CellVariable):
     A 1D test case with very small dimensions.
 
        >>> dx = 1e-10
-       >>> mesh = Grid2D(dx = dx, dy = 1., nx = 8, ny = 1)
+       >>> mesh = Grid1D(dx = dx, nx = 8)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
        >>> var.calcDistanceFunction()
        >>> answer = Numeric.arange(8) * dx - 3.5 * dx
@@ -94,6 +94,7 @@ class DistanceVariable(CellVariable):
 
        >>> dx = 1.
        >>> dy = 2.
+       >>> from fipy.meshes.grid2D import Grid2D
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
        >>> var.calcDistanceFunction()
@@ -157,7 +158,7 @@ class DistanceVariable(CellVariable):
     that are opposite sign neighbors have perpendicular normal vectors. In
     fact the two closest cells could have opposite normals.
 
-       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 1)
+       >>> mesh = Grid1D(dx = 1., nx = 3)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
        >>> var.calcDistanceFunction()
        >>> print var.allclose((-0.5, 0.5, -0.5))
@@ -198,7 +199,6 @@ class DistanceVariable(CellVariable):
             within which the distance function is evaluated.
 
         """
-
         CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
@@ -268,25 +268,33 @@ class DistanceVariable(CellVariable):
         index = Numeric.arange(len(indices[:,0])) * len(indices[0])
 
         s = MA.take(distances.flat, indices[:,0] + index)
-        t = MA.take(distances.flat, indices[:,1] + index)
-        u = MA.take(distances.flat, indices[:,2] + index)
-        ns = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
-        nt = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
 
-        signedDistance = MA.where(s.mask(),
-                                  self.value,
-                                  MA.where(t.mask(),
-                                           sign * s,
-                                           MA.where(abs(fipy.tools.array.dot(ns,nt)) < 0.9,
-                                                    sign * s * t / MA.sqrt(s**2 + t**2),
-                                                    MA.where(u.mask(),
-                                                             sign * s,
-                                                             sign * s * u / MA.sqrt(s**2 + u**2)
-                                                             )
-                                                    )
-                                           )
-                                  )
+        if self.mesh.getDim() == 2:
 
+            t = MA.take(distances.flat, indices[:,1] + index)
+            u = MA.take(distances.flat, indices[:,2] + index)
+
+            ns = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
+            nt = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
+
+            signedDistance = MA.where(s.mask(),
+                                      self.value,
+                                      MA.where(t.mask(),
+                                               sign * s,
+                                               MA.where(abs(fipy.tools.array.dot(ns,nt)) < 0.9,
+                                                        sign * s * t / MA.sqrt(s**2 + t**2),
+                                                        MA.where(u.mask(),
+                                                                 sign * s,
+                                                                 sign * s * u / MA.sqrt(s**2 + u**2)
+                                                                 )
+                                                        )
+                                               )
+                                      )
+        else:
+            signedDistance = MA.where(s.mask(),
+                                      self.value,
+                                      sign * s)
+            
 
         self.value = signedDistance
 
@@ -353,13 +361,17 @@ class DistanceVariable(CellVariable):
 
         index0 = indices[0]
         index1 = indices[1]
-        index2 = indices[2]
+        index2 = indices[self.mesh.getDim()]
         
         if N > 1:
             n0 = self.cellNormals[id, index0]
             n1 = self.cellNormals[id, index1]
-            cross = (n0[0] * n1[1] - n0[1] * n1[0])
-            
+
+            if self.mesh.getDim() == 2:
+                cross = (n0[0] * n1[1] - n0[1] * n1[0])
+            else:
+                cross = 0.0
+                
             if abs(cross) < 0.1:
                 if N == 2:
                     N = 1
@@ -409,8 +421,8 @@ class DistanceVariable(CellVariable):
 
         A simple 1D test:
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 1)
+           >>> from fipy.meshes.grid1D import Grid1D
+           >>> mesh = Grid1D(dx = 1., nx = 4)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-1.5, -0.5, 0.5, 1.5))
            >>> Numeric.allclose(distanceVariable.getCellInterfaceAreas(), 
@@ -418,7 +430,8 @@ class DistanceVariable(CellVariable):
            1
 
         A 2D test case:
-
+        
+           >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (1.5, 0.5, 1.5,
