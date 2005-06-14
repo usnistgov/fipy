@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/13/05 {5:16:01 PM} 
+ #                                last update: 6/14/05 {7:21:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -404,7 +404,11 @@ class Variable:
                         elif style == "name":
                             v = self.var[_popIndex()]
                             if isinstance(v, Variable):
-                                stack.append(v.getName())
+                                name = v.getName()
+                                if len(name) > 0:
+                                    stack.append(name)
+                                else:
+                                    stack.append(str(v))
                             else:
                                 stack.append(repr(v))
                         elif style == "TeX":
@@ -468,8 +472,8 @@ class Variable:
 		    
 		self._setValue(value = self.op(self.var[0].getValue(), val1)) 
 	
-	    def __repr__(self):
-		return "(" + operatorClass.__repr__(self) + ")"
+            def _getRepresentation(self, style = "__repr__"):
+                return "(" + operatorClass._getRepresentation(self, style = style) + ")"
 		
 	return binOp(op, [self, other])
 	
