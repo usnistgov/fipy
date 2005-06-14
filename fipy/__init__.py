@@ -1,4 +1,4 @@
-__version__ = "1.0a1"
+__version__ = "1.0a3"
 
 import sys
 import imp
