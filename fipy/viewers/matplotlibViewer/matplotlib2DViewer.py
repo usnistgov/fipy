@@ -117,11 +117,11 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         smallNumber = 1e-8
         diff = maxz - minz
         
-        if diff < smallNumber:
-            diff = smallNumber
-            
-        V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
-            
+        if diff < smallNumber:            
+            V = Numeric.arange(numberOfContours + 1) * smallNumber / numberOfContours + minz
+        else:
+            V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
+
         pylab.hot()
         if self.usingNewVersion:
             pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
@@ -129,9 +129,16 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                 pylab.colorbar()
                 self.colorbar = True
         else:
-            pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-            pylab.colorbar()
-            
+            if diff > smallNumber:
+                pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+                pylab.colorbar()
+            else:
+                N = self.vars[0].getMesh().getNumberOfCells()
+                value = self.vars[0][:] + (smallNumber * Numeric.array(range(N))) / N
+                
+                pylab.contour(X, Y, Numeric.reshape(value, shape), V)
+                pylab.colorbar()
+                            
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))
 
