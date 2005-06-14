@@ -129,14 +129,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                 pylab.colorbar()
                 self.colorbar = True
         else:
+            pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
             if diff > smallNumber:
-                pylab.contour(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-                pylab.colorbar()
-            else:
-                N = self.vars[0].getMesh().getNumberOfCells()
-                value = self.vars[0][:] + (smallNumber * Numeric.array(range(N))) / N
-                
-                pylab.contour(X, Y, Numeric.reshape(value, shape), V)
                 pylab.colorbar()
                             
         pylab.ylim(ymin = self._getLimit('ymin'))
