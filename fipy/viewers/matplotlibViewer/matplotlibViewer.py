@@ -107,7 +107,8 @@ class _MatplotlibViewer(_Viewer):
         """
 
         pylab.figure(self.id)
-        pylab.clf()
+        if not self.usingNewVersion:
+            pylab.clf()
         pylab.title(self.title)
         
         self._plot()
