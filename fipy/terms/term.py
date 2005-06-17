@@ -84,7 +84,7 @@ class Term:
     def _isConverged(self):
 	return self.converged
 
-    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4):
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = []):
         r"""
         Builds and solves the `Term`'s linear system once.
         	
@@ -95,6 +95,8 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `solutionTolerance`: A value that the residual must be less than so that `_isConverged()` returns `True`.
+           - `returnItems`: Tuple or list of strings representing items to be returned `['matrix', 'var', 'RHSvector', 'residual']`. 
+
 	"""
         
  	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
@@ -110,6 +112,10 @@ class Term:
 	self.residual = residual
 	self.converged = Numeric.alltrue(self.residual < solutionTolerance)
 
+        if len(returnItems) > 0:
+            dict = { 'matrix' : matrix, 'var' : var, 'RHSvector' : RHSvector, 'residual' : residual}
+            return tuple([dict[item] for item in returnItems if dict.has_key(item)])
+            
     def _otherIsZero(self, other):
         if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
             return True

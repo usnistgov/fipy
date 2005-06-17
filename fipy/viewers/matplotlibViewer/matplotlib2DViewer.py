@@ -85,7 +85,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         from fipy.meshes.grid2D import Grid2D
         if not  isinstance(self.vars[0].getMesh(), Grid2D):
-            raise 'The mesh must be a Grid2D instance for the Matpoltlib2dViewer'
+            raise 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
 
         self.colorbar = False
         
