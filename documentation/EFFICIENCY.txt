@@ -48,11 +48,12 @@ this special treatment.
 
 It is hoped that in future releases of |FiPy| the process of C
 inlining for ``Variable`` objects will be automated. This may result
-in considerable efficiency gains, greater than we are seeing for this
+in some efficiency gains, greater than we are seeing for this
 particular problem since all the ``Variable`` objects will be
 inlined. Recent analysis has shown that a ``Variable`` with 9
-operations could be up to 250 times faster at calculating its value
-when inlined.
+operations could be up to 9 times faster at calculating its value when
+inlined. Also a shift from the Numeric module to the Numarray module
+can gain a further factor of 2.
 
 As presented in the above table, memory usage was also recorded for
 each |FiPy| simulation without the ``--inline`` flag. Inlining results
