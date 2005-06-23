@@ -40,66 +40,98 @@
  # ###################################################################
  ##
 
-""" 
-This example shows the failure of advecting a square pulse with a first
-order explicit upwind scheme.
+r""" 
+
+This example demonstrates the use of the `VanLeerConvectionTerm` as
+defined by http://www.gre.ac.uk/~physica/phy2.12/theory/node173.htm
+
+In this example a square wave is advected. The Van Leer discretization
+should in theory do a good job of preserving the shape of the
+wave. This may or may not be happening in this case. This example
+needs further testing
+
+The test case is mainly to check that the periodic mesh is working
+correctly. We advect the wave on different meshes one periodic and one
+non-periodic but twice as long. The results are then compared. The
+periodic wave wraps around the mesh.
+
+    >>> newVar2 = var2.copy()
+
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> for step in range(steps):
+    ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
+    ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
+
+    >>> newVar2[:nx / 4] = var2[nx / 4:]
+    >>> newVar2[nx / 4:] = var2[:nx / 4]
+    >>> Numeric.allclose(var1[nx / 4:3 * nx / 4], newVar2, atol = 1e-6)
+    1
+
+Currently after 20 steps the wave has lost 23% of its height. Van Leer
+should do better than this.
+    
+    >>> max(var1) > 0.77
+    1
+    
 """
+
+__docformat__ = 'restructuredtext'
 
 import Numeric
      
-from fipy.meshes.grid1D import Grid1D
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-
-valueLeft = 0.
-valueRight = 0.
-L = 10.
-nx = 1000
+L = 20.
+nx = 40
 dx = L / nx
-cfl = 0.1
-velocity = -1.
-timeStepDuration = cfl * dx / abs(velocity)
-steps = 10000
+cfl = 0.5
+velocity = 1.0
+dt = cfl * dx / velocity
 
+steps = int(L /  4. / dt / velocity)
+
+from fipy.meshes.grid1D import Grid1D
 mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = Numeric.zeros(nx, 'd')
-startingArray[nx/4:nx/2] = 1. 
+from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
 
+startingArray = Numeric.zeros(nx, 'd')
+startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
+
+from fipy.variables.cellVariable import CellVariable
 var1 = CellVariable(
-    name = "advection variable",
+    name = "non-periodic",
     mesh = mesh,
     value = startingArray)
 
 var2 = CellVariable(
-    name = "advection variable",
-    mesh = mesh,
-    value = startingArray.copy())
-
-boundaryConditions = (
-    FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight)
-    )
+    name = "periodic",
+    mesh = periodicMesh,
+    value = startingArray[:nx / 2])
 
 from fipy.terms.transientTerm import TransientTerm
-eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (velocity,))
-eq2 = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
+from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
+eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
+eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 
 if __name__ == '__main__':
-    
-    viewer = fipy.viewers.make(vars=(var1,var2))
+
+    import fipy.viewers
+    viewer1 = fipy.viewers.make(vars=var1)
+    viewer2 = fipy.viewers.make(vars=var2)
+    viewer1.plot()
+    viewer2.plot()
+    from fipy.solvers.linearLUSolver import LinearLUSolver
+
+    newVar2 = var2.copy()
     
     for step in range(steps):
-	eq1.solve(var = var1, 
-		  boundaryConditions = boundaryConditions, 
-		  solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
-	eq2.solve(var = var2, 
-		  boundaryConditions = boundaryConditions, 
-		  solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
-        viewer.plot()
-	
+	eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
+        eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
+        viewer1.plot()
+        viewer2.plot()
+
+    newVar2[:nx / 4] = var2[nx / 4:]
+    newVar2[nx / 4:] = var2[:nx / 4]
+    print 'error:',max(abs(var1[nx / 4:3 * nx / 4] - newVar2))
+
     raw_input('finished')

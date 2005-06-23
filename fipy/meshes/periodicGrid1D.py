@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
+ #  FiPy - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:47:17 PM} 
+ #  FILE: "periodicGrid1D.py"
+ #                                    created: 11/20/03 {4:47:54 PM} 
+ #                                last update: 3/7/05 {1:17:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,29 +36,9 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2003-11-20 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+from numMesh.periodicGrid1D import PeriodicGrid1D
 
-def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'exponential1D.input',
-            'exponential1D.tri2Dinput',
-            'exponential2D.input',
-            'exponential1DBack.input',
-            'powerLaw1D.input',
-            'exponential1DSource.input',
-            'exponential2D.tri2Dinput',
-            'exponential1DSource.tri2Dinput',
-            'powerLaw1D.tri2Dinput',
-            'advection.inputVanLeerUpwind'
-        ), base = __name__)
-    
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
-
-            
-            

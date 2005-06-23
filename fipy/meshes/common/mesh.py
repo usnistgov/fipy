@@ -268,7 +268,7 @@ class Mesh:
         M = self._getMaxFacesPerCell()
         cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
         cellToCellIDs = self._getCellToCellIDs()
-        self.cellToCellIDsFilled = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs)
+        self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
     
     """get topology methods"""
