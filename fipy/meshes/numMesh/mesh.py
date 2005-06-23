@@ -98,6 +98,12 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
+           >>> print mesh._getCellFaceIDs()
+           [[ 0, 7, 2, 6,]
+            [ 1, 8, 3, 7,]
+            [ 2,10, 4, 9,]
+            [ 3,11, 5,10,]]
+
            >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
 
            >>> print mesh._getCellFaceIDs()
