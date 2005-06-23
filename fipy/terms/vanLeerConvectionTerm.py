@@ -55,13 +55,16 @@ import fipy.tools.array as array
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
     def _getGradient(self, normalGradient, gradUpwind):
 	gradUpUpwind = -gradUpwind + 2 * normalGradient
-	
-	grad = Numeric.where(gradUpwind * gradUpUpwind < 0., 
-				0., 
-				Numeric.where(gradUpUpwind > 0., 
-						Numeric.minimum(gradUpwind, gradUpUpwind), 
-						-Numeric.minimum(abs(gradUpwind), abs(gradUpUpwind))))
-			
+
+        avg = 0.5 * (abs(gradUpwind) + abs(gradUpUpwind))
+        min3 = Numeric.minimum(Numeric.minimum(abs(gradUpwind), abs(gradUpUpwind)), avg)
+
+	grad = Numeric.where(gradUpwind * gradUpUpwind < 0.,
+                             0., 
+                             Numeric.where(gradUpUpwind > 0.,
+                                           min3,
+                                           -min3))
+
 	return grad
 	
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
@@ -79,29 +82,17 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	gradUpwind = (oldArray2 - oldArray1) / array.take(mesh._getCellDistances(), interiorIDs)
 	
 	vol1 = array.take(mesh.getCellVolumes(), id1)
-## 	if Numeric.logical_or.reduce(interiorCFL > vol1):
 	self.CFL = interiorCFL / vol1
-## 	print "CFL1:", Numeric.maximum.reduce(interiorCFL / vol1)
 	
 	oldArray1 += 0.5 * self._getGradient(array.dot(array.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
 	    * (vol1 - interiorCFL) / interiorFaceAreas
-	    
+
 	vol2 = array.take(mesh.getCellVolumes(), id2)
-## 	if Numeric.logical_or.reduce(interiorCFL > vol2):
 	
 	self.CFL = Numeric.maximum(interiorCFL / vol2, self.CFL)
 
-## 	print "CFL2:", Numeric.maximum.reduce(interiorCFL / vol2)
-
 	oldArray2 += 0.5 * self._getGradient(array.dot(array.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
 	    * (vol2 - interiorCFL) / interiorFaceAreas
-	
-## 	print "volume:", array.take(mesh.getCellVolumes(), id1)
-## 	print "sweep:", interiorCFL
-## 	print "area:", interiorFaceAreas
-## 	print "oldArray:", oldArray
-## 	print "oldArray1:", oldArray1
-## 	print "oldArray2:", oldArray2
 	
 	return oldArray1, oldArray2
 
