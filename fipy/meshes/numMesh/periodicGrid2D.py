@@ -87,21 +87,23 @@ class PeriodicGrid2D(Grid2D):
          [ 0.5, 1. , 0.5, 1. ,]
          [ 0.5, 1. , 0.5, 1. ,]] 1
 
-        >>> print mesh._getFaceNormals()
-        [[-0., 1.,]
-         [-0., 1.,]
-         [-0., 1.,]
-         [-0., 1.,]
-         [-0., 1.,]
-         [-0., 1.,]
-         [ 1., 0.,]
-         [ 1., 0.,]
-         [ 1., 0.,]
-         [ 1., 0.,]
-         [ 1., 0.,]
-         [ 1., 0.,]]
+        >>> normals = [[0, 1],
+        ...            [0, 1],
+        ...            [0, 1],
+        ...            [0, 1],
+        ...            [0, 1],
+        ...            [0, 1],
+        ...            [1, 0],
+        ...            [1, 0],
+        ...            [1, 0],
+        ...            [1, 0],
+        ...            [1, 0],
+        ...            [1, 0]]
 
-
+        >>> import Numeric
+        >>> Numeric.allclose(mesh._getFaceNormals(), normals)
+        1
+        
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
