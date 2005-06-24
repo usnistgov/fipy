@@ -59,14 +59,6 @@ class _MatplotlibViewer(_Viewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
-    ## required to support versions older than 0.8.
-    if 'contourf' in pylab.__dict__.keys():
-        usingNewVersion = True
-    else:
-        usingNewVersion = False
-
-    if not usingNewVersion:    
-        id = 1
         
     def __init__(self, vars, limits = None, title = None):
         """
@@ -89,14 +81,9 @@ class _MatplotlibViewer(_Viewer):
 
         pylab.ion()
 
-        if self.usingNewVersion:
-            fig = pylab.figure()
-            self.id = fig.number
-        else:
-            self.id = _MatplotlibViewer.id
-            _MatplotlibViewer.id += 1
-            fig = pylab.figure(self.id)
-            
+        fig = pylab.figure()
+        self.id = fig.number
+                    
     def plot(self, fileName = None):
         """
         Plot the `CellVariable` as a contour plot.
@@ -107,7 +94,6 @@ class _MatplotlibViewer(_Viewer):
         """
 
         pylab.figure(self.id)
-##        if not self.usingNewVersion:
         pylab.clf()
         pylab.title(self.title)
         
