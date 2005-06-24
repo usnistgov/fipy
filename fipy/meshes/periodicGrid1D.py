@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
+ #  FiPy - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/05 {6:38:56 PM} 
+ #  FILE: "periodicGrid1D.py"
+ #                                    created: 11/20/03 {4:47:54 PM} 
+ #                                last update: 3/7/05 {1:17:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,6 +28,7 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
+ # ========================================================================
  #  
  #  Description: 
  # 
@@ -35,30 +36,9 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2003-11-20 JEG 1.0 original
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
-"""
+from numMesh.periodicGrid1D import PeriodicGrid1D
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
-
-def _suite():
-    return _LateImportDocTestSuite(
-        docTestModuleNames = (
-            'fipy.meshes.numMesh.mesh',
-            'fipy.meshes.numMesh.mesh2D',
-            'fipy.meshes.numMesh.grid2D',
-            'fipy.meshes.numMesh.grid3D',
-            'fipy.meshes.numMesh.tri2D',
-            'fipy.meshes.numMesh.gmshImport',
-            'fipy.meshes.numMesh.adaptiveMesh',
-            'fipy.meshes.numMesh.refinedMesh',
-            'fipy.meshes.numMesh.periodicGrid1D',
-            'fipy.meshes.numMesh.periodicGrid2D',
-        ))
-    
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')

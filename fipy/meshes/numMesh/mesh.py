@@ -84,6 +84,102 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _concatenate(self, other, smallNumber):
         return Mesh(**self._getAddedMeshValues(other, smallNumber))
 
+    def _connectFaces(self, faces0, faces1):
+        """
+        
+        Merge faces on the same mesh. This is used to create periodic
+        meshes. The first list of faces, `faces1`, will be the faces
+        that are used to add to the matrix diagonals. The faces in
+        `faces2` will not be used. They aren't deleted but their
+        adjacent cells are made to point at `faces1`. The list
+        `faces2` are not altered, they still remain as members of
+        exterior faces.
+
+           >>> from fipy.meshes.grid2D import Grid2D
+           >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
+
+           >>> print mesh._getCellFaceIDs()
+           [[ 0, 7, 2, 6,]
+            [ 1, 8, 3, 7,]
+            [ 2,10, 4, 9,]
+            [ 3,11, 5,10,]]
+
+           >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
+
+           >>> print mesh._getCellFaceIDs()
+           [[ 0, 7, 2, 6,]
+            [ 1, 6, 3, 7,]
+            [ 2,10, 4, 9,]
+            [ 3, 9, 5,10,]]
+        
+        """
+
+        ## extract the face IDs for each set of faces
+        ids0 = [face.getID() for face in faces0]
+        ids1 = [face.getID() for face in faces1]
+
+        ## check for errors
+
+        ## check that faces are members of exterior faces
+        from sets import Set
+        assert Set(ids0).union(Set(ids1)).issubset(Set(self.getExteriorFaceIDs()))
+
+        ## following assert checks number of faces are equal, normals are opposite and areas are the same
+        assert Numeric.take(self.areaProjections, ids0) == Numeric.take(-self.areaProjections, ids1)
+
+        ## extract the adjacent cells for both sets of faces
+        faceCellIDs0 = self.faceCellIDs[:,0]
+        faceCellIDs1 = self.faceCellIDs[:,1]
+        ## set the new adjacent cells for `faces0`
+        MA.put(faceCellIDs1, ids0, MA.take(faceCellIDs0, ids0))
+        MA.put(faceCellIDs0, ids0, MA.take(faceCellIDs0, ids1))
+        self.faceCellIDs[:,0] = faceCellIDs0
+        self.faceCellIDs[:,1] = faceCellIDs1
+        
+        ## extract the face to cell distances for both sets of faces
+        faceToCellDistances0 = self.faceToCellDistances[:,0]
+        faceToCellDistances1 = self.faceToCellDistances[:,1]
+        ## set the new faceToCellDistances for `faces0`
+        MA.put(faceToCellDistances1, ids0, MA.take(faceToCellDistances0, ids0))
+        MA.put(faceToCellDistances0, ids0, MA.take(faceToCellDistances0, ids1))
+        self.faceToCellDistances[:,0] = faceToCellDistances0
+        self.faceToCellDistances[:,1] = faceToCellDistances1
+
+        ## calculate new cell distances and add them to faces0
+        Numeric.put(self.cellDistances, ids0, MA.take(faceToCellDistances0 + faceToCellDistances1, ids0))
+
+        ## change the direction of the face normals for faces0
+        for dim in range(self.getDim()):
+            faceNormals = self.faceNormals[:,dim].copy()
+            Numeric.put(faceNormals, ids0, MA.take(faceNormals, ids1))
+            self.faceNormals[:,dim] = faceNormals
+
+        ## Cells that are adjacent to faces1 are changed to point at faces0
+        ## get the cells adjacent to faces1
+        faceCellIDs = MA.take(self.faceCellIDs[:,0], ids1)
+        ## get all the adjacent faces for those particular cells
+        cellFaceIDs = MA.take(self.cellFaceIDs[:], faceCellIDs)
+        for i in range(len(cellFaceIDs[0,:])):
+            ## if the faces is a member of faces1 then change the face to point at
+            ## faces0
+            cellFaceIDs[:,i] = MA.where(cellFaceIDs[:,i] == ids1,
+                                        ids0,
+                                        cellFaceIDs[:,i])
+            ## add those faces back to the main self.cellFaceIDs
+            tmp = self.cellFaceIDs[:,i]
+            MA.put(tmp, faceCellIDs, cellFaceIDs[:,i])
+            self.cellFaceIDs[:,i] = tmp
+
+        ## calculate new topology
+        fipy.meshes.common.mesh.Mesh._calcTopology(self)
+
+        ## calculate new geometry
+        self._calcFaceToCellDistanceRatio()
+        self._calcCellToCellDistances()
+        self._calcScaledGeometry()
+        self._calcFaceAspectRatios()
+        
+        
     def _getAddedMeshValues(self, other, smallNumber):
         """
         Returns a `dictionary` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.

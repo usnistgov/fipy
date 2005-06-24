@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/05 {6:38:56 PM} 
+ #  FILE: "periodicGrid1D.py"
+ #                                    created: 11/10/03 {3:30:42 PM} 
+ #                                last update: 4/21/05 {4:46:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,6 +28,7 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
+ # ========================================================================
  #  
  #  Description: 
  # 
@@ -39,26 +40,51 @@
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
 """
+Peridoic 1D Mesh
+"""
+__docformat__ = 'restructuredtext'
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+from fipy.meshes.numMesh.grid1D import Grid1D
 
-def _suite():
-    return _LateImportDocTestSuite(
-        docTestModuleNames = (
-            'fipy.meshes.numMesh.mesh',
-            'fipy.meshes.numMesh.mesh2D',
-            'fipy.meshes.numMesh.grid2D',
-            'fipy.meshes.numMesh.grid3D',
-            'fipy.meshes.numMesh.tri2D',
-            'fipy.meshes.numMesh.gmshImport',
-            'fipy.meshes.numMesh.adaptiveMesh',
-            'fipy.meshes.numMesh.refinedMesh',
-            'fipy.meshes.numMesh.periodicGrid1D',
-            'fipy.meshes.numMesh.periodicGrid2D',
-        ))
+class PeriodicGrid1D(Grid1D):
+    """
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+    Creates a Periodic grid mesh.
+        
+        >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
+        
+        >>> print mesh.getExteriorFaceIDs()
+        [3,]
+
+        >>> print mesh.getFaceCellIDs()
+        [[2 ,0 ,]
+         [0 ,1 ,]
+         [1 ,2 ,]
+         [2 ,-- ,]]
+
+        >>> print mesh._getCellDistances()
+        [ 2. , 1.5, 2.5, 1.5,] 1
+
+        >>> print mesh._getCellToCellDistances()
+        [[ 2. , 1.5,]
+         [ 1.5, 2.5,]
+         [ 2.5, 2. ,]] 1
+
+        >>> print mesh._getFaceNormals()
+        [[ 1.,]
+         [ 1.,]
+         [ 1.,]
+         [ 1.,]]
+
+    """
+    def __init__(self, dx = 1., nx = None):
+        Grid1D.__init__(self, dx = dx, nx = nx)
+        self._connectFaces(self.getFacesLeft(), self.getFacesRight())
+
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
