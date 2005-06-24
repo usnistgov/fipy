@@ -42,27 +42,45 @@
 
 r"""
 
-    >>> import fipy.tests.doctestPlus
-    >>> import examples.diffusion.steadyState.mesh1D.input as inputFixedBCs
-    >>> exec(fipy.tests.doctestPlus._getScript(inputFixedBCs.__name__))
-    
 One can then solve the same problem as in
-`examples/diffusion/steadyState/mesh1D/input.py` but with periodic
-boundary conditions.
+`examples/diffusion/steadyState/mesh1D/input.py` but with a periodic
+mesh and no boundary conditions. The periodic mesh is used to simulate
+periodic boundary conditions.
 
-   >>> from fipy.boundaryConditions.periodicBoundaryCondition import PeriodicBoundaryCondition
-   >>> boundaryConditions = (PeriodicBoundaryCondition(mesh.getFacesLeft(), mesh.getFacesRight()),)
+    >>> nx = 50
+    >>> dx = 1.
+    >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+    >>> mesh = PeriodicGrid1D(nx = nx, dx = dx)
+
+The variable is initially a line varying form `valueLeft` to `valueRight`.
+
+    >>> valueLeft = 0
+    >>> valueRight = 1
+    >>> x = mesh.getCellCenters()[:,0]
+    >>> Lx = nx * dx
+    >>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "solution variable", mesh = mesh,
+    ...                                                value = initialArray)
+
+    >>> if __name__ == '__main__':
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var,
+    ...                                limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer.plot()
+    ...     raw_input("press key to continue")
+    
 
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
-   >>> from fipy.terms.transientTerm import TransientTerm
-   >>> eq = TransientTerm(coeff = 1e-7) - ImplicitDiffusionTerm()
-   >>> eq.solve(var = var, boundaryConditions = boundaryConditions)
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> eq = TransientTerm(coeff = 1e-7) - ImplicitDiffusionTerm()
+    >>> eq.solve(var = var)
 
-   >>> if __name__ == '__main__':
-   ...     viewer.plot()
-   ...     raw_input("press key to continue")
+    >>> if __name__ == '__main__':
+    ...     viewer.plot()
 
 The result of the calculation will be the average value over the domain.
 
