@@ -62,6 +62,7 @@ periodic wave wraps around the mesh.
     ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
     ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
 
+    
     >>> newVar2[:nx / 4] = var2[nx / 4:]
     >>> newVar2[nx / 4:] = var2[:nx / 4]
     >>> Numeric.allclose(var1[nx / 4:3 * nx / 4], newVar2, atol = 1e-6)
@@ -123,7 +124,7 @@ if __name__ == '__main__':
     from fipy.solvers.linearLUSolver import LinearLUSolver
 
     newVar2 = var2.copy()
-    
+
     for step in range(steps):
 	eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
         eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
@@ -132,6 +133,7 @@ if __name__ == '__main__':
 
     newVar2[:nx / 4] = var2[nx / 4:]
     newVar2[nx / 4:] = var2[:nx / 4]
-    print 'error:',max(abs(var1[nx / 4:3 * nx / 4] - newVar2))
+
+    print 'maximum absolute difference between periodic and non-periodic grids:',max(abs(var1[nx / 4:3 * nx / 4] - newVar2))
 
     raw_input('finished')

@@ -93,7 +93,35 @@ Long term Goals
   * Merge ``term`` and ``equation`` objects into one object:
 
     - Boundary conditions should just be terms.
-   
+    
+  * Reconcile variable operators and terms
+
+    - Equations should be stated in terms of variable operators.
+    - For example a DiffusionTerm is represented by var.getGrad().getDiv()
+    - getGrad() and getDiv() should calculate matrices and then use the matrices
+      either as part of the solution scheme or explicitly if one just requires the value.
+    - The convection term would have a special operator
+    - One problem is that terms are really volume integrals while operators
+      are just differences. Thus all operators would be volume integrals
+      and then divide through be the volume when asked by getValue()
+    - The first step would be to make operators use the terms to evaluate themselves.
+      i.e.
+      DivGradVariable(CellVariable):
+          def __init__(self, var)
+              self.var = var
+	      self.matrix =  ImplicitDiffusionTerm.getMatrix()
+
+	  def getMatrix(self, ...):
+              return self.matrix
+         
+          def getValue(self)
+              return ImplicitDiffusionTerm.getMatrix() * self.var.getValue() / self.mesh.getCellVolumes()
+
+     - Next step would be to move the terms to the operator variables.
+     - We are now moving terms into variables and that may have hidden benefits.
+     - This philosophy should apply to all terms including transient terms.
+     - Basicly terms are being abandoned in favor of variable objects.   
+
   * Use ``doctest`` exclusively.
 
   * Major mesh refactor:

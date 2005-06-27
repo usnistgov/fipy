@@ -99,6 +99,7 @@ class _FaceTerm(Term):
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
 
+        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
 	weight = self._getWeight(mesh)['explicit']
         coeff = Numeric.array(self._getGeomCoeff(mesh))
         Nfac = mesh._getNumberOfFaces()
@@ -121,12 +122,11 @@ class _FaceTerm(Term):
 	    long int faceID = faceIDs(i);
 	    long int cellID1 = id1(i);
 	    long int cellID2 = id2(i);
-	    double oldArrayId1 = oldArray(cellID1);
-	    double oldArrayId2 = oldArray(cellID2);
-	 
-	    b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1 + cell1OffDiag(faceID) * oldArrayId2);
-	    b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2 + cell2OffDiag(faceID) * oldArrayId1);
-	""",oldArray = Numeric.array(oldArray),
+            
+	    b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1(i) + cell1OffDiag(faceID) * oldArrayId2(i));
+	    b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2(i) + cell2OffDiag(faceID) * oldArrayId1(i));
+	""",oldArrayId1 = Numeric.array(oldArrayId1),
+            oldArrayId2 = Numeric.array(oldArrayId2),
 	    id1 = id1,
 	    id2 = id2,
 	    b = b,
