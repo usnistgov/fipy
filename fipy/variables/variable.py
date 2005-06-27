@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/14/05 {7:21:45 PM} 
+ #                                last update: 6/27/05 {1:37:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -207,6 +207,9 @@ class Variable:
 
     def getName(self):
         return self.name
+        
+    def setName(self, name):
+        self.name = name
     
     def __str__(self):
 	return str(self.getValue())
@@ -408,9 +411,17 @@ class Variable:
                                 if len(name) > 0:
                                     stack.append(name)
                                 else:
-                                    stack.append(str(v))
-                            else:
+                                    # The string form of a variable
+                                    # would probably be too long and messy.
+                                    # Just give shorthand.
+                                    stack.append("%s(...)" % v.__class__.__name__)
+                            elif type(v) in (type(1), type(1.)):
                                 stack.append(repr(v))
+                            else:
+                                # The string form of anything but a
+                                # number would be too long and messy.
+                                # Just give shorthand.
+                                stack.append("<...>")
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
                         else:
