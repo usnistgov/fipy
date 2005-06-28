@@ -193,8 +193,8 @@ if __name__ == "__main__":
     ## set up the viewers
 
     import fipy.viewers
-    timeViewer = fipy.viewers.make(vars = (analyticalTime, numericalTime))
-    concentrationViewer = fipy.viewers.make(vars = (analyticalConcentration, numericalConcentration))
+##    timeViewer = fipy.viewers.make(vars = (analyticalTime, numericalTime))
+##    concentrationViewer = fipy.viewers.make(vars = (analyticalConcentration, numericalConcentration))
 
     ## start time stepping
 
@@ -212,8 +212,8 @@ if __name__ == "__main__":
         analyticalTime[i] = currentTime
         numericalTime[i] = currentTimeFunc(theta)
 
-        timeViewer.plot()
-        concentrationViewer.plot()
+##        timeViewer.plot()
+##        concentrationViewer.plot()
 
         ## do a time step
         surfactantVar.updateOld()

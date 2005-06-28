@@ -126,11 +126,18 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    from gnuplot1DViewer import Gnuplot1DViewer
-    KMViewer = Gnuplot1DViewer((KMVar / KMVar.getCellVolumeAverage(), PN / PN.getCellVolumeAverage(), TMVar / TMVar.getCellVolumeAverage()), title = 'Gradient Stimulus: Profile', varTitles = ('K_M', 'P_N', 'T_M'), xlabel = 'X', ylabel = 'Normalised concentrations')
+    import fipy.viewers
 
-    KMViewer.plot(fileName = 'plot1D.ps')
-    ## raw_input('stopped')
+    v1 = KMVar / KMVar.getCellVolumeAverage()
+    v2 = PN / PN.getCellVolumeAverage()
+    v3 = TMVar / TMVar.getCellVolumeAverage()
+    v1.setName('KM')
+    v2.setName('PN')
+    v3.setName('TM')
+
+    KMViewer = fipy.viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
+
+    KMViewer.plot()
 
     for i in range(100):
         for var, eqn in eqs:
@@ -148,7 +155,7 @@ if __name__ == '__main__':
             eqn.solve(var, dt = 0.1)
         KMViewer.plot()
 
-    KMViewer.plot(fileName = 'plot1D.ps')
+    KMViewer.plot()
 
     raw_input("finished")
 

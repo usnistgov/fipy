@@ -156,8 +156,8 @@ if __name__ == '__main__':
     
     import fipy.viewers
     distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = fipy.viewers.make(var = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
-    velocityViewer = fipy.viewers.make(var = velocity, limits = {'datamin': 0., 'datamax': 200.})
+    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
+    velocityViewer = fipy.viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()
@@ -178,7 +178,7 @@ if __name__ == '__main__':
         
         velocityViewer.plot()
         distanceViewer.plot()
-        surfactantViewer.plot(minVal = 0, maxVal = 100)
+        surfactantViewer.plot()
 
         finalRadius = Numeric.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius

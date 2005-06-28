@@ -78,14 +78,14 @@ class Matplotlib2DViewer(_MatplotlibViewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
-        
-        if len(self.vars) != 1:
+        if len(list(vars)) != 1:
             raise IndexError, "A 2D Matplotlib viewer can only display one Variable"
 
         from fipy.meshes.grid2D import Grid2D
-        if not  isinstance(self.vars[0].getMesh(), Grid2D):
-            raise 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
+        if not  isinstance(list(vars)[0].getMesh(), Grid2D):
+            raise Exception, 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
+
+        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
         self.colorbar = False
         
@@ -122,9 +122,9 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         pylab.hot()
 
         pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-        if self.colorbar is False:
-            pylab.colorbar()
-            self.colorbar = True
+##        if self.colorbar is False:
+        pylab.colorbar()
+##            self.colorbar = True
                             
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))

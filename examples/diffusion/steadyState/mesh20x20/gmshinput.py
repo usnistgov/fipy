@@ -55,7 +55,6 @@ import sys
 import os
 
 import Numeric
-import pyx
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.skewedGrid2D import SkewedGrid2D
@@ -112,7 +111,6 @@ ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFace
                                                          FixedValue(mesh.getFacesRight(), valueRight)))
 
 if __name__ == '__main__':
-    ##viewer.plot(resolution = 0.1)
     varArray = Numeric.array(var)
     x = mesh.getCellCenters()[:,0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
@@ -121,18 +119,13 @@ if __name__ == '__main__':
                             mesh = mesh,
                             value = abs(errorArray))
     errorViewer = fipy.viewers.make(vars = errorVar)
-    ##errorViewer.plot(resolution = 0.1)
+
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
-    ##NOViewer.plot(resolution = 0.1)
-    nonOrthoArray = mesh._getNonOrthogonality()
-    displaylist = Numeric.concatenate(([nonOrthoArray], [errorArray]))
-    displaylist = Numeric.transpose(displaylist)
-    g = pyx.graph.graphxy(width = 8, x = pyx.graph.axis.linear(title = "Non-Orthogonality"), y = pyx.graph.axis.linear(title = "Error"))
-    g.plot(pyx.graph.data.list(displaylist, addlinenumbers = 0, x=0, y=1))
-    g.writeEPSfile("temptwo")
-    os.system("gv temptwo.eps &")
+    NOViewer = fipy.viewers.make(vars = NonOrthoVar)
+    viewer.plot()
+    NOViewer.plot()
+
     raw_input("finished")
 

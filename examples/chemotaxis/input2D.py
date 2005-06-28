@@ -127,16 +127,20 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    from fipy.viewers.gnuplotViewer import make
+    from fipy.viewers import make
     import Numeric
-    PNArray = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
-    PNViewer = make(PNArray, maxVal = 2., minVal = 0., title = '')
     
-    KMArray = Numeric.reshape(KMVar / KMVar.getCellVolumeAverage(), (50, 50))
-    KMViewer = make(KMArray, maxVal = 2., minVal = 0., title = '')
+    PNView = PN / PN.getCellVolumeAverage()
+    PNView.setName('PN')
+    PNViewer = make(PNView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
     
-    TMArray = Numeric.reshape(TMVar / TMVar.getCellVolumeAverage(), (50, 50))
-    TMViewer = GnuplotViewer(TMArray, maxVal = 2., minVal = 0., title = '')
+    KMView = KMVar / KMVar.getCellVolumeAverage()
+    KMView.setName('KM')
+    KMViewer = make(KMView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
+    
+    TMView = TMVar / TMVar.getCellVolumeAverage()
+    TMView.setName('TM')
+    TMViewer = make(TMView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
 
     for i in range(100):
         print i
@@ -158,14 +162,9 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    PNArray[:] = Numeric.reshape(PN / PN.getCellVolumeAverage(), (50, 50))
-    PNViewer.plot('PN.pdf')
-
-    KMArray[:] = Numeric.reshape(KMVar / KMVar.getCellVolumeAverage(), (50, 50))
-    KMViewer.plot('KM.pdf')
-
-    TMArray[:] = Numeric.reshape(TMVar / TMVar.getCellVolumeAverage(), (50, 50))
-    TMViewer.plot('TM.pdf')
+    PNViewer.plot()
+    KMViewer.plot()
+    TMViewer.plot()
 
     raw_input("finished")
 

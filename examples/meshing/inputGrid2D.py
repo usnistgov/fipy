@@ -88,8 +88,9 @@ One can view the mesh with the following code,
 
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
+   ...     from fipy.variables.cellVariable import CellVariable
    ...     viewer = make(CellVariable(value = 0, mesh = mesh))
-   ...     viewer.plotMesh()
+   ...     viewer.plot()
    
 """
 __docformat__ = 'restructuredtext'
