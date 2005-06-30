@@ -103,12 +103,22 @@ class PeriodicGrid2D(Grid2D):
         >>> import Numeric
         >>> Numeric.allclose(mesh._getFaceNormals(), normals)
         1
-        
+
+        >>> print mesh._getCellVertexIDs()
+        [[4 ,3 ,1 ,0 ,]
+         [5 ,4 ,2 ,1 ,]
+         [7 ,6 ,4 ,3 ,]
+         [8 ,7 ,5 ,4 ,]]
+
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
+        self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
         self._connectFaces(self.getFacesLeft(), self.getFacesRight())
         self._connectFaces(self.getFacesBottom(), self.getFacesTop())
+
+    def _getCellVertexIDs(self):
+        return self.nonPeriodicCellVertexIDs
 
 def _test():
     import doctest

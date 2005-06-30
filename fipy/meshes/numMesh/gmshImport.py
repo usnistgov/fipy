@@ -265,7 +265,6 @@ class _DataGetter:
         self.cellVertexIDs = cellVertexIDs
         self.numCells = len(cellVertexIDs)
 
-
     def _calcBaseFaceVertexIDs(self):
         
         cellVertexIDs = self.cellVertexIDs

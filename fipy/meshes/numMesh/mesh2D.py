@@ -328,6 +328,18 @@ class Mesh2D(Mesh):
             >>> array.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
+            >>> cellVertexIDs = MA.masked_array(((5, 4, 1, 0),
+            ...                                  (6, 5, 2, 1),
+            ...                                  (7, 6, 3, 2),
+            ...                                  (9, 8, 5, 4),
+            ...                                  (10, 9, 6, 5),
+            ...                                  (11, 10, 7, 6),
+            ...                                  (12, 7, 3, -1000),
+            ...                                  (12, 11, 7, -1000)), -1000)
+
+            >>> array.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            1
+            
             >>> import tempfile
             >>> import os
             >>> from fipy.tools import dump

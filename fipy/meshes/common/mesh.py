@@ -302,6 +302,9 @@ class Mesh:
 
     def getNumberOfCells(self):
 	return self.numberOfCells
+    
+    def _getNumberOfVertices(self):
+        return len(self.vertexCoords[:,0])
 	
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs

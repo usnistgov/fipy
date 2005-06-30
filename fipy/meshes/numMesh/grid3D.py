@@ -509,6 +509,14 @@ class Grid3D(Mesh):
             >>> array.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
+            >>> cellVertexIDs = Numeric.array((17, 16, 13, 12, 5, 4, 1, 0))
+            >>> cellVertexIDs = Numeric.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
+            ...                                cellVertexIDs + 4, cellVertexIDs + 5, cellVertexIDs + 6))
+
+
+            >>> array.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            1
+
             >>> import tempfile
             >>> import os
             >>> from fipy.tools import dump

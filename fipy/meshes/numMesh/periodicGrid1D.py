@@ -77,6 +77,10 @@ class PeriodicGrid1D(Grid1D):
          [ 1.,]
          [ 1.,]]
 
+        >>> print mesh._getCellVertexIDs()
+        [[1,0,]
+         [2,1,]
+         [2,0,]]
     """
     def __init__(self, dx = 1., nx = None):
         Grid1D.__init__(self, dx = dx, nx = nx)

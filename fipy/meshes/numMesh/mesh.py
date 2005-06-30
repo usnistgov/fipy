@@ -508,6 +508,37 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def getFaceCenters(self):
         return self.faceCenters
 
+    def _getCellVertexIDs(self):
+
+        ## Get all the vertices from all the faces for each cell
+        from fipy.tools.array import MAtake
+        NCells = self.getNumberOfCells()
+        cellFaceVertices = MAtake(self.faceVertexIDs, self.cellFaceIDs)
+
+        ## get a sorted list of vertices for each cell 
+        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
+        cellVertexIDs = MA.sort(cellVertexIDs, axis = 1, fill_value = -1)
+        cellVertexIDs = cellVertexIDs[:,::-1]
+
+        ## get a unique sorted list of vertices for each cell
+        newmask = MA.getmaskarray(cellVertexIDs).copy()
+        for i in range(len(cellVertexIDs[0]) - 1):
+            newmask[:,i + 1] = MA.where(newmask[:,i + 1],
+                                        newmask[:,i + 1],
+                                        
+                                        MA.where(MA.filled(cellVertexIDs)[:,i] == MA.filled(cellVertexIDs)[:,i + 1],
+                                                 1,
+                                                 newmask[:,i + 1]))
+
+        cellVertexIDs = MA.masked_array(cellVertexIDs, newmask)
+        cellVertexIDs = MA.sort(cellVertexIDs, axis = 1, fill_value = -1)
+        cellVertexIDs = cellVertexIDs[:,::-1]
+
+        ## resize the array to remove extra masked values
+        length = len(cellVertexIDs[0]) - min(Numeric.sum(MA.getmaskarray(cellVertexIDs), axis = 1))
+        return cellVertexIDs[:, :length]
+
+
     """scaling"""
 
 ## ##     def setScale(self, value = 1.):
@@ -694,6 +725,10 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             ...                                          -ynor * dx * dz, nor * Numeric.sqrt(dx**2 + dy**2) * dz, 
             ...                                          (-1000, -1000, -1000))), -1000)
             >>> array.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            1
+
+            >>> cellVertexIDs = MA.masked_values(((7, 6, 5, 4, 3, 2, 1, 0), (9, 8, 6, 5, 2, 1, -1000, -1000)), -1000)
+            >>> array.allclose(cellVertexIDs, mesh._getCellVertexIDs())
             1
 
             >>> import tempfile

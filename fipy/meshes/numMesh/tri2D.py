@@ -471,6 +471,19 @@ class Tri2D(Mesh2D):
             >>> array.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
+            >>> tmp1 = Numeric.array((12, 5, 1))
+            >>> tmp2 = Numeric.array((12, 5, 4))
+            >>> tmp3 = Numeric.array((12, 4, 0))
+            >>> tmp4 = Numeric.array((12, 1, 0))
+            >>> tmp5 = Numeric.array((0, 1, 1))
+            >>> cellVertexIDs = Numeric.array((tmp1, tmp1 + 1, tmp1 + 2, tmp1 + 3 + tmp5, tmp1 + 4 + tmp5, tmp1 + 5 + tmp5,
+            ...                                tmp2, tmp2 + 1, tmp2 + 2, tmp2 + 3 + tmp5, tmp2 + 4 + tmp5, tmp2 + 5 + tmp5,
+            ...                                tmp3, tmp3 + 1, tmp3 + 2, tmp3 + 3 + tmp5, tmp3 + 4 + tmp5, tmp3 + 5 + tmp5,
+            ...                                tmp4, tmp4 + 1, tmp4 + 2, tmp4 + 3 + tmp5, tmp4 + 4 + tmp5, tmp4 + 5 + tmp5))
+
+            >>> array.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            1
+            
             >>> import tempfile
             >>> import os
             >>> from fipy.tools import dump
