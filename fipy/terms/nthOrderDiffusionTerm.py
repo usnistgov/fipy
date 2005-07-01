@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 4/7/05 {2:37:58 PM} 
+ #                                last update: 6/28/05 {9:24:10 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ class NthOrderDiffusionTerm(Term):
 
     .. raw:: latex
 
-        $$ \nabla\cdot\left[ D_1 \nabla\cdot\left(D_2 \nabla \phi\right) \right] $$
+        $$ \nabla \cdot \left\{ D_1 \nabla \left[ \nabla\cdot\left( D_2 \nabla \phi\right) \right] \right\} $$
 
     and so on.
 

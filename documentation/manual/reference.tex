@@ -4,7 +4,7 @@
  % 
  %  FILE: "reference.tex"
  %                                    created: 9/29/04 {11:03:55 AM} 
- %                                last update: 3/24/05 {8:19:56 AM} 
+ %                                last update: 6/28/05 {6:54:55 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -51,6 +51,10 @@
 
 \begin{document}
 
+\makeatletter
+\everypar{\nobreak\hskip\z@skip}
+\makeatother
+
 % \doparttoc
 
 \frontmatter
@@ -67,6 +71,7 @@ and the Center for Theoretical and Computational Materials Science
 
 \vspace*{\fill}
 
+\thispagestyle{empty}
 \input license
 
 % \rule{\textwidth}{1pt}
@@ -94,6 +99,8 @@ and the Center for Theoretical and Computational Materials Science
 \bibliographystyle{fipy}
 \bibliography{refs}
 
+\sloppy
+\raggedright
 \printindex
 
 

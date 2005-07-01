@@ -14,11 +14,11 @@
 
    TeX
 
-.. |latexINSTALLATION.txt| raw:: latex
+.. |latexINSTALL| raw:: latex
 
-   Chapter~\ref{chap:Installation}
+   Chapter~\ref{chap:Installation} ``\nameref{chap:Installation}''
 
-.. |htmlINSTALLATION.txt| raw:: html
+.. |htmlINSTALL| raw:: html
 
    the <a href="installation.html">Installation Guide</a>
 
@@ -37,5 +37,14 @@
 .. |htmlCVS.txt| raw:: html
 
    <a href="cvs.html">CVS tags</a>
+
+.. |latexFAQ| raw:: latex
+
+   Chapter~\ref{chap:FAQ} ``\nameref{chap:FAQ}''
+
+.. |htmlFAQ| raw:: html
+
+   Chapter 6: "Frequently Asked Questions" of the <a href="download/">Manual</a>
+
 
 

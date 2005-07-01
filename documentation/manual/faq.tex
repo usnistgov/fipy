@@ -1,0 +1,393 @@
+\begin{description}
+    
+    \item[How do I represent an equation in \FiPy{}?]  
+    
+    As explained in Chapter~\ref{chap:Numerics}, the canonical
+    governing equation that can be solved by \FiPy{} for the dependent
+    \Class{CellVariable} $\phi$ is
+        \begin{equation}                        
+             \underbrace{
+               \frac{\partial (\rho \phi)}{\partial t}
+             }_{\text{transient}}
+             =
+             \underbrace{
+               \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+               \nabla \cdot \left( \vec{u} \phi \right)
+             }_{\text{convection}}
+             +
+             \underbrace{
+               \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+               \nabla \cdot \left( \Gamma_1 \nabla \phi \right) 
+             }_{\text{diffusion}}
+             +
+             \underbrace{
+               \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+               \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
+             }_{\text{$n$\textsuperscript{th} order}}
+             +
+             \underbrace{
+               \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+               S_{\phi}
+             }_{\text{source}}
+             \tag{\ref{eqn:num:gen}}
+        \end{equation}
+        A physical problem can involve many different coupled
+        governing equations, one for each variable.  Numerous specific
+        examples are presented in Part~\ref{part:Examples}, but let us
+        examine this general expression term-by-term:
+        
+        \begin{description}
+            
+            \item[How do I represent a transient term 
+            $\frac{\partial (\rho \phi)}{\partial t}$?]
+            \hspace*{\fill}
+            
+            \begin{quote}
+\begin{verbatim}
+>>> TransientTerm(coeff = rho)
+\end{verbatim}
+            \end{quote}
+          
+            \begin{reSTadmonition}[Note]
+                We have specified neither the variable $\phi$ nor the time
+                step.  Both are handled when we actually solve the equation.
+            \end{reSTadmonition}
+            
+            \item[How do I represent a convection term
+            $\nabla \cdot \left( \vec{u} \phi \right)$?]
+            \hspace*{\fill}
+            
+            \begin{quote}
+\begin{verbatim}
+>>> <Specific>ConvectionTerm(coeff = u, 
+...                          diffusionTerm = diffTerm)
+\end{verbatim}
+            \end{quote}
+            where \verb|<Specific>| can be any of \verb|CentralDiff|,
+            \verb|Exponential|, \verb|Hybrid|, \verb|PowerLaw|,
+            \verb|Upwind|, \verb|ExplicitUpwind|, or \verb|VanLeer|.
+            The differences between these convection schemes are described
+            in Section~\ref{sec:NumericalSchemes}. The velocity coefficient 
+            \verb|u| must be a \Class{FaceVectorVariable}, or a 
+            constant vector in the form of a Python list or tuple, 
+            \emph{e.g.} \verb|(1,2)| for a vector in 2D.
+            
+            \begin{reSTadmonition}[Note]
+                As discussed in Section~\ref{sec:NumericalSchemes}, the
+                convection schemes need to calculate a P\'eclet number,
+                and therefore need to know about any diffusion term
+                used in the problem.  It is hoped that this dependency
+                can be automated in the future.
+            \end{reSTadmonition}
+            
+            \begin{reSTadmonition}[Warning]
+                \Class{VanLeerConvectionTerm} not mentioned and no discussion of
+                explicit forms.
+            \end{reSTadmonition}
+        
+            \item[How do I represent a diffusion term
+            $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?]
+            \hspace*{\fill}
+            
+            Either
+           \begin{quote}
+\begin{verbatim}
+>>> ImplicitDiffusionTerm(coeff = Gamma1)
+\end{verbatim}
+           \end{quote}
+           or 
+           \begin{quote}
+\begin{verbatim}
+>>> ExplicitDiffusionTerm(coeff = Gamma1)
+\end{verbatim}
+           \end{quote}
+           \Class{ExplicitDiffusionTerm} is provided only for illustrative purposes.
+           \Class{ImplicitDiffusionTerm} is almost always preferred. It is
+           theoretically possible to create an explicit diffusion term with
+           \begin{quote}
+\begin{verbatim}
+>>> (Gamma1 * phi.getFaceGrad()).getDivergence()
+\end{verbatim}
+           \end{quote}
+           Unfortunately, in this form, any boundary conditions on $\phi$
+           will not be accounted for.
+
+            
+            \item[How do I represent an $n$\textsuperscript{th}-order 
+            diffusion term $\nabla^4 \phi$ or
+            $\nabla \cdot \left( \Gamma_1 \nabla \left(
+            \nabla\cdot\left( 
+            \Gamma_2 \nabla \phi\right) \right) \right) $?]
+            \hspace*{\fill}
+            
+            \begin{quote}
+\begin{verbatim}
+>>> NthOrderDiffusionTerm(coeff = (Gamma1, Gamma2))
+\end{verbatim}
+            \end{quote}
+            The number of elements supplied for \verb|coeff| determines the
+            order of the term. As such,
+            \begin{quote}
+\begin{verbatim}
+>>> NthOrderDiffusionTerm(coeff = Gamma1)
+\end{verbatim}
+            \end{quote}
+            is completely equivalent to
+            \begin{quote}
+\begin{verbatim}
+>>> ImplicitDiffusionTerm(coeff = Gamma1)
+\end{verbatim}
+            \end{quote}
+
+            \item[How do I represent a source term $S_{\phi}$?]
+            Any terms that cannot be written in one of the previous
+            forms is considered a source.  An explicit source is
+            written in Python essentially as it appears in
+            mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
+            \theta$ would be written
+            \begin{quote}
+\begin{verbatim}
+>>> 3 * kappa**2 + b * sin(theta)
+\end{verbatim}
+            \end{quote}
+            
+            \begin{reSTadmonition}[Note]
+                Functions like \verb+sin()+ can be obtained from the
+                \EpydocDottedName{fipy.tools.array} module.
+                \begin{reSTadmonition}[Warning]
+                    Generally, things will not work as expected if the
+                    equivalent function is used from the \Numeric{}
+                    library.
+                \end{reSTadmonition}
+            \end{reSTadmonition}
+            
+            If, however, the source depends on the variable that is being solved for,
+            it can be advantageous to linearize the source and cast part of it as an
+            implicit source term, \emph{e.g.}, $3\kappa^2 + \phi \sin \theta$
+            might be written as
+            \begin{quote}
+\begin{verbatim}
+>>> 3 * kappa**2 + ImplicitSourceTerm(coeff = sin(theta))
+\end{verbatim}
+            \end{quote}
+            
+            \begin{reSTadmonition}[Warning]
+                There are subtleties in properly linearizing a source term
+                which are examined in
+                Example~\ref{examples:phase:simple:input}.
+            \end{reSTadmonition}
+
+            \item[How do I represent a \dots{} term that 
+            \emph{doesn't} involve the dependent variable?]
+            It is important to realize that, even though an expression may
+            superficially resemble one of those shown above, if the
+            dependent variable \emph{for that PDE} does not appear in the
+            appropriate place, then that term should be treated as a source.
+            \begin{description}
+                \item[How do I represent a diffusive source?]
+                    If the governing equation for $\phi$ is
+                    \[
+                        \frac{\partial \phi}{\partial t} 
+                        = \nabla\cdot\left( D_1 \nabla \phi\right)
+                        + \nabla\cdot\left( D_2 \nabla \xi\right)
+                    \]
+                    then the first term is a \Class{TransientTerm} and the second term 
+                    is an \Class{ImplicitDiffusionTerm}, but the third term is 
+                    simply an explicit source, which is written in Python as
+                    \begin{quote}
+\begin{verbatim}
+>>> (D2 * xi.getFaceGrad()).getDivergence()
+\end{verbatim}
+                    \end{quote}
+                    Higher order diffusive sources can be obtained by
+                    simply nesting the calls to \verb+getFaceGrad()+
+                    and \verb+getDivergence()+.
+                    \begin{reSTadmonition}[Note]
+                        We use \verb|getFaceGrad()|, rather than
+                        \verb|getGrad()|, in order to obtain a
+                        second-order diffusion term in $\xi$, consistent
+                        with the matrix that is formed by
+                        \Class{ImplicitDiffusionTerm} for $\phi$.
+                    \end{reSTadmonition}
+
+                \item[How do I represent a convective source?]
+                    The convection of an independent field $\xi$ as in
+                    \[
+                        \frac{\partial \phi}{\partial t} 
+                        = \nabla\cdot
+                        \left(
+                            \vec{u} \xi
+                        \right)
+                    \]
+                    can be renderd as
+                    \begin{quote}
+\begin{verbatim}
+>>> (u * xi.getArithmeticFaceValue().transpose()).getDivergence()
+\end{verbatim}
+                    \end{quote}
+
+                \item[How do I represent a transient source?]
+                    The time-rate-of change of an independent variable
+                    $\xi$, such as in
+                    \[
+                        \frac{\partial (\rho_1 \phi)}{\partial t}
+                        = \frac{\partial (\rho_2 \xi)}{\partial t}
+                    \]
+                    does not have an abstract form in \FiPy{} and
+                    should be discretized directly, in the manner of
+                    Equation~\eqref{eqn:num:tra}, as
+                    \begin{quote}
+\begin{verbatim}
+>>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
+\end{verbatim}
+                    \end{quote}
+                    This technique is used in
+                    Example~\ref{examples:phase:anisotropy:input}.
+                    
+            \end{description}
+
+            \item[What if my term involves the dependent variable, 
+            but not where \FiPy{} puts it?]
+            
+            Frequently, viewing the term from a different perspective
+            will allow it to be cast in one of the canonical forms.
+            For example, the third term in
+            \[
+                \frac{\partial \phi}{\partial t} 
+                = \nabla\cdot\left( D_1 \nabla \phi\right)
+                + \nabla\cdot\left( D_2 \phi \nabla \xi\right)
+            \]
+            might be considered as the diffusion of the independent
+            variable $\xi$ with a mobility $D_2\phi$ that is a
+            function of the dependent variable $\phi$.  For \FiPy{}'s
+            purposes, however, this term represents the convection of
+            $\phi$, with a velocity $D_2\nabla\xi$, due to the
+            counter-diffusion of $\xi$, so
+            \begin{quote}
+\begin{verbatim}
+>>> diffTerm = ImplicitDiffusionTerm(coeff = D1)
+>>> convTerm = <Specific>ConvectionTerm(coeff = D2 * xi.getFaceGrad(), 
+...                                     diffusionTerm = diffTerm)
+>>> eq = TransientTerm() == diffTerm + convTerm
+\end{verbatim}
+
+            \end{quote}
+
+        \end{description}
+        
+    \item[Why the distinction between \Class{CellVariable} and
+    \Class{FaceVariable} coefficients?]  \FiPy{} solves field
+    variables on the \Class{Cell} centers.  Transient and source terms
+    describe the change in the value of a field at the \Class{Cell}
+    center, and so they take a \Class{CellVariable} coefficient.
+    Diffusion and convection terms involve fluxes \emph{between}
+    \Class{Cell} centers, and are calculated on the \Class{Face}
+    between two \Class{Cell}s, and so they take a \Class{FaceVariable}
+    or \Class{VectorFaceVariable} coefficient.
+    
+        \begin{description}
+            \item [Why can't \FiPy{} just automatically calculate
+            whichever kind of \Class{Variable} that it needs?]  It
+            would be possible for \FiPy{} to automatically substitute
+            \verb+var.getArithmeticFaceValue()+ if a
+            \Class{CellVariable} \verb+var+ is supplied when a
+            \Class{FaceVariable} is needed.  This can have undesirable
+            consequences, however.  For many problems, such as a
+            conserved concentration field that cannot be allowed to
+            drop below zero, a harmonic average is more appropriate
+            than an arithmetic average.  We think it's better to throw
+            an error so that the \FiPy{} user can decide what makes
+            the most sense for their particular problem.
+        \end{description}
+        
+    \item[What does this error message mean?]\hspace*{\fill}
+    
+        \begin{itemize}
+            
+            \item ``\texttt{ValueError: frames are not aligned}''
+            
+            This error means one of two things:
+            
+            \begin{enumerate}
+                
+                \item You have provided a \Class{CellVariable} when 
+                \FiPy{} was expecting a \Class{FaceVariable} (or vice 
+                versa).
+                
+                \item You are multiplying or dividing a 
+                \verb+Vector<Cell|Face>Variable+ by a 
+                \verb+<Cell|Face>Variable+ that is not oriented 
+                the way \FiPy{} expects it. For example
+                \begin{quote}
+\begin{verbatim}
+>>> phi.getGrad() * phi
+\end{verbatim}
+                \end{quote}
+                will attempt to perform
+                \[
+                    \begin{bmatrix}
+                        \partial_x\phi_1 & \partial_y\phi_1 \\
+                        \partial_x\phi_2 & \partial_y\phi_2 \\
+                        \vdots & \vdots \\
+                        \partial_x\phi_n & \partial_y\phi_n
+                    \end{bmatrix}
+                    \ast
+                    \begin{bmatrix}
+                        \phi_1 & \phi_2 & \dots & \phi_n  
+                    \end{bmatrix}
+                    = \text{?}
+                \]
+                whereas
+                \begin{quote}
+\begin{verbatim}
+>>> phi.getGrad() * phi.transpose()
+\end{verbatim}
+                \end{quote}
+                will produce
+                \[
+                    \begin{bmatrix}
+                        \partial_x\phi_1 & \partial_y\phi_1 \\
+                        \partial_x\phi_2 & \partial_y\phi_2 \\
+                        \vdots & \vdots \\
+                        \partial_x\phi_n & \partial_y\phi_n
+                    \end{bmatrix}
+                    \ast
+                    \begin{bmatrix}
+                        \phi_1 \\ \phi_2 \\ \vdots \\ \phi_n  
+                    \end{bmatrix}
+                    =
+                    \begin{bmatrix}
+                        \phi_1\partial_x\phi_1 & \phi_1\partial_y\phi_1 \\
+                        \phi_2\partial_x\phi_2 & \phi_2\partial_y\phi_2 \\
+                        \vdots & \vdots \\
+                        \phi_n\partial_x\phi_n & \phi_n\partial_y\phi_n
+                    \end{bmatrix}
+             \]
+                as was probably desired.
+
+                This implementation detail of the \Numeric{} library
+                will hopefully be handled automatically in a future
+                release of \FiPy{}.
+
+            \end{enumerate}
+            
+            \item ``\texttt{MA.MA.MAError: Cannot automatically
+            convert masked array to Numeric because data is masked in one or
+            more locations.}''
+            
+            This not-so-helpful error message could mean a number of things,
+            but the most likely explanation is that the solution has become
+            unstable and is diverging to $\pm\infty$.  This can be caused by
+            taking too large a timestep or by using explicit terms instead of
+            implicit ones.
+            
+        \end{itemize}
+
+    \item[What if my question isn't answered here?]  
+        
+        Please post your question to the 
+        \href{http://www.ctcms.nist.gov/fipy/mail.html}{mailing list} or 
+        \href{http://sourceforge.net/tracker/?group_id=118428}{file a tracker request}.
+    
+
+\end{description}

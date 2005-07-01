@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/14/05 {4:47:15 PM} 
+ #                                last update: 6/30/05 {8:45:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -219,17 +219,17 @@ class build_docs (Command):
 		dir = os.path.join('documentation', 'manual', 'examples')
 		self._initializeDirectory(dir = dir, type = 'latex')
                 dir = os.path.join(dir, 'latex')
-                modules = ['examples/update0_1to1_0.py',
-                               'examples/diffusion/',
-			       'examples/convection/',
-			       'examples/phase/',
-			       'examples/levelSet/',
-			       'examples/elphf/',
-			       'examples/cahnHilliard/'
-			       ]
+##                 modules = ['examples/update0_1to1_0.py',
+##                                'examples/diffusion/',
+## 			       'examples/convection/',
+## 			       'examples/phase/',
+## 			       'examples/levelSet/',
+## 			       'examples/elphf/',
+## 			       'examples/cahnHilliard/'
+## 			       ]
                                
                 from utils.epydoc import driver
-                driver.epylatex(module_names = modules, options = {'target':dir})
+                driver.epylatex(module_names = ['examples/'], options = {'target':dir})
 
 	if self.html:
 	    dir = os.path.join('documentation', 'manual', 'api')

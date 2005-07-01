@@ -37,6 +37,12 @@ http://www.ctcms.nist.gov/fipy/.
   
    -->
 
+---------------------------------
+Even if you don't read manuals...
+---------------------------------
+
+...please read |INSTALLATION-txt| and |the FAQ|.
+
 -------------------------
 What's new in version 1.0
 -------------------------
@@ -95,7 +101,7 @@ tutorial for updating your existing scripts can be found in
 Download and Installation
 -------------------------
 
-Please refer to |INSTALLATION.txt| for details on download and
+Please refer to |INSTALLATION-txt| for details on download and
 installation. |FiPy| can be redistributed and/or modified
 freely, provided that any derivative works bear some notice that they
 are derived from it, and any modified versions bear some notice that
@@ -194,7 +200,8 @@ or a
 .. include:: utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-.. |INSTALLATION.txt| replace:: |latexINSTALLATION.txt| |htmlINSTALLATION.txt|
+.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
+.. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 
 .. |latexUpdate0_1to1_0.py| raw:: latex
 

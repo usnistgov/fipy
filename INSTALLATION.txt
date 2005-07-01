@@ -106,12 +106,6 @@ If necessary, you can download_ and install it for your platform.
 
    |FiPy| requires at least version 2.3 of Python_.
 
-.. warning::
-
-   |FiPy| version 1.0a1 and older are not compatible with version 2.4 of
-   Python_.  The problem will be fixed in the next release and is available
-   now via CVS_.
-
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 .. _Python Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
@@ -162,8 +156,9 @@ installers`_ are available.
 
 .. note::
 
-   Windows users should consult the INSTALL file in the base PySparse_
-   directory for specialist instructions.
+   Windows users who choose to build from source should pay particular 
+   attention to the instructions in the INSTALL file in the base PySparse_
+   directory.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
@@ -177,8 +172,8 @@ Viewers
 following packages will be required to view the results of |FiPy|
 calculations. |FiPy| will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
-by setting the FIPY_VIEWER environment variable to either 'gist',
-'gnuplot' or 'matplotlib'.
+by setting the ``FIPY_VIEWER`` environment variable to either '``gist``',
+'``gnuplot``' or '``matplotlib``'.
 
 Matplotlib
 ----------
@@ -281,7 +276,7 @@ commands::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
-and press enter at the password prompt, then to download |FiPy| 1.0 
+and press Return at the password prompt, then to download |FiPy| 1.0 
 (recommended)::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
@@ -300,11 +295,6 @@ in the `online CVS instructions`_.
 
 Manual
 ======
-
-.. raw:: html
-
-   The manual can be found in 
-   <tt class="literal"><span class="pre">download/</span></tt>
 
 You can `download the latest manual`_ or, if you have obtained |FiPy| via
 CVS_, a fresh copy can be built by issuing the following command in the
@@ -388,7 +378,7 @@ Using |FiPy|
 ------------
 
 To see examples of problems that |FiPy| is capable of solving, you can
-run any of the scripts in |examples/|. You to type, *e.g.*::
+run any of the scripts in |examples/|. You can type, *e.g.*::
 
     $ python examples/diffusion/steadyState/mesh1D/input.py
 
@@ -404,16 +394,18 @@ option at the command line, *i.e.*::
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ |citePythonTutorial|.
+yourself with the excellent `Python tutorial`_ |citePythonTutorial| 
+or with `Dive Into Python`_ |citeDiveIntoPython|.
 
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
+.. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
 .. _CVS:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
 
 .. include:: utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |TeX| replace:: |latexTeX| |htmlTeX|
-.. |examples/| replace:: |latexExamples/| |htmlExamples/|
+.. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
 .. |documentation:CVS.txt| replace:: |latexCVS.txt| |htmlCVS.txt|
 
@@ -424,6 +416,10 @@ yourself with the excellent `Python tutorial`_ |citePythonTutorial|.
 .. |citePythonTutorial| raw:: latex
 
    \cite{PythonTutorial}
+
+.. |citeDiveIntoPython| raw:: latex
+
+   \cite{DiveIntoPython}
 
 .. |outsideLinks| raw:: html
 

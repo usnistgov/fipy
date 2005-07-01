@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 6/4/05 {8:57:01 AM} 
+ %                                last update: 6/30/05 {4:16:33 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -40,6 +40,18 @@
 
 \usepackage[tocAsPDFchapter]{fipy}
 
+
+% \usepackage{mdwlist}
+% \newenvironment{faq}{%
+%     \begin{basedescript}{%
+%         \setlength\labelwidth\textwidth%
+%         \desclabelstyle{\multilinelabel}%
+%         \renewcommand{\makelabel}[1]{\bfseries##1\newline}%
+%     }%
+% }{%
+%     \end{basedescript}%
+% }
+
 \begin{document}
 
 \doparttoc
@@ -62,6 +74,7 @@ and the Center for Theoretical and Computational Materials Science
 
 \rule{\textwidth}{0.1pt}
 
+\thispagestyle{empty}
 \input disclaimer
 
 \maxtocdepth{all} 
@@ -129,6 +142,11 @@ and the Center for Theoretical and Computational Materials Science
 \inputencoding{latin1}
 
 \input efficiency
+
+\chapter{Frequently Asked Questions}
+\label{chap:FAQ}
+
+\input faq
 
 % TODO List
 
@@ -317,7 +335,11 @@ book~\cite{levelSetBook}.
 \bibliographystyle{fipy}
 \bibliography{refs}
 
+\sloppy
+\raggedright
 \printindex
+
+\fussy
 
 \appendix 
 

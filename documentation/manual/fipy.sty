@@ -12,6 +12,7 @@
 \RequirePackage[index]{epydoc}
 
 % \usepackage[text={7in,9.333in}]{geometry}
+
 \RequirePackage{geometry}
 
 \RequirePackage{crop}
@@ -31,6 +32,9 @@
 \RequirePackage{minitoc}
 % \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{1}
+% minitoc.sty doesn't show the page number of a part's TOC, which
+% looks weird.
+\renewcommand{\thispageparttocstyle}{\thispagestyle{plain}}
 
 \RequirePackage[ascii]{inputenc}
 
@@ -69,12 +73,12 @@
    \renewcommand{\makelabel}{\optionlistlabel}}
 }{\end{list}}
 % begin: floats for footnotes tweaking.
-\setlength{\floatsep}{0.5em}
-\setlength{\textfloatsep}{\fill}
-\addtolength{\textfloatsep}{3em}
-\renewcommand{\textfraction}{0.5}
-\renewcommand{\topfraction}{0.5}
-\renewcommand{\bottomfraction}{0.5}
+% % % \setlength{\floatsep}{0.5em}
+% % % \setlength{\textfloatsep}{\fill}
+% % % \addtolength{\textfloatsep}{3em}
+% % % \renewcommand{\textfraction}{0.5}
+% % % \renewcommand{\topfraction}{0.5}
+% % % \renewcommand{\bottomfraction}{0.5}
 \setcounter{totalnumber}{50}
 \setcounter{topnumber}{50}
 \setcounter{bottomnumber}{50}
@@ -277,10 +281,10 @@
 %     #2%
     \ifthenelse{\equal{#1}{}}{}{%
         \ifthenelse{\equal{#1}{Method}\OR\equal{#1}{Function}}{%
-            \texttt{#2}()%
+            #2()%
         }{%
-            \ifthenelse{\equal{#1}{Module}}{%
-                \texttt{#2}}{%
+            \ifthenelse{\equal{#1}{Module}\OR\equal{#1}{Package}}{%
+                #2}{%
                 \ifthenelse{\equal{#1}{Class}}{%
                     \textbf{#2}}{%
                     #2 \textit{(\MakeLowercase{#1})}}}%
@@ -432,6 +436,19 @@
 \def\UrlSpecials{\do\ {\ }}%
 \def\UrlOrds{\do\*\do\-\do\~}% any ordinary characters that aren't usually
 }
+
+% \newcommand\capdo[1]{\ifx\capdo#1\else 
+%  \do#1{\allowbreak\mathchar`#1} \expandafter\capdo\fi} 
+% 
+% \def\Url@pydo{% style assignments for tt fonts or T1 encoding 
+%  \def\UrlBreaks{\do\.\do\]\do\) }% 
+%  \def\UrlBigBreaks{\do@url@hyp} % 
+%  \def\UrlNoBreaks{\do\(\do\[\do \{\do\<\do\_}% (unnecessary) 
+%  \def\UrlSpecials{\do\ {\ }% 
+%   \capdo ABCDEFGHIJKLMNOPQRSTUVWXYZ\capdo}% 
+%  \def\UrlOrds{\do\*\do\-\do\~}% 
+% } 
+
 \def\url@pystyle{%
 \@ifundefined{selectfont}{\def\UrlFont{\tt}}{\def\UrlFont{\ttfamily}}\Url@pydo
 }
@@ -458,3 +475,18 @@
     \ifthenelse{\equal{#1}{}}{}{\textbf{\large #1}\vspace{1ex}}%
     \raggedright}
     {\end{cminipage}\end{sffamily}\end{center}}
+
+
+% don't restart page counter between frontmatter and mainmatter
+\renewcommand{\pagenumbering}[1]{%
+  \gdef\thepage{\csname @#1\endcsname\c@page}}
+  
+% blank pages should be BLANK
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+\let\cleardoublepage\clearemptydoublepage
+\let\afterparttoc\clearemptydoublepage
+

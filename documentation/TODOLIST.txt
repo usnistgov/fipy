@@ -14,6 +14,7 @@ Release Goals 1.0a3
 - Distribution
 
   * Install and test with no write permissions.
+  * PySparse doesn't build from CVS on Mac OS X with Python 2.4?
 
 Release Goals 1.1
 -----------------
