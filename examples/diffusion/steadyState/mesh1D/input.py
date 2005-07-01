@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/14/05 {9:15:13 AM} 
+ #                                last update: 6/30/05 {8:59:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -193,7 +193,6 @@ remaining lines, leaving::
         viewer = fipy.viewers.make(vars = var,
                                    limits = {'datamin': 0., 'datamax': 1.})
         viewer.plot()
-        raw_input("press key to continue")
 
 Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script
