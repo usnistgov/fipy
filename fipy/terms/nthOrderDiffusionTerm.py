@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 6/28/05 {9:24:10 AM} 
+ #                                last update: 7/5/05 {2:22:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,7 +104,8 @@ class NthOrderDiffusionTerm(Term):
        >>> print term._getCoefficientMatrix(mesh, coeff)
        -1.000000   1.000000  
         1.000000  -1.000000  
-       >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), boundaryConditions = (bcLeft, bcRight))
+       >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+       ...                         boundaryConditions = (bcLeft, bcRight))
        >>> print L
        -1.000000   1.000000  
         1.000000  -3.000000  
@@ -115,7 +116,8 @@ class NthOrderDiffusionTerm(Term):
     x = 2, fixed value 1, fixed curvature 0
 
        >>> bcLeft1 = FixedFlux(mesh.getFacesLeft(), 3.)
-       >>> from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
+       >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
+       ...     import NthOrderBoundaryCondition
        >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2)
        >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
        >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
@@ -125,7 +127,8 @@ class NthOrderDiffusionTerm(Term):
        -1.000000   1.000000  
         1.000000  -1.000000  
        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
-       ...                         boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
+       ...                         boundaryConditions = (bcLeft1, bcLeft2, 
+       ...                                               bcRight1, bcRight2))
        >>> print L
         4.000000  -6.000000  
        -4.000000  10.000000  
@@ -145,7 +148,8 @@ class NthOrderDiffusionTerm(Term):
         1.000000  -1.000000  
        -1.000000   1.000000  
        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh),
-       ...                         boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
+       ...                         boundaryConditions = (bcLeft1, bcLeft2, 
+       ...                                               bcRight1, bcRight2))
        >>> print L
        -4.000000   6.000000  
         2.000000  -4.000000  
@@ -165,7 +169,8 @@ class NthOrderDiffusionTerm(Term):
        -2.000000   2.000000  
         2.000000  -2.000000  
        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
-       ...                         boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
+       ...                         boundaryConditions = (bcLeft1, bcLeft2, 
+       ...                                               bcRight1, bcRight2))
        >>> ans = Numeric.array(((8e+01, -32),(-32, 16)))
        >>> print Numeric.allclose(Numeric.array(L), ans)
        1
@@ -185,7 +190,8 @@ class NthOrderDiffusionTerm(Term):
        -4.000000   4.000000  
         4.000000  -4.000000  
        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
-       ...                         boundaryConditions = (bcLeft1, bcLeft2, bcRight1, bcRight2))
+       ...                         boundaryConditions = (bcLeft1, bcLeft2, 
+       ...                                               bcRight1, bcRight2))
        >>> ans = Numeric.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
        >>> print Numeric.allclose(Numeric.array(L), ans)
        1

@@ -106,17 +106,18 @@ Long term Goals
       are just differences. Thus all operators would be volume integrals
       and then divide through be the volume when asked by getValue()
     - The first step would be to make operators use the terms to evaluate themselves.
-      i.e.
-      DivGradVariable(CellVariable):
-          def __init__(self, var)
-              self.var = var
-	      self.matrix =  ImplicitDiffusionTerm.getMatrix()
+      i.e.::
 
-	  def getMatrix(self, ...):
-              return self.matrix
-         
-          def getValue(self)
-              return ImplicitDiffusionTerm.getMatrix() * self.var.getValue() / self.mesh.getCellVolumes()
+          DivGradVariable(CellVariable):
+              def __init__(self, var)
+                  self.var = var
+                  self.matrix =  ImplicitDiffusionTerm.getMatrix()
+
+              def getMatrix(self, ...):
+                  return self.matrix
+             
+              def getValue(self)
+                  return ImplicitDiffusionTerm.getMatrix() * self.var.getValue() / self.mesh.getCellVolumes()
 
      - Next step would be to move the terms to the operator variables.
      - We are now moving terms into variables and that may have hidden benefits.

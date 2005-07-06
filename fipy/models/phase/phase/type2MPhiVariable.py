@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:33:22 PM} 
+ #                                last update: 7/5/05 {3:41:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,9 @@ class Type2MPhiVariable(_MPhiVariable):
 
     Usage ::
 
-        Type2MPhiVariable(phase = <CellVariable>, temperature = <CellVariable>, parameters = {'kappa1' : X, 'kappa2' : Y})
+        Type2MPhiVariable(phase = <CellVariable>, 
+                          temperature = <CellVariable>, 
+                          parameters = {'kappa1' : X, 'kappa2' : Y})
 
     """
     def _calcValue(self):        

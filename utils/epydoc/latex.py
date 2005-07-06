@@ -423,7 +423,7 @@ class LatexFormatter:
             seclevel = 1
             str += self._section('Class %s' % self._dotted(uid.shortname()), seclevel, uid)
         
-        str += '    \\label{%s}\n' % self._uid_to_label(uid)
+##         str += '    \\label{%s}\n' % self._uid_to_label(uid)
 
         # The class base tree.
         if doc.bases():

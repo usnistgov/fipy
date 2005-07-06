@@ -274,6 +274,7 @@
 
 \renewcommand{\EpydocHyperlink}[2]{\hyperlink{#1}{#2}}
 \renewcommand{\EpydocHypertarget}[2]{\label{#1}\hypertarget{#1}{#2}}
+% \renewcommand{\EpydocHypertarget}[2]{\hypertarget{#1}{#2}}
 
 % differentiate the appearance of different Index items (somewhat 
 % overriden by url.sty-formatted items).
@@ -393,8 +394,8 @@
 
 \renewenvironment{EpydocDescriptionShortList}[1]{%
     \renewcommand{\and}{, }%
-    \raggedright\textbf{#1: }}
-    {}
+    \raggedright\begin{description}\item[#1: ]}
+    {\end{description}}
 
 % lifted from memoir.cls
 \newcommand{\hangfrom}[1]{%

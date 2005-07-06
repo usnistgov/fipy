@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/04 {10:15:25 AM} { 2:45:36 PM}
+ #                                last update: 7/5/05 {3:44:35 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,8 @@ class Matplotlib1DViewer(_MatplotlibViewer):
     ::
     
        viewer = Matplotlib1DViewer(vars = (<CellVariable>, ... ),
-                                   limits = {'xmin': .., 'xmax' : .., 'datamin' : .. 'datamax' : ..},
+                                   limits = {'xmin': .., 'xmax' : .., 
+                                             'datamin' : .. 'datamax' : ..},
                                    title = 'myTitle')
        viewer.plot()
 
