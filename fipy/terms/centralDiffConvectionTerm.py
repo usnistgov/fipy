@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:43:28 PM} 
+ #                                last update: 7/6/05 {5:04:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,10 +37,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import _ConvectionTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class CentralDifferenceConvectionTerm(_ConvectionTerm):
+class CentralDifferenceConvectionTerm(ConvectionTerm):
     r"""
 
     The discretization for the `CentralDifferenceConvectionTerm` is given by
@@ -61,7 +61,7 @@ class CentralDifferenceConvectionTerm(_ConvectionTerm):
 
     """
     
-    class Alpha(FaceVariable):
+    class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
 	    self.value = 0.5

@@ -6,7 +6,7 @@
  # 
  #  FILE: "type1MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 9/3/04 {10:43:19 PM} 
+ #                                last update: 7/6/05 {2:08:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,20 +42,15 @@
 
 __docformat__ = 'restructuredtext'
 
-from mPhiVariable import _MPhiVariable
+from mPhiVariable import MPhiVariable
 
-class Type1MPhiVariable(_MPhiVariable):
+class Type1MPhiVariable(MPhiVariable):
     r"""
     The `Type1MPhiVariable` is given by,
 
     .. raw:: latex
 
         $$ \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
-
-    Usage ::
-
-        Type1MPhiVariable(phase = <CellVariable>, temperature = <CellVariable>)
-
     """
     
     def _calcValue(self):        

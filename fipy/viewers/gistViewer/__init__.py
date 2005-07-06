@@ -1,6 +1,6 @@
 __docformat__ = 'restructuredtext'
 
-from gistViewer import _GistViewer
+from gistViewer import GistViewer
 
 def make(vars, title = None, limits = None):
     r"""

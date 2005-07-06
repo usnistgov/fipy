@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 2/18/05 {12:20:51 PM} 
+ #                                last update: 7/6/05 {4:24:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import _SourceTerm
+from fipy.terms.sourceTerm import SourceTerm
 
-class ImplicitSourceTerm(_SourceTerm):
+class ImplicitSourceTerm(SourceTerm):
     r"""
 
     The `ImplicitSourceTerm` discretisation is given by

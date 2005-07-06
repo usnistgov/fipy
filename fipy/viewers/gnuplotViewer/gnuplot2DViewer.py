@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/3/05 {12:11:23 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:31:38 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,10 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import Gnuplot
 
-from gnuplotViewer import _GnuplotViewer
+from gnuplotViewer import GnuplotViewer
 from fipy.meshes.grid2D import Grid2D
 
-class Gnuplot2DViewer(_GnuplotViewer):
+class Gnuplot2DViewer(GnuplotViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
     Usage
@@ -87,7 +87,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        _GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

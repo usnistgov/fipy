@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/3/04 {10:38:51 PM} 
+ #                                last update: 7/6/05 {5:04:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,10 +39,10 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import _ConvectionTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class ExponentialConvectionTerm(_ConvectionTerm):
+class ExponentialConvectionTerm(ConvectionTerm):
     r"""
     The discretization for the `ExponentialConvectionTerm` is given by
 
@@ -61,7 +61,7 @@ class ExponentialConvectionTerm(_ConvectionTerm):
         ExponentialConvectionTerm(coeff = <VectorFaceVariable|Float>)
 
     """
-    class Alpha(FaceVariable):
+    class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
 	    self.P = self._requires(P)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearJORSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 10/26/04 {11:37:29 AM} 
+ #                                last update: 7/6/05 {2:13:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.solver import _Solver
+from fipy.solvers.solver import Solver
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class LinearJORSolver(_Solver):
+class LinearJORSolver(Solver):
     """
     
     The `LinearJORSolver` solves a linear system of equations using

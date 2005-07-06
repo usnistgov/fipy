@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/4/05 {2:27:08 PM} 
+ #                                last update: 7/6/05 {3:58:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,8 @@
  # ###################################################################
  ##
  
+__docformat__ = 'restructuredtext'
+
 import Numeric
 
 from fipy.terms.term import Term
@@ -48,7 +50,10 @@ import fipy.tools.array as array
 from fipy.tools.inline import inline
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class _FaceTerm(Term):
+class FaceTerm(Term):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, coeff = 1.):
 	Term.__init__(self, coeff = coeff)
         self.coeffMatrix = None

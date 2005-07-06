@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/3/05 {12:11:33 PM} 
+ #                                last update: 7/6/05 {4:39:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,12 +46,12 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 import fipy.tools.array 
-from fipy.viewers.gistViewer import _GistViewer
+from fipy.viewers.gistViewer import GistViewer
 
 import gist
 import colorbar
 
-class Gist2DViewer(_GistViewer):
+class Gist2DViewer(GistViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.
     Usage:
@@ -80,7 +80,7 @@ class Gist2DViewer(_GistViewer):
             
         """
 
-        _GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
+        GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
 
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gist viewer can only display one CellVariable"

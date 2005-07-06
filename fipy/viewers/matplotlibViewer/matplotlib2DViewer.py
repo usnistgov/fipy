@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/14/05 {3:41:01 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:43:00 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,9 +46,9 @@ __docformat__ = 'restructuredtext'
 
 import pylab
 import Numeric
-from matplotlibViewer import _MatplotlibViewer
+from matplotlibViewer import MatplotlibViewer
 
-class Matplotlib2DViewer(_MatplotlibViewer):
+class Matplotlib2DViewer(MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
     Usage
@@ -85,7 +85,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         if not  isinstance(list(vars)[0].getMesh(), Grid2D):
             raise Exception, 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
 
-        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
         self.colorbar = False
         

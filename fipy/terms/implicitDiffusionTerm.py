@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 12/7/04 {2:53:08 PM} 
+ #                                last update: 7/6/05 {2:33:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,9 +37,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.diffusionTerm import _DiffusionTerm
+from fipy.terms.diffusionTerm import DiffusionTerm
 
-class ImplicitDiffusionTerm(_DiffusionTerm):
+class ImplicitDiffusionTerm(DiffusionTerm):
     r"""
     The discretization for the `ImplicitDiffusionTerm` is given by
 

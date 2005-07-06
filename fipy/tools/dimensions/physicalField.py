@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/21/05 {5:37:09 PM} 
+ #                                last update: 7/6/05 {5:01:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,7 @@ import re, string, umath
 import Numeric
 import MA
 
-from NumberDict import NumberDict
+from NumberDict import _NumberDict
 
 # Class definitions
 
@@ -1023,7 +1023,7 @@ class PhysicalUnit:
 	.. _Numeric: http://www.numpy.org
 	"""
         if type(names) == type(''):
-            self.names = NumberDict()
+            self.names = _NumberDict()
             self.names[names] = 1
         else:
             self.names = names
@@ -1233,7 +1233,7 @@ class PhysicalUnit:
                                   self.names.values())):
                         names = self.names/rounded
                     else:
-                        names = NumberDict()
+                        names = _NumberDict()
                         if f != 1.:
                             names[str(f)] = 1
                         for i in range(len(p)):
@@ -1380,7 +1380,7 @@ class PhysicalUnit:
 	    >>> a
 	    <PhysicalUnit meterpersecond>
 	"""
-        self.names = NumberDict()
+        self.names = _NumberDict()
         self.names[name] = 1
 
     def name(self):

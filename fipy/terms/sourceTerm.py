@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 2/25/05 {5:25:43 PM} 
+ #                                last update: 7/6/05 {4:24:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,11 +40,14 @@
  # ###################################################################
  ##
 
-from fipy.terms.cellTerm import _CellTerm
+from fipy.terms.cellTerm import CellTerm
 
-class _SourceTerm(_CellTerm):
+class SourceTerm(CellTerm):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, coeff = 0.):
-	_CellTerm.__init__(self, coeff = coeff) 
+	CellTerm.__init__(self, coeff = coeff) 
 	
     def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()

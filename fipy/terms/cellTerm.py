@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 2/25/05 {5:23:49 PM} 
+ #                                last update: 7/6/05 {3:59:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,10 @@ from fipy.tools.inline import inline
 
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class _CellTerm(Term):
+class CellTerm(Term):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, coeff = 1.):
 	Term.__init__(self, coeff = coeff)
         self.coeffVectors = None

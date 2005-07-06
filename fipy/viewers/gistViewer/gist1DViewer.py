@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/3/05 {1:04:28 PM} 
+ #                                last update: 7/6/05 {4:39:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,9 +46,9 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
  
-from fipy.viewers.gistViewer import _GistViewer
+from fipy.viewers.gistViewer import GistViewer
 
-class Gist1DViewer(_GistViewer):
+class Gist1DViewer(GistViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     Usage:
@@ -75,7 +75,7 @@ class Gist1DViewer(_GistViewer):
           - `style`: the Gist style file to use
 
         """
-        _GistViewer.__init__(self, vars = vars, limits = limits, title = title)
+        GistViewer.__init__(self, vars = vars, limits = limits, title = title)
 	self.xlog = xlog
 	self.ylog = ylog
 	self.style = style
@@ -84,14 +84,14 @@ class Gist1DViewer(_GistViewer):
         subs = {'ymin': 'datamin', 'ymax': 'datamax'}
         
         if subs.has_key(key):
-            limit = _GistViewer._getLimit(self, key = subs[key])
+            limit = GistViewer._getLimit(self, key = subs[key])
             if limit == 'e':
-                limit = _GistViewer._getLimit(self, key = key)
+                limit = GistViewer._getLimit(self, key = key)
         else:
-            limit = _GistViewer._getLimit(self, key = key)
+            limit = GistViewer._getLimit(self, key = key)
             if limit == 'e':
                 subs = {'datamin': 'ymin', 'datamax': 'ymax'}
-                limit = _GistViewer._getLimit(self, key = key)
+                limit = GistViewer._getLimit(self, key = key)
             
         return limit
 

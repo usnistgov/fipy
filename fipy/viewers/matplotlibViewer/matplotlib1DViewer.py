@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/5/05 {3:44:35 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:43:13 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,9 +46,9 @@ __docformat__ = 'restructuredtext'
 
 import pylab
 import Numeric
-from matplotlibViewer import _MatplotlibViewer
+from matplotlibViewer import MatplotlibViewer
 
-class Matplotlib1DViewer(_MatplotlibViewer):
+class Matplotlib1DViewer(MatplotlibViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     Usage

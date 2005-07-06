@@ -2,11 +2,11 @@
 
 import UserDict, copy
 
-class DictWithDefault(UserDict.UserDict):
+class _DictWithDefault(UserDict.UserDict):
 
     """Dictionary with default values
 
-    Constructor:  DictWithDefault(|default|)
+    Constructor:  _DictWithDefault(|default|)
 
     Instances of this class act like standard Python dictionaries,
     except that they return a *copy* of |default| for a key that

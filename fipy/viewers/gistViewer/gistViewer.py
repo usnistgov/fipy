@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 3/4/05 {4:28:18 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:46:46 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,16 +49,19 @@ import os
 import Numeric
 import gist
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import Viewer
 
-class _GistViewer(_Viewer):
+class GistViewer(Viewer):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
+
     
-    id=0
+    _id=0
     
     def __init__(self, vars, limits = None, title = None, dpi = 75):
         """
-        The `GistViewer` should not be called directly only `Gist1DViewer`
-        and `Gist2DViewer` should be called.
+        Create a `GistViewer` object.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -71,24 +74,18 @@ class _GistViewer(_Viewer):
           - `title`: displayed at the top of the Viewer window
           - `dpi`: the dot-per-inch resolution of the display
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        Viewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.mesh = self.vars[0].getMesh()
 
-        self.id = _GistViewer.id 
-	_GistViewer.id += 1
+        self.id = GistViewer._id 
+	GistViewer._id += 1
         
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, key):
-        limit = _Viewer._getLimit(self, key = key)
+        limit = Viewer._getLimit(self, key = key)
         if limit is None:
             limit = 'e'
             
         return limit
-        
-    def plot(self):
-        pass
-
-
-        

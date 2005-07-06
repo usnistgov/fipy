@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 2/3/05 {3:52:49 PM} 
+ #                                last update: 7/6/05 {1:50:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,11 +45,11 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
-class FixedFlux(_BoundaryCondition):
+class FixedFlux(BoundaryCondition):
     r"""
 
     The `FixedFlux` boundary condition adds a contribution, equivalent
@@ -78,7 +78,7 @@ class FixedFlux(_BoundaryCondition):
 	    - `value`: The value to impose.
             
 	"""
-	_BoundaryCondition.__init__(self,faces,value)
+	BoundaryCondition.__init__(self,faces,value)
 	N = len(self.faces)
 	##self.contribution = Numeric.zeros((N,),'d')
 	# get units right
@@ -109,6 +109,6 @@ class FixedFlux(_BoundaryCondition):
 	if order == 1:
 	    return FixedValue(self.faces, self.value)
 	else:
-	    return _BoundaryCondition._getDerivative(self, order)
+	    return BoundaryCondition._getDerivative(self, order)
 
 

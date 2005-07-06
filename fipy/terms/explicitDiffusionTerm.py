@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitDiffusionTerm.py"
  #                                    created: 11/27/03 {11:39:03 AM} 
- #                                last update: 12/7/04 {2:48:20 PM} 
+ #                                last update: 7/6/05 {2:33:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.diffusionTerm import _DiffusionTerm
+from fipy.terms.diffusionTerm import DiffusionTerm
 
-class ExplicitDiffusionTerm(_DiffusionTerm):
+class ExplicitDiffusionTerm(DiffusionTerm):
     r"""
     The discretization for the `ExplicitDiffusionTerm` is given by
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 2/25/05 {5:35:41 PM} 
+ #                                last update: 7/6/05 {5:04:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,28 +44,31 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.faceTerm import _FaceTerm
+from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
-class _ConvectionTerm(_FaceTerm):
+class ConvectionTerm(FaceTerm):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, coeff = 1.0, diffusionTerm = None):
         """
-        `Convection Term` should not be called directly.
+        Create a `ConvectionTerm` object.
         
         :Parameters:
           - `coeff` : The `term`'s coefficient value.
-          - `diffusionTerm` : If a `_DiffusionTerm` is given, the `_ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
+          - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
-	_FaceTerm.__init__(self, coeff = coeff)
+	FaceTerm.__init__(self, coeff = coeff)
 	
     def __neg__(self):
         """
         Negate the term.
 
-           >>> -_ConvectionTerm(coeff = 1.0)
-           _ConvectionTerm(coeff = -1.0)
+           >>> -ConvectionTerm(coeff = 1.0)
+           ConvectionTerm(coeff = -1.0)
         """
         return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
 
@@ -89,7 +92,7 @@ class _ConvectionTerm(_FaceTerm):
                 if diffCoeff == 0.:
                     diffCoeff = 1e-20
 
-            alpha = self.Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+            alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

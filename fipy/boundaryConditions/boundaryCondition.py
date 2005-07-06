@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 4/21/05 {4:34:21 PM} 
+ #                                last update: 7/6/05 {3:57:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,9 +46,11 @@ import Numeric
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class _BoundaryCondition:
+class BoundaryCondition:
     """
-    Generic boundary condition base class
+    Generic boundary condition base class. 
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
     
     def __init__(self,faces,value):

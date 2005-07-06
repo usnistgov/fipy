@@ -6,7 +6,7 @@
  # 
  #  FILE: "hybridConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/1/05 {11:03:00 AM} 
+ #                                last update: 7/6/05 {5:04:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,10 +39,10 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import _ConvectionTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class HybridConvectionTerm(_ConvectionTerm):
+class HybridConvectionTerm(ConvectionTerm):
     r"""
     The discretization for the `HybridConvectionTerm` is given by
 
@@ -62,7 +62,7 @@ class HybridConvectionTerm(_ConvectionTerm):
 
     """
 
-    class Alpha(FaceVariable):
+    class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
 	    self.P = self._requires(P)

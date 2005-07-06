@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 10/26/04 {11:37:29 AM} 
+ #                                last update: 7/6/05 {2:13:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,11 +48,11 @@ import precon
 import itsolvers
 import superlu
 
-from fipy.solvers.solver import _Solver
+from fipy.solvers.solver import Solver
 from fipy.tools.sparseMatrix import _SparseMatrix
 import Numeric
 
-class LinearLUSolver(_Solver):
+class LinearLUSolver(Solver):
     """
     
     The `LinearLUSolver` solves a linear system of equations using
@@ -81,7 +81,7 @@ class LinearLUSolver(_Solver):
 
         """
         
-	_Solver.__init__(self, tolerance = tolerance, steps = steps)
+	Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
         diag = L.takeDiagonal()

@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 12/6/04 {4:32:49 PM} 
+ #                                last update: 7/6/05 {2:13:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,9 +48,9 @@ import sys
 import precon
 import itsolvers
 
-from fipy.solvers.solver import _Solver
+from fipy.solvers.solver import Solver
 
-class LinearPCGSolver(_Solver):
+class LinearPCGSolver(Solver):
     """
     
     The `LinearPCGSolver` solves a linear system of equations using the

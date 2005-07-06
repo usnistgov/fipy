@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/3/04 {10:43:22 PM} 
+ #                                last update: 7/6/05 {2:13:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,9 +45,9 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import scipy.linalg
 
-from fipy.solvers.solver import _Solver
+from fipy.solvers.solver import Solver
 
-class LinearScipyLUSolver(_Solver):
+class LinearScipyLUSolver(Solver):
     """
     
     The `LinearScipyLUSolver` solves a linear system of equations
@@ -75,7 +75,7 @@ class LinearScipyLUSolver(_Solver):
             For large systems a number of steps is generally required.
 
         """
-	_Solver.__init__(self, tolerance = tolerance, steps = steps)
+	Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 3/10/05 {4:41:12 PM}
+ #                                last update: 7/6/05 {1:46:35 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,12 +49,12 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import array
 from fipy.tools import vector
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class FixedValue(_BoundaryCondition):
+class FixedValue(BoundaryCondition):
     r"""
     
     The `FixedValue` boundary condition adds a contribution,

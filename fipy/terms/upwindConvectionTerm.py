@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/1/05 {11:03:02 AM} 
+ #                                last update: 7/6/05 {5:04:06 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,13 +38,13 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import _ConvectionTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools.inline import inline
 
-class UpwindConvectionTerm(_ConvectionTerm):
+class UpwindConvectionTerm(ConvectionTerm):
     r"""
     The discretization for the `UpwindConvectionTerm` is given by
 
@@ -64,7 +64,7 @@ class UpwindConvectionTerm(_ConvectionTerm):
     
     """
     
-    class Alpha(FaceVariable):
+    class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
 	    self.P = self._requires(P)

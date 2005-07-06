@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 7/5/05 {3:41:45 PM} 
+ #                                last update: 7/6/05 {2:08:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,24 +42,17 @@
 
 __docformat__ = 'restructuredtext'
 
-from mPhiVariable import _MPhiVariable
+from mPhiVariable import MPhiVariable
 import Numeric
 import fipy.tools.array as array
 
-class Type2MPhiVariable(_MPhiVariable):
+class Type2MPhiVariable(MPhiVariable):
     r"""
     The `Type2MPhiVariable` is given by,
 
     .. raw:: latex
 
         $$\phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
-
-    Usage ::
-
-        Type2MPhiVariable(phase = <CellVariable>, 
-                          temperature = <CellVariable>, 
-                          parameters = {'kappa1' : X, 'kappa2' : Y})
-
     """
     def _calcValue(self):        
         self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * array.arctan(self.parameters['kappa 2'] * self.temperature[:])

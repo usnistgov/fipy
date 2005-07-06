@@ -1244,10 +1244,10 @@ class LatexFormatter:
         return not self._docmap.has_key(x.module())
         
     def _hyperlink(self, target, name):
-        if not self._excluded(target):
-            return '\\EpydocHyperlink{%s}{%s}' % (self._uid_to_label(target), self._dotted(name))
-        else:
+        if self._excluded(target) or (target.is_private() and not self._show_private):
             return self._dotted(name)
+        else:
+            return '\\EpydocHyperlink{%s}{%s}' % (self._uid_to_label(target), self._dotted(name))
 
     def _hypertarget(self, uid, sig):
         return '\\EpydocHypertarget{%s}{%s}' % (self._uid_to_label(uid), self._dotted(sig))

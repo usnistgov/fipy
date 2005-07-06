@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/5/05 {5:31:50 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:31:22 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,11 @@ __docformat__ = 'restructuredtext'
 
 import Gnuplot
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import Viewer
 
-class _GnuplotViewer(_Viewer):
+class GnuplotViewer(Viewer):
     """
+    .. attention:: This class is abstract. Always create one of its subclasses.
 
     The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
     `Gnuplot2DViewer` It uses a front end python wrapper available to
@@ -85,12 +86,12 @@ class _GnuplotViewer(_Viewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        Viewer.__init__(self, vars = vars, limits = limits, title = title)
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
     def _getLimit(self, key):
-        limit = _Viewer._getLimit(self, key)
+        limit = Viewer._getLimit(self, key)
         if limit is None:
             return ''
         else:

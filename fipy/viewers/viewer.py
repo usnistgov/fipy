@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 3/4/05 {6:07:54 PM} 
+ #                                last update: 7/6/05 {4:30:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,10 +44,13 @@
 
 __docformat__ = 'restructuredtext'
 
-class _Viewer:
+class Viewer:
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, vars, limits = None, title = None):
         """
-        The `Viewer` class should not be called directly.
+        Create a `Viewer` object.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -97,4 +100,10 @@ class _Viewer:
             limit = None
             
         return limit
+        
+    def plot(self):
+        """
+        Update the display of the viewed variables.
+        """
+        pass
 

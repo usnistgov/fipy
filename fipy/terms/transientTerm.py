@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 2/25/05 {5:25:50 PM} 
+ #                                last update: 7/6/05 {4:26:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.cellTerm import _CellTerm
+from fipy.terms.cellTerm import CellTerm
 
-class TransientTerm(_CellTerm):
+class TransientTerm(CellTerm):
     r"""
     The `TransientTerm` is discretized in the following way
     

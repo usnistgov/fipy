@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 4/4/05 {2:23:19 PM} 
+ #                                last update: 7/6/05 {3:57:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,12 @@
 
 import Numeric
 
-from fipy.terms.faceTerm import _FaceTerm
+from fipy.terms.faceTerm import FaceTerm
 
-class _DiffusionTerm(_FaceTerm):
+class DiffusionTerm(FaceTerm):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh._getFaceAreas() / mesh._getCellDistances()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/5/05 {5:31:50 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {4:44:23 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,14 +47,14 @@ __docformat__ = 'restructuredtext'
 
 import pylab
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import Viewer
 
-class _MatplotlibViewer(_Viewer):
+class MatplotlibViewer(Viewer):
     """
+    .. attention:: This class is abstract. Always create one of its subclasses.
 
-    The `_MatplotlibViewer` is the base class for `Matplotlib1DViewer`
-    and `Matplotlib2DViewer` which both use the Matplotlib_ python
-    plotting package.
+    The `MatplotlibViewer` is the base class for the viewers that use the
+    Matplotlib_ python plotting package.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
@@ -62,8 +62,7 @@ class _MatplotlibViewer(_Viewer):
         
     def __init__(self, vars, limits = None, title = None):
         """
-        The `_MatplotlibViewer` should not be called directly only `Matplotlib1DViewer`
-        and `Matplotlib2DViewer` should be called.
+        Create a `MatplotlibViewer`.
         
         :Parameters:
 
@@ -77,7 +76,7 @@ class _MatplotlibViewer(_Viewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        Viewer.__init__(self, vars = vars, limits = limits, title = title)
 
         pylab.ion()
 

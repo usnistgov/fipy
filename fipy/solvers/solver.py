@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 4/21/05 {3:48:54 PM} 
+ #                                last update: 7/6/05 {3:56:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,14 +43,16 @@
 
 __docformat__ = 'restructuredtext'
 
-class _Solver:
+class Solver:
     """
     The base `LinearXSolver` class.
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
     def __init__(self, tolerance = 1e-10, steps = 1000):
         """
-        The `Solver` class should not be invoked directly.
+        Create a `Solver` object.
 
         :Parameters:
           - `tolerance`: The required error tolerance.

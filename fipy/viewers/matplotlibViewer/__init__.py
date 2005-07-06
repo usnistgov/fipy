@@ -1,6 +1,6 @@
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import _MatplotlibViewer
+from matplotlibViewer import MatplotlibViewer
 
 def make(vars, title = None, limits = None):
     """

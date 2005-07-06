@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 2/3/05 {3:21:52 PM} 
+ #                                last update: 7/6/05 {1:46:34 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -45,11 +45,11 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.boundaryConditions.boundaryCondition import _BoundaryCondition
+from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
 
-class NthOrderBoundaryCondition(_BoundaryCondition):
+class NthOrderBoundaryCondition(BoundaryCondition):
     """
 
     This boundary condition is generally used in conjunction with the
@@ -78,7 +78,7 @@ class NthOrderBoundaryCondition(_BoundaryCondition):
         """
         self.order = order
         self.derivative = {}
-        _BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self,faces,value)
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged

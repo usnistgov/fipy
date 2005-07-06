@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 4/1/05 {11:03:04 AM} 
+ #                                last update: 7/6/05 {5:04:08 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -38,13 +38,13 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.terms.convectionTerm import _ConvectionTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools.inline import inline
 
-class PowerLawConvectionTerm(_ConvectionTerm):
+class PowerLawConvectionTerm(ConvectionTerm):
     r"""
     The discretization for the `PowerLawConvectionTerm` is given by
 
@@ -63,7 +63,7 @@ class PowerLawConvectionTerm(_ConvectionTerm):
        PowerLawConvectionTerm(coeff = <VectorFaceVariable|Float>)
 
     """    
-    class Alpha(FaceVariable):
+    class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
 	    self.P = self._requires(P)

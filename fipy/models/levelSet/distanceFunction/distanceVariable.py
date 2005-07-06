@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 4/6/05 {3:48:50 PM}
+ #                                last update: 7/6/05 {5:09:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -146,7 +146,8 @@ class DistanceVariable(CellVariable):
        >>> v2 = 1.5
        >>> tmp1 = (v1 + v2) / 2 + Numeric.sqrt(2. - (v1 - v2)**2) / 2
        >>> tmp2 = tmp1 + 1 / Numeric.sqrt(2)
-       >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, tmp1, 1.5, tmp1, tmp2))
+       >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
+       ...                      tmp1, 1.5, tmp1, tmp2))
        1
        >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
        >>> var.extendVariable(extensionVar)

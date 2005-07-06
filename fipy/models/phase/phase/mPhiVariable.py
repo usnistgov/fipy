@@ -6,7 +6,7 @@
  # 
  #  FILE: "mPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:13 AM} 
+ #                                last update: 7/6/05 {3:57:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,10 +44,13 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 
-class _MPhiVariable(CellVariable):
+class MPhiVariable(CellVariable):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, phase = None, temperature = None, parameters = None):
         """
-        Base class for `_MPhiVariable` objects
+        Base class for `MPhiVariable` objects
 
         :Parameters:
           - `phase` : The phase field.

@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetDiffusionEquation.py"
  #                                    created: 9/8/04 {10:39:23 AM} 
- #                                last update: 9/8/04 {4:00:40 PM} 
+ #                                last update: 7/6/05 {2:32:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,7 +73,7 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
       - `ionVar` : The species concentration variable.    
       - `distanceVar` : A `DistanceVariable` object.
       - `transientCoeff` : The coefficient for the `TransientTerm`
-      - `diffusionCoeff` : The coefficient for the `_DiffusionTerm`
+      - `diffusionCoeff` : The coefficient for the `DiffusionTerm`
 
     """
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 12/6/04 {4:32:02 PM} 
+ #                                last update: 7/6/05 {2:13:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,10 +44,10 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.solver import _Solver
+from fipy.solvers.solver import Solver
 import scipy.linalg.iterative
 
-class LinearScipyGMRESSolver(_Solver):
+class LinearScipyGMRESSolver(Solver):
     """
     
     The `LinearScipyGMRESSolver` solves a linear system of equations

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 6/3/05 {12:12:24 PM} 
+ #                                last update: 7/6/05 {4:26:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,10 +48,10 @@ import sys
 
 import Numeric
  
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import Viewer
 from fipy.variables.vectorCellVariable import VectorCellVariable
 
-class TSVViewer(_Viewer):
+class TSVViewer(Viewer):
     """
     "Views" one or more variables in tab-separated-value format.
         
@@ -91,7 +91,7 @@ class TSVViewer(_Viewer):
             Any limit set to a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer output
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        Viewer.__init__(self, vars = vars, limits = limits, title = title)
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:
