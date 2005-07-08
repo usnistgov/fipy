@@ -180,6 +180,9 @@ class LatexFormatter:
               order or in the order that they were specified in on
               the command line.  By default, modules are listed in
               alphabetical order.  (type=C{boolean})
+            - C{list_modules}: Whether to list modules at the beginning
+              of a package.  By default, modules are listed.  
+              (type=C{boolean})
         """
         self._docmap = docmap
 
@@ -191,6 +194,7 @@ class LatexFormatter:
         self._list_classes_separately=kwargs.get('list_classes_separately',0)
         self._inheritance = kwargs.get('inheritance', 'listed')
         self._exclude = kwargs.get('exclude', 1)
+        self._list_modules = kwargs.get('list_modules', 1)
         self._top_section = 2
         self._index_functions = 1
         self._hyperref = 1
@@ -384,7 +388,7 @@ class LatexFormatter:
         str += self._standard_fields(doc)
 
         # If it's a package, list the sub-modules.
-        if doc.ispackage() and doc.modules():
+        if self._list_modules and doc.ispackage() and doc.modules():
             str += self._module_list(doc, doc.modules())
 
         # Class list. !! add summaries !!
@@ -919,21 +923,17 @@ class LatexFormatter:
         if uid is None: return ''
 
         doc = self._docmap.get(uid, None)
-        str = ' '*depth + '\\item \\textbf{'
-        str += self._dotted(uid.shortname()) +'}'
+        str = ' '*depth + '\\item[%s]' % self._hyperlink(uid, uid.shortname())
         if doc and doc.descr():
             str += ': %s\n' % self._summary(doc, uid)
         if self._crossref:
-            str += ('\n  \\textit{(Section \\ref{%s}' %
-                    self._uid_to_label(uid))
-            str += ', p.~\\pageref{%s})}\n\n' % self._uid_to_label(uid)
+            str += '\\CrossRef{%s}\n\n' % self._uid_to_label(uid)
         if doc and doc.ispackage() and doc.modules():
-            str += ' '*depth + '  \\begin{itemize}\n'
-            str += ' '*depth + '\\setlength{\\parskip}{0ex}\n'
+            str += ' '*depth + '  \\begin{EpydocModuleSubList}\n'
             modules = [l.target() for l in self._filter(doc.modules())]
             for module in modules:
                 str += self._module_tree_item(module, depth+4)
-            str += ' '*depth + '  \\end{itemize}\n'
+            str += ' '*depth + '  \\end{EpydocModuleSubList}\n'
         return str
 
     def _module_tree(self, sortorder=None):
@@ -968,9 +968,8 @@ class LatexFormatter:
         if len(modules) == 0: return ''
         str = self._start_of('Modules')
         str += self._section('Modules', 1)
-        str += '\\begin{itemize}\n'
-        str += '\\setlength{\\parskip}{0ex}\n'
-
+        str += '\\begin{EpydocModuleList}\n'
+        
         groups = container.by_group(modules)
         
         # Create the portion of the table containing the group
@@ -980,15 +979,15 @@ class LatexFormatter:
         for name, group in groups:
             # Print a header within the table
             if name is not None:
-                str += '  \\item \\textbf{%s}\n' % name
-                str += '  \\begin{itemize}\n'
+                str += '  \\item[%s]\n' % name
+                str += '  \\begin{EpydocModuleSubList}\n'
             # Add the lines for each module
             for link in group:
                 str += self._module_tree_item(link.target())
             if name is not None:
-                str += '  \end{itemize}\n'
+                str += '  \end{EpydocModuleSubList}\n'
         
-        return str + '\\end{itemize}\n\n'
+        return str + '\\end{EpydocModuleList}\n\n'
 
     #////////////////////////////////////////////////////////////
     # Helpers
