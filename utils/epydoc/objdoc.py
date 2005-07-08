@@ -363,7 +363,7 @@ class Raise:
     of the exception's name and its description.  Exceptions are used
     by L{FuncDoc}.
     """
-    def __init__(self, name, descr):
+    def __init__(self, name, descr, container=None):
         """
         Construct the documentation for the raising of an exception.
 
@@ -372,9 +372,13 @@ class Raise:
         @param descr: A description of the circumstances under which
             this exception is raised.
         @type descr: L{markup.ParsedDocstring}
+        @param container: The UID of the raising function or method (used
+            to find the UID of the raised exception).
+        @type container: C{None} or L{UID}
         """
         self._name = name
         self._descr = descr
+        self._uid = findUID(name, container)
         
     def name(self):
         """
@@ -390,6 +394,13 @@ class Raise:
         @rtype: L{markup.ParsedDocstring}
         """
         return self._descr
+
+    def uid(self):
+        """
+        @return: The UID of the exception.
+        @rtype: L{UID} or C{None}
+        """
+        return self._uid
         
     def __repr__(self):
         return '<Raise '+self._name+'>'
@@ -504,8 +515,9 @@ class ObjDoc:
     """
     # Note: order is significant.
     STANDARD_FIELDS = [
-        # If it's depreciated, put that first.
-        DocField(['depreciated'], 'Depreciated', multivalue=0),
+        # If it's deprecated, put that first.
+        DocField(['deprecated', 'depreciated'],
+                 'Deprecated', multivalue=0),
 
         # Status info
         DocField(['version'], 'Version', multivalue=0),
@@ -952,8 +964,8 @@ class ObjDoc:
             docstring = _getdoc(source_uid.value())
             if type(docstring) != types.StringType: return
             docstring = docstring.strip()
-            if not docstring: return
-            self.__include(docstring)
+            if docstring: self.__include(docstring)
+            return
                 
         for field in self._fieldtypes:
             if tag not in field.tags: continue
@@ -1283,7 +1295,7 @@ class ModuleDoc(ObjDoc):
                          (symbol.simple_stmt,
                           (symbol.small_stmt,
                            ['expr_stmt']),
-                          (token.NEWLINE, '')))
+                          (token.NEWLINE, ['optional_comment'])))
     _LHS_PATTERN = (symbol.test,
              (symbol.and_test,
               (symbol.not_test,
@@ -2196,20 +2208,10 @@ class FuncDoc(ObjDoc):
         self._raises = []
         self._overrides = None
         self._matches_override = 0
-        docstring = _getdoc(func)
 
         # Initialize the signature
         if uid.is_method(): func = func.im_func
-        if type(func) is types.FunctionType:
-            self._init_signature(func)
-        elif uid.is_routine():
-            # If there's a builtin signature, then just parse it;
-            # don't include it in the description.
-            if self._init_builtin_signature(func):
-                if '\n' in docstring:
-                    docstring = docstring.split('\n', 1)[1]
-        else:
-            raise TypeError("Can't document %s" % func)
+        docstring = self._init_signature(func)
 
         # These are used to keep track of params & keyword arguments
         # while processing fields; we can delete them when we're done.
@@ -2237,106 +2239,170 @@ class FuncDoc(ObjDoc):
         # Print out any errors/warnings that we encountered.
         self._print_errors()
 
-    # The regular expression that is used to check whether a builtin
-    # function or method has a signature in its docstring.  Err on the
-    # side of conservatism in detecting signatures.
-    _SIGNATURE_RE = re.compile(
-        # Class name (for builtin methods)
-        r'^\s*((?P<self>\w+)\.)?' +
-        
-        # The function name (must match exactly)
-        r'(?P<func>\w+)' +
-        
-        # The parameters
-        r'\((?P<params>(\s*\[?\s*[\w\-\.]+(=.+?)?'+
-        r'(\s*\[?\s*,\s*\]?\s*[\w\-\.]+(=.+?)?)*\]*)?)\s*\)' +
-        
-        # The return value (optional)
-        r'(\s*(->|<=+>)\s*(?P<return>\S.*?))?'+
-        
-        # The end marker
-        r'\s*(\n|\s+--\s+|$|\.\s|\.\n)')
-        
-    def _init_builtin_signature(self, func):
+    def _init_signature(self, func):
         """
-        Construct the signature for a builtin function or method from
-        its docstring.  If the docstring uses the standard convention
-        of including a signature in the first line of the docstring
-        (and formats that signature according to standard
+        Construct the signature for a function or method from its
+        docstring and/or argspec.  If the docstring uses the standard
+        convention of including a signature in the first line of the
+        docstring (and formats that signature according to standard
         conventions), then it will be used to extract a signature.
-        Otherwise, the signature will be set to a single varargs
-        variable named C{"..."}.
+        Otherwise, if an argspec is available, then it will be used to
+        initialize the signature; otherwise, the signature will be set
+        to a single varargs variable named C{"..."}.
 
-        @rtype: C{None}
+        @return: The docstring, with the signature line removed if it
+        was present.
         """
+        docstring = _getdoc(func)
         self._params = []
         self._kwarg_param = None
         self._vararg_param = None
         self._return = Param('return')
 
-        m = FuncDoc._SIGNATURE_RE.match(_getdoc(func) or '')
-        if m and m.group('func') == func.__name__:
-            params = m.group('params')
-            rtype = m.group('return')
-            selfparam = m.group('self')
-            
-            if selfparam and not rtype: 
-                self._vararg_param = Param('...')
-                return 0
-            
-            # Extract the parameters from the signature.
-            if params:
-                # Figure out which parameters are optional.
-                while '[' in params or ']' in params:
-                    m2 = re.match(r'(.*)\[([^\[\]]+)\](.*)', params)
-                    if not m2:
-                        self._vararg_param = Param('...')
-                        return 0
-                    (start, mid, end) = m2.groups()
-                    mid = re.sub(r'((,|^)\s*[\w\-\.]+)', r'\1=...', mid)
-                    params = start+mid+end
-
-                params = re.sub(r'=...=' , r'=', params)
-                for name in params.split(','):
-                    if '=' in name: (name, default) = name.split('=',1)
-                    else: default = None
-                    name = name.strip()
-                    if name == '...':
-                        self._vararg_param = Param('...', default=default)
-                    elif name.startswith('**'):
-                        self._kwarg_param = Param(name[1:], default=default)
-                    elif name.startswith('*'):
-                        self._vararg_param = Param(name[1:], default=default)
-                    else:
-                        self._params.append(Param(name, default=default))
-
-            # Extract the return type/value from the signature
-            if rtype:
-                if selfparam: self._return.set_descr(markup.parse(rtype))
-                else: self._return.set_type(markup.parse(rtype, verbatim=0))
-
-            # Add the self parameter, if it was specified.
-            if selfparam:
-                self._params.insert(0, Param(selfparam))
-
-            # We found a signature.
-            return 1
-            
+        # Check for a signatue in the docstring.
+        if self._init_signature_from_docstring(docstring or '', func.__name__):
+            # Remove the signature from the docstring.
+            return self._SIGNATURE_RE.sub('', docstring, 1)
+        
+        # Otherwise, use the argspec if it's a function.
+        elif type(func) is types.FunctionType:
+            self._init_signature_from_argspec(*inspect.getargspec(func))
+            return docstring
+        
+        # Otherwise, fall back to the signature "f(...)".
         else:
-            # We couldn't parse the signature.
             self._vararg_param = Param('...')
-            return 0
+            return docstring
 
-    def _init_signature(self, func):
-        # Get the function's signature
-        (args, vararg, kwarg, defaults) = inspect.getargspec(func)
+    # A regular expression pattern that matches a parameter (including
+    # optional type and default value) when checking for a signature
+    # in a docstring.  Note that '-' and '.' are accepted as
+    # characters for a parameter name, even though they're not valid
+    # characters for a python identifier, because several of Python's
+    # builtin functions use those characters in their docstring
+    # signatures.  Note also that the default value uses ".+?", i.e.,
+    # it's non-greedy (it will stop as soon as possible).
+    _SIGNATURE_PARAM_PATTERN = (r'''
+        [\w\-\.]+ [\ \t]*                # Param name
+        (: [\ \t]* [\w\-\.]+ [\ \t]*)?   # Optional type
+        (=.+?)?                          # Optional default value
+        ''')
 
-        # Construct argument/return Variables.
+    # The regular expression that is used to check whether a function
+    # or method has a signature in its docstring.  Err on the side of
+    # conservatism in detecting signatures.  
+    _SIGNATURE_RE = re.compile(r'''
+        ^[\ \t]* \n? [\ \t]*        # Optional leading newline and indent.
+        ((?P<self>\w+)\.)?          # Class name (for builtin methods)
+        (?P<func>\w+)               # The function name (must match exactly)
+        \( (?P<params>              # The parameters..
+            ([\ \t]* \[* [\ \t]*        # Optional "["
+              %s                        # First parameter
+              (                         # Remaining parameters...
+                 [\ \t]* \[? [\ \t]*        # Optional "["
+                 ,                          # Separating ","
+                 [\ \t]* \]? [\ \t]*        # Optional "]"
+                 %s)*                       # The parameter
+              [\ \t]* (\] [\ \t]*)*     # Optional closing "]"s
+            )?)
+        \)
+        ( [\ \t]* (->|<=+> )[\ \t]* # Arrow ("->" or "<=>") followed by
+          (?P<return>\S.*?))?       #   the return value (optional)
+        [\ \t]*
+        (\n | $ | [\ \t]+--[\ \t]+  # The end-marker (usually EOL, but
+            | \.[\ \t] | \.\n )     #   sometimes "." or " -- ").
+        ''' % (_SIGNATURE_PARAM_PATTERN, _SIGNATURE_PARAM_PATTERN),
+        re.VERBOSE)
+        
+    def _init_signature_from_docstring(self, docstring, func_name):
+        """
+        If the given docstring begins with a single line describing a
+        function or method's signature, then initialize this FuncDoc's
+        signature variables from it, and return true; otherwise, return
+        false.
+        
+        @param docstring: The docstring that should be checked for a
+        signature line.
+        @param func_name: The name of the function or method that the
+        docstring was taken from.
+        """
+        # Check if the docstring begins w/ a signature line.
+        m = self._SIGNATURE_RE.match(docstring)
+        if (not m) or (m.group('func') != func_name):
+            return False
+
+        # Extract relevant fields from the signature line.
+        params = m.group('params')
+        rtype = m.group('return')
+        selfparam = m.group('self')
+        
+        # Extract individual parameters.
+        if params:
+            # Figure out which parameters are optional.
+            while '[' in params or ']' in params:
+                m2 = re.match(r'(.*)\[([^\[\]]+)\](.*)', params)
+                if not m2:
+                    return False
+                (start, mid, end) = m2.groups()
+                mid = re.sub(r'((,|^)\s*[\w\-\.]+)', r'\1=...', mid)
+                params = start+mid+end
+
+            params = re.sub(r'=...=' , r'=', params)
+            for name in params.split(','):
+                # Chop off the default value (if present)
+                if '=' in name:
+                    (name, default) = name.split('=',1)
+                    default = default.strip()
+                else:
+                    default = None
+                    
+                # Chop off the type (if present)
+                if ':' in name:
+                    (name, ptype) = name.split(':', 1)
+                    ptype = markup.parse('L{%s}' % ptype.strip(),
+                                         markup='epytext')
+                else:
+                    ptype = None
+                    
+                # Trim the name.
+                name = name.strip()
+
+                # Construct the specified parameters.
+                if name == '...':
+                    self._vararg_param = Param('...', default=default,
+                                               type=ptype)
+                elif name.startswith('**'):
+                    self._kwarg_param = Param(name[1:], default=default,
+                                              type=ptype)
+                elif name.startswith('*'):
+                    self._vararg_param = Param(name[1:], default=default,
+                                              type=ptype)
+                else:
+                    self._params.append(Param(name, default=default,
+                                              type=ptype))
+
+        # Extract the return type/value from the signature
+        if rtype:
+            if selfparam: self._return.set_descr(markup.parse(rtype))
+            else: self._return.set_type(markup.parse(rtype, verbatim=0))
+
+        # Add the self parameter, if it was specified.
+        if selfparam:
+            self._params.insert(0, Param(selfparam))
+
+        # We found a signature.
+        return True
+
+    def _init_signature_from_argspec(self, args, vararg, kwarg, defaults):
         self._params = self._params_to_vars(args, defaults)
-        if vararg: self._vararg_param = Param(vararg)
-        else: self._vararg_param = None
-        if kwarg: self._kwarg_param = Param(kwarg)
-        else: self._kwarg_param = None
+        if vararg:
+            self._vararg_param = Param(vararg)
+        else:
+            self._vararg_param = None
+        if kwarg:
+            self._kwarg_param = Param(kwarg)
+        else:
+            self._kwarg_param = None
         self._return = Param('return')
 
     def _params_to_vars(self, params, defaults):
@@ -2485,7 +2551,7 @@ class FuncDoc(ObjDoc):
             if arg is None:
                 warnings.append(tag+' expected a single argument')
                 return
-            self._raises.append(Raise(arg, descr))
+            self._raises.append(Raise(arg, descr, self._uid))
         else:
             ObjDoc._process_field(self, tag, arg, descr, warnings)
 
@@ -3103,6 +3169,191 @@ class DocMap(UserDict.UserDict):
 
     def __repr__(self):
         return '<Documentation: '+`len(self.data)`+' objects>'
+
+##################################################
+## Variable documentation extraction
+##################################################
+
+_vardef_cache = (None,None)
+def add_vardefs(uid):
+    if uid.is_module(): module = uid
+    else: module = uid.module()
+
+    # Get the vardef docstrings for this module.
+    if module[0] == _vardef_cache[0]:
+        vardefs = _vardef_cache[1]
+    else:
+        try: filename = module.value().__file__
+        except: return # E.g., a builtin module
+        if filename[-4:-1].lower() == '.py':
+            filename = filename[:-1]
+    
+        # Extract vardefs from the module.
+        try: vardefs = find_vardefs(open(filename).read(), module.name())
+        except: return # E.g., a .pyc with no corresponding .py
+
+    # X
+    for varname, varparent, vartype, vardoc in vardefs:
+        if varparent == uid.name():
+            vuid = make_uid(None, uid, varname)
+            var = Var(varname, vuid, vardoc, typ, 0)
+            if uid.is_module():
+                module._variables.append(Link(varname, vuid))
+            elif uid.is_class():
+                if vartype == 'instvar':
+                    module._ivariables.append(Link(varname, vuid))
+                else:
+                    module._cvariables.append(Link(varname, vuid))
+            else:
+                raise AssertionError, 'Broken'
+                
+
+    
+
+
+#: A regular expression describing a single Python string literal.
+#: Tripple-quoted, unicode, and raw strings are supported.
+_STRING_LITERAL = re.compile(r"""
+u?r?(?:            # Single-quote (') strings
+  '''(?:                 # Tripple-quoted can contain...
+      [^']               | # a non-quote
+      \\'                | # a backslashed quote
+      '{1,2}(?!')          # one or two quotes
+    )*''' |
+  '(?:                   # Non-tripple quoted can contain...
+     [^']                | # a non-quote
+     \\'                   # a backslashded quote
+   )*'(?!') | """+
+r'''
+                   # Double-quote (") strings
+  """(?:                 # Tripple-quoted can contain...
+      [^"]               | # a non-quote
+      \\"                | # a backslashed single
+      "{1,2}(?!")          # one or two quotes
+    )*""" |
+  "(?:                   # Non-tripple quoted can contain...
+     [^"]                | # a non-quote
+     \\"                   # a backslashded quote
+   )*"(?!")
+)''', re.VERBOSE)
+#: A regular expression for finding variable assignments.
+_ASSIGN = re.compile(r'\s*(?:(\w+)\.)?(\w+)\s*=')
+#: A regular expression for finding constructors.
+_INITDEF = re.compile(r'\s*def\s+__init__\((\w+)')
+#: A regular expression for finding class definitions.
+_CLASSDEF = re.compile(r'\s*class\s+(\w+)')
+#: A regular expression for finding indents.
+_INDENT = re.compile(r'(\s*)(.*)')
+#: A regular expression for finding strings/comments
+_STRING_LITERAL_OR_COMMENT = re.compile(r'%s|\#.*' %
+                                        _STRING_LITERAL.pattern,
+                                        re.VERBOSE)
+
+_vardefs_cache = (None, None)
+def find_vardefs(string, modulename='top', doc_comment_marker='#'):
+    # Remove all newlines from inside multiline strings.  (Note that
+    # non-tripple-quoted strings can also be multiline, via lines
+    # ending in backslash)
+    def newlinesub(match):
+        return match.group().replace('\n', '\0')
+    string = _STRING_LITERAL_OR_COMMENT.sub(newlinesub, string)
+
+    # The variable docstrings we've found
+    vardocs = []
+
+    # The comment we just encountered, or None if we didn't just
+    # encounter a comment.
+    comment = ''
+
+    # The string literal we just encountered, or None if we didn't just
+    # encounter a string literal.
+    stringlit = ''
+
+    # The name used for "self" in the constructor.  This is used to
+    # decide which assignments apply to instance vars.
+    selfname=''
+
+    # The name of the block that we're about to start.  This is set
+    # when we enounter a "def" or "class", and cleared otherwise.
+    blockname = None
+    
+    # The names of the blocks that we're nested in; and the indentation
+    # level for each block.  This is used to decide what long name to
+    # use; and when we enter/exit a block.
+    blocknames = [modulename]
+    indents = [0]
+
+    # The variable assignment we just encountered; or none if we didn't
+    # just encounter a variable assignment.
+    varname = None
+    varparent = None
+    vartype = None
+
+    lines = string.split('\n')
+    for line in lines:
+        indent, line = _INDENT.match(line).groups()
+        indentation = len(indent)
+
+        # Ignore blank lines
+        if line=='':
+            comments = stringlit = None
+            continue
+
+        # Update indentation & block names.
+        if line[0] != '#':
+            while indentation < indents[-1]:
+                blocknames.pop()
+                indents.pop()
+            if indentation > indents[-1]:
+                indents.append(indentation)
+                blocknames.append(blockname)
+
+        # If the top block name is 'None' then we're inside some non-
+        # class block, so we don't care about var docstrings.
+        if blocknames[-1] == None: continue
+        
+        # Update blockname.
+        if _CLASSDEF.match(line):
+            blockname=_CLASSDEF.match(line).group(1)
+        elif _INITDEF.match(line):
+            blockname, selfname = '__init__', _INITDEF.match(line).group(1)
+        elif line[0] != '#':
+            blockname = None
+
+        # If it's an assignment, then update varname.
+        m = _ASSIGN.match(line)
+        if m:
+            # Get the variable's name & type.
+            if blocknames[-1] == '__init__':
+                if m.group(1) == selfname:
+                    varname = m.group(2)
+                    varparent = '.'.join(blocknames[:-1])
+                    vartype = 'instvar'
+            else:
+                varname = [m.group(2)]
+                varparent = '.'.join(blocknames)
+                vartype = 'var'
+
+            # A comment/stringlit followed by an assignment:
+            if (comment or stringlit):
+                vardocstring = comment or stringlit
+                vardocs.append([varname, varparent, vartype, vardocstring])
+                varname = None
+
+        # Update "comments"
+        if line.startswith(doc_comment_marker):
+            comment += line #line.rstrip()[1:]+'\n'
+        else: comment = ''
+
+        # Update "stringlit"
+        if _STRING_LITERAL.match(line):
+            stringlit = line.replace('\0', '\n')
+            if varname:
+                # An assignment followed by a stringlit:
+                vardocs.append([varname, varparent, vartype, stringlit])
+                varname = None
+        else: stringlit = ''
+    return vardocs
 
 ##################################################
 ## Helper Functions

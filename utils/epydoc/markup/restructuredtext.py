@@ -76,6 +76,7 @@ from docutils.readers.standalone import Reader as StandaloneReader
 from docutils.utils import new_document
 from docutils.nodes import NodeVisitor, Text, SkipChildren
 from docutils.nodes import SkipNode, TreeCopyVisitor
+from docutils.frontend import OptionParser
 import docutils.nodes
 
 from epydoc.markup import *
@@ -107,7 +108,6 @@ def parse_docstring(docstring, errors, **options):
     @rtype: L{ParsedDocstring}
     """
     writer = _DocumentPseudoWriter()
-    writer.settings_spec = HTMLWriter.settings_spec
     reader = _EpydocReader(errors) # Outputs errors to the list.
     publish_string(docstring, writer=writer, reader=reader)
     return ParsedRstDocstring(writer.document)
@@ -140,13 +140,13 @@ class ParsedRstDocstring(ParsedDocstring):
         self._document.walk(visitor)
         return visitor.summary
 
-    def concatenate(self, other):
-        result = self._document.copy()
-        for child in self._document.children + other._document.children:
-            visitor = TreeCopyVisitor(self._document)
-            child.walkabout(visitor)
-            result.append(visitor.get_tree_copy())
-        return ParsedRstDocstring(result)
+#     def concatenate(self, other):
+#         result = self._document.copy()
+#         for child in self._document.children + other._document.children:
+#             visitor = TreeCopyVisitor(self._document)
+#             child.walkabout(visitor)
+#             result.append(visitor.get_tree_copy())
+#         return ParsedRstDocstring(result)
         
     def to_html(self, docstring_linker, **options):
         # Inherit docs
@@ -155,10 +155,10 @@ class ParsedRstDocstring(ParsedDocstring):
         return ''.join(visitor.body)
 
     def to_latex(self, docstring_linker, **options):
-	# Inherit docs
-	visitor = _EpydocLaTeXTranslator(self._document, docstring_linker)
-	self._document.walkabout(visitor)
-	return ''.join(visitor.body)
+        # Inherit docs
+        visitor = _EpydocLaTeXTranslator(self._document, docstring_linker)
+        self._document.walkabout(visitor)
+        return ''.join(visitor.body)
 
     def to_plaintext(self, docstring_linker, **options):
         # This is should be replaced by something better:
@@ -360,8 +360,34 @@ class _SplitFieldsTranslator(NodeVisitor):
     def unknown_visit(self, node):
         'Ignore all unknown nodes'
 
+class _EpydocLaTeXTranslator(LaTeXTranslator):
+    def __init__(self, document, docstring_linker):
+        # Set the document's settings.
+        settings = OptionParser([LaTeXWriter()]).get_default_values()
+        document.settings = settings
+
+        LaTeXTranslator.__init__(self, document)
+        self._linker = docstring_linker
+
+        # Start at section level 3.
+        self.section_level = 3
+
+    # Handle interpreted text (crossreferences)
+    def visit_title_reference(self, node):
+        target = self.encode(node.astext())
+        xref = self._linker.translate_identifier_xref(target, target)
+        self.body.append(xref)
+        raise SkipNode
+
+    def visit_document(self, node): pass
+    def depart_document(self, node): pass
+        
 class _EpydocHTMLTranslator(HTMLTranslator):
     def __init__(self, document, docstring_linker):
+        # Set the document's settings.
+        settings = OptionParser([HTMLWriter()]).get_default_values()
+        document.settings = settings
+    
         HTMLTranslator.__init__(self, document)
         self._linker = docstring_linker
 
@@ -402,53 +428,3 @@ class _EpydocHTMLTranslator(HTMLTranslator):
         
         return HTMLTranslator.starttag(self, node, tagname, suffix,
                                        infix, **attributes)
-
-class _EpydocLaTeXTranslator(LaTeXTranslator):
-    def __init__(self, document, docstring_linker):
-	document.settings.use_latex_toc = True
-	document.settings.use_latex_docinfo = True
-	document.settings.use_latex_footnotes = True
-	document.settings.hyperlink_color = 'blue'
-	document.settings.documentoptions = ''
-	document.settings.documentclass = 'article'
-	LaTeXTranslator.__init__(self, document)
-	self._linker = docstring_linker
-
-    # Handle interpreted text (crossreferences)
-    def visit_title_reference(self, node):
-	target = self.encode(node.astext())
-	xref = self._linker.translate_identifier_xref(target, target)
-	self.body.append(xref)
-	raise SkipNode
-
-    def visit_document(self, node): pass
-    def depart_document(self, node): pass
-	
-    def starttag(self, node, tagname, suffix='\n', infix='', **attributes):
-	"""
-	This modified version of starttag makes a few changes to HTML
-	tags, to prevent them from conflicting with epydoc.  In particular:
-	  - existing class attributes are prefixed with C{'rst-'}
-	  - existing names are prefixed with C{'rst-'}
-	  - hrefs starting with C{'#'} are prefixed with C{'rst-'}
-	  - all headings (C{<hM{n}>}) are given the css class C{'heading'}
-	"""
-## 	   # Prefix all CSS classes with "rst-"
-## 	   if attributes.has_key('class'):
-## 	       attributes['class'] = 'rst-%s' % attributes['class']
-## 
-## 	   # Prefix all names with "rst-", to avoid conflicts
-## 	   if attributes.has_key('id'):
-## 	       attributes['id'] = 'rst-%s' % attributes['id']
-## 	   if attributes.has_key('name'):
-## 	       attributes['name'] = 'rst-%s' % attributes['name']
-## 	   if attributes.has_key('href') and attributes['href'][:1]=='#':
-## 	       attributes['href'] = '#rst-%s' % attributes['href'][1:]
-## 
-## 	   # For headings, use class="heading"
-## 	   if re.match(r'^h\d+$', tagname):
-## 	       attributes['class'] = 'heading'
-	
-	return LaTeXTranslator.starttag(self, node, tagname, suffix,
-				       infix, **attributes)
-

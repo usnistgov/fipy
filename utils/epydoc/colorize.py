@@ -154,6 +154,8 @@ def _colorize_re(tree, noparen=0):
             elif c == '\r': str += r'<span class="%s">\r</span>' % ESCAPE_TAG
             elif c == '\f': str += r'<span class="%s">\f</span>' % ESCAPE_TAG
             elif c == '\v': str += r'<span class="%s">\v</span>' % ESCAPE_TAG
+            elif ord(c)<32 or ord(c)>=127: 
+                str += r'<span class="%s">\\x%02x</span>' % (ESCAPE_TAG,ord(c))
             elif c in '.^$\\*+?{}[]|()':
                 str += '<span class="%s">\\%c</span>' % (ESCAPE_TAG, c)
             else: str += chr(args)
@@ -270,8 +272,13 @@ def _colorize_re(tree, noparen=0):
             str += '<span class="%s">\\%d</span>' % (REF_TAG, args)
 
         elif op == sre_constants.RANGE:
-            str += ('%c<span class="%s">-</span>%c' %
-                    (chr(args[0]), CHOICE_TAG, chr(args[1])))
+            c1, c2 = args[0:2]
+            if ord(c1)>=32 and ord(c1)<127 and ord(c1)>=32 and ord(c1)<127:
+                str += ('%c<span class="%s">-</span>%c' %
+                        (c1, CHOICE_TAG, c2))
+            else:
+                str += ('\\x%02x<span class="%s">-</span>\\x%02x' %
+                        (ord(c1), CHOICE_TAG, ord(c2)))
             
         elif op == sre_constants.NEGATE:
             str += '<span class="%s">^</span>' % CHOICE_TAG

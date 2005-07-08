@@ -1661,7 +1661,7 @@ class ParsedEpytextDocstring(ParsedDocstring):
         }
     
     def __init__(self, dom_tree):
-        if isinstance(dom_tree, xml.dom.minidom.Document):
+        if isinstance(dom_tree, Document):
             dom_tree = dom_tree.childNodes[0]
         self._tree = dom_tree
         # Caching:
@@ -1695,7 +1695,7 @@ class ParsedEpytextDocstring(ParsedDocstring):
         return "index-"+re.sub("[^a-zA-Z0-9]", "_", str)
 
     def _to_html(self, tree, linker, indent=0, seclevel=0):
-        if isinstance(tree, xml.dom.minidom.Text):
+        if isinstance(tree, Text):
             return plaintext_to_html(tree.data)
 
         if tree.tagName == 'epytext': indent -= 2
@@ -1708,13 +1708,13 @@ class ParsedEpytextDocstring(ParsedDocstring):
         # Get rid of unnecessary <P>...</P> tags; they introduce extra
         # space on most browsers that we don't want.
         for i in range(len(children)-1):
-            if (not isinstance(tree.childNodes[i], xml.dom.minidom.Text) and
+            if (not isinstance(tree.childNodes[i], Text) and
                 tree.childNodes[i].tagName == 'para' and
-                (isinstance(tree.childNodes[i+1], xml.dom.minidom.Text) or
+                (isinstance(tree.childNodes[i+1], Text) or
                  tree.childNodes[i+1].tagName != 'para')):
                 children[i] = ' '*(indent+2)+children[i][5+indent:-5]+'\n'
         if (tree.hasChildNodes() and
-            not isinstance(tree.childNodes[-1], xml.dom.minidom.Text) and
+            not isinstance(tree.childNodes[-1], Text) and
             tree.childNodes[-1].tagName == 'para'):
             children[-1] = ' '*(indent+2)+children[-1][5+indent:-5]+'\n'
     
@@ -1775,7 +1775,7 @@ class ParsedEpytextDocstring(ParsedDocstring):
             raise ValueError('Unknown epytext DOM element %r' % tree.tagName)
     
     def _to_latex(self, tree, linker, indent=0, seclevel=0, breakany=0):
-        if isinstance(tree, xml.dom.minidom.Text):
+        if isinstance(tree, Text):
             return plaintext_to_latex(tree.data, breakany=breakany)
 
         if tree.tagName == 'section': seclevel += 1
@@ -1896,22 +1896,6 @@ class ParsedEpytextDocstring(ParsedDocstring):
 
         return ParsedEpytextDocstring(doc)
 
-    def concatenate(self, other):
-        if not isinstance(other, ParsedEpytextDocstring):
-            try:
-                dom = parse_as_literal(other.to_plaintext(None))
-                other = ParsedEpytextDocstring(other)
-            except:
-                raise ValueError, 'Could not concatenate docstrings'
-        if self._tree is None: return other
-        if other._tree is None: return self
-        selfclone = self._tree.cloneNode(1)
-        otherclone = other._tree.cloneNode(1)
-        for child in otherclone.childNodes:
-            otherclone.removeChild(child)
-            selfclone.appendChild(child)
-        return ParsedEpytextDocstring(selfclone)
-
     def split_fields(self, errors=None):
         if self._tree is None: return (self, ())
         tree = self._tree.cloneNode(1) # Hmm..
@@ -1954,7 +1938,7 @@ class ParsedEpytextDocstring(ParsedDocstring):
         return self._terms
 
     def _index_terms(self, tree, terms):
-        if tree is None or isinstance(tree, xml.dom.minidom.Text):
+        if tree is None or isinstance(tree, Text):
             return
         
         if tree.tagName == 'indexed':

@@ -302,12 +302,12 @@ class DocChecker:
                 self._warn('No descr', doc.uid().name())
         if self._checks & DocChecker.AUTHOR:
             for field in doc.fields():
-                if 'author' in field.tags: continue
+                if 'author' in field.tags: break
             else:
                 self._warn('No authors', doc.uid().name())
         if self._checks & DocChecker.VERSION:
             for field in doc.fields():
-                if 'version' in field.tags: continue
+                if 'version' in field.tags: break
             else:
                 self._warn('No version', doc.uid().name())
             

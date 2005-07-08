@@ -217,8 +217,7 @@ class ParsedDocstring:
         @raise ValueError: If the two parsed docstrings are
             incompatible.
         """
-        # Default behavior:
-        raise ValueError, 'Could not concatenate docstrings'
+        return ConcatenatedDocstring(self, other)
 
     def __add__(self, other): return self.concatenate(other)
 
@@ -278,6 +277,48 @@ class ParsedDocstring:
         # Default behavior:
         return []
 
+##################################################
+## Concatenated Docstring
+##################################################
+class ConcatenatedDocstring:
+    def __init__(self, *parsed_docstrings):
+        self._parsed_docstrings = parsed_docstrings
+        
+    def split_fields(self, errors=None):
+        bodies = []
+        fields = []
+        for doc in self._parsed_docstrings:
+            b,f = doc.split_fields()
+            bodies.append(b)
+            fields.extend(f)
+
+        return ConcatenatedDocstring(*bodies), fields
+
+    def summary(self):
+        return self._parsed_docstrings[0].summary()
+
+    def to_html(self, docstring_linker, **options):
+        htmlstring = ''
+        for doc in self._parsed_docstrings:
+            htmlstring += doc.to_html(docstring_linker, **options)
+        return htmlstring
+
+    def to_latex(self, docstring_linker, **options):
+        latexstring = ''
+        for doc in self._parsed_docstrings:
+            latexstring += doc.to_latex(docstring_linker, **options)
+
+    def to_plaintext(self, docstring_linker, **options):
+        textstring = ''
+        for doc in self._parsed_docstrings:
+            textstring += doc.to_plaintext(docstring_linker, **options)
+
+    def index_terms(self):
+        terms = []
+        for doc in self._parsed_docstrings:
+            terms += doc.index_terms()
+        return terms
+    
 ##################################################
 ## Fields
 ##################################################

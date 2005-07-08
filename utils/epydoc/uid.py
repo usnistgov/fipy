@@ -582,11 +582,15 @@ class ObjectUID(UID):
                 elif (isinstance(obj, _TypeType) and
                       hasattr(obj, '__module__')):
                     self._module = ObjectUID(import_module(obj.__module__))
-                    if (self._module is not None and
-                        obj not in self._module.value().__dict__.values()):
-                        # The __module__ attribute lied; try finding it ourselves.
-                        module = _find_builtin_obj_module(obj)
-                        if module is not None: self._module = ObjectUID(module)
+                    if self._module is not None:
+                        for val in self._module.value().__dict__.values():
+                            if val is obj: break
+                        else:
+                            # The __module__ attribute lied; try
+                            # finding it ourselves.
+                            module = _find_builtin_obj_module(obj)
+                            if module is not None:
+                                self._module = ObjectUID(module)
                 elif isinstance(obj, _TypeType):
                     module = _find_builtin_obj_module(obj)
                     if module is None: self._module = None
@@ -1123,9 +1127,8 @@ def findUID(name, container=None, docmap=None):
 
     # Is it a builtin object?
     builtins = sys.modules.get('__builtin__')
-    if builtins and builtins.__dict__.has_key(name):
-        return make_uid(builtins.__dict__.get(name),
-                        make_uid(builtins), name)
+    if builtins:
+        return _find_object_in_module(name, builtins, docmap)
 
     # We couldn't find it; return None.
     return None
@@ -1141,15 +1144,17 @@ def _find_object_in_module(name, module, docmap):
         
         # Use getattr to follow all components but the last one.
         obj = module
+        obj_uid = make_uid(obj)
         for component in components[:-1]:
             obj_parent = obj
+            obj_parent_uid = obj_uid
             obj_name = component
             try: obj = getattr(obj, component)
             except:
                 try: obj = obj.__getattribute__(obj, component)
                 except: return None
-        obj_uid = make_uid(obj)
-                
+            obj_uid = make_uid(obj, obj_parent_uid, obj_name)
+
         # Is it a variable in obj?
         var = _find_variable_in(components[-1], obj_uid, docmap)
         if var is not None: return var

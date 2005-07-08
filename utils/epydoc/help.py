@@ -17,7 +17,7 @@ __docformat__ = 'epytext en'
 
 # Expects: {'this_project': name}
 HTML_HELP = '''
-<center><h2> API Documentation </h2></center>
+<h1 class="help"> API Documentation </h1>
 
 <p> This document contains the API (Application Programming Interface)
 documentation for %(this_project)s.  Documentation for the Python
@@ -28,7 +28,7 @@ page, and an index page.  </p>
 
 <h2> Object Documentation </h2>
 
-  <p>Each <b>Package Documentation</b> page contains: 
+  <p>Each <strong>Package Documentation</strong> page contains: </p>
   <ul>
     <li> A description of the package. </li>
     <li> A list of the modules and sub-packages contained by the
@@ -40,9 +40,9 @@ page, and an index page.  </p>
     package. </li>
     <li> A detailed description of each variable defined by the
     package. </li>
-  </ul></p>
+  </ul>
   
-  <p>Each <b>Module Documentation</b> page contains:
+  <p>Each <strong>Module Documentation</strong> page contains:</p>
   <ul>
     <li> A description of the module. </li>
     <li> A summary of the classes defined by the module. </li>
@@ -52,9 +52,9 @@ page, and an index page.  </p>
     module. </li>
     <li> A detailed description of each variable defined by the
     module. </li>
-  </ul></p>
+  </ul>
   
-  <p>Each <b>Class Documentation</b> page contains:
+  <p>Each <strong>Class Documentation</strong> page contains: </p>
   <ul>
     <li> A class inheritance diagram. </li>
     <li> A list of known subclasses. </li>
@@ -69,71 +69,69 @@ page, and an index page.  </p>
     class. </li> 
     <li> A detailed description of each class (static) variable defined
     by the class. </li> 
-  </ul></p>
+  </ul>
 
 <h2> Project Documentation </h2>
 
-  <p> The <b>Trees</b> page contains the module and class hierarchies:
+  <p> The <strong>Trees</strong> page contains the module and class hierarchies: </p>
   <ul>
-    <li> The <i>module hierarchy</i> lists every package and module, with
+    <li> The <em>module hierarchy</em> lists every package and module, with
     modules grouped into packages.  At the top level, and within each
     package, modules and sub-packages are listed alphabetically. </li>
-    <li> The <i>class hierarchy</i> lists every class, grouped by base
+    <li> The <em>class hierarchy</em> lists every class, grouped by base
     class.  If a class has more than one base class, then it will be
     listed under each base class.  At the top level, and under each base
     class, classes are listed alphabetically. </li>
-  </ul></p>
+  </ul>
   
-  <p> The <b>Index</b> page contains indices of terms and
-  identifiers: 
+  <p> The <strong>Index</strong> page contains indices of terms and
+  identifiers: </p>
   <ul>
-    <li> The <i>term index</i> lists every term indexed by any object\'s
+    <li> The <em>term index</em> lists every term indexed by any object\'s
     documentation.  For each term, the index provides links to each
     place where the term is indexed. </li>
-    <li> The <i>identifier index</i> lists the (short) name of every package,
+    <li> The <em>identifier index</em> lists the (short) name of every package,
     module, class, method, function, variable, and parameter.  For each
     identifier, the index provides a short description, and a link to
     its documentation. </li>
-  </ul></p>
+  </ul>
 
 <h2> The Table of Contents </h2>
 
 <p> The table of contents occupies the two frames on the left side of
-the window.  The upper-left frame displays the <i>project
-contents</i>, and the lower-left frame displays the <i>module
-contents</i>: </p>
+the window.  The upper-left frame displays the <em>project
+contents</em>, and the lower-left frame displays the <em>module
+contents</em>: </p>
 
-<center>
-<table class="summary" border="1" cellspacing="0" cellpadding="3">
-  <tr heigh="30%%">
-    <td align="center">
-       <font size="-1">Project<br>Contents<hr>...</font></td>
-    <td align="center" rowspan="2" width="70%%">
-      API<br>Documentation<br>Frame<br><br><br>
+<table class="help summary" border="1" cellspacing="0" cellpadding="3">
+  <tr style="height: 30%%">
+    <td align="center" style="font-size: small">
+       Project<br />Contents<hr />...</td>
+    <td align="center" style="font-size: small" rowspan="2" width="70%%">
+      API<br />Documentation<br />Frame<br /><br /><br />
     </td>
   </tr>
   <tr>
-    <td align="center">
-      <font size="-1">Module<br>Contents<hr>&nbsp;<br>...<br>&nbsp;</font>
+    <td align="center" style="font-size: small">
+      Module<br />Contents<hr />&nbsp;<br />...<br />&nbsp;
     </td>
   </tr>
-</table><br>
-</center>
+</table><br />
 
-<p> The <b>project contents frame</b> contains a list of all packages
+<p> The <strong>project contents frame</strong> contains a list of all packages
 and modules that are defined by the project.  Clicking on an entry
 will display its contents in the module contents frame.  Clicking on a
 special entry, labeled "Everything," will display the contents of
 the entire project. </p>
 
-<p> The <b>module contents frame</b> contains a list of every
+<p> The <strong>module contents frame</strong> contains a list of every
 submodule, class, type, exception, function, and variable defined by a
 module or package.  Clicking on an entry will display its
 documentation in the API documentation frame.  Clicking on the name of
 the module, at the top of the frame, will display the documentation
 for the module itself. </p>
 
-<p> The "<b>frames</b>" and "<b>no frames</b>" buttons below the top
+<p> The "<strong>frames</strong>" and "<strong>no frames</strong>" buttons below the top
 navigation bar can be used to control whether the table of contents is
 displayed or not. </p>
 
@@ -151,32 +149,32 @@ on the navigation bar.  Note that not some labels (such as
   <th>Highlighted when...</th>
   <th>Links to...</th>
 </tr>
-  <tr><td valign="top"><b>[Parent]</b></td>
-      <td valign="top"><i>(never highlighted)</i></td>
+  <tr><td valign="top"><strong>[Parent]</strong></td>
+      <td valign="top"><em>(never highlighted)</em></td>
       <td valign="top"> the parent of the current package </td></tr>
-  <tr><td valign="top"><b>[Package]</b></td>
+  <tr><td valign="top"><strong>[Package]</strong></td>
       <td valign="top">viewing a package</td>
       <td valign="top">the package containing the current object
       </td></tr>
-  <tr><td valign="top"><b>[Module]</b></td>
+  <tr><td valign="top"><strong>[Module]</strong></td>
       <td valign="top">viewing a module</td>
       <td valign="top">the module containing the current object
       </td></tr> 
-  <tr><td valign="top"><b>[Class]</b></td>
+  <tr><td valign="top"><strong>[Class]</strong></td>
       <td valign="top">viewing a class </td>
       <td valign="top">the class containing the current object</td></tr>
-  <tr><td valign="top"><b>[Trees]</b></td>
+  <tr><td valign="top"><strong>[Trees]</strong></td>
       <td valign="top">viewing the trees page</td>
       <td valign="top"> the trees page </td></tr>
-  <tr><td valign="top"><b>[Index]</b></td>
+  <tr><td valign="top"><strong>[Index]</strong></td>
       <td valign="top">viewing the index page</td>
       <td valign="top"> the index page </td></tr>
-  <tr><td valign="top"><b>[Help]</b></td>
+  <tr><td valign="top"><strong>[Help]</strong></td>
       <td valign="top">viewing the help page</td>
       <td valign="top"> the help page </td></tr>
 </table>
 
-<p> The "<b>show private</b>" and "<b>hide private</b>" buttons below
+<p> The "<strong>show private</strong>" and "<strong>hide private</strong>" buttons below
 the top navigation bar can be used to control whether documentation
 for private objects is displayed.  Private objects are usually defined
 as objects whose (short) names begin with a single underscore, but do

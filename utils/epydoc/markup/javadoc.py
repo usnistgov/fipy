@@ -224,7 +224,7 @@ class ParsedJavadocDocstring(ParsedDocstring):
             summary = self._docstring.split('\n', 1)[0]+'...'
             return ParsedJavadocDocstring(summary)
         
-    def concatenate(self, other):
-        if not isinstance(other, ParsedJavadocDocstring):
-            raise ValueError, 'Could not concatenate docstrings'
-        return ParsedJavadocDocstring(self._docstring+other._docstring)
+#     def concatenate(self, other):
+#         if not isinstance(other, ParsedJavadocDocstring):
+#             raise ValueError, 'Could not concatenate docstrings'
+#         return ParsedJavadocDocstring(self._docstring+other._docstring)
