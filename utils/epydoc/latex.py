@@ -6,6 +6,8 @@
 # Created [01/30/01 05:18 PM]
 # $Id$
 #
+#
+# Modified by Jon Guyer for easier customization through LaTeX markup
 
 """
 Documentation to LaTeX converter.  This module defines a single class,
@@ -13,7 +15,6 @@ L{LatexFormatter}, which translates the API documentation encoded in a
 L{DocMap} into a set of LaTeX files.
 
 @var _LATEX_HEADER: The header for standard documentation LaTeX pages.
-@var _HRULE: LaTeX code for a horizontal rule across the page
 @var _SECTIONS: A list of string patterns that encode each numbered
     section level.
 @var _STARSECTIONS: A list of string patterns that encode each
@@ -57,32 +58,38 @@ from epydoc.objdoc import ClassDoc, Var, Raise, ObjDoc
 #   - longtable: multi-page tables (for var lists)
 #   - tocbibind: add the index to the table of contents
 #   - amssymb: extra math symbols.
+## _LATEX_HEADER = r"""
+## \documentclass{article}
+## \usepackage{alltt, parskip, fancyheadings, boxedminipage}
+## \usepackage{makeidx, multirow, longtable, tocbibind, amssymb}
+## \usepackage{fullpage}
+## %\usepackage[headings]{fullpage}
+## \begin{document}
+## 
+## \setlength{\parindent}{0ex}
+## \setlength{\fboxrule}{2\fboxrule}
+## \newlength{\BCL} % base class length, for base trees.
+## 
+## \pagestyle{fancy}
+## \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+## \renewcommand{\subsectionmark}[1]{\markright{#1}}
+## 
+## \newenvironment{Ventry}[1]%
+##   {\begin{list}{}{%
+##     \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
+##     \settowidth{\labelwidth}{\texttt{#1:}}%
+##     \setlength{\leftmargin}{\labelsep}%
+##     \addtolength{\leftmargin}{\labelwidth}}}%
+##   {\end{list}}
+## """.strip()
+
 _LATEX_HEADER = r"""
 \documentclass{article}
-\usepackage{alltt, parskip, fancyheadings, boxedminipage}
-\usepackage{makeidx, multirow, longtable, tocbibind, amssymb}
-\usepackage{fullpage}
-%\usepackage[headings]{fullpage}
+
+\usepackage[%s]{epydoc}
+
 \begin{document}
-
-\setlength{\parindent}{0ex}
-\setlength{\fboxrule}{2\fboxrule}
-\newlength{\BCL} % base class length, for base trees.
-
-\pagestyle{fancy}
-\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
-\renewcommand{\subsectionmark}[1]{\markright{#1}}
-
-\newenvironment{Ventry}[1]%
-  {\begin{list}{}{%
-    \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
-    \settowidth{\labelwidth}{\texttt{#1:}}%
-    \setlength{\leftmargin}{\labelsep}%
-    \addtolength{\leftmargin}{\labelwidth}}}%
-  {\end{list}}
 """.strip()
-
-_HRULE = '\\rule{\\textwidth}{0.5\\fboxrule}\n\n'
 
 _SECTIONS = ['\\part{%s}', '\\chapter{%s}', '\\section{%s}',
              '\\subsection{%s}', '\\subsubsection{%s}',
@@ -173,6 +180,9 @@ class LatexFormatter:
               order or in the order that they were specified in on
               the command line.  By default, modules are listed in
               alphabetical order.  (type=C{boolean})
+            - C{list_modules}: Whether to list modules at the beginning
+              of a package.  By default, modules are listed.  
+              (type=C{boolean})
         """
         self._docmap = docmap
 
@@ -184,6 +194,7 @@ class LatexFormatter:
         self._list_classes_separately=kwargs.get('list_classes_separately',0)
         self._inheritance = kwargs.get('inheritance', 'listed')
         self._exclude = kwargs.get('exclude', 1)
+        self._list_modules = kwargs.get('list_modules', 1)
         self._top_section = 2
         self._index_functions = 1
         self._hyperref = 1
@@ -291,28 +302,38 @@ class LatexFormatter:
     #////////////////////////////////////////////////////////////
 
     def _topfile(self):
-        str = self._header('Inclue File')
+        str = self._header('Include File')
 
         str += self._start_of('Header')
-        str += _LATEX_HEADER + '\n'
-
+        
+        opts = []
+        
         if self._index:
-            str = re.sub(r'(\\begin{document})', '\\makeindex\n\\1', str)
+            opts.append('index')
 
         if self._hyperref:
-            hyperref = (r'\\usepackage[usenames]{color}\n' +
-                        r'\\definecolor{darkblue}{rgb}{0,0.05,0.35}\n' +
-                        r'\\usepackage[dvips, pagebackref, ' +
-                        'pdftitle={%s}, ' % (self._prj_name or '') +
-                        'pdfcreator={epydoc %s}, ' % epydoc.__version__ +
-                        'bookmarks=true, bookmarksopen=false, '+
-                        'pdfpagemode=UseOutlines, colorlinks=true, '+
-                        'linkcolor=black, anchorcolor=black, '+
-                        'citecolor=black, filecolor=black, '+
-                        'menucolor=black, pagecolor=black, '+
-                        'urlcolor=darkblue]{hyperref}\n')
-            str = re.sub(r'(\\begin{document})',
-                         hyperref + '\\1', str)
+            opts.append('pdftitle={%s}' % (self._prj_name or ''))
+            opts.append('pdfcreator={epydoc %s}' % epydoc.__version__)
+            
+        str += _LATEX_HEADER % ','.join(opts) + '\n'
+
+##         if self._index:
+##             str = re.sub(r'(\\begin{document})', '\\makeindex\n\\1', str)
+
+##         if self._hyperref:
+##             hyperref = (r'\\usepackage[usenames]{color}\n' +
+##                         r'\\definecolor{darkblue}{rgb}{0,0.05,0.35}\n' +
+##                         r'\\usepackage[dvips, pagebackref, ' +
+##                         'pdftitle={%s}, ' % (self._prj_name or '') +
+##                         'pdfcreator={epydoc %s}, ' % epydoc.__version__ +
+##                         'bookmarks=true, bookmarksopen=false, '+
+##                         'pdfpagemode=UseOutlines, colorlinks=true, '+
+##                         'linkcolor=black, anchorcolor=black, '+
+##                         'citecolor=black, filecolor=black, '+
+##                         'menucolor=black, pagecolor=black, '+
+##                         'urlcolor=darkblue]{hyperref}\n')
+##             str = re.sub(r'(\\begin{document})',
+##                          hyperref + '\\1', str)
 
         str += self._start_of('Title')
         str += '\\title{%s}\n' % self._text_to_latex(self._prj_name, 1)
@@ -331,8 +352,6 @@ class LatexFormatter:
         # If we're listing classes separately, put them after all the
         # modules.
         if self._list_classes_separately:
-            uids = self._filter(self._docmap.keys())
-            uids.sort()
             for uid in uids:
                 if uid.is_class():
                     if self._excluded(uid): continue
@@ -357,10 +376,9 @@ class LatexFormatter:
         str += self._start_of('Module Description')
         str += '    ' + self._indexterm(uid, 'start')
         if uid.is_package():
-            str += self._section('Package %s' % uid.name(), 0)
+            str += self._section('Package %s' % self._dotted(uid.name()), 0, uid)
         else:
-            str += self._section('Module %s' % uid.name(), 0)
-        str += '    \\label{%s}\n' % self._uid_to_label(uid)
+            str += self._section('Module %s' % self._dotted(uid.name()), 0, uid)
 
         # The module's description.
         if doc.descr():
@@ -370,7 +388,7 @@ class LatexFormatter:
         str += self._standard_fields(doc)
 
         # If it's a package, list the sub-modules.
-        if doc.ispackage() and doc.modules():
+        if self._list_modules and doc.ispackage() and doc.modules():
             str += self._module_list(doc, doc.modules())
 
         # Class list. !! add summaries !!
@@ -404,11 +422,12 @@ class LatexFormatter:
         str += self._start_of('Class Description')
         if self._list_classes_separately:
             seclevel = 0
-            str += self._section('Class %s' % uid.name(), seclevel)
+            str += self._section('Class %s' % self._dotted(uid.name()), seclevel, uid)
         else:
             seclevel = 1
-            str += self._section('Class %s' % uid.shortname(), seclevel)
-        str += '    \\label{%s}\n' % self._uid_to_label(uid)
+            str += self._section('Class %s' % self._dotted(uid.shortname()), seclevel, uid)
+        
+##         str += '    \\label{%s}\n' % self._uid_to_label(uid)
 
         # The class base tree.
         if doc.bases():
@@ -459,8 +478,7 @@ class LatexFormatter:
 
         str = self._start_of('Classes')
         str += self._section('Classes', 1)
-        str += '\\begin{itemize}'
-        str += '  \\setlength{\\parskip}{0ex}\n'
+        str += '\\begin{EpydocClassList}\n'
         
         # Create the portion of the table containing the group
         # entries.  Do this first, so we can see what's not in any
@@ -468,30 +486,27 @@ class LatexFormatter:
         # properties are at the top.
         for name, group in groups:
             if name is not None:
-                str += '  \\item \\textbf{%s}\n' % name
-                str += '  \\begin{itemize}\n'
+                str += '  \\item[%s]\n' % name
+                str += '  \\begin{EpydocClassSubList}\n'
             # Add the lines for each class
             for cls in group:
                 str += self._class_list_line(cls)
             if name is not None:
-                str += '  \end{itemize}\n'
+                str += '  \end{EpydocClassSubList}\n'
         
-        return str + '\\end{itemize}'
+        return str + '\\end{EpydocClassList}'                
 
     def _class_list_line(self, link):
         cname = link.name()
         cls = link.target()
         if not self._docmap.has_key(cls): return ''
         cdoc = self._docmap[cls]
-        str = '  ' + '\\item \\textbf{'
-        str += self._text_to_latex(cname) + '}'
+        str = '  \\item[%s]' % self._hyperlink(cls, cname)
         if cdoc and cdoc.descr():
-            str += ': %s\n' % self._summary(cdoc, cls.module())
+            str += ' %s\n' % self._summary(cdoc, cls.module())
         if self._crossref:
-            str += ('\n  \\textit{(Section \\ref{%s}' %
-                    self._uid_to_label(cls))
-            str += (', p.~\\pageref{%s})}\n\n' %
-                    self._uid_to_label(cls))
+            str += '\\CrossRef{%s}\n\n' % self._uid_to_label(cls)
+            
         return str
         
     #////////////////////////////////////////////////////////////
@@ -506,24 +521,7 @@ class LatexFormatter:
         str = self._start_of(heading)
         str += '  '+self._section(heading, seclevel)
 
-        str += '\\begin{longtable}'
-        str += '{|p{.30\\textwidth}|'
-        str += 'p{.62\\textwidth}|l}\n'
-        str += '\\cline{1-2}\n'
-
-        # Set up the headers & footer (this makes the table span
-        # multiple pages in a happy way).
-        str += '\\cline{1-2} '
-        str += '\\centering \\textbf{Name} & '
-        str += '\\centering \\textbf{Description}& \\\\\n'
-        str += '\\cline{1-2}\n'
-        str += '\\endhead'
-        str += '\\cline{1-2}'
-        str += '\\multicolumn{3}{r}{\\small\\textit{'
-        str += 'continued on next page}}\\\\'
-        str += '\\endfoot'
-        str += '\\cline{1-2}\n'
-        str += '\\endlastfoot'
+        str += '\\begin{EpydocPropertyList}\n'
 
         # Create the portion of the table containing the group
         # entries.  Do this first, so we can see what's not in any
@@ -532,15 +530,13 @@ class LatexFormatter:
         for name, group in groups:
             # Print a header within the table
             if name is not None:
-                str += '\\multicolumn{2}{|l|}{'
-                str += '\\textbf{%s}}\\\\\n' % name
-                str += '\\cline{1-2}\n'
+                str += '\\EpydocInternalHeader{%s}\n' % name
             # Add the lines for each property
             for property in group:
                 str += self._property_list_line(property, container.uid())
             if self._inheritance == 'listed':
                 str += self._inheritance_list_line(group, container.uid())
-        return str + '\\end{longtable}\n\n'
+        return str + '\\end{EpydocPropertyList}\n\n'
 
     def _property_list_line(self, link, container):
         inherit = (container.is_class() and container != link.target().cls())
@@ -549,15 +545,11 @@ class LatexFormatter:
         prop = link.target()
         pdoc = self._docmap.get(prop)
         if pdoc is None: return ''
-        str = '\\raggedright '
-        str += self._text_to_latex(prop.shortname(), 1, 1)
-        str += ' & '
+        
+        str = ('\\EpydocProperty{%s}{%s}\n' 
+            % (self._hypertarget(prop, prop.shortname()), 
+                self._docstring_to_latex(pdoc.descr(), 10).strip() or ''))
 
-        if pdoc.descr():
-            str += '\\raggedright '
-            str += self._docstring_to_latex(pdoc.descr(), 10).strip()
-        str += '&\\\\\n'
-        str += '\\cline{1-2}\n'
         return str
 
     #////////////////////////////////////////////////////////////
@@ -574,25 +566,8 @@ class LatexFormatter:
         str = self._start_of(heading)
         str += '  '+self._section(heading, seclevel)
 
-        str += '\\begin{longtable}'
-        str += '{|p{.30\\textwidth}|'
-        str += 'p{.62\\textwidth}|l}\n'
-        str += '\\cline{1-2}\n'
-
-        # Set up the headers & footer (this makes the table span
-        # multiple pages in a happy way).
-        str += '\\cline{1-2} '
-        str += '\\centering \\textbf{Name} & '
-        str += '\\centering \\textbf{Description}& \\\\\n'
-        str += '\\cline{1-2}\n'
-        str += '\\endhead'
-        str += '\\cline{1-2}'
-        str += '\\multicolumn{3}{r}{\\small\\textit{'
-        str += 'continued on next page}}\\\\'
-        str += '\\endfoot'
-        str += '\\cline{1-2}\n'
-        str += '\\endlastfoot'
-
+        str += '\\begin{EpydocVariableList}\n'
+        
         # Create the portion of the table containing the group
         # entries.  Do this first, so we can see what's not in any
         # group; but add it to the string last, so the groupless
@@ -600,49 +575,38 @@ class LatexFormatter:
         for name, group in groups:
             # Print a header within the table
             if name is not None:
-                str += '\\multicolumn{2}{|l|}{'
-                str += '\\textbf{%s}}\\\\\n' % name
-                str += '\\cline{1-2}\n'
+                str += '\\EpydocInternalHeader{%s}\n' % name
             # Add the lines for each variable
             for var in group:
                 str += self._var_list_line(var, container.uid())
             if (self._inheritance == 'listed' and
                 isinstance(container, ClassDoc)):
                 str += self._inheritance_list_line(group, container.uid())
-        return str + '\\end{longtable}\n\n'
+        return str + '\\end{EpydocVariableList}\n\n'
     
     def _var_list_line(self, var, container):
         inherit = (container.is_class() and container != var.uid().cls())
         if inherit and self._inheritance == 'listed': return ''
             
-        str = '\\raggedright '
-        str += self._text_to_latex(var.name(), 1, 1) + ' & '
-
-        if var.descr() or var.has_value():
-            str += '\\raggedright '
+        str = '\\EpydocVariable{%s}{' % self._hypertarget(var.uid(), var.name())
         if var.descr():
             str += self._docstring_to_latex(var.descr(), 10).strip()
-            if var.has_value() or var.type(): str += '\n\n'
+        str += '}{'
         if var.has_value():
-            str += '\\textbf{Value:} \n'
             str += self._pprint_var_value(var, 80)
-        if var.type():
-            ptype = self._docstring_to_latex(var.type(), 12).strip()
-            str += '%s\\textit{(type=%s)}' % (' '*12, ptype)
-        str += '&\\\\\n'
-        str += '\\cline{1-2}\n'
+        str += '}{%s}\n' % self._docstring_to_latex(var.type() or '', 12).strip()
         return str
 
     def _pprint_var_value(self, var, maxwidth=100):
         val = var.uid().value()
         try: val = `val`
-        except: val = '...'
-        if len(val) > maxwidth: val = val[:maxwidth-3] + '...'
+        except: val = '\ldots'
+        if len(val) > maxwidth: val = val[:maxwidth-3] + '\ldots'
         if '\n' in val:
-            return ('\\begin{alltt}\n%s\\end{alltt}' %
+            return ('\\begin{EpydocLongValue}\n%s\\end{EpydocLongValue}' %
                     self._text_to_latex(val, 0, 1))
         else:
-            return '{\\tt %s}' % self._text_to_latex(val, 1, 1)
+            return '\\EpydocShortValue{%s}' % self._text_to_latex(val, 1, 1)
     
     #////////////////////////////////////////////////////////////
     # Function List
@@ -664,14 +628,14 @@ class LatexFormatter:
         # functions are at the top.
         for name, group in groups:
             # Print a header within the table
-            if name is not None:
-                str += '\n%s\\large{%s}\n' % (_HRULE, name)
+            str += '\\begin{EpydocFunctionGroup}[%s]\n' % (name or '')
             # Add the lines for each function
             for link in group:
                 str += self._func_list_box(link, container.uid())
             if (self._inheritance == 'listed' and
                 isinstance(container, ClassDoc)):
                 str += self._inheritance_list(group, container.uid())
+            str += '\\end{EpydocFunctionGroup}\n'
 
         return str
             
@@ -707,25 +671,15 @@ class LatexFormatter:
             inhdoc = fdoc
         inherit_docs = (inhdoc is not fdoc)
 
-        # nb: this gives the containing section, not a reference
-        # directly to the function.
-        if not inherit:
-            str += '    \\label{%s}\n' % self._uid_to_label(fuid)
-        
-        fsig = self._func_signature(fname, fdoc)
+        str += '\\begin{EpydocFunction}'
+        str += self._func_signature(self._hypertarget(fuid, fname), fdoc)
+
         if not inherit:
             str += '    ' + self._indexterm(fuid)
-        str += '    \\vspace{0.5ex}\n\n'
-        str += '    \\begin{boxedminipage}{\\textwidth}\n\n'
-        str += '    %s\n\n' % fsig
-
+        
         # Use the inherited docs for everything but the signature.
         fdoc = inhdoc
 
-        if fdoc.has_docstring():
-            str += '    \\vspace{-1.5ex}\n\n'
-            str += '    \\rule{\\textwidth}{0.5\\fboxrule}\n'
-        
         fdescr=fdoc.descr()
         fparam = fdoc.parameter_list()[:]
         freturn = fdoc.returns()
@@ -737,21 +691,20 @@ class LatexFormatter:
 
         # Description
         if fdescr:
+            str += ' '*4 + '\\begin{EpydocDocstring}\n'
             str += self._docstring_to_latex(fdescr, 4)
-            str += '    \\vspace{1ex}\n\n'
+            str += ' '*4 + '\\end{EpydocDocstring}\n'
 
         # Parameters
         if fparam:
             longest = max([len(p.name()) for p in fparam])
-            str += ' '*6+'\\textbf{Parameters}\n'
-            str += ' '*6+'\\begin{quote}\n'
-            str += '        \\begin{Ventry}{%s}\n\n' % (longest*'x')
+            str += ' '*4+'\\begin{EpydocFunctionParameters}{%s}\n' % (longest*'x')
             for param in fparam:
                 if param.listed_under(): continue
-                str += ' '*10+'\\item[' + self._text_to_latex(param.name())
+                str += ' '*10+'\\item[' + self._dotted(param.name())
                 if param.shared_descr_params():
                     for p in param.shared_descr_params():
-                        str += ', %s' % self._text_to_latex(p.name())
+                        str += ', %s' % self._dotted(p.name())
                 str += ']\n\n'
                 if param.descr():
                     str += self._docstring_to_latex(param.descr(), 10)
@@ -760,90 +713,70 @@ class LatexFormatter:
                         if not p.type(): continue
                         ptype = self._docstring_to_latex(p.type(), 14).strip()
                         str += (' '*12+'\\textit{(typeof %s=%s)}\n\n' %
-                                (self._text_to_latex(p.name()), ptype))
+                                (self._dotted(p.name()), ptype))
                 elif param.type():
                     ptype = self._docstring_to_latex(param.type(), 12).strip()
                     str += ' '*12+'\\textit{(type=%s)}\n\n' % ptype
-            str += '        \\end{Ventry}\n\n'
-            str += ' '*6+'\\end{quote}\n\n'
-            str += '    \\vspace{1ex}\n\n'
+            str += ' '*4+'\\end{EpydocFunctionParameters}\n\n'
 
         # Returns
         if freturn.descr() or freturn.type():
-            str += ' '*6+'\\textbf{Return Value}\n'
-            str += ' '*6+'\\begin{quote}\n'
+            str += ' '*4 + '\\EpydocFunctionReturns['
             if freturn.descr():
-                str += self._docstring_to_latex(freturn.descr(), 6)
-                if freturn.type():
-                    rtype = self._docstring_to_latex(freturn.type(), 6).strip()
-                    str += ' '*6+'\\textit{(type=%s)}\n\n' % rtype
-            elif freturn.type():
-                str += self._docstring_to_latex(freturn.type(), 6)
-            str += ' '*6+'\\end{quote}\n\n'
-            str += '    \\vspace{1ex}\n\n'
+                str += self._docstring_to_latex(freturn.descr())
+            str += ']{%s}\n\n' % self._docstring_to_latex(freturn.type())
 
         # Raises
         if fraises:
-            str += ' '*6+'\\textbf{Raises}\n'
-            str += ' '*6+'\\begin{quote}\n'
-            str += '        \\begin{description}\n\n'
+            str += ' '*4 + '\\begin{EpydocFunctionRaises}\n'
             for fraise in fraises:
-                str += '          '
-                str += '\\item[\\texttt{'+fraise.name()+'}]\n\n'
+                str += ' '*6 + '\\item[fraise.name()]\n\n'
                 str += self._docstring_to_latex(fraise.descr(), 10)
-            str += '        \\end{description}\n\n'
-            str += ' '*6+'\\end{quote}\n\n'
-            str += '    \\vspace{1ex}\n\n'
+            str += ' '*4+'\\end{EpydocFunctionRaises}\n\n'
 
         ## Overrides
         if foverrides:
-            str += ('      Overrides: %s' %
-                    self._text_to_latex(foverrides.name()))
-            if inherit_docs:
-                str += ' \textit{(inherited documentation)}'
-            str += '\n\n'
+            str += ('\\EpydocFunctionOverrides[%d]{%s}\n\n' 
+                % (inherit_docs, self._hyperlink(foverrides, foverrides.name())))
 
         # Add version, author, warnings, requirements, notes, etc.
         str += self._standard_fields(fdoc)
 
-        str += '    \\end{boxedminipage}\n\n'
+        str += '\\end{EpydocFunction}\n\n'
         return str
 
     def _func_signature(self, fname, fdoc, show_defaults=1):
-        str = '\\raggedright '
-        str += '\\textbf{%s}' % self._text_to_latex(fname)
-        str += '('
-        str += self._params_to_latex(fdoc.parameters(), show_defaults)
+        str = '{%s}{' % fname
         
+        params = self._params_to_latex(fdoc.parameters(), show_defaults)
         if fdoc.vararg():
             vararg_name = self._text_to_latex(fdoc.vararg().name())
-            vararg_name = '\\textit{%s}' % vararg_name
-            if vararg_name != '\\textit{...}':
-                vararg_name = '*%s' % vararg_name
-            str += '%s, ' % vararg_name
+            if vararg_name != '...':
+                params.append('\\VarArg{%s}' % vararg_name)
+            else:
+                params.append('\\GenericArg{}')
         if fdoc.kwarg():
-            str += ('**\\textit{%s}, ' %
-                    self._text_to_latex(fdoc.kwarg().name()))
-        if str[-1] != '(': str = str[:-2]
-
-        return str + ')'
+            params.append('\\KWArg{%s}' % self._text_to_latex(fdoc.kwarg().name()))
+        
+        str += '%\n    \\and '.join(params)
+        str += '}%\n'
+        
+        return str
     
     def _params_to_latex(self, parameters, show_defaults):
-        str = ''
+        params = []
+        
         for param in parameters:
             if type(param) in (type([]), type(())):
-                sublist = self._params_to_latex(param, show_defaults)
-                str += '(%s), ' % sublist[:-2]
+                params.append('\\ArgList{%s}' % '\\and '.join(self._params_to_latex(param, show_defaults)))
             else:
-                str += '\\textit{%s}' % self._text_to_latex(param.name())
+                paramtext = '\\Param'
                 if show_defaults and param.default() is not None:
-                    default = param.default()
-                    if len(default) > 60:
-                        default = default[:57]+'...'
-                    str += ('=\\texttt{%s}' %
-                            self._text_to_latex(default, 1, 1))
-                str += ', '
-        return str
+                    paramtext += '[%s]' % self._text_to_latex(param.default())
+                paramtext += '{%s}' % self._text_to_latex(param.name())
+                params.append(paramtext)
+                
+        return params
 
     #////////////////////////////////////////////////////////////
     # Inheritance lists
@@ -862,18 +795,16 @@ class LatexFormatter:
 
         if not inh_dict: return ''
 
-        str = ''#'\\begin{boxedminipage}{\\textwidth}\n'
+        str = '\\begin{EpydocInheritanceList}\n'
         inh_items = inh_dict.items()
         inh_items.sort(lambda a,b: cmp(a[0], b[0]))
         for (base, obj_links) in inh_items:
-            str += ('  \\textbf{Inherited from %s:}\n' %
-                    self._text_to_latex(base.shortname()))
-            for link in obj_links:
-                str += '    '
-                str += self._text_to_latex(link.name())
-                str += ',\n'
-            str = str[:-2] + '\n    \\\\\n'
-        return str[:-7] #+ '\\end{boxedminipage}\n'
+            str += ('  \\item[%s]\n' %
+                    self._hyperlink(base, base.shortname()))
+            str += ',\n'.join([' '*4 + self._hyperlink(link.target(), link.name()) for link in obj_links])
+            str += '\n\n'
+        str += '\\end{EpydocInheritanceList}\n'
+        return str
 
     def _inheritance_list_line(self, links, cls):
         # Group the objects by defining class
@@ -888,22 +819,17 @@ class LatexFormatter:
 
         if not inh_dict: return ''
 
+##         str = '\\begin{EpydocInheritanceList}\n'
         str = ''
         inh_items = inh_dict.items()
         inh_items.sort(lambda a,b: cmp(a[0], b[0]))
         for (base, obj_links) in inh_items:
-            str += '\\multicolumn{2}{|p{\\textwidth}|}{\n'
-            str += ('  \\textbf{Inherited from %s:}\n' %
-                    self._text_to_latex(base.shortname()))
-            for link in obj_links:
-                str += '    '
-                str += self._text_to_latex(link.name())
-                if self._crossref:
-                    str += (' \\textit{(p.~\\pageref{%s})}' %
-                            self._uid_to_label(base))
-                str += ',\n'
-            str = str[:-2] + '}\n    \\\\\n'
-        return str + '\\cline{1-2}\n'
+            str += ('  \\EpydocInheritanceItemLine{%s}{%s}\n' % 
+                (self._hyperlink(base, base.shortname()),
+                ',\n'.join([' '*4 + self._hyperlink(link.target(), link.name()) for link in obj_links])))
+##         str += '\\end{EpydocInheritanceList}\n'
+        str += '\n\n'
+        return str
 
     #////////////////////////////////////////////////////////////
     # Docstring -> LaTeX Conversion
@@ -932,7 +858,7 @@ class LatexFormatter:
             width = self._find_tree_width(uid)+2
             linespec = []
             str = ('&'*(width-4)+'\\multicolumn{2}{l}{\\textbf{%s}}\n' %
-                   self._text_to_latex(uid.shortname()))
+                   self._dotted(uid.shortname()))
             str += '\\end{tabular}\n\n'
             top = 1
         else:
@@ -954,15 +880,15 @@ class LatexFormatter:
     def _base_tree_line(self, uid, width, linespec):
         # linespec is a list of booleans.
 
-        str = '%% Line for %s, linespec=%s\n' % (uid.name(), linespec)
+        str = '%% Line for %s, linespec=%s\n' % (self._dotted(uid.name()), linespec)
 
         labelwidth = width-2*len(linespec)-2
 
         # The base class name.
-        shortname = self._text_to_latex(uid.name())
+        shortname = self._dotted(uid.name())
         str += ('\\multicolumn{%s}{r}{' % labelwidth)
         str += '\\settowidth{\\BCL}{%s}' % shortname
-        str += '\\multirow{2}{\\BCL}{%s}}\n' % shortname
+        str += '\\multirow{2}{\\BCL}{%s}}\n' % self._hyperlink(uid, uid.name())
 
         # The vertical bars for other base classes (top half)
         for vbar in linespec:
@@ -997,21 +923,17 @@ class LatexFormatter:
         if uid is None: return ''
 
         doc = self._docmap.get(uid, None)
-        str = ' '*depth + '\\item \\textbf{'
-        str += self._text_to_latex(uid.shortname()) +'}'
+        str = ' '*depth + '\\item[%s]' % self._hyperlink(uid, uid.shortname())
         if doc and doc.descr():
             str += ': %s\n' % self._summary(doc, uid)
         if self._crossref:
-            str += ('\n  \\textit{(Section \\ref{%s}' %
-                    self._uid_to_label(uid))
-            str += ', p.~\\pageref{%s})}\n\n' % self._uid_to_label(uid)
+            str += '\\CrossRef{%s}\n\n' % self._uid_to_label(uid)
         if doc and doc.ispackage() and doc.modules():
-            str += ' '*depth + '  \\begin{itemize}\n'
-            str += ' '*depth + '\\setlength{\\parskip}{0ex}\n'
+            str += ' '*depth + '  \\begin{EpydocModuleSubList}\n'
             modules = [l.target() for l in self._filter(doc.modules())]
             for module in modules:
                 str += self._module_tree_item(module, depth+4)
-            str += ' '*depth + '  \\end{itemize}\n'
+            str += ' '*depth + '  \\end{EpydocModuleSubList}\n'
         return str
 
     def _module_tree(self, sortorder=None):
@@ -1046,9 +968,8 @@ class LatexFormatter:
         if len(modules) == 0: return ''
         str = self._start_of('Modules')
         str += self._section('Modules', 1)
-        str += '\\begin{itemize}\n'
-        str += '\\setlength{\\parskip}{0ex}\n'
-
+        str += '\\begin{EpydocModuleList}\n'
+        
         groups = container.by_group(modules)
         
         # Create the portion of the table containing the group
@@ -1058,15 +979,15 @@ class LatexFormatter:
         for name, group in groups:
             # Print a header within the table
             if name is not None:
-                str += '  \\item \\textbf{%s}\n' % name
-                str += '  \\begin{itemize}\n'
+                str += '  \\item[%s]\n' % name
+                str += '  \\begin{EpydocModuleSubList}\n'
             # Add the lines for each module
             for link in group:
                 str += self._module_tree_item(link.target())
             if name is not None:
-                str += '  \end{itemize}\n'
+                str += '  \end{EpydocModuleSubList}\n'
         
-        return str + '\\end{itemize}\n\n'
+        return str + '\\end{EpydocModuleList}\n\n'
 
     #////////////////////////////////////////////////////////////
     # Helpers
@@ -1076,15 +997,16 @@ class LatexFormatter:
         if not self._index: return ''
         if uid.is_routine() and not self._index_functions: return ''
 
-        str = ''
+        indices = []
         u = uid
         while (u.is_routine() or u.is_class()):
-            str = '!%s \\textit{(%s)}%s' % (self._text_to_latex(u.shortname()),
-                               self._kind(u).lower(), str)
+            indices.insert(0, '\\EpydocIndex[%s]{%s}' % 
+                (self._kind(u), self._dotted(u.shortname())))
             u = u.parent()
 
-        str = '%s \\textit{(%s)}%s' % (self._text_to_latex(u.name()),
-                          self._kind(u).lower(), str)
+        indices.insert(0, '\\EpydocIndex[%s]{%s}' % (self._kind(u), self._dotted(u.name())))
+                          
+        str = '!'.join(indices)
 
         if pos == 'only': return '\\index{%s}\n' % str
         elif pos == 'start': return '\\index{%s|(}\n' % str
@@ -1098,6 +1020,9 @@ class LatexFormatter:
         break the resulting string at any point.  This is useful for
         small boxes (e.g., the type box in the variable list table).
         """
+        # Protect special LaTeX command(s)
+        str = re.sub(r'\\(EpydocDottedName){([^}]*)}', r'@SLASH\1@LEFT\2@RIGHT', str)
+        
         # These get converted to hyphenation points later
         if breakany: str = re.sub('(.)', '\\1\1', str)
 
@@ -1117,12 +1042,19 @@ class LatexFormatter:
         str = str.replace('^', '{\\textasciicircum}')
         str = str.replace('~', '{\\textasciitilde}')
         str = str.replace('\0', r'{\textbackslash}')
+##         str = str.replace('.', '\\dothyp{}')
+        
+##         str = str.replace('.', '.\-')
 
         # replace spaces with non-breaking spaces
         if nbsp: str = str.replace(' ', '~')
 
         # Convert \1's to hyphenation points.
         if breakany: str = str.replace('\1', r'\-')
+        
+        str = re.sub('@SLASH', r'\\', str)
+        str = re.sub('@LEFT', '{', str)
+        str = re.sub('@RIGHT', '}', str)
         
         return str
 
@@ -1146,19 +1078,25 @@ class LatexFormatter:
         elif uid.is_variable(): return 'Variable'
         else: raise AssertionError, 'Bad UID type for _name'
 
-    def _section(self, title, depth):
+    def _section(self, title, depth, uid = None):
         sec = _SECTIONS[depth+self._top_section]
-        return (('%s\n\n' % sec) % self._text_to_latex(title))                
+        text = (('%s\n\n' % sec) % title) 
+##         text = (('%s\n\n' % sec) % self._text_to_latex(title)) 
+        if uid:
+            text += self._hypertarget(uid, "")
+        return text               
     
-    def _sectionstar(self, title, depth):
+    def _sectionstar(self, title, depth, uid = None):
         sec = _STARSECTIONS[depth+self._top_section]
-        return (('%s\n\n' % sec) % self._text_to_latex(title))
+        text = (('%s\n\n' % sec) % title) 
+##         text = (('%s\n\n' % sec) % self._text_to_latex(title)) 
+        if uid:
+            text += self._hypertarget(uid, "")
+        return text               
 
     def _start_of(self, section_name):
         str = '\n' + 75*'%' + '\n'
-        str += '%%' + ((71-len(section_name))/2)*' '
-        str += section_name
-        str += ((72-len(section_name))/2)*' ' + '%%\n'
+        str += '%%' + section_name.center(71) + '%%\n'
         str += 75*'%' + '\n\n'
         return str
 
@@ -1235,24 +1173,23 @@ class LatexFormatter:
         if plural is None: plural = singular
         if len(items) == 0: return ''
         if len(items) == 1 and singular is not None:
-            return '\\textbf{%s:} %s\n\n' % (singular, items[0])
+            return '\\EpydocDescriptionItem{%s}{%s}\n\n' % (singular, items[0])
         if short:
-            str = '\\textbf{%s:}\n' % plural
-            items = [item.strip() for item in items]
-            return str + ',\n    '.join(items) + '\n\n'
+            str = '\\begin{EpydocDescriptionShortList}{%s}%%\n    ' % plural
+            str += '%\n    \\and '.join([item.strip() for item in items])
+            str += '%\n\\end{EpydocDescriptionShortList}\n\n'
+            return str
         else:
-            str = '\\textbf{%s:}\n' % plural
-            str += '\\begin{quote}\n'
-            str += '  \\begin{itemize}\n\n  \item '
-            str += '    \\setlength{\\parskip}{0.6ex}\n'
-            str += '\n\n  \item '.join(items)
-            return str + '\n\n\\end{itemize}\n\n\\end{quote}\n\n'
+            str = '\\begin{EpydocDescriptionLongList}{%s}%%\n' % plural
+            str += '\n\n'.join(['  \item %s%%' % item for item in items])
+            str += '\n\\end{EpydocDescriptionLongList}\n\n'
+            return str
 
     def _subclasses(self, subclasses, container):
         """
         @return: The LaTeX code for the subclasses field.
         """
-        items = [self._text_to_latex(sc.name()) for sc in subclasses]
+        items = [self._hyperlink(sc.target(), sc.name()) for sc in subclasses]
         return self._descrlist(items, 'Known Subclasses', short=1)
 
     def _summary(self, doc, container=None):
@@ -1305,3 +1242,14 @@ class LatexFormatter:
         if x.module() is None: return 0
         return not self._docmap.has_key(x.module())
         
+    def _hyperlink(self, target, name):
+        if self._excluded(target) or (target.is_private() and not self._show_private):
+            return self._dotted(name)
+        else:
+            return '\\EpydocHyperlink{%s}{%s}' % (self._uid_to_label(target), self._dotted(name))
+
+    def _hypertarget(self, uid, sig):
+        return '\\EpydocHypertarget{%s}{%s}' % (self._uid_to_label(uid), self._dotted(sig))
+
+    def _dotted(self, name):
+        return '\\EpydocDottedName{%s}' % name
