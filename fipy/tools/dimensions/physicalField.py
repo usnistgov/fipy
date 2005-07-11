@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/6/05 {6:11:20 PM} 
+ #                                last update: 7/11/05 {3:32:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -888,6 +888,27 @@ class PhysicalField:
             TypeError: Numeric array value must be dimensionless
         """
         return PhysicalField(value = umath.arctan(self), unit = "rad")
+            
+    def log(self):
+        """
+        Return the cosine of the `PhysicalField`
+        
+            >>> print round(PhysicalField(2*Numeric.pi/6,"rad").cos(), 6)
+            0.5
+            >>> print round(PhysicalField(60.,"deg").cos(), 6)
+            0.5
+        
+        The units of the `PhysicalField` must be an angle
+        
+            >>> PhysicalField(60.,"m").cos()
+            Traceback (most recent call last):
+                ...
+            TypeError: Argument of cos must be an angle
+        """
+        if self.unit.isDimensionless():
+            return umath.log(self.value)
+        else:
+            raise TypeError, 'Argument of log must be dimensionless'
             
     def dot(self, other):
         """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "array.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/3/05 {12:01:27 PM} 
+ #                                last update: 7/11/05 {3:28:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -323,6 +323,17 @@ def max(arr):
         return arr.max()
     else:
         return _max(arr)
+
+def log(arr):
+    """
+    Provides the same functionality as `Numeric.log`.
+    """
+    if _isPhysical(arr):
+        return arr.log()
+    elif type(arr) is type(Numeric.array((0))):
+        return Numeric.log(arr)
+    else:
+        return umath.log(arr)
 
         
 # Necessary because LLNL hires stupidheads

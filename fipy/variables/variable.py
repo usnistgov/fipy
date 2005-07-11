@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/27/05 {1:37:27 PM} 
+ #                                last update: 7/11/05 {3:29:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -657,6 +657,9 @@ class Variable:
 
     def exp(self):
 	return self._getUnaryOperatorVariable(lambda a: array.exp(a))
+
+    def log(self):
+        return self._getUnaryOperatorVariable(lambda a: array.log(a))
 
     def sin(self):
 	return self._getUnaryOperatorVariable(lambda a: array.sin(a))
