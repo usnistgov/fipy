@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 3/7/05 {5:37:43 PM} 
+ #                                last update: 7/6/05 {5:16:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,8 +103,10 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        >>> mesh = Grid1D(nx = nx, dx = dx)
        >>> from fipy.variables.cellVariable import CellVariable
        >>> ionVar = CellVariable(mesh = mesh, value = 1)
-       >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-       >>> disVar = DistanceVariable(mesh = mesh, value = Numeric.arange(11) - 0.99)
+       >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+       ...     import DistanceVariable
+       >>> disVar = DistanceVariable(mesh = mesh, 
+       ...                           value = Numeric.arange(11) - 0.99)
 
        >>> v = 1.
        >>> diffusion = 1.
@@ -121,7 +123,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
-       >>> answer = gradient * (mesh.getCellCenters()[:,0] - L - dx * 3 / 2) + cinf
+       >>> answer = gradient * (mesh.getCellCenters()[:,0] - L - dx * 3 / 2) \
+       ...          + cinf
        >>> answer[0] = 1
        >>> Numeric.allclose(answer, Numeric.array(ionVar))
        1

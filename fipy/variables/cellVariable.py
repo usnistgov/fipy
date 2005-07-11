@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 4/4/05 {2:53:28 PM} 
+ #                                last update: 7/6/05 {6:13:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,7 +138,8 @@ class CellVariable(Variable):
 
             >>> from fipy.meshes.grid2D import Grid2D
             >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
-            >>> print CellVariable(value = (1, 2, 6), mesh = mesh).getCellVolumeAverage()
+            >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
+            >>> print var.getCellVolumeAverage()
             3.0
         """
 

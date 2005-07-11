@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 4/4/05 {11:04:11 PM} 
+ #                                last update: 7/6/05 {5:52:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,7 +66,8 @@ class VectorCellVariable(Variable):
         >>> from fipy.meshes.grid2D import Grid2D
         >>> mesh = Grid2D(dx = 1., nx = 2)
         >>> var = VectorCellVariable(mesh, value = Numeric.array(((0,0),(1,1))))
-        >>> answer = Numeric.array(((0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (.5, .5), (1, 1)))
+        >>> answer = Numeric.array(((0, 0), (1, 1), (0, 0), (1, 1), 
+        ...                         (0, 0), (.5, .5), (1, 1)))
         >>> Numeric.allclose(answer, Numeric.array(var.getArithmeticFaceValue()))
         1
         """

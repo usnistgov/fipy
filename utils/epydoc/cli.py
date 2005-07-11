@@ -22,6 +22,7 @@ Usage::
      --html                    Generate HTML output (default).
      --latex                   Generate LaTeX output.
      --pdf                     Generate pdf output, via LaTeX.
+     --dot                     Generate dot output.
      --check                   Run documentation completeness checks.
      -o DIR, --output DIR      The output directory.
      -n NAME, --name NAME      The documented project's name.
@@ -116,6 +117,7 @@ def cli():
     elif options['action'] == 'dvi': _latex(docmap, options, 'dvi')
     elif options['action'] == 'ps': _latex(docmap, options, 'ps')
     elif options['action'] == 'pdf': _latex(docmap, options, 'pdf')
+    elif options['action'] == 'dot': _dot(docmap, options)
     else: raise ValueError('Unknown action %r' % options['action'])
 
     # Report any internal errors.
@@ -275,7 +277,7 @@ def _parse_args():
 
     # Get the command-line arguments, using getopts.
     shortopts = 'c:h:n:o:t:u:Vvq?:'
-    longopts = ('html latex dvi ps pdf check '+
+    longopts = ('html latex dvi ps pdf dot check '+
                 'output= name= url= top= css= private-css= private_css= '+
                 'docformat= doc-format= doc_format= private '+
                 'show_imports no_private no-private '+
@@ -330,6 +332,7 @@ def _parse_args():
         elif opt in ('--no-private', '--no_private'): options['private']=0
         elif opt in ('--output', '--target', '-o'): options['target']=val
         elif opt in ('--pdf',): options['action'] = 'pdf'
+        elif opt in ('--dot',): options['action'] = 'dot'
         elif opt in ('--private',):
             options['private'] = 1
             options['tests']['private'] = 1
@@ -603,6 +606,40 @@ def _html(docmap, options):
                               (num_files, options['target']))
     progress = _Progress('Writing', options['verbosity'], num_files, 1)
     try: html_doc.write(options['target'], progress.report)
+    except OSError, e:
+        print >>sys.stderr, '\nError writing docs:\n%s\n' % e
+    except IOError, e:
+        print >>sys.stderr, '\nError writing docs:\n%s\n' % e
+    except Exception, e:
+        if options['debug']: raise
+        else: _internal_error(e)
+    except:   
+        if options['debug']: raise
+        else: _internal_error()
+
+def _dot(docmap, options):
+    """
+    Create the dot documentation for the objects in the given
+    documentation map.  
+
+    @param docmap: A documentation map containing the documentation
+        for the objects whose API documentation should be created.
+    @param options: Options from the command-line arguments.
+    @type options: C{dict}
+    """
+    from epydoc.dot import DotFormatter
+
+    # Create the documenter, and figure out how many files it will
+    # generate.
+    dot_doc = DotFormatter(docmap, **options)
+    num_files = dot_doc.num_files()
+
+    # Write documentation.
+    if options['verbosity'] > 0:
+        print  >>sys.stderr, ('Writing dot docs (%d files) to %r.' %
+                              (num_files, options['target']))
+    progress = _Progress('Writing', options['verbosity'], num_files, 1)
+    try: dot_doc.write(options['target'], progress.report)
     except OSError, e:
         print >>sys.stderr, '\nError writing docs:\n%s\n' % e
     except IOError, e:

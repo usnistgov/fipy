@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 6/7/05 {1:22:02 PM}
+ #                                last update: 7/6/05 {6:02:36 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -186,7 +186,8 @@ import mesh2D
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
-MeshImportError = "MeshImportError"
+class MeshImportError(Exception):
+    pass
 
 class _DataGetter:
 

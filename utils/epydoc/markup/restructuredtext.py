@@ -381,6 +381,13 @@ class _EpydocLaTeXTranslator(LaTeXTranslator):
 
     def visit_document(self, node): pass
     def depart_document(self, node): pass
+    
+    def visit_admonition(self, node, name=''):
+        self.body.append('\\begin{reSTadmonition}[%s]\n' % self.language.labels[name])
+        
+    def depart_admonition(self, node=None):
+        self.body.append('\\end{reSTadmonition}\n');
+
         
 class _EpydocHTMLTranslator(HTMLTranslator):
     def __init__(self, document, docstring_linker):

@@ -297,6 +297,7 @@
 \definecolor{light-gray}{gray}{0.8}
 \definecolor{middle-gray}{gray}{0.55}
 \definecolor{hazy-yellow}{rgb}{1.0,1.0,0.8}
+\definecolor{hazy-orange}{rgb}{1.0,0.75,0.4}
 \definecolor{hazy-red}{rgb}{1.0,0.8,0.8}
 
 \usepackage{calc}
@@ -397,10 +398,24 @@
     \raggedright\begin{description}\item[#1: ]}
     {\end{description}}
 
+\renewenvironment{EpydocModuleList}{%
+    \newcommand{\CrossRef}[1]{}
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+        \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\renewenvironment{EpydocModuleSubList}{%
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+        \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
 % lifted from memoir.cls
 \newcommand{\hangfrom}[1]{%
   \setbox\@tempboxa\hbox{{#1}}%
   \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
+
 
   
 % Same as book.cls, except ragged-right. Looks much better for long 
@@ -458,7 +473,7 @@
 
 \usepackage{booktabs}
 
-\newenvironment{reSTadmonition}[1][]{%
+\renewenvironment{reSTadmonition}[1][]{%
     \begin{center}\begin{sffamily}%
     \ifthenelse{\equal{#1}{}\OR\equal{#1}{Note}}{
         \begin{cminipage}[light-gray]
@@ -466,10 +481,14 @@
         \ifthenelse{\equal{#1}{Warning}}{%
             \begin{cminipage}[hazy-yellow]
         }{%
-            \ifthenelse{\equal{#1}{Danger}}{%
-                \begin{cminipage}[hazy-red]
+            \ifthenelse{\equal{#1}{Attention!}}{%
+                \begin{cminipage}[hazy-orange]
             }{%
-                \begin{cminipage}
+                \ifthenelse{\equal{#1}{Danger}}{%
+                    \begin{cminipage}[hazy-red]
+                }{%
+                    \begin{cminipage}
+                }%
             }%
         }%
     }%

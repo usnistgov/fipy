@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/30/05 {8:45:47 AM} 
+ #                                last update: 7/7/05 {5:16:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -109,7 +109,7 @@ class build_docs (Command):
         dir = os.path.join(dir, 'latex')
         
         from utils.epydoc import driver
-        driver.epylatex(module_names = ['fipy/'], options = {'target':dir})
+        driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
 	
         savedir = os.getcwd()
         try:
@@ -117,7 +117,7 @@ class build_docs (Command):
             os.chdir(os.path.join('documentation','manual'))
             f = open('api.tex', 'w')
             f.write("% This file is created automatically by:\n")
-            f.write("% 	python setup.py build_doc --latex\n\n")
+            f.write("% 	python setup.py build_docs --latex\n\n")
             for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
                 
                 if 'api.tex' in files:
@@ -137,6 +137,7 @@ class build_docs (Command):
 		    mainMatch = mainModule.match(name)
                     subMatch = subModule.match(name)
 
+                    
                     def stringInModule(s):
                         module = open(os.path.join(root, name))
                         functionLine = re.compile(s)
@@ -146,18 +147,34 @@ class build_docs (Command):
 				flag = True
 				break
 				
-			module.close
+			module.close()
                         
                         return flag
 
-                    if mainMatch and stringInModule(r"\\subsection{Modules") \
+                    if mainMatch and stringInModule(r"\\section{Package") \
                        and not stringInModule(r"no chapter heading"):
-			f.write("\\chapter{Module " + mainMatch.group(1) + "}\n")
+                        module = open(os.path.join(root, name), 'r')
+                        lines = []
+                        
+                        for line in module:
+                            
+                            line = re.sub(r'\\section', r'\\chapter', line)
+                            line = re.sub(r'\\subsection', r'\\section', line)
+                            line = re.sub(r'\\subsubsection', r'\\subsection', line)
+                            lines.append(line)
+                            
+                        module.close()
+                        module = open(os.path.join(root, name), 'w')
+                        module.writelines(lines)
+                        module.close()
+                           
+                        if not stringInModule(r"\\section{(Functions|Variables|Class)"):
+                            f.write("\\chapter{Package \\EpydocDottedName{" + subMatch.group(1) + "}}\n")
 
 		    if subMatch:
                         ## epydoc tends to prattle on and on with empty module pages, so 
 			## we eliminate all but those that actually contain something relevant.
-                        if not stringInModule(r"\\subsection{(Functions|Variables|Class)"):
+                        if not stringInModule(r"\\(sub)?section{(Functions|Variables|Class)"):
                             continue
 			
 		    split = os.path.splitext(name)
@@ -244,7 +261,7 @@ class build_docs (Command):
 		
             f = open('version.tex', 'w')
             f.write("% This file is created automatically by:\n")
-            f.write("% 	python setup.py build_doc --manual\n\n")
+            f.write("% 	python setup.py build_docs --manual\n\n")
             f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
             f.close()
             
@@ -578,6 +595,7 @@ f.close()
 ## import py2app
 
 ## app = [os.path.join('examples','levelSet','electroChem','input.py')],
+
 
 dist = setup(	name = "FiPy",
 	version = "1.0a2",

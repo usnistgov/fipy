@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:33 AM} 
+ #                                last update: 7/6/05 {6:05:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,7 +60,8 @@ class _AdsorptionCoeff(CellVariable):
         self.dt = 0
 
     def _calcValue(self):
-        self.value = self.dt * Numeric.array(self.bulkVar) * self.rateConstant * self._multiplier()
+        self.value = self.dt * Numeric.array(self.bulkVar) \
+                     * self.rateConstant * self._multiplier()
 
     def _updateDt(self, dt):
         self.dt = dt
@@ -122,8 +123,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     The following is a test case:
 
-       >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-       >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+       >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+       ...     import DistanceVariable
+       >>> from fipy.models.levelSet.surfactant.surfactantVariable \
+       ...     import SurfactantVariable
        >>> from fipy.meshes.grid2D import Grid2D
        >>> dx = .5
        >>> dy = 2.3
@@ -133,7 +136,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> c = 0.2
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
-       ...                                value = (-dx*3/2, -dx/2, dx/2, 3*dx/2 ,5*dx/2))
+       ...                                value = (-dx*3/2, -dx/2, dx/2, 
+       ...                                          3*dx/2,  5*dx/2))
        >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
        ...                                    distanceVar = distanceVar)
        >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
@@ -143,14 +147,17 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...                                   rateConstant = k)
        >>> eqn.solve(surfactantVar, dt = dt)
        >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-       >>> Numeric.allclose(surfactantVar.getInterfaceVar(), Numeric.array((0, 0, answer, 0, 0)))
+       >>> Numeric.allclose(surfactantVar.getInterfaceVar(), 
+       ...                  Numeric.array((0, 0, answer, 0, 0)))
        1
 
     The following test case is for two surfactant variables. One has more
     surface affinity than the other.
 
-       >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-       >>> from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+       >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+       ...     import DistanceVariable
+       >>> from fipy.models.levelSet.surfactant.surfactantVariable \
+       ...     import SurfactantVariable
        >>> from fipy.meshes.grid2D import Grid2D
        >>> dx = 0.5
        >>> dy = 2.73
@@ -165,8 +172,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
        ...                                value = dx * (Numeric.arange(5) - 1.5))
-       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), distanceVar = distanceVar)
-       >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), distanceVar = distanceVar)
+       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
+       ...                           distanceVar = distanceVar)
+       >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), 
+       ...                           distanceVar = distanceVar)
        >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
        >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
 
@@ -188,9 +197,11 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...     eqn1.solve(var1, dt = dt)
        >>> answer0 = 1 - Numeric.exp(-k0 * c0 * dt * totalSteps)
        >>> answer1 = (1 - Numeric.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-       >>> Numeric.allclose(var0.getInterfaceVar(), Numeric.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
+       >>> Numeric.allclose(var0.getInterfaceVar(), 
+       ...                  Numeric.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
        1
-       >>> Numeric.allclose(var1.getInterfaceVar(), Numeric.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
+       >>> Numeric.allclose(var1.getInterfaceVar(), 
+       ...                  Numeric.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
        1
        >>> dt = 0.1
        >>> for step in range(10):
@@ -203,7 +214,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
-       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), distanceVar = distanceVar)
+       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
+       ...                           distanceVar = distanceVar)
        >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
 
        >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar = var0,
@@ -248,7 +260,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
        >>> extVar = CellVariable(mesh = mesh, value = accVar.getInterfaceVar())
 
-       >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
+       >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
+       ...     import buildHigherOrderAdvectionEquation
        >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff = extVar)
 
        >>> dt = 0.1

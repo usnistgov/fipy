@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/6/05 {5:01:38 PM} 
+ #                                last update: 7/6/05 {6:11:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -357,9 +357,11 @@ class PhysicalField:
         such as Numeric_ that cannot use units, while ensuring the quantities
         have the desired units
         
-            >>> print Numeric.array(PhysicalField(1., 'inch') / PhysicalField(1., 'mm'))
+            >>> print Numeric.array(PhysicalField(1., 'inch') 
+            ...                     / PhysicalField(1., 'mm'))
             25.4
-            >>> print Numeric.array(PhysicalField(1., 'inch') / PhysicalField(1., 'kg'))
+            >>> print Numeric.array(PhysicalField(1., 'inch') 
+            ...                     / PhysicalField(1., 'kg'))
             Traceback (most recent call last):
                 ...
             TypeError: Numeric array value must be dimensionless
@@ -1289,8 +1291,8 @@ class PhysicalUnit:
 	
 	    >>> a = PhysicalField("1. K").getUnit()
 	    >>> b = PhysicalField("1. degF").getUnit()
-	    >>> print tuple([str(round(element,6)) for element in b.conversionTupleTo(a)])
-	    ('0.555556', '459.67')
+	    >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
+	    ['0.555556', '459.67']
 	"""
         if self.powers != other.powers:
             raise TypeError, 'Incompatible units'
@@ -1384,14 +1386,15 @@ class PhysicalUnit:
         self.names[name] = 1
 
     def name(self):
-	"""
-	Return the name of the unit
-	
-	    >>> PhysicalField("1. m").getUnit().name()
-	    'm'
-	    >>> (PhysicalField("1. m")/PhysicalField("1. s")/PhysicalField("1. s")).getUnit().name()
-	    'm/s**2'
-	"""
+        """
+        Return the name of the unit
+        
+            >>> PhysicalField("1. m").getUnit().name()
+            'm'
+            >>> (PhysicalField("1. m") / PhysicalField("1. s") 
+            ...  / PhysicalField("1. s")).getUnit().name()
+            'm/s**2'
+        """
         num = ''
         denom = ''
         for unit in self.names.keys():

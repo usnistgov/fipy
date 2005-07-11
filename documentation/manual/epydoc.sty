@@ -142,7 +142,7 @@
 
 \newenvironment{EpydocClassList}{%
     \begin{itemize}
-        \renewcommand{\item}[1][]{\textbf{##1}}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
     \setlength{\parskip}{0ex}}
     {\end{itemize}}
 
@@ -150,10 +150,24 @@
     \newcommand{\CrossRef}[1]{%
         \textit{(Section \ref{##1}, p.~\pageref{##1})}}
     \begin{itemize}
-        \renewcommand{\item}[1][]{\textbf{##1}}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
     \setlength{\parskip}{0ex}}
     {\end{itemize}}
     
+\newenvironment{EpydocModuleList}{%
+    \newcommand{\CrossRef}[1]{%
+        \textit{(Section \ref{##1}, p.~\pageref{##1})}}
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\newenvironment{EpydocModuleSubList}{%
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
 \newenvironment{@EpydocGeneralList}{%
     \newcommand{\EpydocInternalHeader}[1]{%
         \multicolumn{2}{|l|}{\textbf{##1}\\
@@ -297,5 +311,20 @@
 % %         {\end{longtable}}
 %     }
 %     {\cline{1-2}}
+
+\newenvironment{reSTadmonition}[1][]{%
+    \begin{center}\begin{sffamily}
+        \begin{lrbox}{\@tempboxa}
+            \begin{minipage}{\admonitionwidth}
+                \textbf{\large #1}
+                \vspace{2mm}
+    }
+    {
+        \end{minipage}
+    \end{lrbox}
+    \fbox{\usebox{\@tempboxa}}
+    \end{sffamily}
+    \end{center}
+    }
 
 \newcommand{\EpydocDottedName}[1]{#1}

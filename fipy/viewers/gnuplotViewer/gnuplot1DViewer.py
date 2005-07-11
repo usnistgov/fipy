@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:31:40 PM} { 2:45:36 PM}
+ #                                last update: 7/6/05 {5:54:17 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,14 +52,6 @@ from gnuplotViewer import GnuplotViewer
 class Gnuplot1DViewer(GnuplotViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
-    Usage
-
-    ::
-    
-       viewer = Gnuplot1DViewer(vars = (<CellVariable>, ... ),
-                                limits = {'xmin': .., 'xmax' : .., 'datamin' : .. 'datamax' : ..},
-                                title = 'myTitle')
-       viewer.plot()
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
     wrapper available to download (Gnuplot.py_).

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearJORSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:35 PM} 
+ #                                last update: 7/6/05 {6:06:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,12 +52,7 @@ class LinearJORSolver(Solver):
     Jacobi over-relaxation. This method solves systems with a general
     non-symmetric coefficient matrix.
 
-    `superlu.factorize` method. Usage:
-
-    ::
-
-        solver = LinearJORSolver(tolerance = 1e-10, steps = 1000, relaxation = 1.0)
-
+    `superlu.factorize` method.
     """
     def __init__(self, tolerance = 1e-10, steps = 1000, relaxation = 1.0):
         """
