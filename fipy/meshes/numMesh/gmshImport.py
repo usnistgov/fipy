@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 7/6/05 {6:02:36 PM}
+ #                                last update: 7/12/05 {3:56:07 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -96,24 +96,68 @@ complicated problems.
 Test cases:
 
    >>> newmesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
-   >>> print newmesh.getVertexCoords().tolist()
-   [[0.0, 0.0, 0.0], [0.5, 0.5, 1.0], [1.0, 0.0, 0.0], [0.5, 1.0, 0.0], [0.5, 0.5, 0.5]]
+   >>> print newmesh.getVertexCoords()
+   [[ 0. , 0. , 0. ,]
+    [ 0.5, 0.5, 1. ,]
+    [ 1. , 0. , 0. ,]
+    [ 0.5, 1. , 0. ,]
+    [ 0.5, 0.5, 0.5,]]
 
-   >>> print newmesh._getFaceVertexIDs().tolist()
-   [[2, 1, 0], [4, 1, 0], [4, 2, 0], [4, 2, 1], [3, 1, 0], [4, 3, 0], [4, 3, 1], [3, 2, 0], [4, 3, 2], [3, 2, 1]]
+   >>> print newmesh._getFaceVertexIDs()
+   [[2,1,0,]
+    [4,1,0,]
+    [4,2,0,]
+    [4,2,1,]
+    [3,1,0,]
+    [4,3,0,]
+    [4,3,1,]
+    [3,2,0,]
+    [4,3,2,]
+    [3,2,1,]]
 
-   >>> print newmesh._getCellFaceIDs().tolist()
-   [[0, 1, 2, 3], [4, 1, 5, 6], [7, 2, 5, 8], [9, 3, 6, 8]]
+   >>> print newmesh._getCellFaceIDs()
+   [[0,1,2,3,]
+    [4,1,5,6,]
+    [7,2,5,8,]
+    [9,3,6,8,]]
 
    >>> twomesh = GmshImporter2D('fipy/meshes/numMesh/GmshTest2D.msh')
-   >>> print twomesh.getVertexCoords().tolist()
-   [[0.0, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [1.0, 1.0], [0.5, 1.5], [0.0, 2.0], [1.0, 2.0]]
+   >>> print twomesh.getVertexCoords()
+   [[ 0. , 0. , 0. ,]
+    [ 1. , 0. , 0. ,]
+    [ 0.5, 0.5, 0. ,]
+    [ 0. , 1. , 0. ,]
+    [ 1. , 1. , 0. ,]
+    [ 0.5, 1.5, 0. ,]
+    [ 0. , 2. , 0. ,]
+    [ 1. , 2. , 0. ,]]
    
-   >>> print twomesh._getFaceVertexIDs().tolist()
-   [[2, 0], [0, 1], [1, 2], [0, 3], [3, 2], [1, 4], [4, 2], [4, 3], [3, 5], [5, 4], [3, 6], [6, 5], [5, 7], [7, 4], [7, 6]]
+   >>> print twomesh._getFaceVertexIDs()
+   [[2,0,]
+    [0,1,]
+    [1,2,]
+    [0,3,]
+    [3,2,]
+    [1,4,]
+    [4,2,]
+    [4,3,]
+    [3,5,]
+    [5,4,]
+    [3,6,]
+    [6,5,]
+    [5,7,]
+    [7,4,]
+    [7,6,]]
    
-   >>> print twomesh._getCellFaceIDs().tolist()
-   [[0, 1, 2], [0, 3, 4], [2, 5, 6], [7, 4, 6], [7, 8, 9], [8, 10, 11], [12, 13, 9], [14, 11, 12]]
+   >>> print twomesh._getCellFaceIDs()
+   [[ 0, 1, 2,]
+    [ 0, 3, 4,]
+    [ 2, 5, 6,]
+    [ 7, 4, 6,]
+    [ 7, 8, 9,]
+    [ 8,10,11,]
+    [12,13, 9,]
+    [14,11,12,]]
 
 The following test case is to test the handedness of the mesh to check
 it does not return negative volumes. Firstly we set up a list with
@@ -216,24 +260,26 @@ class _DataGetter:
 
     def _calcVertexCoords(self):
 
-        dimensions = self.dimensions
-        
     ## initialize the file input stream
         a = self.inFile.readline() ## skip the $NOD
 
     ## get the vertex coordinates
         nodeToVertexIDdict = {}
         numVertices = int(self.inFile.readline())
+        
+    ## scan the number of spatial dimensions
+    ## not to be confused with the ultimate dimensionality of the mesh 
+    ## (polygonal cells vs. polyhedral cells)
+        savePos = self.inFile.tell()
+        dimensions = len(self.inFile.readline().split()) - 1
+        self.inFile.seek(savePos)
+        
         vertexCoords = Numeric.zeros((numVertices, dimensions))
         vertexCoords = vertexCoords.astype(Numeric.Float)
         for i in range(numVertices):
-            currLine = self.inFile.readline()
-            currLineArray = currLine.split()
-            currLineArray[0] = int(currLineArray[0])
-            for j in range(1, (dimensions + 1)):
-                currLineArray[j] = float(currLineArray[j])
-                nodeToVertexIDdict[currLineArray[0]] = i
-            vertexCoords[i] = currLineArray[1:(dimensions + 1)]
+            currLineArray = self.inFile.readline().split()
+            nodeToVertexIDdict[int(currLineArray[0])] = i
+            vertexCoords[i] = [float(n) for n in currLineArray[1:]]
 
         maxNode = max(nodeToVertexIDdict.keys())
         nodeToVertexIDs = Numeric.zeros((maxNode + 1,))
@@ -242,7 +288,7 @@ class _DataGetter:
         self.nodeToVertexIDs = nodeToVertexIDs
         
         return vertexCoords
-
+        
     def _calcCellVertexIDs(self):
         """
         Get the elements.
