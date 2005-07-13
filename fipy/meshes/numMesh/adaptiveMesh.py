@@ -160,9 +160,9 @@ class AdaptiveMesh2D(GmshImporter2D):
     def _writeGeometryFile(self):
         ## do the geometry file
         import tempfile
-	(f, fileName) = tempfile.mkstemp('.geo')
+	(f, filename) = tempfile.mkstemp('.geo')
 	
-        geomFile = open(fileName, mode = 'w')
+        geomFile = open(filename, mode = 'w')
         ## create the points
         pointList = ["Point(" + str(i + 1) + ") = " + _bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
         for i in pointList:
@@ -182,7 +182,7 @@ class AdaptiveMesh2D(GmshImporter2D):
         ## close the file
         geomFile.close()
 	
-	return fileName
+	return filename
     
     def _createBackgroundMesh(self):
         ## create the background mesh (this works for Triangular Meshes ONLY)

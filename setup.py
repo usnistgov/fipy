@@ -534,13 +534,13 @@ class efficiency_test(Command):
                 maxMem = 0
                 
                 for i in range(self.memorysamples):
-                    (f, fileName) = tempfile.mkstemp()
-                    os.system(('ps -p %i -o vsz > ' + fileName) % self.pid)
-                    ff = open(fileName, 'r')
+                    (f, filename) = tempfile.mkstemp()
+                    os.system(('ps -p %i -o vsz > ' + filename) % self.pid)
+                    ff = open(filename, 'r')
                     ff.readline()
                     s = ff.readline()
                     ff.close()
-                    os.remove(fileName)
+                    os.remove(filename)
                     maxMem = max(maxMem, int(s))
                     time.sleep(self.runTimeEstimate / self.memorysamples)
 
@@ -557,8 +557,8 @@ class efficiency_test(Command):
             
             while numberOfElements <= self.maximumelements and not exceptionFlag:
                 sys.argv.append('--numberOfElements=' + str(numberOfElements))
-                (f, fileName) = tempfile.mkstemp()
-                tmpFile = open(fileName, 'w')
+                (f, filename) = tempfile.mkstemp()
+                tmpFile = open(filename, 'w')
                 thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid(), self.memorysamples)
                 thread.start()
                 t1 = time.clock()
@@ -573,10 +573,10 @@ class efficiency_test(Command):
             
                 t2 = time.clock()
                 thread.join()
-                tmpFile = open(fileName,'r')
+                tmpFile = open(filename,'r')
                 memUsage = float(tmpFile.read())
                 tmpFile.close()
-                os.remove(fileName)
+                os.remove(filename)
                 os.close(f)
                 sys.argv.remove('--numberOfElements=' + str(numberOfElements))
                 print 'Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB' % (numberOfElements, t2 - t1, memUsage)

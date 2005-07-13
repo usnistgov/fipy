@@ -97,12 +97,12 @@ class GnuplotViewer(Viewer):
         else:
             return str(limit)
 
-    def plot(self, fileName = None):
+    def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
 
         :Parameters:
-          - `fileName`: The name of the file for hard copies.
+          - `filename`: The name of the file for hard copies.
           
         """
         pairs = (('x', 'x'), ('y', 'y'), ('z', 'z'), ('cb', 'data'))
@@ -111,6 +111,6 @@ class GnuplotViewer(Viewer):
             self.g('set ' + pair[0] + 'range [' + self._getLimit(pair[1] + 'min')  + ':' + self._getLimit(pair[1] + 'max') + ']')
 
         self._plot()
-        if fileName is not None:
-            self.g.hardcopy(fileName)
+        if filename is not None:
+            self.g.hardcopy(filename)
 

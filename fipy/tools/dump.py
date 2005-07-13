@@ -41,14 +41,14 @@ import cPickle
 import os
 import gzip
 
-def write(data, fileName):
+def write(data, filename):
     """
     Pickle an object and write it to a file. Wrapper for
     `cPickle.dump`.
 
     :Parameters:
       - `data`: The object to be pickled.
-      - `fileName`: The name of the file to place the pickled object.
+      - `filename`: The name of the file to place the pickled object.
 
     Test to check pickling and unpickling.
 
@@ -61,20 +61,20 @@ def write(data, fileName):
         2
         
     """
-    fileStream = gzip.GzipFile(filename = fileName, mode = 'w', fileobj = None)
+    fileStream = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
-def read(fileName = None):
+def read(filename = None):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load`.
 
     :Parameters:
-      - `fileName`: The name of the file to unpickle the object from.
+      - `filename`: The name of the file to unpickle the object from.
 
     """
-    fileStream = gzip.GzipFile(filename = fileName, mode = 'r', fileobj = None)
+    fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
     data = cPickle.load(fileStream)
     fileStream.close()
     return data

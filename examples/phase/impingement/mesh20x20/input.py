@@ -293,12 +293,12 @@ We save the variables to disk.
 
     >>> import fipy.tools.dump as dump
     >>> import tempfile
-    >>> (f, fileName) = tempfile.mkstemp('.gz')
-    >>> dump.write({'phase' : phase, 'theta' : theta}, fileName)
+    >>> (f, filename) = tempfile.mkstemp('.gz')
+    >>> dump.write({'phase' : phase, 'theta' : theta}, filename)
     
 and then recall them to test the data pickling mechanism
 
-    >>> data = dump.read(fileName)
+    >>> data = dump.read(filename)
     >>> newPhase = data['phase']
     >>> newTheta = data['theta']
     >>> newThetaEq = buildThetaEquation(newPhase, newTheta)
@@ -308,7 +308,7 @@ We clean up the temporary dump file
 
     >>> import os
     >>> os.close(f)
-    >>> os.remove(fileName)
+    >>> os.remove(filename)
 
 and finish the iterations,
 

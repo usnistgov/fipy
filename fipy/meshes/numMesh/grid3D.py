@@ -521,12 +521,12 @@ class Grid3D(Mesh):
             >>> import os
             >>> from fipy.tools import dump
             
-            >>> (f, fileName) = tempfile.mkstemp('.gz')
-            >>> pickledMesh = dump.write(mesh, fileName)
+            >>> (f, filename) = tempfile.mkstemp('.gz')
+            >>> pickledMesh = dump.write(mesh, filename)
             
-            >>> unpickledMesh = dump.read(fileName)
+            >>> unpickledMesh = dump.read(filename)
             >>> os.close(f)
-            >>> os.remove(fileName)
+            >>> os.remove(filename)
 
             >>> array.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1

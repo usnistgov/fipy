@@ -235,14 +235,14 @@ class MeshImportError(Exception):
 
 class _DataGetter:
 
-    def getData(self, fileName, dimensions):
+    def getData(self, filename, dimensions):
 
         if (dimensions != 2 and dimensions != 3):
             raise MeshImportError, "Number of dimensions must be 2 or 3"
             
         self.dimensions = dimensions
         
-        self.inFile = open(fileName)
+        self.inFile = open(filename)
         
         vertexCoords = self._calcVertexCoords()
         self._calcCellVertexIDs()

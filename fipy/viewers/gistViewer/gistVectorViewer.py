@@ -52,7 +52,7 @@ class _GistVectorViewer(GistViewer):
 	self.var = var
 	GistViewer.__init__(self, title, grid)
 	
-    def plot(self, fileName = None):
+    def plot(self, filename = None):
 	import gist
 
         gist.window(self.id, wait = 1)
@@ -72,9 +72,9 @@ class _GistVectorViewer(GistViewer):
 	
         gist.plv(Numeric.array([vy,vy]), Numeric.array([vx,vx]),scale=0.01)
 
-        if fileName is not None:
+        if filename is not None:
             
-            gist.hcp_file(fileName)
+            gist.hcp_file(filename)
             gist.hcp()
 
         gist.fma()

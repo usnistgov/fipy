@@ -83,12 +83,12 @@ class MatplotlibViewer(Viewer):
         fig = pylab.figure()
         self.id = fig.number
                     
-    def plot(self, fileName = None):
+    def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
 
         :Parameters:
-          - `fileName`: The name of the file for hard copies.
+          - `filename`: The name of the file for hard copies.
           
         """
 
@@ -101,6 +101,6 @@ class MatplotlibViewer(Viewer):
         pylab.xlim(xmin = self._getLimit('xmin'))
         pylab.xlim(xmax = self._getLimit('xmax'))
         
-        if fileName is not None:
-            pylab.savefig(fileName)
+        if filename is not None:
+            pylab.savefig(filename)
 

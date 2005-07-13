@@ -59,15 +59,15 @@ class CellVariable(Variable):
         >>> import os
         >>> from fipy.tools import dump
         
-        >>> (f, fileName) = tempfile.mkstemp('.gz')
-        >>> dump.write(var, fileName)
-        >>> unPickledVar = dump.read(fileName)
+        >>> (f, filename) = tempfile.mkstemp('.gz')
+        >>> dump.write(var, filename)
+        >>> unPickledVar = dump.read(filename)
         
         >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
         1
         
         >>> os.close(f)
-        >>> os.remove(fileName)
+        >>> os.remove(filename)
     """
     
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
