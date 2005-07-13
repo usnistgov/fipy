@@ -97,7 +97,7 @@ class Mesh2D(Mesh):
     def _concatenate(self, other, smallNumber):
         return Mesh2D(**self._getAddedMeshValues(other, smallNumber))
 
-    def _getOrderedCellVertexIDs(self):
+    def _getOrderedCellVertexIDs_old(self):
         cellFaceVertexIDs = Numeric.take(self.faceVertexIDs, self.cellFaceIDs)
         cellVertexIDs = Numeric.reshape(cellFaceVertexIDs, (len(self.getCellCenters()), Numeric.size(cellFaceVertexIDs) / len(self.getCellCenters())))
         cellVertexIDs = Numeric.sort(cellVertexIDs)

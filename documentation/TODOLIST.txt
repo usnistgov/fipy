@@ -136,6 +136,7 @@ Long term Goals
       * How does Gmsh fit in?
 
     - Lazy mesh array evaluations.
+    - support for meshes in higher spaces.
 
   * Viewers:
 
