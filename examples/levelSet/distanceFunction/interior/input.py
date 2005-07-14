@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/4/05 {7:03:02 PM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {4:21:35 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,27 +56,27 @@ Do the tests:
 
    >>> dX = dx / 2.
    >>> dY = dy / 2.
-   >>> mm = dX * dY / Numeric.sqrt(dX**2 + dY**2) 
+   >>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2) 
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = Numeric.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> v1 = evalCell(dY, dX, dx, dy)[1]
    >>> v2 = max(-dY*3, -dX*3)   
-   >>> values = Numeric.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
+   >>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
    ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
    ...                           dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
    ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
    ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
-   >>> Numeric.allclose(var, values, atol = 1e-10)
+   >>> print var.allclose(values, atol = 1e-10)
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
@@ -91,7 +91,7 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-initialArray = -Numeric.ones(nx * ny, 'd')
+initialArray = -numerix.ones(nx * ny, 'd')
 
 positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] < dx) or (cell.getCenter()[0] > (Lx - dx)) or (cell.getCenter()[1] < dy) or (cell.getCenter()[1] > (Ly - dy)))
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 4/2/05 {7:30:47 PM} 
+ #                                last update: 7/12/05 {11:35:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,7 @@
 import Numeric, MA
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
-import fipy.tools.array as array
+from fipy.tools import numerix
 from fipy.tools.inline import inline
 from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
@@ -86,12 +86,11 @@ class _CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        from fipy.tools.array import MAtake
-	contributions = MAtake(self.faceGradientContributions[:],ids.flat)
+	contributions = numerix.MAtake(self.faceGradientContributions[:],ids.flat)
 
-        contributions = array.reshape(contributions, (N, M, self.mesh.getDim()))
-        orientations = array.reshape(orientations, (N, M, 1))
-	grad = Numeric.array(array.sum(orientations * contributions, 1))
+        contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
+        orientations = numerix.reshape(orientations, (N, M, 1))
+	grad = Numeric.array(numerix.sum(orientations * contributions, 1))
 
 	grad = grad / volumes[:,Numeric.NewAxis]
 

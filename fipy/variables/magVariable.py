@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 4/1/05 {11:02:24 AM}
+ #                                last update: 7/12/05 {1:03:35 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,7 @@
 import Numeric
 
 from fipy.variables.cellVariable import Variable
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class _MagVariable(Variable):
     def __init__(self, var):
@@ -48,5 +48,5 @@ class _MagVariable(Variable):
         self.result = Numeric.zeros((len(var)),'d')
         
     def _calcValue(self):
-	self.value = array.sqrtDot(self.var(), self.var())
+	self.value = numerix.sqrtDot(self.var(), self.var())
 

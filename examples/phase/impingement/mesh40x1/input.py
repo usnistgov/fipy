@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/14/05 {9:22:07 AM}
+ #                                last update: 7/13/05 {3:42:22 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -187,8 +187,8 @@ discretization of `theta` on the circle.
     >>> phaseModSq = phaseMod * phaseMod
     >>> expo = epsilon * beta * theta.getGrad().getMag()
     >>> expo = (expo < 100.) * (expo - 100.) + 100.
-    >>> import fipy.tools.array
-    >>> pFunc = 1. + fipy.tools.array.exp(-expo) * (mu / epsilon - 1.)
+    >>> from fipy.tools import numerix
+    >>> pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
 
     >>> phaseFace = phase.getArithmeticFaceValue()
     >>> phaseSq = phaseFace * phaseFace
@@ -229,7 +229,7 @@ and orientation variables.
     ...     from fipy import viewers
     ...     phaseViewer = viewers.make(vars = phase, 
     ...                                limits = {'datamin': 0., 'datamax': 1.})
-    ...     from Numeric import pi
+    ...     from fipy.tools.numerix import pi
     ...     thetaProductViewer = viewers.make(vars = theta,
     ...                                       limits = {'datamin': -pi, 
     ...                                                 'datamax': pi})

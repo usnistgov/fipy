@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/6/05 {5:09:41 PM}
+ #                                last update: 7/12/05 {11:43:36 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,9 +45,8 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import MA
 
-from fipy.tools.array import MAtake
 from fipy.variables.cellVariable import CellVariable
-import fipy.tools.array
+from fipy.tools import numerix
 
 class DistanceVariable(CellVariable):
     r"""
@@ -253,13 +252,13 @@ class DistanceVariable(CellVariable):
         cellToCellIDs = self.mesh._getCellToCellIDs()
 
         if deleteIslands:
-            adjVals = MAtake(self.value, cellToCellIDs)
+            adjVals = numerix.MAtake(self.value, cellToCellIDs)
             adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
             masksum = Numeric.sum(Numeric.logical_not(adjInterfaceValues.mask()), 1)
             tmp = MA.logical_and(masksum == 4, self.value > 0)
             self.value = MA.where(tmp, -1, self.value)
 
-        adjVals = MAtake(self.value, cellToCellIDs)
+        adjVals = numerix.MAtake(self.value, cellToCellIDs)
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,Numeric.NewAxis]) > 0)
         dAP = self.mesh._getCellToCellDistances()
         distances = abs(self.value[:,Numeric.NewAxis] * dAP / (self.value[:,Numeric.NewAxis] - adjInterfaceValues))
@@ -282,7 +281,7 @@ class DistanceVariable(CellVariable):
                                       self.value,
                                       MA.where(t.mask(),
                                                sign * s,
-                                               MA.where(abs(fipy.tools.array.dot(ns,nt)) < 0.9,
+                                               MA.where(abs(numerix.dot(ns,nt)) < 0.9,
                                                         sign * s * t / MA.sqrt(s**2 + t**2),
                                                         MA.where(u.mask(),
                                                                  sign * s,
@@ -321,7 +320,7 @@ class DistanceVariable(CellVariable):
             self.value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
-        adjInterfaceFlag = MAtake(interfaceFlag, cellToCellIDs)
+        adjInterfaceFlag = numerix.MAtake(interfaceFlag, cellToCellIDs)
         hasAdjInterface = Numeric.sum(adjInterfaceFlag.filled(), 1) > 0
         trialFlag = Numeric.logical_and(Numeric.logical_not(interfaceFlag), hasAdjInterface) 
         trialIDs = list(Numeric.nonzero(trialFlag))
@@ -471,8 +470,7 @@ class DistanceVariable(CellVariable):
 
         normals = Numeric.array(self._getCellInterfaceNormals().filled(fill_value = 0))
         areas = Numeric.array(self.mesh._getCellAreaProjections().filled(fill_value = 0))
-        import fipy.tools.array as array
-        return Numeric.sum(abs(array.dot(normals, areas, axis = 2)), axis = 1)
+        return Numeric.sum(abs(numerix.dot(normals, areas, axis = 2)), axis = 1)
 
     def _getCellInterfaceNormals(self):
         """
@@ -499,8 +497,7 @@ class DistanceVariable(CellVariable):
 
         valueOverFaces = Numeric.resize(Numeric.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
-        from fipy.tools.array import MAtake
-        interfaceNormals = MAtake(self._getInterfaceNormals(), self.mesh._getCellFaceIDs())
+        interfaceNormals = numerix.MAtake(self._getInterfaceNormals(), self.mesh._getCellFaceIDs())
         import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
@@ -563,9 +560,7 @@ class DistanceVariable(CellVariable):
 
         """
 
-        from fipy.tools.array import MAtake
-        
-        flag = MAtake(self._getInterfaceFlag(), self.mesh._getCellFaceIDs()).filled(fill_value = 0)
+        flag = numerix.MAtake(self._getInterfaceFlag(), self.mesh._getCellFaceIDs()).filled(fill_value = 0)
 
         flag = Numeric.sum(flag, axis = 1)
         

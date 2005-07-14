@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 6/14/05 {9:05:27 AM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {11:20:28 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -479,15 +479,13 @@ is calculated with the CFL number and the maximum extension velocity.
    ...
    ...         extensionVelocityVariable.setValue(depositionRateVariable())
    ...
-   ...         argmax = Numeric.argmax(extensionVelocityVariable)
-   ...
    ...     distanceVar.updateOld()
    ...     acceleratorVar.updateOld()
    ...     metalVar.updateOld()
    ...     bulkAcceleratorVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     if __name__ == '__main__':
-   ...         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+   ...         dt = cflNumber * cellSize / max(extensionVelocityVariable)
    ...     else:
    ...         dt = 0.1
    ...     advectionEquation.solve(distanceVar, dt = dt) 

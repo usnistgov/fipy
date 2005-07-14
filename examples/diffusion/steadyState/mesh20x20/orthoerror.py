@@ -6,7 +6,7 @@
  # 
  #  FILE: "orthoerror.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {5:19:43 PM} 
+ #                                last update: 7/13/05 {3:35:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,6 +48,9 @@ for each mesh and displays them in a graph, allowing the relationship of error t
 For more information, see the documentation for AdaptiveMesh.
 """
 
+import sys
+import os
+
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
 from fipy.meshes.numMesh.tri2D import Tri2D
@@ -55,9 +58,7 @@ from fipy.solvers.linearPCGSolver import LinearPCGSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
-import sys
-import os
-import Numeric
+from fipy.tools import numerix
 
 valueLeft = 0.
 valueRight = 1.
@@ -82,13 +83,13 @@ if __name__ == '__main__':
         ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                                  FixedValue(mesh.getFacesRight(), valueRight)))
 
-        varArray = Numeric.array(var)
+        varArray = numerix.array(var)
         x = mesh.getCellCenters()[:,0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._getNonOrthogonality()
-        RMSError = (Numeric.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
-        RMSNonOrtho = (Numeric.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
+        RMSError = (numerix.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
+        RMSNonOrtho = (numerix.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

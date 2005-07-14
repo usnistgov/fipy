@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:54:23 PM} 
+ #                                last update: 7/13/05 {3:42:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,9 +83,9 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools.numerix import exp
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2) 
     1

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 2/3/05 {3:57:15 PM} 
+ #                                last update: 7/12/05 {1:01:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@
 import Numeric
 
 from fipy.tools.dimensions.physicalField import PhysicalField
-import fipy.tools.array
+from fipy.tools import numerix
 
 import fipy.tools.inline.inline as inline
 
@@ -66,7 +66,7 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(v1.dot(v2))
     ## We can't use Numeric.dot on quantities with units
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return fipy.tools.array.sqrt(abs(fipy.tools.array.sum(v1 * v2)))
+    return numerix.sqrt(abs(numerix.sum(v1 * v2)))
 
 def _putAddPy(vector, ids, additionVector, mask = None):
     additionVector = Numeric.array(additionVector)

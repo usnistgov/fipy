@@ -6,7 +6,7 @@
  # 
  #  FILE: "ThetaHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:41 AM} { 4:14:24 PM}
+ #                                last update: 7/12/05 {11:38:51 AM} { 4:14:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ import Numeric
 
 from fipy.variables.cellVariable import CellVariable
 ##from fipy.tools.inline.inline import runInline
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class _ThetaHalfAngleVariable(CellVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
@@ -57,10 +57,10 @@ class _ThetaHalfAngleVariable(CellVariable):
 	N = self.parameters['symmetry']
         
         if self.getMesh().getDim() > 1:
-            z = array.arctan2(self.phase.getGrad()[:,1], self.phase.getGrad()[:,0])
+            z = numerix.arctan2(self.phase.getGrad()[:,1], self.phase.getGrad()[:,0])
         else:
             z = 0
             
         z = N * (z - self.theta[:])
-        self.value = array.tan(z / 2.)
+        self.value = numerix.tan(z / 2.)
 

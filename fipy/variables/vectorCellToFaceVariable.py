@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellToFaceVariable.py"
  #                                    created: 7/26/04 {2:23:41 PM} 
- #                                last update: 4/7/05 {2:49:17 PM} 
+ #                                last update: 7/12/05 {1:12:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,6 @@
 import Numeric
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
-from fipy.tools import array
 from fipy.tools.inline import inline
 
 class _VectorCellToFaceVariable(VectorFaceVariable):

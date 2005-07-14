@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/2/05 {7:39:40 PM} 
+ #                                last update: 7/12/05 {11:32:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -264,6 +264,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	self.faceToCellDistanceRatio = dFP / dAP
 
     def _calcCellToCellDistances(self):
-	self.cellToCellDistances = fipy.tools.array.take(self._getCellDistances(), self._getCellFaceIDs())
+        from fipy.tools import numerix
+	self.cellToCellDistances = numerix.take(self._getCellDistances(), self._getCellFaceIDs())
 
 

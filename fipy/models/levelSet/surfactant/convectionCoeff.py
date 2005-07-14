@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 4/6/05 {3:23:34 PM} 
+ #                                last update: 7/12/05 {1:05:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ __docformat__ = 'restructuredtext'
 import MA
 import Numeric
 
-import fipy.tools.array as array
+from fipy.tools import numerix
 import fipy.tools.vector as vector
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
@@ -124,11 +124,10 @@ class _ConvectionCoeff(VectorFaceVariable):
      
         faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()[:,Numeric.NewAxis]
 
-        from fipy.tools.array import MAtake
-        cellFaceNormalAreas = Numeric.array(MAtake(faceNormalAreas, self.mesh._getCellFaceIDs()).filled(fill_value = 0))
+        cellFaceNormalAreas = Numeric.array(numerix.MAtake(faceNormalAreas, self.mesh._getCellFaceIDs()).filled(fill_value = 0))
         norms = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(fill_value = 0))
         
-        alpha = array.dot(cellFaceNormalAreas, norms, axis = 2)
+        alpha = numerix.dot(cellFaceNormalAreas, norms, axis = 2)
         alpha = Numeric.where(alpha > 0, alpha, 0)
 
         alphasum = Numeric.sum(alpha, axis = 1)

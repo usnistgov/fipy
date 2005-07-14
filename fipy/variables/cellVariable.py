@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 7/6/05 {6:13:17 PM} 
+ #                                last update: 7/12/05 {1:06:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.variable import Variable
-import fipy.tools.array
+from fipy.tools import numerix
 
         
 class CellVariable(Variable):
@@ -110,7 +110,7 @@ class CellVariable(Variable):
 	if points == () and cells == ():
 	    return Variable.getValue(self)
 	elif cells != ():
-	    return fipy.tools.array.take(Variable.getValue(self), [cell.getID() for cell in cells])
+	    return numerix.take(Variable.getValue(self), [cell.getID() for cell in cells])
 	else:
 	    return [self(point) for point in points]
 	
@@ -118,7 +118,7 @@ class CellVariable(Variable):
 	if cells == ():
 	    self[:] = value
 	else:
-## 	    return fipy.tools.array.put(self.getValue(), [cell.getID() for cell in cells], value)
+## 	    return numerix.put(self.getValue(), [cell.getID() for cell in cells], value)
 ## 	    self._markStale()
 
 	    for cell in cells:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 4/2/05 {7:30:57 PM}
+ #                                last update: 7/12/05 {1:08:19 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,7 @@
 import Numeric
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
-from fipy.tools import array
+from fipy.tools import numerix
 from fipy.tools.inline import inline
 
 class _FaceGradVariable(VectorFaceVariable):
@@ -53,8 +53,8 @@ class _FaceGradVariable(VectorFaceVariable):
     
         dAP = self.mesh._getCellDistances()
 	id1, id2 = self.mesh._getAdjacentCellIDs()
-##	N = self.mod(array.take(self.var,id2) - array.take(self.var,id1)) / dAP
-	N = (array.take(self.var,id2) - array.take(self.var,id1)) / dAP
+##	N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
+	N = (numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
 	normals = self.mesh._getOrientedFaceNormals()
         
 	tangents1 = self.mesh._getFaceTangents1()
@@ -63,12 +63,12 @@ class _FaceGradVariable(VectorFaceVariable):
         
       
         
-	grad1 = array.take(cellGrad,id1)
-	grad2 = array.take(cellGrad,id2)
-	t1grad1 = array.sum(tangents1*grad1,1)
-	t1grad2 = array.sum(tangents1*grad2,1)
-	t2grad1 = array.sum(tangents2*grad1,1)
-	t2grad2 = array.sum(tangents2*grad2,1)
+	grad1 = numerix.take(cellGrad,id1)
+	grad2 = numerix.take(cellGrad,id2)
+	t1grad1 = numerix.sum(tangents1*grad1,1)
+	t1grad2 = numerix.sum(tangents1*grad2,1)
+	t2grad1 = numerix.sum(tangents2*grad1,1)
+	t2grad2 = numerix.sum(tangents2*grad2,1)
 	
 	T1 = (t1grad1 + t1grad2) / 2.
 	T2 = (t2grad1 + t2grad2) / 2.

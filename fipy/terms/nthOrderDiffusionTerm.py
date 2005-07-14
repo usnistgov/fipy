@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
  #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 7/5/05 {2:22:58 PM} 
+ #                                last update: 7/12/05 {1:07:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ import Numeric
 
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import _SparseMatrix
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class NthOrderDiffusionTerm(Term):
 
@@ -255,17 +255,17 @@ class NthOrderDiffusionTerm(Term):
 
 	interiorCoeff = Numeric.array(coeff)
         
-	array.put(interiorCoeff, mesh.getExteriorFaceIDs(), 0)
+        numerix.put(interiorCoeff, mesh.getExteriorFaceIDs(), 0)
         from fipy.variables.faceVariable import FaceVariable
         interiorCoeff = FaceVariable(mesh = mesh, value = interiorCoeff)
         
-	contributions = array.take(interiorCoeff, mesh._getCellFaceIDs())
+	contributions = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
-        interiorCoeff0 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
-        interiorCoeff1 = -array.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
-        interiorFaceCellIDs = array.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
+        interiorCoeff0 = -numerix.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
+        interiorCoeff1 = -numerix.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
+        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
 
-	contributions = array.sum(contributions, 1)	
+	contributions = numerix.sum(contributions, 1)	
 	coefficientMatrix.addAtDiagonal(contributions)
         
 	coefficientMatrix.addAt(interiorCoeff0, interiorFaceCellIDs[:,0], interiorFaceCellIDs[:,1])

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:40 PM} 
+ #                                last update: 7/13/05 {11:19:33 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,6 @@ class LinearLUSolver(Solver):
             xError = Numeric.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
-            arg = Numeric.argmax(Numeric.absolute(xError))
-            tol = Numeric.absolute(xError)[arg]
+            tol = max(Numeric.absolute(xError))
             step += 1
 

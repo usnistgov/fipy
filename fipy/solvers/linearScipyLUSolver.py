@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:37 PM} 
+ #                                last update: 7/13/05 {11:21:32 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,8 +88,7 @@ class LinearScipyLUSolver(Solver):
             xError = scipy.linalg.lu_solve(LU, errorVector)
             x[:] = x - xError
 
-            arg = Numeric.argmax(Numeric.absolute(xError))
-            tol = Numeric.absolute(xError)[arg]
+            tol = max(Numeric.absolute(xError))
             step += 1
             
             print tol

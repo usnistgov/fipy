@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/6/05 {3:34:48 PM}
+ #                                last update: 7/12/05 {11:37:51 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -174,8 +174,8 @@ new subclass of `CellVariable` is created that uses the value of the
     ...     phaseModSq = phaseMod * phaseMod
     ...     expo = epsilon * beta * theta.getGrad().getMag()
     ...     expo = (expo < 100.) * (expo - 100.) + 100.
-    ...     import fipy.tools.array
-    ...     pFunc = 1. + fipy.tools.array.exp(-expo) * (mu / epsilon - 1.)
+    ...     from fipy.tools import numerix
+    ...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
     ...
     ...     phaseFace = phase.getArithmeticFaceValue()
     ...     phaseSq = phaseFace * phaseFace

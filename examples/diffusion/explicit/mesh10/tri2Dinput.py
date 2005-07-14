@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:36:42 PM} 
+ #                                last update: 7/13/05 {3:28:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,7 @@ The result is again tested in the same way:
 
 """
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.tri2D import Tri2D
 from fipy.solvers.linearLUSolver import LinearLUSolver
@@ -107,7 +107,7 @@ solver = LinearLUSolver(tolerance = 1.e-6, steps = 100)
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedValue(mesh.getFacesRight(),valueRight))
 
-answer = Numeric.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+answer = numerix.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
                           7.05111362e-02,  7.81376523e-01,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,

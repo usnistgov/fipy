@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:03:17 PM} 
+ #                                last update: 7/14/05 {4:11:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ periodic wave wraps around the mesh.
     
     >>> newVar2[:nx / 4] = var2[nx / 4:]
     >>> newVar2[nx / 4:] = var2[:nx / 4]
-    >>> Numeric.allclose(var1[nx / 4:3 * nx / 4], newVar2, atol = 1e-6)
+    >>> print newVar2.allclose(var1[nx / 4:3 * nx / 4], atol = 1e-6)
     1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
@@ -78,7 +78,7 @@ should do better than this.
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
      
 L = 20.
 nx = 40
@@ -95,7 +95,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 from fipy.meshes.periodicGrid1D import PeriodicGrid1D
 periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
 
-startingArray = Numeric.zeros(nx, 'd')
+startingArray = numerix.zeros(nx, 'd')
 startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
 
 from fipy.variables.cellVariable import CellVariable

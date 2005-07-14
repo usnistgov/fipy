@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/4/05 {7:00:38 PM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {4:21:54 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,15 +62,15 @@ Also a surfactant is present of the interface, governed by the equation:
 The result can be tested with the following code:
 
 
-   >>> surfactantBefore = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.getCellVolumes())
    >>> for step in range(steps):
    ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
-   >>> Numeric.allclose(surfactantBefore, surfactantAfter)
+   >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> print surfactantBefore.allclose(surfactantAfter)
    1
    >>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
    >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -81,13 +81,13 @@ The result can be tested with the following code:
    ...     if coverage[i] > 1e-3:
    ...         error += (coverage[i] / answer - 1.)**2
    ...         size += 1            
-   >>> print Numeric.sqrt(error / size)
+   >>> print numerix.sqrt(error / size)
    0.00813776069241
 
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
@@ -115,7 +115,7 @@ distanceVariable = DistanceVariable(
     value = 1.
     )
 
-cellRadius = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
+cellRadius = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
 distanceVariable.setValue(cellRadius - initialRadius)
 
 initialSurfactantValue =  1.
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print 'total surfactant before:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+    print 'total surfactant before:',numerix.sum(surfactantVariable * mesh.getCellVolumes())
     
     for step in range(steps):
         surfactantVariable.updateOld()
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable)
 
 
-    print 'total surfactant after:',Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+    print 'total surfactant after:',numerix.sum(surfactantVariable * mesh.getCellVolumes())
 
     areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -164,7 +164,7 @@ if __name__ == '__main__':
             error += (coverage[i] / answer - 1.)**2
             size += 1
             
-    error = Numeric.sqrt(error / size)
+    error = numerix.sqrt(error / size)
     
     print 'error:', error
     

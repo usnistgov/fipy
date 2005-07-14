@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/14/05 {9:50:35 PM} 
+ #                                last update: 7/13/05 {3:41:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ Grid2D with each interior vertex moved in a random direction.
 import sys
 import os
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.skewedGrid2D import SkewedGrid2D
@@ -110,7 +110,7 @@ ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFace
                                                          FixedValue(mesh.getFacesRight(), valueRight)))
 
 if __name__ == '__main__':
-    varArray = Numeric.array(var)
+    varArray = numerix.array(var)
     x = mesh.getCellCenters()[:,0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray

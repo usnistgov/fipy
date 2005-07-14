@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:49:49 PM} 
+ #                                last update: 7/12/05 {1:35:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ def _suite():
     theSuite = _LateImportDocTestSuite(docTestModuleNames = (
             'sparseMatrix',
             'dimensions.physicalField',
-            'array',
+            'numerix',
             'dump',
         ), base = __name__)
 

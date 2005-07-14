@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/7/05 {4:27:14 PM} 
+ #                                last update: 7/12/05 {11:39:57 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -405,7 +405,7 @@ class Mesh:
 	pass
 
     def _calcCellAreas(self):
-        from fipy.tools.array import MAtake
+        from fipy.tools.numerix import MAtake
         self.cellAreas =  MAtake(self._getFaceAreas(), self.cellFaceIDs)
     
     """get geometry methods"""
@@ -490,8 +490,8 @@ class Mesh:
     
     def _getPointToCellDistances(self, point):
 	tmp = self.getCellCenters() - PhysicalField(point)
-	import fipy.tools.array
-	return fipy.tools.array.sqrtDot(tmp, tmp)
+	from fipy.tools import numerix
+	return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
         try:

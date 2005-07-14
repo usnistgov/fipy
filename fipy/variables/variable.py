@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/11/05 {3:29:16 PM} 
+ #                                last update: 7/13/05 {4:52:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ import Numeric
 
 import fipy.tools.dimensions.physicalField
 
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class Variable:
     
@@ -645,39 +645,72 @@ class Variable:
 	
     def __float__(self):
 	return float(self.value)
-	
+
+    def arccos(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arccos(a))
+
+    def arccosh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arccosh(a))
+
+    def arcsin(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arcsin(a))
+
+    def arcsinh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arcsinh(a))
+
     def sqrt(self):
-	return self._getUnaryOperatorVariable(lambda a: array.sqrt(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
 	
     def tan(self):
-	return self._getUnaryOperatorVariable(lambda a: array.tan(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.tan(a))
+
+    def tanh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.tanh(a))
 
     def arctan(self):
-	return self._getUnaryOperatorVariable(lambda a: array.arctan(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.arctan(a))
 
+    def arctanh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arctanh(a))
+            
     def exp(self):
-	return self._getUnaryOperatorVariable(lambda a: array.exp(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.exp(a))
 
     def log(self):
-        return self._getUnaryOperatorVariable(lambda a: array.log(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.log(a))
+
+    def log10(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.log10(a))
 
     def sin(self):
-	return self._getUnaryOperatorVariable(lambda a: array.sin(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.sin(a))
 		
+    def sinh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.sinh(a))
+
     def cos(self):
-	return self._getUnaryOperatorVariable(lambda a: array.cos(a))
+	return self._getUnaryOperatorVariable(lambda a: numerix.cos(a))
+        
+    def cosh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.cosh(a))
+
+    def floor(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.floor(a))
+
+    def ceil(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.ceil(a))
+        
+    def conjugate(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a))
 
     def arctan2(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: array.arctan2(a,b), other)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
 		
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other)
-
-    def min(self):
-        return self._getUnaryOperatorVariable(lambda a: array._min(a), parentClass = Variable)
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other)
         
-    def max(self):
-        return self._getUnaryOperatorVariable(lambda a: array._max(a), parentClass = Variable)
+    def reshape(self, shape):
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape)
         
     def transpose(self):
 	if self.transposeVar is None:
@@ -694,16 +727,16 @@ class Variable:
 	return self.sumVar[index]
 	
     def take(self, ids):
-	return array.take(self.getValue(), ids)
+	return numerix.take(self.getValue(), ids)
 	
 ##     def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
-## 	return array.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
+## 	return numerix.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
         
     def allclose(self, other, rtol = 1.e-5, atol = 1.e-8):
-        return self._getBinaryOperatorVariable(lambda a,b: array.allclose(a, b, atol = atol, rtol = rtol), other)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), other)
         
     def allequal(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: array.allequal(a,b), other)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), other)
 
     def getMag(self):
         if self.mag is None:

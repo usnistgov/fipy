@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:09:07 PM} 
+ #                                last update: 7/13/05 {2:02:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,6 @@ The result is again tested in the same way:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> import Numeric
     >>> print var.allclose(analyticalArray)
     1
 

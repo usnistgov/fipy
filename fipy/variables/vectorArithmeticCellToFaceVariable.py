@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorArithmeticCellToFaceVariable.py"
  #                                    created: 7/26/04 {11:14:05 AM} 
- #                                last update: 4/7/05 {2:48:39 PM} 
+ #                                last update: 7/14/05 {11:04:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,21 +35,19 @@
  # ###################################################################
  ##
 
-import Numeric
-
 from fipy.variables.vectorCellToFaceVariable import _VectorCellToFaceVariable
-from fipy.tools import array
+from fipy.tools import numerix
 from fipy.tools.inline import inline
 
 class _VectorArithmeticCellToFaceVariable(_VectorCellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-	cell1 = array.take(self.var,id1)
-	cell2 = array.take(self.var,id2)
-        self.value = (cell1 - cell2) * alpha[:,Numeric.NewAxis] + cell2
+	cell1 = numerix.take(self.var,id1)
+	cell2 = numerix.take(self.var,id2)
+        self.value = (cell1 - cell2) * alpha[:,numerix.NewAxis] + cell2
 	
     def _calcValueIn(self, alpha, id1, id2):
-##        print Numeric.shape(self.value.value)
-##        print Numeric.shape(self.var.getNumericValue())
+##        print numerix.shape(self.value.value)
+##        print numerix.shape(self.var.getNumericValue())
 	inline._runInlineLoop2("""
 	    double cell2 = var(id2(i),j);
 	    val(i,j) = (var(id1(i),j) - cell2) * alpha(i) + cell2;

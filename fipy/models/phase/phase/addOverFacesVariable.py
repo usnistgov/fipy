@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/05 {7:26:19 PM}
+ #                                last update: 7/12/05 {1:05:10 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-import fipy.tools.array
+from fipy.tools import numerix
 import fipy.tools.inline.inline as inline
 from fipy.variables.cellVariable import CellVariable
 import fipy.variables.cellVariable 
@@ -102,25 +102,25 @@ class AddOverFacesVariable(CellVariable):
         else:
             faceGradient = self.faceGradient
 
-        contributions = fipy.tools.array.sum(self.mesh._getAreaProjections() * faceGradient[:],1)
+        contributions = numerix.sum(self.mesh._getAreaProjections() * faceGradient[:],1)
         contributions = contributions * self.faceVariable[:]
 ##        contributions[len(self.mesh._getInteriorFaces()):] = 0.
         extFaceIDs = self.mesh.getExteriorFaceIDs()
 
-        fipy.tools.array.put(contributions, extFaceIDs, Numeric.zeros(Numeric.shape(extFaceIDs), 'd'))
+        numerix.put(contributions, extFaceIDs, Numeric.zeros(Numeric.shape(extFaceIDs), 'd'))
         ids = self.mesh._getCellFaceIDs()
         
-        contributions = fipy.tools.array.take(contributions[:], ids.flat)
+        contributions = numerix.take(contributions[:], ids.flat)
 
         NCells = self.mesh.getNumberOfCells()
 
-        contributions = fipy.tools.array.reshape(contributions,(NCells,-1))
+        contributions = numerix.reshape(contributions,(NCells,-1))
         
-        orientations = fipy.tools.array.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
+        orientations = numerix.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
 
         orientations = Numeric.array(orientations)
         
-        self.value = fipy.tools.array.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
+        self.value = numerix.sum(orientations * contributions,1) / self.mesh.getCellVolumes()
         
     def _calcValueInline(self):
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 7/6/05 {1:46:35 PM}
+ #                                last update: 7/12/05 {1:17:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
-from fipy.tools import array
+from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.sparseMatrix import _SparseMatrix
 
@@ -92,10 +92,10 @@ class FixedValue(BoundaryCondition):
 	"""
 	
 	LL = _SparseMatrix(size = Ncells, bandwidth = MaxFaces)
-	LL.addAt(array.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
+	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, array.take(-coeff['cell 1 offdiag'],self.faceIds) * self._getValue())
+	vector.putAdd(bb, self.adjacentCellIds, numerix.take(-coeff['cell 1 offdiag'],self.faceIds) * self._getValue())
 
 	return (LL, bb)
 	

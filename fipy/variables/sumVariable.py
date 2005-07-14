@@ -6,7 +6,7 @@
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 4/1/05 {11:02:42 AM} 
+ #                                last update: 7/12/05 {11:38:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,7 +38,7 @@
 import Numeric
 
 from fipy.variables.variable import Variable
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class _SumVariable(Variable):
     def __init__(self, var, index):
@@ -47,5 +47,5 @@ class _SumVariable(Variable):
 	self.index = index
 
     def _calcValue(self):
-	self.value = array.sum(self.var[:], self.index)
+	self.value = numerix.sum(self.var[:], self.index)
 	

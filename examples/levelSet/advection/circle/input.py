@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/13/05 {4:42:46 PM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {3:31:33 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,8 +84,8 @@ Construct a `distanceVariable` object.
 
 Initialise the `distanceVariable` to be a circular distance function.
 
-   >>> import Numeric
-   >>> initialArray = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
+   >>> from fipy.tools import numerix
+   >>> initialArray = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
    ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - \
    ...                             radius
    >>> var.setValue(initialArray)
@@ -114,12 +114,12 @@ The result can be tested with the following commands.
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt = timeStepDuration)
-   >>> x = Numeric.array(mesh.getCellCenters())
+   >>> x = numerix.array(mesh.getCellCenters())
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
-   >>> answer = Numeric.where(answer < 0., -1001., answer)
-   >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(var))
-   >>> Numeric.allclose(answer, solution, atol = 4.7e-3)
+   >>> answer = numerix.where(answer < 0., -1001., answer)
+   >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
+   >>> numerix.allclose(answer, solution, atol = 4.7e-3)
    1
 
 If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
@@ -133,8 +133,8 @@ is more accurate,
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt = timeStepDuration)
-   >>> solution = Numeric.where(answer < 0., -1001., Numeric.array(var))
-   >>> Numeric.allclose(answer, solution, atol = 1.02e-3)
+   >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
+   >>> numerix.allclose(answer, solution, atol = 1.02e-3)
    1
 
 """

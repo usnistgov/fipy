@@ -4,7 +4,7 @@
  # 
  #  FILE: "vectorFaceDifferenceVariable.py"
  #                                    created: 3/17/05 {10:26:32 AM} 
- #                                last update: 4/2/05 {7:30:55 PM} 
+ #                                last update: 7/14/05 {11:02:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,9 +40,8 @@
  # ###################################################################
  ##
 
-from fipy.tools import array
+from fipy.tools import numerix
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
-import Numeric
 
 class _VectorFaceDifferenceVariable(VectorFaceVariable):
     """
@@ -56,6 +55,6 @@ class _VectorFaceDifferenceVariable(VectorFaceVariable):
 	
     def _calcValue(self):
 	id1, id2 = self.mesh._getAdjacentCellIDs()
-        print self.mesh._getFaceAspectRatios()[:,Numeric.NewAxis].shape, (array.take(self.var,id2) - array.take(self.var,id1)).shape
-	self.value = self.mesh._getFaceAspectRatios()[:,Numeric.NewAxis] * (array.take(self.var,id2) - array.take(self.var,id1))
+        print self.mesh._getFaceAspectRatios()[:,numerix.NewAxis].shape, (numerix.take(self.var,id2) - numerix.take(self.var,id1)).shape
+	self.value = self.mesh._getFaceAspectRatios()[:,numerix.NewAxis] * (numerix.take(self.var,id2) - numerix.take(self.var,id1))
 

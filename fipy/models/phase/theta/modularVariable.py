@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 9/3/04 {10:35:53 PM} 
+ #                                last update: 7/13/05 {2:06:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,8 +37,6 @@
 
 __docformat__ = 'restructuredtext'
  
-import Numeric
-
 from fipy.variables.cellVariable import CellVariable
 
 class ModularVariable(CellVariable):

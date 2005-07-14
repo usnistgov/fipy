@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/11/05 {3:32:54 PM} 
+ #                                last update: 7/13/05 {11:43:29 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -774,6 +774,54 @@ class PhysicalField:
         unit = _findUnit (unit)
         return self.unit.isCompatible (unit)
 
+    def arccos(self):
+        """
+        Return the inverse cosine of the `PhysicalField` in radians
+        
+            >>> print PhysicalField(0).arccos()
+            1.57079632679 rad
+        
+        The input `PhysicalField` must be dimensionless
+        
+            >>> print round(PhysicalField("1 m").arccos(), 6)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return PhysicalField(value = umath.arccos(self), unit = "rad")
+        
+    def arccosh(self):
+        """
+        Return the inverse hyperbolic cosine of the `PhysicalField`
+        
+            >>> print PhysicalField(2).arccosh()
+            1.31695789692
+        
+        The input `PhysicalField` must be dimensionless
+        
+            >>> print round(PhysicalField("1 m").arccosh(), 6)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.arccosh(self)
+
+    def arcsin(self):
+        """
+        Return the inverse sine of the `PhysicalField` in radians
+        
+            >>> print PhysicalField(1).arcsin()
+            1.57079632679 rad
+        
+        The input `PhysicalField` must be dimensionless
+        
+            >>> print round(PhysicalField("1 m").arcsin(), 6)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return PhysicalField(value = umath.arcsin(self), unit = "rad")
+        
     def sqrt(self):
         """
         Return the square root of the `PhysicalField`
@@ -812,6 +860,22 @@ class PhysicalField:
         else:
             raise TypeError, 'Argument of sin must be an angle'
 
+    def sinh(self):
+        """
+        Return the hyperbolic cosine of the `PhysicalField`
+        
+            >>> PhysicalField(0.).sinh()
+            0.0
+        
+        The units of the `PhysicalField` must be dimensionless
+        
+            >>> PhysicalField(60.,"m").sinh()
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.sinh(self)
+
     def cos(self):
         """
         Return the cosine of the `PhysicalField`
@@ -833,6 +897,22 @@ class PhysicalField:
                              self.unit.conversionFactorTo(_unit_table['rad']))
         else:
             raise TypeError, 'Argument of cos must be an angle'
+
+    def cosh(self):
+        """
+        Return the hyperbolic cosine of the `PhysicalField`
+        
+            >>> PhysicalField(0.).cosh()
+            1.0
+        
+        The units of the `PhysicalField` must be dimensionless
+        
+            >>> PhysicalField(60.,"m").cosh()
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.cosh(self)
 
     def tan(self):
         """
@@ -856,6 +936,22 @@ class PhysicalField:
         else:
             raise TypeError, 'Argument of tan must be an angle'
             
+    def tanh(self):
+        """
+        Return the hyperbolic tangent of the `PhysicalField`
+        
+            >>> PhysicalField(1.).tanh()
+            0.76159415595576485
+        
+        The units of the `PhysicalField` must be dimensionless
+        
+            >>> PhysicalField(60.,"m").tanh()
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.tanh(self)
+
     def arctan2(self,other):
         """
         Return the arctangent of `self` divided by `other` in radians
@@ -888,28 +984,84 @@ class PhysicalField:
             TypeError: Numeric array value must be dimensionless
         """
         return PhysicalField(value = umath.arctan(self), unit = "rad")
-            
-    def log(self):
+        
+    def arctanh(self):
         """
-        Return the cosine of the `PhysicalField`
+        Return the inverse hyperbolic tangent of the `PhysicalField`
         
-            >>> print round(PhysicalField(2*Numeric.pi/6,"rad").cos(), 6)
-            0.5
-            >>> print round(PhysicalField(60.,"deg").cos(), 6)
-            0.5
+            >>> print PhysicalField(0.5).arctanh()
+            0.549306144334
         
-        The units of the `PhysicalField` must be an angle
+        The input `PhysicalField` must be dimensionless
         
-            >>> PhysicalField(60.,"m").cos()
+            >>> print round(PhysicalField("1 m").arccosh(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Argument of cos must be an angle
+            TypeError: Numeric array value must be dimensionless
         """
-        if self.unit.isDimensionless():
-            return umath.log(self.value)
-        else:
-            raise TypeError, 'Argument of log must be dimensionless'
+        return umath.arctanh(self)
+
+
+    def log(self):
+        """
+        Return the natural logarithm of the `PhysicalField`
+        
+            >>> print round(PhysicalField(10).log(), 6)
+            2.302585
             
+        The input `PhysicalField` must be dimensionless
+        
+            >>> print round(PhysicalField("1 m").log(), 6)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.log(self)
+            
+    def log10(self):
+        """
+        Return the base-10 logarithm of the `PhysicalField`
+        
+            >>> print round(PhysicalField(10).log10(), 6)
+            1.0
+            
+        The input `PhysicalField` must be dimensionless
+        
+            >>> print round(PhysicalField("1 m").log10(), 6)
+            Traceback (most recent call last):
+                ...
+            TypeError: Numeric array value must be dimensionless
+        """
+        return umath.log10(self)
+        
+        
+    def floor(self):
+        """
+        Return the largest integer less than or equal to the `PhysicalField`. 
+        
+            >>> print PhysicalField(2.2,"m").floor()
+            2.0 m
+        """
+        return self.__class__(value = umath.floor(self.value), unit = self.unit)
+
+    def ceil(self):
+        """
+        Return the smallest integer greater than or equal to the `PhysicalField`. 
+        
+            >>> print PhysicalField(2.2,"m").ceil()
+            3.0 m
+        """
+        return self.__class__(value = umath.ceil(self.value), unit = self.unit)
+        
+    def conjugate(self):
+        """
+        Return the complex conjugate of the `PhysicalField`. 
+        
+            >>> print PhysicalField(2.2 - 3j,"ohm").conjugate()
+            (2.2+3j) ohm
+        """
+        return self.__class__(value = umath.conjugate(self.value), unit = self.unit)
+
     def dot(self, other):
         """
         Return the dot product of `self` with `other`. The resulting

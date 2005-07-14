@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 4/7/05 {2:36:41 PM}
+ #                                last update: 7/12/05 {1:04:03 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
 
 import Numeric
 
-import fipy.tools.array as array
+from fipy.tools import numerix
 import fipy.tools.inline.inline as inline
 from fipy.variables.cellVariable import CellVariable
 
@@ -58,17 +58,17 @@ class _AddOverFacesVariable(CellVariable):
     def _calcValuePy(self):
         ids = self.mesh._getCellFaceIDs()
         
-        contributions = array.take(self.faceVariable[:], ids.flat)
+        contributions = numerix.take(self.faceVariable[:], ids.flat)
 
         NCells = self.mesh.getNumberOfCells()
 
-        contributions = array.reshape(contributions,(NCells,-1))
+        contributions = numerix.reshape(contributions,(NCells,-1))
         
-        orientations = array.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
+        orientations = numerix.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
 
 ##         orientations = Numeric.array(orientations)
         
-        self.value = array.sum(contributions * orientations,1) / self.mesh.getCellVolumes()
+        self.value = numerix.sum(contributions * orientations,1) / self.mesh.getCellVolumes()
 	
     def _calcValueIn(self):
 

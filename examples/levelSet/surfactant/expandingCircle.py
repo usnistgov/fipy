@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 4/1/05 {10:54:02 AM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {4:22:24 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,25 +61,24 @@ The solution for these set of equations is given by:
 The following tests can be performed. First test for global
 conservation of surfactant:
 
-   >>> surfactantBefore = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.getCellVolumes())
    >>> totalTime = 0
    >>> for step in range(steps):
    ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
    ...     distanceVariable.extendVariable(velocity)
-   ...     argmax = Numeric.argmax(velocity)
-   ...     timeStepDuration = cfl * dx / velocity[argmax]
+   ...     timeStepDuration = cfl * dx / max(velocity)
    ...     distanceVariable.updateOld()
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    ...     surfactantEquation.solve(surfactantVariable)
    ...     totalTime += timeStepDuration
    >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = Numeric.sum(surfactantVariable * mesh.getCellVolumes())
-   >>> Numeric.allclose(surfactantBefore, surfactantAfter)
+   >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> print surfactantBefore.allclose(surfactantAfter)
    1
 
 Next test for the correct local value of surfactant: 
 
-   >>> finalRadius = Numeric.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+   >>> finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
    >>> answer = initialSurfactantValue * initialRadius / finalRadius
    >>> coverage = surfactantVariable.getInterfaceVar()
    >>> error = 0.
@@ -88,14 +87,14 @@ Next test for the correct local value of surfactant:
    ...     if coverage[i] > 1e-3:
    ...         error += (coverage[i] / answer - 1.)**2
    ...         size += 1
-   >>> print Numeric.sqrt(error / size) < 0.04
+   >>> print numerix.sqrt(error / size) < 0.04
    1
 
 Test for the correct position of the interface:
 
    >>> x = mesh.getCellCenters()[:,0]
    >>> y = mesh.getCellCenters()[:,1]
-   >>> radius = Numeric.sqrt((x - L / 2)**2 + (y - L / 2)**2)
+   >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
    >>> solution = radius - distanceVariable
    >>> error = 0.
    >>> size = 0
@@ -103,13 +102,13 @@ Test for the correct position of the interface:
    ...     if coverage[i] > 1e-3:
    ...         error += (solution[i] / finalRadius - 1.)**2
    ...         size += 1
-   >>> print Numeric.sqrt(error / size) < 0.02
+   >>> print numerix.sqrt(error / size) < 0.02
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
    
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
@@ -131,7 +130,7 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = Numeric.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius)
+    value = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius)
 
 initialSurfactantValue =  1.
 
@@ -168,8 +167,7 @@ if __name__ == '__main__':
         print 'step',step
         velocity.setValue(surfactantVariable.getInterfaceVar() * k)
         distanceVariable.extendVariable(velocity)
-        argmax = Numeric.argmax(velocity)
-        timeStepDuration = cfl * dx / velocity[argmax]
+        timeStepDuration = cfl * dx / max(velocity)
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable)
@@ -180,7 +178,7 @@ if __name__ == '__main__':
         distanceViewer.plot()
         surfactantViewer.plot()
 
-        finalRadius = Numeric.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+        finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.getInterfaceVar()
         error = 0.
@@ -190,7 +188,7 @@ if __name__ == '__main__':
                 error += (coverage[i] / answer - 1.)**2
                 size += 1
 
-        print 'error',Numeric.sqrt(error / size)
+        print 'error',numerix.sqrt(error / size)
 
 
         

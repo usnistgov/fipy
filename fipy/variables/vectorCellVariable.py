@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 7/6/05 {5:52:37 PM} 
+ #                                last update: 7/12/05 {1:03:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@ import Numeric
 from fipy.variables.variable import Variable
 from fipy.variables.cellVariable import CellVariable
 
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class VectorCellVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
@@ -82,7 +82,7 @@ class VectorCellVariable(Variable):
 	return VectorCellVariable
 
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: array.dot(a,b), other, parentClass = CellVariable)
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, parentClass = CellVariable)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):

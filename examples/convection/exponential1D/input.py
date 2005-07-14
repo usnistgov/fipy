@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 6/14/05 {8:46:05 AM} 
+ #                                last update: 7/13/05 {3:43:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -130,9 +130,9 @@ or
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools.numerix import exp
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
     1

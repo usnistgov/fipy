@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:39:32 PM} 
+ #                                last update: 7/13/05 {11:25:06 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,7 @@
 __docformat__ = 'restructuredtext'
 
 import Numeric
-import fipy.tools.array 
+from fipy.tools import numerix 
 from fipy.viewers.gistViewer import GistViewer
 
 import gist
@@ -102,14 +102,14 @@ class Gist2DViewer(GistViewer):
         maxVal = self._getLimit('datamax')
         
         if minVal == 'e':
-            minVal = fipy.tools.array.min(self.vars[0][:])
+            minVal = min(self.vars[0][:])
             for var in self.vars[1:]:
-                minVal = min(minVal, fipy.tools.array.min(var[:]))
+                minVal = min(minVal, min(var[:]))
 
         if maxVal == 'e':
-            maxVal = fipy.tools.array.max(self.vars[0][:])
+            maxVal = max(self.vars[0][:])
             for var in self.vars[1:]:
-                maxVal = max(maxVal, fipy.tools.array.max(var[:]))
+                maxVal = max(maxVal, max(var[:]))
 
         if maxVal == minVal:
             maxVal = minVal + 1e-10
@@ -134,12 +134,10 @@ class Gist2DViewer(GistViewer):
         faceVertexIDs = self.mesh._getFaceVertexIDs()
         vertexCoords = self.mesh.getVertexCoords()
         
-        from fipy.tools import array
-        
-        x0 = array.take(vertexCoords[:,0], faceVertexIDs[:,0])
-        y0 = array.take(vertexCoords[:,1], faceVertexIDs[:,0])
-        x1 = array.take(vertexCoords[:,0], faceVertexIDs[:,1])
-        y1 = array.take(vertexCoords[:,1], faceVertexIDs[:,1])
+        x0 = numerix.take(vertexCoords[:,0], faceVertexIDs[:,0])
+        y0 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,0])
+        x1 = numerix.take(vertexCoords[:,0], faceVertexIDs[:,1])
+        y1 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,1])
         
         gist.pldj(x0, y0, x1, y1)
 

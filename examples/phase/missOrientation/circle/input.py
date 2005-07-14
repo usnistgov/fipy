@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/5/05 {8:08:27 PM} 
+ #                                last update: 7/13/05 {2:06:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,8 +103,8 @@ data and compares it with the `theta` variable.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-   >>> import Numeric
-   >>> testData = Numeric.reshape(testData, Numeric.array(phase).shape)
+   >>> from fipy.tools import numerix
+   >>> testData = numerix.reshape(testData, numerix.array(phase).shape)
    >>> print phase.allclose(testData)
    1
    

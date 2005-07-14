@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 6/14/05 {10:13:18 AM} 
+ #                                last update: 7/13/05 {3:36:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -202,8 +202,8 @@ which now has the analytical solution
 
 We verify that the correct equilibrium is attained
     
-    >>> import Numeric
-    >>> analyticalArray = Numeric.where(x < L/2, -x, ((x-1)**2)/2 - x)
+    >>> from fipy.tools import numerix
+    >>> analyticalArray = numerix.where(x < L/2, -x, ((x-1)**2)/2 - x)
 
     >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()
     1
@@ -246,7 +246,7 @@ which has the analytical solution
 
 We again verify that the correct equilibrium is attained
     
-    >>> analyticalArray = Numeric.where(x < 1, (x**2)/2 - x, -0.5)
+    >>> analyticalArray = numerix.where(x < 1, (x**2)/2 - x, -0.5)
 
     >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()
     1

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/13/05 {4:39:51 PM} { 1:23:41 PM}
+ #                                last update: 7/13/05 {4:21:01 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,8 +90,8 @@ The problem can then be solved by executing the `solve()` method of the equation
 
 The result can be tested with the following commands.
 
-   >>> import Numeric
-   >>> Numeric.allclose(var, dx * (-Numeric.arange(nx) + (nx - 1) / 2. ))
+   >>> from fipy.tools import numerix
+   >>> print numerix.allclose(var, dx * (-numerix.arange(nx) + (nx - 1) / 2. ))
    1
 
 """

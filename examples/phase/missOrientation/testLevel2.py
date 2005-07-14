@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:51:40 PM} 
+ #                                last update: 7/13/05 {3:30:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,8 +44,8 @@ import unittest
 import fipy.tests.testProgram
 
 from fipy.models.phase.theta.modularVariable import ModularVariable
-import Numeric
-from Numeric import pi
+from fipy.tools import numerix
+from fipy.tools.numerix import pi
 from fipy.meshes.grid2D import Grid2D
 from fipy.tests.testBase import _TestBase
 from fipy.models.phase.theta.noModularVariable import _NoModularVariable
@@ -67,7 +67,7 @@ class TestModFace(TestMod):
     def reorderResult(self):
         interiorIDs =  self.mesh.getInteriorFaceIDs()
         exteriorIDs = self.mesh.getExteriorFaceIDs()
-        self.result = Numeric.take(self.result, Numeric.concatenate((interiorIDs, exteriorIDs)))
+        self.result = numerix.take(self.result, numerix.concatenate((interiorIDs, exteriorIDs)))
 
 class TestModSubtract(TestMod):
     def setUp(self):
@@ -85,23 +85,23 @@ class TestModSubtract(TestMod):
 
 class TestModCellToFace(TestModFace):
     def setUp(self):
-        TestMod.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3. )))
-        self.answer = Numeric.array((-pi, 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3. ))
+        TestMod.setUp(self, numerix.array((2. * pi / 3., -2. * pi / 3. )))
+        self.answer = numerix.array((-pi, 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3., 2. * pi / 3., -2. * pi / 3. ))
         self.result = self.theta.getArithmeticFaceValue().getNumericValue()
         self.reorderResult()
         
 class TestModCellGrad(TestMod):
     def setUp(self):
         dx = 0.5
-        TestMod.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3.)), dx = dx, dy = 0.5)
-        self.answer = Numeric.array(((pi / 3., 0.), (pi / 3., 0.))) / dx
+        TestMod.setUp(self, numerix.array((2. * pi / 3., -2. * pi / 3.)), dx = dx, dy = 0.5)
+        self.answer = numerix.array(((pi / 3., 0.), (pi / 3., 0.))) / dx
         self.result = self.theta.getGrad().getNumericValue()
 
 class TestModNoMod(TestMod):
     def setUp(self):
         TestMod.setUp(self, 1., dx = 1., dy = 1.)
         thetaNoMod = _NoModularVariable(self.theta)
-        self.answer = Numeric.array((0. , 0.))
+        self.answer = numerix.array((0. , 0.))
         self.theta[:] = self.answer
         self.result = thetaNoMod.getNumericValue()
 
@@ -109,8 +109,8 @@ class TestModFaceGrad(TestModFace):
     def setUp(self):
         dx = 0.5
         dy = 0.5
-        TestModFace.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3.)) , dx = dx, dy = dy)
-        self.answer = Numeric.array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx
+        TestModFace.setUp(self, numerix.array((2. * pi / 3., -2. * pi / 3.)) , dx = dx, dy = dy)
+        self.answer = numerix.array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx
         self.result = self.theta.getFaceGrad().getNumericValue()
         self.reorderResult()
 
@@ -118,9 +118,9 @@ class TestModFaceGradNoMod(TestModFace):
     def setUp(self):
         dx = 0.5
         dy = 0.5
-        TestModFace.setUp(self, Numeric.array((2. * pi / 3., -2. * pi / 3.)) , dx = dx, dy = dy)
+        TestModFace.setUp(self, numerix.array((2. * pi / 3., -2. * pi / 3.)) , dx = dx, dy = dy)
         thetaNoMod = _NoModularVariable(self.theta)
-        self.answer = Numeric.array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx - Numeric.array(((-4. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (0., 0.), (0., 0.))) / dx
+        self.answer = numerix.array(((2. * pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (pi / 3., 0.), (0., 0.), (0., 0.))) / dx - numerix.array(((-4. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (-2. * pi / 3., 0.), (0., 0.), (0., 0.))) / dx
         self.diff = self.theta.getFaceGrad() - thetaNoMod.getFaceGrad()
         self.result = self.diff.getNumericValue()
         self.reorderResult()
@@ -128,8 +128,8 @@ class TestModFaceGradNoMod(TestModFace):
 class TestModFaceGradNoMod1(TestModFaceGradNoMod):
     def setUp(self):
         TestModFaceGradNoMod.setUp(self)
-        self.theta.setValue(Numeric.array((0., -2 * pi / 3.)))
-        self.answer = Numeric.array(((0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.)))
+        self.theta.setValue(numerix.array((0., -2 * pi / 3.)))
+        self.answer = numerix.array(((0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.), (0., 0.)))
         self.result =  self.diff.getNumericValue()
         self.reorderResult()
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "phaseHalfAngleVariable.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 6/8/05 {3:53:49 PM}
+ #                                last update: 7/12/05 {11:38:13 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,7 @@ import Numeric
 from fipy.tools.inline import inline
 from fipy.variables.faceVariable import FaceVariable
 
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class _PhaseHalfAngleVariable(FaceVariable):
     def __init__(self, parameters = None, phase = None, theta = None):
@@ -63,12 +63,12 @@ class _PhaseHalfAngleVariable(FaceVariable):
         thetaFace = self.theta.getArithmeticFaceValue()[:]
         
         if self.getMesh().getDim() > 1:
-            z = array.arctan2(self.phase.getFaceGrad()[:,1], self.phase.getFaceGrad()[:,0])
+            z = numerix.arctan2(self.phase.getFaceGrad()[:,1], self.phase.getFaceGrad()[:,0])
         else:
             z = 0
             
         z = N * (z - thetaFace)
-        self.value = array.tan(z / 2.)
+        self.value = numerix.tan(z / 2.)
 
     def _calcValueInline(self):
         dphi = Numeric.zeros((self.getMesh()._getNumberOfFaces(), self.getMesh().getDim()),'d')

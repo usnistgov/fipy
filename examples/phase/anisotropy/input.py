@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/14/05 {9:18:58 AM} { 5:14:21 PM}
+ #                                last update: 7/13/05 {4:20:31 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -155,10 +155,9 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 ..
 
-    >>> import Numeric
-    >>> import fipy.tools.array
-    >>> mVar = phase - 0.5 - kappa1 / Numeric.pi * \
-    ...     fipy.tools.array.arctan(kappa2 * temperature)
+    >>> from fipy.tools import numerix
+    >>> mVar = phase - 0.5 - kappa1 / numerix.pi * \
+    ...     numerix.arctan(kappa2 * temperature)
 
 .. raw:: latex
 
@@ -168,8 +167,8 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
     >>> dPhiy = phase.getFaceGrad().getIndexAsFaceVariable(1)
     >>> dPhix = phase.getFaceGrad().getIndexAsFaceVariable(0)
-    >>> arc = N * fipy.tools.array.arctan2(dPhiy, dPhix) + theta
-    >>> Phi = fipy.tools.array.tan(arc / 2)
+    >>> arc = N * numerix.arctan2(dPhiy, dPhix) + theta
+    >>> Phi = numerix.tan(arc / 2)
     >>> PhiSq = Phi**2
     >>> beta = (1. - PhiSq) / (1. + PhiSq)
     >>> dbdpsi = -N * 2 * Phi / (1 + PhiSq)
@@ -260,9 +259,9 @@ the data and compares it with the `phase` variable.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-   >>> phase =  Numeric.array(phase)
-   >>> testData = Numeric.reshape(testData, phase.shape)
-   >>> Numeric.allclose(phase, testData, rtol = 1e-10, atol = 1e-10)
+   >>> phase =  numerix.array(phase)
+   >>> testData = numerix.reshape(testData, phase.shape)
+   >>> print testData.allclose(phase, rtol = 1e-10, atol = 1e-10)
    1
    
 """

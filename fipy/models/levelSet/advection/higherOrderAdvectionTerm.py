@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/2/05 {1:58:34 PM} 
+ #                                last update: 7/12/05 {1:33:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,7 +46,7 @@ import MA
 import Numeric
 
 from advectionTerm import _AdvectionTerm
-from fipy.tools import array
+from fipy.tools import numerix
 
 class _HigherOrderAdvectionTerm(_AdvectionTerm):
     r"""
@@ -190,14 +190,14 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = Numeric.reshape(Numeric.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error[Numeric.argmax(error)]
+        >>> print max(error)
         0.123105625618
 
     The maximum error is large (about 12 %) for the first order advection.
 
         >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = Numeric.reshape(Numeric.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error[Numeric.argmax(error)]
+        >>> print max(error)
         0.0201715476597
 
     The maximum error is 2 % when using a higher order contribution.
@@ -208,15 +208,14 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         dAP = mesh._getCellToCellDistances()
         
 ##        adjacentGradient = Numeric.take(oldArray.getGrad(), cellToCellIDs)
-        from fipy.tools.array import MAtake
-        adjacentGradient = MAtake(oldArray.getGrad(), mesh._getCellToCellIDs())
-        adjacentNormalGradient = array.dot(adjacentGradient, mesh._getCellNormals(), axis = 2)
+        adjacentGradient = numerix.MAtake(oldArray.getGrad(), mesh._getCellToCellIDs())
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), axis = 2)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
         cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(mesh.getNumberOfCells()), mesh._getMaxFacesPerCell()), cellToCellIDs.shape)
         cellIDs = MA.masked_array(cellIDs, mask = mesh._getCellToCellIDs().mask())
-        cellGradient = MAtake(oldArray.getGrad(), cellIDs)
-        cellNormalGradient = array.dot(cellGradient, mesh._getCellNormals(), axis = 2)
+        cellGradient = numerix.MAtake(oldArray.getGrad(), cellIDs)
+        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), axis = 2)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2

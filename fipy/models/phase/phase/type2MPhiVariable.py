@@ -6,7 +6,7 @@
  # 
  #  FILE: "type2MPhiVariable.py"
  #                                    created: 12/24/03 {10:39:23 AM} 
- #                                last update: 7/6/05 {2:08:42 PM} 
+ #                                last update: 7/12/05 {11:36:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ __docformat__ = 'restructuredtext'
 
 from mPhiVariable import MPhiVariable
 import Numeric
-import fipy.tools.array as array
+from fipy.tools import numerix
 
 class Type2MPhiVariable(MPhiVariable):
     r"""
@@ -55,7 +55,7 @@ class Type2MPhiVariable(MPhiVariable):
         $$\phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
     """
     def _calcValue(self):        
-        self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * array.arctan(self.parameters['kappa 2'] * self.temperature[:])
+        self.value = self.phase[:] - 0.5 - self.parameters['kappa 1'] / Numeric.pi * numerix.arctan(self.parameters['kappa 2'] * self.temperature[:])
 
 
         

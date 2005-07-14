@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/18/05 {10:45:37 AM} { 5:14:21 PM}
+ #                                last update: 7/13/05 {4:22:56 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,19 +52,18 @@ Here are some test cases for the model.
     ...         var.updateOld()
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 0.1)
-    >>> import Numeric
     >>> accuracy = 1e-2
-    >>> Numeric.allclose(KMVar, params['KM'], atol = accuracy)
+    >>> print KMVar.allclose(params['KM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TMVar, params['TM'], atol = accuracy)
+    >>> print TMVar.allclose(params['TM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TCVar, params['TC'], atol = accuracy)
+    >>> print TCVar.allclose(params['TC'], atol = accuracy)
     1
-    >>> Numeric.allclose(P2Var, params['P2'], atol = accuracy)
+    >>> print P2Var.allclose(params['P2'], atol = accuracy)
     1
-    >>> Numeric.allclose(P3Var, params['P3'], atol = accuracy)
+    >>> print P3Var.allclose(params['P3'], atol = accuracy)
     1
-    >>> Numeric.allclose(KCVar, params['KC'], atol = accuracy)
+    >>> print KCVar.allclose(params['KC'], atol = accuracy)
     1
 
 """
@@ -128,7 +127,6 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 if __name__ == '__main__':
 
     from fipy.viewers import make
-    import Numeric
     
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
@@ -149,12 +147,11 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    import Numeric
-
     x = mesh.getCellCenters()[:,0]
     y = mesh.getCellCenters()[:,1]
 
-    RVar[:] = L / Numeric.sqrt((x - L / 2)**2 + (y - 2 * L)**2)
+    from fipy.tools.numerix import sqrt
+    RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     
     for i in range(100):
         for var, eqn in eqs:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:33:42 PM} 
+ #                                last update: 7/13/05 {3:39:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,9 +100,9 @@ The analytical solution test for this problem is given by:
     >>> y = mesh.getCellCenters()[:,axis]
     >>> AA = -sourceCoeff * y / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools.numerix import exp
+    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
     >>> print var.allclose(analyticalArray, atol = 1e-5) 
     1
