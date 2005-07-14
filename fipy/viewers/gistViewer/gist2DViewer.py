@@ -54,12 +54,6 @@ import colorbar
 class Gist2DViewer(GistViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.
-    Usage:
-
-    ::
-    
-        viewer = Gist2DViewer(var)
-        viewer.plot()
 
     """
     

@@ -53,12 +53,6 @@ from fipy.meshes.grid2D import Grid2D
 class Gnuplot2DViewer(GnuplotViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
-    Usage
-
-    ::
-    
-        viewer = Gnuplot2DViewer(var)
-        viewer.plot()
        
     The `Gnuplot2DViewer` plots a 2D `CellVariable` using a front end
     python wrapper available to download (Gnuplot.py_).

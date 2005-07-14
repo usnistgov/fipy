@@ -73,7 +73,7 @@ class FixedValue(BoundaryCondition):
 
     ::
 
-        FixedValue(faces, value)
+        FixedValue((<Face>, ...), <Float>)
        
     """
 

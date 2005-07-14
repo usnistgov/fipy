@@ -6,13 +6,8 @@ def make(vars, title = None, limits = None):
     r"""
     Generic function for creating a `GistViewer`. The `make` function
     will search the module tree and return an instance of the first
-    `GistViewer` it finds of the correct dimension. Usage:
-
-    ::
-
-        viewer = make(vars)
-        viewer.plot()
-    
+    `GistViewer` it finds of the correct dimension.
+        
     :Parameters:
 
       - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot

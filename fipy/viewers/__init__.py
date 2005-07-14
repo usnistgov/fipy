@@ -16,20 +16,16 @@ def make(vars, title = None, limits = None):
     `Viewer` it finds that supports the dimensions of `vars`. Setting the
     '`FIPY_VIEWER`' environment variable to either '`gist`',
     '`gnuplot`', '`matplotlib`', or '`tsv`' will specify the viewer.
-
-    ::
-
-       viewer = make(vars)
-       viewer.plot()
        
     The `limits` parameter can be used to constrain the view. For example::
             
         fipy.viewers.make(vars = some1Dvar, 
                           limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
-    will display a line plot from an `x` value of 0.5 up to the largest `x` 
-    value in the dataset. The data values with be truncated at an upper value 
-    of 3, but will have no lower limit.
+    will return a viewer that displays a line plot from an `x` value
+    of 0.5 up to the largest `x` value in the dataset. The data values
+    will be truncated at an upper value of 3, but will have no lower
+    limit.
 
     :Parameters:
 

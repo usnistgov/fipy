@@ -7,12 +7,6 @@ def make(vars, title = None, limits = None):
     Generic function for creating a `MatplotlibViewer`. The `make` function
     will search the module tree and return an instance of the first
     `MatplotlibViewer` it finds of the correct dimension.
-    Usage:
-
-    ::
-
-        viewer = make(vars)
-        viewer.plot()
     
     :Parameters:
 

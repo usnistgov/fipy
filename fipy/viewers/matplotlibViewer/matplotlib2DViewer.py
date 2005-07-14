@@ -51,12 +51,6 @@ from matplotlibViewer import MatplotlibViewer
 class Matplotlib2DViewer(MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
-    Usage
-
-    ::
-    
-       viewer = Matplotlib2DViewer(var)
-       viewer.plot()
 
     The `Matplotlib2DViewer` plots a 2D `CellVariable` using Matplotlib_.
 

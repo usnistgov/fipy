@@ -55,10 +55,6 @@ class NthOrderBoundaryCondition(BoundaryCondition):
     This boundary condition is generally used in conjunction with the
     `NthOrderDiffusionTerm`. It does not have any direct effect on the
     solution matrices, but its derivatives do.
-
-    Usage ::
-    
-        NthOrderBoundaryCondition(faces, value, order)
         
     """
     

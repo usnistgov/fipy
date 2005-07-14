@@ -62,7 +62,7 @@ class LinearGMRESSolver(Solver):
 
     ::
 
-        solver = LinearGMRESSolver(tolerance = 1e-10, steps = 1000)
+        solver = LinearGMRESSolver(tolerance = <Float>, steps = <Integer>)
 
     .. _PySparse: http://pysparse.sourceforge.net
     

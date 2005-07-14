@@ -63,7 +63,7 @@ class LinearCGSSolver(Solver):
 
     ::
 
-        solver = LinearCGSSolver(tolerance = 1e-10, steps = 1000)
+        solver = LinearCGSSolver(tolerance = <Float>, steps = <Integer>)
 
     .. _PySparse: http://pysparse.sourceforge.net
 

@@ -51,12 +51,6 @@ from fipy.viewers.gistViewer import GistViewer
 class Gist1DViewer(GistViewer):
     """
     Displays a y vs. x plot of one or more 1D `CellVariable` objects.
-    Usage:
-
-    ::
-    
-        viewer = Gist1DViewer(vars)
-        viewer.plot()
 
     """
     

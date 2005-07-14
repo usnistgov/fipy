@@ -55,12 +55,8 @@ class LinearScipyLUSolver(Solver):
     non-symmetric matrices with partial pivoting.
 
     The `LinearScipyLUSolver` is a wrapper class for the the Scipy_
-    `scipy.linalg.lu_solve` method. Usage:
-
-    ::
-
-        solver = LinearScipyLUSolver(tolerance = 1e-10, steps = 1000)
-
+    `scipy.linalg.lu_solve` method.
+    
     .. _Scipy: http://www.scipy.org
 
     """

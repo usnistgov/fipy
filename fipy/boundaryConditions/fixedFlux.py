@@ -61,11 +61,7 @@ class FixedFlux(BoundaryCondition):
         $ * A_{\text{face}}, $ where $A_{\text{face}}$
 
     is the area of the face, is only added to entries corresponding to
-    the specified faces. Usage:
-
-    ::
-
-        FixedFlux(faces, value)
+    the specified faces.
        
     """
     
