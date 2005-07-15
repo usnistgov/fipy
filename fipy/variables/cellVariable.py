@@ -261,7 +261,35 @@ class CellVariable(Variable):
 
     def getOld(self):
         """
-        Return the values of the `CellVariable` from the previous solution sweep.
+        Return the values of the `CellVariable` from the previous
+        solution sweep.
+
+        Combinations of `CellVariable's` should also return old
+        values.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 1)
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> var1 = CellVariable(mesh = mesh, value = 2, hasOld = 1)
+            >>> var2 = CellVariable(mesh = mesh, value = 3)
+            >>> v = var1 * var2
+            >>> print v
+            [ 6.,]
+            >>> var1.setValue(3)
+            >>> print v
+            [ 9.,]
+            >>> print v.getOld()
+            [ 6.,]
+
+        The following small test is to correct for a bug when the
+        operator does not just use variables.
+
+            >>> v1 = var1 * 3
+            >>> print v1
+            [ 9.,]
+            >>> print v1.getOld()
+            [ 6.,]
+            
         """
 	if self.old is None:
 	    return self
@@ -274,7 +302,7 @@ class CellVariable(Variable):
         """
 	if self.old is not None:
 	    self.old.setValue(self.value)
-	    
+
     def _resetToOld(self):
 	if self.old is not None:
 	    self.setValue(self.old.value)

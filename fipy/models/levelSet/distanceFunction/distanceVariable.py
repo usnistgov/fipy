@@ -150,7 +150,7 @@ class DistanceVariable(CellVariable):
        1
        >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
        >>> var.extendVariable(extensionVar)
-       >>> print extensionVar.allclose(answer, atol = 1e-5)
+       >>> print extensionVar.allclose(answer, rtol = 1e-4)
        1
 
     Test case for a bug that occurs when initializing the distance

@@ -70,7 +70,7 @@ The result is again tested in the same way:
     >>> x = mesh.getCellCenters()[:,0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> ##print var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
-    >>> print var.allclose(answer)
+    >>> print var.allclose(answer, rtol = 1e-8)
     1
 
 """

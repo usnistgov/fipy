@@ -63,7 +63,7 @@ The result is again tested in the same way:
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> import Numeric
     >>> ## print var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
-    >>> print var.allclose(answer)
+    >>> print var.allclose(answer, rtol = 1e-8)
     1
 
 """

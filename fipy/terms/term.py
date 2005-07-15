@@ -192,7 +192,19 @@ class Term:
 
            >>> Term(coeff = 1.) - Term(coeff = 2.)
            (Term(coeff = 1.0) - Term(coeff = 2.0))
+
+        `Term`s should equate with floats but they don't
+
+           >>> Term(coeff = 1.) == 1.  
+           False
+           
+        and integers but they don't
+
+           >>> Term(coeff = 1.) == 1
+           False
+           
         """
+
         if self._otherIsZero(other):
             return self
         else:

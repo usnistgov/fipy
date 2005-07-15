@@ -84,7 +84,7 @@ solver has no fixed value and can become unstable.
 
 The result of the calculation will be the average value over the domain.
 
-   >>> var.allclose((valueLeft + valueRight) / 2.).getValue()
+   >>> var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5).getValue()
    1
    
 """

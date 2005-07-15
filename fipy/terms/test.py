@@ -49,7 +49,8 @@ def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'nthOrderDiffusionTerm',
             'term',
-            'convectionTerm'
+            'convectionTerm',
+            'transientTerm'
         ), base = __name__)
 
 if __name__ == '__main__':

@@ -54,16 +54,19 @@ class CellTerm(Term):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff = 1.):
+        from fipy.variables.variable import Variable
+        if not isinstance(coeff, Variable):
+            coeff = Variable(value = coeff)
 	Term.__init__(self, coeff = coeff)
         self.coeffVectors = None
 
     def _calcCoeffVectors(self, mesh):
 	coeff = self._getGeomCoeff(mesh)
 	weight = self._getWeight(mesh)
-	
+
 	self.coeffVectors = {
 	    'diagonal': coeff * weight['diagonal'],
-	    'old value': coeff * weight['old value'],
+	    'old value': coeff.getOld() * weight['old value'],
 	    'b vector': coeff * weight['b vector'],
 	    'new value': coeff * weight['new value']
 	}

@@ -344,7 +344,7 @@ class Variable:
 	
     def _getVariableClass(self):
 	return Variable
-	
+
     def _getOperatorVariableClass(self, parentClass = None):
 	if parentClass is None:
 	    parentClass = self._getVariableClass()
@@ -359,7 +359,22 @@ class Variable:
                 self.name = ''
 		for aVar in self.var:
 		    self._requires(aVar)
-		    
+
+                self.old = None
+
+            def getOld(self):
+                if self.old is None:
+                    oldVar = []
+                    for v in self.var:
+                        from fipy.variables.cellVariable import CellVariable
+                        if isinstance(v, CellVariable):
+                            oldVar.append(v.getOld())
+                        else:
+                            oldVar.append(v)
+                    self.old = self.__class__(self.op, oldVar, self.getMesh())
+
+                return self.old
+            
 	    def _getRepresentation(self, style = "__repr__"):
                 """
                 :Parameters:
@@ -732,7 +747,7 @@ class Variable:
 ##     def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
 ## 	return numerix.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
         
-    def allclose(self, other, rtol = 1.e-5, atol = 1.e-8):
+    def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), other)
         
     def allequal(self, other):

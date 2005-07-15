@@ -259,7 +259,7 @@ We iterate the solution in time, plotting as we go if running interactively,
     
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> print theta.allclose(testData)
+    >>> print theta.allclose(testData, rtol = 1e-7, atol = 1e-7)
     1
 
 The following code shows how to restart a simulation from some saved
@@ -320,7 +320,7 @@ and finish the iterations,
 
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> print newTheta.allclose(testData)
+    >>> print newTheta.allclose(testData, rtol = 1e-7)
     1
     
 """

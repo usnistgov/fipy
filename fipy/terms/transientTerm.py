@@ -59,7 +59,41 @@ class TransientTerm(CellTerm):
     Usage ::
 
         TransientTerm(coeff = <CellVariable|Float>)
-        
+
+    The following test case tests variable coefficients. We wish to solve the
+    follwoing equation
+
+    .. raw:: latex
+
+        $$ \frac{ \partial \phi^2 } { \partial t } = k. $$ The analytic solution is given by
+        $$ \phi = \sqrt{ \phi_0^2 + k t }, $$ where $\phi_0$
+
+    is the initial value.
+
+       >>> phi0 = 1.
+       >>> k = 1.
+       >>> dt = 1.
+       
+       >>> from fipy.meshes.grid1D import Grid1D
+       >>> mesh = Grid1D(nx = 1)
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
+       >>> from fipy.terms.transientTerm import TransientTerm
+       >>> eq = TransientTerm(var) - k
+
+    We will do just one time step. Relaxation, given by `alpha`
+    is required for a converged solution.
+    
+       >>> alpha = 0.5
+       >>> for sweep in range(4):
+       ...     tmpVar = var.copy()
+       ...     eq.solve(var, dt = dt)
+       ...     var.setValue(var * alpha + tmpVar * (1 - alpha))
+       >>> import fipy.tools.numerix as numerix
+       >>> print var.allclose(numerix.sqrt(k * dt + phi0**2))
+       1
+       
+       
     """
 
     def _getWeight(self, mesh):
@@ -73,4 +107,10 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()
 	
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
 
