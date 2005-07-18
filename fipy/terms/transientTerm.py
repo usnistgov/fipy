@@ -51,7 +51,7 @@ class TransientTerm(CellTerm):
     .. raw:: latex
 
        $$ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
-       \frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t} $$
+       \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_P^\text{old}) V_P}{\Delta t} $$
        where $\rho$ is the
 
     `coeff` value.
@@ -60,8 +60,9 @@ class TransientTerm(CellTerm):
 
         TransientTerm(coeff = <CellVariable|Float>)
 
-    The following test case tests variable coefficients. We wish to solve the
-    follwoing equation
+    The following test case verifies that variable coefficients and
+    old coefficient values work correctly. We will solve the
+    following equation
 
     .. raw:: latex
 
@@ -73,24 +74,34 @@ class TransientTerm(CellTerm):
        >>> phi0 = 1.
        >>> k = 1.
        >>> dt = 1.
+       >>> relaxationFactor = 1.5
+       >>> steps = 2
+       >>> sweeps = 8
        
        >>> from fipy.meshes.grid1D import Grid1D
        >>> mesh = Grid1D(nx = 1)
        >>> from fipy.variables.cellVariable import CellVariable
        >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
        >>> from fipy.terms.transientTerm import TransientTerm
-       >>> eq = TransientTerm(var) - k
+       >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-    We will do just one time step. Relaxation, given by `alpha`
-    is required for a converged solution.
+    Relaxation, given by `relaxationFactor`, is required for a
+    converged solution.
+       
+       >>> eq = TransientTerm(var) == ImplicitSourceTerm(-relaxationFactor) +  var * relaxationFactor + k 
+
+    A number of sweeps at each time step are required to let the
+    relaxation take effect.
     
-       >>> alpha = 0.5
-       >>> for sweep in range(4):
-       ...     tmpVar = var.copy()
-       ...     eq.solve(var, dt = dt)
-       ...     var.setValue(var * alpha + tmpVar * (1 - alpha))
+       >>> for step in range(steps):
+       ...     var.updateOld()
+       ...     for sweep in range(sweeps):
+       ...         eq.solve(var, dt = dt)
+
+    Compare the final result with the analytical solution.
+    
        >>> import fipy.tools.numerix as numerix
-       >>> print var.allclose(numerix.sqrt(k * dt + phi0**2))
+       >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
        1
        
        
