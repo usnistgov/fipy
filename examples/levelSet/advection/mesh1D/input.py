@@ -80,18 +80,16 @@ Construct the mesh.
 Construct a `distanceVariable` object. This object is required by the
 `distanceEquation`.
 
-   >>> import Numeric
-   >>> values = -Numeric.ones(nx, 'd')
-   >>> cells = mesh.getCells(
-   ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)
-   >>> for cell in cells:
-   ...    values[cell.getID()] = 1
-
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
-   ...                        value = values)
+   ...                        value = -1)
+
+   >>> cells = mesh.getCells(
+   ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)
+   >>> var.setValue(1, cells)
+   
    >>> var.calcDistanceFunction()
    
 The `advectionEquation` is constructed.
@@ -117,13 +115,13 @@ The result can be tested with the following code:
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt = timeStepDuration)
-   >>> import Numeric
-   >>> x = Numeric.array(mesh.getCellCenters()[:,0])
+   >>> x = mesh.getCellCenters()[:,0]
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
-   >>> answer = Numeric.where(x < distanceTravelled, 
+   >>> import fipy.tools.numerix as numerix
+   >>> answer = numerix.where(x < distanceTravelled, 
    ...                        x[0] - interfacePosition, answer)
-   >>> Numeric.allclose(answer, var, atol = 1e-10)
+   >>> print var.allclose(answer)
    1
    
 """

@@ -48,13 +48,13 @@ The example checks for global conservation of surfactant.
 Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction()
-   >>> initialSurfactant = Numeric.sum(surfactantVariable)
+   >>> initialSurfactant = numerix.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> Numeric.allclose(initialSurfactant, Numeric.sum(surfactantVariable[:]))
+   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))
    1
  
 
@@ -62,8 +62,8 @@ Advect the interface and check the position.
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-   
+import fipy.tools.numerix as numerix
+
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
@@ -89,17 +89,13 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 x0 = (L - boxSize) / 2
 x1 = (L + boxSize) / 2
 
-values = Numeric.ones(nx * ny, 'd')
-
-positiveCells = mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1)
-
-for cell in positiveCells:
-    values[cell.getID()] = -1.
-    
 distanceVariable = DistanceVariable(
     mesh = mesh,
-    value = values
+    value = 1
     )
+
+positiveCells = mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1)
+distanceVariable.setValue(-1, positiveCells)
 
 
 surfactantVariable = SurfactantVariable(
@@ -123,7 +119,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print Numeric.sum(surfactantVariable)
+        print numerix.sum(surfactantVariable)
         surfactantVariable.updateOld()
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)

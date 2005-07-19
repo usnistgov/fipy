@@ -133,12 +133,12 @@ Build the mesh:
    >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
    ...     type = 'int', default = 5)
 
-   >>> import Numeric
+   >>> import fipy.tools.numerix as numerix
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
    ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
    ...           / (2 * numberOfElements)
-   ...     cellSize = pos + Numeric.sqrt(pos**2 + sqr)
+   ...     cellSize = pos + numerix.sqrt(pos**2 + sqr)
    ... else:
    ...     cellSize = 0.1e-7
 
@@ -192,15 +192,7 @@ region (positive region).
    ...     else:
    ...         return 1
 
-Get the positive cells by passing the function,
-
-   >>> electrolyteCells = mesh.getCells(electrolyteFunc)
-
-Create an initial array,
-
-   >>> values = -Numeric.ones(mesh.getNumberOfCells(), 'd')
-   >>> for cell in electrolyteCells:
-   ...     values[cell.getID()] = 1
+Create an initial variable,
 
    >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import \
@@ -208,8 +200,11 @@ Create an initial array,
    >>> distanceVar = DistanceVariable(
    ...    name = 'distance variable',
    ...    mesh = mesh,
-   ...    value = values,
+   ...    value = -1,
    ...    narrowBandWidth = narrowBandWidth)
+
+   >>> distanceVar.setValue(1, mesh.getCells(electrolyteFunc))
+   
    >>> distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
 The `distanceVariable` has now been created to mark the interface. Some other
@@ -287,7 +282,7 @@ The commands needed to build this equation are,
    >>> tmp = acceleratorDependenceCurrentDensity \
    ...       * acceleratorVar.getInterfaceVar()
    >>> exchangeCurrentDensity = constantCurrentDensity + tmp
-   >>> expo = Numeric.exp(expoConstant * overpotential)
+   >>> expo = numerix.exp(expoConstant * overpotential)
    >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
    ...                  / bulkMetalConcentration
    >>> depositionRateVariable = currentDensity * atomicVolume \
@@ -516,10 +511,7 @@ to tell if something has changed or been broken.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-   >>> if len(testData) != len(Numeric.array(acceleratorVar)):
-   ...     testData = Numeric.resize(testData, 
-   ...                               Numeric.array(acceleratorVar).shape)
-   >>> Numeric.allclose(Numeric.array(acceleratorVar), testData)
+   >>> print acceleratorVar.allclose(testData)
    1
           
 """

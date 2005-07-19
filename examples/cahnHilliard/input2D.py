@@ -81,15 +81,14 @@ term acts to stabilize the problem.
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
 from fipy.tools.parser import parse
 
 numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
-nx = int(Numeric.sqrt(numberOfElements))
-ny = int(Numeric.sqrt(numberOfElements))
+import fipy.tools.numerix as numerix
+nx = int(numerix.sqrt(numberOfElements))
+ny = int(numerix.sqrt(numberOfElements))
 
 steps = numberOfSteps
 
@@ -146,7 +145,7 @@ if __name__ == '__main__':
 dexp=-5
 
 for step in range(steps):
-    dt = Numeric.exp(dexp)
+    dt = numerix.exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()

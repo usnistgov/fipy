@@ -106,16 +106,15 @@ Start time steping:
 Compare the analaytical and numerical results:
 
    >>> theta = surfactantVar.getInterfaceVar()[1]
-   >>> Numeric.allclose(currentTime, currentTimeFunc(theta), rtol = 1e-4)
+
+   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)
    1
-   >>> Numeric.allclose(Numeric.array(bulkVar)[1:], concentrationFunc(theta), rtol = 1e-4)
+   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)
    1
 
 
 """
 __docformat__ = 'restructuredtext'
-
-import Numeric
 
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.variables.cellVariable import CellVariable
@@ -143,7 +142,10 @@ mesh = Grid1D(nx = nx, dx = dx)
 
 ## build the distance variable
 
-distanceVar = DistanceVariable(mesh = mesh, value = dx * (Numeric.arange(nx) - 0.999))
+
+value = mesh.getCellCenters()[:,0] - 1.499 * dx
+##distanceVar = DistanceVariable(mesh = mesh, value = dx * (Numeric.arange(nx) - 0.999))
+distanceVar = DistanceVariable(mesh = mesh, value = value)
 
 ## Build the bulk diffusion equation
 
@@ -174,27 +176,22 @@ def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
     return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
 
+import fipy.tools.numerix as numerix
+
 def currentTimeFunc(theta):
-    tmp = -diffusion * Numeric.log(1 - theta) + rateConstant * siteDensity * L * theta
+    tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
     return tmp / rateConstant / diffusion/ cinf
 
 ## set up the comparison arrays
 
-analyticalTime = Numeric.zeros(totalTimeSteps,'d')
-numericalTime = Numeric.zeros(totalTimeSteps,'d')
-
 theta = surfactantVar.getInterfaceVar()[1]
     
-analyticalConcentration = concentrationFunc(theta)
-numericalConcentration = Numeric.array(bulkVar)[1:]
 
 if __name__ == "__main__":
 
     ## set up the viewers
 
     import fipy.viewers
-##    timeViewer = fipy.viewers.make(vars = (analyticalTime, numericalTime))
-##    concentrationViewer = fipy.viewers.make(vars = (analyticalConcentration, numericalConcentration))
 
     ## start time stepping
 
@@ -206,14 +203,6 @@ if __name__ == "__main__":
 
         theta = surfactantVar.getInterfaceVar()[1]
         print "theta:",theta
-        analyticalConcentration[:] = concentrationFunc(theta)
-        numericalConcentration[:] = Numeric.array(bulkVar)[1:]
-
-        analyticalTime[i] = currentTime
-        numericalTime[i] = currentTimeFunc(theta)
-
-##        timeViewer.plot()
-##        concentrationViewer.plot()
 
         ## do a time step
         surfactantVar.updateOld()

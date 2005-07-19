@@ -141,10 +141,10 @@ The solution to this 1D problem over an infinite domain is given by,
 
 or
 
-    >>> import Numeric
-    >>> a = Numeric.sqrt(asq)
+    >>> import fipy.tools.numerix as numerix
+    >>> a = numerix.sqrt(asq)
     >>> answer = 1 / (1 + 
-    ...     Numeric.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
+    ...     numerix.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 
@@ -159,13 +159,13 @@ we update the display and output data about the progression of the solution
 
     >>> dexp=-5
     >>> for step in range(100):
-    ...     dt = Numeric.exp(dexp)
+    ...     dt = numerix.exp(dexp)
     ...     dt = min(10, dt)
     ...     dexp += 0.5
     ...     eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
     ...     if __name__ == '__main__':
-    ...         diff = abs(answer - Numeric.array(var))
-    ...         maxarg = Numeric.argmax(diff)
+    ...         diff = abs(answer - numerix.array(var))
+    ...         maxarg = numerix.argmax(diff)
     ...         print 'maximum error:',diff[maxarg]
     ...         print 'element id:',maxarg
     ...         print 'value at element ',maxarg,' is ',var[maxarg]
@@ -175,7 +175,7 @@ we update the display and output data about the progression of the solution
 
 We compare the analytical solution with the numerical result,
 
-   >>> Numeric.allclose(var, answer, atol = 1e-4)
+   >>> print var.allclose(answer, atol = 1e-4)
    1
 
 """

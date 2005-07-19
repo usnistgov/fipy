@@ -55,16 +55,16 @@ for the initial position of the interface:
 
    >>> x = mesh.getCellCenters()[:,0]
    >>> y = mesh.getCellCenters()[:,1]
-   >>> r1 =  -Numeric.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
-   >>> r2 =  Numeric.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
-   >>> d = Numeric.zeros((len(x),3), 'd')
-   >>> d[:,0] = Numeric.where(x >= Lx / 2, y - Ly / 5, r1)
-   >>> d[:,1] = Numeric.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
-   >>> d[:,2] = Numeric.where(Numeric.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
-   >>> argmins = Numeric.argmin(Numeric.absolute(d), axis = 1)
-   >>> answer = Numeric.take(d.flat, Numeric.arange(len(argmins))*3 + argmins)
-   >>> solution = Numeric.array(var)
-   >>> Numeric.allclose(answer, solution, atol = 1e-1)
+   >>> import fipy.tools.numerix as numerix
+   >>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
+   >>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
+   >>> d = numerix.zeros((len(x),3), 'd')
+   >>> d[:,0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
+   >>> d[:,1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+   >>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+   >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
+   >>> answer = numerix.take(d.flat, numerix.arange(len(argmins))*3 + argmins)
+   >>> print var.allclose(answer, atol = 1e-1)
    1
 
 Advect the interface and check the position.
@@ -75,17 +75,14 @@ Advect the interface and check the position.
 
    >>> distanceMoved = timeStepDuration * steps * velocity
    >>> answer = answer - distanceMoved
-   >>> solution = Numeric.array(var)
-   >>> answer = Numeric.where(answer < 0., 0., answer)
-   >>> solution = Numeric.where(solution < 0., 0., solution)
-   >>> Numeric.allclose(answer, solution, atol = 1e-1)
+   >>> answer = numerix.where(answer < 0., 0., answer)
+   >>> var.setValue(numerix.where(var < 0., 0., var))
+   >>> print var.allclose(answer, atol = 1e-1)
    1
  
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
-   
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
 from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
@@ -104,17 +101,14 @@ steps = 200
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-values = -Numeric.ones(nx * ny, 'd')
-
-positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))
-for cell in positiveCells:
-    values[cell.getID()] = 1.
-
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = values
+    value = -1
     )
+
+positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))
+var.setValue(1, positiveCells)
 
 var.calcDistanceFunction()
 

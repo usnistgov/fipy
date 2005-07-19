@@ -60,30 +60,29 @@ given by:
 
 Do the tests:
 
+   >>> import fipy.tools.numerix as numerix
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = Numeric.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> val = evalCell(-dy / 2., -dx / 2., dx, dy)[0]
    >>> v1 = evalCell(val, -3. * dx / 2., dx, dy)[0]
    >>> v2 = evalCell(-3. * dy / 2., val, dx, dy)[0]
    >>> v3 = evalCell(v2, v1, dx, dy)[0]
-   >>> v4 = dx * dy / Numeric.sqrt(dx**2 + dy**2) / 2
-   >>> arr = Numeric.array((
+   >>> v4 = dx * dy / numerix.sqrt(dx**2 + dy**2) / 2
+   >>> arr = numerix.array((
    ...     v3           , v2      , -3. * dy / 2.   , v2      , v3,
    ...     v1           , val     , -dy / 2.        , val     , v1           ,
    ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
    ...     v1           , val     , -dy / 2.        , val     , v1           ,
    ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
-   >>> Numeric.allclose(var, arr, atol = 1e-10)
+   >>> print var.allclose(arr)
    1
 
 """
 __docformat__ = 'restructuredtext'
-
-import Numeric
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.variables.cellVariable import CellVariable
@@ -99,16 +98,15 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-initialArray = -Numeric.ones(nx * ny, 'd')
-positiveCells = mesh.getCells(filter = lambda cell: Lx / 3. < cell.getCenter()[0] < 2. * Lx / 3. and Ly / 3. < cell.getCenter()[1] < 2. * Ly / 3)
-for cell in positiveCells:
-    initialArray[cell.getID()] = 1
-
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = initialArray
+    value = -1
     )
+
+positiveCells = mesh.getCells(filter = lambda cell: Lx / 3. < cell.getCenter()[0] < 2. * Lx / 3. and Ly / 3. < cell.getCenter()[1] < 2. * Ly / 3)
+
+var.setValue(1, positiveCells)
 
 var.calcDistanceFunction()
 

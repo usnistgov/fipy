@@ -74,18 +74,16 @@ Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
-   >>> import Numeric
-   >>> initialArray = -Numeric.ones(nx * ny, 'd')
+   >>> var = DistanceVariable(name = 'level set variable',
+   ...                        mesh = mesh,
+   ...                        value = -1)
+
    >>> positiveCells = mesh.getCells(filter = lambda cell:
    ...                   (cell.getCenter()[0] - Lx / 2.)**2 +
    ...                   (cell.getCenter()[1] - Ly / 2.)**2 <
    ...                   (Lx / 4.)**2)
-   >>> for cell in positiveCells:
-   ...     initialArray[cell.getID()] = 1.
-   
-   >>> var = DistanceVariable(name = 'level set variable',
-   ...                        mesh = mesh,
-   ...                        value = initialArray)
+   >>> var.setValue(1, positiveCells)
+
    >>> var.calcDistanceFunction()
    
    >>> if __name__ == '__main__':
@@ -99,12 +97,13 @@ The result can be tested with the following commands.
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
-   >>> m1 = dY * dX / Numeric.sqrt(dY**2 + dX**2)
+   >>> import fipy.tools.numerix as numerix
+   >>> m1 = dY * dX / numerix.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = Numeric.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
    >>> v2 = evalCell(-m1, -dX, dx, dy)[0]
