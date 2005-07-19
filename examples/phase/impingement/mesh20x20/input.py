@@ -56,8 +56,8 @@ with different initial conditions and a 2D mesh:
     ...                       type = 'int', default = 10)
 
     >>> steps = numberOfSteps
-    >>> import Numeric
-    >>> nx = int(Numeric.sqrt(numberOfElements))
+    >>> import fipy.tools.numerix as numerix
+    >>> nx = int(numerix.sqrt(numberOfElements))
     >>> ny = nx
     >>> Lx = 2.5 * nx / 100.
     >>> dx = Lx / nx
@@ -110,8 +110,8 @@ and is initialized to liquid everywhere
 The orientation is initialized to a uniform value to denote the
 randomly oriented liquid phase
 
-    >>> from Numeric import pi
     >>> from fipy.models.phase.theta.modularVariable import ModularVariable
+    >>> pi = numerix.pi
     >>> theta = ModularVariable(
     ...     name = 'Theta',
     ...     mesh = mesh,
@@ -174,7 +174,6 @@ new subclass of `CellVariable` is created that uses the value of the
     ...     phaseModSq = phaseMod * phaseMod
     ...     expo = epsilon * beta * theta.getGrad().getMag()
     ...     expo = (expo < 100.) * (expo - 100.) + 100.
-    ...     from fipy.tools import numerix
     ...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
     ...
     ...     phaseFace = phase.getArithmeticFaceValue()
@@ -217,7 +216,6 @@ by the phase
     ...     from fipy import viewers
     ...     phaseViewer = viewers.make(vars = phase, 
     ...                                limits = {'datamin': 0., 'datamax': 1.})
-    ...     from Numeric import pi
     ...     thetaProd = -pi + phase * (theta + pi)
     ...     thetaProductViewer = viewers.make(vars = thetaProd ,
     ...                                       limits = {'datamin': -pi, 
@@ -240,12 +238,8 @@ data and compares it with the `theta` variable.
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
-    >>> import Numeric
-    >>> if len(testData.flat) == len(Numeric.array(theta)):
-    ...     testData = Numeric.reshape(testData, Numeric.array(theta).shape)
-    ... else:
-    ...     testData = Numeric.resize(testData, Numeric.array(theta).shape)
-
+    >>> testData = numerix.reshape(testData, (mesh.getNumberOfCells(),))
+    
 We iterate the solution in time, plotting as we go if running interactively,
 
     >>> for i in range(steps):

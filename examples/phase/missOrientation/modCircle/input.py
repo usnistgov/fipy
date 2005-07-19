@@ -102,15 +102,13 @@ data and compares it with the `theta` variable.
    >>> import cPickle
    >>> testData = cPickle.load(filestream)
    >>> filestream.close()
-   >>> import Numeric
-   >>> testData = Numeric.reshape(testData, Numeric.array(phase).shape)
+   >>> import fipy.tools.numerix as numerix
+   >>> testData = numerix.reshape(testData, (mesh.getNumberOfCells(),))
    >>> print phase.allclose(testData)
    1
    
 """
 __docformat__ = 'restructuredtext'
-
-import Numeric
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
@@ -147,11 +145,14 @@ phase = CellVariable(
    mesh = mesh,
    value = 1.
    )
-      
+
+import fipy.tools.numerix as numerix
+
+pi = numerix.pi
 theta = ModularVariable(
    name = 'Theta',
    mesh = mesh,
-   value = 2. * Numeric.pi / 3.,
+   value = 2. * pi / 3.,
    hasOld = 0
    )
 
@@ -163,7 +164,7 @@ def circleFunc(cell):
 
 circleCells = mesh.getCells(filter = circleFunc)
 
-theta.setValue(-2. * Numeric.pi / 3., circleCells)
+theta.setValue(-2. * pi / 3., circleCells)
       
 temperature = 1.
 

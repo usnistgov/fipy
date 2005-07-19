@@ -156,8 +156,8 @@ The analytical solution for this steady-state phase field problem, in an infinit
 or
 
     >>> x = mesh.getCellCenters()[:,0]
-    >>> from Numeric import tanh, sqrt
-    >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
+    >>> import fipy.tools.numerix as numerix 
+    >>> analyticalArray = 0.5*(1 - numerix.tanh((x - L/2)/(2*numerix.sqrt(kappa/W))))
 
 We treate the diffusion term
 
