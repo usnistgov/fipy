@@ -121,8 +121,8 @@ Test cases:
     [7,2,5,8,]
     [9,3,6,8,]]
 
-   >>> twomesh = GmshImporter2D('fipy/meshes/numMesh/GmshTest2D.msh')
-   >>> print twomesh.getVertexCoords()
+   >>> mesh = GmshImporter2DIn3DSpace('fipy/meshes/numMesh/GmshTest2D.msh')
+   >>> print mesh.getVertexCoords()
    [[ 0. , 0. , 0. ,]
     [ 1. , 0. , 0. ,]
     [ 0.5, 0.5, 0. ,]
@@ -131,8 +131,19 @@ Test cases:
     [ 0.5, 1.5, 0. ,]
     [ 0. , 2. , 0. ,]
     [ 1. , 2. , 0. ,]]
-   
-   >>> print twomesh._getFaceVertexIDs()
+
+   >>> mesh = GmshImporter2D('fipy/meshes/numMesh/GmshTest2D.msh')
+   >>> print mesh.getVertexCoords()
+   [[ 0. , 0. ,]
+    [ 1. , 0. ,]
+    [ 0.5, 0.5,]
+    [ 0. , 1. ,]
+    [ 1. , 1. ,]
+    [ 0.5, 1.5,]
+    [ 0. , 2. ,]
+    [ 1. , 2. ,]]
+
+   >>> print mesh._getFaceVertexIDs()
    [[2,0,]
     [0,1,]
     [1,2,]
@@ -149,7 +160,7 @@ Test cases:
     [7,4,]
     [7,6,]]
    
-   >>> print twomesh._getCellFaceIDs()
+   >>> print mesh._getCellFaceIDs()
    [[ 0, 1, 2,]
     [ 0, 3, 4,]
     [ 2, 5, 6,]
@@ -235,7 +246,10 @@ class MeshImportError(Exception):
 
 class _DataGetter:
 
-    def getData(self, filename, dimensions):
+    def getData(self, filename, dimensions, coordDimensions = None):
+
+        if coordDimensions is None:
+            coordDimensions = dimensions
 
         if (dimensions != 2 and dimensions != 3):
             raise MeshImportError, "Number of dimensions must be 2 or 3"
@@ -244,7 +258,7 @@ class _DataGetter:
         
         self.inFile = open(filename)
         
-        vertexCoords = self._calcVertexCoords()
+        vertexCoords = self._calcVertexCoords(coordDimensions)
         self._calcCellVertexIDs()
         self._calcBaseFaceVertexIDs()
         faceVertexIDs = self._calcFaceVertexIDs()
@@ -258,35 +272,35 @@ class _DataGetter:
             'cellFaceIDs': cellFaceIDs
             }
 
-    def _calcVertexCoords(self):
+    def _calcVertexCoords(self, coordDimensions):
 
     ## initialize the file input stream
         a = self.inFile.readline() ## skip the $NOD
 
     ## get the vertex coordinates
         nodeToVertexIDdict = {}
-        numVertices = int(self.inFile.readline())
+
         
+        numVertices = int(self.inFile.readline())
     ## scan the number of spatial dimensions
     ## not to be confused with the ultimate dimensionality of the mesh 
     ## (polygonal cells vs. polyhedral cells)
         savePos = self.inFile.tell()
-        dimensions = len(self.inFile.readline().split()) - 1
+        ##dimensions = len(self.inFile.readline().split()) - 1
         self.inFile.seek(savePos)
         
-        vertexCoords = Numeric.zeros((numVertices, dimensions))
+        vertexCoords = Numeric.zeros((numVertices, coordDimensions))
         vertexCoords = vertexCoords.astype(Numeric.Float)
         for i in range(numVertices):
             currLineArray = self.inFile.readline().split()
             nodeToVertexIDdict[int(currLineArray[0])] = i
-            vertexCoords[i] = [float(n) for n in currLineArray[1:]]
+            vertexCoords[i] = [float(n) for n in currLineArray[1: coordDimensions + 1]]
 
         maxNode = max(nodeToVertexIDdict.keys())
         nodeToVertexIDs = Numeric.zeros((maxNode + 1,))
         for i in nodeToVertexIDdict.keys():
             nodeToVertexIDs[i] = nodeToVertexIDdict[i]
         self.nodeToVertexIDs = nodeToVertexIDs
-        
         return vertexCoords
         
     def _calcCellVertexIDs(self):
@@ -374,12 +388,16 @@ class _DataGetter:
     
 class GmshImporter2D(mesh2D.Mesh2D):
 
-    def __init__(self, filename):
-        mesh2D.Mesh2D.__init__(self, **_DataGetter().getData(filename, dimensions = 2))
-
+    def __init__(self, filename, coordDimensions = 2):
+        mesh2D.Mesh2D.__init__(self, **_DataGetter().getData(filename, dimensions = 2, coordDimensions = coordDimensions))
+        
     def getCellVolumes(self):
         return abs(mesh2D.Mesh2D.getCellVolumes(self))
-    
+
+class GmshImporter2DIn3DSpace(GmshImporter2D):
+    def __init__(self, filename):
+        GmshImporter2D.__init__(self, filename, coordDimensions = 3)
+
 class GmshImporter3D(mesh.Mesh):
     """
         >>> mesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
