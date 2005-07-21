@@ -106,20 +106,31 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     The `AdsorbingSurfactantEquation` object solves the
     `SurfactantEquation` but with an adsorbing species from some bulk
-    value. The equation that describes the surfactant adsorbing is given
-    by,
+    value. The equation that describes the surfactant adsorbing is
+    given by,
 
     .. raw:: latex
 
-        $$ \dot{\theta} = J v \theta + k c (1 - \theta) $$
+        $$ \dot{\theta} = J v \theta + k c (1 - \theta - \theta_{\text{other}}) - \theta c_{\text{other}} k_{\text{other}} - k^- \theta^n $$
 
-    This last term in this equation accounts for Langmuir type adsorption
-    from the bulk. It assumes a vacant proportion of surface sites. The adsorption term
-    is added to the source by setting
+        where $\theta$, $J$, $v$, $k$, $c$, $k^-$ and $n$ represent
+        the surfactant coverage, the curvature, the interface normal
+        velocity, the adsorption rate, the concentration in the bulk
+        at the interface, the consumption rate and an exponent of
+        consumption, respectively. The $\text{other}$ subscript refers
+        to another surfactant with greater surface affinity.
+
+    The terms on the RHS of the above equation represent conservation
+    of surfactant on a non-uniform surface, Langmuir adsorption,
+    removal of surfactant due to adsorption of the other surfactant
+    onto non-vacant sites and consumption of the surfactant
+    respectively. The adsorption term is added to the source by
+    setting
 
     .. raw:: latex
 
-        $ S_c = k c $ and $ S_p = k c $.
+        $ S_c = k c (1 - \theta_{\text{other}})$ and $ S_p = -k c $.
+        The other terms are added to the source in a similar way.
 
     The following is a test case:
 
@@ -292,11 +303,11 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         Create a `AdsorbingSurfactantEquation` object.
 
         :Parameters:
-          - `surfactantVar`: The `SurfactantVariable` to be solver for.
+          - `surfactantVar`: The `SurfactantVariable` to be solved for.
           - `distanceVar`: The `DistanceVariable` that marks the interface.
           - `bulkVar`: The value of the `surfactantVar` in the bulk.
           - `rateConstant`: The adsorption rate of the `surfactantVar`.
-          - `otherVar`: Another `SurfactantVariable` with more surfacr affinity.
+          - `otherVar`: Another `SurfactantVariable` with more surface affinity.
           - `otherBulkVar`: The value of the `otherVar` in the bulk.
           - `otherRateConstant`: The adsorption rate of the `otherVar`.
           - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
