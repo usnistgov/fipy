@@ -110,9 +110,8 @@ The result can be tested with the following commands.
    >>> v3 = evalCell(m1,  m1,  dx, dy)[1]
    >>> v4 = evalCell(v3, dY, dx, dy)[1]
    >>> v5 = evalCell(dX, v3, dx, dy)[1]
-   >>> import MA
    >>> MASK = -1000
-   >>> trialValues = MA.masked_values((
+   >>> trialValues = numerix.MA.masked_values((
    ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
@@ -125,7 +124,7 @@ The result can be tested with the following commands.
    ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
    ...     MASK)
-   >>> MA.allclose(var, trialValues)
+   >>> print var.allclose(trialValues)
    1
    
 """
