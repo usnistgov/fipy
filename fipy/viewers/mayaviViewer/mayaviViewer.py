@@ -68,7 +68,7 @@ class MayaviViewer(Viewer):
       round this either by implementing a method such as
       var.getVertexVariable() and use point data, or reordering the
       variable data via [tets, wedges, hexs] and keep using cell
-      data. First option is cleaner.
+      data. First option is cleaner. Second option is less work.
 
       - Should this class be split into various dimensions? Is it
       useful to display data with different dimension is same viewer?
