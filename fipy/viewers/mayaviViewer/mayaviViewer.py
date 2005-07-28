@@ -57,6 +57,22 @@ class MayaviViewer(Viewer):
 
     .. _Mayavi: http://mayavi.sourceforge.net/
 
+    Issues with the `MayaviViewer` are
+
+      - _getOrderedCellVertexIDs() doesn't return the correct ordering
+      for 3D meshes.  This may be okay for tets and wedges but will
+      break for hexahedrons.
+
+      - Different element types can not be displayed for 3D
+      meshes. This is an ordering issue for the CellData. Could get
+      round this either by implementing a method such as
+      var.getVertexVariable() and use point data, or reordering the
+      variable data via [tets, wedges, hexs] and keep using cell
+      data. First option is cleaner.
+
+      - Should this class be split into various dimensions? Is it
+      useful to display data with different dimension is same viewer?
+
     """
         
     def __init__(self, vars, limits = None, title = None):
@@ -81,11 +97,6 @@ class MayaviViewer(Viewer):
         self._viewer = mayavi.mayavi()
 
         self.structures = []
-
-        if var.getMesh().getDim == 3:
-            print "Warning: The Matayvi viewer may or may not render 3D meshes correctly"
-            print "The method Mesh._getOrderedCellVertexIDs() needs to be fixed to return the"
-            print "correct ordering for 3D meshes that fits with pyvtk paradigm."
             
         for var in self.vars:
             self.structures.append(self._getStructure(var.getMesh()))
@@ -104,6 +115,12 @@ class MayaviViewer(Viewer):
         if mesh.getDim() == 2:
             cellDict['polygon'] = cellVertexListIDs
         else:
+
+            if mesh.getDim() == 3:
+                print "Warning: The Matayvi viewer may or may not render 3D meshes correctly"
+                print "The method Mesh._getOrderedCellVertexIDs() needs to be fixed to return the"
+                print "correct ordering for 3D meshes that fits with pyvtk paradigm."
+
             import sets
             if len(sets.Set(lengths)) > 1:
                 raise TypeError, 'The MayaviViewer can only render 3D data with cells of the same type'
