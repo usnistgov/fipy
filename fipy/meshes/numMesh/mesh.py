@@ -248,7 +248,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         ## compute what the cells are that we need to add
         cellsToAdd = Numeric.ones((other.cellFaceIDs.shape[0], self.cellFaceIDs.shape[1]))
         cellsToAdd = -1 * cellsToAdd
-        
+
         for i in range(len(other.cellFaceIDs)):
             for j in range(len(other.cellFaceIDs[i])):
                 cellsToAdd[i, j] = faceCorrelates[other.cellFaceIDs[i, j]]
@@ -507,6 +507,9 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 
     def getFaceCenters(self):
         return self.faceCenters
+
+    def _getOrderedCellVertexIDs(self):
+        return self._getCellVertexIDs()
 
     def _getCellVertexIDs(self):
 
