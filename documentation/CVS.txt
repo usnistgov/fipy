@@ -1,0 +1,69 @@
+---------
+CVS usage
+---------
+
+Most users will not want to download the latest state of |FiPy| in the CVS
+repository, as these files are subject to active development and may not
+behave as desired. Any released version of |FiPy| will be designated with
+a fixed tag:
+
+``version-x_y``
+    designates a released version x.y.
+
+    .. include:: VERSION.txt
+
+Most users will not be interested in particular version numbers, but
+instead with the degree of code stability.  Different "tracking tags" are
+used to indicate different stages of |FiPy| development.  You will need to
+decide on your own risk tolerance when deciding which stage of development
+to track.  The tracking tags applied |FiPy|, in decreasing order
+stability, are:
+
+``STABLE``
+    designates the most recent release in the repository that can be
+    considered stable for daily use by the common user.  This is a good tag
+    to track if you don't want to run into bugs introduced with ongoing
+    development but would like to take advantage of new features as soon as
+    possible.
+
+``CURRENT``
+    designates the most recent code on the trunk forming a coherent state
+    of |FiPy|, in general this will mean a release, but can also mean a
+    pre-release testing version.  For instance, the release engineer might
+    ask testers to test ``CURRENT`` before he makes a release.  This tracking
+    tag is restricted to the trunk.
+
+``HEAD``
+    this is a CVS internal tag designating the latest revision of any file
+    present in the repository.  It is also a valid branch tag designating
+    the trunk.  For our purposes ``HEAD`` can be used as a tracking tag
+    designating the very latest code checked into the repository; |FiPy| is
+    not guaranteed to pass its tests or to be in a consistent state when
+    checked out under this tag.  This tracking tag is restricted to the
+    trunk.
+
+One final type of tracking tag to note:
+
+``branch-version-x_y``
+    designates a line of development based on a previously released version
+    (i.e., if current development work is being spent on version 0.2, but a
+    bug is found and fixed in version 0.1, that fix will be tagged as
+    ``version-0_1_1``, and can be obtained from ``branch-version-0_1``).
+
+..
+
+Any other tags will not generally by of interest to most users.
+
+
+A fresh copy of |FiPy| that is designated by a particular ``<tag>`` can be
+obtained with::
+
+   $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
+   >     checkout -r <tag> fipy
+
+An existing CVS checkout of |FiPy| can be shifted to a different state of
+development by issuing the command::
+
+   $ cvs update -r <tag>
+
+.. |FiPy| replace:: FiPy

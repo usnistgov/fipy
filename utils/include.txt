@@ -1,0 +1,50 @@
+.. |latexFiPy| raw:: latex
+
+    \FiPy{}
+
+.. |htmlFiPy| raw:: html
+
+    <em>FiPy</em>
+
+.. |latexTeX| raw:: latex
+
+   \TeX{}
+
+.. |htmlTeX| raw:: html
+
+   TeX
+
+.. |latexINSTALL| raw:: latex
+
+   Chapter~\ref{chap:Installation} ``\nameref{chap:Installation}''
+
+.. |htmlINSTALL| raw:: html
+
+   the <a href="installation.html">Installation Guide</a>
+
+.. |latexExamples/| raw:: latex
+
+   Part~\ref{part:Examples}
+
+.. |htmlExamples/| raw:: html
+
+   the Examples portion of the <a href="download/">Manual</a>
+
+.. |latexCVS.txt| raw:: latex
+
+   Section~\ref{sec:CVS}
+
+.. |htmlCVS.txt| raw:: html
+
+   <a href="cvs.html">CVS tags</a>
+
+.. |latexFAQ| raw:: latex
+
+   Chapter~\ref{chap:FAQ} ``\nameref{chap:FAQ}''
+
+.. |htmlFAQ| raw:: html
+
+   Chapter 6: "Frequently Asked Questions" of the <a href="download/">Manual</a>
+
+
+

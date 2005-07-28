@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "phaseHalfAngleVariable.py"
+ #                                    created: 11/12/03 {10:39:23 AM} 
+ #                                last update: 7/12/05 {11:38:13 AM}
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-12 JEG 1.0 original
+ # ###################################################################
+ ##
+
+import Numeric
+ 
+from fipy.tools.inline import inline
+from fipy.variables.faceVariable import FaceVariable
+
+from fipy.tools import numerix
+
+class _PhaseHalfAngleVariable(FaceVariable):
+    def __init__(self, parameters = None, phase = None, theta = None):
+        FaceVariable.__init__(self, phase.getMesh())
+	self.parameters = parameters
+	self.phase = self._requires(phase)
+        self.theta = self._requires(theta)
+        
+    def _calcValue(self):
+        inline._optionalInline(self._calcValueInline, self._calcValuePy)
+
+    def _calcValuePy(self):
+	N = self.parameters['symmetry']
+        ##dphi = self.phase.getFaceGrad()[:,:]
+        thetaFace = self.theta.getArithmeticFaceValue()[:]
+        
+        if self.getMesh().getDim() > 1:
+            z = numerix.arctan2(self.phase.getFaceGrad()[:,1], self.phase.getFaceGrad()[:,0])
+        else:
+            z = 0
+            
+        z = N * (z - thetaFace)
+        self.value = numerix.tan(z / 2.)
+
+    def _calcValueInline(self):
+        dphi = Numeric.zeros((self.getMesh()._getNumberOfFaces(), self.getMesh().getDim()),'d')
+        dphi[:,0] = self.phase.getFaceGrad().getNumericValue()[:,0]
+        if self.getMesh().getDim() > 1:
+            dphi[:,1] = self.phase.getFaceGrad().getNumericValue()[:,1]
+        else:
+            dphi[:,1] = 0.
+            
+        inline._runInlineLoop1("""
+        z = atan2(dphi(i,1), dphi(i,0));
+        z = symmetry * (z - thetaFace(i));
+        value(i) = tan(z / 2.);""",z = 0.,
+                              dphi = dphi,
+                              symmetry = self.parameters['symmetry'],
+                              thetaFace = self.theta.getArithmeticFaceValue().getNumericValue(),
+                              value = self._getArray(),
+                              ni = len(self._getArray()))                              
+            
+
+

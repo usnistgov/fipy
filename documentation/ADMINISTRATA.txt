@@ -1,0 +1,193 @@
+=============
+CVS practices
+=============
+
+HEAD
+
+    this is of course a CVS internal tag designating the latest revision of
+    any file present in the repository.  It is also a valid branch tag
+    designating the trunk.  For our purposes HEAD can be used as a tracking
+    tag designating the very latest code checked into the repository;
+    FiPy is not guaranteed to pass its test or to be in a consistent state
+    when checked out under this tag.  Obviously this tracking tag is
+    restricted to the trunk.
+
+CURRENT
+
+    designates the most recent code on the trunk forming a coherent state
+    of FiPy, in general this will mean a release, but can also mean a
+    pre-release testing version.  For instance, the release engineer might
+    ask testers to test CURRENT before he makes a release.  This tracking
+    tag is restricted to the trunk.
+
+STABLE
+
+    designates the most recent release in the repository that can be
+    considered stable for daily use by the common user.  This is a good tag
+    to track if you don't want to run into bugs introduced with ongoing
+    development but would like to take advantage of new features as soon as
+    possible.
+
+version-x_y
+
+branch-version-x_y
+
+branch-refactoring_etc
+
+--------
+Branches
+--------
+
+Break off for radical refactoring. *Starting on main trunk*::
+
+    $ export BRANCH=branch-refactoring_etc
+    $ cvs tag root-$BRANCH
+    $ cvs tag -b $BRANCH
+    $ cd ..
+    $ cvs co -r $BRANCH -d $BRANCH fipy
+    $ cd $BRANCH
+
+Edit and add to branch::
+
+    $ emacs ...
+    $ cvs ci -m "refactoring"
+    $ cvs tag refactoring_stage_A
+
+    $ emacs ...
+    $ cvs ci -m "more refactoring"
+    $ cvs tag refactoring_stage_B
+
+Merge developments from trunk::
+
+    $ cvs tag -r HEAD somePointOnTrunk
+    $ cvs up -j somePointOnTrunk
+    $ python setup.py test
+    $ cvs ci -m "merged main trunk"
+    $ cvs tag merge-somePointOnTrunk_to_refactoring
+
+Refactoring complete::
+
+    $ cd ../trunk
+    $ cvs up -j branch-refactoring_etc
+    $ python setup.py test
+    $ cvs ci -m "merged refactoring, etc."
+    $ cvs tag merge-refactoring_etc
+
+**Now cease all work on branch-refactoring_etc**
+
+Optionally (must do in directory above branch directory)
+
+    $ cd branch-refactoring_etc/..
+    $ cvs -d :ext:USERNAME@cvs.sourceforge.net:/cvsroot/fipy release branch-refactoring_etc 
+
+--------
+Versions
+--------
+
+At point of version release x.y, *on main trunk*::
+
+    $ cvs tag version-x_y
+    $ cvs tag -r version-x_y -F STABLE
+    $ cvs tag -r version-x_y -F CURRENT
+
+---------
+Bug fixes
+---------
+
+At the point some fix is made to an old version n.m, *on main trunk*::
+
+    $ cvs tag -r version-n_m -b branch-version-n_m
+    $ cd ..
+    $ cvs co -r branch-version-n_m -d branch-version-n_m fipy
+    $ cd branch-version-n_m
+
+Fix the code::
+
+    $ cvs ci -m "fix n.m.q"
+    $ cvs tag version-n_m_q
+
+Possibly::
+
+    $ cvs tag -F STABLE
+
+Now merge n.m.q changes back to main trunk::
+
+    $ cd ../trunk
+    $ cvs up -j branch-version-n_m
+    $ cvs ci -m "merged n.m.q"
+    $ cvs tag merge-version-n_m_q
+
+Possibly::
+
+    $ cvs tag -F CURRENT
+
+Make new fix q+1 to n.m::
+
+    $ cd ../branch-version-n_m 
+    
+Fix the code::
+
+    $ cvs ci -m "fix n.m.q+1"
+    $ cvs tag version-n_m_q+1
+
+Again, merge n.m.q+1 changes back to main trunk::
+
+    $ cd ../trunk
+    $ cvs up -j version-n_m_q -j branch-version-n_m_q+1
+    $ cvs ci -m "merged n.m.q+1"
+    $ cvs tag merge-version-n_m_q+1
+
+.. danger::
+
+   The double ``-j`` is very important to get right.
+
+
+================
+Making a Release
+================
+
+Tag the repository as appropriate (see `CVS practices`_ above).
+
+Check out a clean copy of the desired release::
+
+    $ cvs -z3 -d:ext:<USERNAME>@cvs.sourceforge.net:/cvsroot/fipy checkout -r <TAG> -d <TAG> fipy
+    $ cd <TAG>
+
+.. note:: It is not necessary to ``cvs export`` as the Python distutils
+   routines will omit all of the CVS files automatically.
+
+Run the test suite!:
+
+    $ python setup.py test
+    $ python setup.py test --inline
+
+.. attention:: If tests don't pass, make sure the release notes reflect 
+   that fact!
+
+Build the documentation and the web pages::
+
+    $ python setup.py build_docs --manual --latex --webpage
+
+Build the compressed distribution::
+
+    $ python setup.py sdist
+
+Upload to the CTCMS website::
+
+    $ python setup.py build_docs --upload
+
+.. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
+   when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
+   does not have this problem.
+
+`Upload the release to SourceForge`_.  You can use, e.g.,::
+
+    cvs2cl.pl --branches --tagdates --utc --usermap documentation/UFILE.txt --delta version-1_0a1:HEAD --hide-filenames
+
+to build the ChangeLog.
+
+Make an announcement to `fipy@nist.gov`_
+
+
+.. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
+.. fipy@nist.gov: mailto:fipy@nist.gov

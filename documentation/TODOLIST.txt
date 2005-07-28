@@ -1,0 +1,179 @@
+-----------
+Future Work
+-----------
+
+Release Goals 1.0a3
+-------------------
+
+- Documentation:
+
+  * Review all for accuracy/consistency.
+  * Include some examples on the web page.
+  * Add more figures to examples
+
+- Distribution
+
+  * Install and test with no write permissions.
+  * PySparse doesn't build from CVS on Mac OS X with Python 2.4?
+
+Release Goals 1.1
+-----------------
+
+- Distribution
+
+  * Get FiPy registered on:
+
+    - vaults of parnassus
+    - cfd online
+    - scipy links
+   
+- Refactoring:
+
+  * Reduce memory requirements
+
+    - Automated tests.
+    - Identify memory usage.
+
+  * Reduce run time
+
+    - Augment automated tests
+    - Identify time-consuming code
+    - Choose external references 
+
+      * Ryo's code
+      * Spectral MATLAB CH problem
+      * FemLab
+      * DiffPack
+      * FemLego?
+
+Long term Goals
+---------------
+
+- Documentation:
+
+  * Examples:
+  
+    - 1000*1000 example for efficiency discussion.
+
+- Distribution
+
+  * freeze or py2exe for CEAC stand-alone
+
+    - viewer? GPL or GLL for gnuplot?
+
+- Functionality:
+
+  * Multigrid method.
+  * Cell centered FVM.
+  * Multilevel preconditioners
+  * Adaptive meshing.
+  * Linear Algebra:
+
+    - Petc.
+    - SciPy.
+    - matpy
+	
+  * Look into pyrex as an alternative to inlining.
+  * Laminar Fluid Flow module.
+  * DX viewer.
+  * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
+  * Found group of solvers from sandia called Trilionos
+    http://software.sandia.gov/trilinos
+  * As a stop gap measure for 4th and 6th order terms, 
+    find an implementation of incomplete cholesky factorization.
+
+- Refactoring:
+
+  * Use an array module rather than Numeric and switch to numarray.
+
+  * Global approach to phase field equations.
+
+  * Make the ``build_docs`` just update the files that have changed since
+    the last build.
+    
+  * Merge ``term`` and ``equation`` objects into one object:
+
+    - Boundary conditions should just be terms.
+    
+  * Reconcile variable operators and terms
+
+    - Equations should be stated in terms of variable operators.
+    - For example a DiffusionTerm is represented by var.getGrad().getDiv()
+    - getGrad() and getDiv() should calculate matrices and then use the matrices
+      either as part of the solution scheme or explicitly if one just requires the value.
+    - The convection term would have a special operator
+    - One problem is that terms are really volume integrals while operators
+      are just differences. Thus all operators would be volume integrals
+      and then divide through be the volume when asked by getValue()
+    - The first step would be to make operators use the terms to evaluate themselves.
+      i.e.::
+
+          DivGradVariable(CellVariable):
+              def __init__(self, var)
+                  self.var = var
+                  self.matrix =  ImplicitDiffusionTerm.getMatrix()
+
+              def getMatrix(self, ...):
+                  return self.matrix
+             
+              def getValue(self)
+                  return ImplicitDiffusionTerm.getMatrix() * self.var.getValue() / self.mesh.getCellVolumes()
+
+     - Next step would be to move the terms to the operator variables.
+     - We are now moving terms into variables and that may have hidden benefits.
+     - This philosophy should apply to all terms including transient terms.
+     - Basicly terms are being abandoned in favor of variable objects.   
+
+  * Use ``doctest`` exclusively.
+
+  * Major mesh refactor:
+
+    - Remove separate ``nummesh`` and ``pymesh`` structure
+    - Think about the ``mesh`` hierarchy as it stands:
+
+      * Many branches at present.
+      * Consolidate functionality (``__add__`` etc).
+      * How does Gmsh fit in?
+
+    - Lazy mesh array evaluations.
+    - support for meshes in higher spaces.
+
+  * Viewers:
+
+    - Use viewers in scipy that are similar to gist and remove gist (?).
+
+- Documentation:
+
+  * Write a paper on FiPy.
+  * Better documentation in Reference.pdf
+
+- Efficiency
+
+  * Automatic inlining
+  * Cache mesh calculations
+  * Caching/building sparse matrices?
+  * NthOrderDiffusionTerm 
+
+    - recursive stencil vs. recursive matrix?
+    - special case lower orders?
+    - compare/merge n=2 to ImplicitDiffusionTerm
+
+  * Track down general inefficiencies
+
+    - len(get.xxx()) vs. getNumXXX()
+    - array conversions
+
+  * SciPy linear algebra vs. PySparse
+
+    - solution efficiency
+    - matrix manipulation efficiency
+  
+  * NumArray vs Numeric
+
+    - encapsulate array class
+
+.. _SourceForge CVS repository:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _Steve:                            mailto:slanger@nist.gov
+.. _Konrad Hinsen:                    mailto:hinsen@cnrs-orleans.fr
+.. _Roman Geus:                       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
+

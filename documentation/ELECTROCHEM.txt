@@ -1,0 +1,120 @@
+Superconformal Electrodeposition
+================================
+
+The Damascene Process
+---------------------
+
+State of the art manufacturing of semiconductor devices involves the
+electrodeposition of copper for on-chip wiring of integrated circuits.
+In the Damascene process interconnects are fabricated by first
+patterning trenches in a dielectric medium and then filling by metal
+electrodeposition over the entire wafer surface. This metalization
+process, pioneered by IBM, depends on the use of electrolyte additives
+that effect the local metal deposition rate.
+
+Superfill
+---------
+
+The additives in the electrolyte affect the local deposition rate in
+such a way that bottom-up filling occurs in trenches or vias. This
+process, known as superconformal electrodeposition or superfill, is
+demonstrated in the following figure. The figure shows sequential
+images of bottom-up superfilling of submicrometer trenches by copper
+deposition from an electrolyte containing PEG-SPS-Cl. Preferential
+metal deposition at the bottom of the trenches followed by bump
+formation above the filled trenches is evident.
+
+.. image:: examples/levelSet/electroChem/experimentalSuperfill.png
+   :scale: 50
+   :align: center
+   :alt: experimental superfill
+
+The CEAC Mechanism
+------------------
+
+This process has been demonstrated to depend critically on the
+inclusion of additives in the electrolyte.  Recent publications
+propose Curvature Enhanced Accelerator Coverage (CEAC) as the
+mechanism behind the superfilling process |citeDamascene|.  In this
+mechanism, molecules that accelerate local metal deposition displace
+molecules that inhibit local metal deposition on the metal/electrolyte
+interface. For electrolytes that yield superconformal filling of fine
+features, this buildup happens relatively slowly because the
+concentration of accelerator species is much more dilute compared to
+the inhibitor species in the electrolyte.  The mechanism that leads to
+the increased rate of metal deposition along the bottom of the filling
+trench is the concurrent local increase of the accelerator coverage
+due to decreasing local surface area, which scales with the local
+curvature (hence the name of the mechanism). A good overview of this
+mechanism can be found in |citeMoffat|.
+
+Using |FiPy| to model Superfill
+-------------------------------
+
+The |example/levelSet/electroChem/input.py| provides a detailed
+description of how to use |FiPy| to model the superfill process. The
+example includes the diffusion of metal ions and accelerator additives
+as well as tracking of the accelerator concentration as the interface
+deforms. The main limitation of this model is that the boundary layer
+is very short. The following image shows superfill simulations for
+trenches with an aspect ration of 1.5, 1.7 and 2.2 using |FiPy|.  The
+images were made using the Mayavi_ viewing software. Each contour
+represents sequential positions of the interface and the color
+represents the concentration of accelerator as a surfactant. The areas
+of high surfactant concentration have an increased deposition rate.
+
+.. image:: examples/levelSet/electroChem/superfillImage.png
+   :scale: 50
+   :align: center
+   :alt: FiPy superfill
+
+Future Additions
+----------------
+
+Many more examples of the use of |FiPy| for modeling superfill are
+available, however, these have not all been added to the code
+repository. This is an on-going process. Future additions will
+include:
+
+  - An example that increases the boundary layer depth to a realistic depth (50 microns).
+    This has already been done it just needs to be added to the repository and documented.
+  - An example that includes a secondary surfactant. Again this has already been done.
+  - Create a Mayavi_ viewer class to enable plots like the ones above.
+
+.. include:: ../utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+.. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+
+.. |citeMoffat| replace:: |htmlMoffat| |latexMoffat|
+
+.. |latexMoffat| raw:: latex
+
+   \cite{moffatInterface:2004}
+
+.. |htmlMoffat| raw:: html
+
+   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.electrochem.org/publications/interface/winter2004/IF12-04-Pg46.pdf">Moffat et al</a>
+    
+.. |citeDamascene| replace:: |htmlDamascene| |latexDamascene|
+
+.. |latexDamascene| raw:: latex
+
+   \cite{NIST:damascene:2001}
+
+.. |htmlDamascene| raw:: html
+
+   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://link.aps.org/abstract/PRL/v87/e016102">Josell et al</a>
+
+.. |latexExample| raw:: latex
+
+   following example, ~\ref{levelSetElectroChemExample},
+
+.. |htmlExample| raw:: html
+
+   example in the
+   <a href="http://www.ctcms.nist.gov/fipy/download/fipy.pdf"> manul</a>
+
+.. |example/levelSet/electroChem/input.py| replace:: |htmlExample| |latexExample|
+

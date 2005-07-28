@@ -1,0 +1,101 @@
+==========
+Efficiency
+==========
+
+This section will present results and discussion of efficiency
+evaluations with |FiPy|. Programming in Python_ allows greater
+efficiency when designing and implementing new code, but it has some
+intrinsic inefficiencies during execution as compared with the C or
+FORTRAN programming languages. These inefficients can be minimized by
+translating sections of code that are used frequently into C.
+
+|FiPy| has been tested against an in-house phase field code, written
+at |NIST|, to model grain growth and subsequent impingement. This
+problem can be executed by running::
+
+    $ examples/phase/impingement/mesh20x20/input.py \
+    > --numberOfElements=10000 --numberOfSteps=1000
+
+from the base |FiPy| directory. The in-house code was written by Ryo
+Kobayashi and is used to generate the results presented in
+|citeWarrenPolycrystal|.
+
+The raw CPU execution times for 10 time steps are presented in the
+following table. The run times are in seconds and the memory usage is
+in kilobytes. The Kobayashi code is given the heading of FORTRAN while
+|FiPy| is run with and without inlining. The memory usage is for
+|FiPy| simulations without the ``--inline`` flag.
+
+   ========== ============ ================== ============= ============= 
+    Elements   |FiPy| (s)   |FiPy|             FORTRAN (s)   |FiPy|       
+                            ``--inline`` (s)                 memory (KB)  
+   ========== ============ ================== ============= ============= 
+       100       0.29        0.31              0.05           30068        
+       400       0.45        0.24              0.04           31260        
+      1600       1.18        0.60              0.06           34280        
+      6400       5.47        2.02              0.19           47864        
+     25600      27.2         9.63              1.01           91872        
+    102400     115          42.37              4.17          269332       
+   ========== ============ ================== ============= ============= 
+
+The plain Python_ version of |FiPy|, which uses ``Numeric`` for all
+array operations, is around 25 times slower than the FORTRAN
+code. Utilizing the ``--inline`` flag, this penalty is reduced to
+about 10 times slower. In this example many of the ``Variable``
+objects have been given specialized classes where the C inlining has
+been explicitly defined. However, many variables have not been given
+this special treatment.
+
+It is hoped that in future releases of |FiPy| the process of C
+inlining for ``Variable`` objects will be automated. This may result
+in some efficiency gains, greater than we are seeing for this
+particular problem since all the ``Variable`` objects will be
+inlined. Recent analysis has shown that a ``Variable`` with 9
+operations could be up to 9 times faster at calculating its value when
+inlined. Also a shift from the Numeric module to the Numarray module
+can gain a further factor of 2.
+
+As presented in the above table, memory usage was also recorded for
+each |FiPy| simulation without the ``--inline`` flag. Inlining results
+in some extra memory usage that becomes negligible as the number of
+elements is increased. From the table, once base memory usage is
+subtracted, each cell requires approximately 2.3 kilobytes of
+memory. Further analysis shows that the mesh requires about 0.7
+kilobytes of the 2.3 kilobytes total.
+
+This particular example is solving two fairly complex
+equations on a standard quadrilateral grid. For such a problem, one
+would hope to be using less than 0.5 kilobytes per cell, assuming
+allocation for old and current solution variables, sparse matrices,
+some intermediate variables of interest and mesh data. The following
+list highlights a number of areas that could dramatically reduce the
+memory requirement.
+
+* Intermediate ``BinOps`` hold and store their values. If an assignment operator
+  could be found (e.g. ``:=``), then only `BinOps` on the LHS of such operators
+  would store their arrays. The bulk of the memory in the above problem is probably being used
+  for the large number of ``BinOps``.
+
+* ``Mesh`` objects needlessly calculate and store every geometric and topological
+  array.  The ``_get`` methods could be required to call the ``_calc``  methods only on
+  the first request for a particular array. Since arrays are only created by the `_calc` methods
+  this could reduce the storage of needless arrays in the mesh.
+
+* Conceivably, ``Grid`` objects could be further specialization so they don't hold arrays at all.
+  
+.. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+
+.. include:: ../utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+.. |NIST| raw:: latex
+
+   \NIST{}
+
+.. |citeWarrenPolycrystal| raw:: latex
+
+   \cite{WarrenPolycrystal}
+
+
+

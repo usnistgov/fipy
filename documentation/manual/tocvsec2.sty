@@ -1,0 +1,118 @@
+%%
+%% This is file `tocvsec2.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% tocvsec2.dtx  (with options: `usc')
+%% 
+%% -----------------------------------------------------------------
+%%   Author: Peter Wilson (CUA) now at peter.r.wilson@boeing.com until June 2004
+%%                              (or at: pandgwilson at earthlink dot net)
+%%   Copyright 1998 -- 2004 Peter R. Wilson
+%% 
+%%   This work may be distributed and/or modified under the
+%%   conditions of the LaTeX Project Public License, either
+%%   version 1.3 of this license or (at your option) any
+%%   later version.
+%%   The latest version of the license is in
+%%      http://www.latex-project.org/lppl.txt
+%%   and version 1.3 or later is part of all distributions of
+%%   LaTeX version 2003/06/01 or later.
+%% 
+%%   This work has the LPPL maintenance status "author-maintained".
+%% 
+%%   This work consists of the files listed in the README file.
+%% -----------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tocvsec2}[2004/05/24 v1.2 variable ToC section entries]
+\RequirePackage{ifthen}
+\newif\ift@cchapter
+  \t@cchapterfalse
+\@ifundefined{chapter}{%
+  \@ifundefined{section}{%
+    \PackageWarning{tocvsec2}{%
+       I don't recognize any divisions but I'll do my best}}{}}%
+  {\t@cchaptertrue}
+
+\newif\if@knownsect@c
+\newcommand{\@setseccntt@c}[2]{
+  \@knownsect@cfalse
+  \ifthenelse{\equal{#1}{none}}{\setcounter{#2}{-10}
+                                \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{part}}{\ift@cchapter
+                                  \setcounter{#2}{-1}
+                                \else
+                                  \setcounter{#2}{0}
+                                \fi
+                                \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{chapter}}{\setcounter{#2}{0}
+                                   \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{section}}{\setcounter{#2}{1}
+                                   \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subsection}}{\setcounter{#2}{2}
+                                      \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subsubsection}}{\setcounter{#2}{3}
+                                         \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{paragraph}}{\setcounter{#2}{4}
+                                     \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subparagraph}}{\setcounter{#2}{5}
+                                        \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{all}}{\setcounter{#2}{100}
+                                \@knownsect@ctrue}{}
+  \if@knownsect@c\else
+    \PackageError{tocvsec2}{%
+      Unknown sectioning command name (#1)
+    }{%
+      I'll ignore it. Type \space <return> and I'll continue.\MessageBreak
+      If you haven't mistyped the name then use \protect\setcounter\space instead.}
+  \fi
+}
+\newcommand{\settocdepth}[1]{%
+  \@knownsect@cfalse
+  \ifthenelse{\equal{#1}{none}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{-10}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{part}}{%
+    \ift@cchapter
+      \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+    \else
+      \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+    \fi
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{chapter}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{section}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subsection}}{
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subsubsection}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{paragraph}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{4}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{subparagraph}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{5}}
+    \@knownsect@ctrue}{}
+  \ifthenelse{\equal{#1}{all}}{%
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{100}}
+    \@knownsect@ctrue}{}
+  \if@knownsect@c\else
+    \PackageError{tocvsec2}{%
+      Unknown sectioning command name (#1)}%
+     {I'll ignore it. Type \space <return> and I'll continue.}
+  \fi
+}
+\newcommand{\maxtocdepth}[1]{
+  \@setseccntt@c{#1}{tocdepth}}
+\newcommand{\setsecnumdepth}[1]{\leavevmode%
+  \@setseccntt@c{#1}{secnumdepth}}
+\newcommand{\maxsecnumdepth}[1]{%
+  \@setseccntt@c{#1}{secnumdepth}}
+\endinput
+%%
+%% End of file `tocvsec2.sty'.

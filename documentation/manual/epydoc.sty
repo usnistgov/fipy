@@ -1,0 +1,330 @@
+\NeedsTeXFormat{LaTeX2e}%
+\ProvidesClass{epydoc}[2005/03/18 v1.0 Epydoc Python Documentation]
+
+\RequirePackage{ifthen}
+\newboolean{@dohyper}
+\setboolean{@dohyper}{false}
+
+\DeclareOption{book}{\setboolean{@dobook}{true}}
+\DeclareOption{index}{\makeindex}
+\DeclareOption{hyperref}{\setboolean{@dohyper}{true}}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{hyperref}}
+
+\ProcessOptions
+
+\RequirePackage{alltt, parskip, fancyhdr, boxedminipage} 
+\RequirePackage{makeidx, multirow, longtable, amssymb}
+\RequirePackage[other]{tocbibind}
+
+% \RequirePackage{fullpage}
+\RequirePackage[headings]{fullpage}
+
+\ifthenelse{\boolean{@dohyper}}{%
+    \RequirePackage[usenames]{color}
+    \definecolor{darkblue}{rgb}{0,0.05,0.35}
+%     \RequirePackage[dvips, pagebackref, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
+    \RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
+}{}
+
+\setlength{\parindent}{0ex}
+\setlength{\fboxrule}{2\fboxrule}
+\newlength{\BCL} % base class length, for base trees.
+
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
+\newenvironment{Ventry}[1]%
+  {\begin{list}{}{%
+    \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
+    \settowidth{\labelwidth}{\texttt{#1:}}%
+    \setlength{\leftmargin}{\labelsep}%
+    \addtolength{\leftmargin}{\labelwidth}}}%
+  {\end{list}}
+
+
+\newcommand{\EpydocHyperlink}[2]{#2}
+    
+\newcommand{\EpydocHypertarget}[2]{\label{#1}#2}
+
+\newcommand{\EpydocIndex}[2][]{%
+    #2 %
+    \ifthenelse{\equal{#1}{}}{}{\textit{(\MakeLowercase{#1})}}}
+    
+\newenvironment{EpydocFunctionGroup}[1][]{%
+    \ifthenelse{\equal{#1}{}}{}{%
+    \rule{\textwidth}{0.5\fboxrule}
+    
+    \large{#1}
+    }}
+    {}
+    
+\newenvironment{EpydocFunction}{%
+    \begin{boxedminipage}{\textwidth}}
+    {\end{boxedminipage}}
+
+\newenvironment{EpydocDocstring}{%
+    \vspace{-1.5ex}
+
+    \rule{\textwidth}{0.5\fboxrule}}
+    {\vspace{1ex}}
+
+\newenvironment{EpydocFunctionSignature}[1]{%
+    \renewcommand{\and}{, }%
+    \newcommand{\VarArg}[1]{*\textit{##1}}%
+    \newcommand{\GenericArg}{\textit{\ldots}}%
+    \newcommand{\KWArg}[1]{**\textit{##1}}%
+    \newcommand{\Param}[2][]{%
+        \textit{##2}%
+        \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+    \raggedright{\bfseries #1}(}
+    {)}
+    
+\newenvironment{EpydocFunctionParameters}[1]{%
+    \textbf{Parameters}
+    \begin{quote}
+    \begin{Ventry}{#1}
+        
+    }
+    {\end{Ventry}
+
+    \end{quote}
+
+    \vspace{1ex}
+
+    }
+    
+\newcommand{\EpydocFunctionReturns}[2][]{%
+    \textbf{Return Value}
+    \begin{quote}
+        \ifthenelse{\equal{##1}{}}{##2}{%
+            ##1 \textit{(type=##2)}%
+        }
+    \end{quote}
+    \vspace{1ex}}
+
+\newenvironment{EpydocFunctionRaises}{%
+    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+       \normalfont\itshape ##1}
+    \textbf{Raises}
+    \begin{quote}
+        \begin{description}
+    }
+    {\end{description}
+    \end{quote}
+    \vspace{1ex}}
+
+\newcommand{\EpydocFunctionOverrides}[2][0]{%
+    Overrides: #2 %
+    \ifthenelse{#1=1}{\textit{(inherited documentation)}{}}}
+    
+\newcommand{\EpydocInheritanceItem}[2]{Inherited from #1: #2}
+
+\newenvironment{EpydocInheritanceList}{%
+    \renewcommand{\item}[1][]{\textbf{Inherited from ##1:}}}
+    {}
+
+\newcommand{\EpydocDescriptionItem}[2]{%
+    \textbf{#1:} #2}
+
+\newenvironment{EpydocDescriptionShortList}[1]{%
+    \renewcommand{\and}{, }%
+    \textbf{#1: }}
+    {}
+
+\newenvironment{EpydocDescriptionLongList}[1]{%
+    \textbf{#1:}
+    \begin{quote}
+        \begin{itemize}
+            \setlength{\parskip}{0.6ex}}
+    {	\end{itemize}
+    \end{quote}}
+
+\newenvironment{EpydocClassList}{%
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\newenvironment{EpydocClassSubList}{%
+    \newcommand{\CrossRef}[1]{%
+        \textit{(Section \ref{##1}, p.~\pageref{##1})}}
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+    
+\newenvironment{EpydocModuleList}{%
+    \newcommand{\CrossRef}[1]{%
+        \textit{(Section \ref{##1}, p.~\pageref{##1})}}
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\newenvironment{EpydocModuleSubList}{%
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\newenvironment{@EpydocGeneralList}{%
+    \newcommand{\EpydocInternalHeader}[1]{%
+        \multicolumn{2}{|l|}{\textbf{##1}\\
+        \cline{1-2}}}%
+    \newcommand{\EpydocInheritanceItemLine}[2]{%
+        \multicolumn{2}{|p{\textwidth}|}{%
+            \textbf{Inherited from {##1}: ##2}}}
+    \begin{longtable}{|p{.30\textwidth}|p{.62\textwidth}|l}
+    \cline{1-2}
+    % Set up the headers & footer (this makes the table span
+    % multiple pages in a happy way).
+    \cline{1-2} \centering \textbf{Name} & \centering \textbf{Description}& \\
+    \cline{1-2}
+    \endhead\cline{1-2}\multicolumn{3}{r}{\small\textit{continued on next page}}\\\endfoot\cline{1-2}
+    \endlastfoot}
+    {\end{longtable}}
+    
+\newenvironment{EpydocVariableList}{%
+    \newenvironment{EpydocLongValue}{%
+        \begin{alltt}}
+        {\end{alltt}}%
+    \newcommand{\EpydocShortValue}[1]{\texttt{##1}}
+    \newcommand{\EpydocVariable}[4]{%
+        \raggedright ##1 &
+        \ifthenelse{\equal{##3}{}\AND\equal{##4}{}}{}{\raggedright}
+        \ifthenelse{\equal{##3}{}}{}{\textbf{Value:} ##3 }
+        \ifthenelse{\equal{##4}{}}{}{\textit{(type=##4)}}
+        & \\
+        \cline{1-2}}
+    \begin{@EpydocGeneralList}}
+    {\end{@EpydocGeneralList}}
+    
+% \newenvironment{EpydocVariableList}{%
+%     \newcommand{\EpydocInternalHeader}[1]{%
+%         \multicolumn{2}{|l|}{\textbf{##1}\\
+%         \cline{1-2}}}%
+%     \newenvironment{EpydocLongValue}{%
+%         \begin{alltt}}
+%         {\end{alltt}}%
+%     \newcommand{\EpydocShortValue}[1]{\texttt{##1}}
+%     \newcommand{\EpydocVariable}[4]{%
+%         \raggedright ##1 &
+%         \ifthenelse{\equal{##3}{}\AND\equal{##4}{}}{}{\raggedright}
+%         \ifthenelse{\equal{##3}{}}{}{\textbf{Value:} ##3 }
+%         \ifthenelse{\equal{##4}{}}{}{\textit{(type=##4)}}
+%         & \\
+%         \cline{1-2}}
+% %                 \renewcommand{\EpydocHyperlink}[2]{%
+% %                 ####2 \textit{(p.~\pageref{####1})}}%
+% %     \newcommand{\@EpydocInheritedFrom}{}
+% %     \renewcommand{\EpydocHyperlink}[2]{%
+% %         \ifthenelse{\equal{\@EpydocInheritedFrom}{}}{%
+% %             \typeout{TRUE!!}
+% %             \global\@EpydocInheritedFrom
+% %             ##2 \renewcommand{\@EpydocInheritedFrom}{##1}}{%
+% %             \typeout{FALSE!!}
+% %             ##2 \texit{(p.~\pageref{\@EpydocInheritedFrom})}}}
+%     \newcommand{\EpydocInheritanceItemLine}[2]{%
+%         \multicolumn{2}{|p{\textwidth}|}{%
+%             \textbf{Inherited from {##1}: ##2}}}
+%     \begin{longtable}{|p{.30\textwidth}|p{.62\textwidth}|l}
+%     \cline{1-2}
+%     % Set up the headers & footer (this makes the table span
+%     % multiple pages in a happy way).
+%     \cline{1-2} \centering \textbf{Name} & \centering \textbf{Description}& \\
+%     \cline{1-2}
+%     \endhead\cline{1-2}\multicolumn{3}{r}{\small\textit{continued on next page}}\\\endfoot\cline{1-2}
+%     \endlastfoot}
+%     {\end{longtable}}
+
+\newenvironment{EpydocPropertyList}{%
+    \newcommand{\EpydocProperty}[2]{%
+        \raggedright ##1 &
+        \ifthenelse{\equal{##2}{}}{}{\raggedright ##2}
+        & \\
+        \cline{1-2}}
+    \begin{@EpydocGeneralList}}
+    {\end{@EpydocGeneralList}}
+
+% \newenvironment{EpydocPropertyList}{%
+%     \newcommand{\EpydocInternalHeader}[1]{%
+%         \multicolumn{2}{|l|}{\textbf{##1}\\
+%         \cline{1-2}}}%
+%     \newcommand{\EpydocProperty}[2]{%
+%         \raggedright ##1 &
+%         \ifthenelse{\equal{##2}{}}{}{\raggedright ##2}
+%         & \\
+%         \cline{1-2}}
+%     \newcommand{\EpydocInheritanceItemLine}[2]{%
+%         \multicolumn{2}{|p{\textwidth}|}{%
+%             \textbf{Inherited from {##1}: ##2}}}
+%     \begin{longtable}{|p{.30\textwidth}|p{.62\textwidth}|l}
+%     \cline{1-2}
+%     % Set up the headers & footer (this makes the table span
+%     % multiple pages in a happy way).
+%     \cline{1-2} \centering \textbf{Name} & \centering \textbf{Description}& \\
+%     \cline{1-2}
+%     \endhead\cline{1-2}\multicolumn{3}{r}{\small\textit{continued on next page}}\\\endfoot\cline{1-2}
+%     \endlastfoot}
+%     {\end{longtable}}
+
+% \newenvironment{EpydocVariableList}{%
+%     \newcommand{\EpydocVariableHeader}[1]{%
+%         \multicolumn{2}{|l|}{\textbf{##1}\\
+%         \cline{1-2}}}%
+%     \newenvironment{EpydocLongValue}{%
+%         \begin{alltt}}
+%         {\end{alltt}}%
+%     \renewcommand{\EpydocInheritanceItem}[2]{%
+%         ##1 & ##2 & \\}
+% %     \renewcommand{\EpydocInheritanceItem}[2]{%
+% %         \multicolumn{2}{|p{\textwidth}|}{%
+% % %             \renewcommand{\EpydocHyperlink}[2]{%
+% % %                 ####2 \textit{(p.~\pageref{####1})}}
+% %             \textbf{Inherited from ##1: ##2}}}
+% %     \renewenvironment{EpydocInheritanceList}{%
+% %         \newcommand{\EpydocShortValue}[1]{\texttt{####1}}
+% %         \newcommand{\EpydocVariable}[4]{%
+% %             \raggedright ####1 &
+% %             \ifx####3\empty
+% %                 \ifx####4\empty
+% %                 \else
+% %                     \raggedright
+% %                 \fi
+% %             \else
+% %                 \raggedright
+% %             \fi
+% %             \ifx####3\empty\else\textbf{Value:} ####3 \fi
+% %             \ifx####4\empty\else\textit{(type=####4)}\fi
+% %             & \\
+% %             \cline{1-2}
+% %             }
+% %         \begin{longtable}{|p{.30\textwidth}|p{.62\textwidth}|l}
+% %         \cline{1-2}
+% %         % Set up the headers & footer (this makes the table span
+% %         % multiple pages in a happy way).
+% %         \cline{1-2} \centering \textbf{Name} & \centering \textbf{Description}& \\
+% %         \cline{1-2}
+% %         \endhead\cline{1-2}\multicolumn{3}{r}{\small\textit{continued on next page}}\\\endfoot\cline{1-2}
+% %         \endlastfoot}
+% %         {\end{longtable}}
+%     }
+%     {\cline{1-2}}
+
+\newenvironment{reSTadmonition}[1][]{%
+    \begin{center}\begin{sffamily}
+        \begin{lrbox}{\@tempboxa}
+            \begin{minipage}{\admonitionwidth}
+                \textbf{\large #1}
+                \vspace{2mm}
+    }
+    {
+        \end{minipage}
+    \end{lrbox}
+    \fbox{\usebox{\@tempboxa}}
+    \end{sffamily}
+    \end{center}
+    }
+
+\newcommand{\EpydocDottedName}[1]{#1}

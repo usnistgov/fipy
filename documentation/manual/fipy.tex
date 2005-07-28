@@ -1,0 +1,357 @@
+%% -*-TeX-*-
+ % ###################################################################
+ %  FiPy - a finite volume PDE solver in Python
+ % 
+ %  FILE: "fipy.tex"
+ %                                    created: 4/1/04 {2:58:37 PM} 
+ %                                last update: 6/30/05 {4:16:33 PM} 
+ %  Author: Jonathan Guyer
+ %  E-mail: guyer@nist.gov
+ %  Author: Daniel Wheeler
+ %  E-mail: daniel.wheeler@nist.gov
+ %    mail: NIST
+ %     www: http://ctcms.nist.gov
+ %  
+ % ========================================================================
+ % This document was prepared at the National Institute of Standards
+ % and Technology by employees of the Federal Government in the course
+ % of their official duties.  Pursuant to title 17 Section 105 of the
+ % United States Code this document is not subject to copyright
+ % protection and is in the public domain.  fipy.tex
+ % is an experimental work.  NIST assumes no responsibility whatsoever
+ % for its use by other parties, and makes no guarantees, expressed
+ % or implied, about its quality, reliability, or any other characteristic.
+ % We would appreciate acknowledgement if the document is used.
+ % 
+ % This document can be redistributed and/or modified freely
+ % provided that any derivative works bear some notice that they are
+ % derived from it, and any modified versions bear some notice that
+ % they have been modified.
+ % ========================================================================
+ % See the file "license.terms" for information on usage and  redistribution of
+ % this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ %  
+ % ###################################################################
+ %%
+
+% \documentclass[tocAsPDFpart]{fipy}
+
+\documentclass[letterpaper]{book}
+
+\usepackage[tocAsPDFchapter]{fipy}
+
+
+% \usepackage{mdwlist}
+% \newenvironment{faq}{%
+%     \begin{basedescript}{%
+%         \setlength\labelwidth\textwidth%
+%         \desclabelstyle{\multilinelabel}%
+%         \renewcommand{\makelabel}[1]{\bfseries##1\newline}%
+%     }%
+% }{%
+%     \end{basedescript}%
+% }
+
+\begin{document}
+
+\doparttoc
+
+\frontmatter
+
+\title{\FiPy{}}
+\subtitle{A Finite Volume PDE Solver Using Python}
+
+\author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+\affiliation{Metallurgy Division \and
+and the Center for Theoretical and Computational Materials Science 
+\and Materials Science and Engineering Laboratory}
+
+\maketitle
+
+\vspace*{\fill}
+
+\input license
+
+\rule{\textwidth}{0.1pt}
+
+\thispagestyle{empty}
+\input disclaimer
+
+\maxtocdepth{all} 
+\tableofcontents
+% \faketableofcontents
+
+\mainmatter
+
+%%%%%%%%%%%%%%%%
+% I. INTRODUCTION
+%%%%%%%%%%%%%%%%
+
+\part{Introduction}
+
+\settocdepth{chapter} 
+
+\renewcommand{\ptctitle}{Introduction Contents}
+
+\parttoc
+
+% Technical Overview
+
+\chapter{Overview}
+
+\inputencoding{latin1}
+
+\input readme  
+
+% Installation
+
+\chapter{Installation and Usage}
+\label{chap:Installation}
+
+\inputencoding{latin1}
+
+\input installation
+
+\section{CVS tags}
+\label{sec:CVS}
+
+\input cvs
+
+% Numerical
+
+\chapter{Theoretical and Numerical Background}
+\label{chap:Numerics}
+
+\inputencoding{ascii}
+
+\input numerical/numerical
+
+% Implementation
+
+\chapter{Design and Implementation}
+\label{chap:Design}
+
+\inputencoding{latin1}
+
+\input introduction
+
+% Efficiency
+
+\chapter{Efficiency}
+
+\inputencoding{latin1}
+
+\input efficiency
+
+\chapter{Frequently Asked Questions}
+\label{chap:FAQ}
+
+\input faq
+
+% TODO List
+
+% \chapter{Future Work}
+% \label{chap:ToDo}
+% 
+% \inputencoding{latin1}
+% 
+% \input todolist
+
+%%%%%%%%%%%%%%%%%
+% 2. EXAMPLES
+%%%%%%%%%%%%%%%%%
+
+\settocdepth{all} 
+
+\sloppy
+
+\part{Examples}
+\label{part:Examples}
+
+% \chapter{Usage}
+\input{examples/readme}
+
+\settocdepth{chapter} 
+\renewcommand{\ptctitle}{Example Contents}
+\parttoc
+
+\chapter{Diffusion Examples}
+
+\input{examples/latex/examples.diffusion.steadyState.mesh1D.input-module}
+% \newpage
+% \input{examples/latex/examples.diffusion.steadyState.mesh1D.tri2Dinput-module}
+% \newpage
+\input{examples/latex/examples.diffusion.steadyState.mesh20x20.input-module}
+\input{examples/latex/examples.diffusion.steadyState.otherMeshes.inputCircle-module}
+% \newpage
+% \input{examples/latex/examples.diffusion.steadyState.mesh50x50.input-module}
+% \newpage
+\input{examples/latex/examples.diffusion.explicit.mesh10.input-module}
+% \newpage
+% \input{examples/latex/examples.diffusion.explicit.mesh50.input-module}
+% \newpage
+% \input{examples/latex/examples.diffusion.variable.mesh2x1.input-module}
+% \newpage
+\input{examples/latex/examples.diffusion.variable.mesh10x1.input-module}
+% \newpage
+% \input{examples/latex/examples.diffusion.variable.mesh50x1.input-module}
+% \newpage
+\input{examples/latex/examples.diffusion.nthOrder.input2ndOrder1D-module}
+% \newpage
+\input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
+% \newpage
+
+\chapter{Convection Examples}
+
+\input{examples/latex/examples.convection.exponential1D.input-module}
+% \newpage
+% \input{examples/latex/examples.convection.exponential1DBack.input-module}
+% \newpage
+\input{examples/latex/examples.convection.exponential1DSource.input-module}
+% \newpage
+% \input{examples/latex/examples.convection.exponential2D.input-module}
+% \newpage
+% \input{examples/latex/examples.convection.powerLaw1D.input-module}
+% \newpage
+
+\chapter{Phase Field Examples}
+
+\section*{Solidification Examples}
+% \addstarredsection{Solidification Examples}
+\addcontentsline{toc}{section}{Solidification Examples} 
+
+The following examples exhibit various phenomena in solidification, including
+dendritic growth and grain impingement.  Further discussion of the
+models and algorithms can be found in
+reference~\cite{WarrenPolycrystal}.
+
+\input{examples/latex/examples.phase.simple.input-module}
+
+\input{examples/latex/examples.phase.anisotropy.input-module}
+% \newpage
+\input{examples/latex/examples.phase.impingement.mesh40x1.input-module}
+% \newpage
+% \input{examples/latex/examples.phase.impingement.mesh20x20.base-module}
+% \newpage
+\input{examples/latex/examples.phase.impingement.mesh20x20.input-module}
+% \newpage
+% \input{examples/latex/examples.phase.impingement.restart.input-module}
+% \newpage
+% \input{examples/latex/examples.phase.missOrientation.circle.input-module}
+% \newpage
+% \input{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
+% \newpage
+% \input{examples/latex/examples.phase.missOrientation.modCircle.input-module}
+\newpage
+
+\section*{Electrochemistry Examples}
+% \addstarredsection{Electrochemistry Examples} 
+\addcontentsline{toc}{section}{Electrochemistry Examples} 
+
+\input{../../examples/elphf/README.tex}
+
+\input{examples/latex/examples.elphf.phase.input1D-module}
+% \newpage
+\input{examples/latex/examples.elphf.diffusion.input1D-module}
+% \newpage
+\input{examples/latex/examples.elphf.diffusion.input1Ddimensional-module}
+% \newpage
+% \input{examples/latex/examples.elphf.diffusion.input2D-module}
+
+% \newpage
+\input{examples/latex/examples.elphf.poisson.input1D-module}
+% \newpage
+\input{examples/latex/examples.elphf.phaseDiffusion.input1D-module}
+% \newpage
+
+
+\chapter{Level Set Examples}
+
+The Level Set Method (LSM) is a popular interface tracking
+method. Further details of the LSM and descriptions of the algorithms
+used in \FiPy{} can be found in Sethian's Level Set
+book~\cite{levelSetBook}.
+
+\input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
+% \newpage
+% \input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
+% \newpage
+\input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
+% \newpage
+% \input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
+% \newpage
+\input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
+% \newpage
+\input{examples/latex/examples.levelSet.advection.circle.input-module}
+% \newpage
+
+\newpage
+\section*{Superconformal Electrodeposition Example}
+\addcontentsline{toc}{section}{Superconformal Electrodeposition Example} 
+
+\input electrochem
+
+%Electroplating is a deposition method widely used to fill high-aspect
+%ratio features without seams or voids through the process of
+%superconformal deposition, also called ``superfill.''  This process
+%has been demonstrated to depend critically on the inclusion of
+%additives in the electrolyte.  Recent publications propose ``Curvature
+%Enhanced Accelerator Coverage'' (CEAC) as the mechanism behind the
+%superfilling process~\cite{NIST:damascene:2001}.  In this mechanism,
+%molecules that accelerate local metal deposition displace molecules
+%that inhibit local metal deposition on the metal/electrolyte
+%interface. For electrolytes that yield superconformal filling of fine
+%features, this buildup happens relatively slowly because the
+%concentration of accelerator species is much more dilute compared to
+%the inhibitor species in the electrolyte.  The mechanism that leads to
+%the increased rate of metal deposition along the bottom of the filling
+%trench is the concurrent local increase of the accelerator coverage
+%due to decreasing local surface area, which scales with the local
+%curvature (hence the name of the mechanism).
+
+\input{examples/latex/examples.levelSet.electroChem.input-module}
+
+\chapter{Cahn-Hilliard Examples}
+
+\input{examples/latex/examples.cahnHilliard.inputTanh1D-module}
+% \newpage
+
+\chapter{Converting from \FiPy{}~0.1 to \FiPy{}~1.0}
+\label{chap:Update0.1to1.0}
+
+\input{examples/latex/examples.update0_1to1_0-module}
+
+\settocdepth{all} 
+
+\backmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                 Index                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fussy
+
+% \bibliographystyle{unsrt_no_title}
+\bibliographystyle{fipy}
+\bibliography{refs}
+
+\sloppy
+\raggedright
+\printindex
+
+\fussy
+
+\appendix 
+
+% Credits
+
+\chapter*{Contributors}
+% \addstarredpart{Contributors} 
+\addcontentsline{toc}{part}{Contributors} 
+\label{chap:Contributors}
+
+\inputencoding{latin1}
+
+\input credits
+
+\end{document}
