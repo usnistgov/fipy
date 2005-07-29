@@ -20,6 +20,10 @@ def make(vars, title = None, limits = None):
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
 
+    for var in vars:
+        if var.getMesh().getDim() == 1:
+            raise IndexError, "Mayavi does not display useful 1D data"
+
     return MayaviViewer(vars, title = title, limits = limits) 
         
 
