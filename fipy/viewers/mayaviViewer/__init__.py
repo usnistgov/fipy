@@ -19,7 +19,7 @@ def make(vars, title = None, limits = None):
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
-        
+
     return MayaviViewer(vars, title = title, limits = limits) 
         
 
