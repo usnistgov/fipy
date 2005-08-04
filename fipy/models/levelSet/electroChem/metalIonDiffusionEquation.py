@@ -140,14 +140,14 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     """
 
     eq = _buildLevelSetDiffusionEquation(ionVar = ionVar,
-                                        distanceVar = distanceVar,
-                                        transientCoeff = transientCoeff,
-                                        diffusionCoeff = diffusionCoeff)
+                                         distanceVar = distanceVar,
+                                         transientCoeff = transientCoeff,
+                                         diffusionCoeff = diffusionCoeff)
     
     coeff = _MetalIonSourceVariable(ionVar = ionVar,
-                                   distanceVar = distanceVar,
-                                   depositionRate = depositionRate,
-                                   metalIonAtomicVolume = metalIonAtomicVolume)
+                                    distanceVar = distanceVar,
+                                    depositionRate = depositionRate,
+                                    metalIonAtomicVolume = metalIonAtomicVolume)
 
     return eq + ImplicitSourceTerm(coeff)
 

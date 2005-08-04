@@ -150,8 +150,11 @@ class MayaviViewer(Viewer):
         import tempfile
         
         for var, structure in zip(self.vars, self.structures):
-            celldata = pyvtk.CellData(pyvtk.Scalars(var[:], name = "blah", lookup_table = 'default'))
-            
+            name = var.getName()
+            if name is '':
+                name = 'default'
+
+            celldata = pyvtk.CellData(pyvtk.Scalars(var[:], name = name, lookup_table = 'default'))
             data = pyvtk.VtkData(structure, "mydata", celldata)
             
             (f, fileName) = tempfile.mkstemp('.vtk')
@@ -162,12 +165,39 @@ class MayaviViewer(Viewer):
             os.remove(fileName)
             
             self._viewer.load_module('SurfaceMap', 0)
-            self._viewer.get_render_window().z_plus_view()
-    
+            rw = self._viewer.get_render_window()
+            rw.z_plus_view()
+
+            ## display legend
+            dvm = self._viewer.get_current_dvm()
+            mm = dvm.get_current_module_mgr()
+            slh = mm.get_scalar_lut_handler()
+            slh.legend_on.set(1)
+            slh.legend_on_off()
+
+            ## display legen with correct range
+            slh.range_on_var.set(1)
+            slh.v_range_on_var.set(1)
+
+            xmax = self._getLimit('datamax')
+            if xmax is None:
+                xmax = max(var)
+
+            xmin = self._getLimit('datamin')
+            if xmin is None:
+                xmin = min(var)
+            
+            slh.range_var.set((xmin, xmax))
+            slh.set_range_var()
+
+            slh.v_range_var.set((min(var), max(var)))
+            slh.set_v_range_var()
+
             self._viewer.Render()
 
         if filename is not None:
             self._viewer.renwin.save_png(filename)
+
 
 if __name__ == '__main__':
     from fipy.meshes.grid1D import Grid1D
@@ -191,4 +221,6 @@ if __name__ == '__main__':
 
     viewer = MayaviViewer(vars)
     viewer.plot()
-    raw_input()
+    raw_input("finished")
+    
+    

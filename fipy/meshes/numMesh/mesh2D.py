@@ -91,7 +91,7 @@ class Mesh2D(Mesh):
 
     def __mul__(self, factor):
         newCoords = self.vertexCoords * factor
-        newmesh = Mesh2D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        newmesh = Mesh2D(newCoords, self.faceVertexIDs, self.cellFaceIDs)
         return newmesh
 
     def _concatenate(self, other, smallNumber):
