@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/4/05 {6:58:34 PM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {5:00:23 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,7 +91,8 @@ x1 = (L + boxSize) / 2
 
 distanceVariable = DistanceVariable(
     mesh = mesh,
-    value = 1
+    value = 1,
+    hasOld = 1
     )
 
 positiveCells = mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1)

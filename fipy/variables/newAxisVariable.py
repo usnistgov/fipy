@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "faceVariable.py"
- #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 8/3/05 {4:32:53 PM} 
+ #  FILE: "newAxisVariable.py"
+ #                                    created: 12/19/03 {3:48:05 PM} 
+ #                                last update: 8/2/05 {2:12:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,38 +35,17 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 
-class FaceVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., unit = None):
-	array = Numeric.zeros(mesh._getNumberOfFaces(),'d')
-# 	array[:] = value
-	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
+class _NewAxisVariable(Variable):
+    def __init__(self, var):
+        Variable.__init__(self)
+	self.var = self._requires(var)
 
-    def _getVariableClass(self):
-	return FaceVariable
-
-    def _getShapeFromMesh(mesh):
-        return (mesh._getNumberOfFaces(),)
-    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+    def _calcValue(self):
+	self.value = self.var[...,numerix.NewAxis]
         
-    def _getArithmeticParentClass(self, other):
-        if FaceVariable._getObjectShape(other) == (self.getMesh().getDim(),):
-            from fipy.variables.vectorFaceVariable import VectorFaceVariable
-            return VectorFaceVariable
-        else:
-            return Variable._getArithmeticParentClass(self, other)
-
-    def _getArithmeticBaseClass(self):
-        return FaceVariable
-
-    def transpose(self):
-	if self.transposeVar is None:
-	    from transposeVariable import _TransposeVariable
-	    self.transposeVar = _TransposeVariable(self)
-	
-	return self.transposeVar
-
-	
+    def getMesh(self):
+        return self.var.getMesh()

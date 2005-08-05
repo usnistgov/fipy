@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 7/12/05 {1:03:22 PM} 
+ #                                last update: 8/3/05 {4:33:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,6 +90,25 @@ class VectorCellVariable(Variable):
             self.divergence = _VectorFaceDifferenceVariable(self).getMag()
             
         return self.divergence
+
+    def _getShapeFromMesh(mesh):
+        return (mesh.getNumberOfCells(), mesh.getDim())
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+
+    def _getArithmeticParentClass(self, other):
+        shape = VectorCellVariable._getObjectShape(other)
+        from fipy.variables.cellVariable import CellVariable
+        if isinstance(other, CellVariable) \
+        or shape == (self.getMesh().getDim(),) \
+        or shape == (self.getMesh().getNumberOfCells(),) \
+        or shape == (1,):
+            return VectorCellVariable
+        else:
+            return Variable._getArithmeticParentClass(self, other)
+
+    def _getArithmeticBaseClass(self):
+        return VectorCellVariable
+
 
 def _test(): 
     import doctest

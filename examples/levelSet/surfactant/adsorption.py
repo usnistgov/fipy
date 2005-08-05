@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 3/10/05 {4:56:27 PM} 
+ #                                last update: 8/2/05 {4:58:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -145,7 +145,7 @@ mesh = Grid1D(nx = nx, dx = dx)
 
 value = mesh.getCellCenters()[:,0] - 1.499 * dx
 ##distanceVar = DistanceVariable(mesh = mesh, value = dx * (Numeric.arange(nx) - 0.999))
-distanceVar = DistanceVariable(mesh = mesh, value = value)
+distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
 ## Build the bulk diffusion equation
 

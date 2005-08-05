@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 7/6/05 {5:16:41 PM} 
+ #                                last update: 8/2/05 {5:02:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -106,7 +106,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
        ...     import DistanceVariable
        >>> disVar = DistanceVariable(mesh = mesh, 
-       ...                           value = Numeric.arange(11) - 0.99)
+       ...                           value = Numeric.arange(11) - 0.99,
+       ...                           hasOld = 1)
 
        >>> v = 1.
        >>> diffusion = 1.

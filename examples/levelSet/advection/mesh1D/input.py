@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/14/05 {8:55:15 AM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {5:03:59 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,7 +84,8 @@ Construct a `distanceVariable` object. This object is required by the
    ...     import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
-   ...                        value = -1)
+   ...                        value = -1,
+   ...                        hasOld = 1)
 
    >>> cells = mesh.getCells(
    ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)

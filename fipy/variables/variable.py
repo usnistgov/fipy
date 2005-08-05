@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/13/05 {4:52:33 PM} 
+ #                                last update: 8/4/05 {9:30:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -200,7 +200,7 @@ class Variable:
             >>> Variable(value = 3)[2]
             Traceback (most recent call last):
                   ...
-            TypeError: unsubscriptable object
+            IndexError: index out of bounds
 
         """
 	return self.getValue()[index]
@@ -261,14 +261,16 @@ class Variable:
 
     def _setValue(self, value, unit = None, array = None):
 	PF = fipy.tools.dimensions.physicalField.PhysicalField
-	if not isinstance(value, PF) \
-        and (unit is not None or type(value) in [type(''), type(()), type([])]):
+
+	if isinstance(value, PF):
+            self.value = value
+        elif unit is not None or type(value) in [type(''), type(()), type([])]:
 	    self.value = PF(value = value, unit = unit, array = array)
 	elif array is not None:
 	    array[:] = value
 	    self.value = array
 	else:
-	    self.value = value
+            self.value = Numeric.array(value)
 	    
 	if isinstance(self.value, PF) and self.value.getUnit().isDimensionless():
 	    self.value = self.value.getNumericValue()
@@ -295,6 +297,42 @@ class Variable:
 	    return value.getNumericValue()
 	else:
 	    return value
+            
+    def _getShapeFromMesh(mesh):
+        return (1,)
+##         return None
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+        
+    def getShape(self):
+        """
+            >>> Variable(value = 3).getShape()
+            ()
+            >>> Variable(value = (3,)).getShape()
+            (1,)
+            >>> Variable(value = (3,4)).getShape()
+            (2,)
+            
+            >>> Variable(value = "3 m").getShape()
+            ()
+            >>> Variable(value = (3,), unit = "m").getShape()
+            (1,)
+            >>> Variable(value = (3,4), unit = "m").getShape()
+            (2,)
+
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> mesh = Grid2D(nx = 2, ny = 3)
+            >>> var = CellVariable(mesh = mesh)
+            >>> var.getShape()
+            (6,)
+            >>> var.getArithmeticFaceValue().getShape()
+            (17,)
+            >>> var.getGrad().getShape()
+            (6, 2)
+            >>> var.getFaceGrad().getShape()
+            (17, 2)
+        """
+        return numerix.array(self._getArray()).shape
 	
     def _refresh(self):
 	if self.stale:           
@@ -348,11 +386,10 @@ class Variable:
     def _getOperatorVariableClass(self, parentClass = None):
 	if parentClass is None:
 	    parentClass = self._getVariableClass()
-
+            
 	class OperatorVariable(parentClass):
 	    def __init__(self, op, var, mesh = None):
-		if mesh is None:
-		    mesh = var[0].getMesh()
+                mesh = mesh or var[0].getMesh() or var[1].getMesh()
 		self.op = op
 		self.var = var
 		parentClass.__init__(self, value = var[0], mesh = mesh)
@@ -477,6 +514,35 @@ class Variable:
 
 	return OperatorVariable
 	
+    def _getArithmeticParentClass(self, other):
+        if other.__class__.__name__ is self.__class__.__name__ \
+        or other.getShape() in ((), (1,)):
+            return self._getArithmeticBaseClass()
+        elif self.getShape() == other.getShape():
+            from fipy.variables.constant import _Constant
+            if isinstance(self, other._getArithmeticBaseClass()) or isinstance(other, _Constant):
+                return self._getArithmeticBaseClass()
+            elif isinstance(other, self._getArithmeticBaseClass()) or isinstance(self, _Constant):
+                return other._getArithmeticBaseClass()
+            else:
+                return None
+        else:
+            return None
+            
+    def _getArithmeticBaseClass(self):
+        return Variable
+
+    def _getObjectShape(object):
+        if isinstance(object, Variable):
+            return object.getShape()
+        elif type(object) is type(numerix.array((1))):
+            return object.shape
+        elif type(object) in [type(()), type([])]:
+            return (len(object),)
+        else:
+            return (1,)
+    _getObjectShape = staticmethod(_getObjectShape)
+
     def _getUnaryOperatorVariable(self, op, parentClass = None):
 	class unOp(self._getOperatorVariableClass(parentClass)):
 	    def _calcValue(self):
@@ -485,8 +551,103 @@ class Variable:
 	return unOp(op, [self])
 	    
     def _getBinaryOperatorVariable(self, op, other, parentClass = None):
+        
+        if type(other) is type(numerix.array(1)):
+            otherClass = None
+        else:
+            otherClass = other.__class__
+        
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value = other)
+        
+        parentClass = parentClass or self._getArithmeticParentClass(other) or other._getArithmeticParentClass(self)
+        
+        if parentClass is None:
+            return NotImplemented
+
+        mesh = self.getMesh() or other.getMesh()
+            
+        opShape = parentClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
+        if opShape == ():
+            opShape = (1,)
+        
+        var0 = self
+        var1 = other
+        
+        selfArray = self._getArray()
+        otherArray = other._getArray()
+
+        def _checkShape(var0, var1, var0array, var1array):
+            try:
+                if Variable._getObjectShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
+                    raise ValueError
+                from fipy.variables.newAxisVariable import _NewAxisVariable
+                var1 = _NewAxisVariable(var1)
+            except (ValueError, IndexError):
+                try:
+                    if Variable._getObjectShape(op(var0array, numerix.swapaxes(var1array, 0, 1))) != opShape:
+                        raise ValueError
+                    from fipy.variables.swapAxesVariable import _SwapAxesVariable
+                    var1 = _SwapAxesVariable(var1)
+                except (ValueError, IndexError):
+                    raise SyntaxError
+                    
+            return (var0, var1)
+        
+        try:
+##             print Variable._getObjectShape(op(selfArray, otherArray)),  opShape
+            
+            if Variable._getObjectShape(op(selfArray, otherArray)) != opShape:
+                raise ValueError
+        except ValueError:
+            try:
+                (var0, var1) = _checkShape(var0, var1, selfArray, otherArray)
+            except SyntaxError:
+                if not (otherClass and issubclass(otherClass, Variable)):
+                    try:
+                        (var1, var0) = _checkShape(var1, var0, otherArray, selfArray)
+                    except SyntaxError:
+                        return NotImplemented
+                else:
+                    return NotImplemented
+
+##         def _checkShape(var0, var1, var0array, var1array):
+##             try:
+##                 if Variable._getObjectShape(numerix.equal(var0array, var1array[..., numerix.NewAxis])) != opShape:
+##                     raise ValueError
+##                 from fipy.variables.newAxisVariable import _NewAxisVariable
+##                 var1 = _NewAxisVariable(var1)
+##             except (ValueError, IndexError):
+##                 try:
+##                     if Variable._getObjectShape(numerix.equal(var0array, numerix.swapaxes(var1array, 0, 1))) != opShape:
+##                         raise ValueError
+##                     from fipy.variables.swapAxesVariable import _SwapAxesVariable
+##                     var1 = _SwapAxesVariable(var1)
+##                 except (ValueError, IndexError):
+##                     raise SyntaxError
+##                     
+##             return (var0, var1)
+##         
+##         try:
+##             print Variable._getObjectShape(numerix.equal(selfArray, otherArray)),  opShape
+##             
+##             if Variable._getObjectShape(numerix.equal(selfArray, otherArray)) != opShape:
+##                 raise ValueError
+##         except ValueError:
+##             try:
+##                 (var0, var1) = _checkShape(var0, var1, selfArray, otherArray)
+##             except SyntaxError:
+##                 if not issubclass(otherClass, Variable):
+##                     try:
+##                         (var1, var0) = _checkShape(var1, var0, otherArray, selfArray)
+##                     except SyntaxError:
+##                         return NotImplemented
+##                 else:
+##                     return NotImplemented
+            
 	operatorClass = self._getOperatorVariableClass(parentClass)
-	
+        
 	class binOp(operatorClass):
 	    def _calcValue(self):
 		if isinstance(self.var[1], Variable):
@@ -501,7 +662,7 @@ class Variable:
             def _getRepresentation(self, style = "__repr__"):
                 return "(" + operatorClass._getRepresentation(self, style = style) + ")"
 		
-	return binOp(op, [self, other])
+	return binOp(op, [var0, var1])
 	
     def __add__(self, other):
         from fipy.terms.term import Term
@@ -523,6 +684,823 @@ class Variable:
 	return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
 	    
     def __mul__(self, other):
+        """
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> from fipy.variables.faceVariable import FaceVariable
+            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+            
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> mesh = Grid2D(nx = 3)
+            
+            
+        CellVariable * CellVariable
+        
+            >>> cv = CellVariable(mesh = mesh, value = (0, 1, 2))
+            >>> cvXcv = cv * cv
+            >>> print cvXcv
+            [ 0., 1., 4.,]
+            >>> print isinstance(cvXcv, CellVariable)
+            1
+        
+        CellVariable * FaceVariable
+        
+            >>> fv = FaceVariable(mesh = mesh, value = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+            >>> fvXcv = fv * cv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> cvXfv = cv * fv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+        CellVariable * VectorCellVariable
+        
+            >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
+            >>> vcvXcv = vcv * cv
+            >>> print vcvXcv
+            [[ 0., 0.,]
+             [ 1., 2.,]
+             [ 4., 6.,]]
+            >>> print isinstance(vcvXcv, VectorCellVariable)
+            1
+            >>> cvXvcv = cv * vcv
+            >>> print cvXvcv
+            [[ 0., 0.,]
+             [ 1., 2.,]
+             [ 4., 6.,]]
+            >>> print isinstance(cvXvcv, VectorCellVariable)
+            1
+
+        CellVariable * VectorFaceVariable
+
+            >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
+            >>> vfvXcv = vfv * cv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> cvXvfv = cv * vfv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+        CellVariable * Scalar
+        
+            >>> cvXs = cv * 3
+            >>> print cvXs
+            [ 0., 3., 6.,]
+            >>> print isinstance(cvXs, CellVariable)
+            1
+            >>> sXcv = 3 * cv
+            >>> print sXcv
+            [ 0., 3., 6.,]
+            >>> print isinstance(sXcv, CellVariable)
+            1
+
+        CellVariable * Vector
+        
+            >>> cvXv2 = cv * (3,2)
+            >>> print cvXv2
+            [[ 0., 0.,]
+             [ 3., 2.,]
+             [ 6., 4.,]]
+            >>> print isinstance(cvXv2, VectorCellVariable)
+            1
+            >>> v2Xcv = (3,2) * cv
+            >>> print v2Xcv
+            [[ 0., 0.,]
+             [ 3., 2.,]
+             [ 6., 4.,]]
+            >>> print isinstance(v2Xcv, VectorCellVariable)
+            1
+            
+            >>> cvXv3 = cv * (3,2,1)
+            >>> print cvXv3
+            [ 0., 2., 2.,]
+            >>> print isinstance(cvXv3, CellVariable)
+            1
+            >>> v3Xcv = (3,2,1) * cv
+            >>> print v3Xcv
+            [ 0., 2., 2.,]
+            >>> print isinstance(v3Xcv, CellVariable)
+            1
+            
+            >>> cvXv4 = cv * (3,2,1,0)
+            Traceback (most recent call last):
+                ...
+            TypeError: can't multiply sequence to non-int
+            >>> v4Xcv = (3,2,1,0) * cv
+            Traceback (most recent call last):
+                ...
+            TypeError: can't multiply sequence to non-int
+
+
+        CellVariable * Variable Scalar
+        
+            >>> cvXsv = cv * Variable(value = 3)
+            >>> print cvXsv
+            [ 0., 3., 6.,]
+            >>> print isinstance(cvXsv, CellVariable)
+            1
+            >>> svXcv = Variable(value = 3) * cv
+            >>> print svXcv
+            [ 0., 3., 6.,]
+            >>> print isinstance(svXcv, CellVariable)
+            1
+        
+        CellVariable * Variable Vector
+            
+            >>> cvXv2v = cv * Variable(value = (3,2))
+            >>> print cvXv2v
+            [[ 0., 0.,]
+             [ 3., 2.,]
+             [ 6., 4.,]]
+            >>> print isinstance(cvXv2v, VectorCellVariable)
+            1
+            >>> v2vXcv = Variable(value = (3,2)) * cv
+            >>> print v2vXcv
+            [[ 0., 0.,]
+             [ 3., 2.,]
+             [ 6., 4.,]]
+            >>> print isinstance(v2vXcv, VectorCellVariable)
+            1
+            
+            >>> cvXv3v = cv * Variable(value = (3,2,1))
+            >>> print cvXv3v
+            [ 0., 2., 2.,]
+            >>> print isinstance(cvXv3v, CellVariable)
+            1
+            >>> v3vXcv = Variable(value = (3,2,1)) * cv
+            >>> print v3vXcv
+            [ 0., 2., 2.,]
+            >>> print isinstance(v3vXcv, CellVariable)
+            1
+
+            >>> cvXv4v = cv * Variable(value = (3,2,1,0))
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> v4vXcv = Variable(value = (3,2,1,0)) * cv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            
+
+        CellVariable * CellGradVariable
+        
+            >>> cvXcgv = cv * cv.getGrad()
+            >>> print cvXcgv
+            [[ 0., 0.,]
+             [ 1., 0.,]
+             [ 1., 0.,]]
+            >>> print isinstance(cvXcgv, VectorCellVariable)
+            1
+            
+        FaceVariable * FaceVariable
+
+            >>> fvXfv = fv * fv
+            >>> print fvXfv
+            [  0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.,]
+            >>> print isinstance(fvXfv, FaceVariable)
+            1
+
+        FaceVariable * VectorCellVariable
+
+            >>> vcvXfv = vcv * fv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> fvXvcv = fv * vcv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+        FaceVariable * VectorFaceVariable
+
+            >>> vfvXfv = vfv * fv
+            >>> print vfvXfv
+            [[  0.,  0.,]
+             [  1.,  2.,]
+             [  4.,  6.,]
+             [  9., 12.,]
+             [  4., 12.,]
+             [ 10., 20.,]
+             [ 18., 30.,]
+             [ 42., 63.,]
+             [ 16., 48.,]
+             [  9., 27.,]]
+            >>> print isinstance(vfvXfv, VectorFaceVariable)
+            1
+            >>> fvXvfv = fv * vfv
+            >>> print fvXvfv
+            [[  0.,  0.,]
+             [  1.,  2.,]
+             [  4.,  6.,]
+             [  9., 12.,]
+             [  4., 12.,]
+             [ 10., 20.,]
+             [ 18., 30.,]
+             [ 42., 63.,]
+             [ 16., 48.,]
+             [  9., 27.,]]
+            >>> print isinstance(fvXvfv, VectorFaceVariable)
+            1
+
+        FaceVariable * Scalar
+
+            >>> fvXs = fv * 3
+            >>> print fvXs
+            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            >>> print isinstance(fvXs, FaceVariable)
+            1
+            >>> sXfv = 3 * fv
+            >>> print sXfv
+            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            >>> print isinstance(sXfv, FaceVariable)
+            1
+
+        FaceVariable * Vector
+
+            >>> fvXv2 = fv * (3,2)
+            >>> print fvXv2
+            [[  0.,  0.,]
+             [  3.,  2.,]
+             [  6.,  4.,]
+             [  9.,  6.,]
+             [ 12.,  8.,]
+             [ 15., 10.,]
+             [ 18., 12.,]
+             [ 21., 14.,]
+             [ 24., 16.,]
+             [ 27., 18.,]]
+            >>> print isinstance(fvXv2, VectorFaceVariable)
+            1
+            >>> v2Xfv = (3,2) * fv
+            >>> print v2Xfv
+            [[  0.,  0.,]
+             [  3.,  2.,]
+             [  6.,  4.,]
+             [  9.,  6.,]
+             [ 12.,  8.,]
+             [ 15., 10.,]
+             [ 18., 12.,]
+             [ 21., 14.,]
+             [ 24., 16.,]
+             [ 27., 18.,]]
+            >>> print isinstance(v2Xfv, VectorFaceVariable)
+            1
+            
+            >>> fvXv3 = fv * (3,2,1)
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+            >>> v3Xfv = (3,2,1) * fv 
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+
+            >>> fvXv10 = fv * (9,8,7,6,5,4,3,2,1,0)
+            >>> print fvXv10
+            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            >>> print isinstance(fvXv10, FaceVariable)
+            1
+            >>> v10Xfv = (9,8,7,6,5,4,3,2,1,0) * fv
+            >>> print v10Xfv
+            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            >>> print isinstance(v10Xfv, FaceVariable)
+            1
+
+        FaceVariable * Variable Scalar
+
+            >>> fvXsv = fv * Variable(value = 3)
+            >>> print fvXsv
+            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            >>> print isinstance(fvXsv, FaceVariable)
+            1
+            >>> svXfv = Variable(value = 3) * fv
+            >>> print svXfv
+            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            >>> print isinstance(svXfv, FaceVariable)
+            1
+
+        FaceVariable * Variable Vector
+            
+            >>> fvXv2v = fv * Variable(value = (3,2))
+            >>> print fvXv2v
+            [[  0.,  0.,]
+             [  3.,  2.,]
+             [  6.,  4.,]
+             [  9.,  6.,]
+             [ 12.,  8.,]
+             [ 15., 10.,]
+             [ 18., 12.,]
+             [ 21., 14.,]
+             [ 24., 16.,]
+             [ 27., 18.,]]
+            >>> print isinstance(fvXv2v, VectorFaceVariable)
+            1
+            >>> v2vXfv = Variable(value = (3,2)) * fv
+            >>> print v2vXfv
+            [[  0.,  0.,]
+             [  3.,  2.,]
+             [  6.,  4.,]
+             [  9.,  6.,]
+             [ 12.,  8.,]
+             [ 15., 10.,]
+             [ 18., 12.,]
+             [ 21., 14.,]
+             [ 24., 16.,]
+             [ 27., 18.,]]
+            >>> print isinstance(v2vXfv, VectorFaceVariable)
+            1
+            
+            >>> fvXv3v = fv * Variable(value = (3,2,1))
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> v3vXfv = Variable(value = (3,2,1)) * fv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+            >>> fvXv10v = fv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
+            >>> print fvXv10v
+            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            >>> print isinstance(fvXv10v, FaceVariable)
+            1
+            >>> v10vXfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * fv
+            >>> print v10vXfv
+            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            >>> print isinstance(v10vXfv, FaceVariable)
+            1
+
+            
+            
+        VectorCellVariable * VectorCellVariable
+
+            >>> vcvXvcv = vcv * vcv
+            >>> print vcvXvcv
+            [[ 0., 1.,]
+             [ 1., 4.,]
+             [ 4., 9.,]]
+            >>> print isinstance(vcvXvcv, VectorCellVariable)
+            1
+
+        VectorCellVariable * VectorFaceVariable
+
+            >>> vfvXvcv = vfv * vcv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> vcvXvfv = vcv * vfv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+        VectorCellVariable * Scalar
+
+            >>> vcvXs = vcv * 3
+            >>> print vcvXs
+            [[ 0., 3.,]
+             [ 3., 6.,]
+             [ 6., 9.,]]
+            >>> print isinstance(vcvXs, VectorCellVariable)
+            1
+            >>> sXvcv = 3 * vcv
+            >>> print sXvcv
+            [[ 0., 3.,]
+             [ 3., 6.,]
+             [ 6., 9.,]]
+            >>> print isinstance(vcvXs, VectorCellVariable)
+            1
+
+        VectorCellVariable * Vector
+
+            >>> vcvXv2 = vcv * (3,2)
+            >>> print vcvXv2
+            [[ 0., 2.,]
+             [ 3., 4.,]
+             [ 6., 6.,]]
+            >>> print isinstance(vcvXv2, VectorCellVariable)
+            1
+            >>> v2Xvcv = (3,2) * vcv
+            >>> print v2Xvcv
+            [[ 0., 2.,]
+             [ 3., 4.,]
+             [ 6., 6.,]]
+            >>> print isinstance(v2Xvcv, VectorCellVariable)
+            1
+            
+            >>> vcvXv3 = vcv * (3,2,1)
+            >>> print vcvXv3
+            [[ 0., 3.,]
+             [ 2., 4.,]
+             [ 2., 3.,]]
+            >>> isinstance(vcvXv3, VectorCellVariable)
+            1
+            >>> v3Xvcv = (3,2,1) * vcv 
+            >>> print v3Xvcv
+            [[ 0., 3.,]
+             [ 2., 4.,]
+             [ 2., 3.,]]
+            >>> isinstance(v3Xvcv, VectorCellVariable)
+            1
+
+            >>> vcvXv4 = vcv * (3,2,1,0)
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+            >>> v4Xvcv = (3,2,1,0) * vcv
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+
+        VectorCellVariable * Variable Scalar
+
+            >>> vcvXsv = vcv * Variable(value = 3)
+            >>> print vcvXsv
+            [[ 0., 3.,]
+             [ 3., 6.,]
+             [ 6., 9.,]]
+            >>> print isinstance(vcvXsv, VectorCellVariable)
+            1
+            >>> svXvcv = Variable(value = 3) * vcv
+            >>> print svXvcv
+            [[ 0., 3.,]
+             [ 3., 6.,]
+             [ 6., 9.,]]
+            >>> print isinstance(svXvcv, VectorCellVariable)
+            1
+
+        VectorCellVariable * Variable Vector
+            
+            >>> vcvXv2v = vcv * Variable(value = (3,2))
+            >>> print vcvXv2v
+            [[ 0., 2.,]
+             [ 3., 4.,]
+             [ 6., 6.,]]
+            >>> print isinstance(vcvXv2v, VectorCellVariable)
+            1
+            >>> v2vXvcv = Variable(value = (3,2)) * vcv
+            >>> print v2vXvcv
+            [[ 0., 2.,]
+             [ 3., 4.,]
+             [ 6., 6.,]]
+            >>> print isinstance(v2vXvcv, VectorCellVariable)
+            1
+            
+            >>> vcvXv3v = vcv * Variable(value = (3,2,1))
+            >>> print vcvXv3v
+            [[ 0., 3.,]
+             [ 2., 4.,]
+             [ 2., 3.,]]
+            >>> isinstance(vcvXv3v, VectorCellVariable)
+            1
+            >>> v3vXvcv = Variable(value = (3,2,1)) * vcv 
+            >>> print v3vXvcv
+            [[ 0., 3.,]
+             [ 2., 4.,]
+             [ 2., 3.,]]
+            >>> isinstance(v3vXvcv, VectorCellVariable)
+            1
+
+            >>> vcvXv4v = vcv * Variable(value = (3,2,1,0))
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+            
+            
+            
+            
+            
+        VectorFaceVariable * VectorFaceVariable
+
+            >>> vfvXvfv = vfv * vfv
+            >>> print vfvXvfv
+            [[  0.,  1.,]
+             [  1.,  4.,]
+             [  4.,  9.,]
+             [  9., 16.,]
+             [  1.,  9.,]
+             [  4., 16.,]
+             [  9., 25.,]
+             [ 36., 81.,]
+             [  4., 36.,]
+             [  1.,  9.,]]
+            >>> isinstance(vfvXvfv, VectorFaceVariable)
+            1
+
+        VectorFaceVariable * Scalar
+
+            >>> vfvXs = vfv * 3
+            >>> print vfvXs
+            [[  0.,  3.,]
+             [  3.,  6.,]
+             [  6.,  9.,]
+             [  9., 12.,]
+             [  3.,  9.,]
+             [  6., 12.,]
+             [  9., 15.,]
+             [ 18., 27.,]
+             [  6., 18.,]
+             [  3.,  9.,]]
+            >>> print isinstance(vfvXs, VectorFaceVariable)
+            1
+            >>> sXvfv = 3 * vfv
+            >>> print sXvfv
+            [[  0.,  3.,]
+             [  3.,  6.,]
+             [  6.,  9.,]
+             [  9., 12.,]
+             [  3.,  9.,]
+             [  6., 12.,]
+             [  9., 15.,]
+             [ 18., 27.,]
+             [  6., 18.,]
+             [  3.,  9.,]]
+            >>> print isinstance(sXvfv, VectorFaceVariable)
+            1
+
+        VectorFaceVariable * Vector
+
+            >>> vfvXv2 = vfv * (3,2)
+            >>> print vfvXv2
+            [[  0.,  2.,]
+             [  3.,  4.,]
+             [  6.,  6.,]
+             [  9.,  8.,]
+             [  3.,  6.,]
+             [  6.,  8.,]
+             [  9., 10.,]
+             [ 18., 18.,]
+             [  6., 12.,]
+             [  3.,  6.,]]
+            >>> print isinstance(vfvXv2, VectorFaceVariable)
+            1
+            >>> v2Xvfv = (3,2) * vfv
+            >>> print v2Xvfv
+            [[  0.,  2.,]
+             [  3.,  4.,]
+             [  6.,  6.,]
+             [  9.,  8.,]
+             [  3.,  6.,]
+             [  6.,  8.,]
+             [  9., 10.,]
+             [ 18., 18.,]
+             [  6., 12.,]
+             [  3.,  6.,]]
+            >>> print isinstance(v2Xvfv, VectorFaceVariable)
+            1
+            
+            >>> vfvXv3 = vfv * (2,1,0)
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+            >>> v3Xvfv = (2,1,0) * vfv
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+
+
+            >>> vfvXv10 = vfv * (9,8,7,6,5,4,3,2,1,0)
+            >>> print vfvXv10
+            [[  0.,  9.,]
+             [  8., 16.,]
+             [ 14., 21.,]
+             [ 18., 24.,]
+             [  5., 15.,]
+             [  8., 16.,]
+             [  9., 15.,]
+             [ 12., 18.,]
+             [  2.,  6.,]
+             [  0.,  0.,]]
+            >>> isinstance(vfvXv10, VectorFaceVariable)
+            1
+            >>> v10Xvfv = (9,8,7,6,5,4,3,2,1,0) * vfv
+            >>> print v10Xvfv
+            [[  0.,  9.,]
+             [  8., 16.,]
+             [ 14., 21.,]
+             [ 18., 24.,]
+             [  5., 15.,]
+             [  8., 16.,]
+             [  9., 15.,]
+             [ 12., 18.,]
+             [  2.,  6.,]
+             [  0.,  0.,]]
+            >>> isinstance(v10Xvfv, VectorFaceVariable)
+            1
+
+        VectorFaceVariable * Variable Scalar
+
+            >>> vfvXsv = vfv * Variable(value = 3)
+            >>> print vfvXsv
+            [[  0.,  3.,]
+             [  3.,  6.,]
+             [  6.,  9.,]
+             [  9., 12.,]
+             [  3.,  9.,]
+             [  6., 12.,]
+             [  9., 15.,]
+             [ 18., 27.,]
+             [  6., 18.,]
+             [  3.,  9.,]]
+            >>> print isinstance(vfvXsv, VectorFaceVariable)
+            1
+            >>> svXvfv = Variable(value = 3) * vfv
+            >>> print svXvfv
+            [[  0.,  3.,]
+             [  3.,  6.,]
+             [  6.,  9.,]
+             [  9., 12.,]
+             [  3.,  9.,]
+             [  6., 12.,]
+             [  9., 15.,]
+             [ 18., 27.,]
+             [  6., 18.,]
+             [  3.,  9.,]]
+            >>> print isinstance(svXvfv, VectorFaceVariable)
+            1
+
+        VectorFaceVariable * Variable Vector
+            
+            >>> vfvXv2v = vfv * Variable(value = (3,2))
+            >>> print vfvXv2v
+            [[  0.,  2.,]
+             [  3.,  4.,]
+             [  6.,  6.,]
+             [  9.,  8.,]
+             [  3.,  6.,]
+             [  6.,  8.,]
+             [  9., 10.,]
+             [ 18., 18.,]
+             [  6., 12.,]
+             [  3.,  6.,]]
+            >>> print isinstance(vfvXv2v, VectorFaceVariable)
+            1
+            >>> v2vXvfv = Variable(value = (3,2)) * vfv
+            >>> print v2vXvfv
+            [[  0.,  2.,]
+             [  3.,  4.,]
+             [  6.,  6.,]
+             [  9.,  8.,]
+             [  3.,  6.,]
+             [  6.,  8.,]
+             [  9., 10.,]
+             [ 18., 18.,]
+             [  6., 12.,]
+             [  3.,  6.,]]
+            >>> print isinstance(v2vXvfv, VectorFaceVariable)
+            1
+            
+            >>> vfvXv3v = vfv * Variable(value = (2,1,0))
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            >>> v3vXvfv = Variable(value = (2,1,0)) * vfv
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+
+            >>> vfvXv10v = vfv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
+            >>> print vfvXv10v
+            [[  0.,  9.,]
+             [  8., 16.,]
+             [ 14., 21.,]
+             [ 18., 24.,]
+             [  5., 15.,]
+             [  8., 16.,]
+             [  9., 15.,]
+             [ 12., 18.,]
+             [  2.,  6.,]
+             [  0.,  0.,]]
+            >>> isinstance(vfvXv10v, VectorFaceVariable)
+            1
+            >>> v10vXvfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * vfv
+            >>> print v10vXvfv
+            [[  0.,  9.,]
+             [  8., 16.,]
+             [ 14., 21.,]
+             [ 18., 24.,]
+             [  5., 15.,]
+             [  8., 16.,]
+             [  9., 15.,]
+             [ 12., 18.,]
+             [  2.,  6.,]
+             [  0.,  0.,]]
+            >>> isinstance(v10vXvfv, VectorFaceVariable)
+            1
+
+            
+            
+        Scalar * Variable Scalar
+
+            >>> sXsv = 3 * Variable(value = 3)
+            >>> print sXsv
+            9
+            >>> print isinstance(sXsv, Variable)
+            1
+            >>> svXs = Variable(value = 3) * 3
+            >>> print svXs
+            9
+            >>> print isinstance(svXs, Variable)
+            1
+
+        Scalar * Variable Vector
+            
+            >>> sXv2v = 3 * Variable(value = (3,2))
+            >>> print sXv2v
+            [ 9., 6.,]
+            >>> print isinstance(sXv2v, Variable)
+            1
+            >>> v2vXs = Variable(value = (3,2)) * 3
+            >>> print v2vXs
+            [ 9., 6.,]
+            >>> print isinstance(v2vXs, Variable)
+            1
+            
+            
+            
+        Vector * Variable Scalar
+
+            >>> vXsv = (3, 2) * Variable(value = 3)
+            >>> print vXsv
+            [ 9., 6.,]
+            >>> print isinstance(vXsv, Variable)
+            1
+            >>> svXv = Variable(value = 3) * (3, 2)
+            >>> print svXv
+            [ 9., 6.,]
+            >>> print isinstance(svXv, Variable)
+            1
+
+        Vector * Variable Vector
+            
+            >>> vXv2v = (3, 2) * Variable(value = (3,2))
+            >>> print vXv2v
+            [ 9., 4.,]
+            >>> print isinstance(vXv2v, Variable)
+            1
+            >>> v2vXv = Variable(value = (3,2)) * (3, 2)
+            >>> print v2vXv
+            [ 9., 4.,]
+            >>> print isinstance(v2vXv, Variable)
+            1
+
+            >>> vXv3v = (3, 2, 1) * Variable(value = (3,2))
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+            >>> v3vXv = Variable(value = (3,2)) * (3, 2, 1) 
+            Traceback (most recent call last):
+                  ...
+            TypeError: can't multiply sequence to non-int
+            
+
+        Variable Scalar * Variable Scalar
+
+            >>> svXsv = Variable(value = 3) * Variable(value = 3)
+            >>> print svXsv
+            9
+            >>> print isinstance(svXsv, Variable)
+            1
+
+        Variable Scalar * Variable Vector
+            
+            >>> svXv2v = Variable(value = 3) * Variable(value = (3,2))
+            >>> print svXv2v
+            [ 9., 6.,]
+            >>> print isinstance(svXv2v, Variable)
+            1
+            >>> v2vXsv = Variable(value = (3,2)) * Variable(value = 3)
+            >>> print v2vXsv
+            [ 9., 6.,]
+            >>> print isinstance(v2vXsv, Variable)
+            1
+
+            
+        Variable Vector * Variable Vector
+            
+            >>> v2vXv2v = Variable(value = (3, 2)) * Variable(value = (3,2))
+            >>> print v2vXv2v
+            [ 9., 4.,]
+            >>> print isinstance(v2vXv2v, Variable)
+            1
+            
+            >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2))
+            Traceback (most recent call last):
+                  ...
+            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+
+            
+        """
 	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
 	
     __rmul__ = __mul__
@@ -748,10 +1726,14 @@ class Variable:
 ## 	return numerix.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
         
     def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), other)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
+                                               other, 
+                                               parentClass = Variable)
         
     def allequal(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), other)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
+                                               other,
+                                               parentClass = Variable)
 
     def getMag(self):
         if self.mag is None:

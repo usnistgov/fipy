@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 4/7/05 {2:36:13 PM} 
+ #                                last update: 8/3/05 {4:33:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -34,6 +34,204 @@
  #  
  # ###################################################################
  ##
+
+"""
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(nx = 3)
+    >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,),(1,),(2,),(3,)))
+    
+vector field times scalar
+
+    >>> print vfv * 3
+    [[ 0.,]
+     [ 3.,]
+     [ 6.,]
+     [ 9.,]]
+    >>> print 3 * vfv
+    [[ 0.,]
+     [ 3.,]
+     [ 6.,]
+     [ 9.,]]
+
+vector field times scalar variable
+
+    >>> from fipy.variables.variable import Variable
+    >>> print vfv * Variable(value = 3)
+    [[ 0.,]
+     [ 3.,]
+     [ 6.,]
+     [ 9.,]]
+    >>> print Variable(value = 3) * vfv
+    [[ 0.,]
+     [ 3.,]
+     [ 6.,]
+     [ 9.,]]
+
+vector field times vector field
+
+    >>> print vfv * vfv
+    [[ 0.,]
+     [ 1.,]
+     [ 4.,]
+     [ 9.,]]
+
+vector field times cell centered field
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3))
+    Traceback (most recent call last):
+          ...
+    ValueError: frames are not aligned
+    
+vector field times vector
+
+    >>> print vfv * (2,)
+    >>> print (2,) * vfv
+    >>> print vfv * (2,3)
+
+How about 2D meshes?
+
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(nx = 3, ny = 1)
+    >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
+    
+vector field times scalar
+
+    >>> print vfv * 3
+    [[  0.,  3.,]
+     [  3.,  6.,]
+     [  6.,  9.,]
+     [  9., 12.,]
+     [  3.,  9.,]
+     [  6., 12.,]
+     [  9., 15.,]
+     [ 18., 27.,]
+     [  6., 18.,]
+     [  3.,  9.,]]
+    >>> print 3 * vfv
+    [[  0.,  3.,]
+     [  3.,  6.,]
+     [  6.,  9.,]
+     [  9., 12.,]
+     [  3.,  9.,]
+     [  6., 12.,]
+     [  9., 15.,]
+     [ 18., 27.,]
+     [  6., 18.,]
+     [  3.,  9.,]]
+     
+vector field times scalar variable
+
+    >>> from fipy.variables.variable import Variable
+    >>> print vfv * Variable(value = 3)
+    [[  0.,  3.,]
+     [  3.,  6.,]
+     [  6.,  9.,]
+     [  9., 12.,]
+     [  3.,  9.,]
+     [  6., 12.,]
+     [  9., 15.,]
+     [ 18., 27.,]
+     [  6., 18.,]
+     [  3.,  9.,]]
+    >>> print Variable(value = 3) * vfv
+    [[  0.,  3.,]
+     [  3.,  6.,]
+     [  6.,  9.,]
+     [  9., 12.,]
+     [  3.,  9.,]
+     [  6., 12.,]
+     [  9., 15.,]
+     [ 18., 27.,]
+     [  6., 18.,]
+     [  3.,  9.,]]
+
+vector field times vector field
+
+    >>> print vfv * vfv
+    [[  0.,  1.,]
+     [  1.,  4.,]
+     [  4.,  9.,]
+     [  9., 16.,]
+     [  1.,  9.,]
+     [  4., 16.,]
+     [  9., 25.,]
+     [ 36., 81.,]
+     [  4., 36.,]
+     [  1.,  9.,]]
+
+vector field times cell centered field
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3))
+    Traceback (most recent call last):
+          ...
+    ValueError: frames are not aligned
+    
+vector field times vector
+
+    >>> print vfv * (2,3)
+    [[  0.,  3.,]
+     [  2.,  6.,]
+     [  4.,  9.,]
+     [  6., 12.,]
+     [  2.,  9.,]
+     [  4., 12.,]
+     [  6., 15.,]
+     [ 12., 27.,]
+     [  4., 18.,]
+     [  2.,  9.,]]
+    >>> print (2,3) * vfv
+    [[  0.,  3.,]
+     [  2.,  6.,]
+     [  4.,  9.,]
+     [  6., 12.,]
+     [  2.,  9.,]
+     [  4., 12.,]
+     [  6., 15.,]
+     [ 12., 27.,]
+     [  4., 18.,]
+     [  2.,  9.,]]
+    >>> print vfv * (2,3,4)
+    Traceback (most recent call last):
+        ...
+    ValueError: frames are not aligned
+    >>> print (2,3,4) * vfv
+    Traceback (most recent call last):
+        ...
+    ValueError: frames are not aligned
+    >>> print vfv * Variable(value = (2,3))
+    [[  0.,  3.,]
+     [  2.,  6.,]
+     [  4.,  9.,]
+     [  6., 12.,]
+     [  2.,  9.,]
+     [  4., 12.,]
+     [  6., 15.,]
+     [ 12., 27.,]
+     [  4., 18.,]
+     [  2.,  9.,]]
+    >>> print Variable(value = (2,3)) * vfv
+    [[  0.,  3.,]
+     [  2.,  6.,]
+     [  4.,  9.,]
+     [  6., 12.,]
+     [  2.,  9.,]
+     [  4., 12.,]
+     [  6., 15.,]
+     [ 12., 27.,]
+     [  4., 18.,]
+     [  2.,  9.,]]
+
+vector field times scalar field
+
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> fv = FaceVariable(mesh = mesh, value = (0,1,2,3,4,5,6,7,8,9))
+    >>> print vfv * fv
+    >>> print fv * vfv
+
+"""
+__docformat__ = 'restructuredtext'
 
 import Numeric
 
@@ -84,6 +282,28 @@ class VectorFaceVariable(Variable):
             
         return self.divergence
         
+    def _getShapeFromMesh(mesh):
+        return (mesh._getNumberOfFaces(), mesh.getDim())
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
+    def _getArithmeticParentClass(self, other):
+        shape = VectorFaceVariable._getObjectShape(other)
+        from fipy.variables.faceVariable import FaceVariable
+        if isinstance(other, FaceVariable) \
+        or shape == (self.getMesh().getDim(),) \
+        or shape == (self.getMesh()._getNumberOfFaces(),) \
+        or shape == (1,):
+            return VectorFaceVariable
+        else:
+            return Variable._getArithmeticParentClass(self, other)
+
+    def _getArithmeticBaseClass(self):
+        return VectorFaceVariable
 
 	
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

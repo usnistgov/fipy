@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 7/12/05 {1:06:24 PM} 
+ #                                last update: 8/3/05 {4:32:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -268,27 +268,27 @@ class CellVariable(Variable):
         values.
 
             >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 1)
+            >>> mesh = Grid1D(nx = 2)
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> var1 = CellVariable(mesh = mesh, value = 2, hasOld = 1)
-            >>> var2 = CellVariable(mesh = mesh, value = 3)
+            >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
+            >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
             >>> v = var1 * var2
             >>> print v
-            [ 6.,]
-            >>> var1.setValue(3)
+            [  6., 12.,]
+            >>> var1.setValue((3,2))
             >>> print v
-            [ 9.,]
+            [ 9., 8.,]
             >>> print v.getOld()
-            [ 6.,]
+            [  6., 12.,]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
             >>> v1 = var1 * 3
             >>> print v1
-            [ 9.,]
+            [ 9., 6.,]
             >>> print v1.getOld()
-            [ 6.,]
+            [ 6., 9.,]
             
         """
 	if self.old is None:
@@ -313,6 +313,21 @@ class CellVariable(Variable):
 	    self.old._remesh(mesh)
 	self.mesh = mesh
 	self.markFresh()
+
+    def _getShapeFromMesh(mesh):
+        return (mesh.getNumberOfCells(),)
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+
+    def _getArithmeticParentClass(self, other):
+        if CellVariable._getObjectShape(other) == (self.getMesh().getDim(),):
+            from fipy.variables.vectorCellVariable import VectorCellVariable
+            return VectorCellVariable
+        else:
+            return Variable._getArithmeticParentClass(self, other)
+
+    def _getArithmeticBaseClass(self):
+        return CellVariable
+
 
 ##pickling
             
