@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 7/14/05 {10:04:52 PM} 
+ #                                last update: 8/8/05 {10:18:15 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -128,7 +128,7 @@ def reshape(arr, shape):
     if _isPhysical(arr):
 	return arr.reshape(shape)
     elif type(arr) is type(array((0))):
-	return NUMERIC.reshape(arr, shape)
+	return NUMERIC.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     else:

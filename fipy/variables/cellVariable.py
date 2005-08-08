@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 8/6/05 {1:15:30 PM} 
+ #                                last update: 8/8/05 {4:54:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -319,9 +319,9 @@ class CellVariable(Variable):
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
     def _getArithmeticParentClass(self, other):
-##         print CellVariable._getObjectShape(other), (self.getMesh().getDim(),)
         if not isinstance(other, CellVariable) \
-        and CellVariable._getObjectShape(other) == (self.getMesh().getDim(),):
+        and CellVariable._getObjectShape(other) == (self.getMesh().getDim(),) \
+        and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
             from fipy.variables.vectorCellVariable import VectorCellVariable
             return VectorCellVariable
         else:
