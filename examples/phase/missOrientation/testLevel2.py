@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:30:55 PM} 
+ #                                last update: 8/6/05 {1:15:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,8 +75,9 @@ class TestModSubtract(TestMod):
         self.thetaOther = ModularVariable(
             mesh = self.theta.getMesh(),
             value = 2. * pi / 3.)
-##        print self.thetaOther
-##        print self.theta
+##         print self.thetaOther
+##         print self.theta
+##         print self.thetaOther - self.theta
 ##        print "going into the subtraction"
 ##        print self.thetaOther - self.theta
 ##        raw_input()

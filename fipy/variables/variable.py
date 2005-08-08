@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/4/05 {9:30:25 AM} 
+ #                                last update: 8/8/05 {9:34:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -299,8 +299,7 @@ class Variable:
 	    return value
             
     def _getShapeFromMesh(mesh):
-        return (1,)
-##         return None
+        return None
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
         
     def getShape(self):
@@ -389,7 +388,7 @@ class Variable:
             
 	class OperatorVariable(parentClass):
 	    def __init__(self, op, var, mesh = None):
-                mesh = mesh or var[0].getMesh() or var[1].getMesh()
+                mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
 		parentClass.__init__(self, value = var[0], mesh = mesh)
@@ -533,14 +532,18 @@ class Variable:
         return Variable
 
     def _getObjectShape(object):
+        shape = ()
         if isinstance(object, Variable):
-            return object.getShape()
+            shape = object.getShape()
         elif type(object) is type(numerix.array((1))):
-            return object.shape
+            shape = object.shape
         elif type(object) in [type(()), type([])]:
-            return (len(object),)
-        else:
-            return (1,)
+            shape = (len(object),)
+            
+##         if shape == ():
+##             shape = (1,)
+            
+        return shape
     _getObjectShape = staticmethod(_getObjectShape)
 
     def _getUnaryOperatorVariable(self, op, parentClass = None):
@@ -550,7 +553,7 @@ class Variable:
 		
 	return unOp(op, [self])
 	    
-    def _getBinaryOperatorVariable(self, op, other, parentClass = None):
+    def _getBinaryOperatorVariable(self, op, other, parentClass = None, opShape = None):
         
         if type(other) is type(numerix.array(1)):
             otherClass = None
@@ -568,15 +571,44 @@ class Variable:
 
         mesh = self.getMesh() or other.getMesh()
             
-        opShape = parentClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
-        if opShape == ():
-            opShape = (1,)
+##         print "opShape:", opShape
+##         print "parentClass._getShapeFromMesh(mesh):", parentClass._getShapeFromMesh(mesh)
+##         print "self.getShape():", self.getShape()
+##         print "other.getShape():", other.getShape()
+        opShape = opShape or parentClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
+        if opShape == "number":
+            opShape = ()
+##         if opShape == ():
+##             opShape = (1,)
+##         print "opShape:", opShape
+##         print ""
         
         var0 = self
         var1 = other
         
-        selfArray = self._getArray()
-        otherArray = other._getArray()
+        def _getArrayAsOnes(object):
+            a = object._getArray()
+            
+            # At this point, we are only interested in the shape of the operation result,
+            # not the result itself. Setting self and other to 1 should always pass?
+            
+            # we don't want to meddle with the contents of the actual object
+            if type(a) is type(numerix.array(1)):
+                a = a.copy()
+            else:
+                a = numerix.array(1)
+                
+            if a.shape == ():
+                # if Numeric thinks the array is a scalar (rather than a 1x1 array)
+                # it won't slice
+                a = numerix.array(1)
+            else:
+                a[:] = 1
+                
+            return a
+        
+        selfArray = _getArrayAsOnes(self)
+        otherArray = _getArrayAsOnes(other)
 
         def _checkShape(var0, var1, var0array, var1array):
             try:
@@ -596,7 +628,10 @@ class Variable:
             return (var0, var1)
         
         try:
-##             print Variable._getObjectShape(op(selfArray, otherArray)),  opShape
+##             import sys
+##             print >> sys.stderr, "shape:", selfArray.shape, otherArray.shape
+##             print >> sys.stderr, "class:", parentClass
+##             print >> sys.stderr, "opShape:", Variable._getObjectShape(op(selfArray, otherArray)),  opShape
             
             if Variable._getObjectShape(op(selfArray, otherArray)) != opShape:
                 raise ValueError
@@ -1722,25 +1757,21 @@ class Variable:
     def take(self, ids):
 	return numerix.take(self.getValue(), ids)
 	
-##     def allclose(self, other, atol = 1.e-5, rtol = 1.e-8):
-## 	return numerix.allclose(first = self.getValue(), second = other, atol = atol, rtol = rtol)
-        
     def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
                                                other, 
-                                               parentClass = Variable)
+                                               parentClass = Variable,
+                                               opShape = "number")
         
     def allequal(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
                                                other,
-                                               parentClass = Variable)
+                                               parentClass = Variable,
+                                               opShape = "number")
 
     def getMag(self):
         if self.mag is None:
 	    self.mag = self.dot(self).sqrt()
-	    
-## 	    from magVariable import _MagVariable
-## 	    self.mag = _MagVariable(self)
 	    
 	return self.mag
 

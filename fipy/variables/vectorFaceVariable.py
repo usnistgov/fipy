@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 8/3/05 {4:33:28 PM} 
+ #                                last update: 8/5/05 {8:39:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -236,6 +236,9 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.variables.variable import Variable
+from fipy.variables.faceVariable import FaceVariable
+
+from fipy.tools import numerix
 
 class VectorFaceVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
@@ -275,6 +278,9 @@ class VectorFaceVariable(Variable):
             
             return self.indexAsFaceVar[index]
             
+    def dot(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, parentClass = FaceVariable)
+
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable

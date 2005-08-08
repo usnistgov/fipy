@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 7/6/05 {3:59:19 PM} 
+ #                                last update: 8/6/05 {1:16:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,6 +64,11 @@ class CellTerm(Term):
 	coeff = self._getGeomCoeff(mesh)
 	weight = self._getWeight(mesh)
 
+##         import sys
+##         print >> sys.stderr, "coeff:", coeff
+##         print >> sys.stderr, "coeff.getOld():", coeff.getOld()
+##         print >> sys.stderr, "weight['old value']:", weight['old value']
+
 	self.coeffVectors = {
 	    'diagonal': coeff * weight['diagonal'],
 	    'old value': coeff.getOld() * weight['old value'],
@@ -79,6 +84,11 @@ class CellTerm(Term):
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
 
+##         import sys
+##         print >> sys.stderr, "Numeric.array(oldArray):", Numeric.array(oldArray)
+##         print >> sys.stderr, "coeffVectors['old value'][:]:", coeffVectors['old value'][:]
+##         print >> sys.stderr, "dt:", dt
+        
 	b += Numeric.array(oldArray) * coeffVectors['old value'][:] / dt
 	b += Numeric.ones([N]) * coeffVectors['b vector'][:]
 	L.addAtDiagonal(Numeric.ones([N]) * coeffVectors['new value'][:] / dt)
