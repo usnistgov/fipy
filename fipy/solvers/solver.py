@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 7/6/05 {3:56:55 PM} 
+ #                                last update: 8/9/05 {4:06:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,3 +69,5 @@ class Solver:
         return '%s(tolerance = %g, steps = %g)' \
             % (self.__class__.__name__, self.tolerance, self.steps)
 
+    def _canSolveAssymetric(self):
+        return True

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 8/3/05 {4:32:53 PM} 
+ #                                last update: 8/9/05 {3:12:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,12 +61,5 @@ class FaceVariable(Variable):
 
     def _getArithmeticBaseClass(self):
         return FaceVariable
-
-    def transpose(self):
-	if self.transposeVar is None:
-	    from transposeVariable import _TransposeVariable
-	    self.transposeVar = _TransposeVariable(self)
-	
-	return self.transposeVar
 
 	

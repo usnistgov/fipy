@@ -64,6 +64,11 @@ signficant ones are:
 - A simple ``TSVViewer`` has been added to allow display or export to a file of 
   your solution data.
 
+- It is no longer necessary to ``transpose()`` scalar fields in order to 
+  multiply them with vector fields.
+
+- Better default choice of solver when convection is present.
+
 - Better examples.
 
 - A new viewer based on `matplotlib`_ has been added.

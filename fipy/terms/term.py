@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 4/7/05 {11:35:28 AM} 
+ #                                last update: 8/9/05 {3:46:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,9 +101,9 @@ class Term:
         
  	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
         residual = self._getResidual(matrix, var, RHSvector)
-	if solver is None:
-	    from fipy.solvers.linearPCGSolver import LinearPCGSolver
-	    solver = LinearPCGSolver()
+        
+        from fipy.solvers.linearPCGSolver import LinearPCGSolver
+        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
 	    
 	array = var.getNumericValue()
 	solver._solve(matrix, array, RHSvector)
@@ -116,6 +116,9 @@ class Term:
             dict = { 'matrix' : matrix, 'var' : var, 'RHSvector' : RHSvector, 'residual' : residual}
             return tuple([dict[item] for item in returnItems if dict.has_key(item)])
             
+    def _getDefaultSolver(self, solver):
+        return None
+        
     def _otherIsZero(self, other):
         if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
             return True

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/8/05 {4:53:51 PM} 
+ #                                last update: 8/9/05 {4:00:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,7 +113,6 @@ class Variable:
 	self.stale = 1
 	self._markFresh()
         
-	self.transposeVar = None
 	self.sumVar = {}
 	self.faceDifferences = {}
 	self.laplacian = {}
@@ -1695,11 +1694,13 @@ class Variable:
         return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,))
         
     def transpose(self):
-	if self.transposeVar is None:
-	    from transposeVariable import _TransposeVariable
-	    self.transposeVar = _TransposeVariable(self)
-	
-	return self.transposeVar
+        """
+        .. attention: This routine is deprecated. 
+           It is not longer needed.
+        """
+        import warnings
+        warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
+        return self
 
     def sum(self, index = 0):
 	if not self.sumVar.has_key(index):

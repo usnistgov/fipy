@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:53:41 PM} 
+ #                                last update: 8/9/05 {4:15:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,10 +75,9 @@ uses the `PowerLawConvectionTerm` rather than the
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> eq = diffTerm + PowerLawConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+    ...          boundaryConditions = boundaryConditions)
+
 
 We test the solution against the analytical result:
 

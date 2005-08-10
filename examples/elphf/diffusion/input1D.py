@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/14/05 {7:51:18 PM} 
+ #                                last update: 8/9/05 {2:08:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -176,12 +176,12 @@ We create one diffusion equation for each substitutional component
     ...     phaseTransformation = \
     ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
     ...         + gPrime(phase.getHarmonicFaceValue()) \
-    ...             * Cj.barrier).transpose() * phase.getFaceGrad()
+    ...             * Cj.barrier) * phase.getFaceGrad()
     ...     electromigration = Cj.valence * potential.getFaceGrad()
     ...     convectionCoeff = counterDiffusion \
-    ...         + solvent.getHarmonicFaceValue().transpose() \
+    ...         + solvent.getHarmonicFaceValue() \
     ...             * (phaseTransformation + electromigration)
-    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum).transpose())
+    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 

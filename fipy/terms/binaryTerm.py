@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 4/7/05 {11:33:41 AM} 
+ #                                last update: 8/9/05 {3:43:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,6 +69,10 @@ class _BinaryTerm(Term):
 	RHSvector = self._operator()(RHSvector,termRHSvector)
 	
 	return (matrix, RHSvector)
+        
+    def _getDefaultSolver(self, solver):
+        return self.term1._getDefaultSolver(solver) or self.term2._getDefaultSolver(solver)
+
 
 class _AdditionTerm(_BinaryTerm):
     def __repr__(self):

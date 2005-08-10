@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 7/6/05 {5:04:01 PM} 
+ #                                last update: 8/9/05 {3:54:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,6 +100,13 @@ class ConvectionTerm(FaceTerm):
                                           'cell 2 offdiag' : -alpha}}
 
 	return self.stencil
+
+    def _getDefaultSolver(self, solver):
+        if solver and not solver._canSolveAssymetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        from fipy.solvers.linearCGSSolver import LinearCGSSolver
+        return solver or LinearCGSSolver()
 
 def _test(): 
     import doctest

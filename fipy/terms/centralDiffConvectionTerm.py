@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 7/6/05 {5:04:02 PM} 
+ #                                last update: 8/9/05 {4:04:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,6 +61,12 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
 
     """
     
+    def _getDefaultSolver(self, solver):
+        """
+        CentralDifferenceConvectionTerm produces a symmetric matrix.
+        """
+        return None
+
     class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, P.getMesh())
