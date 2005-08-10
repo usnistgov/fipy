@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:10:27 PM} 
+ #                                last update: 8/10/05 {3:59:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,10 +95,9 @@ is passed to the `ImplicitDiffusionTerm`.  The diffusion coefficient
 exists on the faces of the cells and thus has to be the length of the
 faces.  It is created in the following way:
 
-    >>> x = mesh.getFaceCenters()[:,0]
-    >>> import Numeric
-    >>> outerFaces = Numeric.logical_or(x < L / 4., x >= 3. * L / 4.)
-    >>> diffCoeff = Numeric.where(outerFaces, 1., 0.1)
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
+    >>> diffCoeff.setValue(0.1, faces = mesh.getFaces(filter = lambda face: L / 4. <= face.getCenter()[0] < 3. * L / 4.))
 
 For boundary conditions, we a fixed value of `valueLeft` to the left,
 and a fixed flux of
