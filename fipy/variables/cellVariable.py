@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 8/10/05 {3:59:06 PM} 
+ #                                last update: 8/11/05 {11:51:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -312,21 +312,30 @@ class CellVariable(Variable):
 	self.markFresh()
 
     def _getShapeFromMesh(mesh):
+        """
+        Return the shape of this variable type, given a particular mesh.
+        """
         return (mesh.getNumberOfCells(),)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
-    def _getArithmeticParentClass(self, other):
+    def _getArithmeticBaseClass(self, other = None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return CellVariable
+            
+        # A CellVariable operating with a vector will produce a VectorCellVariable.
+        # As a special case, if the number of cells equals the number of spatial dimensions,
+        # treat tuple of that length as a vector, rather than as a list of scalars.
         if not isinstance(other, CellVariable) \
-        and CellVariable._getObjectShape(other) == (self.getMesh().getDim(),) \
+        and numerix.getShape(other) == (self.getMesh().getDim(),) \
         and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
             from fipy.variables.vectorCellVariable import VectorCellVariable
             return VectorCellVariable
         else:
-            return Variable._getArithmeticParentClass(self, other)
-
-    def _getArithmeticBaseClass(self):
-        return CellVariable
-
+            return Variable._getArithmeticBaseClass(self, other)
 
 ##pickling
             

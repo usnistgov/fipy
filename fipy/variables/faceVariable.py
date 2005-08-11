@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 8/10/05 {3:58:47 PM} 
+ #                                last update: 8/11/05 {11:50:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,6 +38,7 @@
 import Numeric
 
 from fipy.variables.variable import Variable
+from fipy.tools import numerix
 
 class FaceVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None):
@@ -57,17 +58,25 @@ class FaceVariable(Variable):
 	return FaceVariable
 
     def _getShapeFromMesh(mesh):
+        """
+        Return the shape of this variable type, given a particular mesh.
+        """
         return (mesh._getNumberOfFaces(),)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
         
-    def _getArithmeticParentClass(self, other):
-        if FaceVariable._getObjectShape(other) == (self.getMesh().getDim(),):
+    def _getArithmeticBaseClass(self, other = None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return FaceVariable
+            
+        # a FaceVariable operating with a vector will produce a VectorFaceVariable
+        if numerix.getShape(other) == (self.getMesh().getDim(),):
             from fipy.variables.vectorFaceVariable import VectorFaceVariable
             return VectorFaceVariable
         else:
-            return Variable._getArithmeticParentClass(self, other)
-
-    def _getArithmeticBaseClass(self):
-        return FaceVariable
+            return Variable._getArithmeticBaseClass(self, other)
 
 	

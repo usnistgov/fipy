@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 8/5/05 {8:39:03 PM} 
+ #                                last update: 8/11/05 {11:52:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -279,7 +279,7 @@ class VectorFaceVariable(Variable):
             return self.indexAsFaceVar[index]
             
     def dot(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, parentClass = FaceVariable)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = FaceVariable)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
@@ -289,11 +289,23 @@ class VectorFaceVariable(Variable):
         return self.divergence
         
     def _getShapeFromMesh(mesh):
+        """
+        Return the shape of this variable type, given a particular mesh.
+        """
         return (mesh._getNumberOfFaces(), mesh.getDim())
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
-    def _getArithmeticParentClass(self, other):
-        shape = VectorFaceVariable._getObjectShape(other)
+    def _getArithmeticBaseClass(self, other = None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return VectorFaceVariable
+            
+        # a VectorFaceVariable operating with a FaceVariable, a vector, a list of scalars, or a scalar
+        # will produce a VectorFaceVariable
+        shape = numerix.getShape(other)
         from fipy.variables.faceVariable import FaceVariable
         if isinstance(other, FaceVariable) \
         or shape == (self.getMesh().getDim(),) \
@@ -301,10 +313,7 @@ class VectorFaceVariable(Variable):
         or shape == (1,):
             return VectorFaceVariable
         else:
-            return Variable._getArithmeticParentClass(self, other)
-
-    def _getArithmeticBaseClass(self):
-        return VectorFaceVariable
+            return Variable._getArithmeticBaseClass(self, other)
 
 	
 def _test(): 
