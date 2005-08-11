@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitDiffusionTerm.py"
  #                                    created: 11/28/03 {10:07:06 AM} 
- #                                last update: 7/6/05 {2:33:10 PM} 
+ #                                last update: 8/10/05 {10:49:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,28 +40,4 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class ImplicitDiffusionTerm(DiffusionTerm):
-    r"""
-    The discretization for the `ImplicitDiffusionTerm` is given by
-
-    .. raw:: latex
-
-       $$ \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
-       \frac{\phi_A-\phi_P}{d_{AP}} A_f. $$ The variable $\phi$ is
-       evaluated implicitly as part of the solution
-       routine.
-
-    Usage ::
-
-       ImplicitDiffusionTerm(coeff = <FaceVariable|Float>)
-       
-    """
-        
-    def _getWeight(self, mesh):
-	return {
-	    'implicit':{
-		'cell 1 diag':    -1, 
-		'cell 1 offdiag':  1, 
-		'cell 2 diag':    -1, 
-		'cell 2 offdiag':  1
-	    }
-	}
+    pass

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 8/8/05 {4:54:31 PM} 
+ #                                last update: 8/10/05 {6:19:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,11 +52,49 @@ from fipy.tools.sparseMatrix import _SparseMatrix
 class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
+    
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> from fipy.variables.faceVariable import FaceVariable
+        >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+        >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+        >>> m = Grid1D(nx = 2)
+        >>> cv = CellVariable(mesh = m)
+        >>> fv = FaceVariable(mesh = m)
+        >>> vcv = VectorCellVariable(mesh = m)
+        >>> vfv = VectorFaceVariable(mesh = m)
+        >>> CellTerm(coeff = cv)
+        CellTerm(coeff = [ 0., 0.,])
+        >>> CellTerm(coeff = 1)
+        CellTerm(coeff = 1)
+        >>> CellTerm(coeff = fv)
+        Traceback (most recent call last):
+            ...
+        TypeError: The coefficient must be a CellVariable or a scalar value.
+        >>> CellTerm(coeff = vcv)
+        Traceback (most recent call last):
+            ...
+        TypeError: The coefficient must be a CellVariable or a scalar value.
+        >>> CellTerm(coeff = vfv)
+        Traceback (most recent call last):
+            ...
+        TypeError: The coefficient must be a CellVariable or a scalar value.
+        >>> CellTerm(coeff = (1,))
+        Traceback (most recent call last):
+            ...
+        TypeError: The coefficient must be a CellVariable or a scalar value.
+
     """
     def __init__(self, coeff = 1.):
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):
             coeff = Variable(value = coeff)
+
+        from fipy.variables.cellVariable import CellVariable
+        if not isinstance(coeff, CellVariable) \
+        and coeff.getShape() != ():
+            raise TypeError, "The coefficient must be a CellVariable or a scalar value."
+
 	Term.__init__(self, coeff = coeff)
         self.coeffVectors = None
 
@@ -116,3 +154,9 @@ class CellTerm(Term):
 	return (L, b)
 
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 8/9/05 {3:54:20 PM} 
+ #                                last update: 8/10/05 {5:20:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,11 @@ import Numeric
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
+
+from fipy.tools import numerix
 
 class ConvectionTerm(FaceTerm):
     """
@@ -55,12 +60,56 @@ class ConvectionTerm(FaceTerm):
         """
         Create a `ConvectionTerm` object.
         
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> from fipy.variables.faceVariable import FaceVariable
+            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+            >>> m = Grid1D(nx = 2)
+            >>> cv = CellVariable(mesh = m)
+            >>> fv = FaceVariable(mesh = m)
+            >>> vcv = VectorCellVariable(mesh = m)
+            >>> vfv = VectorFaceVariable(mesh = m)
+            >>> ConvectionTerm(coeff = cv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+            >>> ConvectionTerm(coeff = fv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+            >>> ConvectionTerm(coeff = vcv)
+            ConvectionTerm(coeff = [[ 0.,]
+             [ 0.,]
+             [ 0.,]])
+            >>> ConvectionTerm(coeff = vfv)
+            ConvectionTerm(coeff = [[ 0.,]
+             [ 0.,]
+             [ 0.,]])
+            >>> ConvectionTerm(coeff = (1,))
+            ConvectionTerm(coeff = (1,))
+            >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+            >>> PowerLawConvectionTerm(coeff = (1,)).solve(var = cv)
+            >>> PowerLawConvectionTerm(coeff = 1).solve(var = cv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+
+        
         :Parameters:
           - `coeff` : The `term`'s coefficient value.
           - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
 	self.diffusionTerm = diffusionTerm
         self.stencil = None
+        
+        if not isinstance(coeff, VectorFaceVariable) \
+        and isinstance(coeff, VectorCellVariable):
+            coeff = coeff.getArithmeticFaceValue()
+            
+        if isinstance(coeff, CellVariable) or isinstance(coeff, FaceVariable):
+            raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
+
 	FaceTerm.__init__(self, coeff = coeff)
 	
     def __neg__(self):
@@ -93,6 +142,9 @@ class ConvectionTerm(FaceTerm):
                     diffCoeff = 1e-20
 
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+##             print "geomCoeff:", self._getGeomCoeff(mesh)
+##             print "diffCoeff:", diffCoeff
+##             print "alpha:", alpha
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),
@@ -107,6 +159,14 @@ class ConvectionTerm(FaceTerm):
             warnings.warn("%s cannot solve assymetric matrices" % solver)
         from fipy.solvers.linearCGSSolver import LinearCGSSolver
         return solver or LinearCGSSolver()
+
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = []):
+        if not isinstance(self.coeff, VectorFaceVariable) \
+        and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
+            raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
+        
+        return FaceTerm.solve(self, var, solver = solver, boundaryConditions = boundaryConditions, dt = dt, solutionTolerance = solutionTolerance, returnItems = returnItems)
+
 
 def _test(): 
     import doctest

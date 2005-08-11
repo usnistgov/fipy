@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {2:59:56 PM}
+ #                                last update: 8/10/05 {3:15:56 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -115,10 +115,10 @@ var = CellVariable(name = "phase field",
 faceVar = var.getArithmeticFaceValue()
 doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
-from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
-diffTerm2 = NthOrderDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
-diffTerm4 = NthOrderDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
+diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
+diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
 from fipy.solvers.linearPCGSolver import LinearPCGSolver

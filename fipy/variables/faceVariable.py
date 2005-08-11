@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 8/9/05 {3:12:31 PM} 
+ #                                last update: 8/10/05 {3:58:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,14 @@ class FaceVariable(Variable):
 	array = Numeric.zeros(mesh._getNumberOfFaces(),'d')
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
+
+    def setValue(self, value, faces = ()):
+        if faces == ():
+            self[:] = value
+        else:
+            for face in faces:
+                self[face.getID()] = value
+
 
     def _getVariableClass(self):
 	return FaceVariable

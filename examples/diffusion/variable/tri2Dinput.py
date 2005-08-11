@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:36:36 PM} 
+ #                                last update: 8/10/05 {4:50:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,14 +49,13 @@ number of cells set to `nx = 10`.
 A simple analytical answer can be used to test the result:
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[:,0]
-   >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
-   >>> values = Numeric.where(x < L / 4., x, values)
+   >>> from fipy.tools import numerix
+   >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
+   >>> values = numerix.where(x < L / 4., x, values)
    >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """
-
-import Numeric
 
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
@@ -84,9 +83,9 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-x = mesh.getFaceCenters()[:,0]
-middleFaces = Numeric.logical_or(x < L / 4.,x >= 3. * L / 4.)
-diffCoeff = Numeric.where(middleFaces, 1., 0.1)
+from fipy.variables.faceVariable import FaceVariable
+diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
+diffCoeff.setValue(0.1, faces = mesh.getFaces(filter = lambda face: L / 4. <= face.getCenter()[0] < 3. * L / 4.))
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedFlux(mesh.getFacesRight(),fluxRight))

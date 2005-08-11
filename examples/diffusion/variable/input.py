@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:59:26 PM} 
+ #                                last update: 8/10/05 {4:48:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -132,8 +132,9 @@ or
 
     >>> x = mesh.getCellCenters()[:,0]
     >>> values = x + 18. * L / 4.
-    >>> values = Numeric.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
-    >>> values = Numeric.where(x < L / 4., x, values)
+    >>> from fipy.tools import numerix
+    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
+    >>> values = numerix.where(x < L / 4., x, values)
     >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
     1
    

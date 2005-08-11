@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:31:47 PM} 
+ #                                last update: 8/10/05 {3:10:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,10 +65,10 @@ var = CellVariable(mesh = mesh)
 
 from fipy.solvers.linearLUSolver import LinearLUSolver
 from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
+from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
      
-eq = NthOrderDiffusionTerm((1.0, 1.0))
+eq = ImplicitDiffusionTerm((1.0, 1.0))
 
 BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesRight(), Lx, 0),

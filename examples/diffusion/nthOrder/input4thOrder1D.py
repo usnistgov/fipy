@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/7/05 {5:31:47 PM} 
+ #                                last update: 8/10/05 {3:13:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
 
 r"""
 
-This example uses the `NthOrderBoundaryCondition` class to solve the equation
+This example uses the `ImplicitDiffusionTerm` class to solve the equation
 
 .. raw:: latex
 
@@ -100,8 +100,8 @@ We initialize the steady-state equation and use the `LinearLUSolver` for stabili
 
 We perform one implicit timestep to achieve steady state
     
-    >>> from fipy.terms.nthOrderDiffusionTerm import NthOrderDiffusionTerm
-    >>> eq = NthOrderDiffusionTerm(coeff = (1, 1)) == 0
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> eq = ImplicitDiffusionTerm(coeff = (1, 1)) == 0
     >>> eq.solve(var,
     ...          boundaryConditions = BCs,
     ...          solver = LinearLUSolver(tolerance = 1e-11))

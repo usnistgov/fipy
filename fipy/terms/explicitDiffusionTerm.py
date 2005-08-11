@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitDiffusionTerm.py"
  #                                    created: 11/27/03 {11:39:03 AM} 
- #                                last update: 7/6/05 {2:33:11 PM} 
+ #                                last update: 8/10/05 {10:50:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,22 +56,8 @@ class ExplicitDiffusionTerm(DiffusionTerm):
        added to the RHS vector and makes no contribution to
        the solution matrix.
 
-    Usage ::
-
-        ExplicitDiffusionTerm(coeff = <FaceVariable|Float>)
-        
     """
     
-    def _getWeight(self, mesh):
-	return {
-	    'explicit':{
-		'cell 1 diag':    -1, 
-		'cell 1 offdiag':  1, 
-		'cell 2 diag':    -1, 
-		'cell 2 offdiag':  1
-	    }
-	}
-	
-	
-
-
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+        L, b = DiffusionTerm._buildMatrix(self, var, boundaryConditions = boundaryConditions, dt = dt)
+        return (0, b - L * var[:])

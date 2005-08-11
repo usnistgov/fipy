@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 8/8/05 {4:54:12 PM} 
+ #                                last update: 8/10/05 {3:59:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,9 +118,6 @@ class CellVariable(Variable):
 	if cells == ():
 	    self[:] = value
 	else:
-## 	    return numerix.put(self.getValue(), [cell.getID() for cell in cells], value)
-## 	    self._markStale()
-
 	    for cell in cells:
 		self[cell.getID()] = value
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitUpwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/7/04 {5:04:21 PM} 
+ #                                last update: 8/10/05 {3:18:40 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -65,4 +65,11 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
             del weight['implicit']
 
         return weight
+        
+    def _getDefaultSolver(self, solver):
+        """
+        ExplicitUpwindConvectionTerm only affects the b-vector, leaving a symmetric matrix.
+        """
+        return None
+
 
