@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 7/14/05 {10:04:52 PM} 
+ #                                last update: 8/10/05 {3:36:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,6 +100,8 @@ def take(arr, ids):
     
     if _isPhysical(arr):
 	return arr.take(ids)    
+    elif type(ids) is type(MA.array((0))):
+        return MAtake(arr, ids)
     elif type(arr) is type(array((0))):
 	return NUMERIC.take(arr, ids)
     elif type(arr) is type(MA.array((0))):
@@ -128,12 +130,27 @@ def reshape(arr, shape):
     if _isPhysical(arr):
 	return arr.reshape(shape)
     elif type(arr) is type(array((0))):
-	return NUMERIC.reshape(arr, shape)
+	return NUMERIC.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     else:
 	raise TypeError, 'cannot reshape object ' + str(arr)
 
+def getShape(arr):
+    """
+    Return the shape of arr
+    """
+    if _isPhysical(arr):
+        return arr.getShape()
+    elif type(arr) in (type(array(0)), type(MA.array(0))):
+        return arr.shape
+    elif type(arr) in (type(()), type([])):
+        return (len(arr),)
+    elif type(arr) in (type(1), type(1.)):
+        return ()
+    else:
+        raise TypeError, "%s has no shape" % str(arr)
+    
 def sum(arr, index = 0):
     """
     Provides the same functionality as `Numeric.sum`.

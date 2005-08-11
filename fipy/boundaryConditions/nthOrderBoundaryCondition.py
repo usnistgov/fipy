@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 7/6/05 {1:46:34 PM} 
+ #                                last update: 8/10/05 {3:16:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -52,9 +52,10 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 class NthOrderBoundaryCondition(BoundaryCondition):
     """
 
-    This boundary condition is generally used in conjunction with the
-    `NthOrderDiffusionTerm`. It does not have any direct effect on the
-    solution matrices, but its derivatives do.
+    This boundary condition is generally used in conjunction with a
+    `ImplicitDiffusionTerm` that has multiple coefficients.  It does not
+    have any direct effect on the solution matrices, but its derivatives
+    do.
         
     """
     

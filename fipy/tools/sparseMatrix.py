@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/20/04 {11:36:37 PM} 
+ #                                last update: 8/9/05 {2:09:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -244,8 +244,8 @@ class _SparseMatrix:
     def _getShape(self):
         return self.matrix.shape
 	
-    def transpose(self):
-        pass
+##     def transpose(self):
+##         pass
 
     def put(self, vector, id1, id2):
 	"""

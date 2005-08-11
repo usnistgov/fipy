@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:38 PM} 
+ #                                last update: 8/9/05 {4:07:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,7 +51,7 @@ class LinearScipyCGSolver(Solver):
     """
     
     The `LinearScipyCGSolver` solves a linear system of equations
-    using the conguent gradient. It solves system witha a symmetric
+    using the conjugent gradient. It solves a system with a symmetric
     coefficient matrix.
 
     The `LinearScipyCGSolver` is a wrapper class for the the Scipy_
@@ -98,6 +98,10 @@ class LinearScipyCGSolver(Solver):
 
 	if (info != 0):
 	    print >> sys.stderr, 'cg not converged'
+            
+    def _canSolveAssymetric(self):
+        return False
+
 
 def _test(): 
     import doctest

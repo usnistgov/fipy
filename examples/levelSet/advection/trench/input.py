@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {1:37:51 PM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {4:59:10 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,7 +104,8 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = -1
+    value = -1,
+    hasOld = 1
     )
 
 positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))

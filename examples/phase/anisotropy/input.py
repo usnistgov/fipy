@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {4:20:31 PM} { 5:14:21 PM}
+ #                                last update: 8/8/05 {10:00:07 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,7 @@ and implicit technique, respectively.
 The parameters for these equations are 
 
     >>> timeStepDuration = 5e-5
-    >>> tau = 3e-4,
+    >>> tau = 3e-4
     >>> alpha = 0.015
     >>> c = 0.02
     >>> N = 4.

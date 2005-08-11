@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/30/05 {8:59:14 AM} 
+ #                                last update: 8/10/05 {11:47:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -149,7 +149,6 @@ on available viewers and the dimension of the mesh.
     ...     viewer = fipy.viewers.make(vars = var,
     ...                                limits = {'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
-    ...     raw_input("press key to continue")
 
 ..
 

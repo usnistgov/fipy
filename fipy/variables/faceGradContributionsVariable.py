@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 4/1/05 {11:02:47 AM} 
+ #                                last update: 8/9/05 {2:29:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,6 +36,7 @@
  ##
  
 from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.tools import numerix
 
 class _FaceGradContributions(VectorCellVariable):
     def __init__(self, var):
@@ -43,6 +44,6 @@ class _FaceGradContributions(VectorCellVariable):
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        self.value = self.mesh._getAreaProjections()[:] * self.var.getArithmeticFaceValue().transpose().getNumericValue()[:]
+        self.value = self.mesh._getAreaProjections()[:] * self.var.getArithmeticFaceValue().getNumericValue()[:,numerix.NewAxis]
     
 

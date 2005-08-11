@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 7/6/05 {4:26:44 PM} 
+ #                                last update: 8/8/05 {4:54:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

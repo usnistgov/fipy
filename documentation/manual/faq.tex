@@ -222,7 +222,7 @@
                     can be renderd as
                     \begin{quote}
 \begin{verbatim}
->>> (u * xi.getArithmeticFaceValue().transpose()).getDivergence()
+>>> (u * xi.getArithmeticFaceValue()).getDivergence()
 \end{verbatim}
                     \end{quote}
 
@@ -306,71 +306,10 @@
             
             \item ``\texttt{ValueError: frames are not aligned}''
             
-            This error means one of two things:
-            
-            \begin{enumerate}
-                
-                \item You have provided a \Class{CellVariable} when 
-                \FiPy{} was expecting a \Class{FaceVariable} (or vice 
-                versa).
-                
-                \item You are multiplying or dividing a 
-                \verb+Vector<Cell|Face>Variable+ by a 
-                \verb+<Cell|Face>Variable+ that is not oriented 
-                the way \FiPy{} expects it. For example
-                \begin{quote}
-\begin{verbatim}
->>> phi.getGrad() * phi
-\end{verbatim}
-                \end{quote}
-                will attempt to perform
-                \[
-                    \begin{bmatrix}
-                        \partial_x\phi_1 & \partial_y\phi_1 \\
-                        \partial_x\phi_2 & \partial_y\phi_2 \\
-                        \vdots & \vdots \\
-                        \partial_x\phi_n & \partial_y\phi_n
-                    \end{bmatrix}
-                    \ast
-                    \begin{bmatrix}
-                        \phi_1 & \phi_2 & \dots & \phi_n  
-                    \end{bmatrix}
-                    = \text{?}
-                \]
-                whereas
-                \begin{quote}
-\begin{verbatim}
->>> phi.getGrad() * phi.transpose()
-\end{verbatim}
-                \end{quote}
-                will produce
-                \[
-                    \begin{bmatrix}
-                        \partial_x\phi_1 & \partial_y\phi_1 \\
-                        \partial_x\phi_2 & \partial_y\phi_2 \\
-                        \vdots & \vdots \\
-                        \partial_x\phi_n & \partial_y\phi_n
-                    \end{bmatrix}
-                    \ast
-                    \begin{bmatrix}
-                        \phi_1 \\ \phi_2 \\ \vdots \\ \phi_n  
-                    \end{bmatrix}
-                    =
-                    \begin{bmatrix}
-                        \phi_1\partial_x\phi_1 & \phi_1\partial_y\phi_1 \\
-                        \phi_2\partial_x\phi_2 & \phi_2\partial_y\phi_2 \\
-                        \vdots & \vdots \\
-                        \phi_n\partial_x\phi_n & \phi_n\partial_y\phi_n
-                    \end{bmatrix}
-             \]
-                as was probably desired.
+            This error most likely means that you have provided a
+            \Class{CellVariable} when \FiPy{} was expecting a
+            \Class{FaceVariable} (or vice versa).
 
-                This implementation detail of the \Numeric{} library
-                will hopefully be handled automatically in a future
-                release of \FiPy{}.
-
-            \end{enumerate}
-            
             \item ``\texttt{MA.MA.MAError: Cannot automatically
             convert masked array to Numeric because data is masked in one or
             more locations.}''

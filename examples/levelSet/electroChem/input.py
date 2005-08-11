@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/13/05 {11:20:28 AM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {4:59:26 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -201,7 +201,8 @@ Create an initial variable,
    ...    name = 'distance variable',
    ...    mesh = mesh,
    ...    value = -1,
-   ...    narrowBandWidth = narrowBandWidth)
+   ...    narrowBandWidth = narrowBandWidth,
+   ...    hasOld = 1)
 
    >>> distanceVar.setValue(1, mesh.getCells(electrolyteFunc))
    

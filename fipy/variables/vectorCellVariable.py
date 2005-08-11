@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 7/12/05 {1:03:22 PM} 
+ #                                last update: 8/11/05 {11:53:00 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,7 @@ class VectorCellVariable(Variable):
 	return VectorCellVariable
 
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, parentClass = CellVariable)
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = CellVariable)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
@@ -90,6 +90,33 @@ class VectorCellVariable(Variable):
             self.divergence = _VectorFaceDifferenceVariable(self).getMag()
             
         return self.divergence
+
+    def _getShapeFromMesh(mesh):
+        """
+        Return the shape of this variable type, given a particular mesh.
+        """
+        return (mesh.getNumberOfCells(), mesh.getDim())
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+
+    def _getArithmeticBaseClass(self, other = None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return VectorCellVariable
+            
+        # a VectorCellVariable operating with a CellVariable, a vector, a list of scalars, or a scalar
+        # will produce a VectorCellVariable
+        shape = numerix.getShape(other)
+        from fipy.variables.cellVariable import CellVariable
+        if isinstance(other, CellVariable) \
+        or shape == (self.getMesh().getDim(),) \
+        or shape == (self.getMesh().getNumberOfCells(),) \
+        or shape == (1,):
+            return VectorCellVariable
+        else:
+            return Variable._getArithmeticBaseClass(self, other)
 
 def _test(): 
     import doctest

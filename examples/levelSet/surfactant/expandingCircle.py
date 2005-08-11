@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 7/13/05 {4:22:24 PM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {5:04:15 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -130,7 +130,8 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius)
+    value = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2) - initialRadius,
+    hasOld = 1)
 
 initialSurfactantValue =  1.
 

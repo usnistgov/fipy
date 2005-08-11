@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:37 PM} 
+ #                                last update: 8/9/05 {4:06:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,3 +84,7 @@ class LinearPCGSolver(Solver):
 
 	if (info != 0):
 	    print >> sys.stderr, 'cg not converged'
+            
+    def _canSolveAssymetric(self):
+        return False
+                

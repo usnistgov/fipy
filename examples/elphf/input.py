@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/15/05 {12:54:40 PM} 
+ #                                last update: 8/9/05 {2:09:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -221,11 +221,11 @@ and we create the diffustion equation for the solute as in
     ...        
     ...     counterDiffusion = CkSum.getFaceGrad()
     ...     phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() * phase.getFaceGrad()
+    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
     ...     electromigration = Cj.valence * potential.getFaceGrad()
     ...     convectionCoeff = counterDiffusion + \
-    ...         solvent.getHarmonicFaceValue().transpose() * (phaseTransformation + electromigration)
-    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum).transpose())
+    ...         solvent.getHarmonicFaceValue() * (phaseTransformation + electromigration)
+    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
@@ -235,9 +235,9 @@ and we create the diffustion equation for the solute as in
     
     >>> for Cj in interstitials:
     ...     phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier).transpose() * phase.getFaceGrad()
+    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
     ...     electromigration = Cj.valence * potential.getFaceGrad()
-    ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()).transpose() * \
+    ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()) * \
     ...         (phaseTransformation + electromigration)
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {4:21:35 PM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {4:59:55 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,8 @@ for cell in positiveCells:
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = initialArray
+    value = initialArray,
+    hasOld = 1
     )
 
 var.calcDistanceFunction()

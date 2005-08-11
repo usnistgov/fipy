@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 7/6/05 {6:05:12 PM} 
+ #                                last update: 8/2/05 {5:01:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -148,7 +148,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
        ...                                value = (-dx*3/2, -dx/2, dx/2, 
-       ...                                          3*dx/2,  5*dx/2))
+       ...                                          3*dx/2,  5*dx/2),
+       ...                                hasOld = 1)
        >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
        ...                                    distanceVar = distanceVar)
        >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
@@ -182,7 +183,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> totalSteps = 100
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
-       ...                                value = dx * (Numeric.arange(5) - 1.5))
+       ...                                value = dx * (Numeric.arange(5) - 1.5),
+       ...                                hasOld = 1)
        >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
        ...                           distanceVar = distanceVar)
        >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), 
@@ -250,7 +252,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> for i in range(ny):
        ...     values[i * nx] = -1
 
-       >>> disVar = DistanceVariable(mesh = mesh, value = values)
+       >>> disVar = DistanceVariable(mesh = mesh, value = values, hasOld = 1)
        >>> disVar.calcDistanceFunction()
 
        >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)

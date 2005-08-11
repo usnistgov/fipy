@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 7/7/05 {5:16:31 PM} 
+ #                                last update: 8/9/05 {1:47:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -535,7 +535,7 @@ class efficiency_test(Command):
                 
                 for i in range(self.memorysamples):
                     (f, filename) = tempfile.mkstemp()
-                    os.system(('ps -p %i -o vsz > ' + filename) % self.pid)
+                    os.system(('ps -p %i -o rss > ' + filename) % self.pid)
                     ff = open(filename, 'r')
                     ff.readline()
                     s = ff.readline()
@@ -567,8 +567,8 @@ class efficiency_test(Command):
                     import imp
                     mod = imp.load_source("copy_script_module", case)
                     mod.run()
-                except:
-                    print 'Exception executing ' + case
+                except Exception, e:
+                    print 'Exception executing %s: %s' % (case, e)
                     exceptionFlag = True
             
                 t2 = time.clock()

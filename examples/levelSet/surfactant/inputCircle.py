@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {4:21:54 PM} { 1:23:41 PM}
+ #                                last update: 8/2/05 {5:00:11 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,7 +112,8 @@ mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = 1.
+    value = 1.,
+    hasOld = 1
     )
 
 cellRadius = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)

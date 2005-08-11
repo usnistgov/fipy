@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/12/05 {11:43:36 AM}
+ #                                last update: 8/2/05 {4:58:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -185,7 +185,7 @@ class DistanceVariable(CellVariable):
         vectors from the cell of interest to the neighboring cell.
 
     """
-    def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 1, narrowBandWidth = 1e+10):
+    def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0, narrowBandWidth = 1e+10):
         """
         Creates a `distanceVariable` object.
 

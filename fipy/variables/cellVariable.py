@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 7/12/05 {1:06:24 PM} 
+ #                                last update: 8/11/05 {11:51:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,9 +118,6 @@ class CellVariable(Variable):
 	if cells == ():
 	    self[:] = value
 	else:
-## 	    return numerix.put(self.getValue(), [cell.getID() for cell in cells], value)
-## 	    self._markStale()
-
 	    for cell in cells:
 		self[cell.getID()] = value
 
@@ -268,27 +265,27 @@ class CellVariable(Variable):
         values.
 
             >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 1)
+            >>> mesh = Grid1D(nx = 2)
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> var1 = CellVariable(mesh = mesh, value = 2, hasOld = 1)
-            >>> var2 = CellVariable(mesh = mesh, value = 3)
+            >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
+            >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
             >>> v = var1 * var2
             >>> print v
-            [ 6.,]
-            >>> var1.setValue(3)
+            [  6., 12.,]
+            >>> var1.setValue((3,2))
             >>> print v
-            [ 9.,]
+            [ 9., 8.,]
             >>> print v.getOld()
-            [ 6.,]
+            [  6., 12.,]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
             >>> v1 = var1 * 3
             >>> print v1
-            [ 9.,]
+            [ 9., 6.,]
             >>> print v1.getOld()
-            [ 6.,]
+            [ 6., 9.,]
             
         """
 	if self.old is None:
@@ -313,6 +310,32 @@ class CellVariable(Variable):
 	    self.old._remesh(mesh)
 	self.mesh = mesh
 	self.markFresh()
+
+    def _getShapeFromMesh(mesh):
+        """
+        Return the shape of this variable type, given a particular mesh.
+        """
+        return (mesh.getNumberOfCells(),)
+    _getShapeFromMesh = staticmethod(_getShapeFromMesh)
+
+    def _getArithmeticBaseClass(self, other = None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return CellVariable
+            
+        # A CellVariable operating with a vector will produce a VectorCellVariable.
+        # As a special case, if the number of cells equals the number of spatial dimensions,
+        # treat tuple of that length as a vector, rather than as a list of scalars.
+        if not isinstance(other, CellVariable) \
+        and numerix.getShape(other) == (self.getMesh().getDim(),) \
+        and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
+            from fipy.variables.vectorCellVariable import VectorCellVariable
+            return VectorCellVariable
+        else:
+            return Variable._getArithmeticBaseClass(self, other)
 
 ##pickling
             
