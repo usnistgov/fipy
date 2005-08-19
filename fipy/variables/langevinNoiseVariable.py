@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "langevinNoiseTerm.py"
+ #  FILE: "langevinNoiseVariable.py"
  #                                    created: 7/26/05 {8:35:17 AM} 
- #                                last update: 7/26/05 {12:24:27 PM} 
+ #                                last update: 8/19/05 {12:46:36 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -42,27 +42,40 @@
  ##
 
 """
+        >>> mean = 0.
+        >>> stddev = 2.
+        
 	>>> from fipy.meshes.grid2D import Grid2D
-        >>> v = LangevinNoiseTerm(mesh = Grid2D(nx = 100, ny = 100), stddev = 2)
+        >>> v = LangevinNoiseTerm(mesh = Grid2D(nx = 100, ny = 100), mean = mean, stddev = stddev)
+        >>> vdg = v.getFaceGrad().getDivergence()
         >>> from fipy import viewers
-        >>> viewer = viewers.make(vars = v, limits = {'datamin': -3, 'datamax':3})
+        >>> viewer = viewers.make(vars = v)
         
         >>> from fipy.tools.numerix import *
         
         >>> def histogram(a, bins):
         ...     n = searchsorted(sort(a), bins)
         ...     n = concatenate([n, [len(a)]])
-        ...     return n[1:] - n[:-1]
+        ...     dx = bins[1:] - bins[:-1]
+        ...     return (n[1:] - n[:-1]) / concatenate([dx, [dx[-1]]]) / float(len(a))
         
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> hist = CellVariable(mesh = Grid1D(nx = 200, dx = .1) + (-10.,))
-        >>> histoplot = viewers.make(vars = hist)
+        >>> histomesh = Grid1D(nx = 600, dx = .1) + (-30.,)
+        >>> hist = CellVariable(mesh = histomesh)
+        >>> gauss = CellVariable(mesh = histomesh)
+        >>> x = histomesh.getCellCenters()[...,0]
+        >>> gauss.setValue((1/(stddev * sqrt(2*pi))) * exp(-(x - mean)**2 / (2 * stddev**2)))
+        >>> histoplot = viewers.make(vars = (hist, gauss))
         
-        >>> for i in range(1000):
-        ...     viewer.plot()
-        ...     hist[:] = histogram(v(), bins = hist.getMesh().getCellCenters()[:,0])
-        ...     histoplot.plot()
+        >>> for i in range(10):
+        ...     v.updateOld()
+        ...     print vdg.getCellVolumeAverage()
+        ...     0.
+        ...     hist[:] = histogram(v(), bins = x)
+        ...     if __name__ == '__main__':
+        ...         viewer.plot()
+        ...         histoplot.plot()
 
 """
 
@@ -72,19 +85,28 @@ from RandomArray import normal
 
 from fipy.variables.cellVariable import CellVariable
 
-class LangevinNoiseTerm(CellVariable):
-    def __init__(self, mesh, name = '', mean = 0., stddev = 1., unit = None):
+class LangevinNoiseVariable(CellVariable):
+    def __init__(self, mesh, name = '', mean = 0., stddev = 1., unit = None, hasOld = 1):
         self.mean = mean
         self.stddev = stddev
         CellVariable.__init__(self, mesh = mesh, name = name, 
-                              value = 0, unit = unit, hasOld = 0)
+                              value = 0, unit = unit, hasOld = hasOld)
+        if hasOld:
+            self._markStale()
     
-    def _refresh(self):
-        """
-        We *always* want the random variable to be stale, so that we
-        get new random values whenever we look at it.
-        """
-        CellVariable._refresh(self)
+    def copy(self):
+        cpy = self.__class__(
+            mesh = self.mesh, 
+            name = self.name + "_old", 
+            mean = self.mean,
+            stddev = self.stddev,
+            unit = self.getUnit(),
+            hasOld = 0)
+        cpy.setValue(self.getValue())
+        return cpy
+
+    def updateOld(self):
+        CellVariable.updateOld(self)
         self._markStale()
         
     def _calcValue(self):
