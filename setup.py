@@ -535,7 +535,7 @@ class efficiency_test(Command):
                 
                 for i in range(self.memorysamples):
                     (f, filename) = tempfile.mkstemp()
-                    os.system(('ps -p %i -o rss > ' + filename) % self.pid)
+                    os.system(('ps -p %i -o vsz > ' + filename) % self.pid)
                     ff = open(filename, 'r')
                     ff.readline()
                     s = ff.readline()

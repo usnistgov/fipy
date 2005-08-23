@@ -238,7 +238,7 @@ data and compares it with the `theta` variable.
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
-    >>> testData = numerix.reshape(testData, (mesh.getNumberOfCells(),))
+    >>> testData = numerix.resize(testData, (mesh.getNumberOfCells(),))
     
 We iterate the solution in time, plotting as we go if running interactively,
 
