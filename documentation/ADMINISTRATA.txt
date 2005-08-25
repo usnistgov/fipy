@@ -191,3 +191,25 @@ Make an announcement to `fipy@nist.gov`_
 
 .. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
 .. fipy@nist.gov: mailto:fipy@nist.gov
+
+==========================================
+Making a Windows Distribution for Pysparse
+==========================================
+
+Make sure of the following:
+
+   - mingw is installed
+   - libpython.a is in c:\pythonXX\libs
+   - libblas.a is in c:\mingw\lib
+   - liblapack.a is in c:\mingw\lib
+   - Numeric is installed
+
+If the above is not satisfied implement the Pysparse INSTALL instructions.
+
+Set the PATH to use MINGW's tools.
+
+   set PATH=C:\mingw\bin
+
+Build the distribution.
+
+   C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
