@@ -96,13 +96,13 @@ class Matplotlib2DViewer(MatplotlibViewer):
         for limit in ('zmin', 'datamin'):
             value = self._getLimit(limit)
             if value is not None:
-                minz = max(min(self.vars[0]), value)
+                minz = min(min(self.vars[0]), value)
 
         maxz = max(self.vars[0])
         for limit in ('zmax', 'datamax'):
             value = self._getLimit(limit)
             if value is not None:
-                maxz = min(max(self.vars[0]), value)
+                maxz = max(max(self.vars[0]), value)
 
         numberOfContours = 10
         smallNumber = 1e-8
@@ -113,7 +113,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         else:
             V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
 
-        pylab.hot()
+        pylab.hsv()
 
         pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
 ##        if self.colorbar is False:
