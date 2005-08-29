@@ -17,13 +17,8 @@
              +
              \underbrace{
                \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
-               \nabla \cdot \left( \Gamma_1 \nabla \phi \right) 
-             }_{\text{diffusion}}
-             +
-             \underbrace{
-               \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
                \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
-             }_{\text{$n$\textsuperscript{th} order}}
+             }_{\text{diffusion}}
              +
              \underbrace{
                \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
@@ -113,31 +108,20 @@
            will not be accounted for.
 
             
-            \item[How do I represent an $n$\textsuperscript{th}-order 
-            diffusion term $\nabla^4 \phi$ or
+            \item[How do I represent a term $\nabla^4 \phi$ or
             $\nabla \cdot \left( \Gamma_1 \nabla \left(
             \nabla\cdot\left( 
-            \Gamma_2 \nabla \phi\right) \right) \right) $?]
+            \Gamma_2 \nabla \phi\right) \right) \right) $ such as for 
+            Cahn-Hilliard?]
             \hspace*{\fill}
             
             \begin{quote}
 \begin{verbatim}
->>> NthOrderDiffusionTerm(coeff = (Gamma1, Gamma2))
+>>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
 \end{verbatim}
             \end{quote}
             The number of elements supplied for \verb|coeff| determines the
-            order of the term. As such,
-            \begin{quote}
-\begin{verbatim}
->>> NthOrderDiffusionTerm(coeff = Gamma1)
-\end{verbatim}
-            \end{quote}
-            is completely equivalent to
-            \begin{quote}
-\begin{verbatim}
->>> ImplicitDiffusionTerm(coeff = Gamma1)
-\end{verbatim}
-            \end{quote}
+            order of the term.
 
             \item[How do I represent a source term $S_{\phi}$?]
             Any terms that cannot be written in one of the previous
@@ -285,20 +269,29 @@
     between two \Class{Cell}s, and so they take a \Class{FaceVariable}
     or \Class{VectorFaceVariable} coefficient.
     
-        \begin{description}
-            \item [Why can't \FiPy{} just automatically calculate
-            whichever kind of \Class{Variable} that it needs?]  It
-            would be possible for \FiPy{} to automatically substitute
-            \verb+var.getArithmeticFaceValue()+ if a
-            \Class{CellVariable} \verb+var+ is supplied when a
-            \Class{FaceVariable} is needed.  This can have undesirable
-            consequences, however.  For many problems, such as a
-            conserved concentration field that cannot be allowed to
-            drop below zero, a harmonic average is more appropriate
-            than an arithmetic average.  We think it's better to throw
-            an error so that the \FiPy{} user can decide what makes
-            the most sense for their particular problem.
-        \end{description}
+    
+    \begin{reSTadmonition}[Note]
+        If you supply a \Class{CellVariable} \verb+var+ when a
+        \Class{FaceVariable} is expected, \FiPy{} will automatically
+        substitute \verb+var.getArithmeticFaceValue()+.  This can have
+        undesirable consequences, however. For one thing, the 
+        arithmetic face average of a non-linear function is not the 
+        same as the same non-linear function of the average argument, 
+        \emph{e.g.}, for $f(x) = x^2$,
+        \[ f(\frac{1+2}{2}) = \frac{9}{4} \neq 
+        \frac{f(1) + f(2)}{2} = \frac{5}{2} \]
+        This distinction is not generally important for smoothly
+        varying functions, but can dramatically affect the solution
+        when sharp changes are present.  Also, for many problems, such
+        as a conserved concentration field that cannot be allowed to
+        drop below zero, a harmonic average is more appropriate than
+        an arithmetic average.
+        
+        If you experience problems (unstable or wrong results, or 
+        excessively small timesteps), you may need to explictly supply the 
+        desired \Class{FaceVariable} rather than letting \FiPy{} 
+        assume one.
+    \end{reSTadmonition}
         
     \item[What does this error message mean?]\hspace*{\fill}
     

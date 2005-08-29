@@ -109,14 +109,18 @@ scheme, described later in this chapter.
 
 The discretization for the diffusion term is given by
 \begin{eqnarray}
-\int_V \nabla \cdot (\Gamma\nabla\phi) dV & = & \int_S \Gamma (\vec{n} \cdot \nabla\phi) dS \\
-& \simeq & \sum_f \Gamma_f (\vec{n} \cdot \nabla\phi)_f A_f
+\int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV 
+& = & \int_S \Gamma (\vec{n} \cdot \nabla\{\ldots\}) dS \\
+& \simeq & \sum_f \Gamma_f (\vec{n} \cdot \nabla\{\ldots\})_f A_f
 \label{eqn:num:dif}
 \end{eqnarray}
-The estimation for the flux, $(\vec{n} \cdot \nabla\phi)_f$, is
+$\{\ldots\}$ indicates recursive application of the specified 
+operation on \( \phi \)$, depending on 
+the order of the diffusion term.
+The estimation for the flux, $(\vec{n} \cdot \nabla\{\ldots\})_f$, is
 obtained via
 \begin{equation}
-(\vec{n} \cdot \nabla\phi)_f \simeq \frac{\phi_A-\phi_P}{d_{AP}}
+(\vec{n} \cdot \nabla\{\ldots\})_f \simeq \frac{\{\ldots\}_A-\{\ldots\}_P}{d_{AP}}
 \end{equation}
 where the value of $d_{AP}$ is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and

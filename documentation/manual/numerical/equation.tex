@@ -33,13 +33,8 @@ combination of the following terms,
 +
 \underbrace{
   \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
-  \nabla \cdot \left( \Gamma_1 \nabla \phi \right) 
-}_{\text{diffusion}}
-+
-\underbrace{
-  \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
   \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
-}_{\text{$n$\textsuperscript{th} order}}
+}_{\text{diffusion}}
 +
 \underbrace{
   \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
@@ -50,19 +45,15 @@ combination of the following terms,
 where $\rho$, $\vec{u}$ and $\Gamma_i$ represent coefficients in the
 transient, convection and diffusion terms respectively.  These
 coefficients can be arbitrary functions of any parameters or variables
-in the system.  The variable $\phi$ represents the unknown quantity
-in the equation.  The $n$\textsuperscript{th} order term can represent
-any higher order diffusion-type term, where the order is given by the
-exponent $n$.  For example, the $n$\textsuperscript{th} order term can
-represent a diffusion term when the exponent $n = 1$ or a
-Cahn-Hilliard term when $n = 2$.  A Cahn-Hilliard term has the
-form~\cite{CahnHilliardI,CahnHilliardII,CahnHilliardIII},
-\begin{equation}
-  \nabla \cdot \left( \Gamma_1 \nabla \left[ 
-  \nabla \cdot \left( \Gamma_2 \nabla \phi \right) \right] \right)
-  \label{eqn:cahn-hilliard}
-\end{equation}
-Of course, higher order terms ($n > 2$) are also possible.
+in the system.  The variable $\phi$ represents the unknown quantity in
+the equation.  The diffusion term can represent any higher order
+diffusion-like term, where the order is given by the exponent $n$.
+For example, the diffusion term can represent conventional diffusion
+[\emph{i.e.}, $\nabla\cdot(\Gamma\nabla\phi)$] when the exponent $n =
+1$ or a Cahn-Hilliard term [\emph{i.e.}, $\nabla \cdot ( \Gamma_1
+\nabla [ \nabla \cdot \Gamma_2 \nabla \phi ) ] )$
+\cite{CahnHilliardI,CahnHilliardII,CahnHilliardIII}] term when $n =
+2$.  Of course, higher order terms ($n > 2$) are also possible.
 
 
 
