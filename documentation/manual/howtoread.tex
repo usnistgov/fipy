@@ -1,0 +1,210 @@
+%% -*-TeX-*-
+ % ###################################################################
+ %  FiPy - a finite volume PDE solver in Python
+ % 
+ %  FILE: "howtoread.tex"
+ %                                    created: 8/13/05 {10:34:56 AM} 
+ %                                last update: 8/18/05 {4:12:28 PM} 
+ %  Author: Jonathan Guyer
+ %  E-mail: guyer@nist.gov
+ %    mail: NIST
+ %     www: http://www.ctcms.nist.gov/fipy/
+ %  
+ % ========================================================================
+ % This document was prepared at the National Institute of Standards
+ % and Technology by employees of the Federal Government in the course
+ % of their official duties.  Pursuant to title 17 Section 105 of the
+ % United States Code this document is not subject to copyright
+ % protection and is in the public domain.  howtoread.tex
+ % is an experimental work.  NIST assumes no responsibility whatsoever
+ % for its use by other parties, and makes no guarantees, expressed
+ % or implied, about its quality, reliability, or any other characteristic.
+ % We would appreciate acknowledgement if the document is used.
+ % 
+ % This document can be redistributed and/or modified freely
+ % provided that any derivative works bear some notice that they are
+ % derived from it, and any modified versions bear some notice that
+ % they have been modified.
+ % ========================================================================
+ % See the file "license.terms" for information on usage and 
+ % redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ %  
+ %  Description: 
+ % 
+ %  History
+ % 
+ %  modified   by  rev reason
+ %  ---------- --- --- -----------
+ %  2005-08-13 JEG 1.0 original
+ % ###################################################################
+ %%
+
+\chapter{How To Read This Manual}
+\label{chp-howtoread}
+
+This chapter will illustrate the typesetting conventions used
+throughout this manual.
+
+\begin{FiPyDocumentationExample}
+%     \renewcommand{\section}{\section*}
+    
+%     \chapter*{Package \EpydocDottedName{fipy.package}}
+    \chapterheadstart
+    {\printchaptertitle{Package \EpydocDottedName{fipy.package}}
+     \afterchaptertitle
+    }
+    
+    Each chapter describes one of the main sub-packages of the
+    \EpydocDottedName{fipy} package.  The
+    \EpydocDottedName{fipy.package} package can be found in the
+    directory \path{fipy/package/}.  In a few cases, there will be
+    packages within packages, \emph{e.g.}
+    \EpydocDottedName{fipy.package.subpackage} located in
+    \path{fipy/package/subpackage/}.  These sub-packages
+    will not be given their own chapters; rather, their contents will
+    be described in the chapter for their containing package.
+    
+    \input tutorial/latex/fipy.package.object-module
+    
+%     \section*{Module \EpydocDottedName{fipy.package.object}}
+% 
+%     This module can be found in the file \path{fipy/package/object.py}.
+% 
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     %%                           Class Description                           %%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+%     \subsection*{Class \EpydocDottedName{Object}}
+%     
+%     With very few exceptions, the name of a class will be the
+%     capitalized form of the module it resides in.  
+%     
+%     
+%     \Python{} is an object-oriented language and the \FiPy{} framework
+%     is composed of objects or classes.  Knowledge of object-oriented
+%     programming (OOP) is not necessary to use either \Python{} or
+%     \FiPy{}, but a few concepts are useful.  OOP involves two main
+%     ideas:
+%     \begin{description}
+%         \item[encapsulation] an object binds data with actions or 
+%         ``methods''. In most cases, you will not work with an 
+%         object's data directly; instead, you will set, retrieve, or 
+%         manipulate the data using the object's methods.
+%     
+%         \item[inheritance] objects are derived or inherited from more 
+%         abstract objects. Common behaviors or data are defined in 
+%         base objects and specific behaviors or data are either added 
+%         or modified in derived objects.
+%     \end{description}
+%     
+%     \begin{tabular}{cccccc}
+%     \multicolumn{2}{r}{\settowidth{\BCL}{\EpydocDottedName{fipy.package.base.Base}}\multirow{2}{\BCL}{\EpydocHyperlink{}{\EpydocDottedName{fipy.package.base.Base}}}}
+%     &&
+%       \\\cline{3-3}
+%       &&\multicolumn{1}{c|}{}
+%     &&
+%       \\
+%     &&\multicolumn{2}{l}{\textbf{\EpydocDottedName{Object}}}
+%     \end{tabular}
+% 
+%     \begin{EpydocDescriptionShortList}{Known Subclasses}%
+%         \EpydocHyperlink{}{\EpydocDottedName{ModuleSubClass}}%
+%         \and \EpydocHyperlink{}{\EpydocDottedName{ModuleSubSubClass}}%
+%         \and \EpydocDottedName{_ModulePrivateSubClass}%
+%     \end{EpydocDescriptionShortList}
+% 
+%     \vdots
+% 
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     %%                                Methods                                %%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+%       \subsubsection*{Methods}
+%       
+%       Methods are functions that are attached to objects and that have
+%       direct access to the data of those objects.  Rather than 
+%       passing the object data as an argument to a function:
+%       \begin{quote}
+%       \begin{verbatim}
+% >>> fn(object.data, arg1, arg2, ...)\end{verbatim}
+%       \end{quote}
+%       you instruct an object to invoke an appropriate method
+%       \begin{quote}
+%       \begin{verbatim}
+% >>> object.meth(arg1, arg2, ...)\end{verbatim}
+%       \end{quote}
+% 
+%       Methods whose names begin and end with ``\verb+__+'' are
+%       special.  You won't ever need to call these methods directly,
+%       but \Python{} will invoke them for you under certain
+%       circumstances.
+% 
+%     \begin{EpydocFunctionGroup}[]
+%     \begin{EpydocFunction}{\EpydocDottedName{__init__}}{\Param{self}%
+%         \and \Param{arg1}%
+%         \and \Param[None]{arg2}%
+%         \and \Param["string"]{arg3}%
+%         \and \ldots}%
+%         \begin{EpydocDocstring}
+%             This method is invoked when you create an object, as in
+%             
+%             \begin{quote}
+%             \begin{verbatim}
+% >>> obj = Object(arg1 = something, arg3 = somethingElse, ...)\end{verbatim}
+%             \end{quote}
+%             
+%             \begin{EpydocFunctionParameters}{xxxxx}
+%                   \item[self] this special argument
+%                   refers to the object that is being created and is
+%                   supplied automatically by the \Python{} interpreter
+%                   to all methods.  You don't ever need to (and should
+%                   not) specify it yourself.
+%                   \item[arg1] this argument is 
+%                   required, and must either be listed first 
+%                   \begin{quote}
+%                   \begin{verbatim}
+% >>> obj = Object(val1, val2, ...)\end{verbatim}
+%                   \end{quote}
+%                   or be listed by name
+%                   \begin{quote}
+%                   \begin{verbatim}
+% >>> obj = Object(arg2 = val2, arg1 = val1, ...)\end{verbatim}
+%                   \end{quote}
+% 
+%                   \item[arg2] this argument may be 
+%                   omitted, in which case it will be assigned a 
+%                   default value of \verb+None+.
+% 
+%                   \item[arg3] this argument may be 
+%                   omitted, in which case it will be assigned a 
+%                   default value of \verb+"string"+.
+%             \end{EpydocFunctionParameters}
+%         \end{EpydocDocstring}
+%     \end{EpydocFunction}
+% 
+%     \begin{EpydocFunction}{\EpydocDottedName{__add__}}{\Param{self}%
+%         \and \Param{other}}%
+%         \begin{EpydocDocstring}
+%             This method is invoked when you add \verb+other+ to an 
+%             \verb+Object+:
+%             \begin{quote}
+%             \begin{verbatim}
+% >>> a = Object(...) + other\end{verbatim}
+%             \end{quote}
+%         \end{EpydocDocstring}
+%     \end{EpydocFunction}
+% 
+%     \begin{EpydocFunction}{\EpydocDottedName{__radd__}}{\Param{self}%
+%         \and \Param{other}}%
+%         \begin{EpydocDocstring}
+%             This method is invoked when you add an 
+%             \verb+Object+ to \verb+other+:
+%             \begin{quote}
+%             \begin{verbatim}
+% >>> a = other + Object(...)\end{verbatim}
+%             \end{quote}
+%         \end{EpydocDocstring}
+%     \end{EpydocFunction}
+% 
+% \end{EpydocFunctionGroup}
+\end{FiPyDocumentationExample}
