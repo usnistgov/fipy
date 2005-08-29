@@ -4,7 +4,7 @@
  # 
  #  FILE: "gammaNoiseVariable.py"
  #                                    created: 8/26/05 {10:09:50 PM} 
- #                                last update: 8/29/05 {11:09:44 AM} 
+ #                                last update: 8/29/05 {11:40:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,7 +107,7 @@ class GammaNoiseVariable(NoiseVariable):
 
     """
     def __init__(self, mesh, shape, rate, name = '', hasOld = 0):
-        """
+        r"""
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
             - `shape`: The shape parameter,
