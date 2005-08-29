@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/12/05 {3:15:11 PM} { 2:45:36 PM}
+ #                                last update: 8/29/05 {11:43:47 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,19 +59,19 @@ class MayaviViewer(Viewer):
 
     Issues with the `MayaviViewer` are
 
-      - _getOrderedCellVertexIDs() doesn't return the correct ordering
-      for 3D meshes.  This may be okay for tets and wedges but will
-      break for hexahedrons.
+      - `_getOrderedCellVertexIDs()` doesn't return the correct ordering
+        for 3D meshes.  This may be okay for tets and wedges but will
+        break for hexahedrons.
 
       - Different element types can not be displayed for 3D
-      meshes. This is an ordering issue for the CellData. Could get
-      round this either by implementing a method such as
-      var.getVertexVariable() and use point data, or reordering the
-      variable data via [tets, wedges, hexs] and keep using cell
-      data. First option is cleaner. Second option is less work.
+        meshes. This is an ordering issue for the CellData. Could get
+        round this either by implementing a method such as
+        `var.getVertexVariable()` and use point data, or reordering the
+        variable data via [tets, wedges, hexs] and keep using cell
+        data. First option is cleaner. Second option is less work.
 
       - Should this class be split into various dimensions? Is it
-      useful to display data with different dimension is same viewer?
+        useful to display data with different dimension is same viewer?
 
     """
         
