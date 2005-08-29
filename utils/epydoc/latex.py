@@ -701,11 +701,13 @@ class LatexFormatter:
             str += ' '*4+'\\begin{EpydocFunctionParameters}{%s}\n' % (longest*'x')
             for param in fparam:
                 if param.listed_under(): continue
-                str += ' '*10+'\\item[' + self._dotted(param.name())
+##                 str += ' '*10+'\\item[' + self._dotted(param.name())
+                str += ' '*10+'\\item[' + param.name()
                 if param.shared_descr_params():
                     for p in param.shared_descr_params():
                         str += ', %s' % self._dotted(p.name())
-                str += ']\n\n'
+##                 str += ']\n\n'
+                str += ']'
                 if param.descr():
                     str += self._docstring_to_latex(param.descr(), 10)
                 if param.shared_descr_params():
