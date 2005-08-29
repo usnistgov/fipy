@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/16/05 {3:55:48 PM} 
+ #                                last update: 8/29/05 {1:44:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -185,6 +185,35 @@ class Variable:
 	    return value.inBaseUnits()
 	else:
 	    return value
+
+    def inUnitsOf(self, *units):
+        """
+        Returns one or more `Variable` objects that express the same
+        physical quantity in different units.  The units are specified by
+        strings containing their names.  The units must be compatible with
+        the unit of the object.  If one unit is specified, the return value
+        is a single `Variable`.
+        
+            >>> freeze = Variable('0 degC')
+            >>> print freeze.inUnitsOf('degF')
+            32.0 degF
+        
+        If several units are specified, the return value is a tuple of
+        `Variable` instances with with one element per unit such that
+        the sum of all quantities in the tuple equals the the original
+        quantity and all the values except for the last one are integers.
+        This is used to convert to irregular unit systems like
+        hour/minute/second.  The original object will not be changed.
+        
+            >>> t = Variable(value = 314159., unit = 's')
+            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
+            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        """
+        value = self.getValue()
+        if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
+            return value.inUnitsOf(*units)
+        else:
+            return value
 
     def __getitem__(self, index):
         """    
