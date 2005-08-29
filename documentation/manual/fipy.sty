@@ -9,7 +9,7 @@
 \ProcessOptions
 
 % Use epydoc base class to format module documentation
-\RequirePackage[index]{epydoc}
+\RequirePackage[index,memoir]{epydoc}
 
 % \usepackage[text={7in,9.333in}]{geometry}
 
@@ -20,7 +20,7 @@
 % \RequirePackage{alltt, parskip, fancyhdr, boxedminipage}
 % \RequirePackage{multirow, longtable, makeidx, amssymb} 
 
-\RequirePackage[other]{tocbibind}
+% \RequirePackage[other]{tocbibind}
 \tocotherhead{part}
 \setlength{\columnsep}{35pt}
 
@@ -36,6 +36,18 @@
 % looks weird.
 \renewcommand{\thispageparttocstyle}{\thispagestyle{plain}}
 
+% minitoc.sty uses archaic font selectors
+\@ifundefined{chapter}{%
+\def\ptcfont{\small\rmfamily}    % font for the parttoc
+\def\ptcSfont{\small\bfseries}   % font for the parttoc (sections)
+\def\ptifont{\large\bfseries}    % font for titles
+}{%
+\def\ptcfont{\normalsize\rmfamily}    % font for the parttoc
+\def\ptcCfont{\normalsize\bfseries}   % font for the parttoc (chapters)
+\def\ptcSfont{\normalsize\rmfamily}   % font for the parttoc (sections)
+\def\ptifont{\Huge\bfseries}     % font for titles
+}
+
 \RequirePackage[ascii]{inputenc}
 
 % \usepackage{fullpage}
@@ -48,7 +60,9 @@
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
 \RequirePackage{graphicx}
-% \usepackage{memhfixc}
+
+\usepackage{memhfixc}
+
 % \usepackage{nameref}
 
 \graphicspath{{../figures/},{images/}}
@@ -103,7 +117,7 @@
 
 % \usepackage{layout}
 
-\RequirePackage{tocvsec2}
+% \RequirePackage{tocvsec2}
 
 \input{version}
 
@@ -114,11 +128,21 @@
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
 
-\fancyhead{}
-\fancyhead[LO]{\slshape \rightmark}
-\fancyhead[RE]{\slshape \leftmark}
-\fancyhead[LE,RO]{\thepage}
-\fancyfoot{}
+% \fancyhead{}
+% \fancyhead[LO]{\slshape \rightmark}
+% \fancyhead[RE]{\slshape \leftmark}
+% \fancyhead[LE,RO]{\thepage}
+% \fancyfoot{}
+
+\copypagestyle{fipy}{Ruled}
+\makeevenhead{fipy}{\thepage}{}{\slshape\leftmark}
+\makeoddhead{fipy}{\slshape\rightmark}{}{\thepage}
+\makeevenfoot{fipy}{}{}{}
+\makeoddfoot{fipy}{}{}{}
+% \makeheadrule{fipy}{\pagewidth}{\normalrulethickness}
+
+% \aliaspagestyle{fipy}{Ruled}
+\pagestyle{fipy}
 
 % \newenvironment{Ventry}[1]%
 %   {\begin{list}{}{%
@@ -164,13 +188,17 @@
   \renewcommand*{\@oddfoot}{%
   \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}}%\vspace*{-0.5in}}
 
-\def\@makeauthor{\begingroup
-\renewcommand{\and}{\\}
-\begin{tabular}[t]{r@{}}%
-    \@author
-\end{tabular}
-\endgroup
-}
+\copypagestyle{titlingpage}{empty} 
+\makeoddfoot{titlingpage}{}{}{\rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}
+% \makeevenfoot{titlingpage}{}{}{\usebox{\NISTbox}}
+
+% \def\@makeauthor{\begingroup
+% \renewcommand{\and}{\\}
+% \begin{tabular}[t]{r@{}}%
+%     \@author
+% \end{tabular}
+% \endgroup
+% }
 
 \def\@makeaffiliation{\begingroup
 \renewcommand{\and}{\\}
@@ -190,33 +218,82 @@
 }
 \def\@affiliation{}
 
-\renewcommand{\maketitle}{%
-\begin{titlepage}%
-\thispagestyle{mytitlepage}
-\begin{changemargin}{-1in}{-0.5in}
-\let\footnotesize\small
-\let\footnoterule\relax
-\let \footnote \thanks
-\begin{flushright}%
-  \vspace*{-0.6in}
-  \scalebox{10}{\logo}\par
-  \vskip 3em%
-  {\Huge \@title \par}%
-  {\huge \@subtitle \par}%
-  \vskip 3em%
-  {\large
-   \lineskip .75em%
-   \@makeauthor \par
-   \@makeaffiliation \par }%
-    \vskip 1.5em%
-  {\large \@date \par}%       % Set date in \large size.
-      \vskip 1.5em%
-  {\large Version~\Version \par}
-  \vspace*{\fill}%
-\end{flushright}%
-\end{changemargin}%
-\end{titlepage}%
+\renewcommand{\maketitlehooka}{%
+    \begin{changemargin}{-1in}{-0.5in}%
+    \let\footnotesize\small%
+    \let\footnoterule\relax%
+    \let \footnote \thanks%
+    \begin{flushright}%
+      \vspace*{-0.6in}
+      \scalebox{10}{\logo}\par
+      \vskip 3em%
+    \end{flushright}
 }
+
+\pretitle{\begin{flushright}\Huge}
+\posttitle{\par\end{flushright}}
+
+\renewcommand{\maketitlehookb}{%
+\begin{flushright}
+\huge \@subtitle \par
+\end{flushright}
+\vskip 3em%
+}
+
+\preauthor{\begin{flushright}%
+\renewcommand*{\andnext}{\\}%
+\large\lineskip 0.75em% 
+\begin{tabular}[t]{r@{}}} 
+\postauthor{\end{tabular}\par\end{flushright}} 
+
+\renewcommand{\maketitlehookc}{%
+\begin{flushright}
+\par \@makeaffiliation \par%
+\end{flushright}
+\vskip 1.5em%
+}
+ 
+\predate{\begin{flushright}\large}
+\postdate{\par\end{flushright}}
+
+\renewcommand{\maketitlehookd}{%
+\vskip 1.5em%
+\begin{flushright}
+{\large Version~\Version \par}
+\vspace*{\fill}
+% \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
+% \raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
+\end{flushright}
+\end{changemargin}
+}
+
+% \renewcommand{\maketitle}{%
+% \begin{titlepage}%
+% \thispagestyle{mytitlepage}
+% \begin{changemargin}{-1in}{-0.5in}
+% \let\footnotesize\small
+% \let\footnoterule\relax
+% \let \footnote \thanks
+% \begin{flushright}%
+%   \vspace*{-0.6in}
+%   \scalebox{10}{\logo}\par
+%   \vskip 3em%
+%   {\Huge \@title \par}%
+%   {\huge \@subtitle \par}%
+%   \vskip 3em%
+%   {\large
+%    \lineskip .75em%
+%    \@makeauthor \par
+%    \@makeaffiliation \par }%
+%     \vskip 1.5em%
+%   {\large \@date \par}%       % Set date in \large size.
+%       \vskip 1.5em%
+%   {\large Version~\Version \par}
+%   \vspace*{\fill}%
+% \end{flushright}%
+% \end{changemargin}%
+% \end{titlepage}%
+% }
 
 \newcommand{\@Code}[1]{\texttt{#1}}
 \newcommand{\Class}[1]{\@Code{#1}\index{#1@\@Code{#1} class}}
@@ -375,8 +452,10 @@
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
     \begin{cminipage}[light-gray]\textbf{Parameters}\begin{quote}%
+%     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+%        \normalfont\bfseries ##1:}
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
-       \normalfont\bfseries ##1:}
+       \normalfont\itshape ##1:}
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
@@ -411,10 +490,10 @@
         \setlength{\parskip}{0ex}}
     {\end{itemize}}
 
-% lifted from memoir.cls
-\newcommand{\hangfrom}[1]{%
-  \setbox\@tempboxa\hbox{{#1}}%
-  \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
+% % % lifted from memoir.cls
+% % \newcommand{\hangfrom}[1]{%
+% %   \setbox\@tempboxa\hbox{{#1}}%
+% %   \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
 
 
   
@@ -510,3 +589,27 @@
 \let\cleardoublepage\clearemptydoublepage
 \let\afterparttoc\clearemptydoublepage
 
+\newenvironment{FiPyDocumentationExample}{
+    \renewcommand{\index}[1]{}
+    \renewcommand{\@startsection}[6]{%
+      \ifraggedbottomsection\if@nobreak\else
+        \vskip\z@\@plus\bottomsectionskip
+        \penalty\z@
+        \vskip\z@\@plus -\bottomsectionskip
+      \fi\fi
+      \if@noskipsec \leavevmode \fi
+      \par
+      \@tempskipa ##4\relax
+      \@afterindenttrue
+      \ifdim \@tempskipa <\z@
+        \@tempskipa -\@tempskipa \@afterindentfalse
+      \fi
+      \if@nobreak
+        \everypar{}%
+      \else
+        \addpenalty\@secpenalty\addvspace\@tempskipa
+      \fi
+      \@ssect{##3}{##4}{##5}{##6}}
+    \begin{framed}
+    }{%
+    \end{framed}}

@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 8/10/05 {4:12:41 PM} 
+ %                                last update: 8/24/05 {10:21:08 AM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -35,8 +35,9 @@
  %%
 
 % \documentclass[tocAsPDFpart]{fipy}
+\documentclass[letterpaper,twoside,openright,10pt]{memoir}
 
-\documentclass[letterpaper]{book}
+% \documentclass[letterpaper]{book}
 
 \usepackage[tocAsPDFchapter]{fipy}
 
@@ -61,21 +62,30 @@
 \title{\FiPy{}}
 \subtitle{A Finite Volume PDE Solver Using Python}
 
-\author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+% \author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+% \affiliation{Metallurgy Division \and
+% and the Center for Theoretical and Computational Materials Science 
+% \and Materials Science and Engineering Laboratory}
+
+\author{Daniel Wheeler \andnext Jonathan E. Guyer \andnext James A. Warren}
 \affiliation{Metallurgy Division \and
 and the Center for Theoretical and Computational Materials Science 
 \and Materials Science and Engineering Laboratory}
 
+\begin{titlingpage}
 \maketitle
+\thispagestyle{titlingpage}
+
+\newpage
 
 \vspace*{\fill}
-
 \input license
 
 \rule{\textwidth}{0.1pt}
 
 \thispagestyle{empty}
 \input disclaimer
+\end{titlingpage}
 
 \maxtocdepth{all} 
 \tableofcontents

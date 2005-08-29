@@ -4,17 +4,19 @@
 \RequirePackage{ifthen}
 \newboolean{@dohyper}
 \setboolean{@dohyper}{false}
+\newboolean{@domemoir}
+\setboolean{@domemoir}{false}
 
 \DeclareOption{book}{\setboolean{@dobook}{true}}
 \DeclareOption{index}{\makeindex}
 \DeclareOption{hyperref}{\setboolean{@dohyper}{true}}
+\DeclareOption{memoir}{\setboolean{@domemoir}{true}}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{hyperref}}
 
 \ProcessOptions
 
-\RequirePackage{alltt, parskip, fancyhdr, boxedminipage} 
-\RequirePackage{makeidx, multirow, longtable, amssymb}
-\RequirePackage[other]{tocbibind}
+\RequirePackage{alltt, parskip, boxedminipage} 
+\RequirePackage{multirow, longtable, amssymb}
 
 % \RequirePackage{fullpage}
 \RequirePackage[headings]{fullpage}
@@ -30,7 +32,13 @@
 \setlength{\fboxrule}{2\fboxrule}
 \newlength{\BCL} % base class length, for base trees.
 
-\pagestyle{fancy}
+\ifthenelse{\boolean{@domemoir}}{%
+    \RequirePackage[other,notbib]{tocbibind}
+}{%
+    \RequirePackage{fancyhdr,makeidx}
+    \RequirePackage[other]{tocbibind}
+    \pagestyle{fancy}
+}
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
 

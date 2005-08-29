@@ -12,7 +12,7 @@
 %% ----------------------------------------
 %% *** BibTeX style for FiPy documentation ***
 %% 
-%% Copyright 1994-2004 Patrick W Daly
+%% Copyright 1994-2005 Patrick W Daly
  % ===============================================================
  % IMPORTANT NOTICE:
  % This bibliographic style (bst) file has been generated from one or
@@ -695,9 +695,9 @@ FUNCTION {format.eprint}
      { ""}
      { archive empty$
 	  {"\href{http://www.arXiv.org/abs/" eprint * "}" * 
-	     "{{\tt " * eprint * "}}" *}
+	     "{\texttt{" * eprint * "}}" *}
 	  {"\href{" archive *  "/" * eprint * "}" * 
-	     "{{\tt " * eprint * "}}" *}
+	     "{\texttt{" * eprint * "}}" *}
        if$
      }
      if$
