@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {1:50:05 PM} 
+ #                                last update: 8/12/05 {9:53:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,6 @@ import Numeric
      
 from fipy.meshes.grid1D import Grid1D
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.iterators.iterator import Iterator
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
