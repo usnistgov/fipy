@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {7:50:34 PM} 
+ #                                last update: 8/29/05 {11:07:20 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,6 +52,11 @@ def _suite():
             'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.variable',
             'fipy.variables.cellVariable',
+            'fipy.variables.betaNoiseVariable',
+            'fipy.variables.exponentialNoiseVariable',
+            'fipy.variables.gammaNoiseVariable',
+            'fipy.variables.gaussianNoiseVariable',
+            'fipy.variables.uniformNoiseVariable',
         ))
     
 if __name__ == '__main__':

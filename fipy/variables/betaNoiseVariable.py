@@ -4,7 +4,7 @@
  # 
  #  FILE: "betaNoiseVariable.py"
  #                                    created: 8/26/05 {11:37:57 PM} 
- #                                last update: 8/27/05 {9:17:30 AM} 
+ #                                last update: 8/29/05 {11:10:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,21 +79,14 @@ class BetaNoiseVariable(NoiseVariable):
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma
            
-           >>> alpha.setValue(0.5)
-           >>> beta.setValue(0.5)
-           >>> viewer.plot(filename = "beta.cgm")
-           >>> betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) * x**(alpha - 1) * (1 - x)**(beta - 1))
-           >>> from fipy.viewers.tsvViewer import TSVViewer
-           >>> TSVViewer(vars = (histogram, betadist)).plot(filename = "beta.tsv")
-           
            >>> for a in arange(0.5,5,0.5):
            ...     alpha.setValue(a)
            ...     for b in arange(0.5,5,0.5):
            ...         beta.setValue(b)
-           ...         import sys
-           ...         print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
            ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) * x**(alpha - 1) * (1 - x)**(beta - 1))
            ...         if __name__ == '__main__':
+           ...             import sys
+           ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
            ...             viewer.plot()
            ...             histoplot.plot()
 

@@ -4,7 +4,7 @@
  # 
  #  FILE: "gammaNoiseVariable.py"
  #                                    created: 8/26/05 {10:09:50 PM} 
- #                                last update: 8/26/05 {11:45:56 PM} 
+ #                                last update: 8/29/05 {11:09:44 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,21 +79,14 @@ class GammaNoiseVariable(NoiseVariable):
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma
            
-           >>> alpha.setValue(4)
-           >>> beta.setValue(1)
-           >>> viewer.plot(filename = "gamma.cgm")
-           >>> gammadist.setValue(x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
-           >>> from fipy.viewers.tsvViewer import TSVViewer
-           >>> TSVViewer(vars = (histogram, gammadist)).plot(filename = "gamma.tsv")
-           
            >>> for shape in arange(1,8,1):
            ...     alpha.setValue(shape)
            ...     for rate in arange(0.5,2.5,0.5):
            ...         beta.setValue(rate)
-           ...         import sys
-           ...         print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
            ...         gammadist.setValue(x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
            ...         if __name__ == '__main__':
+           ...             import sys
+           ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
            ...             viewer.plot()
            ...             histoplot.plot()
 

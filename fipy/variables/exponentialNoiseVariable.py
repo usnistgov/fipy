@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialNoiseVariable.py"
  #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 8/27/05 {9:53:44 AM} 
+ #                                last update: 8/29/05 {11:10:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,18 +75,12 @@ class ExponentialNoiseVariable(NoiseVariable):
            
            >>> from fipy.tools.numerix import arange, exp
            
-           >>> mean.setValue(1.5)
-           >>> viewer.plot(filename = "exp.cgm")
-           >>> expdist.setValue((1/mean)*exp(-x/mean))
-           >>> from fipy.viewers.tsvViewer import TSVViewer
-           >>> TSVViewer(vars = (histogram, expdist)).plot(filename = "exp.tsv")
-           
            >>> for mu in arange(0.5,3,0.5):
            ...     mean.setValue(mu)
-           ...     import sys
-           ...     print >>sys.stderr, "mean: %g" % mean
            ...     expdist.setValue((1/mean)*exp(-x/mean))
            ...     if __name__ == '__main__':
+           ...         import sys
+           ...         print >>sys.stderr, "mean: %g" % mean
            ...         viewer.plot()
            ...         histoplot.plot()
 
