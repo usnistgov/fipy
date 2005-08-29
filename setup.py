@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 8/9/05 {1:47:57 PM} 
+ #                                last update: 8/29/05 {10:36:32 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class build_docs (Command):
 		    ('manual', None, "compile the manual"),
 		    ('all', None, "compile both the LaTeX and HTML variants of the apis"),
                     ('webpage', None, "compile the html for the web page"),
-                    ('upload', None, "upload webpages to CTCMS website")
+                    ('upload', None, "upload webpages to CTCMS website"),
 		   ]
 
 
@@ -247,16 +247,41 @@ class build_docs (Command):
                                
                 from utils.epydoc import driver
                 driver.epylatex(module_names = ['examples/'], options = {'target':dir})
-
+                
 	if self.html:
 	    dir = os.path.join('documentation', 'manual', 'api')
 	    self._initializeDirectory(dir = dir, type = 'html')
 	    self._epydocFiles(module = 'fipy/', dir = dir, type = 'html')
 
+        if self.apis:
+            # build the package/module/class example documentation
+            
+            dir = os.path.join('documentation', 'manual', 'tutorial')
+            self._initializeDirectory(dir = dir, type = 'latex')
+            dir = os.path.join(dir, 'latex')
+
+            # to avoid a collision between the real fipy namespace
+            # and the fictional fipy namespace we use for the illustration
+            # we build the example documentation in a sub-process
+            # from which we delete the "real" fipy namespace
+            
+            exec("""
+import sys
+if sys.modules.has_key('fipy'):
+    del sys.modules['fipy']
+    
+if sys.modules.has_key('epydoc.uid'):
+    sys.modules['epydoc.uid']._object_uids = {}
+    sys.modules['epydoc.uid']._variable_uids = {}
+    sys.modules['epydoc.uid']._name_to_uid = {}
+
+from utils.epydoc import driver
+driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
+""")
+
 	if self.guide or self.apis:
 	    savedir = os.getcwd()
 	    
-##	    try:
             os.chdir(os.path.join('documentation','manual'))
 		
             f = open('version.tex', 'w')
@@ -296,8 +321,6 @@ class build_docs (Command):
 		os.system("pdflatex reference")
                 os.system("pdflatex reference")
 
-##	    except:
-##		pass
 	    os.chdir(savedir)
 
         if self.webpage:
@@ -598,7 +621,7 @@ f.close()
 
 
 dist = setup(	name = "FiPy",
-	version = "1.0a2",
+	version = "1.0a3",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",
