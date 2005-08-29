@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 8/29/05 {11:07:20 AM} 
+ #                                last update: 8/29/05 {1:51:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,6 +49,7 @@ def _suite():
     return _LateImportDocTestSuite(
         docTestModuleNames = (
             'fipy.variables.vectorCellVariable',
+            'fipy.variables.vectorFaceVariable',
             'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.variable',
             'fipy.variables.cellVariable',
