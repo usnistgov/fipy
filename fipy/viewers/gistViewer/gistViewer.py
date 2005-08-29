@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:46:46 PM} { 2:45:36 PM}
+ #                                last update: 8/26/05 {11:40:12 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,3 +89,18 @@ class GistViewer(Viewer):
             limit = 'e'
             
         return limit
+        
+    def plot(self, filename = None):
+        if filename is not None:
+            import os.path
+            root, ext = os.path.splitext(filename)
+            if ext.lower() in (".eps", ".epsi"):
+                gist.eps(root)
+            else:
+                gist.hcp_file(filename, dump = 1)
+                gist.hcp()
+                gist.hcp_finish(-1)
+        gist.fma()
+        
+        
+

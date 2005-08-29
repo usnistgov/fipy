@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:39:41 PM} 
+ #                                last update: 8/26/05 {11:31:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -105,7 +105,7 @@ class Gist1DViewer(GistViewer):
             
 	gist.logxy(self.xlog, self.ylog)
 
-    def plot(self):
+    def plot(self, filename = None):
         """
         Plot the `CellVariable` or list of `CellVariables` as a y vs x plot.
         """
@@ -120,4 +120,5 @@ class Gist1DViewer(GistViewer):
 	    
 	self._plotArrays()
 	    
-	gist.fma()
+        GistViewer.plot(self, filename = filename)
+

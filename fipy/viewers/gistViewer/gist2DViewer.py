@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/13/05 {11:25:06 AM} 
+ #                                last update: 8/26/05 {11:27:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,7 +92,7 @@ class Gist2DViewer(GistViewer):
         if self.limits != None:
             gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('ymin'), self._getLimit('ymax'))
 
-    def plot(self):
+    def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
         """
@@ -123,7 +123,7 @@ class Gist2DViewer(GistViewer):
 
         colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
 
-        gist.fma()
+        GistViewer.plot(self, filename = filename)
 
     def plotMesh(self):
         """

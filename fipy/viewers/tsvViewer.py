@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/6/05 {4:26:32 PM} 
+ #                                last update: 8/26/05 {10:40:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,10 +98,10 @@ class TSVViewer(Viewer):
             assert mesh is var.getMesh()
 
 
-    def plot(self, file = None):
+    def plot(self, filename = None):
         """
-        "plot" the coordinates and values of the variables to `file`. 
-        If `file` is not provided, "plots" to stdout.
+        "plot" the coordinates and values of the variables to `filename`. 
+        If `filename` is not provided, "plots" to stdout.
         
         >>> from fipy.meshes.grid1D import Grid1D
         >>> m = Grid1D(nx = 3, dx = 0.4)
@@ -123,8 +123,8 @@ class TSVViewer(Viewer):
         0.05	0.45	-2	35	-3.33333333333333
         0.15	0.45	5	35	5
         """
-        if file is not None:
-            f = open(file, "w")
+        if filename is not None:
+            f = open(filename, "w")
         else:
             f = sys.stdout
         
