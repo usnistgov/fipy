@@ -117,6 +117,7 @@ class Variable:
 	self.faceDifferences = {}
 	self.laplacian = {}
         self.mag = None
+        self.sliceVars = {}
     
     def getMesh(self):
 	return self.mesh
@@ -232,6 +233,50 @@ class Variable:
 
         """
 	return self.getValue()[index]
+
+    def getSliceAsVariable(self, slice, parentClass = None):
+        """
+        
+        This is a temporary method for returning a variable slice as a
+        variable.  __getitem__() should take the role of this method.
+        To use this method one, in general, needs to use the slice
+        object
+        
+        :Parameters:
+        
+          - `slice`: slice object or tuple of slice objects
+          - `parentClass`: SliceVariable parent class
+
+        Variable
+
+            >>> var = Variable(value = ((0, 1), (1, 2), (2, 3)))
+            >>> slice = var.getSliceAsVariable((slice(None), 1))
+            >>> print slice
+            [ 1., 2., 3.,]
+            >>> var[0,1] = 2
+            >>> print slice
+            [ 2., 2., 3.,]
+            
+        """
+
+        if not self.sliceVars.has_key(str(slice)):
+
+            if parentClass is None:
+                parentClass = Variable
+                
+            class SliceVariable(parentClass):
+
+                def __init__(self, var, index):
+                    parentClass.__init__(self, mesh = var.getMesh())
+                    self.var = self._requires(var)
+                    self.index = index
+
+                def _calcValue(self):
+                    self.value = Numeric.array(self.var[self.index])
+
+            self.sliceVars[str(slice)] = SliceVariable(self, slice)
+
+        return self.sliceVars[str(slice)]
 
     def getName(self):
         return self.name

@@ -165,8 +165,8 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 ..
 
-    >>> dPhiy = phase.getFaceGrad().getIndexAsFaceVariable(1)
-    >>> dPhix = phase.getFaceGrad().getIndexAsFaceVariable(0)
+    >>> dPhiy = phase.getFaceGrad().getSliceAsVariable((slice(None), 1))
+    >>> dPhix = phase.getFaceGrad().getSliceAsVariable((slice(None), 0))
     >>> arc = N * numerix.arctan2(dPhiy, dPhix) + theta
     >>> Phi = numerix.tan(arc / 2)
     >>> PhiSq = Phi**2

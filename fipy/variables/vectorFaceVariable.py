@@ -51,8 +51,6 @@ class VectorFaceVariable(Variable):
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-        self.indexAsFaceVar = {}
-
     def __call__(self, point = None, order = 0):
         if point != None:
             return self[self.getMesh()._getNearestCellID(point)]
@@ -62,26 +60,6 @@ class VectorFaceVariable(Variable):
     def _getVariableClass(self):
 	return VectorFaceVariable
 
-    def getIndexAsFaceVariable(self, index):
-
-        if not self.indexAsFaceVar.has_key(index):
-
-            from faceVariable import FaceVariable
-        
-            class ItemAsVariable(FaceVariable):
-                def __init__(self, var, index):
-                    FaceVariable.__init__(self, mesh = var.getMesh())
-                    self.var = self._requires(var)
-
-                def _calcValue(self):
-                    self.value = Numeric.array(self.var[:, index])
-
-            return ItemAsVariable(self, index)
-
-        else:
-            
-            return self.indexAsFaceVar[index]
-            
     def dot(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = FaceVariable)
 
