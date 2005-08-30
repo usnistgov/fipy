@@ -10,7 +10,6 @@
 \DeclareOption{book}{\setboolean{@dobook}{true}}
 \DeclareOption{index}{\makeindex}
 \DeclareOption{hyperref}{\setboolean{@dohyper}{true}}
-\DeclareOption{memoir}{\setboolean{@domemoir}{true}}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{hyperref}}
 
 \ProcessOptions
@@ -32,13 +31,15 @@
 \setlength{\fboxrule}{2\fboxrule}
 \newlength{\BCL} % base class length, for base trees.
 
-\ifthenelse{\boolean{@domemoir}}{%
+
+\@ifclassloaded{memoir}{%
     \RequirePackage[other,notbib]{tocbibind}
 }{%
     \RequirePackage{fancyhdr,makeidx}
     \RequirePackage[other]{tocbibind}
     \pagestyle{fancy}
 }
+
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
 
