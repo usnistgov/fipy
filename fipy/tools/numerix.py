@@ -93,19 +93,19 @@ def _isPhysical(arr):
     return isinstance(arr,fipy.variables.variable.Variable) \
 	or isinstance(arr,fipy.tools.dimensions.physicalField.PhysicalField)
 
-def take(arr, ids):
+def take(arr, ids, axis = 0):
     """
     Provides the same functionality as `Numeric.take`.
     """
     
     if _isPhysical(arr):
-	return arr.take(ids)    
+	return arr.take(ids, axis = axis)    
     elif type(ids) is type(MA.array((0))):
-        return MAtake(arr, ids)
+        return MAtake(arr, ids, axis = axis)
     elif type(arr) is type(array((0))):
-	return NUMERIC.take(arr, ids)
+	return NUMERIC.take(arr, ids, axis = axis)
     elif type(arr) is type(MA.array((0))):
-	return MA.take(arr, ids)
+	return MA.take(arr, ids, axis = axis)
     else:
 	raise TypeError, 'cannot take from object ' + str(arr)
     

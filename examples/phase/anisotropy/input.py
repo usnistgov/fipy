@@ -165,8 +165,8 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 ..
 
-    >>> dPhiy = phase.getFaceGrad().getSliceAsVariable((slice(None), 1))
-    >>> dPhix = phase.getFaceGrad().getSliceAsVariable((slice(None), 0))
+    >>> dPhiy = phase.getFaceGrad().dot((0, 1))
+    >>> dPhix = phase.getFaceGrad().dot((1, 0))
     >>> arc = N * numerix.arctan2(dPhiy, dPhix) + theta
     >>> Phi = numerix.tan(arc / 2)
     >>> PhiSq = Phi**2
@@ -175,39 +175,9 @@ The temperature field is initialized to a value of `-0.4` throughout:
     >>> A = alpha**2 * c * (1.+ c * beta) * dbdpsi
     >>> D = alpha**2 * (1.+ c * beta)**2
 
-.. raw:: latex
-
-    The part of the equation represented by $\nabla \cdot \left[ D
-    \nabla \phi + A \nabla \xi \right]$ can now be constructed. This
-    particular term is evaluated explicitly in the phase field method
-    of Kobayashi. The part of this term represented by $ \nabla \cdot
-    \left[ D \nabla \phi \right]$ is represented by a straight forward
-    `ExplicitDiffusionTerm`. The other part $ \nabla \cdot \left[ A
-    \nabla \xi \right] $, can not be represented by a diffusion term
-    since the variable being solved for is not implicitly defined. A
-    specialized variable is built to construct this particular term. To
-    derive this variable first integrate over a CV,
-
-    $$ \frac{ 1 } { V } \int_{V} \nabla \cdot \left[ A \nabla \xi \right] dV, $$
-
-    and apply the divergence theorem gives,
-
-    $$ \frac{ 1 } { V } \int_{S} \vec{ n }  \cdot \left[ A \nabla \xi \right] dS. $$
-
-    Discretizing the above integral gives,
-
-    $$ \sum_f \vec{ n }_f  \cdot \left[ A \nabla \xi \right]_f \frac { S_f } { V_P } $$
-
-    where $S_f$ is the area of a face. The above quantity is
-    represented by the `AddOverFacesVariable` given below.
-    
-..
-    
-    >>> from fipy.models.phase.phase.addOverFacesVariable \
-    ...     import AddOverFacesVariable
-    >>> anisotropySource = AddOverFacesVariable(faceVariable = A, 
-    ...                                         xGrad = -dPhiy, yGrad = dPhix)
-    
+    >>> dxi = phase.getFaceGrad()._take((1, 0), axis = 1) * (-1, 1)
+    >>> anisotropySource = (A * dxi).getDivergence()
+        
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -228,7 +198,7 @@ the phase and temperature fields
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     phaseViewer = fipy.viewers.make(vars = phase)
-    ...     temperatureViewer = fipy.viewers.make(vars = temperature, 
+    ...     temperatureViewer = fipy.viewers.make(vars = temperature,
     ...         limits = {'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()

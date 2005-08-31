@@ -234,50 +234,6 @@ class Variable:
         """
 	return self.getValue()[index]
 
-    def getSliceAsVariable(self, slice, parentClass = None):
-        """
-        
-        This is a temporary method for returning a variable slice as a
-        variable.  __getitem__() should take the role of this method.
-        To use this method one, in general, needs to use the slice
-        object
-        
-        :Parameters:
-        
-          - `slice`: slice object or tuple of slice objects
-          - `parentClass`: SliceVariable parent class
-
-        Variable
-
-            >>> var = Variable(value = ((0, 1), (1, 2), (2, 3)))
-            >>> slice = var.getSliceAsVariable((slice(None), 1))
-            >>> print slice
-            [ 1., 2., 3.,]
-            >>> var[0,1] = 2
-            >>> print slice
-            [ 2., 2., 3.,]
-            
-        """
-
-        if not self.sliceVars.has_key(str(slice)):
-
-            if parentClass is None:
-                parentClass = Variable
-                
-            class SliceVariable(parentClass):
-
-                def __init__(self, var, index):
-                    parentClass.__init__(self, mesh = var.getMesh())
-                    self.var = self._requires(var)
-                    self.index = index
-
-                def _calcValue(self):
-                    self.value = Numeric.array(self.var[self.index])
-
-            self.sliceVars[str(slice)] = SliceVariable(self, slice)
-
-        return self.sliceVars[str(slice)]
-
     def getName(self):
         return self.name
         
@@ -421,8 +377,7 @@ class Variable:
 	    self._markFresh()
 		    
     def _calcValue(self):
-	pass
-	
+	pass	
     def __markStale(self):
         import weakref
         remainingSubscribedVariables = []
@@ -625,7 +580,7 @@ class Variable:
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-		self._setValue(value = self.op(self.var[0].getValue())) 
+		self._setValue(value = self.op(self.var[0].getValue()))
 		
 	return unOp(op, [self])
 	    
@@ -1484,7 +1439,7 @@ class Variable:
         # identically to "None or ...".
         if opShape == "number":
             opShape = ()
-        
+
         var0 = self
         var1 = other
         
@@ -1522,7 +1477,7 @@ class Variable:
         
         selfArray = _getArrayAsOnes(self)
         otherArray = _getArrayAsOnes(other)
-
+        
         def _rotateShape(var0, var1, var0array, var1array):
             """
             # A scalar variable multiplying/dividing a vector variable will
@@ -1820,10 +1775,55 @@ class Variable:
 	    self.sumVar[index] = _SumVariable(self, index)
 	
 	return self.sumVar[index]
-	
-    def take(self, ids):
-	return numerix.take(self.getValue(), ids)
-	
+
+    def take(self, ids, axis = 0):
+	return numerix.take(self.getValue(), ids, axis)
+
+    def _take(self, ids, axis = 0):
+        """
+        
+        Same as take() but returns a Variable subclass.  This function
+        has not yet been implemented as a binary operator but is a
+        unary operator.  As a unary operator it has to return the same
+        shape as the variable it is acting on.  This is not a
+        particular useful implementation of take as it stands. It is
+        good for axis permutations.
+        
+
+           >>> from fipy.meshes.grid2D import Grid2D
+           >>> mesh = Grid2D(nx = 1, ny = 1)
+           >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+           >>> var = VectorFaceVariable(value = ( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh = mesh)
+           >>> v10 = var._take((1, 0), axis = 1)
+           >>> print v10
+           [[ 2., 1.,]
+            [ 3., 2.,]
+            [ 4., 3.,]
+            [ 5., 4.,]]
+           >>> var[3, 0] = 1
+           >>> print v10
+           [[ 2., 1.,]
+            [ 3., 2.,]
+            [ 4., 3.,]
+            [ 5., 1.,]]
+           >>> isinstance(var, VectorFaceVariable)
+           True
+           >>> v0 = var._take((0,))
+           Traceback (most recent call last):
+              ...
+           IndexError: _take() must take ids that return a Variable of the same shape
+           
+        """
+
+        ## Binary operator doesn't work because ids is turned into a _Constant Variable
+        ## which contains floats and not integers. Numeric.take needs integers for ids.
+        ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis = axis), ids) 
+
+        if numerix.take(self.getValue(), ids, axis = axis).shape == self.getShape():
+            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis))
+        else:
+            raise IndexError, '_take() must take ids that return a Variable of the same shape'
+            
     def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
                                                other, 
