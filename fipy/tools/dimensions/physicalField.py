@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/1/05 {2:22:06 PM} 
+ #                                last update: 9/1/05 {4:35:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1925,11 +1925,10 @@ def _getUnitStrings():
     
     units = []
         
-    units.append("\nBase SI units (accepting SI prefixes)::\n")
+    units.append("\nBase SI units::\n")
+    units.append("\t%s" % ", ".join(_base_names))
     for name in _base_names:
         if working_table.has_key(name):
-            unit = working_table[name]
-            units.append("%10s" % unit.name())
             del working_table[name]
     for name, unit in _base_units:
         _deleteFactors(unit)
@@ -1938,14 +1937,6 @@ def _getUnitStrings():
     for prefix, factor in _prefixes:
         units.append("%10s = %g" % (prefix, factor))
 
-##     for name, unit in _base_units:
-##         units.append("\t" + unit.name())
-##         if working_table.has_key(name):
-##             del working_table[name]
-##         for prefix, factor in _prefixes:
-##             if working_table.has_key(prefix + name):
-##                 del working_table[prefix + name]
-                
     units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
     derived = {}
     for key in working_table.keys():
