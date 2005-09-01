@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/12/05 {1:12:34 PM} 
+ #                                last update: 8/31/05 {12:10:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -357,7 +357,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             n = n or 1
         else:
             n = n or len(d)
-            if n != len(d):
+            if n != len(d) and len(d) != 1:
                 raise IndexError, "n%s != len(d%s)" % (axis, axis)
                 
         return n
