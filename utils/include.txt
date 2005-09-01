@@ -14,9 +14,17 @@
 
    TeX
 
+.. |latexLaTeX| raw:: latex
+
+   \LaTeX{}
+
+.. |htmlLaTeX| raw:: html
+
+   LaTeX
+
 .. |latexINSTALL| raw:: latex
 
-   Chapter~\ref{chap:Installation} ``\nameref{chap:Installation}''
+   Chapter~\ref{chap:Installation} ``\titleref{chap:Installation}''
 
 .. |htmlINSTALL| raw:: html
 
@@ -40,7 +48,7 @@
 
 .. |latexFAQ| raw:: latex
 
-   Chapter~\ref{chap:FAQ} ``\nameref{chap:FAQ}''
+   Chapter~\ref{chap:FAQ} ``\titleref{chap:FAQ}''
 
 .. |htmlFAQ| raw:: html
 
