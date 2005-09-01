@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 7/13/05 {11:43:29 AM} 
+ #                                last update: 9/1/05 {2:22:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,6 +100,7 @@ from NumberDict import _NumberDict
 
 # Class definitions
 
+
 class PhysicalField:
     """
     Physical field or quantity with units
@@ -118,7 +119,9 @@ class PhysicalField:
     sin, cos, tan 
       applicable only to objects whose unit is compatible
       with ``rad``.
-    """  
+      
+    """
+    
     
     def __init__(self, value, unit = None, array = None):
         """
@@ -235,6 +238,20 @@ class PhysicalField:
         else:
             return (self.__class__.__name__ + '(' + `self.value` + ',' + 
                     `self.unit.name()` + ')')
+
+    def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
+        """
+        Return human-readable form of a physical quantity
+        
+            >>> print PhysicalField(value = (3., 3.14159), unit = "eV").tostring(precision = 3, separator = '|')
+            [ 3.   | 3.142|] eV
+        """
+        from fipy.tools import numerix
+        return numerix.tostring(self.value, max_line_width = max_line_width, 
+                                precision = precision, 
+                                suppress_small = suppress_small, 
+                                separator = separator) + ' ' + self.unit.name()
+
 
     def _sum(self, other, sign1 = lambda a: a, sign2 = lambda b: b):
         # stupid Numeric bug
@@ -1881,10 +1898,94 @@ del kelvin
 
 _unity = eval("m/m", _unit_table)
 
+def _getUnitStrings():
+    
+    working_table = _unit_table.copy()
+    
+    def _getSortedUnitStrings(unitDict):
+        strings = []
+        keys = unitDict.keys()
+        keys.sort(lambda x,y: cmp(x.lower(), y.lower()))
+        for key in keys:
+            if unitDict.has_key(key):
+                unit = unitDict[key]
+                if isinstance(unit, PhysicalUnit):
+                    tmp = PhysicalField(value = 1, unit = unit)
+                    strings.append("%10s = %s" % (str(tmp), str(tmp.inBaseUnits())))
+                    
+                    del working_table[key]
+                    
+        return strings
+        
+    def _deleteFactors(unit):
+        for prefix, factor in _prefixes:
+            if working_table.has_key(prefix + unit.name()):
+                del working_table[prefix + unit.name()]
+        
+    
+    units = []
+        
+    units.append("\nBase SI units (accepting SI prefixes)::\n")
+    for name in _base_names:
+        if working_table.has_key(name):
+            unit = working_table[name]
+            units.append("%10s" % unit.name())
+            del working_table[name]
+    for name, unit in _base_units:
+        _deleteFactors(unit)
+
+    units.append("\nSI prefixes::\n")
+    for prefix, factor in _prefixes:
+        units.append("%10s = %g" % (prefix, factor))
+
+##     for name, unit in _base_units:
+##         units.append("\t" + unit.name())
+##         if working_table.has_key(name):
+##             del working_table[name]
+##         for prefix, factor in _prefixes:
+##             if working_table.has_key(prefix + name):
+##                 del working_table[prefix + name]
+                
+    units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
+    derived = {}
+    for key in working_table.keys():
+        if working_table.has_key(key):
+            unit = working_table[key]
+            if isinstance(unit, PhysicalUnit) and unit.factor == 1:
+                derived[unit.name()] = unit
+                _deleteFactors(unit)
+                
+    units.extend(_getSortedUnitStrings(derived))
+
+    units.append("\nOther units that accept SI prefixes::\n")
+    prefixed = {}
+    for key in working_table.keys():
+        if working_table.has_key(key):
+            unit = working_table[key]
+            isPrefixed = 1
+            if isinstance(unit, PhysicalUnit):
+                for prefix, factor in _prefixes:
+                    if not working_table.has_key(prefix + key):
+                        isPrefixed = 0
+                        break
+                if isPrefixed:
+                    prefixed[unit.name()] = unit
+                    _deleteFactors(unit)
+                
+    units.extend(_getSortedUnitStrings(prefixed))
+
+    units.append("\nAdditional units and constants::\n")
+    units.extend(_getSortedUnitStrings(working_table))
+
+    return "\n".join(units)
+
+__doc__ += _getUnitStrings()
+
 def _test(): 
     import doctest
     return doctest.testmod()
     
 if __name__ == "__main__": 
+##     print _getUnitStrings()
     _test() 
 
