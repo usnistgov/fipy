@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/29/05 {1:44:06 PM} 
+ #                                last update: 8/31/05 {4:57:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -253,6 +253,13 @@ class Variable:
 	s += ')'
 	return s
 	
+    def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
+        return numerix.tostring(self.getValue(), 
+                                max_line_width = max_line_width,
+                                precision = precision, 
+                                suppress_small = suppress_small, 
+                                separator = separator)
+        
     def __setitem__(self, index, value):
 	self.value[index] = value
 	self._markFresh()
