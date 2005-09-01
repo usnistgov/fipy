@@ -2,6 +2,62 @@
 \ProvidesPackage{fipy}
 	     [2004/10/07 Document style (FiPy manual)]
 
+\renewcommand{\@m@mchapter}[1][]{%
+  \def\ch@pt@c{#1}% capture first optional arg
+   \@ifnextchar[{\@chapter}{\@chapter[]}%
+}
+\def\@chapter[#1]#2{%
+% if |\ch@pt@c| is empty, no [ was found at all. Use |#2| as
+% entry for all fields.
+   \ifx\ch@pt@c\@empty
+     \def\f@rtoc{#2}%
+     \def\f@rhdr{#2}%
+   \else
+% otherwise at least one [ was found. If |#1| is empty then only
+% one was found.
+     \let\f@rtoc\ch@pt@c
+     \ifx\@empty#1\@empty
+       \let\f@rhdr\ch@pt@c
+     \else
+       \def\f@rhdr{#1}%
+     \fi
+   \fi
+   \ifnum \c@secnumdepth >\m@ne
+     \if@mainmatter
+       \refstepcounter{chapter}%
+     \fi
+   \fi
+   \chaptermark{\f@rhdr}%
+   \ifartopt
+     \@makechapterhead{#2}%
+     \@afterheading
+   \else
+     \insertchapterspace
+     \if@twocolumn
+       \@topnewpage[\@makechapterhead{#2}]%
+     \else
+       \@makechapterhead{#2}%
+     \fi
+     \@afterheading
+   \fi
+   \ifnum \c@secnumdepth >\m@ne
+     \if@mainmatter
+       \ifanappendix
+         \addcontentsline{toc}{appendix}{%
+           \protect\chapternumberline{\thechapter}\f@rtoc}%
+       \else
+         \addcontentsline{toc}{chapter}{%
+           \protect\chapternumberline{\thechapter}\f@rtoc}%
+       \fi
+     \else
+       \addcontentsline{toc}{chapter}{\f@rtoc}%
+     \fi
+   \else
+     \addcontentsline{toc}{chapter}{\f@rtoc}%
+   \fi
+   \ifheadnameref\M@gettitle{\f@rhdr}\else\M@gettitle{\f@rtoc}\fi
+}
+
 % Put Part as topmost level in PDF bookmarks
 \def\tocPDFlevel{-1}
 \DeclareOption{tocAsPDFpart}{\def\tocPDFlevel{-1}}
@@ -32,24 +88,26 @@
 \RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
 
 % Give a mini-table-of-contents for each part
-\RequirePackage{minitoc}
+\RequirePackage[tight,hints]{minitoc}
 % \setcounter{tocdepth}{0}
-\setcounter{parttocdepth}{1}
+\setcounter{parttocdepth}{2}
 % minitoc.sty doesn't show the page number of a part's TOC, which
 % looks weird.
-\renewcommand{\thispageparttocstyle}{\thispagestyle{plain}}
+% % \renewcommand{\thispageparttocstyle}{\thispagestyle{plain}}
+
+\mtcsetrules{parttoc}{off}
 
 % minitoc.sty uses archaic font selectors
-\@ifundefined{chapter}{%
-\def\ptcfont{\small\rmfamily}    % font for the parttoc
-\def\ptcSfont{\small\bfseries}   % font for the parttoc (sections)
-\def\ptifont{\large\bfseries}    % font for titles
-}{%
-\def\ptcfont{\normalsize\rmfamily}    % font for the parttoc
-\def\ptcCfont{\normalsize\bfseries}   % font for the parttoc (chapters)
-\def\ptcSfont{\normalsize\rmfamily}   % font for the parttoc (sections)
-\def\ptifont{\Huge\bfseries}     % font for titles
-}
+% % \@ifundefined{chapter}{%
+% % \def\ptcfont{\small\rmfamily}    % font for the parttoc
+% % \def\ptcSfont{\small\bfseries}   % font for the parttoc (sections)
+% % \def\ptifont{\large\bfseries}    % font for titles
+% % }{%
+% % \def\ptcfont{\normalsize\rmfamily}    % font for the parttoc
+% % \def\ptcCfont{\normalsize\bfseries}   % font for the parttoc (chapters)
+% % \def\ptcSfont{\normalsize\rmfamily}   % font for the parttoc (sections)
+% % \def\ptifont{\Huge\bfseries}     % font for titles
+% % }
 
 \RequirePackage[ascii]{inputenc}
 
@@ -108,11 +166,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % reformat the TOC
-\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
-\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
-\renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
-\renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
-\renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
+% \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
+% \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
+% \renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
+% \renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
+% \renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
 
 % \usepackage{layout}
 
@@ -404,7 +462,7 @@
     \newcommand{\KWArg}[1]{**\textit{##1}}%
     \newcommand{\Param}[2][]{%
         \textit{##2}%
-        \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+        \ifthenelse{\equal{##1}{}}{}{=\TX@verb*|##1|}}%
     {\raggedright\Large\hangfrom{\ttfamily #1(}{#2{\ttfamily)}}% 
     \\*[-0.6ex]\rule{\textwidth}{0.5\fboxrule}}%
     \nopagebreak\begin{list}{}{\setlength{\leftmargin}{\parindent}\item{}}}
@@ -454,7 +512,7 @@
 %     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
 %        \normalfont\bfseries ##1:}
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
-       \normalfont\itshape ##1:}
+       \normalfont\rmfamily\itshape ##1:}
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
@@ -613,7 +671,10 @@
     }{%
     \end{framed}}
 
-    
+
+% % Temporary(?) patch supplied by Morten H¿gholm in
+% % <http://groups.google.com/group/comp.text.tex/browse_frm/thread/911a3cd94427194a/e22e4003b9ac2ff1?hl=en#e22e4003b9ac2ff1
+
     
 \usepackage{memhfixc}
 
