@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 4/5/05 {8:09:56 PM} 
+ #                                last update: 8/31/05 {2:47:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,9 +40,9 @@
  # ###################################################################
  ##
 
-""" 
+r""" 
 In this example, we present the same three-component diffusion problem 
-introduced in ``examples/elphf/input1D.py``
+introduced in ``examples/elphf/diffusion/input1D.py``
 but we demonstrate FiPy's facility to use dimensional quantities.
 
     >>> from fipy.tools.dimensions.physicalField import PhysicalField
@@ -55,56 +55,88 @@ We solve the problem on a 40 mm long 1D mesh
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
-The dimensional parameters for this problem are
+Again, one component in this ternary system will be designated the "solvent"
 
-    >>> parameters = {
-    ...     'time step duration': "1000 s",
-    ...     'solvent': {
-    ...         'standard potential': 0.,
-    ...         'barrier height': 0.
-    ...     }
-    ... }
+    >>> from fipy.variables.variable import Variable
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> class ComponentVariable(CellVariable):
+    ...     def __init__(self, mesh, value = 0., name = '', 
+    ...                  standardPotential = 0., barrier = 0., 
+    ...                  diffusivity = None, valence = 0, equation = None):
+    ...         CellVariable.__init__(self, mesh = mesh, value = value, 
+    ...                               name = name)
+    ...         self.standardPotential = Variable(standardPotential)
+    ...         self.barrier = Variable(barrier)
+    ...         self.diffusivity = Variable(diffusivity)
+    ...         self.valence = valence
+    ...         self.equation = equation
+    ...
+    ...     def copy(self):
+    ...         return self.__class__(mesh = self.getMesh(), 
+    ...                               value = self.getValue(), 
+    ...                               name = self.getName(), 
+    ...                               standardPotential = 
+    ...                                   self.standardPotential, 
+    ...                               barrier = self.barrier, 
+    ...                               diffusivity = self.diffusivity,
+    ...                               valence = self.valence,
+    ...                               equation = self.equation)
 
-    >>> parameters['substitutionals'] = (
-    ...     {
-    ...         'name': "c1",
-    ...         'diffusivity': "1.e-9 m**2/s",
-    ...         'standard potential': 1.,
-    ...         'barrier height': 1.
-    ...     },
-    ...     {
-    ...         'name': "c2",
-    ...         'diffusivity': "1.e-9 m**2/s",
-    ...         'standard potential': 1.,
-    ...         'barrier height': 1.
-    ...     }
-    ... )
+    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = "1 mol/m**3")
 
-We use ElPhF to create the variable fields
+We can create an arbitrary number of components,
+simply by providing a `Tuple` or `list` of components
 
-    >>> import fipy.models.elphf.elphf as elphf
-    >>> fields = elphf.makeFields(mesh = mesh, parameters = parameters)
+    >>> substitutionals = [
+    ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = "1e-9 m**2/s", 
+    ...                       standardPotential = 1., barrier = 1., value = "0.3 mol/m**3"),
+    ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = "1e-9 m**2/s",
+    ...                       standardPotential = 1., barrier = 1., value = "0.6 mol/m**3"),
+    ...     ]
+
+    >>> interstitials = []
     
-and we separate the solution domain into two different concentration regimes
-    
-    >>> setCells = mesh.getCells(filter = lambda cell: 
-    ...                          cell.getCenter()[0] > mesh.getPhysicalShape()[0]/2)
-    >>> fields['substitutionals'][0].setValue("0.3 mol/m**3")
-    >>> fields['substitutionals'][0].setValue("0.6 mol/m**3",setCells)
-    >>> fields['substitutionals'][1].setValue("0.6 mol/m**3")
-    >>> fields['substitutionals'][1].setValue("0.3 mol/m**3",setCells)
+    >>> for component in substitutionals:
+    ...     solvent -= component
 
-We use ElPhF again to create the governing equations for the fields
-
-    >>> elphf.makeEquations(fields = fields, 
-    ...                     parameters = parameters)
+We separate the solution domain into two different concentration regimes
     
+    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> substitutionals[0].setValue("0.3 mol/m**3")
+    >>> substitutionals[0].setValue("0.6 mol/m**3",setCells)
+    >>> substitutionals[1].setValue("0.6 mol/m**3")
+    >>> substitutionals[1].setValue("0.3 mol/m**3",setCells)
+
+We create one diffusion equation for each substitutional component
+
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+    
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> for Cj in substitutionals:
+    ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
+    ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
+    ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
+    ...         CkSum += Ck
+    ...         CkFaceSum += Ck.getHarmonicFaceValue()
+    ...        
+    ...     convectionCoeff = CkSum.getFaceGrad() \
+    ...                       * (Cj.diffusivity / (1. - CkFaceSum))
+    ...
+    ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
+    ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
+    ...                                           diffusionTerm = diffusionTerm)
+    ...                                            
+    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     viewer = fipy.viewers.make(
-    ...         vars = (fields['solvent'],) + fields['substitutionals'],
+    ...         vars = [solvent] + substitutionals,
     ...         limits = {'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
@@ -112,25 +144,24 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver()
-
+    
     >>> for i in range(40):
-    ...     for field in fields['substitutionals']:
-    ...         field.updateOld()
-    ...     for field in fields['substitutionals']:
-    ...         field.equation.solve(var = field, 
-    ...                              dt = 10000, 
-    ...                              solver = solver)
-    ...         # dt (scaling doesn't work) parameters['time step duration'],
+    ...     for Cj in substitutionals:
+    ...         Cj.updateOld()
+    ...     for Cj in substitutionals:
+    ...         Cj.equation.solve(var = Cj, 
+    ...                           dt = "1000 s",
+    ...                           solver = solver)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
 
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> print fields['substitutionals'][0].getScaled().allclose("0.45 mol/m**3",
+    >>> print substitutionals[0].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> print fields['substitutionals'][1].getScaled().allclose("0.45 mol/m**3",
+    >>> print substitutionals[1].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
     
