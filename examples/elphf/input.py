@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/9/05 {2:09:20 PM} 
+ #                                last update: 8/26/05 {11:11:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,6 +79,12 @@ We create the phase field
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = PF("1 m**3/J/s") / (molarVolume / (RT * timeStep))
     >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.getScale()**2 * RT / molarVolume)
+
+    >>> def p(xi):
+    ...     return xi**3 * (6 * xi**2 - 15 * xi + 10.)
+        
+    >>> def g(xi):
+    ...     return (xi * (1 - xi))**2
 
     >>> def pPrime(xi):
     ...     return 30. * (xi * (1 - xi))**2
@@ -220,8 +226,12 @@ and we create the diffustion equation for the solute as in
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
     ...     counterDiffusion = CkSum.getFaceGrad()
-    ...     phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
+    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
+    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
+    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
+    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
     ...     electromigration = Cj.valence * potential.getFaceGrad()
     ...     convectionCoeff = counterDiffusion + \
     ...         solvent.getHarmonicFaceValue() * (phaseTransformation + electromigration)
@@ -234,8 +244,12 @@ and we create the diffustion equation for the solute as in
     ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
     
     >>> for Cj in interstitials:
-    ...     phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...             + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
+    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
+    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
+    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
+    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
     ...     electromigration = Cj.valence * potential.getFaceGrad()
     ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()) * \
     ...         (phaseTransformation + electromigration)
@@ -267,13 +281,16 @@ If running interactively, we create viewers to display the results
     ...     phaseViewer.plot()
     ...     concViewer.plot()
     ...     potentialViewer.plot()
-    ...     raw_input()
+    ...     raw_input("Press a key to continue")
 
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver()
+
+    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> solver = LinearCGSSolver(tolerance = 1e-3)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
@@ -287,7 +304,7 @@ iterating to equilibrium
     >>> from fipy.viewers.tsvViewer import TSVViewer
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
     
-    >>> dt = substitutionals[0].diffusivity
+    >>> dt = substitutionals[0].diffusivity * 100
     >>> # dt = 1.
     >>> elapsed = 0.
     >>> maxError = 1e-1
@@ -299,14 +316,14 @@ iterating to equilibrium
     >>> residual = 0.
     >>> for i in range(500): # iterate
     ...     if thisTimeStep == 0.:
-    ...         tsv.plot(file = "%s.tsv" % str(elapsed * timeStep))
+    ...         tsv.plot(filename = "%s.tsv" % str(elapsed * timeStep))
     ...
     ...     for field in [phase, potential] + substitutionals + interstitials:
     ...         field.updateOld()
     ...
     ...     while 1:
-    ...         for j in range(3): # sweep
-    ...             print i, j, dt, residual
+    ...         for j in range(10): # sweep
+    ...             print i, j, dt * timeStep, residual
     ...             # raw_input()
     ...             residual = 0.
     ...                 
