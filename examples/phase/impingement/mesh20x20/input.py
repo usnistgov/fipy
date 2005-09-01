@@ -122,19 +122,12 @@ randomly oriented liquid phase
 Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
-    >>> def cornerCircle(cell, a = 1., b = 1., Lx = Lx):
-    ...     x = cell.getCenter()[0]
-    ...     y = cell.getCenter()[1]
-    ...     if ((x - a)**2 + (y - b)**2) < (Lx / 2.)**2:
-    ...         return 1
-    ...     else:
-    ...         return 0
-    
     >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
     ...                          (Lx, 0., -2. * pi / 3.), 
     ...                          (0., Lx, -2. * pi / 3. + 0.3), 
     ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     cells = mesh.getCells(filter = cornerCircle, a = a, b = b)
+    ...     cells = mesh.getCells(filter = lambda cell: \
+    ...             (cell.getCenter()[0] - a)**2 + (cell.getCenter()[1] - b)**2 < (Lx / 2.)**2)
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 
@@ -148,15 +141,16 @@ so that it can be reused later.
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     >>> def buildPhaseEquation(phase, theta):
+    ...
     ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
     ...     thetaMag = theta.getOld().getGrad().getMag()
     ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
     ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
-    ...     phaseEq = TransientTerm(phaseTransientCoeff) \
-    ...               - ExplicitDiffusionTerm(alpha**2) \
-    ...               + ImplicitSourceTerm(implicitSource) \
-    ...               - (mPhiVar > 0) * mPhiVar * phase
-    ...     return phaseEq
+    ...
+    ...     return TransientTerm(phaseTransientCoeff) == \
+    ...               ExplicitDiffusionTerm(alpha**2) \
+    ...               - ImplicitSourceTerm(implicitSource) \
+    ...               + (mPhiVar > 0) * mPhiVar * phase
 
     >>> phaseEq = buildPhaseEquation(phase, theta)
 
@@ -164,9 +158,7 @@ The `theta` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of `theta` on the circle.  The source term requires the
-evaluation of the face gradient without the modular operators. Thus a
-new subclass of `CellVariable` is created that uses the value of the
-`ModularVariable` but does not use its operators.
+evaluation of the face gradient without the modular operators.
 
     >>> def buildThetaEquation(phase, theta):
     ...
@@ -184,26 +176,13 @@ new subclass of `CellVariable` is created that uses the value of the
     ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
     ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
     ...
-    ...     class NonModularTheta(CellVariable):
-    ...         def __init__(self, modVar):
-    ...             CellVariable.__init__(self, mesh = modVar.getMesh())
-    ...             self.modVar = self._requires(modVar)
-    ...         def _calcValue(self):
-    ...             self.value = self.modVar[:]
-    ...    
-    ...     thetaNoMod = NonModularTheta(theta)
-    ...     thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
-    ...     from fipy.models.phase.phase.addOverFacesVariable \
-    ...         import AddOverFacesVariable
-    ...     sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, 
-    ...                                        faceVariable = diffusionCoeff)
+    ...     thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
+    ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
     ...
-    ...     transientTerm = TransientTerm(thetaTransientCoeff 
-    ...                                   * phaseModSq * pFunc)
     ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    ...     diffusionTerm = ImplicitDiffusionTerm(diffusionCoeff)
-    ...
-    ...     return transientTerm - diffusionTerm - sourceCoeff
+    ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
+    ...                ImplicitDiffusionTerm(diffusionCoeff) \
+    ...                + sourceCoeff
 
     >>> thetaEq = buildThetaEquation(phase, theta)
 
@@ -265,7 +244,8 @@ data. First, reset the variables to their original values.
     ...                          (Lx, 0., -2. * pi / 3.), 
     ...                          (0., Lx, -2. * pi / 3. + 0.3), 
     ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     cells = mesh.getCells(filter = cornerCircle, a = a, b = b)
+    ...     cells = mesh.getCells(filter = lambda cell: \
+    ...             (cell.getCenter()[0] - a)**2 + (cell.getCenter()[1] - b)**2 < (Lx / 2.)**2)
     ...     phase.setValue(1., cells)
     ...     theta.setValue(thetaValue, cells)
 

@@ -173,10 +173,11 @@ The source term is linearized in the manner demonstrated in
     >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
     >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-    >>> phaseEq = TransientTerm(phaseTransientCoeff) \
-    ...           - ExplicitDiffusionTerm(alpha**2) \
-    ...           + ImplicitSourceTerm(implicitSource) \
-    ...           - (mPhiVar > 0) * mPhiVar * phase
+The `phase` equation is constructed.
+
+    >>> phaseEq = TransientTerm(phaseTransientCoeff) == ExplicitDiffusionTerm(alpha**2) \
+    ...                                                 - ImplicitSourceTerm(implicitSource) \
+    ...                                                 + (mPhiVar > 0) * mPhiVar * phase
 
 The `theta` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main
@@ -199,28 +200,18 @@ discretization of `theta` on the circle.
     >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operators. Thus a new subclass of `CellVariable` is
-created that uses the value of the `ModularVariable` but does not use
-its operators.
+the modular operator. A method of `ModularVariable`, `getFaceGradNoMod()`,
+evelautes the gradient without modular arithmetic.
 
-    >>> class NonModularTheta(CellVariable):
-    ...     def __init__(self, modVar):
-    ...         CellVariable.__init__(self, mesh = modVar.getMesh())
-    ...         self.modVar = self._requires(modVar)
-    ...     def _calcValue(self):
-    ...         self.value = self.modVar[:]
-        
-    >>> thetaNoMod = NonModularTheta(theta)
-    >>> thetaGradDiff = theta.getFaceGrad() - thetaNoMod.getFaceGrad()
-    >>> from fipy.models.phase.phase.addOverFacesVariable \
-    ...     import AddOverFacesVariable
-    >>> sourceCoeff = AddOverFacesVariable(faceGradient = thetaGradDiff, 
-    ...                                    faceVariable = diffusionCoeff)
-    
+    >>> thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
+    >>> sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
+
+Finally the `theta` equation can be constructed.
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc)
-    >>> thetaEq -= ImplicitDiffusionTerm(diffusionCoeff)
-    >>> thetaEq -= sourceCoeff
+    >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
+    ...           ImplicitDiffusionTerm(diffusionCoeff) \
+    ...           + sourceCoeff
 
 If the example is run interactively, we create viewers for the phase
 and orientation variables.

@@ -63,6 +63,7 @@ class ModularVariable(CellVariable):
 	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self.arithmeticFaceValue = None
         self.grad = None
+        self.faceGradNoMod = None
         
     _modIn = """
     # define pi 3.141592653589793
@@ -133,3 +134,26 @@ class ModularVariable(CellVariable):
 	    self.faceGrad = _ModFaceGradVariable(self, self._modIn)
 
 	return self.faceGrad
+
+    def getFaceGradNoMod(self):
+        r"""
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorFaceVariable` (second-order gradient).
+        Not adjusted for a `ModularVariable`
+        """
+        
+        if self.faceGradNoMod is None:
+            class NonModularTheta(CellVariable):
+                def __init__(self, modVar):
+                    CellVariable.__init__(self, mesh = modVar.getMesh())
+                    self.modVar = self._requires(modVar)
+                def _calcValue(self):
+                    self.value = self.modVar[:]
+
+            self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
+
+        return self.faceGradNoMod

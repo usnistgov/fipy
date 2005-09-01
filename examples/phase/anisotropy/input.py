@@ -110,8 +110,8 @@ The parameters for these equations are
     >>> tempDiffusionCoeff = 2.25
     >>> theta = 0
 
-The `phase` variable is `0` for a liquid and `1` for a solid.  Here we
-build an example `phase` variable, initialized as a liquid,
+The `phase` variable is `0` for a liquid and `1` for a solid.  Here,
+the `phase` variable is initialized as a liquid,
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
@@ -151,7 +151,8 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 .. raw:: latex
   
-   The $m(\phi, T)$ is created from the `phase` and `temperature` variables.
+   The $m(\phi, T)$ variable is created from the `phase` and
+   `temperature` variables.
 
 ..
 
@@ -175,9 +176,26 @@ The temperature field is initialized to a value of `-0.4` throughout:
     >>> A = alpha**2 * c * (1.+ c * beta) * dbdpsi
     >>> D = alpha**2 * (1.+ c * beta)**2
 
+.. raw:: latex
+
+    The $\nabla \xi$ variable
+
+(`dxi`),
+
+.. raw:: latex
+
+    given by $(\xi_x, \xi_y) = (-\phi_y, \phi_x)$,
+    is constructed by first obtaining $\nabla \phi$
+    
+using `getFaceGrad()`. The axes are then swapped using
+`_take((1,0))` and finally the vector is multiplied by `(-1, 1)` to
+negate the x component.
+
     >>> dxi = phase.getFaceGrad()._take((1, 0), axis = 1) * (-1, 1)
     >>> anisotropySource = (A * dxi).getDivergence()
-        
+
+The phase equation can now be constructed.
+    
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
