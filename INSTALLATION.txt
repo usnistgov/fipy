@@ -296,17 +296,21 @@ in the `online CVS instructions`_.
 Manual
 ======
 
-You can `download the latest manual`_ or, if you have obtained |FiPy| via
-CVS_, a fresh copy can be built by issuing the following command in the
+You can `download the latest manual`_. Alternatively, it may be 
+possible to build a fresh copy by issuing the following command in the
 base directory::
 
     $ python setup.py build_docs --latex --manual
 
-The epydoc_ package and a command-line pdfTeX installation are required in
-order to build the manual.
+.. note::
+
+   This mechanism is intended primarily for the developers.  A
+   command-line pdfTeX installation and several |LaTeX| packages are
+   required; particularly ``memoir.cls``.  You will also need to add
+   ``~/path/to/fipy/utils`` to your ``PYTHONPATH`` environment
+   variable.
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-.. _epydoc:                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://epydoc.sourceforge.net/
 
 --------------
 Testing |FiPy|
@@ -405,6 +409,7 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |TeX| replace:: |latexTeX| |htmlTeX|
+.. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
 .. |documentation:CVS.txt| replace:: |latexCVS.txt| |htmlCVS.txt|
