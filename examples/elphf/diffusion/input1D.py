@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/9/05 {2:08:59 PM} 
+ #                                last update: 8/31/05 {11:53:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,24 +47,14 @@ multicomponent system can be expressed as
 
 .. raw:: latex
 
-   \begin{align*}
+   \begin{equation*}
        \label{eq:elphf:substitutional}
        \frac{\partial C_j}{\partial t}
-       &= D_{jj}\nabla^2 C_j \\
-       & \qquad + 
-           D_{j}\nabla\cdot 
+       = D_{jj}\nabla^2 C_j
+         + D_{j}\nabla\cdot 
            \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
-           \left\{
                \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
-               + 
-               C_n \left[
-                   p'(\xi) \Delta\mu_{jn}^{\circ}
-                   + g'(\xi) W_{jn}
-               \right] \nabla\xi
-               +
-               C_n z_{jn} \nabla \phi
-           \right\}
-   \end{align*}
+   \end{equation*}
 
 
 where 
@@ -131,24 +121,6 @@ simply by providing a `Tuple` or `list` of components
     >>> for component in substitutionals:
     ...     solvent -= component
 
-Although we are not interested in them for this problem, we create one
-field to represent the "phase" (1 everywhere)
-
-    >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1.)
-    
-and one field to represent the electrostatic potential (0 everywhere)
-
-    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
-
-Althought it is constant in this problem, in later problems we will need
-the following functions of the phase field
-
-    >>> def pPrime(xi):
-    ...     return 30. * (xi * (1 - xi))**2
-        
-    >>> def gPrime(xi):
-    ...     return 2 * xi * (1 - xi) * (1 - 2 * xi)
-    
 We separate the solution domain into two different concentration regimes
     
     >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
@@ -172,16 +144,8 @@ We create one diffusion equation for each substitutional component
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
-    ...     counterDiffusion = CkSum.getFaceGrad()
-    ...     phaseTransformation = \
-    ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
-    ...         + gPrime(phase.getHarmonicFaceValue()) \
-    ...             * Cj.barrier) * phase.getFaceGrad()
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
-    ...     convectionCoeff = counterDiffusion \
-    ...         + solvent.getHarmonicFaceValue() \
-    ...             * (phaseTransformation + electromigration)
-    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
+    ...     convectionCoeff = CkSum.getFaceGrad() \
+    ...                       * (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
     ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
