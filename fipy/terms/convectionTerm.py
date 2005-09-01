@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 8/10/05 {5:20:43 PM} 
+ #                                last update: 8/31/05 {1:57:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,9 +88,9 @@ class ConvectionTerm(FaceTerm):
              [ 0.,]])
             >>> ConvectionTerm(coeff = (1,))
             ConvectionTerm(coeff = (1,))
-            >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-            >>> PowerLawConvectionTerm(coeff = (1,)).solve(var = cv)
-            >>> PowerLawConvectionTerm(coeff = 1).solve(var = cv)
+            >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var = cv)
+            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
