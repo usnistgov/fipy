@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 8/26/05 {10:40:37 AM} 
+ #                                last update: 9/1/05 {4:55:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,7 +124,12 @@ class TSVViewer(Viewer):
         0.15	0.45	5	35	5
         """
         if filename is not None:
-            f = open(filename, "w")
+            import os
+            if os.path.splitext(filename)[1] == ".gz":
+                import gzip
+                f = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
+            else:
+                f = open(filename, "w")
         else:
             f = sys.stdout
         
