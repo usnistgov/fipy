@@ -52,7 +52,7 @@ solidification, and eventually dendritic growth, from a circular seed in a 2D me
     >>> dx = Length / nx
     >>> dy = Length / ny
     >>> radius = Length / 4.
-    >>> seed = (Length / 2., Length / 2.)
+    >>> seedCenter = (Length / 2., Length / 2.)
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx,dy,nx,ny)
     
@@ -126,10 +126,12 @@ necessary for a transient solution. In this example we wish to set up
 an interior region that is solid. A value of `1` is assigned to the
 `phase` variable on a patch defined by the method:
 
-The domain is seeded with parameters `seed` and `radius`.
+The domain is seeded with a circular solidified region with parameters
+`seedCenter` and `radius` represneting the center and radius of the seed.
    
     >>> interiorCells = mesh.getCells(filter = lambda cell: \
-    ...     (cell.getCenter()[0] - seed[0])**2 + (cell.getCenter()[1] - seed[1])**2 < radius**2)
+    ...     (cell.getCenter()[0] - seedCenter[0])**2 + \
+    ...     (cell.getCenter()[1] - seedCenter[1])**2 < radius**2)
     >>> phase.setValue(1.,interiorCells)
 
 The temperature field is initialized to a value of `-0.4` throughout:
