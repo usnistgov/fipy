@@ -19,6 +19,11 @@ Release Goals 1.0a3
 Release Goals 1.1
 -----------------
 
+- Dimensions are semi-broken, e.g., 
+  examples/elphf/diffusion/input1Ddimensional.py
+  Also, numerix inverse trig operations should return an angular
+  quantity, rather than a raw number.
+
 - Distribution
 
   * Get FiPy registered on:
