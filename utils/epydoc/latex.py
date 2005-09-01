@@ -702,10 +702,11 @@ class LatexFormatter:
             for param in fparam:
                 if param.listed_under(): continue
 ##                 str += ' '*10+'\\item[' + self._dotted(param.name())
-                str += ' '*10+'\\item[' + param.name()
+                str += ' '*10+'\\item[' + self._text_to_latex(param.name())
                 if param.shared_descr_params():
                     for p in param.shared_descr_params():
-                        str += ', %s' % self._dotted(p.name())
+##                         str += ', %s' % self._dotted(p.name())
+                        str += ', %s' % self._text_to_latex(p.name())
 ##                 str += ']\n\n'
                 str += ']'
                 if param.descr():
