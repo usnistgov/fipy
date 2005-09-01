@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 10/19/04 {2:52:01 PM} 
+ #                                last update: 8/23/05 {11:34:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,78 +57,105 @@ class ConvergenceError(ArithmeticError):
 	return s
 
 class Iterator:
-    """Generic equation iterator
     """
-    
-    def __init__(self,equations,timeStepDuration = None):
-	"""
-        Create an `Iterator`.
+    This simple iterator
+    """
+    def __init__(self, solve, preSolve = None, postSolve = None):
+        """
+        `preSolve`, `solve`, and `postSolve` are static functions to be
+        called before each solution iteration, for the iteration, and after
+        iterating, respectively.  
         
-	:Parameters:
-	    
-	      - `equations`: list or tuple of equations to iterate over
-	      - `timeStepDuration`: duration of each timestep (`Variable`)
-	"""
-        self.equations = equations
-	self.timeStepDuration = timeStepDuration
-	
-    def sweep(self, dt):
-	for equation in self.equations:
-	    equation.solve(dt)
-	converged = True
-	for equation in self.equations:
-	    converged = converged and equation._isConverged()
-	return converged
-	
-## 	if converged:
-## 	    break
-## 	elif maxSweeps > 1 and self.sweepCallback is not None:
-## 	    self.sweepCallback(self.equations)
-## ## 		print '\n'
-## ## 		for equation in self.equations:
-## ## 		    print str(equation) + ' has residual = ' + str(equation._getResidual())
-## ## 		print '\n'
-## ## 		equation.getVar().viewer.plot()
-## 
-## ## 		if (sweep + 1) % 10 == 0:
-## ## 		    sys.stdout.write('|')
-## ## 		else:
-## ## 		    sys.stdout.write('.')
-## ## 		sys.stdout.flush()
-## 	    sweeping = 1
-	    
+        `solve()` is the only function that is required and must be of the
+        form::
+            
+            def solve(dt):
+                eq1.solve(var = var1, dt = dt, ...)
+                eq2.solve(var = var2, dt = dt, ...)
+                eq3.solve(var = var3, dt = dt, ...)
+                  :
+                  :
+                
+                return residual
 
-	
-    def sweeps(self, maxSweeps = 1, dt = 1.):
-	converged = 0
-	sweeping = 0
-	for sweep in range(maxSweeps):
-	    converged = self.sweep(dt)
-	    
-	    if converged:
-		break
-		
-	if maxSweeps > 1 and not converged:
-	    raise ConvergenceError(self.equations)
-	
-    def advanceTimeStep(self):
-	for equation in self.equations:
-	    var = equation.getVar()
-	    var.updateOld()
-	    
-    def timestep(self, maxSweeps = 1, dt = 1.):
-	"""Iterate the solution.
-	
-	:Parameters:
-	    
-	  - `maxSweeps`: maximum number of sweeps to reach convergence
-	"""
-	
-	self.advanceTimeStep()
-	self.sweeps(maxSweeps, dt)
+        where you should actually solve the equations, sweeping if desired. 
+        
+        `residual` is a positive real number that you can determine any way
+        you like, although something of the form::
+            
+            residual = max(max(eq1.residual / eq1.maxError), max(eq2.residual / eq2.maxError), ...)
+            
+        is typical.  If `residual <= 1.`, the iterator will accelerate and
+        proceed to the next iteration, and if `residual > 1.`, it will
+        decelerate and reattempt the same iteration.
+        
+        `preSolve()` is where you will call `updateOld()` on your solution
+        variables, if desired.
+        
+        `postSolve()` is where you would adjust the timestep, if desired.
+        """
+        self._solve = solve
+        if preSolve is not None:
+            self._preSolve = preSolve
+        if postSolve is not None:
+            self._postSolve = postSolve
+            
+        self.residual = 0.
+            
+    def _preSolve():
+        pass
+    _preSolve = staticmethod(_preSolve)
+    
+    def _doPreSolve(self):
+        self._preSolve()
+        
+    def _postSolve(dtActual, dtTry):
+        pass
+    _postSolve = staticmethod(_postSolve)
+    
+    def _doPostSolve(self, dtActual):
+        self._postSolve(dtActual = dtActual, dtTry = self.dtTry)
+    
+    def _doSolve(self, dt):
+        return self._solve(dt = dt())
 
-    def elapseTime(self, desiredTime, maxSweepsPerStep = 1):
-	elapsedTime = 0.
-	while elapsedTime < desiredTime:
-	    self.timestep(maxSweeps = maxSweepsPerStep)
-	    elapsedTime += self.timeStepDuration
+    def step(self, dtTotal = 1., dtTry  = None, dtActual = None):
+        """
+        Takes one timestep of duration `dtTotal`, taking iterations of duration
+        `dtTry`.
+        
+        Returns the next `dtTry` to attempt.
+        """
+        
+        def makeVariable(x):
+            if x is None:
+                x = dtTotal
+            from fipy.variables.variable import Variable
+            if not isinstance(x, Variable):
+                x = Variable(value = x)
+            
+            return x
+
+        self.dtTotal = dtTotal
+        self.dtTry = makeVariable(dtTry)
+        dtActual = makeVariable(dtActual)
+        
+        self.elapsed = 0.
+        
+##         print "%20s | %20s | %20s" % ("elapsed", "next dt", "residual")
+        while 1:
+            dtActual.setValue(min(self.dtTry(), self.dtTotal - self.elapsed))
+            
+            self._doPreSolve()
+            self.residual = self._doSolve(dt = dtActual)
+
+            self.elapsed += dtActual()
+
+            self._doPostSolve(dtActual = dtActual)
+
+            if self.elapsed >= dtTotal:
+                return self.dtTry
+                
+##             print "%20g | %20g | %20g" % (self.elapsed, self.dtTry, self.residual)
+            import sys
+            sys.stdout.flush()
