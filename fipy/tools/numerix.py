@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 8/10/05 {3:36:12 PM} 
+ #                                last update: 8/31/05 {7:12:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,9 +63,8 @@ Take the tangent of an array.
    >>> tan(array((0,0,0)))
    [ 0., 0., 0.,]
    
-This module is building towards a '`Numerix`' module that will be the
-only place in the code where `Numeric` is imported.
-
+Eventually, this module will be the only place in the code where `Numeric` (or
+`numarray` (or `scipy_core`)) is explicitly imported.
 """
 
 __docformat__ = 'restructuredtext'
@@ -95,7 +94,7 @@ def _isPhysical(arr):
 
 def take(arr, ids, axis = 0):
     """
-    Provides the same functionality as `Numeric.take`.
+    Selects the elements of `arr` corresponding to `ids`.
     """
     
     if _isPhysical(arr):
@@ -111,7 +110,8 @@ def take(arr, ids, axis = 0):
     
 def put(arr, ids, values):
     """
-    Provides the same functionality as `Numeric.put`.
+    The opposite of `take`.  The values of `arr` at the locations specified by
+    `ids` are set to the corresponding value of `values`.
     """
     if _isPhysical(arr):
 	return arr.put(ids, values)
@@ -125,7 +125,9 @@ def put(arr, ids, values):
     
 def reshape(arr, shape):
     """
-    Provides the same functionality as `Numeric.reshape`.
+    Change the shape of `arr` to `shape`, as long as the product of all the
+    lenghts of all the axes is constant (the total number of elements does not
+    change).
     """
     if _isPhysical(arr):
 	return arr.reshape(shape)
@@ -138,7 +140,7 @@ def reshape(arr, shape):
 
 def getShape(arr):
     """
-    Return the shape of arr
+    Return the shape of `arr`
     """
     if _isPhysical(arr):
         return arr.getShape()
@@ -153,7 +155,7 @@ def getShape(arr):
     
 def sum(arr, index = 0):
     """
-    Provides the same functionality as `Numeric.sum`.
+    The sum of all the elements of `arr` along the specified axis.
     """
     if _isPhysical(arr):
 	return arr.sum(index)
@@ -164,6 +166,45 @@ def sum(arr, index = 0):
     else:        
 	raise TypeError, 'cannot sum object ' + str(arr)
 
+def tostring(arr, max_line_width = None, precision = None, suppress_small = None, separator = ' ', array_output = 0):
+    r"""
+    Returns a textual representation of a number or field of numbers.  Each
+    dimension is indicated by a pair of matching square brackets (`[]`), within
+    which each subset of the field is output.  The orientation of the dimensions
+    is as follows: the last (rightmost) dimension is always horizontal, so that
+    the frequent rank-1 fields use a minimum of screen real-estate.  The
+    next-to-last dimesnion is displayed vertically if present and any earlier
+    dimension is displayed with additional bracket divisions.
+    
+    :Parameters:
+        - `max\_line\_width`: the maximum number of characters used in a single
+          line.  Default is `sys.output_line_width` or 77.
+        - `precision`: the number of digits after the decimal point. Default is 
+          `sys.float_output_precision` or 8.
+        - `suppress_small`: whether small values should be suppressed (and 
+          output as `0`). Default is `sys.float_output_suppress_small` or `false`.
+        - `separator`: what character string to place between two numbers.
+        - `array_output`: Format output for an `eval`. Only used if `arr` is a 
+          `Numeric` `array`.
+    """
+    if _isPhysical(arr):
+        return arr.tostring(max_line_width = max_line_width, 
+                            precision = precision, 
+                            suppress_small = suppress_small, 
+                            separator = separator)
+    elif type(arr) in [type(array((0))), type(MA.array((0)))]:
+        return NUMERIC.array2string(arr, max_line_width = max_line_width, 
+                                    precision = precision, 
+                                    suppress_small = suppress_small, 
+                                    separator = separator, 
+                                    array_output = array_output)
+    elif type(arr) in [type(0), type(0.)]:
+        from ArrayPrinter import _floatFormat, _formatFloat
+        format, length = _floatFormat(array([arr]), precision = precision, suppress_small = suppress_small)
+        return _formatFloat(arr, format = format)
+    else:        
+        raise TypeError, 'cannot convert ' + str(arr) + ' to string'
+        
 ################################################
 #                                              #
 #   mathematical and trigonometric functions   #
@@ -180,19 +221,23 @@ def arccos(arr):
        
     ..
     
-        >>> print arccos(0.0)
-        1.57079632679
+        >>> print tostring(arccos(0.0), precision = 3)
+         1.571
         >>> print arccos(2.0)
         Traceback (most recent call last):
             ...
         OverflowError: math range error
-        >>> print arccos(array((0,0.5,1.0)))
-        [ 1.57079633, 1.04719755, 0.        ,]
+        >>> print tostring(arccos(array((0,0.5,1.0))), precision = 3)
+        [ 1.571  1.047  0.   ]
         >>> from fipy.variables.variable import Variable
         >>> arccos(Variable(value = (0,0.5,1.0)))
         numerix.arccos(Variable(value = [ 0. , 0.5, 1. ,]))
-        >>> print arccos(Variable(value = (0,0.5,1.0)))
-        [ 1.57079633, 1.04719755, 0.        ,] rad
+        
+    the next should really return radians, but doesn't
+    
+        >>> print tostring(arccos(Variable(value = (0,0.5,1.0))), precision = 3)
+        [ 1.571  1.047  0.   ]
+        
     """
     if _isPhysical(arr):
         return arr.arccos()
@@ -217,13 +262,13 @@ def arccosh(arr):
         Traceback (most recent call last):
             ...
         OverflowError: math range error
-        >>> print arccosh(array((1,2,3)))
-        [ 0.        , 1.3169579 , 1.76274717,]
+        >>> print tostring(arccosh(array((1,2,3))), precision = 3)
+        [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
         >>> arccosh(Variable(value = (1,2,3)))
         numerix.arccosh(Variable(value = [ 1., 2., 3.,]))
-        >>> print arccosh(Variable(value = (1,2,3)))
-        [ 0.        , 1.3169579 , 1.76274717,]
+        >>> print tostring(arccosh(Variable(value = (1,2,3))), precision = 3)
+        [ 0.     1.317  1.763]
     """
     if _isPhysical(arr):
         return arr.arccosh()
@@ -242,19 +287,22 @@ def arcsin(arr):
        
     ..
     
-        >>> print arcsin(1.0)
-        1.57079632679
+        >>> print tostring(arcsin(1.0), precision = 3)
+         1.571
         >>> print arcsin(2.0)
         Traceback (most recent call last):
             ...
         OverflowError: math range error
-        >>> print arcsin(array((0,0.5,1.0)))
-        [ 0.        , 0.52359878, 1.57079633,]
+        >>> print tostring(arcsin(array((0,0.5,1.0))), precision = 3)
+        [ 0.     0.524  1.571]
         >>> from fipy.variables.variable import Variable
         >>> arcsin(Variable(value = (0,0.5,1.0)))
         numerix.arcsin(Variable(value = [ 0. , 0.5, 1. ,]))
-        >>> print arcsin(Variable(value = (0,0.5,1.0)))
-        [ 0.        , 0.52359878, 1.57079633,] rad
+        
+    the next should really return radians, but doesn't
+
+        >>> print tostring(arcsin(Variable(value = (0,0.5,1.0))), precision = 3)
+        [ 0.     0.524  1.571]
     """
     if _isPhysical(arr):
         return arr.arcsin()
@@ -273,15 +321,15 @@ def arcsinh(arr):
        
     ..
 
-        >>> print arcsinh(1.0)
-        0.88137358702
-        >>> print arcsinh(array((1,2,3)))
-        [ 0.88137359, 1.44363548, 1.81844646,]
+        >>> print tostring(arcsinh(1.0), precision = 3)
+         0.881
+        >>> print tostring(arcsinh(array((1,2,3))), precision = 3)
+        [ 0.881  1.444  1.818]
         >>> from fipy.variables.variable import Variable
         >>> arcsinh(Variable(value = (1,2,3)))
         numerix.arcsinh(Variable(value = [ 1., 2., 3.,]))
-        >>> print arcsinh(Variable(value = (1,2,3)))
-        [ 0.88137359, 1.44363548, 1.81844646,]
+        >>> print tostring(arcsinh(Variable(value = (1,2,3))), precision = 3)
+        [ 0.881  1.444  1.818]
     """
     if _isPhysical(arr):
         return arr.arcsinh()
@@ -300,15 +348,18 @@ def arctan(arr):
        
     ..
     
-        >>> print arctan(1.0)
-        0.785398163397
-        >>> print arctan(array((0,0.5,1.0)))
-        [ 0.        , 0.46364761, 0.78539816,]
+        >>> print tostring(arctan(1.0), precision = 3)
+         0.785
+        >>> print tostring(arctan(array((0,0.5,1.0))), precision = 3)
+        [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
         >>> arctan(Variable(value = (0,0.5,1.0)))
         numerix.arctan(Variable(value = [ 0. , 0.5, 1. ,]))
-        >>> print arctan(Variable(value = (0,0.5,1.0)))
-        [ 0.        , 0.46364761, 0.78539816,] rad
+        
+    the next should really return radians, but doesn't
+
+        >>> print tostring(arctan(Variable(value = (0,0.5,1.0))), precision = 3)
+        [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
         return arr.arctan()
@@ -327,15 +378,18 @@ def arctan2(arr, other):
        
     ..
 
-        >>> print arctan2(3.0, 3.0)
-        0.785398163397
-        >>> print arctan2(array((0, 1, 2)), 2)
-        [ 0.        , 0.46364761, 0.78539816,]
+        >>> print tostring(arctan2(3.0, 3.0), precision = 3)
+         0.785
+        >>> print tostring(arctan2(array((0, 1, 2)), 2), precision = 3)
+        [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
         >>> arctan2(Variable(value = (0, 1, 2)), 2)
         (numerix.arctan2(Variable(value = [ 0., 1., 2.,]), 2))
-        >>> print arctan2(Variable(value = (0, 1, 2)), 2)
-        [ 0.        , 0.46364761, 0.78539816,] rad
+        
+    the next should really return radians, but doesn't
+
+        >>> print tostring(arctan2(Variable(value = (0, 1, 2)), 2), precision = 3)
+        [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
         return arr.arctan2(other)
@@ -359,15 +413,15 @@ def arctanh(arr):
        
     ..
     
-        >>> print arctanh(0.5)
-        0.549306144334
-        >>> print arctanh(array((0,0.25,0.5)))
-        [ 0.        , 0.25541281, 0.54930614,]
+        >>> print tostring(arctanh(0.5), precision = 3)
+         0.549
+        >>> print tostring(arctanh(array((0,0.25,0.5))), precision = 3)
+        [ 0.     0.255  0.549]
         >>> from fipy.variables.variable import Variable
         >>> arctanh(Variable(value = (0,0.25,0.5)))
         numerix.arctanh(Variable(value = [ 0.  , 0.25, 0.5 ,]))
-        >>> print arctanh(Variable(value = (0,0.25,0.5)))
-        [ 0.        , 0.25541281, 0.54930614,]
+        >>> print tostring(arctanh(Variable(value = (0,0.25,0.5))), precision = 3)
+        [ 0.     0.255  0.549]
     """
     if _isPhysical(arr):
         return arr.arctanh()
@@ -386,15 +440,15 @@ def cos(arr):
        
     ..
 
-        >>> print cos(2*pi/6)
-        0.5
-        >>> print cos(array((0,2*pi/6,pi/2)))
-        [  1.00000000e+00,  5.00000000e-01,  6.12323400e-17,]
+        >>> print tostring(cos(2*pi/6), precision = 3)
+         0.5
+        >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision = 3, suppress_small = 1)
+        [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
         >>> cos(Variable(value = (0,2*pi/6,pi/2), unit = "rad"))
         numerix.cos(Variable(value = PhysicalField([ 0.        , 1.04719755, 1.57079633,],'rad')))
-        >>> print cos(Variable(value = (0,2*pi/6,pi/2), unit = "rad"))
-        [  1.00000000e+00,  5.00000000e-01,  6.12323400e-17,]
+        >>> print tostring(cos(Variable(value = (0,2*pi/6,pi/2), unit = "rad")), suppress_small = 1)
+        [ 1.   0.5  0. ]
     """
     if _isPhysical(arr):
         return arr.cos()
@@ -415,13 +469,13 @@ def cosh(arr):
 
         >>> print cosh(0)
         1.0
-        >>> print cosh(array((0,1,2)))
-        [ 1.        , 1.54308063, 3.76219569,]
+        >>> print tostring(cosh(array((0,1,2))), precision = 3)
+        [ 1.     1.543  3.762]
         >>> from fipy.variables.variable import Variable
         >>> cosh(Variable(value = (0,1,2)))
         numerix.cosh(Variable(value = [ 0., 1., 2.,]))
-        >>> print cosh(Variable(value = (0,1,2)))
-        [ 1.        , 1.54308063, 3.76219569,]
+        >>> print tostring(cosh(Variable(value = (0,1,2))), precision = 3)
+        [ 1.     1.543  3.762]
     """
     if _isPhysical(arr):
         return arr.cosh()
@@ -440,15 +494,15 @@ def tan(arr):
        
     ..
 
-        >>> print tan(pi/3)
-        1.73205080757
-        >>> print tan(array((0,pi/3,2*pi/3)))
-        [ 0.        , 1.73205081,-1.73205081,]
+        >>> print tostring(tan(pi/3), precision = 3)
+         1.732
+        >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision = 3)
+        [ 0.     1.732 -1.732]
         >>> from fipy.variables.variable import Variable
         >>> tan(Variable(value = (0,pi/3,2*pi/3), unit = "rad"))
         numerix.tan(Variable(value = PhysicalField([ 0.        , 1.04719755, 2.0943951 ,],'rad')))
-        >>> print tan(Variable(value = (0,pi/3,2*pi/3), unit = "rad"))
-        [ 0.        , 1.73205081,-1.73205081,]
+        >>> print tostring(tan(Variable(value = (0,pi/3,2*pi/3), unit = "rad")), precision = 3)
+        [ 0.     1.732 -1.732]
     """
     if _isPhysical(arr):
         return arr.tan()
@@ -467,15 +521,15 @@ def tanh(arr):
        
     ..
 
-        >>> print tanh(1)
-        0.761594155956
-        >>> print tanh(array((0,1,2)))
-        [ 0.        , 0.76159416, 0.96402758,]
+        >>> print tostring(tanh(1), precision = 3)
+         0.762
+        >>> print tostring(tanh(array((0,1,2))), precision = 3)
+        [ 0.     0.762  0.964]
         >>> from fipy.variables.variable import Variable
         >>> tanh(Variable(value = (0,1,2)))
         numerix.tanh(Variable(value = [ 0., 1., 2.,]))
-        >>> print tanh(Variable(value = (0,1,2)))
-        [ 0.        , 0.76159416, 0.96402758,]
+        >>> print tostring(tanh(Variable(value = (0,1,2))), precision = 3)
+        [ 0.     0.762  0.964]
     """
     if _isPhysical(arr):
         return arr.tanh()
@@ -550,13 +604,13 @@ def sinh(arr):
 
         >>> print sinh(0)
         0.0
-        >>> print sinh(array((0,1,2)))
-        [ 0.        , 1.17520119, 3.62686041,]
+        >>> print tostring(sinh(array((0,1,2))), precision = 3)
+        [ 0.     1.175  3.627]
         >>> from fipy.variables.variable import Variable
         >>> sinh(Variable(value = (0,1,2)))
         numerix.sinh(Variable(value = [ 0., 1., 2.,]))
-        >>> print sinh(Variable(value = (0,1,2)))
-        [ 0.        , 1.17520119, 3.62686041,]
+        >>> print tostring(sinh(Variable(value = (0,1,2))), precision = 3)
+        [ 0.     1.175  3.627]
     """
     if _isPhysical(arr):
         return arr.sinh()
@@ -575,15 +629,15 @@ def sqrt(arr):
        
     ..
 
-        >>> print sqrt(2)
-        1.41421356237
-        >>> print sqrt(array((1,2,3)))
-        [ 1.        , 1.41421356, 1.73205081,]
+        >>> print tostring(sqrt(2), precision = 3)
+         1.414
+        >>> print tostring(sqrt(array((1,2,3))), precision = 3)
+        [ 1.     1.414  1.732]
         >>> from fipy.variables.variable import Variable
         >>> sqrt(Variable(value = (1, 2, 3), unit = "m**2"))
         numerix.sqrt(Variable(value = PhysicalField([ 1., 2., 3.,],'m**2')))
-        >>> print sqrt(Variable(value = (1, 2, 3), unit = "m**2"))
-        [ 1.        , 1.41421356, 1.73205081,] m
+        >>> print tostring(sqrt(Variable(value = (1, 2, 3), unit = "m**2")), precision = 3)
+        [ 1.     1.414  1.732] m
 
     """
     if _isPhysical(arr):
@@ -678,15 +732,15 @@ def log(arr):
        
     ..
 
-        >>> print log(10)
-        2.30258509299
-        >>> print log(array((0.1,1,10)))
-        [-2.30258509, 0.        , 2.30258509,]
+        >>> print tostring(log(10), precision = 3)
+         2.303
+        >>> print tostring(log(array((0.1,1,10))), precision = 3)
+        [-2.303  0.     2.303]
         >>> from fipy.variables.variable import Variable
         >>> log(Variable(value = (0.1,1,10)))
         numerix.log(Variable(value = [  0.1,  1. , 10. ,]))
-        >>> print log(Variable(value = (0.1,1,10)))
-        [-2.30258509, 0.        , 2.30258509,]
+        >>> print tostring(log(Variable(value = (0.1,1,10))), precision = 3)
+        [-2.303  0.     2.303]
     """
     if _isPhysical(arr):
         return arr.log()
@@ -816,7 +870,8 @@ def _sqrtDotIn(a1, a2):
 
 def allequal(first, second):
     """
-    Provides the same functionality as `Numeric.allequal`.
+    Returns `true` if every element of `first` is equal to the corresponding
+    element of `second`.
     """
     if _isPhysical(first):
         return first.allequal(second)
@@ -828,8 +883,14 @@ def allequal(first, second):
 	return MA.allequal(first, second)
 	    
 def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
-    """
-    Provides the same functionality as `Numeric.allclose`.
+    r"""
+    Tests whether or not `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        | first - second | < atol + rtol * | second |
+        
+    This means essentially that both elements are small compared to `atol` or
+    their difference divided by `second`'s value is small compared to `rtol`.
     """
     if _isPhysical(first):
 	return first.allclose(other = second, atol = atol, rtol = rtol)
@@ -838,7 +899,6 @@ def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
     else:
 	return MA.allclose(first, second, atol = atol, rtol = rtol)
 
-# Necessary because LLNL hires stupidheads
 def MAtake(array, indices, fill = 0, axis = 0):
     """
     Replaces `MA.take`. `MA.take` does not always work when
