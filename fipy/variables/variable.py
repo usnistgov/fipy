@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/31/05 {4:57:00 PM} 
+ #                                last update: 9/2/05 {9:40:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1492,12 +1492,15 @@ class Variable:
             # This manipulation will give the scalar field shape (N, 1), which will
             # allow the desired operator shape of (N, D).
             """
-            try:
-                if numerix.getShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
-                    raise ValueError
-                from fipy.variables.newAxisVariable import _NewAxisVariable
-                var1 = _NewAxisVariable(var1)
-            except (ValueError, IndexError):
+            if len(var1array.shape) == 1:
+                try:
+                    if numerix.getShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
+                        raise ValueError
+                    from fipy.variables.newAxisVariable import _NewAxisVariable
+                    var1 = _NewAxisVariable(var1)
+                except (ValueError, IndexError):
+                    raise SyntaxError
+            else:
                 raise SyntaxError
                     
             return (var0, var1)

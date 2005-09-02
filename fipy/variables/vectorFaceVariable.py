@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 9/1/05 {4:22:23 PM} 
+ #                                last update: 9/2/05 {9:59:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -237,7 +237,8 @@ class VectorFaceVariable(Variable):
         vector field times cell centered field
 
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3))
+            >>> cv = CellVariable(mesh = mesh, value = (1,2,3))
+            >>> print vfv * cv
             Traceback (most recent call last):
                   ...
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
