@@ -218,7 +218,8 @@ structured and unstructured data. It does not display 3D
 data. Although stated as working on Windows, it does not seem to do a
 good job of rendering on this platform. Pygist_ works fine on other
 common platforms. Don't use Pygist_ if you wish to produce hard
-copies, as this facility doesn't work.
+copies, as this facility doesn't work. Gist seems to be unable to
+make contour plots on  x86_64 architectures running Linux.
 
 .. note::
 
