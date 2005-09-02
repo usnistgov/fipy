@@ -105,7 +105,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
                 maxz = max(max(self.vars[0]), value)
 
         numberOfContours = 10
-        smallNumber = 1e-8
+        smallNumber = 1e-7
         diff = maxz - minz
         
         if diff < smallNumber:            
@@ -116,9 +116,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         pylab.hsv()
 
         pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
-##        if self.colorbar is False:
         pylab.colorbar()
-##            self.colorbar = True
                             
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))
