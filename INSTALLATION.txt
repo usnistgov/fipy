@@ -227,6 +227,13 @@ make contour plots on  x86_64 architectures running Linux.
    X`_, you may wish to to build the package with the ``--x11`` option
    described in its documentation.
 
+.. note::
+
+   Pygist_ can have problems finding color pallets, such as 'heat.gp'
+   and 'work.gs', when installed locally. A fix for this problem is to
+   copy the required pallets into the local directory. The color
+   pallets are in 'src/gist/g' of the base Pygist_ installation.
+
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 
