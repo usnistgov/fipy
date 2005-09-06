@@ -110,7 +110,7 @@ and is initialized to liquid everywhere
 The orientation is initialized to a uniform value to denote the
 randomly oriented liquid phase
 
-    >>> from fipy.models.phase.theta.modularVariable import ModularVariable
+    >>> from fipy.variables.modularVariable import ModularVariable
     >>> pi = numerix.pi
     >>> theta = ModularVariable(
     ...     name = 'Theta',

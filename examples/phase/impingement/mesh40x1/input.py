@@ -145,7 +145,7 @@ we must use `ModularVariable` instead of a `CellVariable`. A
 
 subtraction operator between two angles.
 
-    >>> from fipy.models.phase.theta.modularVariable import ModularVariable
+    >>> from fipy.variables.modularVariable import ModularVariable
     >>> theta = ModularVariable(
     ...     name = 'Theta',
     ...     mesh = mesh,

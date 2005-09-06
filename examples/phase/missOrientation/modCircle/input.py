@@ -129,7 +129,7 @@ mesh = Grid2D(dx, dy, nx, ny)
 from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.models.phase.theta.modularVariable import ModularVariable
+from fipy.variables.modularVariable import ModularVariable
 from fipy.tools import numerix
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
 theta.setValue(-2. * numerix.pi / 3., mesh.getCells(

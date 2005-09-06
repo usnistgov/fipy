@@ -128,7 +128,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.models.phase.theta.modularVariable import ModularVariable
+from fipy.variables.modularVariable import ModularVariable
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
 theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L / 2.))
 
