@@ -45,9 +45,6 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(
-        testModuleNames = (
-            'testLevel2',
-        ),
         docTestModuleNames = (
             'mesh1D.input',
             'circle.input',

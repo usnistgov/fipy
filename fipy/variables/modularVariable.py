@@ -47,6 +47,39 @@ class ModularVariable(CellVariable):
 
         $-\pi$ and $\pi$
 
+    The following examples show how `ModularVariable` works. When
+    subtracting the answer wraps back around the circle.
+
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx = 2)
+        >>> from fipy.tools import numerix
+        >>> pi = numerix.pi
+        >>> v1 = ModularVariable(mesh = mesh, value = (2*pi/3, -2*pi/3))
+        >>> v2 = ModularVariable(mesh = mesh, value = -2*pi/3)
+        >>> print numerix.allclose(v2 - v1, (2*pi/3, 0))
+        1
+
+    Obtaining the arithmetic face value.
+
+        >>> print numerix.allclose(v1.getArithmeticFaceValue(), (2*pi/3, -pi, -2*pi/3))
+        1
+
+    Obtaining the gradient.
+
+        >>> print numerix.allclose(v1.getGrad(), (pi/3, pi/3))
+        1
+
+    Obtaining the gradient at the faces.
+
+        >>> print numerix.allclose(v1.getFaceGrad(), [[0], [2*pi/3], [0]])
+        1
+        
+    Obtaining the gradient at the faces but without modular
+    arithmetic.
+
+        >>> print numerix.allclose(v1.getFaceGradNoMod(), [[0], [-4*pi/3], [0]])
+        1
+        
     """    
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
         """
@@ -71,7 +104,7 @@ class ModularVariable(CellVariable):
     """
 
     def _setValue(self, value, unit = None, array = None):
-        from fipy.models.phase.theta.modPhysicalField import _ModPhysicalField
+        from fipy.variables.modPhysicalField import _ModPhysicalField
 	self.value = _ModPhysicalField(value = value, unit = unit, array = array)
 	
     def updateOld(self):
@@ -95,7 +128,7 @@ class ModularVariable(CellVariable):
         """
 	if self.grad is None:
 
-            from fipy.models.phase.theta.modCellGradVariable import _ModCellGradVariable
+            from fipy.variables.modCellGradVariable import _ModCellGradVariable
             self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
 
 	return self.grad
@@ -157,3 +190,10 @@ class ModularVariable(CellVariable):
             self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
 
         return self.faceGradNoMod
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

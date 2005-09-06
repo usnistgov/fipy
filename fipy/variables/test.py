@@ -58,6 +58,7 @@ def _suite():
             'fipy.variables.gammaNoiseVariable',
             'fipy.variables.gaussianNoiseVariable',
             'fipy.variables.uniformNoiseVariable',
+            'fipy.variables.modularVariable',
         ))
     
 if __name__ == '__main__':
