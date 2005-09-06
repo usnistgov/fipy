@@ -53,12 +53,14 @@ solidification, and eventually dendritic growth, from a circular seed in a 2D me
     >>> dy = Length / ny
     >>> radius = Length / 4.
     >>> seedCenter = (Length / 2., Length / 2.)
+    >>> initialTemperature = -0.4
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx,dy,nx,ny)
     
 Dendritic growth will not be observed with this small test system. If
-you wish to see dendritic growth reset the following parameters:
-``numberOfCells = 200``, ``steps = 10000``, ``radius = Length / 80``.
+you wish to see dendritic growth reset the following parameters such
+that ``numberOfCells = 500``, ``steps = 10000``, ``radius = dx * 5.``
+``seedCenter = (0. , 0.)`` and ``initialTemperature = -0.5``.
 
 The governing equation for the phase field is given by:
 
@@ -139,7 +141,7 @@ The temperature field is initialized to a value of `-0.4` throughout:
     >>> temperature = CellVariable(
     ...     name = 'temperature',
     ...     mesh = mesh,
-    ...     value = -0.4,
+    ...     value = initialTemperature,
     ...     hasOld = 1
     ...     )
 

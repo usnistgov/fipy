@@ -86,8 +86,7 @@ Here the phase equation is solved with an explicit technique.
 The solution is allowed to evolve for `steps = 100` time steps.
 
    >>> for step in range(steps):
-   ...     phase.updateOld()
-   ...     eq.solve(phase, dt = timeStepDuration)
+   ...     phaseEq.solve(phase, dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
@@ -110,69 +109,48 @@ data and compares it with the `theta` variable.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.phase.phase.type1MPhiVariable import Type1MPhiVariable
-from fipy.models.phase.theta.modularVariable import ModularVariable
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-
 steps = 100
 timeStepDuration = 0.02
 L = 1.5
 nx = 100
-ny = 1
-
-phaseParameters={
-   'tau' :        0.1,
-   'epsilon' :    0.008,
-   's' :          0.01,
-   'alpha' :      0.015,
-   'c2':          0.0,
-   'anisotropy':  0.,
-   'symmetry':    4.
-   }
-      
-valueLeft=1.
-valueRight=1.
-      
-dx = L / nx
-dy = L / ny
-
-mesh = Grid2D(dx, dy, nx, ny)
-            
-phase = CellVariable(
-   name = 'PhaseField',
-   mesh = mesh,
-   value = 1.
-   )
-      
-theta = ModularVariable(
-   name = 'Theta',
-   mesh = mesh,
-   value = 1.,
-   hasOld = 0
-   )
-      
-rightCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L / 2.)
-
-theta.setValue(0., rightCells)
-
+temperature = 1.
+phaseTransientCoeff = 0.1
+epsilon = 0.008
+s = 0.01
+alpha = 0.015
 temperature = 1.
 
-from fipy.models.phase.phase.phaseEquation import buildPhaseEquation
-eq = buildPhaseEquation(
-   phase = phase,
-   mPhi = Type1MPhiVariable,
-   temperature = temperature,
-   theta = theta,
-   parameters = phaseParameters
-   )
+dx = L / nx
+
+from fipy.meshes.grid1D import Grid1D
+mesh = Grid1D(dx = dx, nx = nx)
+
+from fipy.variables.cellVariable import CellVariable
+phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
+
+from fipy.models.phase.theta.modularVariable import ModularVariable
+theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
+theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L / 2.))
+
+from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
+thetaMag = theta.getOld().getGrad().getMag()
+implicitSource = mPhiVar * (phase - (mPhiVar < 0))
+implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
+
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+phaseEq = TransientTerm(phaseTransientCoeff) == \
+          ExplicitDiffusionTerm(alpha**2) \
+          - ImplicitSourceTerm(implicitSource) \
+          + (mPhiVar > 0) * mPhiVar * phase
 
 if __name__ == '__main__':
+   
+   import fipy.viewers
    phaseViewer = fipy.viewers.make(vars = phase)
    phaseViewer.plot()
    for step in range(steps):
-      phase.updateOld()
-      eq.solve(phase, dt = timeStepDuration)
+      phaseEq.solve(phase, dt = timeStepDuration)
       phaseViewer.plot()
    raw_input('finished')
