@@ -2,19 +2,31 @@
 Future Work
 -----------
 
-Release Goals 1.0a3
+Release Goals 1.0
 -------------------
+
+- Errors:
+
+  * 4th order input line
+  * numerix trig errors - catch better
+  * FAQ item - SciPy weave - "rebuilding blah blah" - fixed in SciPy 
+    CVS/Subversion?
 
 - Documentation:
 
   * Review all for accuracy/consistency.
   * Include some examples on the web page.
   * Add more figures to examples
+  * fipy.terms.centralDiffConvectionTerm "Attention!" grabs the 
+    following test case. Check for other instances.
+  * Webpage "Download" and "Superfill" links.
 
 - Distribution
 
   * Install and test with no write permissions.
   * PySparse doesn't build from CVS on Mac OS X with Python 2.4?
+    Patch submitted to Geus but not seen?
+  * PySparse; f2c issues on RedHat?
 
 Release Goals 1.1
 -----------------
