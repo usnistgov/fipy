@@ -54,7 +54,7 @@ Operating System
 ================
 
 |FiPy| has been developed and tested on the following operating
-systems, `Mac OS X`_ 10.3, `Debian Linux`_ 3.0, `Windows XP`_ and
+systems, `Mac OS X`_ 10.3 & 10.4, `Debian Linux`_ 3.0, `Windows XP`_ and
 `Windows 2000`_.  We welcome reports of compatibility with other
 systems, along with any steps necessary to install.
 
@@ -82,6 +82,17 @@ Required Packages
 .. warning::
 
    |FiPy| will not run if the following items are not installed.
+
+.. attention::
+
+   On some platforms, it may be possible to satisfy most, if not all,
+   of the following prerequisites by installing the "Enthought 
+   Edition of Python (Enthon)". We are aware of `Enthon for Windows`_
+   and `Enthon for Mac OS X`_.
+
+   .. _Enthon for Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.enthought.com/python/
+   .. _Enthon for Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?http://www.scipy.org/wikis/featurerequests/MacEnthon
+
 
 Python
 ------
