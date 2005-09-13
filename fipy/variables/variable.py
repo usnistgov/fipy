@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/2/05 {9:40:59 AM} 
+ #                                last update: 9/2/05 {10:18:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1487,10 +1487,12 @@ class Variable:
         
         def _rotateShape(var0, var1, var0array, var1array):
             """
-            # A scalar variable multiplying/dividing a vector variable will
-            # fail because the scalar field has shape (N,) and the vector field has shape (N, D)
-            # This manipulation will give the scalar field shape (N, 1), which will
-            # allow the desired operator shape of (N, D).
+            A scalar variable multiplying/dividing a vector variable will
+            fail because the scalar field has shape (N,) and the vector field has shape (N, D)
+            This manipulation will give the scalar field shape (N, 1), which will
+            allow the desired operator shape of (N, D).
+            
+            We *only* do this rotation if var1array is rank 1.
             """
             if len(var1array.shape) == 1:
                 try:
