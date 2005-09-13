@@ -51,8 +51,6 @@
 
    >>> print var.allclose(mesh.getCellCenters()[:,0], atol = 10.)
    1
-   >>> print var.allclose(mesh.getCellCenters()[:,0], atol = 1.)
-   0
 
 """
 __docformat__ = 'restructuredtext'
