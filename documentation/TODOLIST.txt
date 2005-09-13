@@ -27,6 +27,7 @@ Release Goals 1.0
   * PySparse doesn't build from CVS on Mac OS X with Python 2.4?
     Patch submitted to Geus but not seen?
   * PySparse; f2c issues on RedHat?
+  * Fedora Core 4 installation. SourceForge compilefarm?
 
 Release Goals 1.1
 -----------------
