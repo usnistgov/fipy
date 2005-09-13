@@ -54,7 +54,7 @@ Operating System
 ================
 
 |FiPy| has been developed and tested on the following operating
-systems, `Mac OS X`_ 10.3 & 10.4, `Debian Linux`_ 3.0, `Windows XP`_ and
+systems, `Mac OS X`_ 10.3 & 10.4, `Debian Linux`_ 3.1, `Windows XP`_ and
 `Windows 2000`_.  We welcome reports of compatibility with other
 systems, along with any steps necessary to install.
 
