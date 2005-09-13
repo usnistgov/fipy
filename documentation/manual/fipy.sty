@@ -84,6 +84,8 @@
 
 \DeclareMathOperator{\erf}{erf}
 
+\usepackage{xr-hyper}
+
 % \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
 \RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
 
@@ -615,7 +617,7 @@
         \begin{cminipage}[light-gray]
     }{%
         \ifthenelse{\equal{#1}{Warning}}{%
-            \begin{cminipage}[hazy-yellow]
+            \begin{cminipage}[hazy-red] %[hazy-yellow]
         }{%
             \ifthenelse{\equal{#1}{Attention!}}{%
                 \begin{cminipage}[hazy-orange]
