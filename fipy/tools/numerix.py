@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 8/31/05 {7:12:19 PM} 
+ #                                last update: 9/13/05 {1:02:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -223,10 +223,16 @@ def arccos(arr):
     
         >>> print tostring(arccos(0.0), precision = 3)
          1.571
-        >>> print arccos(2.0)
-        Traceback (most recent call last):
-            ...
-        OverflowError: math range error
+         
+    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
+    OverflowError: math range error
+    
+        >>> try: 
+        ...     print str(arccos(2.0)) == "nan"
+        ... except OverflowError:
+        ...     pass
+        1
+
         >>> print tostring(arccos(array((0,0.5,1.0))), precision = 3)
         [ 1.571  1.047  0.   ]
         >>> from fipy.variables.variable import Variable
@@ -258,10 +264,16 @@ def arccosh(arr):
     
         >>> print arccosh(1.0)
         0.0
-        >>> print arccosh(0.0)
-        Traceback (most recent call last):
-            ...
-        OverflowError: math range error
+
+    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
+    OverflowError: math range error
+    
+        >>> try: 
+        ...     print str(arccosh(0.0)) == "nan"
+        ... except OverflowError:
+        ...     pass
+        1
+
         >>> print tostring(arccosh(array((1,2,3))), precision = 3)
         [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
@@ -289,10 +301,16 @@ def arcsin(arr):
     
         >>> print tostring(arcsin(1.0), precision = 3)
          1.571
-        >>> print arcsin(2.0)
-        Traceback (most recent call last):
-            ...
-        OverflowError: math range error
+         
+    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
+    OverflowError: math range error
+    
+        >>> try: 
+        ...     print str(arcsin(2.0)) == "nan"
+        ... except OverflowError:
+        ...     pass
+        1
+
         >>> print tostring(arcsin(array((0,0.5,1.0))), precision = 3)
         [ 0.     0.524  1.571]
         >>> from fipy.variables.variable import Variable
