@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialNoiseVariable.py"
  #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 8/29/05 {11:10:05 AM} 
+ #                                last update: 9/13/05 {5:05:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,7 +90,7 @@ class ExponentialNoiseVariable(NoiseVariable):
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
 
     .. image:: fipy/variables/exp.jpg
-      :scale: 25
+      :scale: 50
       :align: center
 
     but that the root-volume-weighted histogram is Gaussian.

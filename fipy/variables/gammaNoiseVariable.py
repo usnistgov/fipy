@@ -4,7 +4,7 @@
  # 
  #  FILE: "gammaNoiseVariable.py"
  #                                    created: 8/26/05 {10:09:50 PM} 
- #                                last update: 8/29/05 {11:40:17 AM} 
+ #                                last update: 9/13/05 {5:05:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,7 @@ class GammaNoiseVariable(NoiseVariable):
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
 
     .. image:: fipy/variables/gamma.jpg
-      :scale: 25
+      :scale: 50
       :align: center
 
     but that the root-volume-weighted histogram is Gaussian.

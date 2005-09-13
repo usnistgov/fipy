@@ -4,7 +4,7 @@
  # 
  #  FILE: "betaNoiseVariable.py"
  #                                    created: 8/26/05 {11:37:57 PM} 
- #                                last update: 8/29/05 {11:10:27 AM} 
+ #                                last update: 9/13/05 {5:04:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,7 @@ class BetaNoiseVariable(NoiseVariable):
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
 
     .. image:: fipy/variables/beta.jpg
-      :scale: 25
+      :scale: 50
       :align: center
 
     but that the root-volume-weighted histogram is Gaussian.

@@ -4,7 +4,7 @@
  # 
  #  FILE: "uniformNoiseVariable.py"
  #                                    created: 8/26/05 {3:08:48 PM} 
- #                                last update: 8/26/05 {5:20:10 PM} 
+ #                                last update: 9/13/05 {5:05:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ class UniformNoiseVariable(NoiseVariable):
         ...         histoplot.plot()
 
     .. image:: fipy/variables/uniform.jpg
-       :scale: 25
+       :scale: 50
        :align: center
 
     .. image:: fipy/variables/uni-histogram.pdf
