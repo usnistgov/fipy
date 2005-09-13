@@ -313,6 +313,14 @@
             taking too large a timestep or by using explicit terms instead of
             implicit ones.
             
+            \item ``\texttt{repairing catalog by removing key}''
+            
+            This message (not really an error, but causes test 
+            failures) can result when using the \SciPy{} \weave{} 
+            package via the verb+--inline+ flag. It is due to a bug
+            in \SciPy{} that has been patched in their source 
+            repository: \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
+            
         \end{itemize}
 
     \item[What if my question isn't answered here?]  
