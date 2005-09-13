@@ -8,9 +8,6 @@ Release Goals 1.0
 - Errors:
 
   * 4th order input line
-  * numerix trig errors - catch better
-  * FAQ item - SciPy weave - "rebuilding blah blah" - fixed in SciPy 
-    CVS/Subversion?
 
 - Documentation:
 
@@ -20,6 +17,7 @@ Release Goals 1.0
   * fipy.terms.centralDiffConvectionTerm "Attention!" grabs the 
     following test case. Check for other instances.
   * Webpage "Download" and "Superfill" links.
+  * Example figures on webpage.
 
 - Distribution
 
