@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:43:13 PM} { 2:45:36 PM}
+ #                                last update: 9/2/05 {10:48:31 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,18 +50,8 @@ from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib1DViewer(MatplotlibViewer):
     """
-    Displays a y vs. x plot of one or more 1D `CellVariable` objects.
-    Usage
-
-    ::
-    
-       viewer = Matplotlib1DViewer(vars = (<CellVariable>, ... ),
-                                   limits = {'xmin': .., 'xmax' : .., 
-                                             'datamin' : .. 'datamax' : ..},
-                                   title = 'myTitle')
-       viewer.plot()
-
-    The `Matplotlib1DViewer` plots a 1D `CellVariable` using Matplotlib_.
+    Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
+    Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 

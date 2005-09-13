@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 7/12/05 {1:17:58 PM}
+ #                                last update: 9/2/05 {10:49:10 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,12 +69,7 @@ class FixedValue(BoundaryCondition):
         coefficient.
 
     Contributions are only added to entries corresponding to the
-    specified faces. Usage:
-
-    ::
-
-        FixedValue((<Face>, ...), <Float>)
-       
+    specified faces.
     """
 
     
