@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 8/9/05 {4:07:56 PM} 
+ #                                last update: 9/2/05 {10:46:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,11 +55,7 @@ class LinearScipyCGSolver(Solver):
     coefficient matrix.
 
     The `LinearScipyCGSolver` is a wrapper class for the the Scipy_
-    `scipy.linalg.iterative.cg` method. Usage
-
-    ::
-
-        solver = LinearScipyCGSolver(tolerance = 1e-10, steps = 1000)
+    `scipy.linalg.iterative.cg` method.
 
     .. _Scipy: http://www.scipy.org
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 7/6/05 {5:04:06 PM} 
+ #                                last update: 9/2/05 {2:07:28 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -55,13 +55,8 @@ class UpwindConvectionTerm(ConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the upwind convection scheme.
-       For further details see Section 3.5 of the main \FiPy{}
-       guide~\cite{FiPyGuide}.
-
-    Usage ::
-
-        UpwindConvectionTerm(coeff = <VectorFaceVariable|Float>)
-    
+       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
     
     class _Alpha(FaceVariable):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:36 PM} 
+ #                                last update: 9/2/05 {10:47:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,11 +56,7 @@ class LinearScipyGMRESSolver(Solver):
     matrix.
 
     The `LinearScipyGMRESSolver` is a wrapper class for the the
-    Scipy_ `linalg.iterative.gmres` method. Usage
-
-    ::
-
-        solver = LinearScipyGMRESSolver(tolerance = 1e-10, steps = 1000)
+    Scipy_ `linalg.iterative.gmres` method.
 
     .. _Scipy: http://www.scipy.org
 

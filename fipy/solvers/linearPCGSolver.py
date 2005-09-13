@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 8/9/05 {4:06:38 PM} 
+ #                                last update: 9/2/05 {10:46:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,11 +59,7 @@ class LinearPCGSolver(Solver):
     positive definite coefficient matrix.
 
     The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg` and `precon.ssor` methods. Usage:
-
-    ::
-
-        solver = LinearPCGSolver(tolerance = 1e-10, steps = 1000)
+    `itsolvers.pcg` and `precon.ssor` methods.
 
     .. _PySparse: http://pysparse.sourceforge.net
     

@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:39 PM} 
+ #                                last update: 9/2/05 {10:38:29 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,11 +58,7 @@ class LinearGMRESSolver(Solver):
     coefficient matrix.
 
     The `LinearGMRESSolver` is a wrapper class for the the PySparse_
-    `itsolvers.gmres` and `precon.jacobi` methods. Usage:
-
-    ::
-
-        solver = LinearGMRESSolver(tolerance = <Float>, steps = <Integer>)
+    `itsolvers.gmres` and `precon.jacobi` methods.
 
     .. _PySparse: http://pysparse.sourceforge.net
     

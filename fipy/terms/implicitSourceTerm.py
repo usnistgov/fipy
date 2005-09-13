@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 7/6/05 {4:24:38 PM} 
+ #                                last update: 9/2/05 {10:45:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,19 +47,14 @@ from fipy.terms.sourceTerm import SourceTerm
 class ImplicitSourceTerm(SourceTerm):
     r"""
 
-    The `ImplicitSourceTerm` discretisation is given by
+    The `ImplicitSourceTerm` represents
 
     .. raw:: latex
 
-       $$ \int_V \phi S \,dV \simeq \phi_P S_P V_P $$ where $S$ is the
+       \[ \int_V \phi S \,dV \simeq \phi_P S_P V_P \] where $S$ is the
 
     `coeff` value and in general should be negative to maintain
     stability.       
-
-    Usage ::
-
-        ImplicitSourceTerm(coeff = <CellVariable|Float>)
-
     """
     def _getWeight(self, mesh):
 	return {

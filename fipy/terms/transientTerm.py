@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 8/8/05 {4:54:20 PM} 
+ #                                last update: 9/2/05 {10:40:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,19 +46,15 @@ from fipy.terms.cellTerm import CellTerm
 
 class TransientTerm(CellTerm):
     r"""
-    The `TransientTerm` is discretized in the following way
+    The `TransientTerm` represents
     
     .. raw:: latex
 
-       $$ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
-       \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_P^\text{old}) V_P}{\Delta t} $$
+       \[ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
+       \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_P^\text{old}) V_P}{\Delta t} \]
        where $\rho$ is the
 
     `coeff` value.
-
-    Usage ::
-
-        TransientTerm(coeff = <CellVariable|Float>)
 
     The following test case verifies that variable coefficients and
     old coefficient values work correctly. We will solve the

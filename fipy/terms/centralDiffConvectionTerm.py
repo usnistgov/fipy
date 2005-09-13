@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 8/9/05 {4:04:33 PM} 
+ #                                last update: 9/2/05 {2:08:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,22 +43,17 @@ from fipy.variables.faceVariable import FaceVariable
 class CentralDifferenceConvectionTerm(ConvectionTerm):
     r"""
 
-    The discretization for the `CentralDifferenceConvectionTerm` is given by
+    The `CentralDifferenceConvectionTerm` represents
 
     .. raw:: latex
     
-       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
-       \cdot \vec{u})_f \phi_f A_f $$
+       \[ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f \]
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the central differencing scheme.
-       For further details see Section 3.5 of the main \FiPy{}
-       guide~\cite{FiPyGuide}.
-
-    Usage ::
-
-        CentralDifferenceConvectionTerm(coeff = <VectorFaceVariable|Float>)
-
+       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
     
     def _getDefaultSolver(self, solver):

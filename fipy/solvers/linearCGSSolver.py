@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {2:13:34 PM} 
+ #                                last update: 9/2/05 {10:49:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,11 +59,7 @@ class LinearCGSSolver(Solver):
     a general non-symmetric coefficient matrix.
 
     The `LinearCGSSolver` is a wrapper class for the the PySparse_
-    `itsolvers.cgs` method. Usage:
-
-    ::
-
-        solver = LinearCGSSolver(tolerance = <Float>, steps = <Integer>)
+    `itsolvers.cgs` method.
 
     .. _PySparse: http://pysparse.sourceforge.net
 
