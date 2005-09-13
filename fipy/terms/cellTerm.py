@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 8/10/05 {6:19:06 PM} 
+ #                                last update: 9/13/05 {5:19:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,6 +52,8 @@ from fipy.tools.sparseMatrix import _SparseMatrix
 class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
+    
+    ..
     
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy.variables.cellVariable import CellVariable

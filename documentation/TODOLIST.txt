@@ -5,18 +5,11 @@ Future Work
 Release Goals 1.0
 -------------------
 
-- Errors:
-
-  * 4th order input line
-
 - Documentation:
 
   * Review all for accuracy/consistency.
   * Include some examples on the web page.
   * Add more figures to examples
-  * fipy.terms.centralDiffConvectionTerm "Attention!" grabs the 
-    following test case. Check for other instances.
-  * Webpage "Download" and "Superfill" links.
   * Example figures on webpage.
 
 - Distribution
