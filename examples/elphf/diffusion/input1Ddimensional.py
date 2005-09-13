@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/31/05 {2:47:11 PM} 
+ #                                last update: 9/2/05 {3:35:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,9 @@ r"""
 In this example, we present the same three-component diffusion problem 
 introduced in ``examples/elphf/diffusion/input1D.py``
 but we demonstrate FiPy's facility to use dimensional quantities.
+
+    >>> import warnings
+    >>> warnings.warn("\n\n\tSupport for physical dimensions is incomplete.\n\tIt is not possible to solve dimensional equations.\n")
 
     >>> from fipy.tools.dimensions.physicalField import PhysicalField
 
