@@ -67,10 +67,14 @@ The diffusion coefficient varies with the profile
 where 
 
     >>> L = 1.
-    
-is the length of the bar.  Accurate answers to this
-problem are given for any number of cells where `nCells = 4 * i + 2`
-where `i` is an integer and of course for large `nCells`. 
+
+.. raw:: latex
+
+    is the length of the bar.  Exact numerical answers to this problem
+    are given for numbers of cells, $N_i$, that satisfy $N_i = 4 i +
+    2$, where $i$ is an integer. Meshes with $N_i$ cells have cell
+    centers that lie at $L / 2$ and $3 L / 4$.
+
 In this example
 
     >>> nx = 10

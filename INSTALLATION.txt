@@ -127,9 +127,8 @@ Numeric
 http://sourceforge.net/projects/numpy
 
 Obtain and install the Numeric_ package. |FiPy| requires at least
-version 23.1 of Numeric_ but has not been tested with version 24. The
-newer Numarray_ package is not supported at this time. `Numeric
-Windows installers`_ are available.
+version 23.1 of Numeric_. The newer Numarray_ package is not supported
+at this time. `Numeric Windows installers`_ are available.
 
 .. note:: 
 
@@ -289,8 +288,7 @@ Obtaining |FiPy|
 ----------------
 
 |FiPy| is freely available for download via CVS_ or as a `compressed
-archive`_.  We recommend CVS_ over archives at this early stage of the
-development cycle.  To obtain |FiPy| via anonymous CVS, issue the following
+archive`_. To obtain |FiPy| via anonymous CVS, issue the following
 commands::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
@@ -365,11 +363,6 @@ have no failures.
 
        $ export PYTHONPATH=.:${PYTHONPATH}
        
-.. note::
-
-   The tests ``examples.diffusion.nthOrder.input4thOrder-line`` and
-   ``examples.elphf.diffusion.input1Ddimensional`` are expected to fail.
-
 -----------------
 Installing |FiPy|
 -----------------

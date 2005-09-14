@@ -30,18 +30,18 @@ in kilobytes. The Kobayashi code is given the heading of FORTRAN while
     Elements   |FiPy| (s)   |FiPy|             FORTRAN (s)   |FiPy|        FORTRAN
                             ``--inline`` (s)                 memory (KB)   memory (KB)
    ========== ============ ================== ============= ============= =============
-       100       0.282       0.230             0.0008         36056          812
-       400       0.402       0.285             0.0037         46752          884
-      1600       0.963       0.566             0.02           50512         1080
-      6400       4.04        1.94              0.19           65952         1920
-     25600      20.2         9.05              1.20          118048         5240
-    102400      81.0         36.4              4.43          309404        18480
+       100       0.282       0.230             0.0008         30068          812
+       400       0.402       0.285             0.0037         31260          884
+      1600       0.963       0.566             0.02           34280         1080
+      6400       4.04        1.94              0.19           47864         1920
+     25600      20.2         9.05              1.20           91872         5240
+    102400      81.0         36.4              4.43          269332        18480
    ========== ============ ================== ============= ============= =============
 
 The plain Python_ version of |FiPy|, which uses ``Numeric`` for all
-array operations, is around 25 times slower than the FORTRAN
+array operations, is around 18 times slower than the FORTRAN
 code. Utilizing the ``--inline`` flag, this penalty is reduced to
-about 10 times slower. In this example many of the ``Variable``
+about 8 times slower. In this example many of the ``Variable``
 objects have been given specialized classes where the C inlining has
 been explicitly defined. However, many variables have not been given
 this special treatment.
@@ -50,10 +50,9 @@ It is hoped that in future releases of |FiPy| the process of C
 inlining for ``Variable`` objects will be automated. This may result
 in some efficiency gains, greater than we are seeing for this
 particular problem since all the ``Variable`` objects will be
-inlined. Recent analysis has shown that a ``Variable`` with 9
-operations could be up to 9 times faster at calculating its value when
-inlined. Also a shift from the Numeric module to the Numarray module
-can gain a further factor of 2.
+inlined. Recent analysis has shown that a ``Variable`` with multiple
+operations could be up to 6 times faster at calculating its value when
+inlined.
 
 As presented in the above table, memory usage was also recorded for
 each |FiPy| simulation without the ``--inline`` flag. Inlining results
@@ -63,23 +62,24 @@ subtracted, each cell requires approximately 2.3 kilobytes of
 memory. Further analysis shows that the mesh requires about 0.7
 kilobytes of the 2.3 kilobytes total.
 
-This particular example is solving two fairly complex
-equations on a standard quadrilateral grid. For such a problem, one
-would hope to be using less than 0.5 kilobytes per cell, assuming
-allocation for old and current solution variables, sparse matrices,
-some intermediate variables of interest and mesh data. The following
-list highlights a number of areas that could dramatically reduce the
-memory requirement.
+This particular example, see section |IMPINGEMENT|, is solving two
+fairly complex equations on a standard quadrilateral grid. For such a
+problem, one would hope to be using less than 0.5 kilobytes per cell,
+assuming allocation for old and current solution variables, sparse
+matrices, some intermediate variables of interest and mesh data. The
+following list highlights a number of areas that could dramatically
+reduce the memory requirement.
 
 * Intermediate ``BinOps`` hold and store their values. If an assignment operator
-  could be found (e.g. ``:=``), then only `BinOps` on the LHS of such operators
+  could be found (e.g. ``:=``), then only ``BinOps`` on the LHS of such operators
   would store their arrays. The bulk of the memory in the above problem is probably being used
   for the large number of ``BinOps``.
 
 * ``Mesh`` objects needlessly calculate and store every geometric and topological
   array.  The ``_get`` methods could be required to call the ``_calc``  methods only on
-  the first request for a particular array. Since arrays are only created by the `_calc` methods
-  this could reduce the storage of needless arrays in the mesh.
+  the first request for a particular array. Since arrays are only created by the ``_calc`` methods
+  this could reduce the storage of needless arrays in the mesh. Alternatively ``Variable`` objects
+  could be used for basic mesh data.
 
 * Conceivably, ``Grid`` objects could be further specialization so they don't hold arrays at all.
   
@@ -97,5 +97,7 @@ memory requirement.
 
    \cite{WarrenPolycrystal}
 
-
+.. |IMPINGEMENT| raw:: latex
+   
+   \ref{sec:impingement}
 

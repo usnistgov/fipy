@@ -1,14 +1,14 @@
 The goal of \FiPy{} is to provide a highly customizable, open source
 code for modeling problems involving coupled sets of PDEs.  \FiPy{}
 allows users to select and customize modules from within the
-framework.  The initial implementation of \FiPy{} has been developed
-to address model problems in materials science such as poly-crystals,
-dendritic growth and electrochemical deposition.  These applications
-all contain various combinations of PDEs with differing forms in
-conjunction with other unusual physics (over varying length scales)
-and unique solution procedures.  The philosophy of \FiPy{} is to
-enable customization while providing a library of efficient modules
-for common objects and data types.
+framework.  \FiPy{} has been developed to address model problems in
+materials science such as poly-crystals, dendritic growth and
+electrochemical deposition.  These applications all contain various
+combinations of PDEs with differing forms in conjunction with other
+unusual physics (over varying length scales) and unique solution
+procedures.  The philosophy of \FiPy{} is to enable customization
+while providing a library of efficient modules for common objects and
+data types.
 
 \section{Design}
 
@@ -181,7 +181,8 @@ is more palatable to the computer than to the programmer.  Thus
 code first and then dealing with the issue of user interaction,
 initially implements most modules in high-level scripting language and
 only translates to low-level compiled code those portions that prove
-inefficient.
+inefficient. A discussion of efficiency issues can be found in
+Chapter~\ref{chap:Efficiency}.
 
 \subsection{\Python{} Programming Language}
 

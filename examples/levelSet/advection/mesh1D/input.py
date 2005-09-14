@@ -77,8 +77,7 @@ Construct the mesh.
    >>> from fipy.meshes.grid1D import Grid1D
    >>> mesh = Grid1D(dx = dx, nx = nx)
 
-Construct a `distanceVariable` object. This object is required by the
-`distanceEquation`.
+Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable

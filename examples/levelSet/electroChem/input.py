@@ -435,16 +435,10 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
 The function below is constructed to encapsulate the creation of the
 viewers.
 
-   >>> def buildViewers():
-   ...    import fipy.viewers
-   ...    resolution = 3
-   ...    cells = yCells * 2**(resolution-1)
-   ...    return (
-   ...        fipy.viewers.make(
-   ...            vars = distanceVar,
-   ...            limits = { 'datamin' : -1e-9 , 'datamax' : 1e-9 }),
-   ...        fipy.viewers.make(
-   ...            vars = acceleratorVar.getInterfaceVar()))
+   >>> if __name__ == '__main__':
+   ...     from fipy.viewers import make
+   ...     distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
+   ...     acceleratorViewer = make(acceleratorVar.getInterfaceVar())
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -463,9 +457,6 @@ is calculated with the CFL number and the maximum extension velocity.
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
 
 ..
-
-   >>> if __name__ == '__main__':
-   ...     viewers = buildViewers()
 
    >>> for step in range(numberOfSteps):
    ...
@@ -492,8 +483,8 @@ is calculated with the CFL number and the maximum extension velocity.
    ...                                   boundaryConditions = acceleratorBCs)
    ...
    ...     if __name__ == '__main__':
-   ...         for viewer in viewers:
-   ...             viewer.plot()
+   ...         distanceViewer.plot()
+   ...         acceleratorViewer.plot()
  
    >>> if __name__ == '__main__':
    ...     raw_input('finished')

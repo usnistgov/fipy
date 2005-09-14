@@ -170,7 +170,7 @@ as the "base directory", such that::
 
 will correspond to, *e.g.*::
 
-    /some/where/FiPy-0.1/examples/diffusion/steadyState/mesh1D/input.py
+    /some/where/FiPy-1.0/examples/diffusion/steadyState/mesh1D/input.py
 
 Paths will always be rendered using POSIX conventions.  Any references of
 the form::

@@ -43,10 +43,10 @@
 r"""
 
 Here we create a level set variable in one dimension. The level set
-variable calculates its value so that that value at any point in the
-domain is the distance from the zero level set. This can be
-represented succinctly in the following equation with a boundary
-condition at the zero level set such that,
+variable calculates its value over the domain to be the distance from
+the zero level set. This can be represented succinctly in the
+following equation with a boundary condition at the zero level set
+such that,
 
 .. raw:: latex
 
@@ -62,9 +62,7 @@ The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
    >>> dx = 0.5
-   >>> dy = 2.
    >>> nx = 10
-   >>> ny = 1
 
 Construct the mesh.
 
@@ -77,8 +75,14 @@ Construct a `distanceVariable` object.
    ...     import DistanceVariable
    >>> var = DistanceVariable(name = 'level set variable',
    ...                        mesh = mesh,
-   ...                        value = (1,1,1,1,1,-1,-1,-1,-1,-1),
+   ...                        value = -1,
    ...                        hasOld = 1)
+   >>> var.setValue(1, mesh.getCells(lambda cell: cell.getCenter()[0] > dx * nx / 2))
+ 
+Once the initial positive and negative regions have been initialized
+the `calcDistanceFunction()` method can be used to recalculate `var`
+as a distance function from the zero level set.
+   
    >>> var.calcDistanceFunction()
    
 The problem can then be solved by executing the `solve()` method of the equation.
@@ -92,7 +96,7 @@ The problem can then be solved by executing the `solve()` method of the equation
 The result can be tested with the following commands.
 
    >>> from fipy.tools import numerix
-   >>> print numerix.allclose(var, dx * (-numerix.arange(nx) + (nx - 1) / 2. ))
+   >>> print numerix.allclose(var, mesh.getCellCenters()[:,0] - dx * nx / 2)
    1
 
 """

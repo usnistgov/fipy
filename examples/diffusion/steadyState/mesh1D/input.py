@@ -141,7 +141,7 @@ tolerance of `1e-10`.
     >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10).getValue()
     1
 
-The function 'fipy.viewers.make()' returns a suitable viewer depending
+The function `fipy.viewers.make()` returns a suitable viewer depending
 on available viewers and the dimension of the mesh.
 
     >>> if __name__ == '__main__':

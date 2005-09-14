@@ -129,7 +129,8 @@ an interior region that is solid. A value of `1` is assigned to the
 `phase` variable on a patch defined by the method:
 
 The domain is seeded with a circular solidified region with parameters
-`seedCenter` and `radius` represneting the center and radius of the seed.
+`seedCenter` and `radius` representing the center and radius of the
+seed.
    
     >>> interiorCells = mesh.getCells(filter = lambda cell: \
     ...     (cell.getCenter()[0] - seedCenter[0])**2 + \

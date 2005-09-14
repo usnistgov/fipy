@@ -126,9 +126,9 @@ or
     >>> x = mesh.getCellCenters()[:,axis]
     >>> AA = -sourceCoeff * x / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools import numerix
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
