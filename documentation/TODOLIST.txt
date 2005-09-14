@@ -8,17 +8,11 @@ Release Goals 1.0
 - Documentation:
 
   * Review all for accuracy/consistency.
-  * Include some examples on the web page.
-  * Add more figures to examples
-  * Example figures on webpage.
 
 - Distribution
 
   * Install and test with no write permissions.
-  * PySparse doesn't build from CVS on Mac OS X with Python 2.4?
-    Patch submitted to Geus but not seen?
   * PySparse; f2c issues on RedHat?
-  * Fedora Core 4 installation. SourceForge compilefarm?
 
 Release Goals 1.1
 -----------------
@@ -28,8 +22,15 @@ Release Goals 1.1
   Also, numerix inverse trig operations should return an angular
   quantity, rather than a raw number.
 
+- Documentation:
+
+  * Review all for accuracy/consistency.
+  * Include some examples on the web page.
+  * Add more figures to examples
+
 - Distribution
 
+  * Fedora Core 4 installation. SourceForge compilefarm?
   * Get FiPy registered on:
 
     - vaults of parnassus
