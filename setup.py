@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 8/29/05 {10:36:32 AM} 
+ #                                last update: 9/14/05 {9:51:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -348,7 +348,7 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 				     ext = '.html')
 
             import shutil
-            for f in ['menu.html', 'meta.html', 'logo.html']:
+            for f in ['menu.html', 'meta.html', 'logo.html', 'extra.html']:
                 shutil.copyfile(os.path.join(dir, f), os.path.join(tmp, f))
             shutil.move(os.path.join(tmp, 'readme.html'), os.path.join(tmp, 'index.html'))
             
