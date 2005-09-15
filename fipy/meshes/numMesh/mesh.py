@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 8/31/05 {12:10:13 PM} 
+ #                                last update: 9/15/05 {2:08:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,6 @@ from fipy.meshes.numMesh.face import Face
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools import numerix
-from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Mesh(fipy.meshes.common.mesh.Mesh):

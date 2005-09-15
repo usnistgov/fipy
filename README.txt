@@ -71,6 +71,8 @@ signficant ones are:
 
 - Better examples.
 
+- A number of `NoiseVariable` objects have been added.
+
 - A new viewer based on `matplotlib`_ has been added.
 
 - The `PyX` viewer has been removed.
@@ -116,10 +118,10 @@ they have been modified.
 Support
 -------
 
-|FiPy| is being actively developed and supported.  Please use the `tracking
-system`_ for bugs, support requests, feature requests and patch
-submissions.  A `mailing list`_ is also available.  We are also seeking
-collaborative efforts on this project.
+|FiPy| is being actively developed and supported.  Please use the
+`tracking system`_ for bugs, support requests, feature requests and patch
+submissions as well as the `mailing list`_ |citeTrackingMailing|.  We
+also welcome collaborative efforts on this project.
 
 ------------------------
 Conventions and Notation
@@ -172,8 +174,8 @@ will correspond to, *e.g.*::
 
     /some/where/FiPy-1.0/examples/diffusion/steadyState/mesh1D/input.py
 
-Paths will always be rendered using POSIX conventions.  Any references of
-the form::
+Paths will always be rendered using POSIX conventions (path elements
+separated by "``/``").  Any references of the form::
 
     examples.diffusion.steadyState.mesh1D.input
 
@@ -229,3 +231,7 @@ or a
 .. |citeCEAC| raw:: latex
 
    \cite{NIST:damascene:2001}
+
+.. |citeTrackingMailing| raw:: latex
+
+   \cite{FiPyBugTracker,FiPyMailingList}

@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/14/05 {9:51:53 AM} 
+ #                                last update: 9/15/05 {4:37:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -211,7 +211,7 @@ class build_docs (Command):
 
     def run (self):
 	f = open(os.path.join('documentation','VERSION.txt'), 'w')
-	f.write("The current version of |FiPy| is %s."%self.distribution.metadata.get_version())
+	f.write("The current version of |FiPy| is %s" % self.distribution.metadata.get_version())
 	f.close()
 
         mainRestructuredTextFiles = ['INSTALLATION',

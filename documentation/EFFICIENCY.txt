@@ -40,7 +40,7 @@ in kilobytes. The Kobayashi code is given the heading of FORTRAN while
 
 The plain Python_ version of |FiPy|, which uses ``Numeric`` for all
 array operations, is around 18 times slower than the FORTRAN
-code. Utilizing the ``--inline`` flag, this penalty is reduced to
+code. Using the ``--inline`` flag, this penalty is reduced to
 about 8 times slower. In this example many of the ``Variable``
 objects have been given specialized classes where the C inlining has
 been explicitly defined. However, many variables have not been given

@@ -26,8 +26,8 @@ variable values in the two adjacent cells surrounding the face. This
 low order approximation has the advantage of being efficient and
 requiring matrices of low band width (the band width is equal to the
 number of cell neighbors plus one) and thus low storage
-requirement. However, the mesh topology is restricted due to an
-orthogonality and conjunctionality requirement. The value at a face is
+requirement. However, the mesh topology is restricted due to
+orthogonality and conjunctionality requirements. The value at a face is
 assumed to be the average value over the face. On an unstructured mesh
 the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. \FiPy{} currently
@@ -35,8 +35,8 @@ only uses the CC-FVM.
 
 \subsection{Vertex Centered FVM (VC-FVM)}
 
-In the VC-FVM the CV is centered around the vertices and the cells are
-divided into sub-control volumes that make up the main CVs, (see
+In the VC-FVM, the CV is centered around the vertices and the cells are
+divided into sub-control volumes that make up the main CVs (see
 Figure~\ref{fig:vc-cc-fv}).  The vertices `store' the average variable
 values over the CVs.  The CV faces are constructed within the cells
 rather than using the cell faces as in the CC-FVM. The face fluxes use

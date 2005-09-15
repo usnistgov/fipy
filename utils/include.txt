@@ -36,7 +36,7 @@
 
 .. |htmlExamples/| raw:: html
 
-   the Examples portion of the <a href="download/">Manual</a>
+   the Examples portion of the <a href="download/fipy.pdf">Manual</a>
 
 .. |latexCVS.txt| raw:: latex
 
@@ -52,7 +52,5 @@
 
 .. |htmlFAQ| raw:: html
 
-   Chapter 6: "Frequently Asked Questions" of the <a href="download/">Manual</a>
-
-
+   Chapter 6: "Frequently Asked Questions" of the <a href="download/fipy.pdf">Manual</a>
 

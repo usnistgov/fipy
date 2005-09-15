@@ -124,7 +124,7 @@
             order of the term.
 
             \item[How do I represent a source term $S_{\phi}$?]
-            Any terms that cannot be written in one of the previous
+            Any term that cannot be written in one of the previous
             forms is considered a source.  An explicit source is
             written in Python essentially as it appears in
             mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
@@ -203,7 +203,7 @@
                             \vec{u} \xi
                         \right)
                     \]
-                    can be renderd as
+                    can be rendered as
                     \begin{quote}
 \begin{verbatim}
 >>> (u * xi.getArithmeticFaceValue()).getDivergence()
@@ -288,7 +288,7 @@
         an arithmetic average.
         
         If you experience problems (unstable or wrong results, or 
-        excessively small timesteps), you may need to explictly supply the 
+        excessively small timesteps), you may need to explicitly supply the 
         desired \Class{FaceVariable} rather than letting \FiPy{} 
         assume one.
     \end{reSTadmonition}
@@ -315,9 +315,9 @@
             
             \item ``\texttt{repairing catalog by removing key}''
             
-            This message (not really an error, but causes test 
+            This message (not really an error, but may cause test 
             failures) can result when using the \SciPy{} \weave{} 
-            package via the verb+--inline+ flag. It is due to a bug
+            package via the \verb+--inline+ flag. It is due to a bug
             in \SciPy{} that has been patched in their source 
             repository: \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
             
@@ -325,11 +325,11 @@
 
     \item[What if my question isn't answered here?]  
         
-        Please post your question to the 
-        \href{http://www.ctcms.nist.gov/fipy/mail.html}{mailing list} 
-        \cite{FiPyMailingList} or 
-        \href{http://sourceforge.net/tracker/?group_id=118428}{file a tracker request}
-        \cite{FiPyBugTracker}.
+        Please post your question to the
+        \href{http://www.ctcms.nist.gov/fipy/mail.html}{mailing list}
+        \cite{FiPyMailingList} or
+        \href{http://sourceforge.net/tracker/?group_id=118428}{file a
+        Tracker request} \cite{FiPyBugTracker}.
     
 
 \end{description}

@@ -8,7 +8,7 @@ behave as desired. Any released version of |FiPy| will be designated with
 a fixed tag:
 
 ``version-x_y``
-    designates a released version x.y.
+    designates a released version x.y
 
     .. include:: VERSION.txt
 
@@ -30,8 +30,7 @@ stability, are:
     designates the most recent code on the trunk forming a coherent state
     of |FiPy|, in general this will mean a release, but can also mean a
     pre-release testing version.  For instance, the release engineer might
-    ask testers to test ``CURRENT`` before he makes a release.  This tracking
-    tag is restricted to the trunk.
+    ask testers to test ``CURRENT`` before he makes a release.
 
 ``HEAD``
     this is a CVS internal tag designating the latest revision of any file
@@ -66,4 +65,21 @@ development by issuing the command::
 
    $ cvs update -r <tag>
 
+For those who are interested in learning more about CVS, Cederqvist_ 
+|citeCederqvist| is the canonical manual, but many find the red-bean_ 
+|citeRedBean| guide more useful.
+
+.. 
+
 .. |FiPy| replace:: FiPy
+
+.. _Cederqvist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ximbiot.com/cvs/manual/
+.. |citeCederqvist| raw:: latex
+
+   \cite{CederqvistCVS}
+
+.. _red-bean: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvsbook.red-bean.com/
+.. |citeRedBean| raw:: latex
+
+   \cite{RedBeanCVS}
+
