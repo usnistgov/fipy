@@ -4,7 +4,7 @@
  # 
  #  FILE: "includedLaTeXWriter.py"
  #                                    created: 9/29/04 {11:38:07 AM} 
- #                                last update: 6/14/05 {5:06:34 PM} 
+ #                                last update: 9/15/05 {6:42:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,10 @@ class NotStupidLaTeXTranslator(LaTeXTranslator):
     import re
     externalNISThref = re.compile(r"http://www\.nist\.gov/cgi-bin/exit_nist\.cgi\?url=(.*)")
     
+    def __init__(self, document):
+        LaTeXTranslator.__init__(self, document)
+        self.d_class._class_sections['startlower'] = ('subsection', 'subsubsection')
+        
     def visit_reference(self, node):
 	# BUG: hash_char "#" is trouble some in LaTeX.
 	# mbox and other environment do not like the '#'.
