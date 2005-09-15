@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/8/05 {3:47:19 PM} 
+ #                                last update: 9/15/05 {5:56:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -167,8 +167,6 @@ We separate the phase field into electrode and electrolyte regimes
     >>> phase.setValue(1.)
     >>> phase.setValue(0.,setCells)
 
-We use the ElPhF module again to create governing equations from the fields
-
 Even though we are solving the steady-state problem
 
 .. raw:: latex
@@ -180,10 +178,10 @@ we still must sweep the solution several times to equilibrate
     >>> for step in range(10):
     ...     phase.equation.solve(var = phase)
     
-Since we have only a single component, with , and the electrostatic
-potential is uniform, ... reduces to
-
 .. raw:: latex
+
+   Since we have only a single component $n$, with $\Delta\mu_n^\circ = 0$, and
+   the electrostatic potential is uniform, Eq.~\eqref{eq:elphf:phase} reduces to
 
     \begin{equation*}
         \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}

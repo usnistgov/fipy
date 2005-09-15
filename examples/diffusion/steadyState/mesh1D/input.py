@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {11:47:39 AM} 
+ #                                last update: 9/15/05 {5:09:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,16 +92,19 @@ The solution of all equations in FiPy requires a variable. These variables store
 values on various parts of the mesh. In this case we need a
 `CellVariable` object as the solution is sought on the cell
 centers. The boundary conditions are given by `valueLeft = 0` and
-`valueRight = 1`. The initial value for the variable is set to `value = valueLeft`.
+`valueRight = 1`. 
 
     >>> valueLeft = 0
     >>> valueRight = 1
+    
+The initial value for the variable is set to `value = valueLeft`.
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh,
     ...                                                value = valueLeft)
 
-Boundary conditions are given to the equation via a `Tuple`
-(list). Boundary conditions are formed with a value and a set of faces
+The set of boundary conditions are given to the equation as a Python `tuple`
+or `list`. Boundary conditions are formed with a value and a set of faces
 over which they apply. For example here the exterior faces on the left
 of the domain are extracted by `mesh.getFacesLeft()`. These faces and
 a value (`valueLeft`) are passed to a `FixedValue` boundary
@@ -135,13 +138,19 @@ compare with the numerical result,
     >>> Lx = nx * dx
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
-Finally the analytical and numerical results are compared with a
-tolerance of `1e-10`.
+Finally, the analytical and numerical results are compared with a
+tolerance of
+
+.. raw:: latex
+
+   $10^{-10}$.
+   
+..
 
     >>> var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10).getValue()
     1
 
-The function `fipy.viewers.make()` returns a suitable viewer depending
+The function ``fipy.viewers.make()`` returns a suitable viewer depending
 on available viewers and the dimension of the mesh.
 
     >>> if __name__ == '__main__':

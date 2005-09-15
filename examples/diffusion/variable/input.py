@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {4:48:22 PM} 
+ #                                last update: 9/15/05 {5:13:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,9 +101,11 @@ faces.  It is created in the following way:
 
     >>> from fipy.variables.faceVariable import FaceVariable
     >>> diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
-    >>> diffCoeff.setValue(0.1, faces = mesh.getFaces(filter = lambda face: L / 4. <= face.getCenter()[0] < 3. * L / 4.))
+    >>> faces = mesh.getFaces(filter = lambda face: 
+    ...                       L / 4. <= face.getCenter()[0] < 3. * L / 4.)
+    >>> diffCoeff.setValue(0.1, faces = faces)
 
-For boundary conditions, we a fixed value of `valueLeft` to the left,
+For boundary conditions, we apply a fixed value of `valueLeft` to the left,
 and a fixed flux of
 
     >>> fluxRight = 1.

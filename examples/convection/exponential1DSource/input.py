@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 6/14/05 {8:48:04 AM} 
+ #                                last update: 9/15/05 {5:45:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,13 +51,7 @@ this example solves a steady-state convection-diffusion equation, but adds a con
 
      $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0. $$
 
-and
-
-.. raw:: latex
-
-    $ \vec{u} = (10,)$
-    
-such that
+..
 
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,)

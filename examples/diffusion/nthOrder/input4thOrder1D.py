@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:13:11 PM} 
+ #                                last update: 9/15/05 {5:14:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,14 +94,17 @@ or
     ...        NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
     ...        NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3))
 
-We initialize the steady-state equation and use the `LinearLUSolver` for stability. 
+We initialize the steady-state equation
+    
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> eq = ImplicitDiffusionTerm(coeff = (1, 1)) == 0
+    
+and use the `LinearLUSolver` for stability. 
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
 
 We perform one implicit timestep to achieve steady state
-    
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> eq = ImplicitDiffusionTerm(coeff = (1, 1)) == 0
+   
     >>> eq.solve(var,
     ...          boundaryConditions = BCs,
     ...          solver = LinearLUSolver(tolerance = 1e-11))

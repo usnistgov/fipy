@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/15/05 {4:37:34 PM} 
+ #                                last update: 9/15/05 {7:01:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -225,8 +225,10 @@ class build_docs (Command):
 					  'TODOLIST',
 					  'MAIL',
 					  'CVS',
-                                          'EFFICIENCY',
-                                          'ELECTROCHEM']
+                                          'EFFICIENCY']
+
+        tertiaryRestructuredTextFiles = ['ELECTROCHEM']
+
 
 	if self.latex:
 	    if self.apis:
@@ -306,6 +308,13 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 						'footnote_references': 'superscript',
                                                 'table_style': 'booktabs'})
 
+            self._translateTextFiles(files = tertiaryRestructuredTextFiles,
+                                     source_dir = '..',
+                                     writer = IncludedLaTeXWriter(),
+                                     settings ={'use_latex_toc': True,
+                                                'footnote_references': 'superscript',
+                                                'table_style': 'booktabs',
+                                                'documentclass': 'startlower'})
 
 	    if self.guide:
 		os.system("pdflatex fipy")
@@ -339,7 +348,7 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
                                      ext = '.html')
 
             print "secondary files"
-	    self._translateTextFiles(files = secondaryRestructuredTextFiles,
+	    self._translateTextFiles(files = secondaryRestructuredTextFiles + tertiaryRestructuredTextFiles,
 	                             source_dir = "documentation",
 				     destination_dir = tmp,
 				     writer = IncludedHTMLWriter(),
@@ -589,7 +598,7 @@ class efficiency_test(Command):
                 try:
                     import imp
                     mod = imp.load_source("copy_script_module", case)
-                    mod.run()
+                    mod._run()
                 except Exception, e:
                     print 'Exception executing %s: %s' % (case, e)
                     exceptionFlag = True

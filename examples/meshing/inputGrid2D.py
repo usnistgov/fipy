@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGrid2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:29:15 PM} 
+ #                                last update: 9/15/05 {7:05:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,12 +95,10 @@ One can view the mesh with the following code,
 """
 __docformat__ = 'restructuredtext'
 
-def run():
+def _run():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
-
-
+    
 if __name__ == '__main__':
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript())
+    _run()
     raw_input("finished")

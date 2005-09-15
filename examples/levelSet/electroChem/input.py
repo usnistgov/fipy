@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 8/2/05 {4:59:26 PM} { 1:23:41 PM}
+ #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -156,25 +156,21 @@ A `distanceVariable` object,
 
 .. raw :: latex
 
-    $\phi$, is  required to store  the  position of the interface  (at
-    $\phi$  =  0).
+    $\phi$, is  required to store  the  position of the interface  .
 
-The `distanceVariable` calculates its value so that it is a a distance
-function (i.e.  holds the distance at any point in the mesh from the
-electrolyte/metal interface).
+The `distanceVariable` calculates its value so that it is a distance
+function 
 
 .. raw:: latex
 
-    $|\nabla\phi| = 1$.
+   (\emph{i.e.} holds the distance at any point in the mesh from the electrolyte/metal
+   interface at $\phi$ = 0) and $|\nabla\phi| = 1$.
 
-    Firstly, create the $\phi$
+   First, create the $\phi$ variable, which is initially set to -1 everywhere. 
 
-variable:
-
-This is initially set to -1 everywhere. The electrolyte region will be
-the positive region of the domain while the metal region will be
-negative. Create a function for returning cells that lie in the electrolyte
-region (positive region).
+The electrolyte region will be the positive region of the domain while the metal
+region will be negative.  Create a function for returning cells that lie in the
+electrolyte region (positive region).
 
    >>> bottomHeight = cellsBelowTrench * cellSize
    >>> trenchHeight = bottomHeight + trenchDepth
@@ -432,8 +428,7 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
    ...             bulkAcceleratorConcentration
    ...         ),)
    
-The function below is constructed to encapsulate the creation of the
-viewers.
+If running interactively, create viewers.
 
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
@@ -509,10 +504,10 @@ to tell if something has changed or been broken.
 """
 __docformat__ = 'restructuredtext'
 
-if __name__ == '__main__':
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript())
-
-def run():
+def _run():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
+    
+if __name__ == '__main__':
+    _run()
+

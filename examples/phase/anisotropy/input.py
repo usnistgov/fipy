@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/8/05 {10:00:07 AM} { 5:14:21 PM}
+ #                                last update: 9/15/05 {5:51:28 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -148,10 +148,9 @@ The temperature field is initialized to a value of `-0.4` throughout:
 
 .. raw:: latex
   
-   The $m(\phi, T)$ variable is created from the `phase` and
-   `temperature` variables.
-
-..
+   The $m(\phi, T)$ variable 
+   
+is created from the `phase` and `temperature` variables.
 
     >>> from fipy.tools import numerix
     >>> mVar = phase - 0.5 - kappa1 / numerix.pi * \

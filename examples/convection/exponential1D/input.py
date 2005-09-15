@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 8/10/05 {12:07:33 PM} 
+ #                                last update: 9/15/05 {5:50:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,7 +95,7 @@ The solution variable is initialized to `valueLeft`:
     ...     value = valueLeft)
 
 The equation is created with the `ImplicitDiffusionTerm` and
-`ExponentialConvectionTerm`, the scheme used by the convection term
+`ExponentialConvectionTerm`. The scheme used by the convection term
 needs to calculate a Peclet number and thus the diffusion term
 instance must be passed to the convection term.
 
@@ -108,9 +108,16 @@ instance must be passed to the convection term.
    ...                                           diffusionTerm = diffTerm)
    
 More details of the benefits and drawbacks of each type of convection
-term can be found in the numerical section of the manual. Essentially
-the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will both
-handle most types of convection diffusion cases with the
+term can be found in 
+
+.. raw:: latex
+
+   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
+   
+.. of the manual
+
+Essentially, the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will
+both handle most types of convection-diffusion cases, with the
 `PowerLawConvectionTerm` being more efficient.
 
 We solve the equation

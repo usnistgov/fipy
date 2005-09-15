@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/14/05 {8:49:19 AM} 
+ #                                last update: 9/15/05 {5:49:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,8 +42,8 @@
 
 r"""
 
-To run this example from the base fipy directory type
-`./examples/phase/simple/input.py` at the command line.  A viewer
+To run this example from the base FiPy directory, type
+`examples/phase/simple/input.py` at the command line.  A viewer
 object should appear and, after being prompted to step through the different
 examples, the word `finished` in the terminal.
 
@@ -59,13 +59,15 @@ boundary conditions such that,
    - \frac{\partial f}{\partial \phi}
    \label{eq-phase:simple}
    \end{equation}
-
+    
 For solidification problems, the Helmholtz free energy is frequently
 given by
 
 .. raw:: latex
 
    $$ f(\phi,T) = \frac{W}{2}g(\phi) + L\frac{T-T_M}{T_M}p(\phi). $$
+   where $W$ is the double-well barrier height between phases, $L$ is the latent
+   heat, $T$ is the temperature, and $T_M$ is the melting point.
    
 One possible choice for the double-well function is
 

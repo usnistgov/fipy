@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:15:56 PM}
+ #                                last update: 9/15/05 {7:03:06 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -155,6 +155,6 @@ for step in range(steps):
         viewer.plot()
         print 'step',step,'dt',dt
 	
-def run():
+def _run():
     pass
             
