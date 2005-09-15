@@ -97,7 +97,7 @@ class ConvectionTerm(FaceTerm):
 
         
         :Parameters:
-          - `coeff` : The `term`'s coefficient value.
+          - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
 	self.diffusionTerm = diffusionTerm

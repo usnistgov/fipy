@@ -65,7 +65,7 @@ def write(data, filename):
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
 
-def read(filename = None):
+def read(filename):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load`.

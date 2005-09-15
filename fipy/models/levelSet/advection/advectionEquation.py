@@ -46,7 +46,7 @@ from fipy.terms.transientTerm import TransientTerm
 from advectionTerm import _AdvectionTerm
 
 def buildAdvectionEquation(advectionCoeff = None,
-                           advectionTerm = _AdvectionTerm):
+                           advectionTerm = None):
     r"""
 
     The `buildAdvectionEquation` function constructs and returns an
@@ -69,6 +69,8 @@ def buildAdvectionEquation(advectionCoeff = None,
       - `advectionTerm`: An advection term class.
 
     """
+    if advectionTerm == None:
+        advectionTerm = _AdvectionTerm
 
     return TransientTerm(1.) + advectionTerm(advectionCoeff)
         

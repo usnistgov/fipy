@@ -64,7 +64,7 @@ class MayaviViewer(Viewer):
         break for hexahedrons.
 
       - Different element types can not be displayed for 3D
-        meshes. This is an ordering issue for the CellData. Could get
+        meshes. This is an ordering issue for the cell data. Could get
         round this either by implementing a method such as
         `var.getVertexVariable()` and use point data, or reordering the
         variable data via [tets, wedges, hexs] and keep using cell

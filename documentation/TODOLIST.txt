@@ -27,7 +27,9 @@ Release Goals 1.1
   * Review all for accuracy/consistency.
   * Include some examples on the web page.
   * Add more figures to examples
-
+  * The reference manual should have a 'returns' section similar to 'parameters' for methods
+    and functions.
+    
 - Distribution
 
   * Fedora Core 4 installation. SourceForge compilefarm?
@@ -55,6 +57,28 @@ Release Goals 1.1
       * FemLab
       * DiffPack
       * FemLego?
+
+  * fipy.tools.dump
+
+    - write() should return a temporary file when no fileName argument is given.
+    - thus, temporary file allocation can be removed from the example files
+    - read() should (possibly?) clean temporary file. May or may not require dump to be a class to
+      keep file data.
+
+  * clean up variable-vector-numerix-physicalfield interactions
+
+    - merge fipy.tools.variable into numerix.
+    - merge phsycial field and variable
+    - get rid of most references to Numeric function in the code
+    - maybe even get rid of many explicit calls to Numeric function calls in numerix.
+
+      * e.g. looks in numerix, no sin function
+      * numerix then passes Numeric's sin function to Variable's apply method and hey presto
+        a new variable is returned. Sounds like science fiction......
+      * is there a way to do this automagically??? (using __array__ or something)
+
+    - Definetly most of these functions need not be in Variable and numerix
+
 
 Long term Goals
 ---------------

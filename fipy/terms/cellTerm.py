@@ -53,7 +53,8 @@ class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     
-    ..
+    The following tests demonstrate how the `CellVariable` objects
+    interact with other types of `Variable` objects.
     
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy.variables.cellVariable import CellVariable

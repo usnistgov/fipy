@@ -59,8 +59,8 @@ class BoundaryCondition:
         The `BoundaryCondition` class should not be invoked directly.
 	
 	:Parameters:
-	    - `faces` : A `list` or `tuple` of `Face` objects to which this condition applies.
-	    - `value` : The value to impose.
+	    - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
+	    - `value`: The value to impose.
             
 	"""
         self.faces = faces

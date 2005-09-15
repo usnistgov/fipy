@@ -54,8 +54,8 @@ class Variable:
     """
     Lazily evaluated quantity with units. 
     
-    Using a Variable in a mathematical expression will create an automatic
-    dependency Variable, e.g.,
+    Using a `Variable` in a mathematical expression will create an automatic
+    dependency `Variable`, e.g.,
     
 	>>> a = Variable(value = 3)
 	>>> b = 4 * a
@@ -64,7 +64,7 @@ class Variable:
 	>>> b()
 	12
 	
-    Changes to the value of a Variable will automatically trigger changes in any dependent Variables
+    Changes to the value of a `Variable` will automatically trigger changes in any dependent `Variable`s
     
 	>>> a.setValue(5)
 	>>> b
@@ -76,7 +76,7 @@ class Variable:
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
 	"""
-	Create a Variable.
+	Create a `Variable`.
 	
 	    >>> Variable(value = 3)
 	    Variable(value = 3)
@@ -89,10 +89,10 @@ class Variable:
 
 	:Parameters:
 	  - `value`: the initial value
-	  - `unit`: the physical units of the variable
-	  - `array`: the storage array for the variable
-	  - `name`: the user-readable name of the variable
-	  - `mesh`: the mesh that defines the geometry of this variable
+	  - `unit`: the physical units of the `Variable`
+	  - `array`: the storage array for the `Variable`
+	  - `name`: the user-readable name of the `Variable`
+	  - `mesh`: the mesh that defines the geometry of this `Variable`
 	"""
 
 	self.requiredVariables = []
@@ -124,13 +124,13 @@ class Variable:
 	
     def __array__(self, t = None):
 	"""
-        Attempt to convert the Variable to a Numeric `array` object
+        Attempt to convert the `Variable` to a Numeric `array` object
         
             >>> v = Variable(value = [2,3])
             >>> Numeric.array(v)
             [ 2., 3.,]
             
-        It is an error to convert a dimensional Variable to a 
+        It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
         
             >>> v = Variable(value = [2,3], unit = "m")
@@ -144,7 +144,7 @@ class Variable:
 	
     def copy(self):
 	"""
-	Make an duplicate of the Variable
+	Make an duplicate of the `Variable`
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = a.copy()
@@ -174,7 +174,7 @@ class Variable:
 	
     def inBaseUnits(self):
 	"""
-	Return the value of the Variable with all units reduced to 
+	Return the value of the `Variable` with all units reduced to 
 	their base SI elements.
 	
 	    >>> e = Variable(value = "2.7 Hartree*Nav")
@@ -218,13 +218,13 @@ class Variable:
 
     def __getitem__(self, index):
         """    
-        "Evaluate" the variable and return the specified element
+        "Evaluate" the `Variable` and return the specified element
         
             >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
             >>> print a[1,1]
             10.0 m
 
-        It is an error to slice a Variable whose `value` is not sliceable
+        It is an error to slice a `Variable` whose `value` is not sliceable
 
             >>> Variable(value = 3)[2]
             Traceback (most recent call last):
@@ -266,7 +266,7 @@ class Variable:
 	
     def __call__(self):
 	"""
-	"Evaluate" the Variable and return its value
+	"Evaluate" the `Variable` and return its value
 	
 	    >>> a = Variable(value = 3)
 	    >>> a()
@@ -281,7 +281,7 @@ class Variable:
 		
     def getValue(self):
 	"""
-	"Evaluate" the Variable and return its value (longhand)
+	"Evaluate" the `Variable` and return its value (longhand)
 	
 	    >>> a = Variable(value = 3)
 	    >>> a.getValue()
@@ -339,7 +339,7 @@ class Variable:
             
     def _getShapeFromMesh(mesh):
         """
-        Return the shape of this variable type, given a particular mesh.
+        Return the shape of this `Variable` type, given a particular mesh.
         Return None if unknown or independent of the mesh.
         """
         return None
@@ -602,7 +602,7 @@ class Variable:
             >>> mesh = Grid2D(nx = 3)
             
             
-        CellVariable * CellVariable
+        `CellVariable` * CellVariable
         
             >>> cv = CellVariable(mesh = mesh, value = (0, 1, 2))
             >>> cvXcv = cv * cv
@@ -611,7 +611,7 @@ class Variable:
             >>> print isinstance(cvXcv, CellVariable)
             1
         
-        CellVariable * FaceVariable
+        `CellVariable` * FaceVariable
         
             >>> fv = FaceVariable(mesh = mesh, value = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
             >>> fvXcv = fv * cv
@@ -623,7 +623,7 @@ class Variable:
                   ...
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
 
-        CellVariable * VectorCellVariable
+        `CellVariable` * VectorCellVariable
         
             >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
             >>> vcvXcv = vcv * cv
@@ -641,7 +641,7 @@ class Variable:
             >>> print isinstance(cvXvcv, VectorCellVariable)
             1
 
-        CellVariable * VectorFaceVariable
+        `CellVariable` * VectorFaceVariable
 
             >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
             >>> vfvXcv = vfv * cv
@@ -653,7 +653,7 @@ class Variable:
                   ...
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
 
-        CellVariable * Scalar
+        `CellVariable` * Scalar
         
             >>> cvXs = cv * 3
             >>> print cvXs
@@ -666,7 +666,7 @@ class Variable:
             >>> print isinstance(sXcv, CellVariable)
             1
 
-        CellVariable * Vector
+        `CellVariable` * Vector
         
             >>> cvXv2 = cv * (3,2)
             >>> print cvXv2
@@ -704,7 +704,7 @@ class Variable:
             TypeError: can't multiply sequence to non-int
 
 
-        CellVariable * Variable Scalar
+        `CellVariable` * `Variable` Scalar
         
             >>> cvXsv = cv * Variable(value = 3)
             >>> print cvXsv
@@ -717,7 +717,7 @@ class Variable:
             >>> print isinstance(svXcv, CellVariable)
             1
         
-        CellVariable * Variable Vector
+        `CellVariable` * `Variable` Vector
             
             >>> cvXv2v = cv * Variable(value = (3,2))
             >>> print cvXv2v
@@ -755,7 +755,7 @@ class Variable:
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
             
 
-        CellVariable * CellGradVariable
+        `CellVariable` * CellGradVariable
         
             >>> cvXcgv = cv * cv.getGrad()
             >>> print cvXcgv
@@ -765,7 +765,7 @@ class Variable:
             >>> print isinstance(cvXcgv, VectorCellVariable)
             1
             
-        FaceVariable * FaceVariable
+        `FaceVariable` * FaceVariable
 
             >>> fvXfv = fv * fv
             >>> print fvXfv
@@ -773,7 +773,7 @@ class Variable:
             >>> print isinstance(fvXfv, FaceVariable)
             1
 
-        FaceVariable * VectorCellVariable
+        `FaceVariable` * VectorCellVariable
 
             >>> vcvXfv = vcv * fv
             Traceback (most recent call last):
@@ -784,7 +784,7 @@ class Variable:
                   ...
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
 
-        FaceVariable * VectorFaceVariable
+        `FaceVariable` * VectorFaceVariable
 
             >>> vfvXfv = vfv * fv
             >>> print vfvXfv
@@ -815,7 +815,7 @@ class Variable:
             >>> print isinstance(fvXvfv, VectorFaceVariable)
             1
 
-        FaceVariable * Scalar
+        `FaceVariable` * Scalar
 
             >>> fvXs = fv * 3
             >>> print fvXs
@@ -828,7 +828,7 @@ class Variable:
             >>> print isinstance(sXfv, FaceVariable)
             1
 
-        FaceVariable * Vector
+        `FaceVariable` * Vector
 
             >>> fvXv2 = fv * (3,2)
             >>> print fvXv2
@@ -879,7 +879,7 @@ class Variable:
             >>> print isinstance(v10Xfv, FaceVariable)
             1
 
-        FaceVariable * Variable Scalar
+        `FaceVariable` * `Variable` Scalar
 
             >>> fvXsv = fv * Variable(value = 3)
             >>> print fvXsv
@@ -892,7 +892,7 @@ class Variable:
             >>> print isinstance(svXfv, FaceVariable)
             1
 
-        FaceVariable * Variable Vector
+        `FaceVariable` * `Variable` Vector
             
             >>> fvXv2v = fv * Variable(value = (3,2))
             >>> print fvXv2v
@@ -945,7 +945,7 @@ class Variable:
 
             
             
-        VectorCellVariable * VectorCellVariable
+        `VectorCellVariable` * VectorCellVariable
 
             >>> vcvXvcv = vcv * vcv
             >>> print vcvXvcv
@@ -955,7 +955,7 @@ class Variable:
             >>> print isinstance(vcvXvcv, VectorCellVariable)
             1
 
-        VectorCellVariable * VectorFaceVariable
+        `VectorCellVariable` * VectorFaceVariable
 
             >>> vfvXvcv = vfv * vcv
             Traceback (most recent call last):
@@ -966,7 +966,7 @@ class Variable:
                   ...
             TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
 
-        VectorCellVariable * Scalar
+        `VectorCellVariable` * Scalar
 
             >>> vcvXs = vcv * 3
             >>> print vcvXs
@@ -983,7 +983,7 @@ class Variable:
             >>> print isinstance(vcvXs, VectorCellVariable)
             1
 
-        VectorCellVariable * Vector
+        `VectorCellVariable` * Vector
 
             >>> vcvXv2 = vcv * (3,2)
             >>> print vcvXv2
@@ -1024,7 +1024,7 @@ class Variable:
                   ...
             TypeError: can't multiply sequence to non-int
 
-        VectorCellVariable * Variable Scalar
+        `VectorCellVariable` * `Variable` Scalar
 
             >>> vcvXsv = vcv * Variable(value = 3)
             >>> print vcvXsv
@@ -1041,7 +1041,7 @@ class Variable:
             >>> print isinstance(svXvcv, VectorCellVariable)
             1
 
-        VectorCellVariable * Variable Vector
+        `VectorCellVariable` * `Variable` Vector
             
             >>> vcvXv2v = vcv * Variable(value = (3,2))
             >>> print vcvXv2v
@@ -1087,7 +1087,7 @@ class Variable:
             
             
             
-        VectorFaceVariable * VectorFaceVariable
+        `VectorFaceVariable` * VectorFaceVariable
 
             >>> vfvXvfv = vfv * vfv
             >>> print vfvXvfv
@@ -1104,7 +1104,7 @@ class Variable:
             >>> isinstance(vfvXvfv, VectorFaceVariable)
             1
 
-        VectorFaceVariable * Scalar
+        `VectorFaceVariable` * Scalar
 
             >>> vfvXs = vfv * 3
             >>> print vfvXs
@@ -1135,7 +1135,7 @@ class Variable:
             >>> print isinstance(sXvfv, VectorFaceVariable)
             1
 
-        VectorFaceVariable * Vector
+        `VectorFaceVariable` * Vector
 
             >>> vfvXv2 = vfv * (3,2)
             >>> print vfvXv2
@@ -1205,7 +1205,7 @@ class Variable:
             >>> isinstance(v10Xvfv, VectorFaceVariable)
             1
 
-        VectorFaceVariable * Variable Scalar
+        `VectorFaceVariable` * `Variable` Scalar
 
             >>> vfvXsv = vfv * Variable(value = 3)
             >>> print vfvXsv
@@ -1236,7 +1236,7 @@ class Variable:
             >>> print isinstance(svXvfv, VectorFaceVariable)
             1
 
-        VectorFaceVariable * Variable Vector
+        `VectorFaceVariable` * `Variable` Vector
             
             >>> vfvXv2v = vfv * Variable(value = (3,2))
             >>> print vfvXv2v
@@ -1308,7 +1308,7 @@ class Variable:
 
             
             
-        Scalar * Variable Scalar
+        Scalar * `Variable` Scalar
 
             >>> sXsv = 3 * Variable(value = 3)
             >>> print sXsv
@@ -1321,7 +1321,7 @@ class Variable:
             >>> print isinstance(svXs, Variable)
             1
 
-        Scalar * Variable Vector
+        Scalar * `Variable` Vector
             
             >>> sXv2v = 3 * Variable(value = (3,2))
             >>> print sXv2v
@@ -1336,7 +1336,7 @@ class Variable:
             
             
             
-        Vector * Variable Scalar
+        Vector * `Variable` Scalar
 
             >>> vXsv = (3, 2) * Variable(value = 3)
             >>> print vXsv
@@ -1349,7 +1349,7 @@ class Variable:
             >>> print isinstance(svXv, Variable)
             1
 
-        Vector * Variable Vector
+        Vector * `Variable` Vector
             
             >>> vXv2v = (3, 2) * Variable(value = (3,2))
             >>> print vXv2v
@@ -1372,7 +1372,7 @@ class Variable:
             TypeError: can't multiply sequence to non-int
             
 
-        Variable Scalar * Variable Scalar
+        `Variable` Scalar * `Variable` Scalar
 
             >>> svXsv = Variable(value = 3) * Variable(value = 3)
             >>> print svXsv
@@ -1380,7 +1380,7 @@ class Variable:
             >>> print isinstance(svXsv, Variable)
             1
 
-        Variable Scalar * Variable Vector
+        `Variable` Scalar * `Variable` Vector
             
             >>> svXv2v = Variable(value = 3) * Variable(value = (3,2))
             >>> print svXv2v
@@ -1394,7 +1394,7 @@ class Variable:
             1
 
             
-        Variable Vector * Variable Vector
+        `Variable` Vector * `Variable` Vector
             
             >>> v2vXv2v = Variable(value = (3, 2)) * Variable(value = (3,2))
             >>> print v2vXv2v
@@ -1487,7 +1487,7 @@ class Variable:
         
         def _rotateShape(var0, var1, var0array, var1array):
             """
-            A scalar variable multiplying/dividing a vector variable will
+            A scalar `Variable` multiplying/dividing a vector `Variable` will
             fail because the scalar field has shape (N,) and the vector field has shape (N, D)
             This manipulation will give the scalar field shape (N, 1), which will
             allow the desired operator shape of (N, D).
@@ -1598,7 +1598,7 @@ class Variable:
 
     def __lt__(self,other):
 	"""
-	Test if a Variable is less than another quantity
+	Test if a `Variable` is less than another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a < 4)
@@ -1619,7 +1619,7 @@ class Variable:
 
     def __le__(self,other):
 	"""
-	Test if a Variable is less than or equal to another quantity
+	Test if a `Variable` is less than or equal to another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a <= 4)
@@ -1638,7 +1638,7 @@ class Variable:
 	
     def __eq__(self,other):
 	"""
-	Test if a Variable is equal to another quantity
+	Test if a `Variable` is equal to another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a == 4)
@@ -1651,7 +1651,7 @@ class Variable:
 	
     def __ne__(self,other):
 	"""
-	Test if a Variable is not equal to another quantity
+	Test if a `Variable` is not equal to another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a != 4)
@@ -1664,7 +1664,7 @@ class Variable:
 	
     def __gt__(self,other):
 	"""
-	Test if a Variable is greater than another quantity
+	Test if a `Variable` is greater than another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a > 4)
@@ -1680,7 +1680,7 @@ class Variable:
 	
     def __ge__(self,other):
 	"""
-	Test if a Variable is greater than or equal to another quantity
+	Test if a `Variable` is greater than or equal to another quantity
 	
 	    >>> a = Variable(value = 3)
 	    >>> b = (a >= 4)
@@ -1794,10 +1794,10 @@ class Variable:
     def _take(self, ids, axis = 0):
         """
         
-        Same as take() but returns a Variable subclass.  This function
+        Same as take() but returns a `Variable` subclass.  This function
         has not yet been implemented as a binary operator but is a
         unary operator.  As a unary operator it has to return the same
-        shape as the variable it is acting on.  This is not a
+        shape as the `Variable` it is acting on.  This is not a
         particular useful implementation of take as it stands. It is
         good for axis permutations.
         

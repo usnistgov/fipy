@@ -58,6 +58,12 @@ class LinearScipyGMRESSolver(Solver):
     The `LinearScipyGMRESSolver` is a wrapper class for the the
     Scipy_ `linalg.iterative.gmres` method.
 
+    .. warning::
+
+        Currently the solvers that use Scipy_ are only useful for
+        small systems due to the whole sparse matrix having to be
+        turned into an array of size N * N.
+
     .. _Scipy: http://www.scipy.org
 
     

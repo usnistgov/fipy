@@ -52,7 +52,6 @@ class LinearJORSolver(Solver):
     Jacobi over-relaxation. This method solves systems with a general
     non-symmetric coefficient matrix.
 
-    `superlu.factorize` method.
     """
     def __init__(self, tolerance = 1e-10, steps = 1000, relaxation = 1.0):
         """

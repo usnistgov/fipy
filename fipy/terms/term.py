@@ -53,8 +53,8 @@ class Term:
         Create a `Term`.
 
         :Parameters:
-          - `coeff`: The coefficient for the term. A `CellVariable` or number
-            for cell terms. A `FaceVariable` or number for face terms.
+          - `coeff`: The coefficient for the term. A `CellVariable` or number.
+            `FaceVariable` objects are also acceptable for diffusion or convection terms.
 
         """  
         self.coeff = coeff
