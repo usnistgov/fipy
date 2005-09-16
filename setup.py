@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/15/05 {7:01:58 PM} 
+ #                                last update: 9/16/05 {3:22:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -630,7 +630,7 @@ f.close()
 
 
 dist = setup(	name = "FiPy",
-	version = "1.0a3",
+	version = "1.0",
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",
@@ -671,7 +671,7 @@ dist = setup(	name = "FiPy",
                             'fipy.viewers.gistViewer'
 	],
 	classifiers = [
-	    'Development Status :: 4 - Alpha',
+	    'Development Status :: 5 - Production/Stable',
 	    'Environment :: Console',
 	    'Environment :: X11 Applications',
 	    'Intended Audience :: Science/Research',
