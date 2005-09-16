@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/16/05 {3:46:12 PM} 
+ #                                last update: 9/16/05 {3:48:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -664,10 +664,10 @@ dist = setup(	name = "FiPy",
 			    'fipy.tools.inline',
 			'fipy.variables',
 			'fipy.viewers',
-                            'fipy.viewers.gistViewer'
-                            'fipy.viewers.gnuplotViewer'
-                            'fipy.viewers.matplotlibViewer'
-                            'fipy.viewers.mayaviViewer'
+                            'fipy.viewers.gistViewer',
+                            'fipy.viewers.gnuplotViewer',
+                            'fipy.viewers.matplotlibViewer',
+                            'fipy.viewers.mayaviViewer',
 	],
 	classifiers = [
 	    'Development Status :: 5 - Production/Stable',
