@@ -4,7 +4,7 @@
  # 
  #  FILE: "base.py"
  #                                    created: 8/16/05 {10:41:26 AM} 
- #                                last update: 9/16/05 {12:10:25 PM} 
+ #                                last update: 9/16/05 {3:01:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,11 +42,35 @@
  # ###################################################################
  ##
 
+"""
+This module can be found in the file `fipy/package/base.py`.  You make it
+available to your script by either::
+    
+    import fipy.package.base
+    
+in which case you refer to it by its full name of `fipy.package.base`, or::
+    
+    from fipy.package import base
+    
+in which case you can refer simply to `base`.
+"""
 __docformat__ = 'restructuredtext'
 
 class Base:
     """
-    .. attention:: This class is abstract. Always create one of its subclasses.
+    With very few exceptions, the name of a class will be the capitalized
+    form of the module it resides in.  Depending on how you imported the
+    module above, you will refer to either `fipy.package.object.Object` or
+    `object.Object`.  Alternatively, you can use::
+        
+        from fipy.package.object import Object
+        
+    and then refer simply to `Object`. There is a shorthand notation::
+        
+        from fipy import Object
+        
+    but it is still experimental and does not work for all of the objects
+    in FiPy.
 
     Python_ is an object-oriented language and the FiPy framework
     is composed of objects or classes.  Knowledge of object-oriented
@@ -83,8 +107,11 @@ class Base:
       descendants to actually provide that behavior.
       
       Unlike many object-oriented languages, Python_ does not prevent the
-      creation of abstract objects, but we will include a notice like the one
-      above for abstract classes which should be used for documentation but
+      creation of abstract objects, but we will include a notice like 
+      
+      .. attention:: This class is abstract. Always create one of its subclasses.
+
+      for abstract classes which should be used for documentation but
       never actually created in a |FiPy| script.
       
     .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/

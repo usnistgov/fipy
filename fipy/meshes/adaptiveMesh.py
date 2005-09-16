@@ -4,7 +4,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 4/7/05 {4:37:22 PM} 
- #                                last update: 4/7/05 {4:38:10 PM} 
+ #                                last update: 9/16/05 {2:52:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,4 +40,4 @@
  # ###################################################################
  ##
 
-from numMesh.adaptiveMesh import AdaptiveMesh2D
+from numMesh.adaptiveMesh import _AdaptiveMesh2D

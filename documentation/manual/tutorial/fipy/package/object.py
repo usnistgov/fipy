@@ -4,7 +4,7 @@
  # 
  #  FILE: "object.py"
  #                                    created: 8/16/05 {10:41:26 AM} 
- #                                last update: 9/16/05 {12:06:11 PM} 
+ #                                last update: 9/16/05 {3:01:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,38 +42,11 @@
  # ###################################################################
  ##
 
-"""
-This module can be found in the file `fipy/package/object.py`.  You make it
-available to your script by either::
-    
-    import fipy.package.object
-    
-in which case you refer to it by its full name of `fipy.package.object`, or::
-    
-    from fipy.package import object
-    
-in which case you can refer simply to `object`.
-"""
 __docformat__ = 'restructuredtext'
 
 from fipy.package.base import Base
 
 class Object(Base):
-    """
-    With very few exceptions, the name of a class will be the capitalized
-    form of the module it resides in.  Depending on how you imported the
-    module above, you will refer to either `fipy.package.object.Object` or
-    `object.Object`.  Alternatively, you can use::
-        
-        from fipy.package.object import Object
-        
-    and then refer simply to `Object`. There is a shorthand notation::
-        
-        from fipy import Object
-        
-    but it is still experimental and does not work for all of the objects
-    in FiPy.
-    """
     def __init__(self, arg1, arg2 = None, arg3 = 'string'):
         """
         This method, like all those whose names begin and end with
