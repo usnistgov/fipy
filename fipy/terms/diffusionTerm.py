@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 9/16/05 {1:38:45 PM} 
+ #                                last update: 9/16/05 {3:25:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -223,7 +223,7 @@ class DiffusionTerm(Term):
         return (L, b)
         
     def _test(self):
-        """
+        r"""
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
            >>> from fipy.meshes.grid1D import Grid1D
