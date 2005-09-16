@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/16/05 {3:22:51 PM} 
+ #                                last update: 9/16/05 {3:46:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -656,10 +656,6 @@ dist = setup(	name = "FiPy",
 				'fipy.models.levelSet.distanceFunction',
 				'fipy.models.levelSet.electroChem',
 				'fipy.models.levelSet.surfactant',
-			    'fipy.models.phase',
-				'fipy.models.phase.phase',
-				'fipy.models.phase.temperature',
-				'fipy.models.phase.theta',
 			'fipy.solvers',
 			'fipy.terms',
 			'fipy.tests',
@@ -669,6 +665,9 @@ dist = setup(	name = "FiPy",
 			'fipy.variables',
 			'fipy.viewers',
                             'fipy.viewers.gistViewer'
+                            'fipy.viewers.gnuplotViewer'
+                            'fipy.viewers.matplotlibViewer'
+                            'fipy.viewers.mayaviViewer'
 	],
 	classifiers = [
 	    'Development Status :: 5 - Production/Stable',
