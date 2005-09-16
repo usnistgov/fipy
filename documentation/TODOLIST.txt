@@ -2,18 +2,6 @@
 Future Work
 -----------
 
-Release Goals 1.0
--------------------
-
-- Documentation:
-
-  * Review all for accuracy/consistency.
-
-- Distribution
-
-  * Install and test with no write permissions.
-  * PySparse; f2c issues on RedHat?
-
 Release Goals 1.1
 -----------------
 
@@ -36,7 +24,9 @@ Release Goals 1.1
     
 - Distribution
 
+  * PySparse; f2c issues on RedHat?
   * Fedora Core 4 installation. SourceForge compilefarm?
+  * Install and test with no write permissions.
   * Get FiPy registered on:
 
     - vaults of parnassus
