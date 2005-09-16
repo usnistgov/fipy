@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 9/16/05 {1:42:36 PM} 
+ #                                last update: 9/16/05 {2:46:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -204,6 +204,8 @@ class Term:
         .. attention:: 
             
            This does not work due to sign difficulties.
+           
+        ..
 
            >>> Term(coeff = 1.) == 1.  
            False
