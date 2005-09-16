@@ -146,6 +146,10 @@ Again, merge n.m.q+1 changes back to main trunk::
 Making a Release
 ================
 
+Change the version number in setup.py
+
+Check items in TODOLIST.txt
+
 Tag the repository as appropriate (see `CVS practices`_ above).
 
 Check out a clean copy of the desired release::
