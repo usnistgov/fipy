@@ -6,7 +6,7 @@
  # 
  #  FILE: "iterator.py"
  #                                    created: 11/10/03 {2:47:38 PM} 
- #                                last update: 8/23/05 {11:34:25 AM} 
+ #                                last update: 9/16/05 {12:29:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,9 @@ class ConvergenceError(ArithmeticError):
 
 class Iterator:
     """
-    This simple iterator
+    This simple iterator takes equal steps of duration `dtTry` until it reaches
+    `dtTotal`.  This class can be substituted for one of its descendants to
+    easily switch between fixed and adaptive stepsize control.
     """
     def __init__(self, solve, preSolve = None, postSolve = None):
         """
