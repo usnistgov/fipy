@@ -6,7 +6,7 @@
  # 
  #  FILE: "refinedMesh.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 4/2/05 {7:31:02 PM} 
+ #                                last update: 9/16/05 {12:36:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,16 +41,16 @@
  ##
 
 """ 
-The `RefinedMesh` class provides an alternative way to adapt a mesh without
-using the `AdaptiveMesh` class.  The `RefinedMesh` contructor takes as
+The `_RefinedMesh` class provides an alternative way to adapt a mesh without
+using the `_AdaptiveMesh` class.  The `_RefinedMesh` contructor takes as
 input an old mesh (baseMesh) as well as a list of cells to refine
 (nodeList).  The cells are refined by putting an additional vertex in the
 center of the cell and dividng up the cell by drawing lines from the center
 to each vertex.  After creating the new mesh, you can convert variables to
-use the new mesh by creating a `RefinedMeshCellVariable` (defined in this
-module) with the old variable and the new `RefinedMesh` as arguments.  Note
-that if the mesh of the variable passed to `RefinedMeshCellVariable` is not
-the same as the old mesh used to generate the `RefinedMesh`, the results
+use the new mesh by creating a `_RefinedMeshCellVariable` (defined in this
+module) with the old variable and the new `_RefinedMesh` as arguments.  Note
+that if the mesh of the variable passed to `_RefinedMeshCellVariable` is not
+the same as the old mesh used to generate the `_RefinedMesh`, the results
 will be erroneous.
 
 .. note:: 
@@ -62,8 +62,8 @@ Test case:
    >>> from fipy.meshes.numMesh.tri2D import Tri2D
    >>> baseMesh = Tri2D(dx = 6., dy = 6., nx = 1, ny = 1)
    >>> baseVar = CellVariable(value = [0., 1., 2., 3.], mesh = baseMesh)
-   >>> refinedMesh = RefinedMesh2D(baseMesh, [1, 3])
-   >>> refinedVar = RefinedMeshCellVariable(baseVar, refinedMesh)
+   >>> refinedMesh = _RefinedMesh2D(baseMesh, [1, 3])
+   >>> refinedVar = _RefinedMeshCellVariable(baseVar, refinedMesh)
    >>> print refinedMesh.getVertexCoords()
    [[ 0., 0.,]
     [ 6., 0.,]
@@ -82,7 +82,7 @@ import Numeric
 from fipy.variables.cellVariable import CellVariable
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 
-class RefinedMesh2D(Mesh2D):
+class _RefinedMesh2D(Mesh2D):
     def __init__(self, baseMesh, nodeList):
         ## calculate new vertex coords
         baseNumVertices = baseMesh.getVertexCoords().shape[0]
@@ -127,7 +127,7 @@ class RefinedMesh2D(Mesh2D):
             self.newToOldCellIDs = Numeric.concatenate((self.newToOldCellIDs, [i, i, i]))
         Mesh2D.__init__(self, newVertexCoords, newFaceVertexIDs, newCellFaceIDs)
 
-class RefinedMeshCellVariable(CellVariable):
+class _RefinedMeshCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = Numeric.take(Numeric.array(oldVar), newMesh.newToOldCellIDs)
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())

@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/7/05 {4:26:43 PM} 
+ #                                last update: 9/16/05 {12:36:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,11 +63,11 @@ def _bracedList(l):
 def _parenList(l):
     return "(%s)" % ', '.join([str(i) for i in l])
        
-class AdaptiveMesh2D(GmshImporter2D):
+class _AdaptiveMesh2D(GmshImporter2D):
     """
 
-    The `AdaptiveMesh` classes allow meshes to be created "on-the-fly" using a
-    variable specified by the user.  The `AdaptiveMesh` classes use Gmsh, a free
+    The `_AdaptiveMesh` classes allow meshes to be created "on-the-fly" using a
+    variable specified by the user.  The `_AdaptiveMesh` classes use Gmsh, a free
     open-source meshing utility (http://www.geuz.org/gmsh). To do this, pass in a
     variable to the initializer function that has a mesh with the same
     boundaries (though not necessarily the same interior geometry) as the mesh
@@ -90,11 +90,11 @@ class AdaptiveMesh2D(GmshImporter2D):
     Since the value of `var` is smaller in the upper right hand corner, the mesh
     will be finer there.  To create the mesh, do this:
 
-       >>> newMesh = AdaptiveMesh2D(var)
+       >>> newMesh = _AdaptiveMesh2D(var)
 
     .. note:: 
         
-       At present, AdaptiveMesh supports triangular meshes only.
+       At present, `_AdaptiveMesh` supports triangular meshes only.
 
     """
     
