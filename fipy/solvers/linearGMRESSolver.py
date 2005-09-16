@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/2/05 {10:38:29 AM} 
+ #                                last update: 9/16/05 {1:30:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,12 +53,12 @@ class LinearGMRESSolver(Solver):
     """
     
     The `LinearGMRESSolver` solves a linear system of equations using the
-    Generalised Minimal Residual method (GMRES) with jacobi
+    generalised minimal residual method (GMRES) with Jacobi
     preconditioning. GMRES solves systems with a general non-symmetric
     coefficient matrix.
 
     The `LinearGMRESSolver` is a wrapper class for the the PySparse_
-    `itsolvers.gmres` and `precon.jacobi` methods.
+    `itsolvers.gmres()` and `precon.jacobi()` methods.
 
     .. _PySparse: http://pysparse.sourceforge.net
     

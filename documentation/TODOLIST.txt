@@ -22,6 +22,10 @@ Release Goals 1.1
   Also, numerix inverse trig operations should return an angular
   quantity, rather than a raw number.
 
+- Automatic conversion of dimensionless PhysicalField to simple
+  number or array should be done in `__array__` method, not in 
+  `__mul__` and __div__.
+
 - Documentation:
 
   * Review all for accuracy/consistency.

@@ -4,7 +4,7 @@
  # 
  #  FILE: "betaNoiseVariable.py"
  #                                    created: 8/26/05 {11:37:57 PM} 
- #                                last update: 9/13/05 {5:04:33 PM} 
+ #                                last update: 9/16/05 {2:29:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,7 +83,8 @@ class BetaNoiseVariable(NoiseVariable):
            ...     alpha.setValue(a)
            ...     for b in arange(0.5,5,0.5):
            ...         beta.setValue(b)
-           ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) * x**(alpha - 1) * (1 - x)**(beta - 1))
+           ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
+           ...                           * x**(alpha - 1) * (1 - x)**(beta - 1))
            ...         if __name__ == '__main__':
            ...             import sys
            ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
@@ -93,13 +94,9 @@ class BetaNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    Note that the noise exhibits larger amplitude in the small cells than in the large ones
-
     .. image:: fipy/variables/beta.jpg
-      :scale: 50
+      :scale: 25
       :align: center
-
-    but that the root-volume-weighted histogram is Gaussian.
 
     .. image:: fipy/variables/beta-histogram.pdf
       :scale: 25
@@ -116,7 +113,7 @@ class BetaNoiseVariable(NoiseVariable):
               
                  $\alpha$.
                  
-            - `beta`: The parameter,
+            - `beta`: The parameter
             
               .. raw:: latex
               

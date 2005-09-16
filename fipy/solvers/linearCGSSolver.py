@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/2/05 {10:49:23 AM} 
+ #                                last update: 9/16/05 {1:30:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,12 +54,12 @@ class LinearCGSSolver(Solver):
     """
 
     The `LinearCGSSolver` solves a linear system of equations using
-    the Conjugate Gradient Squared method (CGS), a variant of the
-    Biconjugate Gradient method (BiCG). CGS solves linear systems with
+    the conjugate gradient squared method (CGS), a variant of the
+    biconjugate gradient method (BiCG). CGS solves linear systems with
     a general non-symmetric coefficient matrix.
 
     The `LinearCGSSolver` is a wrapper class for the the PySparse_
-    `itsolvers.cgs` method.
+    `itsolvers.cgs()` method.
 
     .. _PySparse: http://pysparse.sourceforge.net
 

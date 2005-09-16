@@ -6,7 +6,7 @@
  # 
  #  FILE: "SkewedGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/1/05 {7:02:08 PM} 
+ #                                last update: 9/16/05 {12:41:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,12 +40,8 @@
  # ###################################################################
  ##
 
-"""
-2D rectangular Mesh with each interior vertex moved in a random distance and direction. The X and Y distances
-to move each vertex are determined independently, and are random values between -R and R, where R is the
-\"rand\" keyword argument to the constructor. 
-"""
-
+__docformat__ = 'restructuredtext'
+ 
 import Numeric
 import random
 from fipy.meshes.numMesh.mesh2D import Mesh2D
@@ -55,9 +51,9 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 class SkewedGrid2D(Mesh2D):
     """
-    Creates a 2D grid mesh with horizontal faces numbered
-    first and then vertical faces. Vertices and cells are numbered 
-    in the usual way. The points are skewed by a random amount (up to the rand parameter) in the X and Y directions.
+    Creates a 2D grid mesh with horizontal faces numbered first and then
+    vertical faces.  The points are skewed by a random amount (between `rand`
+    and `-rand`) in the X and Y directions.
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0):
         self.nx = nx

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/2/05 {10:18:46 AM} 
+ #                                last update: 9/16/05 {2:27:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,7 +64,8 @@ class Variable:
 	>>> b()
 	12
 	
-    Changes to the value of a `Variable` will automatically trigger changes in any dependent `Variable`s
+    Changes to the value of a `Variable` will automatically trigger changes in
+    any dependent `Variable` objects
     
 	>>> a.setValue(5)
 	>>> b

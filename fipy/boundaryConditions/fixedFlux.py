@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 7/6/05 {1:50:54 PM} 
+ #                                last update: 9/16/05 {12:14:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,16 +52,10 @@ from fipy.tools import vector
 class FixedFlux(BoundaryCondition):
     r"""
 
-    The `FixedFlux` boundary condition adds a contribution, equivalent
-    to a fixed flux (Neumann) , to the equation's RHS vector.  The
-    contribution, given by `value`
-
-    .. raw:: latex
-
-        $ * A_{\text{face}}, $ where $A_{\text{face}}$
-
-    is the area of the face, is only added to entries corresponding to
-    the specified faces.
+    The `FixedFlux` boundary condition adds a contribution, equivalent to a
+    fixed flux (Neumann condition), to the equation's RHS vector.  The
+    contribution, given by `value`, is only added to entries corresponding to
+    the specified `faces`, and is weighted by the face areas.
        
     """
     

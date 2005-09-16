@@ -4,7 +4,7 @@
  # 
  #  FILE: "base.py"
  #                                    created: 8/16/05 {10:41:26 AM} 
- #                                last update: 8/16/05 {10:45:31 AM} 
+ #                                last update: 9/16/05 {12:10:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,4 +45,77 @@
 __docformat__ = 'restructuredtext'
 
 class Base:
-    pass
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+
+    Python_ is an object-oriented language and the FiPy framework
+    is composed of objects or classes.  Knowledge of object-oriented
+    programming (OOP) is not necessary to use either Python or
+    FiPy, but a few concepts are useful.  OOP involves two main
+    ideas:
+
+    **encapsulation** 
+      an object binds data with actions or "methods".  In most cases, you will
+      not work with an object's data directly; instead, you will set, retrieve,
+      or manipulate the data using the object's methods.
+
+      Methods are functions that are attached to objects and that have
+      direct access to the data of those objects.  Rather than 
+      passing the object data as an argument to a function::
+          
+          fn(data, arg1, arg2, ...)
+          
+      you instruct an object to invoke an appropriate method::
+          
+          object.meth(arg1, arg2, ...)
+          
+      If you are unfamiliar with object-oriented practices, there probably seems
+      little advantage in this reordering.  You will have to trust us that
+      the latter is a much more powerful way to do things.
+          
+    **inheritance** 
+      specialized objects are derived or inherited from more general objects.
+      Common behaviors or data are defined in base objects and specific
+      behaviors or data are either added or modified in derived objects.
+      Objects that declare the existence of certain methods, without actually
+      defining what those methods do, are called "abstract".  These objects
+      exist to define the behavior of a family of objects, but rely on their
+      descendants to actually provide that behavior.
+      
+      Unlike many object-oriented languages, Python_ does not prevent the
+      creation of abstract objects, but we will include a notice like the one
+      above for abstract classes which should be used for documentation but
+      never actually created in a |FiPy| script.
+      
+    .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+    .. |FiPy| raw:: latex
+        
+       \FiPy{}
+
+    """
+    def method1(self):
+        """
+        This is one thing that you can instruct any object that derives from
+        `Base` to do, by calling::
+            
+            myObjectDerivedFromBase.method1()
+        
+        :Parameters:
+          - `self`: this special argument refers to the object that is being created.
+              
+            .. attention::
+                
+               *self* is supplied automatically by the Python_ interpreter to all
+               methods.  You don't need to (and should not) specify it yourself.
+               
+        .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+        """
+        pass
+        
+    def method2(self):
+        """
+        This is another thing that you can instruct any object that derives from
+        `Base` to do.
+        """
+        pass
+        

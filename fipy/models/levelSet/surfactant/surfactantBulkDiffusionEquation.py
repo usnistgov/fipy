@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantBulkDiffusionEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:34 AM} 
+ #                                last update: 9/16/05 {1:48:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,13 +104,13 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
         $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta) \;\; \text{at} \;\; \phi = 0.$$
         
     :Parameters:
-      - `bulkVar` : The bulk surfactant concentration variable.
-      - `distanceVar` : A `DistanceVariable` object
-      - `surfactantVar` : A `SurfactantVariable` object
-      - `otherSurfactantVar` : Any other surfactants that may remove this one.
-      - `diffusionCoeff` : A float or a `FaceVariable`.
-      - `transientCoeff` : In general 1 is used.
-      - `rateConstant` : The adsorption coefficient.
+      - `bulkVar`: The bulk surfactant concentration variable.
+      - `distanceVar`: A `DistanceVariable` object
+      - `surfactantVar`: A `SurfactantVariable` object
+      - `otherSurfactantVar`: Any other surfactants that may remove this one.
+      - `diffusionCoeff`: A float or a `FaceVariable`.
+      - `transientCoeff`: In general 1 is used.
+      - `rateConstant`: The adsorption coefficient.
 
     """
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 8/9/05 {3:46:21 PM} 
+ #                                last update: 9/16/05 {1:42:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,6 +48,9 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Term:
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
     def __init__(self, coeff = 1.):
         """
         Create a `Term`.
@@ -84,7 +87,7 @@ class Term:
     def _isConverged(self):
 	return self.converged
 
-    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = []):
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = ()):
         r"""
         Builds and solves the `Term`'s linear system once.
         	
@@ -196,8 +199,11 @@ class Term:
            >>> Term(coeff = 1.) - Term(coeff = 2.)
            (Term(coeff = 1.0) - Term(coeff = 2.0))
 
-        A `Term` should equate with a float. This does not work due to
-        sign difficulties.
+        A `Term` should equate with a float. 
+        
+        .. attention:: 
+            
+           This does not work due to sign difficulties.
 
            >>> Term(coeff = 1.) == 1.  
            False

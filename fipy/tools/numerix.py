@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 9/13/05 {1:02:02 PM} 
+ #                                last update: 9/16/05 {2:17:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -224,8 +224,8 @@ def arccos(arr):
         >>> print tostring(arccos(0.0), precision = 3)
          1.571
          
-    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
-    OverflowError: math range error
+    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
+    generate `OverflowError: math range error`
     
         >>> try: 
         ...     print str(arccos(2.0)) == "nan"
@@ -239,8 +239,8 @@ def arccos(arr):
         >>> arccos(Variable(value = (0,0.5,1.0)))
         numerix.arccos(Variable(value = [ 0. , 0.5, 1. ,]))
         
-    the next should really return radians, but doesn't
-    
+    .. attention: the next should really return radians, but doesn't
+       
         >>> print tostring(arccos(Variable(value = (0,0.5,1.0))), precision = 3)
         [ 1.571  1.047  0.   ]
         
@@ -265,8 +265,8 @@ def arccosh(arr):
         >>> print arccosh(1.0)
         0.0
 
-    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
-    OverflowError: math range error
+    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
+    generate `OverflowError: math range error`
     
         >>> try: 
         ...     print str(arccosh(0.0)) == "nan"
@@ -302,8 +302,8 @@ def arcsin(arr):
         >>> print tostring(arcsin(1.0), precision = 3)
          1.571
          
-    If SciPy has been loaded, the next test will return 'NaN', otherwise it will generate 
-    OverflowError: math range error
+    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
+    generate `OverflowError: math range error`
     
         >>> try: 
         ...     print str(arcsin(2.0)) == "nan"
@@ -317,8 +317,8 @@ def arcsin(arr):
         >>> arcsin(Variable(value = (0,0.5,1.0)))
         numerix.arcsin(Variable(value = [ 0. , 0.5, 1. ,]))
         
-    the next should really return radians, but doesn't
-
+    .. attention: the next should really return radians, but doesn't
+        
         >>> print tostring(arcsin(Variable(value = (0,0.5,1.0))), precision = 3)
         [ 0.     0.524  1.571]
     """
@@ -374,8 +374,8 @@ def arctan(arr):
         >>> arctan(Variable(value = (0,0.5,1.0)))
         numerix.arctan(Variable(value = [ 0. , 0.5, 1. ,]))
         
-    the next should really return radians, but doesn't
-
+    .. attention: the next should really return radians, but doesn't
+    
         >>> print tostring(arctan(Variable(value = (0,0.5,1.0))), precision = 3)
         [ 0.     0.464  0.785]
     """
@@ -404,7 +404,7 @@ def arctan2(arr, other):
         >>> arctan2(Variable(value = (0, 1, 2)), 2)
         (numerix.arctan2(Variable(value = [ 0., 1., 2.,]), 2))
         
-    the next should really return radians, but doesn't
+    .. attention: the next should really return radians, but doesn't
 
         >>> print tostring(arctan2(Variable(value = (0, 1, 2)), 2), precision = 3)
         [ 0.     0.464  0.785]

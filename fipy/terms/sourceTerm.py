@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 7/6/05 {4:24:50 PM} 
+ #                                last update: 9/16/05 {1:41:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,6 +39,8 @@
  #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
+
+__docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
 

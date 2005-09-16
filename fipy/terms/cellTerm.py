@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 9/13/05 {5:19:57 PM} 
+ #                                last update: 9/16/05 {1:37:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,41 +52,6 @@ from fipy.tools.sparseMatrix import _SparseMatrix
 class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
-    
-    The following tests demonstrate how the `CellVariable` objects
-    interact with other types of `Variable` objects.
-    
-        >>> from fipy.meshes.grid1D import Grid1D
-        >>> from fipy.variables.cellVariable import CellVariable
-        >>> from fipy.variables.faceVariable import FaceVariable
-        >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-        >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-        >>> m = Grid1D(nx = 2)
-        >>> cv = CellVariable(mesh = m)
-        >>> fv = FaceVariable(mesh = m)
-        >>> vcv = VectorCellVariable(mesh = m)
-        >>> vfv = VectorFaceVariable(mesh = m)
-        >>> CellTerm(coeff = cv)
-        CellTerm(coeff = [ 0., 0.,])
-        >>> CellTerm(coeff = 1)
-        CellTerm(coeff = 1)
-        >>> CellTerm(coeff = fv)
-        Traceback (most recent call last):
-            ...
-        TypeError: The coefficient must be a CellVariable or a scalar value.
-        >>> CellTerm(coeff = vcv)
-        Traceback (most recent call last):
-            ...
-        TypeError: The coefficient must be a CellVariable or a scalar value.
-        >>> CellTerm(coeff = vfv)
-        Traceback (most recent call last):
-            ...
-        TypeError: The coefficient must be a CellVariable or a scalar value.
-        >>> CellTerm(coeff = (1,))
-        Traceback (most recent call last):
-            ...
-        TypeError: The coefficient must be a CellVariable or a scalar value.
-
     """
     def __init__(self, coeff = 1.):
         from fipy.variables.variable import Variable
@@ -155,6 +120,45 @@ class CellTerm(Term):
 	inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 	
 	return (L, b)
+        
+    def _test(self):
+        """
+        The following tests demonstrate how the `CellVariable` objects
+        interact with other types of `Variable` objects.
+        
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> from fipy.variables.faceVariable import FaceVariable
+            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+            >>> m = Grid1D(nx = 2)
+            >>> cv = CellVariable(mesh = m)
+            >>> fv = FaceVariable(mesh = m)
+            >>> vcv = VectorCellVariable(mesh = m)
+            >>> vfv = VectorFaceVariable(mesh = m)
+            >>> CellTerm(coeff = cv)
+            CellTerm(coeff = [ 0., 0.,])
+            >>> CellTerm(coeff = 1)
+            CellTerm(coeff = 1)
+            >>> CellTerm(coeff = fv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a CellVariable or a scalar value.
+            >>> CellTerm(coeff = vcv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a CellVariable or a scalar value.
+            >>> CellTerm(coeff = vfv)
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a CellVariable or a scalar value.
+            >>> CellTerm(coeff = (1,))
+            Traceback (most recent call last):
+                ...
+            TypeError: The coefficient must be a CellVariable or a scalar value.
+
+        """
+        pass
 
 
 def _test(): 

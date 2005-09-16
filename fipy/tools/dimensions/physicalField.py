@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/1/05 {4:35:47 PM} 
+ #                                last update: 9/16/05 {2:10:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,6 +67,9 @@
 """
 Physical quantities with units.
 
+This module derives from `Konrad Hinsen`_'s PhysicalQuantity_
+|citePhysicalQuantity|.
+
 This module provides a data type that represents a physical
 quantity together with its unit. It is possible to add and
 subtract these quantities if the units are compatible, and
@@ -86,6 +89,12 @@ recommended values from CODATA_. Other conversion factors
    We can't guarantee for the correctness of all entries in the unit table, 
    so use this at your own risk!
 
+.. _Konrad Hinsen:                              mailto:hinsen@cnrs-orleans.fr
+.. _PhysicalQuantity:                           http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
+.. |citePhysicalQuantity| raw:: latex
+
+   \cite{PhysicalQuantity}
+   
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
@@ -104,22 +113,6 @@ from NumberDict import _NumberDict
 class PhysicalField:
     """
     Physical field or quantity with units
-    
-    `PhysicalField` instances allow addition, subtraction, 
-    multiplication, and division with each other as well as
-    multiplication, division, and exponentiation with numbers.
-    Addition and subtraction check that the units of the two operands
-    are compatible and return the result in the units of the first
-    operand. A limited set of mathematical functions (from module
-    `Numeric`) is applicable as well:
-
-    sqrt 
-      equivalent to exponentiation with 0.5.
-
-    sin, cos, tan 
-      applicable only to objects whose unit is compatible
-      with ``rad``.
-      
     """
     
     
@@ -243,7 +236,8 @@ class PhysicalField:
         """
         Return human-readable form of a physical quantity
         
-            >>> print PhysicalField(value = (3., 3.14159), unit = "eV").tostring(precision = 3, separator = '|')
+            >>> p = PhysicalField(value = (3., 3.14159), unit = "eV")
+            >>> print p.tostring(precision = 3, separator = '|')
             [ 3.   | 3.142|] eV
         """
         from fipy.tools import numerix
@@ -879,7 +873,7 @@ class PhysicalField:
 
     def sinh(self):
         """
-        Return the hyperbolic cosine of the `PhysicalField`
+        Return the hyperbolic sine of the `PhysicalField`
         
             >>> PhysicalField(0.).sinh()
             0.0
@@ -1169,13 +1163,11 @@ class PhysicalField:
         
     def allclose(self, other, atol = None, rtol = 1.e-8):
         """
-        This function tests whether or not `self` and `other` are equal 
-        subject to the given relative and absolute tolerances. The formula used is
-	
-	.. raw:: latex
-	
-	   $$ | self - other | < atol + rtol | other | $$
-	   
+        This function tests whether or not `self` and `other` are equal subject
+        to the given relative and absolute tolerances.  The formula used is::
+            
+            | self - other | < atol + rtol * | other |
+
         This means essentially that both elements are small compared to `atol` or 
         their difference divided by `other`'s value is small compared to `rtol`.        
         """
@@ -1652,28 +1644,28 @@ def _convertValue (value, src_unit, target_unit):
     (factor, offset) = src_unit.conversionTupleTo(target_unit)
     return (value + offset) * factor
 
-def Scale(quantity, scaling):
+def _Scale(quantity, scaling):
     """ 
     Normalize `quantity` by `scaling`.
     
     `quantity` can be a `PhysicalField`
     
-        >>> print round(Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6)
+        >>> print round(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6)
         25.4
         
     or a value-unit string convertable to a `PhysicalField`
     
-	>>> print round(Scale("1. inch", PhysicalField("1. mm")), 6)
+	>>> print round(_Scale("1. inch", PhysicalField("1. mm")), 6)
 	25.4
 	
     or a dimensionless number. A dimensionless number is left alone. 
            
-        >>> print round(Scale(PhysicalField(2.), PhysicalField("1. mm")), 6)
+        >>> print round(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6)
         2.0
         
     It is an error for the result to have dimensions.
 
-        >>> print Scale(PhysicalField("1. s"), PhysicalField("1. mm"))
+        >>> print _Scale(PhysicalField("1. s"), PhysicalField("1. mm"))
         Traceback (most recent call last):
             ...
         TypeError: <PhysicalUnit s> and <PhysicalUnit m> are incompatible

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/21/05 {4:46:44 PM} 
+ #                                last update: 9/16/05 {12:38:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,8 +54,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid1D(Mesh1D):
     """
-    Creates a 1D grid mesh. Vertices and cells are numbered 
-    in the usual way.
+    Creates a 1D grid mesh.
     
         >>> mesh = Grid1D(nx = 3)
         >>> print mesh.getCellCenters()

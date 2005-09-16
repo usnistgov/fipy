@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 7/12/05 {1:10:36 PM} 
+ #                                last update: 9/16/05 {12:39:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,8 +57,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 class Grid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
-    first and then vertical faces. Vertices and cells are numbered 
-    in the usual way.
+    first and then vertical faces.
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
 	self.dx = PhysicalField(value = dx)

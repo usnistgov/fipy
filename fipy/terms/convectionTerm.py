@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 8/31/05 {1:57:18 PM} 
+ #                                last update: 9/16/05 {1:37:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -160,7 +160,7 @@ class ConvectionTerm(FaceTerm):
         from fipy.solvers.linearCGSSolver import LinearCGSSolver
         return solver or LinearCGSSolver()
 
-    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = []):
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = ()):
         if not isinstance(self.coeff, VectorFaceVariable) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."

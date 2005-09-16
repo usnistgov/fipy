@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 8/2/05 {4:58:24 PM}
+ #                                last update: 9/16/05 {1:24:30 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,7 +89,7 @@ class DistanceVariable(CellVariable):
        >>> print var.allclose(answer)
        1
 
-    A 2D test case to test _calcTrialValue for a pathological case.
+    A 2D test case to test `_calcTrialValue` for a pathological case.
 
        >>> dx = 1.
        >>> dy = 2.

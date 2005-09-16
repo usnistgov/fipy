@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 8/2/05 {5:01:25 PM} 
+ #                                last update: 9/16/05 {1:48:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -353,10 +353,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
         	
         :Parameters:
-           - `var` : A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver` : The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
-           - `boundaryConditions` : A tuple of boundaryConditions.
-           - `dt` : The time step size.
+           - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
            
 	"""
                 

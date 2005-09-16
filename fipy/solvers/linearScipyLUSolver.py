@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/13/05 {11:21:32 AM} 
+ #                                last update: 9/16/05 {2:22:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,10 +54,16 @@ class LinearScipyLUSolver(Solver):
     using LU-factorisation. This method solves systems of general
     non-symmetric matrices with partial pivoting.
 
-    The `LinearScipyLUSolver` is a wrapper class for the the Scipy_
-    `scipy.linalg.lu_solve` method.
+    The `LinearScipyLUSolver` is a wrapper class for the the SciPy_
+    `scipy.linalg.lu_solve()` method.
     
-    .. _Scipy: http://www.scipy.org
+    .. warning::
+
+        Currently the solvers that use Scipy_ are only useful for
+        small systems due to the whole sparse matrix having to be
+        turned into an array of size N * N.
+    
+    .. _SciPy: http://www.scipy.org
 
     """
     

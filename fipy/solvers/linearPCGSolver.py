@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/2/05 {10:46:45 AM} 
+ #                                last update: 9/16/05 {1:33:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,12 +54,12 @@ class LinearPCGSolver(Solver):
     """
     
     The `LinearPCGSolver` solves a linear system of equations using the
-    Preconditioned Conjugate Gradient method (PCG) with SSOR
-    preconditioning. The PCG method solves systems with a symmetric
-    positive definite coefficient matrix.
+    preconditioned conjugate gradient method (PCG) with symmetric successive
+    over-relaxation (SSOR) preconditioning.  The PCG method solves systems with
+    a symmetric positive definite coefficient matrix.
 
     The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg` and `precon.ssor` methods.
+    `itsolvers.pcg()` and `precon.ssor()` methods.
 
     .. _PySparse: http://pysparse.sourceforge.net
     

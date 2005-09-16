@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 9/2/05 {10:49:10 AM}
+ #                                last update: 9/16/05 {12:21:15 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,16 +57,16 @@ from fipy.tools.sparseMatrix import _SparseMatrix
 class FixedValue(BoundaryCondition):
     r"""
     
-    The `FixedValue` boundary condition adds a contribution,
-    equivalent to a fixed value (Dirichlet), to the equation's RHS
-    vector and coefficient matrix.  The contributions are given by
+    The `FixedValue` boundary condition adds a contribution, equivalent to a
+    fixed value (Dirichlet condition), to the equation's RHS vector and
+    coefficient matrix.  The contributions are given by
 
     .. raw:: latex
 
-        $ -\text{value} * G_{\text{face}}, $ for the RHS vector and $
-        G_{\text{face}}, $ for the coefficient matrix. The parameter,
-        $ G_{\text{face}}, $ represents the terms's geometric
-        coefficient.
+        $ -\mathtt{value} * G_{\text{face}} $ for the RHS vector and $
+        G_{\text{face}} $ for the coefficient matrix.  The parameter $
+        G_{\text{face}} $ represents the term's geometric coefficient, which
+        depends on the type of term and the mesh geometry.
 
     Contributions are only added to entries corresponding to the
     specified faces.

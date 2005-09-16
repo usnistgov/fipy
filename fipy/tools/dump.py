@@ -6,7 +6,7 @@
  # 
  #  FILE: "dump.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 9/3/04 {10:35:28 PM} 
+ #                                last update: 9/16/05 {2:11:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ import gzip
 def write(data, filename):
     """
     Pickle an object and write it to a file. Wrapper for
-    `cPickle.dump`.
+    `cPickle.dump()`.
 
     :Parameters:
       - `data`: The object to be pickled.
@@ -68,7 +68,7 @@ def write(data, filename):
 def read(filename):
     """
     Read a pickled object from a file. Returns the unpickled object.
-    Wrapper for `cPickle.load`.
+    Wrapper for `cPickle.load()`.
 
     :Parameters:
       - `filename`: The name of the file to unpickle the object from.

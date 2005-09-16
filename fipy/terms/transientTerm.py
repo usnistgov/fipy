@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 9/2/05 {10:40:37 AM} 
+ #                                last update: 9/16/05 {1:43:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,7 +84,8 @@ class TransientTerm(CellTerm):
     Relaxation, given by `relaxationFactor`, is required for a
     converged solution.
        
-       >>> eq = TransientTerm(var) == ImplicitSourceTerm(-relaxationFactor) +  var * relaxationFactor + k 
+       >>> eq = TransientTerm(var) == ImplicitSourceTerm(-relaxationFactor) \
+       ...                            + var * relaxationFactor + k 
 
     A number of sweeps at each time step are required to let the
     relaxation take effect.

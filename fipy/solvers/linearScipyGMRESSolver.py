@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/2/05 {10:47:04 AM} 
+ #                                last update: 9/16/05 {1:33:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,12 +51,12 @@ class LinearScipyGMRESSolver(Solver):
     """
     
     The `LinearScipyGMRESSolver` solves a linear system of equations
-    using the Generalised Minimal Residual method (GMRES) with no
+    using the generalised minimal residual method (GMRES) with no
     GMRES solves systems with a general non-symmetric coefficient
     matrix.
 
     The `LinearScipyGMRESSolver` is a wrapper class for the the
-    Scipy_ `linalg.iterative.gmres` method.
+    Scipy_ `linalg.iterative.gmres()` method.
 
     .. warning::
 

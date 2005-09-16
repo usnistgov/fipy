@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/2/05 {10:37:17 AM} 
+ #                                last update: 9/16/05 {2:21:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,14 +60,8 @@ class LinearLUSolver(Solver):
     non-symmetric coefficient matrix using partial pivoting.
 
     The `LinearLUSolver` is a wrapper class for the the PySparse_
-    `superlu.factorize` method.
+    `superlu.factorize()` method.
 
-    .. warning::
-
-        Currently the solvers that use Scipy_ are only useful for
-        small systems due to the whole sparse matrix having to be
-        turned into an array of size N * N.
-    
     .. _PySparse: http://pysparse.sourceforge.net
     
     """

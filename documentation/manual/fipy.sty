@@ -464,7 +464,8 @@
     \newcommand{\KWArg}[1]{**\textit{##1}}%
     \newcommand{\Param}[2][]{%
         \textit{##2}%
-        \ifthenelse{\equal{##1}{}}{}{=\TX@verb*|##1|}}%
+        \ifthenelse{\equal{##1}{}}{}{=\TX@verb|##1|}}%
+%         \ifthenelse{\equal{##1}{}}{}{=\TX@verb*|##1|}}%
     {\raggedright\Large\hangfrom{\ttfamily #1(}{#2{\ttfamily)}}% 
     \\*[-0.6ex]\rule{\textwidth}{0.5\fboxrule}}%
     \nopagebreak\begin{list}{}{\setlength{\leftmargin}{\parindent}\item{}}}

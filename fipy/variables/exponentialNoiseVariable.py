@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialNoiseVariable.py"
  #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 9/13/05 {5:05:06 PM} 
+ #                                last update: 9/16/05 {2:29:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,13 +87,9 @@ class ExponentialNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    Note that the noise exhibits larger amplitude in the small cells than in the large ones
-
     .. image:: fipy/variables/exp.jpg
-      :scale: 50
+      :scale: 25
       :align: center
-
-    but that the root-volume-weighted histogram is Gaussian.
 
     .. image:: fipy/variables/exp-histogram.pdf
       :scale: 25
