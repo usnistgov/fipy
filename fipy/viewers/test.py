@@ -47,6 +47,7 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
+        'mayaviViewer.lines',
         ), base = __name__)
     
 if __name__ == '__main__':

@@ -32,8 +32,21 @@ Release Goals 1.1
     - vaults of parnassus
     - cfd online
     - scipy links
-   
+
+- Functionlity
+
+  * Investiagte using VISION for some simple FiPy examples.
+  * Implement some PETC solvers
+
 - Refactoring:
+
+  * Mesh
+   
+    - Look into other software (BLENDER3D, POVray) for example
+
+  * Rethink dependencies (maybe for a much later release)
+
+    - Use general principals outlined in Sanner's talk at scipy (are we doing this?)
 
   * Reduce memory requirements
 
@@ -51,6 +64,7 @@ Release Goals 1.1
       * FemLab
       * DiffPack
       * FemLego?
+      * DOLFIN (has similar python objects)
 
   * fipy.tools.dump
 

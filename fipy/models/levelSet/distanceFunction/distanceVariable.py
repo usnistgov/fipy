@@ -548,7 +548,7 @@ class DistanceVariable(CellVariable):
     def _getCellInterfaceFlag(self):
         """
 
-        Returns 1 for those faces on the interface:
+        Returns 1 for those cells on the interface:
 
         >>> from fipy.meshes.grid2D import Grid2D
         >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
