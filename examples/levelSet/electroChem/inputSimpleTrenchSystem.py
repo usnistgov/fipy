@@ -1,0 +1,360 @@
+#!/usr/bin/env python
+
+## 
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "inputSimpleTrenchSystem.py"
+ #                                    created: 8/26/04 {10:29:10 AM} 
+ #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
+ #  Author: Jonathan Guyer
+ #  E-mail: guyer@nist.gov
+ #  Author: Daniel Wheeler
+ #  E-mail: daniel.wheeler@nist.gov
+ #    mail: NIST
+ #     www: http://ctcms.nist.gov
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  PFM is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-17 JEG 1.0 original
+ # ###################################################################
+ ##
+
+r"""
+
+This input file
+
+.. raw:: latex
+
+    \label{levelSetElectroChemExample} is a demonstration of the use
+    of \FiPy{} for modeling copper electroplating.  The material
+    properties and experimental parameters used are roughly those that
+    have been previously published~\cite{NIST:damascene:2003}.
+
+To run this example from the base fipy directory type::
+    
+    $ examples/levelSet/electroChem/inputSimpleTrenchSystem.py
+
+at the command line. The results of the simulation will be displayed
+and the word `finished` in the terminal at the end of the
+simulation. To obtain this example in a plain script file in order to
+edit the example type::
+
+    $ python setup.py copy_script --From examples/levelSet/electroChem/inputSimpleTrenchSystem.py --To myScript.py
+
+in the base FiPy directory. The file `myScript.py` will contain a
+script which can be run by typing::
+
+    $ python myScript.py
+
+in the base FiPy directory. The following image shows the goverening
+equations for modeling electrodeposition with the CEAC mechanism.
+
+.. image:: examples/levelSet/electroChem/schematicOfEquations.pdf
+   :scale: 50
+   :align: center
+   :alt: schematic of superfill equations
+
+The parameters in the above image are descrbed in teh table below with thier
+python represntation and thier value and unit.
+
+.. raw:: latex
+
+    \begin{tabular}{|rllr@{.}ll|}
+    \hline
+    Symbol                & Description                       & \texttt{Python} representation        & \mulitcolumn{2}{l}{Value} & Unit                               \\
+    \hline
+    \multicolumn{6}{|c|}{Deposition Rate Parameters}                                                                                                                   \\
+    \hline
+    $v$                   & deposition rate                   & N/A                                   & \mulitcolumn{2}{l}{N/A}   & m s$^{-1}$                         \\
+    $i$                   & current density                   & N/A                                   & \mulitcolumn{2}{l}{N/A}   & A m$^{-2}$                         \\
+    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m^3 mol$^{-1}$                     \\
+    $n$                   & ion charge                        & \texttt{charge}                       & 2&                        & N/A                                \\
+    $F$                   & Faraday's constant                & \texttt{faradaysConstant}             & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
+    $i_0$                 & exchange current density          & N/A                                   & \mulitcolumn{2}{l}{N/A}   & A m$^{-2}$                         \\
+    $\alpha$              & transfer coefficient              & \texttt{transferCoefficient}          & 0&5                       & N/A                                \\
+    $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
+    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
+    $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
+    $b_0$                 & current density for $\theta^0$    & \texttt{currentDensity0}              & 0&26                      & A m$^{-2}$                         \\
+    $b_1$                 & current density for $\theta       & \texttt{currentDensity1}              & 45&0                      & A m$^{-2}$                         \\
+    \hline
+    \multicolumn{6}{|c|}{Metal Ion Parameters}                                                                                                                         \\
+    \hline
+    $c_m$                 & metal ion concentration           & \texttt{metalConcentration}           & 250&0                     & mol m$^{-3}$                       \\
+    $c_m^{\infty}$        & far field metal ion concentration & \texttt{metalConcentration}           & 250&0                     & mol m$^{-3}$                       \\
+    $D_m$                 & metal ion diffusion coefficient   & \texttt{metalDiffusion}               & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
+    \hline
+    \multicolumn{6}{|c|}{Catalyst Parameters}                                                                                                                          \\
+    \hline
+    $\theta$              & catalyst surfactnat concentration & \texttt{catalystCoverage}             & 0&0                       & N/A                                \\
+    $c_{\theta}$          & bulk catalyst concentration       & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_{\theta}^{\infty}$ & far field catalyst concentration  & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $D_{\theta}$          & catalyst diffusion coefficent     & \texttt{catalystDiffusionCoefficient} & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
+    $\Gamma$              & catalyst site density             & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
+    $k$                   & rate constant                     & N/A                                   & \mulitcolumn{2}{l}{N/A}   & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $k_0$                 & rate constant for $\eta^0$        & \texttt{rateConstant0}                & 1&76                      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $k_3$                 & rate constant for $\eta^3$        & \texttt{rateConstant3}                & -245&0$\times$10$^{-6}$   & m$^3$ mol$^{-1}$ s$^{-1}$ V$^{-3}$ \\
+    \hline
+    \end{tabular}
+
+    
+The following parameters (all in S.I. units)  represent,
+
+This system runs a blah blah system etc etc.
+Figure
+fix to step the wrong geometry being displayed
+move the mayavi viewer to the lectrochem directory
+check to see if mayavi is available
+
+    >>> if __name__ == '__main__':
+    ...     displayViewers = True
+    ... else:
+    ...     displayViewers = False
+    
+    >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
+    >>> runSimpleTrenchSystem(displayViewers = displayViewers)
+    1   
+
+"""
+__docformat__ = 'restructuredtext'
+
+def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
+                          gasConstant = 8.314,
+                          transferCoefficient = 0.5,
+                          rateConstant = 1.76,
+                          overpotentialDependence = -245e-6,
+                          acceleratorDiffusionCoefficient = 1e-9,
+                          siteDensity = 9.8e-6,
+                          atomicVolume = 7.1e-6,
+                          charge = 2,
+                          metalDiffusionCoefficient = 5.6e-10,
+                          temperature = 298.,
+                          overpotential = -0.3,
+                          bulkMetalConcentration = 250.,
+                          bulkAcceleratorConcentration = 5e-3,
+                          initialAcceleratorCoverage = 0.,
+                          constantCurrentDensity = 0.26,
+                          acceleratorDependenceCurrentDensity = 45.,
+                          cflNumber = 0.2,
+                          numberOfCellsInNarrowBand = 10,
+                          cellsBelowTrench = 10,
+                          cellSize = 0.1e-7,
+                          trenchDepth = 0.5e-6,
+                          aspectRatio = 2.,
+                          trenchSpacing = 0.6e-6,
+                          boundaryLayerDepth = 0.3e-6,
+                          numberOfSteps = 5,
+                          displayViewers = True):
+
+
+
+    yCells = cellsBelowTrench \
+             + int((trenchDepth + boundaryLayerDepth) / cellSize)
+
+    xCells = int(trenchSpacing / 2 / cellSize)
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(dx = cellSize,
+                  dy = cellSize,
+                  nx = xCells,
+                  ny = yCells)
+
+    bottomHeight = cellsBelowTrench * cellSize
+    trenchHeight = bottomHeight + trenchDepth
+    trenchWidth = trenchDepth / aspectRatio
+    sideWidth = (trenchSpacing - trenchWidth) / 2
+    def electrolyteFunc(cell, trenchHeight = trenchHeight,
+                        bottomHeight = bottomHeight, sideWidth = sideWidth):
+        x,y = cell.getCenter()    
+        if y > trenchHeight:
+            return 1
+        elif y < bottomHeight:
+            return 0
+        elif x < sideWidth:
+            return 0
+        else:
+            return 1
+
+    narrowBandWidth = numberOfCellsInNarrowBand * cellSize
+    from fipy.models.levelSet.distanceFunction.distanceVariable import \
+         DistanceVariable        
+
+    distanceVar = DistanceVariable(
+        name = 'distance variable',
+        mesh = mesh,
+        value = -1,
+        narrowBandWidth = narrowBandWidth,
+        hasOld = 1)
+    
+    distanceVar.setValue(1, mesh.getCells(electrolyteFunc))
+    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    from fipy.models.levelSet.surfactant.surfactantVariable import \
+         SurfactantVariable
+    
+    acceleratorVar = SurfactantVariable(
+        name = "accelerator variable",
+        value = initialAcceleratorCoverage,
+        distanceVar = distanceVar)
+    
+    from fipy.variables.cellVariable import CellVariable
+    bulkAcceleratorVar = CellVariable(
+        name = 'bulk accelerator variable',
+        mesh = mesh,
+        value = bulkAcceleratorConcentration)
+    
+    from fipy.variables.cellVariable import CellVariable
+    metalVar = CellVariable(
+        name = 'metal variable',
+        mesh = mesh,
+        value = bulkMetalConcentration)
+    
+    expoConstant = -transferCoefficient * faradaysConstant \
+                   / (gasConstant * temperature)
+    
+    tmp = acceleratorDependenceCurrentDensity \
+          * acceleratorVar.getInterfaceVar()
+
+    exchangeCurrentDensity = constantCurrentDensity + tmp
+
+    import fipy.tools.numerix as numerix
+    expo = numerix.exp(expoConstant * overpotential)
+    currentDensity = expo * exchangeCurrentDensity * metalVar \
+                     / bulkMetalConcentration
+
+    depositionRateVariable = currentDensity * atomicVolume \
+                             / (charge * faradaysConstant)
+
+    extensionVelocityVariable = CellVariable(
+        name = 'extension velocity',
+        mesh = mesh,
+        value = depositionRateVariable)   
+
+    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
+                import AdsorbingSurfactantEquation
+
+    surfactantEquation = AdsorbingSurfactantEquation(
+        surfactantVar = acceleratorVar,
+        distanceVar = distanceVar,
+        bulkVar = bulkAcceleratorConcentration,
+        rateConstant = rateConstant \
+                       + overpotentialDependence * overpotential**3)
+
+    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
+                   import buildHigherOrderAdvectionEquation
+
+    advectionEquation = buildHigherOrderAdvectionEquation(
+        advectionCoeff = extensionVelocityVariable)
+
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
+                         import buildMetalIonDiffusionEquation
+
+    metalEquation = buildMetalIonDiffusionEquation(
+        ionVar = metalVar,
+        distanceVar = distanceVar,
+        depositionRate = depositionRateVariable,
+        diffusionCoeff = metalDiffusionCoefficient,
+        metalIonAtomicVolume = atomicVolume,
+    )
+
+    metalEquationBCs = (
+            FixedValue(
+                mesh.getFacesTop(),
+                bulkMetalConcentration
+            ),
+        )
+
+    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
+                    import buildSurfactantBulkDiffusionEquation
+
+    bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
+        bulkVar = bulkAcceleratorVar,
+        distanceVar = distanceVar,
+        surfactantVar = acceleratorVar,
+        diffusionCoeff = acceleratorDiffusionCoefficient,
+        rateConstant = rateConstant * siteDensity
+    )
+
+    acceleratorBCs = (
+            FixedValue(
+                mesh.getFacesTop(),
+                bulkAcceleratorConcentration
+            ),)
+
+    if displayViewers:
+        from fipy.viewers import make
+        distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
+        acceleratorViewer = make(acceleratorVar.getInterfaceVar())
+
+    levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
+                                  / (cellSize * cflNumber * 2))
+
+    for step in range(numberOfSteps):
+
+        if displayViewers:
+            if step % levelSetUpdateFrequency == 0:
+                distanceVar.calcDistanceFunction()
+
+            extensionVelocityVariable.setValue(depositionRateVariable())
+
+        distanceVar.updateOld()
+        acceleratorVar.updateOld()
+        metalVar.updateOld()
+        bulkAcceleratorVar.updateOld()
+        distanceVar.extendVariable(extensionVelocityVariable)
+        if displayViewers:
+            dt = cflNumber * cellSize / max(extensionVelocityVariable)
+        else:
+            dt = 0.1
+        advectionEquation.solve(distanceVar, dt = dt) 
+        surfactantEquation.solve(acceleratorVar, dt = dt)
+        metalEquation.solve(metalVar, dt = dt, 
+                            boundaryConditions = metalEquationBCs)
+        bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt,
+                                      boundaryConditions = acceleratorBCs)
+
+        if displayViewers:
+            distanceViewer.plot()
+            acceleratorViewer.plot()
+
+    if displayViewers:
+        raw_input("finished")
+    else:
+        import os
+        testFile = 'test.gz'
+        import examples.levelSet.electroChem
+        import gzip
+        filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
+                                testFile)
+
+        filestream = gzip.open(filepath,'r')
+        import cPickle
+        testData = cPickle.load(filestream)
+        filestream.close()
+        print acceleratorVar.allclose(testData)
+
+if __name__ == '__main__':
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript(__name__))
+

@@ -87,7 +87,6 @@ Release Goals 1.1
 
     - Definetly most of these functions need not be in Variable and numerix
 
-
 Long term Goals
 ---------------
 

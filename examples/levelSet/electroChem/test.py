@@ -47,7 +47,8 @@ import input
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'input',
+            'inputWriteScriptHowTo',
+            'inputSimpleTrenchSystem',
         ), base = __name__)
     
 if __name__ == '__main__':
