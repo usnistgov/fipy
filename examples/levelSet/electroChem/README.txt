@@ -82,7 +82,7 @@ include:
   - An example that includes a secondary surfactant. Again this has already been done.
   - Create a Mayavi_ viewer class to enable plots like the ones above.
 
-.. include:: ../utils/include.txt
+.. include:: ../../../utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 

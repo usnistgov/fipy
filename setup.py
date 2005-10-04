@@ -218,14 +218,14 @@ class build_docs (Command):
 				     'README',
 				     'LICENSE',
 				     'DISCLAIMER',
-				     'examples/README']
+				     'examples/README',
+                                     'examples/levelSet/electroChem/README']
         
 	secondaryRestructuredTextFiles = ['CREDITS',
 					  'TALKS',
 					  'TODOLIST',
 					  'MAIL',
-					  'CVS',
-                                          'EFFICIENCY']
+ 					  'CVS']
 
         tertiaryRestructuredTextFiles = ['ELECTROCHEM']
 
