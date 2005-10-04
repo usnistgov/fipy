@@ -42,7 +42,6 @@
  ##
 
 r"""
-
 This input file
 
 .. raw:: latex
@@ -58,42 +57,36 @@ To run this example from the base fipy directory type::
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
-simulation. To obtain this example in a plain script file in order to
-edit the example type::
+simulation.
 
-    $ python setup.py copy_script --From examples/levelSet/electroChem/inputSimpleTrenchSystem.py --To myScript.py
-
-in the base FiPy directory. The file `myScript.py` will contain a
-script which can be run by typing::
-
-    $ python myScript.py
-
-in the base FiPy directory. The following image shows the goverening
-equations for modeling electrodeposition with the CEAC mechanism.
+The following image shows the goverening equations for modeling
+electrodeposition with the CEAC mechanism.
 
 .. image:: examples/levelSet/electroChem/schematicOfEquations.pdf
-   :scale: 50
+   :scale: 70
    :align: center
    :alt: schematic of superfill equations
 
-The parameters in the above image are descrbed in teh table below with thier
-python represntation and thier value and unit.
+The above image is a schematic of a trench geometry along with the
+equations for modeling electrodeposition. An explanation of the
+symbols and their representation in the \FiPy{} system can be seem in
+the table below.
 
 .. raw:: latex
 
     \begin{tabular}{|rllr@{.}ll|}
     \hline
-    Symbol                & Description                       & \texttt{Python} representation        & \mulitcolumn{2}{l}{Value} & Unit                               \\
+    Symbol                & Description                       & Keyword Argument                      & \multicolumn{2}{l}{Value} & Unit                               \\
     \hline
     \multicolumn{6}{|c|}{Deposition Rate Parameters}                                                                                                                   \\
     \hline
-    $v$                   & deposition rate                   & N/A                                   & \mulitcolumn{2}{l}{N/A}   & m s$^{-1}$                         \\
-    $i$                   & current density                   & N/A                                   & \mulitcolumn{2}{l}{N/A}   & A m$^{-2}$                         \\
-    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m^3 mol$^{-1}$                     \\
-    $n$                   & ion charge                        & \texttt{charge}                       & 2&                        & N/A                                \\
+    $v$                   & deposition rate                   &                                       & \multicolumn{2}{l}{}      & m s$^{-1}$                         \\
+    $i$                   & current density                   &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
+    $n$                   & ion charge                        & \texttt{charge}                       & \multicolumn{2}{c}{2}     &                                    \\
     $F$                   & Faraday's constant                & \texttt{faradaysConstant}             & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
-    $i_0$                 & exchange current density          & N/A                                   & \mulitcolumn{2}{l}{N/A}   & A m$^{-2}$                         \\
-    $\alpha$              & transfer coefficient              & \texttt{transferCoefficient}          & 0&5                       & N/A                                \\
+    $i_0$                 & exchange current density          &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $\alpha$              & transfer coefficient              & \texttt{transferCoefficient}          & 0&5                       &                                    \\
     $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
     $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
     $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
@@ -108,68 +101,84 @@ python represntation and thier value and unit.
     \hline
     \multicolumn{6}{|c|}{Catalyst Parameters}                                                                                                                          \\
     \hline
-    $\theta$              & catalyst surfactnat concentration & \texttt{catalystCoverage}             & 0&0                       & N/A                                \\
+    $\theta$              & catalyst surfactant concentration & \texttt{catalystCoverage}             & 0&0                       &                                    \\
     $c_{\theta}$          & bulk catalyst concentration       & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
     $c_{\theta}^{\infty}$ & far field catalyst concentration  & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
-    $D_{\theta}$          & catalyst diffusion coefficent     & \texttt{catalystDiffusionCoefficient} & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
+    $D_{\theta}$          & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
     $\Gamma$              & catalyst site density             & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
-    $k$                   & rate constant                     & N/A                                   & \mulitcolumn{2}{l}{N/A}   & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $k$                   & rate constant                     &                                       & \multicolumn{2}{l}{}      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
     $k_0$                 & rate constant for $\eta^0$        & \texttt{rateConstant0}                & 1&76                      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
     $k_3$                 & rate constant for $\eta^3$        & \texttt{rateConstant3}                & -245&0$\times$10$^{-6}$   & m$^3$ mol$^{-1}$ s$^{-1}$ V$^{-3}$ \\
     \hline
+    \multicolumn{6}{|c|}{Geometry Parameters}                                                                                                                          \\
+    \hline
+    $D$                   & trench depth                      & \texttt{trenchDepth}                  & 0&5$\times$10$^{-6}$      & m                                  \\
+    $D / W$               & trench aspect ratio               & \texttt{aspectRatio}                  & 2&0                       &                                    \\
+    $S$                   & trench spacing                    & \texttt{trenchSpacing}                & 0&6$\times$10$^{-6}$      & m                                  \\
+    $\delta$              & boundary layer depth              & \texttt{boundaryLayerDepth}           & 0&3$\times$10$^{-6}$      & m                                  \\
+    \hline
+    \multicolumn{6}{|c|}{Simulation Control Parameters}                                                                                                                \\
+    \hline
+                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10^{-7}        & m                                  \\
+                          & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
+                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\textttt{True}} &                           \\
+    \hline
     \end{tabular}
+ 
+    One
 
+can run the script by using the following function,
+
+    >>> runSimpleTrenchSystem()
+    1
     
-The following parameters (all in S.I. units)  represent,
+If the default values given are not correct pass in new values for
+keyword arguments. For example, to change the `metalConcentration` and
+`trenchDepth` arguments the command above would change to,
 
-This system runs a blah blah system etc etc.
-Figure
-fix to step the wrong geometry being displayed
-move the mayavi viewer to the lectrochem directory
-check to see if mayavi is available
+    >>> runSimpleTrenchSystem(catalystCoverage = 0.1)
+    0
 
-    >>> if __name__ == '__main__':
-    ...     displayViewers = True
-    ... else:
-    ...     displayViewers = False
-    
+Be sure to import the function as follows,
+
     >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
-    >>> runSimpleTrenchSystem(displayViewers = displayViewers)
-    1   
 
+    
 """
 __docformat__ = 'restructuredtext'
 
 def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                           gasConstant = 8.314,
                           transferCoefficient = 0.5,
-                          rateConstant = 1.76,
-                          overpotentialDependence = -245e-6,
-                          acceleratorDiffusionCoefficient = 1e-9,
+                          rateConstant0 = 1.76,
+                          rateConstant3 = -245e-6,
+                          catalystDiffusion = 1e-9,
                           siteDensity = 9.8e-6,
-                          atomicVolume = 7.1e-6,
+                          molarVolume = 7.1e-6,
                           charge = 2,
-                          metalDiffusionCoefficient = 5.6e-10,
+                          metalDiffusion = 5.6e-10,
                           temperature = 298.,
                           overpotential = -0.3,
-                          bulkMetalConcentration = 250.,
-                          bulkAcceleratorConcentration = 5e-3,
-                          initialAcceleratorCoverage = 0.,
-                          constantCurrentDensity = 0.26,
-                          acceleratorDependenceCurrentDensity = 45.,
-                          cflNumber = 0.2,
-                          numberOfCellsInNarrowBand = 10,
-                          cellsBelowTrench = 10,
+                          metalConcentration = 250.,
+                          catalystConcentration = 5e-3,
+                          catalystCoverage = 0.,
+                          currentDensity0 = 0.26,
+                          currentDensity1 = 45.,
                           cellSize = 0.1e-7,
                           trenchDepth = 0.5e-6,
                           aspectRatio = 2.,
                           trenchSpacing = 0.6e-6,
                           boundaryLayerDepth = 0.3e-6,
-                          numberOfSteps = 5,
-                          displayViewers = True):
+                          numberOfSteps = 5):
 
+    runAsTest = False
+    if __name__ == 'inputSimpleTrenchSystem':
+        runAsTest = True
 
-
+    cflNumber = 0.2
+    numberOfCellsInNarrowBand = 10
+    cellsBelowTrench = 10
+    
     yCells = cellsBelowTrench \
              + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
@@ -212,37 +221,36 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     from fipy.models.levelSet.surfactant.surfactantVariable import \
          SurfactantVariable
     
-    acceleratorVar = SurfactantVariable(
-        name = "accelerator variable",
-        value = initialAcceleratorCoverage,
+    catalystVar = SurfactantVariable(
+        name = "catalyst variable",
+        value = catalystCoverage,
         distanceVar = distanceVar)
     
     from fipy.variables.cellVariable import CellVariable
-    bulkAcceleratorVar = CellVariable(
-        name = 'bulk accelerator variable',
+    bulkCatalystVar = CellVariable(
+        name = 'bulk catalyst variable',
         mesh = mesh,
-        value = bulkAcceleratorConcentration)
+        value = catalystConcentration)
     
     from fipy.variables.cellVariable import CellVariable
     metalVar = CellVariable(
         name = 'metal variable',
         mesh = mesh,
-        value = bulkMetalConcentration)
+        value = metalConcentration)
     
     expoConstant = -transferCoefficient * faradaysConstant \
                    / (gasConstant * temperature)
     
-    tmp = acceleratorDependenceCurrentDensity \
-          * acceleratorVar.getInterfaceVar()
+    tmp = currentDensity1 * catalystVar.getInterfaceVar()
 
-    exchangeCurrentDensity = constantCurrentDensity + tmp
+    exchangeCurrentDensity = currentDensity0 + tmp
 
     import fipy.tools.numerix as numerix
     expo = numerix.exp(expoConstant * overpotential)
     currentDensity = expo * exchangeCurrentDensity * metalVar \
-                     / bulkMetalConcentration
+                     / metalConcentration
 
-    depositionRateVariable = currentDensity * atomicVolume \
+    depositionRateVariable = currentDensity * molarVolume \
                              / (charge * faradaysConstant)
 
     extensionVelocityVariable = CellVariable(
@@ -254,11 +262,10 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                 import AdsorbingSurfactantEquation
 
     surfactantEquation = AdsorbingSurfactantEquation(
-        surfactantVar = acceleratorVar,
+        surfactantVar = catalystVar,
         distanceVar = distanceVar,
-        bulkVar = bulkAcceleratorConcentration,
-        rateConstant = rateConstant \
-                       + overpotentialDependence * overpotential**3)
+        bulkVar = catalystConcentration,
+        rateConstant = rateConstant0 + rateConstant3 * overpotential**3)
 
     from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
                    import buildHigherOrderAdvectionEquation
@@ -274,73 +281,71 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         ionVar = metalVar,
         distanceVar = distanceVar,
         depositionRate = depositionRateVariable,
-        diffusionCoeff = metalDiffusionCoefficient,
-        metalIonAtomicVolume = atomicVolume,
+        diffusionCoeff = metalDiffusion,
+        metalIonMolarVolume = molarVolume,
     )
 
     metalEquationBCs = (
             FixedValue(
                 mesh.getFacesTop(),
-                bulkMetalConcentration
+                metalConcentration
             ),
         )
 
     from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
                     import buildSurfactantBulkDiffusionEquation
 
-    bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
-        bulkVar = bulkAcceleratorVar,
+    bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
+        bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,
-        surfactantVar = acceleratorVar,
-        diffusionCoeff = acceleratorDiffusionCoefficient,
-        rateConstant = rateConstant * siteDensity
+        surfactantVar = catalystVar,
+        diffusionCoeff = catalystDiffusion,
+        rateConstant = rateConstant0 * siteDensity
     )
 
-    acceleratorBCs = (
+    catalystBCs = (
             FixedValue(
                 mesh.getFacesTop(),
-                bulkAcceleratorConcentration
+                catalystConcentration
             ),)
 
-    if displayViewers:
+    if not runAsTest:
         from fipy.viewers import make
         distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
-        acceleratorViewer = make(acceleratorVar.getInterfaceVar())
+        catalystViewer = make(catalystVar.getInterfaceVar())
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
 
-        if displayViewers:
+        if not runAsTest:
             if step % levelSetUpdateFrequency == 0:
                 distanceVar.calcDistanceFunction()
 
             extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()
-        acceleratorVar.updateOld()
+        catalystVar.updateOld()
         metalVar.updateOld()
-        bulkAcceleratorVar.updateOld()
+        bulkCatalystVar.updateOld()
         distanceVar.extendVariable(extensionVelocityVariable)
-        if displayViewers:
+        if not runAsTest:
             dt = cflNumber * cellSize / max(extensionVelocityVariable)
         else:
             dt = 0.1
         advectionEquation.solve(distanceVar, dt = dt) 
-        surfactantEquation.solve(acceleratorVar, dt = dt)
+        surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
                             boundaryConditions = metalEquationBCs)
-        bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt,
-                                      boundaryConditions = acceleratorBCs)
+        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
+                                      boundaryConditions = catalystBCs)
 
-        if displayViewers:
+        if not runAsTest:
             distanceViewer.plot()
-            acceleratorViewer.plot()
+            catalystViewer.plot()
 
-    if displayViewers:
-        raw_input("finished")
-    else:
+    if runAsTest:
         import os
         testFile = 'test.gz'
         import examples.levelSet.electroChem
@@ -352,8 +357,10 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         import cPickle
         testData = cPickle.load(filestream)
         filestream.close()
-        print acceleratorVar.allclose(testData)
-
+        print catalystVar.allclose(testData)
+    else:
+        raw_input("finished")
+        
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))

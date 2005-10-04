@@ -92,7 +92,7 @@ properties associated with the accelerator species,
    
 properties of the cupric ions,
 
-   >>> atomicVolume = 7.1e-6,
+   >>> molarVolume = 7.1e-6,
    >>> charge = 2
    >>> metalDiffusionCoefficient = 5.6e-10
 
@@ -261,8 +261,9 @@ The `depositionRateVariable` is given by the following equation.
 
     $$ v = \frac{i \Omega}{n F} $$
 
-    where $\Omega$ is the metal atomic volume, $n$ is the metal ion
-    charge and $F$ is Faraday's constant. The current density is given by
+    where $\Omega$ is the metal molar volume, $n$ is the metal ion
+    charge and $F$ is Faraday's constant. The current density is given
+    by
 
     $$ i = i_0 \frac{c_m^i}{c_m^{\infty}} \exp{ \left( \frac{- \alpha F}{R T} \eta \right) } $$
 
@@ -285,7 +286,7 @@ The commands needed to build this equation are,
    >>> expo = numerix.exp(expoConstant * overpotential)
    >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
    ...                  / bulkMetalConcentration
-   >>> depositionRateVariable = currentDensity * atomicVolume \
+   >>> depositionRateVariable = currentDensity * molarVolume \
    ...                          / (charge * faradaysConstant)
 
 .. raw:: latex
@@ -374,7 +375,7 @@ The `MetalIonDiffusionEquation` is set up with the following commands.
    ...     distanceVar = distanceVar,
    ...     depositionRate = depositionRateVariable,
    ...     diffusionCoeff = metalDiffusionCoefficient,
-   ...     metalIonAtomicVolume = atomicVolume,
+   ...     metalIonMolarVolume = molarVolume,
    ... )
 
    >>> metalEquationBCs = (

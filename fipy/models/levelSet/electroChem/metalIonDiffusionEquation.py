@@ -54,7 +54,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
                                    depositionRate = 1,
                                    transientCoeff = 1,
                                    diffusionCoeff = 1,
-                                   metalIonAtomicVolume = 1):
+                                   metalIonMolarVolume = 1):
 
     r"""
 
@@ -118,7 +118,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        ...                                      distanceVar = disVar,
        ...                                      depositionRate = v * ionVar,
        ...                                      diffusionCoeff = diffusion,
-       ...                                      metalIonAtomicVolume = omega)
+       ...                                      metalIonMolarVolume = omega)
        >>> bc = (FixedValue(mesh.getFacesRight(), cinf),)
        >>> for i in range(10):
        ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
@@ -136,7 +136,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
       - `depositionRate`: A float or a `CellVariable` representing the interface deposition rate.
       - `transientCoeff`: The transient coefficient.
       - `diffusionCoeff`: The diffusion coefficient
-      - `metalIonAtomicVolume`: Atomic volume of the metal ions.
+      - `metalIonMolarVolume`: Molar volume of the metal ions.
 
     """
 
@@ -148,7 +148,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     coeff = _MetalIonSourceVariable(ionVar = ionVar,
                                     distanceVar = distanceVar,
                                     depositionRate = depositionRate,
-                                    metalIonAtomicVolume = metalIonAtomicVolume)
+                                    metalIonMolarVolume = metalIonMolarVolume)
 
     return eq + ImplicitSourceTerm(coeff)
 

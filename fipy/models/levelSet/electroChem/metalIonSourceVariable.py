@@ -72,7 +72,7 @@ class _MetalIonSourceVariable(CellVariable):
        1
 
     """
-    def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonAtomicVolume = None):
+    def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonMolarVolume = None):
         """
         Creates a `_MetalIonSourceVariable` object.
 
@@ -80,7 +80,7 @@ class _MetalIonSourceVariable(CellVariable):
           - `ionVar` : The metal ion concentration.
           - `distanceVar` : A `DistanceVariable` object.
           - `depositionRate` : The deposition rate.
-          - `metalIonAtomicVolume` : Atomic volume of the metal ions.
+          - `metalIonMolarVolume` : Molar volume of the metal ions.
        
         """
         
@@ -88,12 +88,12 @@ class _MetalIonSourceVariable(CellVariable):
         self.ionVar = self._requires(ionVar)
         self.distanceVar = self._requires(distanceVar)
         self.depositionRate = self._requires(depositionRate)
-        self.metalIonAtomicVolume = metalIonAtomicVolume
+        self.metalIonMolarVolume = metalIonMolarVolume
         
     def _calcValue(self):
         ionVar = Numeric.array(self.ionVar)
         ionVar = Numeric.where(ionVar > 1e-20, ionVar, 1e-20)        
-        self.value = Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonAtomicVolume) / ionVar
+        self.value = Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonMolarVolume) / ionVar
         
 def _test(): 
     import doctest
