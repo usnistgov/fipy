@@ -129,14 +129,15 @@ the table below.
 
 can run the script by using the following function,
 
-    >>> runSimpleTrenchSystem()
+    >>> runSimpleTrenchSystem(runAsTest = True)
     1
-    
-If the default values given are not correct pass in new values for
-keyword arguments. For example, to change the `metalConcentration` and
-`trenchDepth` arguments the command above would change to,
 
-    >>> runSimpleTrenchSystem(catalystCoverage = 0.1)
+without the `runAsTest` argument. If the default values given are not
+correct pass in new values for keyword arguments. For example, to
+change the `metalConcentration` and `trenchDepth` arguments the
+command above would change to,
+
+    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, runAsTest = True)
     0
 
 Be sure to import the function as follows,
@@ -169,11 +170,8 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                           aspectRatio = 2.,
                           trenchSpacing = 0.6e-6,
                           boundaryLayerDepth = 0.3e-6,
-                          numberOfSteps = 5):
-
-    runAsTest = False
-    if __name__ == 'inputSimpleTrenchSystem':
-        runAsTest = True
+                          numberOfSteps = 5,
+                          runAsTest = False):
 
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 10
@@ -360,8 +358,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         print catalystVar.allclose(testData)
     else:
         raw_input("finished")
-        
+
 if __name__ == '__main__':
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript(__name__))
+    runSimpleTrenchSystem()
 
