@@ -47,9 +47,10 @@ This input file
 .. raw:: latex
 
     \label{levelSetElectroChemExample} is a demonstration of the use
-    of \FiPy{} for modeling copper electroplating.  The material
-    properties and experimental parameters used are roughly those that
-    have been previously published~\cite{NIST:damascene:2003}.
+    of \FiPy{} for modeling electrodeposition using the CEAC
+    mechanism. The material properties and experimental parameters
+    used are roughly those that have been previously
+    published~\cite{NIST:damascene:2003}.
 
 To run this example from the base fipy directory type::
     
@@ -57,22 +58,47 @@ To run this example from the base fipy directory type::
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
-simulation.
+simulation. The simulation will only run for 10 time steps. In order
+to alter the number of timesteps, the python function that encapsulates
+the system of equations must first be imported (at the python command
+line),
 
-The following image shows the goverening equations for modeling
-electrodeposition with the CEAC mechanism.
+    >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
+
+and then the function can be run with a different number of time steps
+with the `numberOfSteps` argument as follows,
+
+    >>> runSimpleTrenchSystem(numberOfSteps = 5, runAsTest = True)
+    1
+
+However, do not include the `runAsTest` argument. Any argument
+parameter can be changed. For example if the initial catalyst coverage
+is not 0, then it can be reset,
+
+    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, runAsTest = True)
+    0
+
+The following image shows a schematic of a trench geometry along with
+the governing equations for modeling electrodeposition with the CEAC
+mechanism. All of the given equations are implemented in the
+`runSimpleTrenchSystem` function. As stated above, all the parameters
+in the equations can be changed with function arguments.
 
 .. image:: examples/levelSet/electroChem/schematicOfEquations.pdf
    :scale: 70
    :align: center
    :alt: schematic of superfill equations
 
-The above image is a schematic of a trench geometry along with the
-equations for modeling electrodeposition. An explanation of the
-symbols and their representation in the \FiPy{} system can be seem in
-the table below.
+The following table shows the
 
 .. raw:: latex
+
+    symbols used in the governing equations and their corresponding
+    arguments to the `runSimpleTrenchSystem` function. The boundary
+    layer depth is intentionally small in this example in order not to
+    complicate the mesh. Further examples will simulate more realistic
+    boundary layer depths but will also have more complex meshes
+    requiring the `gmsh` software.
 
     \begin{tabular}{|rllr@{.}ll|}
     \hline
@@ -121,29 +147,9 @@ the table below.
     \hline
                           & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10^{-7}        & m                                  \\
                           & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
-                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\textttt{True}} &                           \\
+                          & whether to run as a test          & \texttt{runAsTest}                    & \multicolumn{2}{c}{\textttt{False}} &                          \\
     \hline
     \end{tabular}
- 
-    One
-
-can run the script by using the following function,
-
-    >>> runSimpleTrenchSystem(runAsTest = True)
-    1
-
-without the `runAsTest` argument. If the default values given are not
-correct pass in new values for keyword arguments. For example, to
-change the `metalConcentration` and `trenchDepth` arguments the
-command above would change to,
-
-    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, runAsTest = True)
-    0
-
-Be sure to import the function as follows,
-
-    >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
-
     
 """
 __docformat__ = 'restructuredtext'
@@ -360,5 +366,5 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         raw_input("finished")
 
 if __name__ == '__main__':
-    runSimpleTrenchSystem()
+    runSimpleTrenchSystem(numberOfSteps = 10)
 

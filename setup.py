@@ -227,7 +227,7 @@ class build_docs (Command):
 					  'MAIL',
  					  'CVS']
 
-        tertiaryRestructuredTextFiles = ['ELECTROCHEM']
+        tertiaryRestructuredTextFiles = []
 
 
 	if self.latex:
