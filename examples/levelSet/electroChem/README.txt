@@ -51,21 +51,30 @@ mechanism can be found in |citeMoffat|.
 Using |FiPy| to model Superfill
 -------------------------------
 
-The |example/levelSet/electroChem/input.py| provides a detailed
-description of how to use |FiPy| to model the superfill process. The
-example includes the diffusion of metal ions and accelerator additives
-as well as tracking of the accelerator concentration as the interface
-deforms. The main limitation of this model is that the boundary layer
-is very short. The following image shows superfill simulations for
-trenches with an aspect ration of 1.5, 1.7 and 2.2 using |FiPy|.  The
-images were made using the Mayavi_ viewing software. Each contour
+Example |inputSimpleTrench| provides a simple way to use |FiPy|
+to model the superfill process. The example includes a detailed
+description of the governing equations and feature geometry. It
+requires the user to import and execute a function at the python
+prompt.  The model parameters can be passed as arguments to this
+function. In future all superfill examples will be provided with this
+type of interface. Example |inputWriteScriptHowTo| has the same
+functionality as |inputSimpleTrench| but demonstrates how to
+write a new script in the case where the existing suite of scripts do
+not meet the required needs.
+
+In general it is a good idea to obtain the Mayavi_ plotting package
+for which a specialized superfill viewer class has been created, see
+|INSTALLATION-txt|. The other standard viewers mentioned in
+|INSTALLATION-txt| are still adequate although they do not give such
+clear images that are tailored for the superfill problem.  The images
+below demonstrate the Mayavi_ viewing capability.  Each contour
 represents sequential positions of the interface and the color
 represents the concentration of accelerator as a surfactant. The areas
 of high surfactant concentration have an increased deposition rate.
 
 .. image:: examples/levelSet/electroChem/superfillImage.png
    :scale: 50
-   :align: center
+   :align: left
    :alt: FiPy superfill
 
 Future Additions
@@ -108,13 +117,25 @@ include:
 
    <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://link.aps.org/abstract/PRL/v87/e016102">Josell et al</a>
 
-.. |latexExample| raw:: latex
+.. |latexInputSimpleTrench| raw:: latex
 
-   following example, Section~\ref{levelSetElectroChemExample},
+   \ref{inputSimpleTrench}
 
-.. |htmlExample| raw:: html
+.. |htmlInputSimpleTrench| raw:: html
 
-   example in the <a href="download/fipy.pdf">manual</a>
+   <a href="download/fipy.pdf">1</a>
 
-.. |example/levelSet/electroChem/input.py| replace:: |htmlExample| |latexExample|
+.. |inputSimpleTrench| replace:: |htmlInputSimpleTrench| |latexInputSimpleTrench|
+
+.. |latexInputWriteScriptHowTo| raw:: latex
+
+   \ref{inputWriteScriptHowTo}
+
+.. |htmlInputWriteScriptHowTo| raw:: html
+
+   <a href="download/fipy.pdf">2</a>
+
+.. |inputWriteScriptHowTo| replace:: |htmlInputWriteScriptHowTo| |latexInputWriteScriptHowTo|
+
+.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 

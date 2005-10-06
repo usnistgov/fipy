@@ -220,7 +220,7 @@ class build_docs (Command):
 				     'DISCLAIMER',
 				     'examples/README',
                                      'examples/levelSet/electroChem/README']
-        
+                                     
 	secondaryRestructuredTextFiles = ['CREDITS',
 					  'TALKS',
 					  'TODOLIST',

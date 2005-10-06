@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "inputWriteScriptHowTo.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
  #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
@@ -45,11 +45,10 @@ r"""
 
 .. raw:: latex
 
-    \label{levelSetElectroChemExample}
-    This input file is a demonstration of the use of FiPy for modeling
-    copper electroplating.  The material properties and experimental
-    parameters used are roughly those that have been previously
-    published~\cite{NIST:damascene:2003}.
+    \label{inputWriteScriptHowTo} This input file demonstrates how to
+    create a new superfill script if the existing suite of scripts do
+    not meet the required needs. It provides the functionality of
+    Example~\ref{inputSimpleTrench}.
 
 To run this example from the base fipy directory type::
     
@@ -63,17 +62,16 @@ edit and run type::
     $ python setup.py copy_script --From examples/levelSet/electroChem/input.py --To myScript.py
 
 in the base FiPy directory. The file `myScript.py` will contain the
-script. The Gist package is required to view the results as the
-simulation is being executed (see the installation
-
-.. raw:: latex
-
-    guide in chapter~\ref{chap:Installation}).
+script.
 
 The following is an explicit explanation of the input commands
 required to set up and run the problem. At the top of the file all the
 parameter values are set. Their use will be explained during the
-instantiation of various objects.
+instantiation of various objects and are the same as those explained in
+
+.. raw:: latex
+
+    Example~\ref{inputSimpleTrench}.
 
 The following parameters (all in S.I. units)  represent,
 

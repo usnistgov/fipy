@@ -46,10 +46,10 @@ This input file
 
 .. raw:: latex
 
-    \label{levelSetElectroChemExample} is a demonstration of the use
-    of \FiPy{} for modeling electrodeposition using the CEAC
-    mechanism. The material properties and experimental parameters
-    used are roughly those that have been previously
+    \label{inputSimpleTrench} is a demonstration of the use of \FiPy{}
+    for modeling electrodeposition using the CEAC mechanism. The
+    material properties and experimental parameters used are roughly
+    those that have been previously
     published~\cite{NIST:damascene:2003}.
 
 To run this example from the base fipy directory type::
@@ -85,20 +85,18 @@ mechanism. All of the given equations are implemented in the
 in the equations can be changed with function arguments.
 
 .. image:: examples/levelSet/electroChem/schematicOfEquations.pdf
-   :scale: 70
+   :scale: 60
    :align: center
    :alt: schematic of superfill equations
 
-The following table shows the
+The following table shows the symbols used in the governing equations
+and their corresponding arguments to the `runSimpleTrenchSystem`
+function. The boundary layer depth is intentionally small in this
+example in order not to complicate the mesh. Further examples will
+simulate more realistic boundary layer depths but will also have more
+complex meshes requiring the `gmsh` software.
 
 .. raw:: latex
-
-    symbols used in the governing equations and their corresponding
-    arguments to the `runSimpleTrenchSystem` function. The boundary
-    layer depth is intentionally small in this example in order not to
-    complicate the mesh. Further examples will simulate more realistic
-    boundary layer depths but will also have more complex meshes
-    requiring the `gmsh` software.
 
     \begin{tabular}{|rllr@{.}ll|}
     \hline
