@@ -279,6 +279,20 @@ common platforms.
    copy the required pallets into the local directory. The color
    pallets are in "``src/gist/g``" of the base Pygist_ installation.
 
+.. warning::
+
+   If Pygist_ is installed in a local directory a further path may
+   have to be added to the PYTHONPATH environment variable. For
+   example, if
+
+       $ python setup.py install --home=/some/directory/some/where
+
+   then both /some/directory/some/where and
+   /some/directory/some/where/lib/python/gist are required to be added to
+   the PYTHONPATH. e.g.
+
+       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python/gist
+
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 

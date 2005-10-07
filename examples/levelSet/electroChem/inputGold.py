@@ -76,22 +76,40 @@ However, do not include the `runAsTest` argument.  This example has a
 more realistic default boundary layer depth and thus requires `gmsh`
 to construct a more complex mesh.
 
+There
+
+.. raw:: latex
+
+    are a few differences between the gold superfill model presented
+    in this example and Example~\ref{inputSimpleTrench}. Most default
+    values have changed to account for a different metal ion (gold)
+    and catalyst (lead). In this system the catalyst is not present in
+    the electrolyte but instead has a non-zero initial coverage. Thus
+    quantities associated with bulk catalyst and catalyst accumulation
+    are not defined. The current density is given by, $$ i =
+    \frac{c_m}{c_m^{\infty}} \left( b_0 + b_1 \theta \right). $$ The
+    more common representation of the current density includes an
+    exponential part. Here it is buried in $b_0$ and $b_1$. The
+    governing equation for catalyst evolution includes a term for
+    catalyst consumption on the interface and is given by $$
+    \dot{\theta} = J v \theta - k_c v \theta $$ where $k_c$ is the
+    consumption coefficient
+
+(`consumptionRateConstant`). The trench geometry is also given a
+slight taper, given by `taperAngle`.
+
 """
 __docformat__ = 'restructuredtext'
 
 def runGold(faradaysConstant = 9.6e4,
-            gasConstant = 8.314,
-            transferCoefficient = 0.5,
             consumptionRateConstant = 2.6e+6,
             molarVolume = 10.21e-6,
             charge = 1.0,
             metalDiffusion = 1.7e-9,
-            temperature = 298.,
-            overpotential = -0.3,
             metalConcentration = 20.0,
             catalystCoverage = 0.15,
-            currentDensity0 = 0.26,
-            currentDensity1 = 45.,
+            currentDensity0 = 3e-2 * 16,
+            currentDensity1 = 6.5e-1 * 16,
             cellSize = 0.1e-7,
             trenchDepth = 0.2e-6,
             aspectRatio = 1.47,
@@ -99,8 +117,6 @@ def runGold(faradaysConstant = 9.6e4,
             boundaryLayerDepth = 90.0e-6,
             numberOfSteps = 40,
             taperAngle = 6.0,
-            A = 3e-2,
-            B = 6.5e-1,
             runAsTest = False):
     
     cflNumber = 0.2
@@ -143,7 +159,7 @@ def runGold(faradaysConstant = 9.6e4,
         mesh = mesh,
         value = metalConcentration)
 
-    exchangeCurrentDensity = 16 * (A + B * catalystVar.getInterfaceVar())
+    exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.getInterfaceVar()
     
     currentDensity = metalVar / metalConcentration * exchangeCurrentDensity
 
@@ -186,65 +202,50 @@ def runGold(faradaysConstant = 9.6e4,
         mesh.getTopFaces(),
         metalConcentration),)
 
-    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-                    import buildSurfactantBulkDiffusionEquation
-
-    eqnTuple = ( (advectionEquation, distanceVar, ()),
-                 (catalystSurfactantEquation, catalystVar, ()),
-                 (metalEquation, metalVar,  metalEquationBCs))
-                     
-    class PlotVariable(CellVariable):
-        def __init__(self, var = None, name = ''):
-            CellVariable.__init__(self, mesh = mesh.getFineMesh(), name = name)
-            self.var = self._requires(var)
-
-        def _calcValue(self):
-            self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
-    
-    levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
-       
-    m1 = 0
-
     if not runAsTest:
-        from fipy.viewers import make
-        viewers = (make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                   make(PlotVariable(var = catalystVar.getInterfaceVar())))
 
-    def doOneStep(step, totalTime):
-        if not runAsTest:
-            print totalTime,' ',step
+        class PlotVariable(CellVariable):
+            def __init__(self, var = None, name = ''):
+                CellVariable.__init__(self, mesh = mesh.getFineMesh(), name = name)
+                self.var = self._requires(var)
+
+            def _calcValue(self):
+                self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
+
+        from fipy.viewers import make
+        
+        distanceViewer = make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9})
+        catalystViewer = make(PlotVariable(var = catalystVar.getInterfaceVar()))
+        
+    levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
+    step = 0
+    
+    while step < numberOfSteps:
         
         if step % levelSetUpdateFrequency == 0:
+            
             distanceVar.calcDistanceFunction(deleteIslands = True)
             
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
-
         argmax = numerix.argmax(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
-            
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
-
-        for eqn, var, BCs in eqnTuple:
-            var.updateOld()
-
-        for eqn, var, BCs in eqnTuple:
-            eqn.solve(var, boundaryConditions = BCs, dt = dt)
-
-        if not runAsTest:
-            for viewer in viewers:
-                viewer.plot()
-
-        return totalTime + dt
         
-    totalTime = 0.
-    step = 0
-    
-    metalVar.setValue(metalConcentration)
+        distanceVar.updateOld()
+        catalystVar.updateOld()
+        metalVar.updateOld()
 
-    while step < numberOfSteps:
-        totalTime = doOneStep(step, totalTime)
+        advectionEquation.solve(distanceVar, dt = dt)
+        catalystSurfactantEquation.solve(catalystVar, dt = dt)
+        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
+
         step += 1
 
+        if not runAsTest:
+            
+            distanceViewer.plot()
+            catalystViewer.plot()
+        
     if runAsTest:
         
         from fipy.tools import dump

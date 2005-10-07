@@ -502,7 +502,7 @@ to tell if something has changed or been broken.
    >>> filestream.close()
    >>> print acceleratorVar.allclose(testData)
    1
-          
+
 """
 __docformat__ = 'restructuredtext'
 
