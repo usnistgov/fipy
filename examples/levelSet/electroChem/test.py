@@ -45,11 +45,13 @@ import fipy.tests.testProgram
 
 import inputWriteScriptHowTo
 import inputSimpleTrenchSystem
+import inputGold
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'inputWriteScriptHowTo',
             'inputSimpleTrenchSystem',
+            'inputGold',
         ), base = __name__)
     
 if __name__ == '__main__':

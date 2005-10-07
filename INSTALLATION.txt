@@ -180,6 +180,20 @@ installers`_ are available.
    attention to the instructions in the INSTALL file in the base PySparse_
    directory.
 
+.. warning::
+
+   If pysparse is installed in a local directory a further path may
+   have to be added to the PYTHONPATH environment variable. For
+   example, if
+
+       $ python setup.py install --home=/some/directory/some/where
+
+   then both /some/directory/some/where and
+   /some/directory/some/where/lib/python are required to be added to
+   the PYTHONPATH. e.g.
+
+       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
+
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
