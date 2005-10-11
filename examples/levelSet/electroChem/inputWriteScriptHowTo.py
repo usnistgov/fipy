@@ -184,10 +184,10 @@ electrolyte region (positive region).
    ...         return 1
    ...     elif y < bottomHeight:
    ...         return 0
-   ...     elif x < sideWidth:
-   ...         return 0
-   ...     else:
+   ...     elif x < xCells * cellSize - sideWidth:
    ...         return 1
+   ...     else:
+   ...         return 0
 
 Create an initial variable,
 

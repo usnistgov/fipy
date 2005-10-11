@@ -58,10 +58,10 @@ To run this example from the base fipy directory type::
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
-simulation. The simulation will only run for 10 time steps. In order
-to alter the number of timesteps, the python function that
-encapsulates the system of equations must first be imported (at the
-python command line),
+simulation. The simulation will run for 200 time steps. In order to
+alter the number of timesteps, the python function that encapsulates
+the system of equations must first be imported (at the python command
+line),
 
     >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
 
@@ -210,10 +210,10 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
             return 1
         elif y < bottomHeight:
             return 0
-        elif x < sideWidth:
-            return 0
-        else:
+        elif x < xCells * cellSize - sideWidth:
             return 1
+        else:
+            return 0
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
     from fipy.models.levelSet.distanceFunction.distanceVariable import \
@@ -320,14 +320,26 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
             ),)
 
     if displayViewers:
-        from fipy.viewers import make
-        distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
-        catalystViewer = make(catalystVar.getInterfaceVar())
+        try:
+            from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 })
+        except:
+            from fipy.viewers import make
+            distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
+            catalystViewer = make(catalystVar.getInterfaceVar())
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
+
+        if displayViewers:
+            try:
+                if step % 10 == 0:
+                    viewer.plot()
+            except:
+                distanceViewer.plot()
+                catalystViewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
@@ -349,12 +361,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
                                    boundaryConditions = catalystBCs)
 
-        if displayViewers:
-            distanceViewer.plot()
-            catalystViewer.plot()
 
-
-        
     import os
     import examples.levelSet.electroChem
     filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
@@ -363,5 +370,5 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     print catalystVar.allclose(dump.read(filepath))
 
 if __name__ == '__main__':
-    runSimpleTrenchSystem(numberOfSteps = 20)
+    runSimpleTrenchSystem(numberOfSteps = 200)
     raw_input("finished")

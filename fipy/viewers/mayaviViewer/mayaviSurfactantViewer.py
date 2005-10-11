@@ -56,7 +56,7 @@ class MayaviSurfactantViewer(Viewer):
 
     """
         
-    def __init__(self, distanceVar, surfactantVar = None, levelSetValue = 0., limits = None, title = None, smooth = 0):
+    def __init__(self, distanceVar, surfactantVar = None, levelSetValue = 0., limits = None, title = None, smooth = 0, zoomFactor = 1.):
         """
         Create a `MayaviDistanceViewer`.
         
@@ -82,6 +82,7 @@ class MayaviSurfactantViewer(Viewer):
         else:            
             self.surfactantVar = surfactantVar
         self.smooth = smooth
+        self.zoomFactor = zoomFactor
         if distanceVar.getMesh().getDim() != 2:
             raise 'The MayaviIsoViewer only works for 2D meshes.'
 
@@ -93,6 +94,7 @@ class MayaviSurfactantViewer(Viewer):
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
         coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs)
+        coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
         shiftedCoords[:,0] = -coordinates[:,0] + (maxX - minX)
@@ -103,6 +105,7 @@ class MayaviSurfactantViewer(Viewer):
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = min(self.distanceVar.getMesh()._getCellDistances()) * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
+
         data = numerix.concatenate((data, data))
 
         tmpIDs = numerix.nonzero(data > 0.0001)
@@ -130,8 +133,6 @@ class MayaviSurfactantViewer(Viewer):
                         else:
                             numerix.put(arrI[:], line, tmp[:])
 
-
-                        
         return (pyvtk.UnstructuredGrid(points = coordinates,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data)))
