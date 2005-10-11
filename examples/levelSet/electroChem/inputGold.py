@@ -69,12 +69,13 @@ python command line),
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
 
-    >>> runGold(numberOfSteps = 10, runAsTest = True)
+    >>> runGold(numberOfSteps = 10, displayViewers = False)
     1
 
-However, do not include the `runAsTest` argument.  This example has a
-more realistic default boundary layer depth and thus requires `gmsh`
-to construct a more complex mesh.
+Change the `displayViewers` argument to `True` if you wish to see the
+results displayed on the screen. This example has a more realistic
+default boundary layer depth and thus requires `gmsh` to construct a
+more complex mesh.
 
 There
 
@@ -117,7 +118,7 @@ def runGold(faradaysConstant = 9.6e4,
             boundaryLayerDepth = 90.0e-6,
             numberOfSteps = 40,
             taperAngle = 6.0,
-            runAsTest = False):
+            displayViewers = True):
     
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
@@ -202,7 +203,7 @@ def runGold(faradaysConstant = 9.6e4,
         mesh.getTopFaces(),
         metalConcentration),)
 
-    if not runAsTest:
+    if displayViewers:
 
         class PlotVariable(CellVariable):
             def __init__(self, var = None, name = ''):
@@ -241,18 +242,16 @@ def runGold(faradaysConstant = 9.6e4,
 
         step += 1
 
-        if not runAsTest:
+        if displayViewers:
             
             distanceViewer.plot()
             catalystViewer.plot()
         
-    if runAsTest:
-        
-        from fipy.tools import dump
-        import os
-        import examples.levelSet.electroChem
-        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
-        print catalystVar.allclose(data)
+    from fipy.tools import dump
+    import os
+    import examples.levelSet.electroChem
+    data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
+    print catalystVar.allclose(data)
     
 if __name__ == '__main__':
     runGold()

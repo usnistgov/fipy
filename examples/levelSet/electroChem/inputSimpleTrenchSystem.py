@@ -59,23 +59,31 @@ To run this example from the base fipy directory type::
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
 simulation. The simulation will only run for 10 time steps. In order
-to alter the number of timesteps, the python function that encapsulates
-the system of equations must first be imported (at the python command
-line),
+to alter the number of timesteps, the python function that
+encapsulates the system of equations must first be imported (at the
+python command line),
 
     >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
 
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
 
-    >>> runSimpleTrenchSystem(numberOfSteps = 5, runAsTest = True)
+    >>> runSimpleTrenchSystem(numberOfSteps = 5, displayViewers = False)
     1
 
-However, do not include the `runAsTest` argument. Any argument
-parameter can be changed. For example if the initial catalyst coverage
-is not 0, then it can be reset,
+Change the `displayViewers` argument to `True` if you wish to see the
 
-    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, runAsTest = True)
+.. raw:: latex
+
+    results displayed on the
+    screen. Example~\ref{inputWriteScriptHowTo} gives explanation for
+    writing new scripts or modifying existing scripts that are
+    encapsulated by functions.
+
+Any argument parameter can be changed. For example if the initial
+catalyst coverage is not 0, then it can be reset,
+
+    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, displayViewers = False)
     0
 
 The following image shows a schematic of a trench geometry along with
@@ -145,7 +153,7 @@ complex meshes requiring the `gmsh` software.
     \hline
                           & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10^{-7}        & m                                  \\
                           & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
-                          & whether to run as a test          & \texttt{runAsTest}                    & \multicolumn{2}{c}{\textttt{False}} &                          \\
+                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\textttt{True}} &                           \\
     \hline
     \end{tabular}
     
@@ -175,7 +183,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                           trenchSpacing = 0.6e-6,
                           boundaryLayerDepth = 0.3e-6,
                           numberOfSteps = 5,
-                          runAsTest = False):
+                          displayViewers = True):
 
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 10
@@ -311,7 +319,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                 catalystConcentration
             ),)
 
-    if not runAsTest:
+    if displayViewers:
         from fipy.viewers import make
         distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
         catalystViewer = make(catalystVar.getInterfaceVar())
@@ -341,22 +349,19 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
                                    boundaryConditions = catalystBCs)
 
-        if not runAsTest:
+        if displayViewers:
             distanceViewer.plot()
             catalystViewer.plot()
 
-    if runAsTest:
+
         
-        import os
-        import examples.levelSet.electroChem
-        filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
-
-        from fipy.tools import dump
-        print catalystVar.allclose(dump.read(filepath))
-
-    else:
-        raw_input("finished")
+    import os
+    import examples.levelSet.electroChem
+    filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
+    
+    from fipy.tools import dump
+    print catalystVar.allclose(dump.read(filepath))
 
 if __name__ == '__main__':
-    runSimpleTrenchSystem(numberOfSteps = 10)
-
+    runSimpleTrenchSystem(numberOfSteps = 20)
+    raw_input("finished")

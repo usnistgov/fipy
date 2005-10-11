@@ -85,9 +85,6 @@ available, however, these have not all been added to the code
 repository. This is an on-going process. Future additions will
 include:
 
-  - An example that increases the boundary layer depth to a realistic 
-    depth (50 micrometers).  This has already been done it just needs
-    to be added to the repository and documented.
   - An example that includes a secondary surfactant. Again this has already been done.
   - Create a Mayavi_ viewer class to enable plots like the ones above.
 
