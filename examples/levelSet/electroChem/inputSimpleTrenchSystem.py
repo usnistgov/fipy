@@ -229,12 +229,12 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         distanceVar = distanceVar)
     
     from fipy.variables.cellVariable import CellVariable
+
     bulkCatalystVar = CellVariable(
         name = 'bulk catalyst variable',
         mesh = mesh,
         value = catalystConcentration)
-    
-    from fipy.variables.cellVariable import CellVariable
+
     metalVar = CellVariable(
         name = 'metal variable',
         mesh = mesh,
@@ -266,7 +266,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     surfactantEquation = AdsorbingSurfactantEquation(
         surfactantVar = catalystVar,
         distanceVar = distanceVar,
-        bulkVar = catalystConcentration,
+        bulkVar = bulkCatalystVar,
         rateConstant = rateConstant0 + rateConstant3 * overpotential**3)
 
     from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
@@ -321,45 +321,39 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
 
     for step in range(numberOfSteps):
 
-        if not runAsTest:
-            if step % levelSetUpdateFrequency == 0:
-                distanceVar.calcDistanceFunction()
-
-            extensionVelocityVariable.setValue(depositionRateVariable())
+        if step % levelSetUpdateFrequency == 0:
+            distanceVar.calcDistanceFunction()
+            
+        extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()
         catalystVar.updateOld()
         metalVar.updateOld()
         bulkCatalystVar.updateOld()
+
         distanceVar.extendVariable(extensionVelocityVariable)
-        if not runAsTest:
-            dt = cflNumber * cellSize / max(extensionVelocityVariable)
-        else:
-            dt = 0.1
+        dt = cflNumber * cellSize / max(extensionVelocityVariable)
+
         advectionEquation.solve(distanceVar, dt = dt) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
                             boundaryConditions = metalEquationBCs)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                      boundaryConditions = catalystBCs)
+                                   boundaryConditions = catalystBCs)
 
         if not runAsTest:
             distanceViewer.plot()
             catalystViewer.plot()
 
     if runAsTest:
+        
         import os
-        testFile = 'test.gz'
         import examples.levelSet.electroChem
-        import gzip
-        filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
-                                testFile)
+        filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
 
-        filestream = gzip.open(filepath,'r')
-        import cPickle
-        testData = cPickle.load(filestream)
-        filestream.close()
-        print catalystVar.allclose(testData)
+        from fipy.tools import dump
+        print catalystVar.allclose(dump.read(filepath))
+
     else:
         raw_input("finished")
 

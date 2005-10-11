@@ -81,11 +81,11 @@ physical constants,
    >>> gasConstant = 8.314
    >>> transferCoefficient = 0.5
 
-properties associated with the accelerator species,
+properties associated with the catalyst species,
 
-   >>> rateConstant = 1.76
-   >>> overpotentialDependence = -245e-6
-   >>> acceleratorDiffusionCoefficient = 1e-9
+   >>> rateConstant0 = 1.76
+   >>> rateConstant3 = -245e-6
+   >>> catalystDiffusion = 1e-9
    >>> siteDensity = 9.8e-6
    
 properties of the cupric ions,
@@ -99,13 +99,13 @@ parameters dependent on experimental constraints,
    >>> temperature = 298.
    >>> overpotential = -0.3
    >>> bulkMetalConcentration = 250.
-   >>> bulkAcceleratorConcentration = 5e-3
-   >>> initialAcceleratorCoverage = 0.
+   >>> catalystConcentration = 5e-3
+   >>> catalystCoverage = 0.
       
 parameters obtained from experiments on flat copper electrodes,
 
-   >>> constantCurrentDensity = 0.26
-   >>> acceleratorDependenceCurrentDensity = 45.
+   >>> currentDensity0 = 0.26
+   >>> currentDensity1 = 45.
 
 general simulation control parameters,
 
@@ -210,28 +210,28 @@ variables need to be created that govern the concentrations of various species.
 
 .. raw:: latex
 
-    Create the accelerator surfactant coverage, $\theta$, variable.
+    Create the catalyst surfactant coverage, $\theta$, variable.
 
 This variable influences the deposition rate.
 
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import \
    ...     SurfactantVariable
-   >>> acceleratorVar = SurfactantVariable(
-   ...     name = "accelerator variable",
-   ...     value = initialAcceleratorCoverage,
+   >>> catalystVar = SurfactantVariable(
+   ...     name = "catalyst variable",
+   ...     value = catalystCoverage,
    ...     distanceVar = distanceVar)
 
 .. raw:: latex
 
-    Create the bulk accelerator concentration, $c_{\theta}$,
+    Create the bulk catalyst concentration, $c_{\theta}$,
 
 in the electrolyte,
 
    >>> from fipy.variables.cellVariable import CellVariable
-   >>> bulkAcceleratorVar = CellVariable(
-   ...     name = 'bulk accelerator variable',
+   >>> bulkCatalystVar = CellVariable(
+   ...     name = 'bulk catalyst variable',
    ...     mesh = mesh,
-   ...     value = bulkAcceleratorConcentration)
+   ...     value = catalystConcentration)
    
 Create the bulk metal ion concentration,
 
@@ -270,7 +270,7 @@ The `depositionRateVariable` is given by the following equation.
     metal ions, $\alpha$ is the transfer coefficient, $R$ is the gas
     constant, $T$ is the temperature and $\eta$ is the
     overpotential. The exchange current density is an empirical
-    function of accelerator coverage,
+    function of catalyst coverage,
 
     $$ i_0(\theta) = b_0 + b_1 \theta $$
 
@@ -278,9 +278,9 @@ The commands needed to build this equation are,
 
    >>> expoConstant = -transferCoefficient * faradaysConstant \
    ...                / (gasConstant * temperature)
-   >>> tmp = acceleratorDependenceCurrentDensity \
-   ...       * acceleratorVar.getInterfaceVar()
-   >>> exchangeCurrentDensity = constantCurrentDensity + tmp
+   >>> tmp = currentDensity1 \
+   ...       * catalystVar.getInterfaceVar()
+   >>> exchangeCurrentDensity = currentDensity0 + tmp
    >>> expo = numerix.exp(expoConstant * overpotential)
    >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
    ...                  / bulkMetalConcentration
@@ -308,10 +308,10 @@ by,
 
     $$ \dot{\theta} = J v \theta + k c_{\theta}^i (1 - \theta) $$
 
-    where $\theta$ is the coverage of accelerator at the interface,
+    where $\theta$ is the coverage of catalyst at the interface,
     $J$ is the curvature of the interface, $v$ is the normal velocity
     of the interface, $c_{\theta}^i$ is the concentration of
-    accelerator in the bulk at the interface. The value $k$ is given
+    catalyst in the bulk at the interface. The value $k$ is given
     by an empirical function of overpotential,
 
     $$ k = k_0 + k_3 \eta^3 $$
@@ -322,11 +322,11 @@ in FiPy:
    >>> from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
    ...             import AdsorbingSurfactantEquation
    >>> surfactantEquation = AdsorbingSurfactantEquation(
-   ...     surfactantVar = acceleratorVar,
+   ...     surfactantVar = catalystVar,
    ...     distanceVar = distanceVar,
-   ...     bulkVar = bulkAcceleratorConcentration,
-   ...     rateConstant = rateConstant \
-   ...                    + overpotentialDependence * overpotential**3)
+   ...     bulkVar = bulkCatalystVar,
+   ...     rateConstant = rateConstant0 \
+   ...                    + rateConstant3 * overpotential**3)
 
 .. raw:: latex
 
@@ -416,18 +416,18 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
 
    >>> from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
    ...                 import buildSurfactantBulkDiffusionEquation
-   >>> bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
-   ...     bulkVar = bulkAcceleratorVar,
+   >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
+   ...     bulkVar = bulkCatalystVar,
    ...     distanceVar = distanceVar,
-   ...     surfactantVar = acceleratorVar,
-   ...     diffusionCoeff = acceleratorDiffusionCoefficient,
-   ...     rateConstant = rateConstant * siteDensity
+   ...     surfactantVar = catalystVar,
+   ...     diffusionCoeff = catalystDiffusion,
+   ...     rateConstant = rateConstant0 * siteDensity
    ... )
 
-   >>> acceleratorBCs = (
+   >>> catalystBCs = (
    ...         FixedValue(
    ...             mesh.getFacesTop(),
-   ...             bulkAcceleratorConcentration
+   ...             catalystConcentration
    ...         ),)
    
 If running interactively, create viewers.
@@ -435,7 +435,7 @@ If running interactively, create viewers.
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
    ...     distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
-   ...     acceleratorViewer = make(acceleratorVar.getInterfaceVar())
+   ...     catalystViewer = make(catalystVar.getInterfaceVar())
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -457,31 +457,27 @@ is calculated with the CFL number and the maximum extension velocity.
 
    >>> for step in range(numberOfSteps):
    ...
-   ...     if __name__ == '__main__':
-   ...         if step % levelSetUpdateFrequency == 0:
-   ...             distanceVar.calcDistanceFunction()
+   ...     if step % levelSetUpdateFrequency == 0:
+   ...         distanceVar.calcDistanceFunction()
    ...
-   ...         extensionVelocityVariable.setValue(depositionRateVariable())
+   ...     extensionVelocityVariable.setValue(depositionRateVariable())
    ...
    ...     distanceVar.updateOld()
-   ...     acceleratorVar.updateOld()
+   ...     catalystVar.updateOld()
    ...     metalVar.updateOld()
-   ...     bulkAcceleratorVar.updateOld()
+   ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
-   ...     if __name__ == '__main__':
-   ...         dt = cflNumber * cellSize / max(extensionVelocityVariable)
-   ...     else:
-   ...         dt = 0.1
+   ...     dt = cflNumber * cellSize / max(extensionVelocityVariable)
    ...     advectionEquation.solve(distanceVar, dt = dt) 
-   ...     surfactantEquation.solve(acceleratorVar, dt = dt)
+   ...     surfactantEquation.solve(catalystVar, dt = dt)
    ...     metalEquation.solve(metalVar, dt = dt, 
    ...                         boundaryConditions = metalEquationBCs)
-   ...     bulkAcceleratorEquation.solve(bulkAcceleratorVar, dt = dt,
-   ...                                   boundaryConditions = acceleratorBCs)
+   ...     bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
+   ...                                   boundaryConditions = catalystBCs)
    ...
    ...     if __name__ == '__main__':
    ...         distanceViewer.plot()
-   ...         acceleratorViewer.plot()
+   ...         catalystViewer.plot()
  
    >>> if __name__ == '__main__':
    ...     raw_input('finished')
@@ -491,16 +487,12 @@ simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
 
    >>> import os
-   >>> testFile = 'test.gz'
    >>> import examples.levelSet.electroChem
-   >>> import gzip
    >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
-   ...                         testFile)
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> print acceleratorVar.allclose(testData)
+   ...                         'test.gz')
+
+   >>> from fipy.tools import dump
+   >>> print catalystVar.allclose(dump.read(filepath))
    1
 
 """
