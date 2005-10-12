@@ -58,10 +58,9 @@ To run this example from the base fipy directory type::
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
-simulation. The simulation will run for 200 time steps. In order to
-alter the number of timesteps, the python function that encapsulates
-the system of equations must first be imported (at the python command
-line),
+simulation. In order to alter the number of timesteps, the python
+function that encapsulates the system of equations must first be
+imported (at the python command line),
 
     >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
 
@@ -322,7 +321,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     if displayViewers:
         try:
             from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 })
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1)
         except:
             from fipy.viewers import make
             distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
@@ -370,5 +369,5 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     print catalystVar.allclose(dump.read(filepath))
 
 if __name__ == '__main__':
-    runSimpleTrenchSystem(numberOfSteps = 200)
+    runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
     raw_input("finished")

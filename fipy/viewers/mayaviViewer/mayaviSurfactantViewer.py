@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mayaviDistanceViewer.py"
+ #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
  #                                last update: 8/2/05 {4:58:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
