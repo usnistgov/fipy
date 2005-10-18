@@ -1838,6 +1838,17 @@ class Variable:
             raise IndexError, '_take() must take ids that return a Variable of the same shape'
             
     def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
+        """
+           >>> var = Variable((1, 1))
+           >>> print var.allclose((1, 1))
+           1
+           >>> print var.allclose((1,))
+           0
+
+        """
+        
+
+        
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
                                                other, 
                                                baseClass = Variable,

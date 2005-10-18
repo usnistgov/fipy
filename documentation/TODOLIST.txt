@@ -21,7 +21,8 @@ Release Goals 1.1
   * Add more figures to examples
   * The reference manual should have a 'returns' section similar to 'parameters' for methods
     and functions.
-    
+  * Improve BC doc, make clear no internal BCs    
+
 - Distribution
 
   * PySparse; f2c issues on RedHat?
@@ -32,6 +33,8 @@ Release Goals 1.1
     - vaults of parnassus
     - cfd online
     - scipy links
+
+  * set up mail archive
 
 - Functionlity
 
@@ -86,6 +89,8 @@ Release Goals 1.1
       * is there a way to do this automagically??? (using __array__ or something)
 
     - Definetly most of these functions need not be in Variable and numerix
+
+  * prevent assigning boundary conditions to internal faces.
 
 Long term Goals
 ---------------
