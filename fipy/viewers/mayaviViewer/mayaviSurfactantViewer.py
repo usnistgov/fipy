@@ -133,9 +133,14 @@ class MayaviSurfactantViewer(Viewer):
                         else:
                             numerix.put(arrI[:], line, tmp[:])
 
+        name = self.title
+        name = name.strip()
+        if name == '':
+            name = None
+
         return (pyvtk.UnstructuredGrid(points = coordinates,
                                        poly_line = lines),
-                pyvtk.PointData(pyvtk.Scalars(data)))
+                pyvtk.PointData(pyvtk.Scalars(data, name = name)))
         
     def plot(self, filename = None):
 
@@ -161,7 +166,7 @@ class MayaviSurfactantViewer(Viewer):
         slh.legend_on.set(1)
         slh.legend_on_off()
         
-        ## display legen with correct range
+        ## display legend with correct range
         slh.range_on_var.set(1)
         slh.v_range_on_var.set(1)
         
