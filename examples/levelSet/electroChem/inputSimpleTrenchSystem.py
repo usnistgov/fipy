@@ -155,7 +155,22 @@ complex meshes requiring the `gmsh` software.
                           & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\textttt{True}} &                           \\
     \hline
     \end{tabular}
-    
+
+If the MayaVi plotting
+software is
+
+.. raw:: latex
+
+    installed (see Chapter~\ref{chap:Installation}) then a plot should
+    appear that is updated every 20 time steps and will eventually
+
+resemble the image below.
+
+.. image:: examples/levelSet/electroChem/inputSimpleTrenchSystem.pdf
+   :scale: 60
+   :align: center
+   :alt: resulting image
+
 """
 __docformat__ = 'restructuredtext'
 
@@ -192,27 +207,12 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
              + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
     xCells = int(trenchSpacing / 2 / cellSize)
+
     from fipy.meshes.grid2D import Grid2D
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
                   ny = yCells)
-
-    bottomHeight = cellsBelowTrench * cellSize
-    trenchHeight = bottomHeight + trenchDepth
-    trenchWidth = trenchDepth / aspectRatio
-    sideWidth = (trenchSpacing - trenchWidth) / 2
-    def electrolyteFunc(cell, trenchHeight = trenchHeight,
-                        bottomHeight = bottomHeight, sideWidth = sideWidth):
-        x,y = cell.getCenter()    
-        if y > trenchHeight:
-            return 1
-        elif y < bottomHeight:
-            return 0
-        elif x < xCells * cellSize - sideWidth:
-            return 1
-        else:
-            return 0
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
     from fipy.models.levelSet.distanceFunction.distanceVariable import \
@@ -224,9 +224,19 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         value = -1,
         narrowBandWidth = narrowBandWidth,
         hasOld = 1)
-    
-    distanceVar.setValue(1, mesh.getCells(electrolyteFunc))
+
+    bottomHeight = cellsBelowTrench * cellSize
+    trenchHeight = bottomHeight + trenchDepth
+    trenchWidth = trenchDepth / aspectRatio
+    sideWidth = (trenchSpacing - trenchWidth) / 2
+   
+    distanceVar.setValue(1, mesh.getCells(lambda cell:
+                                          cell.getCenter()[1] > trenchHeight or \
+                                          (cell.getCenter()[1] > bottomHeight and \
+                                           cell.getCenter()[0] < xCells * cellSize - sideWidth)))
+
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+
     from fipy.models.levelSet.surfactant.surfactantVariable import \
          SurfactantVariable
     
@@ -321,11 +331,13 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     if displayViewers:
         try:
             from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1)
+            viewers = (
+                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
         except:
             from fipy.viewers import make
-            distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
-            catalystViewer = make(catalystVar.getInterfaceVar())
+            viewers = (
+                make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+                make(catalystVar.getInterfaceVar()))
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
@@ -333,12 +345,9 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     for step in range(numberOfSteps):
 
         if displayViewers:
-            try:
-                if step % 10 == 0:
-                    viewer.plot()
-            except:
-                distanceViewer.plot()
-                catalystViewer.plot()
+            if step % 20 == 0:
+                for viewer in viewers:
+                    viewer.plot('inputSimpleTrenchSystem.png')
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
@@ -359,7 +368,6 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
                             boundaryConditions = metalEquationBCs)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
                                    boundaryConditions = catalystBCs)
-
 
     import os
     import examples.levelSet.electroChem

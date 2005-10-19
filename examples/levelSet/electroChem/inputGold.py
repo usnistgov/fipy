@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 ## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
@@ -99,6 +97,20 @@ There
 (`consumptionRateConstant`). The trench geometry is also given a
 slight taper, given by `taperAngle`.
 
+If the MayaVi plotting software is
+
+.. raw:: latex
+
+    installed (see Chapter~\ref{chap:Installation}) then a plot should
+    appear that is updated every 10 time steps and will eventually
+
+resemble the image below.
+
+.. image:: examples/levelSet/electroChem/inputGold.pdf
+   :scale: 60
+   :align: center
+   :alt: resulting image
+
 """
 __docformat__ = 'restructuredtext'
 
@@ -116,7 +128,7 @@ def runGold(faradaysConstant = 9.6e4,
             aspectRatio = 1.47,
             trenchSpacing = 0.5e-6,
             boundaryLayerDepth = 90.0e-6,
-            numberOfSteps = 40,
+            numberOfSteps = 10,
             taperAngle = 6.0,
             displayViewers = True):
     
@@ -205,24 +217,37 @@ def runGold(faradaysConstant = 9.6e4,
 
     if displayViewers:
 
-        class PlotVariable(CellVariable):
-            def __init__(self, var = None, name = ''):
-                CellVariable.__init__(self, mesh = mesh.getFineMesh(), name = name)
-                self.var = self._requires(var)
+        try:
+            
+            from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+            viewers = (
+                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+            
+        except:
+            
+            class PlotVariable(CellVariable):
+                def __init__(self, var = None, name = ''):
+                    CellVariable.__init__(self, mesh = mesh.getFineMesh(), name = name)
+                    self.var = self._requires(var)
 
-            def _calcValue(self):
-                self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
+                def _calcValue(self):
+                    self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
 
-        from fipy.viewers import make
-        
-        distanceViewer = make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9})
-        catalystViewer = make(PlotVariable(var = catalystVar.getInterfaceVar()))
+            from fipy.viewers import make
+            viewers = (
+                make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                make(PlotVariable(var = catalystVar.getInterfaceVar())))
         
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
     
     while step < numberOfSteps:
-        
+
+        if displayViewers:
+            if step % 10 == 0:
+                for viewer in viewers:
+                    viewer.plot('inputGold.png')
+
         if step % levelSetUpdateFrequency == 0:
             
             distanceVar.calcDistanceFunction(deleteIslands = True)
@@ -241,11 +266,6 @@ def runGold(faradaysConstant = 9.6e4,
         metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
 
         step += 1
-
-        if displayViewers:
-            
-            distanceViewer.plot()
-            catalystViewer.plot()
         
     from fipy.tools import dump
     import os
@@ -254,4 +274,5 @@ def runGold(faradaysConstant = 9.6e4,
     print catalystVar.allclose(data)
     
 if __name__ == '__main__':
-    runGold()
+    runGold(numberOfSteps = 400, cellSize = 0.05e-7)
+    

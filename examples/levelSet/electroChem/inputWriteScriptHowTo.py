@@ -52,7 +52,7 @@ r"""
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/input.py --numberOfElements=10000 --numberOfSteps=1000
+    $ examples/levelSet/electroChem/input.py --numberOfElements=10000 --numberOfSteps=800
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
@@ -128,7 +128,6 @@ size.
 Build the mesh:
 
    >>> from fipy.tools.parser import parse
-
    >>> numberOfElements = parse('--numberOfElements', action = 'store',
    ...     type = 'int', default = -1)
    >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
@@ -169,26 +168,6 @@ function
 
    First, create the $\phi$ variable, which is initially set to -1 everywhere. 
 
-The electrolyte region will be the positive region of the domain while the metal
-region will be negative.  Create a function for returning cells that lie in the
-electrolyte region (positive region).
-
-   >>> bottomHeight = cellsBelowTrench * cellSize
-   >>> trenchHeight = bottomHeight + trenchDepth
-   >>> trenchWidth = trenchDepth / aspectRatio
-   >>> sideWidth = (trenchSpacing - trenchWidth) / 2
-   >>> def electrolyteFunc(cell, trenchHeight = trenchHeight,
-   ...     bottomHeight = bottomHeight, sideWidth = sideWidth):
-   ...     x,y = cell.getCenter()    
-   ...     if y > trenchHeight:
-   ...         return 1
-   ...     elif y < bottomHeight:
-   ...         return 0
-   ...     elif x < xCells * cellSize - sideWidth:
-   ...         return 1
-   ...     else:
-   ...         return 0
-
 Create an initial variable,
 
    >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
@@ -201,8 +180,19 @@ Create an initial variable,
    ...    narrowBandWidth = narrowBandWidth,
    ...    hasOld = 1)
 
-   >>> distanceVar.setValue(1, mesh.getCells(electrolyteFunc))
+The electrolyte region will be the positive region of the domain while the metal
+region will be negative.
+
+   >>> bottomHeight = cellsBelowTrench * cellSize
+   >>> trenchHeight = bottomHeight + trenchDepth
+   >>> trenchWidth = trenchDepth / aspectRatio
+   >>> sideWidth = (trenchSpacing - trenchWidth) / 2
    
+   >>> distanceVar.setValue(1, mesh.getCells(lambda cell:
+   ...     cell.getCenter()[1] > trenchHeight or \
+   ...     (cell.getCenter()[1] > bottomHeight and \
+   ...     cell.getCenter()[0] < xCells * cellSize - sideWidth)))
+
    >>> distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
 The `distanceVariable` has now been created to mark the interface. Some other
@@ -433,9 +423,19 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
 If running interactively, create viewers.
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers import make
-   ...     distanceViewer = make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 })
-   ...     catalystViewer = make(catalystVar.getInterfaceVar())
+   ...     try:
+   ...         from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+   ...         viewers = (
+   ...             MayaviSurfactantViewer(distanceVar,
+   ...                                    catalystVar.getInterfaceVar(),
+   ...                                    zoomFactor = 1e6,
+   ...                                    limits = { 'datamax' : 1.0, 'datamin' : 0.0 },
+   ...                                    smooth = 1),)
+   ...     except:
+   ...         from fipy.viewers import make
+   ...         viewers = (
+   ...             make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+   ...             make(catalystVar.getInterfaceVar()))
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -457,6 +457,10 @@ is calculated with the CFL number and the maximum extension velocity.
 
    >>> for step in range(numberOfSteps):
    ...
+   ...     if __name__ == '__main__':
+   ...         for viewer in viewers:
+   ...             viewer.plot()
+   ...
    ...     if step % levelSetUpdateFrequency == 0:
    ...         distanceVar.calcDistanceFunction()
    ...
@@ -468,16 +472,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / max(extensionVelocityVariable)
-   ...     advectionEquation.solve(distanceVar, dt = dt) 
+   ...     advectionEquation.solve(distanceVar, dt = dt)
    ...     surfactantEquation.solve(catalystVar, dt = dt)
-   ...     metalEquation.solve(metalVar, dt = dt, 
+   ...     metalEquation.solve(metalVar, dt = dt,
    ...                         boundaryConditions = metalEquationBCs)
    ...     bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
    ...                                   boundaryConditions = catalystBCs)
-   ...
-   ...     if __name__ == '__main__':
-   ...         distanceViewer.plot()
-   ...         catalystViewer.plot()
  
    >>> if __name__ == '__main__':
    ...     raw_input('finished')
@@ -503,5 +503,7 @@ def _run():
     exec(fipy.tests.doctestPlus._getScript(__name__))
     
 if __name__ == '__main__':
-    _run()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript(__name__))
+
 
