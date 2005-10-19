@@ -1,8 +1,7 @@
 __docformat__ = 'restructuredtext'
 
-from mayaviViewer import MayaviViewer
-
 def make(vars, title = None, limits = None):
+    from mayaviViewer import MayaviViewer
     r"""
     Generic function for creating a `MayaviViewer`..
         
