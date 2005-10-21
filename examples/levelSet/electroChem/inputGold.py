@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputSimpleTrenchSystem.py"
+ #  FILE: "inputGold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
  #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
@@ -271,8 +271,10 @@ def runGold(faradaysConstant = 9.6e4,
     import os
     import examples.levelSet.electroChem
     data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
-    print catalystVar.allclose(data)
+    n = mesh.getFineMesh().getNumberOfCells()
+    print numerix.allclose(catalystVar[:n], data[:n])
     
 if __name__ == '__main__':
     runGold(numberOfSteps = 400, cellSize = 0.05e-7)
+
     
