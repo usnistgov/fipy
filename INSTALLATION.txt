@@ -301,13 +301,13 @@ MayaVi
 http://mayavi.sourceforge.net
 
 The MayaVi_ Data Visualizer is a free, easy to use scientific data
-visualizer.  It displays 1D, 2d and 3D data. It is the only |FiPy|
+visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing.
 
 .. warning::
 
-   MayaVi_ can only display 3D meshes that consist entirely of
+   MayaVi_ can only display 3D meshes consisting entirely of
    tetrahedrons or wedge elements. The ordering of vertices for other
    mesh types may not work.
 
