@@ -316,11 +316,6 @@ or 2D viewing.
    Is is also necessary to install the PyVTK_ package to use the
    |FiPy| MayaVi_ viewers.
 
-.. warning::
-
-   MayaVi_ does not seem to be working correctly on the Windows
-   platform. All that appears is a red box.
-
 .. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
