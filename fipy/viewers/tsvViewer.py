@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 10/24/05 {8:57:01 PM} 
+ #                                last update: 10/25/05 {10:19:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,7 +75,7 @@ class TSVViewer(Viewer):
     
     All variables must have the same mesh.
         
-    It tries to do something reasonable with `VectorCellVariable` objects.
+    It tries to do something reasonable with `VectorCellVariable` and `VectorFaceVariable` objects.
 
     """
     _axis = ["x", "y", "z"]
@@ -85,7 +85,8 @@ class TSVViewer(Viewer):
         Creates a `TSVViewer`.
         
         :Parameters:
-          - `vars`: A `tuple` ot `list` of `CellVariable` or `VectorCellVariable` objects.
+          - `vars`: A `tuple` ot `list` of `CellVariable`, `VectorCellVariable`,
+            `FaceVariable`, `VectorFaceVariable` objects.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
             A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer 
@@ -179,7 +180,7 @@ class TSVViewer(Viewer):
             
         for var in self.vars:
             name = var.getName()
-            if isinstance(var, VectorCellVariable):
+            if isinstance(var, VectorCellVariable) or isinstance(var, VectorFaceVariable):
                 for index in range(dim):
                     headings.extend(["%s_%s" % (name, self._axis[index])])
             else:
