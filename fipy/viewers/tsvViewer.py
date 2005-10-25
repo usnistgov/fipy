@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 9/1/05 {4:55:53 PM} 
+ #                                last update: 10/24/05 {8:57:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,10 @@ import sys
 import Numeric
  
 from fipy.viewers.viewer import Viewer
+from fipy.variables.cellVariable import CellVariable
 from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class TSVViewer(Viewer):
     """
@@ -97,6 +100,36 @@ class TSVViewer(Viewer):
         for var in self.vars:
             assert mesh is var.getMesh()
 
+
+    def _plot(self, values, f, dim):
+        for index in range(values.shape[0]):
+            lineValues = values[index]
+            
+            # omit any elements whose cell centers lie outside of the specified limits
+            skip = False
+            for axis in range(dim):
+                mini = self._getLimit("%smin" % self._axis[axis])
+                maxi = self._getLimit("%smax" % self._axis[axis])
+                
+                if (mini and lineValues[axis] < mini) or (maxi and lineValues[axis] > maxi):
+                    skip = True
+                    break
+                    
+            if skip:
+                continue
+
+            # replace any values that lie outside of the specified datalimits with 'nan'
+            for valIndex in range(dim, len(lineValues)):
+                mini = self._getLimit("datamin")
+                maxi = self._getLimit("datamax")
+                
+                if (mini and lineValues[valIndex] < mini) or (maxi and lineValues[valIndex] > maxi):
+                    lineValues[valIndex] = float("NaN")
+                    break
+            
+            line = ["%.15g" % value for value in lineValues]
+            f.write("\t".join(line))
+            f.write("\n")
 
     def plot(self, filename = None):
         """
@@ -155,43 +188,32 @@ class TSVViewer(Viewer):
         f.write("\t".join(headings))
         f.write("\n")
         
-        values = mesh.getCellCenters()
-        for var in self.vars:
-            if isinstance(var, VectorCellVariable):
-                values = Numeric.concatenate((values, Numeric.array(var)), 1)
-            else:
-# 		this is brute force. Fix later
-#                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
-                values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
+        cellVars = [var for var in self.vars if isinstance(var, CellVariable) or isinstance(var, VectorCellVariable)]
+        faceVars = [var for var in self.vars if isinstance(var, FaceVariable) or isinstance(var, VectorFaceVariable)]
         
-        for index in range(values.shape[0]):
-            lineValues = values[index]
-            
-            # omit any elements whose cell centers lie outside of the specified limits
-            skip = False
-            for axis in range(dim):
-                mini = self._getLimit("%smin" % self._axis[axis])
-                maxi = self._getLimit("%smax" % self._axis[axis])
-                
-                if (mini and lineValues[axis] < mini) or (maxi and lineValues[axis] > maxi):
-                    skip = True
-                    break
+        if len(cellVars) > 0:
+            values = mesh.getCellCenters()
+            for var in self.vars:
+                if isinstance(var, VectorCellVariable):
+                    values = Numeric.concatenate((values, Numeric.array(var)), 1)
+                else:
+    # 		this is brute force. Fix later
+    #                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
+                    values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
                     
-            if skip:
-                continue
+            self._plot(values, f, dim)
 
-            # replace any values that lie outside of the specified datalimits with 'nan'
-            for valIndex in range(dim, len(lineValues)):
-                mini = self._getLimit("datamin")
-                maxi = self._getLimit("datamax")
-                
-                if (mini and lineValues[valIndex] < mini) or (maxi and lineValues[valIndex] > maxi):
-                    lineValues[valIndex] = float("NaN")
-                    break
-            
-            line = ["%.15g" % value for value in lineValues]
-            f.write("\t".join(line))
-            f.write("\n")
+        if len(faceVars) > 0:
+            values = mesh.getFaceCenters()
+            for var in self.vars:
+                if isinstance(var, VectorFaceVariable):
+                    values = Numeric.concatenate((values, Numeric.array(var)), 1)
+                else:
+    # 		this is brute force. Fix later
+    #                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
+                    values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
+                    
+            self._plot(values, f, dim)
 
         if f is not sys.stdout:
             f.close()
