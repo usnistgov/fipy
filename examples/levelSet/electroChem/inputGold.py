@@ -237,16 +237,17 @@ def runGold(faradaysConstant = 9.6e4,
             viewers = (
                 make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
                 make(PlotVariable(var = catalystVar.getInterfaceVar())))
-        
+
+    else:
+        viewers = ()
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
     
     while step < numberOfSteps:
 
-        if displayViewers:
-            if step % 10 == 0:
-                for viewer in viewers:
-                    viewer.plot('inputGold.png')
+        if step % 10 == 0:
+            for viewer in viewers:
+                viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             

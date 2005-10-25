@@ -436,6 +436,8 @@ If running interactively, create viewers.
    ...         viewers = (
    ...             make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
    ...             make(catalystVar.getInterfaceVar()))
+   ... else:
+   ...     viewers = ()
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -457,9 +459,8 @@ is calculated with the CFL number and the maximum extension velocity.
 
    >>> for step in range(numberOfSteps):
    ...
-   ...     if __name__ == '__main__':
-   ...         for viewer in viewers:
-   ...             viewer.plot()
+   ...     for viewer in viewers:
+   ...         viewer.plot()
    ...
    ...     if step % levelSetUpdateFrequency == 0:
    ...         distanceVar.calcDistanceFunction()

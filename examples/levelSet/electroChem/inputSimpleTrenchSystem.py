@@ -329,24 +329,25 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
             ),)
 
     if displayViewers:
-##        try:
-        from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
-        viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
-##        except:
-##            from fipy.viewers import make
-##            viewers = (
-##                make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-##                make(catalystVar.getInterfaceVar()))
+        try:
+	    from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+        except:
+	    from fipy.viewers import make
+            viewers = (
+                make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+                make(catalystVar.getInterfaceVar()))
+    else:
+        viewers = ()
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
 
-        if displayViewers:
-            if step % 20 == 0:
-                for viewer in viewers:
-                    viewer.plot('inputSimpleTrenchSystem.png')
+ 	if step % 20 == 0:
+            for viewer in viewers:
+                viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
