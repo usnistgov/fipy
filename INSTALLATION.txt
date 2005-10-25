@@ -311,6 +311,11 @@ or 2D viewing.
    tetrahedrons or wedge elements. The ordering of vertices for other
    mesh types may not work.
 
+.. warning::
+
+   MayaVi_ does not seem to be working correctly on the Windows
+   platform. All that appears is a red box.
+
 .. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 
 Recommended Packages
@@ -377,6 +382,15 @@ If you prefer, you can download |FiPy| 0.1 with::
 Further information about CVS_ can be found in |documentation:CVS.txt| and
 in the `online CVS instructions`_ |citeSourceForgeCVS|.
 
+.. note::
+
+   An expedient way for Windows users who use CVS is to simply get the
+   cvs executable and run it from the command prompt. This seems
+   somewhat simpler than using the many GUI CVS tools available. The
+   one place that seems to actually have a link to cvs.exe is
+   http://bmrc.berkeley.edu/people/chaffee/winntutil.html#sshnt. The
+   actual link to cvs.exe_.
+
 .. warning::
 
    Keep in mind that if you choose to download the `compressed
@@ -384,6 +398,7 @@ in the `online CVS instructions`_ |citeSourceForgeCVS|.
    to |FiPy| become available (upgrades via CVS_ will handle this
    issue automatically).
 
+.. _cvs.exe: http://bmrc.berkeley.edu/ftp/pub/winnt/util/cvs.exe
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 .. _online CVS instructions: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/cvs/?group_id=118428
 .. |citeFiPyDownload| raw:: latex
