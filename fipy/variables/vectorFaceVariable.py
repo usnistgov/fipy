@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 9/2/05 {9:59:59 AM} 
+ #                                last update: 10/24/05 {5:14:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,6 +96,12 @@ class VectorFaceVariable(Variable):
             return VectorFaceVariable
         else:
             return Variable._getArithmeticBaseClass(self, other)
+
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+        if isinstance(var1, FaceVariable) and self.getMesh() == var1.getMesh():
+            return self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
+        else:
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass)
 
     def _testArithmetic(self):
         r"""

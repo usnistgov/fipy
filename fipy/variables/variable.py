@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 9/16/05 {2:27:07 PM} 
+ #                                last update: 10/24/05 {4:52:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -592,6 +592,82 @@ class Variable:
 		
 	return unOp(op, [self])
 	    
+    def _getArrayAsOnes(object, valueMattersForShape = ()): 
+        """ 
+        For the purposes of assembling the binop, we are only
+        interested in the shape of the operation result, not the result
+        itself.  Some operations (e.g. division) will fail if an input
+        happens to have been initialized with zeros, even though it
+        will not actually contain zeros by the time a value is
+        requested.  Setting the arrays of `self` and `other` to 1
+        should always pass?
+        
+        reshape() is one case where the value cannot be substituted, so
+        the shape must be included in valueMattersForShape.
+        """
+        
+        a = object._getArray()
+        
+        # we don't want to meddle with the contents of the actual object
+        if type(a) in (type(()), type([]), type(numerix.array(1))):
+            a = a.copy()
+        else:
+            a = numerix.array(1)
+            
+        if object not in valueMattersForShape:
+            if a.shape == ():
+                # if Numeric thinks the array is a scalar (rather than a 1x1 array)
+                # it won't slice
+                a = numerix.array(1)
+            else:
+                a[:] = 1
+            
+        return a
+    _getArrayAsOnes = staticmethod(_getArrayAsOnes)
+
+    def _rotateShape(op, var0, var1, var0array, var1array, opShape):
+        """
+        A scalar `Variable` multiplying/dividing a vector `Variable` will
+        fail because the scalar field has shape (N,) and the vector field has shape (N, D)
+        This manipulation will give the scalar field shape (N, 1), which will
+        allow the desired operator shape of (N, D).
+        
+        We *only* do this rotation if var1array is rank 1.
+        """
+        if len(var1array.shape) == 1:
+            try:
+                if numerix.getShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
+                    raise ValueError
+                from fipy.variables.newAxisVariable import _NewAxisVariable
+                var1 = _NewAxisVariable(var1)
+            except (ValueError, IndexError):
+                raise SyntaxError
+        else:
+            raise SyntaxError
+                
+        return (var0, var1)
+    _rotateShape = staticmethod(_rotateShape)
+    
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+        try:
+            # check if applying the operation to the inputs will produce the desired shape
+            if numerix.getShape(op(var0Array, var1Array)) != opShape:
+                raise ValueError
+        except ValueError:
+            try:
+                # check if changing var1 from a row variable to a column variable
+                # will produce the desired shape
+                (var0, var1) = self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
+            except SyntaxError:
+                if not (otherClass and issubclass(otherClass, Variable)):
+                    # check if changing var0 from a row variable to a column variable
+                    # will produce the desired shape
+                    (var1, var0) = self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
+                else:
+                    raise SyntaxError
+                    
+        return (var0, var1)
+
     def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = ()):
         """
             >>> from fipy.variables.cellVariable import CellVariable
@@ -1451,83 +1527,14 @@ class Variable:
         var0 = self
         var1 = other
         
-        def _getArrayAsOnes(object): 
-            """ 
-            For the purposes of assembling the binop, we are only
-            interested in the shape of the operation result, not the result
-            itself.  Some operations (e.g. division) will fail if an input
-            happens to have been initialized with zeros, even though it
-            will not actually contain zeros by the time a value is
-            requested.  Setting the arrays of `self` and `other` to 1
-            should always pass?
-            
-            reshape() is one case where the value cannot be substituted, so
-            the shape must be included in valueMattersForShape.
-            """
-            
-            a = object._getArray()
-            
-            # we don't want to meddle with the contents of the actual object
-            if type(a) in (type(()), type([]), type(numerix.array(1))):
-                a = a.copy()
-            else:
-                a = numerix.array(1)
-                
-            if object not in valueMattersForShape:
-                if a.shape == ():
-                    # if Numeric thinks the array is a scalar (rather than a 1x1 array)
-                    # it won't slice
-                    a = numerix.array(1)
-                else:
-                    a[:] = 1
-                
-            return a
-        
-        selfArray = _getArrayAsOnes(self)
-        otherArray = _getArrayAsOnes(other)
-        
-        def _rotateShape(var0, var1, var0array, var1array):
-            """
-            A scalar `Variable` multiplying/dividing a vector `Variable` will
-            fail because the scalar field has shape (N,) and the vector field has shape (N, D)
-            This manipulation will give the scalar field shape (N, 1), which will
-            allow the desired operator shape of (N, D).
-            
-            We *only* do this rotation if var1array is rank 1.
-            """
-            if len(var1array.shape) == 1:
-                try:
-                    if numerix.getShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
-                        raise ValueError
-                    from fipy.variables.newAxisVariable import _NewAxisVariable
-                    var1 = _NewAxisVariable(var1)
-                except (ValueError, IndexError):
-                    raise SyntaxError
-            else:
-                raise SyntaxError
-                    
-            return (var0, var1)
+        selfArray = self._getArrayAsOnes(self, valueMattersForShape)
+        otherArray = self._getArrayAsOnes(other, valueMattersForShape)
         
         try:
-            # check if applying the operation to the inputs will produce the desired shape
-            if numerix.getShape(op(selfArray, otherArray)) != opShape:
-                raise ValueError
-        except ValueError:
-            try:
-                # check if changing var1 from a row variable to a column variable
-                # will produce the desired shape
-                (var0, var1) = _rotateShape(var0, var1, selfArray, otherArray)
-            except SyntaxError:
-                if not (otherClass and issubclass(otherClass, Variable)):
-                    try:
-                        # check if changing var0 from a row variable to a column variable
-                        # will produce the desired shape
-                        (var1, var0) = _rotateShape(var1, var0, otherArray, selfArray)
-                    except SyntaxError:
-                        return NotImplemented
-                else:
-                    return NotImplemented
-
+            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass)
+        except SyntaxError:
+            return NotImplemented
+        
         # obtain a general operator class with the desired base class
 	operatorClass = self._getOperatorVariableClass(baseClass)
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 8/11/05 {11:50:43 AM} 
+ #                                last update: 10/24/05 {5:14:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,4 +79,9 @@ class FaceVariable(Variable):
         else:
             return Variable._getArithmeticBaseClass(self, other)
 
-	
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+        from fipy.variables.vectorFaceVariable import VectorFaceVariable
+        if isinstance(var1, VectorFaceVariable) and self.getMesh() == var1.getMesh():
+            return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
+        else:
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 8/11/05 {11:53:00 AM} 
+ #                                last update: 10/24/05 {5:14:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -117,6 +117,12 @@ class VectorCellVariable(Variable):
             return VectorCellVariable
         else:
             return Variable._getArithmeticBaseClass(self, other)
+
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+        if isinstance(var1, CellVariable) and self.getMesh() == var1.getMesh():
+            return self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
+        else:
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass)
 
 def _test(): 
     import doctest
