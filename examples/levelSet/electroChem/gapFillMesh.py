@@ -28,7 +28,6 @@ class GapFillMesh(Mesh2D):
 
         >>> import Numeric
 
-        >>> from fipy.equations.diffusionEquation import DiffusionEquation
         >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
         >>> from fipy.iterators.iterator import Iterator
@@ -48,20 +47,10 @@ class GapFillMesh(Mesh2D):
         >>> mesh.getNumberOfCells() - len(mesh.getCellIDsAboveFineRegion())
         90
         
-        >>> var = CellVariable(name = "solution variable",
-        ...                    mesh = mesh,
-        ...                    value = 0.)
-        
-        >>> eq =  DiffusionEquation(var,
-        ...                         transientCoeff = 0.,
-        ...                         diffusionCoeff = 1.,
-        ...                         boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
-        ...                                               FixedValue(mesh.getTopFaces(), domainHeight)),
-        ...                         solver = LinearPCGSolver(tolerance = 1.e-15, 
-        ...                                                  steps = 1000))
-        
-        >>> it = Iterator((eq,))
-        >>> it.timestep()
+        >>> var = CellVariable(mesh = mesh)
+        >>> eq = DiffusionTerm()
+        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
+        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
 
     Evaluate the result:
        
@@ -303,7 +292,7 @@ class TrenchMesh(GapFillMesh):
         transitionHeight = fineRegionHeight * 3.
         self.domainWidth = trenchSpacing / 2.
         domainHeight = self.heightBelowTrench + self.trenchDepth + boundaryLayerDepth
-        
+
         GapFillMesh.__init__(self,
                              cellSize = cellSize,
                              desiredDomainWidth = self.domainWidth,

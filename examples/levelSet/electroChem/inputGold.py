@@ -276,6 +276,6 @@ def runGold(faradaysConstant = 9.6e4,
     print numerix.allclose(catalystVar[:n], data[:n])
     
 if __name__ == '__main__':
-    runGold(numberOfSteps = 400, cellSize = 0.05e-7)
+    runGold(numberOfSteps = 300, cellSize = 0.05e-7)
 
     

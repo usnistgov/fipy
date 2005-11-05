@@ -331,7 +331,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     if displayViewers:
         try:
 	    from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
-            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
         except:
 	    from fipy.viewers import make
             viewers = (
@@ -345,7 +345,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
 
     for step in range(numberOfSteps):
 
- 	if step % 20 == 0:
+ 	if step % 5 == 0:
             for viewer in viewers:
                 viewer.plot()
 
