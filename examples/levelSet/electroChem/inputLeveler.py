@@ -104,6 +104,19 @@ This
     k_{lc} v \theta_l, $$ $$ \dot{\theta_{a}} = k_a c_a \left( 1 -
     \theta_a - \theta_l \right) - k_l c_l \theta_a - k_{ac}
     \theta_a^{q - 1} $$ and $$ \theta_s = 1 - \theta_a - \theta_l $$
+
+The following images show accelerator and leveler contour plots that
+can be obtained by running this example.
+
+.. image:: examples/levelSet/electroChem/accelerator.pdf
+   :scale: 60
+   :align: center
+   :alt: resulting image
+
+.. image:: examples/levelSet/electroChem/leveler.pdf
+   :scale: 60
+   :align: center
+   :alt: resulting image
     
 """
 __docformat__ = 'restructuredtext'
@@ -352,9 +365,6 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
 
     print numerix.allclose(data, levelerVar)
 
-##    viewer[0].plot('accelerator.png')
-##    viewer[1].plot('leveler.png')
-    
 if __name__ == '__main__':
     runLeveler()
     raw_input("finished")    
