@@ -356,5 +356,5 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
 ##    viewer[1].plot('leveler.png')
     
 if __name__ == '__main__':
-    runLeveler(numberOfSteps = 10, displayViewers = False, cellSize = 0.25e-7)
+    runLeveler()
     raw_input("finished")    
