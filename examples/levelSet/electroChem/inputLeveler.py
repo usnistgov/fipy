@@ -68,7 +68,7 @@ python command line),
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
 
-    >>> runGold(numberOfSteps = 10, displayViewers = False)
+    >>> runLeveler(numberOfSteps = 10, displayViewers = False, cellSize = 0.25e-7)
     1
 
 Change the `displayViewers` argument to `True` if you wish to see the
@@ -108,7 +108,7 @@ This
 """
 __docformat__ = 'restructuredtext'
 
-def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1e-7, rateConstant = 0.00026, initialAcceleratorCoverage = 0.0, levelerDiffusionCoefficient = 5e-10, numberOfSteps = 400, displayRate = 10):
+def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1e-7, rateConstant = 0.00026, initialAcceleratorCoverage = 0.0, levelerDiffusionCoefficient = 5e-10, numberOfSteps = 400, displayRate = 10, displayViewers = True):
 
     
     kLevelerConsumption = 0.0005
@@ -179,8 +179,6 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
         name = "accelerator variable",
         value = initialAcceleratorCoverage,
         distanceVar = distanceVar)
-
-
 
     from fipy.variables.cellVariable import CellVariable
     bulkAcceleratorVar = CellVariable(name = 'bulk accelerator variable',
@@ -302,16 +300,18 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
 
     totalTime = 0.0
 
-    from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
-    viewers = (
-        MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'accelerator coverage'),
-        MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'leveler coverage'))
-    
-    
+    if displayViewers:
+        from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+        viewers = (
+            MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'accelerator coverage'),
+            MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'leveler coverage'))
+        
     for step in range(numberOfSteps):
-        if step % displayRate == 0:
-            for viewer in viewers:
-                viewer.plot()
+
+        if displayViewers:
+            if step % displayRate == 0:
+                for viewer in viewers:
+                    viewer.plot()
             
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction(deleteIslands = True)
@@ -323,7 +323,6 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
                                                extensionVelocityVariable,
                                                0),
                                  0)
-
 
         dt = cflNumber * cellSize / max(extOnInt)
 
@@ -344,6 +343,18 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
 
         totalTime += dt
 
+    testFile = 'testLeveler.gz'
+    import os
+    import examples.levelSet.electroChem
+    filepath = os.path.join(examples.levelSet.electroChem.__path__[0], testFile)
+    from fipy.tools import dump
+    data = dump.read(filepath)
+
+    print numerix.allclose(data, levelerVar)
+
+##    viewer[0].plot('accelerator.png')
+##    viewer[1].plot('leveler.png')
+    
 if __name__ == '__main__':
-    runLeveler()
+    runLeveler(numberOfSteps = 10, displayViewers = False, cellSize = 0.25e-7)
     raw_input("finished")    

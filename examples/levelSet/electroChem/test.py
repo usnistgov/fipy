@@ -47,13 +47,15 @@ import inputWriteScriptHowTo
 import inputSimpleTrenchSystem
 import inputGold
 import gapFillMesh
+import inputLeveler
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'inputWriteScriptHowTo',
             'inputSimpleTrenchSystem',
             'inputGold',
-            'gapFillMesh'
+            'gapFillMesh',
+            'inputLeveler'
         ), base = __name__)
     
 if __name__ == '__main__':

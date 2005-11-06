@@ -14,8 +14,6 @@ only used for the diffusion in the boundary layer.
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
@@ -26,42 +24,45 @@ class GapFillMesh(Mesh2D):
     
     The following test case tests for diffusion across the domain.
 
-        >>> import Numeric
 
-        >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-        >>> from fipy.boundaryConditions.fixedValue import FixedValue
-        >>> from fipy.iterators.iterator import Iterator
-        >>> from fipy.variables.cellVariable import CellVariable
-        >>> import fipy.tools.dump as dump
-        >>> domainHeight = 5.
-        
+        >>> domainHeight = 5.        
         >>> mesh = GapFillMesh(transitionRegionHeight = 2.,
         ...                    cellSize = 0.1,
         ...                    desiredFineRegionHeight = 1.,
         ...                    desiredDomainHeight = domainHeight,
         ...                    desiredDomainWidth = 1.)
-        
-        >>> dump.write(mesh, 'tmpmesh')
-        >>> mesh = dump.read('tmpmesh')
 
+        >>> import tempfile
+        >>> (f, filename) = tempfile.mkstemp('.geo')
+        >>> import fipy.tools.dump as dump
+        >>> dump.write(mesh, filename)
+        >>> mesh = dump.read(filename)
+        >>> os.close(f)
+        >>> os.remove(filename)
         >>> mesh.getNumberOfCells() - len(mesh.getCellIDsAboveFineRegion())
         90
-        
+
+        >>> from fipy.variables.cellVariable import CellVariable
         >>> var = CellVariable(mesh = mesh)
+
+        >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
+        
+        >>> from fipy.boundaryConditions.fixedValue import FixedValue
         >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
         ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
 
     Evaluate the result:
        
         >>> centers = mesh.getCellCenters()[:,1]
-        >>> localErrors = ((centers - Numeric.array(var)) / centers)**2
-        >>> globalError = Numeric.sqrt(Numeric.sum(localErrors) / mesh.getNumberOfCells())
-        >>> argmax = Numeric.argmax(localErrors)
-        >>> print 'maximum local error:',Numeric.sqrt(localErrors[argmax])
-        maximum local error: 0.0467527693696
-        >>> print 'global error:',globalError
-        global error: 0.0171020850885
+        >>> localErrors = (centers - var)**2 / centers**2
+        >>> from fipy.tools import numerix
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
+        >>> argmax = numerix.argmax(localErrors)
+        >>> print numerix.sqrt(localErrors[argmax]) < 0.05
+        1
+        >>> print globalError < 0.02
+        1
 
     """
     
@@ -136,7 +137,9 @@ class GapFillMesh(Mesh2D):
     
     def buildTransitionMesh(self, nx, height, cellSize):
 
-        file = open('mesh.geo', 'w')    
+        import tempfile
+        (f, geomName) = tempfile.mkstemp('.geo')
+        file = open(geomName, 'w')    
 
         ## Required to coerce gmsh to use the correct number of
         ## cells in the X direction.
@@ -158,10 +161,22 @@ class GapFillMesh(Mesh2D):
         Plane Surface(10) = {9} ; """)
         
         file.close()
+        import os
+        os.close(f)
 
-        os.system('gmsh mesh.geo -2 -v 0')
-
-        return GmshImporter2D("mesh.msh")
+        import sys
+        if sys.platform == 'win32':
+            meshName = 'tmp.msh'
+        else:
+            (f, meshName) = tempfile.mkstemp('.msh')
+        
+        os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
+        os.remove(geomName)
+        if sys.platform != 'win32':
+            os.close(f)
+        mesh = GmshImporter2D(meshName)
+        os.remove(meshName)
+        return mesh
 
     def getTopFaces(self):
         return self.getFaces(lambda face: face.getCenter()[1] > self.actualDomainHeight - self.epsilon)
@@ -184,19 +199,14 @@ class TrenchMesh(GapFillMesh):
 
     The following test case tests for diffusion across the domain.
 
-        >>> import Numeric
 
-        >>> from fipy.equations.diffusionEquation import DiffusionEquation
-        >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
-        >>> from fipy.boundaryConditions.fixedValue import FixedValue
-        >>> from fipy.iterators.iterator import Iterator
-        >>> from fipy.variables.cellVariable import CellVariable
-        >>> import fipy.tools.dump as dump
+
 
         >>> cellSize = 0.05e-6
         >>> trenchDepth = 0.5e-6
         >>> boundaryLayerDepth = 50e-6
         >>> domainHeight = 10 * cellSize + trenchDepth + boundaryLayerDepth
+        
         
         >>> mesh = TrenchMesh(trenchSpacing = 1e-6,
         ...                   cellSize = cellSize,
@@ -204,38 +214,38 @@ class TrenchMesh(GapFillMesh):
         ...                   boundaryLayerDepth = boundaryLayerDepth,
         ...                   aspectRatio = 1.)
 
-        
-        >>> dump.write(mesh, 'tmpmesh')
-        >>> mesh = dump.read('tmpmesh')
+        >>> import tempfile
+        >>> (f, filename) = tempfile.mkstemp('.geo')
 
+        >>> import fipy.tools.dump as dump
+        >>> dump.write(mesh, filename)
+        >>> mesh = dump.read(filename)
+        >>> os.close(f)
+        >>> os.remove(filename)
         >>> mesh.getNumberOfCells() - len(mesh.getElectrolyteCells())        
         150
 
-        >>> var = CellVariable(name = "solution variable",
-        ...                    mesh = mesh,
-        ...                    value = 0.)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> var = CellVariable(mesh = mesh, value = 0.)
+
+        >>> from fipy.terms.diffusionTerm import DiffusionTerm
+        >>> eq = DiffusionTerm()
         
-        >>> eq =  DiffusionEquation(var,
-        ...                         transientCoeff = 0.,
-        ...                         diffusionCoeff = 1.,
-        ...                         boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
-        ...                                               FixedValue(mesh.getTopFaces(), domainHeight)),
-        ...                         solver = LinearPCGSolver(tolerance = 1.e-15, 
-        ...                                                  steps = 1000))
-        
-        >>> it = Iterator((eq,))
-        >>> it.timestep()
+        >>> from fipy.boundaryConditions.fixedValue import FixedValue
+        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
+        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
 
     Evaluate the result:
        
         >>> centers = mesh.getCellCenters()[:,1]
-        >>> localErrors = ((centers - Numeric.array(var)) / centers)**2
-        >>> globalError = Numeric.sqrt(Numeric.sum(localErrors) / mesh.getNumberOfCells())
-        >>> argmax = Numeric.argmax(localErrors)
-        >>> print 'maximum local error:',Numeric.sqrt(localErrors[argmax])
-        maximum local error: 0.050679531208
-        >>> print 'global error:',globalError
-        global error: 0.0132375017771
+        >>> localErrors = (centers - var)**2 / centers**2
+        >>> from fipy.tools import numerix
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
+        >>> argmax = numerix.argmax(localErrors)
+        >>> print numerix.sqrt(localErrors[argmax]) < 0.051
+        1
+        >>> print globalError < 0.02
+        1
 
     """
 
@@ -306,13 +316,14 @@ class TrenchMesh(GapFillMesh):
             Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
 
             ## taper
-            taper = Numeric.tan(self.angle) * Y
+            from fipy.tools import numerix
+            taper = numerix.tan(self.angle) * Y
 
             ## bow
             if abs(self.bowWidth) > 1e-12 and (-self.trenchDepth / 2 < Y < self.trenchDepth / 2):
                 param1 = self.trenchDepth**2 / 8 / self.bowWidth
                 param2 = self.bowWidth / 2
-                bow = -Numeric.sqrt((param1 + param2)**2 - Y**2) + param1 - param2
+                bow = -numerix.sqrt((param1 + param2)**2 - Y**2) + param1 - param2
             else:
                 bow = 0
 
@@ -326,12 +337,12 @@ class TrenchMesh(GapFillMesh):
             overBump = 0
             if Y > -self.overBumpRadius:
                 if self.overBumpRadius > 1e-12:
-                    overBump += self.overBumpWidth / 2 * (1 + Numeric.cos(Y * Numeric.pi / self.overBumpRadius))
+                    overBump += self.overBumpWidth / 2 * (1 + numerix.cos(Y * numerix.pi / self.overBumpRadius))
                 if Y > 0:
                     if Y > self.overBumpRadius:
                         overBump -= self.overBumpRadius
                     else:
-                        overBump -= self.overBumpRadius - Numeric.sqrt(self.overBumpRadius**2 - Y**2)
+                        overBump -= self.overBumpRadius - numerix.sqrt(self.overBumpRadius**2 - Y**2)
 
 ##            print overBump
 ##            raw_input()
