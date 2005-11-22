@@ -122,7 +122,7 @@ complex meshes requiring the `gmsh` software.
     $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
     $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
     $b_0$                 & current density for $\theta^0$    & \texttt{currentDensity0}              & 0&26                      & A m$^{-2}$                         \\
-    $b_1$                 & current density for $\theta       & \texttt{currentDensity1}              & 45&0                      & A m$^{-2}$                         \\
+    $b_1$                 & current density for $\theta$      & \texttt{currentDensity1}              & 45&0                      & A m$^{-2}$                         \\
     \hline
     \multicolumn{6}{|c|}{Metal Ion Parameters}                                                                                                                         \\
     \hline
@@ -150,9 +150,9 @@ complex meshes requiring the `gmsh` software.
     \hline
     \multicolumn{6}{|c|}{Simulation Control Parameters}                                                                                                                \\
     \hline
-                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10^{-7}        & m                                  \\
+                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10$^{-7}$      & m                                  \\
                           & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
-                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\textttt{True}} &                           \\
+                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\texttt{True}} &                           \\
     \hline
     \end{tabular}
 

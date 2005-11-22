@@ -65,8 +65,8 @@ python command line),
 
     >>> from examples.levelSet.electroChem.inputLeveler import runLeveler
 
-and then the function can be run with a different number of time steps
-with the `numberOfSteps` argument as follows,
+and then the function can be executed with a different number of time
+steps by changing the `numberOfSteps` argument as follows,
 
     >>> runLeveler(numberOfSteps = 10, displayViewers = False, cellSize = 0.25e-7)
     1
@@ -79,31 +79,113 @@ This
 
 .. raw:: latex
 
-    example is for the case when there are suppressor, accelerator and
-    leveler additives in the electrolyte. The suppressor is assumed to
-    absorb quickly compared with the other additives. Any unoccupied
-    surface sites are immediately covered with suppressor. The
-    accelerator additive has more surface affinity than suppressor and
-    is thus preferential adsorbed. The accelerator can also remove
-    suppressor when the surface reaches full coverage. Similarly, the
-    leveler additive has more surface affinity than both the
-    suppressor and accelerator. This forms a simple set of assumptions
-    for understanding the behavior of these additives.
+    example models the case when suppressor, accelerator and leveler
+    additives are present in the electrolyte. The suppressor is
+    assumed to absorb quickly compared with the other additives. Any
+    unoccupied surface sites are immediately covered with
+    suppressor. The accelerator additive has more surface affinity
+    than suppressor and is thus preferential adsorbed. The accelerator
+    can also remove suppressor when the surface reaches full
+    coverage. Similarly, the leveler additive has more surface
+    affinity than both the suppressor and accelerator. This forms a
+    simple set of assumptions for understanding the behavior of these
+    additives.
 
     The following is a complete description of the equations for the
     model described here. Any equations that have been omitted are the
     same as those given in Example~\ref{inputSimpleTrench}. The
     current density is governed by $$ i = \frac{ c_m }{ c_m^\infty }
-    \sum_{ j } \left[ i_j \theta_j \left( \exp{ \frac{\alpha_j F \eta
-    }{ R T }} + \exp{ \frac{-\alpha_j F \eta}{ R T }} \right) \right]
-    $$ where $j$ represents $s$ for suppressor, $a$ for accelerator
-    and $l$ for leveler. This model assumes a linear interpolation
-    between the three cases of complete coverage for each
-    additive. The governing equations for the surfactants are given
-    by, $$ \dot{\theta_{l}} = k_l c_l \left( 1 - \theta_l \right) -
-    k_{lc} v \theta_l, $$ $$ \dot{\theta_{a}} = k_a c_a \left( 1 -
-    \theta_a - \theta_l \right) - k_l c_l \theta_a - k_{ac}
-    \theta_a^{q - 1} $$ and $$ \theta_s = 1 - \theta_a - \theta_l $$
+    \sum_{ j } \left[ i_j \theta_j \left( \exp{ \frac{-\alpha_j F \eta
+    }{ R T }} - \exp{ \frac{ \left( 1 - \alpha_j \right) F \eta}{ R T
+    }} \right) \right] $$ where $j$ represents $S$ for suppressor, $A$
+    for accelerator, $L$ for leveler and $V$ for vacant. This model
+    assumes a linear interpolation between the three cases of complete
+    coverage for each additive or vacant substrate. The governing
+    equations for the surfactants are given by, $$ \dot{\theta_{L}} =
+    \kappa v \theta_L + k_l^+ c_L \left( 1 - \theta_L \right) - k_L^-
+    v \theta_L, $$ $$ \dot{\theta_{a}} = \kappa v \theta_A + k_A^+ c_A
+    \left( 1 - \theta_A - \theta_L \right) - k_L c_L \theta_A - k_A^-
+    \theta_A^{q - 1}, $$ $$ \theta_S = 1 - \theta_A - \theta_L $$ and
+    $$ \theta_V = 0. $$ It has been found experimentally that $i_L =
+    i_S$.
+
+    If the surface reaches full coverage, the equations do not
+    naturally prevent the coverage rising above full coverage due to
+    the curvature terms. Thus, when $\theta_L + \theta_A = 1$ then the
+    equation for accelerator becomes $\dot{ \theta_A } = -\dot{
+    \theta_L }$ and when $\theta_L = 1$, the equation for leveler
+    becomes $\dot{\theta_{L}} = - k_L^- v \theta_L.$
+
+    The parameters $k_A^+,$ $k_A^-$ and $q$ are both functions of $\eta$
+    given by, $$ k_A^+ = k_{A0}^+ \exp{\frac{-\alpha_k F \eta}{R T}}, $$
+    and $$ k_A^- = B_d + \frac{A}{\exp{\left(B_a \left(\eta + V_d
+    \right) \right)}} + \exp{\left(B_b \left(\eta + V_d \right)
+    \right)} $$ and $$ q = m * \eta + b. $$
+
+The following table shows the symbols used in the governing equations
+and their corresponding arguments for the `runLeveler` function.
+
+.. raw:: latex
+
+    \begin{tabular}{|rllr@{.}ll|}
+    \hline
+    Symbol                & Description                       & Keyword Argument                      & \multicolumn{2}{l}{Value} & Unit                               \\
+    \hline
+    \multicolumn{6}{|c|}{Deposition Rate Parameters}                                                                                                                   \\
+    \hline
+    $v$                   & deposition rate                   &                                       & \multicolumn{2}{l}{}      & m s$^{-1}$                         \\
+    $i_A$                 & accelerator current density       & i0Accelerator                         & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $i_L$                 & leveler current density           & i0Leveler                             & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
+    $n$                   & ion charge                        & \texttt{charge}                       & \multicolumn{2}{c}{2}     &                                    \\
+    $F$                   & Faraday's constant                & \texttt{faradaysConstant}             & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
+    $i_0$                 & exchange current density          &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $\alpha_A$            & accelerator transfer coefficient  & \texttt{alphaAccelerator}             & 0&4                       &                                    \\
+    $\alpha_S$            & leveler transfer coefficient      & \texttt{alphaLeveler}                 & 0&5                       &                                    \\
+    $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
+    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
+    $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
+    \hline
+    \multicolumn{6}{|c|}{Ion Parameters}                                                                                                                               \\
+    \hline
+    $c_I$                 & ion concentration                 & \texttt{ionConcentration}             & 250&0                     & mol m$^{-3}$                       \\
+    $c_I^{\infty}$        & far field ion concentration       & \texttt{ionConcentration}             & 250&0                     & mol m$^{-3}$                       \\
+    $D_I$                 & ion diffusion coefficient         & \texttt{ionDiffusion}                 & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
+    \hline
+    \multicolumn{6}{|c|}{Accelerator Parameters}                                                                                                                       \\
+    \hline
+    $\theta_A$            & accelerator coverage              & \texttt{acceleratorCoverage}          & 0&0                       &                                    \\
+    $c_A$                 & accelerator concentartion         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_A^{\infty}$        & far field accelerator concentration & \texttt{acceleratorConcentration}   & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $D_A$                 & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
+    $\Gamma_A$            & accelerator site density          & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
+    $k_A^+$               & accelerator adsorption            &                                       & \multicolumn{2}{l}{}      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $k_{A0}^+$            & accelerator adsorption coeff      & \texttt{kAccelerator0}                & 2&6$times$10$^{-4}$       & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $\alpha_k$            & accelerator adsorption coeff      & \texttt{alphaAdsorption}              & 0&62                      &                                    \\
+    $k_A^-$               $ accelerator consumption coeff     &                                       & \multicolumn{2}{l}{}      &                                    \\
+    $B_a$                 $ experimental parameter            $ \texttt{Bd}                           & -40&0                     &
+                                \\
+    $B_b$                 $ experimental parameter            $ \texttt{Bd}                           & 60&0                      &
+                                \\
+    $V_d$                 $ experimental parameter            $ \texttt{Bd}                           & 9&8$\times$10$^{-2}$      &
+                                \\
+    $B_d$                 $ experimental parameter            $ \texttt{Bd}                           & 8&0$\times$10$^{-4}$      &
+                                \\
+    \hline
+    \multicolumn{6}{|c|}{Geometry Parameters}                                                                                                                          \\
+    \hline
+    $D$                   & trench depth                      & \texttt{trenchDepth}                  & 0&5$\times$10$^{-6}$      & m                                  \\
+    $D / W$               & trench aspect ratio               & \texttt{aspectRatio}                  & 2&0                       &                                    \\
+    $S$                   & trench spacing                    & \texttt{trenchSpacing}                & 0&6$\times$10$^{-6}$      & m                                  \\
+    $\delta$              & boundary layer depth              & \texttt{boundaryLayerDepth}           & 0&3$\times$10$^{-6}$      & m                                  \\
+    \hline
+    \multicolumn{6}{|c|}{Simulation Control Parameters}                                                                                                                \\
+    \hline
+                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10$^{-7}$      & m                                  \\
+                          & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
+                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\texttt{True}} &                           \\
+    \hline
+    \end{tabular}
 
 The following images show accelerator and leveler contour plots that
 can be obtained by running this example.
