@@ -107,6 +107,7 @@ Python
 
 http://www.python.org/
 
+
 |FiPy| is written in the Python_ language and requires a Python_
 installation to run.  Python_ comes pre-installed on many operating
 systems, which you can check by opening a terminal and typing
@@ -303,7 +304,8 @@ http://mayavi.sourceforge.net
 The MayaVi_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
-or 2D viewing.
+or 2D viewing. The `Enthon for Windows`_ version of python is
+recommended for Windows users who wish to use MayaVi_.
 
 .. warning::
 

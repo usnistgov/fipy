@@ -441,11 +441,10 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
     testFile = 'testLeveler.gz'
     import os
     import examples.levelSet.electroChem
-    filepath = os.path.join(examples.levelSet.electroChem.__path__[0], testFile)
     from fipy.tools import dump
-    data = dump.read(filepath)
-
-    print numerix.allclose(data, levelerVar)
+    data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
+    N = mesh.getFineMesh().getNumberOfCells()
+    print numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3)
 
 if __name__ == '__main__':
     runLeveler()
