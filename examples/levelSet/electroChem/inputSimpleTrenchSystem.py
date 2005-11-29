@@ -119,7 +119,7 @@ complex meshes requiring the `gmsh` software.
     $i_0$                 & exchange current density          &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
     $\alpha$              & transfer coefficient              & \texttt{transferCoefficient}          & 0&5                       &                                    \\
     $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
-    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
+    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K$^{-1} mol$^{-1}$               \\
     $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
     $b_0$                 & current density for $\theta^0$    & \texttt{currentDensity0}              & 0&26                      & A m$^{-2}$                         \\
     $b_1$                 & current density for $\theta$      & \texttt{currentDensity1}              & 45&0                      & A m$^{-2}$                         \\
