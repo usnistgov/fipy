@@ -91,11 +91,15 @@ class MatplotlibViewer(Viewer):
           - `filename`: The name of the file for hard copies.
           
         """
-
+        
         pylab.figure(self.id)
+
+        ## Added garbage collection since matplotlib objects seem to hang
+        ## around and accumulate.
+        import gc
+        gc.collect()
         pylab.clf()
         pylab.title(self.title)
-        
         self._plot()
 
         pylab.xlim(xmin = self._getLimit('xmin'))
@@ -103,4 +107,3 @@ class MatplotlibViewer(Viewer):
         
         if filename is not None:
             pylab.savefig(filename)
-
