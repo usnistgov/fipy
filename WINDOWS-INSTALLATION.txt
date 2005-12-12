@@ -5,100 +5,113 @@ Simple Windows Installation
 These instructions are simple step by step instructions for the
 `Windows XP`_ and `Windows 2000`_ platforms. Please see the more
 general |INSTALLATION-txt| for detailed installation instructions.
-These step by step instructions are not the only way to
-set up |FiPy| on a Windows OS but represent the most expedient way
-from our experience to have a usable installation up and running.
+These step by step instructions are not the only way to set up |FiPy|
+on a Windows OS but represent the most expedient way from our
+experience to have a usable installation up and running.
 
 .. note
 
     The first five steps require downloading installation .exe binary
-    files from various websites. When given the choice to run (open)
-    or save these files it is best to simply chooose run (open).
+    files from various web sites. When given the choice to run (open)
+    or save these files it is best to simply choose run (open).
 
 .. include:: utils/include.txt
 
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
+.. _Windows XP: http://www.microsoft.com/windowsxp/default.mspx
+.. _Windows 2000: http://www.microsoft.com/windows2000/
 
-----------------------
+-----------
+Instuctions
+-----------
+
 Step 1: Install Python
 ----------------------
 
-Download and run the `Enthough Edition`_ installer.
+http://download.enthought.com/enthought_python-2.3.5-1078.exe
 
----------------------
+Download and run the Enthought Edition installer.
+
 Step 2: Install PyVTK
 ---------------------
 
-Download and run the `PyVtk`_ installer.
+http://www.ctcms.nist.gov/fipy/download/PyVTK-0.4.67.win32.exe
 
-------------------------
+Download and run the PyVTK installer.
+
 Step 3: Install Pysparse   
 ------------------------
 
-Download and run the `PySparse`_ installer.
+http://prdownloads.sourceforge.net/pysparse/pysparse-0.34.032.win32-py2.3.exe?download
 
---------------------
-Step 4: Install FiPy
---------------------
+Download and run the PySparse installer.
 
-Download and run the `|FiPy|`_ installer
-
-     - add in test.gz files.
-     - stop mayavi printing stuff at each step
-
+Step 4: Install |FiPy|
 ----------------------
+
+http://www.ctcms.nist.gov/fipy/download/FiPy-1.1a1-branch-windows-dist.win32.exe
+
+Download and run the |FiPy| installer.
+
 Step 6: Install Matplotlib
-----------------------
+--------------------------
 
-Download and run the `PyGist` installer
+http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.85.win32-py2.3.exe?download
 
---------------------
+Download and run the Matplotlib installer.
+
 Step 5: Install Gmsh
 --------------------
 
-Download and unpack `Gmsh for Windows`_. Open the unpacked file with a
-file browser and copy the gmsh and cygwin1.dll to C:\Python23.
+http://www.geuz.org/gmsh/bin/Windows/gmsh-1.61.3-Windows.zip
 
------------------
+Download and unpack Gmsh for Windows. Open the unpacked folder with a
+browser and copy the ``gmsh.exe`` and ``cygwin1.dll`` files to ``C:\Python23``.
+
 Step 6: Run IDLE_
 -----------------
 
-The IDLE_ environemnet is recomended for running |FiPy|. In order to have
-interactive viewing capabilities the -n option is required. To run IDLE_ on
-with the -n option follow the following instructions:
+The IDLE_ environment is recommended for running |FiPy|. In order to
+have interactive viewing capabilities the ``-n`` option is
+required. To run IDLE_ with the ``-n`` option follow the following
+instructions:
 
-   - Click on "Start"
-   - Click on "Programs"
-   - Click on "Python 2.3 (Enthought Edition)"
-   - Right click on "IDLE (Python GUI)" and click on "Create Shortcut" which creates "IDLE (Python GUI)(2)"
-   - Right click on "IDLE (Python GUI)(2)"
+   - Click on ``Start``
+   - Click on ``Programs``
+   - Click on ``Python 2.3 (Enthought Edition)``
+   - Right click on ``IDLE (Python GUI)`` and click on ``Create Shortcut`` which creates ``IDLE (Python GUI)(2)``
+   - Right click on ``IDLE (Python GUI)(2)``
    - Click on properties
-   - Add the -n option to "Target" being sure to leave a space after the last quote and before -n
-   - Drag and drop "IDLE (Python GUI)(2)" to the desktop to create an icon.
+   - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
+   - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
---------------------------------------------
 Step 7: Import a module and view the results
 --------------------------------------------
 
-You can use the IDLE_ path browser to find FiPy examples. For example to run
-the 2D diffusoin example,
+You can use the IDLE_ path browser to find |FiPy| examples. For
+example to run the 2D diffusion example,
 
-    - Click on "File"
-    - Click on "Path Browser"
-    - Click on "C:\Python23\lib\site-packages"
-    - Click on "examples"
-    - Click on "diffusion"
-    - Click on "steadyState"
-    - Click on "mesh50x50"
-    - Click on "input.py"
+    - Click on ``File``
+    - Click on ``Path Browser``
+    - Click on ``C:\Python23\lib\site-packages``
+    - Click on ``examples``
+    - Click on ``diffusion``
+    - Click on ``steadyState``
+    - Click on ``mesh50x50``
+    - Click on ``input.py``
 
 This will open an editor simple press the F5 key to run the example.
-A matplotlib viewer should appear with a rainbow stripes.
+A Matplotlib viewer should appear with rainbow stripes.
 
-Another way to use FiPy examples is to import the example file and then run any functionality
-it ma have. For example at the IDLE command line run the following code:
+Another way to use |FiPy| examples is to import the example file and
+then run any functionality it may have. For example at the IDLE_
+command line run the following code:
 
     >>> from examples.levelSet.electroChem.inputGold import runGold.
     >>> runGold(numberOfSteps = 100)
 
 A MayaVi viewer should appear with a trench filling simulation.
+
+   .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
+
+   .. |FiPy| replace:: |htmlFiPy| |latexFiPy|

@@ -218,6 +218,7 @@ class build_docs (Command):
 				     'README',
 				     'LICENSE',
 				     'DISCLAIMER',
+                                     'WINDOWS-INSTALLATION',
 				     'examples/README',
                                      'examples/levelSet/electroChem/README']
                                      

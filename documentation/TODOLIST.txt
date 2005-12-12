@@ -92,6 +92,9 @@ Release Goals 1.1
 
   * prevent assigning boundary conditions to internal faces.
 
+  * Boundary conditions should be able to take CellVariables or FaceVariables as
+    values and pull out the correct values.
+
 Long term Goals
 ---------------
 

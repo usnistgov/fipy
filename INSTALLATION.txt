@@ -57,7 +57,8 @@ Operating System
 systems, `Mac OS X`_ 10.3 "Panther" & 10.4 "Tiger", `Debian Linux`_
 3.1 "Sarge", `Windows XP`_ and `Windows 2000`_.  We welcome reports of
 compatibility with other systems, along with any steps necessary to
-install.
+install. Simple instructions for Windows users are in
+|WINDOWS-INSTALLATION-txt|.
 
 The only elements of |FiPy| that are likely to be platform-dependent
 are the viewers, but at least one viewer should work on each platform.
@@ -76,6 +77,16 @@ follow explicitly any instructions given in the respective packages'
 .. _Debian Linux:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
 .. _Windows XP: http://www.microsoft.com/windowsxp/default.mspx
 .. _Windows 2000: http://www.microsoft.com/windows2000/
+
+.. |latexWINDOWSINSTALL| raw:: latex
+
+   Section~\ref{sec:WindowsInstallation} ``\titleref{sec:WindowsInstallation}''
+
+.. |htmlWINDOWSINSTALL| raw:: html
+
+   the <a href="windows-installation.html">Windows Installation Guide</a>
+
+.. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWSINSTALL| |latexWINDOWSINSTALL|
 
 Required Packages
 =================
