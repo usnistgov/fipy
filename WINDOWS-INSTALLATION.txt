@@ -28,9 +28,17 @@ Instuctions
 Step 1: Install Python
 ----------------------
 
-http://download.enthought.com/enthought_python-2.3.5-1078.exe
+http://download.enthought.com/enthought_python-2.3.5-1076-wx26-n238.exe
 
-Download and run the Enthought Edition installer.
+Download and run the Enthought Edition installer. Open the
+``C:\Python23\Lib\site-packages\vtk_python\`` directory in a browser
+and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python23\``
+directory.
+
+.. warning:
+
+    Don't download the latest Enthought Edition (build 1078). This
+    version's Mayavi doesn't work correctly.
 
 Step 2: Install PyVTK
 ---------------------
@@ -60,7 +68,7 @@ http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.85.win32-py2.3.exe?do
 
 Download and run the Matplotlib installer.
 
-Step 5: Install Gmsh
+Step 7: Install Gmsh
 --------------------
 
 http://www.geuz.org/gmsh/bin/Windows/gmsh-1.61.3-Windows.zip
@@ -68,7 +76,7 @@ http://www.geuz.org/gmsh/bin/Windows/gmsh-1.61.3-Windows.zip
 Download and unpack Gmsh for Windows. Open the unpacked folder with a
 browser and copy the ``gmsh.exe`` and ``cygwin1.dll`` files to ``C:\Python23``.
 
-Step 6: Run IDLE_
+Step 8: Run IDLE_
 -----------------
 
 The IDLE_ environment is recommended for running |FiPy|. In order to
@@ -85,7 +93,7 @@ instructions:
    - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
    - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
-Step 7: Import a module and view the results
+Step 9: Import a module and view the results
 --------------------------------------------
 
 You can use the IDLE_ path browser to find |FiPy| examples. For
