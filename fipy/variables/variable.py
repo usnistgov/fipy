@@ -1529,11 +1529,12 @@ class Variable:
         
         selfArray = self._getArrayAsOnes(self, valueMattersForShape)
         otherArray = self._getArrayAsOnes(other, valueMattersForShape)
-        
+
         try:
             var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass)
         except SyntaxError:
             return NotImplemented
+            
         
         # obtain a general operator class with the desired base class
 	operatorClass = self._getOperatorVariableClass(baseClass)
@@ -1850,12 +1851,16 @@ class Variable:
            >>> print var.allclose((1, 1))
            1
            >>> print var.allclose((1,))
+           1
+           >>> print var.allclose((1,1,1))
+           1
+           >>> print var.allclose((1,1,0))
            0
-
+           
         """
         
 
-        
+
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
                                                other, 
                                                baseClass = Variable,
