@@ -138,7 +138,10 @@ class MayaviSurfactantViewer(Viewer):
         if name == '':
             name = None
 
-        return (pyvtk.UnstructuredGrid(points = coordinates,
+        coords = numerix.zeros((coordinates.shape[0], 3), 'd')
+        coords[:,:coordinates.shape[1]] = coordinates
+
+        return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data, name = name)))
         

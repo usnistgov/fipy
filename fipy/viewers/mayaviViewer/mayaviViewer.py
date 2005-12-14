@@ -130,7 +130,12 @@ class MayaviViewer(Viewer):
                 else:
                     raise TypeError, 'These cell types can not be rendered by the MayaviViewer'
 
-        return pyvtk.UnstructuredGrid(points = mesh.getVertexCoords(),
+
+                
+        coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
+        coords[:,:mesh.getDim()] = mesh.getVertexCoords()
+
+        return pyvtk.UnstructuredGrid(points = coords,
                                       line = cellDict[2],
                                       tetra = cellDict[4],
                                       wedge = cellDict[6],

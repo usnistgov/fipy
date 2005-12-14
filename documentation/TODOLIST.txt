@@ -22,6 +22,7 @@ Release Goals 1.1
   * The reference manual should have a 'returns' section similar to 'parameters' for methods
     and functions.
   * Improve BC doc, make clear no internal BCs    
+  * Superfill manual
 
 - Distribution
 
@@ -35,6 +36,8 @@ Release Goals 1.1
     - scipy links
 
   * set up mail archive
+  * Make tests work for an installation of FiPy
+  * Make examples work for an installation of FiPy
 
 - Functionlity
 
@@ -94,6 +97,13 @@ Release Goals 1.1
 
   * Boundary conditions should be able to take CellVariables or FaceVariables as
     values and pull out the correct values.
+
+  * Level set
+
+    - refactor to use basic types, make level set code work independently of FiPy
+    - unstructured grids
+    - 3D grids
+    - input files should not refer to equation objects
 
 Long term Goals
 ---------------
