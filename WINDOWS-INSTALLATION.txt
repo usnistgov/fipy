@@ -9,17 +9,17 @@ These step by step instructions are not the only way to set up |FiPy|
 on a Windows OS but represent the most expedient way from our
 experience to have a usable installation up and running.
 
-.. note
+.. note::
 
-    The first five steps require downloading installation .exe binary
-    files from various web sites. When given the choice to run (open)
-    or save these files it is best to simply choose run (open).
+   These steps require downloading installation ``.exe`` binary files from
+   various web sites.  When given the choice to ``run`` (``open``) or
+   ``save`` these files it is best to simply choose ``run`` (``open``).
 
 .. include:: utils/include.txt
 
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
-.. _Windows XP: http://www.microsoft.com/windowsxp/default.mspx
-.. _Windows 2000: http://www.microsoft.com/windows2000/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/default.mspx
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
 -----------
 Instuctions
