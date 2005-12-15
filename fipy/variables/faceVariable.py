@@ -79,9 +79,9 @@ class FaceVariable(Variable):
         else:
             return Variable._getArithmeticBaseClass(self, other)
 
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable):
         from fipy.variables.vectorFaceVariable import VectorFaceVariable
         if isinstance(var1, VectorFaceVariable) and self.getMesh() == var1.getMesh():
             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
         else:
-            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass)
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable)

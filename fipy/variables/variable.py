@@ -648,27 +648,31 @@ class Variable:
         return (var0, var1)
     _rotateShape = staticmethod(_rotateShape)
     
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable = True):
         try:
             # check if applying the operation to the inputs will produce the desired shape
             if numerix.getShape(op(var0Array, var1Array)) != opShape:
                 raise ValueError
+
         except ValueError:
-            try:
-                # check if changing var1 from a row variable to a column variable
-                # will produce the desired shape
-                (var0, var1) = self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
-            except SyntaxError:
-                if not (otherClass and issubclass(otherClass, Variable)):
-                    # check if changing var0 from a row variable to a column variable
+            if rotateVariable:
+                try:
+                    # check if changing var1 from a row variable to a column variable
                     # will produce the desired shape
-                    (var1, var0) = self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-                else:
-                    raise SyntaxError
-                    
+                    (var0, var1) = self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
+                except SyntaxError:
+                    if not (otherClass and issubclass(otherClass, Variable)):
+                        # check if changing var0 from a row variable to a column variable
+                        # will produce the desired shape
+                        (var1, var0) = self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
+                    else:
+                        raise SyntaxError
+            else:
+                raise ValueError
+            
         return (var0, var1)
 
-    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = ()):
+    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateVariable = True):
         """
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
@@ -1490,6 +1494,8 @@ class Variable:
           - `baseClass`: the `Variable` class that the binary operator should inherit from 
           - `opShape`: the shape that should result from the operation
           - `valueMattersForShape`: tuple of elements that must have a particular value for the operation to succeed.
+          - `rotateVariable`: whether the operator should permit rotation of the variables shape to allow the
+            operation to complete.
         """
         
         # for convenience, we want to be able to treat `other` as a Variable
@@ -1531,7 +1537,7 @@ class Variable:
         otherArray = self._getArrayAsOnes(other, valueMattersForShape)
 
         try:
-            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass)
+            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateVariable)
         except SyntaxError:
             return NotImplemented
             
@@ -1853,18 +1859,43 @@ class Variable:
            >>> print var.allclose((1,))
            1
            >>> print var.allclose((1,1,1))
-           1
-           >>> print var.allclose((1,1,0))
-           0
+           Traceback (most recent call last):
+               ...
+           ValueError
+
+        The following test is to check that the system does not run
+        out of memory.
+
+           >>> from fipy.tools import numerix
+           >>> var = Variable(numerix.ones(10000))
+           >>> var.allclose(numerix.ones(10001))
+           Traceback (most recent call last):
+               ...
+           ValueError
            
         """
-        
+
+        ## This operation passes `rotationVariable = False` to stop the variable being rotated. This
+        ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
+        ## out of memory.
+        ##
+        ##    >>> import Numeric
+        ##    >>> a = Numeric.ones(10000)
+        ##    >>> b = Numeric.ones(10001)
+        ##    >>> b = b[...,Numeric.NewAxis]
+        ##    >>> Numeric.allclose(a, b)
+        ##    Traceback (most recent call last):
+        ##    ...
+        ##    MemoryError: can't allocate memory for array
+        ##
+    
 
 
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
                                                other, 
                                                baseClass = Variable,
-                                               opShape = "number")
+                                               opShape = "number",
+                                               rotateVariable = False)
         
     def allequal(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 

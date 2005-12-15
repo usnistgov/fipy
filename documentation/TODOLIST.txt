@@ -38,6 +38,10 @@ Release Goals 1.1
   * set up mail archive
   * Make tests work for an installation of FiPy
   * Make examples work for an installation of FiPy
+    
+    - '*.gz' files should be added to the dist
+
+  * update to 1.0 auto branch testing
 
 - Functionlity
 
