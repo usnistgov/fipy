@@ -87,6 +87,10 @@ class SurfactantEquation:
            - `dt`: The time step size.
 
         """
+
+	if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+
         self.eq.solve(var,
                       boundaryConditions = self.bc + boundaryConditions,
                       solver = solver)

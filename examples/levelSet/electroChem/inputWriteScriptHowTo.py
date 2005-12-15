@@ -366,12 +366,7 @@ The `MetalIonDiffusionEquation` is set up with the following commands.
    ...     metalIonMolarVolume = molarVolume,
    ... )
 
-   >>> metalEquationBCs = (
-   ...         FixedValue(
-   ...             mesh.getFacesTop(),
-   ...             bulkMetalConcentration
-   ...         ),
-   ...     )
+   >>> metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
 
 The `SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -414,11 +409,7 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
    ...     rateConstant = rateConstant0 * siteDensity
    ... )
 
-   >>> catalystBCs = (
-   ...         FixedValue(
-   ...             mesh.getFacesTop(),
-   ...             catalystConcentration
-   ...         ),)
+   >>> catalystBCs = FixedValue(mesh.getFacesTop(), catalystConcentration)
    
 If running interactively, create viewers.
 

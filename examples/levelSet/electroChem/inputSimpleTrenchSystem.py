@@ -304,12 +304,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         metalIonMolarVolume = molarVolume,
     )
 
-    metalEquationBCs = (
-            FixedValue(
-                mesh.getFacesTop(),
-                metalConcentration
-            ),
-        )
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
 
     from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
                     import buildSurfactantBulkDiffusionEquation
@@ -322,11 +317,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
         rateConstant = rateConstant0 * siteDensity
     )
 
-    catalystBCs = (
-            FixedValue(
-                mesh.getFacesTop(),
-                catalystConcentration
-            ),)
+    catalystBCs = FixedValue(mesh.getFacesTop(), catalystConcentration)
 
     if displayViewers:
         try:

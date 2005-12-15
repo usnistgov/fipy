@@ -120,6 +120,7 @@ class DiffusionTerm(Term):
     def _getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
         lowerOrderBCs = []
+
         for bc in boundaryConditions:
             bcDeriv = bc._getDerivative(self.order - 2)
             if bcDeriv:

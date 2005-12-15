@@ -210,10 +210,7 @@ def runGold(faradaysConstant = 9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalEquationBCs = (
-        FixedValue(
-        mesh.getTopFaces(),
-        metalConcentration),)
+    metalEquationBCs = FixedValue(mesh.getTopFaces(), metalConcentration)
 
     if displayViewers:
 

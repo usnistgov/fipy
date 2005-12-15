@@ -101,7 +101,10 @@ class Term:
            - `returnItems`: Tuple or list of strings representing items to be returned `['matrix', 'var', 'RHSvector', 'residual']`. 
 
 	"""
-        
+
+	if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+
  	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
         residual = self._getResidual(matrix, var, RHSvector)
         

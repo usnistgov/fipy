@@ -353,10 +353,7 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalEquationBCs = (
-        FixedValue(
-        mesh.getTopFaces(),
-        bulkMetalConcentration),)
+    metalEquationBCs = FixedValue(mesh.getTopFaces(), bulkMetalConcentration)
 
     from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
          import buildSurfactantBulkDiffusionEquation
