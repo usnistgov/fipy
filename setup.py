@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 9/16/05 {3:48:07 PM} 
+ #                                last update: 12/15/05 {10:35:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,8 @@ class build_docs (Command):
 		    ('manual', None, "compile the manual"),
 		    ('all', None, "compile both the LaTeX and HTML variants of the apis"),
                     ('webpage', None, "compile the html for the web page"),
-                    ('upload', None, "upload webpages to CTCMS website"),
+                    ('upload', None, "upload webpages, documentation, and distributions to CTCMS website"),
+                    ('uploadwww', None, "upload webpages to CTCMS website"),
 		   ]
 
 
@@ -66,6 +67,7 @@ class build_docs (Command):
 	self.all = 0
         self.webpage = 0
         self.upload = 0
+        self.uploadwww = 0
     # initialize_options()
 
 
@@ -392,6 +394,8 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 	    print "linking tarballs to website..."
 	    os.system('ln -sf ../../../dist/FiPy-%s.tar.gz documentation/www/download/'%self.distribution.metadata.get_version())
 
+        if self.upload or self.uploadwww:
+                 
 	    print "setting group and ownership of web pages..."
 	    os.system('chgrp -R pfm documentation/www/')
 	    os.system('chmod -R g+w documentation/www/')
@@ -616,7 +620,7 @@ class efficiency_test(Command):
                 
                 numberOfElements *= self.factor
                 runTimeEstimate = (t2 - t1) * self.factor
-                                        
+
 f = open('README.txt', 'r') 
 long_description = '\n' + f.read() + '\n'
 f.close()
