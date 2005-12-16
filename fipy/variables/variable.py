@@ -648,14 +648,14 @@ class Variable:
         return (var0, var1)
     _rotateShape = staticmethod(_rotateShape)
     
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable = True):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
         try:
             # check if applying the operation to the inputs will produce the desired shape
             if numerix.getShape(op(var0Array, var1Array)) != opShape:
                 raise ValueError
 
         except ValueError:
-            if rotateVariable:
+            if rotateShape:
                 try:
                     # check if changing var1 from a row variable to a column variable
                     # will produce the desired shape
@@ -672,7 +672,7 @@ class Variable:
             
         return (var0, var1)
 
-    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateVariable = True):
+    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True):
         """
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
@@ -1494,8 +1494,7 @@ class Variable:
           - `baseClass`: the `Variable` class that the binary operator should inherit from 
           - `opShape`: the shape that should result from the operation
           - `valueMattersForShape`: tuple of elements that must have a particular value for the operation to succeed.
-          - `rotateVariable`: whether the operator should permit rotation of the variables shape to allow the
-            operation to complete.
+          - `rotateShape`: whether the operator should permit rotation of the variable's shape to allow the operation to complete. This is required because some Numeric operators such as allclose() run out of memory.
         """
         
         # for convenience, we want to be able to treat `other` as a Variable
@@ -1537,7 +1536,7 @@ class Variable:
         otherArray = self._getArrayAsOnes(other, valueMattersForShape)
 
         try:
-            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateVariable)
+            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
         except SyntaxError:
             return NotImplemented
             
@@ -1875,7 +1874,7 @@ class Variable:
            
         """
 
-        ## This operation passes `rotationVariable = False` to stop the variable being rotated. This
+        ## This operation passes `rotateShape = False` to stop the variable being rotated. This
         ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
         ## out of memory.
         ##
@@ -1895,7 +1894,7 @@ class Variable:
                                                other, 
                                                baseClass = Variable,
                                                opShape = "number",
-                                               rotateVariable = False)
+                                               rotateShape = False)
         
     def allequal(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 

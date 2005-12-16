@@ -97,11 +97,11 @@ class VectorFaceVariable(Variable):
         else:
             return Variable._getArithmeticBaseClass(self, other)
 
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
         if isinstance(var1, FaceVariable) and self.getMesh() == var1.getMesh():
             return self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
         else:
-            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass)
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
 
     def _testArithmetic(self):
         r"""

@@ -337,12 +337,12 @@ class CellVariable(Variable):
         else:
             return Variable._getArithmeticBaseClass(self, other)
 
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable = True):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
         from fipy.variables.vectorCellVariable import VectorCellVariable
         if isinstance(var1, VectorCellVariable) and self.getMesh() == var1.getMesh():
             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
         else:
-            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateVariable)
+            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
 
 ##pickling
             
