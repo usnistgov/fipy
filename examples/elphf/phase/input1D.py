@@ -100,7 +100,8 @@ We create the phase field
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh = mesh, name = 'xi')
-    >>> phase.mobility = float("infinity")
+    >>> import scipy
+    >>> phase.mobility = scipy.inf
     >>> phase.gradientEnergy = 0.025
     
 Although we are not interested in them for this problem, we create one field to 
