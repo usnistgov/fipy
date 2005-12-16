@@ -112,8 +112,12 @@ class DiffusionTerm(Term):
 
            >>> -DiffusionTerm(coeff = [1.])
            DiffusionTerm(coeff = [-1.0])
+
+           >>> -DiffusionTerm()
+           DiffusionTerm(coeff = [-1.0])
+           
         """
-        negatedCoeff = self.coeff
+        negatedCoeff = list(self.coeff)
         negatedCoeff[0] = -negatedCoeff[0]
         return self.__class__(coeff = negatedCoeff)
             

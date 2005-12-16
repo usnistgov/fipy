@@ -158,6 +158,16 @@ class Term:
 
         """
         return self.__class__(coeff = -self.coeff)
+
+    def __pos__(self):
+        """
+        Posate a `Term`.
+
+           >>> +Term(coeff = 1.)
+           Term(coeff = 1.0)
+
+        """
+        return self
         
     def __sub__(self, other):
         """
