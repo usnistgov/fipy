@@ -90,8 +90,8 @@ class FixedFlux(BoundaryCondition):
 	"""
 
 	bb = Numeric.zeros((Ncells,),'d')
-## 	vector.putAdd(bb, self.adjacentCellIds, -Numeric.array(self.contribution))
-        vector.putAdd(bb, self.adjacentCellIds, -self.contribution)
+## 	vector.putAdd(bb, self.adjacentCellIDs, -Numeric.array(self.contribution))
+        vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
 	
 	return (0, bb)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 8/5/05 {2:53:36 PM} 
+ #                                last update: 8/29/05 {1:51:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,7 +28,6 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
- # ========================================================================
  #  
  #  Description: 
  # 
@@ -40,20 +39,17 @@
  # ###################################################################
  ##
 
-from fipy.tests.lateImportTest import _LateImportTestSuite
+"""Test numeric implementation of the mesh
+"""
+
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-        'solvers.test',
-        'models.test',
-        'terms.test',
-        'tools.test',
-        'meshes.numMesh.test',
-        'variables.test',
-        'viewers.test',
-	'boundaryConditions.test',
-    ), base = __name__)
+    return _LateImportDocTestSuite(
+        docTestModuleNames = (
+            'fipy.boundaryConditions.boundaryCondition',
+        ))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

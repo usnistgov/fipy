@@ -87,10 +87,10 @@ class FixedValue(BoundaryCondition):
 	"""
 	
 	LL = _SparseMatrix(size = Ncells, bandwidth = MaxFaces)
-	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faceIds), self.adjacentCellIds, self.adjacentCellIds)
+	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faceIDs), self.adjacentCellIDs, self.adjacentCellIDs)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIds, numerix.take(-coeff['cell 1 offdiag'],self.faceIds) * self._getValue())
+	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faceIDs) * self._getValue())
 
 	return (LL, bb)
 	

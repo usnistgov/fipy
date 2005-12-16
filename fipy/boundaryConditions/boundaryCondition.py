@@ -62,12 +62,35 @@ class BoundaryCondition:
 	    - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
 	    - `value`: The value to impose.
             
+        The `BoundaryCondition` class should raise an error when
+        invoked with internal faces. Don't use the `BoundaryCondition`
+        class in this manner. This is merely a test.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 2)
+            >>> bc = BoundaryCondition(mesh.getFaces(), 0)
+            Traceback (most recent call last):
+                ...
+            ValueError: Face list has interior faces
+            >>> bc = BoundaryCondition((mesh.getFaces()[0], mesh.getFaces()[0]), 0)
+            Traceback (most recent call last):
+                ...
+            ValueError: Face list has repeated entries
+
 	"""
         self.faces = faces
         self.value = PhysicalField(value)
 	
-	self.faceIds = Numeric.array([face.getID() for face in self.faces])
-	self.adjacentCellIds = Numeric.array([face.getCellID() for face in self.faces])
+	self.faceIDs = Numeric.array([face.getID() for face in self.faces])
+
+        import sets
+        if len(sets.Set(self.faceIDs)) < len(self.faceIDs):
+            raise ValueError, 'Face list has repeated entries'
+
+        if not (sets.Set(self.faceIDs).issubset(sets.Set(self.faces[0].getMesh().getExteriorFaceIDs()))):
+            raise ValueError, 'Face list has interior faces'
+
+	self.adjacentCellIDs = Numeric.array([face.getCellID() for face in self.faces])
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Return the effect of this boundary condition on the equation
@@ -98,3 +121,10 @@ class BoundaryCondition:
 
     def __repr__(self):
         return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test()

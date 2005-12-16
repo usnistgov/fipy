@@ -60,7 +60,9 @@ class Face:
 	"""
         self.mesh = mesh
 	self.id = id
-	
+    
+    def getMesh(self):
+	return self.mesh
 ##     def getCells(self):
 ## 	"""Return the Cells which lie on either side of this Face.
 ## 	"""
