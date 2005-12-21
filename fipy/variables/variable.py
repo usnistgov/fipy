@@ -102,7 +102,7 @@ class Variable:
 	if isinstance(value, Variable):
 	    name = value.name
 	    mesh = value.mesh
-	    value = value.getValue()
+	    value = value.getValue().copy()
 	    unit = None
 	    array = None
 	    
@@ -157,6 +157,17 @@ class Variable:
 	    >>> a.setValue(5)
 	    >>> b
 	    Variable(value = 3)
+
+        Check that this works for arrays.
+
+            >>> a = Variable(value = numerix.array((0,1,2)))
+            >>> b = a.copy()
+            >>> b
+            Variable(value = [0,1,2,])
+            >>> a[1] = 3
+            >>> b
+            Variable(value = [0,1,2,])
+            
 	"""
 	return Variable(value = self)
 	
