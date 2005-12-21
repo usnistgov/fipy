@@ -103,6 +103,7 @@ __docformat__ = 'restructuredtext'
 import re, string, umath
 
 import Numeric
+from fipy.tools import numerix
 import MA
 
 from NumberDict import _NumberDict
@@ -174,7 +175,10 @@ class PhysicalField:
         """
         if isinstance(value, PhysicalField):
             unit = value.unit
-            value = value.value
+            if hasattr(value.value, 'copy'):
+                value = value.value.copy()
+            else:
+                value = value.value
         elif unit is not None:
             unit = _findUnit(unit)
         elif type(value) is type(''):
@@ -208,6 +212,30 @@ class PhysicalField:
     _number = re.compile('[+-]?[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?')
 
     def copy(self):
+        """
+        Make a duplicate.
+
+            >>> a = PhysicalField(1)
+            >>> b = a.copy()
+
+        The duplicate will not reflect changes made to the original
+            
+            >>> a.value = 2
+            >>> b
+            1
+            
+        and for arrays
+        
+            >>> a = PhysicalField(numerix.array((0,1,2)))
+            >>> b = a.copy()
+            >>> b
+            [0,1,2,]
+            >>> a[0] = 3
+            >>> b
+            [0,1,2,]
+            
+        """
+        
         return PhysicalField(self)
         
     def __str__(self):
