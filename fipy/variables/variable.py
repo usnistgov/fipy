@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/22/05 {3:48:23 PM} 
+ #                                last update: 12/22/05 {4:26:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -293,15 +293,12 @@ class Variable:
 	    >>> b.getValue()
 	    7
 	"""
-	self._refresh()
+        if self.stale:           
+            self.value = self._calcValue()
+            self._markFresh()
+
 	return self.value
  
-    def _getValue(self):
-        """
-        Return the internal value of the `Variable`.
-        """
-        return self.value
-
     def _setValue(self, value, unit = None, array = None):
         self.value = self._makeValue(value = value, unit = unit, array = array)
      
@@ -385,13 +382,6 @@ class Variable:
         """
         return numerix.array(self._getArray()).shape
 	
-    def _refresh(self):
-	if self.stale:           
-	    for required in self.requiredVariables:
-		required._refresh()
-	    self.value = self._calcValue()
-	    self._markFresh()
-		    
     def _calcValue(self):
 	pass	
  
