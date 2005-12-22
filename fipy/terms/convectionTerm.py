@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 9/16/05 {1:37:58 PM} 
+ #                                last update: 12/22/05 {1:27:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,8 +138,7 @@ class ConvectionTerm(FaceTerm):
                 diffCoeff = 1e-20
             else:
                 diffCoeff = self.diffusionTerm._getGeomCoeff(mesh)
-                if diffCoeff == 0.:
-                    diffCoeff = 1e-20
+                diffCoeff = diffCoeff * (diffCoeff != 0.) + 1e-20 * (diffCoeff == 0.)
 
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
 ##             print "geomCoeff:", self._getGeomCoeff(mesh)
