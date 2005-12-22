@@ -6,7 +6,7 @@
  # 
  #  FILE: "hybridConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:07:38 PM} 
+ #                                last update: 12/22/05 {10:56:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,5 +70,5 @@ class HybridConvectionTerm(ConvectionTerm):
 	    alpha = Numeric.where( Numeric.logical_and(2. >= P, P >= -2.),         0.5, alpha)
 	    alpha = Numeric.where(                               -2. >  P,      -1 / P, alpha)
 
-	    self.value = alpha
+	    return alpha
 

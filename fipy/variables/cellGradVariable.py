@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 7/12/05 {11:35:54 AM} 
+ #                                last update: 12/22/05 {3:59:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,7 @@ class _CellGradVariable(VectorCellVariable):
         self.faceGradientContributions = _FaceGradContributions(self.var)
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
+        val = self._getArray().copy()
 
 	inline._runInlineLoop2("""
 	    val(i,j) = 0.;
@@ -61,13 +62,16 @@ class _CellGradVariable(VectorCellVariable):
 	    }
 		
 	    val(i, j) /= volumes(i);
-	""",val = self._getArray(),
+	""",val = val,
             ids = Numeric.array(MA.filled(ids, 0)),
             orientations = Numeric.array(MA.filled(orientations, 0)),
             volumes = Numeric.array(volumes),
             areaProj = Numeric.array(self.mesh._getAreaProjections()),
             faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
 	    ni = N, nj = self.mesh.getDim(), nk = M)
+     
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
         
 ##    def _calcValueIn(self, N, M, ids, orientations, volumes):
 ##	inline.runInlineLoop2("""
@@ -94,7 +98,7 @@ class _CellGradVariable(VectorCellVariable):
 
 	grad = grad / volumes[:,Numeric.NewAxis]
 
-	self.value = grad
+	return grad
 
     def _calcValue(self):
 	N = self.mesh.getNumberOfCells()
@@ -105,4 +109,4 @@ class _CellGradVariable(VectorCellVariable):
 	orientations = self.mesh._getCellFaceOrientations()
 	volumes = self.mesh.getCellVolumes()
 
-	inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)
+	return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

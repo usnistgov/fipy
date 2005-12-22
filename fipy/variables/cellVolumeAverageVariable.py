@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVolumeAverageVariable.py"
  #                                    created: 10/7/04 {2:28:00 PM} 
- #                                last update: 4/1/05 {3:12:31 PM} 
+ #                                last update: 12/22/05 {10:52:56 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -60,8 +60,8 @@ class _CellVolumeAverageVariable(Variable):
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        self.value = Numeric.sum(self.var * self.var.getMesh().getCellVolumes())
-        self.value /= Numeric.sum(self.var.getMesh().getCellVolumes())
+        value = Numeric.sum(self.var * self.var.getMesh().getCellVolumes())
+        return value / Numeric.sum(self.var.getMesh().getCellVolumes())
 
 def _test(): 
     import doctest

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/24/05 {4:52:40 PM} 
+ #                                last update: 12/22/05 {3:48:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -295,25 +295,33 @@ class Variable:
 	"""
 	self._refresh()
 	return self.value
+ 
+    def _getValue(self):
+        """
+        Return the internal value of the `Variable`.
+        """
+        return self.value
 
     def _setValue(self, value, unit = None, array = None):
-	PF = fipy.tools.dimensions.physicalField.PhysicalField
+        self.value = self._makeValue(value = value, unit = unit, array = array)
+     
+    def _makeValue(self, value, unit = None, array = None):
+        PF = fipy.tools.dimensions.physicalField.PhysicalField
 
         from fipy.tools.numerix import MA
-	if isinstance(value, PF):
-            self.value = value
-        elif unit is not None or type(value) in [type(''), type(()), type([])]:
-	    self.value = PF(value = value, unit = unit, array = array)
-	elif array is not None:
-	    array[:] = value
-	    self.value = array
-        elif type(value) in (type(Numeric.array(1)), type(MA.array(1))):
-            self.value = value
-	else:
-            self.value = Numeric.array(value)
-	    
-	if isinstance(self.value, PF) and self.value.getUnit().isDimensionless():
-	    self.value = self.value.getNumericValue()
+        if not isinstance(value, PF):
+            if unit is not None or type(value) in [type(''), type(()), type([])]:
+                value = PF(value = value, unit = unit, array = array)
+            elif array is not None:
+                array[:] = value
+                value = array
+            elif type(value) not in (type(Numeric.array(1)), type(MA.array(1))):
+                value = Numeric.array(value)
+            
+        if isinstance(value, PF) and value.getUnit().isDimensionless():
+            value = value.getNumericValue()
+            
+        return value
 
     def setValue(self, value, unit = None, array = None):
 	self._setValue(value = value, unit = unit, array = array)
@@ -330,7 +338,7 @@ class Variable:
 	    return self.value._getArray()
 	else:
 	    return self.value
-	    
+     
     def getNumericValue(self):
 	value = self.getValue()
 	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
@@ -381,11 +389,12 @@ class Variable:
 	if self.stale:           
 	    for required in self.requiredVariables:
 		required._refresh()
-	    self._calcValue()
+	    self.value = self._calcValue()
 	    self._markFresh()
 		    
     def _calcValue(self):
 	pass	
+ 
     def __markStale(self):
         import weakref
         remainingSubscribedVariables = []
@@ -588,7 +597,7 @@ class Variable:
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-		self._setValue(value = self.op(self.var[0].getValue()))
+		return self.op(self.var[0].getValue())
 		
 	return unOp(op, [self])
 	    
@@ -1549,7 +1558,7 @@ class Variable:
 			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
 		    val1 = self.var[1]
 		    
-		self._setValue(value = self.op(self.var[0].getValue(), val1)) 
+		return self.op(self.var[0].getValue(), val1)
 	
             def _getRepresentation(self, style = "__repr__"):
                 return "(" + operatorClass._getRepresentation(self, style = style) + ")"

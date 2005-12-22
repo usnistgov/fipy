@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:08:10 PM} 
+ #                                last update: 12/22/05 {10:57:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,5 +69,5 @@ class ExponentialConvectionTerm(ConvectionTerm):
 	    alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
 	    alpha = Numeric.where(abs(P) > eps and P <= 101., ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
 
-	    self.value = alpha
+	    return alpha
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 7/13/05 {2:06:07 PM} 
+ #                                last update: 12/22/05 {2:26:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -184,8 +184,9 @@ class ModularVariable(CellVariable):
                 def __init__(self, modVar):
                     CellVariable.__init__(self, mesh = modVar.getMesh())
                     self.modVar = self._requires(modVar)
+                    
                 def _calcValue(self):
-                    self.value = self.modVar[:]
+                    return self.modVar[:]
 
             self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
 

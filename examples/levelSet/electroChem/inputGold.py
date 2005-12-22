@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
+ #                                last update: 12/22/05 {10:56:54 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -231,7 +231,7 @@ def runGold(faradaysConstant = 9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
+                    return numerix.array(self.var[:self.mesh.getNumberOfCells()])
 
             from fipy.viewers import make
             viewers = (

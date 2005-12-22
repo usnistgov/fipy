@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 9/16/05 {1:24:30 PM}
+ #                                last update: 12/22/05 {2:38:09 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -207,6 +207,9 @@ class DistanceVariable(CellVariable):
         self.cellNormals = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(0))       
         self.cellAreas = Numeric.array(MA.array(self.mesh._getCellAreas()).filled(0))
         self.cellToCellIDs = Numeric.array(self.mesh._getCellToCellIDsFilled())
+        
+    def _calcValue(self):
+        return self.value
         
     def extendVariable(self, extensionVariable, deleteIslands = False):
         """

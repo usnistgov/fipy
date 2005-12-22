@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 9/3/04 {10:33:20 PM} 
+ #                                last update: 12/22/05 {3:59:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,6 +47,7 @@ class _ModCellGradVariable(_CellGradVariable):
         self.modPy = modPy
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
+        val = self._getArray().copy()
         
 	inline._runInlineLoop2(self.modIn + """
 	    val(i,j) = 0.;
@@ -60,7 +61,7 @@ class _ModCellGradVariable(_CellGradVariable):
 	    val(i, j) /= volumes(i);
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
 	""",
-	val = self._getArray(),
+	val = val,
         ids = Numeric.array(ids),
         orientations = Numeric.array(orientations),
         volumes = Numeric.array(volumes),
@@ -68,9 +69,12 @@ class _ModCellGradVariable(_CellGradVariable):
         faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
 	ni = N, nj = self.mesh.getDim(), nk = M,
         gridSpacing = Numeric.array(self.mesh._getMeshSpacing()))
+        
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        _CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
+        value = _CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._getMeshSpacing()
-	self.value = self.modPy(self.value * gridSpacing) / gridSpacing
+	return self.modPy(value * gridSpacing) / gridSpacing
 

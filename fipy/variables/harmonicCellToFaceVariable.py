@@ -6,7 +6,7 @@
  # 
  #  FILE: "harmonicCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:15:10 AM} 
- #                                last update: 7/12/05 {1:14:58 PM} 
+ #                                last update: 12/22/05 {3:59:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,12 +45,16 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
 	cell1 = numerix.take(self.var,id1)
 	cell2 = numerix.take(self.var,id2)
-	self.value = ((cell2 - cell1) * alpha + cell1)
+	value = ((cell2 - cell1) * alpha + cell1)
 	eps = 1e-20
-	self.value = Numeric.where(self.value == 0., eps, self.value)
-	self.value = Numeric.where(self.value > eps, cell1 * cell2 / self.value, 0.)
+	value = Numeric.where(value == 0., eps, value)
+	value = Numeric.where(value > eps, cell1 * cell2 / value, 0.)
+ 
+        return value
 	
     def _calcValueIn(self, alpha, id1, id2):
+        val = self._getArray().copy()
+        
 	inline._runInlineLoop1("""
 	    double	cell1 = var(id1(i));
 	    double	cell2 = var(id2(i));
@@ -62,8 +66,11 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
 	    }
 	""",
 	var = self.var.getNumericValue(),
-	val = self._getArray(), 
+	val = val, 
 	alpha = alpha,
 	id1 = id1, id2 = id2,
 	ni = len(self.mesh.getFaces())
 	)
+ 
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())

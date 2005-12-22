@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:21 AM} 
+ #                                last update: 12/22/05 {2:49:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -127,6 +127,9 @@ class SurfactantVariable(CellVariable):
 
     def _getDistanceVar(self):
         return self.distanceVar
+        
+    def _calcValue(self):
+        return self.value
     
 class _InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
@@ -136,7 +139,7 @@ class _InterfaceSurfactantVariable(CellVariable):
     def _calcValue(self):
         areas = self.surfactantVar._getDistanceVar().getCellInterfaceAreas()        
         areas = Numeric.where(areas > 1e-20, areas, 1)
-        self.value = Numeric.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
+        return Numeric.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
     
 def _test(): 
     import doctest

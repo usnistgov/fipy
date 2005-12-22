@@ -4,7 +4,7 @@
  # 
  #  FILE: "histogramVariable.py"
  #                                    created: 8/26/05 {3:11:08 PM} 
- #                                last update: 8/26/05 {4:58:08 PM} 
+ #                                last update: 12/22/05 {11:52:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,4 +60,4 @@ class HistogramVariable(CellVariable):
         n = numerix.searchsorted(numerix.sort(self.distribution), bins)
         n = numerix.concatenate([n, [l]])
         dx = bins[1:] - bins[:-1]
-        self.value = (n[1:] - n[:-1]) / numerix.concatenate([dx, [dx[-1]]]) / float(l)
+        return (n[1:] - n[:-1]) / numerix.concatenate([dx, [dx[-1]]]) / float(l)

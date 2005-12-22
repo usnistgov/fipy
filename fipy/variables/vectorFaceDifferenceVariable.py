@@ -4,7 +4,7 @@
  # 
  #  FILE: "vectorFaceDifferenceVariable.py"
  #                                    created: 3/17/05 {10:26:32 AM} 
- #                                last update: 7/14/05 {11:02:46 AM} 
+ #                                last update: 12/22/05 {10:53:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,6 +55,5 @@ class _VectorFaceDifferenceVariable(VectorFaceVariable):
 	
     def _calcValue(self):
 	id1, id2 = self.mesh._getAdjacentCellIDs()
-        print self.mesh._getFaceAspectRatios()[:,numerix.NewAxis].shape, (numerix.take(self.var,id2) - numerix.take(self.var,id1)).shape
-	self.value = self.mesh._getFaceAspectRatios()[:,numerix.NewAxis] * (numerix.take(self.var,id2) - numerix.take(self.var,id1))
+	return self.mesh._getFaceAspectRatios()[:,numerix.NewAxis] * (numerix.take(self.var,id2) - numerix.take(self.var,id1))
 

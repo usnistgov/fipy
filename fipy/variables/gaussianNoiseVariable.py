@@ -6,7 +6,7 @@
  # 
  #  FILE: "gaussianNoiseVariable.py"
  #                                    created: 7/26/05 {8:35:17 AM} 
- #                                last update: 8/28/05 {10:42:14 AM} 
+ #                                last update: 12/22/05 {11:58:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -168,8 +168,8 @@ class GaussianNoiseVariable(NoiseVariable):
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
     
     def _calcValue(self):
-        self.value = normal(self.mean, sqrt(self.variance), 
-                            shape = [self.getMesh().getNumberOfCells()])
+        return normal(self.mean, sqrt(self.variance), 
+                      shape = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

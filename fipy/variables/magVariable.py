@@ -6,7 +6,7 @@
  # 
  #  FILE: "magVariable.py"
  #                                    created: 12/18/03 {2:42:36 PM} 
- #                                last update: 7/12/05 {1:03:35 PM}
+ #                                last update: 12/22/05 {12:02:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,5 +48,5 @@ class _MagVariable(Variable):
         self.result = Numeric.zeros((len(var)),'d')
         
     def _calcValue(self):
-	self.value = numerix.sqrtDot(self.var(), self.var())
+	return numerix.sqrtDot(self.var(), self.var())
 
