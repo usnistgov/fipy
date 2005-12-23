@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/22/05 {4:26:51 PM} 
+ #                                last update: 12/23/05 {1:43:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,6 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
+import sys
 
 import Numeric
 
@@ -75,7 +76,7 @@ class Variable:
 	
     """
     
-    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
+    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
 	Create a `Variable`.
 	
@@ -119,6 +120,11 @@ class Variable:
 	self.laplacian = {}
         self.mag = None
         self.sliceVars = {}
+        
+        self._cached = cached
+        self._refcount = sys.getrefcount(self)
+##         import gc
+##         self._referrers = gc.get_referrers(self)
     
     def getMesh(self):
 	return self.mesh
@@ -253,7 +259,21 @@ class Variable:
 	    s += ', mesh = ' + `self.mesh`
 	s += ')'
 	return s
-	
+
+            
+##     def __str__(self):
+## 	return str(self.name)
+## 	    
+##     def __repr__(self):
+## 	s = self.__class__.__name__ + '('
+## 	if len(self.name) > 0:
+## 	    s += 'name = "' + self.name + '", '
+## 	s += 'value = ' + "value"
+## 	if self.mesh:
+## 	    s += ', mesh = ' + `self.mesh`
+## 	s += ')'
+## 	return s
+
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
@@ -293,11 +313,23 @@ class Variable:
 	    >>> b.getValue()
 	    7
 	"""
-        if self.stale:           
-            self.value = self._calcValue()
-            self._markFresh()
+        if self.stale or not self.cached():           
+            value = self._calcValue()
+            if self.cached():
+                self.value = value
+                self._markFresh()
+        else:
+            value = self.value
 
-	return self.value
+	return value
+ 
+    def cached(self):
+##         tmp = [referrer for referrer in self._referrers if referrer is not self] + ["self" for referrer in self._referrers if referrer is self]
+##         print "__init__", tmp
+##         import gc
+##         tmp = [referrer for referrer in gc.get_referrers(self) if referrer is not self] + ["self" for referrer in gc.get_referrers(self) if referrer is self]
+##         print "cached?", tmp
+        return self._cached and (sys.getrefcount(self) > self._refcount + len(self.subscribedVariables))
  
     def _setValue(self, value, unit = None, array = None):
         self.value = self._makeValue(value = value, unit = unit, array = array)
@@ -383,7 +415,7 @@ class Variable:
         return numerix.array(self._getArray()).shape
 	
     def _calcValue(self):
-	pass	
+        return self.value
  
     def __markStale(self):
         import weakref
@@ -1547,7 +1579,7 @@ class Variable:
 		    if type(self.var[1]) is type(''):
 			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
 		    val1 = self.var[1]
-		    
+		
 		return self.op(self.var[0].getValue(), val1)
 	
             def _getRepresentation(self, style = "__repr__"):
