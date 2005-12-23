@@ -4,7 +4,7 @@
  # 
  #  FILE: "noiseVariable.py"
  #                                    created: 8/25/05 {1:25:23 PM} 
- #                                last update: 8/26/05 {4:59:24 PM} 
+ #                                last update: 12/23/05 {1:41:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,5 +77,3 @@ class NoiseVariable(CellVariable):
         """
         self._markStale()
         
-    def _calcValue(self):
-        pass
