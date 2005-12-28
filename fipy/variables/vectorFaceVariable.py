@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 10/24/05 {5:14:54 PM} 
+ #                                last update: 12/23/05 {3:36:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,8 +46,10 @@ from fipy.tools import numerix
 
 class VectorFaceVariable(Variable):
     def __init__(self,mesh,name = '',value=0., unit = None):
-
-	array = Numeric.zeros([mesh._getNumberOfFaces(), mesh.getDim()],'d')
+        if value is None:
+            array = None
+        else:
+            array = Numeric.zeros(self._getShapeFromMesh(mesh),'d')
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 

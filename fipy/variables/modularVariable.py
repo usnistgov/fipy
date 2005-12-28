@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/22/05 {2:26:07 PM} 
+ #                                last update: 12/28/05 {11:21:33 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -111,8 +111,8 @@ class ModularVariable(CellVariable):
         """
         Set the values of the previous solution sweep to the current values.
         """
-	self.setValue(self.value.mod(self()))
-        if self.old != None:
+	self.setValue(self.getValue().mod(self()))
+        if self.old is not None:
 	    self.old.setValue(self())
 
     def getGrad(self):

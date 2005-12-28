@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/22/05 {11:42:56 AM} 
+ #                                last update: 12/28/05 {10:14:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,7 +71,10 @@ class CellVariable(Variable):
     """
     
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
-	array = Numeric.zeros([mesh.getNumberOfCells()],'d')
+        if value is None:
+            array = None
+        else:
+            array =  Numeric.zeros(self._getShapeFromMesh(mesh),'d')
 # 	array[:] = value
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
@@ -92,7 +95,7 @@ class CellVariable(Variable):
 ##        self.setValue(newValues)
         
     def copy(self):
-
+        
         return self.__class__(
             mesh = self.mesh, 
 	    name = self.name + "_old", 
@@ -291,18 +294,20 @@ class CellVariable(Variable):
 	if self.old is None:
 	    return self
 	else:
-	    return self.old
+            return self.old
+##             import weakref
+## 	    return weakref.proxy(self.old)
 
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
         """
 	if self.old is not None:
-	    self.old.setValue(self.value)
+	    self.old.setValue(self.getValue())
 
     def _resetToOld(self):
 	if self.old is not None:
-	    self.setValue(self.old.value)
+	    self.setValue(self.old.getValue())
 	    
     def _remesh(self, mesh):
 	self.value = Numeric.array(self.getValue(points = mesh.getCellCenters()))
