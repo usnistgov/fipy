@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/28/05 {11:12:11 AM} 
+ #                                last update: 12/28/05 {11:25:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -318,8 +318,7 @@ class Variable:
 	    >>> b.getValue()
 	    7
 	"""
-        if self.stale or not self.cached():
-##             or self.value is None:           
+        if self.stale or not self.cached() or self.value is None:           
             value = self._calcValue()
             if value is None:
                 print self.name, "is None!!!"
