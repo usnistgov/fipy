@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/28/05 {11:25:07 AM} 
+ #                                last update: 12/29/05 {9:55:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,6 +97,8 @@ class Variable:
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
 	"""
 
+##         self.absrefcount = 0
+        
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
@@ -109,14 +111,52 @@ class Variable:
 	    
 	self._setValue(value = value, unit = unit, array = array)
 	
-	self.name = name
+        self.name = name
 	self.mesh = mesh
 		
         self._cached = cached
-        import gc
 
-        self._refcount = sys.getrefcount(self)
-##         self._refcount = self.getRefCount()
+        self._refcount = sys.getrefcount(self) - 2
+        
+        ## The magic refcount offset of 2 is to account for the different
+        ## reference list within `__init__()`, e.g.,
+        ## 
+        ##     >>> import gc
+        ##     >>> print gc.get_referrers(self)
+        ##     [<bound method Variable.__init__ of Variable(name = "a", value = 0.0)>, (Variable(name = "a", value = 0.0),), <frame object at 0x3106f0>]
+        ## 
+        ## to that within a normal method of the `Variable` immediately
+        ## after `__init__()`,
+        ## 
+        ##     >>> print Variable().get_referrers()
+        ##     [<frame object at 0x3106f0>]
+        ## 
+        ## Here, the only referrer is the execution frame of the method
+        ## call.  In the `__init__()`, the referrers appear to be the
+        ## `__init__()` method itself, possibly the argument tuple to
+        ## `__init__()`, and the execution frame of `__init__()`.  It is
+        ## unclear why there is not a corresponding `<bound method
+        ## Variable.get_referrers ...>` for the second call, but there
+        ## isn't.
+        ## 
+        ## If the query is made in the general execution context, and not
+        ## in a method of `Variable`, then the execution frame of the
+        ## method is not present
+        ## 
+        ##     >>> print gc.get_referrers(Variable())
+        ##     []
+        ## 
+        ## If the `Variable` has been assigned_ to a Python name_
+        ## 
+        ##     >>> a = Variable(name = "a")
+        ##     >>> a.get_referrers()
+        ##     [<frame object at 0x3106f0>, {... , 'a': Variable(name = "a", value = 0.0), ...}]
+        ##     
+        ## then the referrers will be the execution frame of the
+        ## `get_referrers()` method and the global symbol table that
+        ## defines the name binding of the `Variable` to `a`.
+
+##         print self.name, self._refcount
 	self.stale = 1
 	self._markFresh()
         
@@ -126,8 +166,26 @@ class Variable:
         self.mag = None
         self.sliceVars = {}
         
+##         sys.settrace(self.trace)
+
+##         print "get_referrers():", gc.get_referrers(self)
+
 ##         self._referrers = gc.get_referrers(self)
-    
+
+        import gc
+        ref = gc.get_referrers(self)
+        print "__init__", ref
+        print ref[2].f_code, ref[2].f_code.co_name
+
+    def get_referrers(self):
+        import gc
+        ref = gc.get_referrers(self)
+        print ref[0].f_code, ref[0].f_code.co_name
+        return ref
+
+    def get_my_referrers(self):
+        return self.get_referrers()
+
     def getMesh(self):
 	return self.mesh
 	
@@ -305,6 +363,9 @@ class Variable:
 	"""
 	return self.getValue()
 		
+    def printRefCounts(self):
+        print sys.getrefcount(self), ">?", self._refcount, len(self.subscribedVariables)
+    
     def getValue(self):
 	"""
 	"Evaluate" the `Variable` and return its value (longhand)
@@ -318,7 +379,7 @@ class Variable:
 	    >>> b.getValue()
 	    7
 	"""
-        if self.stale or not self.cached() or self.value is None:           
+        if self.stale or not self.cached(): # or self.value is None:           
             value = self._calcValue()
             if value is None:
                 print self.name, "is None!!!"
@@ -331,27 +392,28 @@ class Variable:
         else:
             value = self.value
             if value is None:
-                print `self`, "is None and we can't be here!!!"
+                print `self`, self.name, "is None and we can't be here!!!"
 ##                 print "stale:", self.stale, "cached:", self.cached()
 ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+                print self.cached(debug = 1)
                 import gc
 ##                 print "_referrers:", self._referrers
                 print "get_referrers():", gc.get_referrers(self)
 
 	return value
         
-    def getRefCount(self):
-        return sys.getrefcount(self)
- 
-    def cached(self):
+    def cached(self, debug = 0):
 ##         tmp = [referrer for referrer in self._referrers if referrer is not self] + ["self" for referrer in self._referrers if referrer is self]
 ##         print "__init__", tmp
 ##         import gc
 ##         tmp = [referrer for referrer in gc.get_referrers(self) if referrer is not self] + ["self" for referrer in gc.get_referrers(self) if referrer is self]
 ##         print "cached?", tmp
-        _cached = self._cached and (sys.getrefcount(self) > self._refcount + len(self.subscribedVariables))
-##         if _cached:
-##             print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+        ref = sys.getrefcount(self)
+        _cached = self._cached and (ref > self._refcount + len(self.subscribedVariables))
+        if debug:
+            print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", len(self.subscribedVariables)
+            import gc
+            print "get_referrers():", gc.get_referrers(self)
         return _cached
  
     def _setValue(self, value, unit = None, array = None):
@@ -491,6 +553,35 @@ class Variable:
 	return Variable
 
     def _getOperatorVariableClass(self, baseClass = None):
+        """
+            >>> a = Variable(value = 1)
+
+            >>> c = -a
+            >>> b = c.getOld() + 3
+            >>> print b
+            2
+
+        replacing with the same thing is no problem
+        
+            >>> a.setValue(3)
+            >>> b = c.getOld() + 3
+            >>> print b
+            0
+
+        replacing with multiple copies causes the reference counting problem
+        
+            >>> a.setValue(3)
+            >>> b = (c + c).getOld() + 3
+            >>> print b
+            -3
+            
+        the order matters
+        
+            >>> b = (c + c).getOld() + 3
+            >>> a.setValue(2)
+            >>> print b
+            -1
+        """
 	if baseClass is None:
             baseClass = self._getVariableClass()
             
@@ -1994,6 +2085,31 @@ class Variable:
 	    self.mag = self.dot(self).sqrt()
 	    
 	return self.mag
+
+    def trace(self,frame,event,arg,
+              trace_events=['line','return'],
+              refcount=sys.getrefcount):
+
+        """ Note: this will only trace lines called from the function
+            that installed the trace object
+        """
+        if event not in trace_events:
+            return self.trace
+        try:
+            rc = refcount(self)
+        except AttributeError:
+            # stop tracing in case of error
+            return None
+        if rc != self.absrefcount:
+            self.absrefcount = rc
+            if event == 'line':
+                sys.stderr.write('%15s:+%5i: refcount of "%s" = %i (%i)\n' % \
+                             (frame.f_code.co_filename,frame.f_lineno,
+                              self.name,rc,self._refcount))
+            else:
+                sys.stderr.write('%15s:-%5i: refcount of "%s" = %i (%i)\n' % \
+                             (frame.f_code.co_filename,frame.f_lineno,
+                              self.name,rc,self._refcount))
 
 def _test(): 
     import doctest
