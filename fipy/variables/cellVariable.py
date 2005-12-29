@@ -376,6 +376,9 @@ class CellVariable(Variable):
         if dict['old'] is not None:
             hasOld = 1
 
+        ##import sys      
+        ##self._refcount = sys.getrefcount(self)
+
         self.__init__(dict['mesh'], name = dict['name'], value = dict['value'], unit = dict['unit'], hasOld = hasOld)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())

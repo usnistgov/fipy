@@ -234,18 +234,12 @@ The solution is compared with test data. The test data was created for
 field modeling. The following code opens the file ``test.gz`` extracts
 the data and compares it with the `phase` variable.
 
-   >>> import os
-   >>> testFile = 'test.gz'
    >>> import examples.phase.anisotropy
-   >>> import gzip
-   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], testFile)
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> phase =  numerix.array(phase)
-   >>> testData = numerix.reshape(testData, phase.shape)
-   >>> print testData.allclose(phase, rtol = 1e-10, atol = 1e-10)
+   >>> import os
+   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'test.gz')
+   >>> from fipy.tools import dump
+   >>> testData = dump.read(filepath)
+   >>> print numerix.allclose(phase, testData)
    1
    
 """

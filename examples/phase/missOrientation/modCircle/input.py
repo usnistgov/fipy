@@ -95,17 +95,13 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.modCircle
-   >>> import gzip
    >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'test.gz')
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> import fipy.tools.numerix as numerix
-   >>> testData = numerix.reshape(testData, (mesh.getNumberOfCells(),))
-   >>> print phase.allclose(testData)
+   >>> from fipy.tools import dump
+   >>> testData = dump.read(filepath)
+   >>> from fipy.tools import numerix
+   >>> print numerix.allclose(testData, phase)
    1
-   
+
 """
 __docformat__ = 'restructuredtext'
 
