@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/28/05 {10:14:34 AM} 
+ #                                last update: 12/30/05 {11:20:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -371,13 +371,13 @@ class CellVariable(Variable):
         Used internally to create a new `CellVariable` from ``pickled`` 
         persistent storage.
         """
+        
+        import sys
+        self._refcount = sys.getrefcount(self)
 
         hasOld = 0
         if dict['old'] is not None:
             hasOld = 1
-
-        ##import sys      
-        ##self._refcount = sys.getrefcount(self)
 
         self.__init__(dict['mesh'], name = dict['name'], value = dict['value'], unit = dict['unit'], hasOld = hasOld)
         if self.old is not None:
