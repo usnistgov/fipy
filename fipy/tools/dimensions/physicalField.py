@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/16/05 {2:10:10 PM} 
+ #                                last update: 12/29/05 {5:17:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1131,6 +1131,10 @@ class PhysicalField:
             TypeError: Incompatible units
         """
         Numeric.put(self.value, indices, self._inMyUnits(values).value)
+      
+    def getShape(self):
+        from fipy.tools import numerix
+        return numerix.getShape(self.value)
         
     def reshape(self, shape):
         """
