@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/23/05 {3:36:59 PM} 
+ #                                last update: 12/30/05 {9:27:29 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -152,7 +152,9 @@ class VectorFaceVariable(Variable):
             >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
+            
+        (older error message was "TypeError: unsupported operand type(s) for *: 'instance' and 'instance'")
             
         vector field times vector
 
@@ -249,7 +251,9 @@ class VectorFaceVariable(Variable):
             >>> print vfv * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
+            
+        (older error message was "TypeError: unsupported operand type(s) for *: 'instance' and 'instance'")
             
         vector field times vector
 

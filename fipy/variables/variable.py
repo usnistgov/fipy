@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/29/05 {3:17:33 PM} 
+ #                                last update: 12/30/05 {9:29:12 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -525,7 +525,8 @@ class Variable(object):
 ##         array = self._getArray()
         if self.value is not None:
 ##             return numerix.array(self._getArray()).shape
-            return self._getArray().shape
+##             return self._getArray().shape
+            return numerix.getShape(self.value)
         else:
             return self._getShapeFromMesh(self.getMesh()) or ()
 	
@@ -931,12 +932,12 @@ class Variable(object):
             >>> fvXcv = fv * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> cvXfv = cv * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
-
+            TypeError: can't multiply sequence to non-int
+            
         `CellVariable` * VectorCellVariable
         
             >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
@@ -961,11 +962,11 @@ class Variable(object):
             >>> vfvXcv = vfv * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> cvXvfv = cv * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `CellVariable` * Scalar
         
@@ -1062,11 +1063,11 @@ class Variable(object):
             >>> cvXv4v = cv * Variable(value = (3,2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v4vXcv = Variable(value = (3,2,1,0)) * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             
 
         `CellVariable` * CellGradVariable
@@ -1092,11 +1093,11 @@ class Variable(object):
             >>> vcvXfv = vcv * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> fvXvcv = fv * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `FaceVariable` * VectorFaceVariable
 
@@ -1240,11 +1241,11 @@ class Variable(object):
             >>> fvXv3v = fv * Variable(value = (3,2,1))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v3vXfv = Variable(value = (3,2,1)) * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
             >>> fvXv10v = fv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
             >>> print fvXv10v
@@ -1274,11 +1275,11 @@ class Variable(object):
             >>> vfvXvcv = vfv * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> vcvXvfv = vcv * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `VectorCellVariable` * Scalar
 
@@ -1390,11 +1391,11 @@ class Variable(object):
             >>> vcvXv4v = vcv * Variable(value = (3,2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
             
             
@@ -1584,11 +1585,11 @@ class Variable(object):
             >>> vfvXv3v = vfv * Variable(value = (2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v3vXvfv = Variable(value = (2,1,0)) * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
 
             >>> vfvXv10v = vfv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
@@ -1719,7 +1720,7 @@ class Variable(object):
             >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
