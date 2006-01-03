@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 12/30/05 {9:29:12 AM} 
+ #                                last update: 1/3/06 {10:47:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,15 +43,23 @@
 __docformat__ = 'restructuredtext'
 
 import sys
+import os
 
 import Numeric
 
 import fipy.tools.dimensions.physicalField
 
 from fipy.tools import numerix
+from fipy.tools import parser
 
 class Variable(object):
     
+    _alwaysCache = (os.getenv("FIPY_CACHE") is not None) or False
+    if parser.parse("--no-cache", action = "store_true"):
+        _alwaysCache = False
+    if parser.parse("--cache", action = "store_true"):
+        _alwaysCache = True
+
     """
     Lazily evaluated quantity with units. 
     
@@ -79,7 +87,7 @@ class Variable(object):
     def __new__(cls, *args, **kwds):
         new = object.__new__(cls)
         
-        new._refcount = sys.getrefcount(new)
+##         new._refcount = sys.getrefcount(new)
 
 ##         print "__new__"
 ##         print "count:", sys.getrefcount(new)
@@ -127,7 +135,8 @@ class Variable(object):
 		
         self._cached = cached
 
-##         self._refcount = sys.getrefcount(self) - 2
+##         print "%s.__init__" % self.name, sys.getrefcount(self)
+##         self._refcount = sys.getrefcount(self) # - 2
         
         ## The magic refcount offset of 2 is to account for the different
         ## reference list within `__init__()`, e.g.,
@@ -204,6 +213,10 @@ class Variable(object):
 ##         print ref[0].f_code, ref[0].f_code.co_name
         gc.collect()
         return gc.get_referrers(self)
+        
+    def getrefcount(self):
+        import sys
+        return sys.getrefcount(self)
 
     def getMesh(self):
 	return self.mesh
@@ -384,47 +397,67 @@ class Variable(object):
 	"""
 	return self.getValue()
 		
-    def getValue(self):
-	"""
-	"Evaluate" the `Variable` and return its value (longhand)
-	
-	    >>> a = Variable(value = 3)
-	    >>> a.getValue()
-	    3
-	    >>> b = a + 4
-	    >>> b
-	    (Variable(value = 3) + 4)
-	    >>> b.getValue()
-	    7
-	"""
-        cached = self.cached()
-        if self.stale or not cached: # or self.value is None:           
-            value = self._calcValue()
-            if value is None:
-                print self.name, "is None!!!"
-            if cached:
-                self._setValue(value = value)
-##                 self.value = value
-            else:
-                self._setValue(value = None)
-##                 self.value = None
-            self._markFresh()
-##                 self._markFresh()
+##     def getValue(self):
+## 	"""
+## 	"Evaluate" the `Variable` and return its value (longhand)
+## 	
+## 	    >>> a = Variable(value = 3)
+## 	    >>> a.getValue()
+## 	    3
+## 	    >>> b = a + 4
+## 	    >>> b
+## 	    (Variable(value = 3) + 4)
+## 	    >>> b.getValue()
+## 	    7
+## 	"""
+##         cached = self.cached(debug = 1)
+##         print self.name, cached #, self.get_referrers()
+##         if self.stale or not cached: # or self.value is None:           
+##             value = self._calcValue()
+##             if value is None:
+##                 print self.name, "is None!!!"
+##             if cached:
+##                 self._setValue(value = value)
+## ##                 self.value = value
 ##             else:
-##                 self.__markStale()
-        else:
-            value = self.value
-            if value is None:
-                print >>sys.stderr, self.name, "is None and we can't be here!!!"
-##                 print "stale:", self.stale, "cached:", self.cached()
-##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
-                print self.cached(debug = 1)
-                import gc
-##                 print "_referrers:", self._referrers
-##                 print "get_referrers():", gc.get_referrers(self)
+##                 self._setValue(value = None)
+## ##                 self.value = None
+##             self._markFresh()
+## ##                 self._markFresh()
+## ##             else:
+## ##                 self.__markStale()
+##         else:
+##             value = self.value
+##             if value is None:
+##                 print >>sys.stderr, self.name, "is None and we can't be here!!!"
+## ##                 print "stale:", self.stale, "cached:", self.cached()
+## ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+##                 print self.cached(debug = 1)
+##                 import gc
+## ##                 print "_referrers:", self._referrers
+## ##                 print "get_referrers():", gc.get_referrers(self)
+## 
+## 	return value
 
-	return value
+    def getValue(self):
+        """
+        "Evaluate" the `Variable` and return its value (longhand)
         
+            >>> a = Variable(value = 3)
+            >>> a.getValue()
+            3
+            >>> b = a + 4
+            >>> b
+            (Variable(value = 3) + 4)
+            >>> b.getValue()
+            7
+        """
+        if self.stale:
+            self.value = self._calcValue()
+            self._markFresh()
+            
+        return self.value
+
     def cached(self, debug = 0):
 ##         tmp = [referrer for referrer in self._referrers if referrer is not self] + ["self" for referrer in self._referrers if referrer is self]
 ##         print "__init__", tmp
@@ -433,13 +466,15 @@ class Variable(object):
 ##         print "cached?", tmp
         ref = sys.getrefcount(self)
 ##         _cached = self._cached and (ref > self._refcount + len(self.subscribedVariables))
-        _cached = self._cached and (ref > self._refcount + len(self.getSubscribedVariables()))
+        _cached = self._cached and (ref > self._refcount + 2 * len(self.getSubscribedVariables()))
         if debug:
 ##             print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", len(self.subscribedVariables)
-            print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", len(self.getSubscribedVariables())
+            print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", 2 * len(self.getSubscribedVariables())
             import gc
 ##             print "get_referrers():", gc.get_referrers(self)
-        return _cached
+##         if self._alwaysCache:
+##         print "Caching:", self.name, self._alwaysCache, _cached, ref, self._refcount, len(self.getSubscribedVariables())
+        return self._alwaysCache or _cached
  
     def _setValue(self, value, unit = None, array = None):
         self.value = self._makeValue(value = value, unit = unit, array = array)
@@ -638,6 +673,37 @@ class Variable(object):
 		    self._requires(aVar)
 
                 self.old = None
+                
+            def getValue(self):
+                cached = len(self.subscribedVariables) > 1
+##                 print self.name, cached #, self.get_referrers()
+                if self.stale or not cached or self.value is None:           
+                    value = self._calcValue()
+                    if value is None:
+                        print self.name, "is None!!!"
+                    if cached:
+                        self._setValue(value = value)
+        ##                 self.value = value
+                    else:
+                        self._setValue(value = None)
+        ##                 self.value = None
+                    self._markFresh()
+        ##                 self._markFresh()
+        ##             else:
+        ##                 self.__markStale()
+                else:
+                    value = self.value
+                    if value is None:
+                        print >>sys.stderr, self.name, "is None and we can't be here!!!"
+        ##                 print "stale:", self.stale, "cached:", self.cached()
+        ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+                        print self.cached(debug = 1)
+                        import gc
+        ##                 print "_referrers:", self._referrers
+        ##                 print "get_referrers():", gc.get_referrers(self)
+
+                return value
+
 
             def getOld(self):
                 if self.old is None:
@@ -2128,30 +2194,9 @@ class Variable(object):
 	    
 	return self.mag
 
-    def trace(self,frame,event,arg,
-              trace_events=['line','return'],
-              refcount=sys.getrefcount):
-
-        """ Note: this will only trace lines called from the function
-            that installed the trace object
-        """
-        if event not in trace_events:
-            return self.trace
-        try:
-            rc = refcount(self)
-        except AttributeError:
-            # stop tracing in case of error
-            return None
-        if rc != self.absrefcount:
-            self.absrefcount = rc
-            if event == 'line':
-                sys.stderr.write('%15s:+%5i: refcount of "%s" = %i (%i)\n' % \
-                             (frame.f_code.co_filename,frame.f_lineno,
-                              self.name,rc,self._refcount))
-            else:
-                sys.stderr.write('%15s:-%5i: refcount of "%s" = %i (%i)\n' % \
-                             (frame.f_code.co_filename,frame.f_lineno,
-                              self.name,rc,self._refcount))
+Variable._refcount = Variable().getrefcount()
+## import gc
+## print Variable._refcount, Variable().get_referrers()
 
 def _test(): 
     import doctest
