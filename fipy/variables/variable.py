@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/06 {10:47:38 AM} 
+ #                                last update: 1/3/06 {2:55:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,12 +54,14 @@ from fipy.tools import parser
 
 class Variable(object):
     
-    _alwaysCache = (os.getenv("FIPY_CACHE") is not None) or False
+    _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action = "store_true"):
-        _alwaysCache = False
+        _cacheAlways = False
     if parser.parse("--cache", action = "store_true"):
-        _alwaysCache = True
+        _cacheAlways = True
 
+    _cacheNever = False
+    
     """
     Lazily evaluated quantity with units. 
     
@@ -452,11 +454,17 @@ class Variable(object):
             >>> b.getValue()
             7
         """
-        if self.stale:
-            self.value = self._calcValue()
+        if self.stale or not self._isCached() or self.value is None:
+            value = self._calcValue()
+            if self._isCached():
+                self._setValue(value = value)
+            else:
+                self._setValue(value = None)
             self._markFresh()
+        else:
+            value = self.value
             
-        return self.value
+        return value
 
     def cached(self, debug = 0):
 ##         tmp = [referrer for referrer in self._referrers if referrer is not self] + ["self" for referrer in self._referrers if referrer is self]
@@ -475,7 +483,22 @@ class Variable(object):
 ##         if self._alwaysCache:
 ##         print "Caching:", self.name, self._alwaysCache, _cached, ref, self._refcount, len(self.getSubscribedVariables())
         return self._alwaysCache or _cached
- 
+        
+    def _isCached(self):
+        return self._cacheAlways or (self._cached and not self._cacheNever)
+        
+    def cacheMe(self, recursive = False):
+        self._cached = True
+        if recursive:
+            for var in self.requiredVariables:
+                var.cacheMe(recursive = True)
+                
+    def dontCacheMe(self, recursive = False):
+        self._cached = False
+        if recursive:
+            for var in self.requiredVariables:
+                var.dontCacheMe(recursive = False)
+
     def _setValue(self, value, unit = None, array = None):
         self.value = self._makeValue(value = value, unit = unit, array = array)
      
@@ -674,36 +697,41 @@ class Variable(object):
 
                 self.old = None
                 
-            def getValue(self):
-                cached = len(self.subscribedVariables) > 1
-##                 print self.name, cached #, self.get_referrers()
-                if self.stale or not cached or self.value is None:           
-                    value = self._calcValue()
-                    if value is None:
-                        print self.name, "is None!!!"
-                    if cached:
-                        self._setValue(value = value)
-        ##                 self.value = value
-                    else:
-                        self._setValue(value = None)
-        ##                 self.value = None
-                    self._markFresh()
-        ##                 self._markFresh()
-        ##             else:
-        ##                 self.__markStale()
-                else:
-                    value = self.value
-                    if value is None:
-                        print >>sys.stderr, self.name, "is None and we can't be here!!!"
-        ##                 print "stale:", self.stale, "cached:", self.cached()
-        ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
-                        print self.cached(debug = 1)
-                        import gc
-        ##                 print "_referrers:", self._referrers
-        ##                 print "get_referrers():", gc.get_referrers(self)
+                self.dontCacheMe()
+                
+##             def getValue(self):
+##                 cached = self._isCached() or (len(self.subscribedVariables) > 1 and not self._cacheNever)
+## ##                 print self.name, cached #, self.get_referrers()
+##                 if self.stale or not cached or self.value is None:           
+##                     value = self._calcValue()
+##                     if value is None:
+##                         print self.name, "is None!!!"
+##                     if cached:
+##                         self._setValue(value = value)
+##         ##                 self.value = value
+##                     else:
+##                         self._setValue(value = None)
+##         ##                 self.value = None
+##                     self._markFresh()
+##         ##                 self._markFresh()
+##         ##             else:
+##         ##                 self.__markStale()
+##                 else:
+##                     value = self.value
+##                     if value is None:
+##                         print >>sys.stderr, self.name, "is None and we can't be here!!!"
+##         ##                 print "stale:", self.stale, "cached:", self.cached()
+##         ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+##                         print self.cached(debug = 1)
+##                         import gc
+##         ##                 print "_referrers:", self._referrers
+##         ##                 print "get_referrers():", gc.get_referrers(self)
+## 
+##                 return value
 
-                return value
-
+            def _isCached(self):
+                return (Variable._isCached(self) 
+                        or (len(self.subscribedVariables) > 1 and not self._cacheNever))
 
             def getOld(self):
                 if self.old is None:
