@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 9/16/05 {1:43:23 PM} 
+ #                                last update: 1/4/06 {4:31:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,7 +97,7 @@ class TransientTerm(CellTerm):
 
     Compare the final result with the analytical solution.
     
-       >>> import fipy.tools.numerix as numerix
+       >>> import fipy.tools import numerix
        >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
        1
        
@@ -114,6 +114,7 @@ class TransientTerm(CellTerm):
 	
     def _calcGeomCoeff(self, mesh):
 	self.geomCoeff = self.coeff * mesh.getCellVolumes()
+        self.geomCoeff.dontCacheMe()
 	
 def _test(): 
     import doctest
