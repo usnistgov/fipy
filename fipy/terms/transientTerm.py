@@ -97,7 +97,7 @@ class TransientTerm(CellTerm):
 
     Compare the final result with the analytical solution.
     
-       >>> import fipy.tools import numerix
+       >>> from fipy.tools import numerix
        >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
        1
        
