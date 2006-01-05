@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:30:00 PM} 
+ #                                last update: 12/17/05 {6:35:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,6 +77,9 @@ class Viewer:
 
         self.title = title
 
+    def getVars(self):
+        return self.vars
+        
     def setLimits(self, limits):
         """
         Update the limits.

@@ -8,6 +8,9 @@ import imp
 
 # what about vector variables?
 
+class MeshDimensionError(IndexError):
+    pass
+
 def make(vars, title = None, limits = None):
     r"""
     
@@ -42,6 +45,7 @@ def make(vars, title = None, limits = None):
     
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
+    vars = list(vars)
     
     if os.environ.has_key('FIPY_VIEWER'):
         viewerClassNames = [os.environ['FIPY_VIEWER'] + 'Viewer']
@@ -62,13 +66,31 @@ def make(vars, title = None, limits = None):
 
     errors = []
 
-    for className in viewerClassNames:
-        try:
-            className = string.lower(className[0]) + className[1:]
-            viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
+    viewers = []
+    while len(vars) > 0:
+        for className in viewerClassNames:
+            try:
+                className = string.lower(className[0]) + className[1:]
+                viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
+                
+                viewer = viewerModule.make(vars = vars, title = title, limits = limits)
+                
+                for var in viewer.getVars():
+                    vars.remove(var)
+                
+                viewers.append(viewer)
+                
+                break
+            except Exception, s:
+                errors.append("%s: %s" % (className, s))
+        
+    if len(vars) > 0:
+        raise ImportError, "Failed to import a viewer: %s" % str(errors)        
             
-            return viewerModule.make(vars = vars, title = title, limits = limits)
-        except Exception, s:
-            errors.append("%s: %s" % (className, s))
-            
-    raise ImportError, "Failed to import a viewer: %s" % str(errors)
+    if len(viewers) > 1:
+        from fipy.viewers.multiViewer import _MultiViewer
+        return _MultiViewer(viewers = viewers)
+    else:
+        return viewers[0]
+        
+

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 8/26/05 {11:27:43 AM} 
+ #                                last update: 12/17/05 {9:29:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,11 +73,19 @@ class Gist2DViewer(GistViewer):
             Use 0 to switch them off.
             
         """
+        twoDVar = None
+        for var in vars:
+            if var.getMesh().getDim() == 2:
+                twoDVar = var
+                break
+        if not twoDVar:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "%s can only plot 2D data"
 
-        GistViewer.__init__(self, vars = vars, limits = limits, title = title, dpi = dpi)
+        GistViewer.__init__(self, vars = [twoDVar], limits = limits, title = title, dpi = dpi)
 
-        if len(self.vars) != 1:
-            raise IndexError, "A 2D Gist viewer can only display one CellVariable"
+##         if len(self.vars) != 1:
+##             raise IndexError, "A 2D Gist viewer can only display one CellVariable"
         
         self.palette = palette
         self.grid = grid
