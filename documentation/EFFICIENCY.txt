@@ -82,6 +82,28 @@ reduce the memory requirement.
   could be used for basic mesh data.
 
 * Conceivably, ``Grid`` objects could be further specialization so they don't hold arrays at all.
+
+Efficiency comparison between ``--no-cache`` and ``--cache`` flags
+==================================================================
+
+This table shows results for efficiency tests when using the caching
+flags. Examples with more variables involved in complex expressions
+show the largest improvement in memory usage. The ``--no-cache``
+option mainly prevents intermediate variables created due to binary
+operations from caching their values. This results in large memory
+gains while not effecting run times substantially.
+
+
+   =========================== ==================== =================  ====================== ==================
+    Example                     time per step        time per step      memory per cell        memory per cell
+                                ``--no-cache`` (s)   ``--cache`` (s)    ``--no-cache`` (kB)    ``--cache`` (kB)
+   =========================== ==================== =================  ====================== ==================
+    Impingement |IMPINGEMENT|                       
+    Anisotropy |ANISOTROPY|      5.5                  5.0               1.5                    2.3
+    Cahn-Hilliard                3.3                  2.7               1.1                    1.3
+    Leveler |LEVELER|	        35                   34                 3.7                    5.4
+   =========================== ==================== =================  ====================== ==================
+
   
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 
@@ -100,4 +122,12 @@ reduce the memory requirement.
 .. |IMPINGEMENT| raw:: latex
    
    \ref{sec:impingement}
+
+.. |ANISOTROPY| raw:: latex
+   
+   \ref{sec:anisotropy}
+
+.. |LEVELER| raw:: latex
+   
+   \ref{inputLeveler}
 

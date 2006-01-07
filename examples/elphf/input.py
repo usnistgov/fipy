@@ -178,8 +178,7 @@ and the solvent and a liquid phase rich in the two substitutional species
 Once again, we start with a sharp phase boundary
 
     >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-    >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(mesh.getCellCenters()[:,0] < L / 2)
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, setCells)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, setCells)
     >>> substitutionals[1].setValue("0.249999982581341 mol/l" * molarVolume, setCells)

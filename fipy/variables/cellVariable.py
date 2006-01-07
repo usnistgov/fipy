@@ -117,13 +117,41 @@ class CellVariable(Variable):
 	else:
 	    return [self(point) for point in points]
 	
-    def setValue(self,value,cells = ()):
+    def setValue(self, value, cells = (), unit = None, mask = None):
+        """
+        Patched values can be set by using either `cells` or `mask`.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> v1 = CellVariable(value = (4,7,2,6), mesh = mesh)
+            >>> print v1
+            [ 4., 7., 2., 6.,]
+            >>> v1.setValue(4, mask = (0, 0, 1, 1))
+            >>> print v1
+            [ 4., 7., 4., 4.,]
+            >>> v1.setValue((5,2,7,8), mask = (0, 1, 1, 1))
+            >>> print v1
+            [ 4., 2., 7., 8.,]
+            >>> v1.setValue(3, unit = 'm')
+            >>> print v1
+            [ 3., 3., 3., 3.,] m
+            >>> v1.setValue(1, cells = mesh.getCells()[2:])
+            >>> print v1
+            [ 3., 3., 1., 1.,] m
+            >>> v1.setValue(4)
+            >>> print v1
+            [ 4., 4., 4., 4.,]
+            
+
+        """
+            
 	if cells == ():
-	    self[:] = value
+            Variable.setValue(self, value, unit = unit, mask = mask)
 	else:
 	    for cell in cells:
 		self[cell.getID()] = value
-  
+
+            
     def getCellVolumeAverage(self):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
@@ -303,7 +331,7 @@ class CellVariable(Variable):
         Set the values of the previous solution sweep to the current values.
         """
 	if self.old is not None:
-	    self.old.setValue(self.getValue())
+            self.old.setValue(self.getValue().copy())
 
     def _resetToOld(self):
 	if self.old is not None:

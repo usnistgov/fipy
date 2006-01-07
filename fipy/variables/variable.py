@@ -506,7 +506,18 @@ class Variable(object):
         PF = fipy.tools.dimensions.physicalField.PhysicalField
 
         from fipy.tools.numerix import MA
+
         if not isinstance(value, PF):
+            
+            if getattr(self, 'value', None) is not None:
+                v = self.value
+                if isinstance(v, PF):
+                    v = self.value.value
+                if type(value) in (type(1), type(1.)):
+                    if type(v) is type(numerix.array(1)):
+                        if len(v) > 1:
+                            value = numerix.resize(float(value), (len(v),))
+                    
             if unit is not None or type(value) in [type(''), type(()), type([])]:
                 value = PF(value = value, unit = unit, array = array)
             elif array is not None:
@@ -514,14 +525,50 @@ class Variable(object):
                 value = array
             elif type(value) not in (type(None), type(Numeric.array(1)), type(MA.array(1))):
                 value = Numeric.array(value)
-            
+
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
             
         return value
 
-    def setValue(self, value, unit = None, array = None):
-	self._setValue(value = value, unit = unit, array = array)
+    def setValue(self, value, unit = None, array = None, mask = None):
+        """
+        Set the value of the Variable. Can take a masked array.
+
+            >>> a = Variable((1,2,3))
+            >>> a.setValue(5, mask = (1, 0, 1))
+            >>> print a
+            [ 5., 2., 5.,]
+
+            >>> b = Variable((4,5,6))
+            >>> a.setValue(b, mask = (1, 0, 1))
+            >>> print a
+            [ 4., 2., 6.,]
+            >>> print b
+            [ 4., 5., 6.,]
+            >>> a.setValue(3)
+            >>> print a
+            [ 3., 3., 3.,]
+
+            >>> b = numerix.array((3,4,5))
+            >>> a.setValue(b)
+            >>> a[:] = 1
+            >>> print b
+            [3,4,5,]
+
+            >>> a.setValue((4,5,6), mask = (1, 0))
+            Traceback (most recent call last):
+                ....
+            ValueError: array dimensions must agree
+            
+        """
+        if hasattr(value, 'copy'):
+            tmp = value.copy()
+        else:
+            tmp = value
+        if mask is not None:
+            tmp = numerix.where(mask, tmp, self.getValue())
+	self._setValue(value = tmp, unit = unit, array = array)
 	self._markFresh()
 	
     def _setNumericValue(self, value):

@@ -208,7 +208,25 @@ class PhysicalField:
     _number = re.compile('[+-]?[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?')
 
     def copy(self):
-        return PhysicalField(self)
+        """
+        Check that copy works
+
+            >>> from fipy.tools import numerix
+            >>> pf = PhysicalField(numerix.array((0,1,2)), unit = 'm')
+            >>> pf1 = pf.copy()
+            >>> pf[:] = 2
+            >>> print pf1
+            [0,1,2,] m
+
+            >>> pf = PhysicalField(1, unit = 'm')
+            >>> print pf.copy()
+            1 m
+            
+        """
+        if hasattr(self.value, 'copy'):
+            return PhysicalField(value = self.value.copy(), unit = self.unit)
+        else:
+            return PhysicalField(value = self.value, unit = self.unit)
         
     def __str__(self):
         """

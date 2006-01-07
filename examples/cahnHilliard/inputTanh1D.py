@@ -73,9 +73,6 @@ and create the solution variable
     ...     name = "phase field",
     ...     mesh = mesh,
     ...     value = 1)
-    >>> def rightCells(cell):
-    ...     return cell.getCenter()[0] > L / 2
-    >>> var.setValue(1, cells = mesh.getCells(filter = rightCells))
 
 The boundary conditions for this problem are
 

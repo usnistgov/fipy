@@ -104,16 +104,39 @@ class ModularVariable(CellVariable):
     """
 
     def _setValue(self, value, unit = None, array = None):
+        """
+           >>> from fipy.meshes.grid1D import Grid1D
+           >>> mesh = Grid1D(nx = 4)
+           >>> from fipy.variables.modularVariable import ModularVariable
+           >>> var = ModularVariable(mesh = mesh, value = 1, hasOld = 1)
+           >>> print var
+           [ 1., 1., 1., 1.,] 1
+           >>> var.setValue(1)
+           >>> print var
+           [ 1., 1., 1., 1.,] 1
+
+        """
+        value = self._makeValue(value = value, unit = unit, array = array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
 	self.value = _ModPhysicalField(value = value, unit = unit, array = array)
 	
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
+        Test case due to bug.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 1)
+            >>> var = ModularVariable(mesh = mesh, value = 1, hasOld = 1)
+            >>> var.updateOld()
+            >>> var[:] = 2
+            >>> print var.getOld()
+            [ 1.,] 1
+            
         """
 	self.setValue(self.getValue().mod(self()))
         if self.old is not None:
-	    self.old.setValue(self())
+	    self.old.setValue(self.value.value.copy())
 
     def getGrad(self):
         r"""

@@ -122,12 +122,11 @@ simply by providing a `Tuple` or `list` of components
     ...     solvent -= component
 
 We separate the solution domain into two different concentration regimes
-    
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+
     >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6,setCells)
+    >>> substitutionals[0].setValue(0.6, mask = mesh.getCellCenters()[:,0] > L / 2)
     >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3,setCells)
+    >>> substitutionals[1].setValue(0.3, mask = mesh.getCellCenters()[:,0] > L / 2)
 
 We create one diffusion equation for each substitutional component
 

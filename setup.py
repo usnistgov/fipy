@@ -228,7 +228,8 @@ class build_docs (Command):
 					  'TALKS',
 					  'TODOLIST',
 					  'MAIL',
- 					  'CVS']
+ 					  'CVS',
+                                          'EFFICIENCY']
 
         tertiaryRestructuredTextFiles = []
 
