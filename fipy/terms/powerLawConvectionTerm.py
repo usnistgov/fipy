@@ -36,7 +36,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
@@ -64,31 +64,36 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, eps, P):
-	    P = Numeric.where(abs(P) < eps, eps, P)
+            """
+
+                >>> from fipy.meshes.grid1D import Grid1D
+                >>> mesh = Grid1D(nx = 3)
+                >>> from fipy.variables.faceVariable import FaceVariable
+                >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
+                >>> alpha = PowerLawConvectionTerm._Alpha(P)
+                >>> print alpha
+                [ 0.5, 1. , 0.5, 0.5,] 1
+                
+            """
+            
+	    P = numerix.where(abs(P) < eps, eps, P)
 	    
-## 	    print "P:", P
-	    
-	    alpha = Numeric.where(                    P > 10.,                     (P - 1.) / P,   0.5)
+	    alpha = numerix.where(                    P > 10.,                     (P - 1.) / P,   0.5)
 
 	    tmp = (1. - P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = Numeric.where(   (10. >= P) and (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
+	    alpha = numerix.where(numerix.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
 
 	    tmp = (1. + P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = Numeric.where((eps  >  P) and (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
-	    
-	    alpha = Numeric.where(                   P < -10.,                          -1. / P, alpha)
-	    
-## 	    print "alpha:", alpha
-## 	    raw_input()
-	    
+	    alpha = numerix.where(numerix.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
+
+	    alpha = numerix.where(                   P < -10.,                          -1. / P, alpha)
+
 	    self.value = PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
-##            print P.shape
-##            print len(self.mesh.getCells())
-##            raw_input()
+
 	    inline._runInlineLoop1("""
 		if (fabs(P(i)) < eps) {
 		    P(i) = eps;
@@ -120,3 +125,11 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    P  = self.P.getNumericValue()
 	    
 	    inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
+
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
