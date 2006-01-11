@@ -340,8 +340,8 @@ class Variable:
 	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
 	    return self.value._getArray()
 	else:
-	    return self.value
-	    
+            return self.value
+            
     def getNumericValue(self):
 	value = self.getValue()
 	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
@@ -616,7 +616,7 @@ class Variable:
         reshape() is one case where the value cannot be substituted, so
         the shape must be included in valueMattersForShape.
         """
-        
+
         a = object._getArray()
         
         # we don't want to meddle with the contents of the actual object
@@ -632,8 +632,9 @@ class Variable:
                 a = numerix.array(1)
             else:
                 a[:] = 1
-            
+
         return a
+
     _getArrayAsOnes = staticmethod(_getArrayAsOnes)
 
     def _rotateShape(op, var0, var1, var0array, var1array, opShape):
@@ -1723,10 +1724,51 @@ class Variable:
 	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
 
     def __and__(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: a & b, other)
+        """
+        This test case has been added due to a weird bug that was appearing.
+
+            >>> a = Variable(value = (0, 0, 1, 1))
+            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> print (a == 0) & (b == 1)
+            [0,1,0,0,]
+            >>> print a & b
+            [0,0,0,1,]
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
+            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> print (a == 0) & (b == 1)
+            [0,1,0,0,]
+            >>> print a & b
+            [0,0,0,1,]
+
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other)
 
     def __or__(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: a | b, other)
+        """
+        This test case has been added due to a weird bug that was appearing.
+
+            >>> a = Variable(value = (0, 0, 1, 1))
+            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> print (a == 0) | (b == 1)
+            [1,1,0,1,]
+            >>> print a | b
+            [0,1,1,1,]
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
+            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> print (a == 0) | (b == 1)
+            [1,1,0,1,]
+            >>> print a | b
+            [0,1,1,1,]
+            
+        """
+        
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other)
         
     def __len__(self):
 	return len(self.value)
