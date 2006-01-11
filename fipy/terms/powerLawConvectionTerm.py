@@ -65,7 +65,8 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    
 	def _calcValuePy(self, eps, P):
             """
-            Test case added because of *and* syntax. 
+
+            Test case added because `and` was being used instead of bitwise `&`.
 
                 >>> from fipy.meshes.grid1D import Grid1D
                 >>> mesh = Grid1D(nx = 3)
@@ -79,17 +80,17 @@ class PowerLawConvectionTerm(ConvectionTerm):
             
 	    P = numerix.where(abs(P) < eps, eps, P)
 	    
-	    alpha = numerix.where(                    P > 10.,                     (P - 1.) / P,   0.5)
+	    alpha = numerix.where(                  P > 10.,                     (P - 1.) / P,   0.5)
 
 	    tmp = (1. - P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = numerix.where(numerix.logical_and(10. >= P, P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
+	    alpha = numerix.where(  (10. >= P) & (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
 
 	    tmp = (1. + P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = numerix.where(numerix.logical_and(eps  >  P, P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
+	    alpha = numerix.where((eps  >  P) & (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
 
-	    alpha = numerix.where(                   P < -10.,                          -1. / P, alpha)
+	    alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
 
 	    self.value = PhysicalField(value = alpha)
 
