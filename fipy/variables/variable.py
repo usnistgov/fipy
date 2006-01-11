@@ -1724,6 +1724,9 @@ class Variable:
 
     def __and__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: a & b, other)
+
+    def __or__(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: a | b, other)
         
     def __len__(self):
 	return len(self.value)
