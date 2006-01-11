@@ -37,7 +37,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
@@ -62,12 +62,37 @@ class ExponentialConvectionTerm(ConvectionTerm):
 	    self.P = self._requires(P)
 	    
 	def _calcValue(self):
+            """
+            
+            Test case added because of `and` syntax. `and` has been
+            changed to `numerix.logical_and`.  Currently `Variable`s
+            do not work correctly with `and`. `v1 and v2` returns
+            either `v1` or `v2` not `and`s of the internal values.
+            This was a very dangerous bug.
+
+                >>> from fipy.meshes.grid1D import Grid1D
+                >>> mesh = Grid1D(nx = 3)
+                >>> from fipy.variables.faceVariable import FaceVariable
+                >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
+                >>> alpha = ExponentialConvectionTerm._Alpha(P)
+                >>> print alpha
+                [ 0.5, 1. , 0.5, 0.5,]
+                
+            """
 	    eps = 1e-3
+            largeValue = 101.0
 	    P  = self.P.getNumericValue()
 
-	    P = Numeric.where(abs(P) < eps, eps, P)
-	    alpha = Numeric.where(P > 101., (P - 1) / P, 0.5)
-	    alpha = Numeric.where(abs(P) > eps and P <= 101., ((P - 1) * Numeric.exp(P) + 1) / (P * (Numeric.exp(P) - 1)), alpha)
+	    P = numerix.where(abs(P) < eps, eps, P)
+	    alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)
+            Pmin = numerix.where(P > largeValue + 1, largeValue + 1, P)
+            alpha = numerix.where(numerix.logical_and(abs(Pmin) > eps, Pmin <= largeValue), ((Pmin - 1) * numerix.exp(Pmin) + 1) / (Pmin * (numerix.exp(Pmin) - 1)), alpha)
 
 	    self.value = alpha
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

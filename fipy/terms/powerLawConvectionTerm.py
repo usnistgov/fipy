@@ -65,6 +65,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    
 	def _calcValuePy(self, eps, P):
             """
+            Test case added because of *and* syntax. 
 
                 >>> from fipy.meshes.grid1D import Grid1D
                 >>> mesh = Grid1D(nx = 3)
