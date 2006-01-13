@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/31/05 {11:53:03 AM} 
+ #                                last update: 1/12/06 {8:41:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -123,10 +123,11 @@ simply by providing a `Tuple` or `list` of components
 
 We separate the solution domain into two different concentration regimes
 
+    >>> x = mesh.getCellCenters()[...,0]
     >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6, mask = mesh.getCellCenters()[:,0] > L / 2)
+    >>> substitutionals[0].setValue(0.6, where=x > L / 2)
     >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3, mask = mesh.getCellCenters()[:,0] > L / 2)
+    >>> substitutionals[1].setValue(0.3, where=x > L / 2)
 
 We create one diffusion equation for each substitutional component
 

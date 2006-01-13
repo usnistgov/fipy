@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/15/05 {5:56:44 PM} 
+ #                                last update: 1/12/06 {9:42:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -163,9 +163,8 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
 
 We separate the phase field into electrode and electrolyte regimes
 
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=mesh.getCellCenters()[...,0] > L / 2)
 
 Even though we are solving the steady-state problem
 

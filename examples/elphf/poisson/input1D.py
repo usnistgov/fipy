@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 7/13/05 {3:36:12 PM} 
+ #                                last update: 1/12/06 {8:27:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -179,11 +179,9 @@ Next, we segregate all of the electrons to right side of the domain
     
 ..
 
-    >>> def rightCells(cell):
-    ...     return cell.getCenter()[0] > L/2.
-    >>> setCells = mesh.getCells(filter = rightCells)
+    >>> x = mesh.getCellCenters()[...,0]
     >>> interstitials[0].setValue(0.)
-    >>> interstitials[0].setValue(1.,setCells)
+    >>> interstitials[0].setValue(1., where=x > L / 2.)
 
 and again solve for the electrostatic potential
 
@@ -227,7 +225,7 @@ Finally, we segregate all of the electrons to left side of the domain
 ..
 
     >>> interstitials[0].setValue(1.)
-    >>> interstitials[0].setValue(0.,setCells)
+    >>> interstitials[0].setValue(0., where=x > L / 2.)
 
 and again solve for the electrostatic potential
 

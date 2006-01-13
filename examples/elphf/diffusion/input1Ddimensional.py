@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/2/05 {3:35:37 PM} 
+ #                                last update: 1/12/06 {9:21:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,10 +104,11 @@ simply by providing a `Tuple` or `list` of components
 
 We separate the solution domain into two different concentration regimes
 
+    >>> x = mesh.getCellCenters()[...,0]
     >>> substitutionals[0].setValue("0.3 mol/m**3")
-    >>> substitutionals[0].setValue("0.6 mol/m**3", mask = mesh.getCellCenters()[:,0] > L / 2)
+    >>> substitutionals[0].setValue("0.6 mol/m**3", where=x > L / 2)
     >>> substitutionals[1].setValue("0.6 mol/m**3")
-    >>> substitutionals[1].setValue("0.3 mol/m**3", mask = mesh.getCellCenters()[:,0] > L / 2)
+    >>> substitutionals[1].setValue("0.3 mol/m**3", where=x > L / 2)
 
 We create one diffusion equation for each substitutional component
 

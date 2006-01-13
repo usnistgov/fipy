@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {5:12:28 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -230,7 +230,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
    
-    distanceVar.setValue(1, mesh.getCells(lambda cell:
+    distanceVar.setValue(1, cells=mesh.getCells(lambda cell:
                                           cell.getCenter()[1] > trenchHeight or \
                                           (cell.getCenter()[1] > bottomHeight and \
                                            cell.getCenter()[0] < xCells * cellSize - sideWidth)))

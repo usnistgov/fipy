@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {3:42:22 PM}
+ #                                last update: 1/12/06 {9:29:15 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -155,8 +155,7 @@ subtraction operator between two angles.
 
 The left and right halves of the domain are given different orientations.
     
-    >>> theta.setValue(0., mesh.getCells(
-    ...    filter = lambda cell: cell.getCenter()[0] > Lx / 2.))
+    >>> theta.setValue(0., where=mesh.getCellCenters()[...,0] > Lx / 2.)
 
 The `phase` equation is built in the following way.
 

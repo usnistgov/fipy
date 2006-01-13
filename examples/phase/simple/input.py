@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/15/05 {5:49:17 PM} 
+ #                                last update: 1/12/06 {7:50:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -109,9 +109,9 @@ and set a step-function initial condition
 
 ..
 
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> x = mesh.getCellCenters()[...,0]
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L/2)
     
 If we are running interactively, we'll want a viewer to see the results
 
@@ -238,7 +238,7 @@ transient term from
     >>> eq = TransientTerm() == diffusionTerm + S0
     
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L/2)
     
     >>> for i in range(13):
     ...     eq.solve(var = phase)
@@ -325,7 +325,7 @@ transient term, these sweeps are not time steps, but rather repeated
 iterations at the same time step to reach a converged solution).
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L/2)
     
     >>> for i in range(8):
     ...     eq.solve(var = phase)
@@ -381,7 +381,7 @@ Using this scheme, where the coefficient of the implicit source term is
 tangent to the source, we reach convergence in only 5 sweeps
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L/2)
     
     >>> for i in range(5):
     ...     eq.solve(var = phase)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/26/05 {11:11:04 AM} 
+ #                                last update: 1/12/06 {9:20:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -177,11 +177,11 @@ and the solvent and a liquid phase rich in the two substitutional species
 
 Once again, we start with a sharp phase boundary
 
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
-    >>> phase.setValue(mesh.getCellCenters()[:,0] < L / 2)
-    >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, setCells)
-    >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, setCells)
-    >>> substitutionals[1].setValue("0.249999982581341 mol/l" * molarVolume, setCells)
+    >>> x = mesh.getCellCenters()[...,0]
+    >>> phase.setValue(x < L / 2)
+    >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
+    >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)
+    >>> substitutionals[1].setValue("0.249999982581341 mol/l" * molarVolume, where=x > L / 2)
     
 We again create the phase equation as in ``examples.elphf.phase.input1D``
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:42:00 PM} 
+ #                                last update: 1/12/06 {9:29:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -126,7 +126,7 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 from fipy.variables.modularVariable import ModularVariable
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
-theta.setValue(0., mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L / 2.))
+theta.setValue(0., where=mesh.getCellCenters()[...,0] > L / 2.)
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)

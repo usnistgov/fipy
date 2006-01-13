@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 12/23/05 {3:35:58 PM} 
+ #                                last update: 1/12/06 {8:26:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,9 +49,9 @@ class FaceVariable(Variable):
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-    def setValue(self, value, faces = ()):
+    def setValue(self, value, faces = (), unit = None, where = None):
         if faces == ():
-            self[:] = value
+            Variable.setValue(self, value, unit = unit, where = where)
         else:
             for face in faces:
                 self[face.getID()] = value

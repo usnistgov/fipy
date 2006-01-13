@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 12/22/05 {10:56:54 AM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {5:10:10 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -157,7 +157,7 @@ def runGold(faradaysConstant = 9.6e4,
        value = -1,
        narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, mesh.getElectrolyteCells())
+    distanceVar.setValue(1, cells=mesh.getElectrolyteCells())
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
     from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable

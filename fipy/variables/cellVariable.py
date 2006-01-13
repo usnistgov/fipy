@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 12/30/05 {11:20:19 AM} 
+ #                                last update: 1/12/06 {6:01:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class CellVariable(Variable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+        >>> var.setValue(mesh.getCellCenters()[...,0] * mesh.getCellCenters()[...,1])
 
         >>> import tempfile
         >>> import os
@@ -117,25 +117,25 @@ class CellVariable(Variable):
 	else:
 	    return [self(point) for point in points]
 	
-    def setValue(self, value, cells = (), unit = None, mask = None):
+    def setValue(self, value, cells = (), unit = None, where = None):
         """
-        Patched values can be set by using either `cells` or `mask`.
+        Patched values can be set by using either `cells` or `where`.
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 4)
-            >>> v1 = CellVariable(value = (4,7,2,6), mesh = mesh)
+            >>> v1 = CellVariable(value=(4,7,2,6), mesh=mesh)
             >>> print v1
             [ 4., 7., 2., 6.,]
-            >>> v1.setValue(4, mask = (0, 0, 1, 1))
+            >>> v1.setValue(4, where=(0, 0, 1, 1))
             >>> print v1
             [ 4., 7., 4., 4.,]
-            >>> v1.setValue((5,2,7,8), mask = (0, 1, 1, 1))
+            >>> v1.setValue((5,2,7,8), where=(0, 1, 1, 1))
             >>> print v1
             [ 4., 2., 7., 8.,]
             >>> v1.setValue(3, unit = 'm')
             >>> print v1
             [ 3., 3., 3., 3.,] m
-            >>> v1.setValue(1, cells = mesh.getCells()[2:])
+            >>> v1.setValue(1, cells=mesh.getCells()[2:])
             >>> print v1
             [ 3., 3., 1., 1.,] m
             >>> v1.setValue(4)
@@ -146,7 +146,7 @@ class CellVariable(Variable):
         """
             
 	if cells == ():
-            Variable.setValue(self, value, unit = unit, mask = mask)
+            Variable.setValue(self, value, unit = unit, where = where)
 	else:
 	    for cell in cells:
 		self[cell.getID()] = value

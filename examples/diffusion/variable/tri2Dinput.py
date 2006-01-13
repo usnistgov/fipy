@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {4:50:10 PM} 
+ #                                last update: 1/12/06 {9:39:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,7 +85,9 @@ var = CellVariable(
 
 from fipy.variables.faceVariable import FaceVariable
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
-diffCoeff.setValue(0.1, faces = mesh.getFaces(filter = lambda face: L / 4. <= face.getCenter()[0] < 3. * L / 4.))
+
+x = mesh.getFaceCenters()[...,0]
+diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedFlux(mesh.getFacesRight(),fluxRight))

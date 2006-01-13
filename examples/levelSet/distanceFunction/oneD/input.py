@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {5:02:31 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {9:26:09 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,8 @@ Construct a `distanceVariable` object.
    ...                        mesh = mesh,
    ...                        value = -1,
    ...                        hasOld = 1)
-   >>> var.setValue(1, mesh.getCells(lambda cell: cell.getCenter()[0] > dx * nx / 2))
+   >>> x = mesh.getCellCenters()[...,0]
+   >>> var.setValue(1, where=x > dx * nx / 2)
  
 Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
@@ -96,7 +97,7 @@ The problem can then be solved by executing the `solve()` method of the equation
 The result can be tested with the following commands.
 
    >>> from fipy.tools import numerix
-   >>> print numerix.allclose(var, mesh.getCellCenters()[:,0] - dx * nx / 2)
+   >>> print numerix.allclose(var, x - dx * nx / 2)
    1
 
 """

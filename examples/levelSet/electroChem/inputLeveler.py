@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputLeveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {5:10:24 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -261,7 +261,7 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
         value = -1,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, mesh.getElectrolyteCells())
+    distanceVar.setValue(1, cells=mesh.getElectrolyteCells())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable

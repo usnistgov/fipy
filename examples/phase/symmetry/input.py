@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {3:39:03 PM} 
+ #                                last update: 1/12/06 {9:14:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,15 +60,42 @@ We wish to create 4 symmetric regions such that
    \[ 0 \le x \le L / 2 \]
    \[ 0 \le y \le L / 2 \]
     
+We create a square domain
+
+    >>> from fipy.meshes.grid2D import Grid2D
+
+    >>> N = 20
+    >>> L = 1.
+    >>> dx = L / N
+    >>> dy = L / N
+
+    >>> mesh = Grid2D(
+    ...    dx = dx,
+    ...    dy = dy,
+    ...    nx = N,
+    ...    ny = N)
+
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(name = "test", mesh = mesh)
+  
 First set the values as given in the above equation:
 
-    >>> var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> var.setValue(x * y)
+
+    >>> if __name__ == '__main__':
+    ...     from fipy import viewers
+    ...     viewer = viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
+    ...     viewer.plot()
 
 then extract the bottom left quadrant of cells:
 
     >>> def func(cell, Length = None):
     ...     return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
     >>> bottomLeftCells = mesh.getCells(filter = func,  Length = L)
+    >>> bottomRightCells = ()
+    >>> topLeftCells = ()
+    >>> topRightCells = ()
 
 Next, extract the corresponding cells from each region in the correct order:
 
@@ -81,11 +108,17 @@ Next, extract the corresponding cells from each region in the correct order:
 The method `mesh.getNearestCell((x, y))` finds the nearest cell to
 the given coordinate. The cells are then set to the symmetry value:
 
+    >>> orderedCells = (bottomRightCells, topRightCells, topLeftCells)
+    >>> symmetryCells = bottomLeftCells
     >>> for cellSet in orderedCells:
     ...     for i in range(len(cellSet)):
     ...         id = symmetryCells[i].getID()
     ...         idOther = cellSet[i].getID()
     ...         var[idOther] = var[id]
+
+
+    >>> if __name__ == '__main__':
+    ...     viewer.plot()
 
 The following code tests the results with a different algorithm:
 
@@ -112,54 +145,11 @@ The following code tests the results with a different algorithm:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-import fipy.viewers
-from fipy.variables.cellVariable import CellVariable
-
-N = 20
-L = 1.
-dx = L / N
-dy = L / N
-
-mesh = Grid2D(
-    dx = dx,
-    dy = dy,
-    nx = N,
-    ny = N)
-
-var = CellVariable(
-    name = "test",
-    mesh = mesh)
-
-var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
-
-def func(cell, Length = None):
-    return cell.getCenter()[0] < Length / 2. and cell.getCenter()[1] < Length / 2.
-
-bottomLeftCells = mesh.getCells(filter = func,  Length = L)
-bottomRightCells = ()
-topLeftCells = ()
-topRightCells = ()
-        
-for cell in bottomLeftCells:
-    x, y = cell.getCenter()
-    bottomRightCells += (mesh.getNearestCell((L - x, y)),)            
-    topRightCells += (mesh.getNearestCell((L - x , L - y)),)
-    topLeftCells += (mesh.getNearestCell((x , L - y)),)
-    
-    orderedCells = (bottomRightCells, topRightCells, topLeftCells)
-    symmetryCells = bottomLeftCells
-
-for cellSet in orderedCells:
-    for i in range(len(cellSet)):
-        id = symmetryCells[i].getID()
-        idOther = cellSet[i].getID()
-        var[idOther] = var[id]
-
 if __name__ == '__main__':
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
-    viewer.plot()
-    raw_input('finished')
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())
+    raw_input("finished")
+
     
 
 

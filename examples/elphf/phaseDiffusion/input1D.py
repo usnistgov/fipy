@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/10/05 {2:44:41 PM} 
+ #                                last update: 1/12/06 {7:49:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -211,9 +211,9 @@ We start with a sharp phase boundary
 
 or
 
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+    >>> x = mesh.getCellCenters()[...,0]
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L / 2)
 
 and with a uniform concentration field
 
@@ -309,7 +309,7 @@ Again, if we're running interactively, we create a viewer
 We reinitialize the sharp phase boundary
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L / 2)
     
 and the uniform concentration fields, with the substitutional concentrations
 
@@ -406,7 +406,7 @@ Once again, if we're running interactively, we create a viewer
 We reinitialize the sharp phase boundary
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0.,setCells)
+    >>> phase.setValue(0., where=x > L / 2)
     
 and the uniform concentration fields, with the interstitial
 concentration

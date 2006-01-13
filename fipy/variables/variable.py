@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/06 {2:55:07 PM} 
+ #                                last update: 1/12/06 {5:07:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -531,17 +531,17 @@ class Variable(object):
             
         return value
 
-    def setValue(self, value, unit = None, array = None, mask = None):
+    def setValue(self, value, unit = None, array = None, where = None):
         """
         Set the value of the Variable. Can take a masked array.
 
             >>> a = Variable((1,2,3))
-            >>> a.setValue(5, mask = (1, 0, 1))
+            >>> a.setValue(5, where = (1, 0, 1))
             >>> print a
             [ 5., 2., 5.,]
 
             >>> b = Variable((4,5,6))
-            >>> a.setValue(b, mask = (1, 0, 1))
+            >>> a.setValue(b, where = (1, 0, 1))
             >>> print a
             [ 4., 2., 6.,]
             >>> print b
@@ -556,18 +556,19 @@ class Variable(object):
             >>> print b
             [3,4,5,]
 
-            >>> a.setValue((4,5,6), mask = (1, 0))
+            >>> a.setValue((4,5,6), where = (1, 0))
             Traceback (most recent call last):
                 ....
             ValueError: array dimensions must agree
             
         """
+        
         if hasattr(value, 'copy'):
             tmp = value.copy()
         else:
             tmp = value
-        if mask is not None:
-            tmp = numerix.where(mask, tmp, self.getValue())
+        if where is not None:
+            tmp = numerix.where(where, tmp, self.getValue())
 	self._setValue(value = tmp, unit = unit, array = array)
 	self._markFresh()
 	
