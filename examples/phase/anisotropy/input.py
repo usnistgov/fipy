@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/15/05 {5:51:28 PM} { 5:14:21 PM}
+ #                                last update: 1/17/06 {11:49:47 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -132,10 +132,8 @@ The domain is seeded with a circular solidified region with parameters
 `seedCenter` and `radius` representing the center and radius of the
 seed.
    
-    >>> interiorCells = mesh.getCells(filter = lambda cell: \
-    ...     (cell.getCenter()[0] - seedCenter[0])**2 + \
-    ...     (cell.getCenter()[1] - seedCenter[1])**2 < radius**2)
-    >>> phase.setValue(1.,interiorCells)
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> phase.setValue(1., where=(x - seedCenter[0])**2 + (y - seedCenter[1])**2 < radius**2)
 
 The temperature field is initialized to a value of `-0.4` throughout:
 
