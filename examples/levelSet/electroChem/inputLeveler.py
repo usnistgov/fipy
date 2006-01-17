@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputLeveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/12/06 {5:10:24 PM} { 1:23:41 PM}
+ #                                last update: 1/13/06 {4:16:01 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -134,56 +134,56 @@ and their corresponding arguments for the `runLeveler` function.
     \multicolumn{6}{|c|}{Deposition Rate Parameters}                                                                                                                   \\
     \hline
     $v$                   & deposition rate                   &                                       & \multicolumn{2}{l}{}      & m s$^{-1}$                         \\
-    $i_A$                 & accelerator current density       & i0Accelerator                         & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
-    $i_L$                 & leveler current density           & i0Leveler                             & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
-    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
-    $n$                   & ion charge                        & \texttt{charge}                       & \multicolumn{2}{c}{2}     &                                    \\
-    $F$                   & Faraday's constant                & \texttt{faradaysConstant}             & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
+    $i_A$                 & accelerator current density       & \verb+i0Accelerator+                  & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $i_L$                 & leveler current density           & \verb+i0Leveler+                      & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
+    $\Omega$              & molar volume                      & \verb+molarVolume+                    & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
+    $n$                   & ion charge                        & \verb+charge+                         & \multicolumn{2}{c}{2}     &                                    \\
+    $F$                   & Faraday's constant                & \verb+faradaysConstant+               & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
     $i_0$                 & exchange current density          &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
-    $\alpha_A$            & accelerator transfer coefficient  & \texttt{alphaAccelerator}             & 0&4                       &                                    \\
-    $\alpha_S$            & leveler transfer coefficient      & \texttt{alphaLeveler}                 & 0&5                       &                                    \\
-    $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
-    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K mol$^{-1}$                     \\
-    $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
+    $\alpha_A$            & accelerator transfer coefficient  & \verb+alphaAccelerator+               & 0&4                       &                                    \\
+    $\alpha_S$            & leveler transfer coefficient      & \verb+alphaLeveler+                   & 0&5                       &                                    \\
+    $\eta$                & overpotential                     & \verb+overpotential+                  & -0&3                      & V                                  \\
+    $R$                   & gas constant                      & \verb+gasConstant+                    & 8&314                     & J K mol$^{-1}$                     \\
+    $T$                   & temperature                       & \verb+temperature+                    & 298&0                     & K                                  \\
     \hline
     \multicolumn{6}{|c|}{Ion Parameters}                                                                                                                               \\
     \hline
-    $c_I$                 & ion concentration                 & \texttt{ionConcentration}             & 250&0                     & mol m$^{-3}$                       \\
-    $c_I^{\infty}$        & far field ion concentration       & \texttt{ionConcentration}             & 250&0                     & mol m$^{-3}$                       \\
-    $D_I$                 & ion diffusion coefficient         & \texttt{ionDiffusion}                 & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
+    $c_I$                 & ion concentration                 & \verb+ionConcentration+               & 250&0                     & mol m$^{-3}$                       \\
+    $c_I^{\infty}$        & far field ion concentration       & \verb+ionConcentration+               & 250&0                     & mol m$^{-3}$                       \\
+    $D_I$                 & ion diffusion coefficient         & \verb+ionDiffusion+                   & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
     \hline
     \multicolumn{6}{|c|}{Accelerator Parameters}                                                                                                                       \\
     \hline
-    $\theta_A$            & accelerator coverage              & \texttt{acceleratorCoverage}          & 0&0                       &                                    \\
-    $c_A$                 & accelerator concentartion         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
-    $c_A^{\infty}$        & far field accelerator concentration & \texttt{acceleratorConcentration}   & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
-    $D_A$                 & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
-    $\Gamma_A$            & accelerator site density          & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
+    $\theta_A$            & accelerator coverage              & \verb+acceleratorCoverage+            & 0&0                       &                                    \\
+    $c_A$                 & accelerator concentartion         & \verb+acceleratorConcentration+       & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_A^{\infty}$        & far field accelerator concentration & \verb+acceleratorConcentration+     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $D_A$                 & catalyst diffusion coefficient    & \verb+catalystDiffusion+              & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
+    $\Gamma_A$            & accelerator site density          & \verb+siteDensity+                    & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
     $k_A^+$               & accelerator adsorption            &                                       & \multicolumn{2}{l}{}      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
-    $k_{A0}^+$            & accelerator adsorption coeff      & \texttt{kAccelerator0}                & 2&6$times$10$^{-4}$       & m$^3$ mol$^{-1}$ s$^{-1}$          \\
-    $\alpha_k$            & accelerator adsorption coeff      & \texttt{alphaAdsorption}              & 0&62                      &                                    \\
-    $k_A^-$               $ accelerator consumption coeff     &                                       & \multicolumn{2}{l}{}      &                                    \\
-    $B_a$                 $ experimental parameter            $ \texttt{Bd}                           & -40&0                     &
+    $k_{A0}^+$            & accelerator adsorption coeff      & \verb+kAccelerator0+                  & 2&6$times$10$^{-4}$       & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $\alpha_k$            & accelerator adsorption coeff      & \verb+alphaAdsorption+                & 0&62                      &                                    \\
+    $k_A^-$               & accelerator consumption coeff     &                                       & \multicolumn{2}{l}{}      &                                    \\
+    $B_a$                 & experimental parameter            & \verb+Bd+                             & -40&0                     &
                                 \\
-    $B_b$                 $ experimental parameter            $ \texttt{Bd}                           & 60&0                      &
+    $B_b$                 & experimental parameter            & \verb+Bd+                             & 60&0                      &
                                 \\
-    $V_d$                 $ experimental parameter            $ \texttt{Bd}                           & 9&8$\times$10$^{-2}$      &
+    $V_d$                 & experimental parameter            & \verb+Bd+                             & 9&8$\times$10$^{-2}$      &
                                 \\
-    $B_d$                 $ experimental parameter            $ \texttt{Bd}                           & 8&0$\times$10$^{-4}$      &
+    $B_d$                 & experimental parameter            & \verb+Bd+                             & 8&0$\times$10$^{-4}$      &
                                 \\
     \hline
     \multicolumn{6}{|c|}{Geometry Parameters}                                                                                                                          \\
     \hline
-    $D$                   & trench depth                      & \texttt{trenchDepth}                  & 0&5$\times$10$^{-6}$      & m                                  \\
-    $D / W$               & trench aspect ratio               & \texttt{aspectRatio}                  & 2&0                       &                                    \\
-    $S$                   & trench spacing                    & \texttt{trenchSpacing}                & 0&6$\times$10$^{-6}$      & m                                  \\
-    $\delta$              & boundary layer depth              & \texttt{boundaryLayerDepth}           & 0&3$\times$10$^{-6}$      & m                                  \\
+    $D$                   & trench depth                      & \verb+trenchDepth+                    & 0&5$\times$10$^{-6}$      & m                                  \\
+    $D / W$               & trench aspect ratio               & \verb+aspectRatio+                    & 2&0                       &                                    \\
+    $S$                   & trench spacing                    & \verb+trenchSpacing+                  & 0&6$\times$10$^{-6}$      & m                                  \\
+    $\delta$              & boundary layer depth              & \verb+boundaryLayerDepth+             & 0&3$\times$10$^{-6}$      & m                                  \\
     \hline
     \multicolumn{6}{|c|}{Simulation Control Parameters}                                                                                                                \\
     \hline
-                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10$^{-7}$      & m                                  \\
-                          & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
-                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\texttt{True}} &                           \\
+                          & computational cell size           & \verb+cellSize+                       & 0&1$\times$10$^{-7}$      & m                                  \\
+                          & number of time steps              & \verb+numberOfSteps+                  & \multicolumn{2}{c}{5}     &                                    \\
+                          & whether to display the viewers    & \verb+displayViewers+                 & \multicolumn{2}{c}{\texttt{True}} &                           \\
     \hline
     \end{tabular}
 

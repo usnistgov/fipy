@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/12/06 {5:12:28 PM} { 1:23:41 PM}
+ #                                last update: 1/13/06 {4:16:05 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -113,46 +113,46 @@ complex meshes requiring the `gmsh` software.
     \hline
     $v$                   & deposition rate                   &                                       & \multicolumn{2}{l}{}      & m s$^{-1}$                         \\
     $i$                   & current density                   &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
-    $\Omega$              & molar volume                      & \texttt{molarVolume}                  & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
-    $n$                   & ion charge                        & \texttt{charge}                       & \multicolumn{2}{c}{2}     &                                    \\
-    $F$                   & Faraday's constant                & \texttt{faradaysConstant}             & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
+    $\Omega$              & molar volume                      & \verb+molarVolume+                    & 7&1$\times$10$^{-6}$      & m$^3$ mol$^{-1}$                   \\
+    $n$                   & ion charge                        & \verb+charge+                         & \multicolumn{2}{c}{2}     &                                    \\
+    $F$                   & Faraday's constant                & \verb+faradaysConstant+               & 9&6$\times$10$^{-4}$      & C mol$^{-1}$                       \\
     $i_0$                 & exchange current density          &                                       & \multicolumn{2}{l}{}      & A m$^{-2}$                         \\
-    $\alpha$              & transfer coefficient              & \texttt{transferCoefficient}          & 0&5                       &                                    \\
-    $\eta$                & overpotential                     & \texttt{overpotential}                & -0&3                      & V                                  \\
-    $R$                   & gas constant                      & \texttt{gasConstant}                  & 8&314                     & J K$^{-1} mol$^{-1}$               \\
-    $T$                   & temperature                       & \texttt{temperature}                  & 298&0                     & K                                  \\
-    $b_0$                 & current density for $\theta^0$    & \texttt{currentDensity0}              & 0&26                      & A m$^{-2}$                         \\
-    $b_1$                 & current density for $\theta$      & \texttt{currentDensity1}              & 45&0                      & A m$^{-2}$                         \\
+    $\alpha$              & transfer coefficient              & \verb+transferCoefficient+            & 0&5                       &                                    \\
+    $\eta$                & overpotential                     & \verb+overpotential+                  & -0&3                      & V                                  \\
+    $R$                   & gas constant                      & \verb+gasConstant+                    & 8&314                     & J K$^{-1}$ mol$^{-1}$               \\
+    $T$                   & temperature                       & \verb+temperature+                    & 298&0                     & K                                  \\
+    $b_0$                 & current density for $\theta^0$    & \verb+currentDensity0+                & 0&26                      & A m$^{-2}$                         \\
+    $b_1$                 & current density for $\theta$      & \verb+currentDensity1+                & 45&0                      & A m$^{-2}$                         \\
     \hline
     \multicolumn{6}{|c|}{Metal Ion Parameters}                                                                                                                         \\
     \hline
-    $c_m$                 & metal ion concentration           & \texttt{metalConcentration}           & 250&0                     & mol m$^{-3}$                       \\
-    $c_m^{\infty}$        & far field metal ion concentration & \texttt{metalConcentration}           & 250&0                     & mol m$^{-3}$                       \\
-    $D_m$                 & metal ion diffusion coefficient   & \texttt{metalDiffusion}               & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
+    $c_m$                 & metal ion concentration           & \verb+metalConcentration+             & 250&0                     & mol m$^{-3}$                       \\
+    $c_m^{\infty}$        & far field metal ion concentration & \verb+metalConcentration+             & 250&0                     & mol m$^{-3}$                       \\
+    $D_m$                 & metal ion diffusion coefficient   & \verb+metalDiffusion+                 & 5&6$\times$10$^{-10}$     & m$^2$ s$^{-1}$                     \\
     \hline
     \multicolumn{6}{|c|}{Catalyst Parameters}                                                                                                                          \\
     \hline
-    $\theta$              & catalyst surfactant concentration & \texttt{catalystCoverage}             & 0&0                       &                                    \\
-    $c_{\theta}$          & bulk catalyst concentration       & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
-    $c_{\theta}^{\infty}$ & far field catalyst concentration  & \texttt{catalystConcentration}        & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
-    $D_{\theta}$          & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
-    $\Gamma$              & catalyst site density             & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
+    $\theta$              & catalyst surfactant concentration & \verb+catalystCoverage+               & 0&0                       &                                    \\
+    $c_{\theta}$          & bulk catalyst concentration       & \verb+catalystConcentration+          & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_{\theta}^{\infty}$ & far field catalyst concentration  & \verb+catalystConcentration+          & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $D_{\theta}$          & catalyst diffusion coefficient    & \verb+catalystDiffusion+              & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
+    $\Gamma$              & catalyst site density             & \verb+siteDensity+                    & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
     $k$                   & rate constant                     &                                       & \multicolumn{2}{l}{}      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
-    $k_0$                 & rate constant for $\eta^0$        & \texttt{rateConstant0}                & 1&76                      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
-    $k_3$                 & rate constant for $\eta^3$        & \texttt{rateConstant3}                & -245&0$\times$10$^{-6}$   & m$^3$ mol$^{-1}$ s$^{-1}$ V$^{-3}$ \\
+    $k_0$                 & rate constant for $\eta^0$        & \verb+rateConstant0+                  & 1&76                      & m$^3$ mol$^{-1}$ s$^{-1}$          \\
+    $k_3$                 & rate constant for $\eta^3$        & \verb+rateConstant3+                  & -245&0$\times$10$^{-6}$   & m$^3$ mol$^{-1}$ s$^{-1}$ V$^{-3}$ \\
     \hline
     \multicolumn{6}{|c|}{Geometry Parameters}                                                                                                                          \\
     \hline
-    $D$                   & trench depth                      & \texttt{trenchDepth}                  & 0&5$\times$10$^{-6}$      & m                                  \\
-    $D / W$               & trench aspect ratio               & \texttt{aspectRatio}                  & 2&0                       &                                    \\
-    $S$                   & trench spacing                    & \texttt{trenchSpacing}                & 0&6$\times$10$^{-6}$      & m                                  \\
-    $\delta$              & boundary layer depth              & \texttt{boundaryLayerDepth}           & 0&3$\times$10$^{-6}$      & m                                  \\
+    $D$                   & trench depth                      & \verb+trenchDepth+                    & 0&5$\times$10$^{-6}$      & m                                  \\
+    $D / W$               & trench aspect ratio               & \verb+aspectRatio+                    & 2&0                       &                                    \\
+    $S$                   & trench spacing                    & \verb+trenchSpacing+                  & 0&6$\times$10$^{-6}$      & m                                  \\
+    $\delta$              & boundary layer depth              & \verb+boundaryLayerDepth+             & 0&3$\times$10$^{-6}$      & m                                  \\
     \hline
     \multicolumn{6}{|c|}{Simulation Control Parameters}                                                                                                                \\
     \hline
-                          & computational cell size           & \texttt{cellSize}                     & 0&1$\times$10$^{-7}$      & m                                  \\
-                          & number of time steps              & \texttt{numberOfSteps}                & \multicolumn{2}{c}{5}     &                                    \\
-                          & whether to display the viewers    & \texttt{displayViewers}               & \multicolumn{2}{c}{\texttt{True}} &                           \\
+                          & computational cell size           & \verb+cellSize+                       & 0&1$\times$10$^{-7}$      & m                                  \\
+                          & number of time steps              & \verb+numberOfSteps+                  & \multicolumn{2}{c}{5}     &                                    \\
+                          & whether to display the viewers    & \verb+displayViewers+                 & \multicolumn{2}{c}{\texttt{True}} &                           \\
     \hline
     \end{tabular}
 
