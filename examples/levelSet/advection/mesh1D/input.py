@@ -85,11 +85,7 @@ Construct a `distanceVariable` object.
    ...                        mesh = mesh,
    ...                        value = -1,
    ...                        hasOld = 1)
-
-   >>> cells = mesh.getCells(
-   ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)
-   >>> var.setValue(1, cells=cells)
-   
+   >>> var.setValue(1, where=mesh.getCellCenters()[...,0] > interfacePosition)
    >>> var.calcDistanceFunction()
    
 The `advectionEquation` is constructed.

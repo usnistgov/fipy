@@ -261,7 +261,7 @@ def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1
         value = -1,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, cells=mesh.getElectrolyteCells())
+    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
