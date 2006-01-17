@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/12/06 {6:01:01 PM} 
+ #                                last update: 1/17/06 {11:17:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -148,6 +148,8 @@ class CellVariable(Variable):
 	if cells == ():
             Variable.setValue(self, value, unit = unit, where = where)
 	else:
+            import warnings
+            warnings.warn("'where' should be used instead of 'cells'", DeprecationWarning, stacklevel=2)
 	    for cell in cells:
 		self[cell.getID()] = value
 
