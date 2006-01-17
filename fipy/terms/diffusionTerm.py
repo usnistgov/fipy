@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/4/06 {4:41:13 PM} 
+ #                                last update: 1/17/06 {11:29:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -137,7 +137,6 @@ class DiffusionTerm(Term):
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
             self.geomCoeff = self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
-            self.geomCoeff.dontCacheMe()
         else:
             self.geomCoeff = None
         
