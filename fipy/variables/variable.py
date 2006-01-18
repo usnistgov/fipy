@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/12/06 {5:07:24 PM} 
+ #                                last update: 1/17/06 {12:07:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -466,24 +466,6 @@ class Variable(object):
             
         return value
 
-    def cached(self, debug = 0):
-##         tmp = [referrer for referrer in self._referrers if referrer is not self] + ["self" for referrer in self._referrers if referrer is self]
-##         print "__init__", tmp
-##         import gc
-##         tmp = [referrer for referrer in gc.get_referrers(self) if referrer is not self] + ["self" for referrer in gc.get_referrers(self) if referrer is self]
-##         print "cached?", tmp
-        ref = sys.getrefcount(self)
-##         _cached = self._cached and (ref > self._refcount + len(self.subscribedVariables))
-        _cached = self._cached and (ref > self._refcount + 2 * len(self.getSubscribedVariables()))
-        if debug:
-##             print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", len(self.subscribedVariables)
-            print "CACHED:", self.__class__, self.name, ref, "?>?", self._refcount, "+", 2 * len(self.getSubscribedVariables())
-            import gc
-##             print "get_referrers():", gc.get_referrers(self)
-##         if self._alwaysCache:
-##         print "Caching:", self.name, self._alwaysCache, _cached, ref, self._refcount, len(self.getSubscribedVariables())
-        return self._alwaysCache or _cached
-        
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         
