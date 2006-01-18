@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 1/12/06 {8:35:59 PM}
+ #                                last update: 1/17/06 {3:51:51 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -300,9 +300,12 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
-if __name__ == '__main__':
+def _run():
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript())
+    exec(fipy.tests.doctestPlus._getScript(__name__))
+
+if __name__ == '__main__':
+    _run()
 
     raw_input('finished')
 

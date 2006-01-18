@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputWriteScriptHowTo.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:24:49 PM} { 1:23:41 PM}
+ #                                last update: 1/17/06 {3:52:03 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -504,7 +504,6 @@ def _run():
     exec(fipy.tests.doctestPlus._getScript(__name__))
     
 if __name__ == '__main__':
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript(__name__))
+    _run()
 
 
