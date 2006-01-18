@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 12/15/05 {10:35:53 AM} 
+ #                                last update: 1/18/06 {5:52:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -228,7 +228,8 @@ class build_docs (Command):
 					  'TALKS',
 					  'TODOLIST',
 					  'MAIL',
- 					  'CVS']
+ 					  'CVS',
+                                          'EFFICIENCY']
 
         tertiaryRestructuredTextFiles = []
 
@@ -508,7 +509,7 @@ class copy_script(Command):
 	mod = imp.load_source("copy_script_module", self.From)
 	script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
 	
-	script = "## This script was derived from\r## '%s'\n\n%s"%(self.From, script)
+	script = "#!/usr/bin/env python\n\n## This script was derived from\n## '%s'\n\n%s"%(self.From, script)
 	
 	f = file(self.To, "w")
 	f.write(script)
@@ -522,104 +523,87 @@ class efficiency_test(Command):
     user_options = [ ('minimumelements=', None, 'minimum number of elements'),
                      ('factor=', None, 'factor by which the number of elements is increased'),
                      ('inline', None, 'turn on inlining for the efficiency tests'),
+                     ('cache', None, 'turn on variable caching'),
                      ('maximumelements=', None, 'maximum number of elements'),
-                     ('case=', None, 'run a specific example'),
-                     ('memorysamples=', None, 'number of samplings to find max memory usage')]
+                     ('sampleTime=', None, 'sampling interval for memory high-water')]
     
     def initialize_options(self):
         self.factor = 10
-        self.inline = False
+        self.inline = 0
+        self.cache = 0
         self.maximumelements = 10000
         self.minimumelements = 100
-        self.case = None
-        self.memorysamples = 10
+        self.sampleTime = 1
+        self.cases = ['examples/benchmarking/cahnHilliard.py', 'examples/benchmarking/superfill.py', 'examples/benchmarking/phaseImpingement.py', 'examples/benchmarking/mesh.py']
         
     def finalize_options(self):
         self.factor = int(self.factor)
         self.maximumelements = int(self.maximumelements)
         self.minimumelements = int(self.minimumelements)
-        self.memorysamples = int(self.memorysamples)
-        if self.case is None:
-            self.cases = ['examples/cahnHilliard/input2D.py', 'examples/levelSet/electroChem/input.py', 'examples/phase/impingement/mesh20x20/input.py', 'examples/meshing/inputGrid2D.py']
-        else:
-            self.cases = [self.case]
+        self.sampleTime = float(self.sampleTime)
 
     def run(self):
 
         import time
-        import sys
-        import threading
-        import tempfile
         import os
         
-        file = open('efficiencyData.txt', 'w')
-        
-        ##sys.argv = sys.argv[:1]
-
-        numberOfSteps = 10
-        sys.argv.append('--numberOfSteps=%i' % numberOfSteps)
-
-        class GetMemoryThread(threading.Thread):
-            def __init__(self, runTimeEstimate, fileObject, pid, memorysamples):
-                threading.Thread.__init__(self)
-                self.runTimeEstimate = runTimeEstimate
-                self.fileObject = fileObject
-                self.pid = pid
-                self.memorysamples = memorysamples
-
-            def run(self):
-                maxMem = 0
-                
-                for i in range(self.memorysamples):
-                    (f, filename) = tempfile.mkstemp()
-                    os.system(('ps -p %i -o vsz > ' + filename) % self.pid)
-                    ff = open(filename, 'r')
-                    ff.readline()
-                    s = ff.readline()
-                    ff.close()
-                    os.remove(filename)
-                    maxMem = max(maxMem, int(s))
-                    time.sleep(self.runTimeEstimate / self.memorysamples)
-
-                self.fileObject.write(str(maxMem))
-                self.fileObject.close()
-
         for case in self.cases:
+            print "case: %s" % case
             
-            runTimeEstimate = 10.
-            print 'case:' + case
+            testPath = '%s.dat' % case
+            
+            if not os.path.isfile(testPath):
+                f = open(testPath, 'w')
+
+                f.write("\t".join(["--inline", "--cache", "Date", "Elements", \
+                                  "mesh (s)", "variables (s)", "terms (s)", \
+                                  "solver (s)", "BCs (s)", "solve (s)", \
+                                  "total (s)", "per step (s)", \
+                                  \
+                                  "mesh (KiB)", "variables (KiB)", \
+                                  "terms (KiB)", "solver (KiB)", "BCs (KiB)", \
+                                  "solve (KiB)", "max (KiB)", \
+                                  "per element (KiB)"]))
+                f.write("\n")
+                f.flush()
+            else:
+                f = open(testPath, 'a')
+            
             numberOfElements = self.minimumelements
 
-            exceptionFlag = False
-            
-            while numberOfElements <= self.maximumelements and not exceptionFlag:
-                sys.argv.append('--numberOfElements=' + str(numberOfElements))
-                (f, filename) = tempfile.mkstemp()
-                tmpFile = open(filename, 'w')
-                thread = GetMemoryThread(runTimeEstimate, tmpFile, os.getpid(), self.memorysamples)
-                thread.start()
-                t1 = time.clock()
+            while numberOfElements <= self.maximumelements:
+                print "\tnumberOfElements: %i" % numberOfElements
                 
-                try:
-                    import imp
-                    mod = imp.load_source("copy_script_module", case)
-                    mod._run()
-                except Exception, e:
-                    print 'Exception executing %s: %s' % (case, e)
-                    exceptionFlag = True
-            
-                t2 = time.clock()
-                thread.join()
-                tmpFile = open(filename,'r')
-                memUsage = float(tmpFile.read())
-                tmpFile.close()
-                os.remove(filename)
-                os.close(f)
-                sys.argv.remove('--numberOfElements=' + str(numberOfElements))
-                print 'Elements: %i, CPU time: %.3f seconds, memory usage: %.0f KB' % (numberOfElements, t2 - t1, memUsage)
+                cmd = [case, '--numberOfElements=%i' % numberOfElements]
+                
+                if self.inline:
+                    cmd += ['--inline']
+                    
+                if self.cache:
+                    cmd += ['--cache']
+                else:
+                    cmd += ['--no-cache']
+
+                output = "\t".join([str(self.inline), str(self.cache), time.ctime(), str(numberOfElements)])
+                
+                timeCmd = cmd + ['--measureTime']
+                w, r = os.popen4(' '.join(timeCmd))
+                output += '\t' + ''.join(r.readlines()).strip()
+                r.close()
+                w.close()
+
+                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
+                w, r = os.popen4(' '.join(memCmd))
+                output += '\t' + ''.join(r.readlines()).strip()
+                r.close()
+                w.close()
+                    
+                f.write(output + '\n')
+                f.flush()
                 
                 numberOfElements *= self.factor
-                runTimeEstimate = (t2 - t1) * self.factor
+                
+            f.close()
 
 f = open('README.txt', 'r') 
 long_description = '\n' + f.read() + '\n'
