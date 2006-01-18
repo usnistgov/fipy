@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/17/06 {11:29:13 AM} 
+ #                                last update: 1/17/06 {12:00:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -136,9 +136,9 @@ class DiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-            self.geomCoeff = self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
+            return self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
-            self.geomCoeff = None
+            return None
         
     def _getCoefficientMatrix(self, mesh, coeff):
         coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())

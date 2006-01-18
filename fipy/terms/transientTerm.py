@@ -6,7 +6,7 @@
  # 
  #  FILE: "transientTerm.py"
  #                                    created: 11/12/03 {11:36:25 AM} 
- #                                last update: 1/17/06 {11:57:09 AM} 
+ #                                last update: 1/17/06 {12:03:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -113,7 +113,7 @@ class TransientTerm(CellTerm):
 	}
 	
     def _calcGeomCoeff(self, mesh):
-	self.geomCoeff = self.coeff * mesh.getCellVolumes()
+	return self.coeff * mesh.getCellVolumes()
 	
 def _test(): 
     import doctest
