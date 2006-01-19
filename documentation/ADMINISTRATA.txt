@@ -67,6 +67,7 @@ Merge developments from trunk::
 
 Refactoring complete::
 
+    $ cvs tag merged-to_HEAD
     $ cd ../trunk
     $ cvs up -j branch-refactoring_etc
     $ python setup.py test
@@ -75,9 +76,16 @@ Refactoring complete::
 
 **Now cease all work on branch-refactoring_etc**
 
-Optionally (must do in directory above branch directory)
+Optionally 
 
-    $ cd branch-refactoring_etc/..
+    $ cd ../branch-refactoring_etc
+    $ echo "Branch merged back to HEAD: `date`" > "THIS BRANCH IS FINISHED"
+    $ cvs add "THIS BRANCH IS FINISHED"
+    $ cvs ci -m "" "THIS BRANCH IS FINISHED"
+
+(must do in directory above branch directory)
+
+    $ cd ..
     $ cvs -d :ext:USERNAME@cvs.sourceforge.net:/cvsroot/fipy release branch-refactoring_etc 
 
 --------
