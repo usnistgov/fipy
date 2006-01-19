@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantBulkDiffusionEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 9/16/05 {1:48:18 PM} 
+ #                                last update: 12/22/05 {11:59:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ class _AdsorptionCoeff(CellVariable):
         self.rateConstant = rateConstant
 
     def _calcValue(self):
-        self.value = self.rateConstant * self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+        return self.rateConstant * self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
 
 class _ScAdsorptionCoeff(_AdsorptionCoeff):
     def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
@@ -64,10 +64,10 @@ class _ScAdsorptionCoeff(_AdsorptionCoeff):
         self.surfactantVar = self._requires(surfactantVar)
     
     def _calcValue(self):
-        _AdsorptionCoeff._calcValue(self)
+        value = _AdsorptionCoeff._calcValue(self)
         bulk = Numeric.array(self.bulkVar)
-        val = Numeric.array(self.value)
-        self.value = val * bulk * Numeric.array(self.surfactantVar.getInterfaceVar())
+        val = Numeric.array(value)
+        return val * bulk * Numeric.array(self.surfactantVar.getInterfaceVar())
 
 def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          distanceVar = None,

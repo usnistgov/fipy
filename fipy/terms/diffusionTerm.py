@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 9/16/05 {3:25:38 PM} 
+ #                                last update: 1/17/06 {12:00:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,12 +91,17 @@ class DiffusionTerm(Term):
 
         if len(coeff) > 0:
             self.nthCoeff = coeff[0]
+            
+            from fipy.variables.variable import Variable
+            if not isinstance(self.nthCoeff, Variable):
+                self.nthCoeff = Variable(value = self.nthCoeff)
+
             from fipy.variables.faceVariable import FaceVariable
             from fipy.variables.cellVariable import CellVariable
             if not isinstance(self.nthCoeff, FaceVariable):
                 if isinstance(self.nthCoeff, CellVariable):
                     self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
-                elif numerix.getShape(self.nthCoeff) != ():
+                elif self.nthCoeff.getShape() != ():
                     raise TypeError, "The coefficient must be a FaceVariable, CellVariable, or a scalar value."
         else:
             self.nthCoeff = None
@@ -105,7 +110,7 @@ class DiffusionTerm(Term):
         
         if self.order > 0:
             self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])
-
+        
     def __neg__(self):
         """
         Negate the term.
@@ -136,9 +141,9 @@ class DiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-            self.geomCoeff = self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
+            return self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
-            self.geomCoeff = None
+            return None
         
     def _getCoefficientMatrix(self, mesh, coeff):
         coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
@@ -194,7 +199,7 @@ class DiffusionTerm(Term):
                 'cell 1 diag':    -coeff,
                 'cell 1 offdiag':  coeff
             }
-            
+
             coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
             coeffs['cell 2 diag'] = coeffs['cell 1 diag']
 
@@ -204,16 +209,17 @@ class DiffusionTerm(Term):
 ##                 
 ##                 coefficientMatrix += LL
 ##                 boundaryB += bb
-                
+
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
                                                                                  boundaryConditions = lowerOrderBCs, 
                                                                                  dt = dt)
 ##                                                                              coefficientMatrix = coefficientMatrix)
+
             lowerOrderb = lowerOrderb / volumes
             volMatrix = _SparseMatrix(size = N)
             volMatrix.addAtDiagonal(1. / volumes )
             lowerOrderL = volMatrix * lowerOrderL
-    
+            
             L = coefficientMatrix * lowerOrderL
 
             b = coefficientMatrix * lowerOrderb + boundaryB

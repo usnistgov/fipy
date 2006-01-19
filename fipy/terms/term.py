@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 9/16/05 {2:46:50 PM} 
+ #                                last update: 1/17/06 {12:02:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -255,11 +255,14 @@ class Term:
         return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
 
     def _calcGeomCoeff(self, mesh):
-	pass
+	return None
 	
     def _getGeomCoeff(self, mesh):
 	if self.geomCoeff is None:
-	    self._calcGeomCoeff(mesh)
+	    self.geomCoeff = self._calcGeomCoeff(mesh)
+            if self.geomCoeff is not None:
+                self.geomCoeff.dontCacheMe()
+
 	return self.geomCoeff
 	
     def _getWeight(self, mesh):

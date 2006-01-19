@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 9/3/04 {10:37:47 PM} 
+ #                                last update: 12/22/05 {3:59:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,7 @@ class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
         self.modIn = modIn
         
     def  _calcValueIn(self, alpha, id1, id2):
+        val = self._getArray().copy()
         
 	inline._runInline(self.modIn + """
         int i;
@@ -55,7 +56,10 @@ class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
 	    val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
         }
 	""",var = self.var.getNumericValue(),
-            val = self._getArray(), 
+            val = val, 
             alpha = alpha,
             id1 = id1, id2 = id2,
             ni = self.mesh._getNumberOfFaces())
+            
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())

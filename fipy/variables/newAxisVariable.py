@@ -6,7 +6,7 @@
  # 
  #  FILE: "newAxisVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 8/2/05 {2:12:05 PM} 
+ #                                last update: 12/22/05 {11:52:51 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,7 @@ class _NewAxisVariable(Variable):
 	self.var = self._requires(var)
 
     def _calcValue(self):
-	self.value = self.var[...,numerix.NewAxis]
+	return self.var[...,numerix.NewAxis]
         
     def getMesh(self):
         return self.var.getMesh()

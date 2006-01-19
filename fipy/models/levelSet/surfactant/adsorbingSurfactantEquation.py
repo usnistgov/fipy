@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 9/16/05 {1:48:15 PM} 
+ #                                last update: 12/22/05 {12:00:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,7 +60,7 @@ class _AdsorptionCoeff(CellVariable):
         self.dt = 0
 
     def _calcValue(self):
-        self.value = self.dt * Numeric.array(self.bulkVar) \
+        return self.dt * Numeric.array(self.bulkVar) \
                      * self.rateConstant * self._multiplier()
 
     def _updateDt(self, dt):
@@ -91,7 +91,7 @@ class _MaxCoeff(CellVariable):
 
 class _SpMaxCoeff(_MaxCoeff):
     def _calcValue(self):
-        self.value = 1e20 * self._calcMax()
+        return 1e20 * self._calcMax()
 
 class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
@@ -99,7 +99,7 @@ class _ScMaxCoeff(_MaxCoeff):
         for var in self.vars[1:]:
             val -= self.distanceVar._getCellInterfaceFlag() * Numeric.array(var)
 
-        self.value = 1e20 * self._calcMax() * Numeric.where(val < 0, 0, val)
+        return 1e20 * self._calcMax() * Numeric.where(val < 0, 0, val)
 
 class AdsorbingSurfactantEquation(SurfactantEquation):
     r"""

@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:07:28 PM} 
+ #                                last update: 12/22/05 {4:00:55 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -67,10 +67,11 @@ class UpwindConvectionTerm(ConvectionTerm):
 	def _calcValuePy(self, P):
 	    alpha = Numeric.where(P > 0., 1., 0.)
 
-	    self.value = PhysicalField(value = alpha)
+	    return PhysicalField(value = alpha)
 
 	def _calcValueIn(self, P):
-
+            alpha = self._getArray().copy()
+            
 	    inline._runInlineLoop1("""
 		alpha(i) = 0.5;
 		
@@ -80,12 +81,15 @@ class UpwindConvectionTerm(ConvectionTerm):
 		    alpha(i) = 0.;
 		}
 	    """,
-	    alpha = self._getArray(), P = P,
+	    alpha = alpha, P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
+     
+            return self._makeValue(value = alpha)
+##         return self._makeValue(value = alpha, unit = self.getUnit())
 
 
 	def _calcValue(self):	    
 	    P  = self.P.getNumericValue()
 	    
-	    inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
+	    return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)

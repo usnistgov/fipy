@@ -6,7 +6,7 @@
  # 
  # FILE: "superfill.py"
  #                                     created: 1/19/06 {4:09:41 PM}
- #                                 last update: 1/18/06 {6:01:53 PM}
+ #                                 last update: 1/18/06 {4:17:53 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -123,11 +123,10 @@ bottomHeight = cellsBelowTrench * cellSize
 trenchHeight = bottomHeight + trenchDepth
 trenchWidth = trenchDepth / aspectRatio
 sideWidth = (trenchSpacing - trenchWidth) / 2
-
-distanceVar.setValue(1, mesh.getCells(lambda cell:
-    cell.getCenter()[1] > trenchHeight or \
-    (cell.getCenter()[1] > bottomHeight and \
-    cell.getCenter()[0] < xCells * cellSize - sideWidth)))
+x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+distanceVar.setValue(1, where=(y > trenchHeight) 
+                              | ((y > bottomHeight) 
+                                 & (x < xCells * cellSize - sideWidth)))
 
 distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 from fipy.models.levelSet.surfactant.surfactantVariable import \

@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 7/12/05 {1:05:54 PM} 
+ #                                last update: 12/22/05 {12:04:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -140,15 +140,15 @@ class _ConvectionCoeff(VectorFaceVariable):
         volumes = Numeric.array(self.mesh.getCellVolumes())
         alpha = alpha[:,:,Numeric.NewAxis] * volumes[:,Numeric.NewAxis,Numeric.NewAxis] * norms
 
-        self.value = Numeric.zeros(Nfaces * dim,'d')
+        value = Numeric.zeros(Nfaces * dim,'d')
 
         cellFaceIDs = (self.mesh._getCellFaceIDs().flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh._getCellFaceIDs().flat),dim))
         
-        vector._putAddPy(self.value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
+        vector._putAddPy(value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
 
-        self.value = Numeric.reshape(self.value, (Nfaces, dim))
+        value = Numeric.reshape(value, (Nfaces, dim))
 
-        self.value = -self.value / self.mesh._getFaceAreas()[:,Numeric.NewAxis]
+        return -value / self.mesh._getFaceAreas()[:,Numeric.NewAxis]
 
 def _test(): 
     import doctest

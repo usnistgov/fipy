@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/16/05 {2:10:10 PM} 
+ #                                last update: 1/19/06 {12:04:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,7 +29,7 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2005 by Konrad Hinsen, except as noted below.
+ #  Copyright 1997-2006 by Konrad Hinsen, except as noted below.
  # 
  #  Permission to use, copy, modify, and distribute this software and its
  #  documentation for any purpose and without fee is hereby granted,
@@ -215,28 +215,32 @@ class PhysicalField:
         """
         Make a duplicate.
 
-            >>> a = PhysicalField(1)
+            >>> a = PhysicalField(1, unit = 'inch')
             >>> b = a.copy()
-
+            
         The duplicate will not reflect changes made to the original
-            
-            >>> a.value = 2
-            >>> b
-            1
-            
-        and for arrays
+
+            >>> a.convertToUnit('cm')
+            >>> print a
+            2.54 cm
+            >>> print b
+            1 inch
+
+        Likewise for arrays
         
-            >>> a = PhysicalField(numerix.array((0,1,2)))
+            >>> a = PhysicalField(numerix.array((0,1,2)), unit  = 'm')
             >>> b = a.copy()
-            >>> b
-            [0,1,2,]
             >>> a[0] = 3
-            >>> b
-            [0,1,2,]
+            >>> print a
+            [3,1,2,] m
+            >>> print b
+            [0,1,2,] m
             
         """
-        
-        return PhysicalField(self)
+        if hasattr(self.value, 'copy'):
+            return PhysicalField(value = self.value.copy(), unit = self.unit)
+        else:
+            return PhysicalField(value = self.value, unit = self.unit)
         
     def __str__(self):
         """
@@ -1159,6 +1163,10 @@ class PhysicalField:
             TypeError: Incompatible units
         """
         Numeric.put(self.value, indices, self._inMyUnits(values).value)
+      
+    def getShape(self):
+        from fipy.tools import numerix
+        return numerix.getShape(self.value)
         
     def reshape(self, shape):
         """

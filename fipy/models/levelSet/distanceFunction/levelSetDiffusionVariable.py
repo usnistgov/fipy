@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetDiffusionVariable.py"
  #                                    created: 9/8/04 {10:39:23 AM} 
- #                                last update: 4/7/05 {5:07:06 PM} 
+ #                                last update: 12/22/05 {3:59:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,11 +87,13 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         cell1 = Numeric.take(distance, id1)
         cell2 = Numeric.take(distance, id2)
 
-        self.value = Numeric.where(cell1 < 0 or cell2 < 0,
-                                   0,
-                                   self.diffusionCoeff)
+        return Numeric.where(cell1 < 0 or cell2 < 0,
+                             0,
+                             self.diffusionCoeff)
                                    
     def _calcValueIn(self, alpha, id1, id2):
+        val = self._getArray().copy()
+        
         inline._runInlineLoop1("""
 	    double	cell1 = var(id1(i));
 	    double	cell2 = var(id2(i));
@@ -103,11 +105,14 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 	    }
 	""",
 	var = Numeric.array(self.var),
-	val = self._getArray(), 
+	val = val,
 	id1 = id1, id2 = id2,
         diffusionCoeff = self.diffusionCoeff,
 	ni = len(self.mesh.getFaces())
 	)
+ 
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
 
 def _test(): 
     import doctest

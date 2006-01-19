@@ -6,7 +6,7 @@
  # 
  #  FILE: "powerLawConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:07:44 PM} 
+ #                                last update: 1/19/06 {11:19:52 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -92,10 +92,11 @@ class PowerLawConvectionTerm(ConvectionTerm):
 
 	    alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
 
-	    self.value = PhysicalField(value = alpha)
+	    return PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
-
+            alpha = self._getArray().copy()
+            
 	    inline._runInlineLoop1("""
 		if (fabs(P(i)) < eps) {
 		    P(i) = eps;
@@ -117,17 +118,19 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		    alpha(i) = -1. / P(i);
 		}
 	    """,
-	    alpha = self._getArray(), eps = eps, P = P,
+	    alpha = alpha, eps = eps, P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
+     
+            return self._makeValue(value = alpha)
+##         return self._makeValue(value = alpha, unit = self.getUnit())
 
 
 	def _calcValue(self):	    
 	    eps = 1e-3
 	    P  = self.P.getNumericValue()
 	    
-	    inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
-
+            return inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
 
 def _test(): 
     import doctest

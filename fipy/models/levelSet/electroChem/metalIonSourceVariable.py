@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonSourceVariable.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 4/1/05 {11:02:15 AM} 
+ #                                last update: 12/22/05 {12:05:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -93,7 +93,7 @@ class _MetalIonSourceVariable(CellVariable):
     def _calcValue(self):
         ionVar = Numeric.array(self.ionVar)
         ionVar = Numeric.where(ionVar > 1e-20, ionVar, 1e-20)        
-        self.value = Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonMolarVolume) / ionVar
+        return Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonMolarVolume) / ionVar
         
 def _test(): 
     import doctest

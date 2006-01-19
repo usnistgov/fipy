@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 9/15/05 {7:03:58 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {5:10:10 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -157,7 +157,7 @@ def runGold(faradaysConstant = 9.6e4,
        value = -1,
        narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, mesh.getElectrolyteCells())
+    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
     from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
@@ -228,7 +228,7 @@ def runGold(faradaysConstant = 9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    self.value = numerix.array(self.var[:self.mesh.getNumberOfCells()])
+                    return numerix.array(self.var[:self.mesh.getNumberOfCells()])
 
             from fipy.viewers import make
             viewers = (

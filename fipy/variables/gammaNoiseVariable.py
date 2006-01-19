@@ -4,7 +4,7 @@
  # 
  #  FILE: "gammaNoiseVariable.py"
  #                                    created: 8/26/05 {10:09:50 PM} 
- #                                last update: 9/16/05 {2:30:07 PM} 
+ #                                last update: 12/22/05 {11:56:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,8 +124,8 @@ class GammaNoiseVariable(NoiseVariable):
         self.rate = self._requires(rate)
     
     def _calcValue(self):
-        self.value = gamma(a = self.rate, r = self.shape, 
-                           shape = [self.getMesh().getNumberOfCells()])
+        return gamma(a = self.rate, r = self.shape, 
+                     shape = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

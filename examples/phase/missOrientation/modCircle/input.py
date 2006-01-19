@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/5/05 {8:08:51 PM} 
+ #                                last update: 1/12/06 {9:19:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,17 +95,13 @@ data and compares it with the `theta` variable.
 
    >>> import os
    >>> import examples.phase.missOrientation.modCircle
-   >>> import gzip
    >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'test.gz')
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> import fipy.tools.numerix as numerix
-   >>> testData = numerix.reshape(testData, (mesh.getNumberOfCells(),))
-   >>> print phase.allclose(testData)
+   >>> from fipy.tools import dump
+   >>> testData = dump.read(filepath)
+   >>> from fipy.tools import numerix
+   >>> print numerix.allclose(testData, phase)
    1
-   
+
 """
 __docformat__ = 'restructuredtext'
 
@@ -132,8 +128,8 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 from fipy.variables.modularVariable import ModularVariable
 from fipy.tools import numerix
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
-theta.setValue(-2. * numerix.pi / 3., mesh.getCells(
-   lambda cell: (cell.getCenter()[0] - L / 2.)**2 + (cell.getCenter()[1] - L / 2.)**2 < (L / 4.)**2))
+x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)

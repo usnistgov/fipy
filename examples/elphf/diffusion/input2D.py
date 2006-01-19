@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/9/05 {2:07:12 PM} 
+ #                                last update: 1/12/06 {7:46:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,12 +107,12 @@ functions of the phase field
     ...     return 2 * xi * (1 - xi) * (1 - 2 * xi)
     
 We separate the solution domain into two different concentration regimes
-    
-    >>> setCells = mesh.getCells(filter = lambda cell: cell.getCenter()[0] > L/2)
+
+    >>> x = mesh.getCellCenters()[...,0]
     >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6,setCells)
+    >>> substitutionals[0].setValue(0.6, where=x > L / 2)
     >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3,setCells)
+    >>> substitutionals[1].setValue(0.3, where=x > L / 2)
 
 We create one diffusion equation for each substitutional component
 
@@ -183,15 +183,11 @@ we verify that the concentrations have become uniform
 We now rerun the problem with an initial condition that only has a
 concentration step in one corner.
 
-    >>> def cornerFunc(cell):
-    ...     center = cell.getCenter()
-    ...     return (center[0] > L/2) and (center[1] > L/2) 
-    
-    >>> setCells = mesh.getCells(filter = cornerFunc)
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
     >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6,setCells)
+    >>> substitutionals[0].setValue(0.6, where=(x > L / 2.) & (y > L / 2.))
     >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3,setCells)
+    >>> substitutionals[1].setValue(0.3, where=(x > L / 2.) & (y > L / 2.))
     
 We iterate the problem to equilibrium again
 

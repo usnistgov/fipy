@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:08:10 PM} 
+ #                                last update: 1/19/06 {11:17:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,7 +84,7 @@ class ExponentialConvectionTerm(ConvectionTerm):
             Pmin = numerix.where(P > largeValue + 1, largeValue + 1, P)
             alpha = numerix.where((abs(Pmin) > eps) & (Pmin <= largeValue), ((Pmin - 1) * numerix.exp(Pmin) + 1) / (Pmin * (numerix.exp(Pmin) - 1)), alpha)
 
-	    self.value = alpha
+	    return alpha
 
 def _test(): 
     import doctest

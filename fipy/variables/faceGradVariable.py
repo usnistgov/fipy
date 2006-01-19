@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 7/12/05 {1:08:19 PM}
+ #                                last update: 12/22/05 {3:58:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,9 @@ class _FaceGradVariable(VectorFaceVariable):
 	self.var = self._requires(var)
 
     def _calcValue(self):        
-	inline._optionalInline(self._calcValueInline, self._calcValuePy)
+	return inline._optionalInline(self._calcValueInline, self._calcValuePy)
     
     def _calcValuePy(self):
-    
         dAP = self.mesh._getCellDistances()
 	id1, id2 = self.mesh._getAdjacentCellIDs()
 ##	N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
@@ -77,7 +76,7 @@ class _FaceGradVariable(VectorFaceVariable):
 	T1 = T1[:,Numeric.NewAxis]
 	T2 = T2[:,Numeric.NewAxis]
         
-	self.value = normals * N + tangents1 * T1 + tangents2 * T2
+	return normals * N + tangents1 * T1 + tangents2 * T2
 
     def _calcValueInline(self):
 
@@ -85,6 +84,8 @@ class _FaceGradVariable(VectorFaceVariable):
 	
 	tangents1 = self.mesh._getFaceTangents1()
 	tangents2 = self.mesh._getFaceTangents2()
+ 
+        val = self._getArray().copy()
 
 	inline._runInlineLoop1("""
             int j;
@@ -114,9 +115,11 @@ class _FaceGradVariable(VectorFaceVariable):
             id2 = id2,
 	    dAP = Numeric.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
-            val = self._getArray(),
+            val = val,
             ni = tangents1.shape[0],
             nj = tangents1.shape[1])
-
+            
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
 
     

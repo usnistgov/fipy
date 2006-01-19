@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {4:59:10 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {9:43:34 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,8 +108,8 @@ var = DistanceVariable(
     hasOld = 1
     )
 
-positiveCells = mesh.getCells(lambda cell: (cell.getCenter()[1] > 0.6 * Ly) or (cell.getCenter()[1] > 0.2 * Ly and cell.getCenter()[0] > 0.5 * Lx))
-var.setValue(1, positiveCells)
+x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
 
 var.calcDistanceFunction()
 

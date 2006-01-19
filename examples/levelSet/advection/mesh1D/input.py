@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {5:03:59 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {5:49:37 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,11 +85,7 @@ Construct a `distanceVariable` object.
    ...                        mesh = mesh,
    ...                        value = -1,
    ...                        hasOld = 1)
-
-   >>> cells = mesh.getCells(
-   ...     filter = lambda cell: cell.getCenter()[0] > interfacePosition)
-   >>> var.setValue(1, cells)
-   
+   >>> var.setValue(1, where=mesh.getCellCenters()[...,0] > interfacePosition)
    >>> var.calcDistanceFunction()
    
 The `advectionEquation` is constructed.

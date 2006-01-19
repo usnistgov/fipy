@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 10/24/05 {5:14:37 PM} 
+ #                                last update: 1/17/06 {11:17:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,17 +42,21 @@ from fipy.tools import numerix
 
 class FaceVariable(Variable):
     def __init__(self, mesh, name = '', value=0., unit = None):
-	array = Numeric.zeros(mesh._getNumberOfFaces(),'d')
+        if value is None:
+            array = None
+        else:
+            array = Numeric.zeros(self._getShapeFromMesh(mesh),'d')
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-    def setValue(self, value, faces = ()):
+    def setValue(self, value, faces = (), unit = None, where = None):
         if faces == ():
-            self[:] = value
+            Variable.setValue(self, value, unit = unit, where = where)
         else:
+            import warnings
+            warnings.warn("'where' should be used instead of 'faces'", DeprecationWarning, stacklevel=2)
             for face in faces:
                 self[face.getID()] = value
-
 
     def _getVariableClass(self):
 	return FaceVariable

@@ -6,7 +6,7 @@
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 7/13/05 {2:07:12 PM} 
+ #                                last update: 12/22/05 {3:58:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,17 +43,22 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
 	cell1 = numerix.take(self.var,id1)
 	cell2 = numerix.take(self.var,id2)
-	self.value = (cell1 - cell2) * alpha + cell2
+	return (cell1 - cell2) * alpha + cell2
 	
     def _calcValueIn(self, alpha, id1, id2):
+        val = self._getArray().copy()
+        
 	inline._runInlineLoop1("""
 	    double cell2 = var(id2(i));
 	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
 	""",
 	var = self.var.getNumericValue(),
-	val = self._getArray(), 
+	val = val, 
 	alpha = alpha,
 	id1 = id1, id2 = id2,
 	ni = self.mesh._getNumberOfFaces())
+ 
+ 	return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
 
 	

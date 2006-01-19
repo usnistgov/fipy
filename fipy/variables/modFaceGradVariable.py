@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 4/2/05 {7:30:51 PM}
+ #                                last update: 12/22/05 {3:59:14 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,6 +51,8 @@ class _ModFaceGradVariable(_FaceGradVariable):
 	
 	tangents1 = self.mesh._getFaceTangents1()
 	tangents2 = self.mesh._getFaceTangents2()
+ 
+        val = self._getArray().copy()
 
 	inline._runInline(self.modIn + """
         int i;
@@ -84,6 +86,9 @@ class _ModFaceGradVariable(_FaceGradVariable):
             id2 = Numeric.array(id2),
             dAP = Numeric.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
-            val = self._getArray(),
+            val = val,
             ni = tangents1.shape[0],
             nj = tangents1.shape[1])
+            
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())

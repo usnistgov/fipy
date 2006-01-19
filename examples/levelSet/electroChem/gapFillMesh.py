@@ -18,6 +18,7 @@ from fipy.meshes.numMesh.gmshImport import GmshImporter2D
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 import os
+from fipy.tools import numerix
 
 class GapFillMesh(Mesh2D):
     """
@@ -56,7 +57,6 @@ class GapFillMesh(Mesh2D):
        
         >>> centers = mesh.getCellCenters()[:,1]
         >>> localErrors = (centers - var)**2 / centers**2
-        >>> from fipy.tools import numerix
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
         >>> print numerix.sqrt(localErrors[argmax]) < 0.05
@@ -185,8 +185,7 @@ class GapFillMesh(Mesh2D):
         return self.getFaces(lambda face: face.getCenter()[1] < self.epsilon)
 
     def getCellIDsAboveFineRegion(self):
-        cells = self.getCells(lambda cell: cell.getCenter()[1] > self.actualFineRegionHeight - self.cellSize)
-        return [cell.getID() for cell in cells]
+        return numerix.nonzero(self.getCellCenters()[:,1] > self.actualFineRegionHeight - self.cellSize)
 
     def getFineMesh(self):
         return self.fineMesh
@@ -222,7 +221,7 @@ class TrenchMesh(GapFillMesh):
         >>> mesh = dump.read(filename)
         >>> os.close(f)
         >>> os.remove(filename)
-        >>> mesh.getNumberOfCells() - len(mesh.getElectrolyteCells())        
+        >>> mesh.getNumberOfCells() - len(numerix.nonzero(mesh.getElectrolyteMask()))        
         150
 
         >>> from fipy.variables.cellVariable import CellVariable
@@ -239,7 +238,6 @@ class TrenchMesh(GapFillMesh):
        
         >>> centers = mesh.getCellCenters()[:,1]
         >>> localErrors = (centers - var)**2 / centers**2
-        >>> from fipy.tools import numerix
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
         >>> print numerix.sqrt(localErrors[argmax]) < 0.051
@@ -310,54 +308,48 @@ class TrenchMesh(GapFillMesh):
                              desiredFineRegionHeight = fineRegionHeight,
                              transitionRegionHeight = transitionHeight)
 
-    def getElectrolyteCells(self):
-        def filter(cell):
-            x,y = cell.getCenter()
-            Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
+    def getElectrolyteMask(self):
+        x = self.getCellCenters()[:,0]
+        y = self.getCellCenters()[:,1]
+        
+        Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
 
-            ## taper
-            from fipy.tools import numerix
-            taper = numerix.tan(self.angle) * Y
+        ## taper
+        taper = numerix.tan(self.angle) * Y
 
-            ## bow
-            if abs(self.bowWidth) > 1e-12 and (-self.trenchDepth / 2 < Y < self.trenchDepth / 2):
-                param1 = self.trenchDepth**2 / 8 / self.bowWidth
-                param2 = self.bowWidth / 2
-                bow = -numerix.sqrt((param1 + param2)**2 - Y**2) + param1 - param2
-            else:
-                bow = 0
+        ## bow
+        if abs(self.bowWidth) > 1e-12 and (-self.trenchDepth / 2 < Y < self.trenchDepth / 2):
+            param1 = self.trenchDepth**2 / 8 / self.bowWidth
+            param2 = self.bowWidth / 2
+            bow = -numerix.sqrt((param1 + param2)**2 - Y**2) + param1 - param2
+        else:
+            bow = 0
 
-            ## over hang
+        ## over hang
+        Y = y - (self.heightBelowTrench + self.trenchDepth - self.overBumpRadius)
 
-            
-            
-            Y = y - (self.heightBelowTrench + self.trenchDepth - self.overBumpRadius)
+        overBump = 0
 
-##            Y = 0
-            overBump = 0
-            if Y > -self.overBumpRadius:
-                if self.overBumpRadius > 1e-12:
-                    overBump += self.overBumpWidth / 2 * (1 + numerix.cos(Y * numerix.pi / self.overBumpRadius))
-                if Y > 0:
-                    if Y > self.overBumpRadius:
-                        overBump -= self.overBumpRadius
-                    else:
-                        overBump -= self.overBumpRadius - numerix.sqrt(self.overBumpRadius**2 - Y**2)
+        if self.overBumpRadius > 1e-12:            
+            overBump += numerix.where(Y > -self.overBumpRadius,
+                                      self.overBumpWidth / 2 * (1 + numerix.cos(Y * numerix.pi / self.overBumpRadius)),
+                                      0)
 
-##            print overBump
-##            raw_input()
-            
-            if y > self.trenchDepth + self.heightBelowTrench:
-                return 1
-            elif y < self.heightBelowTrench:
-                return 0
-##            elif x < self.domainWidth - self.trenchWidth / 2 - taper + bow + overBump:
-            elif x > self.trenchWidth / 2 + taper - bow - overBump:
-                return 0
-            else:
-                return 1
+        tmp = self.overBumpRadius**2 - Y**2
+        tmp = (tmp > 0) * tmp
+        overBump += numerix.where((Y > -self.overBumpRadius) & (Y > 0),
+                                  numerix.where(Y > self.overBumpRadius,
+                                                -self.overBumpRadius,
+                                                -(self.overBumpRadius - numerix.sqrt(tmp))),
+                                  0)
 
-        return self.getCells(filter)
+        return numerix.where(y > self.trenchDepth + self.heightBelowTrench,
+                             1,
+                             numerix.where(y < self.heightBelowTrench,
+                                           0,
+                                           numerix.where(x > self.trenchWidth / 2 + taper - bow - overBump,
+                                                         0,
+                                                         1)))
 
     def __getstate__(self):
         dict = GapFillMesh.__getstate__(self)

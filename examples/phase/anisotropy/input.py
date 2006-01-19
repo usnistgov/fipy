@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 9/15/05 {5:51:28 PM} { 5:14:21 PM}
+ #                                last update: 1/17/06 {11:49:47 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -132,10 +132,8 @@ The domain is seeded with a circular solidified region with parameters
 `seedCenter` and `radius` representing the center and radius of the
 seed.
    
-    >>> interiorCells = mesh.getCells(filter = lambda cell: \
-    ...     (cell.getCenter()[0] - seedCenter[0])**2 + \
-    ...     (cell.getCenter()[1] - seedCenter[1])**2 < radius**2)
-    >>> phase.setValue(1.,interiorCells)
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> phase.setValue(1., where=(x - seedCenter[0])**2 + (y - seedCenter[1])**2 < radius**2)
 
 The temperature field is initialized to a value of `-0.4` throughout:
 
@@ -234,18 +232,12 @@ The solution is compared with test data. The test data was created for
 field modeling. The following code opens the file ``test.gz`` extracts
 the data and compares it with the `phase` variable.
 
-   >>> import os
-   >>> testFile = 'test.gz'
    >>> import examples.phase.anisotropy
-   >>> import gzip
-   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], testFile)
-   >>> filestream = gzip.open(filepath,'r')
-   >>> import cPickle
-   >>> testData = cPickle.load(filestream)
-   >>> filestream.close()
-   >>> phase =  numerix.array(phase)
-   >>> testData = numerix.reshape(testData, phase.shape)
-   >>> print testData.allclose(phase, rtol = 1e-10, atol = 1e-10)
+   >>> import os
+   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'test.gz')
+   >>> from fipy.tools import dump
+   >>> testData = dump.read(filepath)
+   >>> print numerix.allclose(phase, testData)
    1
    
 """

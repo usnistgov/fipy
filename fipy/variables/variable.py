@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/24/05 {4:52:40 PM} 
+ #                                last update: 1/19/06 {11:49:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,14 +42,25 @@
 
 __docformat__ = 'restructuredtext'
 
+import sys
+import os
 
 import Numeric
 
 import fipy.tools.dimensions.physicalField
 
 from fipy.tools import numerix
+from fipy.tools import parser
 
-class Variable:
+class Variable(object):
+    
+    _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
+    if parser.parse("--no-cache", action = "store_true"):
+        _cacheAlways = False
+    if parser.parse("--cache", action = "store_true"):
+        _cacheAlways = True
+
+    _cacheNever = False
     
     """
     Lazily evaluated quantity with units. 
@@ -75,7 +86,18 @@ class Variable:
 	
     """
     
-    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None):
+    def __new__(cls, *args, **kwds):
+        new = object.__new__(cls)
+        
+##         new._refcount = sys.getrefcount(new)
+
+##         print "__new__"
+##         print "count:", sys.getrefcount(new)
+##         print "refs:", gc.get_referrers(new)
+        
+        return new
+
+    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
 	Create a `Variable`.
 	
@@ -96,6 +118,8 @@ class Variable:
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
 	"""
 
+##         self.absrefcount = 0
+        
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
@@ -108,9 +132,53 @@ class Variable:
 	    
 	self._setValue(value = value, unit = unit, array = array)
 	
-	self.name = name
+        self.name = name
 	self.mesh = mesh
 		
+        self._cached = cached
+
+##         print "%s.__init__" % self.name, sys.getrefcount(self)
+##         self._refcount = sys.getrefcount(self) # - 2
+        
+        ## The magic refcount offset of 2 is to account for the different
+        ## reference list within `__init__()`, e.g.,
+        ## 
+        ##     >>> import gc
+        ##     >>> print gc.get_referrers(self)
+        ##     [<bound method Variable.__init__ of Variable(name = "a", value = 0.0)>, (Variable(name = "a", value = 0.0),), <frame object at 0x3106f0>]
+        ## 
+        ## to that within a normal method of the `Variable` immediately
+        ## after `__init__()`,
+        ## 
+        ##     >>> print Variable().get_referrers()
+        ##     [<frame object at 0x3106f0>]
+        ## 
+        ## Here, the only referrer is the execution frame of the method
+        ## call.  In the `__init__()`, the referrers appear to be the
+        ## `__init__()` method itself, possibly the argument tuple to
+        ## `__init__()`, and the execution frame of `__init__()`.  It is
+        ## unclear why there is not a corresponding `<bound method
+        ## Variable.get_referrers ...>` for the second call, but there
+        ## isn't.
+        ## 
+        ## If the query is made in the general execution context, and not
+        ## in a method of `Variable`, then the execution frame of the
+        ## method is not present
+        ## 
+        ##     >>> print gc.get_referrers(Variable())
+        ##     []
+        ## 
+        ## If the `Variable` has been assigned_ to a Python name_
+        ## 
+        ##     >>> a = Variable(name = "a")
+        ##     >>> a.get_referrers()
+        ##     [<frame object at 0x3106f0>, {... , 'a': Variable(name = "a", value = 0.0), ...}]
+        ##     
+        ## then the referrers will be the execution frame of the
+        ## `get_referrers()` method and the global symbol table that
+        ## defines the name binding of the `Variable` to `a`.
+
+##         print self.name, self._refcount
 	self.stale = 1
 	self._markFresh()
         
@@ -119,7 +187,39 @@ class Variable:
 	self.laplacian = {}
         self.mag = None
         self.sliceVars = {}
-    
+        
+##         sys.settrace(self.trace)
+
+##         print "get_referrers():", gc.get_referrers(self)
+
+##         self._referrers = gc.get_referrers(self)
+
+##         import gc
+## ##         gc.collect()
+##         ref = gc.get_referrers(self)
+##         print "__init__", ref
+## ##         print ref[3].f_code, ref[3].f_code.co_name
+##         
+##         del ref
+        
+##         frame = sys._getframe()
+##         stack = 0
+##         while frame is not None:
+##             print "frame %d:" % stack, frame, frame.f_code.co_name, frame.f_locals, frame.f_globals
+##             frame = frame.f_back
+##             stack += 1
+
+    def get_referrers(self):
+        import gc
+##         ref = gc.get_referrers(self)
+##         print ref[0].f_code, ref[0].f_code.co_name
+        gc.collect()
+        return gc.get_referrers(self)
+        
+    def getrefcount(self):
+        import sys
+        return sys.getrefcount(self)
+
     def getMesh(self):
 	return self.mesh
 	
@@ -262,9 +362,25 @@ class Variable:
 	s += 'value = ' + `self.getValue()`
 	if self.mesh:
 	    s += ', mesh = ' + `self.mesh`
+##         s += ', ref = (%d, %d, %d)' % (sys.getrefcount(self), self._refcount, len(self.getSubscribedVariables()))
+##         s += ', ref = (%d, %d, %s)' % (sys.getrefcount(self), self._refcount, `[sub.__repr__() for sub in self.getSubscribedVariables()]`)
 	s += ')'
 	return s
-	
+
+            
+##     def __str__(self):
+## 	return str(self.name)
+## 	    
+##     def __repr__(self):
+## 	s = self.__class__.__name__ + '('
+## 	if len(self.name) > 0:
+## 	    s += 'name = "' + self.name + '", '
+## 	s += 'value = ' + "value"
+## 	if self.mesh:
+## 	    s += ', mesh = ' + `self.mesh`
+## 	s += ')'
+## 	return s
+
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
@@ -273,6 +389,9 @@ class Variable:
                                 separator = separator)
         
     def __setitem__(self, index, value):
+        if self.value is None:
+            self.getValue()
+##         self.getValue()[index] = value
 	self.value[index] = value
 	self._markFresh()
 	
@@ -291,43 +410,159 @@ class Variable:
 	"""
 	return self.getValue()
 		
+##     def getValue(self):
+## 	"""
+## 	"Evaluate" the `Variable` and return its value (longhand)
+## 	
+## 	    >>> a = Variable(value = 3)
+## 	    >>> a.getValue()
+## 	    3
+## 	    >>> b = a + 4
+## 	    >>> b
+## 	    (Variable(value = 3) + 4)
+## 	    >>> b.getValue()
+## 	    7
+## 	"""
+##         cached = self.cached(debug = 1)
+##         print self.name, cached #, self.get_referrers()
+##         if self.stale or not cached: # or self.value is None:           
+##             value = self._calcValue()
+##             if value is None:
+##                 print self.name, "is None!!!"
+##             if cached:
+##                 self._setValue(value = value)
+## ##                 self.value = value
+##             else:
+##                 self._setValue(value = None)
+## ##                 self.value = None
+##             self._markFresh()
+## ##                 self._markFresh()
+## ##             else:
+## ##                 self.__markStale()
+##         else:
+##             value = self.value
+##             if value is None:
+##                 print >>sys.stderr, self.name, "is None and we can't be here!!!"
+## ##                 print "stale:", self.stale, "cached:", self.cached()
+## ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+##                 print self.cached(debug = 1)
+##                 import gc
+## ##                 print "_referrers:", self._referrers
+## ##                 print "get_referrers():", gc.get_referrers(self)
+## 
+## 	return value
+
     def getValue(self):
-	"""
-	"Evaluate" the `Variable` and return its value (longhand)
-	
-	    >>> a = Variable(value = 3)
-	    >>> a.getValue()
-	    3
-	    >>> b = a + 4
-	    >>> b
-	    (Variable(value = 3) + 4)
-	    >>> b.getValue()
-	    7
-	"""
-	self._refresh()
-	return self.value
+        """
+        "Evaluate" the `Variable` and return its value (longhand)
+        
+            >>> a = Variable(value = 3)
+            >>> a.getValue()
+            3
+            >>> b = a + 4
+            >>> b
+            (Variable(value = 3) + 4)
+            >>> b.getValue()
+            7
+        """
+        if self.stale or not self._isCached() or self.value is None:
+            value = self._calcValue()
+            if self._isCached():
+                self._setValue(value = value)
+            else:
+                self._setValue(value = None)
+            self._markFresh()
+        else:
+            value = self.value
+            
+        return value
+
+    def _isCached(self):
+        return self._cacheAlways or (self._cached and not self._cacheNever)
+        
+    def cacheMe(self, recursive = False):
+        self._cached = True
+        if recursive:
+            for var in self.requiredVariables:
+                var.cacheMe(recursive = True)
+                
+    def dontCacheMe(self, recursive = False):
+        self._cached = False
+        if recursive:
+            for var in self.requiredVariables:
+                var.dontCacheMe(recursive = False)
 
     def _setValue(self, value, unit = None, array = None):
-	PF = fipy.tools.dimensions.physicalField.PhysicalField
+        self.value = self._makeValue(value = value, unit = unit, array = array)
+     
+    def _makeValue(self, value, unit = None, array = None):
+        PF = fipy.tools.dimensions.physicalField.PhysicalField
 
         from fipy.tools.numerix import MA
-	if isinstance(value, PF):
-            self.value = value
-        elif unit is not None or type(value) in [type(''), type(()), type([])]:
-	    self.value = PF(value = value, unit = unit, array = array)
-	elif array is not None:
-	    array[:] = value
-	    self.value = array
-        elif type(value) in (type(Numeric.array(1)), type(MA.array(1))):
-            self.value = value
-	else:
-            self.value = Numeric.array(value)
-	    
-	if isinstance(self.value, PF) and self.value.getUnit().isDimensionless():
-	    self.value = self.value.getNumericValue()
 
-    def setValue(self, value, unit = None, array = None):
-	self._setValue(value = value, unit = unit, array = array)
+        if not isinstance(value, PF):
+            
+            if getattr(self, 'value', None) is not None:
+                v = self.value
+                if isinstance(v, PF):
+                    v = self.value.value
+                if type(value) in (type(1), type(1.)):
+                    if type(v) is type(numerix.array(1)):
+                        if len(v) > 1:
+                            value = numerix.resize(float(value), (len(v),))
+                    
+            if unit is not None or type(value) in [type(''), type(()), type([])]:
+                value = PF(value = value, unit = unit, array = array)
+            elif array is not None:
+                array[:] = value
+                value = array
+            elif type(value) not in (type(None), type(Numeric.array(1)), type(MA.array(1))):
+                value = Numeric.array(value)
+
+        if isinstance(value, PF) and value.getUnit().isDimensionless():
+            value = value.getNumericValue()
+            
+        return value
+
+    def setValue(self, value, unit = None, array = None, where = None):
+        """
+        Set the value of the Variable. Can take a masked array.
+
+            >>> a = Variable((1,2,3))
+            >>> a.setValue(5, where = (1, 0, 1))
+            >>> print a
+            [ 5., 2., 5.,]
+
+            >>> b = Variable((4,5,6))
+            >>> a.setValue(b, where = (1, 0, 1))
+            >>> print a
+            [ 4., 2., 6.,]
+            >>> print b
+            [ 4., 5., 6.,]
+            >>> a.setValue(3)
+            >>> print a
+            [ 3., 3., 3.,]
+
+            >>> b = numerix.array((3,4,5))
+            >>> a.setValue(b)
+            >>> a[:] = 1
+            >>> print b
+            [3,4,5,]
+
+            >>> a.setValue((4,5,6), where = (1, 0))
+            Traceback (most recent call last):
+                ....
+            ValueError: array dimensions must agree
+            
+        """
+        
+        if hasattr(value, 'copy'):
+            tmp = value.copy()
+        else:
+            tmp = value
+        if where is not None:
+            tmp = numerix.where(where, tmp, self.getValue())
+	self._setValue(value = tmp, unit = unit, array = array)
 	self._markFresh()
 	
     def _setNumericValue(self, value):
@@ -386,42 +621,62 @@ class Variable:
             >>> var.getFaceGrad().getShape()
             (17, 2)
         """
-        return numerix.array(self._getArray()).shape
+##         array = self._getArray()
+        if self.value is not None:
+##             return numerix.array(self._getArray()).shape
+##             return self._getArray().shape
+            return numerix.getShape(self.value)
+        else:
+            return self._getShapeFromMesh(self.getMesh()) or ()
 	
-    def _refresh(self):
-	if self.stale:           
-	    for required in self.requiredVariables:
-		required._refresh()
-	    self._calcValue()
-	    self._markFresh()
-		    
     def _calcValue(self):
-	pass	
-    def __markStale(self):
+        return self.value
+        
+    def getSubscribedVariables(self):
         import weakref
-        remainingSubscribedVariables = []
-        for subscriber in self.subscribedVariables:
-            try:
-                subscriber._markStale() 
-                remainingSubscribedVariables.append(subscriber)
-            except weakref.ReferenceError:
-                pass
-        self.subscribedVariables = remainingSubscribedVariables
+        self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
+        
+        return self.subscribedVariables
+        
+    def __markStale(self):
+##         import weakref
+##         remainingSubscribedVariables = []
+        for subscriber in self.getSubscribedVariables():
+##             try:
+                subscriber()._markStale() 
+##                 remainingSubscribedVariables.append(subscriber)
+##                 print subscriber.__repr__(), "stale"
+##             except weakref.ReferenceError:
+##                 pass
+
+##         for subscriber in self.subscribedVariables:
+##             try:
+##                 subscriber()._markStale() 
+##                 remainingSubscribedVariables.append(subscriber)
+## ##                 print subscriber.__repr__(), "stale"
+##             except weakref.ReferenceError:
+##                 pass
+##         self.subscribedVariables = remainingSubscribedVariables
 
     def _markFresh(self):
 	self.stale = 0
+##         print `self`, "staling", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
         self.__markStale()
+##         print `self`, "staled", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
 
     def _markStale(self):
 	if not self.stale:
 	    self.stale = 1
+##             print `self`, "staling", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
             self.__markStale()
+##             print `self`, "staled", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
 	    
     def _requires(self, var):
 	if isinstance(var, Variable):
 	    self.requiredVariables.append(var)
 	    var._requiredBy(self)
 	    self._markStale()
+##         print `var`, "requires", var.requiredVariables
 	return var
 	    
     def _requiredBy(self, var):
@@ -431,12 +686,43 @@ class Variable:
         # due to circular references between the subscriber
         # and the subscribee
         import weakref
-	self.subscribedVariables.append(weakref.proxy(var))
+        self.subscribedVariables.append(weakref.ref(var))
+## 	self.subscribedVariables.append(weakref.proxy(var))
+##         print `self`, "requiredBy", [ref.__repr__() for ref in self.subscribedVariables]
 	
     def _getVariableClass(self):
 	return Variable
 
     def _getOperatorVariableClass(self, baseClass = None):
+        """
+            >>> a = Variable(value = 1)
+
+            >>> c = -a
+            >>> b = c.getOld() + 3
+            >>> print b
+            2
+
+        replacing with the same thing is no problem
+        
+            >>> a.setValue(3)
+            >>> b = c.getOld() + 3
+            >>> print b
+            0
+
+        replacing with multiple copies causes the reference counting problem
+        
+            >>> a.setValue(3)
+            >>> b = (c + c).getOld() + 3
+            >>> print b
+            -3
+            
+        the order matters
+        
+            >>> b = (c + c).getOld() + 3
+            >>> a.setValue(2)
+            >>> print b
+            -1
+        """
 	if baseClass is None:
             baseClass = self._getVariableClass()
             
@@ -445,24 +731,68 @@ class Variable:
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
-                baseClass.__init__(self, value = 0, mesh = mesh)
+                baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
 		for aVar in self.var:
 		    self._requires(aVar)
 
                 self.old = None
+                
+                self.dontCacheMe()
+                
+##             def getValue(self):
+##                 cached = self._isCached() or (len(self.subscribedVariables) > 1 and not self._cacheNever)
+## ##                 print self.name, cached #, self.get_referrers()
+##                 if self.stale or not cached or self.value is None:           
+##                     value = self._calcValue()
+##                     if value is None:
+##                         print self.name, "is None!!!"
+##                     if cached:
+##                         self._setValue(value = value)
+##         ##                 self.value = value
+##                     else:
+##                         self._setValue(value = None)
+##         ##                 self.value = None
+##                     self._markFresh()
+##         ##                 self._markFresh()
+##         ##             else:
+##         ##                 self.__markStale()
+##                 else:
+##                     value = self.value
+##                     if value is None:
+##                         print >>sys.stderr, self.name, "is None and we can't be here!!!"
+##         ##                 print "stale:", self.stale, "cached:", self.cached()
+##         ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
+##                         print self.cached(debug = 1)
+##                         import gc
+##         ##                 print "_referrers:", self._referrers
+##         ##                 print "get_referrers():", gc.get_referrers(self)
+## 
+##                 return value
+
+            def _isCached(self):
+                return (Variable._isCached(self) 
+                        or (len(self.subscribedVariables) > 1 and not self._cacheNever))
 
             def getOld(self):
                 if self.old is None:
                     oldVar = []
+##                     print "making old:", self.var
                     for v in self.var:
                         from fipy.variables.cellVariable import CellVariable
                         if isinstance(v, CellVariable):
                             oldVar.append(v.getOld())
                         else:
                             oldVar.append(v)
-                    self.old = self.__class__(self.op, oldVar, self.getMesh())
+                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh())
+##                     print `self.old`
+##                     print "made old"
 
+##                 b = self.old
+##                 a = str(self.old.getValue())
+##                 print "getOld():", a
+##                 print "getOld():", self.old.getValue()
+                
                 return self.old
             
 	    def _getRepresentation(self, style = "__repr__"):
@@ -560,10 +890,10 @@ class Variable:
                 return name
                 
 	    def copy(self):
-	       return self.__class__(
-		   op = self.op,
-		   var = self.var,
-		   mesh = self.getMesh())
+                return self.__class__(
+                    op = self.op,
+                    var = self.var,
+                    mesh = self.getMesh())
 
 	return OperatorVariable
 	
@@ -599,7 +929,18 @@ class Variable:
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-		self._setValue(value = self.op(self.var[0].getValue()))
+##                 print "----"
+##                 print self.getName()
+                
+                val0 = self.var[0].getValue()
+##                 print "[", "[OP]", "var0:", type(val0), "]"
+                
+                ret = self.op(val0)
+                
+##                 print "\t=", type(ret)
+                return ret
+
+		return self.op(self.var[0].getValue())
 		
 	return unOp(op, [self])
 	    
@@ -616,22 +957,17 @@ class Variable:
         reshape() is one case where the value cannot be substituted, so
         the shape must be included in valueMattersForShape.
         """
-
-        a = object._getArray()
         
-        # we don't want to meddle with the contents of the actual object
-        if type(a) in (type(()), type([]), type(numerix.array(1))):
-            a = a.copy()
-        else:
-            a = numerix.array(1)
-            
         if object not in valueMattersForShape:
-            if a.shape == ():
-                # if Numeric thinks the array is a scalar (rather than a 1x1 array)
-                # it won't slice
-                a = numerix.array(1)
-            else:
-                a[:] = 1
+            a = numerix.ones(object.getShape())
+        else:
+            a = object._getArray()
+            
+##             # we don't want to meddle with the contents of the actual object
+##             if type(a) in (type(()), type([]), type(numerix.array(1))):
+##                 a = a.copy()
+##             else:
+##                 a = numerix.array(1)
 
         return a
 
@@ -710,12 +1046,12 @@ class Variable:
             >>> fvXcv = fv * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> cvXfv = cv * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
-
+            TypeError: can't multiply sequence to non-int
+            
         `CellVariable` * VectorCellVariable
         
             >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
@@ -740,11 +1076,11 @@ class Variable:
             >>> vfvXcv = vfv * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> cvXvfv = cv * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `CellVariable` * Scalar
         
@@ -841,11 +1177,11 @@ class Variable:
             >>> cvXv4v = cv * Variable(value = (3,2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v4vXcv = Variable(value = (3,2,1,0)) * cv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             
 
         `CellVariable` * CellGradVariable
@@ -871,11 +1207,11 @@ class Variable:
             >>> vcvXfv = vcv * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> fvXvcv = fv * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `FaceVariable` * VectorFaceVariable
 
@@ -1019,11 +1355,11 @@ class Variable:
             >>> fvXv3v = fv * Variable(value = (3,2,1))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v3vXfv = Variable(value = (3,2,1)) * fv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
             >>> fvXv10v = fv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
             >>> print fvXv10v
@@ -1053,11 +1389,11 @@ class Variable:
             >>> vfvXvcv = vfv * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> vcvXvfv = vcv * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
         `VectorCellVariable` * Scalar
 
@@ -1169,11 +1505,11 @@ class Variable:
             >>> vcvXv4v = vcv * Variable(value = (3,2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
             
             
@@ -1363,11 +1699,11 @@ class Variable:
             >>> vfvXv3v = vfv * Variable(value = (2,1,0))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             >>> v3vXvfv = Variable(value = (2,1,0)) * vfv
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
 
 
             >>> vfvXv10v = vfv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
@@ -1498,7 +1834,7 @@ class Variable:
             >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2))
             Traceback (most recent call last):
                   ...
-            TypeError: unsupported operand type(s) for *: 'instance' and 'instance'
+            TypeError: can't multiply sequence to non-int
             
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
@@ -1544,8 +1880,8 @@ class Variable:
         var0 = self
         var1 = other
         
-        selfArray = self._getArrayAsOnes(self, valueMattersForShape)
-        otherArray = self._getArrayAsOnes(other, valueMattersForShape)
+        selfArray = self._getArrayAsOnes(object = self, valueMattersForShape = valueMattersForShape)
+        otherArray = self._getArrayAsOnes(object = other, valueMattersForShape = valueMattersForShape)
 
         try:
             var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
@@ -1565,8 +1901,18 @@ class Variable:
 		    if type(self.var[1]) is type(''):
 			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
 		    val1 = self.var[1]
-		    
-		self._setValue(value = self.op(self.var[0].getValue(), val1)) 
+		
+##                 print "===="
+##                 print self.getName()
+##                 print "[", "var0:", self.var[0].getName(), "[OP]", "var1:", val1, "]"
+                val0 = self.var[0].getValue()
+##                 print "[", "var0:", type(val0), "[OP]", "var1:", type(val1), "]"
+                
+                ret = self.op(val0, val1)
+                
+##                 print "\t=", type(ret)
+                return ret
+		return self.op(self.var[0].getValue(), val1)
 	
             def _getRepresentation(self, style = "__repr__"):
                 return "(" + operatorClass._getRepresentation(self, style = style) + ")"
@@ -1771,10 +2117,12 @@ class Variable:
         return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other)
         
     def __len__(self):
-	return len(self.value)
+        return len(self.getValue())
+## 	return len(self.value)
 	
     def __float__(self):
-	return float(self.value)
+        return float(self.getValue())
+## 	return float(self.value)
 
     def arccos(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.arccos(a))
@@ -1963,6 +2311,10 @@ class Variable:
 	    self.mag = self.dot(self).sqrt()
 	    
 	return self.mag
+
+Variable._refcount = Variable().getrefcount()
+## import gc
+## print Variable._refcount, Variable().get_referrers()
 
 def _test(): 
     import doctest

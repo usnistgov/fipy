@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/12/05 {11:37:51 AM}
+ #                                last update: 1/17/06 {3:51:51 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -122,14 +122,14 @@ randomly oriented liquid phase
 Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
     >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
     ...                          (Lx, 0., -2. * pi / 3.), 
     ...                          (0., Lx, -2. * pi / 3. + 0.3), 
     ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     cells = mesh.getCells(filter = lambda cell: \
-    ...             (cell.getCenter()[0] - a)**2 + (cell.getCenter()[1] - b)**2 < (Lx / 2.)**2)
-    ...     phase.setValue(1., cells)
-    ...     theta.setValue(thetaValue, cells)
+    ...     segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+    ...     phase.setValue(1., where=segment)
+    ...     theta.setValue(thetaValue, where=segment)
 
 The `phase` equation is built in the following way. The source term is
 linearized in the manner demonstrated in `examples.phase.simple.input`
@@ -240,14 +240,14 @@ data. First, reset the variables to their original values.
 
     >>> phase.setValue(0)
     >>> theta.setValue(-pi + 0.0001)
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
     >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
     ...                          (Lx, 0., -2. * pi / 3.), 
     ...                          (0., Lx, -2. * pi / 3. + 0.3), 
     ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     cells = mesh.getCells(filter = lambda cell: \
-    ...             (cell.getCenter()[0] - a)**2 + (cell.getCenter()[1] - b)**2 < (Lx / 2.)**2)
-    ...     phase.setValue(1., cells)
-    ...     theta.setValue(thetaValue, cells)
+    ...     segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+    ...     phase.setValue(1., where=segment)
+    ...     theta.setValue(thetaValue, where=segment)
 
 Step through half the time steps.
 
@@ -300,9 +300,12 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
-if __name__ == '__main__':
+def _run():
     import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript())
+    exec(fipy.tests.doctestPlus._getScript(__name__))
+
+if __name__ == '__main__':
+    _run()
 
     raw_input('finished')
 

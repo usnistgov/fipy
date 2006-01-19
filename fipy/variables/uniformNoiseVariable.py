@@ -4,7 +4,7 @@
  # 
  #  FILE: "uniformNoiseVariable.py"
  #                                    created: 8/26/05 {3:08:48 PM} 
- #                                last update: 9/16/05 {2:30:39 PM} 
+ #                                last update: 12/22/05 {11:58:15 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,8 +84,8 @@ class UniformNoiseVariable(NoiseVariable):
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
     
     def _calcValue(self):
-        self.value = uniform(self.minimum, self.maximum,
-                             shape = [self.getMesh().getNumberOfCells()])
+        return uniform(self.minimum, self.maximum,
+                       shape = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

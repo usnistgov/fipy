@@ -6,7 +6,7 @@
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 7/12/05 {11:38:34 AM} 
+ #                                last update: 12/22/05 {11:58:06 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,5 +47,5 @@ class _SumVariable(Variable):
 	self.index = index
 
     def _calcValue(self):
-	self.value = numerix.sum(self.var[:], self.index)
+	return numerix.sum(self.var[:], self.index)
 	

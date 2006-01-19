@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 10/24/05 {5:14:30 PM} 
+ #                                last update: 1/17/06 {11:17:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class CellVariable(Variable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> var.setValue(mesh.getCellCenters()[:,0] * mesh.getCellCenters()[:,1])
+        >>> var.setValue(mesh.getCellCenters()[...,0] * mesh.getCellCenters()[...,1])
 
         >>> import tempfile
         >>> import os
@@ -71,7 +71,10 @@ class CellVariable(Variable):
     """
     
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
-	array = Numeric.zeros([mesh.getNumberOfCells()],'d')
+        if value is None:
+            array = None
+        else:
+            array =  Numeric.zeros(self._getShapeFromMesh(mesh),'d')
 # 	array[:] = value
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
@@ -92,7 +95,7 @@ class CellVariable(Variable):
 ##        self.setValue(newValues)
         
     def copy(self):
-
+        
         return self.__class__(
             mesh = self.mesh, 
 	    name = self.name + "_old", 
@@ -114,13 +117,43 @@ class CellVariable(Variable):
 	else:
 	    return [self(point) for point in points]
 	
-    def setValue(self,value,cells = ()):
+    def setValue(self, value, cells = (), unit = None, where = None):
+        """
+        Patched values can be set by using either `cells` or `where`.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> v1 = CellVariable(value=(4,7,2,6), mesh=mesh)
+            >>> print v1
+            [ 4., 7., 2., 6.,]
+            >>> v1.setValue(4, where=(0, 0, 1, 1))
+            >>> print v1
+            [ 4., 7., 4., 4.,]
+            >>> v1.setValue((5,2,7,8), where=(0, 1, 1, 1))
+            >>> print v1
+            [ 4., 2., 7., 8.,]
+            >>> v1.setValue(3, unit = 'm')
+            >>> print v1
+            [ 3., 3., 3., 3.,] m
+            >>> v1.setValue(1, cells=mesh.getCells()[2:])
+            >>> print v1
+            [ 3., 3., 1., 1.,] m
+            >>> v1.setValue(4)
+            >>> print v1
+            [ 4., 4., 4., 4.,]
+            
+
+        """
+            
 	if cells == ():
-	    self[:] = value
+            Variable.setValue(self, value, unit = unit, where = where)
 	else:
+            import warnings
+            warnings.warn("'where' should be used instead of 'cells'", DeprecationWarning, stacklevel=2)
 	    for cell in cells:
 		self[cell.getID()] = value
 
+            
     def getCellVolumeAverage(self):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
@@ -291,18 +324,20 @@ class CellVariable(Variable):
 	if self.old is None:
 	    return self
 	else:
-	    return self.old
+            return self.old
+##             import weakref
+## 	    return weakref.proxy(self.old)
 
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
         """
 	if self.old is not None:
-	    self.old.setValue(self.value)
+            self.old.setValue(self.getValue().copy())
 
     def _resetToOld(self):
 	if self.old is not None:
-	    self.setValue(self.old.value)
+	    self.setValue(self.old.getValue())
 	    
     def _remesh(self, mesh):
 	self.value = Numeric.array(self.getValue(points = mesh.getCellCenters()))
@@ -366,6 +401,9 @@ class CellVariable(Variable):
         Used internally to create a new `CellVariable` from ``pickled`` 
         persistent storage.
         """
+        
+        import sys
+        self._refcount = sys.getrefcount(self)
 
         hasOld = 0
         if dict['old'] is not None:

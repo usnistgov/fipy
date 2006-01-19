@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 8/2/05 {4:58:24 PM}
+ #                                last update: 1/12/06 {8:24:28 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -203,17 +203,18 @@ if __name__ == '__main__':
     mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
     from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
     var = DistanceVariable(mesh = mesh, value = -1)
-    positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] - Lx / 2.)**2 + (cell.getCenter()[1] - Ly / 2.)**2 < (Lx / 4.)**2)
     
-    var.setValue(1, positiveCells)
+    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+
+    var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
     var.calcDistanceFunction()
     viewer = MayaviSurfactantViewer(var, smooth = 2)
     viewer.plot()
     raw_input("press key to continue")
 
     var = DistanceVariable(mesh = mesh, value = -1)
-    positiveCells = mesh.getCells(filter = lambda cell: cell.getCenter()[1] > 2. * Ly / 3. or (cell.getCenter()[0] > Lx / 2. and cell.getCenter()[1] > Ly / 3.) or (cell.getCenter()[1] < Ly / 6. and cell.getCenter()[0] > Lx / 2))
-    var.setValue(1, positiveCells)
+
+    var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
     var.calcDistanceFunction()
     viewer = MayaviSurfactantViewer(var)
     viewer.plot()

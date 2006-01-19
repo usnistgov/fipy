@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {5:00:23 PM} { 1:23:41 PM}
+ #                                last update: 1/12/06 {8:30:35 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -95,8 +95,8 @@ distanceVariable = DistanceVariable(
     hasOld = 1
     )
 
-positiveCells = mesh.getCells(lambda cell: x0 < cell.getCenter()[0] < x1 and x0 < cell.getCenter()[1] < x1)
-distanceVariable.setValue(-1, positiveCells)
+x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+distanceVariable.setValue(-1, where=((x0 < x) & (x < x1)) & ((x0 < y) & (y < x1)))
 
 
 surfactantVariable = SurfactantVariable(

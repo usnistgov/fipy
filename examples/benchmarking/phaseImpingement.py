@@ -6,7 +6,7 @@
  # 
  # FILE: "phaseImpingement.py"
  #                                     created: 1/18/06 {2:35:59 PM}
- #                                 last update: 1/18/06 {6:00:11 PM}
+ #                                 last update: 1/18/06 {3:55:17 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -102,14 +102,14 @@ theta = ModularVariable(
     hasOld = 1
     )
 
+x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
 for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
                          (Lx, 0., -2. * pi / 3.), 
                          (0., Lx, -2. * pi / 3. + 0.3), 
                          (Lx, Lx,  2. * pi / 3.)):
-    cells = mesh.getCells(filter = lambda cell: \
-            (cell.getCenter()[0] - a)**2 + (cell.getCenter()[1] - b)**2 < (Lx / 2.)**2)
-    phase.setValue(1., cells)
-    theta.setValue(thetaValue, cells)
+    segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+    phase.setValue(1., where=segment)
+    theta.setValue(thetaValue, where=segment)
 
 bench.stop('variables')
 

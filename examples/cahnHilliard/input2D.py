@@ -104,13 +104,11 @@ diffusionCoeff = 1
 from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx, dy, nx, ny)
 
-import random
 from fipy.variables.cellVariable import CellVariable
+import RandomArray
 var = CellVariable(name = "phase field",
                    mesh = mesh,
-                   value = [random.random() for x in range(nx * ny)])
-
-##var.setValue(1, cells = mesh.getCells(lambda cell: cell.getCenter()[0] > L / 2))
+                   value = RandomArray.random(nx * ny))
 
 faceVar = var.getArithmeticFaceValue()
 doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))

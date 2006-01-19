@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 7/12/05 {1:04:03 PM}
+ #                                last update: 12/22/05 {4:04:04 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,13 +68,15 @@ class _AddOverFacesVariable(CellVariable):
 
 ##         orientations = Numeric.array(orientations)
         
-        self.value = numerix.sum(contributions * orientations,1) / self.mesh.getCellVolumes()
+        return numerix.sum(contributions * orientations,1) / self.mesh.getCellVolumes()
 	
     def _calcValueIn(self):
 
         NCells = self.mesh.getNumberOfCells()
 	ids = self.mesh._getCellFaceIDs()
 
+        val = self._getArray().copy()
+        
         inline._runInline("""
         int i;
         
@@ -88,19 +90,21 @@ class _AddOverFacesVariable(CellVariable):
             }
             value(i) = value(i) / cellVolume(i);
           }
-          """,
-              numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
-              numberOfCells = NCells,
-              faceVariable = self.faceVariable.getNumericValue(),
-              ids = Numeric.array(ids),
-              value = self._getArray(),
-              orientations = Numeric.array(self.mesh._getCellFaceOrientations()),
-              cellVolume = Numeric.array(self.mesh.getCellVolumes()))
-	      
+        """,
+            numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
+            numberOfCells = NCells,
+            faceVariable = self.faceVariable.getNumericValue(),
+            ids = Numeric.array(ids),
+            value = val,
+            orientations = Numeric.array(self.mesh._getCellFaceOrientations()),
+            cellVolume = Numeric.array(self.mesh.getCellVolumes()))
+            
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.getUnit())
 
     def _calcValue(self):
 
-        inline._optionalInline(self._calcValueIn, self._calcValuePy)
+        return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
 
 

@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialNoiseVariable.py"
  #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 9/16/05 {2:29:35 PM} 
+ #                                last update: 12/22/05 {11:55:58 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,8 +110,8 @@ class ExponentialNoiseVariable(NoiseVariable):
         self.mean = self._requires(mean)
     
     def _calcValue(self):
-        self.value = exponential(mean = self.mean, 
-                                 shape = [self.getMesh().getNumberOfCells()])
+        return exponential(mean = self.mean, 
+                           shape = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest
