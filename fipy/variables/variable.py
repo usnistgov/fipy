@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/19/06 {11:49:55 AM} 
+ #                                last update: 1/19/06 {2:49:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,15 +87,7 @@ class Variable(object):
     """
     
     def __new__(cls, *args, **kwds):
-        new = object.__new__(cls)
-        
-##         new._refcount = sys.getrefcount(new)
-
-##         print "__new__"
-##         print "count:", sys.getrefcount(new)
-##         print "refs:", gc.get_referrers(new)
-        
-        return new
+        return object.__new__(cls)
 
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
@@ -118,8 +110,6 @@ class Variable(object):
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
 	"""
 
-##         self.absrefcount = 0
-        
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
@@ -137,48 +127,6 @@ class Variable(object):
 		
         self._cached = cached
 
-##         print "%s.__init__" % self.name, sys.getrefcount(self)
-##         self._refcount = sys.getrefcount(self) # - 2
-        
-        ## The magic refcount offset of 2 is to account for the different
-        ## reference list within `__init__()`, e.g.,
-        ## 
-        ##     >>> import gc
-        ##     >>> print gc.get_referrers(self)
-        ##     [<bound method Variable.__init__ of Variable(name = "a", value = 0.0)>, (Variable(name = "a", value = 0.0),), <frame object at 0x3106f0>]
-        ## 
-        ## to that within a normal method of the `Variable` immediately
-        ## after `__init__()`,
-        ## 
-        ##     >>> print Variable().get_referrers()
-        ##     [<frame object at 0x3106f0>]
-        ## 
-        ## Here, the only referrer is the execution frame of the method
-        ## call.  In the `__init__()`, the referrers appear to be the
-        ## `__init__()` method itself, possibly the argument tuple to
-        ## `__init__()`, and the execution frame of `__init__()`.  It is
-        ## unclear why there is not a corresponding `<bound method
-        ## Variable.get_referrers ...>` for the second call, but there
-        ## isn't.
-        ## 
-        ## If the query is made in the general execution context, and not
-        ## in a method of `Variable`, then the execution frame of the
-        ## method is not present
-        ## 
-        ##     >>> print gc.get_referrers(Variable())
-        ##     []
-        ## 
-        ## If the `Variable` has been assigned_ to a Python name_
-        ## 
-        ##     >>> a = Variable(name = "a")
-        ##     >>> a.get_referrers()
-        ##     [<frame object at 0x3106f0>, {... , 'a': Variable(name = "a", value = 0.0), ...}]
-        ##     
-        ## then the referrers will be the execution frame of the
-        ## `get_referrers()` method and the global symbol table that
-        ## defines the name binding of the `Variable` to `a`.
-
-##         print self.name, self._refcount
 	self.stale = 1
 	self._markFresh()
         
@@ -188,38 +136,6 @@ class Variable(object):
         self.mag = None
         self.sliceVars = {}
         
-##         sys.settrace(self.trace)
-
-##         print "get_referrers():", gc.get_referrers(self)
-
-##         self._referrers = gc.get_referrers(self)
-
-##         import gc
-## ##         gc.collect()
-##         ref = gc.get_referrers(self)
-##         print "__init__", ref
-## ##         print ref[3].f_code, ref[3].f_code.co_name
-##         
-##         del ref
-        
-##         frame = sys._getframe()
-##         stack = 0
-##         while frame is not None:
-##             print "frame %d:" % stack, frame, frame.f_code.co_name, frame.f_locals, frame.f_globals
-##             frame = frame.f_back
-##             stack += 1
-
-    def get_referrers(self):
-        import gc
-##         ref = gc.get_referrers(self)
-##         print ref[0].f_code, ref[0].f_code.co_name
-        gc.collect()
-        return gc.get_referrers(self)
-        
-    def getrefcount(self):
-        import sys
-        return sys.getrefcount(self)
-
     def getMesh(self):
 	return self.mesh
 	
@@ -362,24 +278,8 @@ class Variable(object):
 	s += 'value = ' + `self.getValue()`
 	if self.mesh:
 	    s += ', mesh = ' + `self.mesh`
-##         s += ', ref = (%d, %d, %d)' % (sys.getrefcount(self), self._refcount, len(self.getSubscribedVariables()))
-##         s += ', ref = (%d, %d, %s)' % (sys.getrefcount(self), self._refcount, `[sub.__repr__() for sub in self.getSubscribedVariables()]`)
 	s += ')'
 	return s
-
-            
-##     def __str__(self):
-## 	return str(self.name)
-## 	    
-##     def __repr__(self):
-## 	s = self.__class__.__name__ + '('
-## 	if len(self.name) > 0:
-## 	    s += 'name = "' + self.name + '", '
-## 	s += 'value = ' + "value"
-## 	if self.mesh:
-## 	    s += ', mesh = ' + `self.mesh`
-## 	s += ')'
-## 	return s
 
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
@@ -391,7 +291,6 @@ class Variable(object):
     def __setitem__(self, index, value):
         if self.value is None:
             self.getValue()
-##         self.getValue()[index] = value
 	self.value[index] = value
 	self._markFresh()
 	
@@ -409,48 +308,6 @@ class Variable(object):
 	    7
 	"""
 	return self.getValue()
-		
-##     def getValue(self):
-## 	"""
-## 	"Evaluate" the `Variable` and return its value (longhand)
-## 	
-## 	    >>> a = Variable(value = 3)
-## 	    >>> a.getValue()
-## 	    3
-## 	    >>> b = a + 4
-## 	    >>> b
-## 	    (Variable(value = 3) + 4)
-## 	    >>> b.getValue()
-## 	    7
-## 	"""
-##         cached = self.cached(debug = 1)
-##         print self.name, cached #, self.get_referrers()
-##         if self.stale or not cached: # or self.value is None:           
-##             value = self._calcValue()
-##             if value is None:
-##                 print self.name, "is None!!!"
-##             if cached:
-##                 self._setValue(value = value)
-## ##                 self.value = value
-##             else:
-##                 self._setValue(value = None)
-## ##                 self.value = None
-##             self._markFresh()
-## ##                 self._markFresh()
-## ##             else:
-## ##                 self.__markStale()
-##         else:
-##             value = self.value
-##             if value is None:
-##                 print >>sys.stderr, self.name, "is None and we can't be here!!!"
-## ##                 print "stale:", self.stale, "cached:", self.cached()
-## ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
-##                 print self.cached(debug = 1)
-##                 import gc
-## ##                 print "_referrers:", self._referrers
-## ##                 print "get_referrers():", gc.get_referrers(self)
-## 
-## 	return value
 
     def getValue(self):
         """
@@ -621,10 +478,7 @@ class Variable(object):
             >>> var.getFaceGrad().getShape()
             (17, 2)
         """
-##         array = self._getArray()
         if self.value is not None:
-##             return numerix.array(self._getArray()).shape
-##             return self._getArray().shape
             return numerix.getShape(self.value)
         else:
             return self._getShapeFromMesh(self.getMesh()) or ()
@@ -639,44 +493,23 @@ class Variable(object):
         return self.subscribedVariables
         
     def __markStale(self):
-##         import weakref
-##         remainingSubscribedVariables = []
         for subscriber in self.getSubscribedVariables():
-##             try:
-                subscriber()._markStale() 
-##                 remainingSubscribedVariables.append(subscriber)
-##                 print subscriber.__repr__(), "stale"
-##             except weakref.ReferenceError:
-##                 pass
-
-##         for subscriber in self.subscribedVariables:
-##             try:
-##                 subscriber()._markStale() 
-##                 remainingSubscribedVariables.append(subscriber)
-## ##                 print subscriber.__repr__(), "stale"
-##             except weakref.ReferenceError:
-##                 pass
-##         self.subscribedVariables = remainingSubscribedVariables
+            subscriber()._markStale() 
 
     def _markFresh(self):
 	self.stale = 0
-##         print `self`, "staling", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
         self.__markStale()
-##         print `self`, "staled", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
 
     def _markStale(self):
 	if not self.stale:
 	    self.stale = 1
-##             print `self`, "staling", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
             self.__markStale()
-##             print `self`, "staled", [ref.__repr__() + ", stale = " + str(ref.stale) for ref in self.subscribedVariables]
 	    
     def _requires(self, var):
 	if isinstance(var, Variable):
 	    self.requiredVariables.append(var)
 	    var._requiredBy(self)
 	    self._markStale()
-##         print `var`, "requires", var.requiredVariables
 	return var
 	    
     def _requiredBy(self, var):
@@ -687,12 +520,10 @@ class Variable(object):
         # and the subscribee
         import weakref
         self.subscribedVariables.append(weakref.ref(var))
-## 	self.subscribedVariables.append(weakref.proxy(var))
-##         print `self`, "requiredBy", [ref.__repr__() for ref in self.subscribedVariables]
 	
     def _getVariableClass(self):
 	return Variable
-
+        
     def _getOperatorVariableClass(self, baseClass = None):
         """
             >>> a = Variable(value = 1)
@@ -739,36 +570,6 @@ class Variable(object):
                 self.old = None
                 
                 self.dontCacheMe()
-                
-##             def getValue(self):
-##                 cached = self._isCached() or (len(self.subscribedVariables) > 1 and not self._cacheNever)
-## ##                 print self.name, cached #, self.get_referrers()
-##                 if self.stale or not cached or self.value is None:           
-##                     value = self._calcValue()
-##                     if value is None:
-##                         print self.name, "is None!!!"
-##                     if cached:
-##                         self._setValue(value = value)
-##         ##                 self.value = value
-##                     else:
-##                         self._setValue(value = None)
-##         ##                 self.value = None
-##                     self._markFresh()
-##         ##                 self._markFresh()
-##         ##             else:
-##         ##                 self.__markStale()
-##                 else:
-##                     value = self.value
-##                     if value is None:
-##                         print >>sys.stderr, self.name, "is None and we can't be here!!!"
-##         ##                 print "stale:", self.stale, "cached:", self.cached()
-##         ##                 print "CACHED:", self.__class__, self.name, sys.getrefcount(self), self._refcount, len(self.subscribedVariables)
-##                         print self.cached(debug = 1)
-##                         import gc
-##         ##                 print "_referrers:", self._referrers
-##         ##                 print "get_referrers():", gc.get_referrers(self)
-## 
-##                 return value
 
             def _isCached(self):
                 return (Variable._isCached(self) 
@@ -777,7 +578,6 @@ class Variable(object):
             def getOld(self):
                 if self.old is None:
                     oldVar = []
-##                     print "making old:", self.var
                     for v in self.var:
                         from fipy.variables.cellVariable import CellVariable
                         if isinstance(v, CellVariable):
@@ -785,13 +585,6 @@ class Variable(object):
                         else:
                             oldVar.append(v)
                     self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh())
-##                     print `self.old`
-##                     print "made old"
-
-##                 b = self.old
-##                 a = str(self.old.getValue())
-##                 print "getOld():", a
-##                 print "getOld():", self.old.getValue()
                 
                 return self.old
             
@@ -929,17 +722,6 @@ class Variable(object):
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-##                 print "----"
-##                 print self.getName()
-                
-                val0 = self.var[0].getValue()
-##                 print "[", "[OP]", "var0:", type(val0), "]"
-                
-                ret = self.op(val0)
-                
-##                 print "\t=", type(ret)
-                return ret
-
 		return self.op(self.var[0].getValue())
 		
 	return unOp(op, [self])
@@ -1860,7 +1642,8 @@ class Variable(object):
         # check if the member Variables know what type of Variable should
         # result from the operation.
         baseClass = baseClass or self._getArithmeticBaseClass(other) or other._getArithmeticBaseClass(self)
-        
+
+
         # This operation is unknown. Fall back on Python's reciprocal operation or error.
         if baseClass is None:
             return NotImplemented
@@ -1902,16 +1685,6 @@ class Variable(object):
 			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
 		    val1 = self.var[1]
 		
-##                 print "===="
-##                 print self.getName()
-##                 print "[", "var0:", self.var[0].getName(), "[OP]", "var1:", val1, "]"
-                val0 = self.var[0].getValue()
-##                 print "[", "var0:", type(val0), "[OP]", "var1:", type(val1), "]"
-                
-                ret = self.op(val0, val1)
-                
-##                 print "\t=", type(ret)
-                return ret
 		return self.op(self.var[0].getValue(), val1)
 	
             def _getRepresentation(self, style = "__repr__"):
@@ -2118,11 +1891,9 @@ class Variable(object):
         
     def __len__(self):
         return len(self.getValue())
-## 	return len(self.value)
 	
     def __float__(self):
         return float(self.getValue())
-## 	return float(self.value)
 
     def arccos(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.arccos(a))
@@ -2311,10 +2082,6 @@ class Variable(object):
 	    self.mag = self.dot(self).sqrt()
 	    
 	return self.mag
-
-Variable._refcount = Variable().getrefcount()
-## import gc
-## print Variable._refcount, Variable().get_referrers()
 
 def _test(): 
     import doctest
