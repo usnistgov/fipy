@@ -44,7 +44,7 @@ Break off for radical refactoring. *Starting on main trunk*::
     $ cvs tag root-$BRANCH
     $ cvs tag -b $BRANCH
     $ cd ..
-    $ cvs co -r $BRANCH -d $BRANCH fipy
+    $ cvs -d $FIPYROOT co -r $BRANCH -d $BRANCH fipy
     $ cd $BRANCH
 
 Edit and add to branch::
