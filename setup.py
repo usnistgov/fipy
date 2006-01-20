@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 1/19/06 {11:12:59 AM} 
+ #                                last update: 1/19/06 {5:11:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -525,7 +525,8 @@ class efficiency_test(Command):
                      ('inline', None, 'turn on inlining for the efficiency tests'),
                      ('cache', None, 'turn on variable caching'),
                      ('maximumelements=', None, 'maximum number of elements'),
-                     ('sampleTime=', None, 'sampling interval for memory high-water')]
+                     ('sampleTime=', None, 'sampling interval for memory high-water'),
+                     ('path=', None, 'directory to place output results in')]
     
     def initialize_options(self):
         self.factor = 10
@@ -534,6 +535,7 @@ class efficiency_test(Command):
         self.maximumelements = 10000
         self.minimumelements = 100
         self.sampleTime = 1
+        self.path = None
         self.cases = ['examples/benchmarking/cahnHilliard.py', 'examples/benchmarking/superfill.py', 'examples/benchmarking/phaseImpingement.py', 'examples/benchmarking/mesh.py']
         
     def finalize_options(self):
@@ -550,7 +552,15 @@ class efficiency_test(Command):
         for case in self.cases:
             print "case: %s" % case
             
-            testPath = '%s.dat' % case
+            if self.path is None:
+                testPath = os.path.split(case)[0]
+            else:
+                testPath = self.path
+                
+            if not os.access(testPath, os.F_OK):
+                os.makedirs(testPath)
+                
+            testPath = os.path.join(testPath, '%s.dat' % os.path.split(case)[1])
             
             if not os.path.isfile(testPath):
                 f = open(testPath, 'w')
