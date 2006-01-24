@@ -23,6 +23,7 @@ Release Goals 1.1
     and functions.
   * Improve BC doc, make clear no internal BCs    
   * Superfill manual
+  * Fix source term and numerical docs wrt sources. Sort out the signs!
 
 - Distribution
 

@@ -53,6 +53,7 @@ class VectorCellVariable(Variable):
 # 	array[:] = value	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
         self.arithmeticFaceValue = None
+        self.harmonicFaceValue = None
 
     def __call__(self, point = None, order = 0):
         if point != None:
@@ -80,6 +81,44 @@ class VectorCellVariable(Variable):
 	    self.arithmeticFaceValue = _VectorArithmeticCellToFaceVariable(self)
 
 	return self.arithmeticFaceValue
+
+    def getHarmonicFaceValue(self):
+        """
+
+        Return a `VectorFaceVariable` with values determined by the
+        harmonic mean from the neighboring cells.
+        
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = 1., nx = 2)
+        >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0),(1,1))))
+        >>> print var.getHarmonicFaceValue()
+        [[ 0., 0.,]
+         [ 1., 1.,]
+         [ 0., 0.,]
+         [ 1., 1.,]
+         [ 0., 0.,]
+         [ 0., 0.,]
+         [ 1., 1.,]]
+
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(dx = 0.1, nx = 2)
+        >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0.3),(2.,0.4))))
+        >>> print var.getHarmonicFaceValue()
+        [[ 0.        , 0.3       ,]
+         [ 2.        , 0.4       ,]
+         [ 0.        , 0.3       ,]
+         [ 2.        , 0.4       ,]
+         [ 0.        , 0.3       ,]
+         [ 0.        , 0.34285714,]
+         [ 2.        , 0.4       ,]]
+
+        """
+        
+	if self.harmonicFaceValue is None:
+	    from vectorHarmonicCellToFaceVariable import _VectorHarmonicCellToFaceVariable
+	    self.harmonicFaceValue = _VectorHarmonicCellToFaceVariable(self)
+
+	return self.harmonicFaceValue
 	
     def _getVariableClass(self):
 	return VectorCellVariable
