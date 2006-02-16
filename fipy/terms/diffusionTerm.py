@@ -101,14 +101,10 @@ class DiffusionTerm(Term):
 	    if isinstance(self.nthCoeff, VectorCellVariable) or isinstance(self.nthCoeff, CellVariable):
 		self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
 
-	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
-	    if isinstance(self.nthCoeff, VectorFaceVariable):
-		self.nthCoeff = self.nthCoeff.dot(self.nthCoeff.getMesh()._getFaceNormals()**2)
-
-	    from fipy.variables.faceVariable import FaceVariable
-	    if not isinstance(self.nthCoeff, FaceVariable):
-		if self.nthCoeff.getShape() != ():
-		    raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
+#	    from fipy.variables.faceVariable import FaceVariable
+#	    if not isinstance(self.nthCoeff, FaceVariable):		
+#		if self.nthCoeff.getShape() != ():
+#		    raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
 
         else:
             self.nthCoeff = None
@@ -148,7 +144,16 @@ class DiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-            return self.nthCoeff * mesh._getFaceAreas() / mesh._getCellDistances()
+
+	    coeff = self.nthCoeff
+	    shape = numerix.getShape(coeff)
+
+	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
+	    if isinstance(coeff, VectorFaceVariable) \
+	    or shape == (mesh.getDim(),):
+		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff) 
+
+            return coeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
             return None
         
@@ -301,9 +306,7 @@ class DiffusionTerm(Term):
            [ 0., 0.,]
            
            >>> term = DiffusionTerm(coeff = ((1,2),))
-           Traceback (most recent call last):
-               ...
-           TypeError: The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value.
+
            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
            >>> term = DiffusionTerm(coeff = VectorFaceVariable(mesh = mesh, value = (1,)))
            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
@@ -419,17 +422,25 @@ class DiffusionTerm(Term):
 
 	   >>> from fipy.meshes.tri2D import Tri2D
 	   >>> mesh = Tri2D(nx = 1, ny = 1)
-	   >>> print DiffusionTerm(CellVariable(value = 1, mesh = mesh)).nthCoeff
-	   [ 1., 1., 1., 1., 1., 1., 1., 1.,]
-	   >>> print DiffusionTerm(FaceVariable(value = 1, mesh = mesh)).nthCoeff
-	   [ 1., 1., 1., 1., 1., 1., 1., 1.,]
-	   >>> print DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh)).nthCoeff
-	   [ 1.  , 1.  , 0.5 , 0.5 , 0.75, 0.75, 0.75, 0.75,]
-	   >>> print DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh)).nthCoeff
-	   [ 1.  , 1.  , 0.5 , 0.5 , 0.75, 0.75, 0.75, 0.75,]
+	   >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
+	   >>> print term._getGeomCoeff(mesh)
+	   [ 6. , 6. , 6. , 6. , 1.5, 1.5, 1.5, 1.5,]
+	   >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
+	   >>> print term._getGeomCoeff(mesh)
+	   [ 6. , 6. , 6. , 6. , 1.5, 1.5, 1.5, 1.5,]
+	   >>> term = DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh))
+	   >>> print term._getGeomCoeff(mesh)
+	   [ 6.   , 6.   , 3.   , 3.   , 1.125, 1.125, 1.125, 1.125,]
+	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+	   >>> print term._getGeomCoeff(mesh)
+	   [ 6.   , 6.   , 3.   , 3.   , 1.125, 1.125, 1.125, 1.125,]
 	   >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
-	   >>> val = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh)).nthCoeff
-	   >>> print numerix.allclose((1, 1, 0.5, 0.5, 0.9950495, 0.9950495, 0.9950495, 0.9950495), val)
+	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+	   >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
+	   >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
+	   1
+	   >>> term = DiffusionTerm(((0.5, 1),))
+	   >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
 	   1
 
         """
