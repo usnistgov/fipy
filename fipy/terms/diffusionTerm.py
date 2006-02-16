@@ -75,14 +75,14 @@ class DiffusionTerm(Term):
     and so on.
 
     """
-    
+
     def __init__(self, coeff = (1.,)):
         """
         Create a `DiffusionTerm`.
 
         :Parameters:
           - `coeff`: `Tuple` or `list` of `FaceVariables` or numbers.
-
+	  
         """
         if type(coeff) not in (type(()), type([])):
             coeff = (coeff,)
@@ -91,18 +91,25 @@ class DiffusionTerm(Term):
 
         if len(coeff) > 0:
             self.nthCoeff = coeff[0]
-            
+
             from fipy.variables.variable import Variable
             if not isinstance(self.nthCoeff, Variable):
                 self.nthCoeff = Variable(value = self.nthCoeff)
 
-            from fipy.variables.faceVariable import FaceVariable
-            from fipy.variables.cellVariable import CellVariable
-            if not isinstance(self.nthCoeff, FaceVariable):
-                if isinstance(self.nthCoeff, CellVariable):
-                    self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
-                elif self.nthCoeff.getShape() != ():
-                    raise TypeError, "The coefficient must be a FaceVariable, CellVariable, or a scalar value."
+	    from fipy.variables.cellVariable import CellVariable
+	    from fipy.variables.vectorCellVariable import VectorCellVariable
+	    if isinstance(self.nthCoeff, VectorCellVariable) or isinstance(self.nthCoeff, CellVariable):
+		self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
+
+	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
+	    if isinstance(self.nthCoeff, VectorFaceVariable):
+		self.nthCoeff = self.nthCoeff.dot(self.nthCoeff.getMesh()._getFaceNormals()**2)
+
+	    from fipy.variables.faceVariable import FaceVariable
+	    if not isinstance(self.nthCoeff, FaceVariable):
+		if self.nthCoeff.getShape() != ():
+		    raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
+
         else:
             self.nthCoeff = None
 
@@ -296,18 +303,11 @@ class DiffusionTerm(Term):
            >>> term = DiffusionTerm(coeff = ((1,2),))
            Traceback (most recent call last):
                ...
-           TypeError: The coefficient must be a FaceVariable, CellVariable, or a scalar value.
+           TypeError: The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value.
            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
            >>> term = DiffusionTerm(coeff = VectorFaceVariable(mesh = mesh, value = (1,)))
-           Traceback (most recent call last):
-               ...
-           TypeError: The coefficient must be a FaceVariable, CellVariable, or a scalar value.
            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
            >>> term = DiffusionTerm(coeff = VectorCellVariable(mesh = mesh, value = (1,)))
-           Traceback (most recent call last):
-               ...
-           TypeError: The coefficient must be a FaceVariable, CellVariable, or a scalar value.
-
 
         Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
 
@@ -413,6 +413,25 @@ class DiffusionTerm(Term):
            1
            >>> print b
            [-24., 16.,]
+
+        The following tests are to check that DiffusionTerm can take any of the four
+        main Variable types.
+
+	   >>> from fipy.meshes.tri2D import Tri2D
+	   >>> mesh = Tri2D(nx = 1, ny = 1)
+	   >>> print DiffusionTerm(CellVariable(value = 1, mesh = mesh)).nthCoeff
+	   [ 1., 1., 1., 1., 1., 1., 1., 1.,]
+	   >>> print DiffusionTerm(FaceVariable(value = 1, mesh = mesh)).nthCoeff
+	   [ 1., 1., 1., 1., 1., 1., 1., 1.,]
+	   >>> print DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh)).nthCoeff
+	   [ 1.  , 1.  , 0.5 , 0.5 , 0.75, 0.75, 0.75, 0.75,]
+	   >>> print DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh)).nthCoeff
+	   [ 1.  , 1.  , 0.5 , 0.5 , 0.75, 0.75, 0.75, 0.75,]
+	   >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
+	   >>> val = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh)).nthCoeff
+	   >>> print numerix.allclose((1, 1, 0.5, 0.5, 0.9950495, 0.9950495, 0.9950495, 0.9950495), val)
+	   1
+
         """
         pass
 
