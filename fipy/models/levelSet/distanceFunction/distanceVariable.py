@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 12/22/05 {2:38:09 PM}
+ #                                last update: 2/23/06 {2:43:12 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -381,7 +381,7 @@ class DistanceVariable(CellVariable):
                 elif N == 3:
                     index1 = index2
         if N == 0:
-            raise Error 
+            raise Exception 
         elif N == 1:
             return v0 + sign * d0, e0
         else:
