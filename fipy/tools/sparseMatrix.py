@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 8/9/05 {2:09:47 PM} 
+ #                                last update: 2/23/06 {11:58:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -276,8 +276,14 @@ class _SparseMatrix:
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
-	ids = Numeric.arange(len(vector))
-	self.put(vector, ids, ids)
+        if type(vector) in [type(1), type(1.)]:
+            ids = Numeric.arange(self._getShape()[0])
+            tmp = Numeric.zeros((self._getShape()[0],), 'd')
+            tmp[:] = vector
+            self.put(tmp, ids, ids)
+        else:
+            ids = Numeric.arange(len(vector))
+            self.put(vector, ids, ids)
 
     def take(self, id1, id2):
 	vector = Numeric.zeros(len(id1), 'd')
@@ -303,8 +309,14 @@ class _SparseMatrix:
 	self.matrix.update_add_at(vector, id1, id2)
 
     def addAtDiagonal(self, vector):
-	ids = Numeric.arange(len(vector))
-	self.addAt(vector, ids, ids)
+        if type(vector) in [type(1), type(1.)]:
+            ids = Numeric.arange(self._getShape()[0])
+            tmp = Numeric.zeros((self._getShape()[0],), 'd')
+            tmp[:] = vector
+            self.addAt(tmp, ids, ids)
+        else:
+            ids = Numeric.arange(len(vector))
+            self.addAt(vector, ids, ids)
 
     def __array__(self):
 	shape = self._getShape()
