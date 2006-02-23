@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 3/7/05 {1:17:12 PM} 
+ #                                last update: 2/23/06 {4:44:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,5 +40,14 @@
  # ###################################################################
  ##
 
-from numMesh.grid1D import Grid1D
+from numMesh import uniformGrid1D
+from numMesh import grid1D
+
+def Grid1D(dx = 1., nx = None):
+    if type(dx) in [type(1), type(1.)]:
+        return uniformGrid1D.UniformGrid1D(dx = dx, nx = nx)
+    else:
+        return grid1D.Grid1D(dx = dx, nx = nx)
+
+
 

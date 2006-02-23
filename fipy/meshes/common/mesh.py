@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/12/05 {11:39:57 AM} 
+ #                                last update: 2/22/06 {3:36:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -292,9 +292,11 @@ class Mesh:
 	pass
 	
     def _getExteriorCellIDs(self):
+        """ Why do we have this?!? It's only used for testing against itself? """
 	return self.exteriorCellIDs
 
     def _getInteriorCellIDs(self):
+        """ Why do we have this?!? It's only used for testing against itself? """
 	return self.interiorCellIDs
 
     def _getCellFaceOrientations(self):
@@ -459,7 +461,7 @@ class Mesh:
         return self.cellAreas
 
     def _getCellAreaProjections(self):
-        return self.cellNormals * self._getCellAreas()[:, :, Numeric.NewAxis]
+        return self.cellNormals * self._getCellAreas()[..., Numeric.NewAxis]
 
     """scaling"""
 

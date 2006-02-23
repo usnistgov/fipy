@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 9/15/05 {2:08:05 PM} 
+ #                                last update: 2/22/06 {12:41:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -378,10 +378,10 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         return self.vertexCoords
 
     def getExteriorFaces(self):
-	return [Face(self, id) for id in self.exteriorFaceIDs]
+	return [Face(self, id) for id in self.getExteriorFaceIDs()]
 
     def _getInteriorFaces(self):
-	return [Face(self, id) for id in self.interiorFaceIDs]
+	return [Face(self, id) for id in self.getInteriorFaceIDs()]
 	
     def getFaceCellIDs(self):
         return self.faceCellIDs

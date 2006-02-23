@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 8/2/05 {5:02:48 PM} 
+ #                                last update: 2/23/06 {3:59:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,7 +124,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
-       >>> answer = gradient * (mesh.getCellCenters()[:,0] - L - dx * 3 / 2) \
+       >>> answer = gradient * (mesh.getCellCenters()[...,0] - L - dx * 3 / 2) \
        ...          + cinf
        >>> answer[0] = 1
        >>> Numeric.allclose(answer, Numeric.array(ionVar))
