@@ -4,7 +4,7 @@
  # 
  # FILE: "benchmarker.py"
  #                                     created: 1/18/06 {3:05:48 PM}
- #                                 last update: 1/18/06 {5:09:13 PM}
+ #                                 last update: 2/24/06 {11:24:03 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -93,6 +93,6 @@ class Benchmarker:
         if self.measureMemory:
             output += [str(maxMemory), str(float(maxMemory) / numberOfElements)]
         else:
-            output += [str(self.times['total']), str(self.times['solve'] / steps)]
+            output += [str(self.times['total']), str(self.times['solve'] / steps / numberOfElements)]
 
         return "\t".join(output)
