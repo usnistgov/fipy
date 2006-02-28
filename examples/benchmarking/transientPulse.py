@@ -5,8 +5,8 @@ bench = Benchmarker()
 
 bench.start()
 
-from fipy.meshes.numMesh.grid1D import Grid1D
-## from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D as Grid1D
+## from fipy.meshes.numMesh.grid1D import Grid1D
+from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D as Grid1D
 
 N = 100000
 L = 10.
@@ -41,7 +41,7 @@ bench.stop('terms')
 bench.start()
 
 dt = 1e0
-steps = 10
+steps = 1
 for step in range(steps):
     eq.solve(var = C, dt = dt)
 ##     viewer.plot()
