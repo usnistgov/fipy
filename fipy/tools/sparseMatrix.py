@@ -6,7 +6,7 @@
  # 
  #  FILE: "sparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 2/23/06 {11:58:04 AM} 
+ #                                last update: 2/27/06 {5:39:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,9 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
-
 import spmatrix
+
+from fipy.tools import numerix
 
 class _SparseMatrix:
     
@@ -55,7 +55,7 @@ class _SparseMatrix:
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size = None, bandwidth = 0, matrix = None):
+    def __init__(self, size = None, bandwidth = 0, matrix = None, sizeHint = None):
         """
         Creates a `_SparseMatrix`.
 
@@ -68,7 +68,8 @@ class _SparseMatrix:
         if matrix != None:
             self.matrix = matrix
         else:
-            self.matrix = spmatrix.ll_mat(size, size, size * bandwidth)
+            sizeHint = sizeHint or size * bandwidth
+            self.matrix = spmatrix.ll_mat(size, size, sizeHint)
                 
     def _getMatrix(self):
         return self.matrix
@@ -93,7 +94,7 @@ class _SparseMatrix:
                 if v == 0:
                     s += "---".center(cellWidth)
                 else:
-                    exp = Numeric.log(abs(v))
+                    exp = numerix.log(abs(v))
                     if abs(exp) <= 4:
                         if exp < 0:
                             s += ("%9.6f" % v).ljust(cellWidth)
@@ -105,7 +106,7 @@ class _SparseMatrix:
         return s[:-1]
 	    
     def __repr__(self):
-	return repr(Numeric.array(self))
+	return repr(numerix.array(self))
 ## 	return self.matrix.__repr__()
 	
     def __setitem__(self, index, value):
@@ -127,7 +128,7 @@ class _SparseMatrix:
         Add two sparse matrices
         
             >>> L = _SparseMatrix(size = 3)
-            >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L + _SparseIdentityMatrix(3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
@@ -177,49 +178,53 @@ class _SparseMatrix:
         Multiply a sparse matrix by another sparse matrix
         
             >>> L1 = _SparseMatrix(size = 3)
-            >>> L1.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L1.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _SparseIdentityMatrix(size = 3)
             >>> L2.put((4.38,12357.2,1.1), (2,1,0), (1,0,2))
             
-            >>> tmp = Numeric.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+            >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> Numeric.allclose(Numeric.array(L1 * L2), tmp)
+            >>> numerix.allclose(numerix.array(L1 * L2), tmp)
             1
              
         or a sparse matrix by a vector
 
-            >>> tmp = Numeric.array((29., 6.28318531, 2.5))       
-            >>> Numeric.allclose(L1 * Numeric.array((1,2,3),'d'), tmp)
+            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
             1
             
         or a vector by a sparse matrix
 
-            >>> tmp = Numeric.array((7.5, 16.28318531,  3.))  
-            >>> Numeric.allclose(Numeric.array((1,2,3),'d') * L1, tmp)
+            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
             1
             
         """
+        N = self.matrix.shape[0]
 
-        if type(other) == type(self):
+        if isinstance(other, _SparseMatrix):
             return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
-        elif type(1) == type(other) or type(1.) == type(other):
-	    N = self.matrix.shape[0]
-	    L = spmatrix.ll_mat(N, N)
-	    L.put(other * Numeric.ones(N))
-	    return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
-	elif type(Numeric.ones(1)) == type(other):
-	    y = other.copy()
-	    self.matrix.matvec(other, y)
-	    return y
-	else:
- 	    raise TypeError
+        else:
+            shape = numerix.shape(other)
+            if shape == ():
+                L = spmatrix.ll_mat(N, N, N)
+                L.put(other * numerix.ones(N))
+                return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
+            elif shape == (N,):
+                o = numerix.array(other)
+                y = o.copy()
+                self.matrix.matvec(o, y)
+                return y
+            else:
+                raise TypeError
             
     def __rmul__(self, other):
-	if type(Numeric.ones(1)) == type(other):
-	    y = other.copy()
-	    self.matrix.matvec_transp(other, y)
+	if type(numerix.ones(1)) == type(other):
+            o = numerix.array(other)
+            y = o.copy()
+	    self.matrix.matvec_transp(o, y)
 	    return y
 	else:
 	    return self * other
@@ -252,7 +257,7 @@ class _SparseMatrix:
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
             >>> L = _SparseMatrix(size = 3)
-            >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
@@ -265,7 +270,7 @@ class _SparseMatrix:
         Put elements of `vector` along diagonal of matrix
         
             >>> L = _SparseMatrix(size = 3)
-            >>> L.putDiagonal((3.,10.,Numeric.pi))
+            >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
              3.000000      ---        ---    
                 ---    10.000000      ---    
@@ -277,21 +282,21 @@ class _SparseMatrix:
                 ---        ---     3.141593  
         """
         if type(vector) in [type(1), type(1.)]:
-            ids = Numeric.arange(self._getShape()[0])
-            tmp = Numeric.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._getShape()[0])
+            tmp = numerix.zeros((self._getShape()[0],), 'd')
             tmp[:] = vector
             self.put(tmp, ids, ids)
         else:
-            ids = Numeric.arange(len(vector))
+            ids = numerix.arange(len(vector))
             self.put(vector, ids, ids)
 
     def take(self, id1, id2):
-	vector = Numeric.zeros(len(id1), 'd')
+	vector = numerix.zeros(len(id1), 'd')
 	self.matrix.take(vector, id1, id2)
         return vector
 
     def takeDiagonal(self):
-	ids = Numeric.arange(self._getShape()[0])
+	ids = numerix.arange(self._getShape()[0])
 	return self.take(ids, ids)
 
     def addAt(self, vector, id1, id2):
@@ -299,7 +304,7 @@ class _SparseMatrix:
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
 	    >>> L = _SparseMatrix(size = 3)
-	    >>> L.put((3.,10.,Numeric.pi,2.5), (0,0,1,2), (2,1,1,0))
+	    >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
 	    >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
             12.300000  10.000000   3.000000  
@@ -310,20 +315,20 @@ class _SparseMatrix:
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = Numeric.arange(self._getShape()[0])
-            tmp = Numeric.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._getShape()[0])
+            tmp = numerix.zeros((self._getShape()[0],), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
-            ids = Numeric.arange(len(vector))
+            ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
     def __array__(self):
 	shape = self._getShape()
-	indices = Numeric.indices(shape)
+	indices = numerix.indices(shape)
 	numMatrix = self.take(indices[0].flat, indices[1].flat)
 	
-	return Numeric.reshape(numMatrix, shape)
+	return numerix.reshape(numMatrix, shape)
 
     def matvec(self, x):
         """
@@ -346,8 +351,8 @@ class _SparseIdentityMatrix(_SparseMatrix):
                 ---        ---     1.000000  
 	"""
 	_SparseMatrix.__init__(self, size = size, bandwidth = 1)
-	ids = Numeric.arange(size)
-	self.put(Numeric.ones(size), ids, ids)
+	ids = numerix.arange(size)
+	self.put(numerix.ones(size), ids, ids)
 	
 def _test(): 
     import doctest
