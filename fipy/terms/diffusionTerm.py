@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/17/06 {12:00:58 PM} 
+ #                                last update: 2/28/06 {2:22:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -158,25 +158,22 @@ class DiffusionTerm(Term):
             return None
         
     def _getCoefficientMatrix(self, mesh, coeff):
-        coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
-
         interiorCoeff = Numeric.array(coeff)
         
         numerix.put(interiorCoeff, mesh.getExteriorFaceIDs(), 0)
-        from fipy.variables.faceVariable import FaceVariable
-        interiorCoeff = FaceVariable(mesh = mesh, value = interiorCoeff)
         
-        contributions = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
+        interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
-        interiorCoeff0 = -numerix.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
-        interiorCoeff1 = -numerix.take(Numeric.array(coeff), mesh.getInteriorFaceIDs())
+        coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 1))
+        del interiorCoeff
+        
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
 
-        contributions = numerix.sum(contributions, 1)	
-        coefficientMatrix.addAtDiagonal(contributions)
-        
-        coefficientMatrix.addAt(interiorCoeff0, interiorFaceCellIDs[:,0], interiorFaceCellIDs[:,1])
-        coefficientMatrix.addAt(interiorCoeff1, interiorFaceCellIDs[:,1], interiorFaceCellIDs[:,0])
+        interiorCoeff = -numerix.take(coeff, mesh.getInteriorFaceIDs())
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,0], interiorFaceCellIDs[...,1])
+        interiorCoeff = -numerix.take(coeff, mesh.getInteriorFaceIDs())
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,1], interiorFaceCellIDs[...,0])
         
         return coefficientMatrix
         
@@ -189,58 +186,83 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-##    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., coefficientMatrix = None):
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
-        volumes = mesh.getCellVolumes()
-        if self.order > 0:
+        M = mesh._getMaxFacesPerCell()
 
+        if self.order > 2:
+
+            higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
+            
+            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
+                                                                                 boundaryConditions = lowerOrderBCs, 
+                                                                                 dt = dt)
+            del lowerOrderBCs
+            
+            lowerOrderb = lowerOrderb / mesh.getCellVolumes()
+            volMatrix = _SparseMatrix(size = N, bandwidth = 1)
+            
+            volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
+            lowerOrderL = volMatrix * lowerOrderL
+            del volMatrix
+            
             coeff = self._getGeomCoeff(mesh)
             
-##            if coefficientMatrix is None:
-            coefficientMatrix = self._getCoefficientMatrix(mesh, -coeff)
-
-            boundaryB = Numeric.zeros(N,'d')
-                
-            higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
-            M = mesh._getMaxFacesPerCell()
+            mm = self._getCoefficientMatrix(mesh, -coeff)
 
             coeffs = {
                 'cell 1 diag':    -coeff,
                 'cell 1 offdiag':  coeff
             }
+            del coeff
 
             coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
             coeffs['cell 2 diag'] = coeffs['cell 1 diag']
 
-            coefficientMatrix, boundaryB = self._doBCs(higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB)
-##             for boundaryCondition in higherOrderBCs:
-##                 LL, bb = boundaryCondition._buildMatrix(N, M, coeffs)
-##                 
-##                 coefficientMatrix += LL
-##                 boundaryB += bb
+            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
+                               mm, Numeric.zeros(N,'d'))
+                               
+            del coeffs
+            del higherOrderBCs
+            del mm
 
-            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
-                                                                                 boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt)
-##                                                                              coefficientMatrix = coefficientMatrix)
+            b = L * lowerOrderb + b
+            del lowerOrderb
 
-            lowerOrderb = lowerOrderb / volumes
-            volMatrix = _SparseMatrix(size = N)
-            volMatrix.addAtDiagonal(1. / volumes )
-            lowerOrderL = volMatrix * lowerOrderL
+            L = L * lowerOrderL
+            del lowerOrderL
+
+        elif self.order == 2:
+
+            coeff = self._getGeomCoeff(mesh)
+            minusCoeff = -coeff
             
-            L = coefficientMatrix * lowerOrderL
 
-            b = coefficientMatrix * lowerOrderb + boundaryB
+            coeffs = {
+                'cell 1 diag':    minusCoeff,
+                'cell 1 offdiag':  coeff
+            }
+            del coeff
+
+            coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
+            coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+
+            higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
+            del lowerOrderBCs
+            
+            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
+                               self._getCoefficientMatrix(mesh, minusCoeff), Numeric.zeros(N,'d'))
+                               
+            del minusCoeff
+            del coeffs
+            del higherOrderBCs
 
         else:
-            N = mesh.getNumberOfCells()
+            
             L = _SparseMatrix(size = N)
-            L.addAtDiagonal(volumes)
-        
+            L.addAtDiagonal(mesh.getCellVolumes())
             b = Numeric.zeros((N),'d')
             
         return (L, b)
