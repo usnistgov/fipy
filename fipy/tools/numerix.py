@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 12/29/05 {3:13:37 PM} 
+ #                                last update: 3/2/06 {11:13:11 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -141,6 +141,20 @@ def reshape(arr, shape):
 def getShape(arr):
     """
     Return the shape of `arr`
+    
+        >>> getShape(1)
+        ()
+        >>> getShape(1.)
+        ()
+        >>> from fipy.variables.variable import Variable
+        >>> getShape(Variable(1))
+        ()
+        >>> getShape(Variable(1.))
+        ()
+        >>> getShape(Variable(1., unit = "m"))
+        ()
+        >>> getShape(Variable("1 m"))
+        ()
     """
     if _isPhysical(arr):
         return arr.getShape()

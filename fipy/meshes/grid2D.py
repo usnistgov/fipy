@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 9/3/04 {10:43:26 PM} 
+ #                                last update: 3/2/06 {3:46:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,5 +40,14 @@
  # ###################################################################
  ##
 
-from numMesh.grid2D import Grid2D
+from numMesh import uniformGrid2D
+from numMesh import grid2D
 
+from fipy.tools import numerix
+
+def Grid2D(dx = 1., dy = 1., nx = None, ny = None):
+    if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
+        return uniformGrid2D.UniformGrid2D(dx = dx, dy = dy, 
+                                           nx = nx or 1, ny = ny or 1)
+    else:
+        return grid2D.Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)

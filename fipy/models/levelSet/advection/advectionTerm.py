@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 4/6/05 {3:28:04 PM} 
+ #                                last update: 3/2/06 {10:50:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -141,7 +141,7 @@ class _AdvectionTerm(Term):
         adjacentValues = Numeric.take(oldArray, cellToCellIDs)
 
         differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-        differences = differences.filled(fill_value = 0)
+        differences = MA.filled(differences, value = 0)
         
         minsq = Numeric.sqrt(Numeric.sum(Numeric.minimum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))
         maxsq = Numeric.sqrt(Numeric.sum(Numeric.maximum(differences, Numeric.zeros((NCells, NCellFaces)))**2, axis = 1))

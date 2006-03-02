@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 2/23/06 {3:25:02 PM} 
+ #                                last update: 3/2/06 {12:15:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,9 @@ class UniformGrid1D(Grid1D):
          [ 1.5,]
          [ 2.5,]] 1
     """
-    def __init__(self, dx = 1., nx = None, origin = (0,)):
+    def __init__(self, dx = 1., nx = 1, origin = (0,)):
+        self.dim = 1
+        
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
@@ -69,7 +71,7 @@ class UniformGrid1D(Grid1D):
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
         
-        self.nx = self._calcNumPts(d = self.dx, n = nx)
+        self.nx = nx
         
         self.numberOfVertices = self.nx + 1
         self.numberOfFaces = self.nx + 1
@@ -83,19 +85,20 @@ class UniformGrid1D(Grid1D):
         
         self.setScale(value = scale)
         
-    def __repr__(self):
-        return "%s(dx = %s, nx = %d)" % (self.__class__.__name__, `self.dx`, self.nx)
-
     def _translate(self, vector):
         return UniformGrid1D(dx = self.dx, nx = self.nx, origin = self.origin + vector)
 
     def __mul__(self, factor):
         return UniformGrid1D(dx = self.dx * factor, nx = self.nx, origin = self.origin * factor)
 
-    def _concatenate(self, other, smallNumber):
+    def _getConcatenableMesh(self):
+        from fipy.meshes.numMesh.mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.getVertexCoords(), 
                       faceVertexIDs = self._createFaces(), 
-                      cellFaceIDs = self.createCells())._concatenate(other = other, smallNumber = smallNumber)
+                      cellFaceIDs = self._createCells())
+                      
+    def _concatenate(self, other, smallNumber):
+        return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
         
 ##     get topology methods
 
@@ -126,10 +129,7 @@ class UniformGrid1D(Grid1D):
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
         ids = MA.transpose(MA.array((c1 - 1, c1 + 1)))
-##         ids[0,1] = ids[0,0]
         ids[0,0] = MA.masked
-##         ids[0,0] = ids[0,1]
-##         ids[0,1] = MA.masked
         ids[-1,1] = MA.masked
         return ids
         
@@ -205,7 +205,7 @@ class UniformGrid1D(Grid1D):
         return numerix.zeros(self.numberOfFaces, 'd')[..., numerix.NewAxis]
         
     def _getFaceAspectRatios(self):
-        return 1. / _getCellDistances()
+        return 1. / self._getCellDistances()
     
     def _getCellToCellDistances(self):
         distances = MA.zeros((self.numberOfCells,2), 'd')

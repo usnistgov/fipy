@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/22/06 {12:41:57 PM} 
+ #                                last update: 3/2/06 {12:14:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,7 +94,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         `faces2` are not altered, they still remain as members of
         exterior faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> print mesh._getCellFaceIDs()
@@ -178,11 +178,15 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self._calcScaledGeometry()
         self._calcFaceAspectRatios()
         
+    def _getConcatenableMesh(self):
+        return self
         
     def _getAddedMeshValues(self, other, smallNumber):
         """
         Returns a `dictionary` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
         """
+        
+        other = other._getConcatenableMesh()
         
         MeshAdditionError = "MeshAdditionError"
         selfNumFaces = self.faceVertexIDs.shape[0]

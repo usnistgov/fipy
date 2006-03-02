@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 2/23/06 {2:43:12 PM}
+ #                                last update: 3/2/06 {3:14:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -203,9 +203,12 @@ class DistanceVariable(CellVariable):
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
 
-        self.cellToCellDistances = Numeric.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
-        self.cellNormals = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(0))       
-        self.cellAreas = Numeric.array(MA.array(self.mesh._getCellAreas()).filled(0))
+        self.cellToCellDistances = MA.filled(self.mesh._getCellToCellDistances(), 0)
+        self.cellNormals = MA.filled(self.mesh._getCellNormals(), 0)      
+        self.cellAreas = MA.filled(self.mesh._getCellAreas(), 0)
+##         self.cellToCellDistances = Numeric.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
+##         self.cellNormals = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(0))       
+##         self.cellAreas = Numeric.array(MA.array(self.mesh._getCellAreas()).filled(0))
         self.cellToCellIDs = Numeric.array(self.mesh._getCellToCellIDsFilled())
         
     def _calcValue(self):
@@ -338,7 +341,7 @@ class DistanceVariable(CellVariable):
             trialIDs.remove(id)
             evaluatedFlag[id] = 1
 
-            for adjID in cellToCellIDs[id].filled(fill_value = -1):
+            for adjID in MA.filled(cellToCellIDs[id], value = -1):
                 if adjID != -1:
                     if not evaluatedFlag[adjID]:
                         self.value[adjID], extensionVariable[adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
@@ -471,8 +474,8 @@ class DistanceVariable(CellVariable):
            
         """
 
-        normals = Numeric.array(self._getCellInterfaceNormals().filled(fill_value = 0))
-        areas = Numeric.array(self.mesh._getCellAreaProjections().filled(fill_value = 0))
+        normals = Numeric.array(MA.filled(self._getCellInterfaceNormals(), value = 0))
+        areas = Numeric.array(MA.filled(self.mesh._getCellAreaProjections(), value = 0))
         return Numeric.sum(abs(numerix.dot(normals, areas, axis = 2)), axis = 1)
 
     def _getCellInterfaceNormals(self):
