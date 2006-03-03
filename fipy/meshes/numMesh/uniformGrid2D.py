@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 3/2/06 {3:22:55 PM} 
+ #                                last update: 3/3/06 {1:57:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,12 +46,9 @@
 __docformat__ = 'restructuredtext'
 
 
-import Numeric
 import MA
 
 from fipy.meshes.numMesh.grid2D import Grid2D
-from fipy.meshes.numMesh.face import Face
-from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -299,9 +296,6 @@ class UniformGrid2D(Grid2D):
         distances[...,-1,1] = self.dx / 2.
         
         return numerix.reshape(distances, (self.numberOfCells, 4))
-        
-    def _getFaceToCellDistances(self):
-        return self.scale['length'] * self.faceToCellDistances
 
 
     def _getCellNormals(self):
@@ -391,14 +385,14 @@ class UniformGrid2D(Grid2D):
             
             >>> mesh = UniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)     
             
-            >>> vertices = Numeric.array(((0., 0.), (1., 0.), (2., 0.), (3., 0.),
+            >>> vertices = numerix.array(((0., 0.), (1., 0.), (2., 0.), (3., 0.),
             ...                           (0., 1.), (1., 1.), (2., 1.), (3., 1.),
             ...                           (0., 2.), (1., 2.), (2., 2.), (3., 2.)))
-            >>> vertices *= Numeric.array((dx, dy))
+            >>> vertices *= numerix.array((dx, dy))
             >>> numerix.allequal(vertices, mesh._createVertices())
             1
         
-            >>> faces = Numeric.array(((1, 0), (2, 1), (3, 2),
+            >>> faces = numerix.array(((1, 0), (2, 1), (3, 2),
             ...                        (4, 5), (5, 6), (6, 7),
             ...                        (8, 9), (9, 10), (10, 11),
             ...                        (0, 4), (5, 1), (6, 2), (7, 3),
@@ -406,7 +400,7 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(faces, mesh._createFaces())
             1
 
-            >>> cells = Numeric.array(((0, 10, 3, 9),
+            >>> cells = numerix.array(((0, 10, 3, 9),
             ...                       (1 , 11, 4, 10),
             ...                       (2, 12, 5, 11),
             ...                       (3, 14, 6, 13),
@@ -415,11 +409,11 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9 , 13, 12, 16))
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 13, 12, 16))
             >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
             1
 
-            >>> internalFaces = Numeric.array((3, 4, 5, 10, 11, 14, 15))
+            >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
             >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
             1
 
@@ -432,17 +426,17 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
             1
             
-            >>> faceAreas = Numeric.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
+            >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
             1
             
-            >>> faceCoords = Numeric.take(vertices, faces)
+            >>> faceCoords = numerix.take(vertices, faces)
             >>> faceCenters = (faceCoords[:,0] + faceCoords[:,1]) / 2.
             >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> faceNormals = Numeric.array(((0., -1.), (0., -1.), (0., -1.),
+            >>> faceNormals = numerix.array(((0., -1.), (0., -1.), (0., -1.),
             ...                              (0., 1.), (0., 1.), (0., 1.),
             ...                              (0., 1.), (0., 1.), (0., 1.),
             ...                              (-1., 0), (1., 0), (1., 0), (1., 0),
@@ -450,21 +444,21 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellToFaceOrientations = Numeric.array(((1, 1, 1, 1), (1, 1, 1, -1), (1, 1, 1, -1),
+            >>> cellToFaceOrientations = numerix.array(((1, 1, 1, 1), (1, 1, 1, -1), (1, 1, 1, -1),
             ...                                         (-1, 1, 1, 1), (-1, 1, 1, -1), (-1, 1, 1, -1)))
             >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
             1
                                              
-            >>> cellVolumes = Numeric.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
+            >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellCenters = Numeric.array(((dx/2.,dy/2.), (3.*dx/2.,dy/2.), (5.*dx/2.,dy/2.),
+            >>> cellCenters = numerix.array(((dx/2.,dy/2.), (3.*dx/2.,dy/2.), (5.*dx/2.,dy/2.),
             ...                              (dx/2.,3.*dy/2.), (3.*dx/2.,3.*dy/2.), (5.*dx/2.,3.*dy/2.)))
             >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
             1
                                               
-            >>> cellDistances = Numeric.array((dy / 2., dy / 2., dy / 2.,
+            >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
             ...                                dy, dy, dy,
             ...                                dy / 2., dy / 2., dy / 2.,
             ...                                dx / 2., dx, dx,
@@ -485,11 +479,11 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> areaProjections = faceNormals * faceAreas[...,Numeric.NewAxis]
+            >>> areaProjections = faceNormals * faceAreas[...,numerix.NewAxis]
             >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents1 = Numeric.array(((1., 0), (1., 0),(1., 0),
+            >>> tangents1 = numerix.array(((1., 0), (1., 0),(1., 0),
             ...                            (-1., 0), (-1., 0),(-1., 0),
             ...                            (-1., 0), (-1., 0),(-1., 0),
             ...                            (0., -1.), (0., 1.), (0., 1.), (0., 1.),
@@ -497,7 +491,7 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents2 = Numeric.array(((0., 0), (0., 0),(0., 0),
+            >>> tangents2 = numerix.array(((0., 0), (0., 0),(0., 0),
             ...                            (-0., 0), (-0., 0),(-0., 0),
             ...                            (-0., 0), (-0., 0),(-0., 0),
             ...                            (0., -0.), (0., 0.), (0., 0.), (0., 0.),
@@ -523,7 +517,7 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellNormals = Numeric.array((((0, -1), (1, 0), (0, 1), (-1, 0)),
+            >>> cellNormals = numerix.array((((0, -1), (1, 0), (0, 1), (-1, 0)),
             ...                              ((0, -1), (1, 0), (0, 1), (-1, 0)),
             ...                              ((0, -1), (1, 0), (0, 1), (-1, 0)),
             ...                              ((0, -1), (1, 0), (0, 1), (-1, 0)),
@@ -532,8 +526,8 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> vv = Numeric.array(((0, -dx), (dy, 0), (0, dx), (-dy, 0)))
-            >>> cellAreaProjections = Numeric.array(((vv,vv,vv,vv,vv,vv)))
+            >>> vv = numerix.array(((0, -dx), (dy, 0), (0, dx), (-dy, 0)))
+            >>> cellAreaProjections = numerix.array(((vv,vv,vv,vv,vv,vv)))
             >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
