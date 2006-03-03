@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:40:50 PM} 
+ #                                last update: 3/3/06 {4:39:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,7 @@ Test case for the Grid3D.
    
 """
 
-from fipy.meshes.numMesh.grid3D import Grid3D
+from fipy.meshes.grid3D import Grid3D
 from fipy.meshes.grid2D import Grid2D
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable

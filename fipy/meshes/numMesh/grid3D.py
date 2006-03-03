@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 7/12/05 {1:16:59 PM} 
+ #                                last update: 3/3/06 {4:17:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,21 +40,6 @@
  # ###################################################################
  ##
 
-"""
-3D rectangular-prism Mesh
-
-X axis runs from left to right.
-Y axis runs from bottom to top.
-Z axis runs from front to back.
-
-Numbering System:
-
-Vertices: Numbered in the usual way. X coordinate changes most quickly, then Y, then Z.
-
-Cells: Same numbering system as vertices.
-
-Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
-"""
 __docformat__ = 'restructuredtext'
 
 import Numeric
@@ -68,7 +53,19 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid3D(Mesh):
     """
-    Creates a 3D grid mesh.
+    3D rectangular-prism Mesh
+
+    X axis runs from left to right.
+    Y axis runs from bottom to top.
+    Z axis runs from front to back.
+
+    Numbering System:
+
+    Vertices: Numbered in the usual way. X coordinate changes most quickly, then Y, then Z.
+
+    Cells: Same numbering system as vertices.
+
+    Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None):
         self.nx = nx
@@ -359,6 +356,9 @@ class Grid3D(Mesh):
             
             >>> mesh = Grid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
             
+            >>> print mesh._getAdjacentCellIDs()
+            ([0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,0,1,2,3,4,5,0,0,1,2,3,3,4,5,], [0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,3,4,5,0,1,2,2,3,4,5,5,])
+
             >>> vertices = Numeric.array(((0., 0., 0.), (1., 0., 0.), (2., 0., 0.), (3., 0., 0.),
             ...                           (0., 1., 0.), (1., 1., 0.), (2., 1., 0.), (3., 1., 0.),
             ...                           (0., 2., 0.), (1., 2., 0.), (2., 2., 0.), (3., 2., 0.),
@@ -474,14 +474,21 @@ class Grid3D(Mesh):
             >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellToCellIDs = MA.masked_values(((-1, -1, -1, 3, -1, 1),
-            ...                                   (-1, -1, -1,  4, 0, 2),
-            ...                                   (-1, -1, -1, 5, 1, -1),
-            ...                                   (-1, -1, 0, -1, -1, 4),
-            ...                                   (-1, -1, 1, -1, 3, 5),
-            ...                                   (-1 , -1, 2, -1, 4, -1)), -1)
-            >>> numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
-            1
+            >>> print mesh._getCellToCellIDs()
+            [[-- ,1 ,-- ,3 ,-- ,-- ,]
+             [0 ,2 ,-- ,4 ,-- ,-- ,]
+             [1 ,-- ,-- ,5 ,-- ,-- ,]
+             [-- ,4 ,0 ,-- ,-- ,-- ,]
+             [3 ,5 ,1 ,-- ,-- ,-- ,]
+             [4 ,-- ,2 ,-- ,-- ,-- ,]]
+
+            >>> print mesh._getCellToCellIDsFilled()
+            [[0,1,0,3,0,0,]
+             [0,2,1,4,1,1,]
+             [1,2,2,5,2,2,]
+             [3,4,0,3,3,3,]
+             [3,5,1,4,4,4,]
+             [4,5,2,5,5,5,]]
 
             >>> cellToCellDistances = Numeric.take(cellDistances, cells)
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)

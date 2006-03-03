@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 8/29/05 {11:43:47 AM} { 2:45:36 PM}
+ #                                last update: 3/3/06 {4:07:06 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -139,7 +139,7 @@ class MayaviViewer(Viewer):
                                       line = cellDict[2],
                                       tetra = cellDict[4],
                                       wedge = cellDict[6],
-                                      hexahedron = cellDict[8],
+                                      voxel = cellDict[8],
                                       polygon = cellDict['polygon'])
 
     def plot(self, filename = None):
