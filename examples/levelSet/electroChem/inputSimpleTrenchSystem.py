@@ -363,7 +363,7 @@ def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
     filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
     
     from fipy.tools import dump
-    print catalystVar.allclose(dump.read(filepath))
+    print catalystVar.allclose(dump.read(filepath), rtol = 1e-7)
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)

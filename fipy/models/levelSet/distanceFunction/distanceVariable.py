@@ -338,6 +338,10 @@ class DistanceVariable(CellVariable):
         while len(trialIDs):
 
             id = trialIDs[Numeric.argmin(abs(Numeric.take(self.value, trialIDs)))]
+
+            if abs(self.value[id]) > narrowBandWidth / 2:
+                break
+
             trialIDs.remove(id)
             evaluatedFlag[id] = 1
 
@@ -347,9 +351,6 @@ class DistanceVariable(CellVariable):
                         self.value[adjID], extensionVariable[adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
                         if adjID not in trialIDs:
                             trialIDs.append(adjID)
-
-            if abs(self.value[id]) > narrowBandWidth / 2:
-                break
 
         self.value = Numeric.array(self.value)
 
