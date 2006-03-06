@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 3/2/06 {3:14:58 PM}
+ #                                last update: 3/5/06 {7:18:34 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -620,8 +620,8 @@ class DistanceVariable(CellVariable):
 
         ## set faceGrad zero on exteriorFaces
         dim = self.mesh.getDim()
-        exteriorFaces = (self.mesh.getExteriorFaceIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
-        Numeric.put(faceGrad, exteriorFaces, Numeric.zeros(exteriorFaces.shape,'d'))
+        exteriorFaceIDs = (self.mesh.getExteriorFaces().getIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
+        Numeric.put(faceGrad, exteriorFaceIDs, Numeric.zeros(numerix.getShape(exteriorFaceIDs),'d'))
         
         return faceGrad / faceGradMag[:,Numeric.NewAxis] 
 

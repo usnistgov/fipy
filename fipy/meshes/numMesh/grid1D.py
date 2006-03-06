@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/16/05 {12:38:50 PM} 
+ #                                last update: 3/5/06 {8:14:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.numMesh.mesh1D import Mesh1D
-from fipy.meshes.numMesh.face import Face
+from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -117,12 +117,12 @@ class Grid1D(Mesh1D):
     def getFacesLeft(self):
         """Return face on left boundary of Grid1D as list.
         """
-        return [Face(self, 0)]
+        return FaceIterator(mesh = self, ids = (0,))
         
     def getFacesRight(self):
         """Return face on right boundary of Grid1D as list.
         """
-        return [Face(self, self.numberOfFaces - 1)]
+        return FaceIterator(mesh = self, ids = (self.numberOfFaces - 1,))
         
     def getScale(self):
         return self.scale['length']

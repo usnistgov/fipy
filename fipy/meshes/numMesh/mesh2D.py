@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/12/05 {11:41:44 AM} 
+ #                                last update: 3/4/06 {3:55:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,7 +121,7 @@ class Mesh2D(Mesh):
     
     def _getNonOrthogonality(self):
         exteriorFaceArray = Numeric.zeros((self.faceCellIDs.shape[0],))
-        Numeric.put(exteriorFaceArray, self.getExteriorFaceIDs(), 1)
+        Numeric.put(exteriorFaceArray, self.getExteriorFaces(), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
         faceDisplacementVectors = Numeric.where(Numeric.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, Numeric.take(self.getCellCenters(), unmaskedFaceCellIDs[:, 1]) - Numeric.take(self.getCellCenters(), unmaskedFaceCellIDs[:, 0]))
@@ -167,11 +167,11 @@ class Mesh2D(Mesh):
             >>> mesh = Mesh2D(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
             
             >>> externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
-            >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
             1
 
             >>> internalFaces = Numeric.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
-            >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
             >>> faceCellIds = MA.masked_values(((0, -1), (1, -1), (2, -1),

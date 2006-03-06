@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/16/05 {12:39:23 PM} 
+ #                                last update: 3/5/06 {4:54:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
-from fipy.meshes.numMesh.face import Face
+from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -144,44 +144,40 @@ class Grid2D(Mesh2D):
         Return list of faces on left boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13),
-            ...                  [face.getID() for face in mesh.getFacesLeft()])
+            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
             1
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
 	
     def getFacesRight(self):
 	"""
         Return list of faces on right boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16),
-            ...                  [face.getID() for face in mesh.getFacesRight()])
+            >>> numerix.allequal((12, 16), mesh.getFacesRight())
             1
 	"""
-	return [Face(self, id) for id in  Numeric.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
 	
     def getFacesTop(self):
 	"""
         Return list of faces on top boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8),
-            ...                  [face.getID() for face in mesh.getFacesTop()])
+            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
             1
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
 	
     def getFacesBottom(self):
 	"""
         Return list of faces on bottom boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((0, 1, 2),
-            ...                  [face.getID() for face in mesh.getFacesBottom()])
+            >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())
             1
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.nx)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.nx))
         
     def getScale(self):
 	return self.scale['length']
@@ -255,11 +251,13 @@ class Grid2D(Mesh2D):
             1
 
             >>> externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            >>> tmp = list(mesh.getExteriorFaces())
+            >>> tmp.sort()
+            >>> numerix.allequal(externalFaces, tmp)
             1
 
             >>> internalFaces = Numeric.array((3, 4, 5, 10, 11, 14, 15))
-            >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
             >>> import MA

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/12/05 {11:34:22 AM} 
+ #                                last update: 3/4/06 {3:47:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,7 +70,7 @@ class FaceTerm(Term):
     def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
 	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 	
-	interiorFaceIDs = mesh.getInteriorFaceIDs()
+	interiorFaceIDs = mesh.getInteriorFaces()
 	
 	L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaceIDs),    id1, id1)
 	L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs), id1, id2)
@@ -140,18 +140,18 @@ class FaceTerm(Term):
 	    cell2Diag = cell2Diag,
 	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
-	    faceIDs = mesh.getInteriorFaceIDs(),
-	    ni = len(mesh.getInteriorFaceIDs()))
+	    faceIDs = mesh.getInteriorFaces(),
+	    ni = len(mesh.getInteriorFaces()))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, dt):
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
 
-	interiorFaceIDs = mesh.getInteriorFaceIDs()
+	interiorFaces = mesh.getInteriorFaces()
 
-	cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaceIDs)
-	cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs)
-	cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaceIDs)
-	cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaceIDs)
+	cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
+	cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
+	cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaces)
+	cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces)
 
 	fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
 	fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
@@ -166,8 +166,8 @@ class FaceTerm(Term):
 	mesh = var.getMesh()
 	
 	id1, id2 = mesh._getAdjacentCellIDs()
-	id1 = numerix.take(id1, mesh.getInteriorFaceIDs())
-	id2 = numerix.take(id2, mesh.getInteriorFaceIDs())
+	id1 = numerix.take(id1, mesh.getInteriorFaces())
+	id2 = numerix.take(id2, mesh.getInteriorFaces())
 	
         N = len(var)
         b = Numeric.zeros((N),'d')

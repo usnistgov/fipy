@@ -4,7 +4,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 3/3/06 {4:41:37 PM}
+ #                                 last update: 3/5/06 {10:55:25 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,7 @@
 import MA
 
 from fipy.meshes.numMesh.grid3D import Grid3D
+from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -94,7 +95,6 @@ class UniformGrid3D(Grid3D):
         self.numberOfXZFaces = self.nx * (self.ny + 1) * self.nz
         self.numberOfYZFaces = (self.nx + 1) * self.ny * self.nz
         self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
-        self.totalNumberOfFaces = self.numberOfFaces
         self.numberOfCells = self.nx * self.ny * self.nz
         
         
@@ -146,21 +146,26 @@ class UniformGrid3D(Grid3D):
         ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces)
         return numerix.reshape(ids, (self.nz, self.ny, self.nx + 1))
 
-    def getExteriorFaceIDs(self):
+    def getExteriorFaces(self):
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return numerix.concatenate((numerix.ravel(XYids[  0,    ...]), numerix.ravel(XYids[ -1,    ...]),
-                                    numerix.ravel(XZids[...,  0,...]), numerix.ravel(XZids[..., -1,...]),
-                                    numerix.ravel(YZids[...    ,  0]), numerix.ravel(YZids[...    , -1])))
+        return FaceIterator(mesh=self,
+                            ids=numerix.concatenate((numerix.ravel(XYids[  0,    ...]), 
+                                                     numerix.ravel(XYids[ -1,    ...]),
+                                                     numerix.ravel(XZids[...,  0,...]), 
+                                                     numerix.ravel(XZids[..., -1,...]),
+                                                     numerix.ravel(YZids[...    ,  0]), 
+                                                     numerix.ravel(YZids[...    , -1]))))
         
-    def getInteriorFaceIDs(self):
+    def getInteriorFaces(self):
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return numerix.concatenate((numerix.ravel(XYids[1:-1,      ...]),
-                                    numerix.ravel(XZids[ ...,1:-1, ...]),
-                                    numerix.ravel(YZids[ ...     ,1:-1])))
+        return FaceIterator(mesh=self,
+                            ids=numerix.concatenate((numerix.ravel(XYids[1:-1,      ...]),
+                                                     numerix.ravel(XZids[ ...,1:-1, ...]),
+                                                     numerix.ravel(YZids[ ...     ,1:-1]))))
 
     def _getCellFaceOrientations(self):
         tmp = numerix.MAtake(self.getFaceCellIDs()[...,0], self._getCellFaceIDs())
@@ -217,7 +222,7 @@ class UniformGrid3D(Grid3D):
         XZids = MA.zeros((self.nz, self.ny + 1, self.nx, 2))
         indices = numerix.indices((self.nz, self.ny + 1, self.nx))
         XZids[...,1] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx
-        XZids[...,0] = XZids[...,1] - self.nx * self.nz
+        XZids[...,0] = XZids[...,1] - self.nx
         XZids[..., 0,...,0] = XZids[..., 0,...,1]
         XZids[..., 0,...,1] = MA.masked
         XZids[...,-1,...,1] = MA.masked
@@ -508,7 +513,7 @@ class UniformGrid3D(Grid3D):
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
             >>> import MA

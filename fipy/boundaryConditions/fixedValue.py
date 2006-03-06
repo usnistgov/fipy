@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 2/27/06 {10:36:21 AM}
+ #                                last update: 3/4/06 {12:44:42 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,11 +86,11 @@ class FixedValue(BoundaryCondition):
             this exterior face
 	"""
 	
-	LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faceIDs))
-	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faceIDs), self.adjacentCellIDs, self.adjacentCellIDs)
+	LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
+	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faceIDs) * self._getValue())
+	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
 
 	return (LL, bb)
 	

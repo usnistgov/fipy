@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 3/3/06 {1:57:55 PM} 
+ #                                last update: 3/5/06 {4:54:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,6 +49,7 @@ __docformat__ = 'restructuredtext'
 import MA
 
 from fipy.meshes.numMesh.grid2D import Grid2D
+from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -118,13 +119,14 @@ class UniformGrid2D(Grid2D):
     def _getCellFaceIDs(self):
         return MA.array(self._createCells())
         
-    def getExteriorFaceIDs(self):
-        return numerix.concatenate((numerix.arange(0, self.nx),
-                                    numerix.arange(0, self.nx) + self.nx * self.ny,
-                                    numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces,
-                                    numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces + self.nx))
+    def getExteriorFaces(self):
+        return FaceIterator(mesh=self,
+                            ids=numerix.concatenate((numerix.arange(0, self.nx),
+                                                     numerix.arange(0, self.nx) + self.nx * self.ny,
+                                                     numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces,
+                                                     numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces + self.nx)))
         
-    def getInteriorFaceIDs(self):
+    def getInteriorFaces(self):
         Hids = numerix.arange(0, self.numberOfHorizontalFaces)
         Hids = numerix.reshape(Hids, (self.ny + 1, self.nx))
         Hids = Hids[1:-1,...]
@@ -133,8 +135,9 @@ class UniformGrid2D(Grid2D):
         Vids = numerix.reshape(Vids, (self.ny, self.nx + 1))
         Vids = Vids[...,1:-1]
         
-        return numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
-                                    numerix.reshape(Vids, ((self.nx - 1) * self.ny,))))
+        return FaceIterator(mesh=self,
+                            ids=numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
+                                                     numerix.reshape(Vids, ((self.nx - 1) * self.ny,)))))
 
     def _getCellFaceOrientations(self):
         # needs fix?
@@ -359,11 +362,11 @@ class UniformGrid2D(Grid2D):
                                     numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
                                     
     def _getOrderedCellVertexIDs(self):
-        ids = numerix.zeros((self.nx, self.ny, 4))
-        indices = numerix.indices((self.nx, self.ny))
-        ids[...,1] = indices[0] + (indices[1] + 1) * (self.nx + 1)
+        ids = numerix.zeros((self.ny, self.nx, 4))
+        indices = numerix.indices((self.ny, self.nx))
+        ids[...,1] = indices[1] + (indices[0] + 1) * (self.nx + 1)
         ids[...,0] = ids[...,1] + 1
-        ids[...,2] = indices[0] + indices[1] * (self.nx + 1)
+        ids[...,2] = indices[1] + indices[0] * (self.nx + 1)
         ids[...,3] = ids[...,2] + 1
         
         return numerix.reshape(ids, (self.numberOfCells, 4))
@@ -414,7 +417,7 @@ class UniformGrid2D(Grid2D):
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
             >>> import MA

@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 9/16/05 {12:14:02 PM} 
+ #                                last update: 3/5/06 {6:34:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,10 +75,7 @@ class FixedFlux(BoundaryCondition):
 	##self.contribution = self.contribution * self.value * self.faces[0].getArea()
 	##for i in range(N):  
 	##    self.contribution[i] = self.value * self.faces[i].getArea()
-        areas = Numeric.zeros((N,),'d')
-        for i in range(N):
-            areas[i] = self.faces[i].getArea()
-	self.contribution = self.value * areas
+	self.contribution = self.value * self.faces.getAreas()
         
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Leave **L** unchanged and add gradient to **b**

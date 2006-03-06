@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/19/06 {2:49:22 PM} 
+ #                                last update: 3/5/06 {9:06:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,6 +46,8 @@ import sys
 import os
 
 import Numeric
+
+from fipy.meshes.meshIterator import MeshIterator
 
 import fipy.tools.dimensions.physicalField
 
@@ -260,7 +262,11 @@ class Variable(object):
             IndexError: index out of bounds
 
         """
-	return self.getValue()[index]
+        if isinstance(index, MeshIterator):
+            assert index.getMesh() == self.getMesh()
+            return self.take(index)
+        else:
+            return self.getValue()[index]
 
     def getName(self):
         return self.name
@@ -289,10 +295,20 @@ class Variable(object):
                                 separator = separator)
         
     def __setitem__(self, index, value):
+        if isinstance(index, MeshIterator):
+            assert index.getMesh() == self.getMesh()
+            self.put(indices=index, value=value)
+        else:
+            if self.value is None:
+                self.getValue()
+            self.value[index] = value
+            self._markFresh()
+        
+    def put(self, indices, value):
         if self.value is None:
             self.getValue()
-	self.value[index] = value
-	self._markFresh()
+        numerix.put(self.value, indices, value)
+        self._markFresh()
 	
     def __call__(self):
 	"""

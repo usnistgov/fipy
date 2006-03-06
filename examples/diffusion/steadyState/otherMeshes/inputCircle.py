@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/12/05 {11:39:18 AM} { 5:14:21 PM}
+ #                                last update: 3/3/06 {11:21:08 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -117,7 +117,7 @@ faces. These are used as the boundary condition fixed values.
 
    >>> from fipy.tools import numerix
    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[:,0],
-   ...                                mesh.getExteriorFaceIDs())
+   ...                                mesh.getExteriorFaces())
 
 The example is then solved as an implicit diffusion problem.
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/22/06 {3:36:07 PM} 
+ #                                last update: 3/5/06 {6:35:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -279,17 +279,11 @@ class Mesh:
     def _getCellFaceIDs(self):
         return self.cellFaceIDs
 
-    def getExteriorFaceIDs(self):
-	return self.exteriorFaceIDs
-	
     def getExteriorFaces(self):
 	pass
 
-    def getInteriorFaceIDs(self):
-	return self.interiorFaceIDs
-	    
-    def _getInteriorFaces(self):
-	pass
+    def getInteriorFaces(self):
+        pass
 	
     def _getExteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
@@ -496,12 +490,7 @@ class Mesh:
 	return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
-        try:
-            tmp = self.getCellCenters() - point
-        except TypeError:
-            tmp = self.getCellCenters() - PhysicalField(point)
-        i = Numeric.argmin(Numeric.add.reduce((tmp * tmp), axis = 1))
-	return self._getCellsByID([i])[0]
+	return self._getCellsByID([self._getNearestCellID(point)])[0]
 
     def _getNearestCellID(self, point):
         try:

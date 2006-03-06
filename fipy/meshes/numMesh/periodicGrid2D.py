@@ -6,7 +6,7 @@
  #
  #  FILE: "periodicGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 4/21/05 {4:49:30 PM} 
+ #                                last update: 3/4/06 {12:25:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ class PeriodicGrid2D(Grid2D):
 
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
 
-        >>> print mesh.getExteriorFaceIDs()
+        >>> print mesh.getExteriorFaces()
         [ 4, 5, 8,11,]
 
         >>> print mesh.getFaceCellIDs()

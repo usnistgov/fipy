@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 9/16/05 {12:36:45 PM} 
+ #                                last update: 3/3/06 {11:21:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -127,7 +127,7 @@ class _AdaptiveMesh2D(GmshImporter2D):
     def _calcExteriorVertexIDs(self):
         ## get the exterior vertex IDs
         self.varMesh = self.variable.getMesh()
-        exteriorFaces = self.varMesh.getExteriorFaceIDs()
+        exteriorFaces = self.varMesh.getExteriorFaces()
         exteriorFaceVertexIDs = Numeric.take(self.varMesh.faceVertexIDs, exteriorFaces)
         exteriorVertexIDs = Numeric.ravel(exteriorFaceVertexIDs)
         exteriorVertexIDs = _removeDuplicates(exteriorVertexIDs)

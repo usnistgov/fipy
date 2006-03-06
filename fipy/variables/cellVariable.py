@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/17/06 {11:17:09 AM} 
+ #                                last update: 3/5/06 {7:28:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -135,7 +135,10 @@ class CellVariable(Variable):
             >>> v1.setValue(3, unit = 'm')
             >>> print v1
             [ 3., 3., 3., 3.,] m
+            >>> import warnings
+            >>> warnings.filterwarnings("ignore", "'where' should be used instead of 'cells'", DeprecationWarning)
             >>> v1.setValue(1, cells=mesh.getCells()[2:])
+            >>> warnings.resetwarnings()
             >>> print v1
             [ 3., 3., 1., 1.,] m
             >>> v1.setValue(4)
@@ -209,21 +212,21 @@ class CellVariable(Variable):
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
@@ -248,21 +251,22 @@ class CellVariable(Variable):
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> # faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaceIDs()[0]]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
             >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1

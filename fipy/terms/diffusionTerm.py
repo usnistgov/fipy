@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 2/28/06 {2:22:36 PM} 
+ #                                last update: 3/5/06 {10:55:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -160,7 +160,7 @@ class DiffusionTerm(Term):
     def _getCoefficientMatrix(self, mesh, coeff):
         interiorCoeff = Numeric.array(coeff)
         
-        numerix.put(interiorCoeff, mesh.getExteriorFaceIDs(), 0)
+        numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
@@ -168,11 +168,13 @@ class DiffusionTerm(Term):
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 1))
         del interiorCoeff
         
-        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), mesh.getInteriorFaceIDs())
+        interiorFaces = mesh.getInteriorFaces()
+        
+        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces)
 
-        interiorCoeff = -numerix.take(coeff, mesh.getInteriorFaceIDs())
+        interiorCoeff = -numerix.take(coeff, interiorFaces)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,0], interiorFaceCellIDs[...,1])
-        interiorCoeff = -numerix.take(coeff, mesh.getInteriorFaceIDs())
+        interiorCoeff = -numerix.take(coeff, interiorFaces)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,1], interiorFaceCellIDs[...,0])
         
         return coefficientMatrix

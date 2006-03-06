@@ -179,10 +179,14 @@ class GapFillMesh(Mesh2D):
         return mesh
 
     def getTopFaces(self):
-        return self.getFaces(lambda face: face.getCenter()[1] > self.actualDomainHeight - self.epsilon)
+        faces = self.getFaces()
+        return faces.where(faces.getCenters()[...,1] > self.actualDomainHeight - self.epsilon)
+##         return self.getFaces(lambda face: face.getCenter()[1] > self.actualDomainHeight - self.epsilon)
 
     def getBottomFaces(self):
-        return self.getFaces(lambda face: face.getCenter()[1] < self.epsilon)
+        faces = self.getFaces()
+        return faces.where(faces.getCenters()[...,1] < self.epsilon)
+##         return self.getFaces(lambda face: face.getCenter()[1] < self.epsilon)
 
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[:,1] > self.actualFineRegionHeight - self.cellSize)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 7/6/05 {3:57:13 PM} 
+ #                                last update: 3/5/06 {8:39:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,26 +71,26 @@ class BoundaryCondition:
             >>> bc = BoundaryCondition(mesh.getFaces(), 0)
             Traceback (most recent call last):
                 ...
-            ValueError: Face list has interior faces
-            >>> bc = BoundaryCondition((mesh.getFaces()[0], mesh.getFaces()[0]), 0)
+            IndexError: Face list has interior faces
+            >>> bc = BoundaryCondition(mesh.getFaces()[0] + mesh.getFaces()[0], 0)
             Traceback (most recent call last):
                 ...
-            ValueError: Face list has repeated entries
+            IndexError: Face list has repeated entries
 
 	"""
         self.faces = faces
         self.value = PhysicalField(value)
 	
-	self.faceIDs = Numeric.array([face.getID() for face in self.faces])
-
         import sets
-        if len(sets.Set(self.faceIDs)) < len(self.faceIDs):
-            raise ValueError, 'Face list has repeated entries'
+        if len(sets.Set(self.faces)) < len(self.faces):
+            raise IndexError, 'Face list has repeated entries'
+        
+        if not (sets.Set(self.faces).issubset(sets.Set(self.faces.getMesh().getExteriorFaces()))):
+            raise IndexError, 'Face list has interior faces'
 
-        if not (sets.Set(self.faceIDs).issubset(sets.Set(self.faces[0].getMesh().getExteriorFaceIDs()))):
-            raise ValueError, 'Face list has interior faces'
-
-	self.adjacentCellIDs = Numeric.array([face.getCellID() for face in self.faces])
+## 	self.adjacentCellIDs = Numeric.array([face.getCellID() for face in self.faces])
+##      self.adjacentCellIDs = Numeric.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
+        self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
 	"""Return the effect of this boundary condition on the equation

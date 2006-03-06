@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/2/06 {12:14:00 PM} 
+ #                                last update: 3/5/06 {8:35:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ import MA
 
 import fipy.meshes.common.mesh
 
-from fipy.meshes.numMesh.face import Face
+from fipy.meshes.meshIterator import FaceIterator
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools import numerix
@@ -102,7 +102,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             [ 1, 8, 3, 7,]
             [ 2,10, 4, 9,]
             [ 3,11, 5,10,]]
-
+            
            >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
 
            >>> print mesh._getCellFaceIDs()
@@ -113,25 +113,21 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         
         """
 
-        ## extract the face IDs for each set of faces
-        ids0 = [face.getID() for face in faces0]
-        ids1 = [face.getID() for face in faces1]
-
         ## check for errors
 
         ## check that faces are members of exterior faces
         from sets import Set
-        assert Set(ids0).union(Set(ids1)).issubset(Set(self.getExteriorFaceIDs()))
+        assert Set(faces0).union(Set(faces1)).issubset(Set(self.getExteriorFaces()))
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
-        assert Numeric.take(self.areaProjections, ids0) == Numeric.take(-self.areaProjections, ids1)
+        assert Numeric.take(self.areaProjections, faces0) == Numeric.take(-self.areaProjections, faces1)
 
         ## extract the adjacent cells for both sets of faces
         faceCellIDs0 = self.faceCellIDs[:,0]
         faceCellIDs1 = self.faceCellIDs[:,1]
         ## set the new adjacent cells for `faces0`
-        MA.put(faceCellIDs1, ids0, MA.take(faceCellIDs0, ids0))
-        MA.put(faceCellIDs0, ids0, MA.take(faceCellIDs0, ids1))
+        MA.put(faceCellIDs1, faces0, MA.take(faceCellIDs0, faces0))
+        MA.put(faceCellIDs0, faces0, MA.take(faceCellIDs0, faces1))
         self.faceCellIDs[:,0] = faceCellIDs0
         self.faceCellIDs[:,1] = faceCellIDs1
         
@@ -139,30 +135,30 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         faceToCellDistances0 = self.faceToCellDistances[:,0]
         faceToCellDistances1 = self.faceToCellDistances[:,1]
         ## set the new faceToCellDistances for `faces0`
-        MA.put(faceToCellDistances1, ids0, MA.take(faceToCellDistances0, ids0))
-        MA.put(faceToCellDistances0, ids0, MA.take(faceToCellDistances0, ids1))
+        MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
+        MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
         self.faceToCellDistances[:,0] = faceToCellDistances0
         self.faceToCellDistances[:,1] = faceToCellDistances1
 
         ## calculate new cell distances and add them to faces0
-        Numeric.put(self.cellDistances, ids0, MA.take(faceToCellDistances0 + faceToCellDistances1, ids0))
+        Numeric.put(self.cellDistances, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
 
         ## change the direction of the face normals for faces0
         for dim in range(self.getDim()):
             faceNormals = self.faceNormals[:,dim].copy()
-            Numeric.put(faceNormals, ids0, MA.take(faceNormals, ids1))
+            Numeric.put(faceNormals, faces0, MA.take(faceNormals, faces1))
             self.faceNormals[:,dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
-        faceCellIDs = MA.take(self.faceCellIDs[:,0], ids1)
+        faceCellIDs = MA.take(self.faceCellIDs[:,0], faces1)
         ## get all the adjacent faces for those particular cells
         cellFaceIDs = MA.take(self.cellFaceIDs[:], faceCellIDs)
         for i in range(len(cellFaceIDs[0,:])):
             ## if the faces is a member of faces1 then change the face to point at
             ## faces0
-            cellFaceIDs[:,i] = MA.where(cellFaceIDs[:,i] == ids1,
-                                        ids0,
+            cellFaceIDs[:,i] = MA.where(cellFaceIDs[:,i] == faces1,
+                                        faces0,
                                         cellFaceIDs[:,i])
             ## add those faces back to the main self.cellFaceIDs
             tmp = self.cellFaceIDs[:,i]
@@ -321,17 +317,19 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        self.exteriorFaceIDs = Numeric.nonzero(self.faceCellIDs[:,1].mask())
-        self.interiorFaceIDs = Numeric.nonzero(Numeric.logical_not(self.faceCellIDs[:,1].mask()))
+        self.exteriorFaces = FaceIterator(mesh=self, 
+                                          ids=Numeric.nonzero(self.faceCellIDs[:,1].mask()))
+        self.interiorFaces = FaceIterator(mesh=self, 
+                                          ids=Numeric.nonzero(Numeric.logical_not(self.faceCellIDs[:,1].mask())))
 
     def _calcInteriorAndExteriorCellIDs(self):
         try:
             import sets
-            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[:,0],self.exteriorFaceIDs))
+            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[:,0],self.getExteriorFaces()))
             self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
             self.exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            self.exteriorCellIDs = Numeric.take(self.faceCellIDs[:,0], self.exteriorFaceIDs)
+            self.exteriorCellIDs = Numeric.take(self.faceCellIDs[:,0], self.getExteriorFaces())
             tmp = Numeric.zeros(self.numberOfCells)
             Numeric.put(tmp, self.exteriorCellIDs, Numeric.ones(len(self.exteriorCellIDs)))
             self.exteriorCellIDs = Numeric.nonzero(tmp)            
@@ -382,27 +380,24 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         return self.vertexCoords
 
     def getExteriorFaces(self):
-	return [Face(self, id) for id in self.getExteriorFaceIDs()]
-
-    def _getInteriorFaces(self):
-	return [Face(self, id) for id in self.getInteriorFaceIDs()]
+        return self.exteriorFaces
+            
+    def getInteriorFaces(self):
+        return self.interiorFaces
 	
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
     def _getFaces(self):
-        return [Face(self, id) for id in Numeric.arange(self.numberOfFaces)]
+        return FaceIterator(mesh=self,
+                            ids=Numeric.arange(self.numberOfFaces),
+                            checkIDs=False)
 
     def _getCellsByID(self, ids = None):
 	if ids is None:
 	    ids = range(self.numberOfCells) 
 	return [Cell(self, id) for id in ids]
     
-    def getFacesByID(self, ids = None):
-	if ids is None:
-	    ids = range(self.numberOfFaces) 
-	return [Face(self, id) for id in ids]
-	
     def _getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
 
@@ -651,11 +646,11 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             >>> mesh = Mesh(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
 
             >>> externalFaces = Numeric.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
-            >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
             1
 
             >>> internalFaces = Numeric.array((3,))
-            >>> numerix.allequal(internalFaces, [face.getID() for face in mesh._getInteriorFaces()])
+            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
             >>> import MA

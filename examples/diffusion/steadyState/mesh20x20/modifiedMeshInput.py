@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:42:39 PM} 
+ #                                last update: 3/5/06 {6:36:12 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,37 +87,10 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-def leftSide(face):
-    a = face.getCenter()[0]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
-        return 1
-    else:
-        return 0
-
-def rightSide(face):
-    a = face.getCenter()[0]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
-        return 1
-    else:
-        return 0
-
-def bottomSide(face):
-    a = face.getCenter()[1]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
-        return 1
-    else:
-        return 0
-
-def topSide(face):
-    a = face.getCenter()[0]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
-        return 1
-    else:
-        return 0
-
-
-boundaryConditions = (FixedValue(mesh.getFaces(leftSide), valueLeft),
-                      FixedValue(mesh.getFaces(rightSide), valueRight))
+exteriorFaces = mesh.getExteriorFaces()
+xFace = exteriorFaces.getCenters()[...,0]
+boundaryConditions = (FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000001), valueLeft),
+                      FixedValue(exteriorFaces.where((xFace - 20) ** 2 < 0.000000000000001), valueRight))
                       
 
 if __name__ == '__main__':

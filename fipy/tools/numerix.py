@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 3/2/06 {11:13:11 AM} 
+ #                                last update: 3/4/06 {1:20:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -165,7 +165,7 @@ def getShape(arr):
     elif type(arr) in (type(1), type(1.)):
         return ()
     else:
-        raise TypeError, "%s has no shape" % str(arr)
+        return array(arr).shape
     
 def sum(arr, index = 0):
     """

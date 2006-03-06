@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:41:45 PM} 
+ #                                last update: 3/3/06 {11:31:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,28 +78,28 @@ viewer = fipy.viewers.make(vars = var)
 
 def leftSide(face):
     a = face.getCenter()[0]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
+    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
         return 1
     else:
         return 0
 
 def rightSide(face):
     a = face.getCenter()[0]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
+    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
         return 1
     else:
         return 0
 
 def bottomSide(face):
     a = face.getCenter()[1]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
+    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
         return 1
     else:
         return 0
 
 def topSide(face):
     a = face.getCenter()[1]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaceIDs())):
+    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
         return 1
     else:
         return 0

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 1/17/06 {11:17:03 AM} 
+ #                                last update: 3/5/06 {4:43:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,10 +53,7 @@ class FaceVariable(Variable):
         if faces == ():
             Variable.setValue(self, value, unit = unit, where = where)
         else:
-            import warnings
-            warnings.warn("'where' should be used instead of 'faces'", DeprecationWarning, stacklevel=2)
-            for face in faces:
-                self[face.getID()] = value
+            self.put(indices=faces, value=value)
 
     def _getVariableClass(self):
 	return FaceVariable

@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 10/19/04 {11:37:47 AM} 
+ #                                last update: 3/5/06 {6:36:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,8 @@ class Face:
 	  - `mesh`: the `Mesh` that contains this `Face`
 	  - `id`:   a unique identifier
 	"""
+        import warnings
+        warnings.warn("'FaceIterator' and ID numbers should be used instead of 'Face'", DeprecationWarning, stacklevel=2)
         self.mesh = mesh
 	self.id = id
     
