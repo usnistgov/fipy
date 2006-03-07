@@ -797,6 +797,50 @@ def log(arr):
     else:
         return umath.log(arr)
 
+pythonmax = max
+def max(arr):
+    r"""
+    max function
+
+    >>> from fipy.tools.dimensions.physicalField import PhysicalField
+    >>> print max(PhysicalField(value = (0.1, -0.2, 0.3), unit = 'm'))
+    0.3 m
+    >>> print max(array((0.1, -0.2, 0.3)))
+    0.3
+    >>> from fipy.variables.variable import Variable
+    >>> print max(Variable(value = (0.1, -0.2, 0.3)))
+    0.3
+    
+    """
+
+    if type(arr) in (type(array(0)), type(MA.array(0)), type(()), type([])) or \
+       (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
+        return pythonmax(arr)
+    else:
+        return pythonmax(array(arr))
+
+pythonmin = min
+def min(arr):
+    r"""
+    min function
+
+    >>> from fipy.tools.dimensions.physicalField import PhysicalField
+    >>> print min(PhysicalField(value = (0.1, -0.2, 0.3), unit = 'm'))
+    -0.2 m
+    >>> print min(array((0.1, -0.2, 0.3)))
+    -0.2
+    >>> from fipy.variables.variable import Variable
+    >>> print min(Variable((0.1, -0.2, 0.3)))
+    -0.2
+    
+    """
+
+    if type(arr) in (type(array(0)), type(MA.array(0)), type(()), type([])) or \
+       (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
+        return pythonmin(arr)
+    else:
+        return pythonmin(array(arr))
+
 def conjugate(arr):
     r"""
     Complex conjugate of

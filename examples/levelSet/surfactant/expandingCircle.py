@@ -66,7 +66,7 @@ conservation of surfactant:
    >>> for step in range(steps):
    ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
    ...     distanceVariable.extendVariable(velocity)
-   ...     timeStepDuration = cfl * dx / max(velocity)
+   ...     timeStepDuration = cfl * dx / numerix.max(velocity)
    ...     distanceVariable.updateOld()
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    ...     surfactantEquation.solve(surfactantVariable)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
         print 'step',step
         velocity.setValue(surfactantVariable.getInterfaceVar() * k)
         distanceVariable.extendVariable(velocity)
-        timeStepDuration = cfl * dx / max(velocity)
+        timeStepDuration = cfl * dx / numerix.max(velocity)
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable)

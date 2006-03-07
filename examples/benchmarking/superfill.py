@@ -247,7 +247,7 @@ for step in range(numberOfSteps):
     metalVar.updateOld()
     bulkCatalystVar.updateOld()
     distanceVar.extendVariable(extensionVelocityVariable)
-    dt = cflNumber * cellSize / max(extensionVelocityVariable)
+    dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
     advectionEquation.solve(distanceVar, dt = dt)
     surfactantEquation.solve(catalystVar, dt = dt)
     metalEquation.solve(metalVar, dt = dt,

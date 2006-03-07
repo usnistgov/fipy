@@ -42,6 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools import numerix
 from fipy.viewers.viewer import Viewer
 import pyvtk
 
@@ -82,7 +83,6 @@ class MayaviDistanceViewer(Viewer):
 
     def _getStructure(self):
 
-        from fipy.tools import numerix
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
         coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar / self.distanceVar.getGrad().getMag(), IDs)
@@ -128,16 +128,16 @@ class MayaviDistanceViewer(Viewer):
         
         xmax = self._getLimit('datamax')
         if xmax is None:
-            xmax = max(self.surfactantVar)
+            xmax = numerix.max(self.surfactantVar)
             
         xmin = self._getLimit('datamin')
         if xmin is None:
-            xmin = min(self.surafactantVar)
+            xmin = numerix.min(self.surafactantVar)
             
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((min(var), max(var)))
+        slh.v_range_var.set((numerix.min(var), numerix.max(var)))
         slh.set_v_range_var()
         
         self._viewer.Render()

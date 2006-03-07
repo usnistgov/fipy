@@ -88,8 +88,8 @@ class MayaviSurfactantViewer(Viewer):
 
     def _getStructure(self):
 
-        maxX = max(self.distanceVar.getMesh().getFaceCenters()[:,0])
-        minX = min(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        maxX = numerix.max(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        minX = numerix.min(self.distanceVar.getMesh().getFaceCenters()[:,0])
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
@@ -101,8 +101,8 @@ class MayaviSurfactantViewer(Viewer):
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
         from lines import _getOrderedLines
-        print min(self.distanceVar.getMesh()._getCellDistances()) * 3
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = min(self.distanceVar.getMesh()._getCellDistances()) * 10)
+        print numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 3
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -110,7 +110,7 @@ class MayaviSurfactantViewer(Viewer):
 
         tmpIDs = numerix.nonzero(data > 0.0001)
         if len(tmpIDs) > 0:
-            val = min(numerix.take(data, tmpIDs))
+            val = numerix.min(numerix.take(data, tmpIDs))
         else:
             val = 0.0001
             
@@ -175,16 +175,16 @@ class MayaviSurfactantViewer(Viewer):
         
         xmax = self._getLimit('datamax')
         if xmax is None:
-            xmax = max(self.surfactantVar)
+            xmax = numerix.max(self.surfactantVar)
             
         xmin = self._getLimit('datamin')
         if xmin is None:
-            xmin = min(self.surfactantVar)
+            xmin = numerix.min(self.surfactantVar)
             
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((min(self.surfactantVar), max(self.surfactantVar)))
+        slh.v_range_var.set((numerix.min(self.surfactantVar), numerix.max(self.surfactantVar)))
         slh.set_v_range_var()
         
         self._viewer.Render()

@@ -186,16 +186,16 @@ class MayaviViewer(Viewer):
 
             xmax = self._getLimit('datamax')
             if xmax is None:
-                xmax = max(var)
+                xmax = numerix.max(var)
 
             xmin = self._getLimit('datamin')
             if xmin is None:
-                xmin = min(var)
+                xmin = numerix.min(var)
             
             slh.range_var.set((xmin, xmax))
             slh.set_range_var()
 
-            slh.v_range_var.set((min(var), max(var)))
+            slh.v_range_var.set((numerix.min(var), numerix.max(var)))
             slh.set_v_range_var()
 
             self._viewer.Render()

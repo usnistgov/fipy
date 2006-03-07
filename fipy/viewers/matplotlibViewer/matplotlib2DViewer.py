@@ -75,7 +75,8 @@ class Matplotlib2DViewer(MatplotlibViewer):
         if len(list(vars)) != 1:
             raise IndexError, "A 2D Matplotlib viewer can only display one Variable"
 
-        from fipy.meshes.grid2D import Grid2D
+
+        from fipy.meshes.numMesh.grid2D import Grid2D
         if not  isinstance(list(vars)[0].getMesh(), Grid2D):
             raise Exception, 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
 
@@ -92,17 +93,17 @@ class Matplotlib2DViewer(MatplotlibViewer):
         Y = Numeric.reshape(mesh.getCellCenters()[:,1], shape)
         Z = Numeric.reshape(self.vars[0][:], shape)
         
-        minz = min(self.vars[0])
+        minz = numerix.min(self.vars[0])
         for limit in ('zmin', 'datamin'):
             value = self._getLimit(limit)
             if value is not None:
-                minz = min(min(self.vars[0]), value)
-
-        maxz = max(self.vars[0])
+                minz = min(minz, value)
+                
+        maxz = numerix.max(self.vars[0])
         for limit in ('zmax', 'datamax'):
             value = self._getLimit(limit)
             if value is not None:
-                maxz = max(max(self.vars[0]), value)
+                maxz = max(maxz, value)
 
         numberOfContours = 10
         smallNumber = 1e-7

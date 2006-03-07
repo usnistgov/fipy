@@ -190,14 +190,14 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = Numeric.reshape(Numeric.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print max(error)
+        >>> print numerix.max(error)
         0.123105625618
 
     The maximum error is large (about 12 %) for the first order advection.
 
         >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = Numeric.reshape(Numeric.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print max(error)
+        >>> print numerix.max(error)
         0.0201715476597
 
     The maximum error is 2 % when using a higher order contribution.

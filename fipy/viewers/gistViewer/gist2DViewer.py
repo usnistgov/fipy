@@ -112,12 +112,12 @@ class Gist2DViewer(GistViewer):
         if minVal == 'e':
             minVal = min(self.vars[0][:])
             for var in self.vars[1:]:
-                minVal = min(minVal, min(var[:]))
+                minVal = min(minVal, numerix.min(var[:]))
 
         if maxVal == 'e':
-            maxVal = max(self.vars[0][:])
+            maxVal = numerix.max(self.vars[0][:])
             for var in self.vars[1:]:
-                maxVal = max(maxVal, max(var[:]))
+                maxVal = max(maxVal, numerix.max(var[:]))
 
         if maxVal == minVal:
             maxVal = minVal + 1e-10
