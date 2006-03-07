@@ -45,7 +45,7 @@
 __docformat__ = 'restructuredtext'
 
 import pylab
-import Numeric
+from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib2DViewer(MatplotlibViewer):
@@ -89,9 +89,9 @@ class Matplotlib2DViewer(MatplotlibViewer):
         mesh = self.vars[0].getMesh()
         shape = mesh.getShape()
         shape = (shape[1], shape[0])
-        X = Numeric.reshape(mesh.getCellCenters()[:,0], shape)
-        Y = Numeric.reshape(mesh.getCellCenters()[:,1], shape)
-        Z = Numeric.reshape(self.vars[0][:], shape)
+        X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
+        Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
+        Z = numerix.reshape(self.vars[0][:], shape)
         
         minz = numerix.min(self.vars[0])
         for limit in ('zmin', 'datamin'):
@@ -110,13 +110,13 @@ class Matplotlib2DViewer(MatplotlibViewer):
         diff = maxz - minz
         
         if diff < smallNumber:            
-            V = Numeric.arange(numberOfContours + 1) * smallNumber / numberOfContours + minz
+            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + minz
         else:
-            V = Numeric.arange(numberOfContours + 1) * diff / numberOfContours + minz
+            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
 
         pylab.hsv()
 
-        pylab.contourf(X, Y, Numeric.reshape(self.vars[0][:], shape), V)
+        pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)
         pylab.colorbar()
                             
         pylab.ylim(ymin = self._getLimit('ymin'))
