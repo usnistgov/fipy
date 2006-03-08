@@ -4,7 +4,7 @@
  # 
  #  FILE: "uniformNoiseVariable.py"
  #                                    created: 8/26/05 {3:08:48 PM} 
- #                                last update: 12/22/05 {11:58:15 AM} 
+ #                                last update: 3/7/06 {11:55:44 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class UniformNoiseVariable(NoiseVariable):
         >>> from fipy.variables.histogramVariable import HistogramVariable
         >>> histogram = HistogramVariable(distribution = noise, dx = 0.01, nx = 120, offset = -.1)
         
-        >>> if __name__ == 'main':
+        >>> if __name__ == '__main__':
         ...     from fipy import viewers
         ...     viewer = viewers.make(vars = noise, limits = {'datamin':0, 'datamax':1})
         ...     histoplot = viewers.make(vars = histogram)
