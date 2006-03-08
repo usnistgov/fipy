@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/05 {6:38:56 PM} 
+ #                                last update: 3/6/06 {8:57:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,7 @@ def _suite():
         docTestModuleNames = (
             'fipy.meshes.numMesh.mesh',
             'fipy.meshes.numMesh.mesh2D',
+            'fipy.meshes.numMesh.grid1D',
             'fipy.meshes.numMesh.grid2D',
             'fipy.meshes.numMesh.grid3D',
             'fipy.meshes.numMesh.tri2D',
@@ -58,6 +59,9 @@ def _suite():
             'fipy.meshes.numMesh.refinedMesh',
             'fipy.meshes.numMesh.periodicGrid1D',
             'fipy.meshes.numMesh.periodicGrid2D',
+            'fipy.meshes.numMesh.uniformGrid1D',
+            'fipy.meshes.numMesh.uniformGrid2D',
+            'fipy.meshes.numMesh.uniformGrid3D',
         ))
     
 if __name__ == '__main__':
