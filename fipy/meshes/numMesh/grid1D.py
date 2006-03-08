@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/5/06 {8:14:13 AM} 
+ #                                last update: 3/8/06 {11:50:18 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,13 +60,13 @@ class Grid1D(Mesh1D):
         >>> print mesh.getCellCenters()
         [[ 0.5,]
          [ 1.5,]
-         [ 2.5,]] 1
+         [ 2.5,]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
         [[ 0.5,]
          [ 2. ,]
-         [ 4.5,]] 1
+         [ 4.5,]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 3/5/06 {8:16:23 AM} 
+ #                                last update: 3/7/06 {5:02:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,7 +60,7 @@ class UniformGrid1D(Grid1D):
         >>> print mesh.getCellCenters()
         [[ 0.5,]
          [ 1.5,]
-         [ 2.5,]] 1
+         [ 2.5,]]
     """
     def __init__(self, dx = 1., nx = 1, origin = (0,)):
         self.dim = 1
@@ -174,7 +174,7 @@ class UniformGrid1D(Grid1D):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
 
     def getCellCenters(self):
-        return (numerix.arange(self.numberOfCells)[...,numerix.NewAxis] + 0.5) * self.dx + self.origin
+        return ((numerix.arange(self.numberOfCells)[...,numerix.NewAxis] + 0.5) * self.dx + self.origin) * self.scale['length']
 
     def _getCellDistances(self):
         distances = numerix.zeros(self.numberOfFaces, 'd')

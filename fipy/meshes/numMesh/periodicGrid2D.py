@@ -6,7 +6,7 @@
  #
  #  FILE: "periodicGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/4/06 {12:25:31 AM} 
+ #                                last update: 3/8/06 {11:49:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,7 +73,7 @@ class PeriodicGrid2D(Grid2D):
          [3 ,-- ,]]
 
         >>> print mesh._getCellDistances()
-        [ 0.5 , 0.5 , 0.5 , 0.5 , 0.25, 0.25, 1.  , 1.  , 0.5 , 1.  , 1.  , 0.5 ,] 1
+        [ 0.5 , 0.5 , 0.5 , 0.5 , 0.25, 0.25, 1.  , 1.  , 0.5 , 1.  , 1.  , 0.5 ,]
  
         >>> print mesh._getCellFaceIDs()
         [[ 0, 7, 2, 6,]
@@ -85,7 +85,7 @@ class PeriodicGrid2D(Grid2D):
         [[ 0.5, 1. , 0.5, 1. ,]
          [ 0.5, 1. , 0.5, 1. ,]
          [ 0.5, 1. , 0.5, 1. ,]
-         [ 0.5, 1. , 0.5, 1. ,]] 1
+         [ 0.5, 1. , 0.5, 1. ,]]
 
         >>> normals = [[0, 1],
         ...            [0, 1],

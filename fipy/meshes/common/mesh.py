@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/5/06 {6:35:57 PM} 
+ #                                last update: 3/7/06 {4:57:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -461,6 +461,8 @@ class Mesh:
 
     def setScale(self, value = 1.):
         self.scale['length'] = PhysicalField(value = value)
+        if self.scale['length'].getUnit().isDimensionless():
+            self.scale['length'] = 1
 	self._calcHigherOrderScalings()
 	self._calcScaledGeometry()
 

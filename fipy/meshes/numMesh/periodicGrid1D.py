@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicGrid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/4/06 {12:25:15 AM} 
+ #                                last update: 3/8/06 {11:49:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,12 +64,12 @@ class PeriodicGrid1D(Grid1D):
          [2 ,-- ,]]
 
         >>> print mesh._getCellDistances()
-        [ 2. , 1.5, 2.5, 1.5,] 1
+        [ 2. , 1.5, 2.5, 1.5,]
 
         >>> print mesh._getCellToCellDistances()
         [[ 2. , 1.5,]
          [ 1.5, 2.5,]
-         [ 2.5, 2. ,]] 1
+         [ 2.5, 2. ,]]
 
         >>> print mesh._getFaceNormals()
         [[ 1.,]
