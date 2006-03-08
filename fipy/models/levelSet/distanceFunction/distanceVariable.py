@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 3/5/06 {7:18:34 AM}
+ #                                last update: 3/6/06 {11:39:12 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -547,8 +547,9 @@ class DistanceVariable(CellVariable):
            1
            
         """
-        val0 = Numeric.take(Numeric.array(self.value), self.mesh._getAdjacentCellIDs()[0])
-        val1 = Numeric.take(Numeric.array(self.value), self.mesh._getAdjacentCellIDs()[1])
+        adjacentCellIDs = self.mesh._getAdjacentCellIDs()
+        val0 = Numeric.take(Numeric.array(self.value), adjacentCellIDs[0])
+        val1 = Numeric.take(Numeric.array(self.value), adjacentCellIDs[1])
         
         return Numeric.where(val1 * val0 < 0, 1, 0)
 
