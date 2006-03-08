@@ -4,7 +4,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 3/5/06 {10:55:25 AM}
+ #                                 last update: 3/7/06 {4:59:52 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -509,7 +509,7 @@ class UniformGrid3D(Grid3D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 25, 24, 28))
-            >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
