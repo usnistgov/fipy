@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 3/5/06 {4:54:47 PM} 
+ #                                last update: 3/7/06 {4:59:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,7 @@ class UniformGrid2D(Grid2D):
         self.dim = 2
         
 	self.dx = PhysicalField(value = dx)
-	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
 	self.dx /= scale
         
         self.nx = nx
@@ -184,24 +184,24 @@ class UniformGrid2D(Grid2D):
         return self._createVertices() + self.origin
 
     def getFaceCellIDs(self):
-        Hids = MA.zeros((self.nx, self.ny + 1, 2))
-        indices = numerix.indices((self.nx, self.ny + 1))
-        Hids[...,1] = indices[0] + indices[1] * self.nx
+        Hids = MA.zeros((self.ny + 1, self.nx, 2))
+        indices = numerix.indices((self.ny + 1, self.nx))
+        Hids[...,1] = indices[1] + indices[0] * self.nx
         Hids[...,0] = Hids[...,1] - self.nx
-        Hids[...,0,0] = Hids[...,0,1]
-        Hids[...,0,1] = MA.masked
-        Hids[...,-1,1] = MA.masked
+        Hids[0,...,0] = Hids[0,...,1]
+        Hids[0,...,1] = MA.masked
+        Hids[-1,...,1] = MA.masked
 
-        Vids = MA.zeros((self.nx + 1, self.ny, 2))
-        indices = numerix.indices((self.nx + 1, self.ny))
-        Vids[...,1] = indices[0] + indices[1] * self.nx
+        Vids = MA.zeros((self.ny, self.nx + 1, 2))
+        indices = numerix.indices((self.ny, self.nx + 1))
+        Vids[...,1] = indices[1] + indices[0] * self.nx
         Vids[...,0] = Vids[...,1] - 1
-        Vids[0,...,0] = Vids[0,...,1]
-        Vids[0,...,1] = MA.masked
-        Vids[-1,...,1] = MA.masked
+        Vids[...,0,0] = Vids[...,0,1]
+        Vids[...,0,1] = MA.masked
+        Vids[...,-1,1] = MA.masked
 
-        return MA.concatenate((numerix.reshape(MA.transpose(Hids,(1,0,2)), (self.numberOfHorizontalFaces, 2)), 
-                                    numerix.reshape(MA.transpose(Vids,(1,0,2)), (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
+        return MA.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
+                               numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
 ##     get geometry methods
         
@@ -413,7 +413,7 @@ class UniformGrid2D(Grid2D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 13, 12, 16))
-            >>> numerix.allequal(externalFaces, [face.getID() for face in mesh.getExteriorFaces()])
+            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
