@@ -1770,7 +1770,12 @@ class Variable(object):
 	    >>> a.setValue(4)
 	    >>> b()
 	    0
-	    
+            >>> print 1000000000000000000 * Variable(1) < 1.
+            0
+            >>> print 1000 * Variable(1) < 1.
+            0
+
+
 	Python automatically reverses the arguments when necessary
 	
 	    >>> 4 > Variable(value = 3)
