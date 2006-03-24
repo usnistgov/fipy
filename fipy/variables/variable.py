@@ -391,6 +391,11 @@ class Variable(object):
                 value = array
             elif type(value) not in (type(None), type(Numeric.array(1)), type(MA.array(1))):
                 value = Numeric.array(value)
+                # Numeric does strange things with really large integers.
+                # Even though Python knows how to do arithmetic with them,
+                # Numeric converts them to 'O' objects that it then doesn't understand.
+                if value.typecode() == 'O':
+                    value = Numeric.array(float(value))
 
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()

@@ -5,6 +5,14 @@ Future Work
 Release Goals 1.1
 -----------------
 
+- User feed back
+
+  * make 'from fipy import Class' work for common classes
+  * make ConvectionTerm -> BaseConvectionTerm, PowerLawConvectionTerm -> ConvectionTerm
+  * flesh out phase section, phaseSimple, transient, binary, ternary, explanation and
+    maybe a little variational calculus
+  * make eqns auto generate thier peclet numbers
+
 - Dimensions are semi-broken, e.g., 
   examples/elphf/diffusion/input1Ddimensional.py
   Also, numerix inverse trig operations should return an angular
