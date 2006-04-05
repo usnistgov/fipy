@@ -627,7 +627,7 @@ f.close()
 
 ## app = [os.path.join('examples','levelSet','electroChem','input.py')],
 
-
+import fipy
 dist = setup(	name = "FiPy",
 	version = fipy.__version__,
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
