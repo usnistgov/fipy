@@ -629,7 +629,7 @@ f.close()
 
 
 dist = setup(	name = "FiPy",
-	version = "1.1a1",
+	version = fipy.__version__,
 	author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
 	author_email = "guyer@nist.gov",
 	url = "http://ctcms.nist.gov/fipy/",
