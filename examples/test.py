@@ -54,7 +54,8 @@ def _suite():
             'elphf.test',
             'levelSet.test',
             'chemotaxis.test',  
-            'cahnHilliard.test',  
+            'cahnHilliard.test',
+            'flow.test',  
         ), base = __name__)
 
 if __name__ == '__main__':

@@ -42,7 +42,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 class MeshIterator:
-    def __init__(self, mesh, ids=(), checkIDs=True):
+    def __init__(self, mesh, ids=(), checkIDs=False):
         self.mesh = mesh
         if type(ids) is type(1):
             ids = (ids,)

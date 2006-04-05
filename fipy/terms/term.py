@@ -43,6 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -84,10 +85,17 @@ class Term:
 		
 	return abs(residual)
 
+    def _applyUnderRelaxation(self, matrix, var, RHSVector, underRelaxation):
+
+        matrix.putDiagonal(matrix.takeDiagonal() / underRelaxation)
+        RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
+        
+        return matrix, RHSVector
+
     def _isConverged(self):
 	return self.converged
 
-    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = ()):
+    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = (), underRelaxation = None):
         r"""
         Builds and solves the `Term`'s linear system once.
         	
@@ -98,7 +106,8 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `solutionTolerance`: A value that the residual must be less than so that `_isConverged()` returns `True`.
-           - `returnItems`: Tuple or list of strings representing items to be returned `['matrix', 'var', 'RHSvector', 'residual']`. 
+           - `returnItems`: Tuple or list of strings representing items to be returned `['matrix', 'var', 'RHSvector', 'residual']`.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
 	"""
 
@@ -106,6 +115,10 @@ class Term:
             boundaryConditions = (boundaryConditions,)
 
  	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
+
+        if underRelaxation is not None:
+            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+            
         residual = self._getResidual(matrix, var, RHSvector)
         
         from fipy.solvers.linearPCGSolver import LinearPCGSolver

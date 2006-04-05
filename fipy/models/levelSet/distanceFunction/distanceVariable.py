@@ -210,6 +210,9 @@ class DistanceVariable(CellVariable):
 ##         self.cellNormals = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(0))       
 ##         self.cellAreas = Numeric.array(MA.array(self.mesh._getCellAreas()).filled(0))
         self.cellToCellIDs = Numeric.array(self.mesh._getCellToCellIDsFilled())
+        self.adjacentCellIDs = self.mesh._getAdjacentCellIDs()
+        self.exteriorFaces = self.mesh.getExteriorFaces()
+        self.cellFaceIDs = self.mesh._getCellFaceIDs()
         
     def _calcValue(self):
         return self.value
@@ -474,7 +477,7 @@ class DistanceVariable(CellVariable):
            1.57984690073
            
         """
-
+        
         normals = Numeric.array(MA.filled(self._getCellInterfaceNormals(), value = 0))
         areas = Numeric.array(MA.filled(self.mesh._getCellAreaProjections(), value = 0))
         return Numeric.sum(abs(numerix.dot(normals, areas, axis = 2)), axis = 1)
@@ -504,7 +507,7 @@ class DistanceVariable(CellVariable):
 
         valueOverFaces = Numeric.resize(Numeric.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
-        interfaceNormals = numerix.MAtake(self._getInterfaceNormals(), self.mesh._getCellFaceIDs())
+        interfaceNormals = numerix.MAtake(self._getInterfaceNormals(), self.cellFaceIDs)
         import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
@@ -547,7 +550,7 @@ class DistanceVariable(CellVariable):
            1
            
         """
-        adjacentCellIDs = self.mesh._getAdjacentCellIDs()
+        adjacentCellIDs = self.adjacentCellIDs
         val0 = Numeric.take(Numeric.array(self.value), adjacentCellIDs[0])
         val1 = Numeric.take(Numeric.array(self.value), adjacentCellIDs[1])
         
@@ -568,7 +571,7 @@ class DistanceVariable(CellVariable):
 
         """
 
-        flag = numerix.MAtake(self._getInterfaceFlag(), self.mesh._getCellFaceIDs()).filled(fill_value = 0)
+        flag = numerix.MAtake(self._getInterfaceFlag(), self.cellFaceIDs).filled(fill_value = 0)
 
         flag = Numeric.sum(flag, axis = 1)
         
@@ -621,7 +624,7 @@ class DistanceVariable(CellVariable):
 
         ## set faceGrad zero on exteriorFaces
         dim = self.mesh.getDim()
-        exteriorFaceIDs = (self.mesh.getExteriorFaces().getIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.mesh.getExteriorFaces()),dim))
+        exteriorFaceIDs = (self.exteriorFaces.getIDs() * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(self.exteriorFaces),dim))
         Numeric.put(faceGrad, exteriorFaceIDs, Numeric.zeros(numerix.getShape(exteriorFaceIDs),'d'))
         
         return faceGrad / faceGradMag[:,Numeric.NewAxis] 

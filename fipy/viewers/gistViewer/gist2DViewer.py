@@ -125,8 +125,9 @@ class Gist2DViewer(GistViewer):
         vertexIDs = self.mesh._getOrderedCellVertexIDs()
         Nfac = self.mesh._getMaxFacesPerCell()
         Ncells = self.mesh.getNumberOfCells()
-        xCoords = Numeric.take(self.mesh.getVertexCoords()[:,0], vertexIDs.flat)
-        yCoords = Numeric.take(self.mesh.getVertexCoords()[:,1], vertexIDs.flat)
+        vertexCoords = self.mesh.getVertexCoords()
+        xCoords = Numeric.take(vertexCoords[:,0], vertexIDs.flat)
+        yCoords = Numeric.take(vertexCoords[:,1], vertexIDs.flat)
         gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
 
         colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')

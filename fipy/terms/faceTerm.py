@@ -67,15 +67,13 @@ class FaceTerm(Term):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions):
+    def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
 	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 	
-	interiorFaceIDs = mesh.getInteriorFaces()
-	
-	L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaceIDs),    id1, id1)
-	L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaceIDs), id1, id2)
-	L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaceIDs), id2, id1)
-	L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaceIDs),    id2, id2)
+	L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces),    id1, id1)
+	L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces), id1, id2)
+	L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
+	L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
 
         N = mesh.getNumberOfCells()
 	M = mesh._getMaxFacesPerCell()
@@ -85,11 +83,11 @@ class FaceTerm(Term):
             L += LL
             b += bb
 
-    def _explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, dt):
+    def _explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
 
 	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
-        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, dt)
+        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt)
 
         N = mesh.getNumberOfCells()
 	M = mesh._getMaxFacesPerCell()
@@ -102,7 +100,7 @@ class FaceTerm(Term):
                 b -= LL * Numeric.array(oldArray)
 	    b += bb
 
-    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, dt):
+    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
 	weight = self._getWeight(mesh)['explicit']
@@ -140,13 +138,11 @@ class FaceTerm(Term):
 	    cell2Diag = cell2Diag,
 	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
-	    faceIDs = mesh.getInteriorFaces(),
-	    ni = len(mesh.getInteriorFaces()))
+	    faceIDs = interiorFaces,
+	    ni = len(interiorFaces))
 
-    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, dt):
-        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
-
-	interiorFaces = mesh.getInteriorFaces()
+    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt):
+        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt = dt)
 
 	cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
 	cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
@@ -163,11 +159,12 @@ class FaceTerm(Term):
 	"""Implicit portion considers
 	"""
 
-	mesh = var.getMesh()
-	
+	mesh = var.getMesh()	
 	id1, id2 = mesh._getAdjacentCellIDs()
-	id1 = numerix.take(id1, mesh.getInteriorFaces())
-	id2 = numerix.take(id2, mesh.getInteriorFaces())
+        interiorFaces = mesh.getInteriorFaces()
+        
+	id1 = numerix.take(id1, interiorFaces)
+	id2 = numerix.take(id2, interiorFaces)
 	
         N = len(var)
         b = Numeric.zeros((N),'d')
@@ -176,10 +173,10 @@ class FaceTerm(Term):
 	weight = self._getWeight(mesh)
 
         if weight.has_key('implicit'):
-	    self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions)
+	    self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
         if weight.has_key('explicit'):
-            self._explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, dt)
+            self._explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
         return (L, b)
 
