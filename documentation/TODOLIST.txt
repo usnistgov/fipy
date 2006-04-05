@@ -8,43 +8,21 @@ Release Goals 1.1
 - User feed back
 
   * make 'from fipy import Class' work for common classes
-  * make ConvectionTerm -> BaseConvectionTerm, PowerLawConvectionTerm -> ConvectionTerm
   * flesh out phase section, phaseSimple, transient, binary, ternary, explanation and
     maybe a little variational calculus
-  * make eqns auto generate thier peclet numbers
-
-- Dimensions are semi-broken, e.g., 
-  examples/elphf/diffusion/input1Ddimensional.py
-  Also, numerix inverse trig operations should return an angular
-  quantity, rather than a raw number.
-
-- Automatic conversion of dimensionless PhysicalField to simple
-  number or array should be done in `__array__` method, not in 
-  `__mul__` and __div__.
 
 - Documentation:
 
   * Review all for accuracy/consistency.
-  * Include some examples on the web page.
   * Add more figures to examples
-  * The reference manual should have a 'returns' section similar to 'parameters' for methods
-    and functions.
-  * Improve BC doc, make clear no internal BCs    
-  * Superfill manual
   * Fix source term and numerical docs wrt sources. Sort out the signs!
+  * time-steps and sweep documentation
+  * Add poly-crystal case.
+  * Add vector plot figure to flow.
 
 - Distribution
 
-  * PySparse; f2c issues on RedHat?
-  * Fedora Core 4 installation. SourceForge compilefarm?
-  * Install and test with no write permissions.
-  * Get FiPy registered on:
-
-    - vaults of parnassus
-    - cfd online
-    - scipy links
-
-  * set up mail archive
+  * Move to subversion and to Kent
   * Make tests work for an installation of FiPy
   * Make examples work for an installation of FiPy
     
@@ -52,45 +30,30 @@ Release Goals 1.1
 
   * update to 1.0 auto branch testing
 
-- Functionlity
-
-  * Investiagte using VISION for some simple FiPy examples.
-  * Implement some PETC solvers
-
 - Refactoring:
 
-  * Mesh
-   
-    - Look into other software (BLENDER3D, POVray) for example
-
-  * Rethink dependencies (maybe for a much later release)
-
-    - Use general principals outlined in Sanner's talk at scipy (are we doing this?)
-
-  * Reduce memory requirements
-
-    - Automated tests.
-    - Identify memory usage.
-
-  * Reduce run time
-
-    - Augment automated tests
-    - Identify time-consuming code
-    - Choose external references 
-
-      * Ryo's code
-      * Spectral MATLAB CH problem
-      * FemLab
-      * DiffPack
-      * FemLego?
-      * DOLFIN (has similar python objects)
-
+  * Check slow down for UnifromGrid2D/3D
   * fipy.tools.dump
 
     - write() should return a temporary file when no fileName argument is given.
     - thus, temporary file allocation can be removed from the example files
     - read() should (possibly?) clean temporary file. May or may not require dump to be a class to
       keep file data.
+
+Long term Goals
+---------------
+
+- Boundary conditions should be able to take CellVariables or FaceVariables as values and pull out the correct values.
+
+- Level set
+
+  * refactor to use basic types, make level set code work independently of FiPy
+  * unstructured grids
+  * 3D grids
+  * input files should not refer to equation objects
+  * Superfill manual
+
+- other stuff
 
   * clean up variable-vector-numerix-physicalfield interactions
 
@@ -106,20 +69,53 @@ Release Goals 1.1
 
     - Definetly most of these functions need not be in Variable and numerix
 
-  * prevent assigning boundary conditions to internal faces.
+  * Reduce run time
 
-  * Boundary conditions should be able to take CellVariables or FaceVariables as
-    values and pull out the correct values.
+    - Choose external references 
 
-  * Level set
+      * Ryo's code
+      * Spectral MATLAB CH problem
+      * DOLFIN (has similar python objects)
+      * Dolfyn
 
-    - refactor to use basic types, make level set code work independently of FiPy
-    - unstructured grids
-    - 3D grids
-    - input files should not refer to equation objects
+- Functionlity
 
-Long term Goals
----------------
+  * Flow solver using Dolfyn comparison
+
+    - Get better results compared with Dolfyn
+
+      * Higher order Implicit Diffusion
+      * Higher order explicit diffusion
+      * Wall boundary condition
+      * Improved mass flux evaluation
+      * Extrapolation of cell values to boundaries using gradients
+
+    - Add convection term to Navier-Stokes and compare with Dolfyn
+    - Add transient term and compare with Dolfyn 
+    - Efficieny tests of Dolfyn against FiPy
+
+- Implement some PETC solvers
+
+- Investiagte using VISION for some simple FiPy examples.
+
+- Improve BC doc, make clear no internal BCs    
+
+- The reference manual should have a 'returns' section similar to 'parameters' for methods and functions.
+
+- Include some examples on the web page.
+
+- Dimensions are semi-broken, e.g., 
+  examples/elphf/diffusion/input1Ddimensional.py
+  Also, numerix inverse trig operations should return an angular
+  quantity, rather than a raw number.
+
+- Automatic conversion of dimensionless PhysicalField to simple
+  number or array should be done in `__array__` method, not in 
+  `__mul__` and __div__.
+
+- make ConvectionTerm -> BaseConvectionTerm, PowerLawConvectionTerm -> ConvectionTerm
+
+- make eqns auto generate their Peclet numbers
 
 - Documentation:
 
@@ -169,6 +165,7 @@ Long term Goals
     
   * Reconcile variable operators and terms
 
+    - Apply boundary conditions to variables instead of terms
     - Equations should be stated in terms of variable operators.
     - For example a DiffusionTerm is represented by var.getGrad().getDiv()
     - getGrad() and getDiv() should calculate matrices and then use the matrices
