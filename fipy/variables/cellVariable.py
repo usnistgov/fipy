@@ -55,19 +55,13 @@ class CellVariable(Variable):
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
         >>> var.setValue(mesh.getCellCenters()[...,0] * mesh.getCellCenters()[...,1])
 
-        >>> import tempfile
-        >>> import os
-        >>> from fipy.tools import dump
-        
-        >>> (f, filename) = tempfile.mkstemp('.gz')
-        >>> dump.write(var, filename)
-        >>> unPickledVar = dump.read(filename)
+        >>> from fipy.tools import dump        
+        >>> (f, filename) = dump.write(var, extension = '.gz')
+        >>> unPickledVar = dump.read(filename, f)
         
         >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
         1
         
-        >>> os.close(f)
-        >>> os.remove(filename)
     """
     
     def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):

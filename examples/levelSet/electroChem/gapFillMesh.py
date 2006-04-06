@@ -33,13 +33,9 @@ class GapFillMesh(Mesh2D):
         ...                    desiredDomainHeight = domainHeight,
         ...                    desiredDomainWidth = 1.)
 
-        >>> import tempfile
-        >>> (f, filename) = tempfile.mkstemp('.geo')
         >>> import fipy.tools.dump as dump
-        >>> dump.write(mesh, filename)
-        >>> mesh = dump.read(filename)
-        >>> os.close(f)
-        >>> os.remove(filename)
+        >>> (f, filename) = dump.write(mesh)
+        >>> mesh = dump.read(filename, f)        
         >>> mesh.getNumberOfCells() - len(mesh.getCellIDsAboveFineRegion())
         90
 
@@ -217,14 +213,9 @@ class TrenchMesh(GapFillMesh):
         ...                   boundaryLayerDepth = boundaryLayerDepth,
         ...                   aspectRatio = 1.)
 
-        >>> import tempfile
-        >>> (f, filename) = tempfile.mkstemp('.geo')
-
         >>> import fipy.tools.dump as dump
-        >>> dump.write(mesh, filename)
-        >>> mesh = dump.read(filename)
-        >>> os.close(f)
-        >>> os.remove(filename)
+        >>> (f, filename) = dump.write(mesh)
+        >>> mesh = dump.read(filename, f)
         >>> mesh.getNumberOfCells() - len(numerix.nonzero(mesh.getElectrolyteMask()))        
         150
 

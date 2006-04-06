@@ -784,16 +784,10 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             >>> numerix.allclose(cellVertexIDs, mesh._getCellVertexIDs())
             1
 
-            >>> import tempfile
-            >>> import os
-            >>> from fipy.tools import dump
-            
-            >>> (f, filename) = tempfile.mkstemp('.gz')
-            >>> pickledMesh = dump.write(mesh, filename)
-            
-            >>> unpickledMesh = dump.read(filename)
-            >>> os.close(f)
-            >>> os.remove(filename)
+
+            >>> from fipy.tools import dump            
+            >>> (f, filename) = dump.write(mesh, extension = '.gz')
+            >>> unpickledMesh = dump.read(filename, f)
 
             >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1

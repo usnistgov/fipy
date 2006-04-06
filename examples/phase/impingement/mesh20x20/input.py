@@ -266,23 +266,15 @@ Ryo Kobayashi's FORTRAN code:
 We save the variables to disk.
 
     >>> import fipy.tools.dump as dump
-    >>> import tempfile
-    >>> (f, filename) = tempfile.mkstemp('.gz')
-    >>> dump.write({'phase' : phase, 'theta' : theta}, filename)
+    >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
     
 and then recall them to test the data pickling mechanism
 
-    >>> data = dump.read(filename)
+    >>> data = dump.read(filename, f)
     >>> newPhase = data['phase']
     >>> newTheta = data['theta']
     >>> newThetaEq = buildThetaEquation(newPhase, newTheta)
     >>> newPhaseEq = buildPhaseEquation(newPhase, newTheta)
-
-We clean up the temporary dump file
-
-    >>> import os
-    >>> os.close(f)
-    >>> os.remove(filename)
 
 and finish the iterations,
 

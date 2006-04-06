@@ -28,18 +28,6 @@ Release Goals 1.1
     
     - '*.gz' files should be added to the dist
 
-  * update to 1.0 auto branch testing
-
-- Refactoring:
-
-  * Check slow down for UnifromGrid2D/3D
-  * fipy.tools.dump
-
-    - write() should return a temporary file when no fileName argument is given.
-    - thus, temporary file allocation can be removed from the example files
-    - read() should (possibly?) clean temporary file. May or may not require dump to be a class to
-      keep file data.
-
 Long term Goals
 ---------------
 

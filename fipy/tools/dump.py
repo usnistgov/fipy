@@ -41,42 +41,53 @@ import cPickle
 import os
 import gzip
 
-def write(data, filename):
+def write(data, filename = None, extension = ''):
     """
     Pickle an object and write it to a file. Wrapper for
     `cPickle.dump()`.
 
     :Parameters:
       - `data`: The object to be pickled.
-      - `filename`: The name of the file to place the pickled object.
+      - `filename`: The name of the file to place the pickled object. If `filename` is `None`
+        then a temporary file will be used and the file object and file name will be returned as a tuple
+      - `extension`: Used if filename is not given.
 
     Test to check pickling and unpickling.
 
         >>> from fipy.meshes.grid1D import Grid1D
-        >>> import tempfile
-        >>> f, tempFile = tempfile.mkstemp('.gz')
-        >>> write(Grid1D(nx = 2), tempFile)
-        >>> mesh = read(tempFile)
+        >>> f, tempfile = write(Grid1D(nx = 2))
+        >>> mesh = read(tempfile, f)
         >>> print mesh.getNumberOfCells()
         2
         
     """
-    fileStream = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
+    if filename is None:
+        import tempfile
+        (f, _filename) =  tempfile.mkstemp(extension)
+    else:
+        _filename = filename
+    fileStream = gzip.GzipFile(filename = _filename, mode = 'w', fileobj = None)
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
+    if filename is None:
+        return (f, _filename)
 
-def read(filename):
+def read(filename, fileobject = None):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load()`.
 
     :Parameters:
       - `filename`: The name of the file to unpickle the object from.
-
+      - `fileobject`: Used to remove temporary files
+      
     """
     fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
     data = cPickle.load(fileStream)
     fileStream.close()
+    if fileobject is not None:
+        os.close(fileobject)
+        os.remove(filename)
     return data
 
 def _test(): 
