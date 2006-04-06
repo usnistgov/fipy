@@ -118,8 +118,10 @@ class Term:
 
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
-            
-        residual = self._getResidual(matrix, var, RHSvector)
+
+        residual = None
+        if 'residual' in returnItems:
+            residual = self._getResidual(matrix, var, RHSvector)
         
         from fipy.solvers.linearPCGSolver import LinearPCGSolver
         solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
@@ -128,8 +130,7 @@ class Term:
 	solver._solve(matrix, array, RHSvector)
 	var[:] = array
 	
-	self.residual = residual
-	self.converged = Numeric.alltrue(self.residual < solutionTolerance)
+	self.converged = Numeric.alltrue(residual < solutionTolerance)
 
         if len(returnItems) > 0:
             dict = { 'matrix' : matrix, 'var' : var, 'RHSvector' : RHSvector, 'residual' : residual}

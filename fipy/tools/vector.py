@@ -95,7 +95,22 @@ def prune(array, shift, start = 0):
     """
     removes elements with indices i = start + shift * n
     where n = 0, 1, 2, ...
+
+        >>> prune(numerix.arange(10), 3, 5)
+        [0,2,3,5,6,8,9,]
+        >>> prune(numerix.arange(10), 3)
+        [1,2,4,5,7,8,]
+        >>> prune(numerix.arange(4, 7), 3)
+        [5,6,]
+        
     """
-    
-    takeArray = [x for x in range(len(array)) if (x % shift) != start]
+
+    takeArray = numerix.nonzero((numerix.arange(len(array)) + start) % shift != 0) 
     return Numeric.take(array, takeArray)
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__":
+    _test() 

@@ -49,6 +49,7 @@ def _suite():
             'dimensions.physicalField',
             'numerix',
             'dump',
+            'vector',
         ), base = __name__)
 
     return theSuite
