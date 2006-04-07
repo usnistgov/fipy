@@ -15,7 +15,6 @@ Release Goals 1.1
 
   * Review all for accuracy/consistency.
   * Add more figures to examples
-  * Fix source term and numerical docs wrt sources. Sort out the signs!
   * time-steps and sweep documentation
   * Add poly-crystal case.
   * Add vector plot figure to flow.
@@ -30,6 +29,8 @@ Release Goals 1.1
 
 Long term Goals
 ---------------
+
+- multipy a term by a CellVariable or constant.
 
 - Boundary conditions should be able to take CellVariables or FaceVariables as values and pull out the correct values.
 

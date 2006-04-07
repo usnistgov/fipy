@@ -171,7 +171,7 @@ each CV as
 &&+
 \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
 + 
-V_P ( S_0 - S_1 \phi_P ).
+V_P ( S_0 + S_1 \phi_P ).
 \label{eqn:num:dis}
 \end{eqnarray}
 
@@ -184,8 +184,8 @@ a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,
 \end{equation}
 where
 \begin{eqnarray}
-a_P & = & V_P S_1 + \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
-F_f), \\
+a_P & = & \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} -
+F_f) - V_P S_1, \\
 a_{A} & = & ( 1 - \alpha_f ) F_f + D_f, \\
 b_P & = & V_P S_0 + \frac{\rho_P V_P \phi_P^\text{old}}{\Delta t}.
 \end{eqnarray}
