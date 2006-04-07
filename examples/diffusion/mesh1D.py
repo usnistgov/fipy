@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 4/7/06 {11:47:21 AM} 
+ #                                last update: 4/7/06 {5:14:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -594,164 +594,10 @@ remaining lines, leaving::
     phi = CellVariable(name="solution variable", 
                        mesh=mesh,
                        value=0)
-
-    D = 1.
-    valueLeft = 1
-    valueRight = 0
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-           FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
-
-    from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    from fipy.terms.transientTerm import TransientTerm
-    eqX = TransientTerm() == ExplicitDiffusionTerm(coeff=D)
-    timeStepDuration = 0.9 * dx**2 / (2 * D)
-    steps = 100
-    x = mesh.getCellCenters()[...,0]
-    t = timeStepDuration * steps
-    from fipy.tools.numerix import sqrt
-    phiAnalytical = CellVariable(name="analytical value",
-                                 mesh=mesh)
-
-    try:
-        from scipy.special import erf
-        phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
-    except ImportError:
-        print "The SciPy library is not available to test the solution to \
-    the transient diffusion equation"
-
-    if __name__ == '__main__':
-        from fipy import viewers
-        viewer = viewers.make(vars=(phi, phiAnalytical),
-                              limits={'datamin': 0., 'datamax': 1.})
-        viewer.plot()
-
-    for step in range(steps):
-        eqX.solve(var=phi,
-                  boundaryConditions=BCs,
-                  dt=timeStepDuration)
-        if __name__ == '__main__':
-            viewer.plot()
-
-    print phi.allclose(phiAnalytical, atol = 7e-4)
-    # Expect:
-    # 1
-    # 
-    if __name__ == '__main__':
-        raw_input("Explicit transient diffusion. Press <return> to proceed...")
-
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    eqI = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
-    phi.setValue(valueRight)
-    timeStepDuration *= 10
-    steps /= 10
-    for step in range(steps):
-        eqI.solve(var=phi,
-                  boundaryConditions=BCs,
-                  dt=timeStepDuration)
-        if __name__ == '__main__':
-            viewer.plot()
-
-    print phi.allclose(phiAnalytical, atol = 2e-2)
-    # Expect:
-    # 1
-    # 
-    if __name__ == '__main__':
-        raw_input("Implicit transient diffusion. Press <return> to proceed...")
-
-    eqCN = eqX + eqI
-    phi.setValue(valueRight)
-    for step in range(steps - 1):
-        eqCN.solve(var=phi,
-                   boundaryConditions=BCs,
-                   dt=timeStepDuration)
-        if __name__ == '__main__':
-            viewer.plot()
-
-    eqI.solve(var=phi,
-              boundaryConditions=BCs,
-              dt=timeStepDuration)
-
-    if __name__ == '__main__':
-        viewer.plot()
-
-    print phi.allclose(phiAnalytical, atol = 3e-3)
-    # Expect:
-    # 1
-    # 
-    if __name__ == '__main__':
-        raw_input("Crank-Nicholson transient diffusion. Press <return> to proceed...")
-
-    ImplicitDiffusionTerm(coeff=D).solve(var=phi,
-                                         boundaryConditions=BCs)
-                                         
-
-    if __name__ == '__main__':
-        viewer.plot()
-
-    L = nx * dx
-    print phi.allclose(valueLeft + (valueRight - valueLeft) * x / L, 
-                       rtol = 1e-10, atol = 1e-10)
-
-    # Expect:
-    # 1
-    # 
-    if __name__ == '__main__':
-        raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
-
-    from fipy.variables.faceVariable import FaceVariable
-    D = FaceVariable(mesh = mesh, value = 1.0)
-    x = mesh.getFaceCenters()[...,0]
-    D.setValue(0.1, where = (L / 4. <= x) & (x < 3. * L / 4.))
-    valueLeft = 0.
-    fluxRight = 1.
-    from fipy.boundaryConditions.fixedFlux import FixedFlux
-    BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-           FixedFlux(faces=mesh.getFacesRight(), value=fluxRight))
-
-    phi.setValue(0)
-    ImplicitDiffusionTerm(coeff = D).solve(var=phi,
-                                           boundaryConditions = BCs)
-
-    viewers.make(vars=phi).plot()
-    x = mesh.getCellCenters()[...,0]
-    from fipy.tools.numerix import where
-    values = x
-    values = where((L / 4. <= x) & (x < 3. * L / 4.), 10 * x - 9. * L / 4., values)
-    values = where(3. * L / 4. <= x, x + 18. * L / 4., values)
-    print phi.allclose(values, atol = 1e-8, rtol = 1e-8)
-    # Expect:
-    # 1
-    # 
-    if __name__ == '__main__':
-        raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
-
-    valueLeft = 1
-    valueRight = 0
-    phi = [
-        CellVariable(name="solution variable",
-                     mesh=mesh,
-                     value=valueRight,
-                     hasOld=1),
-        CellVariable(name="1 sweep",
-                     mesh=mesh),
-        CellVariable(name="2 sweeps",
-                     mesh=mesh),
-        CellVariable(name="3 sweeps",
-                     mesh=mesh),
-        CellVariable(name="4 sweeps",
-                     mesh=mesh)
-    ]
-
-    D0 = 1
-    eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
-    BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-           FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
-
-    if __name__ == '__main__':
-        viewer = viewers.make(vars=phi + [phiAnalytical],
-                              limits={'datamin': 0., 'datamax': 1.})
-        viewer.plot()
+                       
+        .
+        .
+        .
 
     for sweeps in range(1,5):
         phi[0].setValue(valueRight)
