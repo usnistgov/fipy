@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:15:17 PM}
+ #                                last update: 4/7/06 {4:54:27 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -181,10 +181,8 @@ Set up the no-slip boundary conditions
 Set up the viewers,
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewers = [make(vars = pressure), 
-    ...                make(vars = xVelocity),
-    ...                make(vars = yVelocity)]
+    ...     from fipy import viewers
+    ...     viewer = viewers.make(vars = (pressure, xVelocity, yVelocity, velocity))
     
 Iterate for a set number of sweeps.
 
@@ -227,8 +225,7 @@ Iterate for a set number of sweeps.
     ...             print 'sweep:',sweep,', x residual:',max(abs(xres)),', y residual',max(abs(yres)), \
     ...                                  ', p residual:',max(abs(pres)),', continuity:',max(abs(rhs))
     ...
-    ...         for viewer in viewers:
-    ...             viewer.plot()
+    ... 	viewer.plot()
 
 Test values in the last cell.
 
