@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 12/17/05 {9:29:52 PM} 
+ #                                last update: 4/7/06 {11:58:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,8 @@ class Gist2DViewer(GistViewer):
         Creates a `Gist2DViewer`.
         
         :Parameters:
-          - `vars`: A `CellVariable` object to plot (not a list or tuple).
+          - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
+            Only the first 2D `CellVariable` will be plotted.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
@@ -73,22 +74,21 @@ class Gist2DViewer(GistViewer):
             Use 0 to switch them off.
             
         """
-        twoDVar = None
-        for var in vars:
-            if var.getMesh().getDim() == 2:
-                twoDVar = var
-                break
-        if not twoDVar:
-            from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "%s can only plot 2D data"
-
-        GistViewer.__init__(self, vars = [twoDVar], limits = limits, title = title, dpi = dpi)
-
-##         if len(self.vars) != 1:
-##             raise IndexError, "A 2D Gist viewer can only display one CellVariable"
-        
+        GistViewer.__init__(self, vars = vars, limits = limits, 
+                            title = " ", dpi = dpi)
+                            
         self.palette = palette
         self.grid = grid
+        
+    def _getSuitableVars(self, vars):
+        from fipy.variables.cellVariable import CellVariable
+        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+          if (var.getMesh().getDim() == 2 and isinstance(var, CellVariable))]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "Can only plot 2D data"
+        # this viewer can only display one variable
+        return [vars[0]]
 
     def _plot(self):
         gist.window(self.id, wait = 1)
@@ -130,11 +130,11 @@ class Gist2DViewer(GistViewer):
         yCoords = Numeric.take(vertexCoords[:,1], vertexIDs.flat)
         gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
 
-        colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = 'fred')
+        colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = self.vars[0].getName())
 
         GistViewer.plot(self, filename = filename)
 
-    def plotMesh(self):
+    def plotMesh(self, filename = None):
         """
         Plot the `CellVariable`'s mesh as a wire frame.
         """
@@ -149,6 +149,16 @@ class Gist2DViewer(GistViewer):
         y1 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,1])
         
         gist.pldj(x0, y0, x1, y1)
+
+        if filename is not None:
+            import os.path
+            root, ext = os.path.splitext(filename)
+            if ext.lower() in (".eps", ".epsi"):
+                gist.eps(root)
+            else:
+                gist.hcp_file(filename, dump = 1)
+                gist.hcp()
+                gist.hcp_finish(-1)
 
         gist.fma()
 

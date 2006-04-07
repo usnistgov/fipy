@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 12/17/05 {6:35:11 PM} 
+ #                                last update: 3/16/06 {3:17:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,9 +63,7 @@ class Viewer:
           - `title`: displayed at the top of the Viewer window
 
         """
-        if type(vars) not in [type([]), type(())]:
-            vars = [vars]
-        self.vars = vars
+        self.vars = self._getSuitableVars(vars)
 
         self.limits = limits
 
@@ -79,6 +77,11 @@ class Viewer:
 
     def getVars(self):
         return self.vars
+        
+    def _getSuitableVars(self, vars):
+        if type(vars) not in [type([]), type(())]:
+            vars = [vars]
+        return [var for var in vars]
         
     def setLimits(self, limits):
         """

@@ -23,18 +23,15 @@ def make(vars, title = None, limits = None):
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
         
-    mesh = vars[0].getMesh()
+    from fipy.viewers import MeshDimensionError
     
-    for var in vars:
-        assert mesh is var.getMesh()
-
-    dim = mesh.getDim()
-    
-    if dim == 1:
+    try:
         from matplotlib1DViewer import Matplotlib1DViewer
         return Matplotlib1DViewer(vars = vars, title = title, limits = limits)
-    elif dim == 2:
-        from matplotlib2DViewer import Matplotlib2DViewer
-        return Matplotlib2DViewer(vars = vars, title = title, limits = limits)
-    else:
-        raise IndexError, "Matplotlib can only plot 1D and 2D data"
+    except MeshDimensionError:
+        try:
+            from matplotlib2DViewer import Matplotlib2DViewer
+            return Matplotlib2DViewer(vars = vars, title = title, limits = limits)
+        except MeshDimensionError:
+            from matplotlibVectorViewer import MatplotlibVectorViewer
+            return MatplotlibVectorViewer(vars = vars, title = title)

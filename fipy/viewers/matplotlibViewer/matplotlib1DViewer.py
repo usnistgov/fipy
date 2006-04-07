@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 9/2/05 {10:48:31 AM} { 2:45:36 PM}
+ #                                last update: 4/7/06 {11:56:24 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,15 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
     """
     
+    def _getSuitableVars(self, vars):
+        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        if len(vars) > 1:
+            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "Can only plot 1D data"
+        return vars
+
     def _plot(self):
 
         data = ()

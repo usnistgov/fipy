@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/3/06 {4:07:06 PM} { 2:45:36 PM}
+ #                                last update: 4/7/06 {11:59:49 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -105,7 +105,7 @@ class MayaviViewer(Viewer):
 
         cellVertexIDs = mesh._getOrderedCellVertexIDs()
 
-        import fipy.tools.numerix as numerix
+        from fipy.tools import numerix
         lengths = len(cellVertexIDs[0]) - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), index = 1)
         
         cellDict = {2 : [], 4: [], 6: [], 8: [], 'polygon' : []}
@@ -167,7 +167,7 @@ class MayaviViewer(Viewer):
             self._viewer.open_vtk(fileName, config=0)
             
             os.close(f)
-            os.remove(fileName)
+##             os.remove(fileName)
             
             self._viewer.load_module('SurfaceMap', 0)
             rw = self._viewer.get_render_window()
@@ -184,6 +184,8 @@ class MayaviViewer(Viewer):
             slh.range_on_var.set(1)
             slh.v_range_on_var.set(1)
 
+            from fipy.tools import numerix 
+            
             xmax = self._getLimit('datamax')
             if xmax is None:
                 xmax = numerix.max(var)
@@ -199,26 +201,30 @@ class MayaviViewer(Viewer):
             slh.set_v_range_var()
 
             self._viewer.Render()
+            
+##             self._viewer.master.wait_window()
+##             self._viewer = mayavi.mayavi()
 
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
 
 if __name__ == '__main__':
-    from fipy.meshes.grid1D import Grid1D
+##     from fipy.meshes.grid1D import Grid1D
     from fipy.variables.cellVariable import CellVariable
-    vars = [CellVariable(value = range(3), mesh = Grid1D(nx = 3, dx = 1.))]
+##     vars = [CellVariable(value = range(3), mesh = Grid1D(nx = 3, dx = 1.))]
 
-    from fipy.meshes.tri2D import Tri2D
-    triMesh = Tri2D()
-    from fipy.meshes.grid2D import Grid2D
-    gridMesh = Grid2D(nx = 3)
-    gridMesh += (1, 0)
+##     from fipy.meshes.tri2D import Tri2D
+##     triMesh = Tri2D()
+##     from fipy.meshes.grid2D import Grid2D
+##     gridMesh = Grid2D(nx = 3)
+##     gridMesh += (1, 0)
 
-    compositeMesh = gridMesh + triMesh
-    compositeMesh += (0, 2)
-    vars += [CellVariable(value = range(7), mesh = compositeMesh)]
+##     compositeMesh = gridMesh + triMesh
+##     compositeMesh += (0, 2)
+##     vars += [CellVariable(value = range(7), mesh = compositeMesh)]
     
+    vars = []
     from fipy.meshes.grid3D import Grid3D
     mesh3D = Grid3D(nx = 3)
     mesh3D += (0, 0, 2)

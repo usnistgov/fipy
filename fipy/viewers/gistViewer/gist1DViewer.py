@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 12/17/05 {9:22:01 PM} 
+ #                                last update: 4/7/06 {11:58:12 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,24 +69,22 @@ class Gist1DViewer(GistViewer):
           - `style`: the Gist style file to use
 
         """
-        mesh1D = None
-        for var in vars:
-            mesh = var.getMesh()
-            if mesh.getDim() == 1:
-                mesh1D = mesh
-                break
-                
-        if not mesh1D:
-            from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "%s can only plot 1D data"
-            
-        vars = [var for var in vars if var.getMesh() is mesh1D]
-        
         GistViewer.__init__(self, vars = vars, limits = limits, title = title)
         
 	self.xlog = xlog
 	self.ylog = ylog
 	self.style = style
+        
+    def _getSuitableVars(self, vars):
+        from fipy.variables.cellVariable import CellVariable
+        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+          if (var.getMesh().getDim() == 1 and isinstance(var, CellVariable))]
+        if len(vars) > 1:
+            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "Can only plot 1D data"
+        return vars
         
     def _getLimit(self, key):
         subs = {'ymin': 'datamin', 'ymax': 'datamax'}

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:44:23 PM} { 2:45:36 PM}
+ #                                last update: 4/7/06 {11:59:30 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,7 @@ class MatplotlibViewer(Viewer):
 
         fig = pylab.figure()
         self.id = fig.number
-                    
+        
     def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.

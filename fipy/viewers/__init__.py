@@ -67,22 +67,22 @@ def make(vars, title = None, limits = None):
     errors = []
 
     viewers = []
-    while len(vars) > 0:
-        for className in viewerClassNames:
-            try:
-                className = string.lower(className[0]) + className[1:]
-                viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
-                
+    for className in viewerClassNames:
+        try:
+            className = string.lower(className[0]) + className[1:]
+            viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
+            
+            while len(vars) > 0:
                 viewer = viewerModule.make(vars = vars, title = title, limits = limits)
                 
                 for var in viewer.getVars():
                     vars.remove(var)
                 
                 viewers.append(viewer)
-                
-                break
-            except Exception, s:
-                errors.append("%s: %s" % (className, s))
+            
+            break
+        except Exception, s:
+            errors.append("%s: %s" % (className, s))
         
     if len(vars) > 0:
         raise ImportError, "Failed to import a viewer: %s" % str(errors)        

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:39:36 PM} { 2:45:36 PM}
+ #                                last update: 4/7/06 {11:58:02 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,15 +42,28 @@
  # ###################################################################
  ##
 
-import Numeric
-
 from fipy.viewers.gistViewer import GistViewer
 
-class _GistVectorViewer(GistViewer):
+from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.vectorFaceVariable import VectorFaceVariable
+
+from fipy.tools import numerix
+
+class GistVectorViewer(GistViewer):
     
-    def __init__(self, var = None, title = '', grid = 1):
-	self.var = var
-	GistViewer.__init__(self, title, grid)
+    def __init__(self, vars, title = ''):
+	GistViewer.__init__(self, vars=vars, title=title)
+        
+    def _getSuitableVars(self, vars):
+        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+          if (var.getMesh().getDim() == 2 \
+              and (isinstance(var, VectorFaceVariable) \
+                   or isinstance(var, VectorCellVariable)))]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "Can only plot 2D vector data"
+        # this viewer can only display one variable
+        return [vars[0]]
 	
     def plot(self, filename = None):
 	import gist
@@ -58,20 +71,25 @@ class _GistVectorViewer(GistViewer):
         gist.window(self.id, wait = 1)
 	gist.pltitle(self.title)
         gist.animate(1)
-        gist.palette(self.palette)
-## 	gist.gridxy(self.grid)
 	
-	centers = self.var.getMesh().getFaceCenters()
+        var = self.vars[0]
+        
+        if isinstance(var, VectorFaceVariable):
+            centers = var.getMesh().getFaceCenters()
+        elif isinstance(var, VectorCellVariable):
+            centers = var.getMesh().getCellCenters()
 	
-	gist.plmesh(Numeric.array([centers[:,1],centers[:,1]]), Numeric.array([centers[:,0],centers[:,0]]))
+	gist.plmesh(numerix.array([centers[...,1],centers[...,1]]), 
+                    numerix.array([centers[...,0],centers[...,0]]))
 
-	print self.var
+	vx = numerix.array(var[...,0])
+	vy = numerix.array(var[...,1])
 	
-	vx = Numeric.array(self.var[:,0])
-	vy = Numeric.array(self.var[:,1])
-	
-        gist.plv(Numeric.array([vy,vy]), Numeric.array([vx,vx]),scale=0.01)
-
+        maxVec = numerix.max(var.getMag())
+        maxGrid = numerix.max(numerix.max(var.getMesh()._getCellToCellDistances()))
+        
+        gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec) #,scale=0.002)
+        
         if filename is not None:
             
             gist.hcp_file(filename)

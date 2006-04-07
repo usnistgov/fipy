@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:43:00 PM} { 2:45:36 PM}
+ #                                last update: 4/7/06 {11:56:09 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,17 +72,20 @@ class Matplotlib2DViewer(MatplotlibViewer):
           - `title`: displayed at the top of the Viewer window
 
         """
-        if len(list(vars)) != 1:
-            raise IndexError, "A 2D Matplotlib viewer can only display one Variable"
-
-
-        from fipy.meshes.numMesh.grid2D import Grid2D
-        if not  isinstance(list(vars)[0].getMesh(), Grid2D):
-            raise Exception, 'The mesh must be a Grid2D instance for the Matplotlib2dViewer'
-
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
         self.colorbar = False
+        
+    def _getSuitableVars(self, vars):
+        from fipy.meshes.numMesh.grid2D import Grid2D
+        from fipy.variables.cellVariable import CellVariable
+        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+          if (isinstance(var.getMesh(), Grid2D) and isinstance(var, CellVariable))]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "The mesh must be a Grid2D instance"
+        # this viewer can only display one variable
+        return [vars[0]]
         
     def _plot(self):
 
