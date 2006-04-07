@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 1/17/06 {3:51:51 PM}
+ #                                last update: 4/7/06 {5:04:47 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -193,10 +193,10 @@ by the phase
 
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
-    ...     phaseViewer = viewers.make(vars = phase, 
+    ...     phaseViewer = viewers.make(vars = phase,
     ...                                limits = {'datamin': 0., 'datamax': 1.})
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = viewers.make(vars = thetaProd ,
+    ...     thetaProductViewer = viewers.make(vars = thetaProd,
     ...                                       limits = {'datamin': -pi, 
     ...                                                 'datamax': pi})
     ...     phaseViewer.plot()
@@ -292,12 +292,9 @@ The solution is compared against Ryo Kobayashi's test data
 """
 __docformat__ = 'restructuredtext'
 
-def _run():
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript(__name__))
-
 if __name__ == '__main__':
-    _run()
-
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())
+    
     raw_input('finished')
 
