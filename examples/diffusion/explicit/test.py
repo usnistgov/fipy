@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:48:42 PM} 
+ #                                last update: 4/7/06 {4:35:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,6 @@ def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'mesh10.tri2Dinput',
             'mesh10.input',
-            'mesh50.input',
             'mesh10.mixedelement'
         ), base = __name__)
     

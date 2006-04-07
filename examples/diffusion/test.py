@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:49:43 PM} { 2:26:30 PM}
+ #                                last update: 4/7/06 {4:33:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,17 +43,23 @@
 """Run all the test cases in examples/diffusion/
 """
 
-from fipy.tests.lateImportTest import _LateImportTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-            'steadyState.test',
-            'explicit.test',
-            'variable.test',
-            'nthOrder.test',
-        ), base = __name__)
-
+    return _LateImportDocTestSuite(testModuleNames = (
+                                       'steadyState.test',
+                                       'explicit.test',
+                                       'variable.test',
+                                       'nthOrder.test'
+                                   ), 
+                                   docTestModuleNames = (
+                                       'mesh1D',
+                                       'mesh20x20',
+                                       'circle',
+                                   ), 
+                                   base = __name__)
+    
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
 
