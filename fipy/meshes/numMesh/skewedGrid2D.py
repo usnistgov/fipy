@@ -48,6 +48,7 @@ from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.face import Face
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.meshes.meshIterator import FaceIterator
 
 class SkewedGrid2D(Mesh2D):
     """
@@ -136,22 +137,22 @@ class SkewedGrid2D(Mesh2D):
     def getFacesLeft(self):
 	"""Return list of faces on left boundary of Grid2D.
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1)]
-	
+	return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
+    
     def getFacesRight(self):
 	"""Return list of faces on right boundary of Grid2D.
 	"""
-	return [Face(self, id) for id in  Numeric.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
 	
     def getFacesTop(self):
 	"""Return list of faces on top boundary of Grid2D.
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
 	
     def getFacesBottom(self):
 	"""Return list of faces on bottom boundary of Grid2D.
 	"""
-	return [Face(self, id) for id in Numeric.arange(self.nx)]
+        return FaceIterator(mesh = self, ids = Numeric.arange(self.nx))
         
     def getScale(self):
 	return self.scale['length']

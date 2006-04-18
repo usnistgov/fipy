@@ -41,11 +41,14 @@
  ##
 
 r"""
+
 This example benchmarks the speed and memory usage of solving an
 electrochemistry superfill problem. Run:
-    
+
     $ python setup.py efficiency_test
+
 """
+__docformat__ = 'restructuredtext'
 
 faradaysConstant = 9.6e4
 gasConstant = 8.314

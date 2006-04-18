@@ -14,18 +14,18 @@ Release Goals 1.1
 - Documentation:
 
   * Review all for accuracy/consistency.
-  * Add more figures to examples
   * time-steps and sweep documentation
   * Add poly-crystal case.
   * Add vector plot figure to flow.
 
 - Distribution
 
+  * Run all the examples
   * Move to subversion and to Kent
   * Make tests work for an installation of FiPy
   * Make examples work for an installation of FiPy
     
-    - '*.gz' files should be added to the dist
+    - '.gz' files should be added to the dist
 
 Long term Goals
 ---------------
