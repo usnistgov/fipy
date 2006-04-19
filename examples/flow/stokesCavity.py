@@ -93,8 +93,7 @@ the results of Dolfyn_
 
     To start,
 
-some parameters are declared. To run this example to steady
-state increase `sweeps` to 200.
+some parameters are declared.
 
     >>> L = 1.0
     >>> N = 50
@@ -102,7 +101,10 @@ state increase `sweeps` to 200.
     >>> viscosity = 1.
     >>> pressureRelaxation = 0.2
     >>> velocityRelaxation = 0.5
-    >>> sweeps = 5
+    >>> if __name__ == '__main__':
+    ...     sweeps = 300
+    ... else:
+    ...     sweeps = 5
 
 Build the mesh.
 
@@ -161,9 +163,9 @@ Build the Stokes equations.
     \cdot \nabla p' = \nabla \cdot \vec{u}^{\ast} $$ In the
     discretized version of the above equation $V_P / a_P$ is
     approximated at the face by $A_f d_{AP} / (a_P)_f.$ In \FiPy{} the
-    pressure correction equation can be written as,
+    pressure correction equation can be written as, 
 
-..
+..   
 
     >>> ap = CellVariable(mesh = mesh)
     >>> coeff = mesh._getFaceAreas() * mesh._getCellDistances() / ap.getArithmeticFaceValue()
@@ -225,7 +227,11 @@ Iterate for a set number of sweeps.
     ...             print 'sweep:',sweep,', x residual:',max(abs(xres)),', y residual',max(abs(yres)), \
     ...                                  ', p residual:',max(abs(pres)),', continuity:',max(abs(rhs))
     ...
-    ... 	viewer.plot()
+    ... 	    viewer.plot()
+
+.. image:: examples/flow/cavity.pdf
+   :scale: 50
+   :align: center
 
 Test values in the last cell.
 
