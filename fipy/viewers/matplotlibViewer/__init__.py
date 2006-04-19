@@ -10,7 +10,8 @@ def make(vars, title = None, limits = None):
     
     :Parameters:
 
-      - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+      - `vars`: a `CellVariable`, `VectorCellVariable` or
+        `VectorFaceVariable` object or sequence to plot
       - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
         `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
         A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer
