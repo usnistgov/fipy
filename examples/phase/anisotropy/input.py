@@ -83,11 +83,11 @@ where
 
     and
 
-    $$ A = \alpha^2 c \left[ 1 + c \beta \right] \Phi_\psi $$
+    $$ A = \alpha^2 c \left[ 1 + c \beta \right] \beta_\psi $$
 
     where $ \beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2} $,
-    $ \Phi = \tan \left( \frac{ \theta } { 2 } + \frac{ N } { 2 } \arctan \psi \right) $,
-    $ \psi = \frac{ \phi_y } { \phi_x } $ and
+    $ \Phi = \tan \left( \frac{ N } { 2 } \psi \right) $,
+    $ \psi = \theta + \arctan \frac{ \phi_y } { \phi_x } $ and
     $ \xi_x = -\phi_y $ and $ \xi_y = \phi_x $.
 
     The governing equation for temperature is given by:
@@ -111,7 +111,7 @@ The parameters for these equations are
     >>> kappa1 = 0.9
     >>> kappa2 = 20.    
     >>> tempDiffusionCoeff = 2.25
-    >>> theta = 0
+    >>> theta = 0.
 
 The `phase` variable is `0` for a liquid and `1` for a solid.  Here,
 the `phase` variable is initialized as a liquid,
@@ -160,14 +160,14 @@ is created from the `phase` and `temperature` variables.
 
 ..
 
-    >>> dPhiy = phase.getFaceGrad().dot((0, 1))
-    >>> dPhix = phase.getFaceGrad().dot((1, 0))
-    >>> arc = N * numerix.arctan2(dPhiy, dPhix) + theta
-    >>> Phi = numerix.tan(arc / 2)
+    >>> phaseY = phase.getFaceGrad().dot((0, 1))
+    >>> phaseX = phase.getFaceGrad().dot((1, 0))
+    >>> psi = theta + numerix.arctan2(phaseY, phaseX)
+    >>> Phi = numerix.tan(N * psi / 2)
     >>> PhiSq = Phi**2
     >>> beta = (1. - PhiSq) / (1. + PhiSq)
-    >>> dbdpsi = -N * 2 * Phi / (1 + PhiSq)
-    >>> A = alpha**2 * c * (1.+ c * beta) * dbdpsi
+    >>> betaPsi = -N * 2 * Phi / (1 + PhiSq)
+    >>> A = alpha**2 * c * (1.+ c * beta) * betaPsi
     >>> D = alpha**2 * (1.+ c * beta)**2
 
 .. raw:: latex

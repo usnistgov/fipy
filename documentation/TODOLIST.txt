@@ -16,7 +16,6 @@ Release Goals 1.1
   * Review all for accuracy/consistency.
   * time-steps and sweep documentation
   * Add poly-crystal case.
-  * Add vector plot figure to flow.
 
 - Distribution
 
