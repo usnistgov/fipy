@@ -67,7 +67,7 @@ python command line),
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
 
-    >>> runGold(numberOfSteps = 10, displayViewers = False)
+    >>> runGold(numberOfSteps=10, displayViewers=False)
     1
 
 Change the `displayViewers` argument to `True` if you wish to see the
@@ -114,23 +114,23 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
-def runGold(faradaysConstant = 9.6e4,
-            consumptionRateConstant = 2.6e+6,
-            molarVolume = 10.21e-6,
-            charge = 1.0,
-            metalDiffusion = 1.7e-9,
-            metalConcentration = 20.0,
-            catalystCoverage = 0.15,
-            currentDensity0 = 3e-2 * 16,
-            currentDensity1 = 6.5e-1 * 16,
-            cellSize = 0.1e-7,
-            trenchDepth = 0.2e-6,
-            aspectRatio = 1.47,
-            trenchSpacing = 0.5e-6,
-            boundaryLayerDepth = 90.0e-6,
-            numberOfSteps = 10,
-            taperAngle = 6.0,
-            displayViewers = True):
+def runGold(faradaysConstant=9.6e4,
+            consumptionRateConstant=2.6e+6,
+            molarVolume=10.21e-6,
+            charge=1.0,
+            metalDiffusion=1.7e-9,
+            metalConcentration=20.0,
+            catalystCoverage=0.15,
+            currentDensity0=3e-2 * 16,
+            currentDensity1=6.5e-1 * 16,
+            cellSize=0.1e-7,
+            trenchDepth=0.2e-6,
+            aspectRatio=1.47,
+            trenchSpacing=0.5e-6,
+            boundaryLayerDepth=90.0e-6,
+            numberOfSteps=10,
+            taperAngle=6.0,
+            displayViewers=True):
     
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20

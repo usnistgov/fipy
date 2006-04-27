@@ -49,7 +49,7 @@ one dimensional grid.
     >>> Lx = 2.5 * nx / 100.
     >>> dx = Lx / nx
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx, nx)
+    >>> mesh = Grid1D(dx=dx, nx=nx)
 	
 This problem simulates the wet boundary that forms between grains of different 
 orientations. The phase equation is given by
@@ -123,9 +123,9 @@ and is initially solid everywhere
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
-    ...     name = 'PhaseField',
-    ...     mesh = mesh,
-    ...     value = 1.
+    ...     name='phase field',
+    ...     mesh=mesh,
+    ...     value=1.
     ...     )
 
 Because `theta`
@@ -147,10 +147,10 @@ subtraction operator between two angles.
 
     >>> from fipy.variables.modularVariable import ModularVariable
     >>> theta = ModularVariable(
-    ...     name = 'Theta',
-    ...     mesh = mesh,
-    ...     value = 1.,
-    ...     hasOld = 1
+    ...     name='theta',
+    ...     mesh=mesh,
+    ...     value=1.,
+    ...     hasOld=1
     ...     )
 
 The left and right halves of the domain are given different orientations.
@@ -216,13 +216,13 @@ If the example is run interactively, we create viewers for the phase
 and orientation variables.
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
-    ...     phaseViewer = viewers.make(vars = phase, 
-    ...                                limits = {'datamin': 0., 'datamax': 1.})
+    ...     from fipy.viewers import make
+    ...     phaseViewer = make(vars=phase, 
+    ...                        limits={'datamin': 0., 'datamax': 1.})
     ...     from fipy.tools.numerix import pi
-    ...     thetaProductViewer = viewers.make(vars = theta,
-    ...                                       limits = {'datamin': -pi, 
-    ...                                                 'datamax': pi})
+    ...     thetaProductViewer = make(vars=theta,
+    ...                               limits={'datamin': -pi, 
+    ...                                       'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

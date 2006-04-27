@@ -67,7 +67,7 @@ imported (at the python command line),
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
 
-    >>> runSimpleTrenchSystem(numberOfSteps = 5, displayViewers = False)
+    >>> runSimpleTrenchSystem(numberOfSteps=5, displayViewers=False)
     1
 
 Change the `displayViewers` argument to `True` if you wish to see the
@@ -82,7 +82,7 @@ Change the `displayViewers` argument to `True` if you wish to see the
 Any argument parameter can be changed. For example if the initial
 catalyst coverage is not 0, then it can be reset,
 
-    >>> runSimpleTrenchSystem(catalystCoverage = 0.1, displayViewers = False)
+    >>> runSimpleTrenchSystem(catalystCoverage=0.1, displayViewers=False)
     0
 
 The following image shows a schematic of a trench geometry along with
@@ -174,30 +174,30 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
-def runSimpleTrenchSystem(faradaysConstant = 9.6e4,
-                          gasConstant = 8.314,
-                          transferCoefficient = 0.5,
-                          rateConstant0 = 1.76,
-                          rateConstant3 = -245e-6,
-                          catalystDiffusion = 1e-9,
-                          siteDensity = 9.8e-6,
-                          molarVolume = 7.1e-6,
-                          charge = 2,
-                          metalDiffusion = 5.6e-10,
-                          temperature = 298.,
-                          overpotential = -0.3,
-                          metalConcentration = 250.,
-                          catalystConcentration = 5e-3,
-                          catalystCoverage = 0.,
-                          currentDensity0 = 0.26,
-                          currentDensity1 = 45.,
-                          cellSize = 0.1e-7,
-                          trenchDepth = 0.5e-6,
-                          aspectRatio = 2.,
-                          trenchSpacing = 0.6e-6,
-                          boundaryLayerDepth = 0.3e-6,
-                          numberOfSteps = 5,
-                          displayViewers = True):
+def runSimpleTrenchSystem(faradaysConstant=9.6e4,
+                          gasConstant=8.314,
+                          transferCoefficient=0.5,
+                          rateConstant0=1.76,
+                          rateConstant3=-245e-6,
+                          catalystDiffusion=1e-9,
+                          siteDensity=9.8e-6,
+                          molarVolume=7.1e-6,
+                          charge=2,
+                          metalDiffusion=5.6e-10,
+                          temperature=298.,
+                          overpotential=-0.3,
+                          metalConcentration=250.,
+                          catalystConcentration=5e-3,
+                          catalystCoverage=0.,
+                          currentDensity0=0.26,
+                          currentDensity1=45.,
+                          cellSize=0.1e-7,
+                          trenchDepth=0.5e-6,
+                          aspectRatio=2.,
+                          trenchSpacing=0.6e-6,
+                          boundaryLayerDepth=0.3e-6,
+                          numberOfSteps=5,
+                          displayViewers=True):
 
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 10

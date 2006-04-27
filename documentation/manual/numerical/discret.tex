@@ -20,7 +20,7 @@ CVs are either defined by the cells or are centered on the vertices.
 \subsection{Cell Centered FVM (CC-FVM)}
 
 In the CC-FVM the CVs are formed by the mesh cells with the cell
-center `storing' the average variable value in the CV, (see
+center ``storing'' the average variable value in the CV, (see
 Figure~\ref{fig:vc-cc-fv}). The face fluxes are approximated using the
 variable values in the two adjacent cells surrounding the face. This
 low order approximation has the advantage of being efficient and
@@ -35,16 +35,18 @@ only uses the CC-FVM.
 
 \subsection{Vertex Centered FVM (VC-FVM)}
 
-In the VC-FVM, the CV is centered around the vertices and the cells are
-divided into sub-control volumes that make up the main CVs (see
-Figure~\ref{fig:vc-cc-fv}).  The vertices `store' the average variable
-values over the CVs.  The CV faces are constructed within the cells
-rather than using the cell faces as in the CC-FVM. The face fluxes use
-all the vertex values from the cell where the face is located to
-calculate interpolations.  For this reason, the VC-FVM is less
-efficient and requires more storage (a larger matrix band width) than
-the CC-FVM. However, the mesh topology does not have the same
-restrictions as the CC-FVM. Future releases of \FiPy{} will have both
+In the VC-FVM, the CV is centered around the vertices and the cells
+are divided into sub-control volumes that make up the main CVs (see
+Figure~\ref{fig:vc-cc-fv}). The vertices ``store'' the average
+variable values over the CVs. The CV faces are constructed within the
+cells rather than using the cell faces as in the CC-FVM. The face
+fluxes use all the vertex values from the cell where the face is
+located to calculate interpolations. For this reason, the VC-FVM is
+less efficient and requires more storage (a larger matrix band width)
+than the CC-FVM. However, the mesh topology does not have the same
+restrictions as the CC-FVM. \FiPy{} does not have a VC-FVM capability.
+
+Future releases of \FiPy{} will have both
 the CC-FVM and VC-FVM capabilities.
 
 \begin{figure}

@@ -65,7 +65,7 @@ We define a 1D mesh
     >>> L = 10.
     >>> nx = 10
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(L / nx, nx)
+    >>> mesh = Grid1D(dx=L / nx, nx=nx)
 
 and impose the boundary conditions
 
@@ -82,17 +82,14 @@ or
     >>> valueRight = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
-    ...     FixedValue(mesh.getFacesRight(), valueRight),
+    ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
     ...     )
 
 The solution variable is initialized to `valueLeft`:
     
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(
-    ...     name = "concentration",
-    ...     mesh = mesh,
-    ...     value = valueLeft)
+    >>> var = CellVariable(mesh=mesh, name = "variable")
 
 The equation is created with the `ImplicitDiffusionTerm` and
 `ExponentialConvectionTerm`. The scheme used by the convection term
@@ -100,12 +97,12 @@ needs to calculate a Peclet number and thus the diffusion term
 instance must be passed to the convection term.
 
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-   >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
+   >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
    
    >>> from fipy.terms.exponentialConvectionTerm \
    ...     import ExponentialConvectionTerm
-   >>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff,
-   ...                                           diffusionTerm = diffTerm)
+   >>> eq = diffTerm + ExponentialConvectionTerm(coeff=convCoeff,
+   ...                                           diffusionTerm=diffTerm)
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in 
@@ -123,9 +120,7 @@ both handle most types of convection-diffusion cases, with the
 We solve the equation
 
    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
-   >>> eq.solve(var = var, 
-   ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000), 
-   ...          boundaryConditions = boundaryConditions)
+   >>> eq.solve(var=var, boundaryConditions=boundaryConditions)
    
 and test the solution against the analytical result
 
@@ -141,14 +136,14 @@ or
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+    >>> print var.allclose(analyticalArray)
     1
    
 If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     from fipy.viewers import make
+    ...     viewer = make(vars=var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

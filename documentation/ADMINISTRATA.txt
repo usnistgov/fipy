@@ -4,21 +4,21 @@ CVS practices
 
 HEAD
 
-    this is of course a CVS internal tag designating the latest revision of
-    any file present in the repository.  It is also a valid branch tag
-    designating the trunk.  For our purposes HEAD can be used as a tracking
-    tag designating the very latest code checked into the repository;
-    FiPy is not guaranteed to pass its test or to be in a consistent state
-    when checked out under this tag.  Obviously this tracking tag is
-    restricted to the trunk.
+    this is of course a CVS internal tag designating the latest
+    revision of any file present in the repository.  It is also a
+    valid branch tag designating the trunk.  For our purposes HEAD can
+    be used as a tracking tag designating the very latest code checked
+    into the repository; |FiPy| is not guaranteed to pass its test or
+    to be in a consistent state when checked out under this tag.
+    Obviously this tracking tag is restricted to the trunk.
 
 CURRENT
 
-    designates the most recent code on the trunk forming a coherent state
-    of FiPy, in general this will mean a release, but can also mean a
-    pre-release testing version.  For instance, the release engineer might
-    ask testers to test CURRENT before he makes a release.  This tracking
-    tag is restricted to the trunk.
+    designates the most recent code on the trunk forming a coherent
+    state of |FiPy|, in general this will mean a release, but can also
+    mean a pre-release testing version.  For instance, the release
+    engineer might ask testers to test CURRENT before he makes a
+    release.  This tracking tag is restricted to the trunk.
 
 STABLE
 
@@ -225,3 +225,7 @@ Set the PATH to use MINGW's tools.
 Build the distribution.
 
    C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
+
+.. include:: utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|

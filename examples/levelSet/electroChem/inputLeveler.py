@@ -68,7 +68,7 @@ python command line),
 and then the function can be executed with a different number of time
 steps by changing the `numberOfSteps` argument as follows,
 
-    >>> runLeveler(numberOfSteps = 10, displayViewers = False, cellSize = 0.25e-7)
+    >>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7)
     1
 
 Change the `displayViewers` argument to `True` if you wish to see the
@@ -203,7 +203,7 @@ can be obtained by running this example.
 """
 __docformat__ = 'restructuredtext'
 
-def runLeveler(kLeveler = 0.018, bulkLevelerConcentration = 0.02, cellSize = 0.1e-7, rateConstant = 0.00026, initialAcceleratorCoverage = 0.0, levelerDiffusionCoefficient = 5e-10, numberOfSteps = 400, displayRate = 10, displayViewers = True):
+def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, rateConstant=0.00026, initialAcceleratorCoverage=0.0, levelerDiffusionCoefficient=5e-10, numberOfSteps=400, displayRate=10, displayViewers=True):
 
     
     kLevelerConsumption = 0.0005

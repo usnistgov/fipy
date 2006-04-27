@@ -62,7 +62,7 @@ We define a 1D mesh
     >>> nx = 1000
     >>> L = 10.
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx = L / 1000, nx = nx)
+    >>> mesh = Grid1D(dx=L / 1000, nx=nx)
 
 and impose the boundary conditions
 
@@ -79,27 +79,25 @@ or
     >>> valueRight = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesRight(), valueRight),
-    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
+    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
+    ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
     ...     )
 
 The solution variable is initialized to `valueLeft`:
     
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(
-    ...     name = "concentration",
-    ...     mesh = mesh,
-    ...     value = valueLeft)
+    >>> var = CellVariable(name="variable", mesh=mesh)
+
 
 We define the convection-diffusion equation with source
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm \
     ...     import ExponentialConvectionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
+    >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
     >>> eq = diffTerm \
-    ...      + ExponentialConvectionTerm(coeff = convCoeff, 
-    ...                                  diffusionTerm = diffTerm) \
+    ...      + ExponentialConvectionTerm(coeff=convCoeff, 
+    ...                                  diffusionTerm=diffTerm) \
     ...      + sourceCoeff
     
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
@@ -124,14 +122,14 @@ or
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
-    >>> print var.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    >>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
     1
          
 If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     from fipy.viewers import make
+    ...     viewer = make(vars=var)
     ...     viewer.plot()
 
 """

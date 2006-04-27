@@ -75,16 +75,16 @@ script. Firstly, setup the parameters.
 Construct the mesh.
 
    >>> from fipy.meshes.grid1D import Grid1D
-   >>> mesh = Grid1D(dx = dx, nx = nx)
+   >>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
-   >>> var = DistanceVariable(name = 'level set variable',
-   ...                        mesh = mesh,
-   ...                        value = -1,
-   ...                        hasOld = 1)
+   >>> var = DistanceVariable(name='level set variable',
+   ...                        mesh=mesh,
+   ...                        value=-1,
+   ...                        hasOld=1)
    >>> var.setValue(1, where=mesh.getCellCenters()[...,0] > interfacePosition)
    >>> var.calcDistanceFunction()
    
@@ -92,25 +92,25 @@ The `advectionEquation` is constructed.
 
    >>> from fipy.models.levelSet.advection.advectionEquation import \
    ...     buildAdvectionEquation
-   >>> advEqn = buildAdvectionEquation(advectionCoeff = velocity)
+   >>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var,
-   ...         limits = {'datamin': -10., 'datamax': 10.})
+   ...     from fipy.viewers import make
+   ...     viewer = make(vars=var,
+   ...                   limits={'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()
-   ...         advEqn.solve(var, dt = timeStepDuration)
+   ...         advEqn.solve(var, dt=timeStepDuration)
    ...         viewer.plot()
 
 The result can be tested with the following code:
 
    >>> for step in range(steps):
    ...     var.updateOld()
-   ...     advEqn.solve(var, dt = timeStepDuration)
+   ...     advEqn.solve(var, dt=timeStepDuration)
    >>> x = mesh.getCellCenters()[:,0]
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity

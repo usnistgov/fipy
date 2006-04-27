@@ -77,17 +77,6 @@ of high surfactant concentration have an increased deposition rate.
    :align: left
    :alt: FiPy superfill
 
-Future Additions
-----------------
-
-Many more examples of the use of |FiPy| for modeling superfill are
-available, however, these have not all been added to the code
-repository. This is an on-going process. Future additions will
-include:
-
-  - An example that includes a secondary surfactant. Again this has already been done.
-  - Create a Mayavi_ viewer class to enable plots like the ones above.
-
 .. include:: ../../../utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|

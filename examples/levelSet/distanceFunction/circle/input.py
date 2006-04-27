@@ -68,16 +68,16 @@ script. Firstly, setup the parameters.
 Construct the mesh.
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+   >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
-   >>> var = DistanceVariable(name = 'level set variable',
-   ...                        mesh = mesh,
-   ...                        value = -1,
-   ...                        hasOld = 1)
+   >>> var = DistanceVariable(name='level set variable',
+   ...                        mesh=mesh,
+   ...                        value=-1,
+   ...                        hasOld=1)
 
    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
    >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)

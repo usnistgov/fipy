@@ -71,7 +71,9 @@ For those who are interested in learning more about CVS, Cederqvist_
 
 .. 
 
-.. |FiPy| replace:: FiPy
+.. include:: ../utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 .. _Cederqvist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ximbiot.com/cvs/manual/
 .. |citeCederqvist| raw:: latex

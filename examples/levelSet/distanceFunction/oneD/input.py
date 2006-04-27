@@ -67,16 +67,16 @@ script. Firstly, setup the parameters.
 Construct the mesh.
 
    >>> from fipy.meshes.grid1D import Grid1D
-   >>> mesh = Grid1D(dx = dx, nx = nx)
+   >>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
-   >>> var = DistanceVariable(name = 'level set variable',
-   ...                        mesh = mesh,
-   ...                        value = -1,
-   ...                        hasOld = 1)
+   >>> var = DistanceVariable(name='level set variable',
+   ...                        mesh=mesh,
+   ...                        value=-1,
+   ...                        hasOld=1)
    >>> x = mesh.getCellCenters()[...,0]
    >>> var.setValue(1, where=x > dx * nx / 2)
  
@@ -89,9 +89,9 @@ as a distance function from the zero level set.
 The problem can then be solved by executing the `solve()` method of the equation.
 
    >>> if __name__ == '__main__':
-   ...     from fipy import viewers
-   ...     viewer = viewers.make(vars = var,
-   ...                           limits = {'datamin': -5., 'datamax': 5.})
+   ...     from fipy.viewers import make
+   ...     viewer = make(vars=var,
+   ...                   limits={'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
 
 The result can be tested with the following commands.

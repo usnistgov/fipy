@@ -1,6 +1,6 @@
-------------
+============
 Mailing List
-------------
+============
 
 In order to discuss |FiPy| with other users and with the developers, 
 we encourage you to sign up for the mailing list by sending a
@@ -18,7 +18,18 @@ we encourage you to sign up for the mailing list by sending a
 Once you are subscribed, you can post messages to the list simply by
 addressing email to mailto:fipy@nist.gov.
 
+------------
+List Archive
+------------
 
+http://dir.gmane.org/gmane.comp.python.fipy
+
+The mailing list is archive_ is hosted by GMANE_. Any mail sent to
+fipy@nist.gov will appear in this publicly available archive_.
+
+.. _GMANE:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gmane.org/
+
+.. _archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://dir.gmane.org/gmane.comp.python.fipy
 
 .. include:: ../utils/include.txt
 

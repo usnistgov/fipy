@@ -64,15 +64,15 @@ We solve the problem on a 1D mesh
     >>> nx = 1000
     >>> dx = L / nx
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+    >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and create the solution variable
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
-    ...     name = "phase field",
-    ...     mesh = mesh,
-    ...     value = 1)
+    ...     name="phase field",
+    ...     mesh=mesh,
+    ...     value=1)
 
 The boundary conditions for this problem are
 
@@ -104,10 +104,10 @@ or
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
     ...     import NthOrderBoundaryCondition
     >>> BCs = (
-    ...     FixedValue(mesh.getFacesRight(), 1),
-    ...     FixedValue(mesh.getFacesLeft(), .5),
-    ...     NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 2),
-    ...     NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3))
+    ...     FixedValue(faces=mesh.getFacesRight(), value=1),
+    ...     FixedValue(faces=mesh.getFacesLeft(), value=.5),
+    ...     NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=0, order=2),
+    ...     NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=0, order=3))
 
 Using
 
@@ -124,11 +124,11 @@ we create the Cahn-Hilliard equation:
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> diffTerm2 = ImplicitDiffusionTerm(
     ...     coeff = (diffusionCoeff * doubleWellDerivative,))
-    >>> diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, epsilon**2))
+    >>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
     >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> solver = LinearLUSolver(tolerance = 1e-15, steps = 100)
+    >>> solver = LinearLUSolver(tolerance=1e-15, steps=100)
 
 The solution to this 1D problem over an infinite domain is given by,
 
@@ -146,9 +146,9 @@ or
 If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var,
-    ...         limits = {'datamin': 0., 'datamax': 1.0})
+    ...     from fipy.viewers import make
+    ...     viewer = make(vars=var,
+    ...                   limits={'datamin': 0., 'datamax': 1.0})
     ...     viewer.plot()
 
 We iterate the solution to equilibrium and, if we are running interactively, 
@@ -159,7 +159,7 @@ we update the display and output data about the progression of the solution
     ...     dt = numerix.exp(dexp)
     ...     dt = min(10, dt)
     ...     dexp += 0.5
-    ...     eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
+    ...     eqch.solve(var=var, boundaryConditions=BCs, solver=solver, dt=dt)
     ...     if __name__ == '__main__':
     ...         diff = abs(answer - numerix.array(var))
     ...         maxarg = numerix.argmax(diff)
@@ -172,7 +172,7 @@ we update the display and output data about the progression of the solution
 
 We compare the analytical solution with the numerical result,
 
-   >>> print var.allclose(answer, atol = 1e-4)
+   >>> print var.allclose(answer, atol=1e-4)
    1
 
 """

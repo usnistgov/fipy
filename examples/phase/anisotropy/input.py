@@ -55,7 +55,7 @@ solidification, and eventually dendritic growth, from a circular seed in a 2D me
     >>> seedCenter = (Length / 2., Length / 2.)
     >>> initialTemperature = -0.4
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx,dy,nx,ny)
+    >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
     
 Dendritic growth will not be observed with this small test system. If
 you wish to see dendritic growth reset the following parameters such
@@ -117,11 +117,7 @@ The `phase` variable is `0` for a liquid and `1` for a solid.  Here,
 the `phase` variable is initialized as a liquid,
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> phase = CellVariable(
-    ...     name = 'phaseField',
-    ...     mesh = mesh,
-    ...     value = 0.,
-    ...     hasOld = 1)
+    >>> phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
 
 The `hasOld` flag keeps the old value of the variable. This is
 necessary for a transient solution. In this example we wish to set up
@@ -138,10 +134,10 @@ seed.
 The temperature field is initialized to a value of `-0.4` throughout:
 
     >>> temperature = CellVariable(
-    ...     name = 'temperature',
-    ...     mesh = mesh,
-    ...     value = initialTemperature,
-    ...     hasOld = 1
+    ...     name='temperature',
+    ...     mesh=mesh,
+    ...     value=initialTemperature,
+    ...     hasOld=1
     ...     )
 
 .. raw:: latex
@@ -208,10 +204,10 @@ If we are running this example interactively, we create viewers for
 the phase and temperature fields
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     phaseViewer = fipy.viewers.make(vars = phase)
-    ...     temperatureViewer = fipy.viewers.make(vars = temperature,
-    ...         limits = {'datamin': -0.5, 'datamax': 0.5})
+    ...     from fipy.viewers import make
+    ...     phaseViewer = make(vars=phase)
+    ...     temperatureViewer = make(vars=temperature,
+    ...                              limits={'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 
@@ -221,8 +217,8 @@ we iterate the solution in time, plotting as we go if running interactively,
     >>> for i in range(steps):
     ...     phase.updateOld()
     ...     temperature.updateOld()
-    ...     phaseEq.solve(phase, dt = timeStepDuration)
-    ...     temperatureEq.solve(temperature, dt = timeStepDuration)
+    ...     phaseEq.solve(phase, dt=timeStepDuration)
+    ...     temperatureEq.solve(temperature, dt=timeStepDuration)
     ...     if i%10 == 0 and __name__ == '__main__':
     ...         phaseViewer.plot()
     ...         temperatureViewer.plot()

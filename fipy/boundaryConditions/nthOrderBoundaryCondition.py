@@ -59,7 +59,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         
     """
     
-    def __init__(self,faces,value,order):
+    def __init__(self, faces, value, order):
         """
         Creates an `NthOrderBoundaryCondition`.
 

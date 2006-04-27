@@ -128,10 +128,10 @@ size.
 Build the mesh:
 
    >>> from fipy.tools.parser import parse
-   >>> numberOfElements = parse('--numberOfElements', action = 'store',
-   ...     type = 'int', default = -1)
-   >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
-   ...     type = 'int', default = 5)
+   >>> numberOfElements = parse('--numberOfElements', action='store',
+   ...     type='int', default=-1)
+   >>> numberOfSteps = parse('--numberOfSteps', action='store',
+   ...     type='int', default=5)
 
    >>> import fipy.tools.numerix as numerix
    >>> if numberOfElements != -1:
@@ -147,10 +147,10 @@ Build the mesh:
    >>> xCells = int(trenchSpacing / 2 / cellSize)
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = cellSize,
-   ...               dy = cellSize,
-   ...               nx = xCells,
-   ...               ny = yCells)
+   >>> mesh = Grid2D(dx=cellSize,
+   ...               dy=cellSize,
+   ...               nx=xCells,
+   ...               ny=yCells)
 
 A `distanceVariable` object,
 
@@ -174,11 +174,11 @@ Create an initial variable,
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import \
    ...     DistanceVariable        
    >>> distanceVar = DistanceVariable(
-   ...    name = 'distance variable',
-   ...    mesh = mesh,
-   ...    value = -1,
-   ...    narrowBandWidth = narrowBandWidth,
-   ...    hasOld = 1)
+   ...    name='distance variable',
+   ...    mesh= mesh,
+   ...    value=-1,
+   ...    narrowBandWidth=narrowBandWidth,
+   ...    hasOld=1)
 
 The electrolyte region will be the positive region of the domain while the metal
 region will be negative.
@@ -193,7 +193,7 @@ region will be negative.
    ...                               | ((y > bottomHeight) 
    ...                                  & (x < xCells * cellSize - sideWidth)))
 
-   >>> distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+   >>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10)
 
 The `distanceVariable` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -207,9 +207,9 @@ This variable influences the deposition rate.
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import \
    ...     SurfactantVariable
    >>> catalystVar = SurfactantVariable(
-   ...     name = "catalyst variable",
-   ...     value = catalystCoverage,
-   ...     distanceVar = distanceVar)
+   ...     name="catalyst variable",
+   ...     value=catalystCoverage,
+   ...     distanceVar=distanceVar)
 
 .. raw:: latex
 
@@ -219,9 +219,9 @@ in the electrolyte,
 
    >>> from fipy.variables.cellVariable import CellVariable
    >>> bulkCatalystVar = CellVariable(
-   ...     name = 'bulk catalyst variable',
-   ...     mesh = mesh,
-   ...     value = catalystConcentration)
+   ...     name='bulk catalyst variable',
+   ...     mesh=mesh,
+   ...     value=catalystConcentration)
    
 Create the bulk metal ion concentration,
 
@@ -233,9 +233,9 @@ in the electrolyte.
         
    >>> from fipy.variables.cellVariable import CellVariable
    >>> metalVar = CellVariable(
-   ...     name = 'metal variable',
-   ...     mesh = mesh,
-   ...     value = bulkMetalConcentration)
+   ...     name='metal variable',
+   ...     mesh=mesh,
+   ...     value=bulkMetalConcentration)
 
 The following commands build the `depositionRateVariable`,
 
@@ -286,9 +286,9 @@ The commands needed to build this equation are,
 rest of the domain.
 
    >>> extensionVelocityVariable = CellVariable(
-   ...     name = 'extension velocity',
-   ...     mesh = mesh,
-   ...     value = depositionRateVariable)   
+   ...     name='extension velocity',
+   ...     mesh=mesh,
+   ...     value=depositionRateVariable)   
 
 Using the variables created above the governing equations will be
 built.  The governing equation for surfactant conservation is given
@@ -312,10 +312,10 @@ in FiPy:
    >>> from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
    ...             import AdsorbingSurfactantEquation
    >>> surfactantEquation = AdsorbingSurfactantEquation(
-   ...     surfactantVar = catalystVar,
-   ...     distanceVar = distanceVar,
-   ...     bulkVar = bulkCatalystVar,
-   ...     rateConstant = rateConstant0 \
+   ...     surfactantVar=catalystVar,
+   ...     distanceVar=distanceVar,
+   ...     bulkVar=bulkCatalystVar,
+   ...     rateConstant=rateConstant0 \
    ...                    + rateConstant3 * overpotential**3)
 
 .. raw:: latex
@@ -333,7 +333,7 @@ and is set up with the following commands:
    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
    ...                import buildHigherOrderAdvectionEquation
    >>> advectionEquation = buildHigherOrderAdvectionEquation(
-   ...     advectionCoeff = extensionVelocityVariable)
+   ...     advectionCoeff=extensionVelocityVariable)
 
 The diffusion of metal ions from the far field to the interface is
 governed by,
@@ -359,14 +359,14 @@ The `MetalIonDiffusionEquation` is set up with the following commands.
    >>> from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
    ...                      import buildMetalIonDiffusionEquation
    >>> metalEquation = buildMetalIonDiffusionEquation(
-   ...     ionVar = metalVar,
-   ...     distanceVar = distanceVar,
-   ...     depositionRate = depositionRateVariable,
-   ...     diffusionCoeff = metalDiffusionCoefficient,
-   ...     metalIonMolarVolume = molarVolume,
+   ...     ionVar=metalVar,
+   ...     distanceVar=distanceVar,
+   ...     depositionRate=depositionRateVariable,
+   ...     diffusionCoeff=metalDiffusionCoefficient,
+   ...     metalIonMolarVolume=molarVolume,
    ... )
 
-   >>> metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
+   >>> metalEquationBCs = FixedValue(faces=mesh.getFacesTop(), value=bulkMetalConcentration)
 
 The `SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -402,14 +402,14 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
    >>> from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
    ...                 import buildSurfactantBulkDiffusionEquation
    >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
-   ...     bulkVar = bulkCatalystVar,
-   ...     distanceVar = distanceVar,
-   ...     surfactantVar = catalystVar,
-   ...     diffusionCoeff = catalystDiffusion,
-   ...     rateConstant = rateConstant0 * siteDensity
+   ...     bulkVar=bulkCatalystVar,
+   ...     distanceVar=distanceVar,
+   ...     surfactantVar=catalystVar,
+   ...     diffusionCoeff=catalystDiffusion,
+   ...     rateConstant=rateConstant0 * siteDensity
    ... )
 
-   >>> catalystBCs = FixedValue(mesh.getFacesTop(), catalystConcentration)
+   >>> catalystBCs = FixedValue(faces=mesh.getFacesTop(), value=catalystConcentration)
    
 If running interactively, create viewers.
 
@@ -419,13 +419,13 @@ If running interactively, create viewers.
    ...         viewers = (
    ...             MayaviSurfactantViewer(distanceVar,
    ...                                    catalystVar.getInterfaceVar(),
-   ...                                    zoomFactor = 1e6,
-   ...                                    limits = { 'datamax' : 1.0, 'datamin' : 0.0 },
-   ...                                    smooth = 1),)
+   ...                                    zoomFactor=1e6,
+   ...                                    limits={ 'datamax' : 1.0, 'datamin' : 0.0 },
+   ...                                    smooth=1),)
    ...     except:
    ...         from fipy.viewers import make
    ...         viewers = (
-   ...             make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+   ...             make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
    ...             make(catalystVar.getInterfaceVar()))
    ... else:
    ...     viewers = ()
@@ -464,12 +464,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
-   ...     advectionEquation.solve(distanceVar, dt = dt)
-   ...     surfactantEquation.solve(catalystVar, dt = dt)
-   ...     metalEquation.solve(metalVar, dt = dt,
-   ...                         boundaryConditions = metalEquationBCs)
-   ...     bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-   ...                                   boundaryConditions = catalystBCs)
+   ...     advectionEquation.solve(distanceVar, dt=dt)
+   ...     surfactantEquation.solve(catalystVar, dt=dt)
+   ...     metalEquation.solve(var=metalVar, dt=dt,
+   ...                         boundaryConditions=metalEquationBCs)
+   ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
+   ...                                   boundaryConditions=catalystBCs)
  
    >>> if __name__ == '__main__':
    ...     raw_input('finished')
@@ -484,7 +484,7 @@ to tell if something has changed or been broken.
    ...                         'test.gz')
 
    >>> from fipy.tools import dump
-   >>> print catalystVar.allclose(dump.read(filepath), rtol = 1e-7)
+   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-7)
    1
 
 """

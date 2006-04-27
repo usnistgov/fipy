@@ -58,20 +58,20 @@ distance function.  The solution to this problem will be demonstrated
 in the following script. Firstly, setup the parameters.
 
    >>> L = 1.
-   >>> nx = 25
+   >>> N = 25
    >>> velocity = 1.
    >>> cfl = 0.1
    >>> velocity = 1.
    >>> distanceToTravel = L / 10.
    >>> radius = L / 4.
-   >>> dx = L / nx   
-   >>> timeStepDuration = cfl * dx / velocity
-   >>> steps = int(distanceToTravel / dx / cfl)
+   >>> dL = L / N   
+   >>> timeStepDuration = cfl * dL / velocity
+   >>> steps = int(distanceToTravel / dL / cfl)
 
 Construct the mesh.
 
    >>> from fipy.meshes.grid2D import Grid2D
-   >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
+   >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 Construct a `distanceVariable` object.
 
@@ -96,31 +96,31 @@ The `advectionEquation` is constructed.
    >>> from fipy.models.levelSet.advection.advectionEquation import \
    ...     buildAdvectionEquation
    >>> advEqn = buildAdvectionEquation(
-   ...     advectionCoeff = velocity)
+   ...     advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
    >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var, 
-   ...         limits = {'datamin': -radius, 'datamax': radius})
+   ...     from fipy.viewers import make
+   ...     viewer = make(vars=var, 
+   ...                   limits={'datamin': -radius, 'datamax': radius})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()
-   ...         advEqn.solve(var, dt = timeStepDuration)
+   ...         advEqn.solve(var, dt=timeStepDuration)
    ...         viewer.plot()
 
 The result can be tested with the following commands.
 
    >>> for step in range(steps):
    ...     var.updateOld()
-   ...     advEqn.solve(var, dt = timeStepDuration)
+   ...     advEqn.solve(var, dt=timeStepDuration)
    >>> x = numerix.array(mesh.getCellCenters())
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
    >>> answer = numerix.where(answer < 0., -1001., answer)
    >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
-   >>> numerix.allclose(answer, solution, atol = 4.7e-3)
+   >>> numerix.allclose(answer, solution, atol=4.7e-3)
    1
 
 If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
@@ -133,9 +133,9 @@ is more accurate,
    ...     advectionCoeff = velocity)
    >>> for step in range(steps):
    ...     var.updateOld()
-   ...     advEqn.solve(var, dt = timeStepDuration)
+   ...     advEqn.solve(var, dt=timeStepDuration)
    >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
-   >>> numerix.allclose(answer, solution, atol = 1.02e-3)
+   >>> numerix.allclose(answer, solution, atol=1.02e-3)
    1
 
 """

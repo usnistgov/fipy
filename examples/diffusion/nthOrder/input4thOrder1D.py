@@ -57,15 +57,12 @@ We create an appropriate mesh
     >>> nx = 1000
     >>> dx = L / nx
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+    >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and initialize the solution variable to 0
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(
-    ...     name = "concentration",
-    ...     mesh = mesh,
-    ...     value = 0.)
+    >>> var = CellVariable(mesh=mesh, name='variable')
     
 For this problem, we impose the boundary conditions:
 
@@ -97,7 +94,7 @@ or
 We initialize the steady-state equation
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> eq = ImplicitDiffusionTerm(coeff = (1, 1)) == 0
+    >>> eq = ImplicitDiffusionTerm(coeff=(1, 1)) == 0
     
 and use the `LinearLUSolver` for stability. 
 
@@ -105,9 +102,9 @@ and use the `LinearLUSolver` for stability.
 
 We perform one implicit timestep to achieve steady state
    
-    >>> eq.solve(var,
-    ...          boundaryConditions = BCs,
-    ...          solver = LinearLUSolver(tolerance = 1e-11))
+    >>> eq.solve(var=var,
+    ...          boundaryConditions=BCs,
+    ...          solver=LinearLUSolver(tolerance=1e-11))
 
 The analytical solution is:
 
@@ -121,14 +118,14 @@ or
     >>> x = mesh.getCellCenters()[:,0]
     >>> answer = alpha4 / 6. * x**3 + alpha3 / 2. * x**2 
     >>> answer += (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1
-    >>> print var.allclose(answer, rtol = 1e-4)
+    >>> print var.allclose(answer, rtol=1e-4)
     1
 
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     from fipy.viewers import make
+    ...     viewer = make(vars=var)
     ...     viewer.plot()
 
 """

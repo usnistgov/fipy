@@ -57,12 +57,11 @@ with different initial conditions and a 2D mesh:
 
     >>> steps = numberOfSteps
     >>> import fipy.tools.numerix as numerix
-    >>> nx = int(numerix.sqrt(numberOfElements))
-    >>> ny = nx
-    >>> Lx = 2.5 * nx / 100.
-    >>> dx = Lx / nx
+    >>> N = int(numerix.sqrt(numberOfElements))
+    >>> L = 2.5 * N / 100.
+    >>> dL = L / N
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx,dx,nx,nx)
+    >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 The initial conditions are given by
 
@@ -101,11 +100,7 @@ The system is held isothermal at
 and is initialized to liquid everywhere
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> phase = CellVariable(
-    ...     name = 'PhaseField',
-    ...     mesh = mesh,
-    ...     value = 0.
-    ...     )
+    >>> phase = CellVariable(name='phase field', mesh=mesh)
 
 The orientation is initialized to a uniform value to denote the
 randomly oriented liquid phase
@@ -113,10 +108,10 @@ randomly oriented liquid phase
     >>> from fipy.variables.modularVariable import ModularVariable
     >>> pi = numerix.pi
     >>> theta = ModularVariable(
-    ...     name = 'Theta',
-    ...     mesh = mesh,
-    ...     value = -pi + 0.0001,
-    ...     hasOld = 1
+    ...     name='theta',
+    ...     mesh=mesh,
+    ...     value=-pi + 0.0001,
+    ...     hasOld=1
     ...     )
 
 Four different solid circular domains are created at each corner of
@@ -124,10 +119,10 @@ the domain with appropriate orientations
 
     >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
     >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
-    ...                          (Lx, 0., -2. * pi / 3.), 
-    ...                          (0., Lx, -2. * pi / 3. + 0.3), 
-    ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+    ...                          (L, 0., -2. * pi / 3.), 
+    ...                          (0., L, -2. * pi / 3. + 0.3), 
+    ...                          (L, L,  2. * pi / 3.)):
+    ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
     ...     phase.setValue(1., where=segment)
     ...     theta.setValue(thetaValue, where=segment)
 
@@ -192,13 +187,13 @@ which is not meaningful in the liquid phase, we weight the orientation
 by the phase
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
-    ...     phaseViewer = viewers.make(vars = phase,
-    ...                                limits = {'datamin': 0., 'datamax': 1.})
+    ...     from fipy.viewers import make
+    ...     phaseViewer = make(vars=phase,
+    ...                        limits={'datamin': 0., 'datamax': 1.})
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = viewers.make(vars = thetaProd,
-    ...                                       limits = {'datamin': -pi, 
-    ...                                                 'datamax': pi})
+    ...     thetaProductViewer = make(vars=thetaProd,
+    ...                               limits={'datamin': -pi, 
+    ...                                       'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 
@@ -224,15 +219,15 @@ We iterate the solution in time, plotting as we go if running interactively,
     >>> for i in range(steps):
     ...     theta.updateOld()
     ...     phase.updateOld()
-    ...     thetaEq.solve(theta, dt = timeStepDuration)
-    ...     phaseEq.solve(phase, dt = timeStepDuration)
+    ...     thetaEq.solve(theta, dt=timeStepDuration)
+    ...     phaseEq.solve(phase, dt=timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ... 	thetaProductViewer.plot()
     
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> print theta.allclose(testData, rtol = 1e-7, atol = 1e-7)
+    >>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
     1
 
 The following code shows how to restart a simulation from some saved
@@ -242,10 +237,10 @@ data. First, reset the variables to their original values.
     >>> theta.setValue(-pi + 0.0001)
     >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
     >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
-    ...                          (Lx, 0., -2. * pi / 3.), 
-    ...                          (0., Lx, -2. * pi / 3. + 0.3), 
-    ...                          (Lx, Lx,  2. * pi / 3.)):
-    ...     segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+    ...                          (L, 0., -2. * pi / 3.), 
+    ...                          (0., L, -2. * pi / 3. + 0.3), 
+    ...                          (L, L,  2. * pi / 3.)):
+    ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
     ...     phase.setValue(1., where=segment)
     ...     theta.setValue(thetaValue, where=segment)
 
@@ -254,8 +249,8 @@ Step through half the time steps.
     >>> for i in range(steps / 2):
     ...     theta.updateOld()
     ...     phase.updateOld()
-    ...     thetaEq.solve(theta, dt = timeStepDuration)
-    ...     phaseEq.solve(phase, dt = timeStepDuration)
+    ...     thetaEq.solve(theta, dt=timeStepDuration)
+    ...     phaseEq.solve(phase, dt=timeStepDuration)
 
 We confirm that the solution has not yet converged to that given by 
 Ryo Kobayashi's FORTRAN code:
@@ -281,12 +276,12 @@ and finish the iterations,
     >>> for i in range(steps / 2):
     ...     newTheta.updateOld()
     ...     newPhase.updateOld()
-    ...     newThetaEq.solve(newTheta, dt = timeStepDuration)
-    ...     newPhaseEq.solve(newPhase, dt = timeStepDuration)
+    ...     newThetaEq.solve(newTheta, dt=timeStepDuration)
+    ...     newPhaseEq.solve(newPhase, dt=timeStepDuration)
 
 The solution is compared against Ryo Kobayashi's test data
 
-    >>> print newTheta.allclose(testData, rtol = 1e-7)
+    >>> print newTheta.allclose(testData, rtol=1e-7)
     1
     
 """

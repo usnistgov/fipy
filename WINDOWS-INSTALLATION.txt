@@ -97,7 +97,7 @@ Step 9: Import a module and view the results
 --------------------------------------------
 
 You can use the IDLE_ path browser to find |FiPy| examples. For
-example to run the 2D diffusion example,
+example, to run the 2D diffusion example,
 
     - Click on ``File``
     - Click on ``Path Browser``

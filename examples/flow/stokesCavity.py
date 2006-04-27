@@ -109,15 +109,15 @@ some parameters are declared.
 Build the mesh.
 
     >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(nx = N, ny = N, dx = dL, dy = dL)
+    >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> pressure = CellVariable(mesh = mesh, name = 'pressure')
-    >>> pressureCorrection = CellVariable(mesh = mesh)
-    >>> xVelocity = CellVariable(mesh = mesh, name = 'X velocity')
-    >>> yVelocity = CellVariable(mesh = mesh, name = 'Y velocity')
+    >>> pressure = CellVariable(mesh=mesh, name='pressure')
+    >>> pressureCorrection = CellVariable(mesh=mesh)
+    >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
+    >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
 The velocity is required as a `VectorFaceVariable` for calculating the
 mass flux. This is a somewhat clumsy aspect of the
@@ -129,13 +129,13 @@ mass flux. This is a somewhat clumsy aspect of the
 interface that needs improvement.
 
     >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-    >>> velocity = VectorFaceVariable(mesh = mesh)
+    >>> velocity = VectorFaceVariable(mesh=mesh)
 
 Build the Stokes equations.
 
-    >>> from fipy.terms.diffusionTerm import DiffusionTerm
-    >>> xVelocityEq = DiffusionTerm(viscosity) - pressure.getGrad().dot([1,0])
-    >>> yVelocityEq = DiffusionTerm(viscosity) - pressure.getGrad().dot([0,1])
+    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    >>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
+    >>> yVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
     
 .. raw:: latex
 
@@ -167,38 +167,38 @@ Build the Stokes equations.
 
 ..   
 
-    >>> ap = CellVariable(mesh = mesh)
+    >>> ap = CellVariable(mesh=mesh)
     >>> coeff = mesh._getFaceAreas() * mesh._getCellDistances() / ap.getArithmeticFaceValue()
-    >>> pressureCorrectionEq = DiffusionTerm(coeff) - velocity.getDivergence()
+    >>> pressureCorrectionEq = ImplicitDiffusionTerm(coeff=coeff) - velocity.getDivergence()
 
 Set up the no-slip boundary conditions
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),
-    ...        FixedValue(faces = mesh.getFacesRight(), value = 0),
-    ...        FixedValue(faces = mesh.getFacesBottom(), value = 0),)
-    >>> bcsX = bcs + (FixedValue(faces = mesh.getFacesTop(), value = 1),)
-    >>> bcsY = bcs + (FixedValue(faces = mesh.getFacesTop(), value = 0),)
+    >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
+    ...        FixedValue(faces=mesh.getFacesRight(), value=0),
+    ...        FixedValue(faces=mesh.getFacesBottom(), value=0),)
+    >>> bcsX = bcs + (FixedValue(faces=mesh.getFacesTop(), value=1),)
+    >>> bcsY = bcs + (FixedValue(faces=mesh.getFacesTop(), value=0),)
 
 Set up the viewers,
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
-    ...     viewer = viewers.make(vars = (pressure, xVelocity, yVelocity, velocity))
+    ...     from fipy.viewers import make
+    ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
     
 Iterate for a set number of sweeps.
 
     >>> for sweep in range(sweeps):
     ...
     ...     ## solve the Stokes equations to get starred values
-    ...     (xmat, xres) = xVelocityEq.solve(var = xVelocity,
-    ...                                      boundaryConditions = bcsX,
-    ...                                      returnItems = ['matrix', 'residual'],
-    ...                                      underRelaxation = velocityRelaxation)
-    ...     (yres,) = yVelocityEq.solve(var = yVelocity,
-    ...                                 boundaryConditions = bcsY,
-    ...                                 returnItems = ['residual'],
-    ...                                 underRelaxation = velocityRelaxation)\
+    ...     (xmat, xres) = xVelocityEq.solve(var=xVelocity,
+    ...                                      boundaryConditions=bcsX,
+    ...                                      returnItems=['matrix', 'residual'],
+    ...                                      underRelaxation=velocityRelaxation)
+    ...     (yres,) = yVelocityEq.solve(var=yVelocity,
+    ...                                 boundaryConditions=bcsY,
+    ...                                 returnItems=['residual'],
+    ...                                 underRelaxation=velocityRelaxation)\
     ...
     ...     ## update the ap coefficient from the matrix diagonal
     ...     ap[:] = -xmat.takeDiagonal()
@@ -210,8 +210,8 @@ Iterate for a set number of sweeps.
     ...         velocity[id,:] = 0.
     ...
     ...     ## solve the pressure correction equation
-    ...     pres, rhs = pressureCorrectionEq.solve(var = pressureCorrection,
-    ...                                            returnItems = ['residual', 'RHSvector'])
+    ...     pres, rhs = pressureCorrectionEq.solve(var=pressureCorrection,
+    ...                                            returnItems=['residual', 'RHSvector'])
     ...
     ...     ## update the pressure using the corrected value but hold one cell fixed
     ...     pressure.setValue(pressure + pressureRelaxation * \
