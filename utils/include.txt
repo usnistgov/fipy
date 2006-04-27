@@ -54,3 +54,19 @@
 
    Chapter 6: "Frequently Asked Questions" of the <a href="download/fipy.pdf">Manual</a>
 
+.. |latexWINDOWS-INSTALLATION| raw:: latex
+
+   Section~\ref{sec:WindowsInstallation} ``\titleref{sec:WindowsInstallation}''
+
+.. |htmlWINDOWS-INSTALLATION| raw:: html
+
+   <a href="windows-installation.html">Windows installation</a>
+
+.. |latexEFFICIENCY| raw:: latex
+
+   Chapter~\ref{chap:Efficiency} ``\titleref{chap:Efficiency}''
+
+.. |htmlEFFICIENCY| raw:: html
+
+   Chapter 5: "Efficiency" of the <a href="download/fipy.pdf">Manual</a>
+

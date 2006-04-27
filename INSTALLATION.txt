@@ -221,8 +221,8 @@ Viewers
 following packages will be required to view the results of |FiPy|
 calculations. |FiPy| will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
-by setting the ``FIPY_VIEWER`` environment variable to either '``gist``',
-'``gnuplot``' or '``matplotlib``'.
+by setting the ``FIPY_VIEWER`` environment variable to either
+"``gist``", "``gnuplot``" or "``matplotlib``".
 
 Matplotlib
 ----------
@@ -283,9 +283,9 @@ common platforms.
 
 .. note::
 
-   If you experience difficulty building the native Pygist_ viewer on `Mac OS
-   X`_, you may wish to to build the package with the ``--x11`` option
-   described in its documentation.
+   If you experience difficulty building the native Pygist_ viewer on
+   `Mac OS X`_, you may wish to build the package with the ``--x11``
+   option described in its documentation.
 
 .. note::
 
@@ -386,13 +386,15 @@ commands::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
 
-and press Return at the password prompt, then to download |FiPy| 1.0 
-(recommended)::
+and press Return at the password prompt, then to download a fairly
+stable version of |FiPy| (somewhere between version |VERSION| and
+HEAD)::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
     >     checkout -r CURRENT fipy
 
-If you prefer, you can download |FiPy| 0.1 with::
+If you prefer, you can download |FiPy| version |VERSION| (recommended)
+with::
 
     $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
     >     checkout -r STABLE fipy
@@ -534,6 +536,8 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 .. _CVS:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
 
 .. include:: utils/include.txt
+
+.. include:: documentation/VERSION.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |TeX| replace:: |latexTeX| |htmlTeX|

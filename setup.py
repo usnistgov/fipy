@@ -213,7 +213,7 @@ class build_docs (Command):
 
     def run (self):
 	f = open(os.path.join('documentation','VERSION.txt'), 'w')
-	f.write("The current version of |FiPy| is %s" % self.distribution.metadata.get_version())
+	f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version())
 	f.close()
 
         mainRestructuredTextFiles = ['INSTALLATION',

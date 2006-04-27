@@ -10,7 +10,7 @@ a fixed tag:
 ``version-x_y``
     designates a released version x.y
 
-    .. include:: VERSION.txt
+    The current version of |FiPy| is |VERSION|.
 
 Most users will not be interested in particular version numbers, but
 instead with the degree of code stability.  Different "tracking tags" are
@@ -83,3 +83,4 @@ For those who are interested in learning more about CVS, Cederqvist_
 
    \cite{RedBeanCVS}
 
+.. include:: VERSION.txt

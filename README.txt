@@ -43,9 +43,39 @@ Even if you don't read manuals...
 
 ...please read |INSTALLATION-txt| and |the FAQ|.
 
--------------------------
-What's new in version 1.0
--------------------------
+-----------------------------------
+What's new in version |VERSION|
+-----------------------------------
+
+The significant changes since version |VERSION| are:
+
+- Memory efficiency has been improved in a number of ways, but most
+  significantly by:
+
+  * not caching all intermediate ``Variable`` values.
+  * introducing ``UniformGrid`` classes that calculate geometric
+    arrays on the fly.
+
+  Details of these improvements are presented in |EFFICIENCY-txt|.
+
+- Installation on Windows has been made considerably easier by
+  constructing executable installers for |FiPy| and its
+  dependencies. Details for Windows installation can found in
+  |WINDOWS-INSTALLATION-txt|.
+
+- The arithmetic for ``Variable`` subclasses now works, and returns
+  sensible answers. For example, ``VectorCellVariable * CellVariable``
+  returns a ``VectorCellVariable``.
+
+- ``PeriodicGrid`` meshes have been included. Currently, however,
+  there and no examples of their use in the manual.
+
+- The "Superfill" examples have been substantially improved with better
+  functionality and documentation.
+
+---------------------------------------------------
+What's new in version 1.0, this needs to be removed
+---------------------------------------------------
 
 Numerous changes have been made since |FiPy| 0.1 was released, but the most 
 signficant ones are:
@@ -200,15 +230,17 @@ or a
 .. _NIST:                 http://www.nist.gov/
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _CVS:                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-0.1.tar.gz
+.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
 .. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/tracker/?group_id=118428
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 
 .. include:: utils/include.txt
+.. include:: documentation/VERSION.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
+.. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
 
 .. |latexUpdate0_1to1_0.py| raw:: latex
 
@@ -235,3 +267,4 @@ or a
 .. |citeTrackingMailing| raw:: latex
 
    \cite{FiPyBugTracker,FiPyMailingList}
+
