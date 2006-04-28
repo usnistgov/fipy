@@ -44,7 +44,7 @@
 
 r"""
 
-This example solves the Cahn-Hilliard equation given by:
+This example solves the Cahn-Hilliard equation given by,
 
 .. raw:: latex
 
@@ -56,7 +56,19 @@ where the free energy functional is given by,
 
 .. raw:: latex
 
-    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2. $$
+    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2 $$
+
+The Cahn-Hilliard equation can be rewritten in the following form,
+
+.. raw:: latex
+
+    $$ \frac{\partial \phi}{\partial t} = \nabla \cdot D 
+	\left( \frac{\partial^2 f}{\partial \phi^2} \nabla \phi 
+	    - \epsilon^2 \nabla^3 \phi \right) $$
+
+    The above form of the equation makes the non-linearity part of the
+    diffusion coefficient for the first term on the RHS. This is the correct
+    way to express the equation to \FiPy{}.
     
 We solve the problem on a 1D mesh
 
