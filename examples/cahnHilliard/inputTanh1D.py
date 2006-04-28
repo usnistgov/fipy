@@ -130,12 +130,12 @@ Using
 we create the Cahn-Hilliard equation:
 
     >>> faceVar = var.getArithmeticFaceValue()
-    >>> doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
+    >>> freeEnergyDoubleDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> diffTerm2 = ImplicitDiffusionTerm(
-    ...     coeff = (diffusionCoeff * doubleWellDerivative,))
+    ...     coeff=diffusionCoeff * freeEnergyDoubleDerivative)
     >>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
     >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
