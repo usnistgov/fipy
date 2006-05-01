@@ -94,7 +94,7 @@ The boundary conditions for this problem are
    \left.
        \begin{aligned}
 	   \phi &= \frac{1}{2} \\
-	   \frac{\partial^3 \phi}{\partial x^3} &= 0
+	   \frac{\partial^2 \phi}{\partial x^2} &= 0
        \end{aligned}
    \right\} \qquad \text{on $x = 0$}
    $$
@@ -119,7 +119,7 @@ or
     ...     FixedValue(faces=mesh.getFacesRight(), value=1),
     ...     FixedValue(faces=mesh.getFacesLeft(), value=.5),
     ...     NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=0, order=2),
-    ...     NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=0, order=3))
+    ...     NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=0, order=2))
 
 Using
 

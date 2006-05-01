@@ -44,7 +44,7 @@ from fipy.tools.parser import parse
 
 class Benchmarker:
     def __init__(self):
-        self.measureMemory = parse('--measureMemory', action = 'store_true')
+        self.measureMemory = parse('--measureMemory', action = 'store_true', default=False)
         self.sampleTime = parse('--sampleTime', action = 'store', type = 'float', default = 1)
         
         self.keys = ['mesh', 'variables', 'terms', 'solver', 'BCs', 'solve']
@@ -52,7 +52,7 @@ class Benchmarker:
         self.times = {}
         for key in self.keys:
             self.times[key] = 0
-        
+
         if self.measureMemory:
             from fipy.tools.memoryLogger import MemoryLogger
             self.logger = MemoryLogger(sampleTime = self.sampleTime)
