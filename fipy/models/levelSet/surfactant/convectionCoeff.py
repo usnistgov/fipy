@@ -145,7 +145,7 @@ class _ConvectionCoeff(VectorFaceVariable):
 
         cellFaceIDs = (cellFaceIDs.flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(cellFaceIDs.flat),dim))
         
-        vector._putAddPy(value, cellFaceIDs.flat, alpha.flat, mask = cellFaceIDs.flat.mask())
+        vector._putAddPy(value, cellFaceIDs.flat, alpha.flat, mask = MA.array(cellFaceIDs).flat.mask())
 
         value = Numeric.reshape(value, (Nfaces, dim))
 

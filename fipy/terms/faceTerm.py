@@ -115,12 +115,7 @@ class FaceTerm(Term):
         cell2Diag[:] = weight['cell 2 diag']
         cell2OffDiag = Numeric.zeros((Nfac,),'d')
         cell2OffDiag[:] = weight['cell 2 offdiag']
-
-##         cell1Diag = Numeric.resize(Numeric.array(weight['cell 1 diag']), (Nfac,))
-##         cell1OffDiag = Numeric.resize(Numeric.array(weight['cell 1 offdiag']), (Nfac,))
-##         cell2Diag = Numeric.resize(Numeric.array(weight['cell 2 diag']), (Nfac,))
-##         cell2OffDiag = Numeric.resize(Numeric.array(weight['cell 2 offdiag']), (Nfac,))
-
+        
 	inline._runInlineLoop1("""
 	    long int faceID = faceIDs(i);
 	    long int cellID1 = id1(i);
@@ -138,7 +133,7 @@ class FaceTerm(Term):
 	    cell2Diag = cell2Diag,
 	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
-	    faceIDs = interiorFaces,
+	    faceIDs = Numeric.array(interiorFaces),
 	    ni = len(interiorFaces))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt):

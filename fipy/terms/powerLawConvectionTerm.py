@@ -73,8 +73,8 @@ class PowerLawConvectionTerm(ConvectionTerm):
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
                 >>> alpha = PowerLawConvectionTerm._Alpha(P)
-                >>> print alpha
-                [ 0.5, 1. , 0.5, 0.5,] 1
+                >>> print numerix.allclose(alpha, (0.5, 1, 0.5, 0.5))
+                1
                 
             """
             
@@ -88,7 +88,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 
 	    tmp = (1. + P / 10.)
 	    tmpSqr = tmp * tmp
-	    alpha = numerix.where((eps  >  P) & (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
+	    alpha = numerix.where((-eps >  P) & (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
 
 	    alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
 
@@ -110,18 +110,18 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		    double	tmp = (1. - P(i) / 10.);
 		    double	tmpSqr = tmp * tmp;
 		    alpha(i) = ((P(i) - 1.) + tmpSqr*tmpSqr*tmp) / P(i);
-		} else if (eps >= P(i) && P(i) >= -10) {
+		} else if (-eps > P(i) && P(i) >= -10.) {
 		    double	tmp = (1. + P(i) / 10.);
 		    double	tmpSqr = tmp * tmp;
 		    alpha(i) = (tmpSqr*tmpSqr*tmp - 1.) / P(i);
-		} else {	// P(i) < -10.
+		} else if (P(i) < -10.) {
 		    alpha(i) = -1. / P(i);
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
 	    ni = len(self.mesh.getFaces())
 	    )
-     
+
             return self._makeValue(value = alpha)
 ##         return self._makeValue(value = alpha, unit = self.getUnit())
 

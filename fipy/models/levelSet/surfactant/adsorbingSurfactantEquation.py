@@ -145,6 +145,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> k = 0.56
        >>> initialValue = 0.1
        >>> c = 0.2
+       
+       >>> from fipy.meshes.grid2D import Grid2D
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
        ...                                value = (-dx*3/2, -dx/2, dx/2, 

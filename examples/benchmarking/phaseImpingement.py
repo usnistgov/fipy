@@ -115,6 +115,8 @@ bench.stop('variables')
 
 bench.start()
 
+
+
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -160,13 +162,25 @@ thetaEq = buildThetaEquation(phase, theta)
 
 bench.stop('terms')
 
+theta.updateOld()
+phase.updateOld()
+thetaEq.solve(theta, dt = timeStepDuration)
+phaseEq.solve(phase, dt = timeStepDuration)
+
 bench.start()
+
+##from profiler import Profiler
+##from profiler import calibrate_profiler
+##fudge = calibrate_profiler(10000)
+##profile = Profiler('profile-HEAD-i686', fudge=fudge)
 
 for i in range(steps):
     theta.updateOld()
     phase.updateOld()
     thetaEq.solve(theta, dt = timeStepDuration)
     phaseEq.solve(phase, dt = timeStepDuration)
+
+##profile.stop()
 
 bench.stop('solve')
 

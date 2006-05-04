@@ -48,6 +48,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
+from fipy.tools.inline import inline
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
@@ -133,11 +134,33 @@ class Grid2D(Mesh2D):
         """
         self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
         self.numberOfFaces = self.numberOfHorizontalFaces + self.ny * (self.nx + 1)
-        f1 = Numeric.arange(self.numberOfHorizontalFaces - self.nx)
-        f3 = f1 + self.nx
-        f2 = vector.prune(Numeric.arange(self.numberOfHorizontalFaces,  self.numberOfFaces), self.nx + 1)
-        f4 = f2 - 1
-        return Numeric.transpose(Numeric.array((f1, f2, f3, f4)))
+        return inline._optionalInline(self._createCellsIn, self._createCellsPy)
+
+    def _createCellsPy(self):
+        cellFaceIDs = Numeric.zeros((self.nx * self.ny, 4))
+        faceIDs = Numeric.arange(self.numberOfFaces)
+        cellFaceIDs[:,0] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
+        cellFaceIDs[:,2] = cellFaceIDs[:,0] + self.nx
+        cellFaceIDs[:,1] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.nx + 1)
+        cellFaceIDs[:,3] = cellFaceIDs[:,1] - 1
+        return cellFaceIDs
+
+    def _createCellsIn(self):
+        cellFaceIDs = Numeric.zeros((self.nx * self.ny, 4))
+        
+        inline._runInlineLoop2("""
+            int ID = j * ni + i;
+            cellFaceIDs(ID, 0) = ID;
+            cellFaceIDs(ID, 2) = cellFaceIDs(ID, 0) + ni;
+            cellFaceIDs(ID, 3) = horizontalFaces + ID + j;
+            cellFaceIDs(ID, 1) = cellFaceIDs(ID, 3) + 1;
+	""",
+        horizontalFaces=self.numberOfHorizontalFaces,
+        cellFaceIDs=cellFaceIDs,
+        ni=self.nx,
+        nj=self.ny)
+
+        return cellFaceIDs
 
     def getFacesLeft(self):
 	"""

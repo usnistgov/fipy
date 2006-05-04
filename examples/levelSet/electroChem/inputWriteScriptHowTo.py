@@ -484,7 +484,7 @@ to tell if something has changed or been broken.
    ...                         'test.gz')
 
    >>> from fipy.tools import dump
-   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-7)
+   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
    1
 
 """

@@ -995,15 +995,55 @@ def MAtake(array, indices, fill = 0, axis = 0):
     """
     Replaces `MA.take`. `MA.take` does not always work when
     `indices` is a masked array.
+
+       
     """
+
     tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
-    if indices.mask() is not None and tmp.shape != indices.mask().shape:
-        mask = MA.repeat(indices.mask()[...,NUMERIC.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
-        if tmp.mask() is not None:
-            mask = NUMERIC.logical_or(tmp.mask(), mask)
+
+    if hasattr(indices, 'mask'):
+        if indices.mask() is not None and tmp.shape != indices.mask().shape:
+            mask = MA.repeat(indices.mask()[...,NUMERIC.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
+            if tmp.mask() is not None:
+                mask = NUMERIC.logical_or(tmp.mask(), mask)
+        else:
+            mask = indices.mask()
     else:
-        mask = indices.mask()
+        mask = None
+        
     return MA.array(data = tmp, mask = mask)
+
+def indices(dimensions, typecode=None):
+    """indices(dimensions,typecode=None) returns an array representing a grid
+    of indices with row-only, and column-only variation.
+
+       >>> NUMERIC.allclose(NUMERIC.array(indices((4, 6))), NUMERIC.indices((4,6)))
+       1
+       >>> NUMERIC.allclose(NUMERIC.array(indices((4, 6, 2))), NUMERIC.indices((4, 6, 2)))
+       1
+       >>> NUMERIC.allclose(NUMERIC.array(indices((1,))), NUMERIC.indices((1,)))
+       1
+       >>> NUMERIC.allclose(NUMERIC.array(indices((5,))), NUMERIC.indices((5,)))
+       1
+  
+    """
+
+    lst = []
+
+    if len(dimensions) == 1:
+        lst.append(NUMERIC.arange(dimensions[0]))
+    elif len(dimensions) == 2:
+        ## copy() methods are used to force contiguous arrays
+        lst = [NUMERIC.swapaxes(NUMERIC.resize(NUMERIC.arange(dimensions[0]), (dimensions[1], dimensions[0])), 0, 1).copy(),
+               NUMERIC.resize(NUMERIC.arange(dimensions[1]), dimensions).copy()]
+    else:
+        tmp = NUMERIC.ones(dimensions, typecode)
+        lst = []
+        for i in range(len(dimensions)):
+            lst.append(NUMERIC.add.accumulate(tmp, i,) - 1)
+
+    ## we don't turn the list back into an array because that is expensive and not required
+    return lst
 
 def _test(): 
     import doctest
