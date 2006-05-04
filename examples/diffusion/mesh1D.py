@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 4/7/06 {5:14:26 PM} 
+ #                                last update: 5/4/06 {11:59:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -512,6 +512,19 @@ as
     >>> D0 = 1
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
+.. raw:: latex
+
+   Although this problem does not exact transient solution, it can be
+   solved in steady-state, with
+   \[
+       \phi(x) = 1 - \sqrt{\frac{x}{L}}
+   \]
+   
+..
+
+    >>> x = mesh.getCellCenters()[...,0]
+    >>> phiAnalytical.setValue(1. - sqrt(x/L))
+
 .. note::
     
    Because of the non-linearity, the Crank-Nicholson scheme does not work
@@ -530,11 +543,6 @@ analytical solution from before.
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
-.. note::
-    
-   The analytical solution is only plotted for qualitative comparison. Variable
-   diffusivity problems generally have no analytical solutions.
-
 We now repeatedly run the problem with increasing numbers of sweeps.
 
     >>> for sweeps in range(1,5):
@@ -545,9 +553,10 @@ We now repeatedly run the problem with increasing numbers of sweeps.
     ...         
     ...         # but "sweep" many times per time step
     ...         for sweep in range(sweeps):
-    ...             eq.solve(var=phi[0],
-    ...                      boundaryConditions=BCs,
-    ...                      dt=timeStepDuration)
+    ...             res, = eq.solve(var=phi[0],
+    ...                             boundaryConditions=BCs,
+    ...                             dt=timeStepDuration,
+    ...                             returnItems = ('residual',))
     ...         if __name__ == '__main__':
     ...             viewer.plot()
     ...             
@@ -556,11 +565,7 @@ We now repeatedly run the problem with increasing numbers of sweeps.
     ...     if __name__ == '__main__':
     ...         viewer.plot()
     ...         raw_input("Implicit variable diffusity. %d sweep(s). \
-    ... Residual = %f. Press <return> to proceed..." % (sweeps, max(abs(eq.residual))))
-
-.. image:: examples/diffusion/mesh1Dvariable.pdf
-   :scale: 50
-   :align: center
+    ... Residual = %f. Press <return> to proceed..." % (sweeps, max(abs(res))))
 
 As can be seen, sweeping does not dramatically change the result, but the
 "residual" of the equation (a measure of how accurately it has been solved)
@@ -573,6 +578,30 @@ drops about an order of magnitude with each additional sweep.
    more art than science and will require some experimentation on your part
    for each new problem.
 
+Finally, we can increase the number of steps to approach equilibrium, or we
+can just solve for it directly
+
+    >>> eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
+
+    >>> phi[0].setValue(valueRight)
+    >>> res = 1e20
+    >>> while res > 1e-6:
+    ...     res, = eq.solve(var=phi[0],
+    ...                     boundaryConditions=BCs,
+    ...                     dt=timeStepDuration,
+    ...                     returnItems = ('residual',))
+
+    >>> print phi[0].allclose(phiAnalytical, atol = 1e-1)
+    1
+
+    >>> if __name__ == '__main__':
+    ...     viewer.plot()
+    ...     raw_input("Implicit variable diffusity - steady-state. \
+    ... Press <return> to proceed...")
+
+.. image:: examples/diffusion/mesh1Dvariable.pdf
+   :scale: 50
+   :align: center
 
 ------
 
@@ -599,26 +628,23 @@ remaining lines, leaving::
         .
         .
 
-    for sweeps in range(1,5):
-        phi[0].setValue(valueRight)
-        for step in range(steps):
-            # only move forward in time once per time step
-            phi[0].updateOld()
-            
-            # but "sweep" many times per time step
-            for sweep in range(sweeps):
-                eq.solve(var=phi[0],
-                         boundaryConditions=BCs,
-                         dt=timeStepDuration)
-            if __name__ == '__main__':
-                viewer.plot()
-                
-        # copy the final result into the appropriate display variable
-        phi[sweeps].setValue(phi[0])
-        if __name__ == '__main__':
-            viewer.plot()
-            raw_input("Implicit variable diffusity. %d sweep(s). \
-    Residual = %f. Press <return> to proceed..." % (sweeps, max(abs(eq.residual))))
+    eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
+    phi[0].setValue(valueRight)
+    res = 1e20
+    while res > 1e-6:
+        res, = eq.solve(var=phi[0],
+                        boundaryConditions=BCs,
+                        dt=timeStepDuration,
+                        returnItems = ('residual',))
+
+    print phi[0].allclose(phiAnalytical, atol = 1e-1)
+    # Expect:
+    # 1
+    # 
+    if __name__ == '__main__':
+        viewer.plot()
+        raw_input("Implicit variable diffusity - steady-state. \
+    Press <return> to proceed...")
 
 Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script
