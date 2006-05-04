@@ -8,8 +8,7 @@ Release Goals 1.1
 - User feed back
 
   * make 'from fipy import Class' work for common classes
-  * flesh out phase section, phaseSimple, transient, binary, ternary, explanation and
-    maybe a little variational calculus
+  * 'returnItems' is gross
 
 - Documentation:
 
