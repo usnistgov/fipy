@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:50:25 PM} { 2:24:25 PM}
+ #                                last update: 5/3/06 {5:29:33 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -39,17 +39,21 @@
  # ###################################################################
  ##
 
-from fipy.tests.lateImportTest import _LateImportTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-            'simple.test',
-            'anisotropy.test',
-            'impingement.test',
-            'missOrientation.test',
-            'symmetry.test',
-        ), base = __name__)
+    return _LateImportDocTestSuite(testModuleNames = (
+                                       'simple.test',
+                                       'anisotropy.test',
+                                       'impingement.test',
+                                       'missOrientation.test',
+                                       'symmetry.test'
+                                   ),
+                                   docTestModuleNames = (
+                                       'binary',
+                                   ), 
+                                   base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

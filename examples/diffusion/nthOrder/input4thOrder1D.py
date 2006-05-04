@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/15/05 {5:14:49 PM} 
+ #                                last update: 5/4/06 {7:29:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,10 +86,10 @@ or
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
     ...     import NthOrderBoundaryCondition
-    >>> BCs = (FixedValue(mesh.getFacesLeft(), alpha1),
-    ...        FixedFlux(mesh.getFacesRight(), alpha2),
-    ...        NthOrderBoundaryCondition(mesh.getFacesLeft(), alpha3, 2),
-    ...        NthOrderBoundaryCondition(mesh.getFacesRight(), alpha4, 3))
+    >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
+    ...        FixedFlux(faces=mesh.getFacesRight(), value=alpha2),
+    ...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
+    ...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
 
 We initialize the steady-state equation
     

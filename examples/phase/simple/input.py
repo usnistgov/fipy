@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/12/06 {7:50:35 PM} 
+ #                                last update: 5/4/06 {6:43:18 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -158,8 +158,8 @@ The analytical solution for this steady-state phase field problem, in an infinit
 or
 
     >>> x = mesh.getCellCenters()[:,0]
-    >>> import fipy.tools.numerix as numerix 
-    >>> analyticalArray = 0.5*(1 - numerix.tanh((x - L/2)/(2*numerix.sqrt(kappa/W))))
+    >>> from fipy.tools.numerix import tanh, sqrt
+    >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
 We treate the diffusion term
 
@@ -396,9 +396,167 @@ run-time between the fully explicit source and the optimized semi-implicit
 source, the benefit of 60% fewer sweeps should be obvious for larger
 systems and longer iterations.
     
+-----
+
+This example has focused on just the region of the phase field interface in
+equilibrium. Real problems, in contrast, involve the dynamics of one phase
+transforming to another. To that end, let us recast the problem using
+physical parameters and dimensions. We'll need a new mesh
+
+    >>> nx = 400
+    >>> dx = 5e-6 # cm
+    >>> L = nx * dx
+
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
+
+and thus must redeclare |phase| on the new mesh
+
+    >>> phase = CellVariable(name="phase",
+    ...                      mesh=mesh,
+    ...                      hasOld=1)
+    >>> x = mesh.getCellCenters()[...,0]
+    >>> phase.setValue(1.)
+    >>> phase.setValue(0., where=x > L/2)
+
+.. raw:: latex
+
+   We choose the parameter values appropriate for nickel, given in
+   \cite{Warren:1994}
+
+..
+
+    >>> Lv = 2350 # J / cm**3
+    >>> Tm = 1728. # K
+    >>> from fipy.variables.variable import Variable
+    >>> T = Variable(value=Tm)
+    >>> enthalpy = Lv * (T - Tm) / Tm # J / cm**3
+    
+.. raw:: latex
+
+   The parameters of the phase field model can be related to the surface
+   energy \( \sigma \) and the interfacial thickness \( \delta  \) by
+   \begin{align*} 
+       \kappa &= 6\sigma\delta \\
+       W &= \frac{6\sigma}{\delta} \\
+       M_\phi &= \frac{T_m\beta}{6 L \delta}.
+   \end{align*}
+   We take \( \delta \approx \Delta x \).
+
+..
+
+    >>> delta = 1.5 * dx
+    >>> sigma = 3.7e-5 # J / cm**2
+    >>> beta = 0.33 # cm / (K s)
+    >>> kappa = 6 * sigma * delta # J / cm
+    >>> W = 6 * sigma / delta # J / cm**3
+    >>> Mphi = Tm * beta / (6. * Lv * delta) # cm**3 / (J s)
+
+    >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
+    ...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) / (2 * delta))))
+
+and make a new viewer
+
+    >>> if __name__ == '__main__':
+    ...     viewer2 = fipy.viewers.make(vars = (phase, analyticalArray))
+    ...     viewer2.plot()
+
+Now we can redefine the transient phase field equation, using the optimal
+form of the source term shown above
+
+    >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
+    >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
+    >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
+    ...                         + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+
+In order to separate the effect of forming the phase field interface from
+the kinetics of moving it, we first equilibrate at the melting point
+    
+    >>> from fipy.tools.numerix import max
+
+    >>> timeStep = 1e-6
+    >>> for i in range(10):
+    ...     phase.updateOld()
+    ...     res = 1e20
+    ...     while max(res) > 1e-5:
+    ...         res, = eq.solve(var=phase, dt=timeStep, returnItems = ('residual',))
+    >>> if __name__ == '__main__':
+    ...     viewer2.plot()
+
+and then quench by 1 K
+
+    >>> T.setValue(T() - 1)
+
+In order to have a stable numerical solution, the interface must not move
+more than one grid point per time step, 
+
+.. raw:: latex
+
+   we thus set the timestep according to the grid spacing \( \Delta x \),
+   the linear kinetic coefficient \( \beta \), and the undercooling \(
+   \abs{T_m - T} \)
+   
+..
+
+    >>> velocity = beta * abs(Tm - T()) # cm / s
+    >>> timeStep = .1 * dx / velocity # s
+
+    >>> elapsed = 0
+    >>> while elapsed < 0.1 * L / velocity:
+    ...     phase.updateOld()
+    ...     res = 1e20
+    ...     while max(res) > 1e-5:
+    ...         res, = eq.solve(var=phase, dt=timeStep, returnItems = ('residual',))
+    ...     elapsed += timeStep
+    ...     if __name__ == '__main__':
+    ...         viewer2.plot()
+
+A hyperbolic tangent is not an exact steady-state solution given the
+quintic polynomial we chose for the ``p()`` function, but it gives a
+reasonable approximation.
+    
+    >>> print phase.allclose(analyticalArray, rtol = 5, atol = 2e-3)
+    1
+    
+.. raw:: latex
+
+   If we had made another common choice of \( p(\phi) = \phi^2(3 - 2\phi)
+   \), we would have found much better agreement, as that case does give an
+   exact \( \tanh \) solution in steady state.
+   
+If SciPy is available, another way to compare against the expected result
+is to do a least-squared fit to determine the interface velocity and
+thickness
+
+    >>> try:
+    ...     def tanhResiduals(p, y, x, t):
+    ...         V, d = p
+    ...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
+    ...     from scipy.optimize import leastsq
+    ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
+    ...                                   args=(phase(), mesh.getCellCenters()[...,0], elapsed))
+    ... except ImportError:
+    ...     V_fit = d_fit = 0
+    ...     print "The SciPy library is unavailable to fit the interface thickness and velocity"
+
+    >>> print abs(1 - V_fit / velocity) < 3e-2
+    True
+    >>> print abs(1 - d_fit / delta) < 2e-2
+    True
+
+    >>> if __name__ == '__main__':
+    ...     raw_input("Dimensional, semi-implicit. Press <return> to proceed...")
+
+.. image:: examples/phase/simple/dimensional.pdf
+   :scale: 50
+   :align: center
+
 .. |phase| raw:: latex
 
    $ \phi $
+   
 """
 __docformat__ = 'restructuredtext'
 
