@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/4/06 {7:21:10 AM}
+ #                                 last update: 5/5/06 {3:06:09 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -406,6 +406,8 @@ or
     ...   + PowerLawConvectionTerm(coeff=phaseTransformationVelocity,
     ...                            diffusionTerm=diffusion)
 
+-----
+
 We initialize the phase field to a step function in the middle of the domain
 
     >>> phase.setValue(1.)
@@ -487,7 +489,7 @@ SciPy can be used.
    = 
    R T\left[\begin{matrix} 
        -\frac{1}{1-C_S} & \frac{1}{1-C_L} \\
-       \frac{1}{C_S} & -\frac{1}{C_L} \\
+       \frac{1}{C_S} & -\frac{1}{C_L}
    \end{matrix}\right]\]
 
 ..
@@ -577,7 +579,9 @@ while conserving mass overall
 
     >>> print Cavg.allclose(0.5, atol=1e-8)
     1
-    
+
+-----
+
 We now quench by ten degrees
 
     >>> T.setValue(T() - 10.) # K
@@ -586,7 +590,8 @@ We now quench by ten degrees
     >>> sharp.setValue(Cl, where=x >= L * fraction)
 
 Because this lower temperature will induce the phase interface to move
-(solidification), we will need to take much smaller timesteps.
+(solidify), we will need to take much smaller timesteps (the time scales of
+diffusion and of phase transformation compete with each other).
 
     >>> dt = 1.e-6
 
@@ -608,7 +613,7 @@ Because this lower temperature will induce the phase interface to move
    :scale: 50
    :align: center
 
-We see that the composition on either side of the interface adjusts to the
+We see that the composition on either side of the interface approach the
 sharp-interface solidus and liquidus, but it will take a great many more
 timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
