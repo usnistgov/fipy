@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 5/3/06 {5:29:33 PM} { 2:24:25 PM}
+ #                                last update: 5/4/06 {2:17:54 PM} { 2:24:25 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -52,6 +52,7 @@ def _suite():
                                    ),
                                    docTestModuleNames = (
                                        'binary',
+                                       'quaternary'
                                    ), 
                                    base = __name__)
     
