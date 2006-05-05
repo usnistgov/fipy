@@ -526,6 +526,12 @@ option at the command line, *i.e.*::
 
     $ python examples/diffusion/steadyState/mesh1D/input.py --inline
 
+Some modest speed efficiency gains can be made with the use of the
+``--cache`` flag. This flag instructs |FiPy| to trade memory for
+speed. This flag can be invoked with, *e.g.*::
+
+    $ python examples/diffusion/steadyState/mesh1D/input.py --inline --cache
+
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ |citePythonTutorial| 

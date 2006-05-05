@@ -132,6 +132,12 @@ bench.stop('BCs')
 
 dexp=-5
 
+dt = numerix.exp(dexp)
+dt = min(100, dt)
+dexp += 0.01
+var.updateOld()
+eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
+
 bench.start()
 
 for step in range(steps):

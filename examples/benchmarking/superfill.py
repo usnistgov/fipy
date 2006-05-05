@@ -233,11 +233,31 @@ catalystBCs = (
 
 bench.stop('BCs')
 
-bench.start()
-
 levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                               / (cellSize * cflNumber * 2))
 
+step = 0
+
+if step % levelSetUpdateFrequency == 0:
+    distanceVar.calcDistanceFunction()
+
+extensionVelocityVariable.setValue(depositionRateVariable())
+
+distanceVar.updateOld()
+catalystVar.updateOld()
+metalVar.updateOld()
+bulkCatalystVar.updateOld()
+distanceVar.extendVariable(extensionVelocityVariable)
+dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+advectionEquation.solve(distanceVar, dt = dt)
+surfactantEquation.solve(catalystVar, dt = dt)
+metalEquation.solve(metalVar, dt = dt,
+                    boundaryConditions = metalEquationBCs)
+bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
+                           boundaryConditions = catalystBCs)
+
+bench.start()
+  
 for step in range(numberOfSteps):
 
     if step % levelSetUpdateFrequency == 0:
