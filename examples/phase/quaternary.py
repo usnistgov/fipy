@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/06 {3:32:46 PM} 
+ #                                last update: 5/5/06 {4:02:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -455,7 +455,7 @@ and again iterate to equilibrium
 
 We can confirm that the far-field phases have remained separated
 
-    >>> from fipy.tools.numerix import take
+    >>> from fipy.tools.numerix import take, allclose
     >>> ends = take(phase, (0,-1))
     >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
