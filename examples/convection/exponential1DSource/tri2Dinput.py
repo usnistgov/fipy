@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:39:49 PM} 
+ #                                last update: 5/15/06 {2:21:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,7 +92,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000))
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
 
 The analytical solution test for this problem is given by:
 

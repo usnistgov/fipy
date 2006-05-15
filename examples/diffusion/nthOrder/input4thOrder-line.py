@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:10:38 PM} 
+ #                                last update: 5/15/06 {2:27:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,7 +79,7 @@ BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
 
-solver = LinearLUSolver(steps = 10)
+solver = LinearLUSolver(iterations=10)
 
 if __name__ == '__main__':
     eq.solve(var,

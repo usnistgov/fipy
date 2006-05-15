@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 8/9/05 {4:06:07 PM} 
+ #                                last update: 5/15/06 {3:56:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,24 +50,30 @@ class Solver:
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance = 1e-10, steps = 1000):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
         """
         Create a `Solver` object.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `steps`: The maximum number of iterative steps to perform.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
 
         """
 	self.tolerance = tolerance
-	self.steps = steps
+        if steps is not None:
+            import warnings
+            warnings.warn("'iterations' should be used instead of 'steps'", DeprecationWarning, stacklevel=2)
+            self.iterations = steps
+        else:
+            self.iterations = iterations
 	
     def _solve(self, L, x, b):
 	pass
         
     def __repr__(self):
-        return '%s(tolerance = %g, steps = %g)' \
-            % (self.__class__.__name__, self.tolerance, self.steps)
+        return '%s(tolerance=%g, iterations=%g)' \
+            % (self.__class__.__name__, self.tolerance, self.iterations)
 
     def _canSolveAssymetric(self):
         return True

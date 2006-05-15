@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/16/05 {1:33:59 PM} 
+ #                                last update: 5/15/06 {3:55:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,6 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.solver import Solver
-import scipy.linalg.iterative
 
 class LinearScipyGMRESSolver(Solver):
     """
@@ -97,7 +96,8 @@ class LinearScipyGMRESSolver(Solver):
            1
            
         """
-        x[:], info = scipy.linalg.iterative.gmres(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.steps)
+        from scipy.linalg.iterative import gmres
+        x[:], info = gmres(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.iterations)
 
 	if (info != 0):
 	    print >> sys.stderr, 'gmres not converged'

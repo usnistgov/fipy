@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearJORSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 7/6/05 {6:06:26 PM} 
+ #                                last update: 5/15/06 {3:54:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,18 +53,18 @@ class LinearJORSolver(Solver):
     non-symmetric coefficient matrix.
 
     """
-    def __init__(self, tolerance = 1e-10, steps = 1000, relaxation = 1.0):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0):
         """
         The `Solver` class should not be invoked directly.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `steps`: The maximum number of iterative steps to perform.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
           - `relaxation`: The relaxation.
           
         """
-	self.tolerance = tolerance
-	self.steps = steps
+        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps)
         self.relaxation = relaxation
         
     def _solve(self, L, x, b):
@@ -74,11 +74,13 @@ class LinearJORSolver(Solver):
         D.putDiagonal(d)
 
         LU = L - D
-        step = 0
         tol = 1e+10
         xold = x.copy()
 
-        while step < self.steps and tol > self.tolerance:
+        for iteration in range(self.iterations):
+            if tol <= self.tolerance:
+                break
+                
             residual = L * x - b
 
             xold[:] = x
@@ -88,7 +90,5 @@ class LinearJORSolver(Solver):
 
             tol = max(abs(residual))
 
-            step += 1
-            
-            print step,tol
+            print iteration,tol
             

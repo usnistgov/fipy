@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:42:43 PM} 
+ #                                last update: 5/15/06 {2:22:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
 
 The analytical solution test for this problem is given by:
 

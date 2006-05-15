@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/16/05 {2:22:55 PM} 
+ #                                last update: 5/15/06 {3:56:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,6 @@
 __docformat__ = 'restructuredtext'
 
 import Numeric
-import scipy.linalg
 
 from fipy.solvers.solver import Solver
 
@@ -67,34 +66,36 @@ class LinearScipyLUSolver(Solver):
 
     """
     
-    def __init__(self, tolerance = 1e-10, steps = 10):
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None):
         """
         Creates a `LinearScipyLUSolver`.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `steps`: The number of LU decompositions to perform.
+          - `iterations`: The number of LU decompositions to perform.
             For large systems a number of steps is generally required.
+          - `steps`: A deprecated name for `iterations`.
 
         """
-	Solver.__init__(self, tolerance = tolerance, steps = steps)
+	Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps)
 
     def _solve(self, L, x, b):
-
+        from scipy.linalg import lu_factor, lu_solve
+    
 ##        x[:] = scipy.linalg.solve(Numeric.array(L), b)
-        LU = scipy.linalg.lu_factor(Numeric.array(L))
-        x[:] = scipy.linalg.lu_solve(LU, b)
+        LU = lu_factor(Numeric.array(L))
+        x[:] = lu_solve(LU, b)
         tol = self.tolerance + 1.
-        step = 0
 
-        while tol > self.tolerance and step < self.steps:
+        for iteration in range(self.iterations):
+            if tol <= self.tolerance:
+                break
 
             errorVector = L * x - b
-            LU = scipy.linalg.lu_factor(Numeric.array(L))
-            xError = scipy.linalg.lu_solve(LU, errorVector)
+            LU = lu_factor(Numeric.array(L))
+            xError = lu_solve(LU, errorVector)
             x[:] = x - xError
 
             tol = max(Numeric.absolute(xError))
-            step += 1
             
             print tol

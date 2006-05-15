@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:14:40 PM} 
+ #                                last update: 5/15/06 {2:21:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,7 +78,7 @@ mesh with `nx = 10` and `ny = 10`:
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 

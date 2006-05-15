@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 9/16/05 {2:21:34 PM} 
+ #                                last update: 5/15/06 {3:54:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,13 +66,14 @@ class LinearLUSolver(Solver):
     
     """
 
-    def __init__(self, tolerance = 1e-10, steps = 10):
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None):
         """
         Creates a `LinearLUSolver`.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `steps`: The number of LU decompositions to perform.
+          - `iterations`: The number of LU decompositions to perform.
+          - `steps`: A deprecated name for `iterations`.
             For large systems a number of steps is generally required.
 
         """
@@ -87,16 +88,16 @@ class LinearLUSolver(Solver):
         b = b * (1 / maxdiag)
 
         tol = self.tolerance + 1.
-        step = 0
 
         LU = superlu.factorize(L._getMatrix().to_csr())
 
-        while tol > self.tolerance and step < self.steps:
+        for iteration in range(self.iterations):
+            if tol <= self.tolerance:
+                break
 
             errorVector = L * x - b
             xError = Numeric.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
             tol = max(Numeric.absolute(xError))
-            step += 1
 

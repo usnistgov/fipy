@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:28:45 PM} 
+ #                                last update: 5/15/06 {2:24:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,7 +102,7 @@ var = CellVariable(
 
 eq = TransientTerm() == ExplicitDiffusionTerm()
 
-solver = LinearLUSolver(tolerance = 1.e-6, steps = 100)
+solver = LinearLUSolver(tolerance = 1.e-6, iterations = 100)
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedValue(mesh.getFacesRight(),valueRight))
