@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/7/06 {11:59:30 AM}
+ #                                last update: 5/15/06 {4:02:13 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,6 +83,8 @@ class MatplotlibViewer(Viewer):
         fig = pylab.figure()
         self.id = fig.number
         
+        pylab.title(self.title)
+        
     def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
@@ -94,16 +96,8 @@ class MatplotlibViewer(Viewer):
         
         pylab.figure(self.id)
 
-        ## Added garbage collection since matplotlib objects seem to hang
-        ## around and accumulate.
-        import gc
-        gc.collect()
-        pylab.clf()
-        pylab.title(self.title)
         self._plot()
-
-        pylab.xlim(xmin = self._getLimit('xmin'))
-        pylab.xlim(xmax = self._getLimit('xmax'))
+        pylab.draw()
         
         if filename is not None:
             pylab.savefig(filename)

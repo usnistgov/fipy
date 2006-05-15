@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 5/15/06 {4:01:53 PM} { 2:45:36 PM}
+ #                                last update: 5/13/06 {10:01:25 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,24 +45,20 @@
 __docformat__ = 'restructuredtext'
 
 import pylab
-from fipy.tools import numerix
+
 from matplotlibViewer import MatplotlibViewer
 
-class Matplotlib2DViewer(MatplotlibViewer):
+class Matplotlib2DGridViewer(MatplotlibViewer):
     """
-    Displays a contour plot of a 2D `CellVariable` object.    
-
-    The `Matplotlib2DViewer` plots a 2D `CellVariable` using Matplotlib_.
+    Displays an image plot of a 2D `CellVariable` object using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
-
-
     """
 
 
     def __init__(self, vars, limits = None, title = None):
         """
-        Creates a `Matplotlib2DViewer`.
+        Creates a `Matplotlib2DGridViewer`.
         
         :Parameters:
           - `vars`: A `CellVariable` object.
@@ -73,71 +69,48 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         """
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
-        
-        self.colorbar = None
-        self._plot()
-        from fipy.tools.numerix import array
-        
+
+        self.image = pylab.imshow(self._getData(),
+                                  extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
+                                          self._getLimit('ymin'), self._getLimit('ymax')),
+                                  vmin=self._getLimit('datamin'),
+                                  vmax=self._getLimit('datamax'))
+                                          
+        pylab.title(self.vars[0].getName())
+
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        self.colorbar = pylab.colorbar(array(self.vars[0]))
+        pylab.colorbar()
+
+    def _getLimit(self, key):
+        limit = MatplotlibViewer._getLimit(self, key)
+        if limit is None:
+            if key == 'xmin' or key == 'ymin':
+                limit = 0
+            elif key == 'xmax':
+                limit = float(self.vars[0].getMesh().getPhysicalShape()[0])
+            elif key == 'ymax':
+                limit = float(self.vars[0].getMesh().getPhysicalShape()[1])
+        return limit
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.grid2D import Grid2D
+##         from fipy.viewers import MeshDimensionError
+##         raise MeshDimensionError, "I'm just being pissy"
+        from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.getMesh(), Grid2D) and isinstance(var, CellVariable))]
+          if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Grid2D instance"
+            raise MeshDimensionError, "The mesh must be a UniformGrid2D instance"
         # this viewer can only display one variable
         return [vars[0]]
         
+    def _getData(self):
+        from fipy.tools.numerix import array, reshape
+        return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape())
+    
     def _plot(self):
-##         pylab.clf()
-        
-##         ## Added garbage collection since matplotlib objects seem to hang
-##         ## around and accumulate.
-##         import gc
-##         gc.collect()
-
-        mesh = self.vars[0].getMesh()
-        shape = mesh.getShape()
-        shape = (shape[1], shape[0])
-        X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
-        Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
-        Z = numerix.reshape(self.vars[0][:], shape)
-        
-        minz = numerix.min(self.vars[0])
-        for limit in ('zmin', 'datamin'):
-            value = self._getLimit(limit)
-            if value is not None:
-                minz = min(minz, value)
-                
-        maxz = numerix.max(self.vars[0])
-        for limit in ('zmax', 'datamax'):
-            value = self._getLimit(limit)
-            if value is not None:
-                maxz = max(maxz, value)
-
-        numberOfContours = 10
-        smallNumber = 1e-7
-        diff = maxz - minz
-        
-        if diff < smallNumber:            
-            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + minz
-        else:
-            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
-
-        pylab.hsv()
-
-        pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)
-
-        pylab.xlim(xmin = self._getLimit('xmin'))
-        pylab.xlim(xmax = self._getLimit('xmax'))
-
-        pylab.ylim(ymin = self._getLimit('ymin'))
-        pylab.ylim(ymax = self._getLimit('ymax'))
-
+        self.image.set_data(self._getData())
 
         

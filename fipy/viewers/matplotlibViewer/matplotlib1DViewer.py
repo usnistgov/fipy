@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/7/06 {11:56:24 AM} { 2:45:36 PM}
+ #                                last update: 5/15/06 {4:01:27 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,27 +57,17 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
 
     """
+    def __init__(self, vars, limits = None, title = None):
+        MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     
-    def _getSuitableVars(self, vars):
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
-        if len(vars) > 1:
-            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
-        if len(vars) == 0:
-            from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Can only plot 1D data"
-        return vars
+        self.lines = [pylab.plot(*datum) for datum in self._getData()]
+##         self.lines, = apply(pylab.plot, self._getData())
 
-    def _plot(self):
+        pylab.legend([var.getName() for var in self.vars])
 
-        data = ()
-        names = ()
-        for var in self.vars:
-            data += (Numeric.array(var.getMesh().getCellCenters()[:,0]), Numeric.array(var))
-            names += (var.getName(),)
+        pylab.xlim(xmin = self._getLimit('xmin'),
+                   xmax = self._getLimit('xmax'))
 
-        apply(pylab.plot, data)
-        pylab.legend(names)
-        
         ymin = self._getLimit('datamin')
         if ymin is None:
             ymin = self._getLimit('ymin')
@@ -87,4 +77,38 @@ class Matplotlib1DViewer(MatplotlibViewer):
         if ymax is None:
             ymax = self._getLimit('ymax')
         pylab.ylim(ymax = ymax)
-        
+
+    def _getData(self):
+        from fipy.tools.numerix import array
+        return [[array(var.getMesh().getCellCenters()[...,0]), array(var)] for var in self.vars]
+            
+    def _getSuitableVars(self, vars):
+        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        if len(vars) > 1:
+            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError, "Can only plot 1D data"
+        return vars
+
+##     def plot(self, filename = None):
+##         """
+##         Plot the `CellVariable` as a contour plot.
+## 
+##         :Parameters:
+##           - `filename`: The name of the file for hard copies.
+##           
+##         """
+##         
+##         pylab.figure(self.id)
+## 
+##         self._plot()
+##         
+##         if filename is not None:
+##             pylab.savefig(filename)
+
+    def _plot(self):
+        for line, datum in zip(self.lines, self._getData()):
+            line[0].set_xdata(datum[0])
+            line[0].set_ydata(datum[1])
+            
