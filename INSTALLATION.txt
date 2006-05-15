@@ -121,6 +121,9 @@ Python
 
 http://www.python.org/
 
+.. raw:: latex
+
+   \IndexSoftware{Python}
 
 |FiPy| is written in the Python_ language and requires a Python_
 installation to run.  Python_ comes pre-installed on many operating
@@ -151,9 +154,24 @@ Numeric
 
 http://sourceforge.net/projects/numpy
 
+.. raw:: latex
+
+   \IndexSoftware{Numeric}
+
 Obtain and install the Numeric_ package. |FiPy| requires at least
-version 23.1 of Numeric_. The newer Numarray_ package is not supported
-at this time. `Numeric Windows installers`_ are available.
+version 23.1 of Numeric_. `Numeric Windows installers`_ are available.
+
+.. attention::
+
+   |FiPy| cannot presently use the newer numarray_ or NumPy_ packages. Due to
+   a quirk of history, the Numeric_ package has been casually referred to as
+   "numpy" for many years, but it is distinct from (although related to)
+   NumPy_.
+
+   .. raw:: latex
+
+      \IndexSoftware{numarray}
+      \IndexSoftware{NumPy}
 
 .. note:: 
 
@@ -164,7 +182,8 @@ at this time. `Numeric Windows installers`_ are available.
    variable.
 
 .. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
-.. _Numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
+.. _numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
+.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
 .. _peculiarity: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/mailman?fn=scipy-dev/2002-December/thread.html#1443
 .. _Numeric Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 
@@ -172,6 +191,10 @@ PySparse
 --------
 
 http://pysparse.sourceforge.net
+
+.. raw:: latex
+
+   \IndexSoftware{PySparse}
 
 |FiPy| requires `Roman Geus`_' PySparse_ package.
 
@@ -229,6 +252,10 @@ Matplotlib
 
 http://matplotlib.sourceforge.net
 
+.. raw:: latex
+
+   \IndexSoftware{Matplotlib}
+
 Matplotlib_ is a Python_ package that displays publication quality
 results. It displays both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
@@ -264,6 +291,11 @@ Pygist
 
 http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
+.. raw:: latex
+
+   \IndexSoftware{Pygist}
+   \IndexSoftware{gist}
+
 The Pygist_ package can be used to display simulation results. It
 displays both 1D X-Y type plots and 2D contour plots for both
 structured and unstructured data. It does not display 3D
@@ -273,8 +305,8 @@ common platforms.
 
 .. warning:: 
 
-   The facility to produce hard copies in Pygist_ does not work very
-   well and may crash the |FiPy| run.
+   The facility to produce hard copies in Pygist_ does not work very well and
+   may crash the |FiPy| run. "``.eps''" and "``.cgm''" export seem to work.
 
 .. attention::
 
@@ -315,6 +347,10 @@ MayaVi
 
 http://mayavi.sourceforge.net
 
+.. raw:: latex
+
+   \IndexSoftware{MayaVi}
+
 The MayaVi_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
@@ -333,8 +369,7 @@ recommended for Windows users who wish to use MayaVi_.
    |FiPy| MayaVi_ viewers.
 
 .. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-
-.. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
+.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
 
 Recommended Packages
 ====================
@@ -347,6 +382,10 @@ SciPy
 -----
 
 http://www.scipy.org/
+
+.. raw:: latex
+
+   \IndexSoftware{SciPy}
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
@@ -366,6 +405,10 @@ gmsh
 ----
 
 http://www.geuz.org/gmsh/
+
+.. raw:: latex
+
+   \IndexSoftware{gmsh}
 
 It is possible to create irregular meshes with this package.
 

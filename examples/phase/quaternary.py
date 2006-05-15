@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/5/06 {4:02:31 PM} 
+ #                                last update: 5/15/06 {3:11:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,6 +45,12 @@ The same procedure used to construct the two-component phase field
 diffusion problem in ``examples.phase.binary`` can be used to build up a
 system of multiple components. Once again, we'll focus on 1D.
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
@@ -55,6 +61,7 @@ system of multiple components. Once again, we'll focus on 1D.
 
    We consider a free energy density \( f(\phi, C_0,\ldots,C_N, T) \) 
    that is a function of phase \( \phi \)
+   \IndexClass{CellVariable}
 
 ..
 
@@ -213,6 +220,13 @@ and a liquid phase rich in the two substitutional species.
     ...     rhoS += Cj.S
     ...     rhoL += Cj.L
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{log}
+
+..
+
     >>> from fipy.tools.numerix import log
     >>> for Cj in interstitials + substitutionals + [solvent]:
     ...     Cj.standardPotential = R * T * (log(Cj.L/rhoL) - log(Cj.S/rhoS))
@@ -254,6 +268,14 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
     >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
 
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ImplicitDiffusionTerm}
+   \IndexClass{ImplicitSourceTerm}
+
+..
+    
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -313,6 +335,7 @@ interstitial diffusion equations, we arrange in canonical form as before:
            \right\}
        }_{\text{convection}}
    \end{align*}
+   \IndexClass{PowerLawConvectionTerm}
 
 ..
 
@@ -422,6 +445,12 @@ the solidus and liquidus concentrations
 
 If we're running interactively, we create a viewer
     
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
     ...     viewer = viewers.make(vars = [phase] \
@@ -431,6 +460,12 @@ If we're running interactively, we create a viewer
     ...     viewer.plot()
 
 and again iterate to equilibrium
+
+.. raw:: latex
+
+   \IndexClass{LinearLUSolver}
+
+..
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver(tolerance=1e-3)
@@ -454,6 +489,14 @@ and again iterate to equilibrium
 ..
 
 We can confirm that the far-field phases have remained separated
+
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{take}
+   \IndexFunction{allclose}
+
+..
 
     >>> from fipy.tools.numerix import take, allclose
     >>> ends = take(phase, (0,-1))

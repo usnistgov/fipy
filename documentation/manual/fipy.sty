@@ -250,7 +250,8 @@
   \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}}%\vspace*{-0.5in}}
 
 \copypagestyle{titlingpage}{empty} 
-\makeoddfoot{titlingpage}{}{}{\rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}
+% \makeoddfoot{titlingpage}{}{}{\begin{changemargin}{-1in}{-0.5in}\begin{flushright}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}\end{flushright}\end{changemargin}}
+\makeoddfoot{titlingpage}{}{}{\rule{7in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}
 % \makeevenfoot{titlingpage}{}{}{\usebox{\NISTbox}}
 
 % \def\@makeauthor{\begingroup
@@ -279,13 +280,15 @@
 }
 \def\@affiliation{}
 
+\setlength{\droptitle}{-1.4in}
+
 \renewcommand{\maketitlehooka}{%
     \begin{changemargin}{-1in}{-0.5in}%
     \let\footnotesize\small%
     \let\footnoterule\relax%
     \let \footnote \thanks%
     \begin{flushright}%
-      \vspace*{-0.6in}
+%       \vspace*{-0.6in}
       \scalebox{10}{\logo}\par
       \vskip 3em%
     \end{flushright}
@@ -322,12 +325,32 @@
 \begin{flushright}
 {\large Version~\Version \par}
 \vspace*{\fill}
+% \parbox[t][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}
 % \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
 % \raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
 \end{flushright}
 \end{changemargin}
 }
 
+\newcounter{FAQdepth}
+\setcounter{FAQdepth}{0}
+
+\newenvironment{FAQ}%
+               {\list{}{\stepcounter{FAQdepth}%
+                        \labelwidth\z@ \itemindent-\leftmargin
+                        \let\makelabel\FAQlabel}}%
+               {\addtocounter{FAQdepth}{-1}%
+               \endlist}
+\newcommand*{\FAQlabel}[1]{\hspace\labelsep
+                                   \normalfont\bfseries #1%
+                           \ifnum\value{FAQdepth}=1\relax
+                               \addcontentsline{toc}{section}{#1}
+                           \else\ifnum\value{FAQdepth}=2\relax
+                               \addcontentsline{toc}{subsection}{#1}   
+                           \fi
+                           \fi\adjustmtc}
+                           
+                           
 % \renewcommand{\maketitle}{%
 % \begin{titlepage}%
 % \thispagestyle{mytitlepage}
@@ -357,7 +380,15 @@
 % }
 
 \newcommand{\@Code}[1]{\texttt{#1}}
-\newcommand{\Class}[1]{\@Code{#1}\index{#1@\@Code{#1} class}}
+\newcommand{\IndexClass}[1]{\index{#1@\EpydocIndex[Class]{\EpydocDottedName{#1}} class}}
+\newcommand{\IndexModule}[1]{\index{#1@\EpydocIndex[Module]{\EpydocDottedName{#1}} module}}
+\newcommand{\IndexPackage}[1]{\index{#1@\EpydocIndex[Package]{\EpydocDottedName{#1}} package}}
+\newcommand{\IndexSoftware}[1]{\index{#1@\@Software{#1}}}
+\newcommand{\IndexFunction}[1]{\index{#1@\EpydocIndex[Function]{\EpydocDottedName{#1}}}}
+\newcommand{\IndexConstant}[2]{\index{$#1\equiv\text{#2}$@$#1\equiv\text{\EpydocIndex[Module]{\EpydocDottedName{#2}}}$}%
+                               \index{#2$\equiv #1$@$\text{\EpydocIndex[Module]{\EpydocDottedName{#2}}}\equiv #1$}}
+\newcommand{\Class}[1]{\@Code{#1}\IndexClass{#1}}
+\newcommand{\Module}[1]{\@Code{#1}\IndexModule{#1}}
 
 % commands for various weblinks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -369,7 +400,7 @@
 
 \newcommand{\@OrgURL}[2]{\href{#2}{\@Org{#1}}\index{#1@\@Org{#1}}}
 
-\newcommand{\@SoftwareURL}[2]{\href{#2}{\@Software{#1}}\index{#1@\@Software{#1}}}
+\newcommand{\@SoftwareURL}[2]{\href{#2}{\@Software{#1}}\IndexSoftware{#1}}
 
 \newcommand{\SciPy}{\@SoftwareURL{SciPy}{http://www.scipy.org/}}
 
@@ -381,7 +412,12 @@
 
 \newcommand{\PyX}{\@SoftwareURL{PyX}{http://pyx.sourceforge.net/}}
 
-\newcommand{\PyGist}{\@SoftwareURL{PyGist}{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}}
+\newcommand{\Pygist}{\@SoftwareURL{Pygist}{http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html}%
+                     \IndexSoftware{gist}}
+
+\newcommand{\Matplotlib}{\@SoftwareURL{Matplotlib}{http://matplotlib.sourceforge.net}}
+
+\newcommand{\MayaVi}{\@SoftwareURL{MayaVi}{http://mayavi.sourceforge.net}}
 
 \newcommand{\PySparse}{\@SoftwareURL{PySparse}{http://people.web.psi.ch/geus/pyfemax/pysparse.html}}
 
@@ -425,7 +461,7 @@
             \ifthenelse{\equal{#1}{Module}\OR\equal{#1}{Package}}{%
                 #2}{%
                 \ifthenelse{\equal{#1}{Class}}{%
-                    \textbf{#2}}{%
+                    #2}{%\textbf{#2}
                     #2 \textit{(\MakeLowercase{#1})}}}%
         }%
     }%

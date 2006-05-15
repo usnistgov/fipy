@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/5/06 {3:06:09 PM}
+ #                                 last update: 5/15/06 {2:58:37 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,10 +40,14 @@
  ##
 
 r"""
-    >>> import sys
-
 It is straightforward to extend a phase field model to include binary alloys.
 As in `examples.phase.simple.input`, we will examine a 1D problem
+
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
 
     >>> nx = 400
     >>> dx = 5e-6 # cm
@@ -54,7 +58,7 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
 .. raw:: latex
 
    The Helmholtz free energy functional can be written as the integral
-   \cite{Wheeler:1992,McFadden:2002,Boettinger:2002}
+   \cite{BoettingerReview:2002,McFaddenReview:2002,Wheeler:1992}
    \[
        \mathcal{F}\left(\phi, C, T\right)
        = \int_\mathcal{V} \left\{
@@ -68,6 +72,7 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    (see \emph{e.g.} the composition-dependent diffusivity example in
    \texttt{examples.diffusion.mesh1D}), so we declare \( \phi \) and \( C
    \) to retain an ``old'' value.} \( \phi \)
+   \IndexClass{CellVariable}
    
 ..
 
@@ -87,6 +92,7 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    and temperature\footnote{we are going to want to
    examine different temperatures in this example, so we declare \( T
    \) as a \texttt{Variable}} \( T \) 
+   \IndexClass{Variable}
    
 ..
 
@@ -275,6 +281,14 @@ Using the same gradient energy coefficient and phase field mobility
 
 we define the phase field equation
 
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ImplicitDiffusionTerm}
+   \IndexClass{ImplicitSourceTerm}
+
+..
+
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -401,6 +415,12 @@ or
     ...   + 0.5 * (WB - WA) * g(phase).getFaceGrad()) \
     ...   * D * (1. - C).getHarmonicFaceValue() * Vm / (R * T)
 
+.. raw:: latex
+
+   \IndexClass{PowerLawConvectionTerm}
+
+..
+    
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> diffusionEq = TransientTerm() == diffusion \
     ...   + PowerLawConvectionTerm(coeff=phaseTransformationVelocity,
@@ -433,6 +453,8 @@ We initialize the phase field to a step function in the middle of the domain
        - \exp\left(-\frac{L_A\left(T - T_M^A\right)}{T_M^A}\frac{V_m}{R T}\right)} \\
        C_S &= \exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right) C_L
    \end{align*}
+   \IndexModule{numerix}
+   \IndexFunction{exp}
    
 ..
 
@@ -469,6 +491,8 @@ SciPy can be used.
        \frac{L_B\left(T - T_M^B\right)}{T_M^B} V_m
        + R T \ln C_S - R T \ln C_L
    \end{align*}
+   \IndexModule{numerix}
+   \IndexFunction{log}
 
 ..
 
@@ -491,6 +515,8 @@ SciPy can be used.
        -\frac{1}{1-C_S} & \frac{1}{1-C_L} \\
        \frac{1}{C_S} & -\frac{1}{C_L}
    \end{matrix}\right]\]
+   \IndexModule{numerix}
+   \IndexFunction{array}
 
 ..
 
@@ -498,6 +524,12 @@ SciPy can be used.
     >>> def equilibriumJacobian(C):
     ...     return R * T * array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
     ...                           [ 1. / C[0],      -1. / C[1]]])
+
+.. raw:: latex
+
+   \IndexSoftware{SciPy}
+
+..
 
     >>> try:
     ...     from scipy.optimize import fsolve
@@ -520,6 +552,12 @@ We plot the result against the sharp interface solution
     >>> sharp.setValue(Cs, where=x < L * fraction)
     >>> sharp.setValue(Cl, where=x >= L * fraction)
 
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
     ...     viewer = viewers.make(vars=(phase, C, sharp), 
@@ -541,6 +579,14 @@ equations) as a test for how long to sweep. Because of the
 ``ConvectionTerm``, the solution matrix for ``diffusionEq`` is asymmetric
 and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 ``LinearLUSolver`` for this equation.
+
+.. raw:: latex
+
+   \IndexClass{LinearLUSolver}
+   \IndexModule{numerix}
+   \IndexFunction{max}
+   
+..
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver(tolerance=1e-3)

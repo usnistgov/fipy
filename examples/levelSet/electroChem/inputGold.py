@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/12/06 {5:10:10 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:45:35 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,6 +62,12 @@ to alter the number of timesteps, the python function that
 encapsulates the system of equations must first be imported (at the
 python command line),
 
+.. raw:: latex
+
+   \IndexFunction{runGold}
+
+..
+
     >>> from examples.levelSet.electroChem.inputGold import runGold
 
 and then the function can be run with a different number of time steps
@@ -75,11 +81,11 @@ results displayed on the screen. This example has a more realistic
 default boundary layer depth and thus requires `gmsh` to construct a
 more complex mesh.
 
-There
-
 .. raw:: latex
 
-    are a few differences between the gold superfill model presented
+    \IndexSoftware{gmsh}
+
+    There are a few differences between the gold superfill model presented
     in this example and Example~\ref{inputSimpleTrench}. Most default
     values have changed to account for a different metal ion (gold)
     and catalyst (lead). In this system the catalyst is not present in

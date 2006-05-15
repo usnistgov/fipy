@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputLeveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/13/06 {4:16:01 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:45:49 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -63,6 +63,12 @@ to alter the number of timesteps, the python function that
 encapsulates the system of equations must first be imported (at the
 python command line),
 
+.. raw:: latex
+
+   \IndexFunction{runLeveler}
+
+..
+
     >>> from examples.levelSet.electroChem.inputLeveler import runLeveler
 
 and then the function can be executed with a different number of time
@@ -75,11 +81,11 @@ Change the `displayViewers` argument to `True` if you wish to see the
 results displayed on the screen. This example requires `gmsh` to
 construct the mesh.
 
-This
-
 .. raw:: latex
 
-    example models the case when suppressor, accelerator and leveler
+    \IndexSoftware{gmsh}
+    
+    This example models the case when suppressor, accelerator and leveler
     additives are present in the electrolyte. The suppressor is
     assumed to absorb quickly compared with the other additives. Any
     unoccupied surface sites are immediately covered with

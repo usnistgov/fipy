@@ -258,7 +258,7 @@ or a
 
 .. |citePhaseField| raw:: latex
 
-   \cite{BoettingerReview:2002,McFaddenReview:2002}
+   \cite{BoettingerReview:2002,ChenReview:2002,McFaddenReview:2002}
 
 .. |citeCEAC| raw:: latex
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 5/4/06 {11:59:13 AM} 
+ #                                last update: 5/15/06 {3:47:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,14 +42,14 @@
 
 r"""
 
-To run this example from the base FiPy directory, type::
+To run this example from the base |FiPy| directory, type::
     
     $ examples/diffusion/mesh1D.py
     
 at the command line. Different stages of the example should be displayed,
 along with prompting messages in the terminal.
 
-This example takes the user through assembling a simple problem with FiPy.
+This example takes the user through assembling a simple problem with |FiPy|.
 It describes different approaches to a 1D diffusion problem with constant
 diffusivity and fixed value boundary conditions such that,
 
@@ -64,18 +64,22 @@ The first step is to define a one dimensional domain with 50 solution
 points. The `Grid1D` object represents a linear structured grid. The
 parameter `dx` refers to the grid spacing (set to unity here).
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> nx = 50
     >>> dx = 1.
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(nx = nx, dx = dx)
 
-FiPy solves all equations at the centers of the cells of the mesh. We thus
-need a `CellVariable` object to hold the values of the solution, with the
-initial condition
-
 .. raw:: latex
 
-   $\phi = 0$ at $t = 0$,
+   \FiPy{} solves all equations at the centers of the cells of the mesh. We
+   thus need a \Class{CellVariable} object to hold the values of the
+   solution, with the initial condition $\phi = 0$ at $t = 0$, 
 
 ..
 
@@ -91,7 +95,7 @@ We'll let
 for now. 
 
 The set of boundary conditions are given to the equation as a Python
-`tuple` or `list` (the distinction is not generally important to FiPy).
+`tuple` or `list` (the distinction is not generally important to |FiPy|).
 The boundary conditions 
 
 .. raw:: latex
@@ -117,6 +121,12 @@ and a set of faces over which they apply.
 For example, here the exterior faces on the left of the domain are
 extracted by `mesh.getFacesLeft()`. A `FixedValue` boundary condition is
 created with these faces and a value (`valueLeft`). 
+
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+   
+..
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
@@ -146,7 +156,14 @@ something like::
               + (D * dt / dx**2) * (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1])
         time += dt
         
-plus additional code for the boundary conditions. In FiPy, you would write
+plus additional code for the boundary conditions. In |FiPy|, you would write
+
+.. raw:: latex
+
+   \IndexClass{ExplicitDiffusionTerm}
+   \IndexClass{TransientTerm}
+
+..
 
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
@@ -169,10 +186,12 @@ diffusion problem is given by
 
 .. raw:: latex
 
-   $\phi = 1 - \erf(x/2\sqrt{D t})$.
+   $\phi = 1 - \erf(x/2\sqrt{D t})$. If the \SciPy{} library is available,
+   the result is tested against the expected profile: 
+   \IndexModule{numerix}
+   \IndexFunction{sqrt}
    
-If the SciPy library is available, the result is tested against the
-expected profile:
+..
     
     >>> x = mesh.getCellCenters()[...,0]
     >>> t = timeStepDuration * steps
@@ -195,6 +214,12 @@ only be true if we explicitly launched it and not if it has been imported
 by another script such as the automatic tester. The function
 ``fipy.viewers.make()`` returns a suitable viewer depending on available
 viewers and the dimension of the mesh.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
@@ -240,7 +265,13 @@ it is possible to take much larger time steps. Because `phi_new` appears on
 both the left and right sides of the equation, this form is called
 "implicit". In general, the "implicit" representation is much more
 difficult to program than the "explicit" form that we just used, but in
-FiPy, all that is needed is to write
+|FiPy|, all that is needed is to write
+
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eqI = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
@@ -281,7 +312,7 @@ timestep you can take for this particular problem), the solution is less
                      + (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1]))
     
 which is essentially an average of the explicit and implicit schemes from
-above. This can be rendered in FiPy as easily as
+above. This can be rendered in |FiPy| as easily as
 
     >>> eqCN = eqX + eqI
 
@@ -328,7 +359,7 @@ equation
 
    \[ D \nabla^2 \phi = 0 \]
 
-is represented in FiPy by
+is represented in |FiPy| by
 
     >>> ImplicitDiffusionTerm(coeff=D).solve(var=phi,
     ...                                      boundaryConditions=BCs)
@@ -361,6 +392,52 @@ of
        
 ------
 
+Often, boundary conditions may be functions of another variable in the
+system or of time.
+
+.. raw:: latex
+
+   For example, to have
+   \[
+       \phi = \begin{cases}
+           (1 + \sin t) / 2 &\text{on \( x = 0 \)} \\
+           0 &\text{on \( x = L \)} \\
+       \end{cases}
+   \]
+   we will need to declare time \( t \) as a \Class{Variable}
+   \IndexModule{numerix}
+   \IndexFunction{sin}
+   
+..
+
+    >>> from fipy.variables.variable import Variable
+    >>> time = Variable()
+
+and then declare our boundary condition as a function of this `Variable`
+
+    >>> from fipy.tools.numerix import sin
+    >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=0.5 * (1 + sin(time))),
+    ...        FixedValue(faces=mesh.getFacesRight(), value=0.))
+
+When we update `time` at each timestep, the left-hand boundary
+condition will automatically update,
+
+    >>> dt = .1
+    >>> while time() < 15:
+    ...     time.setValue(time() + dt)
+    ...     eqI.solve(var=phi, dt=dt, boundaryConditions=BCs)
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
+
+    >>> if __name__ == '__main__':
+    ...     raw_input("Time-dependent boundary condition. Press <return> to proceed...")
+
+.. image:: examples/diffusion/mesh1DtimedBC.pdf
+   :scale: 50
+   :align: center
+
+------
+
 Many interesting problems do not have simple, uniform diffusivities. We consider a
 steady-state diffusion problem  
 
@@ -390,14 +467,20 @@ and with boundary conditions
    where \( i \) is an integer. The mesh we've been using thus far is
    satisfactory, with \( Ni = 50 \) and \( i = 12 \).
    
-Because FiPy considers diffusion to be a flux from one `Cell` to the next,
+Because |FiPy| considers diffusion to be a flux from one `Cell` to the next,
 through the intervening `Face`, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
+.. raw:: latex
+
+   \IndexClass{FaceVariable}
+
+..
+
     >>> from fipy.variables.faceVariable import FaceVariable
-    >>> D = FaceVariable(mesh = mesh, value = 1.0)
+    >>> D = FaceVariable(mesh=mesh, value=1.0)
     >>> x = mesh.getFaceCenters()[...,0]
-    >>> D.setValue(0.1, where = (L / 4. <= x) & (x < 3. * L / 4.))
+    >>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
 
@@ -408,6 +491,12 @@ to the left and a fixed flux of
     >>> fluxRight = 1.
     
 to the right:
+
+.. raw:: latex
+
+   \IndexClass{FixedFlux}
+
+..
 
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
@@ -431,21 +520,24 @@ The analytical solution is simply
    10 x - 9L/4 & \text{for \( L/4 \le x < 3 L / 4 \),} \\
    x + 18 L / 4 & \text{for \( 3 L / 4 \le x < L \),}
    \end{cases} \]
+   or
+   \IndexModule{numerix}
+   \IndexFunction{where}
 
-or
+..
 
     >>> x = mesh.getCellCenters()[...,0]
     >>> from fipy.tools.numerix import where
-    >>> values = x
-    >>> values = where((L / 4. <= x) & (x < 3. * L / 4.), 10 * x - 9. * L / 4., values)
-    >>> values = where(3. * L / 4. <= x, x + 18. * L / 4., values)
-    >>> print phi.allclose(values, atol = 1e-8, rtol = 1e-8)
+    >>> phiAnalytical.setValue(x)
+    >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , where=(L / 4. <= x) & (x < 3. * L / 4.))
+    >>> phiAnalytical.setValue(x + 18. * L / 4. , where=3. * L / 4. <= x)
+    >>> print phi.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8)
     1
 
 And finally, we can plot the result
 
     >>> if __name__ == '__main__':
-    ...     viewers.make(vars=phi).plot()
+    ...     viewers.make(vars=(phi, phiAnalytical)).plot()
     ...     raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
@@ -468,7 +560,7 @@ the value of the variable, such that
 With such a non-linearity, it is generally necessary to "sweep" the
 solution to convergence. This means that each time step should be
 calculated over and over, using the result of the previous sweep to update
-the coefficients of the equation, without advancing in time. In FiPy, this
+the coefficients of the equation, without advancing in time. In |FiPy|, this
 is accomplished by creating a solution variable that explicitly retains its
 "old" value by specifying `hasOld` when you create it. The variable does
 not move forward in time until it is explicity told to `updateOld()`. In
@@ -512,6 +604,17 @@ as
     >>> D0 = 1
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
+.. note::
+    
+   Because of the non-linearity, the Crank-Nicholson scheme does not work
+   for this problem.
+   
+We apply the same boundary conditions that we used for the uniform
+diffusivity cases
+
+    >>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
+    ...        FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
+
 .. raw:: latex
 
    Although this problem does not exact transient solution, it can be
@@ -525,17 +628,7 @@ as
     >>> x = mesh.getCellCenters()[...,0]
     >>> phiAnalytical.setValue(1. - sqrt(x/L))
 
-.. note::
-    
-   Because of the non-linearity, the Crank-Nicholson scheme does not work
-   for this problem.
-   
-We apply the same boundary conditions that we used for the uniform diffusivity cases
-
-    >>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-    ...        FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
-
-and we create a viewer to compare the different numbers of sweeps with the
+We create a viewer to compare the different numbers of sweeps with the
 analytical solution from before.
 
     >>> if __name__ == '__main__':
@@ -654,8 +747,12 @@ like this from some `.../example.py` by typing::
 
 at the command line.
 
-Most of the FiPy examples will be a
+Most of the |FiPy| examples will be a
 mixture of plain scripts and doctest documentation/tests.  
+
+.. |FiPy| raw:: latex
+
+   \FiPy{}
 """
 
 __docformat__ = 'restructuredtext'

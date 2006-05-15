@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 4/7/06 {11:50:31 AM}
+ #                                last update: 5/15/06 {2:23:18 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,6 +45,12 @@ This example demonstrates how to solve a simple diffusion problem on a
 non-standard mesh with varying boundary conditions. The gmsh_ package
 is used to create the mesh. Firstly, define some parameters for the
 creation of the mesh,
+
+.. raw:: latex
+
+   \IndexSoftware{gmsh}
+   
+..
 
     >>> cellSize = 0.05
     >>> radius = 1.
@@ -95,14 +101,26 @@ geometrically defined region.
     ...     os.close(f)
     >>> os.remove(geomName)
 
-The mesh created by gmsh_ is then imported into FiPy using the
+The mesh created by gmsh_ is then imported into |FiPy| using the
 `GmshImporter2D` object.
    
+.. raw:: latex
+
+   \IndexClass{GmshImporter2D}
+
+..
+
     >>> from fipy.meshes.gmshImport import GmshImporter2D
     >>> mesh = GmshImporter2D(meshName)
     >>> os.remove(meshName)
     
 Using this mesh, we can construct a solution variable
+
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
@@ -111,6 +129,15 @@ Using this mesh, we can construct a solution variable
 
 We can now create a viewer to see the mesh (only the `Gist2DViewer` is
 capable of displaying variables on this sort of irregular mesh)
+
+.. raw:: latex
+
+   \IndexSoftware{Pygist}
+   \IndexSoftware{gist}
+   \IndexClass{Gist2DViewer}
+   \IndexModule{viewers}
+
+..
 
     >>> viewer = None
     >>> if __name__ == '__main__':
@@ -129,6 +156,13 @@ capable of displaying variables on this sort of irregular mesh)
 
 We set up a transient diffusion equation
 
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
+
     >>> D = 1.
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
@@ -137,10 +171,23 @@ We set up a transient diffusion equation
 The following line extracts the `x` coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{take}
+
+..
+
     >>> from fipy.tools import numerix
     >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[...,0],
     ...                                mesh.getExteriorFaces())
 
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+
+..
+    
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=exteriorXcoords),)
 
@@ -159,7 +206,28 @@ We first step through the transient problem
    :scale: 50
    :align: center
    
-..
+-----
+
+.. raw:: latex
+
+   If we wanted to plot or analyze the results of this calculation with
+   another application, we could export tab-separated-values with
+   \IndexClass{TSVViewer}
+
+::
+    
+   from fipy.viewers.tsvViewer import TSVViewer
+   TSVViewer(vars=(phi, phi.getGrad())).plot(filename="myTSV.tsv")
+
+.. raw:: latex
+
+   {\tiny \verbatimtabinput[30]{images/examples/diffusion/myTSV.tsv}}
+   
+The values are listed at the `Cell` centers. Particularly for irregular
+meshes, no specific ordering should be relied upon. Vector quantities are
+listed in multiple columns, one for each mesh dimension.
+            
+-----
 
 This problem again has an analytical solution that depends on the error
 function, but it's a bit more complicated due to the varying boundary
@@ -171,6 +239,16 @@ vertical positions
 
     >>> phiAnalytical = CellVariable(name="analytical value",
     ...                              mesh=mesh)
+
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexSoftware{SciPy}
+   \IndexFunction{sqrt}
+   \IndexFunction{arcsin}
+   \IndexFunction{cos}
+
+..
 
     >>> from fipy.tools.numerix import sqrt, arcsin, cos
     >>> x0 = radius * cos(arcsin(y))
@@ -211,6 +289,9 @@ Display the results if run as a script.
    :scale: 50
    :align: center
 
+.. |FiPy| raw:: latex
+
+   \FiPy{}
 """
 
 __docformat__ = 'restructuredtext'

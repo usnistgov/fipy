@@ -21,9 +21,6 @@ experience to have a usable installation up and running.
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/default.mspx
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
------------
-Instuctions
------------
 
 Step 1: Install Python
 ----------------------

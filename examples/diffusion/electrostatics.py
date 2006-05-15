@@ -6,7 +6,7 @@
  # 
  #  FILE: "electrostatics.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 5/4/06 {2:03:32 PM} 
+ #                                last update: 5/15/06 {2:23:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,12 @@ r"""
 The Poisson equation is a particular example of the steady-state diffusion
 equation. We examine a few cases in one dimension.
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> nx = 200
     >>> dx = 0.01
     >>> L = nx * dx
@@ -53,6 +59,7 @@ equation. We examine a few cases in one dimension.
 .. raw:: latex
 
    Given the electrostatic potential $\phi$,
+   \IndexClass{CellVariable}
    
 ..
 
@@ -94,6 +101,7 @@ The dimensionless Poisson equation is
    \begin{equation*}
    \nabla\cdot\left(\epsilon\nabla\phi\right) = -\rho = -\sum_{j=1}^n z_j C_j
    \end{equation*}
+   \IndexClass{ImplicitDiffusionTerm}
 
 ..
 
@@ -104,6 +112,12 @@ The dimensionless Poisson equation is
 Because this equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+
+..
+
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),)
 
@@ -138,6 +152,12 @@ which has been satisifactorily obtained
     1
 
 If we are running the example interactively, we view the result
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers

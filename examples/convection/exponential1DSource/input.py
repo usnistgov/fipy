@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/15/05 {5:45:59 PM} 
+ #                                last update: 5/15/06 {2:20:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,6 +59,12 @@ this example solves a steady-state convection-diffusion equation, but adds a con
 
 We define a 1D mesh
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> nx = 1000
     >>> L = 10.
     >>> from fipy.meshes.grid1D import Grid1D
@@ -72,8 +78,10 @@ and impose the boundary conditions
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
    \end{cases} $$ 
-
-or
+   or
+   \IndexClass{FixedValue}
+   
+..
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -85,11 +93,24 @@ or
 
 The solution variable is initialized to `valueLeft`:
     
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name="variable", mesh=mesh)
 
 
 We define the convection-diffusion equation with source
+
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+   \IndexClass{ExponentialConvectionTerm}
+
+..
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm \
@@ -99,6 +120,12 @@ We define the convection-diffusion equation with source
     ...      + ExponentialConvectionTerm(coeff=convCoeff, 
     ...                                  diffusionTerm=diffTerm) \
     ...      + sourceCoeff
+    
+.. raw:: latex
+
+   \IndexClass{LinearLUSolver}
+
+..
     
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> eq.solve(var = var, 
@@ -111,21 +138,30 @@ and test the solution against the analytical result:
 
    $$ \phi = -\frac{S_0 x}{u_x} 
    + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
+   or
+   \IndexModule{numerix}
+   \IndexFunction{exp}
 
-or
+..
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
     >>> AA = -sourceCoeff * x / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> from fipy.tools import numerix
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools.numerix import exp
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
     >>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
     1
          
 If the problem is run interactively, we can view the result:
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make

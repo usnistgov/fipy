@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 1/19/06 {5:11:33 PM} 
+ #                                last update: 5/15/06 {4:12:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -220,7 +220,6 @@ class build_docs (Command):
 				     'README',
 				     'LICENSE',
 				     'DISCLAIMER',
-                                     'WINDOWS-INSTALLATION',
 				     'examples/README',
                                      'examples/levelSet/electroChem/README']
                                      
@@ -231,7 +230,8 @@ class build_docs (Command):
  					  'CVS',
                                           'EFFICIENCY']
 
-        tertiaryRestructuredTextFiles = []
+        tertiaryRestructuredTextFiles = ['WINDOWS-INSTALLATION',
+                                         'examples/levelSet/electroChem/README']
 
 
 	if self.latex:
@@ -313,7 +313,7 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
                                                 'table_style': 'booktabs'})
 
             self._translateTextFiles(files = tertiaryRestructuredTextFiles,
-                                     source_dir = '..',
+                                     source_dir = '../..',
                                      writer = IncludedLaTeXWriter(),
                                      settings ={'use_latex_toc': True,
                                                 'footnote_references': 'superscript',

@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputWriteScriptHowTo.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/17/06 {3:52:03 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:49:35 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -127,24 +127,45 @@ size.
 
 Build the mesh:
 
+.. raw:: latex
+
+   \IndexModule{parser}
+
+..
+
    >>> from fipy.tools.parser import parse
    >>> numberOfElements = parse('--numberOfElements', action='store',
    ...     type='int', default=-1)
    >>> numberOfSteps = parse('--numberOfSteps', action='store',
    ...     type='int', default=5)
 
-   >>> import fipy.tools.numerix as numerix
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{sqrt}
+   \IndexFunction{exp}
+   \IndexFunction{max}
+
+..
+
+   >>> from fipy.tools.numerix import sqrt, exp, max
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
    ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
    ...           / (2 * numberOfElements)
-   ...     cellSize = pos + numerix.sqrt(pos**2 + sqr)
+   ...     cellSize = pos + sqrt(pos**2 + sqr)
    ... else:
    ...     cellSize = 0.1e-7
 
    >>> yCells = cellsBelowTrench \
    ...          + int((trenchDepth + boundaryLayerDepth) / cellSize)
    >>> xCells = int(trenchSpacing / 2 / cellSize)
+
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+
+..
 
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx=cellSize,
@@ -167,8 +188,10 @@ function
    interface at $\phi$ = 0) and $|\nabla\phi| = 1$.
 
    First, create the $\phi$ variable, which is initially set to -1 everywhere. 
+   Create an initial variable,
+   \IndexClass{DistanceVariable}
 
-Create an initial variable,
+..
 
    >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import \
@@ -201,8 +224,10 @@ variables need to be created that govern the concentrations of various species.
 .. raw:: latex
 
     Create the catalyst surfactant coverage, $\theta$, variable.
+    This variable influences the deposition rate.
+    \IndexClass{SurfactantVariable}
 
-This variable influences the deposition rate.
+ ..
 
    >>> from fipy.models.levelSet.surfactant.surfactantVariable import \
    ...     SurfactantVariable
@@ -214,8 +239,10 @@ This variable influences the deposition rate.
 .. raw:: latex
 
     Create the bulk catalyst concentration, $c_{\theta}$,
+    in the electrolyte,
+    \IndexClass{CellVariable}
 
-in the electrolyte,
+..
 
    >>> from fipy.variables.cellVariable import CellVariable
    >>> bulkCatalystVar = CellVariable(
@@ -231,7 +258,6 @@ Create the bulk metal ion concentration,
 
 in the electrolyte.
         
-   >>> from fipy.variables.cellVariable import CellVariable
    >>> metalVar = CellVariable(
    ...     name='metal variable',
    ...     mesh=mesh,
@@ -271,7 +297,7 @@ The commands needed to build this equation are,
    >>> tmp = currentDensity1 \
    ...       * catalystVar.getInterfaceVar()
    >>> exchangeCurrentDensity = currentDensity0 + tmp
-   >>> expo = numerix.exp(expoConstant * overpotential)
+   >>> expo = exp(expoConstant * overpotential)
    >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
    ...                  / bulkMetalConcentration
    >>> depositionRateVariable = currentDensity * molarVolume \
@@ -303,11 +329,11 @@ by,
     of the interface, $c_{\theta}^i$ is the concentration of
     catalyst in the bulk at the interface. The value $k$ is given
     by an empirical function of overpotential,
-
     $$ k = k_0 + k_3 \eta^3 $$
+    The above equation is represented by the \Class{AdsorbingSurfactantEquation}
+    in \FiPy{}:
 
-The above equation is represented by the `AdsorbingSurfactantEquation`
-in FiPy:
+..
 
    >>> from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
    ...             import AdsorbingSurfactantEquation
@@ -327,8 +353,10 @@ in FiPy:
 .. raw:: latex
 
     $$ \frac{\partial \phi}{\partial t} + v_{\text{ext}}|\nabla \phi| = 0 $$
+    and is set up with the following commands:
+    \IndexFunction{buildHigherOrderAdvectionEquation}
 
-and is set up with the following commands:
+..
 
    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
    ...                import buildHigherOrderAdvectionEquation
@@ -350,10 +378,12 @@ governed by,
     \end{cases} $$
 
     The following boundary condition applies at $\phi = 0$,
-
     $$ D \hat{n} \cdot \nabla c = \frac{v}{\Omega}. $$
+    The \verb|MetalIonDiffusionEquation| is set up with the following commands.
+    \IndexClass{FixedValue}
+    \IndexFunction{buildMetalIonDiffusionEquation}
 
-The `MetalIonDiffusionEquation` is set up with the following commands.
+..
 
    >>> from fipy.boundaryConditions.fixedValue import FixedValue
    >>> from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
@@ -394,10 +424,11 @@ density and a jump coefficient. The boundary condition
 .. raw:: latex
 
     at $\phi = 0$ is given by,
-
     $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta). $$
+    The \verb|SurfactantBulkDiffusionEquation| is set up with the following commands.
+    \IndexFunction{buildSurfactantBulkDiffusionEquation}
 
-The `SurfactantBulkDiffusionEquation` is set up with the following commands.
+..
 
    >>> from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
    ...                 import buildSurfactantBulkDiffusionEquation
@@ -412,6 +443,13 @@ The `SurfactantBulkDiffusionEquation` is set up with the following commands.
    >>> catalystBCs = FixedValue(faces=mesh.getFacesTop(), value=catalystConcentration)
    
 If running interactively, create viewers.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+   \IndexClass{MayaviSurfactantViewer}
+   
+..
 
    >>> if __name__ == '__main__':
    ...     try:
@@ -463,7 +501,7 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     metalVar.updateOld()
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
-   ...     dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+   ...     dt = cflNumber * cellSize / max(extensionVelocityVariable)
    ...     advectionEquation.solve(distanceVar, dt=dt)
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,
@@ -482,6 +520,12 @@ to tell if something has changed or been broken.
    >>> import examples.levelSet.electroChem
    >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
    ...                         'test.gz')
+
+.. raw:: latex
+
+   \IndexModule{dump}
+   
+..
 
    >>> from fipy.tools import dump
    >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)

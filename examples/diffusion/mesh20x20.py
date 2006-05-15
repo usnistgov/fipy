@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 4/6/06 {11:16:55 AM} 
+ #                                last update: 5/15/06 {4:45:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,12 @@
 This example again solves a 1D diffusion problem as in
 ``examples/diffusion/mesh1D.py``, but now on a two-dimensional mesh:
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+
+..
+    
     >>> nx = 20
     >>> ny = nx
     >>> dx = 1.
@@ -53,6 +59,12 @@ This example again solves a 1D diffusion problem as in
 
 We create a `CellVariable` and initialize it to zero:
     
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
@@ -60,6 +72,13 @@ We create a `CellVariable` and initialize it to zero:
 
 and then create a diffusion equation.  This is solved by default with an
 iterative conjugate gradient solver.  
+
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
 
     >>> D = 1.
     >>> from fipy.terms.transientTerm import TransientTerm
@@ -74,6 +93,12 @@ We apply Dirichlet boundary conditions
 to the left and right.  Neumann boundary conditions are
 automatically applied to the top and bottom.
 
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+
+..
+
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), 
     ...                   value=valueLeft),
@@ -81,6 +106,12 @@ automatically applied to the top and bottom.
     ...                   value=valueRight))
     
 We create a viewer to see the results
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
@@ -108,6 +139,9 @@ We can again test against the analytical solution
 .. raw:: latex
 
    $\phi = 1 - \erf(x/2\sqrt{D t})$.
+   \IndexModule{numerix}
+   \IndexSoftware{SciPy}
+   \IndexFunction{sqrt}
 
 ..
 

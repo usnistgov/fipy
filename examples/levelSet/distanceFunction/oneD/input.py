@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:26:09 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:44:56 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,10 +66,22 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+
+..
+
    >>> from fipy.meshes.grid1D import Grid1D
    >>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
+
+.. raw:: latex
+
+   \IndexClass{DistanceVariable}
+
+..
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
@@ -88,6 +100,12 @@ as a distance function from the zero level set.
    
 The problem can then be solved by executing the `solve()` method of the equation.
 
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
    ...     viewer = make(vars=var,
@@ -95,6 +113,12 @@ The problem can then be solved by executing the `solve()` method of the equation
    ...     viewer.plot()
 
 The result can be tested with the following commands.
+
+.. raw:: latex
+
+   \IndexModule{numerix}
+
+..
 
    >>> from fipy.tools import numerix
    >>> print numerix.allclose(var, x - dx * nx / 2)

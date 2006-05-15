@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 5/4/06 {2:17:17 PM} 
+ %                                last update: 5/15/06 {1:57:56 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -56,8 +56,11 @@
 %     \end{basedescript}%
 % }
 
+\usepackage{moreverb}
+
 \begin{document}
 
+\dominitoc
 \doparttoc
 
 \frontmatter
@@ -76,8 +79,9 @@
 and the Center for Theoretical and Computational Materials Science 
 \and Materials Science and Engineering Laboratory}
 
-\begin{titlingpage}
+% \begin{titlingpage}
 \maketitle
+% \thispagestyle{empty}
 \thispagestyle{titlingpage}
 
 \newpage
@@ -89,7 +93,7 @@ and the Center for Theoretical and Computational Materials Science
 
 \thispagestyle{empty}
 \input disclaimer
-\end{titlingpage}
+% \end{titlingpage}
 
 \maxtocdepth{all} 
 \tableofcontents
@@ -233,10 +237,10 @@ and the Center for Theoretical and Computational Materials Science
 % \addstarredsection{Solidification Examples}
 % \addcontentsline{toc}{section}{Solidification Examples} 
 
-The following examples exhibit various phenomena in solidification, including
-dendritic growth and grain impingement.  Further discussion of the
-models and algorithms can be found in
-reference~\cite{WarrenPolycrystal}.
+The phase field method is a ``diffuse interface'' technique for
+modeling phase transformations and interface motion. Several good
+review articles have been written on the subject
+\cite{BoettingerReview:2002,ChenReview:2002,McFaddenReview:2002}.
 
 \input{examples/latex/examples.phase.simple.input-module}
 \input{examples/latex/examples.phase.binary-module}
@@ -304,7 +308,7 @@ book~\cite{levelSetBook}.
 
 \newpage
 \section*{Superconformal Electrodeposition Examples}
-\addcontentsline{toc}{section}{Superconformal Electrodeposition Example} 
+\addcontentsline{toc}{section}{Superconformal Electrodeposition Examples} 
 
 \input{examples/levelset/electrochem/readme}
 

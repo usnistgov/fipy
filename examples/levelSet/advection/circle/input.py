@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {4:59:40 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:33:16 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,10 +70,22 @@ in the following script. Firstly, setup the parameters.
 
 Construct the mesh.
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+
+..
+
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 Construct a `distanceVariable` object.
+
+.. raw:: latex
+
+   \IndexClass{DistanceVariable}
+
+..
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
@@ -85,6 +97,13 @@ Construct a `distanceVariable` object.
 
 Initialise the `distanceVariable` to be a circular distance function.
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{sqrt}
+
+..
+
    >>> from fipy.tools import numerix
    >>> initialArray = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
    ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - \
@@ -93,12 +112,24 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 The `advectionEquation` is constructed.
    
+.. raw:: latex
+
+   \IndexFunction{buildAdvectionEquation}
+
+..
+
    >>> from fipy.models.levelSet.advection.advectionEquation import \
    ...     buildAdvectionEquation
    >>> advEqn = buildAdvectionEquation(
    ...     advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
@@ -111,6 +142,14 @@ The problem can then be solved by executing a serious of time steps.
    ...         viewer.plot()
 
 The result can be tested with the following commands.
+
+.. raw:: latex
+
+   \IndexFunction{array}
+   \IndexFunction{where}
+   \IndexFunction{allclose}
+   
+..
 
    >>> for step in range(steps):
    ...     var.updateOld()
@@ -125,6 +164,12 @@ The result can be tested with the following commands.
 
 If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
 is more accurate,
+
+.. raw:: latex
+
+   \IndexFunction{buildHigherOrderAdvectionEquation}
+
+..
 
    >>> var.setValue(initialArray)
    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \

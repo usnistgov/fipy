@@ -1,6 +1,6 @@
-\begin{description}
+\minitoc[e]
     
-    \item[How do I represent an equation in \FiPy{}?]  
+    \section{How do I represent an equation in \FiPy{}?}
     
     As explained in Chapter~\ref{chap:Numerics}, the canonical
     governing equation that can be solved by \FiPy{} for the dependent
@@ -31,10 +31,8 @@
         examples are presented in Part~\ref{part:Examples}, but let us
         examine this general expression term-by-term:
         
-        \begin{description}
-            
-            \item[How do I represent a transient term 
-            $\frac{\partial (\rho \phi)}{\partial t}$?]
+            \subsection{How do I represent a transient term 
+            $\partial (\rho \phi) / \partial t$?}
             \hspace*{\fill}
             
             \begin{quote}
@@ -48,8 +46,8 @@
                 step.  Both are handled when we actually solve the equation.
             \end{reSTadmonition}
             
-            \item[How do I represent a convection term
-            $\nabla \cdot \left( \vec{u} \phi \right)$?]
+            \subsection{How do I represent a convection term
+            $\nabla \cdot \left( \vec{u} \phi \right)$?}
             \hspace*{\fill}
             
             \begin{quote}
@@ -80,7 +78,7 @@
                 explicit forms.
             \end{reSTadmonition}
         
-            \item[How do I represent a diffusion term
+            \IndexPackage[How do I represent a diffusion term
             $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?]
             \hspace*{\fill}
             
@@ -108,11 +106,11 @@
            will not be accounted for.
 
             
-            \item[How do I represent a term $\nabla^4 \phi$ or
+           \subsection{How do I represent a term $\nabla^4 \phi$ or
             $\nabla \cdot \left( \Gamma_1 \nabla \left(
             \nabla\cdot\left( 
             \Gamma_2 \nabla \phi\right) \right) \right) $ such as for 
-            Cahn-Hilliard?]
+            Cahn-Hilliard?}
             \hspace*{\fill}
             
             \begin{quote}
@@ -123,10 +121,10 @@
             The number of elements supplied for \verb|coeff| determines the
             order of the term.
 
-            \item[How do I represent a source term $S_{\phi}$?]
+            \subsection{What if the term isn't one of those?}
             Any term that cannot be written in one of the previous
-            forms is considered a source.  An explicit source is
-            written in Python essentially as it appears in
+            forms is considered a source $S_{\phi}$. An explicit
+            source is written in Python essentially as it appears in
             mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
             \theta$ would be written
             \begin{quote}
@@ -161,14 +159,14 @@
                 Example~\ref{examples:phase:simple:input}.
             \end{reSTadmonition}
 
-            \item[How do I represent a \dots{} term that 
-            \emph{doesn't} involve the dependent variable?]
+            \subsection{How do I represent a \dots{} term that 
+            \emph{doesn't} involve the dependent variable?}
             It is important to realize that, even though an expression may
             superficially resemble one of those shown above, if the
             dependent variable \emph{for that PDE} does not appear in the
             appropriate place, then that term should be treated as a source.
-            \begin{description}
-                \item[How do I represent a diffusive source?]
+
+                \subsubsection{How do I represent a diffusive source?}
                     If the governing equation for $\phi$ is
                     \[
                         \frac{\partial \phi}{\partial t} 
@@ -189,12 +187,13 @@
                     \begin{reSTadmonition}[Note]
                         We use \verb|getFaceGrad()|, rather than
                         \verb|getGrad()|, in order to obtain a
-                        second-order diffusion term in $\xi$, consistent
-                        with the matrix that is formed by
+                        second-order spatial discretization of the
+                        diffusion term in $\xi$, consistent with the
+                        matrix that is formed by
                         \Class{ImplicitDiffusionTerm} for $\phi$.
                     \end{reSTadmonition}
 
-                \item[How do I represent a convective source?]
+                \subsubsection{How do I represent a convective source?}
                     The convection of an independent field $\xi$ as in
                     \[
                         \frac{\partial \phi}{\partial t} 
@@ -210,7 +209,7 @@
 \end{verbatim}
                     \end{quote}
 
-                \item[How do I represent a transient source?]
+                \subsubsection{How do I represent a transient source?}
                     The time-rate-of change of an independent variable
                     $\xi$, such as in
                     \[
@@ -228,10 +227,8 @@
                     This technique is used in
                     Example~\ref{examples:phase:anisotropy:input}.
                     
-            \end{description}
-
-            \item[What if my term involves the dependent variable, 
-            but not where \FiPy{} puts it?]
+        \subsection{What if my term involves the dependent variable, 
+            but not where \FiPy{} puts it?}
             
             Frequently, viewing the term from a different perspective
             will allow it to be cast in one of the canonical forms.
@@ -257,10 +254,135 @@
 
             \end{quote}
 
-        \end{description}
+    \section{How do I export data?} The way to save your calculations
+    depends on how you plan to make use of the data. If you want to
+    save it for ``restart'' (so that you can continue or redirect a
+    calculation from some intermediate stage), then you'll want to
+    ``pickle'' the \Python{} data with the \Module{dump} module. This
+    is illustrated in Examples~\ref{examples:phase:anisotropy:input},
+    \ref{examples:phase:impingement:mesh40x1:input},
+    \ref{examples:phase:impingement:mesh20x20:input}, and
+    \ref{examples:levelSet:electroChem:inputWriteScriptHowTo}.
+    
+    On the other hand, pickled \FiPy{} data is of little use to
+    anything besides \Python{} and \FiPy{}. If you want to import your
+    calculations into another piece of software, whether to make
+    publication-quality graphs or movies, or to perform some analysis,
+    or as input to another stage of a multiscale model, then you can
+    save your data as an \textsc{ascii} text file of
+    tab-separated-values with a \Class{TSVViewer}. This is 
+    illustrated in Example~\ref{examples:diffusion:circle}.
+    
+    \section{How do I save a plot image?} Some of the viewers have a
+    button or other mechanism in the user interface for saving an
+    image file. Also, you can supply an optional keyword
+    \verb+filename+ when you tell the viewer to \verb+plot()+,
+    \emph{e.g.}
+    \begin{quote}
+\begin{verbatim}
+>>> viewer.plot(filename="myimage.ext")
+\end{verbatim}
+    \end{quote}
+    which will save a file named \verb+myimage.ext+ in your current
+    working directory. The type of image is determined by the file
+    extension ``\verb+.ext+''. Different viewers have different
+    capabilities: \Pygist{} accepts ``\verb+.eps+''
+    (\href{http://en.wikipedia.org/wiki/Encapsulated_PostScript}{Encapsulated
+    PostScript}) and ``\verb+.cgm+''
+    (\href{http://xml.coverpages.org/cgm.html}{Computer Graphics
+    Metafile}). \Matplotlib{} accepts ``\verb+.eps+'', ``\verb+.jpg+''
+    (\href{http://www.jpeg.org/}{Joint Photographic Experts Group}),
+    and ``\verb+.png+''
+    (\href{http://www.w3.org/Graphics/PNG/}{Portable Network
+    Graphics}). \MayaVi{} only accepts ``\verb+.png+''.
+
+    \section{How do I make a movie?} \FiPy{} has no facilities for 
+    making movies. You will need to save individual frames (see the 
+    previous question) and then stitch them together into a movie, 
+    using one of a variety of different free, shareware, or 
+    commercial software packages.
+    
+    \section{Iterations, timesteps, and sweeps? Oh, my!} Any non-linear 
+    solution of partial differential equations is an approximation. 
+    These approximations benefit from repetetive solution to achieve 
+    the best possible answer. In \FiPy{} (and in many similar PDE 
+    solvers), there are three layers of repetition. 
+    
+    \begin{description}
+    
+        \item[iterations] This is the lowest layer of repetition,
+        which you'll generally need to spend the least time thinking
+        about. \FiPy{} solves PDEs by discretizing them into a set of
+        linear equations in matrix form, as explained in
+        Sections~\ref{section:discretization} and
+        \ref{section:linear-equations}. It is not always practical, or
+        even possible, to exactly solve these matrix equations on a
+        computer. \FiPy{} thus employs ``iterative solvers'', which
+        make successive approximations until the linear equations have
+        been satisfactorily solved. \FiPy{} chooses a default number
+        of iterations and solution tolerance, which you will not
+        generally need to change. If you do wish to change these
+        defaults, you'll need to create a new \Class{Solver} object
+        with the desired number of iterations and solution tolerance,
+        \emph{e.g.}
+        \begin{quote}
+\begin{verbatim}
+>>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6) 
+    : 
+    :
+>>> eq.solve(..., solver=mySolver, ...)
+\end{verbatim}
+    	\end{quote}
+        \begin{reSTadmonition}[Note]
+        The older \Class{Solver} \verb+steps=+ keyword is now
+        deprecated in favor of \verb+iterations=+ to make the role
+        clearer.
+        \end{reSTadmonition}
+        Solver iterations are modified in
+        Examples~\ref{examples:cahnHilliard:inputTanh1D},
+        \ref{examples:flow:stokesCavity}, and
+        \ref{chap:Update0.1to1.0}.
         
-    \item[Why the distinction between \Class{CellVariable} and
-    \Class{FaceVariable} coefficients?]  \FiPy{} solves field
+        \item[sweeps] This middle layer of repetition is importrant
+        when a PDE is non-linear (\emph{e.g.}, a diffusivity that
+        depends on concentration) or when multiple PDEs are coupled
+        (\emph{e.g.}, if solute diffusivity depends on temperature and
+        thermal conductivity depends on concentration). Even if the
+        \Class{Solver} solves the \emph{linear} approximation of the
+        PDE to absolute perfection by performing an infinite number of
+        \emph{iterations}, the solution may still not be a very good
+        representation of the actual \emph{non-linear} PDE. If we
+        resolve the same equation \emph{at the same point in elapsed
+        time}, but use the result of the previous solution instead of 
+        the previous timestep, then we can get a refined solution to 
+        the \emph{non-linear} PDE. This process is known as 
+        ``sweeping''. To sweep in \FiPy{}, we need to do two things 
+        differently,
+        
+        \item[timesteps] This is the outermost layer of repetition, 
+        and is of most interest to the user.
+    
+    \end{description}
+    
+    We can (and often do) combine all three layers of repetition:
+    \begin{quote}
+\begin{verbatim}
+>>> myVar = CellVariable(..., hasOld=1)
+: 
+:
+>>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6) 
+: 
+:
+>>> while elapsedTime < totalElapsedTime:
+...     myVar.updateOld()
+...     while residual > minResidual:
+...         res = eq.sweep(...
+
+>>> eq.solve(..., solver=mySolver, ...)
+\end{verbatim}
+
+    \section{Why the distinction between \Class{CellVariable} and
+    \Class{FaceVariable} coefficients?}  \FiPy{} solves field
     variables on the \Class{Cell} centers.  Transient and source terms
     describe the change in the value of a field at the \Class{Cell}
     center, and so they take a \Class{CellVariable} coefficient.
@@ -293,7 +415,7 @@
         assume one.
     \end{reSTadmonition}
         
-    \item[What does this error message mean?]\hspace*{\fill}
+    \section{What does this error message mean?}\hspace*{\fill}
     
         \begin{itemize}
             
@@ -321,15 +443,18 @@
             in \SciPy{} that has been patched in their source 
             repository: \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
             
+            \item ``\texttt{numerix Numeric 23.6}''
+            
+            This is neither an error nor a warning. It's just sloppy 
+            message left in \SciPy{}:
+            \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
+            
         \end{itemize}
 
-    \item[What if my question isn't answered here?]  
+    \section{What if my question isn't answered here?}  
         
         Please post your question to the
         \href{http://www.ctcms.nist.gov/fipy/mail.html}{mailing list}
         \cite{FiPyMailingList} or
         \href{http://sourceforge.net/tracker/?group_id=118428}{file a
         Tracker request} \cite{FiPyBugTracker}.
-    
-
-\end{description}

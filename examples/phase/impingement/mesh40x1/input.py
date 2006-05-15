@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:29:15 PM}
+ #                                last update: 5/15/06 {3:10:38 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,8 +42,17 @@
 
 r"""
 
-In this example we solve a coupled phase and orientation equation on a
-one dimensional grid.
+In this example we solve a coupled phase and orientation equation on a one
+dimensional grid. This is another aspect of the model of Warren, Kobayashi,
+Lobkovsky and Carter
+
+.. raw:: latex
+
+   \cite{WarrenPolycrystal}
+
+   \IndexClass{Grid1D}
+
+..
 
     >>> nx = 40
     >>> Lx = 2.5 * nx / 100.
@@ -121,6 +130,12 @@ The system is held isothermal at
 
 and is initially solid everywhere
 
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
     ...     name='phase field',
@@ -145,6 +160,12 @@ we must use `ModularVariable` instead of a `CellVariable`. A
 
 subtraction operator between two angles.
 
+.. raw:: latex
+
+   \IndexClass{ModularVariable}
+
+..
+
     >>> from fipy.variables.modularVariable import ModularVariable
     >>> theta = ModularVariable(
     ...     name='theta',
@@ -158,6 +179,14 @@ The left and right halves of the domain are given different orientations.
     >>> theta.setValue(0., where=mesh.getCellCenters()[...,0] > Lx / 2.)
 
 The `phase` equation is built in the following way.
+
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ExplicitDiffusionTerm}
+   \IndexClass{ImplicitSourceTerm}
+
+..
 
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
@@ -183,12 +212,19 @@ this equation are fairly involved, see J.A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of `theta` on the circle.
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{exp}
+
+..
+
     >>> phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
     >>> phaseModSq = phaseMod * phaseMod
     >>> expo = epsilon * beta * theta.getGrad().getMag()
     >>> expo = (expo < 100.) * (expo - 100.) + 100.
-    >>> from fipy.tools import numerix
-    >>> pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
+    >>> from fipy.tools.numerix import exp
+    >>> pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
 
     >>> phaseFace = phase.getArithmeticFaceValue()
     >>> phaseSq = phaseFace * phaseFace
@@ -207,6 +243,12 @@ evelautes the gradient without modular arithmetic.
 
 Finally the `theta` equation can be constructed.
 
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
     ...           ImplicitDiffusionTerm(diffusionCoeff) \
@@ -214,6 +256,14 @@ Finally the `theta` equation can be constructed.
 
 If the example is run interactively, we create viewers for the phase
 and orientation variables.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+   \IndexModule{numerix}
+   \IndexConstant{\pi}{pi}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
@@ -242,6 +292,12 @@ The solution is compared with test data. The test data was created
 with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for
 phase field modeling. The following code opens the file `test.gz`
 extracts the data and compares it with the `theta` variable.
+
+.. raw:: latex
+
+   \IndexModule{dump}
+
+..
 
    >>> import os
    >>> testFile = 'test.gz'

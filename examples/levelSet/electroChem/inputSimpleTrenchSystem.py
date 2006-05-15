@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 1/13/06 {4:16:05 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:46:01 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -62,6 +62,12 @@ simulation. In order to alter the number of timesteps, the python
 function that encapsulates the system of equations must first be
 imported (at the python command line),
 
+.. raw:: latex
+
+   \IndexFunction{runSimpleTrenchSystem}
+
+..
+
     >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
 
 and then the function can be run with a different number of time steps
@@ -105,6 +111,8 @@ complex meshes requiring the `gmsh` software.
 
 .. raw:: latex
 
+    \IndexSoftware{gmsh}
+    %
     \begin{tabular}{|rllr@{.}ll|}
     \hline
     Symbol                & Description                       & Keyword Argument                      & \multicolumn{2}{l}{Value} & Unit                               \\

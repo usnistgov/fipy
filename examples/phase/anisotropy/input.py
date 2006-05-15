@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/17/06 {11:49:47 AM} { 5:14:21 PM}
+ #                                last update: 5/15/06 {3:49:01 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,9 +42,19 @@
 
 r"""
 
-In this example we solve a coupled phase and temperature equation to model 
-solidification, and eventually dendritic growth, from a circular seed in a 2D mesh:
+In this example we solve a coupled phase and temperature equation to model
+solidification, and eventually dendritic growth, based on the work of
+Warren, Kobayashi, Lobkovsky and Carter
     
+.. raw:: latex
+
+   \cite{WarrenPolycrystal}
+   
+   We start from a circular seed in a 2D mesh:
+   \IndexClass{Grid2D}
+
+..
+
     >>> numberOfCells = 40
     >>> Length = numberOfCells * 2.5 / 100.
     >>> nx = numberOfCells
@@ -116,6 +126,12 @@ The parameters for these equations are
 The `phase` variable is `0` for a liquid and `1` for a solid.  Here,
 the `phase` variable is initialized as a liquid,
 
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
 
@@ -146,9 +162,18 @@ The temperature field is initialized to a value of `-0.4` throughout:
    
 is created from the `phase` and `temperature` variables.
 
-    >>> from fipy.tools import numerix
-    >>> mVar = phase - 0.5 - kappa1 / numerix.pi * \
-    ...     numerix.arctan(kappa2 * temperature)
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexConstant{\pi}{pi}
+   \IndexFunction{arctan}
+   \IndexFunction{arctan2}
+   \IndexFunction{tan}
+
+..
+
+    >>> from fipy.tools.numerix import pi, arctan, arctan2, tan
+    >>> mVar = phase - 0.5 - kappa1 / pi * arctan(kappa2 * temperature)
 
 .. raw:: latex
 
@@ -158,8 +183,8 @@ is created from the `phase` and `temperature` variables.
 
     >>> phaseY = phase.getFaceGrad().dot((0, 1))
     >>> phaseX = phase.getFaceGrad().dot((1, 0))
-    >>> psi = theta + numerix.arctan2(phaseY, phaseX)
-    >>> Phi = numerix.tan(N * psi / 2)
+    >>> psi = theta + arctan2(phaseY, phaseX)
+    >>> Phi = tan(N * psi / 2)
     >>> PhiSq = Phi**2
     >>> beta = (1. - PhiSq) / (1. + PhiSq)
     >>> betaPsi = -N * 2 * Phi / (1 + PhiSq)
@@ -186,6 +211,14 @@ negate the x component.
 
 The phase equation can now be constructed.
     
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ExplicitDiffusionTerm}
+   \IndexClass{ImplicitSourceTerm}
+
+..
+
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -195,6 +228,12 @@ The phase equation can now be constructed.
 
 The temperature equation is built in the following way,
 
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> temperatureEq = TransientTerm() == \
     ...                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
@@ -202,6 +241,12 @@ The temperature equation is built in the following way,
 
 If we are running this example interactively, we create viewers for
 the phase and temperature fields
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
@@ -228,12 +273,21 @@ The solution is compared with test data. The test data was created for
 field modeling. The following code opens the file ``test.gz`` extracts
 the data and compares it with the `phase` variable.
 
+.. raw:: latex
+
+   \IndexModule{dump}
+   \IndexModule{numerix}
+   \IndexFunction{allclose}
+
+..
+
    >>> import examples.phase.anisotropy
    >>> import os
    >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'test.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
-   >>> print numerix.allclose(phase, testData)
+   >>> from fipy.tools.numerix import allclose
+   >>> print allclose(phase, testData)
    1
    
 """

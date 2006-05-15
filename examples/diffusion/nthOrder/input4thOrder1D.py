@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/4/06 {7:29:40 AM} 
+ #                                last update: 5/15/06 {2:27:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,12 +54,24 @@ on a 1D mesh of length
     
 We create an appropriate mesh
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> nx = 1000
     >>> dx = L / nx
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and initialize the solution variable to 0
+
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh=mesh, name='variable')
@@ -82,6 +94,14 @@ or
     >>> alpha3 = 4.
     >>> alpha4 = -3.
     
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+   \IndexClass{FixedFlux}
+   \IndexClass{NthOrderBoundaryCondition}
+
+..
+    
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
@@ -93,10 +113,22 @@ or
 
 We initialize the steady-state equation
     
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eq = ImplicitDiffusionTerm(coeff=(1, 1)) == 0
     
 and use the `LinearLUSolver` for stability. 
+
+.. raw:: latex
+
+   \IndexClass{LinearLUSolver}
+
+..
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
 
@@ -123,6 +155,12 @@ or
 
 If the problem is run interactively, we can view the result:
     
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
     ...     viewer = make(vars=var)
@@ -130,8 +168,6 @@ If the problem is run interactively, we can view the result:
 
 """
 __docformat__ = 'restructuredtext'
-
-## from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

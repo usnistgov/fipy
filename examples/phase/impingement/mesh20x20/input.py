@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 4/7/06 {5:04:47 PM}
+ #                                last update: 5/15/06 {3:03:59 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,6 +48,12 @@ In the following examples, we solve the same set of equations as in::
     
 with different initial conditions and a 2D mesh:
 
+.. raw:: latex
+
+   \IndexModule{parser}
+
+..
+
     >>> from fipy.tools.parser import parse
 
     >>> numberOfElements = parse('--numberOfElements', action = 'store',
@@ -55,9 +61,17 @@ with different initial conditions and a 2D mesh:
     >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
     ...                       type = 'int', default = 10)
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{sqrt}
+   \IndexClass{Grid2D}
+
+..
+    
     >>> steps = numberOfSteps
-    >>> import fipy.tools.numerix as numerix
-    >>> N = int(numerix.sqrt(numberOfElements))
+    >>> from fipy.tools.numerix import sqrt
+    >>> N = int(sqrt(numberOfElements))
     >>> L = 2.5 * N / 100.
     >>> dL = L / N
     >>> from fipy.meshes.grid2D import Grid2D
@@ -99,14 +113,28 @@ The system is held isothermal at
     
 and is initialized to liquid everywhere
 
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name='phase field', mesh=mesh)
 
 The orientation is initialized to a uniform value to denote the
 randomly oriented liquid phase
 
+.. raw:: latex
+
+   \IndexClass{ModularVariable}
+   \IndexModule{numerix}
+   \IndexConstant{\pi}{pi}
+
+..
+
     >>> from fipy.variables.modularVariable import ModularVariable
-    >>> pi = numerix.pi
+    >>> from fipy.tools.numerix import pi
     >>> theta = ModularVariable(
     ...     name='theta',
     ...     mesh=mesh,
@@ -130,6 +158,14 @@ The `phase` equation is built in the following way. The source term is
 linearized in the manner demonstrated in `examples.phase.simple.input`
 (Kobayashi, semi-implicit). Here we use a function to build the equation,
 so that it can be reused later.
+
+.. raw:: latex
+
+   \IndexClass{TransientTerm}
+   \IndexClass{ExplicitDiffusionTerm}
+   \IndexClass{ImplicitSourceTerm}
+
+..
 
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
@@ -155,13 +191,21 @@ detail is that a source must be added to correct for the
 discretization of `theta` on the circle.  The source term requires the
 evaluation of the face gradient without the modular operators.
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{exp}
+
+..
+
+    >>> from fipy.tools.numerix import exp
     >>> def buildThetaEquation(phase, theta):
     ...
     ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
     ...     phaseModSq = phaseMod * phaseMod
     ...     expo = epsilon * beta * theta.getGrad().getMag()
     ...     expo = (expo < 100.) * (expo - 100.) + 100.
-    ...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
+    ...     pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
     ...
     ...     phaseFace = phase.getArithmeticFaceValue()
     ...     phaseSq = phaseFace * phaseFace
@@ -179,12 +223,24 @@ evaluation of the face gradient without the modular operators.
     ...                ImplicitDiffusionTerm(diffusionCoeff) \
     ...                + sourceCoeff
 
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+
+..
+    
     >>> thetaEq = buildThetaEquation(phase, theta)
 
 If the example is run interactively, we create viewers for the phase
 and orientation variables. Rather than viewing the raw orientation,
 which is not meaningful in the liquid phase, we weight the orientation
 by the phase
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
@@ -212,9 +268,18 @@ data and compares it with the `theta` variable.
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
-    >>> testData = numerix.resize(testData, (mesh.getNumberOfCells(),))
     
-We iterate the solution in time, plotting as we go if running interactively,
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{resize}
+
+..
+
+    >>> from fipy.tools.numerix import resize
+    >>> testData = resize(testData, (mesh.getNumberOfCells(),))
+    
+We step the solution in time, plotting as we go if running interactively,
 
     >>> for i in range(steps):
     ...     theta.updateOld()
@@ -260,7 +325,13 @@ Ryo Kobayashi's FORTRAN code:
 
 We save the variables to disk.
 
-    >>> import fipy.tools.dump as dump
+.. raw:: latex
+
+   \IndexModule{dump}
+
+..
+
+    >>> from fipy.tools import dump
     >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
     
 and then recall them to test the data pickling mechanism

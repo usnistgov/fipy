@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:16:37 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:44:02 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,10 +67,22 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+
+..
+
    >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 Construct a `distanceVariable` object.
+
+.. raw:: latex
+
+   \IndexClass{DistanceVariable}
+
+..
 
    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
    ...     import DistanceVariable
@@ -84,6 +96,12 @@ Construct a `distanceVariable` object.
 
    >>> var.calcDistanceFunction()
    
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
    >>> if __name__ == '__main__':
    ...     from fipy import viewers
    ...     viewer = viewers.make(vars = var, 
@@ -92,10 +110,16 @@ Construct a `distanceVariable` object.
 
 The result can be tested with the following commands.
 
+.. raw:: latex
+
+   \IndexModule{numerix}
+
+..
+
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
-   >>> import fipy.tools.numerix as numerix
+   >>> from fipy.tools import numerix
    >>> m1 = dY * dX / numerix.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2

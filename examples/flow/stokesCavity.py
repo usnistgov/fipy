@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/06 {4:54:27 PM}
+ #                                last update: 5/15/06 {2:30:34 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -108,10 +108,22 @@ some parameters are declared.
 
 Build the mesh.
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+   
+..
+
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
+
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+   
+..
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> pressure = CellVariable(mesh=mesh, name='pressure')
@@ -119,19 +131,24 @@ Declare the variables.
     >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
     >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
-The velocity is required as a `VectorFaceVariable` for calculating the
-mass flux. This is a somewhat clumsy aspect of the
-
 .. raw:: latex
 
-    \FiPy{}
+   The velocity is required as a \Class{VectorFaceVariable} for calculating
+   the mass flux. This is a somewhat clumsy aspect of the \FiPy{}
+   interface that needs improvement.
 
-interface that needs improvement.
+..
 
     >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
     >>> velocity = VectorFaceVariable(mesh=mesh)
 
 Build the Stokes equations.
+
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+   
+..
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
@@ -173,6 +190,12 @@ Build the Stokes equations.
 
 Set up the no-slip boundary conditions
 
+.. raw:: latex
+
+   \IndexClass{FixedValue}
+   
+..
+
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
     ...        FixedValue(faces=mesh.getFacesRight(), value=0),
@@ -181,6 +204,12 @@ Set up the no-slip boundary conditions
     >>> bcsY = bcs + (FixedValue(faces=mesh.getFacesTop(), value=0),)
 
 Set up the viewers,
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+   
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
@@ -224,16 +253,25 @@ Iterate for a set number of sweeps.
     ...
     ...     if __name__ == '__main__':
     ...         if sweep%1 == 0:
-    ...             print 'sweep:',sweep,', x residual:',max(abs(xres)),', y residual',max(abs(yres)), \
-    ...                                  ', p residual:',max(abs(pres)),', continuity:',max(abs(rhs))
+    ...             print 'sweep:',sweep,', x residual:', max(abs(xres)), \
+    ...                                  ', y residual', max(abs(yres)), \
+    ...                                  ', p residual:', max(abs(pres)), \
+    ...                                  ', continuity:', max(abs(rhs))
     ...
     ... 	    viewer.plot()
 
 .. image:: examples/flow/cavity.pdf
-   :scale: 50
+   :scale: 40
    :align: center
 
 Test values in the last cell.
+
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{allclose}
+
+..
 
     >>> from fipy.tools import numerix
     >>> numerix.allclose(pressure[-1], 145.233883763)

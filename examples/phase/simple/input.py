@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/4/06 {6:43:18 AM} 
+ #                                last update: 5/15/06 {3:50:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,10 +87,22 @@ We create a 1D solution mesh
     >>> nx = 400
     >>> dx = L / nx
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+    
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field variable
+
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name = "phase",
@@ -114,6 +126,12 @@ and set a step-function initial condition
     >>> phase.setValue(0., where=x > L/2)
     
 If we are running interactively, we'll want a viewer to see the results
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
@@ -154,8 +172,12 @@ The analytical solution for this steady-state phase field problem, in an infinit
    \phi = \frac{1}{2}\left[1 - \tanh\frac{x-L/2}{2\sqrt{\kappa/W}}\right]
    \label{eq-phase:simple:analytical}
    \end{equation}
+   or
+   \IndexModule{numerix}
+   \IndexFunction{tanh}
+   \IndexFunction{sqrt}
 
-or
+..
 
     >>> x = mesh.getCellCenters()[:,0]
     >>> from fipy.tools.numerix import tanh, sqrt
@@ -166,8 +188,10 @@ We treate the diffusion term
 .. raw:: latex
 
    $ \kappa_\phi \nabla^2\phi $
-  
-implicitly, 
+  implicitly, 
+  \IndexClass{ImplicitDiffusionTerm}
+
+..
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffusionTerm = ImplicitDiffusionTerm(coeff = kappa)
@@ -231,8 +255,9 @@ transient term from
 .. raw:: latex
   
    Equation~\eqref{eq-phase:simple}
+   \IndexClass{TransientTerm}
        
-:
+..
     
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> eq = TransientTerm() == diffusionTerm + S0
@@ -309,6 +334,12 @@ There are an infinite number of choices for this linearization, but
 many do not converge very well. One choice is that used by Ryo
 Kobayashi:
     
+.. raw:: latex
+
+   \IndexClass{ImplicitSourceTerm}
+
+..
+
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
@@ -407,7 +438,6 @@ physical parameters and dimensions. We'll need a new mesh
     >>> dx = 5e-6 # cm
     >>> L = nx * dx
 
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and thus must redeclare |phase| on the new mesh
@@ -423,6 +453,7 @@ and thus must redeclare |phase| on the new mesh
 
    We choose the parameter values appropriate for nickel, given in
    \cite{Warren:1994}
+   \IndexClass{Variable}
 
 ..
 
@@ -474,6 +505,13 @@ form of the source term shown above
 In order to separate the effect of forming the phase field interface from
 the kinetics of moving it, we first equilibrate at the melting point
     
+.. raw:: latex
+
+   \IndexModule{numerix}
+   \IndexFunction{max}
+
+..
+
     >>> from fipy.tools.numerix import max
 
     >>> timeStep = 1e-6
@@ -529,6 +567,12 @@ reasonable approximation.
 If SciPy is available, another way to compare against the expected result
 is to do a least-squared fit to determine the interface velocity and
 thickness
+
+.. raw:: latex
+
+   \IndexSoftware{SciPy}
+
+..
 
     >>> try:
     ...     def tanhResiduals(p, y, x, t):

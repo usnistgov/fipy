@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 9/15/05 {5:50:33 PM} 
+ #                                last update: 5/15/06 {2:06:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,6 +62,12 @@ or
     
 We define a 1D mesh
 
+.. raw:: latex
+
+   \IndexClass{Grid1D}
+
+..
+
     >>> L = 10.
     >>> nx = 10
     >>> from fipy.meshes.grid1D import Grid1D
@@ -75,8 +81,10 @@ and impose the boundary conditions
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
    \end{cases} $$ 
+   or
+   \IndexClass{FixedValue}
 
-or
+..
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -88,6 +96,12 @@ or
 
 The solution variable is initialized to `valueLeft`:
     
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+
+..
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh=mesh, name = "variable")
 
@@ -95,6 +109,13 @@ The equation is created with the `ImplicitDiffusionTerm` and
 `ExponentialConvectionTerm`. The scheme used by the convection term
 needs to calculate a Peclet number and thus the diffusion term
 instance must be passed to the convection term.
+
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+   \IndexClass{ExponentialConvectionTerm}
+
+..
 
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
    >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
@@ -119,7 +140,6 @@ both handle most types of convection-diffusion cases, with the
 
 We solve the equation
 
-   >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
    >>> eq.solve(var=var, boundaryConditions=boundaryConditions)
    
 and test the solution against the analytical result
@@ -127,8 +147,11 @@ and test the solution against the analytical result
 .. raw:: latex
 
    $$ \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
+   or
+   \IndexModule{numerix}
+   \IndexFunction{exp}
 
-or 
+..
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
@@ -140,6 +163,12 @@ or
     1
    
 If the problem is run interactively, we can view the result:
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
