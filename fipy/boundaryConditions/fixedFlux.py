@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 3/5/06 {6:34:20 PM} 
+ #                                last update: 5/15/06 {3:22:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,7 +69,7 @@ class FixedFlux(BoundaryCondition):
             
 	"""
 	BoundaryCondition.__init__(self,faces,value)
-	N = len(self.faces)
+## 	N = len(self.faces)
 	##self.contribution = Numeric.zeros((N,),'d')
 	# get units right
 	##self.contribution = self.contribution * self.value * self.faces[0].getArea()

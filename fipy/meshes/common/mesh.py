@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/7/06 {4:57:48 PM} 
+ #                                last update: 5/15/06 {3:51:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -315,11 +315,11 @@ class Mesh:
 	"""Return `Cell` objects of `Mesh`."""
 	cells = self._getCellsByID(ids)
 	
-        if filter is None:
-            return cells
-        else:        
-	    return [cell for cell in cells if filter(cell, **args)]
+        if filter is not None:
+            cells = [cell for cell in cells if filter(cell, **args)]
 
+        return cells
+        
     def _getFaces(self):
         pass
     
@@ -327,10 +327,10 @@ class Mesh:
 	"""Return `Face` objects of `Mesh`."""
 	faces = self._getFaces()
 	
-        if filter is None:
-            return faces
-        else:        
+        if filter is not None:
 	    return [face for face in faces if filter(face, **args)]
+
+        return faces
 
     def _getMaxFacesPerCell(self):
 	pass

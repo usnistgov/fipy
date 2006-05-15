@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/5/06 {8:35:17 AM} 
+ #                                last update: 5/15/06 {3:41:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@ __docformat__ = 'restructuredtext'
 import Numeric
 import MA
 
-import fipy.meshes.common.mesh
+from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.meshes.numMesh.cell import Cell
@@ -50,7 +50,10 @@ from fipy.meshes.numMesh.cell import Cell
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class Mesh(fipy.meshes.common.mesh.Mesh):
+class MeshAdditionError(Exception):
+    pass
+    
+class Mesh(_CommonMesh):
     """Generic mesh class using Numeric to do the calculations
 
         Meshes contain cells, faces, and vertices.
@@ -65,7 +68,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.faceVertexIDs = MA.array(faceVertexIDs)
         self.cellFaceIDs = MA.array(cellFaceIDs)
 
-        fipy.meshes.common.mesh.Mesh.__init__(self)
+        _CommonMesh.__init__(self)
 	
     """Topology methods"""
 
@@ -166,7 +169,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
             self.cellFaceIDs[:,i] = tmp
 
         ## calculate new topology
-        fipy.meshes.common.mesh.Mesh._calcTopology(self)
+        _CommonMesh._calcTopology(self)
 
         ## calculate new geometry
         self._calcFaceToCellDistanceRatio()
@@ -184,18 +187,13 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         
         other = other._getConcatenableMesh()
         
-        MeshAdditionError = "MeshAdditionError"
         selfNumFaces = self.faceVertexIDs.shape[0]
-        selfNumCells = self.cellFaceIDs.shape[0]
         selfNumVertices = self.vertexCoords.shape[0]
         otherNumFaces = other.faceVertexIDs.shape[0]
-        otherNumCells = other.cellFaceIDs.shape[0]
         otherNumVertices = other.vertexCoords.shape[0]
         ## check dimensions
         if(self.vertexCoords.shape[1] != other.vertexCoords.shape[1]):
             raise MeshAdditionError, "Dimensions do not match"
-        else:
-            dimensions = self.vertexCoords.shape[1]
         ## compute vertex correlates
         vertexCorrelates = {}
         for i in range(selfNumVertices):
@@ -297,7 +295,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         self.numberOfCells = len(self.cellFaceIDs)
         self._calcFaceCellIDs()
 	
-        fipy.meshes.common.mesh.Mesh._calcTopology(self)
+        _CommonMesh._calcTopology(self)
 
 
     """calc Topology methods"""
@@ -396,7 +394,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _getCellsByID(self, ids = None):
 	if ids is None:
 	    ids = range(self.numberOfCells) 
-	return [Cell(self, id) for id in ids]
+        return [Cell(self, ID) for ID in ids]
     
     def _getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[0])
@@ -405,7 +403,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 
     def _calcGeometry(self):
 	self._calcFaceCenters()
-        fipy.meshes.common.mesh.Mesh._calcGeometry(self)
+        _CommonMesh._calcGeometry(self)
         self._calcCellNormals()
         
     """calc geometry methods"""

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 7/12/05 {1:01:56 PM} 
+ #                                last update: 5/15/06 {3:57:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,8 +48,6 @@ import Numeric
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
-import fipy.tools.inline.inline as inline
-
 def crossProd(v1,v2):
     """Return vector cross-product of v1 and v2.
     """
@@ -79,6 +77,7 @@ def _putAddPy(vector, ids, additionVector, mask = None):
                 vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):
+    from fipy.tools.inline import inline
     inline._runInlineLoop1("""
 	vector(ids(i)) += additionVector(i);
     """,
@@ -89,6 +88,7 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
+    from fipy.tools.inline import inline
     inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start = 0):

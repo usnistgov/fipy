@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 3/2/06 {3:46:04 PM} 
+ #                                last update: 5/15/06 {3:24:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,12 +40,13 @@
  # ###################################################################
  ##
 
-from numMesh import uniformGrid1D
-from numMesh import grid1D
 
-from fipy.tools import numerix
 
 def Grid1D(dx = 1., nx = None):
+    from numMesh import uniformGrid1D
+    from numMesh import grid1D
+
+    from fipy.tools import numerix
     if numerix.getShape(dx) == ():
         return uniformGrid1D.UniformGrid1D(dx = dx, nx = nx or 1)
     else:

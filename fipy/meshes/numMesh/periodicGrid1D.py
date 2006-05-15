@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicGrid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/8/06 {11:49:47 AM} 
+ #                                last update: 5/15/06 {3:42:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,7 @@ Peridoic 1D Mesh
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.numMesh.grid1D import Grid1D
+from grid1D import Grid1D
 
 class PeriodicGrid1D(Grid1D):
     """

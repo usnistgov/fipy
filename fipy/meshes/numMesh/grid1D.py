@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/8/06 {11:50:18 AM} 
+ #                                last update: 5/15/06 {3:52:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,10 +47,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 
-from fipy.meshes.numMesh.mesh1D import Mesh1D
-from fipy.meshes.meshIterator import FaceIterator
-from fipy.tools import vector
-from fipy.tools.dimensions.physicalField import PhysicalField
+from mesh1D import Mesh1D
 
 class Grid1D(Mesh1D):
     """
@@ -75,6 +72,7 @@ class Grid1D(Mesh1D):
 
     """
     def __init__(self, dx = 1., nx = None):
+        from fipy.tools.dimensions.physicalField import PhysicalField
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
@@ -117,11 +115,13 @@ class Grid1D(Mesh1D):
     def getFacesLeft(self):
         """Return face on left boundary of Grid1D as list.
         """
+        from fipy.meshes.meshIterator import FaceIterator
         return FaceIterator(mesh = self, ids = (0,))
         
     def getFacesRight(self):
         """Return face on right boundary of Grid1D as list.
         """
+        from fipy.meshes.meshIterator import FaceIterator
         return FaceIterator(mesh = self, ids = (self.numberOfFaces - 1,))
         
     def getScale(self):
@@ -130,6 +130,7 @@ class Grid1D(Mesh1D):
     def getPhysicalShape(self):
         """Return physical dimensions of Grid1D.
         """
+        from fipy.tools.dimensions.physicalField import PhysicalField
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
     def _getMeshSpacing(self):
@@ -141,11 +142,11 @@ class Grid1D(Mesh1D):
 ## pickling
 
     def __getstate__(self):
-        dict = {
+        return {
             'dx' : self.dx,            
-            'nx' : self.nx}
-        return dict
-
+            'nx' : self.nx
+        }
+        
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], nx = dict['nx'])
 
