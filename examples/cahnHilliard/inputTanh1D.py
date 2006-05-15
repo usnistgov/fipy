@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 8/10/05 {3:15:17 PM}
+ #                                last update: 5/15/06 {2:15:13 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -72,6 +72,12 @@ The Cahn-Hilliard equation can be rewritten in the following form,
     
 We solve the problem on a 1D mesh
 
+.. raw:: latex
+
+   \IndexClass{Grid2D}
+   
+..
+
     >>> L = 40.
     >>> nx = 1000
     >>> dx = L / nx
@@ -79,6 +85,12 @@ We solve the problem on a 1D mesh
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and create the solution variable
+
+.. raw:: latex
+
+   \IndexClass{CellVariable}
+   
+..
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
@@ -109,8 +121,11 @@ The boundary conditions for this problem are
        \end{aligned}
    \right\} \qquad \text{on $x = L$}
    $$
-
-or
+   or
+   \IndexClass{FixedValue}
+   \IndexClass{NthOrderBoundaryCondition}
+      
+..
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
@@ -132,6 +147,13 @@ we create the Cahn-Hilliard equation:
     >>> faceVar = var.getArithmeticFaceValue()
     >>> freeEnergyDoubleDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
+.. raw:: latex
+
+   \IndexClass{ImplicitDiffusionTerm}
+   \IndexClass{TransientTerm}
+   
+..
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
     >>> diffTerm2 = ImplicitDiffusionTerm(
@@ -139,23 +161,39 @@ we create the Cahn-Hilliard equation:
     >>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
     >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
+.. raw:: latex
+
+   \IndexClass{LinearLUSolver}
+   
+..
+
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> solver = LinearLUSolver(tolerance=1e-15, steps=100)
+    >>> solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 
 The solution to this 1D problem over an infinite domain is given by,
 
 .. raw:: latex
 
    $$ \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}} $$
+   or
+   \IndexModule{numerix}
+   \IndexFunction{sqrt}
+   \IndexFunction{exp}
+      
+..
 
-or
-
-    >>> import fipy.tools.numerix as numerix
+    >>> from fipy.tools import numerix
     >>> a = numerix.sqrt(asq)
     >>> answer = 1 / (1 + 
     ...     numerix.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+   
+..
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
