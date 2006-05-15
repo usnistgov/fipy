@@ -1002,6 +1002,13 @@ class LatexFormatter:
 
         indices = []
         u = uid
+
+        if u.is_class():
+            classCrossRef = '\\index{\\EpydocIndex[%s]{%s}|see{%%s}}\n' \
+              % (self._kind(u), self._dotted(u.shortname()))
+        else:
+            classCrossRef = None
+            
         while (u.is_routine() or u.is_class()):
             indices.insert(0, '\\EpydocIndex[%s]{%s}' % 
                 (self._kind(u), self._dotted(u.shortname())))
@@ -1011,11 +1018,19 @@ class LatexFormatter:
                           
         str = '!'.join(indices)
 
-        if pos == 'only': return '\\index{%s}\n' % str
-        elif pos == 'start': return '\\index{%s|(}\n' % str
-        elif pos == 'end': return '\\index{%s|)}\n' % str
+        if pos == 'only': 
+            term = '\\index{%s}\n' % str
+        elif pos == 'start': 
+            term = '\\index{%s|(}\n' % str
+        elif pos == 'end': 
+            term = '\\index{%s|)}\n' % str
         else:
             raise AssertionError('Bad index position %s' % pos)
+                
+        if pos in ['only', 'start'] and classCrossRef is not None:
+            term += classCrossRef % ('\\EpydocIndex[%s]{%s}' % (self._kind(u), self._dotted(u.name())))
+            
+        return term
 
     def _text_to_latex(self, str, nbsp=0, breakany=0):
         """
