@@ -59,8 +59,8 @@ def make(vars, title = None, limits = None):
                 
         viewerClassNames = []
         for viewerPath in viewerPaths:
-            path, file = os.path.split(viewerPath)
-            className, ext = os.path.splitext(file)
+            path, f = os.path.split(viewerPath)
+            className, ext = os.path.splitext(f)
             viewerClassNames.append(className)
 
 

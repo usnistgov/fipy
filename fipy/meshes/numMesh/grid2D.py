@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/5/06 {4:54:50 PM} 
+ #                                last update: 5/15/06 {4:17:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -223,12 +223,12 @@ class Grid2D(Mesh2D):
         Used internally to collect the necessary information to ``pickle`` the 
         `Grid2D` to persistent storage.
         """
-        dict = {
+        return {
             'dx' : self.dx,            
             'dy' : self.dy,
             'nx' : self.nx,
-            'ny' : self.ny}
-        return dict
+            'ny' : self.ny
+        }
 
     def __setstate__(self, dict):
         """

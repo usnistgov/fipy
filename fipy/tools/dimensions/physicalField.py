@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/19/06 {12:04:50 PM} 
+ #                                last update: 5/15/06 {3:57:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -189,7 +189,7 @@ class PhysicalField:
                 unit = _findUnit(s)
 #                   raise TypeError, 'No number found'
             else:
-                value = string.atof(match.group(0))
+                value = float(match.group(0))
                 unit = _findUnit(s[len(match.group(0)):])
             
         if type(value) in [type([]),type(())]:
@@ -286,7 +286,7 @@ class PhysicalField:
         # gets done.
         
         selfValue = self.value
-        if type(self.value) is type(Numeric.array((0))) and self.value.typecode() is 'b':
+        if type(self.value) is type(Numeric.array((0))) and self.value.typecode() == 'b':
             selfValue = 1. * self.value
             
         if _isVariable(other):
@@ -300,14 +300,14 @@ class PhysicalField:
                 new_value = sign1(selfValue)
             elif self.unit.isDimensionlessOrAngle():
                 otherValue = other
-                if type(other) is type(Numeric.array((0))) and other.typecode() is 'b':
+                if type(other) is type(Numeric.array((0))) and other.typecode() == 'b':
                     otherValue = 1. * other
                 new_value = sign1(selfValue) + sign2(otherValue)
             else:
                 raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
         else:
             otherValue = other.value
-            if type(other.value) is type(Numeric.array((0))) and other.value.typecode() is 'b':
+            if type(other.value) is type(Numeric.array((0))) and other.value.typecode() == 'b':
                 otherValue = 1. * other.value
 
             new_value = sign1(selfValue) + \

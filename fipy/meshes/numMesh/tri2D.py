@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 3/5/06 {8:15:53 AM} 
+ #                                last update: 5/15/06 {3:42:34 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -222,12 +222,12 @@ class Tri2D(Mesh2D):
 ## pickling
 
     def __getstate__(self):
-        dict = {
+        return {
             'dx' : self.dx,            
             'dy' : self.dy,
             'nx' : self.nx,
-            'ny' : self.ny}
-        return dict
+            'ny' : self.ny
+        }
 
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])

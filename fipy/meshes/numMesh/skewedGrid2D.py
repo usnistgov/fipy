@@ -6,7 +6,7 @@
  # 
  #  FILE: "SkewedGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 9/16/05 {12:41:57 PM} 
+ #                                last update: 5/15/06 {3:42:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -171,12 +171,12 @@ class SkewedGrid2D(Mesh2D):
 ## pickling
 
     def __getstate__(self):
-        dict = {
+        return {
             'dx' : self.dx,            
             'dy' : self.dy,
             'nx' : self.nx,
-            'ny' : self.ny}
-        return dict
+            'ny' : self.ny
+        }
 
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])

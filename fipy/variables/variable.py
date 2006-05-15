@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/5/06 {9:06:17 AM} 
+ #                                last update: 5/15/06 {3:58:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -508,7 +508,6 @@ class Variable(object):
         return self.value
         
     def getSubscribedVariables(self):
-        import weakref
         self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
         
         return self.subscribedVariables

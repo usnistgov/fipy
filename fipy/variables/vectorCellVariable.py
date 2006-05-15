@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 12/23/05 {3:36:29 PM} 
+ #                                last update: 5/15/06 {3:58:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@ class VectorCellVariable(Variable):
         self.arithmeticFaceValue = None
         self.harmonicFaceValue = None
 
-    def __call__(self, point = None, order = 0):
+    def __call__(self, point = None):
         if point != None:
             return self[self.getMesh()._getNearestCellID(point)]
         else:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 3/4/06 {1:20:22 AM} 
+ #                                last update: 5/15/06 {3:57:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -80,7 +80,6 @@ from Numeric import *
 
 import umath
 import MA
-import fipy.tools.inline.inline as inline
 
 def _isPhysical(arr):
     """
@@ -244,7 +243,7 @@ def arccos(arr):
         >>> try: 
         ...     print str(arccos(2.0)) == "nan"
         ... except OverflowError:
-        ...     pass
+        ...     print 1
         1
 
         >>> print tostring(arccos(array((0,0.5,1.0))), precision = 3)
@@ -289,7 +288,7 @@ def arccosh(arr):
         >>> try: 
         ...     print str(arccosh(0.0)) == "nan"
         ... except OverflowError:
-        ...     pass
+        ...     print 1
         1
 
         >>> print tostring(arccosh(array((1,2,3))), precision = 3)
@@ -326,7 +325,7 @@ def arcsin(arr):
         >>> try: 
         ...     print str(arcsin(2.0)) == "nan"
         ... except OverflowError:
-        ...     pass
+        ...     print 1
         1
 
         >>> print tostring(arcsin(array((0,0.5,1.0))), precision = 3)
@@ -910,6 +909,8 @@ def sqrtDot(a1, a2):
     
     Usually used with v1==v2 to return magnitude of v1.
     """
+    from fipy.tools.inline import inline
+
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
 ##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
@@ -933,6 +934,8 @@ def _sqrtDotPy(a1, a2):
 ##    return result
 
 def _sqrtDotIn(a1, a2):
+    from fipy.tools.inline import inline
+    
     unit1 = unit2 = 1
     if _isPhysical(a1):
 	unit1 = a1.inBaseUnits().getUnit()

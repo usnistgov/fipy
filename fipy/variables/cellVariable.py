@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 3/5/06 {7:28:41 AM} 
+ #                                last update: 5/15/06 {3:58:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,7 @@ class CellVariable(Variable):
 	    value = self.getValue(),
 	    hasOld = 0)
 	    
-    def __call__(self, point = None, order = 0):
+    def __call__(self, point = None):
 	if point != None:
 	    return self[self.getMesh()._getNearestCellID(point)]
 	else:
@@ -342,7 +342,7 @@ class CellVariable(Variable):
 	if self.old is not None:
 	    self.old._remesh(mesh)
 	self.mesh = mesh
-	self.markFresh()
+	self._markFresh()
 
     def _getShapeFromMesh(mesh):
         """
@@ -384,15 +384,13 @@ class CellVariable(Variable):
         Used internally to collect the necessary information to ``pickle`` the 
         `CellVariable` to persistent storage.
         """
-
-        dict = {
+        return {
             'mesh' : self.mesh,
             'name' : self.name,
             'value' : self.getValue(),
             'unit' : self.getUnit(),
             'old' : self.old
-            }
-        return dict
+        }
 
     def __setstate__(self, dict):
         """
@@ -407,7 +405,8 @@ class CellVariable(Variable):
         if dict['old'] is not None:
             hasOld = 1
 
-        self.__init__(dict['mesh'], name = dict['name'], value = dict['value'], unit = dict['unit'], hasOld = hasOld)
+        self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld)
+##         self.__init__(hasOld=hasOld, **dict)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
 

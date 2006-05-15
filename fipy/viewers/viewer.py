@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 3/16/06 {3:17:51 PM} 
+ #                                last update: 5/15/06 {4:02:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,7 +107,7 @@ class Viewer:
             
         return limit
         
-    def plot(self):
+    def plot(self, filename=None):
         """
         Update the display of the viewed variables.
         """

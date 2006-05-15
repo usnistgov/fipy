@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 5/4/06 {7:58:11 AM} 
+ #                                last update: 5/15/06 {3:58:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,7 +53,7 @@ class VectorFaceVariable(Variable):
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-    def __call__(self, point = None, order = 0):
+    def __call__(self, point = None):
         if point != None:
             return self[self.getMesh()._getNearestCellID(point)]
         else:
