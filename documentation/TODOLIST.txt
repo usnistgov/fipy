@@ -5,18 +5,10 @@ Future Work
 Release Goals 1.1
 -----------------
 
-- User feed back
-
-  * make 'from fipy import Class' work for common classes
-  * 'returnItems' is gross
-
 - Documentation:
 
   * Review all for accuracy/consistency.
   * time-steps and sweep documentation
-  * Add poly-crystal case.
-  * Add dendrite pic
-  * sort out efficiency docs
   * Guide coding style queries
 
     - f(a = b) -> f(a=b) everywhere in guide?
@@ -27,7 +19,6 @@ Release Goals 1.1
     - python punctutation.
       e.g. "This code shows: >>>" or "This code shows. >>>"
     - equation punctuation is inconsistent
-
 
 - Distribution
 
@@ -42,9 +33,13 @@ Release Goals 1.1
     and then tested non-locally (WINDOWS, MAC and LINUX).
   * remember to run the tests with --no-cache and --cache before dist.
   * remember to do a Windows build again.
+  * remove iterators directory
+  * add FAQ to website (maybe?)
 
 Long term Goals
 ---------------
+
+- Add dendrite pic
 
 - include dophyn comparison in efficiency discussion
 
