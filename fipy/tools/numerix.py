@@ -900,8 +900,38 @@ def dot(a1, a2, axis = 1):
     for arrays a1 and a2 of vectors v1 and v2
     
     We can't use Numeric.dot on an array of vectors
+
+    Test that Variables are returned as Variables.
+
+       >>> from fipy.meshes.grid2D import Grid2D
+       >>> mesh = Grid2D(nx=2, ny=1)
+       >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+       >>> v1 = VectorCellVariable(mesh=mesh, value=((0,1),(1,2)))
+       >>> v2 = array(((0,1),(1,2)))
+       >>> dot(v1, v2)._getVariableClass()
+       <class 'fipy.variables.cellVariable.CellVariable'>
+       >>> dot(v2, v1)._getVariableClass()
+       <class 'fipy.variables.cellVariable.CellVariable'>
+       >>> print dot(v1, v2)
+       [ 1., 5.,]
+       >>> dot(v1, v1)._getVariableClass()
+       <class 'fipy.variables.cellVariable.CellVariable'>
+       >>> print dot(v1, v1)
+       [ 1., 5.,]
+       >>> type(dot(v2, v2))
+       <type 'array'>
+       >>> print dot(v2, v2)
+       [1,5,]
+       
+    
     """
-    return sum((a1*a2)[:], axis)
+
+    if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
+        return a1.dot(a2)
+    elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
+        return a2.dot(a1)
+    else:
+        return sum((a1*a2)[:], axis)
 
 def sqrtDot(a1, a2):
     """Return array of square roots of vector dot-products
