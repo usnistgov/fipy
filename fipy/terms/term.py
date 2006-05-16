@@ -52,7 +52,7 @@ class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff = 1.):
+    def __init__(self, coeff=1.):
         """
         Create a `Term`.
 
@@ -63,79 +63,154 @@ class Term:
         """  
         self.coeff = coeff
 	self.geomCoeff = None
+        self._cacheMatrix = False
+        self.matrix = None
+        self._cacheRHSvector = False
+        self.RHSvector = None
         
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions, dt):
 	pass
-	
-    def _getFigureOfMerit(self):
-	return None
 
-    def _getResidual(self, matrix, var, RHSvector):
+    def _calcResidual(self, var, matrix, RHSvector):
+
 	Lx = matrix * Numeric.array(var[:])
-	
+      
 	residual = Lx - RHSvector
-	
+      
 	denom = max(abs(Lx))
 	if denom == 0:
 	    denom = max(abs(RHSvector))
 	if denom == 0:
 	    denom = 1.
-	    
+          
 	residual /= denom
-		
-	return abs(residual)
+      	
+	return numerix.max(abs(residual))
 
-    def _applyUnderRelaxation(self, matrix, var, RHSVector, underRelaxation):
+    def __buildMatrix(self, var, boundaryConditions, dt):
 
-        matrix.putDiagonal(matrix.takeDiagonal() / underRelaxation)
-        RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
-        
-        return matrix, RHSVector
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
 
-    def _isConverged(self):
-	return self.converged
+        return self._buildMatrix(var, boundaryConditions, dt)
 
-    def solve(self, var, solver = None, boundaryConditions = (), dt = 1., solutionTolerance = 1e-4, returnItems = (), underRelaxation = None):
+    def _solveLinearSystem(self, var, solver, matrix, RHSvector):
+
+        if self._cacheMatrix:
+            self.matrix = matrix
+
+        if self._cacheRHSvector:
+            self.RHSvector = RHSvector
+
+        from fipy.solvers.linearPCGSolver import LinearPCGSolver
+
+        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
+	array = var.getNumericValue()
+	solver._solve(matrix, array, RHSvector)
+	var[:] = array
+    
+    def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
-        Builds and solves the `Term`'s linear system once.
-        	
+        Builds and solves the `Term`'s linear system once. This method
+        does not return the residual. It should be used when the
+        residual is not required.
+      	
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
-           - `solutionTolerance`: A value that the residual must be less than so that `_isConverged()` returns `True`.
-           - `returnItems`: Tuple or list of strings representing items to be returned `['matrix', 'var', 'RHSvector', 'residual']`.
+
+	"""
+        self._verifyCoeffType(var)
+        
+        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+        
+        self._solveLinearSystem(var, solver, matrix, RHSvector)
+
+    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None):
+        r"""
+        Builds and solves the `Term`'s linear system once. This method
+        also recalculates and returns the residual as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
 	"""
-
-	if type(boundaryConditions) not in (type(()), type([])):
-            boundaryConditions = (boundaryConditions,)
-
- 	matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt = dt)
-
+        self._verifyCoeffType(var)
+        
+        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+ 	
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
-        residual = None
-        if 'residual' in returnItems:
-            residual = self._getResidual(matrix, var, RHSvector)
+        residual = self._calcResidual(var, matrix, RHSvector)
         
-        from fipy.solvers.linearPCGSolver import LinearPCGSolver
-        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
-	    
-	array = var.getNumericValue()
-	solver._solve(matrix, array, RHSvector)
-	var[:] = array
-	
-	self.converged = Numeric.alltrue(residual < solutionTolerance)
+        self._solveLinearSystem(var, solver, matrix, RHSvector)
 
-        if len(returnItems) > 0:
-            dict = { 'matrix' : matrix, 'var' : var, 'RHSvector' : RHSvector, 'residual' : residual}
-            return tuple([dict[item] for item in returnItems if dict.has_key(item)])
-            
+        return residual
+
+    def _verifyCoeffType(self, var):
+        pass
+
+    def cacheMatrix(self):
+        r"""
+        Informs `solve()` and `sweep()` to cache their matrix so
+        that `getMatrix()` can return the matrix.
+        """
+        self._cacheMatrix = True
+
+    def getMatrix(self):
+        r"""
+        Return the matrix caculated in `solve()` or `sweep()`. The
+        cacheMatrix() method should be called before `solve()` or
+        `sweep()` to cache the matrix.
+        """
+        if not self._cacheMatrix: 
+            import warnings
+            warnings.warn("""cacheMatrix() should be called followed by sweep() or solve()
+                          to calculate the matrix. None will be returned on this occasion.""",
+                          UserWarning, stacklevel=2)
+            self.cacheMatrix()
+
+        return self.matrix
+
+    def cacheRHSvector(self):
+        r"""        
+        Informs `solve()` and `sweep()` to cache their right hand side
+        vector so that `getRHSvector()` can return it.
+        """
+        self._cacheRHSvector = True
+
+    def getRHSvector(self):
+        r"""
+        Return the RHS vector caculated in `solve()` or `sweep()`. The
+        cacheRHSvector() method should be called before `solve()` or
+        `sweep()` to cache the vector.
+        """
+        if not self._cacheRHSvector: 
+            import warnings
+            warnings.warn("""getRHSvector should be called after cacheRHSvector() and either sweep() or solve()
+                          to calculate the RHS vector. None will be returned on this occasion.""",
+                          UserWarning, stacklevel=2)
+            self.cacheRHSvector()
+
+        return self.RHSvector
+    
+
+
+    def _applyUnderRelaxation(self, matrix, var, RHSVector, underRelaxation):
+        matrix.putDiagonal(matrix.takeDiagonal() / underRelaxation)
+        RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
+        return matrix, RHSVector
+
     def _getDefaultSolver(self, solver):
         return None
         
@@ -146,13 +221,14 @@ class Term:
             return False
 
     def __add__(self, other):
-        """
+        r"""
         Add a `Term` to another `Term`, number or variable.
 
            >>> Term(coeff = 1.) + 10.
            (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = 10.0))
            >>> Term(coeff = 1.) + Term(coeff = 2.)
            (Term(coeff = 1.0) + Term(coeff = 2.0))
+
         """
         
         if self._otherIsZero(other):
@@ -164,7 +240,7 @@ class Term:
     __radd__ = __add__
     
     def __neg__(self):
-        """
+        r"""
          Negate a `Term`.
 
            >>> -Term(coeff = 1.)
@@ -174,7 +250,7 @@ class Term:
         return self.__class__(coeff = -self.coeff)
 
     def __pos__(self):
-        """
+        r"""
         Posate a `Term`.
 
            >>> +Term(coeff = 1.)
@@ -184,7 +260,7 @@ class Term:
         return self
         
     def __sub__(self, other):
-        """
+        r"""
         Subtract a `Term` from a `Term`, number or variable.
 
            >>> Term(coeff = 1.) - 10.
@@ -200,7 +276,7 @@ class Term:
             return _SubtractionTerm(term1 = self, term2 = other)
 
     def __rsub__(self, other):
-        """
+        r"""
         Subtract a `Term`, number or variable from a `Term`.
 
            >>> 10. - Term(coeff = 1.)
@@ -214,7 +290,7 @@ class Term:
             return _SubtractionTerm(term1 = other, term2 = self)
         
     def __eq__(self, other):
-        """
+        r"""
         This method allows `Terms` to be equated in a natural way. Note that the
         following does not return `False.`
 
