@@ -214,20 +214,37 @@ Set up the viewers,
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
     ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
-    
-Iterate for a set number of sweeps.
+
+.. raw:: latex
+
+    \IndexFunction{sweep}
+    \IndexFunction{cacheMatrix}
+    \IndexFunction{getMatrix}
+    \IndexFunction{cacheRHSvector}
+    \IndexFunction{getRHSvector}
+   
+..
+
+Below, we iterate for a set number of sweeps. We use the `sweep()`
+method instead of `solve()` because we require the residual for
+output.  We also use the `cacheMatrix()`, `getMatrix()`,
+`cacheRHSvector()` and `getRHSvector()` because both the matrix and
+RHS vector are required by the SIMPLE algorithm. Additionally, the
+`sweep()` method is passed an `underRelaxation` factor to relax the
+solution. This argument cannot be passed to `solve()`.
 
     >>> for sweep in range(sweeps):
     ...
     ...     ## solve the Stokes equations to get starred values
-    ...     (xmat, xres) = xVelocityEq.solve(var=xVelocity,
-    ...                                      boundaryConditions=bcsX,
-    ...                                      returnItems=['matrix', 'residual'],
-    ...                                      underRelaxation=velocityRelaxation)
-    ...     (yres,) = yVelocityEq.solve(var=yVelocity,
-    ...                                 boundaryConditions=bcsY,
-    ...                                 returnItems=['residual'],
-    ...                                 underRelaxation=velocityRelaxation)\
+    ...     xVelocityEq.cacheMatrix()
+    ...     xres = xVelocityEq.sweep(var=xVelocity,
+    ...                              boundaryConditions=bcsX,
+    ...                              underRelaxation=velocityRelaxation)
+    ...     xmat = xVelocityEq.getMatrix()
+    ...
+    ...     yres = yVelocityEq.sweep(var=yVelocity,
+    ...                              boundaryConditions=bcsY,
+    ...                              underRelaxation=velocityRelaxation)
     ...
     ...     ## update the ap coefficient from the matrix diagonal
     ...     ap[:] = -xmat.takeDiagonal()
@@ -239,8 +256,9 @@ Iterate for a set number of sweeps.
     ...         velocity[id,:] = 0.
     ...
     ...     ## solve the pressure correction equation
-    ...     pres, rhs = pressureCorrectionEq.solve(var=pressureCorrection,
-    ...                                            returnItems=['residual', 'RHSvector'])
+    ...     pressureCorrectionEq.cacheRHSvector()
+    ...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
+    ...     rhs = pressureCorrectionEq.getRHSvector()
     ...
     ...     ## update the pressure using the corrected value but hold one cell fixed
     ...     pressure.setValue(pressure + pressureRelaxation * \
@@ -253,10 +271,10 @@ Iterate for a set number of sweeps.
     ...
     ...     if __name__ == '__main__':
     ...         if sweep%1 == 0:
-    ...             print 'sweep:',sweep,', x residual:', max(abs(xres)), \
-    ...                                  ', y residual', max(abs(yres)), \
-    ...                                  ', p residual:', max(abs(pres)), \
-    ...                                  ', continuity:', max(abs(rhs))
+    ...             print 'sweep:',sweep,', x residual:',xres, \
+    ...                                  ', y residual',yres, \
+    ...                                  ', p residual:',pres, \
+    ...                                  ', continuity:',max(abs(rhs))
     ...
     ... 	    viewer.plot()
 
