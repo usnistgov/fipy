@@ -583,24 +583,24 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 .. raw:: latex
 
    \IndexClass{LinearLUSolver}
-   \IndexModule{numerix}
-   \IndexFunction{max}
-   
+   \IndexFunction{solve}
+
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> solver = LinearLUSolver(tolerance=1e-3)
+We now use the "sweep()" method instead of "solve()" because we
+require the residual.
 
-    >>> from fipy.tools.numerix import max
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> solver = LinearLUSolver(tolerance=1e-10)
 
     >>> phase.updateOld()
     >>> C.updateOld()
-    >>> phaseRes = diffRes = 1e20
-    >>> while max(phaseRes) > 1e-3 or max(diffRes) > 1e-3:
-    ...     phaseRes, = phaseEq.solve(var=phase, dt=dt, returnItems = ('residual',))
-    ...     diffRes, = diffusionEq.solve(var=C, dt=dt, solver=solver, 
-    ...                                  returnItems = ('residual',))
-    >>> if __name__ == '__main__':    
+    >>> phaseRes = 1e+10
+    >>> diffRes = 1e+10
+    >>> while phaseRes > 1e-3 or diffRes > 1e-3:
+    ...     phaseRes = phaseEq.sweep(var=phase, dt=dt)
+    ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("stationary phase field")
 
@@ -644,12 +644,12 @@ diffusion and of phase transformation compete with each other).
     >>> for i in range(100):
     ...     phase.updateOld()
     ...     C.updateOld()
-    ...     phaseRes = diffRes = 1e20
-    ...     while max(phaseRes) > 1e-3 or max(diffRes) > 1e-3:
-    ...         phaseRes, = phaseEq.solve(var=phase, dt=dt, returnItems = ('residual',))
-    ...         diffRes, = diffusionEq.solve(var=C, dt=dt, solver=solver, 
-    ...                                      returnItems = ('residual',))
-    ...     if __name__ == '__main__': 
+    ...     phaseRes = 1e+10
+    ...     diffRes = 1e+10
+    ...     while phaseRes > 1e-3 or diffRes > 1e-3:
+    ...         phaseRes = phaseEq.sweep(var=phase, dt=dt)
+    ...         diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
+    ...     if __name__ == '__main__':
     ...         viewer.plot()
 
     >>> if __name__ == '__main__': 

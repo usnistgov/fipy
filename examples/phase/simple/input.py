@@ -256,7 +256,7 @@ transient term from
   
    Equation~\eqref{eq-phase:simple}
    \IndexClass{TransientTerm}
-       
+
 ..
     
     >>> from fipy.terms.transientTerm import TransientTerm
@@ -333,7 +333,7 @@ must never be negative.
 There are an infinite number of choices for this linearization, but
 many do not converge very well. One choice is that used by Ryo
 Kobayashi:
-    
+
 .. raw:: latex
 
    \IndexClass{ImplicitSourceTerm}
@@ -502,8 +502,16 @@ form of the source term shown above
     >>> eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
     ...                         + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
 
-In order to separate the effect of forming the phase field interface from
-the kinetics of moving it, we first equilibrate at the melting point
+.. raw:: latex
+
+    \IndexFunction{sweep}
+
+..
+
+In order to separate the effect of forming the phase field interface
+from the kinetics of moving it, we first equilibrate at the melting
+point. We now use the "sweep()" method instead of "solve()" because we
+require the residual.
     
 .. raw:: latex
 
@@ -517,9 +525,9 @@ the kinetics of moving it, we first equilibrate at the melting point
     >>> timeStep = 1e-6
     >>> for i in range(10):
     ...     phase.updateOld()
-    ...     res = 1e20
-    ...     while max(res) > 1e-5:
-    ...         res, = eq.solve(var=phase, dt=timeStep, returnItems = ('residual',))
+    ...     res = 1e+10
+    ...     while res > 1e-5:
+    ...         res = eq.sweep(var=phase, dt=timeStep)
     >>> if __name__ == '__main__':
     ...     viewer2.plot()
 
@@ -538,15 +546,16 @@ more than one grid point per time step,
    
 ..
 
+Again we use the "sweep()" method as a replacement for "solve()".
+
     >>> velocity = beta * abs(Tm - T()) # cm / s
     >>> timeStep = .1 * dx / velocity # s
-
     >>> elapsed = 0
     >>> while elapsed < 0.1 * L / velocity:
     ...     phase.updateOld()
-    ...     res = 1e20
-    ...     while max(res) > 1e-5:
-    ...         res, = eq.solve(var=phase, dt=timeStep, returnItems = ('residual',))
+    ...     res = 1e+10
+    ...     while res > 1e-5:
+    ...         res = eq.sweep(var=phase, dt=timeStep)
     ...     elapsed += timeStep
     ...     if __name__ == '__main__':
     ...         viewer2.plot()
