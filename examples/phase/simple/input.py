@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {3:50:39 PM} 
+ #                                last update: 5/16/06 {1:30:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -355,6 +355,11 @@ relaxation approach, but in only 8 sweeps (note that because there is no
 transient term, these sweeps are not time steps, but rather repeated
 iterations at the same time step to reach a converged solution).
 
+.. note:: We use `solve()` instead of `sweep()` because we don't care about
+   the residual. Either function would work, but `solve()` is a bit faster.
+   
+..
+    
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L/2)
     
@@ -502,25 +507,16 @@ form of the source term shown above
     >>> eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
     ...                         + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
 
-.. raw:: latex
-
-    \IndexFunction{sweep}
-
-..
-
 In order to separate the effect of forming the phase field interface
 from the kinetics of moving it, we first equilibrate at the melting
-point. We now use the "sweep()" method instead of "solve()" because we
+point. We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
     
 .. raw:: latex
 
-   \IndexModule{numerix}
-   \IndexFunction{max}
+   \IndexFunction{sweep}
 
 ..
-
-    >>> from fipy.tools.numerix import max
 
     >>> timeStep = 1e-6
     >>> for i in range(10):
@@ -546,7 +542,7 @@ more than one grid point per time step,
    
 ..
 
-Again we use the "sweep()" method as a replacement for "solve()".
+Again we use the "`sweep()`" method as a replacement for "`solve()`".
 
     >>> velocity = beta * abs(Tm - T()) # cm / s
     >>> timeStep = .1 * dx / velocity # s

@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:30:34 PM}
+ #                                last update: 5/16/06 {1:32:30 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -215,6 +215,14 @@ Set up the viewers,
     ...     from fipy.viewers import make
     ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
 
+Below, we iterate for a set number of sweeps. We use the `sweep()`
+method instead of `solve()` because we require the residual for
+output.  We also use the `cacheMatrix()`, `getMatrix()`,
+`cacheRHSvector()` and `getRHSvector()` because both the matrix and
+RHS vector are required by the SIMPLE algorithm. Additionally, the
+`sweep()` method is passed an `underRelaxation` factor to relax the
+solution. This argument cannot be passed to `solve()`.
+
 .. raw:: latex
 
     \IndexFunction{sweep}
@@ -224,14 +232,6 @@ Set up the viewers,
     \IndexFunction{getRHSvector}
    
 ..
-
-Below, we iterate for a set number of sweeps. We use the `sweep()`
-method instead of `solve()` because we require the residual for
-output.  We also use the `cacheMatrix()`, `getMatrix()`,
-`cacheRHSvector()` and `getRHSvector()` because both the matrix and
-RHS vector are required by the SIMPLE algorithm. Additionally, the
-`sweep()` method is passed an `underRelaxation` factor to relax the
-solution. This argument cannot be passed to `solve()`.
 
     >>> for sweep in range(sweeps):
     ...

@@ -78,8 +78,8 @@
                 explicit forms.
             \end{reSTadmonition}
         
-            \IndexPackage[How do I represent a diffusion term
-            $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?]
+            \subsection{How do I represent a diffusion term
+            $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?}
             \hspace*{\fill}
             
             Either
@@ -338,48 +338,137 @@
         deprecated in favor of \verb+iterations=+ to make the role
         clearer.
         \end{reSTadmonition}
-        Solver iterations are modified in
+        Solver iterations are changed from their defaults in
         Examples~\ref{examples:cahnHilliard:inputTanh1D},
         \ref{examples:flow:stokesCavity}, and
         \ref{chap:Update0.1to1.0}.
         
-        \item[sweeps] This middle layer of repetition is importrant
+        \item[sweeps] This middle layer of repetition is important
         when a PDE is non-linear (\emph{e.g.}, a diffusivity that
         depends on concentration) or when multiple PDEs are coupled
         (\emph{e.g.}, if solute diffusivity depends on temperature and
         thermal conductivity depends on concentration). Even if the
         \Class{Solver} solves the \emph{linear} approximation of the
         PDE to absolute perfection by performing an infinite number of
-        \emph{iterations}, the solution may still not be a very good
+        iterations, the solution may still not be a very good
         representation of the actual \emph{non-linear} PDE. If we
         resolve the same equation \emph{at the same point in elapsed
         time}, but use the result of the previous solution instead of 
         the previous timestep, then we can get a refined solution to 
-        the \emph{non-linear} PDE. This process is known as 
-        ``sweeping''. To sweep in \FiPy{}, we need to do two things 
-        differently,
-        
-        \item[timesteps] This is the outermost layer of repetition, 
-        and is of most interest to the user.
+        the \emph{non-linear} PDE in a process known as ``sweeping.'' 
+        \begin{reSTadmonition}[Note]
+        Despite references to the ``previous timestep,'' sweeping is 
+        not limited to time-evolving problems. Nonlinear sets of 
+        quasi-static or steady-state PDEs can require sweeping, too.
+        \end{reSTadmonition}
+        We need to distinguish between the value of the variable at
+        the last timestep and the value of the variable at the last
+        sweep (the last cycle where we tried to solve the
+        \emph{current} timestep). This is done by first modifying the
+        way the variable is created:
+        \begin{quote}
+\begin{verbatim}
+>>> myVar = CellVariable(..., hasOld=1)
+\end{verbatim}
+        \end{quote}
+        and then by explicitly moving the current value of the 
+        variable into the ``old'' value only when we want to:
+        \begin{quote}
+\begin{verbatim}
+>>> myVar.updateOld()
+\end{verbatim}
+        \end{quote}
+        Finally, we will need to repeatedly solve the equation until 
+        it gives a stable result. To clearly distinguish that a 
+        single cycle will not truly ``solve'' the equation, we invoke 
+        a different method ``\verb+sweep()+''\IndexFunction{sweep}:
+        \begin{quote}
+\begin{verbatim}
+>>> for sweep in range(sweeps):
+...     eq.sweep(var=myVar, ...)
+\end{verbatim}
+        \end{quote}
+        Even better than sweeping a fixed number of cycles is to do it 
+        until the non-linear PDE has been solved satisfactorily:
+        \begin{quote}
+\begin{verbatim}
+>>> while residual > desiredResidual:
+...     residual = eq.sweep(var=myVar, ...)
+\end{verbatim}
+        \end{quote}
+        Sweeps are used to achieve better solutions in
+        Examples~\ref{examples:diffusion:mesh1D}, 
+        \ref{examples:phase:simple:input}, 
+        \ref{examples:phase:binary}, and \ref{examples:flow:stokesCavity}.
+
+        \item[timesteps] This outermost layer of repetition is of most
+        practical interest to the user. Understanding the time
+        evolution of a problem is frequently the goal of studying a
+        particular set of PDEs. Moreover, even when only an
+        equilibrium or steady-state solution is desired, it may not be
+        possible to simply solve that directly, due to non-linear
+        coupling between equations or to boundary conditions or
+        initial conditions. Some types of PDEs have fundamental 
+        limits to how large a timestep they can take before they 
+        become either unstable or inaccurate.
+        \begin{reSTadmonition}[Note]
+        Stability and accuracy are distinctly different. An unstable 
+        solution is often said to ``blow up'', with radically 
+        different values from point to point, often diverging to 
+        infinity. An inaccurate solution may look perfectly 
+        reasonable, but will disagree significantly from an 
+        analytical solution or from a numerical solution obtained by 
+        taking either smaller or larger timesteps. 
+        \end{reSTadmonition}
+        For all of these reasons, you will frequently need to advance
+        a problem in time and to choose an appropriate interval
+        between solutions. This can be simple:
+        \begin{quote}
+\begin{verbatim}
+>>> timeStep = 1.234e-5
+>>> for step in range(steps):
+...     eq.solve(var=myVar, dt=timeStep, ...)
+\end{verbatim}
+        \end{quote}
+        or more elaborate:
+        \begin{quote}
+\begin{verbatim}
+>>> timeStep = 1.234e-5
+>>> elapsedTime = 0
+>>> while elapsedTime < totalElapsedTime:
+...     eq.solve(var=myVar, dt=timeStep, ...)
+...     elapsedTime += timeStep
+...     timeStep = SomeFunctionOfVariablesAndTime(myVar1, myVar2, elapedTime)
+\end{verbatim}
+        \end{quote}
+
+        A majority of the examples in this manual illustrate time
+        evolving behavior. Notably, boundary conditions are made a
+        function of elapsed time in
+        Example~\ref{examples:diffusion:mesh1D}. The timestep is
+        chosen based on the expected interfacial velocity in
+        Example~\ref{examples:phase:simple:input}. The timestep is
+        gradually increased as the kinetics slow down in
+        Example~\ref{examples:cahnHilliard:inputTanh1D}.
     
     \end{description}
     
-    We can (and often do) combine all three layers of repetition:
+    Finally, we can (and often do) combine all three layers of repetition:
     \begin{quote}
 \begin{verbatim}
 >>> myVar = CellVariable(..., hasOld=1)
-: 
-:
+    : 
+    :
 >>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6) 
-: 
-:
+    : 
+    :
 >>> while elapsedTime < totalElapsedTime:
 ...     myVar.updateOld()
-...     while residual > minResidual:
-...         res = eq.sweep(...
-
->>> eq.solve(..., solver=mySolver, ...)
+...     while residual > desiredResidual:
+...         residual = eq.sweep(var=myVar, dt=timeStep, ...)
+...     elapsedTime += timeStep
 \end{verbatim}
+    \end{quote}
 
     \section{Why the distinction between \Class{CellVariable} and
     \Class{FaceVariable} coefficients?}  \FiPy{} solves field

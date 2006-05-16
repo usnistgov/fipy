@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/15/06 {2:58:37 PM}
+ #                                 last update: 5/16/06 {1:31:28 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -584,10 +584,11 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 
    \IndexClass{LinearLUSolver}
    \IndexFunction{solve}
+   \IndexFunction{sweep}
 
 ..
 
-We now use the "sweep()" method instead of "solve()" because we
+We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
     >>> from fipy.solvers.linearLUSolver import LinearLUSolver
