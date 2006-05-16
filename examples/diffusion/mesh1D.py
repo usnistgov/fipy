@@ -139,7 +139,7 @@ created with these faces and a value (`valueLeft`).
 
    .. raw:: latex
 
-      $ \nabla \phi \rvert_\text{someFaces} = 0 $.
+      $ \vec{n} \cdot \nabla \phi \rvert_\text{someFaces} = 0 $.
 
 If you have ever tried to numerically solve
 
@@ -190,9 +190,9 @@ diffusion problem is given by
    the result is tested against the expected profile: 
    \IndexModule{numerix}
    \IndexFunction{sqrt}
-   
+
 ..
-    
+
     >>> x = mesh.getCellCenters()[...,0]
     >>> t = timeStepDuration * steps
     >>> from fipy.tools.numerix import sqrt
@@ -617,8 +617,8 @@ diffusivity cases
 
 .. raw:: latex
 
-   Although this problem does not exact transient solution, it can be
-   solved in steady-state, with
+   Although this problem does not have an exact transient solution, it
+   can be solved in steady-state, with
    \[
        \phi(x) = 1 - \sqrt{\frac{x}{L}}
    \]
@@ -636,7 +636,23 @@ analytical solution from before.
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
-We now repeatedly run the problem with increasing numbers of sweeps.
+.. raw:: latex
+
+    \IndexFunction{sweep}
+    \IndexFunction{solve}
+
+..
+
+As described above, an inner "sweep" loop is generally required for
+the solution of non-linear or multiple equation sets. Often a
+conditional is required to exit this "sweep" loop given some
+convergence criteria. Instead of using the `solve()` method equation,
+when sweeping, it is often useful to call `sweep()` instead. The
+`sweep()` method behaves the same way as `solve()`, but returns the
+residual that can then be used as part of the exit condition.
+
+We now repeatedly run the problem with increasing numbers of
+sweeps.
 
     >>> for sweeps in range(1,5):
     ...     phi[0].setValue(valueRight)
@@ -646,10 +662,9 @@ We now repeatedly run the problem with increasing numbers of sweeps.
     ...         
     ...         # but "sweep" many times per time step
     ...         for sweep in range(sweeps):
-    ...             res, = eq.solve(var=phi[0],
-    ...                             boundaryConditions=BCs,
-    ...                             dt=timeStepDuration,
-    ...                             returnItems = ('residual',))
+    ...             res = eq.sweep(var=phi[0],
+    ...                            boundaryConditions=BCs,
+    ...                            dt=timeStepDuration)
     ...         if __name__ == '__main__':
     ...             viewer.plot()
     ...             
@@ -677,12 +692,12 @@ can just solve for it directly
     >>> eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
     >>> phi[0].setValue(valueRight)
-    >>> res = 1e20
+    >>> res = 1e+10
     >>> while res > 1e-6:
-    ...     res, = eq.solve(var=phi[0],
-    ...                     boundaryConditions=BCs,
-    ...                     dt=timeStepDuration,
-    ...                     returnItems = ('residual',))
+    ...     res = eq.sweep(var=phi[0],
+    ...                    boundaryConditions=BCs,
+    ...                    dt=timeStepDuration)
+
 
     >>> print phi[0].allclose(phiAnalytical, atol = 1e-1)
     1
@@ -723,12 +738,11 @@ remaining lines, leaving::
 
     eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
     phi[0].setValue(valueRight)
-    res = 1e20
+    res = 1e+10
     while res > 1e-6:
-        res, = eq.solve(var=phi[0],
-                        boundaryConditions=BCs,
-                        dt=timeStepDuration,
-                        returnItems = ('residual',))
+        res = eq.sweep(var=phi[0],
+                       boundaryConditions=BCs,
+                       dt=timeStepDuration)
 
     print phi[0].allclose(phiAnalytical, atol = 1e-1)
     # Expect:
@@ -748,11 +762,12 @@ like this from some `.../example.py` by typing::
 at the command line.
 
 Most of the |FiPy| examples will be a
-mixture of plain scripts and doctest documentation/tests.  
+mixture of plain scripts and doctest documentation/tests.
 
 .. |FiPy| raw:: latex
 
    \FiPy{}
+
 """
 
 __docformat__ = 'restructuredtext'
