@@ -143,6 +143,8 @@ This problem has the analytical solution
 
    $$\psi(x) = \frac{x^2}{2} - 2x$$
 
+..
+
     >>> x = mesh.getCellCenters()[:,0]
     >>> analytical = CellVariable(mesh=mesh, name="analytical solution", value=(x**2)/2 - 2*x)
 
@@ -218,7 +220,8 @@ and again view the result
    :scale: 50
    :align: center
 
-Finally, we segregate all of the electrons to left side of the domain
+Finally, we segregate all of the electrons to the left side of the
+domain
 
 .. raw:: latex
 
