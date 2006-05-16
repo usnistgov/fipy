@@ -926,6 +926,7 @@ def dot(a1, a2, axis = 1):
     
     """
 
+    ## have to check MA since MA's have dot() method!!!
     if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
         return a1.dot(a2)
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
