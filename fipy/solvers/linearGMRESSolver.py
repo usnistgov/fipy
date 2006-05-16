@@ -66,21 +66,11 @@ class LinearGMRESSolver(Solver):
     
     def _solve(self, L, x, b):
 
-## 	print "L: ", L
-## 	print "b: ", b
-## 	print "x: ", x
-	
 	A = L._getMatrix().to_csr()
         
         Assor=precon.jacobi(L._getMatrix())
         
         info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
-        
-## 	print info, iter, relres
-	
-## 	y = x.copy()
-## 	L.matvec(x,y)
-## 	print "L * x: ", y
 	
 	if (info != 0):
 	    print >> sys.stderr, 'gmres not converged'
