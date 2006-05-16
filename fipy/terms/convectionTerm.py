@@ -148,20 +148,17 @@ class ConvectionTerm(FaceTerm):
 
 	return self.stencil
 
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver):        
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
-        from fipy.solvers.linearCGSSolver import LinearCGSSolver
-        return solver or LinearCGSSolver()
+        from fipy.solvers.linearLUSolver import LinearLUSolver
+        return solver or LinearLUSolver()
 
-    def solve(self, var, solver=None, boundaryConditions=(), dt=1., solutionTolerance=1e-4, returnItems=(), underRelaxation=None):
+    def _verifyCoeffType(self, var):
         if not isinstance(self.coeff, VectorFaceVariable) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
-        
-        return FaceTerm.solve(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, solutionTolerance=solutionTolerance, returnItems=returnItems, underRelaxation=underRelaxation)
-
 
 def _test(): 
     import doctest
