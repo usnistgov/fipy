@@ -54,7 +54,8 @@ def _suite():
             'exponential2D.tri2Dinput',
             'exponential1DSource.tri2Dinput',
             'powerLaw1D.tri2Dinput',
-            'advection.inputVanLeerUpwind'
+            'advection.inputVanLeerUpwind',
+            'peclet'
         ), base = __name__)
     
 if __name__ == '__main__':
