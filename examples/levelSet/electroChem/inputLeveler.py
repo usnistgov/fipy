@@ -433,12 +433,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
             var.updateOld()
 
         for eqn, var, BCs in eqnTuple:
-            if isinstance(eqn, AdsorbingSurfactantEquation):
-                eqn.solve(var, boundaryConditions = BCs, dt = dt)
-                res = (0.,0.)
-            else:
-                res, = eqn.solve(var, boundaryConditions = BCs, dt = dt, returnItems = ('residual',))
-
+            eqn.solve(var, boundaryConditions = BCs, dt = dt)
+            
         totalTime += dt
 
     testFile = 'testLeveler.gz'
