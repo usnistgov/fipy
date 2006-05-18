@@ -388,12 +388,15 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 	    os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
 	    os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
 	    
-	    print "setting group and ownership of tarballs..."
-	    os.system('chmod -R g+w dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
-	    os.system('chgrp -R pfm dist/FiPy-%s.tar.gz'%self.distribution.metadata.get_version())
-	    
-	    print "linking tarballs to website..."
-	    os.system('ln -sf ../../../dist/FiPy-%s.tar.gz documentation/www/download/'%self.distribution.metadata.get_version())
+            for end in ('tar.gz', 'win32.exe'):
+                file = 'dist/FiPy-%s.%s'%(self.distribution.metadata.get_version(), end)
+                print "setting group and ownership for %s ..."%file
+                os.system('chmod -R g+w %s'%file)
+                os.system('chgrp -R pfm %s'%file)
+
+                print "linking %s to website ..."%file
+                os.system('ln -sf ../../../%s documentation/www/download/'%file)
+                
 
         if self.upload or self.uploadwww:
                  
@@ -610,12 +613,12 @@ class efficiency_test(Command):
                     
                 f.write(output + '\n')
                 f.flush()
-                
+
                 numberOfElements *= self.factor
-                
+
             f.close()
 
-f = open('README.txt', 'r') 
+f = open('README.txt', 'r')
 long_description = '\n' + f.read() + '\n'
 f.close()
 	
