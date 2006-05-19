@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 5/15/06 {3:03:59 PM}
+ #                                last update: 5/18/06 {8:41:33 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -288,7 +288,7 @@ We step the solution in time, plotting as we go if running interactively,
     ...     phaseEq.solve(phase, dt=timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
-    ... 	thetaProductViewer.plot()
+    ...         thetaProductViewer.plot()
     
 The solution is compared against Ryo Kobayashi's test data
 

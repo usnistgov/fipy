@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:46:01 PM} { 1:23:41 PM}
+ #                                last update: 5/18/06 {8:41:56 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -327,10 +327,10 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-	    from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
+            from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
         except:
-	    from fipy.viewers import make
+            from fipy.viewers import make
             viewers = (
                 make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
                 make(catalystVar.getInterfaceVar()))
@@ -342,7 +342,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     for step in range(numberOfSteps):
 
- 	if step % 5 == 0:
+        if step % 5 == 0:
             for viewer in viewers:
                 viewer.plot()
 

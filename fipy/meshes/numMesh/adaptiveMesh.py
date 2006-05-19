@@ -7,7 +7,7 @@
  # 
  #  FILE: "adaptiveMesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/3/06 {11:21:50 PM} 
+ #                                last update: 5/18/06 {8:38:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -160,8 +160,8 @@ class _AdaptiveMesh2D(GmshImporter2D):
     def _writeGeometryFile(self):
         ## do the geometry file
         import tempfile
-	(f, filename) = tempfile.mkstemp('.geo')
-	
+        (f, filename) = tempfile.mkstemp('.geo')
+        
         geomFile = open(filename, mode = 'w')
         ## create the points
         pointList = ["Point(" + str(i + 1) + ") = " + _bracedList(self.geometryPoints[i]) + " ; \n" for i in range(len(self.geometryPoints))]
@@ -181,8 +181,8 @@ class _AdaptiveMesh2D(GmshImporter2D):
         index = index + 1
         ## close the file
         geomFile.close()
-	
-	return filename
+        
+        return filename
     
     def _createBackgroundMesh(self):
         ## create the background mesh (this works for Triangular Meshes ONLY)
@@ -202,16 +202,16 @@ class _AdaptiveMesh2D(GmshImporter2D):
     def _writeBackgroundMesh(self):
         ## write the mesh
         import tempfile
-	(f, bgFile) = tempfile.mkstemp('.pos')
-	
+        (f, bgFile) = tempfile.mkstemp('.pos')
+        
         bgmeshFile = open(bgFile, mode = 'w')
         bgmeshFile.write("View \"characteristic lengths\" {")
         for i in range(len(self.varMesh.getCellCenters())):
             bgmeshFile.write("ST" + _parenList(self.cellOutputs[i]) + _bracedList(self.cellVertexValues[i]) + ";\n")
         bgmeshFile.write("};")
         bgmeshFile.close()
-	
-	return bgFile
+        
+        return bgFile
 
 def _test():
     import doctest

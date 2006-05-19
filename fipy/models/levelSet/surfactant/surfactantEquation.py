@@ -7,7 +7,7 @@
  # 
  #  FILE: "SurfactantEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 9/16/05 {1:28:57 PM} 
+ #                                last update: 5/18/06 {8:35:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,7 +79,7 @@ class SurfactantEquation:
     def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
         """
         Builds and solves the `SurfactantEquation`'s linear system once.
-        	
+                
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
@@ -88,7 +88,7 @@ class SurfactantEquation:
 
         """
 
-	if type(boundaryConditions) not in (type(()), type([])):
+        if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
         self.eq.solve(var,

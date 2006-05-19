@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 12/22/05 {3:59:41 PM} 
+ #                                last update: 5/18/06 {8:39:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,25 +49,25 @@ class _ModCellGradVariable(_CellGradVariable):
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
         
-	inline._runInlineLoop2(self.modIn + """
-	    val(i,j) = 0.;
-	    
-	    int k;
+        inline._runInlineLoop2(self.modIn + """
+            val(i,j) = 0.;
             
-	    for (k = 0; k < nk; k++) {
-		val(i, j) += orientations(i, k) * areaProj(ids(i, k), j) * faceValues(ids(i, k));
-	    }
-		
-	    val(i, j) /= volumes(i);
+            int k;
+            
+            for (k = 0; k < nk; k++) {
+                val(i, j) += orientations(i, k) * areaProj(ids(i, k), j) * faceValues(ids(i, k));
+            }
+                
+            val(i, j) /= volumes(i);
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
-	""",
-	val = val,
+        """,
+        val = val,
         ids = Numeric.array(ids),
         orientations = Numeric.array(orientations),
         volumes = Numeric.array(volumes),
         areaProj = Numeric.array(self.mesh._getAreaProjections()),
         faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
-	ni = N, nj = self.mesh.getDim(), nk = M,
+        ni = N, nj = self.mesh.getDim(), nk = M,
         gridSpacing = Numeric.array(self.mesh._getMeshSpacing()))
         
         return self._makeValue(value = val)
@@ -76,5 +76,5 @@ class _ModCellGradVariable(_CellGradVariable):
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         value = _CellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._getMeshSpacing()
-	return self.modPy(value * gridSpacing) / gridSpacing
+        return self.modPy(value * gridSpacing) / gridSpacing
 

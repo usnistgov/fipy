@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/16/06 {1:32:30 PM}
+ #                                last update: 5/18/06 {8:42:13 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -276,7 +276,7 @@ solution. This argument cannot be passed to `solve()`.
     ...                                  ', p residual:',pres, \
     ...                                  ', continuity:',max(abs(rhs))
     ...
-    ... 	    viewer.plot()
+    ...             viewer.plot()
 
 .. image:: examples/flow/cavity.pdf
    :scale: 40

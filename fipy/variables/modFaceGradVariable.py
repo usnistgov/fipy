@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 12/22/05 {3:59:14 PM}
+ #                                last update: 5/18/06 {8:39:56 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,19 +42,19 @@ from fipy.tools.inline import inline
 
 class _ModFaceGradVariable(_FaceGradVariable):
     def __init__(self, var, modIn):
-	_FaceGradVariable.__init__(self, var)
+        _FaceGradVariable.__init__(self, var)
         self.modIn = modIn
         
     def _calcValueInline(self):
 
-	id1, id2 = self.mesh._getAdjacentCellIDs()
-	
-	tangents1 = self.mesh._getFaceTangents1()
-	tangents2 = self.mesh._getFaceTangents2()
+        id1, id2 = self.mesh._getAdjacentCellIDs()
+        
+        tangents1 = self.mesh._getFaceTangents1()
+        tangents2 = self.mesh._getFaceTangents2()
  
         val = self._getArray().copy()
 
-	inline._runInline(self.modIn + """
+        inline._runInline(self.modIn + """
         int i;
         for(i = 0; i < ni; i++)
         {
@@ -63,20 +63,20 @@ class _ModFaceGradVariable(_FaceGradVariable):
 
             N = mod(var(id2(i)) - var(id1(i))) / dAP(i);
 
-	    t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
+            t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
-	    for (j = 0; j < nj; j++) {
-		t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
-		t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
-		t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
-		t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
-	    }
-	    
-	    for (j = 0; j < nj; j++) {
-		val(i,j) = normals(i,j) * N;
-		val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-		val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
-	    }
+            for (j = 0; j < nj; j++) {
+                t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
+                t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
+                t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
+                t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
+            }
+            
+            for (j = 0; j < nj; j++) {
+                val(i,j) = normals(i,j) * N;
+                val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
+                val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
+            }
         }
         """,tangents1 = tangents1,
             tangents2 = tangents2,

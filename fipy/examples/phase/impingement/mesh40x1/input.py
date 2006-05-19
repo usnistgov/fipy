@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {3:10:38 PM}
+ #                                last update: 5/18/06 {8:41:19 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ Lobkovsky and Carter
     >>> dx = Lx / nx
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
-	
+        
 This problem simulates the wet boundary that forms between grains of different 
 orientations. The phase equation is given by
 
@@ -286,7 +286,7 @@ we iterate the solution in time, plotting as we go if running interactively,
     ...     phaseEq.solve(phase, dt = timeStepDuration)
     ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
-    ... 	thetaProductViewer.plot()
+    ...         thetaProductViewer.plot()
 
 The solution is compared with test data. The test data was created
 with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/5/06 {8:14:55 AM} 
+ #                                last update: 5/18/06 {8:37:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,38 +70,38 @@ class Grid3D(Mesh):
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None):
         self.nx = nx
         self.ny = ny
-	self.nz = nz
+        self.nz = nz
         
-	self.dx = PhysicalField(value = dx)
-	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-	self.dx /= scale
-	
+        self.dx = PhysicalField(value = dx)
+        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx /= scale
+        
         self.nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
         
-	self.dy = PhysicalField(value = dy)
-	if self.dy.getUnit().isDimensionless():
-	    self.dy = dy
-	else:
-	    self.dy /= scale
+        self.dy = PhysicalField(value = dy)
+        if self.dy.getUnit().isDimensionless():
+            self.dy = dy
+        else:
+            self.dy /= scale
 
         self.ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
         
-	self.dz = PhysicalField(value = dz)
-	if self.dz.getUnit().isDimensionless():
-	    self.dz = dz
-	else:
-	    self.dz /= scale
-	
+        self.dz = PhysicalField(value = dz)
+        if self.dz.getUnit().isDimensionless():
+            self.dz = dz
+        else:
+            self.dz /= scale
+        
         self.nz = self._calcNumPts(d = self.dz, n = nz, axis = "z")
         
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1) * (self.nz + 1)
         
-	vertices = self._createVertices()
+        vertices = self._createVertices()
         faces = self._createFaces()
         cells = self._createCells()
         Mesh.__init__(self, vertices, faces, cells)
-	
-	self.setScale(value = scale)
+        
+        self.setScale(value = scale)
         
     def __repr__(self):
         return "%s(dx = %s, dy = %s, dz = %s, nx = %d, ny = %d, nz = %d)" \
@@ -196,52 +196,52 @@ class Grid3D(Mesh):
         return Numeric.transpose(Numeric.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces)))
 
     def getFacesBottom(self):
-	"""
+        """
         Return list of faces on bottom boundary of Grid3D.
 
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
             1
-	"""
+        """
         return FaceIterator(mesh=self, 
                             ids=self._repeatWithOffset(Numeric.arange(self.numberOfXYFaces, 
                                                                       self.numberOfXYFaces + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
-	
+        
     def getFacesTop(self):
-	"""
+        """
         Return list of faces on top boundary of Grid3D.
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
             1
-	"""
-	return FaceIterator(mesh=self, 
+        """
+        return FaceIterator(mesh=self, 
                             ids=self._repeatWithOffset(Numeric.arange(self.numberOfXYFaces + (self.nx * self.ny), 
                                                                       self.numberOfXYFaces + (self.nx * self.ny) + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
-	
+        
     def getFacesBack(self):
-	"""
+        """
         Return list of faces on back boundary of Grid3D.
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
             1
-	"""
-	return FaceIterator(mesh=self, 
+        """
+        return FaceIterator(mesh=self, 
                             ids=Numeric.arange(self.numberOfXYFaces - (self.nx * self.ny), 
                                                self.numberOfXYFaces))
-	
+        
     def getFacesFront(self):
-	"""
+        """
         Return list of faces on front boundary of Grid3D.
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
             1
-	"""
-	return FaceIterator(mesh=self, 
+        """
+        return FaceIterator(mesh=self, 
                             ids=Numeric.arange(self.nx * self.ny))
 
     def getFacesLeft(self):
@@ -271,15 +271,15 @@ class Grid3D(Mesh):
                                                self.nx + 1))
         
     def getScale(self):
-	return self.scale['length']
-	
+        return self.scale['length']
+        
     def getPhysicalShape(self):
-	"""Return physical dimensions of Grid3D.
-	"""
-	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
+        """Return physical dimensions of Grid3D.
+        """
+        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
 
     def _getMeshSpacing(self):
-	return Numeric.array((self.dx, self.dy, self.dz))
+        return Numeric.array((self.dx, self.dy, self.dz))
     
     def getShape(self):
         return (self.nx, self.ny, self.nz)
@@ -332,7 +332,7 @@ class Grid3D(Mesh):
 
     def _calcHigherOrderScalings(self):
         self.scale['area'] = self.scale['length']**2
-	self.scale['volume'] = self.scale['length']**3
+        self.scale['volume'] = self.scale['length']**3
         
 ## pickling
 

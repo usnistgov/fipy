@@ -6,7 +6,7 @@
  # 
  #  FILE: "sumVariable.py"
  #                                    created: 12/19/03 {3:48:05 PM} 
- #                                last update: 12/22/05 {11:58:06 AM} 
+ #                                last update: 5/18/06 {8:37:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,10 @@ from fipy.tools import numerix
 
 class _SumVariable(Variable):
     def __init__(self, var, index):
-	Variable.__init__(self, mesh = var.getMesh())
-	self.var = self._requires(var)
-	self.index = index
+        Variable.__init__(self, mesh = var.getMesh())
+        self.var = self._requires(var)
+        self.index = index
 
     def _calcValue(self):
-	return numerix.sum(self.var[:], self.index)
-	
+        return numerix.sum(self.var[:], self.index)
+        

@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 3/7/06 {4:59:37 PM} 
+ #                                last update: 5/18/06 {8:35:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,17 +62,17 @@ class UniformGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1, origin = (0,0)):
         self.dim = 2
         
-	self.dx = PhysicalField(value = dx)
+        self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-	self.dx /= scale
+        self.dx /= scale
         
         self.nx = nx
         
-	self.dy = PhysicalField(value = dy)
-	if self.dy.getUnit().isDimensionless():
-	    self.dy = dy
-	else:
-	    self.dy /= scale
+        self.dy = PhysicalField(value = dy)
+        if self.dy.getUnit().isDimensionless():
+            self.dy = dy
+        else:
+            self.dy /= scale
             
         self.ny = ny
         
@@ -92,7 +92,7 @@ class UniformGrid2D(Grid2D):
             'volume': 1.
         }
 
-	self.setScale(value = scale)
+        self.setScale(value = scale)
         
     def _translate(self, vector):
         return UniformGrid2D(dx = self.dx, nx = self.nx, 
@@ -181,7 +181,7 @@ class UniformGrid2D(Grid2D):
                 faceCellIDs1(ID + Nhor + j + 1) = ID;
             }
             
-	""",
+        """,
         Nhor=self.numberOfHorizontalFaces,
         faceCellIDs0=faceCellIDs0,
         faceCellIDs1=faceCellIDs1,
@@ -280,7 +280,7 @@ class UniformGrid2D(Grid2D):
                 faceCellIDs(ID + Nhor + j + 1, 0) = ID;
                 mask(ID + Nhor + j + 1, 1) = 1;
             }
-	""",
+        """,
         Nhor=self.numberOfHorizontalFaces,
         mask=mask,
         faceCellIDs=faceCellIDs,
@@ -382,7 +382,7 @@ class UniformGrid2D(Grid2D):
             } else {
                 areaProjections(i, 0) = dy;
            }
-	""",
+        """,
         dx = self.dx,
         dy = self.dy,
         nx = self.nx,

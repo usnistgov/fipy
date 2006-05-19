@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellToFaceVariable.py"
  #                                    created: 7/26/04 {2:23:41 PM} 
- #                                last update: 12/22/05 {11:51:06 AM} 
+ #                                last update: 5/18/06 {8:36:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,12 +42,12 @@ from fipy.tools.inline import inline
 
 class _VectorCellToFaceVariable(VectorFaceVariable):
     def __init__(self, var):
-	VectorFaceVariable.__init__(self, var.getMesh())
-	self.var = self._requires(var)
+        VectorFaceVariable.__init__(self, var.getMesh())
+        self.var = self._requires(var)
 
     def _calcValue(self):
-	alpha = self.mesh._getFaceToCellDistanceRatio()
-	id1, id2 = self.mesh._getAdjacentCellIDs()
-	return inline._optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)
+        alpha = self.mesh._getFaceToCellDistanceRatio()
+        id1, id2 = self.mesh._getAdjacentCellIDs()
+        return inline._optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)
 
-	
+        

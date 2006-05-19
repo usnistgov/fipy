@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputExplicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/14/05 {4:11:08 PM} 
+ #                                last update: 5/18/06 {8:40:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     newVar2 = var2.copy()
 
     for step in range(steps):
-	eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
+        eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
         eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
         viewer1.plot()
         viewer2.plot()

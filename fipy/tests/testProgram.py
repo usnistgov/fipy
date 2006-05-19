@@ -6,7 +6,7 @@
  # 
  #  FILE: "testSuite.py"
  #                                    created: 2/12/04 {11:02:02 AM} 
- #                                last update: 9/3/04 {10:41:50 PM} 
+ #                                last update: 5/18/06 {8:34:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,38 +39,38 @@ import unittest
 
 class _TestProgram(unittest.TestProgram):
     def parseArgs(self, argv):
-	import getopt
-##	inline = 0
+        import getopt
+##      inline = 0
 ##        numMesh = 0
-	try:
-	    options, args = getopt.getopt(argv[1:], 'hHvq',
-					  ['help','verbose','quiet','inline'])
-	    for opt, value in options:
-		if opt in ('-h','-H','--help'):
-		    self.usageExit()
-		if opt in ('-q','--quiet'):
-		    self.verbosity = 0
-		if opt in ('-v','--verbose'):
-		    self.verbosity = 2
-##		if opt in ('--inline',):
-##		    inline = 1
+        try:
+            options, args = getopt.getopt(argv[1:], 'hHvq',
+                                          ['help','verbose','quiet','inline'])
+            for opt, value in options:
+                if opt in ('-h','-H','--help'):
+                    self.usageExit()
+                if opt in ('-q','--quiet'):
+                    self.verbosity = 0
+                if opt in ('-v','--verbose'):
+                    self.verbosity = 2
+##              if opt in ('--inline',):
+##                  inline = 1
 ##                if opt in ('--numMesh',):
 ##                    numMesh = 1
-	    if len(args) == 0 and self.defaultTest is None:
-		self.test = self.testLoader.loadTestsFromModule(self.module)
-		return
-	    if len(args) > 0:
-		self.testNames = args
-	    else:
-		self.testNames = (self.defaultTest,)
-	    self.createTests()
+            if len(args) == 0 and self.defaultTest is None:
+                self.test = self.testLoader.loadTestsFromModule(self.module)
+                return
+            if len(args) > 0:
+                self.testNames = args
+            else:
+                self.testNames = (self.defaultTest,)
+            self.createTests()
 ##            print argv
 ##            raw_input()
-##	    if inline:
-##		argv[1:] = ['--inline']
+##          if inline:
+##              argv[1:] = ['--inline']
 ##            if numMesh:
 ##                argv[1:] = ['--numMesh']
-	except getopt.error, msg:
-	    self.usageExit(msg)
+        except getopt.error, msg:
+            self.usageExit(msg)
 
 main = _TestProgram
