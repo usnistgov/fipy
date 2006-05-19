@@ -6,5 +6,5 @@ recursive-include documentation/www/ *.html *.css *.gif *.png
 include documentation/manual/fipy.pdf
 include documentation/manual/reference.pdf
 
-recursive-include examples *.py *.msh *.gz
-recursive-include fipy *.msh
+#recursive-include examples *.py *.msh *.gz
+recursive-include fipy *.msh *.gz
