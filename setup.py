@@ -33,6 +33,8 @@
  # ###################################################################
  ##
 
+
+
 import glob
 import os
 import string
@@ -377,6 +379,16 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 
         if self.upload:
 
+            ## Build FiPy-version.tar.gz and FiPy-version.win32.tar.gz in dist/ before upload 
+
+            ##    $ rm MANIFEST
+            ##    $ python setup.py sdist
+            ##    $ rm MANIFEST
+            ##    $ python setup.py bdist --formats=wininst
+            ##    $ rm MANIFEST
+            ##    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults
+            ##    $ mv dist-windows/FiPy-version.tar.gz dist/FiPy-version.win32.tar.gz
+
             print "setting group and ownership of manuals..."
             os.system('chgrp -R pfm documentation/manual/fipy.pdf')
             os.system('chmod -R g+w documentation/manual/reference.pdf')
@@ -388,8 +400,8 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
             os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
             
-            for end in ('tar.gz', 'win32.exe'):
-                file = 'dist/FiPy-%s.%s'%(self.distribution.metadata.get_version(), end)
+            for name in ('', '.win32'):
+                file = 'dist/FiPy-%s%s.tar.gz'%(self.distribution.metadata.get_version(), name)
                 print "setting group and ownership for %s ..."%file
                 os.system('chmod -R g+w %s'%file)
                 os.system('chgrp -R pfm %s'%file)
@@ -458,8 +470,8 @@ class test(Command):
             theSuite.addTest(fipy.test._suite())
         
         if self.doExamples:
-            import fipy.examples.test
-            theSuite.addTest(fipy.examples.test._suite())
+            import examples.test
+            theSuite.addTest(examples.test._suite())
         
         testRunner = unittest.TextTestRunner(verbosity=self.verbosity)
         result = testRunner.run(theSuite)
@@ -626,11 +638,8 @@ f = open('LICENSE.txt', 'r')
 license = '\n' + f.read() + '\n'
 f.close()
 
-## import py2app
-
-## app = [os.path.join('examples','levelSet','electroChem','input.py')],
-
 import fipy
+
 dist = setup(	name = "FiPy",
         version = fipy.__version__,
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
@@ -647,61 +656,6 @@ dist = setup(	name = "FiPy",
         },
         packages = ['fipy',
                         'fipy.boundaryConditions',
-                        'fipy.examples',
-                            'fipy.examples.benchmarking',
-                            'fipy.examples.cahnHilliard',
-                            'fipy.examples.chemotaxis',
-                            'fipy.examples.convection',
-                                'fipy.examples.convection.advection',
-                                'fipy.examples.convection.exponential1D',
-                                'fipy.examples.convection.exponential1DBack',
-                                'fipy.examples.convection.exponential1DSource',
-                                'fipy.examples.convection.exponential2D',
-                                'fipy.examples.convection.powerLaw1D',
-                            'fipy.examples.diffusion',
-                                'fipy.examples.diffusion.explicit',
-                                    'fipy.examples.diffusion.explicit.mesh10',
-                                    'fipy.examples.diffusion.explicit.mesh50',
-                                'fipy.examples.diffusion.nthOrder',
-                                'fipy.examples.diffusion.steadyState',
-                                    'fipy.examples.diffusion.steadyState.mesh1D',
-                                    'fipy.examples.diffusion.steadyState.mesh20x20',
-                                    'fipy.examples.diffusion.steadyState.mesh50x50',
-                                    'fipy.examples.diffusion.steadyState.otherMeshes',
-                                'fipy.examples.diffusion.variable',
-                                    'fipy.examples.diffusion.variable.mesh10x1',
-                                    'fipy.examples.diffusion.variable.mesh2x1',
-                                    'fipy.examples.diffusion.variable.mesh50x1',
-                            'fipy.examples.elphf',
-                                'fipy.examples.elphf.diffusion',
-                                'fipy.examples.elphf.phase',
-                                'fipy.examples.elphf.phaseDiffusion',
-                                'fipy.examples.elphf.poisson',
-                            'fipy.examples.flow',
-                            'fipy.examples.levelSet',
-                                'fipy.examples.levelSet.advection',
-                                    'fipy.examples.levelSet.advection.circle',
-                                    'fipy.examples.levelSet.advection.mesh1D',
-                                    'fipy.examples.levelSet.advection.trench',
-                                'fipy.examples.levelSet.distanceFunction',
-                                    'fipy.examples.levelSet.distanceFunction.circle',
-                                    'fipy.examples.levelSet.distanceFunction.interior',
-                                    'fipy.examples.levelSet.distanceFunction.oneD',
-                                    'fipy.examples.levelSet.distanceFunction.square',
-                                'fipy.examples.levelSet.electroChem',
-                                'fipy.examples.levelSet.surfactant',
-                            'fipy.examples.phase',
-                                'fipy.examples.phase.anisotropy',
-                                'fipy.examples.phase.impingement',
-                                    'fipy.examples.phase.impingement.mesh20x20',
-                                    'fipy.examples.phase.impingement.mesh40x1',
-                                'fipy.examples.phase.missOrientation',
-                                    'fipy.examples.phase.missOrientation.circle',
-                                    'fipy.examples.phase.missOrientation.mesh1D',
-                                    'fipy.examples.phase.missOrientation.modCircle',
-                                'fipy.examples.phase.simple',
-                                'fipy.examples.phase.symmetry',
-                        'fipy.iterators',
                         'fipy.meshes',
                             'fipy.meshes.common',
                             'fipy.meshes.numMesh',
@@ -723,7 +677,7 @@ dist = setup(	name = "FiPy",
                             'fipy.viewers.gistViewer',
                             'fipy.viewers.gnuplotViewer',
                             'fipy.viewers.matplotlibViewer',
-                            'fipy.viewers.mayaviViewer',],
+                            'fipy.viewers.mayaviViewer'],
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
@@ -737,7 +691,7 @@ dist = setup(	name = "FiPy",
             'Topic :: Scientific/Engineering :: Physics',
             'Topic :: Scientific/Engineering :: Visualization',
             'Topic :: Software Development :: Libraries :: Python Modules'
-        ]
+        ],
 )
 
 if 'install' in dist.commands:
