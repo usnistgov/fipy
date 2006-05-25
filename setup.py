@@ -379,16 +379,6 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 
         if self.upload:
 
-            ## Build FiPy-version.tar.gz and FiPy-version.win32.tar.gz in dist/ before upload 
-
-            ##    $ rm MANIFEST
-            ##    $ python setup.py sdist
-            ##    $ rm MANIFEST
-            ##    $ python setup.py bdist --formats=wininst
-            ##    $ rm MANIFEST
-            ##    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults
-            ##    $ mv dist-windows/FiPy-version.tar.gz dist/FiPy-version.win32.tar.gz
-
             print "setting group and ownership of manuals..."
             os.system('chgrp -R pfm documentation/manual/fipy.pdf')
             os.system('chmod -R g+w documentation/manual/reference.pdf')
