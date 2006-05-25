@@ -154,7 +154,7 @@ Again, merge n.m.q+1 changes back to main trunk::
 Making a Release
 ================
 
-Change the version number in setup.py
+Change the version number in fipy/__init__.py
 
 Check items in TODOLIST.txt
 
@@ -182,7 +182,20 @@ Build the documentation and the web pages::
 
 Build the compressed distribution::
 
+    $ rm MANIFEST
     $ python setup.py sdist
+
+Build a windows executable installer::
+
+    $ rm MANIFEST
+    $ python setup.py bdist --formats=wininst
+
+Combine the windows installer and examples into one tar ball.
+
+    $ rm MANIFEST
+    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults
+    $ set FIPY_VERSION=XXX
+    $ mv dist-windows/FiPy-${FIPY_VERSION}.tar.gz dist/FiPy-${FIPY_VERSION}.win32.tar.gz
 
 Upload to the CTCMS website::
 

@@ -1,11 +1,2 @@
-# Build FiPy-version.tar.gz and FiPy-version.win32.tar.gz in dist/ before upload
-# rm MANIFEST
-# python setup.py sdist
-# rm MANIFEST
-# python setup.py bdist --formats=wininst
-# rm MANIFEST
-# python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults
-# mv dist-windows/FiPy-version.tar.gz dist/FiPy-version.win32.tar.gz
-
 recursive-include examples *.py *.msh *.gz *.txt
 include dist/FiPy-1.1a1.win32.exe
