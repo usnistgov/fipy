@@ -8,35 +8,20 @@ Release Goals 1.1
 - Documentation:
 
   * Review all for accuracy/consistency.
-  * Guide coding style queries
-
-    - f(a = b) -> f(a=b) everywhere in guide?
-    - ImplicitDiffusionTerm -> DiffusionTerm everywhere?
-    - from fipy.viewers import make or import fipy.viewers?
-    - f(a) when using only one argument rather than f(a=b)
-      e.g. make((var1, var2, var3)) rather than make(vars=(var1, var2, var3))
-    - python punctutation.
-      e.g. "This code shows: >>>" or "This code shows. >>>"
-    - equation punctuation is inconsistent
 
 - Distribution
 
   * Run all the examples
-  * Move to subversion and to Kent
-  * Make tests work for an installation of FiPy
-  * Make examples work for an installation of FiPy
-    
-    - '.gz' files should be added to the dist
-
-  * After moving the examples to the fipy directory check that FiPy can be installed
-    and then tested non-locally (WINDOWS, MAC and LINUX).
+  * Chekc installation on WINDOWS
+  * Move fipy/examples back to examples/
   * remember to run the tests with --no-cache and --cache before dist.
   * remember to do a Windows build again.
   * remove iterators directory
-  * add FAQ to website (maybe?)
 
 Long term Goals
 ---------------
+
+- Add axi-symmetric test case
 
 - Add dendrite pic
 
