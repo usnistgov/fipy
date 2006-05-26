@@ -12,10 +12,9 @@ Release Goals 1.1
 - Distribution
 
   * Run all the examples
-  * Chekc installation on WINDOWS
+  * Check that version 1.0.0 of enthought python has vtkRenderingWidgets.dll
   * Move fipy/examples back to examples/
   * remember to run the tests with --no-cache and --cache before dist.
-  * remember to do a Windows build again.
   * remove iterators directory
 
 Long term Goals
