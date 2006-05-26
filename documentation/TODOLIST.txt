@@ -20,6 +20,8 @@ Release Goals 1.1
 Long term Goals
 ---------------
 
+- Allow some keyword parameters to be passed to the plot() methods of viewers
+
 - Update Mayavi viewers to use TVTK (much better according to Prabhu) instead of PyVTK.
   Should be able to remove all uses of PyVTK.
 
