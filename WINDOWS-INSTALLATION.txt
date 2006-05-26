@@ -25,55 +25,45 @@ experience to have a usable installation up and running.
 Step 1: Install Python
 ----------------------
 
-http://download.enthought.com/enthought_python-2.3.5-1076-wx26-n238.exe
+http://code.enthought.com/enthon/
 
-Download and run the Enthought Edition installer. Open the
+Download version 1.0.0 and run the installer. Open the
 ``C:\Python23\Lib\site-packages\vtk_python\`` directory in a browser
 and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python23\``
 directory.
 
-.. warning:
-
-    Don't download the latest Enthought Edition (build 1078). This
-    version's Mayavi doesn't work correctly.
-
 Step 2: Install PyVTK
 ---------------------
 
-http://www.ctcms.nist.gov/fipy/download/PyVTK-0.4.67.win32.exe
+http://www.ctcms.nist.gov/fipy/download/PyVTK-0.4.70.win32.exe
 
 Download and run the PyVTK installer.
 
-Step 3: Install Pysparse   
+Step 3: Install Pysparse
 ------------------------
 
 http://prdownloads.sourceforge.net/pysparse/pysparse-0.34.032.win32-py2.3.exe?download
 
-Download and run the PySparse installer.
+Download and run the Pysparse installer.
 
 Step 4: Install |FiPy|
 ----------------------
 
-http://www.ctcms.nist.gov/fipy/download/FiPy-1.1a1-branch-windows-dist.win32.exe
+http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.win32.tar.gz
 
-Download and run the |FiPy| installer.
+Download and unpack the tarball. Run the |FiPy| installer
+``FiPy-1.1.win32.exe``, which should be in the base FiPy-1.1
+directory.
 
-Step 6: Install Matplotlib
---------------------------
-
-http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.85.win32-py2.3.exe?download
-
-Download and run the Matplotlib installer.
-
-Step 7: Install Gmsh
+Step 5: Install Gmsh
 --------------------
 
-http://www.geuz.org/gmsh/bin/Windows/gmsh-1.61.3-Windows.zip
+http://www.geuz.org/gmsh/bin/Windows/gmsh-1.65.0-Windows.zip
 
 Download and unpack Gmsh for Windows. Open the unpacked folder with a
-browser and copy the ``gmsh.exe`` and ``cygwin1.dll`` files to ``C:\Python23``.
+browser and copy the ``gmsh.exe`` file to ``C:\Python23``.
 
-Step 8: Run IDLE_
+Step 6: Run IDLE_
 -----------------
 
 The IDLE_ environment is recommended for running |FiPy|. In order to
@@ -90,29 +80,26 @@ instructions:
    - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
    - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
-Step 9: Import a module and view the results
+Step 7: Import a module and view the results
 --------------------------------------------
 
-You can use the IDLE_ path browser to find |FiPy| examples. For
-example, to run the 2D diffusion example,
+You can use the IDLE_ file browser to open the examples and run the
+module.
 
     - Click on ``File``
-    - Click on ``Path Browser``
-    - Click on ``C:\Python23\lib\site-packages``
-    - Click on ``examples``
-    - Click on ``diffusion``
-    - Click on ``steadyState``
-    - Click on ``mesh50x50``
-    - Click on ``input.py``
+    - Click on ``Open``
+    - Open ``C:\Path\To\Base\FiPy\directory\examples\diffusion\steadyState\mesh50x50\input.py``
 
-This will open an editor simple press the F5 key to run the example.
+This will open an editor, press the F5 key to run the example.
 A Matplotlib viewer should appear with rainbow stripes.
 
 Another way to use |FiPy| examples is to import the example file and
 then run any functionality it may have. For example at the IDLE_
 command line run the following code:
 
-    >>> from examples.levelSet.electroChem.inputGold import runGold.
+    >>> import sys
+    >>> sys.path.append('C://Path//To//Base//FiPy//Directory')
+    >>> from examples.levelSet.electroChem.inputGold import runGold
     >>> runGold(numberOfSteps = 100)
 
 A MayaVi viewer should appear with a trench filling simulation.
