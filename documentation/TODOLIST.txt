@@ -20,6 +20,9 @@ Release Goals 1.1
 Long term Goals
 ---------------
 
+- Update Mayavi viewers to use TVTK (much better according to Prabhu) instead of PyVTK.
+  Should be able to remove all uses of PyVTK.
+
 - Add axi-symmetric test case
 
 - Add dendrite pic
