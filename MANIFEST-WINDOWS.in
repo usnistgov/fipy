@@ -1,2 +1,10 @@
+include *.txt
+
 recursive-include examples *.py *.msh *.gz *.txt
 include dist/FiPy-1.1a1.win32.exe
+
+recursive-include documentation/ *.txt
+recursive-include documentation/www/ *.html *.css *.gif *.png
+include documentation/manual/reference.pdf
+include documentation/manual/fipy.pdf
+
