@@ -47,7 +47,7 @@ Even if you don't read manuals...
 What's new in version |VERSION|
 -----------------------------------
 
-The significant changes since version |VERSION| are:
+The significant changes since version 1.0 are:
 
 - Memory efficiency has been improved in a number of ways, but most
   significantly by:
@@ -60,79 +60,27 @@ The significant changes since version |VERSION| are:
 
 - Installation on Windows has been made considerably easier by
   constructing executable installers for |FiPy| and its
-  dependencies. Details for Windows installation can found in
+  dependencies. Instructions for Windows installation can be found in
   |WINDOWS-INSTALLATION-txt|.
 
 - The arithmetic for ``Variable`` subclasses now works, and returns
   sensible answers. For example, ``VectorCellVariable * CellVariable``
   returns a ``VectorCellVariable``.
 
-- ``PeriodicGrid`` meshes have been included. Currently, however,
+- ``PeriodicGrid`` meshes have been implemented. Currently, however,
   there and no examples of their use in the manual.
 
 - The "Superfill" examples have been substantially improved with better
   functionality and documentation.
 
----------------------------------------------------
-What's new in version 1.0, this needs to be removed
----------------------------------------------------
+- The repository has been converted from a CVS to a Subversion_
+  repository. Details on how to check out the new repository are given
+  in the |INSTALLATION-txt|.
 
-Numerous changes have been made since |FiPy| 0.1 was released, but the most 
-signficant ones are:
+- The |FiPy| repository has also been moved from Sourceforge_ to the
+  `Materials Digital Library Pathway`_.
 
-- ``Equation`` objects no longer exist. PDEs are constructed from ``Term`` 
-  objects. ``Term`` objects can be added, subtracted, and equated to build up 
-  an equation.
-
-- A true 1D grid class has been added: ``fipy.meshes.grid1D.Grid1D``.
-
-- A generic "factory" method ``fipy.viewers.make()`` has been added that will 
-  do a reasonable job of automatically creating a ``Viewer`` for the supplied 
-  ``Variable`` objects. The ``FIPY_VIEWER`` environment variable allows you to 
-  specify your preferred viewer.
-
-- A simple ``TSVViewer`` has been added to allow display or export to a file of 
-  your solution data.
-
-- It is no longer necessary to ``transpose()`` scalar fields in order to 
-  multiply them with vector fields.
-
-- Better default choice of solver when convection is present.
-
-- Better examples.
-
-- A number of `NoiseVariable` objects have been added.
-
-- A new viewer based on `matplotlib`_ has been added.
-
-- The `PyX` viewer has been removed.
-
-- Considerably simplified the public interface to FiPy.
-
-- Support for Python 2.4.
-
-- Improved layout of the manuals.
-
-- ``getLaplacian()`` method has been removed from ``CellVariable`` objects.
-  You can obtain the same effect with ``getFaceGrad().getDivergence()``, 
-  which provides better control.
-
-- An ``import`` shorthand has been added that allows for::
-
-     from fipy import Class
-
-  instead of::
-
-     from fipy.some.deeply.nested.module.class import Class
-
-  This system is still experimental. Please tell us if you find situations
-  that don't work.
-
-The syntax of |FiPy| 1.0 scripts is incompatible with earlier releases.  A 
-tutorial for updating your existing scripts can be found in 
-|examples/update0_1to1_0.py|.
-
-.. _matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
+http://matdl-osi.org/fipy
 
 -------------------------
 Download and Installation
@@ -229,10 +177,12 @@ or a
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
 .. _NIST:                 http://www.nist.gov/
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-.. _CVS:                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _Subversion:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/browser
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/tracker/?group_id=118428
+.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/report
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
+.. _Sourceforge:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
+.. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy
 
 .. include:: utils/include.txt
 .. include:: documentation/VERSION.txt
@@ -241,16 +191,6 @@ or a
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
-
-.. |latexUpdate0_1to1_0.py| raw:: latex
-
-   Chapter~\ref{chap:Update0.1to1.0}
-
-.. |htmlUpdate0_1to1_0.py| raw:: html
-
-   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/fipy/examples/update0_1to1_0.py?view=markup">examples/update0_1to1_0.py</a>
-
-.. |examples/update0_1to1_0.py| replace:: |latexUpdate0_1to1_0.py| |htmlUpdate0_1to1_0.py|
 
 .. |citePython| raw:: latex
 
