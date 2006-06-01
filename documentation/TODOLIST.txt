@@ -15,6 +15,7 @@ Release Goals 1.1
   * Check that version 1.0.0 of enthought python has vtkRenderingWidgets.dll
   * remember to run the tests with --no-cache and --cache before dist.
   * Add files to sourceforge site or give a note pointing to Kent
+  * Tag CVS repository saying that we have finished using it
 
 Long term Goals
 ---------------
