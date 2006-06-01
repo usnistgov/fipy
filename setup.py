@@ -229,7 +229,7 @@ class build_docs (Command):
                                           'TALKS',
                                           'TODOLIST',
                                           'MAIL',
-                                          'CVS',
+                                          'SVN',
                                           'EFFICIENCY']
 
         tertiaryRestructuredTextFiles = ['WINDOWS-INSTALLATION',
