@@ -38,13 +38,13 @@
 
    the Examples portion of the <a href="download/fipy.pdf">Manual</a>
 
-.. |latexCVS.txt| raw:: latex
+.. |latexSVN.txt| raw:: latex
 
-   Section~\ref{sec:CVS}
+   Section~\ref{sec:SVN}
 
-.. |htmlCVS.txt| raw:: html
+.. |htmlSVN.txt| raw:: html
 
-   <a href="cvs.html">CVS tags</a>
+   <a href="svn.html">SVN tags</a>
 
 .. |latexFAQ| raw:: latex
 

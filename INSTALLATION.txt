@@ -198,7 +198,7 @@ http://pysparse.sourceforge.net
 
 |FiPy| requires `Roman Geus`_' PySparse_ package.
 
-You can either `download the PySparse archive`_ or check it out via
+You can `download the PySparse archive`_ or check it out via
 anonymous CVS download::
 
     $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse login
@@ -423,61 +423,40 @@ It is possible to create irregular meshes with this package.
 Obtaining |FiPy|
 ----------------
 
-|FiPy| is freely available for download via CVS_ or as a `compressed
-archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous CVS, issue the following
+|FiPy| is freely available for download via Subversion_ or as a `compressed
+archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion, issue the following
 commands::
 
-    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy login
+    $ svn checkout http://matdl-osi.org/svn/fipy/tags/CURRENT
 
-and press Return at the password prompt, then to download a fairly
-stable version of |FiPy| (somewhere between version |VERSION| and
-HEAD)::
+This will download a fairly stable version of |FiPy| (somewhere
+between version |VERSION| and HEAD). If you prefer, you can download
+|FiPy| version |VERSION| (recommended) with::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
-    >     checkout -r CURRENT fipy
+    $ svn checkout http://matdl-osi.org/svn/fipy/tags/STABLE
 
-If you prefer, you can download |FiPy| version |VERSION| (recommended)
-with::
-
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/fipy \
-    >     checkout -r STABLE fipy
-
-Further information about CVS_ can be found in |documentation:CVS.txt| and
-in the `online CVS instructions`_ |citeSourceForgeCVS|.
-
-.. note::
-
-   An expedient way for Windows users who use CVS is to simply get the
-   cvs executable and run it from the command prompt. This seems
-   somewhat simpler than using the many GUI CVS tools available. The
-   one place that seems to actually have a link to cvs.exe is
-   http://bmrc.berkeley.edu/people/chaffee/winntutil.html#sshnt. The
-   actual link to cvs.exe_.
+Further information about Subversion_ can be found in
+|documentation:SVN.txt| and in the `online Subversion Red Bean book`_
+|citeSubversionRedBean|.
 
 .. warning::
 
    Keep in mind that if you choose to download the `compressed
    archive`_ you will then need to preserve your changes when upgrades
-   to |FiPy| become available (upgrades via CVS_ will handle this
-   issue automatically).
+   to |FiPy| become available (upgrades via Subversion_ will handle
+   this issue automatically).
 
-.. _cvs.exe: http://bmrc.berkeley.edu/ftp/pub/winnt/util/cvs.exe
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
-.. _online CVS instructions: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/cvs/?group_id=118428
 .. |citeFiPyDownload| raw:: latex
 
    \cite{FiPyDownload}
 
-.. |citeSourceForgeCVS| raw:: latex
-
-   \cite{SourceForgeCVS}
-
 Manual
 ======
 
-You can `download the latest manual`_ |citeFiPyGuide|. Alternatively, it may be 
-possible to build a fresh copy by issuing the following command in the
-base directory::
+You can `download the latest manual`_ |citeFiPyGuide|. Alternatively,
+it may be possible to build a fresh copy by issuing the following
+command in the base directory::
 
     $ python setup.py build_docs --latex --manual
 
@@ -582,7 +561,8 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
-.. _CVS:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/browser
+.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
 .. include:: utils/include.txt
 
@@ -592,8 +572,11 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 .. |TeX| replace:: |latexTeX| |htmlTeX|
 .. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|
+.. |documentation:SVN.txt| replace:: |latexSVN.txt| |htmlSVN.txt|
 
-.. |documentation:CVS.txt| replace:: |latexCVS.txt| |htmlCVS.txt|
+.. |citeSubversionRedBean| raw:: latex
+
+   \cite{SubversionRedBean}
 
 .. |citeInstallingPythonModules| raw:: latex
 
