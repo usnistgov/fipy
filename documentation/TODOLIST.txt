@@ -13,7 +13,6 @@ Release Goals 1.1
 
   * Run all the examples
   * Check that version 1.0.0 of enthought python has vtkRenderingWidgets.dll
-  * Move fipy/examples back to examples/
   * remember to run the tests with --no-cache and --cache before dist.
   * remove iterators directory
   * Add files to sourceforge site or give a note pointing to Kent
