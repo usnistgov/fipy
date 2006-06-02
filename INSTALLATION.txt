@@ -119,11 +119,11 @@ Required Packages
 Python
 ------
 
-http://www.python.org/
-
 .. raw:: latex
 
    \IndexSoftware{Python}
+
+http://www.python.org/
 
 |FiPy| is written in the Python_ language and requires a Python_
 installation to run.  Python_ comes pre-installed on many operating
@@ -152,11 +152,11 @@ If necessary, you can download_ and install it for your platform
 Numeric
 -------
 
-http://sourceforge.net/projects/numpy
-
 .. raw:: latex
 
    \IndexSoftware{Numeric}
+
+http://sourceforge.net/projects/numpy
 
 Obtain and install the Numeric_ package. |FiPy| requires at least
 version 23.1 of Numeric_. `Numeric Windows installers`_ are available.
@@ -190,11 +190,11 @@ version 23.1 of Numeric_. `Numeric Windows installers`_ are available.
 PySparse
 --------
 
-http://pysparse.sourceforge.net
-
 .. raw:: latex
 
    \IndexSoftware{PySparse}
+
+http://pysparse.sourceforge.net
 
 |FiPy| requires `Roman Geus`_' PySparse_ package.
 
@@ -250,11 +250,11 @@ by setting the ``FIPY_VIEWER`` environment variable to either
 Matplotlib
 ----------
 
-http://matplotlib.sourceforge.net
-
 .. raw:: latex
 
    \IndexSoftware{Matplotlib}
+
+http://matplotlib.sourceforge.net
 
 Matplotlib_ is a Python_ package that displays publication quality
 results. It displays both 1D X-Y type plots and 2D contour plots for
@@ -289,12 +289,12 @@ Matplotlib_ is preferable.
 Pygist
 ------
 
-http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
-
 .. raw:: latex
 
    \IndexSoftware{Pygist}
    \IndexSoftware{gist}
+
+http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
 
 The Pygist_ package can be used to display simulation results. It
 displays both 1D X-Y type plots and 2D contour plots for both
@@ -345,11 +345,11 @@ common platforms.
 MayaVi
 ------
 
-http://mayavi.sourceforge.net
-
 .. raw:: latex
 
    \IndexSoftware{MayaVi}
+
+http://mayavi.sourceforge.net
 
 The MayaVi_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
@@ -381,11 +381,11 @@ Recommended Packages
 SciPy
 -----
 
-http://www.scipy.org/
-
 .. raw:: latex
 
    \IndexSoftware{SciPy}
+
+http://www.scipy.org/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
@@ -404,11 +404,11 @@ In addition, a handful of test cases use functions from the SciPy_ library.
 gmsh
 ----
 
-http://www.geuz.org/gmsh/
-
 .. raw:: latex
 
    \IndexSoftware{gmsh}
+
+http://www.geuz.org/gmsh/
 
 It is possible to create irregular meshes with this package.
 

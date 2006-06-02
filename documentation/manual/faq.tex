@@ -208,6 +208,15 @@
 >>> (u * xi.getArithmeticFaceValue()).getDivergence()
 \end{verbatim}
                     \end{quote}
+                    when $\vec{u}$ is a \Class{VectorFaceVariable} 
+                    (preferred) or as
+                    \begin{quote}
+\begin{verbatim}
+>>> (u * xi).getDivergence()
+\end{verbatim}
+                    \end{quote}
+                    if $\vec{u} is a \Class{VectorCellVariable}.
+
 
                 \subsubsection{How do I represent a transient source?}
                     The time-rate-of change of an independent variable
@@ -251,8 +260,28 @@
 ...                                     diffusionTerm = diffTerm)
 >>> eq = TransientTerm() == diffTerm + convTerm
 \end{verbatim}
-
             \end{quote}
+
+        \subsection{What if the coefficient of a term depends on 
+            the variable that I'm solving for?}
+            
+            A non-linear coefficient, such as the diffusion 
+            coefficient in \( 
+            \nabla\cdot[\Gamma_1(\phi) \nabla \phi] = 
+            \nabla\cdot[\Gamma_0 \phi (1 - \phi) \nabla\phi] \) is 
+            not a problem for \FiPy. Simply write it as it appears:
+            \begin{quote}
+\begin{verbatim}
+>>> diffTerm = ImplicitDiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
+\end{verbatim}
+            \end{quote}
+            \begin{reSTadmonition}[Note]
+            Due to the nonlinearity of the coefficient, it will
+            probably be necessary to ``sweep'' the solution to
+            convergence as discussed in
+            FAQ~\ref{FAQ-IterationsTimestepsSweeps}.
+            \end{reSTadmonition}
+
 
     \section{How do I export data?} The way to save your calculations
     depends on how you plan to make use of the data. If you want to
@@ -302,11 +331,12 @@
     using one of a variety of different free, shareware, or 
     commercial software packages.
     
-    \section{Iterations, timesteps, and sweeps? Oh, my!} Any non-linear 
-    solution of partial differential equations is an approximation. 
-    These approximations benefit from repetetive solution to achieve 
-    the best possible answer. In \FiPy{} (and in many similar PDE 
-    solvers), there are three layers of repetition. 
+    \section{Iterations, timesteps, and sweeps? Oh, my!} 
+    \label{FAQ-IterationsTimestepsSweeps}
+    Any non-linear solution of partial differential equations is an
+    approximation. These approximations benefit from repetetive
+    solution to achieve the best possible answer. In \FiPy{} (and in
+    many similar PDE solvers), there are three layers of repetition.
     
     \begin{description}
     

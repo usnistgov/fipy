@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/06 {1:51:05 PM} 
+ #                                last update: 6/2/06 {3:14:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,8 +65,8 @@ given by
 
 .. raw:: latex
 
-   $$ f(\phi,T) = \frac{W}{2}g(\phi) + L\frac{T-T_M}{T_M}p(\phi). $$
-   where $W$ is the double-well barrier height between phases, $L$ is the latent
+   $$ f(\phi,T) = \frac{W}{2}g(\phi) + L_v\frac{T-T_M}{T_M}p(\phi). $$
+   where $W$ is the double-well barrier height between phases, $L_v$ is the latent
    heat, $T$ is the temperature, and $T_M$ is the melting point.
    
 One possible choice for the double-well function is
@@ -183,7 +183,7 @@ The analytical solution for this steady-state phase field problem, in an infinit
     >>> from fipy.tools.numerix import tanh, sqrt
     >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
-We treate the diffusion term
+We treat the diffusion term
 
 .. raw:: latex
 
@@ -196,6 +196,13 @@ We treate the diffusion term
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> diffusionTerm = ImplicitDiffusionTerm(coeff = kappa)
 
+.. note::
+    
+   "Diffusion" in |FiPy| is not limited to the movement of atoms, but
+   rather refers to the spontaneous spreading of any quantity (e.g.,
+   solute, temperature, or in this case "phase") by flow "down" the
+   gradient of that quantity.
+   
 The source term is
 
 .. raw:: latex
@@ -313,7 +320,7 @@ represent a term like
 .. raw:: latex
 
    $\phi^4$ in the linear set of equations 
-   $ \mathsf{L} \vec{\phi} - \vec{b} = 0 $.
+   $ \mathsf{M} \vec{\phi} - \vec{b} = 0 $.
 
 By linearizing a source as
 
@@ -435,7 +442,7 @@ systems and longer iterations.
 -----
 
 This example has focused on just the region of the phase field interface in
-equilibrium. Real problems, in contrast, involve the dynamics of one phase
+equilibrium. Problems of interest, though, usually involve the dynamics of one phase
 transforming to another. To that end, let us recast the problem using
 physical parameters and dimensions. We'll need a new mesh
 

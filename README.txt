@@ -80,8 +80,6 @@ The significant changes since version 1.0 are:
 - The |FiPy| repository has also been moved from Sourceforge_ to the
   `Materials Digital Library Pathway`_.
 
-http://matdl-osi.org/fipy
-
 -------------------------
 Download and Installation
 -------------------------
@@ -96,10 +94,10 @@ they have been modified.
 Support
 -------
 
-|FiPy| is being actively developed and supported.  Please use the
-`tracking system`_ for bugs, support requests, feature requests and patch
-submissions as well as the `mailing list`_ |citeTrackingMailing|.  We
-also welcome collaborative efforts on this project.
+You can communicate with the |FiPy| developers and with other users via our
+`mailing list`_ |citeMailing|. We also welcome you to use the `tracking
+system`_ |citeTracking| for bugs, support requests, feature requests and
+patch submissions. We welcome collaborative efforts on this project.
 
 ------------------------
 Conventions and Notation
@@ -204,7 +202,11 @@ or a
 
    \cite{NIST:damascene:2001}
 
-.. |citeTrackingMailing| raw:: latex
+.. |citeTracking| raw:: latex
 
-   \cite{FiPyBugTracker,FiPyMailingList}
+   \cite{FiPyBugTracker}
+
+.. |citeMailing| raw:: latex
+
+   \cite{FiPyMailingList}
 
