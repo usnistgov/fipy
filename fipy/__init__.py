@@ -1,4 +1,4 @@
-__version__ = "1.1a1"
+__version__ = "1.1"
 
 from boundaryConditions import *
 from meshes import *
