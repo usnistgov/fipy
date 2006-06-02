@@ -128,7 +128,7 @@ Tag the repository as appropriate (see `SVN practices`_ above).
 
 Check out a clean copy of the desired release::
 
-    $ svn co $FIPYROOT/trunk -d CLEAN
+    $ svn co $FIPYROOT/trunk CLEAN
     $ cd CLEAN
 
 Run the test suite!:
