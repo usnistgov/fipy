@@ -95,9 +95,9 @@ Support
 -------
 
 You can communicate with the |FiPy| developers and with other users via our
-`mailing list`_ |citeMailing|. We also welcome you to use the `tracking
-system`_ |citeTracking| for bugs, support requests, feature requests and
-patch submissions. We welcome collaborative efforts on this project.
+`mailing list`_ and we welcome you to use the `tracking
+system`_ for bugs, support requests, feature requests and
+patch submissions |citeMailingTracking|. We welcome collaborative efforts on this project.
 
 ------------------------
 Conventions and Notation
@@ -187,6 +187,7 @@ or a
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
+.. |EFFICIENCY-txt| replace:: |htmlEFFICIENCY| |latexEFFICIENCY|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
 
@@ -202,11 +203,7 @@ or a
 
    \cite{NIST:damascene:2001}
 
-.. |citeTracking| raw:: latex
+.. |citeMailingTracking| raw:: latex
 
-   \cite{FiPyBugTracker}
-
-.. |citeMailing| raw:: latex
-
-   \cite{FiPyMailingList}
+   \cite{FiPyMailingList,FiPyBugTracker}
 
