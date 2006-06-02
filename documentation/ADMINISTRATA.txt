@@ -1,63 +1,40 @@
 =============
-CVS practices
+SVN practices
 =============
 
-HEAD
-
-    this is of course a CVS internal tag designating the latest
-    revision of any file present in the repository.  It is also a
-    valid branch tag designating the trunk.  For our purposes HEAD can
-    be used as a tracking tag designating the very latest code checked
-    into the repository; |FiPy| is not guaranteed to pass its test or
-    to be in a consistent state when checked out under this tag.
-    Obviously this tracking tag is restricted to the trunk.
-
-CURRENT
-
-    designates the most recent code on the trunk forming a coherent
-    state of |FiPy|, in general this will mean a release, but can also
-    mean a pre-release testing version.  For instance, the release
-    engineer might ask testers to test CURRENT before he makes a
-    release.  This tracking tag is restricted to the trunk.
-
-STABLE
-
-    designates the most recent release in the repository that can be
-    considered stable for daily use by the common user.  This is a good tag
-    to track if you don't want to run into bugs introduced with ongoing
-    development but would like to take advantage of new features as soon as
-    possible.
-
-version-x_y
-
-branch-version-x_y
-
-branch-refactoring_etc
+Refer to SVN.txt for the current tagging conventions.
 
 --------
 Branches
 --------
 
-Break off for radical refactoring. *Starting on main trunk*::
+The following needs to be updated as we become more experienced with SVN
 
+Break off for radical refactoring. We will use the following method to
+preserve the tags/ and branches/ policy, though not strictly necessary
+with SVN, *Starting at base of trunk*::
+    
     $ export BRANCH=branch-refactoring_etc
-    $ cvs tag root-$BRANCH
-    $ cvs tag -b $BRANCH
+    $ export FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/root-$BRANCH -m "creating tag for $BRANCH"
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
     $ cd ..
-    $ cvs -d $FIPYROOT co -r $BRANCH -d $BRANCH fipy
+    $ svn co $FIPYROOT/branches/$BRANCH
     $ cd $BRANCH
 
 Edit and add to branch::
 
     $ emacs ...
-    $ cvs ci -m "refactoring"
-    $ cvs tag refactoring_stage_A
-
+    $ svn ci -m "refactoring_stage_A"
+    $ svn copy $FIPYROOT/$BRANCH $FIPYROOT/tags/refactoring_stage_A -m "refactoring_stage_A"
     $ emacs ...
-    $ cvs ci -m "more refactoring"
-    $ cvs tag refactoring_stage_B
+    $ svn ci -m "refactoring_stage_B"
+    $ svn copy $FIPYROOT/$BRANCH $FIPYROOT/tags/refactoring_stage_A -m "refactoring_stage_A"
 
 Merge developments from trunk::
+
+    $ svn copy $FIPYROOT/trunk 
+
 
     $ cvs tag -r HEAD somePointOnTrunk
     $ cvs up -j somePointOnTrunk
@@ -242,3 +219,9 @@ Build the distribution.
 .. include:: utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+================================
+Converting CVS Repository to SVN
+================================
+
+Jon can fill in the details
