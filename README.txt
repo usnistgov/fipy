@@ -41,7 +41,7 @@ http://www.ctcms.nist.gov/fipy/.
 Even if you don't read manuals...
 ---------------------------------
 
-...please read |INSTALLATION-txt| and |the FAQ|.
+...please read |INSTALLATION-txt| and |the FAQ|. 
 
 -----------------------------------
 What's new in version |VERSION|
@@ -70,8 +70,24 @@ The significant changes since version 1.0 are:
 - ``PeriodicGrid`` meshes have been implemented. Currently, however,
   there and no examples of their use in the manual.
 
-- The "Superfill" examples have been substantially improved with better
-  functionality and documentation.
+- Many of the examples have been completely rewritten
+
+  * A basic 1D diffusion problem now serves as a general tutorial for 
+    setting up any problem in |FiPy|. 
+  * Several more phase field examples have been added that should make it 
+    clearer how to get from the simple 1D case to the more elaborate 
+    multicomponent, multidimensional, and anisotropic models.
+  * The "Superfill" examples have been substantially improved with better
+    functionality and documentation.
+  * An example of fluid flow with the classic Stokes moving lid has been 
+    added.
+
+- A clear distinction has been made between solving an equation via `solve()`
+  and iterating an non-linear equation to solution via `sweep()`. An extensive 
+  explanation of the concepts involved has been added to |the FAQ|.
+
+- Added a `MultiViewer` class that automatically groups several viewers 
+  together if the variables couldn't be displayed by a single viewer.
 
 - The repository has been converted from a CVS to a Subversion_
   repository. Details on how to check out the new repository are given
