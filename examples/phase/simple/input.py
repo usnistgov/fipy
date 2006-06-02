@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/06 {3:14:36 PM} 
+ #                                last update: 6/2/06 {3:45:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -615,6 +615,10 @@ thickness
 .. |phase| raw:: latex
 
    $ \phi $
+   
+.. |FiPy| raw:: latex
+
+   \FiPy{}
    
 """
 __docformat__ = 'restructuredtext'
