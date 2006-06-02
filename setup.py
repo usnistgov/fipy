@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 5/18/06 {8:33:05 PM} 
+ #                                last update: 6/2/06 {4:20:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -233,6 +233,7 @@ class build_docs (Command):
                                           'EFFICIENCY']
 
         tertiaryRestructuredTextFiles = ['WINDOWS-INSTALLATION',
+                                         'documentation/MAIL',
                                          'examples/levelSet/electroChem/README']
 
 
@@ -354,8 +355,16 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
                                      ext = '.html')
 
             print "secondary files"
-            self._translateTextFiles(files = secondaryRestructuredTextFiles + tertiaryRestructuredTextFiles,
+            self._translateTextFiles(files = secondaryRestructuredTextFiles,
                                      source_dir = "documentation",
+                                     destination_dir = tmp,
+                                     writer = IncludedHTMLWriter(),
+                                     settings = {'initial_header_level' : 3,
+                                                 'xml_declaration' : 0},
+                                     ext = '.html')
+
+            print "tertiary files"
+            self._translateTextFiles(files = tertiaryRestructuredTextFiles,
                                      destination_dir = tmp,
                                      writer = IncludedHTMLWriter(),
                                      settings = {'initial_header_level' : 3,
