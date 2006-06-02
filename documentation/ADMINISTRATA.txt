@@ -14,8 +14,8 @@ Break off for radical refactoring. We will use the following method to
 preserve the tags/ and branches/ policy, though not strictly necessary
 with SVN, *Starting at base of trunk*::
     
-    $ export BRANCH=branch-refactoring_etc
-    $ export FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
+    $ BRANCH=branch-refactoring_etc
+    $ FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
     $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/root-$BRANCH -m "creating tag for $BRANCH"
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
     $ cd ..
@@ -220,8 +220,117 @@ Build the distribution.
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
-================================
-Converting CVS Repository to SVN
-================================
+===============================
+Converting a CVS Project to SVN
+===============================
 
-Jon can fill in the details
+Obtain cvs2svn_
+
+.. _cvs2svn: http://cvs2svn.tigris.org/
+
+.. note::
+
+   `cvs2svn-1.3.0/www/faq.html` covers this, but if you follow its directions 
+   exactly, you will get the rather ridiculous::
+
+       REPOSITORY
+          |
+          |---> ${PROJECT}
+          |         |
+          |         |---> trunk
+          |         |        |
+          |         |        |---> ${PROJECT}
+          |         |
+          |         |---> branches
+          |         |        |
+          |         |        |---> BRANCH1
+          |         |        |       |
+          |         |        |       |---> ${PROJECT}
+          |         |        |
+          |         |        |---> BRANCH2
+          |         |                |
+          |         |                |---> ${PROJECT}
+          |         |
+          |         |---> tags
+          |                  |
+          |                  |---> TAG1
+          |                  |       |
+          |                  |       |---> ${PROJECT}
+          |                  |
+          |                  |---> TAG2
+          |                          |
+          |                          |---> ${PROJECT}
+          |
+          |---> SOME_OTHER_PROJECT1
+          |
+          |---> SOME_OTHER_PROJECT2
+
+   instead of the more desirable::
+
+       REPOSITORY
+          |
+          |---> ${PROJECT}
+          |         |
+          |         |---> trunk
+          |         |
+          |         |---> branches
+          |         |        |
+          |         |        |---> BRANCH1
+          |         |        |
+          |         |        |---> BRANCH2
+          |         |
+          |         |---> tags
+          |                  |
+          |                  |---> TAG1
+          |                  |
+          |                  |---> TAG2
+          |
+          |---> SOME_OTHER_PROJECT1
+          |
+          |---> SOME_OTHER_PROJECT2
+
+
+Make a copy of the portion of the CVS repository governing the project in 
+question
+
+    $ PROJECT=MyProjectInCVS
+    $ mkdir cvs2svnSandbox
+    $ cd cvs2svnSandbox
+    $ cp -r /path/to/cvs/repository/${PROJECT} ${PROJECT}
+
+Convert the CVS project repository copy into an SVN repository dump file
+
+    $ mkdir ${PROJECT}/CVSROOT
+    $ cvs2svn --dump-only ${PROJECT}
+
+You should now have a file `cvs2svn-dump` in your working directory.
+
+If necessary, create an SVN repository
+
+    $ svnadmin create --fs-type fsfs /path/to/svn/repos
+
+.. note:: An FSFS repository has fewer permissions problems than a Berkeley-DB 
+   repository.
+
+Make sure that the new repository has appropriate group permissions (this is
+still a bit fuzzy for me)
+
+    $ chgrp -R $GROUP /path/to/svn/repos
+    $ chmod -R g+w /path/to/svn/repos
+
+Add a stub for the new project
+
+    $ svn mkdir file:///path/to/svn/repos/${PROJECT} -m "added ${PROJECT} directory"
+
+Import the converted project repository into SVN
+
+    $ svnadmin --parent-dir $PROJECT load /path/to/svn/repos < cvs2svn-dump
+
+You can now test a checkout
+
+    $ svn checkout svn+ssh://MACHINE.IP.ADDR/path/to/svn/repos/${PROJECT}/trunk SVNTEST
+
+At this point, you can get rid of all of the conversion materials
+
+    $ cd ..
+    $ rm -rf cvs2svnSandbox
