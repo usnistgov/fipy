@@ -425,6 +425,8 @@ class test(Command):
                     ('examples', None, "test FiPy examples"),
                     ('modules', None, "test FiPy code modules"),
                     ('terse', None, "give limited output during tests"),
+                    ('cache', None, "run FiPy with Variable caching"),
+                    ('no-cache', None, "run FiPy without Variable caching"),
                    ]
 
 
@@ -437,6 +439,8 @@ class test(Command):
         self.doModules = True
         self.examples = False
         self.modules = False
+        self.cache = False
+        self.no_cache = True
 
     def finalize_options (self):
         if self.verbose:

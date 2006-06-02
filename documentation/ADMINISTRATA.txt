@@ -8,22 +8,22 @@ Refer to SVN.txt for the current tagging conventions.
 Branches
 --------
 
-The following needs to be updated as we become more experienced with SVN
+The following needs to be updated as we become more experienced with SVN.
 
 Break off for radical refactoring. We will use the following method to
 preserve the tags/ and branches/ policy, though not strictly necessary
-with SVN, *Starting at base of trunk*::
+with SVN::
     
     $ BRANCH=branch-refactoring_etc
     $ FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
     $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/root-$BRANCH -m "creating tag for $BRANCH"
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
-    $ cd ..
+    $ cd outside/of/SVN/working/copy
     $ svn co $FIPYROOT/branches/$BRANCH
-    $ cd $BRANCH
 
 Edit and add to branch::
 
+    $ cd where/ever//$BRANCH
     $ emacs ...
     $ svn ci -m "refactoring_stage_A"
     $ svn copy $FIPYROOT/$BRANCH $FIPYROOT/tags/refactoring_stage_A -m "refactoring_stage_A"
@@ -33,37 +33,32 @@ Edit and add to branch::
 
 Merge developments from trunk::
 
-    $ svn copy $FIPYROOT/trunk 
-
-
-    $ cvs tag -r HEAD somePointOnTrunk
-    $ cvs up -j somePointOnTrunk
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/somePointOnTrunk -m "tag for $BRANCH merge"
+    $ svn diff $FIPYROOT/tags/root-$BRANCH $FIPYROOT/tags/somePointOnTrunk
+    $ svn merge $FIPYROOT/tags/root-$BRANCH $FIPYROOT/tags/somePointOnTrunk $FIPYROOT/branches/$BRANCH
+    $ cd where/ever/$BRANCH
     $ python setup.py test
-    $ cvs ci -m "merged main trunk"
-    $ cvs tag merge-somePointOnTrunk_to_refactoring
+    $ svn ci -m "merged main trunk"
+    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/merge-somePointOnTrunk_to_$BRANCH -m "tagging merge from trunk"
 
 Refactoring complete::
 
-    $ cvs tag merged-to_HEAD
-    $ cd ../trunk
-    $ cvs up -j branch-refactoring_etc
+    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/end-$BRANCH -m "finished with branch"
+    $ svn diff $FIPYROOT/tags/root-$BRANCH $FIPYROOT/branches/$BRANCH
+    $ svn merge $FIPYROOT/tags/root-$BRANCH $FIPYROOT/branches/$BRANCH $FIPYROOT/trunk
+    $ cd where/ever/trunk
     $ python setup.py test
-    $ cvs ci -m "merged refactoring, etc."
-    $ cvs tag merge-refactoring_etc
+    $ svn ci -m "merged $BRANCH"
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/$BRANCH-merged -m "merged $BRANCH"	
 
 **Now cease all work on branch-refactoring_etc**
 
 Optionally 
 
-    $ cd ../branch-refactoring_etc
-    $ echo "Branch merged back to HEAD: `date`" > "THIS BRANCH IS FINISHED"
-    $ cvs add "THIS BRANCH IS FINISHED"
-    $ cvs ci -m "" "THIS BRANCH IS FINISHED"
-
-(must do in directory above branch directory)
-
-    $ cd ..
-    $ cvs -d :ext:USERNAME@cvs.sourceforge.net:/cvsroot/fipy release branch-refactoring_etc 
+    $ cd where/ever/$BRANCH
+    $ echo "$BRANCH merged back to trunk: `date`" > "THIS BRANCH IS FINISHED"
+    $ svn add "THIS BRANCH IS FINISHED"
+    $ svn ci -m "" "THIS BRANCH IS FINISHED"
 
 --------
 Versions
@@ -71,9 +66,9 @@ Versions
 
 At point of version release x.y, *on main trunk*::
 
-    $ cvs tag version-x_y
-    $ cvs tag -r version-x_y -F STABLE
-    $ cvs tag -r version-x_y -F CURRENT
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
+    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/STABLE -m "tagging STABLE"
+    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/CURRENT -m "tagging CURRENT"	
 
 ---------
 Bug fixes
@@ -81,51 +76,45 @@ Bug fixes
 
 At the point some fix is made to an old version n.m, *on main trunk*::
 
-    $ cvs tag -r version-n_m -b branch-version-n_m
-    $ cd ..
-    $ cvs co -r branch-version-n_m -d branch-version-n_m fipy
-    $ cd branch-version-n_m
+    $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/branch-version-n_m -m "making branck for version n.m"
+    $ cd outside/of/SVN/working/copy
+    $ svn co $FIPYROOT/branches/branch-version-n_m
 
 Fix the code::
 
-    $ cvs ci -m "fix n.m.q"
-    $ cvs tag version-n_m_q
+    $ cd where/ever/branch-version-n_m
+    $ svn ci -m "fix n.m.q"
+    $ svn copy $FIPYROOT/branches/branch-version-n_m $FIPYROOT/tags/version-n_m_q
 
 Possibly::
 
-    $ cvs tag -F STABLE
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "tagging CURRENT" 
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "tagging STABLE" 
 
 Now merge n.m.q changes back to main trunk::
 
-    $ cd ../trunk
-    $ cvs up -j branch-version-n_m
-    $ cvs ci -m "merged n.m.q"
-    $ cvs tag merge-version-n_m_q
-
-Possibly::
-
-    $ cvs tag -F CURRENT
+    $ svn diff $FIPYROOT/tags/version-n_m $FIPYROOT/branches/branch-version-n_m
+    $ svn merge $FIPYROOT/tags/version-n_m $FIPYROOT/branches/branch-version-n_m $FIPYROOT/trunk
+    $ cd where/ever/trunk
+    $ svn ci -m "merged version n.m.q"    
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/merge-branch-version-n_m_q -m "tagging version n.m.q merge"
 
 Make new fix q+1 to n.m::
 
-    $ cd ../branch-version-n_m 
+    $ cd where/ever/branch-version-n_m 
     
 Fix the code::
 
-    $ cvs ci -m "fix n.m.q+1"
-    $ cvs tag version-n_m_q+1
+    $ svn ci -m "fix version n.m.q+1"
+    $ svn copy $FIPYROOT/branches/branch-version-n_m $FIPYROOT/tags/version-n_m_q+1
 
 Again, merge n.m.q+1 changes back to main trunk::
 
-    $ cd ../trunk
-    $ cvs up -j version-n_m_q -j branch-version-n_m_q+1
-    $ cvs ci -m "merged n.m.q+1"
-    $ cvs tag merge-version-n_m_q+1
-
-.. danger::
-
-   The double ``-j`` is very important to get right.
-
+    $ svn diff $FIPYROOT/tags/version-n_m_q $FIPYROOT/branches/branch-version-n_m_q+1
+    $ svn merge $FIPYROOT/tags/version-n_m_q $FIPYROOT/branches/branch-version-n_m_q+1 $FIPYROOT/trunk
+    $ cd where/ever/trunk
+    $ svn ci -m "merged version n.m.q+1"    
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/merge-branch-version-n_m_q+1 -m "tagging version n.m.q+1 merge"
 
 ================
 Making a Release
@@ -135,20 +124,19 @@ Change the version number in fipy/__init__.py
 
 Check items in TODOLIST.txt
 
-Tag the repository as appropriate (see `CVS practices`_ above).
+Tag the repository as appropriate (see `SVN practices`_ above).
 
 Check out a clean copy of the desired release::
 
-    $ cvs -z3 -d:ext:<USERNAME>@cvs.sourceforge.net:/cvsroot/fipy checkout -r <TAG> -d <TAG> fipy
-    $ cd <TAG>
-
-.. note:: It is not necessary to ``cvs export`` as the Python distutils
-   routines will omit all of the CVS files automatically.
+    $ svn co $FIPYROOT/trunk -d CLEAN
+    $ cd CLEAN
 
 Run the test suite!:
 
-    $ python setup.py test
-    $ python setup.py test --inline
+    $ python setup.py test --no-cache
+    $ python setup.py test --inline --no-cache
+    $ python setup.py test --cache
+    $ python setup.py test --inline --cache
 
 .. attention:: If tests don't pass, make sure the release notes reflect 
    that fact!
