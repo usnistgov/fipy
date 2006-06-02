@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 5/15/06 {3:47:43 PM} 
+ #                                last update: 6/2/06 {12:35:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -529,8 +529,10 @@ The analytical solution is simply
     >>> x = mesh.getCellCenters()[...,0]
     >>> from fipy.tools.numerix import where
     >>> phiAnalytical.setValue(x)
-    >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , where=(L / 4. <= x) & (x < 3. * L / 4.))
-    >>> phiAnalytical.setValue(x + 18. * L / 4. , where=3. * L / 4. <= x)
+    >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
+    ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
+    >>> phiAnalytical.setValue(x + 18. * L / 4. , 
+    ...                        where=3. * L / 4. <= x)
     >>> print phi.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8)
     1
 

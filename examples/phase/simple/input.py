@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/16/06 {1:30:39 PM} 
+ #                                last update: 6/2/06 {1:51:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -457,7 +457,7 @@ and thus must redeclare |phase| on the new mesh
 .. raw:: latex
 
    We choose the parameter values appropriate for nickel, given in
-   \cite{Warren:1994}
+   \cite{Warren:1995}
    \IndexClass{Variable}
 
 ..
@@ -489,7 +489,8 @@ and thus must redeclare |phase| on the new mesh
     >>> Mphi = Tm * beta / (6. * Lv * delta) # cm**3 / (J s)
 
     >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
-    ...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) / (2 * delta))))
+    ...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) 
+    ...                                                      / (2 * delta))))
 
 and make a new viewer
 
@@ -584,11 +585,13 @@ thickness
     ...         V, d = p
     ...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
     ...     from scipy.optimize import leastsq
+    ...     x =  mesh.getCellCenters()[...,0]
     ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
-    ...                                   args=(phase(), mesh.getCellCenters()[...,0], elapsed))
+    ...                                   args=(phase(), x, elapsed))
     ... except ImportError:
     ...     V_fit = d_fit = 0
-    ...     print "The SciPy library is unavailable to fit the interface thickness and velocity"
+    ...     print "The SciPy library is unavailable to fit the interface \
+    ... thickness and velocity"
 
     >>> print abs(1 - V_fit / velocity) < 3e-2
     True

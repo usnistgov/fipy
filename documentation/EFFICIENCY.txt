@@ -29,7 +29,7 @@ on in all cases for the following table.
 
    ========== ============ ================== ============= ============= =============
     Elements   |FiPy| (s)   |FiPy|             FORTRAN (s)   |FiPy|        FORTRAN
-                            ``--inline`` (s)                 memory (KB)   memory (KB)
+                            ``--inline`` (s)                 memory (KiB)  memory (KiB)
    ========== ============ ================== ============= ============= =============
        100       0.77        0.30              0.0009         39316          772
        400       0.87        0.37              0.0031         39664          828
@@ -76,7 +76,7 @@ The ``--no-cache`` flag is the default option.
 
    =========================== ==================== =================  ===================== ==================
     Example                     time per step        time per step      memory per cell       memory per cell
-                                ``--no-cache`` (s)   ``--cache`` (s)    ``--no-cache`` (kB)   ``--cache`` (kB)
+                                ``--no-cache`` (s)   ``--cache`` (s)    ``--no-cache`` (KiB)  ``--cache`` (KiB)
    =========================== ==================== =================  ===================== ==================
     Impingement |IMPINGEMENT|    4.3                  4.1               1.4                   2.3
     Anisotropy |ANISOTROPY|      3.5                  3.2               1.1                   1.9

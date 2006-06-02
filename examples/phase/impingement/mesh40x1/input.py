@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/18/06 {8:41:19 PM}
+ #                                last update: 6/2/06 {1:54:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -203,9 +203,10 @@ The source term is linearized in the manner demonstrated in
 
 The `phase` equation is constructed.
 
-    >>> phaseEq = TransientTerm(phaseTransientCoeff) == ExplicitDiffusionTerm(alpha**2) \
-    ...                                                 - ImplicitSourceTerm(implicitSource) \
-    ...                                                 + (mPhiVar > 0) * mPhiVar * phase
+    >>> phaseEq = TransientTerm(phaseTransientCoeff) \
+    ...   == ExplicitDiffusionTerm(alpha**2) \
+    ...      - ImplicitSourceTerm(implicitSource) \
+    ...      + (mPhiVar > 0) * mPhiVar * phase
 
 The `theta` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main

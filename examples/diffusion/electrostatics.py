@@ -6,7 +6,7 @@
  # 
  #  FILE: "electrostatics.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 5/15/06 {2:23:43 PM} 
+ #                                last update: 6/2/06 {12:39:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -146,7 +146,8 @@ This problem has the analytical solution
 ..
 
     >>> x = mesh.getCellCenters()[:,0]
-    >>> analytical = CellVariable(mesh=mesh, name="analytical solution", value=(x**2)/2 - 2*x)
+    >>> analytical = CellVariable(mesh=mesh, name="analytical solution", 
+    ...                           value=(x**2)/2 - 2*x)
 
 which has been satisifactorily obtained
 

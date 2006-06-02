@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 5/15/06 {4:45:59 PM} 
+ #                                last update: 6/2/06 {12:38:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,7 @@
  # ###################################################################
  ##
 
-"""
+r"""
 This example again solves a 1D diffusion problem as in
 ``examples/diffusion/mesh1D.py``, but now on a two-dimensional mesh:
 

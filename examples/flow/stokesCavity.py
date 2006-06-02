@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/18/06 {8:42:13 PM}
+ #                                last update: 6/2/06 {1:59:35 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -83,9 +83,9 @@ the results of Dolfyn_
     \% frequency of cells & x-velocity error (\%) & y-velocity error (\%) & pressure error (\%) \\
     \hline
     90                    & $<$ 0.1               & $<$ 0.1               & $<$ 5               \\
-    5                     & 0.1 - 0.6             & 0.1 - 0.3             & 5 - 11              \\
-    4                     & 0.6 - 7               & 0.3 - 4               & 11 - 35             \\
-    1                     & 7 - 96                & 4 - 80                & 35 - 179            \\
+    5                     & 0.1 to 0.6             & 0.1 to 0.3             & 5 to 11              \\
+    4                     & 0.6 to 7               & 0.3 to 4               & 11 to 35             \\
+    1                     & 7 to 96                & 4 to 80                & 35 to 179            \\
     0                     & $>$ 96                & $>$ 80                & $>$ 179             \\
     \hline
     %\caption{The frequency of cell values in \FiPy{} that are within the given error confidence.}
