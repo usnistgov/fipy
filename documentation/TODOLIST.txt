@@ -8,7 +8,6 @@ Long term Goals
 - Get a decent dendritic simulation working. Figure out why out dendrite doesn't look
   as cool as Jim's. Why do we have thin little arms and interface splitting?
 
-
 - Allow some keyword parameters to be passed to the plot() methods of viewers
 
 - Update Mayavi viewers to use TVTK (much better according to Prabhu) instead of PyVTK.
