@@ -8,4 +8,3 @@ include documentation/manual/reference.pdf
 
 recursive-include examples *.py *.msh *.gz
 recursive-include fipy *.msh
-prune fipy/examples

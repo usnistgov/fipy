@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/2/06 {4:20:24 PM} 
+ #                                last update: 6/5/06 {11:57:11 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -399,8 +399,8 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
             os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
             
-            for name in ('', '.win32'):
-                file = 'dist/FiPy-%s%s.tar.gz'%(self.distribution.metadata.get_version(), name)
+            for name in ('.tar.gz', '.win32.zip'):
+                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
                 print "setting group and ownership for %s ..."%file
                 os.system('chmod -R g+w %s'%file)
                 os.system('chgrp -R pfm %s'%file)
