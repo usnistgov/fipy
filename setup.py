@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/2/06 {4:20:24 PM} 
+ #                                last update: 6/5/06 {3:48:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -218,24 +218,25 @@ class build_docs (Command):
         f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version())
         f.close()
 
-        mainRestructuredTextFiles = ['INSTALLATION',
-                                     'README',
-                                     'LICENSE',
-                                     'DISCLAIMER',
-                                     'examples/README',
-                                     'examples/levelSet/electroChem/README']
+        mainRestructuredTextFiles = {'article': 
+                                         ['INSTALLATION',
+                                          'README',
+                                          'LICENSE',
+                                          'DISCLAIMER',
+                                          'examples/README'], 
+                                     'startlower': 
+                                         ['WINDOWS-INSTALLATION',
+                                          'examples/levelSet/electroChem/README']}
+                                         
                                      
-        secondaryRestructuredTextFiles = ['CREDITS',
-                                          'TALKS',
-                                          'TODOLIST',
-                                          'MAIL',
-                                          'SVN',
-                                          'EFFICIENCY']
-
-        tertiaryRestructuredTextFiles = ['WINDOWS-INSTALLATION',
-                                         'documentation/MAIL',
-                                         'examples/levelSet/electroChem/README']
-
+        secondaryRestructuredTextFiles = {'article': 
+                                              ['CREDITS',
+                                               'TALKS',
+                                               'TODOLIST',
+                                               'SVN',
+                                               'EFFICIENCY'],
+                                          'startlower': 
+                                              ['MAIL']}
 
         if self.latex:
             if self.apis:
@@ -301,27 +302,23 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             
             from utils.includedLaTeXWriter import IncludedLaTeXWriter
             
-            self._translateTextFiles(files = mainRestructuredTextFiles,
-                                     source_dir = '../..',
-                                     writer = IncludedLaTeXWriter(),
-                                     settings ={'use_latex_toc': True,
-                                                'footnote_references': 'superscript',
-                                                'table_style': 'nolines'})
+            for key in mainRestructuredTextFiles.keys():
+                self._translateTextFiles(files = mainRestructuredTextFiles[key],
+                                         source_dir = '../..',
+                                         writer = IncludedLaTeXWriter(),
+                                         settings ={'use_latex_toc': True,
+                                                    'footnote_references': 'superscript',
+                                                    'table_style': 'nolines',
+                                                    'documentclass': key})
 
-            self._translateTextFiles(files = secondaryRestructuredTextFiles,
-                                     source_dir = '..',
-                                     writer = IncludedLaTeXWriter(),
-                                     settings ={'use_latex_toc': True,
-                                                'footnote_references': 'superscript',
-                                                'table_style': 'booktabs'})
-
-            self._translateTextFiles(files = tertiaryRestructuredTextFiles,
-                                     source_dir = '../..',
-                                     writer = IncludedLaTeXWriter(),
-                                     settings ={'use_latex_toc': True,
-                                                'footnote_references': 'superscript',
-                                                'table_style': 'booktabs',
-                                                'documentclass': 'startlower'})
+            for key in mainRestructuredTextFiles.keys():
+                self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
+                                         source_dir = '..',
+                                         writer = IncludedLaTeXWriter(),
+                                         settings ={'use_latex_toc': True,
+                                                    'footnote_references': 'superscript',
+                                                    'table_style': 'booktabs',
+                                                    'documentclass': key})
 
             if self.guide:
                 os.system("pdflatex fipy")
@@ -347,29 +344,23 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             from utils.includedHTMLWriter import IncludedHTMLWriter
             
             print "main files"
-            self._translateTextFiles(files = mainRestructuredTextFiles,
-                                     destination_dir = tmp,
-                                     writer = IncludedHTMLWriter(),
-                                     settings = {'initial_header_level' : 3,
-                                                 'xml_declaration' : 0},
-                                     ext = '.html')
+            for key in mainRestructuredTextFiles.keys():
+                self._translateTextFiles(files = mainRestructuredTextFiles[key],
+                                         destination_dir = tmp,
+                                         writer = IncludedHTMLWriter(),
+                                         settings = {'initial_header_level' : 3,
+                                                     'xml_declaration' : 0},
+                                         ext = '.html')
 
             print "secondary files"
-            self._translateTextFiles(files = secondaryRestructuredTextFiles,
-                                     source_dir = "documentation",
-                                     destination_dir = tmp,
-                                     writer = IncludedHTMLWriter(),
-                                     settings = {'initial_header_level' : 3,
-                                                 'xml_declaration' : 0},
-                                     ext = '.html')
-
-            print "tertiary files"
-            self._translateTextFiles(files = tertiaryRestructuredTextFiles,
-                                     destination_dir = tmp,
-                                     writer = IncludedHTMLWriter(),
-                                     settings = {'initial_header_level' : 3,
-                                                 'xml_declaration' : 0},
-                                     ext = '.html')
+            for key in secondaryRestructuredTextFiles.keys():
+                self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
+                                         source_dir = "documentation",
+                                         destination_dir = tmp,
+                                         writer = IncludedHTMLWriter(),
+                                         settings = {'initial_header_level' : 3,
+                                                     'xml_declaration' : 0},
+                                         ext = '.html')
 
             import shutil
             for f in ['menu.html', 'meta.html', 'logo.html', 'extra.html']:
@@ -399,8 +390,8 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
             os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
             
-            for name in ('', '.win32'):
-                file = 'dist/FiPy-%s%s.tar.gz'%(self.distribution.metadata.get_version(), name)
+            for name in ('.tar.gz', '.win32.zip'):
+                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
                 print "setting group and ownership for %s ..."%file
                 os.system('chmod -R g+w %s'%file)
                 os.system('chgrp -R pfm %s'%file)
@@ -416,7 +407,9 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             os.system('chmod -R g+w documentation/www/')
             
             print "uploading web pages..."
-            os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
+            # The -t flag (implicit in -a) is suddenly causing problems
+            # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
+            os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
 
             print "activating web pages..."
             os.system(os.environ['FIPY_WWWACTIVATE'])

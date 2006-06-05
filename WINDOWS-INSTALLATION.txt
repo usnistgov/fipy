@@ -49,9 +49,9 @@ Download and run the Pysparse installer.
 Step 4: Install |FiPy|
 ----------------------
 
-http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.win32.tar.gz
+http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.win32.zip
 
-Download and unpack the tarball. Run the |FiPy| installer
+Download and unpack the zip file. Run the |FiPy| installer
 ``FiPy-1.1.win32.exe``, which should be in the base FiPy-1.1
 directory.
 

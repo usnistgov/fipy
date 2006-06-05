@@ -160,9 +160,11 @@ Build a windows executable installer::
 Combine the windows installer and examples into one tar ball.
 
     $ rm MANIFEST
-    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults
     $ set FIPY_VERSION=XXX
-    $ mv dist-windows/FiPy-${FIPY_VERSION}.tar.gz dist/FiPy-${FIPY_VERSION}.win32.tar.gz
+    $ ln -s dist/FiPy-${FIPY_VERSION}.win32.exe .
+    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults --formats=zip
+    $ unlink FiPy-${FIPY_VERSION}.win32.exe
+    $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
 
 Upload to the CTCMS website::
 
@@ -172,16 +174,20 @@ Upload to the CTCMS website::
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-`Upload the release to SourceForge`_.  You can use, e.g.,::
+`Upload the release to SourceForge`_ and to the `MatDL download page`_.  You can use, e.g.,::
 
-    cvs2cl.pl --branches --tagdates --utc --usermap documentation/UFILE.txt --delta version-1_0a1:HEAD --hide-filenames
+    $ svn log --revision HEAD:${LASTREV}
 
-to build the ChangeLog.
+to build the ChangeLog. You can determine the revision number LASTREV by examining the "Last Changed 
+Rev:" field given by::
+
+    $ svn info http://matdl-osi.org/svn/fipy/tags/version-x_y
 
 Make an announcement to `fipy@nist.gov`_
 
 
 .. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
+.. MatDL download page: http://matdl-osi.org/fipy/wiki/FiPyFiles
 .. fipy@nist.gov: mailto:fipy@nist.gov
 
 ==========================================
