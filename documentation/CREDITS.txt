@@ -1,5 +1,5 @@
 ============
-CONTRIBUTORS
+Contributors
 ============
 
 `Jon Guyer`_ 
