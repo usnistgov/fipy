@@ -242,7 +242,7 @@ def arccos(arr):
     
         >>> try: 
         ...     print str(arccos(2.0)) == "nan"
-        ... except OverflowError:
+        ... except (OverflowError, ValueError):
         ...     print 1
         1
 
@@ -287,7 +287,7 @@ def arccosh(arr):
     
         >>> try: 
         ...     print str(arccosh(0.0)) == "nan"
-        ... except OverflowError:
+        ... except (OverflowError, ValueError):
         ...     print 1
         1
 
@@ -324,7 +324,7 @@ def arcsin(arr):
     
         >>> try: 
         ...     print str(arcsin(2.0)) == "nan"
-        ... except OverflowError:
+        ... except (OverflowError, ValueError):
         ...     print 1
         1
 
