@@ -260,7 +260,7 @@ vertical positions
     ...     print "The SciPy library is not available to test the solution to \
     ... the transient diffusion equation"
 
-    >>> print phi.allclose(phiAnalytical, atol = 6e-2)
+    >>> print phi.allclose(phiAnalytical, atol = 7e-2)
     1
 
     >>> if __name__ == '__main__':
