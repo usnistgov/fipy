@@ -89,6 +89,10 @@ The significant changes since version 1.0 are:
 - Added a `MultiViewer` class that automatically groups several viewers 
   together if the variables couldn't be displayed by a single viewer.
 
+- The abbreviated syntax ``from fipy import Class`` or ``from fipy import *``
+  promised in version 1.0 actually works now. The examples all still use the
+  fully qualified names.
+
 - The repository has been converted from a CVS to a Subversion_
   repository. Details on how to check out the new repository are given
   in the |INSTALLATION-txt|.
