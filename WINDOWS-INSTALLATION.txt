@@ -25,12 +25,17 @@ experience to have a usable installation up and running.
 Step 1: Install Python
 ----------------------
 
-http://code.enthought.com/enthon/
+http://download.enthought.com/enthought_python-2.3.5-1076-wx26-n238.exe
 
-Download version 1.0.0 and run the installer. Open the
+Download and run the Enthought Edition installer. Open the
 ``C:\Python23\Lib\site-packages\vtk_python\`` directory in a browser
 and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python23\``
 directory.
+
+.. warning:
+
+    Don't download later versions of Enthought Python, they may
+    be missing ``vtkRenderingPythonTkWidgets.dll``.
 
 Step 2: Install PyVTK
 ---------------------
@@ -55,7 +60,14 @@ Download and unpack the zip file. Run the |FiPy| installer
 ``FiPy-1.1.win32.exe``, which should be in the base FiPy-1.1
 directory.
 
-Step 5: Install Gmsh
+Step 5: Install Matplotlib
+--------------------------
+
+http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.87.2.win32-py2.3.exe?download
+
+Download and run the Matplotlib installer.
+
+Step 6: Install Gmsh
 --------------------
 
 http://www.geuz.org/gmsh/bin/Windows/gmsh-1.65.0-Windows.zip
@@ -63,7 +75,7 @@ http://www.geuz.org/gmsh/bin/Windows/gmsh-1.65.0-Windows.zip
 Download and unpack Gmsh for Windows. Open the unpacked folder with a
 browser and copy the ``gmsh.exe`` file to ``C:\Python23``.
 
-Step 6: Run IDLE_
+Step 7: Run IDLE_
 -----------------
 
 The IDLE_ environment is recommended for running |FiPy|. In order to
@@ -80,7 +92,7 @@ instructions:
    - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
    - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
-Step 7: Import a module and view the results
+Step 8: Import a module and view the results
 --------------------------------------------
 
 You can use the IDLE_ file browser to open the examples and run the
