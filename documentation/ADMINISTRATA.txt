@@ -68,9 +68,9 @@ At point of version release x.y, *on main trunk*::
 
     $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
     $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/STABLE -m "tagging STABLE"
+    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/STABLE -m "version x.y is STABLE"
     $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/CURRENT -m "tagging CURRENT"	
+    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/CURRENT -m "version x.y is CURRENT"	
 
 ---------
 Bug fixes

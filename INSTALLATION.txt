@@ -2,6 +2,14 @@
 Installation
 ============
 
+.. contents::
+   :local:
+   :depth: 2
+
+.. raw:: latex
+
+   \minitoc[e]
+
 The |FiPy| finite volume PDE solver relies on several third-party packages.
 It is *best to obtain and install those first*, before attempting to install
 |FiPy|.
@@ -306,7 +314,7 @@ common platforms.
 .. warning:: 
 
    The facility to produce hard copies in Pygist_ does not work very well and
-   may crash the |FiPy| run. "``.eps''" and "``.cgm''" export seem to work.
+   may crash the |FiPy| run. "``.eps``" and "``.cgm``" export seem to work.
 
 .. attention::
 
@@ -392,11 +400,20 @@ judicious use of C language inlining, via the weave_ module of the
 SciPy_ package. `SciPy installers for specific platforms`_ 
 |citeSciPyDownload| are available.
 
-In addition, a handful of test cases use functions from the SciPy_ library.
+.. attention::
+
+   SciPy_ is undergoing a lot of development lately but, as yet, |FiPy| still
+   requires "old SciPy". Be sure to install version 0.3.x of
+   ``SciPy_complete``.
+
+.. note:: 
+
+   A handful of test cases use functions from the SciPy_ library and will
+   throw errors if it is missing.
 
 .. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
 .. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
-.. _SciPy installers for specific platforms:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/download/
+.. _SciPy installers for specific platforms:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=27747&package_id=19531&release_id=389739
 .. |citeSciPyDownload| raw:: latex
 
    \cite{SciPyDownload}
