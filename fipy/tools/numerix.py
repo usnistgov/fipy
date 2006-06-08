@@ -852,13 +852,15 @@ def conjugate(arr):
 
         >>> print conjugate(3 + 4j)
         (3-4j)
-        >>> print conjugate(array((3 + 4j, -2j, 10)))
-        [  3.-4.j,  0.+2.j, 10.-0.j,]
+        >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
+        1
         >>> from fipy.variables.variable import Variable
-        >>> conjugate(Variable(value = (3 + 4j, -2j, 10), unit = "ohm"))
-        numerix.conjugate(Variable(value = PhysicalField([  3.+4.j,  0.-2.j, 10.+0.j,],'ohm')))
-        >>> print conjugate(Variable(value = (3 + 4j, -2j, 10), unit = "ohm"))
-        [  3.-4.j,  0.+2.j, 10.-0.j,] ohm
+        >>> var = conjugate(Variable(value = (3 + 4j, -2j, 10), unit = "ohm"))
+        >>> print var.getUnit()
+        <PhysicalUnit ohm>
+        >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
+        1
+        
     """
     if _isPhysical(arr):
         return arr.conjugate()

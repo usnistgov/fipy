@@ -276,7 +276,7 @@ def runGold(faradaysConstant=9.6e4,
     import examples.levelSet.electroChem
     data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
     n = mesh.getFineMesh().getNumberOfCells()
-    print numerix.allclose(catalystVar[:n], data[:n])
+    print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
     
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
