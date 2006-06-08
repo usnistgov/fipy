@@ -159,8 +159,13 @@ class _AdaptiveMesh2D(GmshImporter2D):
 
     def _writeGeometryFile(self):
         ## do the geometry file
+
         import tempfile
-        (f, filename) = tempfile.mkstemp('.geo')
+        import sys
+        if sys.platform == 'win32':
+            filename = 'tmp.geo'
+        else:
+            (f, filename) = tempfile.mkstemp('.geo')
         
         geomFile = open(filename, mode = 'w')
         ## create the points
@@ -201,8 +206,13 @@ class _AdaptiveMesh2D(GmshImporter2D):
 
     def _writeBackgroundMesh(self):
         ## write the mesh
+
         import tempfile
-        (f, bgFile) = tempfile.mkstemp('.pos')
+        import sys
+        if sys.platform == 'win32':
+            bgFile = 'tmp.pos'
+        else:
+            (f, bgFile) = tempfile.mkstemp('.pos')
         
         bgmeshFile = open(bgFile, mode = 'w')
         bgmeshFile.write("View \"characteristic lengths\" {")

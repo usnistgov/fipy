@@ -5,6 +5,12 @@ Future Work
 Long term Goals
 ---------------
 
+- Turn off sourceforge tracker
+
+- Different tracker items in Trac
+
+- Tarball of the repository
+
 - Get a decent dendritic simulation working. Figure out why out dendrite doesn't look
   as cool as Jim's. Why do we have thin little arms and interface splitting?
 
