@@ -13,52 +13,60 @@ The following needs to be updated as we become more experienced with SVN.
 Break off for radical refactoring. We will use the following method to
 preserve the tags/ and branches/ policy, though not strictly necessary
 with SVN::
-    
+
+    $ cd trunk    
     $ BRANCH=branch-refactoring_etc
     $ FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/root-$BRANCH -m "creating tag for $BRANCH"
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
-    $ cd outside/of/SVN/working/copy
+    $ cd ..
     $ svn co $FIPYROOT/branches/$BRANCH
 
 Edit and add to branch::
 
-    $ cd where/ever//$BRANCH
+    $ cd $BRANCH
     $ emacs ...
     $ svn ci -m "refactoring_stage_A"
-    $ svn copy $FIPYROOT/$BRANCH $FIPYROOT/tags/refactoring_stage_A -m "refactoring_stage_A"
     $ emacs ...
     $ svn ci -m "refactoring_stage_B"
-    $ svn copy $FIPYROOT/$BRANCH $FIPYROOT/tags/refactoring_stage_A -m "refactoring_stage_A"
 
-Merge developments from trunk::
+Find the initial revision number for the branch (IRN)::
 
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/somePointOnTrunk -m "tag for $BRANCH merge"
-    $ svn diff $FIPYROOT/tags/root-$BRANCH $FIPYROOT/tags/somePointOnTrunk
-    $ svn merge $FIPYROOT/tags/root-$BRANCH $FIPYROOT/tags/somePointOnTrunk $FIPYROOT/branches/$BRANCH
-    $ cd where/ever/$BRANCH
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ IRN=...
+
+Check out what has happend on the trunk since the checkout
+
+    $ svn log -r$IVN:HEAD $FIPYROOT/trunk
+    $ svn diff -r$IVN:HEAD $FIPYROOT/trunk
+
+Merge developments from trunk (best not to do this at all)::
+
+    $ svn merge -r$IVN:HEAD $FIPYROOT/trunk
     $ python setup.py test
     $ svn ci -m "merged main trunk"
-    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/merge-somePointOnTrunk_to_$BRANCH -m "tagging merge from trunk"
 
-Refactoring complete::
+Edit and add to branch::
 
-    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/end-$BRANCH -m "finished with branch"
-    $ svn diff $FIPYROOT/tags/root-$BRANCH $FIPYROOT/branches/$BRANCH
-    $ svn merge $FIPYROOT/tags/root-$BRANCH $FIPYROOT/branches/$BRANCH $FIPYROOT/trunk
-    $ cd where/ever/trunk
+    $ emacs ...
+    $ svn ci -m "refactoring_stage_C"
+
+Refactoring complete, find out latest revision number for the branch (LRN) and when trunk was merged (TRN)::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ LRN=...
+    $ TRN=...
+    
+Refactoring complete, merge to trunk::
+
+    $ cd ../trunk
+    $ svn diff -r$IRN:$TRN-1 $FIPYROOT/branches/$BRANCH
+    $ svn merge -r$IRN:$TRN-1 $FIPYROOT/branches/$BRANCH
+    $ svn diff -r$TRN:$LRN $FIPYROOT/branches/$BRANCH
+    $ svn merge -r$TRN:$LRN $FIPYROOT/branches/$BRANCH
     $ python setup.py test
     $ svn ci -m "merged $BRANCH"
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/$BRANCH-merged -m "merged $BRANCH"	
 
 **Now cease all work on branch-refactoring_etc**
-
-Optionally 
-
-    $ cd where/ever/$BRANCH
-    $ echo "$BRANCH merged back to trunk: `date`" > "THIS BRANCH IS FINISHED"
-    $ svn add "THIS BRANCH IS FINISHED"
-    $ svn ci -m "" "THIS BRANCH IS FINISHED"
 
 --------
 Versions
@@ -76,47 +84,58 @@ At point of version release x.y, *on main trunk*::
 Bug fixes
 ---------
 
-At the point some fix is made to an old version n.m, *on main trunk*::
+At the point some fix is made to an old version n.m::
 
-    $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/branch-version-n_m -m "making branck for version n.m"
-    $ cd outside/of/SVN/working/copy
-    $ svn co $FIPYROOT/branches/branch-version-n_m
+    $ BRANCH=branch-version-n_m
+    $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/$BRANCH -m "making branch for version n.m"
+    $ svn co $FIPYROOT/branches/$BRANCH
 
 Fix the code::
 
-    $ cd where/ever/branch-version-n_m
+    $ cd $BRANCH
     $ svn ci -m "fix n.m.q"
-    $ svn copy $FIPYROOT/branches/branch-version-n_m $FIPYROOT/tags/version-n_m_q
+    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
 
 Possibly::
 
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "tagging CURRENT" 
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "tagging STABLE" 
+    $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
+    $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "tagging CURRENT"
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "tagging STABLE"
+
+Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ IRN=..
+    $ LRN=...
 
 Now merge n.m.q changes back to main trunk::
 
-    $ svn diff $FIPYROOT/tags/version-n_m $FIPYROOT/branches/branch-version-n_m
-    $ svn merge $FIPYROOT/tags/version-n_m $FIPYROOT/branches/branch-version-n_m $FIPYROOT/trunk
-    $ cd where/ever/trunk
+    $ cd ../trunk
+    $ svn diff -r$IRN:LRN $FIPYROOT/branches/$BRANCH
+    $ svn merge -r$IRN:LRN $FIPYROOT/branches/$BRANCH
     $ svn ci -m "merged version n.m.q"    
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/merge-branch-version-n_m_q -m "tagging version n.m.q merge"
 
 Make new fix q+1 to n.m::
 
-    $ cd where/ever/branch-version-n_m 
+    $ cd ../$BRANCH 
     
 Fix the code::
 
     $ svn ci -m "fix version n.m.q+1"
-    $ svn copy $FIPYROOT/branches/branch-version-n_m $FIPYROOT/tags/version-n_m_q+1
+
+Find the previous revision number for the branch (PRN) and the latest revision number (LRN)::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ PRN=..
+    $ LRN=...
 
 Again, merge n.m.q+1 changes back to main trunk::
 
-    $ svn diff $FIPYROOT/tags/version-n_m_q $FIPYROOT/branches/branch-version-n_m_q+1
-    $ svn merge $FIPYROOT/tags/version-n_m_q $FIPYROOT/branches/branch-version-n_m_q+1 $FIPYROOT/trunk
-    $ cd where/ever/trunk
-    $ svn ci -m "merged version n.m.q+1"    
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/merge-branch-version-n_m_q+1 -m "tagging version n.m.q+1 merge"
+    $ cd ../trunk
+    $ svn diff -r$PRN:LRN $FIPYROOT/branches/$BRANCH
+    $ svn merge -r$PRN:LRN $FIPYROOT/branches/$BRANCH
+    $ svn ci -m "merged version n.m.q+1"
 
 ================
 Making a Release
