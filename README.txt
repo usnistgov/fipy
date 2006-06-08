@@ -119,6 +119,12 @@ You can communicate with the |FiPy| developers and with other users via our
 system`_ for bugs, support requests, feature requests and
 patch submissions |citeMailingTracking|. We welcome collaborative efforts on this project.
 
+|FiPy| is a member of the
+`Materials Digital Library Pathway Open Source Initiative`_ (MatDL-OSI). 
+This National Science Foundation funded service provides management of our
+public source code repository, our bug tracking system, and a "wiki" space
+for public contributions of code snippets, discussions, and tutorials.
+
 ------------------------
 Conventions and Notation
 ------------------------
@@ -201,6 +207,7 @@ or a
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 .. _Sourceforge:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy
+.. _Materials Digital Library Pathway Open Source Initiative: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/
 
 .. include:: utils/include.txt
 .. include:: documentation/VERSION.txt
