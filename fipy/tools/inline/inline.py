@@ -10,7 +10,7 @@ def _optionalInline(inlineFn, pythonFn, *args):
 	return pythonFn(*args)
 	
 def _runInline(code,**args):
-    import weave
+    from scipy import weave
 
 ##    from weave.blitz_tools import blitz_type_factories	
 
