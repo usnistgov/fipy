@@ -91,6 +91,7 @@ class Variable(object):
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
 
+    id = 0
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
 	Create a `Variable`.
@@ -137,6 +138,9 @@ class Variable(object):
 	self.laplacian = {}
         self.mag = None
         self.sliceVars = {}
+
+        self.id = Variable.id  #######
+        Variable.id += 1       #######
         
     def getMesh(self):
 	return self.mesh
@@ -350,6 +354,11 @@ class Variable(object):
             
         return value
 
+    #def getCstring(self, argDict = {}):   ###########
+    #    identifier = 'var%s' % (self.id)
+    #    argDict[identifier] = self.getValue()
+    #    return (identifier + '(i)'), argDict
+    
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         
@@ -612,12 +621,25 @@ class Variable(object):
                 """
                 :Parameters:
                     
-                  - `style`: one of `'__repr__'`, `'name'`, `'TeX'`
+                  - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'` ############
+
+               """
+
+                """
+                Test of _getRepresentation
+                >>> a = Variable(Numeric.array((1,2,3,4)))
+                >>> b = Variable(Numeric.array((5,6,7,8)))
+                >>> c = a * b
+                >>> print c._getRepresentation()
+                (Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))
+                >>> print c.getValue()
+                [ 5,12,21,32,]
+                                 
                 """                
                 import opcode
                 
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
-		
+	
 		def _popIndex():
 		    return bytecodes.pop(0) + bytecodes.pop(0) * 256
 		
@@ -670,11 +692,24 @@ class Variable(object):
                                 # number would be too long and messy.
                                 # Just give shorthand.
                                 stack.append("<...>")
+                            print 'repr(self.var) = ', repr(self.var)
+                            #print repr(self.var[_popIndex()])
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
+                        elif style == "C":
+                            argDict = {}
+                            stack.append(self.var[_popIndex()])
+                            print "Stack = ", stack
+                            for var in stack:
+                                print 'var = ', var
+                                argDict[var.id] = var.getValue()
+                            #s1, argDict = self.var.getCstring(argDict)
+                            #s2, argDict = self.other.getCstring(argDict)
+                            #return '(%s %s %s)' % (s1, self.op, s2), argDict
+                            print 'argDict = ', argDict
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
-		    elif opcode.opname[bytecode] == 'CALL_FUNCTION':
+                    elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
 			args = []
 			for j in range(bytecodes.pop(1)):
 			    # keyword parameters
@@ -693,9 +728,10 @@ class Variable(object):
 		    else:
 			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`)
 
+                                        
             def __repr__(self):
                 return self._getRepresentation()
-                
+            
             def getName(self):
                 name = baseClass.getName(self)
                 if len(name) == 0:
@@ -742,7 +778,9 @@ class Variable(object):
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-		return self.op(self.var[0].getValue())
+                #if --inline:
+                
+                return self.op(self.var[0].getValue()) ########## replace 
 		
 	return unOp(op, [self])
 	    
