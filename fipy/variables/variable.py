@@ -44,7 +44,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import os
-
+import weave
 import Numeric
 
 from fipy.meshes.meshIterator import MeshIterator
@@ -53,6 +53,10 @@ import fipy.tools.dimensions.physicalField
 
 from fipy.tools import numerix
 from fipy.tools import parser
+
+doKTinline = False   #######
+if parser.parse("--KTinline", action = "store_true"):
+    doKTinline = True
 
 class Variable(object):
     
@@ -282,15 +286,31 @@ class Variable(object):
 	return str(self.getValue())
 	    
     def __repr__(self):
-	s = self.__class__.__name__ + '('
+        s = self.__class__.__name__ + '('
 	if len(self.name) > 0:
 	    s += 'name = "' + self.name + '", '
 	s += 'value = ' + `self.getValue()`
 	if self.mesh:
 	    s += ', mesh = ' + `self.mesh`
 	s += ')'
-	return s
+        return s
 
+    def getCstring(self, argDict = {}):
+         """
+         Generate the string and dictionary to be used in inline
+         
+             >>> a = Variable(Numeric.array((1,2,3,4)))
+             >>> string, argDict =  a.getCstring(argDict = {})
+             >>> print string
+             (var0(i))
+             >>> print argDict
+             {'var0': [1,2,3,4,]}
+             
+         """
+         identifier = 'var%s' % (self.id)
+         argDict[identifier] = self.getValue()
+         return (identifier + '(i)')
+    
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
@@ -353,11 +373,6 @@ class Variable(object):
             value = self.value
             
         return value
-
-    #def getCstring(self, argDict = {}):   ###########
-    #    identifier = 'var%s' % (self.id)
-    #    argDict[identifier] = self.getValue()
-    #    return (identifier + '(i)'), argDict
     
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
@@ -616,25 +631,76 @@ class Variable(object):
                     self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh())
                 
                 return self.old
+         
+            def getCstring(self, argDict = {}):
+                return self._getRepresentation(style = "C", argDict = argDict)
             
-	    def _getRepresentation(self, style = "__repr__"):
+	    def _getRepresentation(self, style = "__repr__", argDict = {}):
                 """
                 :Parameters:
                     
                   - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'` ############
 
-               """
-
+                """
+                """
+                Test of getCstring         
+                >>> s1, argDict = self.getCstring( argDict = {} )
+                >>> print s1
+                (var0(i) * var1(i))
+                >>> print argDict
+                {'var1': array([1, 2, 3, 4]), 'var0': array([1, 2, 3, 4])}
+                """
+                
                 """
                 Test of _getRepresentation
-                >>> a = Variable(Numeric.array((1,2,3,4)))
-                >>> b = Variable(Numeric.array((5,6,7,8)))
-                >>> c = a * b
-                >>> print c._getRepresentation()
-                (Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))
-                >>> print c.getValue()
-                [ 5,12,21,32,]
-                                 
+                >>> v1 = Variable(Numeric.array((1,2,3,4)))
+                >>> v2 = Variable(Numeric.array((5,6,7,8)))
+                >>> v3 = Variable(Numeric.array((9,10,11,12)))
+                >>> v4 = Variable(Numeric.array((13,14,15,16)))
+
+                >>> print (v1 * v2)._getRepresentation()
+
+                >>> s, d = (v1 * v2)._getRepresentation(style='C')
+                >>> print s
+                >>> print d
+
+                >>> s, d = (v1 * v2 + v3 * v4)._getRepresentation(style='C')
+                >>> print s
+                (varX[i] * varY[i] + varZ[i] * varP[i])
+                >>> d['var01'] is v1
+                True
+
+                >>> s, d = (v1 - v2)._getRepresentation(style='C')
+                >>> print s
+                (varX[i] - varY[i])
+                >>> print d
+
+                >>> s, d = (v1 / v2)._getRepresentation(style='C')
+                >>> print s
+                (varX[i] / varY[i])
+                >>>  d['var01'] is v1
+                TRUE
+
+                >>> s, d = (v1 - 1)._getRepresentation(style='C')
+                >>> print s
+                (varX[i] - varY[i])
+                >>>  d['var01'] is v1
+                TRUE   
+                
+                >>> s, d = (5 * v2)._getRepresentation(style='C')
+                >>> print s
+                (5 * varX[i])
+                >>>  d['var01'] is v1
+                TRUE
+            
+
+                >>> s, d = (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
+                >>> print s
+                (varX[i] / varY[i] - varZ[i] * varP[i] + varQ[i] * varS[i])
+                >>>  d['var01'] is v1
+                TRUE
+                
+                
                 """                
                 import opcode
                 
@@ -654,7 +720,7 @@ class Variable(object):
 			    62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
 		}
 		
-		while len(bytecodes) > 0:
+   		while len(bytecodes) > 0:
 		    bytecode = bytecodes.pop(0)
 		    
 		    if opcode.opname[bytecode] == 'UNARY_CONVERT':
@@ -697,16 +763,7 @@ class Variable(object):
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
-                            argDict = {}
-                            stack.append(self.var[_popIndex()])
-                            print "Stack = ", stack
-                            for var in stack:
-                                print 'var = ', var
-                                argDict[var.id] = var.getValue()
-                            #s1, argDict = self.var.getCstring(argDict)
-                            #s2, argDict = self.other.getCstring(argDict)
-                            #return '(%s %s %s)' % (s1, self.op, s2), argDict
-                            print 'argDict = ', argDict
+                            stack.append(self.var[_popIndex()].getCstring(argDict))
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -726,7 +783,7 @@ class Variable(object):
 		    elif binop.has_key(bytecode):
 			stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
 		    else:
-			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`)
+			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
 
                                         
             def __repr__(self):
@@ -774,13 +831,41 @@ class Variable(object):
         else:
             # If self and other have different shapes, we don't know how to combine them.
             return None
-            
+
+    def _reallyInline(self):
+        argDict = {}
+        string = self.getCstring(argDict)
+        string = 'result(i) = ' + string
+        print 'opShape = ', self.opShape
+        ni = self.opShape[0]
+        argDict['result'] = Numeric.zeros(ni, 'd')
+        argDict['ni'] = ni
+        argNames = argDict.keys()
+        print 'argNames = ', argNames
+        print 'argDict =', argDict
+        print 'string = ', string
+
+        CODE = """    
+                    for (int i = 0; i < ni; i++)
+                    {
+                        %s;
+                        }
+                    """ % string
+
+        weave.inline(CODE, arg_names = argNames,
+                     local_dict = argDict,
+                     type_converters = weave.converters.blitz)
+        
+        return argDict['result']
+        
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-                #if --inline:
-                
-                return self.op(self.var[0].getValue()) ########## replace 
+                if doKTinline == True:
+                    return Variable(self)._reallyInline()
+                        
+                else:
+                    return self.op(self.var[0].getValue())   
 		
 	return unOp(op, [self])
 	    
@@ -1417,7 +1502,7 @@ class Variable(object):
              [  9., 10.,]
              [ 18., 18.,]
              [  6., 12.,]
-             [  3.,  6.,]]
+             [  3.,  6.,]]_getBinaryOperatorVariable
             >>> print isinstance(vfvXv2, VectorFaceVariable)
             1
             >>> v2Xvfv = (3,2) * vfv
@@ -1734,22 +1819,32 @@ class Variable(object):
 	operatorClass = self._getOperatorVariableClass(baseClass)
         
         # declare a binary operator class with the desired base class
-	class binOp(operatorClass):
+	class binOp(operatorClass):    #### place3
 	    def _calcValue(self):
+                if doKTinline == True:           ######
+                    return self._reallyInline()
+                    pass
 		if isinstance(self.var[1], Variable):
 		    val1 = self.var[1].getValue()
-		else:
-		    if type(self.var[1]) is type(''):
+                else:
+                    if type(self.var[1]) is type(''):
 			self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
-		    val1 = self.var[1]
-		
+		    val1 = self.var[1]                		
 		return self.op(self.var[0].getValue(), val1)
-	
-            def _getRepresentation(self, style = "__repr__"):
-                return "(" + operatorClass._getRepresentation(self, style = style) + ")"
-		
+
+            ##def getCstring(self, argDict={}):        
+##                s1, argDict = self.var.getCstring(argDict)
+##                s2, argDict = self.other.getCstring(argDict)
+##                return '(%s %s %s)' % (s1, self.op, s2), argDict                    
+                	
+            def _getRepresentation(self, style = "__repr__", argDict = {}):
+
+                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict) + ")"
+	#####################NEED TO INLINE	
         # return the binary operator variable instance
-	return binOp(op, [var0, var1])
+        tmp = binOp(op, [var0, var1])
+        tmp.opShape = opShape
+	return tmp
 	
     def __add__(self, other):
         from fipy.terms.term import Term
