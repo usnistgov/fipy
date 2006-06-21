@@ -54,12 +54,12 @@ import fipy.tools.dimensions.physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 
-doKTinline = False   #######
+doKTinline = False
 if parser.parse("--KTinline", action = "store_true"):
     doKTinline = True
 
 class Variable(object):
-    
+    id = 0
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action = "store_true"):
         _cacheAlways = False
@@ -95,7 +95,7 @@ class Variable(object):
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
 
-    id = 0
+
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
 	Create a `Variable`.
@@ -115,6 +115,10 @@ class Variable(object):
 	  - `array`: the storage array for the `Variable`
 	  - `name`: the user-readable name of the `Variable`
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
+
+        Test id attribute
+            >>> Variable(Numeric.array((1,2))).id
+            22
 	"""
 
 	self.requiredVariables = []
@@ -143,8 +147,8 @@ class Variable(object):
         self.mag = None
         self.sliceVars = {}
 
-        self.id = Variable.id  #######
-        Variable.id += 1       #######
+        self.id = Variable.id  
+        Variable.id += 1       
         
     def getMesh(self):
 	return self.mesh
@@ -299,17 +303,15 @@ class Variable(object):
          """
          Generate the string and dictionary to be used in inline
          
-             >>> a = Variable(Numeric.array((1,2,3,4)))
-             >>> string, argDict =  a.getCstring(argDict = {})
-             >>> print string
-             (var0(i))
-             >>> print argDict
-             {'var0': [1,2,3,4,]}
-             
+             >>> (Variable(Numeric.array((1,2,3,4)))).getCstring(argDict = {})
+             'var146(i)'
+             >>> (Variable(Numeric.array((1,2,3,4))) + Variable(Numeric.array((1,2,3,4)))).getCstring(argDict = {})
+             '(var147(i) + var148(i))'
+
          """
          identifier = 'var%s' % (self.id)
          argDict[identifier] = self.getValue()
-         return (identifier + '(i)')
+         return (identifier + '(i)')  # will need to check shapes (int(no i), 2D(i,j), 3D(i,j,k))
     
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
@@ -597,6 +599,43 @@ class Variable(object):
             >>> a.setValue(2)
             >>> print b
             -1
+
+        Test of getCstring         
+
+            >>> (Variable((0,1,2,3)) * Variable((0,1,2,3))).getCstring()
+            '(var117(i) * var118(i))'
+
+        Test of _getRepresentation
+
+            >>> v1 = Variable(Numeric.array((1,2,3,4)))
+            >>> v2 = Variable(Numeric.array((5,6,7,8)))
+            >>> v3 = Variable(Numeric.array((9,10,11,12)))
+            >>> v4 = Variable(Numeric.array((13,14,15,16)))
+
+            >>> (v1 * v2)._getRepresentation()
+            '(Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))'
+            
+            >>> (v1 * v2)._getRepresentation(style='C')
+            '(var120(i) * var121(i))'
+            
+            >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C')
+            '((var120(i) * var121(i)) + (var122(i) * var123(i)))'
+            
+            >>> (v1 - v2)._getRepresentation(style='C')
+            '(var120(i) - var121(i))'
+
+            >>> (v1 / v2)._getRepresentation(style='C')
+            '(var120(i) / var121(i))'
+
+            >>> (v1 - 1)._getRepresentation(style='C') ## Broken becase int should not have index
+            '(var120(i) - var)'
+                
+            >>> (5 * v2)._getRepresentation(style='C')
+            '(var * var257(i))'
+
+            >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
+            '(((var120(i) / var121(i)) - (var122(i) * var123(i))) + (var120(i) * var123(i)))'
+            
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
@@ -639,68 +678,8 @@ class Variable(object):
                 """
                 :Parameters:
                     
-                  - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'` ############
+                  - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
 
-                """
-                """
-                Test of getCstring         
-                >>> s1, argDict = self.getCstring( argDict = {} )
-                >>> print s1
-                (var0(i) * var1(i))
-                >>> print argDict
-                {'var1': array([1, 2, 3, 4]), 'var0': array([1, 2, 3, 4])}
-                """
-                
-                """
-                Test of _getRepresentation
-                >>> v1 = Variable(Numeric.array((1,2,3,4)))
-                >>> v2 = Variable(Numeric.array((5,6,7,8)))
-                >>> v3 = Variable(Numeric.array((9,10,11,12)))
-                >>> v4 = Variable(Numeric.array((13,14,15,16)))
-
-                >>> print (v1 * v2)._getRepresentation()
-
-                >>> s, d = (v1 * v2)._getRepresentation(style='C')
-                >>> print s
-                >>> print d
-
-                >>> s, d = (v1 * v2 + v3 * v4)._getRepresentation(style='C')
-                >>> print s
-                (varX[i] * varY[i] + varZ[i] * varP[i])
-                >>> d['var01'] is v1
-                True
-
-                >>> s, d = (v1 - v2)._getRepresentation(style='C')
-                >>> print s
-                (varX[i] - varY[i])
-                >>> print d
-
-                >>> s, d = (v1 / v2)._getRepresentation(style='C')
-                >>> print s
-                (varX[i] / varY[i])
-                >>>  d['var01'] is v1
-                TRUE
-
-                >>> s, d = (v1 - 1)._getRepresentation(style='C')
-                >>> print s
-                (varX[i] - varY[i])
-                >>>  d['var01'] is v1
-                TRUE   
-                
-                >>> s, d = (5 * v2)._getRepresentation(style='C')
-                >>> print s
-                (5 * varX[i])
-                >>>  d['var01'] is v1
-                TRUE
-            
-
-                >>> s, d = (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
-                >>> print s
-                (varX[i] / varY[i] - varZ[i] * varP[i] + varQ[i] * varS[i])
-                >>>  d['var01'] is v1
-                TRUE
-                
-                
                 """                
                 import opcode
                 
@@ -833,10 +812,24 @@ class Variable(object):
             return None
 
     def _reallyInline(self):
+        """
+        Gets the stack from getCstring() which calls _getRepresentation()
+        
+        >>> a = Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8)))
+        >>> a.getCstring()
+        'var139(i) * var140(i)'
+        >>> a.opShape
+        
+        (4,)
+        >>> a.getShape()
+        (4,)
+        """
+
         argDict = {}
         string = self.getCstring(argDict)
         string = 'result(i) = ' + string
-        print 'opShape = ', self.opShape
+        print type(self)
+        print self.opShape
         ni = self.opShape[0]
         argDict['result'] = Numeric.zeros(ni, 'd')
         argDict['ni'] = ni
