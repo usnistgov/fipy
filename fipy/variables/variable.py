@@ -518,7 +518,7 @@ class Variable(object):
             >>> var = CellVariable(mesh = mesh)
             >>> var.getShape()
             (6,)
-            >>> var.getArithmeticFaceValue().getShape()
+            >>> var.getArithmeticgetShapeFaceValue().getShape()
             (17,)
             >>> var.getGrad().getShape()
             (6, 2)
@@ -641,10 +641,11 @@ class Variable(object):
             baseClass = self._getVariableClass()
             
 	class OperatorVariable(baseClass):
-	    def __init__(self, op, var, mesh = None):
+	    def __init__(self, op, var, opShape = (), mesh = None):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
+                self.opShape = opShape
                 baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
 		for aVar in self.var:
@@ -780,6 +781,9 @@ class Variable(object):
                     var = self.var,
                     mesh = self.getMesh())
 
+            def getShape(self):
+                return baseClass.getShape(self) or self.opShape
+
 	return OperatorVariable
 	
     def _getArithmeticBaseClass(self, other = None):
@@ -860,7 +864,7 @@ class Variable(object):
                 else:
                     return self.op(self.var[0].getValue())   
 		
-	return unOp(op, [self])
+	return unOp(op = op, var = [self], opShape = self.getShape())
 	    
     def _getArrayAsOnes(object, valueMattersForShape = ()): 
         """ 
@@ -1788,6 +1792,10 @@ class Variable(object):
             
         # If the caller has not specified a shape for the result, determine the 
         # shape from the base class or from the inputs
+        print "opShape = ", opShape
+        print "baseClass._getShapeFromMesh(mesh) = ", baseClass._getShapeFromMesh(mesh)
+        print "self.getShape() = ", self.getShape()
+        print "other.getShape() = ", other.getShape()
         opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
         
         # the magic value of "number" specifies that the operation should result in a single value,
@@ -1835,8 +1843,10 @@ class Variable(object):
                 return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict) + ")"
 	#####################NEED TO INLINE	
         # return the binary operator variable instance
-        tmp = binOp(op, [var0, var1])
-        tmp.opShape = opShape
+        tmp = binOp(op = op, var = [var0, var1], opShape = opShape)
+        
+        print "Opshape = ", tmp.opShape
+        print "TMP = ", `tmp`
 	return tmp
 	
     def __add__(self, other):
