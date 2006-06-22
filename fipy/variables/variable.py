@@ -158,6 +158,19 @@ class Variable(object):
                 ...
             TypeError: Numeric array value must be dimensionless
 
+        Convert a list of 1 element Variables to an array
+
+            >>> Numeric.array([Variable(0), Variable(0)])
+            [[0,]
+             [0,]]
+            >>> print Variable(0) + Variable(0)
+            0
+            >>> Numeric.array([Variable(0) + Variable(0), Variable(0)])
+
+            >>> Numeric.array([Variable(0), Variable(0) + Variable(0)])
+            [[0,]
+             [0,]]
+        
 	"""
 	return Numeric.array(self.getValue(), t)
 	
