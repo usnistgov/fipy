@@ -437,14 +437,17 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
             
         totalTime += dt
 
-    testFile = 'testLeveler.gz'
-    import os
-    import examples.levelSet.electroChem
-    from fipy.tools import dump
-    data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
-    N = mesh.getFineMesh().getNumberOfCells()
-    print numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3)
-
+    try:
+        testFile = 'testLeveler.gz'
+        import os
+        import examples.levelSet.electroChem
+        from fipy.tools import dump
+        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
+        N = mesh.getFineMesh().getNumberOfCells()
+        print numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3)
+    except:
+        return 0
+    
 if __name__ == '__main__':
     runLeveler()
     raw_input("finished")    
