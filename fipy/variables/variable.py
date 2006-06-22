@@ -55,7 +55,7 @@ from fipy.tools import numerix
 from fipy.tools import parser
 
 doKTinline = False
-if parser.parse("--KTinline", action = "store_true"):
+if parser.parse("--inline", action = "store_true"):
     doKTinline = True
 
 class Variable(object):
@@ -302,16 +302,35 @@ class Variable(object):
     def getCstring(self, argDict = {}):
          """
          Generate the string and dictionary to be used in inline
+             >>> (Variable(Numeric.array((1)))).getCstring(argDict = {})
+             'var374'
          
              >>> (Variable(Numeric.array((1,2,3,4)))).getCstring(argDict = {})
-             'var150(i)'
-             >>> (Variable(Numeric.array((1,2,3,4))) + Variable(Numeric.array((1,2,3,4)))).getCstring(argDict = {})
-             '(var151(i) + var152(i))'
+             'var375(i)'
+       
+             >>> (Variable(Numeric.array(((1,2),(3,4))))).getCstring(argDict = {})
+             'var376(i,j)'
 
+             >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) ).getCstring(argDict = {})
+             'var377(i,j,k)'
          """
+
          identifier = 'var%s' % (self.id)
-         argDict[identifier] = self.getValue()
-         return (identifier + '(i)')  # will need to check shapes (int(no i), 2D(i,j), 3D(i,j,k))
+         argDict[identifier] = self.getValue()          ######## NEW
+         shape = 0
+         try:
+             shape =  len(self.opShape)
+         except AttributeError:
+             shape = len(self.getShape())
+         if shape == 0:
+             return (identifier)
+         if shape == 1:
+             return (identifier + '(i)')
+         if shape == 2:
+             return (identifier + '(i,j)')
+         if shape == 3:
+             return (identifier + '(i,j,k)')
+         
     
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
@@ -628,10 +647,10 @@ class Variable(object):
             '(var121(i) / var122(i))'
 
             >>> (v1 - 1)._getRepresentation(style='C') ## Broken becase int should not have index
-            '(var120(i) - var)'
+            '(var337(i) - var348)'
                 
             >>> (5 * v2)._getRepresentation(style='C')
-            '(var * var257(i))'
+            '(var338(i) * var350)'
 
             >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
             '(((var121(i) / var122(i)) - (var123(i) * var124(i))) + (var121(i) * var124(i)))'
@@ -673,6 +692,7 @@ class Variable(object):
                 return self.old
          
             def getCstring(self, argDict = {}):
+                print 'argDict1 =', argDict
                 return self._getRepresentation(style = "C", argDict = argDict)
             
 	    def _getRepresentation(self, style = "__repr__", argDict = {}):
@@ -818,33 +838,45 @@ class Variable(object):
         """
         Gets the stack from getCstring() which calls _getRepresentation()
         
-        >>> a = Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8)))
-        >>> a.getCstring()
+        >>> (Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8)))).getCstring()
         '(var139(i) * var140(i))'
-        >>> a.opShape
-        (4,)
+        >>> (Variable(Numeric.array(((1,2),(3,4)))) * Variable(Numeric.array(((5,6),(7,8))))).getCstring()
+        '(var141(i,j) * var142(i,j))'
+                                                           
         """
-
+        from fipy.tools import inline
         argDict = {}
-        string = self.getCstring(argDict)
-        string = 'result(i) = ' + string
-        ni = self.opShape[0]
+        string = self.getCstring(argDict = {})
+        print 'ArgDict2 = ', argDict
+        dimensions = len(self.opShape)
 
-        argDict['result'] = Numeric.zeros(ni, 'd')
-        argDict['ni'] = ni
-        argNames = argDict.keys()
-        
-        CODE = """    
-                    for (int i = 0; i < ni; i++)
-                    {
-                        %s;
-                        }
-                    """ % string
 
-        weave.inline(CODE, arg_names = argNames,
-                     local_dict = argDict,
-                     type_converters = weave.converters.blitz)
-        
+        if dimensions==0:
+            string = 'result = ' + string
+            ni = 0
+            argDict['result'] = Numeric.zeros(ni, 'd')
+            inline._runInlineLoop0
+        else:
+            ni = self.opShape[0]
+            argDict['ni'] = ni
+            if dimensions == 1:
+                string = 'result(i) = ' + string
+                argDict['result'] = Numeric.zeros(ni, 'd')
+                inline._runInlineLoop1
+            elif dimensions == 2:
+                string = 'result(i,j) = ' + string
+                nj = self.opShape[1]
+                argDict['nj'] = nj
+                argDict['result'] = Numeric.zeros((ni,nj), 'd')
+                inline._runInlineLoop2
+            elif dimensions ==3:
+                nj = self.opShape[1]
+                argDict['nj'] = nj
+                nk = self.opShape[2]
+                argDict['nk'] = nk
+                argDict['result'] = Numeric.zeros((ni,nj,nk), 'd')
+                inline._runInlineLoop3
+                
         return argDict['result']
         
     def _getUnaryOperatorVariable(self, op, baseClass = None):
@@ -1054,7 +1086,6 @@ class Variable(object):
             [ 0., 3., 6.,]
             >>> print isinstance(cvXsv, CellVariable)
             1
-            >>> print doKTinline
             >>> svXcv = Variable(value = 3) * cv
             >>> print svXcv
             [ 0., 3., 6.,]
