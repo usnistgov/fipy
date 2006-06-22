@@ -508,28 +508,27 @@ is calculated with the CFL number and the maximum extension velocity.
    ...                         boundaryConditions=metalEquationBCs)
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
    ...                                   boundaryConditions=catalystBCs)
- 
-   >>> if __name__ == '__main__':
-   ...     raw_input('finished')
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
-
-   >>> import os
-   >>> import examples.levelSet.electroChem
-   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
-   ...                         'test.gz')
 
 .. raw:: latex
 
    \IndexModule{dump}
    
 ..
-
+ 
+   >>> import os
+   >>> import examples.levelSet.electroChem
+   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
+   ...                         'test.gz')
    >>> from fipy.tools import dump
    >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
    1
+
+   >>> if __name__ == '__main__':
+   ...     raw_input('finished')
 
 """
 __docformat__ = 'restructuredtext'

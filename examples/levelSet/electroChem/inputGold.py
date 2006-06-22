@@ -75,7 +75,7 @@ with the `numberOfSteps` argument as follows,
 
     >>> runGold(numberOfSteps=10, displayViewers=False)
     1
-
+    
 Change the `displayViewers` argument to `True` if you wish to see the
 results displayed on the screen. This example has a more realistic
 default boundary layer depth and thus requires `gmsh` to construct a
@@ -270,15 +270,18 @@ def runGold(faradaysConstant=9.6e4,
         metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
 
         step += 1
-        
-    from fipy.tools import dump
-    import os
-    import examples.levelSet.electroChem
-    data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
-    n = mesh.getFineMesh().getNumberOfCells()
-    print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
+
+    try:
+        from fipy.tools import dump
+        import os
+        import examples.levelSet.electroChem
+        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
+        n = mesh.getFineMesh().getNumberOfCells()
+        print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
+    except:
+        return 0
     
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
-
+    raw_input("finished")
     
