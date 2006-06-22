@@ -299,22 +299,22 @@ class Variable(object):
 	s += ')'
         return s
 
-    def getCstring(self, argDict = {}):
+    def _getCstring(self, argDict = {}):
          """
          Generate the string and dictionary to be used in inline
-             >>> (Variable(Numeric.array((1)))).getCstring(argDict = {})
+             >>> (Variable(Numeric.array((1))))._getCstring(argDict = {})
              'var374'
          
-             >>> (Variable(Numeric.array((1,2,3,4)))).getCstring(argDict = {})
+             >>> (Variable(Numeric.array((1,2,3,4))))._getCstring(argDict = {})
              'var375(i)'
        
-             >>> (Variable(Numeric.array(((1,2),(3,4))))).getCstring(argDict = {})
+             >>> (Variable(Numeric.array(((1,2),(3,4)))))._getCstring(argDict = {})
              'var376(i,j)'
 
-             >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) ).getCstring(argDict = {})
+             >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) )._getCstring(argDict = {})
              'var377(i,j,k)'
          """
-
+    
          identifier = 'var%s' % (self.id)
          argDict[identifier] = self.getValue()          ######## NEW
          shape = 0
@@ -323,7 +323,11 @@ class Variable(object):
          except AttributeError:
              shape = len(self.getShape())
          if shape == 0:
-             return (identifier)
+             if type(self.getValue()) == 'array':
+                 print 'Made it'
+                 return (identifier + '[0]')
+             else:
+                 return (identifier + '[0]')
          if shape == 1:
              return (identifier + '(i)')
          if shape == 2:
@@ -619,9 +623,9 @@ class Variable(object):
             >>> print b
             -1
 
-        Test of getCstring         
+        Test of _getCstring         
 
-            >>> (Variable((0,1,2,3)) * Variable((0,1,2,3))).getCstring()
+            >>> (Variable((0,1,2,3)) * Variable((0,1,2,3)))._getCstring()
             '(var118(i) * var119(i))'
 
         Test of _getRepresentation
@@ -691,8 +695,7 @@ class Variable(object):
                 
                 return self.old
          
-            def getCstring(self, argDict = {}):
-                print 'argDict1 =', argDict
+            def _getCstring(self, argDict = {}):
                 return self._getRepresentation(style = "C", argDict = argDict)
             
 	    def _getRepresentation(self, style = "__repr__", argDict = {}):
@@ -701,7 +704,7 @@ class Variable(object):
                     
                   - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
 
-                """                
+                """
                 import opcode
                 
 		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
@@ -762,7 +765,7 @@ class Variable(object):
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
-                            stack.append(self.var[_popIndex()].getCstring(argDict))
+                            stack.append(self.var[_popIndex()]._getCstring(argDict))
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -836,46 +839,54 @@ class Variable(object):
 
     def _reallyInline(self):
         """
-        Gets the stack from getCstring() which calls _getRepresentation()
+        Gets the stack from _getCstring() which calls _getRepresentation()
         
-        >>> (Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8)))).getCstring()
+        >>> (Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8))))._getCstring()
         '(var139(i) * var140(i))'
-        >>> (Variable(Numeric.array(((1,2),(3,4)))) * Variable(Numeric.array(((5,6),(7,8))))).getCstring()
+        >>> (Variable(Numeric.array(((1,2),(3,4)))) * Variable(Numeric.array(((5,6),(7,8)))))._getCstring()
         '(var141(i,j) * var142(i,j))'
                                                            
         """
-        from fipy.tools import inline
+        from fipy.tools.inline import inline
         argDict = {}
-        string = self.getCstring(argDict = {})
-        print 'ArgDict2 = ', argDict
+        string = self._getCstring(argDict = argDict) + ';'
+        
         dimensions = len(self.opShape)
-
-
-        if dimensions==0:
+        print 'Dimensions = ', dimensions
+        if dimensions == 0:
             string = 'result = ' + string
             ni = 0
             argDict['result'] = Numeric.zeros(ni, 'd')
-            inline._runInlineLoop0
+            inline._runInlineLoop0(string, **argDict)
+
         else:
             ni = self.opShape[0]
             argDict['ni'] = ni
+
             if dimensions == 1:
                 string = 'result(i) = ' + string
                 argDict['result'] = Numeric.zeros(ni, 'd')
-                inline._runInlineLoop1
-            elif dimensions == 2:
-                string = 'result(i,j) = ' + string
+                inline._runInlineLoop1(string, **argDict)
+
+            else:    
                 nj = self.opShape[1]
-                argDict['nj'] = nj
-                argDict['result'] = Numeric.zeros((ni,nj), 'd')
-                inline._runInlineLoop2
-            elif dimensions ==3:
-                nj = self.opShape[1]
-                argDict['nj'] = nj
-                nk = self.opShape[2]
-                argDict['nk'] = nk
-                argDict['result'] = Numeric.zeros((ni,nj,nk), 'd')
-                inline._runInlineLoop3
+                argDict['nj'] = nj                
+
+                if dimensions == 2:
+                    string = 'result(i,j) = ' + string
+                    argDict['result'] = Numeric.zeros((ni,nj), 'd')
+                    inline._runInlineLoop2(string, **argDict)
+
+                elif dimensions == 3:
+                    string = 'result(i,j,k) = ' + string
+                    nk = self.opShape[2] 
+                    argDict['result'] = Numeric.zeros((ni,nj,nk), 'd')
+                    argDict['nk'] = nk
+                    inline._runInlineLoop3(string, **argDict)
+
+                else:
+                    raise DimensionError, 'Blah Blah'
+                    
                 
         return argDict['result']
         
@@ -1854,7 +1865,6 @@ class Variable(object):
 		return self.op(self.var[0].getValue(), val1)
                 	
             def _getRepresentation(self, style = "__repr__", argDict = {}):
-
                 return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict) + ")"
 
         tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape)
