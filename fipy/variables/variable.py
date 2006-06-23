@@ -51,12 +51,13 @@ from fipy.meshes.meshIterator import MeshIterator
 
 import fipy.tools.dimensions.physicalField
 
+
 from fipy.tools import numerix
 from fipy.tools import parser
 
-doKTinline = False
+runInline = False
 if parser.parse("--inline", action = "store_true"):
-    doKTinline = True
+    runInline = True
 
 class Variable(object):
     id = 0
@@ -302,38 +303,42 @@ class Variable(object):
     def _getCstring(self, argDict = {}):
          """
          Generate the string and dictionary to be used in inline
-             >>> (Variable(Numeric.array((1))))._getCstring(argDict = {})
-             'var374'
-         
-             >>> (Variable(Numeric.array((1,2,3,4))))._getCstring(argDict = {})
-             'var375(i)'
+             >>> (Variable((1)))._getCstring(argDict = {})
+             'var107(0)
+           
+             >>> (Variable((1,2,3,4)))._getCstring(argDict = {})
+             'var108(i)'
        
-             >>> (Variable(Numeric.array(((1,2),(3,4)))))._getCstring(argDict = {})
-             'var376(i,j)'
+             >>> (Variable(((1,2),(3,4))))._getCstring(argDict = {})
+             'var109(i,j)'
 
              >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) )._getCstring(argDict = {})
-             'var377(i,j,k)'
+             'var110(i,j,k)'
+
+             >>> Variable(5)._getCstring(argDict = {})
+             'var111(0)'
+
+             >>> Variable(Numeric.array((1)))._getCstring(argDict = {})
+             'var112(0)'
          """
-    
+
          identifier = 'var%s' % (self.id)
-         argDict[identifier] = self.getValue()          ######## NEW
+         argDict[identifier] = self.getValue()
          shape = 0
+         
          try:
              shape =  len(self.opShape)
          except AttributeError:
              shape = len(self.getShape())
+
          if shape == 0:
-             if type(self.getValue()) == 'array':
-                 print 'Made it'
-                 return (identifier + '[0]')
-             else:
-                 return (identifier + '[0]')
+             return ('*' + identifier)        # + '[0]' )
          if shape == 1:
-             return (identifier + '(i)')
+             return (identifier + '[i]')
          if shape == 2:
-             return (identifier + '(i,j)')
+             return (identifier + '[i+ni*j]')
          if shape == 3:
-             return (identifier + '(i,j,k)')
+             return (identifier + '[i+ni*j+ni*nj*k]')
          
     
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
@@ -654,7 +659,7 @@ class Variable(object):
             '(var337(i) - var348)'
                 
             >>> (5 * v2)._getRepresentation(style='C')
-            '(var338(i) * var350)'
+            '(var338(i) * var350(0)
 
             >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
             '(((var121(i) / var122(i)) - (var123(i) * var124(i))) + (var121(i) * var124(i)))'
@@ -851,41 +856,47 @@ class Variable(object):
         argDict = {}
         string = self._getCstring(argDict = argDict) + ';'
         
-        dimensions = len(self.opShape)
-        print 'Dimensions = ', dimensions
+        try:
+            dimensions = len(self.opShape)
+        except:
+            if isinstance(self, Variable):
+                dimensions = 0
+            elif isinstance(self, int):
+                dimensions = 0
+                
         if dimensions == 0:
-            string = 'result = ' + string
             ni = 0
+            string = 'result[0]' + string
             argDict['result'] = Numeric.zeros(ni, 'd')
             inline._runInlineLoop0(string, **argDict)
 
         else:
             ni = self.opShape[0]
             argDict['ni'] = ni
-
             if dimensions == 1:
-                string = 'result(i) = ' + string
+                string = 'result[i] = ' + string
                 argDict['result'] = Numeric.zeros(ni, 'd')
                 inline._runInlineLoop1(string, **argDict)
-
+                
             else:    
                 nj = self.opShape[1]
                 argDict['nj'] = nj                
 
                 if dimensions == 2:
-                    string = 'result(i,j) = ' + string
+                    string = 'result[i+ni*j] = ' + string
                     argDict['result'] = Numeric.zeros((ni,nj), 'd')
+                    print 'string = ', string
                     inline._runInlineLoop2(string, **argDict)
 
                 elif dimensions == 3:
-                    string = 'result(i,j,k) = ' + string
+                    string = 'result[i+ni*j+ni*nj*k] = ' + string
                     nk = self.opShape[2] 
                     argDict['result'] = Numeric.zeros((ni,nj,nk), 'd')
                     argDict['nk'] = nk
                     inline._runInlineLoop3(string, **argDict)
 
                 else:
-                    raise DimensionError, 'Blah Blah'
+                    raise DimensionError, 'Impossible Dimensions'
                     
                 
         return argDict['result']
@@ -893,7 +904,7 @@ class Variable(object):
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
-                if doKTinline == True:
+                if runInline == True:
                     return Variable(self)._reallyInline()
                         
                 else:
@@ -1853,7 +1864,7 @@ class Variable(object):
         # declare a binary operator class with the desired base class
 	class binOp(operatorClass):
 	    def _calcValue(self):
-                if doKTinline == True:
+                if runInline == True:
                     return self._reallyInline()
                     pass
 		if isinstance(self.var[1], Variable):
