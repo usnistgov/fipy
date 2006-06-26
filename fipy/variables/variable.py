@@ -300,7 +300,27 @@ class Variable(object):
 	s += ')'
         return s
 
-    def _getCstring(self, argDict = {}):
+    def _getCIndexString(self, shape):
+        dimensions = len(shape)
+        if dimensions == 1:
+            return '[i]'
+        elif dimensions == 2:
+            if shape[-1] == 1:
+                return '[j]'
+            else:
+                return '[j * ni + i]'
+        elif dimensions == 3:
+            if shape[-1] == 1:
+                if shape[-2] == 1:
+                    return '[k]'
+                else:
+                    return '[k + j * nk]'
+            elif shape[-2] == 1:
+                return '[k + i * nj * nk]'
+            else:
+                return '[k + j * nk + i * nj * nk]'
+
+    def _getCstring(self, argDict={}):
          """
          Generate the string and dictionary to be used in inline
              >>> (Variable((1)))._getCstring(argDict = {})
@@ -324,28 +344,62 @@ class Variable(object):
 
          identifier = 'var%s' % (self.id)
          argDict[identifier] = self.getValue()
-         shape = 0
-         
-         try:
-             shape =  len(self.opShape)
-         except AttributeError:
-             shape = len(self.getShape())
 
-         if shape == 0:
-             return ('*' + identifier)        # + '[0]' )
-         if shape == 1:
-             return (identifier + '[i]')
-         if shape == 2:
-             return (identifier + '[i+ni*j]')
-         if shape == 3:
-             return (identifier + '[i+ni*j+ni*nj*k]')
+         try:
+             shape = self.opShape
+         except AttributeError:
+             shape = self.getShape()
+
+##         if len(shape) == 0:
+##             dimensions = 0
+##       else:
+##           dimensions = len(shape)
+##           if shape[-1] == 1:
+##               dimensions -= 1
+
+##         try:
+##             dimensions =  len(self.opShape)
+##         except AttributeError:
+##             shape = self.getShape()
+##             if len(shape) == 0:
+##                 dimensions = 0
+##             elif shape[-1] == 1:
+##                 dimensions = len(shape) - 1
+##             else:
+##                 dimensions = len(shape)
+
+
+
+##         dimensions = len(self.getShape())
+##             if self.getShape()[-1] == 1:
+##                 dimensions -= 1
+             
+##         print 'self.__class__',self.__class__
+##         print 'self',self
+##         print 'shape',shape
+##         print 'dimensions',dimensions
+         
+         if len(shape) == 0:
+             return '*' + identifier
+         else:
+             return identifier + self._getCIndexString(shape)
+
+##         if shape == 1:
+##             return (identifier + '[i]')
+##         if shape == 2:
+##             retur
+##             return (identifier + '[i*(ni-j) + j(nj-i]')
+##         #if shape == 2:
+##         #    return (identifier + '[nj*i+j]')
+##         if shape == 3:
+##             return (identifier + '[i+ni*j+ni*nj*k]')
          
     
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
                                 precision = precision, 
-                                suppress_small = suppress_small, 
+                                 suppress_small = suppress_small, 
                                 separator = separator)
         
     def __setitem__(self, index, value):
@@ -701,6 +755,8 @@ class Variable(object):
                 return self.old
          
             def _getCstring(self, argDict = {}):
+                #if opShape is None:
+                #    opShape = self.opShape
                 return self._getRepresentation(style = "C", argDict = argDict)
             
 	    def _getRepresentation(self, style = "__repr__", argDict = {}):
@@ -857,41 +913,41 @@ class Variable(object):
         string = self._getCstring(argDict = argDict) + ';'
         
         try:
-            dimensions = len(self.opShape)
-        except:
-            if isinstance(self, Variable):
-                dimensions = 0
-            elif isinstance(self, int):
-                dimensions = 0
-                
-        if dimensions == 0:
+            shape = self.opShape
+        except AttributeError:
+            shape = self.getShape()            
+
+        dimensions = len(shape)
+        
+        if len(shape) == 0:
             ni = 0
-            string = 'result[0]' + string
+            string = 'result[0] =' + string
             argDict['result'] = Numeric.zeros(ni, 'd')
             inline._runInlineLoop0(string, **argDict)
 
         else:
-            ni = self.opShape[0]
+
+            string = 'result' + self._getCIndexString(shape) + ' = ' + string
+            
+            ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                string = 'result[i] = ' + string
+                ##string = 'result[i] = ' + string
                 argDict['result'] = Numeric.zeros(ni, 'd')
                 inline._runInlineLoop1(string, **argDict)
                 
             else:    
-                nj = self.opShape[1]
+                nj = self.opShape[-2]
                 argDict['nj'] = nj                
-
                 if dimensions == 2:
-                    string = 'result[i+ni*j] = ' + string
-                    argDict['result'] = Numeric.zeros((ni,nj), 'd')
-                    print 'string = ', string
+                    argDict['result'] = Numeric.zeros((nj,ni), 'd')
+##                    print 'string = ', string
                     inline._runInlineLoop2(string, **argDict)
 
                 elif dimensions == 3:
-                    string = 'result[i+ni*j+ni*nj*k] = ' + string
-                    nk = self.opShape[2] 
-                    argDict['result'] = Numeric.zeros((ni,nj,nk), 'd')
+                    ##string = 'result[i+ni*j+ni*nj*k] = ' + string
+                    nk = self.opShape[-3]
+                    argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
                     argDict['nk'] = nk
                     inline._runInlineLoop3(string, **argDict)
 
