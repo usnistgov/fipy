@@ -150,7 +150,8 @@ class Variable(object):
 
         self.id = Variable.id  
         Variable.id += 1       
-        
+##        print 'self.id = ', self.id
+##        print 'self', self
     def getMesh(self):
 	return self.mesh
 	
@@ -350,26 +351,6 @@ class Variable(object):
          except AttributeError:
              shape = self.getShape()
 
-##         if len(shape) == 0:
-##             dimensions = 0
-##       else:
-##           dimensions = len(shape)
-##           if shape[-1] == 1:
-##               dimensions -= 1
-
-##         try:
-##             dimensions =  len(self.opShape)
-##         except AttributeError:
-##             shape = self.getShape()
-##             if len(shape) == 0:
-##                 dimensions = 0
-##             elif shape[-1] == 1:
-##                 dimensions = len(shape) - 1
-##             else:
-##                 dimensions = len(shape)
-
-
-
 ##         dimensions = len(self.getShape())
 ##             if self.getShape()[-1] == 1:
 ##                 dimensions -= 1
@@ -377,24 +358,14 @@ class Variable(object):
 ##         print 'self.__class__',self.__class__
 ##         print 'self',self
 ##         print 'shape',shape
-##         print 'dimensions',dimensions
          
          if len(shape) == 0:
-             return '*' + identifier
+##             print 'identifier', identifer
+             return identifier + '[0]'
          else:
+##             print 'identifier', identifier
              return identifier + self._getCIndexString(shape)
-
-##         if shape == 1:
-##             return (identifier + '[i]')
-##         if shape == 2:
-##             retur
-##             return (identifier + '[i*(ni-j) + j(nj-i]')
-##         #if shape == 2:
-##         #    return (identifier + '[nj*i+j]')
-##         if shape == 3:
-##             return (identifier + '[i+ni*j+ni*nj*k]')
          
-    
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
@@ -898,7 +869,7 @@ class Variable(object):
             # If self and other have different shapes, we don't know how to combine them.
             return None
 
-    def _reallyInline(self):
+    def _runInline(self):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
         
@@ -920,10 +891,11 @@ class Variable(object):
         dimensions = len(shape)
         
         if len(shape) == 0:
-            ni = 0
+            ni = 1
             string = 'result[0] =' + string
-            argDict['result'] = Numeric.zeros(ni, 'd')
-            inline._runInlineLoop0(string, **argDict)
+            argDict['result'] = [0] #Numeric.zeros(ni, 'd')
+            inline._runInlineLoop0(string, converters=None, **argDict)
+            return  argDict['result'][0]
 
         else:
 
@@ -934,34 +906,32 @@ class Variable(object):
             if dimensions == 1:
                 ##string = 'result[i] = ' + string
                 argDict['result'] = Numeric.zeros(ni, 'd')
-                inline._runInlineLoop1(string, **argDict)
+                inline._runInlineLoop1(string, converters=None, **argDict)
                 
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
                 if dimensions == 2:
                     argDict['result'] = Numeric.zeros((nj,ni), 'd')
-##                    print 'string = ', string
-                    inline._runInlineLoop2(string, **argDict)
+                    inline._runInlineLoop2(string, converters=None, **argDict)
 
                 elif dimensions == 3:
                     ##string = 'result[i+ni*j+ni*nj*k] = ' + string
                     nk = self.opShape[-3]
                     argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
                     argDict['nk'] = nk
-                    inline._runInlineLoop3(string, **argDict)
+                    inline._runInlineLoop3(string, converters=None, **argDict)
 
                 else:
                     raise DimensionError, 'Impossible Dimensions'
                     
-                
         return argDict['result']
         
     def _getUnaryOperatorVariable(self, op, baseClass = None):
 	class unOp(self._getOperatorVariableClass(baseClass)):
 	    def _calcValue(self):
                 if runInline == True:
-                    return Variable(self)._reallyInline()
+                    return Variable(self)._runInline()
                         
                 else:
                     return self.op(self.var[0].getValue())   
@@ -1921,7 +1891,7 @@ class Variable(object):
 	class binOp(operatorClass):
 	    def _calcValue(self):
                 if runInline == True:
-                    return self._reallyInline()
+                    return self._runInline()
                     pass
 		if isinstance(self.var[1], Variable):
 		    val1 = self.var[1].getValue()
