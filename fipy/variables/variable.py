@@ -51,16 +51,11 @@ from fipy.meshes.meshIterator import MeshIterator
 
 import fipy.tools.dimensions.physicalField
 
-
+ 
 from fipy.tools import numerix
 from fipy.tools import parser
 
-##runInline = False
-##if parser.parse("--inline", action = "store_true"):
-##    runInline = True
-
 class Variable(object):
-    id = 0
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action = "store_true"):
         _cacheAlways = False
@@ -117,11 +112,8 @@ class Variable(object):
 	  - `name`: the user-readable name of the `Variable`
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
 
-        Test id attribute
-            >>> Variable(Numeric.array((1,2))).id
-            1640
 	"""
-
+            
 	self.requiredVariables = []
 	self.subscribedVariables = []
 
@@ -147,9 +139,6 @@ class Variable(object):
 	self.laplacian = {}
         self.mag = None
         self.sliceVars = {}
-
-        self.id = Variable.id  
-        Variable.id += 1       
 
     def getMesh(self):
 	return self.mesh
@@ -184,7 +173,7 @@ class Variable(object):
 	    Variable(value = 3)
 
 	The duplicate will not reflect changes made to the original
-	
+	                  
 	    >>> a.setValue(5)
 	    >>> b
 	    Variable(value = 3)
@@ -320,29 +309,29 @@ class Variable(object):
             else:
                 return '[k + j * nk + i * nj * nk]'
 
-    def _getCstring(self, argDict={}):
+    def _getCstring(self, argDict={}, id = ""):
          """
          Generate the string and dictionary to be used in inline
              >>> (Variable((1)))._getCstring(argDict = {})
-             'var1870[0]'
+             'var[0]'
            
              >>> (Variable((1,2,3,4)))._getCstring(argDict = {})
-             'var1871[i]'
+             'var[i]'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict = {})
-             'var1872[j * ni + i]'
+             'var[j * ni + i]'
 
              >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) )._getCstring(argDict = {})
-             'var1873[k + j * nk + i * nj * nk]'
+             'var[k + j * nk + i * nj * nk]'
 
              >>> Variable(5)._getCstring(argDict = {})
-             'var1874[0]'
+             'var[0]'
 
              >>> Variable(Numeric.array((1)))._getCstring(argDict = {})
-             'var1875[0]'
+             'var[0]'
          """
-
-         identifier = 'var%s' % (self.id)
+         
+         identifier = 'var%s' % (id)
          argDict[identifier] = self.getValue()
 
          try:
@@ -350,10 +339,6 @@ class Variable(object):
          except AttributeError:
              shape = self.getShape()
 
-##         dimensions = len(self.getShape())
-##             if self.getShape()[-1] == 1:
-##                 dimensions -= 1
-             
          if len(shape) == 0:
              return identifier + '[0]'
          else:
@@ -363,7 +348,7 @@ class Variable(object):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
                                 precision = precision, 
-                                 suppress_small = suppress_small, 
+                                suppress_small = suppress_small, 
                                 separator = separator)
         
     def __setitem__(self, index, value):
@@ -649,7 +634,7 @@ class Variable(object):
         Test of _getCstring         
 
             >>> (Variable((0,1,2,3)) * Variable((0,1,2,3)))._getCstring()
-            '(var1891[i] * var1892[i])'
+            '(var0[i] * var1[i])'
 
         Test of _getRepresentation
 
@@ -661,50 +646,48 @@ class Variable(object):
             >>> (v1 * v2)._getRepresentation()
             '(Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))'
             
-            >>> (v1 * v2)._getRepresentation(style='C')
-            '(var1894[i] * var1895[i])'
+            >>> (v1 * v2)._getRepresentation(style='C', id = "")
+            '(var0[i] * var1[i])'
             
-            >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C')
-            '((var1894[i] * var1895[i]) + (var1896[i] * var1897[i]))'
+            >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id = "")
+            '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
             
-            >>> (v1 - v2)._getRepresentation(style='C')
-            '(var1894[i] - var1895[i])'
+            >>> (v1 - v2)._getRepresentation(style='C', id = "")
+            '(var0[i] - var1[i])'
 
-            >>> (v1 / v2)._getRepresentation(style='C')
-            '(var1894[i] / var1895[i])'
+            >>> (v1 / v2)._getRepresentation(style='C', id = "")
+            '(var0[i] / var1[i])'
 
-            >>> (v1 - 1)._getRepresentation(style='C') ## Broken becase int should not have index
-            '(var1894[i] - var1905[0])'
+            >>> (v1 - 1)._getRepresentation(style='C', id = "")
+            '(var0[i] - var1[0])'
                 
-            >>> (5 * v2)._getRepresentation(style='C')
-            '(var1895[i] * var1907[0])'
+            >>> (5 * v2)._getRepresentation(style='C', id = "")
+            '(var0[i] * var1[0])'
 
-            >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C')
-            '(((var1894[i] / var1895[i]) - (var1896[i] * var1897[i])) + (var1894[i] * var1897[i]))'
+            >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id = "")
+            '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
             
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
             
 	class OperatorVariable(baseClass):
-	    def __init__(self, op, var, opShape = (), mesh = None, _canInline = True):
+	    def __init__(self, op, var, mesh = None, opShape = (), _canInline = True):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
                 self.opShape = opShape
-                baseClass.__init__(self, value = None, mesh = mesh)
+                baseClass.__init__(self, value = None, mesh = mesh) #does this need an opshape or caninline?
                 self.name = ''
                 self._canInline = _canInline
 		for aVar in self.var:
 		    self._requires(aVar)
-
+                
                 self.old = None
                 
                 self.dontCacheMe()
 
-
             def _calcValue(self):
-                print _canInline
                 from fipy.tools.inline import inline
                 if not _canInline:
                     return self._calcValuePy()
@@ -712,7 +695,7 @@ class Variable(object):
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
             def _calcValueIn(self):
-                return self._runInline()
+                return self._execInline()
 
             def _calcValuePy(self):
                 pass
@@ -734,10 +717,10 @@ class Variable(object):
                 
                 return self.old
          
-            def _getCstring(self, argDict = {}):
-                return self._getRepresentation(style = "C", argDict = argDict)
+            def _getCstring(self, argDict = {}, id = ""):
+                return self._getRepresentation(style = "C", argDict = argDict, id = id)
             
-	    def _getRepresentation(self, style = "__repr__", argDict = {}):
+	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
                 """
                 :Parameters:
                     
@@ -764,13 +747,12 @@ class Variable(object):
 		
    		while len(bytecodes) > 0:
 		    bytecode = bytecodes.pop(0)
-		    
 		    if opcode.opname[bytecode] == 'UNARY_CONVERT':
 			stack.append("`" + stack.pop() + "`")
 		    elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
 			stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
 		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
-			return stack.pop()
+                        return stack.pop()
                     elif opcode.opname[bytecode] == 'LOAD_CONST':
                         stack.append(self.op.func_code.co_consts[_popIndex()])
 		    elif opcode.opname[bytecode] == 'LOAD_ATTR':
@@ -778,7 +760,9 @@ class Variable(object):
 		    elif opcode.opname[bytecode] == 'COMPARE_OP':
 			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
 		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
-			stack.append(self.op.func_code.co_names[_popIndex()])
+                        counter = _popIndex()
+                        id.append(counter)
+			stack.append(self.op.func_code.co_names[counter])
 		    elif opcode.opname[bytecode] == 'LOAD_FAST':
                         if style == "__repr__":
                             stack.append(repr(self.var[_popIndex()]))
@@ -803,8 +787,8 @@ class Variable(object):
                         elif style == "TeX":
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
-##                            id += str(_popIndex())
-                            stack.append(self.var[_popIndex()]._getCstring(argDict))
+                            counter = _popIndex()
+                            stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter)))         
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -825,8 +809,7 @@ class Variable(object):
 			stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
 		    else:
 			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
-
-                                        
+                    
             def __repr__(self):
                 return self._getRepresentation()
             
@@ -876,14 +859,14 @@ class Variable(object):
             # If self and other have different shapes, we don't know how to combine them.
             return None
 
-    def _runInline(self):
+    def _execInline(self):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
         
         >>> (Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8))))._getCstring()
-        '(var1914[i] * var1915[i])'
+        '(var0[i] * var1[i])'
         >>> (Variable(Numeric.array(((1,2),(3,4)))) * Variable(Numeric.array(((5,6),(7,8)))))._getCstring()
-        '(var1917[j * ni + i] * var1918[j * ni + i])'
+        '(var0[j * ni + i] * var1[j * ni + i])'
                                                            
         """
         from fipy.tools.inline import inline
@@ -898,61 +881,40 @@ class Variable(object):
         dimensions = len(shape)
         
         if len(shape) == 0:
-            ni = 1
             string = 'result[0] =' + string
-            argDict['result'] = [0] #Numeric.zeros(ni, 'd')
-            inline._runInlineLoop0(string, converters=None, **argDict)
-            return  argDict['result'][0]
-
+            argDict['result'] = [0] 
         else:
-
             string = 'result' + self._getCIndexString(shape) + ' = ' + string
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                argDict['result'] = Numeric.zeros(ni, 'd')
-                inline._runInlineLoop1(string, converters=None, **argDict)
-                
+                argDict['result'] = Numeric.zeros(ni, 'd')   
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
                 if dimensions == 2:
                     argDict['result'] = Numeric.zeros((nj,ni), 'd')
-                    inline._runInlineLoop2(string, converters=None, **argDict)
-
                 elif dimensions == 3:
                     nk = self.opShape[-3]
                     argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
                     argDict['nk'] = nk
-                    inline._runInlineLoop3(string, converters=None, **argDict)
-
                 else:
                     raise DimensionError, 'Impossible Dimensions'
-                    
-        return argDict['result']
+        inline._runInline(string, dimensions, converters=None, **argDict)
+
+        print type(argDict['result'])
+
+        if dimensions == 0:
+            return argDict['result'][0]
+        else:
+            return argDict['result']
         
     def _getUnaryOperatorVariable(self, op, baseClass = None, _canInline = True):
 	class unOp(self._getOperatorVariableClass(baseClass)):
-            
-            #def _calcValueIn(self):
-                #if isinstance(self, Variable):
-            #    return self._runInline() 
-                #else:
-                #    return Variable(self._runInline())
-
             def _calcValuePy(self):
                 return self.op(self.var[0].getValue())   
             
-##	    def _calcValue(self):
-##                if runInline == True:
-##                    if isinstance(self, Variable):
-##                        return self._runInline()  ##3
-##                    else:
-##                        return Variable(self._runInline())
-##                else:
-##                    return self.op(self.var[0].getValue())   
-		
-	return unOp(op = op, var = [self], opShape = self.getShape(), _canInline = _canInline)
+	return unOp(op = op, var = [self], opShape = self.getShape(), _canInline = _canInline) #???return unOp(op, [self])
 	    
     def _getArrayAsOnes(object, valueMattersForShape = ()): 
         """ 
@@ -1521,11 +1483,7 @@ class Variable(object):
                   ...
             TypeError: can't multiply sequence to non-int
 
-            
-            
-            
-            
-            
+                        
         `VectorFaceVariable` * VectorFaceVariable
 
             >>> vfvXvfv = vfv * vfv
@@ -1907,9 +1865,7 @@ class Variable(object):
         
         # declare a binary operator class with the desired base class
 	class binOp(operatorClass):
-            
-            def _calcValue(self):
-                print _canInline
+            def _calcValue(self):  
                 from fipy.tools.inline import inline
                 if not _canInline:
                     return self._calcValuePy()
@@ -1922,12 +1878,13 @@ class Variable(object):
                 else:
                     if type(self.var[1]) is type(''):
                         self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
-                        val1 = self.var[1]                		
+                    val1 = self.var[1]
+                    
                 return self.op(self.var[0].getValue(), val1)
 
-     	
-            def _getRepresentation(self, style = "__repr__", argDict = {}):
-                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict) + ")"
+            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
+                self.id = id
+                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id) + ")"
 
         tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, _canInline = _canInline)
         return tmpBop
