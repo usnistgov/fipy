@@ -321,16 +321,13 @@ class Variable(object):
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict = {})
              'var[j * ni + i]'
 
-             >>> Variable( ( ((1,2), (3,4)), ((5,6),(7,8)) ) )._getCstring(argDict = {})
+             >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict = {})
              'var[k + j * nk + i * nj * nk]'
 
-             >>> Variable(5)._getCstring(argDict = {})
-             'var[0]'
-
-             >>> Variable(Numeric.array((1)))._getCstring(argDict = {})
-             'var[0]'
+             >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict = {})
+             '(var0[0] * var1[i])'
          """
-         
+
          identifier = 'var%s' % (id)
          argDict[identifier] = self.getValue()
 
@@ -631,11 +628,7 @@ class Variable(object):
             >>> print b
             -1
 
-        Test of _getCstring         
-
-            >>> (Variable((0,1,2,3)) * Variable((0,1,2,3)))._getCstring()
-            '(var0[i] * var1[i])'
-
+        
         Test of _getRepresentation
 
             >>> v1 = Variable(Numeric.array((1,2,3,4)))
@@ -679,7 +672,7 @@ class Variable(object):
                 self.opShape = opShape
                 baseClass.__init__(self, value = None, mesh = mesh) #does this need an opshape or caninline?
                 self.name = ''
-                self._canInline = _canInline
+                self._canInline = _canInline  #allows for certain functions to opt out of --inline
 		for aVar in self.var:
 		    self._requires(aVar)
                 
@@ -713,13 +706,18 @@ class Variable(object):
                             oldVar.append(v.getOld())
                         else:
                             oldVar.append(v)
-                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh())
+                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, _canInline=True)
                 
                 return self.old
          
             def _getCstring(self, argDict = {}, id = ""):
-                return self._getRepresentation(style = "C", argDict = argDict, id = id)
-            
+                if self._canInline:
+                    return self._getRepresentation(style = "C", argDict = argDict, id = id)
+                else:
+                    return baseClass._getCstring(self, argDict=argDict, id=id)
+                    
+
+                    
 	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
                 """
                 :Parameters:
@@ -752,7 +750,11 @@ class Variable(object):
 		    elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
 			stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
 		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
-                        return stack.pop()
+                        s = stack.pop()
+                        if style == 'C':
+                            return s.replace('arc','a').strip('numerix.')
+                        else:
+                            return s
                     elif opcode.opname[bytecode] == 'LOAD_CONST':
                         stack.append(self.op.func_code.co_consts[_popIndex()])
 		    elif opcode.opname[bytecode] == 'LOAD_ATTR':
@@ -761,7 +763,7 @@ class Variable(object):
 			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
 		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
                         counter = _popIndex()
-                        id.append(counter)
+                        #id.append(counter)
 			stack.append(self.op.func_code.co_names[counter])
 		    elif opcode.opname[bytecode] == 'LOAD_FAST':
                         if style == "__repr__":
@@ -863,10 +865,12 @@ class Variable(object):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
         
-        >>> (Variable(Numeric.array((1,2,3,4))) * Variable(Numeric.array((5,6,7,8))))._getCstring()
+        >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
         '(var0[i] * var1[i])'
-        >>> (Variable(Numeric.array(((1,2),(3,4)))) * Variable(Numeric.array(((5,6),(7,8)))))._getCstring()
+        >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
         '(var0[j * ni + i] * var1[j * ni + i])'
+        >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
+        '((var00[i] * var01[i]) * var1[i])'
                                                            
         """
         from fipy.tools.inline import inline
@@ -900,9 +904,8 @@ class Variable(object):
                     argDict['nk'] = nk
                 else:
                     raise DimensionError, 'Impossible Dimensions'
-        inline._runInline(string, dimensions, converters=None, **argDict)
-
-        print type(argDict['result'])
+                
+        inline._runInline(string, converters=None, **argDict)
 
         if dimensions == 0:
             return argDict['result'][0]
@@ -2109,6 +2112,17 @@ class Variable(object):
         return self._getUnaryOperatorVariable(lambda a: numerix.arcsinh(a))
 
     def sqrt(self):
+        """
+        
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh= Grid1D(nx=3)
+
+            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+            >>> var = VectorCellVariable(mesh=mesh, value=((0.,),(2.,),(3.,)))
+            >>> print (var.dot(var)).sqrt()
+            [ 0., 2., 3.,]
+            
+        """
 	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
 	
     def tan(self):
@@ -2157,7 +2171,7 @@ class Variable(object):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
 		
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other)
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, _canInline = False)
         
     def reshape(self, shape):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,))
