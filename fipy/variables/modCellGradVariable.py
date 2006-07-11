@@ -49,7 +49,7 @@ class _ModCellGradVariable(_CellGradVariable):
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
         
-        inline._runInlineLoop2(self.modIn + """
+        inline._runInline(self.modIn + """
             val(i,j) = 0.;
             
             int k;

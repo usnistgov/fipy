@@ -50,7 +50,7 @@ class _VectorArithmeticCellToFaceVariable(_VectorCellToFaceVariable):
 ##        print numerix.shape(self.var.getNumericValue())
         val = self._getArray().copy()
         
-        inline._runInlineLoop2("""
+        inline._runInline("""
             double cell2 = var(id2(i),j);
             val(i,j) = (var(id1(i),j) - cell2) * alpha(i) + cell2;
         """,

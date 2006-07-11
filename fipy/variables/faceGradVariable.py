@@ -87,7 +87,7 @@ class _FaceGradVariable(VectorFaceVariable):
  
         val = self._getArray().copy()
 
-	inline._runInlineLoop1("""
+	inline._runInline("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
 

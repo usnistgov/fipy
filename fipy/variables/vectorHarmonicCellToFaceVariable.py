@@ -53,7 +53,7 @@ class _VectorHarmonicCellToFaceVariable(_VectorCellToFaceVariable):
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
         
-        inline._runInlineLoop2("""
+        inline._runInline("""
             double cell2 = var(id2(i),j);
             double cell1 = var(id1(i),j);
             val(i,j) = (cell1 - cell2) * alpha(i) + cell2;

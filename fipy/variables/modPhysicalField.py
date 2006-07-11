@@ -47,7 +47,6 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 import Numeric
 
 class _ModPhysicalField(PhysicalField):
-
     def mod(self, argument):
         return Numeric.fmod(argument + 3. * Numeric.pi, 2. * Numeric.pi) - Numeric.pi
 

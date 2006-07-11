@@ -119,14 +119,14 @@ class GammaNoiseVariable(NoiseVariable):
                  $\beta$.
                  
         """
-        NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
+	
+        NoiseVariable.__init__(self, mesh = mesh, name = name,  hasOld = hasOld)
         self.shape = self._requires(shape)
         self.rate = self._requires(rate)
     
     def _calcValue(self):
-        return gamma(a = self.rate, r = self.shape, 
-                     shape = [self.getMesh().getNumberOfCells()])
-
+	return gamma(a = self.rate, r = self.shape, shape = [self.getMesh().getNumberOfCells()])
+	 
 def _test(): 
     import doctest
     return doctest.testmod()

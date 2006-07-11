@@ -97,7 +97,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	def _calcValueIn(self, eps, P):
             alpha = self._getArray().copy()
             
-	    inline._runInlineLoop1("""
+	    inline._runInline("""
 		if (fabs(P(i)) < eps) {
 		    P(i) = eps;
 		}

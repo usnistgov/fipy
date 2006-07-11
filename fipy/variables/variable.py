@@ -202,7 +202,8 @@ class Variable(object):
 	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
 	    return value.getUnit()
 	else:
-	    return "1"
+            return fipy.tools.dimensions.physicalField._unity 
+#	    return "1"
 	
     def inBaseUnits(self):
 	"""
@@ -264,6 +265,7 @@ class Variable(object):
             IndexError: index out of bounds
 
         """
+        
         if isinstance(index, MeshIterator):
             assert index.getMesh() == self.getMesh()
             return self.take(index)
@@ -291,6 +293,7 @@ class Variable(object):
 
     def _getCIndexString(self, shape):
         dimensions = len(shape)
+        
         if dimensions == 1:
             return '[i]'
         elif dimensions == 2:
@@ -327,9 +330,10 @@ class Variable(object):
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict = {})
              '(var0[0] * var1[i])'
          """
-
+         
          identifier = 'var%s' % (id)
-         argDict[identifier] = self.getValue()
+         
+         argDict[identifier] = numerix.array(self.getValue())
 
          try:
              shape = self.opShape
@@ -492,6 +496,7 @@ class Variable(object):
             tmp = value.copy()
         else:
             tmp = value
+
         if where is not None:
             tmp = numerix.where(where, tmp, self.getValue())
 	self._setValue(value = tmp, unit = unit, array = array)
@@ -598,7 +603,7 @@ class Variable(object):
     def _getVariableClass(self):
 	return Variable
         
-    def _getOperatorVariableClass(self, baseClass = None, _canInline = True):
+    def _getOperatorVariableClass(self, baseClass = None, canInline = True):
         """
             >>> a = Variable(value = 1)
 
@@ -663,26 +668,31 @@ class Variable(object):
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
-            
 	class OperatorVariable(baseClass):
-	    def __init__(self, op, var, mesh = None, opShape = (), _canInline = True):
+	    def __init__(self, op, var, mesh = None, opShape = (), canInline = canInline):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
                 self.opShape = opShape
-                baseClass.__init__(self, value = None, mesh = mesh) #does this need an opshape or caninline?
+                baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
-                self._canInline = _canInline  #allows for certain functions to opt out of --inline
+                for var in self.var:    #C does not accept units
+                    #print 'in opVar =', repr(var)
+                    if not var.getUnit().isDimensionless():
+                        canInline = False
+                        break
+
 		for aVar in self.var:
 		    self._requires(aVar)
-                
+                    
+                self.canInline = canInline  #allows for certain functions to opt out of --inline
                 self.old = None
-                
+               
                 self.dontCacheMe()
 
             def _calcValue(self):
                 from fipy.tools.inline import inline
-                if not _canInline:
+                if not self.canInline:
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
@@ -706,16 +716,16 @@ class Variable(object):
                             oldVar.append(v.getOld())
                         else:
                             oldVar.append(v)
-                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, _canInline=True)
+                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=True)
                 
                 return self.old
          
             def _getCstring(self, argDict = {}, id = ""):
-                if self._canInline:
+                if self.canInline:
                     return self._getRepresentation(style = "C", argDict = argDict, id = id)
                 else:
                     return baseClass._getCstring(self, argDict=argDict, id=id)
-                    
+                
 
                     
 	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
@@ -752,7 +762,7 @@ class Variable(object):
 		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
                         s = stack.pop()
                         if style == 'C':
-                            return s.replace('arc','a').strip('numerix.')
+                            return s.replace('numerix.', '').replace('arc', 'a')
                         else:
                             return s
                     elif opcode.opname[bytecode] == 'LOAD_CONST':
@@ -825,7 +835,10 @@ class Variable(object):
                 return self.__class__(
                     op = self.op,
                     var = self.var,
-                    mesh = self.getMesh())
+                    mesh = self.getMesh(),
+                    opShape = self.opShape,
+                    canInline = self.canInline)
+                    
 
             def getShape(self):
                 return baseClass.getShape(self) or self.opShape
@@ -873,6 +886,7 @@ class Variable(object):
         '((var00[i] * var01[i]) * var1[i])'
                                                            
         """
+    
         from fipy.tools.inline import inline
         argDict = {}
         string = self._getCstring(argDict = argDict) + ';'
@@ -884,7 +898,7 @@ class Variable(object):
 
         dimensions = len(shape)
         
-        if len(shape) == 0:
+        if dimensions == 0:
             string = 'result[0] =' + string
             argDict['result'] = [0] 
         else:
@@ -912,12 +926,15 @@ class Variable(object):
         else:
             return argDict['result']
         
-    def _getUnaryOperatorVariable(self, op, baseClass = None, _canInline = True):
+    def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
 	class unOp(self._getOperatorVariableClass(baseClass)):
             def _calcValuePy(self):
                 return self.op(self.var[0].getValue())   
-            
-	return unOp(op = op, var = [self], opShape = self.getShape(), _canInline = _canInline) #???return unOp(op, [self])
+
+        if not self.getUnit().isDimensionless():
+            canInline = False
+
+	return unOp(op = op, var = [self], opShape = self.getShape(), canInline = canInline)
 	    
     def _getArrayAsOnes(object, valueMattersForShape = ()): 
         """ 
@@ -995,7 +1012,7 @@ class Variable(object):
             
         return (var0, var1)
 
-    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True, _canInline = True):
+    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True, canInline = True):
         """
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
@@ -1838,11 +1855,12 @@ class Variable(object):
             return NotImplemented
 
         mesh = self.getMesh() or other.getMesh()
-            
+        
         # If the caller has not specified a shape for the result, determine the 
         # shape from the base class or from the inputs
+                
         opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
-        
+                
         # the magic value of "number" specifies that the operation should result in a single value,
         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
         # identically to "None or ...".
@@ -1863,14 +1881,13 @@ class Variable(object):
         
         # obtain a general operator class with the desired base class
 	operatorClass = self._getOperatorVariableClass(baseClass)
-
-        self._canInline = _canInline
+        
         
         # declare a binary operator class with the desired base class
-	class binOp(operatorClass):
-            def _calcValue(self):  
+	class binOp(operatorClass):            
+            def _calcValue(self):
                 from fipy.tools.inline import inline
-                if not _canInline:
+                if not canInline:
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)                
@@ -1882,14 +1899,19 @@ class Variable(object):
                     if type(self.var[1]) is type(''):
                         self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
                     val1 = self.var[1]
-                    
+
                 return self.op(self.var[0].getValue(), val1)
 
             def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
                 self.id = id
                 return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id) + ")"
-
-        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, _canInline = _canInline)
+        
+        var = [var0, var1]
+        for v in var:
+            if not v.getUnit().isDimensionless():
+                canInline = False
+        
+        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
         return tmpBop
     
     def __add__(self, other):
@@ -1920,10 +1942,10 @@ class Variable(object):
 	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
 	    
     def __pow__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a**b, other)
+	return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
 	    
     def __rpow__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b**a, other)
+	return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
 	    
     def __div__(self, other):
 	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
@@ -2067,7 +2089,7 @@ class Variable(object):
             [0,0,0,1,]
 
         """
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other, canInline = False)
 
     def __or__(self, other):
         """
@@ -2091,7 +2113,7 @@ class Variable(object):
             
         """
         
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other, canInline = False)
         
     def __len__(self):
         return len(self.getValue())
@@ -2165,16 +2187,16 @@ class Variable(object):
         return self._getUnaryOperatorVariable(lambda a: numerix.ceil(a))
         
     def conjugate(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline = False)
 
     def arctan2(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
 		
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, _canInline = False)
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
         
     def reshape(self, shape):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,))
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,), canInline = False)
         
     def transpose(self):
         """
@@ -2236,7 +2258,7 @@ class Variable(object):
         ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis = axis), ids) 
 
         if numerix.take(self.getValue(), ids, axis = axis).shape == self.getShape():
-            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis))
+            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis), canInline = False)
         else:
             raise IndexError, '_take() must take ids that return a Variable of the same shape'
             
@@ -2285,14 +2307,14 @@ class Variable(object):
                                                baseClass = Variable,
                                                opShape = "number",
                                                rotateShape = False,
-                                               _canInline = False)
+                                               canInline = False)
         
     def allequal(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
                                                other,
                                                baseClass = Variable,
                                                opShape = "number",
-                                               _canInline = False)
+                                               canInline = False)
 
     def getMag(self):
         if self.mag is None:

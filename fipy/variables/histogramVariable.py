@@ -51,11 +51,11 @@ class HistogramVariable(CellVariable):
             - `nx`: the number of bins
             - `offset`: the position of the first bin
         """
-        CellVariable.__init__(self, mesh = Grid1D(dx = dx, nx = nx) + (offset,))
+        CellVariable.__init__(self, mesh = Grid1D(dx = dx, nx = nx) + (offset,)) #opShape = self.opShape, canInline = True
         self.distribution = self._requires(distribution)
-        
+    
     def _calcValue(self):
-        l = len(self.distribution)
+	l = len(self.distribution)
         bins = self.getMesh().getCellCenters()[...,0]
         n = numerix.searchsorted(numerix.sort(self.distribution), bins)
         n = numerix.concatenate([n, [l]])

@@ -116,7 +116,7 @@ class FaceTerm(Term):
         cell2OffDiag = Numeric.zeros((Nfac,),'d')
         cell2OffDiag[:] = weight['cell 2 offdiag']
         
-	inline._runInlineLoop1("""
+	inline._runInline("""
 	    long int faceID = faceIDs(i);
 	    long int cellID1 = id1(i);
 	    long int cellID2 = id2(i);

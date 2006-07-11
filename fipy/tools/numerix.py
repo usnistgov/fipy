@@ -978,19 +978,33 @@ def _sqrtDotIn(a1, a2):
         a2 = a2.getNumericValue()
     ni, nj = NUMERIC.shape(a1)
     result = NUMERIC.zeros((ni,),'d')
+
+##    inline._runInline("""
+##        int i;
+##        for (i = 0; i < ni; i++)
+##	{
+##	    int j;
+##            result(i) = 0.;
+##            for (j = 0; j < nj; j++)
+##            {
+##	        result(i) += a1(i,j) * a2(i,j);
+##            }
+##            result(i) = sqrt(result(i));
+##        }
+##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj)
+
+
     inline._runInline("""
-        int i;
-        for (i = 0; i < ni; i++)
-	{
-	    int j;
-            result(i) = 0.;
-            for (j = 0; j < nj; j++)
-            {
-	        result(i) += a1(i,j) * a2(i,j);
-            }
-            result(i) = sqrt(result(i));
+        int j;
+        result(i) = 0.;
+        for (j = 0; j < NJ; j++)
+        {
+            result(i) += a1(i,j) * a2(i,j);
         }
-    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj)
+        result(i) = sqrt(result(i));        
+    """,result = result, a1 = a1, a2 = a2, ni = ni, NJ = nj)
+
+    
     if unit1 != 1 or unit2 != 1:
 	from fipy.tools.dimensions.physicalField import PhysicalField
 	result = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)

@@ -123,8 +123,8 @@ class VectorCellVariable(Variable):
     def _getVariableClass(self):
 	return VectorCellVariable
 
-    def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = CellVariable)
+    def dot(self, other): 
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = CellVariable, canInline = False)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):

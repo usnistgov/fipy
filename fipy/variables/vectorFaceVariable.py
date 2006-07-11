@@ -63,7 +63,7 @@ class VectorFaceVariable(Variable):
 	return VectorFaceVariable
 
     def dot(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = FaceVariable)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = FaceVariable, canInline = False)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):

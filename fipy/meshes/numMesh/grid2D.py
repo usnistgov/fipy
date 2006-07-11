@@ -148,7 +148,7 @@ class Grid2D(Mesh2D):
     def _createCellsIn(self):
         cellFaceIDs = Numeric.zeros((self.nx * self.ny, 4))
         
-        inline._runInlineLoop2("""
+        inline._runInline("""
             int ID = j * ni + i;
             cellFaceIDs(ID, 0) = ID;
             cellFaceIDs(ID, 2) = cellFaceIDs(ID, 0) + ni;

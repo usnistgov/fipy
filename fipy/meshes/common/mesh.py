@@ -297,7 +297,7 @@ class Mesh:
         return self.cellToFaceOrientations
 
     def getNumberOfCells(self):
-	return self.numberOfCells
+        return self.numberOfCells
     
     def _getNumberOfVertices(self):
         return len(self.vertexCoords[:,0])

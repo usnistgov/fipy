@@ -95,7 +95,6 @@ class Term:
         return self._buildMatrix(var, boundaryConditions, dt)
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
-
         if self._cacheMatrix:
             self.matrix = matrix
 
@@ -113,7 +112,7 @@ class Term:
         r"""
         Builds and solves the `Term`'s linear system once. This method
         does not return the residual. It should be used when the
-        residual is not required.
+        residual is not required.F
       	
         :Parameters:
 
@@ -123,8 +122,9 @@ class Term:
            - `dt`: The time step size.
 
 	"""
+	
         self._verifyCoeffType(var)
-        
+    	      
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
         self._solveLinearSystem(var, solver, matrix, RHSvector)

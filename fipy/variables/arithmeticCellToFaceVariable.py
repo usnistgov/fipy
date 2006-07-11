@@ -48,7 +48,7 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
         
-	inline._runInlineLoop1("""
+	inline._runInline("""
 	    double cell2 = var(id2(i));
 	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
 	""",

@@ -151,8 +151,8 @@ class DiffusionTerm(Term):
 	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
 	    if isinstance(coeff, VectorFaceVariable) \
 	    or shape == (mesh.getDim(),):
-		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff) 
-
+		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
+        
             return coeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
             return None
@@ -209,7 +209,7 @@ class DiffusionTerm(Term):
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
             lowerOrderL = volMatrix * lowerOrderL
             del volMatrix
-            
+
             coeff = self._getGeomCoeff(mesh)
             
             mm = self._getCoefficientMatrix(mesh, -coeff)

@@ -141,7 +141,6 @@ class CellVariable(Variable):
             
 
         """
-            
 	if cells == ():
             Variable.setValue(self, value, unit = unit, where = where)
 	else:

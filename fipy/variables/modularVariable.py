@@ -215,6 +215,17 @@ class ModularVariable(CellVariable):
 
         return self.faceGradNoMod
 
+    def __sub__(self, other):
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return -other + self
+        else:
+            return self._getBinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
+	
+    def __rsub__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
+
+
 def _test(): 
     import doctest
     return doctest.testmod()
