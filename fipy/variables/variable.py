@@ -922,7 +922,7 @@ class Variable(object):
         inline._runInline(string, converters=None, **argDict)
 
         if dimensions == 0:
-            return argDict['result'][0]
+            return int(argDict['result'][0])
         else:
             return argDict['result']
         
@@ -1942,10 +1942,12 @@ class Variable(object):
 	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
 	    
     def __pow__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: pow(a,b), other)
+	#return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
 	    
     def __rpow__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: pow(b,a), other)
+        #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
 	    
     def __div__(self, other):
 	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
