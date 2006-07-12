@@ -290,7 +290,6 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...     levEq.solve(levVar, dt = dt)
        ...     accEq.solve(accVar, dt = dt)
 
-       >>> print accVar < -1e-10
        >>> Numeric.sum(accVar < -1e-10) == 0
        1
    

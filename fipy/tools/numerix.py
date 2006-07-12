@@ -50,7 +50,7 @@ Take the tangent of such a variable. The returned value is itself a
    >>> v = tan(var)
    >>> v
    numerix.tan(Variable(value = 0))
-   >>> print v
+   >>> print float(v)
    0.0
 
 Take the tangent of a int.

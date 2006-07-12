@@ -84,9 +84,8 @@ class UpwindConvectionTerm(ConvectionTerm):
 	    )
      
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
 
-
-	def _calcValue(self):	    
+	def _calcValue(self):
 	    P  = self.P.getNumericValue()
+
 	    return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)

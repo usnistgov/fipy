@@ -312,7 +312,7 @@ class Variable(object):
             else:
                 return '[k + j * nk + i * nj * nk]'
 
-    def _getCstring(self, argDict={}, id = ""):
+    def _getCstring(self, argDict={}, id = "", freshen=None):
          """
          Generate the string and dictionary to be used in inline
              >>> (Variable((1)))._getCstring(argDict = {})
@@ -329,6 +329,8 @@ class Variable(object):
 
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict = {})
              '(var0[0] * var1[i])'
+
+         freshen is ignored
          """
          
          identifier = 'var%s' % (id)
@@ -396,6 +398,7 @@ class Variable(object):
             >>> b.getValue()
             7
         """
+
         if self.stale or not self._isCached() or self.value is None:
             value = self._calcValue() 
             if self._isCached():
@@ -674,6 +677,7 @@ class Variable(object):
 		self.op = op
 		self.var = var
                 self.opShape = opShape
+                self.canInline = canInline  #allows for certain functions to opt out of --inline
                 baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
                 for var in self.var:    #C does not accept units
@@ -685,7 +689,7 @@ class Variable(object):
 		for aVar in self.var:
 		    self._requires(aVar)
                     
-                self.canInline = canInline  #allows for certain functions to opt out of --inline
+
                 self.old = None
                
                 self.dontCacheMe()
@@ -720,15 +724,20 @@ class Variable(object):
                 
                 return self.old
          
-            def _getCstring(self, argDict = {}, id = ""):
+            def _getCstring(self, argDict = {}, id = "", freshen=False):
                 if self.canInline:
-                    return self._getRepresentation(style = "C", argDict = argDict, id = id)
+                    s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
                 else:
-                    return baseClass._getCstring(self, argDict=argDict, id=id)
+                    s = baseClass._getCstring(self, argDict=argDict, id=id)
+
+                if freshen:
+                    self._markFresh()
+                    
+                return s
                 
 
                     
-	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
+	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
                 """
                 :Parameters:
                     
@@ -800,7 +809,7 @@ class Variable(object):
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
                             counter = _popIndex()
-                            stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter)))         
+                            stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))         
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -889,7 +898,7 @@ class Variable(object):
     
         from fipy.tools.inline import inline
         argDict = {}
-        string = self._getCstring(argDict = argDict) + ';'
+        string = self._getCstring(argDict = argDict, freshen=True) + ';'
         
         try:
             shape = self.opShape
@@ -1823,6 +1832,27 @@ class Variable(object):
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
+
+        Test for weird bug that was appearing in inline. Caused by the intermediate
+        operators not getting marked fresh.
+
+            >>> class Alpha(Variable):
+            ...     def __init__(self, var):
+            ...         Variable.__init__(self)
+            ...         self.var = self._requires(var)
+            ...     def _calcValue(self):
+            ...         return self.var.getValue()
+
+            >>> coeff = Variable()
+            >>> alpha = Alpha(-coeff / 1.)
+            >>> print float(alpha.getValue())
+            0.0
+            >>> coeff.setValue(-10.0)
+            >>> print float(alpha.getValue())
+            10.0
+            >>> coeff.setValue(10.0)
+            >>> print float(alpha.getValue())
+            -10.0
             
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
@@ -1885,13 +1915,6 @@ class Variable(object):
         
         # declare a binary operator class with the desired base class
 	class binOp(operatorClass):            
-            def _calcValue(self):
-                from fipy.tools.inline import inline
-                if not canInline:
-                    return self._calcValuePy()
-                else:
-                    return inline._optionalInline(self._calcValueIn, self._calcValuePy)                
-
             def _calcValuePy(self):
                 if isinstance(self.var[1], Variable):
                     val1 = self.var[1].getValue()
@@ -1902,9 +1925,9 @@ class Variable(object):
 
                 return self.op(self.var[0].getValue(), val1)
 
-            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id):
+            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
                 self.id = id
-                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id) + ")"
+                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id, freshen=freshen) + ")"
         
         var = [var0, var1]
         for v in var:

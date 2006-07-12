@@ -87,7 +87,7 @@ class FaceTerm(Term):
 
 	coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
-        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt)
+        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
 
         N = mesh.getNumberOfCells()
 	M = mesh._getMaxFacesPerCell()
@@ -100,10 +100,9 @@ class FaceTerm(Term):
                 b -= LL * Numeric.array(oldArray)
 	    b += bb
 
-    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt):
+    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt, weight):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
-	weight = self._getWeight(mesh)['explicit']
         coeff = Numeric.array(self._getGeomCoeff(mesh))
         Nfac = mesh._getNumberOfFaces()
 
@@ -136,7 +135,7 @@ class FaceTerm(Term):
 	    faceIDs = Numeric.array(interiorFaces),
 	    ni = len(interiorFaces))
 
-    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt):
+    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt = dt)
 
 	cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
