@@ -114,22 +114,28 @@ class PeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
+        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs()
         self._connectFaces(self.getFacesLeft(), self.getFacesRight())
         self._connectFaces(self.getFacesBottom(), self.getFacesTop())
 
     def _getCellVertexIDs(self):
         return self.nonPeriodicCellVertexIDs
 
+    def _getOrderedCellVertexIDs(self):
+        return self.nonPeriodicOrderedCellVertexIDs
+               
 class PeriodicGrid2DLeftRight(PeriodicGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
+        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
         self._connectFaces(self.getFacesLeft(), self.getFacesRight())
 
-class PeriodicGrid2DTopBottom(Grid2D):
+class PeriodicGrid2DTopBottom(PeriodicGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
+        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
         self._connectFaces(self.getFacesBottom(), self.getFacesTop())
     
 def _test():
