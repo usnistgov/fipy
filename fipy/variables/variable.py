@@ -681,15 +681,13 @@ class Variable(object):
                 baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
                 for var in self.var:    #C does not accept units
-                    #print 'in opVar =', repr(var)
                     if not var.getUnit().isDimensionless():
-                        canInline = False
+                        self.canInline = False
                         break
 
 		for aVar in self.var:
 		    self._requires(aVar)
                     
-
                 self.old = None
                
                 self.dontCacheMe()
@@ -720,7 +718,7 @@ class Variable(object):
                             oldVar.append(v.getOld())
                         else:
                             oldVar.append(v)
-                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=True)
+                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=self.canInline)
                 
                 return self.old
          

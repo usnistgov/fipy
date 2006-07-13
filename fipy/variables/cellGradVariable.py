@@ -48,7 +48,7 @@ class _CellGradVariable(VectorCellVariable):
 	VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
 	self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
-
+        
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
 

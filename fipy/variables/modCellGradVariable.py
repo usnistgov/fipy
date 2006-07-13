@@ -45,7 +45,15 @@ class _ModCellGradVariable(_CellGradVariable):
         _CellGradVariable.__init__(self, var)
         self.modIn = modIn
         self.modPy = modPy
-        
+
+    ##def _calcValue(self):
+##        try:
+##            canInline = self.canInline
+##            if not self.canInline:
+##                return self._calcValuePy(self,N, M, ids, orientations, volumes)
+##        except AttributeError:
+            
+
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
         
