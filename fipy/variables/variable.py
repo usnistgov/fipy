@@ -334,9 +334,10 @@ class Variable(object):
          """
          
          identifier = 'var%s' % (id)
-         
-         argDict[identifier] = numerix.array(self.getValue())
 
+         ##argDict[identifier] = numerix.array(self)
+         argDict[identifier] = self.getValue()
+         
          try:
              shape = self.opShape
          except AttributeError:
@@ -346,7 +347,7 @@ class Variable(object):
              return identifier + '[0]'
          else:
              return identifier + self._getCIndexString(shape)
-         
+
     def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width = max_line_width,
@@ -689,12 +690,13 @@ class Variable(object):
 		    self._requires(aVar)
                     
                 self.old = None
-               
+                
                 self.dontCacheMe()
-
+                
             def _calcValue(self):
                 from fipy.tools.inline import inline
-                if not self.canInline:
+                #if not self._isCached
+                if not self.canInline:#or not self._isCached:
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
@@ -723,17 +725,16 @@ class Variable(object):
                 return self.old
          
             def _getCstring(self, argDict = {}, id = "", freshen=False):
+                  
                 if self.canInline:
                     s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
                 else:
                     s = baseClass._getCstring(self, argDict=argDict, id=id)
-
+                                  
                 if freshen:
                     self._markFresh()
-                    
+                  
                 return s
-                
-
                     
 	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
                 """
@@ -913,7 +914,7 @@ class Variable(object):
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                argDict['result'] = Numeric.zeros(ni, 'd')   
+                argDict['result'] = Numeric.zeros(ni, 'd')
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
@@ -932,6 +933,8 @@ class Variable(object):
             return int(argDict['result'][0])
         else:
             return argDict['result']
+
+    
         
     def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
 	class unOp(self._getOperatorVariableClass(baseClass)):
@@ -1931,7 +1934,7 @@ class Variable(object):
         for v in var:
             if not v.getUnit().isDimensionless():
                 canInline = False
-        
+
         tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
         return tmpBop
     

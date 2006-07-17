@@ -11,7 +11,7 @@ def _optionalInline(inlineFn, pythonFn, *args):
 def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
     #can add to dimList to increase dimensionality
     
-    from fipy.variables.variable import Variable
+    #from fipy.variables.variable import Variable
     dimList = ['i', 'j', 'k']
     argsKeys = args.keys()
                 
@@ -25,7 +25,7 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
         dimensions = 0
     
     if dimensions == 0:
-        code = """ { %s } """ % code_in
+        code = """ { %s } """ % code_in 
     else:
         loops = """"""
         enders = """"""
