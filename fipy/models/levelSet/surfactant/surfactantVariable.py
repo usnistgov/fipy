@@ -103,11 +103,10 @@ class SurfactantVariable(CellVariable):
           - `name`: The name of the variable.
           
         """
-        print 'Making surfactant variable'
         CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name)
 
         self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
-        print 'value = ', self.value
+        
         self.distanceVar = self._requires(distanceVar)
         self.interfaceSurfactantVariable = None
 

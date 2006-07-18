@@ -335,14 +335,24 @@ class Variable(object):
          
          identifier = 'var%s' % (id)
 
-         ##argDict[identifier] = numerix.array(self)
-         ##argDict[identifier] = self.getValue()
-         argDict[identifier] = self
-         
+##         argDict[identifier] = numerix.array(self)
+         v = self.getValue()
+         if type(v) not in (type(numerix.array(1)),):
+             argDict[identifier] = numerix.array(v)
+         else:
+             argDict[identifier] = v
+
+##         argDict[identifier] = self.getValue()
+         ##argDict[identifier] = self
          try:
              shape = self.opShape
          except AttributeError:
              shape = self.getShape()
+
+         #try:
+         #    myType = self.typeResult
+         #except AttributeError:
+         #    myType = type(self)
 
          if len(shape) == 0:
              return identifier + '[0]'
@@ -695,12 +705,12 @@ class Variable(object):
                 
             def _calcValue(self):
                 from fipy.tools.inline import inline
-                #if not self._isCached
+                #if not self._isCached():
                 if not self.canInline:#or not self._isCached:
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
-
+                
             def _calcValueIn(self):
                 return self._execInline()
 
@@ -720,14 +730,16 @@ class Variable(object):
                             oldVar.append(v.getOld())
                         else:
                             oldVar.append(v)
+                    
                     self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=self.canInline)
-                
+                                  
                 return self.old
          
             def _getCstring(self, argDict = {}, id = "", freshen=False):
                   
-                if self.canInline:
-                    s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
+                if self.canInline: # and not self._isCached():
+                        s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
+                        
                 else:
                     s = baseClass._getCstring(self, argDict=argDict, id=id)
                                   
@@ -808,7 +820,12 @@ class Variable(object):
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
                             counter = _popIndex()
-                            stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))         
+                            if not self.var[counter]._isCached():## or self.stale:
+                                stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
+                            else:
+##                                stack.append(baseClass._getCstring(self, argDict, id = id + str(counter), freshen=freshen))
+                                stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, id = id + str(counter), freshen=False))
+                                ##stack.append(baseClass._getCstring(self.var[counter], argDict, id = id + str(counter), freshen=freshen))
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -846,11 +863,15 @@ class Variable(object):
                     mesh = self.getMesh(),
                     opShape = self.opShape,
                     canInline = self.canInline)
+                    #myType = self.myType
                     
 
             def getShape(self):
                 return baseClass.getShape(self) or self.opShape
 
+            #def getType(self):
+                #return baseClass.getType(self) or type(self)
+                
 	return OperatorVariable
 	
     def _getArithmeticBaseClass(self, other = None):
@@ -896,11 +917,11 @@ class Variable(object):
         """
     
         from fipy.tools.inline import inline
-        if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
-            self.argDict = {}
-            self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
-        #argDict = {}
-        #string = self._getCstring(argDict = argDict, freshen=True) + ';'
+        #if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
+        #    self.argDict = {}
+        #    self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
+        argDict = {}
+        string = self._getCstring(argDict = argDict, freshen=True) + ';'
         
         try:
             shape = self.opShape
@@ -908,18 +929,25 @@ class Variable(object):
             shape = self.getShape()            
 
         dimensions = len(shape)
+
+        #try:
+            #myType = self.typeResult
+        #except AttributeError:
+            #myType = type(self)
         
-        argDict = {}
-        for k in self.argDict.keys():
-            if not type(self.argDict[k]) in (type(Numeric.array((1))), type([])):
-                argDict[k] = self.argDict[k].getValue()
-            else:
-                argDict[k] = self.argDict[k]
+        #argDict = {}
+        #for k in self.argDict.keys():
+        #    if not type(self.argDict[k]) in (type(Numeric.array((1))), type([])):
+        #        argDict[k] = self.argDict[k].getValue()
+##            else:
+##                argDict[k] = self.argDict[k]
                 
         if dimensions == 0:
-            string = '((double *) result->data)[0] =' + self.cString
+##            string = '((double *) result->data)[0] =' + self.cString
+            string = '((double *) result->data)[0] =' + string
         else:
-            string = '((double *) result->data)' + self._getCIndexString(shape) + ' = ' + self.cString
+##            string = '((double *) result->data)' + self._getCIndexString(shape) + ' = ' + self.cString
+            string = '((double *) result->data)' + self._getCIndexString(shape) + ' = ' + string
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
@@ -1948,7 +1976,10 @@ class Variable(object):
         # shape from the base class or from the inputs
                 
         opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
-                
+
+        # Need to find the type of the result
+        #typeResult = typeResult or type(self)
+        
         # the magic value of "number" specifies that the operation should result in a single value,
         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
         # identically to "None or ...".

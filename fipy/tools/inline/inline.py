@@ -22,6 +22,7 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
 ##            if 'nk' in argsKeys:
 ##                dimensions = 3
 
+
     dimlist = []
     if 'ni' in argsKeys:
         dimensions = 1
