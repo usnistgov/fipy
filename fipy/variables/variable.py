@@ -336,7 +336,8 @@ class Variable(object):
          identifier = 'var%s' % (id)
 
          ##argDict[identifier] = numerix.array(self)
-         argDict[identifier] = self.getValue()
+         ##argDict[identifier] = self.getValue()
+         argDict[identifier] = self
          
          try:
              shape = self.opShape
@@ -688,9 +689,8 @@ class Variable(object):
 
 		for aVar in self.var:
 		    self._requires(aVar)
-                    
-                self.old = None
                 
+                self.old = None
                 self.dontCacheMe()
                 
             def _calcValue(self):
@@ -896,8 +896,11 @@ class Variable(object):
         """
     
         from fipy.tools.inline import inline
-        argDict = {}
-        string = self._getCstring(argDict = argDict, freshen=True) + ';'
+        if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
+            self.argDict = {}
+            self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
+        #argDict = {}
+        #string = self._getCstring(argDict = argDict, freshen=True) + ';'
         
         try:
             shape = self.opShape
@@ -906,33 +909,87 @@ class Variable(object):
 
         dimensions = len(shape)
         
+        argDict = {}
+        for k in self.argDict.keys():
+            if not type(self.argDict[k]) in (type(Numeric.array((1))), type([])):
+                argDict[k] = self.argDict[k].getValue()
+            else:
+                argDict[k] = self.argDict[k]
+                
         if dimensions == 0:
-            string = 'result[0] =' + string
-            argDict['result'] = [0] 
+            string = '((double *) result->data)[0] =' + self.cString
         else:
-            string = 'result' + self._getCIndexString(shape) + ' = ' + string
+            string = '((double *) result->data)' + self._getCIndexString(shape) + ' = ' + self.cString
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                argDict['result'] = Numeric.zeros(ni, 'd')
+                pass
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
                 if dimensions == 2:
-                    argDict['result'] = Numeric.zeros((nj,ni), 'd')
+                    pass
                 elif dimensions == 3:
                     nk = self.opShape[-3]
-                    argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
                     argDict['nk'] = nk
                 else:
                     raise DimensionError, 'Impossible Dimensions'
-                
-        inline._runInline(string, converters=None, **argDict)
 
-        if dimensions == 0:
-            return int(argDict['result'][0])
-        else:
-            return argDict['result']
+        tmpReturn = inline._runInline(string, converters=None, **argDict)
+        return tmpReturn
+        #return inline._runInline(string, converters=None, **argDict)
+
+   ## def _execInline(self):
+##        """
+##        Gets the stack from _getCstring() which calls _getRepresentation()
+        
+##        >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
+##        '(var0[i] * var1[i])'
+##        >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
+##        '(var0[j * ni + i] * var1[j * ni + i])'
+##        >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
+##        '((var00[i] * var01[i]) * var1[i])'
+                                                           
+##        """
+    
+##        from fipy.tools.inline import inline
+##        argDict = {}
+##        string = self._getCstring(argDict = argDict, freshen=True) + ';'
+        
+##        try:
+##            shape = self.opShape
+##        except AttributeError:
+##            shape = self.getShape()            
+
+##        dimensions = len(shape)
+        
+##        if dimensions == 0:
+##            string = 'result[0] =' + string
+##            argDict['result'] = [0] 
+##        else:
+##            string = 'result' + self._getCIndexString(shape) + ' = ' + string
+##            ni = self.opShape[-1]
+##            argDict['ni'] = ni
+##            if dimensions == 1:
+##                argDict['result'] = Numeric.zeros(ni, 'd')
+##            else:    
+##                nj = self.opShape[-2]
+##                argDict['nj'] = nj                
+##                if dimensions == 2:
+##                    argDict['result'] = Numeric.zeros((nj,ni), 'd')
+##                elif dimensions == 3:
+##                    nk = self.opShape[-3]
+##                    argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
+##                    argDict['nk'] = nk
+##                else:
+##                    raise DimensionError, 'Impossible Dimensions'
+                
+##        inline._runInline(string, converters=None, **argDict)
+
+##        if dimensions == 0:
+##            return int(argDict['result'][0])
+##        else:
+##            return argDict['result']
 
     
         
@@ -1934,7 +1991,6 @@ class Variable(object):
         for v in var:
             if not v.getUnit().isDimensionless():
                 canInline = False
-
         tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
         return tmpBop
     

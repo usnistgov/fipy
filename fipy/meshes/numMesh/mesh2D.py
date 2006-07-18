@@ -66,7 +66,7 @@ class Mesh2D(Mesh):
         faceVertexCoords = Numeric.take(self.vertexCoords, self.faceVertexIDs)
         tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
         self.faceAreas = numerix.sqrtDot(tangent, tangent)
-
+        
     def _calcFaceNormals(self):
         faceVertexCoords = Numeric.take(self.vertexCoords, self.faceVertexIDs)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]

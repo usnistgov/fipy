@@ -12,19 +12,33 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
     #can add to dimList to increase dimensionality
     
     #from fipy.variables.variable import Variable
-    dimList = ['i', 'j', 'k']
     argsKeys = args.keys()
+    dimList = ['i', 'j', 'k']
                 
+##    if 'ni' in argsKeys:
+##        dimensions = 1
+##        if 'nj' in argsKeys:
+##            dimensions = 2
+##            if 'nk' in argsKeys:
+##                dimensions = 3
+
+    dimlist = []
     if 'ni' in argsKeys:
         dimensions = 1
+        dimlist.insert(0,'ni')        
         if 'nj' in argsKeys:
             dimensions = 2
+            ##dimlist.append(str(args['nj']))
+            dimlist.insert(0, 'nj')
             if 'nk' in argsKeys:
                 dimensions = 3
+                ##dimlist.append(str(args['nk']))
+                dimlist.insert(0, 'nk')
+
     else:
         dimensions = 0
     
-    if dimensions == 0:
+    if dimensions == 5:  ##fix
         code = """ { %s } """ % code_in 
     else:
         loops = """"""
@@ -33,9 +47,29 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
         for dim in range(dimensions):
             d = dimList[dim]
             declarations.append(d)
-            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
+            loops += "\t" * dim + "for(int %s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
-        code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
+        code = """
+        int dimensions[] = {%s};
+        PyArrayObject * result = (PyArrayObject *) PyArray_FromDims(%d, dimensions, PyArray_DOUBLE);
+        
+        """ % (','.join(dimlist), dimensions) \
+          + loops + "\t" * dimensions + code_in + enders \
+        + """
+        return_val = PyArray_Return(result);
+        """
+          
+
+   ## else:
+##        loops = """"""
+##        enders = """"""
+##        declarations = []
+##        for dim in range(dimensions):
+##            d = dimList[dim]
+##            declarations.append(d)
+##            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
+##            enders += "\n" + "\t" * (dimensions - dim -1) + "}"
+##        code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
     
     #from scipy import weave
@@ -51,7 +85,7 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
 ##        print 'key',key,'type(args[key])',type(args[key])
 ##        import MA
 
-    weave.inline(code,
+    return weave.inline(code,
 		 args.keys(),
       		 local_dict=args,
 ##		 type_factories = blitz_type_factories,

@@ -144,7 +144,7 @@ class DiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-
+            
 	    coeff = self.nthCoeff
 	    shape = numerix.getShape(coeff)
 
@@ -152,8 +152,10 @@ class DiffusionTerm(Term):
 	    if isinstance(coeff, VectorFaceVariable) \
 	    or shape == (mesh.getDim(),):
 		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
-        
-            return coeff * mesh._getFaceAreas() / mesh._getCellDistances()
+            tmpBop =  coeff * mesh._getFaceAreas() / mesh._getCellDistances()
+            return  tmpBop
+            
+        #coeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
             return None
         

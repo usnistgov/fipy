@@ -76,13 +76,13 @@ class Tri2D(Mesh2D):
             The total number of boxes will be equal to `nx * ny`, and the total 
             number of cells will be equal to `4 * nx * ny`.
         """
+
         self.nx = nx
         self.ny = ny
 	
 	self.dx = PhysicalField(value = dx)
 	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
 	self.dx /= scale
-	
 	self.dy = PhysicalField(value = dy)
 	if self.dy.getUnit().isDimensionless():
 	    self.dy = dy
@@ -97,6 +97,7 @@ class Tri2D(Mesh2D):
         faces = self._createFaces()
         cells = self._createCells()
         cells = Numeric.sort(cells)
+        
         Mesh2D.__init__(self, vertices, faces, cells)
 	self.setScale(value = scale)
         

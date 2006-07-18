@@ -66,7 +66,7 @@ import fipy.tools.numerix as numerix
 nx = int(numerix.sqrt(numberOfElements))
 ny = int(numerix.sqrt(numberOfElements))
 
-steps = 10
+steps = 100
 
 dx = 2.
 dy = 2.
