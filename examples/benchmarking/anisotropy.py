@@ -16,10 +16,10 @@ N = int(numerix.sqrt(numberOfElements))
 ##profile = Profiler('profile-inline', fudge=fudge)
 
 
-#from benchmarker import Benchmarker
-#bench = Benchmarker()
+from benchmarker import Benchmarker
+bench = Benchmarker()
 
-#bench.start()
+bench.start()
 
 Length = N * 2.5 / 100.
 nx = N
@@ -32,9 +32,9 @@ initialTemperature = -0.4
 from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
-#bench.stop('mesh')
+bench.stop('mesh')
 
-#bench.start()
+bench.start()
 
 timeStepDuration = 5e-5
 tau = 3e-4
@@ -56,9 +56,9 @@ temperature = CellVariable(
     hasOld=1
     )
 
-#bench.stop('variables')
+bench.stop('variables')
 
-#bench.start()
+bench.start()
 
 from fipy.tools import numerix
 mVar = phase - 0.5 - kappa1 / numerix.pi * \
@@ -87,7 +87,7 @@ temperatureEq = TransientTerm() == \
                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
                 (phase - phase.getOld()) / timeStepDuration
 
-#bench.stop('terms')
+bench.stop('terms')
 
 phase.updateOld()
 temperature.updateOld()
@@ -96,12 +96,12 @@ temperatureEq.solve(temperature, dt=timeStepDuration)
 
 steps = 10
 
-#bench.start()
+bench.start()
 
-from profiler import Profiler
-from profiler import calibrate_profiler
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile-inline', fudge=fudge)
+##from profiler import Profiler
+##from profiler import calibrate_profiler
+##fudge = calibrate_profiler(10000)
+##profile = Profiler('profile-inline', fudge=fudge)
 
 for i in range(steps):
     phase.updateOld()
@@ -109,6 +109,6 @@ for i in range(steps):
     phaseEq.solve(phase, dt=timeStepDuration)
     temperatureEq.solve(temperature, dt=timeStepDuration)
 
-#bench.stop('solve')
-profile.stop()
-#print bench.report(numberOfElements=numberOfElements, steps=steps)
+bench.stop('solve')
+#profile.stop()
+print bench.report(numberOfElements=numberOfElements, steps=steps)

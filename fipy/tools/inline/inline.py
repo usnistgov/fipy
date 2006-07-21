@@ -80,7 +80,7 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
 ##     print "in:", code
 ##    import weave
 ##
-##    print 'code = ', code
+    print 'code = ', code
 ##    print 'argDict =', args
 ##    for key in args.keys():
 ##        print 'key',key,'type(args[key])',type(args[key])

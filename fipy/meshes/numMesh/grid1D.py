@@ -138,7 +138,8 @@ class Grid1D(Mesh1D):
     
     def getShape(self):
         return (self.nx,)
-    
+
+   
 ## pickling
 
     def __getstate__(self):

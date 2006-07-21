@@ -165,6 +165,12 @@ def getShape(arr):
         return ()
     else:
         return array(arr).shape
+
+def getType(arr):
+    if type(arr) == array:
+        return type(arr.flat[0])
+    else:
+        return type(arr)
     
 def sum(arr, index = 0):
     """
@@ -1094,6 +1100,9 @@ def indices(dimensions, typecode=None):
 
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
+
+def getType(arr):
+    return arr.typecodea
 
 if not hasattr(numerix.NUMERIC, 'empty'):
     def empty(shape, dtype='d', order='C'):
