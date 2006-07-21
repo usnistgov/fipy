@@ -8,11 +8,7 @@ Refer to SVN.txt for the current tagging conventions.
 Branches
 --------
 
-The following needs to be updated as we become more experienced with SVN.
-
-Break off for radical refactoring. We will use the following method to
-preserve the tags/ and branches/ policy, though not strictly necessary
-with SVN::
+Break off for radical refactoring::
 
     $ cd trunk    
     $ BRANCH=branch-refactoring_etc
@@ -29,44 +25,19 @@ Edit and add to branch::
     $ emacs ...
     $ svn ci -m "refactoring_stage_B"
 
-Find the initial revision number for the branch (IRN)::
+Refactoring complete, find the initial (IRN) and latest (LRN) revision numbers::
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     $ IRN=...
-
-Check out what has happend on the trunk since the checkout
-
-    $ svn log -r$IVN:HEAD $FIPYROOT/trunk
-    $ svn diff -r$IVN:HEAD $FIPYROOT/trunk
-
-Merge developments from trunk (best not to do this at all)::
-
-    $ svn merge -r$IVN:HEAD $FIPYROOT/trunk
-    $ python setup.py test
-    $ svn ci -m "merged main trunk"
-
-Edit and add to branch::
-
-    $ emacs ...
-    $ svn ci -m "refactoring_stage_C"
-
-Refactoring complete, find out latest revision number for the branch (LRN) and when trunk was merged (TRN)::
-
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     $ LRN=...
-    $ TRN=...
-    
+
 Refactoring complete, merge to trunk::
 
     $ cd ../trunk
-    $ svn diff -r$IRN:$TRN-1 $FIPYROOT/branches/$BRANCH
-    $ svn merge -r$IRN:$TRN-1 $FIPYROOT/branches/$BRANCH
-    $ svn diff -r$TRN:$LRN $FIPYROOT/branches/$BRANCH
-    $ svn merge -r$TRN:$LRN $FIPYROOT/branches/$BRANCH
+    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ python setup.py test
     $ svn ci -m "merged $BRANCH"
-
-**Now cease all work on branch-refactoring_etc**
 
 --------
 Versions
@@ -112,8 +83,8 @@ Find the initial revision number for the branch (IRN) and the latest revision nu
 Now merge n.m.q changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r$IRN:LRN $FIPYROOT/branches/$BRANCH
-    $ svn merge -r$IRN:LRN $FIPYROOT/branches/$BRANCH
+    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn ci -m "merged version n.m.q"    
 
 Make new fix q+1 to n.m::
@@ -133,8 +104,8 @@ Find the previous revision number for the branch (PRN) and the latest revision n
 Again, merge n.m.q+1 changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r$PRN:LRN $FIPYROOT/branches/$BRANCH
-    $ svn merge -r$PRN:LRN $FIPYROOT/branches/$BRANCH
+    $ svn diff -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
+    $ svn merge -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
     $ svn ci -m "merged version n.m.q+1"
 
 ================
