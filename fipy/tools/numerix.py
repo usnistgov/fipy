@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/15/06 {3:57:48 PM} 
+ #                                last update: 7/21/06 {2:36:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1095,6 +1095,84 @@ def indices(dimensions, typecode=None):
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
 
+if not hasattr(numerix.NUMERIC, 'empty'):
+    def empty(shape, dtype='d', order='C'):
+        """
+        `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+        provides a routine:
+            
+            empty((d1,...,dn),dtype=float,order='C') will return a new array of
+            shape (d1,...,dn) and given type with all its entries
+            uninitialized. This can be faster than zeros.
+            
+        We approximate this routine when unavailable, but note that `order` is
+        ignored when using Numeric.
+        """
+        from fipy.tools.inline import inline
+
+        return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
+    
+    def _emptyPy(shape, dtype):
+        return NUMERIC.zeros(shape, dtype)
+
+    def _emptyIn(shape, dtype):
+        from scipy import weave
+        
+        local_dict = {'shape': shape, 'dtype': dtype}
+        
+        code = """
+PyObject *op;
+PyArrayObject *ret;
+
+char type_char='l';
+char *type = &type_char;
+int nd, dimensions[MAX_DIMS];
+
+if ((nd=PySequence_Length(shape)) == -1) {
+    PyErr_Clear();
+    if (!(op = PyNumber_Int(shape))) return NULL;
+    nd = 1;
+    dimensions[0] = PyInt_AsLong(op);
+    Py_DECREF(op);
+} else {
+    if (nd > MAX_DIMS) {
+        fprintf(stderr, "Maximum number of dimensions = %d\\n", MAX_DIMS);
+        PyErr_SetString(PyExc_ValueError, "Number of dimensions is too large");
+        return NULL;
+    }
+    for(int i=0; i<nd; i++) {
+        if( (op=PySequence_GetItem(shape,i))) {
+            dimensions[i]=PyInt_AsLong(op);
+            Py_DECREF(op);
+        }
+        if(PyErr_Occurred()) return NULL;
+    }
+}
+if ((ret = (PyArrayObject *)PyArray_FromDims(nd, dimensions, dtype[0])) == NULL) {
+    return NULL;
+}
+
+return_val = PyArray_Return(ret);
+
+// refcounting bug in weave. See: "weave: Note on ref counts" in
+// weave/scxx/notes.txt
+while (return_val.refcount() > 1) {
+    Py_DECREF((PyObject *) return_val);
+}
+"""
+
+        return weave.inline(code,
+                     local_dict.keys(),
+                     local_dict=local_dict,
+                     type_converters=weave.converters.blitz,
+                     compiler = 'gcc',
+                     verbose = 0,
+                     support_code = """
+#define MAX_DIMS 30
+                     """,
+                     extra_compile_args =['-O3'])
+
+    
 def _test(): 
     import doctest
     return doctest.testmod()
