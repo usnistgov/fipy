@@ -983,38 +983,38 @@ def _sqrtDotIn(a1, a2):
 	unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
     ni, nj = NUMERIC.shape(a1)
-    #result1 = NUMERIC.zeros((ni,),'d')
+    result1 = NUMERIC.zeros((ni,),'d')
 
-##    inline._runInline("""
-##        int i;
-##        for (i = 0; i < ni; i++)
-##	{
-##	    int j;
-##            result1(i) = 0.;
-##            for (j = 0; j < nj; j++)
-##            {
-##	        result1(i) += a1(i,j) * a2(i,j);
-##            }
-##            result1(i) = sqrt(result1(i));
-##        }
-##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj)
-
-
-    result = inline._runInline("""
-        int j;
-        ((double *) result->data)[i] = 0.;
-        for (j = 0; j < NJ; j++)
-        {
-            ((double *) result->data)[i] += a1(i,j) * a2(i,j);
+    inline._runInline("""
+        int i;
+        for (i = 0; i < ni; i++)
+	{
+	    int j;
+            result1(i) = 0.;
+            for (j = 0; j < nj; j++)
+            {
+	        result1(i) += a1(i,j) * a2(i,j);
+            }
+            result1(i) = sqrt(result1(i));
         }
-        ((double *) result->data)[i] = sqrt(((double *) result->data)[i]);        
-    """, a1 = a1, a2 = a2, ni = ni, NJ = nj)
+    """,result1 = result1, a1 = a1, a2 = a2, ni = ni, nj = nj)
+
+
+    ##result = inline._runInline("""
+##        int j;
+##        ((double *) result->data)[i] = 0.;
+##        for (j = 0; j < NJ; j++)
+##        {
+##            ((double *) result->data)[i] += a1(i,j) * a2(i,j);
+##        }
+##        ((double *) result->data)[i] = sqrt(((double *) result->data)[i]);        
+##    """, a1 = a1, a2 = a2, ni = ni, NJ = nj)
 
     
     if unit1 != 1 or unit2 != 1:
 	from fipy.tools.dimensions.physicalField import PhysicalField
-	result = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
-    return result
+	result1 = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
+    return result1
 
 def allequal(first, second):
     """
@@ -1102,9 +1102,15 @@ def indices(dimensions, typecode=None):
     return lst
 
 def getType(arr):
-    return arr.typecodea
+    #try:
+    #    end = arr.typecode()
+    #except AttributeError:
+    #    end =  arr.value.typecode()
+    #return end
+    return 'd'
+        
 
-if not hasattr(numerix.NUMERIC, 'empty'):
+if not hasattr(NUMERIC, 'empty'):
     def empty(shape, dtype='d', order='C'):
         """
         `ones()` and `zeros()` are really slow ways to create arrays. NumPy
@@ -1187,4 +1193,9 @@ def _test():
     return doctest.testmod()
     
 if __name__ == "__main__":
-    _test() 
+  print 'zero = ', empty((), 'd')
+  print '1D = ', empty((1,), 'd')
+  print '1Dish = ', empty((0,), 'd')
+  print '2D = ', empty((1,2), 'd')
+  
+##    _test() 

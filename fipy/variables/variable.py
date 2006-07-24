@@ -265,7 +265,6 @@ class Variable(object):
             IndexError: index out of bounds
 
         """
-        print 'self = ', repr(self)
         if isinstance(index, MeshIterator):
             assert index.getMesh() == self.getMesh()
             return self.take(index)
@@ -579,12 +578,12 @@ class Variable(object):
             return self._getShapeFromMesh(self.getMesh()) or ()
 
     def getType(self):
-        #print 'self.value =', (self.value)
-        if self.value is not None:
-            return numerix.getType(self.value)
-        else:
-            return type((self[0]))
-        
+        #if self.value is not None:
+        ##return numerix.getType(self.value)
+        #else:
+        #    return self.typecode()
+        return 'd'
+    
     def _calcValue(self):
         return self.value
         
@@ -877,8 +876,8 @@ class Variable(object):
                 return baseClass.getShape(self) or self.opShape
 
             def getType(self):
-                return baseClass.getType(self) or type(self.var[0][0])
-                
+                #return baseClass.getType(self) or (self.var[0]).typecode()
+                return 'd'
 	return OperatorVariable
 	
     def _getArithmeticBaseClass(self, other = None):
@@ -940,7 +939,8 @@ class Variable(object):
         except AttributeError:
             endType =self.getType()
 
-        print 'endType = ', endType
+        
+        #print 'endType = ', endType
 
         dimensions = len(shape)
 
@@ -955,86 +955,43 @@ class Variable(object):
         #        argDict[k] = self.argDict[k].getValue()
 ##            else:
 ##                argDict[k] = self.argDict[k]
-                
+            
         if dimensions == 0:
-##            string = '((double *) result->data)[0] =' + self.cString
-            string = '((%s *) result->data)[0] =' % (endType)+ string
+            string = 'result[0] = ' + string
+##            string = '((%s *) result->data)[0] =' % (endType)+ string
+            #argDict['result'] = numerix.empty((), endType)
+            dim = ()
         else:
-##            string = '((double *) result->data)' + self._getCIndexString(shape) + ' = ' + self.cString
-            string = '((%s *) result->data)' % (endType) + self._getCIndexString(shape) + ' = ' + string
+            string = 'result' + self._getCIndexString(shape) + ' = ' + string
+##            string = '((%s *) result->data)' % (endType) + self._getCIndexString(shape) + ' = ' + string
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                pass
+                #argDict['result'] = numerix.empty(ni, endType)
+                dim = (ni)
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
                 if dimensions == 2:
-                    pass
+                    #argDict['result'] = numerix.empty((nj,ni), endType)
+                    dim =(nj,ni)
                 elif dimensions == 3:
                     nk = self.opShape[-3]
+                    dim = (nk,nj,ni)
                     argDict['nk'] = nk
                 else:
                     raise DimensionError, 'Impossible Dimensions'
 
-        tmpReturn = inline._runInline(string, converters=None, **argDict)
-        return tmpReturn
-        #return inline._runInline(string, converters=None, **argDict)
-
-   ## def _execInline(self):
-##        """
-##        Gets the stack from _getCstring() which calls _getRepresentation()
+        if self.value is None:
+            argDict['result'] = numerix.empty(dim, 'd')
+        else:
+            argDict['result'] = self.value
         
-##        >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
-##        '(var0[i] * var1[i])'
-##        >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-##        '(var0[j * ni + i] * var1[j * ni + i])'
-##        >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
-##        '((var00[i] * var01[i]) * var1[i])'
-                                                           
-##        """
-    
-##        from fipy.tools.inline import inline
-##        argDict = {}
-##        string = self._getCstring(argDict = argDict, freshen=True) + ';'
-        
-##        try:
-##            shape = self.opShape
-##        except AttributeError:
-##            shape = self.getShape()            
+        inline._runInline(string, converters=None, **argDict)
 
-##        dimensions = len(shape)
-        
-##        if dimensions == 0:
-##            string = 'result[0] =' + string
-##            argDict['result'] = [0] 
-##        else:
-##            string = 'result' + self._getCIndexString(shape) + ' = ' + string
-##            ni = self.opShape[-1]
-##            argDict['ni'] = ni
-##            if dimensions == 1:
-##                argDict['result'] = Numeric.zeros(ni, 'd')
-##            else:    
-##                nj = self.opShape[-2]
-##                argDict['nj'] = nj                
-##                if dimensions == 2:
-##                    argDict['result'] = Numeric.zeros((nj,ni), 'd')
-##                elif dimensions == 3:
-##                    nk = self.opShape[-3]
-##                    argDict['result'] = Numeric.zeros((nk,nj,ni), 'd')
-##                    argDict['nk'] = nk
-##                else:
-##                    raise DimensionError, 'Impossible Dimensions'
-                
-##        inline._runInline(string, converters=None, **argDict)
-
-##        if dimensions == 0:
-##            return int(argDict['result'][0])
-##        else:
-##            return argDict['result']
+        return argDict['result']
 
     
-        
     def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
 	class unOp(self._getOperatorVariableClass(baseClass)):
             def _calcValuePy(self):
@@ -1043,8 +1000,22 @@ class Variable(object):
         if not self.getUnit().isDimensionless():
             canInline = False
 
+        #unOP = unOp(self, baseClass) 
+        # unOp(Variable)
 	return unOp(op = op, var = [self], opShape = self.getShape(), typeResult  = self.getType(), canInline = canInline)
-	    
+
+##==========
+##new file
+##=========
+
+##def unOp(var, op, baseClass = None, canInline = True):
+##    class UnOp(var._getOperatorVariableClass(baseClass)):
+##        pass
+
+##    return UnOp(...)
+
+
+	
     def _getArrayAsOnes(object, valueMattersForShape = ()): 
         """ 
         For the purposes of assembling the binop, we are only
