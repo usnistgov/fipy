@@ -212,23 +212,29 @@ class DiffusionTerm(Term):
             lowerOrderL = volMatrix * lowerOrderL
             del volMatrix
 
-            coeff = self._getGeomCoeff(mesh)
-            
-            mm = self._getCoefficientMatrix(mesh, -coeff)
+            if not hasattr(self, 'coeffDict'):
 
-            coeffs = {
-                'cell 1 diag':    -coeff,
-                'cell 1 offdiag':  coeff
-            }
-            del coeff
+                coeff = self._getGeomCoeff(mesh)
+                minusCoeff = -coeff
+                
+                coeff.dontCacheMe()
+                minusCoeff.dontCacheMe()
 
-            coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
-            coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+                self.coeffDict = {
+                    'cell 1 diag':     minusCoeff,
+                    'cell 1 offdiag':  coeff
+                    }
+                del coeff
+                del minusCoeff
 
-            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
+                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
+                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+
+
+            mm = self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag'])
+            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
                                mm, Numeric.zeros(N,'d'))
                                
-            del coeffs
             del higherOrderBCs
             del mm
 
@@ -240,27 +246,31 @@ class DiffusionTerm(Term):
 
         elif self.order == 2:
 
-            coeff = self._getGeomCoeff(mesh)
-            minusCoeff = -coeff
-            
+            if not hasattr(self, 'coeffDict'):
 
-            coeffs = {
-                'cell 1 diag':    minusCoeff,
-                'cell 1 offdiag':  coeff
-            }
-            del coeff
+                coeff = self._getGeomCoeff(mesh)
+                minusCoeff = -coeff
 
-            coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
-            coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+                coeff.dontCacheMe()
+                minusCoeff.dontCacheMe()
+
+                self.coeffDict = {
+                    'cell 1 diag':    minusCoeff,
+                    'cell 1 offdiag':  coeff
+                    }
+                del coeff
+                del minusCoeff
+
+                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
+                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
             
-            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
-                               self._getCoefficientMatrix(mesh, minusCoeff), Numeric.zeros(N,'d'))
+            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
+                               self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag']), Numeric.zeros(N,'d'))
                                
-            del minusCoeff
-            del coeffs
             del higherOrderBCs
 
         else:

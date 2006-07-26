@@ -88,9 +88,13 @@ class FixedValue(BoundaryCondition):
 	
 	LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
 	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
+
+        if not hasattr(self, 'minusCoeff'):
+            self.minusCoeff = -coeff['cell 1 offdiag']
+            self.minusCoeff.dontCacheMe()
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
+	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(self.minusCoeff, self.faces) * self._getValue())
 
 	return (LL, bb)
 	
