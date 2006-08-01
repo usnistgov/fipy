@@ -90,8 +90,7 @@ class Variable(object):
     
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
-
-
+    
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
 	"""
 	Create a `Variable`.
@@ -203,7 +202,6 @@ class Variable(object):
 	    return value.getUnit()
 	else:
             return fipy.tools.dimensions.physicalField._unity 
-#	    return "1"
 	
     def inBaseUnits(self):
 	"""
@@ -292,7 +290,6 @@ class Variable(object):
 
     def _getCIndexString(self, shape):
         dimensions = len(shape)
-        
         if dimensions == 1:
             return '[i]'
         elif dimensions == 2:
@@ -334,15 +331,14 @@ class Variable(object):
          
          identifier = 'var%s' % (id)
 
-##         argDict[identifier] = numerix.array(self)
+         ##argDict[identifier] = numerix.array(self)
          v = self.getValue()
          if type(v) not in (type(numerix.array(1)),):
              argDict[identifier] = numerix.array(v)
          else:
              argDict[identifier] = v
-
-##         argDict[identifier] = self.getValue()
          ##argDict[identifier] = self
+             
          try:
              shape = self.opShape
          except AttributeError:
@@ -577,7 +573,7 @@ class Variable(object):
         else:
             return self._getShapeFromMesh(self.getMesh()) or ()
 
-    def getType(self):
+    def getType(self): ## A WORK IN PROGRESS
         #if self.value is not None:
         ##return numerix.getType(self.value)
         #else:
@@ -713,7 +709,7 @@ class Variable(object):
             def _calcValue(self):
                 from fipy.tools.inline import inline
                 #if not self._isCached():
-                if not self.canInline:#or not self._isCached:
+                if not self.canInline:
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
@@ -798,7 +794,6 @@ class Variable(object):
 			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
 		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
                         counter = _popIndex()
-                        #id.append(counter)
 			stack.append(self.op.func_code.co_names[counter])
 		    elif opcode.opname[bytecode] == 'LOAD_FAST':
                         if style == "__repr__":
@@ -870,7 +865,6 @@ class Variable(object):
                     typeResult = self.typeResult,
                     canInline = self.canInline)
                     #myType = self.myType
-                    
 
             def getShape(self):
                 return baseClass.getShape(self) or self.opShape
@@ -878,6 +872,7 @@ class Variable(object):
             def getType(self):
                 #return baseClass.getType(self) or (self.var[0]).typecode()
                 return 'd'
+            
 	return OperatorVariable
 	
     def _getArithmeticBaseClass(self, other = None):
@@ -923,9 +918,8 @@ class Variable(object):
         """
     
         from fipy.tools.inline import inline
-        #if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
-        #    self.argDict = {}
-        #    self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
+        ##if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
+        ##self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
         argDict = {}
         string = self._getCstring(argDict = argDict, freshen=True) + ';'
         
@@ -958,22 +952,17 @@ class Variable(object):
             
         if dimensions == 0:
             string = 'result[0] = ' + string
-##            string = '((%s *) result->data)[0] =' % (endType)+ string
-            #argDict['result'] = numerix.empty((), endType)
             dim = ()
         else:
             string = 'result' + self._getCIndexString(shape) + ' = ' + string
-##            string = '((%s *) result->data)' % (endType) + self._getCIndexString(shape) + ' = ' + string
             ni = self.opShape[-1]
             argDict['ni'] = ni
             if dimensions == 1:
-                #argDict['result'] = numerix.empty(ni, endType)
                 dim = (ni)
             else:    
                 nj = self.opShape[-2]
                 argDict['nj'] = nj                
                 if dimensions == 2:
-                    #argDict['result'] = numerix.empty((nj,ni), endType)
                     dim =(nj,ni)
                 elif dimensions == 3:
                     nk = self.opShape[-3]
@@ -1959,11 +1948,11 @@ class Variable(object):
         
         # If the caller has not specified a shape for the result, determine the 
         # shape from the base class or from the inputs
-                
         opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
+
+        # Need to find the type of the result
         typeResult = typeResult or self.getType() or other.getType()
         #print 'typeResult2 = ', typeResult
-        # Need to find the type of the result
         #typeResult = typeResult or type(self)
         
         # the magic value of "number" specifies that the operation should result in a single value,
