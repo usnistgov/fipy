@@ -61,22 +61,11 @@ class Matplotlib1DViewer(MatplotlibViewer):
         MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     
         self.lines = [pylab.plot(*datum) for datum in self._getData()]
-##         self.lines, = apply(pylab.plot, self._getData())
 
         pylab.legend([var.getName() for var in self.vars])
 
         pylab.xlim(xmin = self._getLimit('xmin'),
                    xmax = self._getLimit('xmax'))
-
-        ymin = self._getLimit('datamin')
-        if ymin is None:
-            ymin = self._getLimit('ymin')
-        pylab.ylim(ymin = ymin)
-
-        ymax = self._getLimit('datamax')
-        if ymax is None:
-            ymax = self._getLimit('ymax')
-        pylab.ylim(ymax = ymax)
 
     def _getData(self):
         from fipy.tools.numerix import array
@@ -91,23 +80,28 @@ class Matplotlib1DViewer(MatplotlibViewer):
             raise MeshDimensionError, "Can only plot 1D data"
         return vars
 
-##     def plot(self, filename = None):
-##         """
-##         Plot the `CellVariable` as a contour plot.
-## 
-##         :Parameters:
-##           - `filename`: The name of the file for hard copies.
-##           
-##         """
-##         
-##         pylab.figure(self.id)
-## 
-##         self._plot()
-##         
-##         if filename is not None:
-##             pylab.savefig(filename)
-
     def _plot(self):
+
+        ymin = self._getLimit('datamin')
+        if ymin is None:
+            ymin = self._getLimit('ymin')
+        if ymin is None:
+            ymin = min(self.vars[0])
+            for var in self.vars[1:]:
+                ymin = min(ymin, min(var))
+
+        pylab.ylim(ymin=ymin)
+
+        ymax = self._getLimit('datamax')
+        if ymax is None:
+            ymax = self._getLimit('ymax')
+        if ymax is None:
+            ymax = max(self.vars[0])
+            for var in self.vars[1:]:
+                ymax = max(ymax, max(var))
+
+        pylab.ylim(ymax=ymax)
+
         for line, datum in zip(self.lines, self._getData()):
             line[0].set_xdata(datum[0])
             line[0].set_ydata(datum[1])
