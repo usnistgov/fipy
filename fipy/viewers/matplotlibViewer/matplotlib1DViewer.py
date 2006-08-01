@@ -67,6 +67,20 @@ class Matplotlib1DViewer(MatplotlibViewer):
         pylab.xlim(xmin = self._getLimit('xmin'),
                    xmax = self._getLimit('xmax'))
 
+        ymin = self._getLimit('datamin')
+        if ymin is None:
+            ymin = self._getLimit('ymin')
+        pylab.ylim(ymin=ymin)
+
+        ymax = self._getLimit('datamax')
+        if ymax is None:
+            ymax = self._getLimit('ymax')
+        pylab.ylim(ymax=ymax)
+
+        if ymax is None or ymin is None:
+            import warnings
+            warnings.warn("Matplotlib1DViewer efficiency is improved by setting the 'datamax' and 'datamin' keys", UserWarning, stacklevel=2)
+
     def _getData(self):
         from fipy.tools.numerix import array
         return [[array(var.getMesh().getCellCenters()[...,0]), array(var)] for var in self.vars]
@@ -82,25 +96,26 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
     def _plot(self):
 
+        
         ymin = self._getLimit('datamin')
         if ymin is None:
             ymin = self._getLimit('ymin')
         if ymin is None:
-            ymin = min(self.vars[0])
+            from fipy.tools import numerix
+            ymin = numerix.min(self.vars[0])
             for var in self.vars[1:]:
-                ymin = min(ymin, min(var))
-
-        pylab.ylim(ymin=ymin)
+                ymin = min(ymin, numerix.min(var))
+            pylab.ylim(ymin=ymin)
 
         ymax = self._getLimit('datamax')
         if ymax is None:
             ymax = self._getLimit('ymax')
         if ymax is None:
-            ymax = max(self.vars[0])
+            from fipy.tools import numerix
+            ymax = numerix.max(self.vars[0])
             for var in self.vars[1:]:
-                ymax = max(ymax, max(var))
-
-        pylab.ylim(ymax=ymax)
+                ymax = max(ymax, numerix.max(var))
+            pylab.ylim(ymax=ymax)
 
         for line, datum in zip(self.lines, self._getData()):
             line[0].set_xdata(datum[0])
