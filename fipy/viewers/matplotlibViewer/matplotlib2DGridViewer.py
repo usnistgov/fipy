@@ -111,6 +111,7 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape())
     
     def _plot(self):
+        pylab.hsv()
         self.image.set_data(self._getData())
 
         
