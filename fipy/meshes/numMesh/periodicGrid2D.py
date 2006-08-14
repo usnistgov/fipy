@@ -54,7 +54,7 @@ class PeriodicGrid2D(Grid2D):
     in the usual way.
 
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
-
+        
         >>> print mesh.getExteriorFaces()
         [ 4, 5, 8,11,]
 
@@ -114,7 +114,7 @@ class PeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
-        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs()
+        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
         self._connectFaces(self.getFacesLeft(), self.getFacesRight())
         self._connectFaces(self.getFacesBottom(), self.getFacesTop())
 
