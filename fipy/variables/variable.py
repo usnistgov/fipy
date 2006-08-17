@@ -1104,11 +1104,11 @@ class Variable(object):
         `CellVariable` * FaceVariable
         
             >>> fv = FaceVariable(mesh = mesh, value = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-            >>> fvXcv = fv * cv
+            >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> cvXfv = cv * fv
+            >>> cvXfv = cv * fv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1134,11 +1134,11 @@ class Variable(object):
         `CellVariable` * VectorFaceVariable
 
             >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
-            >>> vfvXcv = vfv * cv
+            >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> cvXvfv = cv * vfv
+            >>> cvXvfv = cv * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1184,11 +1184,11 @@ class Variable(object):
             >>> print isinstance(v3Xcv, CellVariable)
             1
             
-            >>> cvXv4 = cv * (3,2,1,0)
+            >>> cvXv4 = cv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TypeError: can't multiply sequence to non-int
-            >>> v4Xcv = (3,2,1,0) * cv
+            >>> v4Xcv = (3,2,1,0) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TypeError: can't multiply sequence to non-int
@@ -1235,11 +1235,11 @@ class Variable(object):
             >>> print isinstance(v3vXcv, CellVariable)
             1
 
-            >>> cvXv4v = cv * Variable(value = (3,2,1,0))
+            >>> cvXv4v = cv * Variable(value = (3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v4vXcv = Variable(value = (3,2,1,0)) * cv
+            >>> v4vXcv = Variable(value = (3,2,1,0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1265,11 +1265,11 @@ class Variable(object):
 
         `FaceVariable` * VectorCellVariable
 
-            >>> vcvXfv = vcv * fv
+            >>> vcvXfv = vcv * fv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> fvXvcv = fv * vcv
+            >>> fvXvcv = fv * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1349,11 +1349,11 @@ class Variable(object):
             >>> print isinstance(v2Xfv, VectorFaceVariable)
             1
             
-            >>> fvXv3 = fv * (3,2,1)
+            >>> fvXv3 = fv * (3,2,1) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3Xfv = (3,2,1) * fv 
+            >>> v3Xfv = (3,2,1) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1413,11 +1413,11 @@ class Variable(object):
             >>> print isinstance(v2vXfv, VectorFaceVariable)
             1
             
-            >>> fvXv3v = fv * Variable(value = (3,2,1))
+            >>> fvXv3v = fv * Variable(value = (3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXfv = Variable(value = (3,2,1)) * fv
+            >>> v3vXfv = Variable(value = (3,2,1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1447,11 +1447,11 @@ class Variable(object):
 
         `VectorCellVariable` * VectorFaceVariable
 
-            >>> vfvXvcv = vfv * vcv
+            >>> vfvXvcv = vfv * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> vcvXvfv = vcv * vfv
+            >>> vcvXvfv = vcv * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1505,11 +1505,11 @@ class Variable(object):
             >>> isinstance(v3Xvcv, VectorCellVariable)
             1
 
-            >>> vcvXv4 = vcv * (3,2,1,0)
+            >>> vcvXv4 = vcv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v4Xvcv = (3,2,1,0) * vcv
+            >>> v4Xvcv = (3,2,1,0) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1563,11 +1563,11 @@ class Variable(object):
             >>> isinstance(v3vXvcv, VectorCellVariable)
             1
 
-            >>> vcvXv4v = vcv * Variable(value = (3,2,1,0))
+            >>> vcvXv4v = vcv * Variable(value = (3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv
+            >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1652,11 +1652,11 @@ class Variable(object):
             >>> print isinstance(v2Xvfv, VectorFaceVariable)
             1
             
-            >>> vfvXv3 = vfv * (2,1,0)
+            >>> vfvXv3 = vfv * (2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3Xvfv = (2,1,0) * vfv
+            >>> v3Xvfv = (2,1,0) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1753,11 +1753,11 @@ class Variable(object):
             >>> print isinstance(v2vXvfv, VectorFaceVariable)
             1
             
-            >>> vfvXv3v = vfv * Variable(value = (2,1,0))
+            >>> vfvXv3v = vfv * Variable(value = (2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXvfv = Variable(value = (2,1,0)) * vfv
+            >>> v3vXvfv = Variable(value = (2,1,0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1848,11 +1848,11 @@ class Variable(object):
             >>> print isinstance(v2vXv, Variable)
             1
 
-            >>> vXv3v = (3, 2, 1) * Variable(value = (3,2))
+            >>> vXv3v = (3, 2, 1) * Variable(value = (3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXv = Variable(value = (3,2)) * (3, 2, 1) 
+            >>> v3vXv = Variable(value = (3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL 
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1888,7 +1888,7 @@ class Variable(object):
             >>> print isinstance(v2vXv2v, Variable)
             1
             
-            >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2))
+            >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -1904,14 +1904,14 @@ class Variable(object):
             ...         return self.var.getValue()
 
             >>> coeff = Variable()
-            >>> alpha = Alpha(-coeff / 1.)
-            >>> print float(alpha.getValue())
-            0.0
+            >>> alpha = Alpha(-coeff / 1)
+            >>> alpha.getValue()
+            -0.0
             >>> coeff.setValue(-10.0)
-            >>> print float(alpha.getValue())
+            >>> alpha.getValue()
             10.0
             >>> coeff.setValue(10.0)
-            >>> print float(alpha.getValue())
+            >>> alpha.getValue()
             -10.0
             
         :Parameters:

@@ -149,7 +149,7 @@ class VectorFaceVariable(Variable):
         vector field times cell centered field
 
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3))
+            >>> print vfv * CellVariable(mesh = mesh, value = (1,2,3)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -172,7 +172,7 @@ class VectorFaceVariable(Variable):
              [ 2.,]
              [ 4.,]
              [ 6.,]]
-            >>> print vfv * (2,3)
+            >>> print vfv * (2,3) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TypeError: can't multiply sequence to non-int
@@ -252,7 +252,7 @@ class VectorFaceVariable(Variable):
 
             >>> from fipy.variables.cellVariable import CellVariable
             >>> cv = CellVariable(mesh = mesh, value = (1,2,3))
-            >>> print vfv * cv
+            >>> print vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -287,11 +287,11 @@ class VectorFaceVariable(Variable):
              [ 12., 27.,]
              [  4., 18.,]
              [  2.,  9.,]]
-            >>> print vfv * (2,3,4)
+            >>> print vfv * (2,3,4) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TypeError: can't multiply sequence to non-int
-            >>> print (2,3,4) * vfv
+            >>> print (2,3,4) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TypeError: can't multiply sequence to non-int
