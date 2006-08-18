@@ -49,7 +49,7 @@ import Numeric
 
 from fipy.meshes.meshIterator import MeshIterator
 
-import fipy.tools.dimensions.physicalField
+from fipy.tools.dimensions import physicalField
 
  
 from fipy.tools import numerix
@@ -189,19 +189,27 @@ class Variable(object):
             
 	"""
 	return Variable(value = self)
-	
+
+
+    def _getUnitAsOne(self):
+        if self.getUnit() is physicalField._unity:
+            return 1.
+        else:
+            return physicalField.PhysicalField(value=1, unit=self.getUnit())
+
+    def _extractUnit(self, value):
+        if isinstance(value, physicalField.PhysicalField):
+	    return value.getUnit()
+	else:
+            return physicalField._unity 
+
     def getUnit(self):
 	"""
-	Return the unit object of `self`.
-	
+	Return the unit object of `self`.	
 	    >>> Variable(value = "1 m").getUnit()
 	    <PhysicalUnit m>
 	"""
-	value = self.getValue()
-	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
-	    return value.getUnit()
-	else:
-            return fipy.tools.dimensions.physicalField._unity 
+        return self._extractUnit(self.getValue())
 	
     def inBaseUnits(self):
 	"""
@@ -213,7 +221,7 @@ class Variable(object):
 	    7088849.01085 kg*m**2/s**2/mol
 	"""
 	value = self.getValue()
-	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value, physicalField.PhysicalField):
 	    return value.inBaseUnits()
 	else:
 	    return value
@@ -242,7 +250,7 @@ class Variable(object):
             ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
         """
         value = self.getValue()
-        if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
+        if isinstance(value, physicalField.PhysicalField):
             return value.inUnitsOf(*units)
         else:
             return value
@@ -417,7 +425,7 @@ class Variable(object):
             value = self.value
             
         return value
-    
+
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         
@@ -437,7 +445,7 @@ class Variable(object):
         self.value = self._makeValue(value = value, unit = unit, array = array)
      
     def _makeValue(self, value, unit = None, array = None):
-        PF = fipy.tools.dimensions.physicalField.PhysicalField
+        PF = physicalField.PhysicalField
 
         from fipy.tools.numerix import MA
 
@@ -513,20 +521,20 @@ class Variable(object):
 	self._markFresh()
 	
     def _setNumericValue(self, value):
-	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(self.value, physicalField.PhysicalField):
 	    self.value.value = value
 	else:
 	    self.value = value
 	
     def _getArray(self):
-	if isinstance(self.value, fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(self.value, physicalField.PhysicalField):
 	    return self.value._getArray()
 	else:
             return self.value
             
     def getNumericValue(self):
 	value = self.getValue()
-	if isinstance(value, fipy.tools.dimensions.physicalField.PhysicalField):
+	if isinstance(value, physicalField.PhysicalField):
 	    return value.getNumericValue()
 	else:
 	    return value
@@ -579,7 +587,7 @@ class Variable(object):
         #else:
         #    return self.typecode()
         return 'd'
-    
+
     def _calcValue(self):
         return self.value
         
@@ -681,7 +689,17 @@ class Variable(object):
 
             >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id = "")
             '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
-            
+
+        Check that getUnit() works for a binOp
+
+            >>> (Variable(value = "1 m") * Variable(value = "1 s")).getUnit()
+            <PhysicalUnit s*m>
+
+            >>> (Variable(value = "1 m") / Variable(value = "0 s")).getUnit()
+            <PhysicalUnit m/s>
+
+            >>> a = -((Variable() * Variable()).sin())
+
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
@@ -713,7 +731,7 @@ class Variable(object):
                     return self._calcValuePy()
                 else:
                     return inline._optionalInline(self._calcValueIn, self._calcValuePy)
-                
+
             def _calcValueIn(self):
                 return self._execInline()
 
@@ -982,10 +1000,25 @@ class Variable(object):
 
     
     def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
+	"""
+        Check that getUnit() works fot unOp
+
+            >>> (-Variable(value = "1 m")).getUnit()
+            <PhysicalUnit m>
+            
+	"""
+        
 	class unOp(self._getOperatorVariableClass(baseClass)):
             def _calcValuePy(self):
-                return self.op(self.var[0].getValue())   
+                return self.op(self.var[0].getValue())
 
+            def getUnit(self):
+                try:
+                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
+                except:
+                    return self._extractUnit(self.op(self._calcValue()))
+            
+            
         if not self.getUnit().isDimensionless():
             canInline = False
 
@@ -1913,6 +1946,15 @@ class Variable(object):
             >>> coeff.setValue(10.0)
             >>> alpha.getValue()
             -10.0
+
+        Test to prevent divide by zero evaluation before value is
+        requested.  The request is caused by the Variable requiring
+        its unit to see whether it can do an inline calculation in
+        _getUnaryOperatorVariable().
+        
+            >>> T = Variable()
+            >>> from fipy import numerix
+            >>> v = numerix.exp(-T / (1. *  T))
             
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
@@ -1978,16 +2020,23 @@ class Variable(object):
         
         
         # declare a binary operator class with the desired base class
-	class binOp(operatorClass):            
+	class binOp(operatorClass):
+
             def _calcValuePy(self):
                 if isinstance(self.var[1], Variable):
                     val1 = self.var[1].getValue()
                 else:
                     if type(self.var[1]) is type(''):
-                        self.var[1] = fipy.tools.dimensions.physicalField.PhysicalField(value = self.var[1])
+                        self.var[1] = physicalField.PhysicalField(value = self.var[1])
                     val1 = self.var[1]
 
                 return self.op(self.var[0].getValue(), val1)
+
+            def getUnit(self):
+                try:
+                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
+                except:
+                    return self._extractUnit(self._calcValuePy())
 
             def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
                 self.id = id

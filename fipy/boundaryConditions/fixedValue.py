@@ -90,7 +90,7 @@ class FixedValue(BoundaryCondition):
 	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
-        ## FixedValue's _buildMatrix() mehthd is called for
+        ## FixedValue's _buildMatrix() method is called for
         ## each term in the equation. Thus minusCoeff can be different for each term.
         ##
         ## if not hasattr(self, 'minusCoeff'):
