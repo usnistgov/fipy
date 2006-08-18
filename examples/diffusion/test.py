@@ -51,7 +51,7 @@ def _suite():
                                        'steadyState.test',
                                        'explicit.test',
                                        'variable.test',
-##                                       'nthOrder.test'        
+                                       'nthOrder.test'        
                                    ), 
                                    docTestModuleNames = (
                                        'mesh1D',
