@@ -137,7 +137,7 @@ def runGold(faradaysConstant=9.6e4,
             numberOfSteps=10,
             taperAngle=6.0,
             displayViewers=True):
-    
+
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
     cellsBelowTrench = 10
@@ -270,7 +270,7 @@ def runGold(faradaysConstant=9.6e4,
         metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
 
         step += 1
-        
+    
     from fipy.tools import dump
     import os
     import examples.levelSet.electroChem

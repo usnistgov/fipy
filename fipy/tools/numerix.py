@@ -166,12 +166,6 @@ def getShape(arr):
     else:
         return array(arr).shape
 
-def getType(arr):
-    if type(arr) == array:
-        return type(arr.flat[0])
-    else:
-        return type(arr)
-    
 def sum(arr, index = 0):
     """
     The sum of all the elements of `arr` along the specified axis.
@@ -1101,15 +1095,44 @@ def indices(dimensions, typecode=None):
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
 
-def getType(arr):
-    #try:
-    #    end = arr.typecode()
-    #except AttributeError:
-    #    end =  arr.value.typecode()
-    #return end
-    return 'd'
-        
+def getTypecode(arr):
+    """
+    
+    Returns the `typecode()` of the array or `Variable`. Also returns a meaningful
+    typecode for ints and floats.
 
+        >>> getTypecode(1)
+        'l'
+        >>> getTypecode(1.)
+        'd'
+        >>> getTypecode(array(1))
+        'l'
+        >>> getTypecode(array(1.))
+        'd'
+        >>> from fipy.variables.variable import Variable
+        >>> getTypecode(Variable(1.))
+        'd'
+        >>> getTypecode(Variable(1))
+        'l'
+        >>> getTypecode([0])
+        Traceback (most recent call last):
+              ...
+        TypeError: No typecode for object
+
+    """
+    
+    if hasattr(arr, 'getTypecode'):
+        return arr.getTypecode()
+    elif type(arr) is type(array(0)):
+        return arr.typecode()
+    elif type(arr) is type(0):
+        return 'l'
+    elif type(arr) is type(0.):
+        return 'd'
+    else:
+        raise TypeError, "No typecode for object"
+
+    
 if not hasattr(NUMERIC, 'empty'):
     def empty(shape, dtype='d', order='C'):
         """
@@ -1193,9 +1216,4 @@ def _test():
     return doctest.testmod()
     
 if __name__ == "__main__":
-  print 'zero = ', empty((), 'd')
-  print '1D = ', empty((1,), 'd')
-  print '1Dish = ', empty((0,), 'd')
-  print '2D = ', empty((1,2), 'd')
-  
-##    _test() 
+    _test() 

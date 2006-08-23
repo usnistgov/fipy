@@ -339,25 +339,18 @@ class Variable(object):
          
          identifier = 'var%s' % (id)
 
-         ##argDict[identifier] = numerix.array(self)
          v = self.getValue()
          if type(v) not in (type(numerix.array(1)),):
              argDict[identifier] = numerix.array(v)
          else:
              argDict[identifier] = v
-         ##argDict[identifier] = self
              
          try:
              shape = self.opShape
          except AttributeError:
              shape = self.getShape()
 
-         #try:
-         #    myType = self.typeResult
-         #except AttributeError:
-         #    myType = type(self)
-
-         if len(shape) == 0:
+         if len(shape) == 0:         
              return identifier + '[0]'
          else:
              return identifier + self._getCIndexString(shape)
@@ -581,12 +574,24 @@ class Variable(object):
         else:
             return self._getShapeFromMesh(self.getMesh()) or ()
 
-    def getType(self): ## A WORK IN PROGRESS
-        #if self.value is not None:
-        ##return numerix.getType(self.value)
-        #else:
-        #    return self.typecode()
-        return 'd'
+    def getTypecode(self):
+        """
+
+        Returns the Numpy typecode of the underlying array.
+
+            >>> Variable(1).getTypecode()
+            'l'
+            >>> Variable(1.).getTypecode()
+            'd'
+            >>> Variable((1,1.)).getTypecode()
+            'd'
+            
+        """
+        
+        if not hasattr(self, 'typecode'):
+            self.typecode = numerix.getTypecode(self.getValue())
+        
+        return self.typecode
 
     def _calcValue(self):
         return self.value
@@ -636,14 +641,16 @@ class Variable(object):
             >>> b = c.getOld() + 3
             >>> print b
             2
-
+            >>> b.getTypecode()
+            'l'
+            
         replacing with the same thing is no problem
         
             >>> a.setValue(3)
             >>> b = c.getOld() + 3
             >>> print b
             0
-
+            
         replacing with multiple copies causes the reference counting problem
         
             >>> a.setValue(3)
@@ -700,16 +707,21 @@ class Variable(object):
 
             >>> a = -((Variable() * Variable()).sin())
 
+        Check that getTypeCode() works as expected.
+
+            >>> a = Variable(1.) * Variable(1)
+            >>> a.getTypecode()
+            'd'
+
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
 	class OperatorVariable(baseClass):
-	    def __init__(self, op, var, mesh = None, opShape = (), typeResult = None, canInline = canInline):
+	    def __init__(self, op, var, mesh = None, opShape = (), canInline = canInline):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
 		self.op = op
 		self.var = var
                 self.opShape = opShape
-                self.typeResult = typeResult
                 self.canInline = canInline  #allows for certain functions to opt out of --inline
                 baseClass.__init__(self, value = None, mesh = mesh)
                 self.name = ''
@@ -723,6 +735,15 @@ class Variable(object):
                 
                 self.old = None
                 self.dontCacheMe()
+
+            def getTypecode(self):
+                if not hasattr(self, 'typecode'):
+                    if self.value is not None:                        
+                        self.typecode = numerix.getTypecode(self.value)
+                    else:
+                        self.typecode = numerix.getTypecode(self._calcValuePy())
+
+                return self.typecode
                 
             def _calcValue(self):
                 from fipy.tools.inline import inline
@@ -752,12 +773,11 @@ class Variable(object):
                         else:
                             oldVar.append(v)
                     
-                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, typeResult = self.typeResult, canInline=self.canInline)
+                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=self.canInline)
                                   
                 return self.old
          
-            def _getCstring(self, argDict = {}, id = "", freshen=False):
-                  
+            def _getCstring(self, argDict = {}, id = "", freshen=False):  
                 if self.canInline: # and not self._isCached():
                     s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
                 else:
@@ -841,9 +861,9 @@ class Variable(object):
                             if not self.var[counter]._isCached():## or self.stale:
                                 stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
                             else:
-                                ##stack.append(baseClass._getCstring(self, argDict, id = id + str(counter), freshen=freshen))
-                                stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, id = id + str(counter), freshen=False))
-                                ##stack.append(baseClass._getCstring(self.var[counter], argDict, id = id + str(counter), freshen=freshen))
+                                stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, \
+                                                                                               id = id + str(counter),\
+                                                                                               freshen=False))
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -880,17 +900,12 @@ class Variable(object):
                     var = self.var,
                     mesh = self.getMesh(),
                     opShape = self.opShape,
-                    typeResult = self.typeResult,
                     canInline = self.canInline)
                     #myType = self.myType
 
             def getShape(self):
                 return baseClass.getShape(self) or self.opShape
 
-            def getType(self):
-                #return baseClass.getType(self) or (self.var[0]).typecode()
-                return 'd'
-            
 	return OperatorVariable
 	
     def _getArithmeticBaseClass(self, other = None):
@@ -936,8 +951,6 @@ class Variable(object):
         """
     
         from fipy.tools.inline import inline
-        ##if not hasattr(self, 'cString') and not hasattr(self, 'argDict'):
-        ##self.cString = self._getCstring(argDict = self.argDict, freshen=True) + ';'
         argDict = {}
         string = self._getCstring(argDict = argDict, freshen=True) + ';'
         
@@ -946,27 +959,7 @@ class Variable(object):
         except AttributeError:
             shape = self.getShape()
 
-        try:
-            endType = self.typeResult
-        except AttributeError:
-            endType =self.getType()
-
-        
-        #print 'endType = ', endType
-
         dimensions = len(shape)
-
-        #try:
-            #myType = self.typeResult
-        #except AttributeError:
-            #myType = type(self)
-        
-        #argDict = {}
-        #for k in self.argDict.keys():
-        #    if not type(self.argDict[k]) in (type(Numeric.array((1))), type([])):
-        #        argDict[k] = self.argDict[k].getValue()
-##            else:
-##                argDict[k] = self.argDict[k]
             
         if dimensions == 0:
             string = 'result[0] = ' + string
@@ -979,7 +972,7 @@ class Variable(object):
                 dim = (ni)
             else:    
                 nj = self.opShape[-2]
-                argDict['nj'] = nj                
+                argDict['nj'] = nj
                 if dimensions == 2:
                     dim =(nj,ni)
                 elif dimensions == 3:
@@ -990,10 +983,10 @@ class Variable(object):
                     raise DimensionError, 'Impossible Dimensions'
 
         if self.value is None:
-            argDict['result'] = numerix.empty(dim, 'd')
+            argDict['result'] = numerix.empty(dim, self.getTypecode())
         else:
             argDict['result'] = self.value
-        
+
         inline._runInline(string, converters=None, **argDict)
 
         return argDict['result']
@@ -1024,9 +1017,9 @@ class Variable(object):
 
         #unOP = unOp(self, baseClass) 
         # unOp(Variable)
-	return unOp(op = op, var = [self], opShape = self.getShape(), typeResult  = self.getType(), canInline = canInline)
+	return unOp(op = op, var = [self], opShape = self.getShape(), canInline = canInline)
 
-##==========
+##==========       ### !!! we eventually want to put unop and binop into their own files for simplicity purposes
 ##new file
 ##=========
 
@@ -1057,12 +1050,6 @@ class Variable(object):
         else:
             a = object._getArray()
             
-##             # we don't want to meddle with the contents of the actual object
-##             if type(a) in (type(()), type([]), type(numerix.array(1))):
-##                 a = a.copy()
-##             else:
-##                 a = numerix.array(1)
-
         return a
 
     _getArrayAsOnes = staticmethod(_getArrayAsOnes)
@@ -1114,7 +1101,7 @@ class Variable(object):
             
         return (var0, var1)
 
-    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, typeResult = None, valueMattersForShape = (), rotateShape = True, canInline = True):
+    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True, canInline = True):
         """
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
@@ -1992,11 +1979,6 @@ class Variable(object):
         # shape from the base class or from the inputs
         opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
 
-        # Need to find the type of the result
-        typeResult = typeResult or self.getType() or other.getType()
-        #print 'typeResult2 = ', typeResult
-        #typeResult = typeResult or type(self)
-        
         # the magic value of "number" specifies that the operation should result in a single value,
         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
         # identically to "None or ...".
@@ -2046,7 +2028,7 @@ class Variable(object):
         for v in var:
             if not v.getUnit().isDimensionless():
                 canInline = False
-        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, typeResult = typeResult, canInline = canInline)
+        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
         return tmpBop
     
     def __add__(self, other):

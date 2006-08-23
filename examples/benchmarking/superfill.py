@@ -255,9 +255,9 @@ metalEquation.solve(metalVar, dt = dt,
                     boundaryConditions = metalEquationBCs)
 bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
                            boundaryConditions = catalystBCs)
-
+import time
 bench.start()
-  
+t1 = time.clock() 
 for step in range(numberOfSteps):
 
     if step % levelSetUpdateFrequency == 0:

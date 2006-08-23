@@ -205,7 +205,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           trenchSpacing=0.6e-6,
                           boundaryLayerDepth=0.3e-6,
                           numberOfSteps=5,
-                          displayViewers=True):
+                          displayViewers=False):
 
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 10
@@ -339,7 +339,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
-
     for step in range(numberOfSteps):
 
         if step % 5 == 0:
@@ -365,7 +364,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                             boundaryConditions = metalEquationBCs)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
                                    boundaryConditions = catalystBCs)
-
     import os
     import examples.levelSet.electroChem
     filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')

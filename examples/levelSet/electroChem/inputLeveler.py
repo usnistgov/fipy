@@ -403,7 +403,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         viewers = (
             MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'accelerator coverage'),
             MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'leveler coverage'))
-        
+
     for step in range(numberOfSteps):
 
         if displayViewers:
@@ -436,7 +436,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
             eqn.solve(var, boundaryConditions = BCs, dt = dt)
             
         totalTime += dt
-
+            
     testFile = 'testLeveler.gz'
     import os
     import examples.levelSet.electroChem
