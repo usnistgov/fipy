@@ -19,13 +19,11 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
             dimensions = 2
             if 'nk' in argsKeys:
                 dimensions = 3
-
     else:
         dimensions = 0
     
     if dimensions == 0:
         code = """ { %s } """ % code_in 
-
     else:
         loops = """"""
         enders = """"""
@@ -37,11 +35,10 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
-    return weave.inline(code,
-		 args.keys(),
-      		 local_dict=args,
+    weave.inline(code,
+                 args.keys(),
+                 local_dict=args,
                  type_converters=converters,
-		 compiler = 'gcc',
-		 verbose = verbose,
-		 extra_compile_args =['-O3'])
-		 
+                 compiler = 'gcc',
+                 verbose = verbose,
+                 extra_compile_args =['-O3'])
