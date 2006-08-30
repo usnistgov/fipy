@@ -99,7 +99,6 @@ class FixedValue(BoundaryCondition):
 	
 	bb = Numeric.zeros((Ncells,),'d')
 
-        ##print 'numerix.take(self.minusCoeff, self.faces)',numerix.take(-coeff['cell 1 offdiag'], self.faces)
 	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
         
 	return (LL, bb)
