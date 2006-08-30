@@ -405,10 +405,11 @@ class Variable(object):
             (Variable(value = 3) + 4)
             >>> b.getValue()
             7
-        """
 
+        """
+        
         if self.stale or not self._isCached() or self.value is None:
-            value = self._calcValue() 
+            value = self._calcValue()
             if self._isCached():
                 self._setValue(value = value)
             else:
@@ -438,6 +439,14 @@ class Variable(object):
         self.value = self._makeValue(value = value, unit = unit, array = array)
      
     def _makeValue(self, value, unit = None, array = None):
+
+        ## --inline code often returns spurious results with noncontiguous
+        ## arrays. A test case was put in _execInline(). The best fix turned out to
+        ## be here.
+        
+        if hasattr(value, 'iscontiguous') and not value.iscontiguous():
+            value = value.copy()
+            
         PF = physicalField.PhysicalField
 
         from fipy.tools.numerix import MA
@@ -502,7 +511,7 @@ class Variable(object):
             ValueError: array dimensions must agree
             
         """
-        
+
         if hasattr(value, 'copy'):
             tmp = value.copy()
         else:
@@ -713,6 +722,39 @@ class Variable(object):
             >>> a.getTypecode()
             'd'
 
+        The following test is to correct an `--inline` bug that was
+        being thrown by the Cahn-Hilliard example. The fix for this
+        bug was to add the last line to the following code in
+        `_getRepresentation()`.
+        
+            >>> ##elif style == "C":
+            >>> ##    counter = _popIndex()
+            >>> ##    if not self.var[counter]._isCached():
+            >>> ##        stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
+            >>> ##        self.var[counter].value = None
+
+        This is the test that fails if the last line above is removed
+        from `_getRepresentation()`, the `binOp.getValue()` statement
+        below will return `1.0` and not `0.5`.
+            
+            >>> from fipy import numerix
+            >>> def doBCs(binOp):
+            ...     unOp1 = -binOp
+            ...     print binOp.getValue()
+            >>> var = Variable(1.)
+            >>> binOp = 1. * var
+            >>> unOp = -binOp
+            >>> print unOp.getValue()
+            -1.0
+            >>> doBCs(binOp)
+            1.0
+            >>> var[0] = 0.5
+            >>> print unOp.getValue()
+            -0.5
+            >>> unOp2 = -binOp
+            >>> print binOp.getValue()
+            0.5
+
         """
 	if baseClass is None:
             baseClass = self._getVariableClass()
@@ -736,15 +778,6 @@ class Variable(object):
                 self.old = None
                 self.dontCacheMe()
 
-            def getTypecode(self):
-                if not hasattr(self, 'typecode'):
-                    if self.value is not None:                        
-                        self.typecode = numerix.getTypecode(self.value)
-                    else:
-                        self.typecode = numerix.getTypecode(self._calcValuePy())
-
-                return self.typecode
-                
             def _calcValue(self):
                 from fipy.tools.inline import inline
                 #if not self._isCached():
@@ -777,7 +810,7 @@ class Variable(object):
                                   
                 return self.old
          
-            def _getCstring(self, argDict = {}, id = "", freshen=False):  
+            def _getCstring(self, argDict = {}, id = "", freshen=False):
                 if self.canInline: # and not self._isCached():
                     s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
                 else:
@@ -858,8 +891,9 @@ class Variable(object):
                             raise Exception, "TeX style not yet implemented"
                         elif style == "C":
                             counter = _popIndex()
-                            if not self.var[counter]._isCached():## or self.stale:
+                            if not self.var[counter]._isCached():
                                 stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
+                                self.var[counter].value = None
                             else:
                                 stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, \
                                                                                                id = id + str(counter),\
@@ -941,12 +975,29 @@ class Variable(object):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
         
-        >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
-        '(var0[i] * var1[i])'
-        >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-        '(var0[j * ni + i] * var1[j * ni + i])'
-        >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
-        '((var00[i] * var01[i]) * var1[i])'
+            >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
+            '(var0[i] * var1[i])'
+            >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
+            '(var0[j * ni + i] * var1[j * ni + i])'
+            >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
+            '((var00[i] * var01[i]) * var1[i])'
+
+        The following test was implemented due to a problem with
+        contiguous arrays.  The `mesh.getCellCenters()[:,1]` command
+        introduces a non-contiguous array into the `Variable` and this
+        causes the inline routine to return senseless results.
+        
+            >>> from fipy import Grid2D, CellVariable
+            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+            >>> var = CellVariable(mesh = mesh, value = 0.)
+            >>> Y =  mesh.getCellCenters()[:,1]
+            >>> var.setValue(Y + 1.0)
+            >>> print var - Y
+            [ 1., 1., 1., 1.,]
+
+
+
+
                                                            
         """
     
@@ -970,7 +1021,7 @@ class Variable(object):
             argDict['ni'] = ni
             if dimensions == 1:
                 dim = (ni)
-            else:    
+            else:
                 nj = self.opShape[-2]
                 argDict['nj'] = nj
                 if dimensions == 2:
@@ -982,13 +1033,25 @@ class Variable(object):
                 else:
                     raise DimensionError, 'Impossible Dimensions'
 
-        if self.value is None:
-            argDict['result'] = numerix.empty(dim, self.getTypecode())
+        ## Following section makes sure that the result array has a
+        ## valid typecode. If self.value is None then a typecode is
+        ## assigned to the Variable by running the calculation without
+        ## inlining. The non-inlined result is thus used the first
+        ## time through.
+
+        if self.value is None and not hasattr(self, 'typecode'):
+            self.canInline = False
+            argDict['result'] = self.getValue()
+            self.canInline = True
+            self.typecode = numerix.getTypecode(argDict['result'])
         else:
-            argDict['result'] = self.value
+            if self.value is None:
+                argDict['result'] = numerix.empty(dim, self.getTypecode())
+            else:
+                argDict['result'] = self.value
 
-        inline._runInline(string, converters=None, **argDict)
-
+            inline._runInline(string, converters=None, **argDict)
+                
         return argDict['result']
 
     
@@ -1010,8 +1073,7 @@ class Variable(object):
                     return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
                 except:
                     return self._extractUnit(self.op(self._calcValue()))
-            
-            
+                
         if not self.getUnit().isDimensionless():
             canInline = False
 
@@ -2079,7 +2141,18 @@ class Variable(object):
 	return self
 	
     def __abs__(self):
-	return self._getUnaryOperatorVariable(lambda a: abs(a))
+        """
+
+        Following test it to fix a bug with C inline string using
+        abs() instead of fabs()
+
+            >>> print abs(Variable(2.3) - Variable(1.2))
+            1.1
+
+        """
+        
+        fabs = abs
+	return self._getUnaryOperatorVariable(lambda a: fabs(a))
 
     def __lt__(self,other):
 	"""
