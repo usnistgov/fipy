@@ -90,7 +90,7 @@ properties associated with the catalyst species,
    
 properties of the cupric ions,
 
-   >>> molarVolume = 7.1e-6,
+   >>> molarVolume = 7.1e-6
    >>> charge = 2
    >>> metalDiffusionCoefficient = 5.6e-10
 
