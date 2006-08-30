@@ -46,8 +46,9 @@
 __docformat__ = 'restructuredtext'
 
 import mayavi
-import pyvtk
+##import pyvtk
 
+from enthought.tvtk.api import tvtk as pyvtk
 from fipy.viewers.viewer import Viewer
 
 class MayaviViewer(Viewer):
@@ -180,7 +181,7 @@ class MayaviViewer(Viewer):
             slh.legend_on.set(1)
             slh.legend_on_off()
 
-            ## display legen with correct range
+            ## display legend with correct range
             slh.range_on_var.set(1)
             slh.v_range_on_var.set(1)
 
