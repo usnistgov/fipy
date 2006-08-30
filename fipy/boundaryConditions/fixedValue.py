@@ -88,10 +88,19 @@ class FixedValue(BoundaryCondition):
 	
 	LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
 	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
+
+        ## The following has been commented out because
+        ## FixedValue's _buildMatrix() method is called for
+        ## each term in the equation. Thus minusCoeff can be different for each term.
+        ##
+        ## if not hasattr(self, 'minusCoeff'):
+        ##     self.minusCoeff = -coeff['cell 1 offdiag']
+        ##     self.minusCoeff.dontCacheMe()
 	
 	bb = Numeric.zeros((Ncells,),'d')
-	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
 
+	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
+        
 	return (LL, bb)
 	
     def _getValue(self):

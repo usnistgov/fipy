@@ -48,4 +48,7 @@ class _SumVariable(Variable):
 
     def _calcValue(self):
         return numerix.sum(self.var[:], self.index)
-        
+
+    def getShape(self):
+        varShape = self.var.getShape()
+        return (varShape[:self.index] + varShape[self.index + 1:])

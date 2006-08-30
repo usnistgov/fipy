@@ -154,7 +154,7 @@ class UniformGrid2D(Grid2D):
         faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
         faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
 
-        inline._runInlineLoop2("""
+        inline._runInline("""
             int ID = j * ni + i;
 
             faceCellIDs0(ID) = ID - ni;
@@ -252,7 +252,7 @@ class UniformGrid2D(Grid2D):
         faceCellIDs = numerix.zeros((self.numberOfFaces, 2))
         mask = numerix.zeros((self.numberOfFaces, 2))
         
-        inline._runInlineLoop2("""
+        inline._runInline("""
             int ID = j * ni + i;
 
             faceCellIDs(ID, 0) = ID - ni;
@@ -372,7 +372,7 @@ class UniformGrid2D(Grid2D):
     def _getAreaProjectionsIn(self):
         areaProjections = numerix.zeros((self.numberOfFaces, 2), 'd')
 
-        inline._runInlineLoop1("""
+        inline._runInline("""
             if (i < nx) {
                 areaProjections(i, 1) = -dx;
             } else if (i < Nhor) {

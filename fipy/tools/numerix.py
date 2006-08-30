@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/15/06 {3:57:48 PM} 
+ #                                last update: 7/21/06 {2:36:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,7 @@ Take the tangent of such a variable. The returned value is itself a
    >>> v = tan(var)
    >>> v
    numerix.tan(Variable(value = 0))
-   >>> print v
+   >>> print float(v)
    0.0
 
 Take the tangent of a int.
@@ -165,7 +165,7 @@ def getShape(arr):
         return ()
     else:
         return array(arr).shape
-    
+
 def sum(arr, index = 0):
     """
     The sum of all the elements of `arr` along the specified axis.
@@ -977,24 +977,38 @@ def _sqrtDotIn(a1, a2):
 	unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
     ni, nj = NUMERIC.shape(a1)
-    result = NUMERIC.zeros((ni,),'d')
+    result1 = NUMERIC.zeros((ni,),'d')
+
     inline._runInline("""
         int i;
         for (i = 0; i < ni; i++)
 	{
 	    int j;
-            result(i) = 0.;
+            result1(i) = 0.;
             for (j = 0; j < nj; j++)
             {
-	        result(i) += a1(i,j) * a2(i,j);
+	        result1(i) += a1(i,j) * a2(i,j);
             }
-            result(i) = sqrt(result(i));
+            result1(i) = sqrt(result1(i));
         }
-    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj)
+    """,result1 = result1, a1 = a1, a2 = a2, ni = ni, nj = nj)
+
+
+    ##result = inline._runInline("""
+##        int j;
+##        ((double *) result->data)[i] = 0.;
+##        for (j = 0; j < NJ; j++)
+##        {
+##            ((double *) result->data)[i] += a1(i,j) * a2(i,j);
+##        }
+##        ((double *) result->data)[i] = sqrt(((double *) result->data)[i]);        
+##    """, a1 = a1, a2 = a2, ni = ni, NJ = nj)
+
+    
     if unit1 != 1 or unit2 != 1:
 	from fipy.tools.dimensions.physicalField import PhysicalField
-	result = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
-    return result
+	result1 = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
+    return result1
 
 def allequal(first, second):
     """
@@ -1081,6 +1095,122 @@ def indices(dimensions, typecode=None):
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
 
+def getTypecode(arr):
+    """
+    
+    Returns the `typecode()` of the array or `Variable`. Also returns a meaningful
+    typecode for ints and floats.
+
+        >>> getTypecode(1)
+        'l'
+        >>> getTypecode(1.)
+        'd'
+        >>> getTypecode(array(1))
+        'l'
+        >>> getTypecode(array(1.))
+        'd'
+        >>> from fipy.variables.variable import Variable
+        >>> getTypecode(Variable(1.))
+        'd'
+        >>> getTypecode(Variable(1))
+        'l'
+        >>> getTypecode([0])
+        Traceback (most recent call last):
+              ...
+        TypeError: No typecode for object
+
+    """
+    
+    if hasattr(arr, 'getTypecode'):
+        return arr.getTypecode()
+    elif type(arr) is type(array(0)):
+        return arr.typecode()
+    elif type(arr) is type(0):
+        return 'l'
+    elif type(arr) is type(0.):
+        return 'd'
+    else:
+        raise TypeError, "No typecode for object"
+
+    
+if not hasattr(NUMERIC, 'empty'):
+    def empty(shape, dtype='d', order='C'):
+        """
+        `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+        provides a routine:
+            
+            empty((d1,...,dn),dtype=float,order='C') will return a new array of
+            shape (d1,...,dn) and given type with all its entries
+            uninitialized. This can be faster than zeros.
+            
+        We approximate this routine when unavailable, but note that `order` is
+        ignored when using Numeric.
+        """
+        from fipy.tools.inline import inline
+
+        return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
+    
+    def _emptyPy(shape, dtype):
+        return NUMERIC.zeros(shape, dtype)
+
+    def _emptyIn(shape, dtype):
+        from scipy import weave
+        
+        local_dict = {'shape': shape, 'dtype': dtype}
+        
+        code = """
+PyObject *op;
+PyArrayObject *ret;
+
+char type_char='l';
+char *type = &type_char;
+int nd, dimensions[MAX_DIMS];
+
+if ((nd=PySequence_Length(shape)) == -1) {
+    PyErr_Clear();
+    if (!(op = PyNumber_Int(shape))) return NULL;
+    nd = 1;
+    dimensions[0] = PyInt_AsLong(op);
+    Py_DECREF(op);
+} else {
+    if (nd > MAX_DIMS) {
+        fprintf(stderr, "Maximum number of dimensions = %d\\n", MAX_DIMS);
+        PyErr_SetString(PyExc_ValueError, "Number of dimensions is too large");
+        return NULL;
+    }
+    for(int i=0; i<nd; i++) {
+        if( (op=PySequence_GetItem(shape,i))) {
+            dimensions[i]=PyInt_AsLong(op);
+            Py_DECREF(op);
+        }
+        if(PyErr_Occurred()) return NULL;
+    }
+}
+if ((ret = (PyArrayObject *)PyArray_FromDims(nd, dimensions, dtype[0])) == NULL) {
+    return NULL;
+}
+
+return_val = PyArray_Return(ret);
+
+// refcounting bug in weave. See: "weave: Note on ref counts" in
+// weave/scxx/notes.txt
+while (return_val.refcount() > 1) {
+    Py_DECREF((PyObject *) return_val);
+}
+"""
+
+        return weave.inline(code,
+                     local_dict.keys(),
+                     local_dict=local_dict,
+                     type_converters=weave.converters.blitz,
+                     compiler = 'gcc',
+                     verbose = 0,
+                     support_code = """
+#define MAX_DIMS 30
+                     """,
+                     extra_compile_args =['-O3'])
+
+    
 def _test(): 
     import doctest
     return doctest.testmod()

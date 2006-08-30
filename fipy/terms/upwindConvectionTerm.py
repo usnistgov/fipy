@@ -58,7 +58,6 @@ class UpwindConvectionTerm(ConvectionTerm):
        For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
        main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
-    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())
@@ -71,8 +70,7 @@ class UpwindConvectionTerm(ConvectionTerm):
 
 	def _calcValueIn(self, P):
             alpha = self._getArray().copy()
-            
-	    inline._runInlineLoop1("""
+	    inline._runInline("""
 		alpha(i) = 0.5;
 		
 		if (P(i) > 0.) {
@@ -86,10 +84,8 @@ class UpwindConvectionTerm(ConvectionTerm):
 	    )
      
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
 
-
-	def _calcValue(self):	    
+	def _calcValue(self):
 	    P  = self.P.getNumericValue()
-	    
+
 	    return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)

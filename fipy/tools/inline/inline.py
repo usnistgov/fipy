@@ -1,99 +1,44 @@
 import sys
-
 import Numeric 
-##import weave
+import weave
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if '--inline' in sys.argv[1:]:
 	return inlineFn(*args)
     else:
 	return pythonFn(*args)
-	
-def _runInline(code,**args):
-    from scipy import weave
-
-##    from weave.blitz_tools import blitz_type_factories	
-
-##     print "in:", code
-    
-    weave.inline(code,
-		 args.keys(),
-		 local_dict=args,
-##		 type_factories = blitz_type_factories,
-##		 type_converters = weave_type_factories,
-		 type_converters=weave.converters.blitz,
-##		 type_converters=weave.weave_type_Factories
-		 compiler = 'gcc',
-		 verbose = 2,
-		 extra_compile_args =['-O3'])
-		 
-##     print "out"
 			 
-def _runInlineLoop3(code_in,**args):
-    
-    code="""
-    int i,j,k;
-    for(i=0;i<ni;i++)
-     {
-      for(j=0;j<nj;j++)
-       {
-	for(k=0;k<nk;k++)
-	 {
-    """ + code_in + """
-	 }
-       }
-     }
-    """
-    
-    return _runInline(code, **args)
-    
-def _runInlineLoop2(code_in,**args):
-    
-    code="""
-    int i,j;
-    for(i=0;i<ni;i++)
-     {
-      for(j=0;j<nj;j++)
-       {
-    """ + code_in + """
-       }
-     }
-    """
-    
-    return _runInline(code, **args)
-    
-def _runInlineLoop1(code_in,**args):
-    
-    code="""
-    int i;
-    for(i=0;i<ni;i++)
-     {
-    """ + code_in + """
-     }
-    """
-    
-    return _runInline(code, **args)
+def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
 
-def _runInlineLoop(code_in,**args):
+    argsKeys = args.keys()
+    dimList = ['i', 'j', 'k']
+          
+    if 'ni' in argsKeys:
+        dimensions = 1
+        if 'nj' in argsKeys:
+            dimensions = 2
+            if 'nk' in argsKeys:
+                dimensions = 3
+    else:
+        dimensions = 0
     
-    code="""
-    int i,j,k;
-    for(i=0;i<ni;i++)
-     {
-      for(j=0;j<nj;j++)
-       {
-	for(k=0;k<nk;k++)
-	 {
-    """ + code_in + """
-	 }
-       }
-     }
-    """
-    
+    if dimensions == 0:
+        code = """ { %s } """ % code_in 
+    else:
+        loops = """"""
+        enders = """"""
+        declarations = []
+        for dim in range(dimensions):
+            d = dimList[dim]
+            declarations.append(d)
+            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
+            enders += "\n" + "\t" * (dimensions - dim -1) + "}"
+        code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
+
     weave.inline(code,
-		 args.keys(),
-		 local_dict=args,
-		 type_converters=weave.converters.blitz,
-		 compiler = 'gcc',
-		 extra_compile_args =['-O3'])
-
+                 args.keys(),
+                 local_dict=args,
+                 type_converters=converters,
+                 compiler = 'gcc',
+                 verbose = verbose,
+                 extra_compile_args =['-O3'])

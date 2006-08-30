@@ -94,7 +94,7 @@ class CellTerm(Term):
         N = oldArray.getMesh().getNumberOfCells()
         updatePyArray = Numeric.zeros((N),'d')
 
-        inline._runInlineLoop1("""
+        inline._runInline("""
             b(i) += oldArray(i) * oldCoeff(i) / dt;
             b(i) += bCoeff(i);
             updatePyArray(i) += newCoeff(i) / dt;

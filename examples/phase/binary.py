@@ -493,13 +493,15 @@ SciPy can be used.
    \end{align*}
    \IndexModule{numerix}
    \IndexFunction{log}
+   \IndexFunction{array}
 
 ..
 
     >>> from fipy.tools.numerix import log
+    >>> from fipy.tools.numerix import array
     >>> def equilibrium(C):
-    ...     return [enthalpyA * Vm + R * T * log(1 - C[0]) - R * T * log(1 - C[1]),
-    ...             enthalpyB * Vm + R * T * log(C[0]) - R * T * log(C[1])]
+    ...     return [array(enthalpyA * Vm + R * T * log(1 - C[0]) - R * T * log(1 - C[1])),
+    ...             array(enthalpyB * Vm + R * T * log(C[0]) - R * T * log(C[1]))]
                
 .. raw:: latex
 
@@ -515,12 +517,9 @@ SciPy can be used.
        -\frac{1}{1-C_S} & \frac{1}{1-C_L} \\
        \frac{1}{C_S} & -\frac{1}{C_L}
    \end{matrix}\right]\]
-   \IndexModule{numerix}
-   \IndexFunction{array}
-
+   
 ..
 
-    >>> from fipy.tools.numerix import array
     >>> def equilibriumJacobian(C):
     ...     return R * T * array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
     ...                           [ 1. / C[0],      -1. / C[1]]])

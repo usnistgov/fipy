@@ -144,16 +144,18 @@ class DiffusionTerm(Term):
                 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-
+            
 	    coeff = self.nthCoeff
 	    shape = numerix.getShape(coeff)
 
 	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
 	    if isinstance(coeff, VectorFaceVariable) \
 	    or shape == (mesh.getDim(),):
-		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff) 
-
-            return coeff * mesh._getFaceAreas() / mesh._getCellDistances()
+		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
+            tmpBop =  coeff * mesh._getFaceAreas() / mesh._getCellDistances()
+            return  tmpBop
+            
+        #coeff * mesh._getFaceAreas() / mesh._getCellDistances()
         else:
             return None
         
@@ -209,24 +211,30 @@ class DiffusionTerm(Term):
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
             lowerOrderL = volMatrix * lowerOrderL
             del volMatrix
-            
-            coeff = self._getGeomCoeff(mesh)
-            
-            mm = self._getCoefficientMatrix(mesh, -coeff)
 
-            coeffs = {
-                'cell 1 diag':    -coeff,
-                'cell 1 offdiag':  coeff
-            }
-            del coeff
+            if not hasattr(self, 'coeffDict'):
 
-            coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
-            coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+                coeff = self._getGeomCoeff(mesh)
+                minusCoeff = -coeff
+                
+                coeff.dontCacheMe()
+                minusCoeff.dontCacheMe()
 
-            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
+                self.coeffDict = {
+                    'cell 1 diag':     minusCoeff,
+                    'cell 1 offdiag':  coeff
+                    }
+                del coeff
+                del minusCoeff
+
+                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
+                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+
+
+            mm = self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag'])
+            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
                                mm, Numeric.zeros(N,'d'))
                                
-            del coeffs
             del higherOrderBCs
             del mm
 
@@ -238,27 +246,31 @@ class DiffusionTerm(Term):
 
         elif self.order == 2:
 
-            coeff = self._getGeomCoeff(mesh)
-            minusCoeff = -coeff
-            
+            if not hasattr(self, 'coeffDict'):
 
-            coeffs = {
-                'cell 1 diag':    minusCoeff,
-                'cell 1 offdiag':  coeff
-            }
-            del coeff
+                coeff = self._getGeomCoeff(mesh)
+                minusCoeff = -coeff
 
-            coeffs['cell 2 offdiag'] = coeffs['cell 1 offdiag']
-            coeffs['cell 2 diag'] = coeffs['cell 1 diag']
+                coeff.dontCacheMe()
+                minusCoeff.dontCacheMe()
+
+                self.coeffDict = {
+                    'cell 1 diag':    minusCoeff,
+                    'cell 1 offdiag':  coeff
+                    }
+                del coeff
+                del minusCoeff
+
+                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
+                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
             
-            L, b = self._doBCs(higherOrderBCs, N, M, coeffs, 
-                               self._getCoefficientMatrix(mesh, minusCoeff), Numeric.zeros(N,'d'))
+            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
+                               self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag']), Numeric.zeros(N,'d'))
                                
-            del minusCoeff
-            del coeffs
             del higherOrderBCs
 
         else:
