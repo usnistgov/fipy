@@ -20,6 +20,9 @@ addressing email to mailto:fipy@nist.gov. If you are new to mailing
 lists, you may want to read the following resource about asking
 effective questions:  http://www.catb.org/~esr/faqs/smart-questions.html
 
+To get off the list follow the instructions above, but place
+``unsubscribe fipy`` in the text body.
+
 List Archive
 ------------
 
