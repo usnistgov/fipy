@@ -675,7 +675,7 @@ sweeps.
     ...     if __name__ == '__main__':
     ...         viewer.plot()
     ...         raw_input("Implicit variable diffusity. %d sweep(s). \
-    ... Residual = %f. Press <return> to proceed..." % (sweeps, max(abs(res))))
+    ... Residual = %f. Press <return> to proceed..." % (sweeps, res))
 
 As can be seen, sweeping does not dramatically change the result, but the
 "residual" of the equation (a measure of how accurately it has been solved)
