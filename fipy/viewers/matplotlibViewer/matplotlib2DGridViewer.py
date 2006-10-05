@@ -108,10 +108,10 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         
     def _getData(self):
         from fipy.tools.numerix import array, reshape
-        return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape())
+        return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
     
     def _plot(self):
-        pylab.hsv()
+        pylab.jet()
         self.image.set_data(self._getData())
 
         

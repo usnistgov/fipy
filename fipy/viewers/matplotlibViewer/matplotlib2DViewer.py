@@ -130,7 +130,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         else:
             V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
 
-        pylab.hsv()
+        pylab.jet()
 
         pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)
 
