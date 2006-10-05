@@ -80,7 +80,8 @@ class Matplotlib2DViewer(MatplotlibViewer):
         
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        self.colorbar = pylab.colorbar(array(self.vars[0]))
+        ## self.colorbar = pylab.colorbar(array(self.vars[0]))
+        self.colorbar = pylab.colorbar()
         
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.grid2D import Grid2D
@@ -129,7 +130,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         else:
             V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
 
-        pylab.hsv()
+        pylab.jet()
 
         pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)
 
