@@ -111,7 +111,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     .. raw:: latex
 
-        $$ \dot{\theta} = J v \theta + k c (1 - \theta - \theta_{\text{other}}) - \theta c_{\text{other}} k_{\text{other}} - k^- \theta^n $$
+        $$ \dot{\theta} = J v \theta + k c (1 - \theta - \theta_{\text{other}}) - \theta c_{\text{other}} k_{\text{other}} - k^- \theta $$
 
         where $\theta$, $J$, $v$, $k$, $c$, $k^-$ and $n$ represent
         the surfactant coverage, the curvature, the interface normal
