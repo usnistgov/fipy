@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 5/15/06 {3:58:47 PM} 
+ #                                last update: 10/25/06 {3:34:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import os
-import weave
 import Numeric
 
 from fipy.meshes.meshIterator import MeshIterator
@@ -1164,6 +1163,517 @@ class Variable(object):
 
     def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True, canInline = True):
         """
+        :Parameters:
+          - `op`: the operator function to apply (takes two arguments for `self` and `other`)
+          - `other`: the quantity to be operated with
+          - `baseClass`: the `Variable` class that the binary operator should inherit from 
+          - `opShape`: the shape that should result from the operation
+          - `valueMattersForShape`: tuple of elements that must have a particular value for the operation to succeed.
+          - `rotateShape`: whether the operator should permit rotation of the variable's shape to allow the operation to complete. This is required because some Numeric operators such as allclose() run out of memory.
+        """
+        
+        # for convenience, we want to be able to treat `other` as a Variable
+        # so we record its original class for later reference
+        if type(other) is type(numerix.array(1)):
+            otherClass = None
+        else:
+            otherClass = other.__class__
+        
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value = other)
+
+        # If the caller has not specified a base class for the binop, 
+        # check if the member Variables know what type of Variable should
+        # result from the operation.
+        baseClass = baseClass or self._getArithmeticBaseClass(other) or other._getArithmeticBaseClass(self)
+
+
+        # This operation is unknown. Fall back on Python's reciprocal operation or error.
+        if baseClass is None:
+            return NotImplemented
+
+        mesh = self.getMesh() or other.getMesh()
+        
+        # If the caller has not specified a shape for the result, determine the 
+        # shape from the base class or from the inputs
+        opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
+
+        # the magic value of "number" specifies that the operation should result in a single value,
+        # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
+        # identically to "None or ...".
+        if opShape == "number":
+            opShape = ()
+
+        var0 = self
+        var1 = other
+        
+        selfArray = self._getArrayAsOnes(object = self, valueMattersForShape = valueMattersForShape)
+        otherArray = self._getArrayAsOnes(object = other, valueMattersForShape = valueMattersForShape)
+
+        try:
+            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
+        except SyntaxError:
+            return NotImplemented
+            
+        
+        # obtain a general operator class with the desired base class
+	operatorClass = self._getOperatorVariableClass(baseClass)
+        
+        
+        # declare a binary operator class with the desired base class
+	class binOp(operatorClass):
+
+            def _calcValuePy(self):
+                if isinstance(self.var[1], Variable):
+                    val1 = self.var[1].getValue()
+                else:
+                    if type(self.var[1]) is type(''):
+                        self.var[1] = physicalField.PhysicalField(value = self.var[1])
+                    val1 = self.var[1]
+
+                return self.op(self.var[0].getValue(), val1)
+
+            def getUnit(self):
+                try:
+                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
+                except:
+                    return self._extractUnit(self._calcValuePy())
+
+            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
+                self.id = id
+                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id, freshen=freshen) + ")"
+        
+        var = [var0, var1]
+        for v in var:
+            if not v.getUnit().isDimensionless():
+                canInline = False
+        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
+        return tmpBop
+    
+    def __add__(self, other):
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return other + self
+        else:
+            return self._getBinaryOperatorVariable(lambda a,b: a+b, other)
+	
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return -other + self
+        else:
+            return self._getBinaryOperatorVariable(lambda a,b: a-b, other)
+	
+    def __rsub__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
+	    
+    def __mul__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
+	
+    __rmul__ = __mul__
+	    
+    def __mod__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
+	    
+    def __pow__(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: pow(a,b), other)
+	#return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
+	    
+    def __rpow__(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: pow(b,a), other)
+        #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
+	    
+    def __div__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
+	
+    def __rdiv__(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: b/a, other)
+	    
+    def __neg__(self):
+	return self._getUnaryOperatorVariable(lambda a: -a)
+	
+    def __pos__(self):
+	return self
+	
+    def __abs__(self):
+        """
+
+        Following test it to fix a bug with C inline string using
+        abs() instead of fabs()
+
+            >>> print abs(Variable(2.3) - Variable(1.2))
+            1.1
+
+        """
+        
+        fabs = abs
+	return self._getUnaryOperatorVariable(lambda a: fabs(a))
+
+    def __lt__(self,other):
+	"""
+	Test if a `Variable` is less than another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a < 4)
+	    >>> b
+	    (Variable(value = 3) < 4)
+	    >>> b()
+	    1
+	    >>> a.setValue(4)
+	    >>> b()
+	    0
+            >>> print 1000000000000000000 * Variable(1) < 1.
+            0
+            >>> print 1000 * Variable(1) < 1.
+            0
+
+
+	Python automatically reverses the arguments when necessary
+	
+	    >>> 4 > Variable(value = 3)
+	    (Variable(value = 3) < 4)
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
+
+    def __le__(self,other):
+	"""
+	Test if a `Variable` is less than or equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a <= 4)
+	    >>> b
+	    (Variable(value = 3) <= 4)
+	    >>> b()
+	    1
+	    >>> a.setValue(4)
+	    >>> b()
+	    1
+	    >>> a.setValue(5)
+	    >>> b()
+	    0
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
+	
+    def __eq__(self,other):
+	"""
+	Test if a `Variable` is equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a == 4)
+	    >>> b
+	    (Variable(value = 3) == 4)
+	    >>> b()
+	    0
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a==b, other)
+	
+    def __ne__(self,other):
+	"""
+	Test if a `Variable` is not equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a != 4)
+	    >>> b
+	    (Variable(value = 3) != 4)
+	    >>> b()
+	    1
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a!=b, other)
+	
+    def __gt__(self,other):
+	"""
+	Test if a `Variable` is greater than another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a > 4)
+	    >>> b
+	    (Variable(value = 3) > 4)
+	    >>> b()
+	    0
+	    >>> a.setValue(5)
+	    >>> b()
+	    1
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
+	
+    def __ge__(self,other):
+	"""
+	Test if a `Variable` is greater than or equal to another quantity
+	
+	    >>> a = Variable(value = 3)
+	    >>> b = (a >= 4)
+	    >>> b
+	    (Variable(value = 3) >= 4)
+	    >>> b()
+	    0
+	    >>> a.setValue(4)
+	    >>> b()
+	    1
+	    >>> a.setValue(5)
+	    >>> b()
+	    1
+	"""
+	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
+
+    def __and__(self, other):
+        """
+        This test case has been added due to a weird bug that was appearing.
+
+            >>> a = Variable(value = (0, 0, 1, 1))
+            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> print (a == 0) & (b == 1)
+            [0,1,0,0,]
+            >>> print a & b
+            [0,0,0,1,]
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
+            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> print (a == 0) & (b == 1)
+            [0,1,0,0,]
+            >>> print a & b
+            [0,0,0,1,]
+
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other, canInline = False)
+
+    def __or__(self, other):
+        """
+        This test case has been added due to a weird bug that was appearing.
+
+            >>> a = Variable(value = (0, 0, 1, 1))
+            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> print (a == 0) | (b == 1)
+            [1,1,0,1,]
+            >>> print a | b
+            [0,1,1,1,]
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh = Grid1D(nx = 4)
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
+            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> print (a == 0) | (b == 1)
+            [1,1,0,1,]
+            >>> print a | b
+            [0,1,1,1,]
+            
+        """
+        
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other, canInline = False)
+        
+    def __len__(self):
+        return len(self.getValue())
+	
+    def __float__(self):
+        return float(self.getValue())
+
+    def arccos(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arccos(a))
+
+    def arccosh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arccosh(a))
+
+    def arcsin(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arcsin(a))
+
+    def arcsinh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arcsinh(a))
+
+    def sqrt(self):
+        """
+        
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> mesh= Grid1D(nx=3)
+
+            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
+            >>> var = VectorCellVariable(mesh=mesh, value=((0.,),(2.,),(3.,)))
+            >>> print (var.dot(var)).sqrt()
+            [ 0., 2., 3.,]
+            
+        """
+	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
+	
+    def tan(self):
+	return self._getUnaryOperatorVariable(lambda a: numerix.tan(a))
+
+    def tanh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.tanh(a))
+
+    def arctan(self):
+	return self._getUnaryOperatorVariable(lambda a: numerix.arctan(a))
+
+    def arctanh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.arctanh(a))
+            
+    def exp(self):
+	return self._getUnaryOperatorVariable(lambda a: numerix.exp(a))
+
+    def log(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.log(a))
+
+    def log10(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.log10(a))
+
+    def sin(self):
+	return self._getUnaryOperatorVariable(lambda a: numerix.sin(a))
+		
+    def sinh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.sinh(a))
+
+    def cos(self):
+	return self._getUnaryOperatorVariable(lambda a: numerix.cos(a))
+        
+    def cosh(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.cosh(a))
+
+    def floor(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.floor(a))
+
+    def ceil(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.ceil(a))
+        
+    def conjugate(self):
+        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline = False)
+
+    def arctan2(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
+		
+    def dot(self, other):
+	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
+        
+    def reshape(self, shape):
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,), canInline = False)
+        
+    def transpose(self):
+        """
+        .. attention: This routine is deprecated. 
+           It is not longer needed.
+        """
+        import warnings
+        warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
+        return self
+
+    def sum(self, index = 0):
+	if not self.sumVar.has_key(index):
+	    from sumVariable import _SumVariable
+	    self.sumVar[index] = _SumVariable(self, index)
+	
+	return self.sumVar[index]
+
+    def take(self, ids, axis = 0):
+	return numerix.take(self.getValue(), ids, axis)
+
+    def _take(self, ids, axis = 0):
+        """
+        
+        Same as take() but returns a `Variable` subclass.  This function
+        has not yet been implemented as a binary operator but is a
+        unary operator.  As a unary operator it has to return the same
+        shape as the `Variable` it is acting on.  This is not a
+        particular useful implementation of take as it stands. It is
+        good for axis permutations.
+        
+
+           >>> from fipy.meshes.grid2D import Grid2D
+           >>> mesh = Grid2D(nx = 1, ny = 1)
+           >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
+           >>> var = VectorFaceVariable(value = ( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh = mesh)
+           >>> v10 = var._take((1, 0), axis = 1)
+           >>> print v10
+           [[ 2., 1.,]
+            [ 3., 2.,]
+            [ 4., 3.,]
+            [ 5., 4.,]]
+           >>> var[3, 0] = 1
+           >>> print v10
+           [[ 2., 1.,]
+            [ 3., 2.,]
+            [ 4., 3.,]
+            [ 5., 1.,]]
+           >>> isinstance(var, VectorFaceVariable)
+           True
+           >>> v0 = var._take((0,))
+           Traceback (most recent call last):
+              ...
+           IndexError: _take() must take ids that return a Variable of the same shape
+           
+        """
+
+        ## Binary operator doesn't work because ids is turned into a _Constant Variable
+        ## which contains floats and not integers. Numeric.take needs integers for ids.
+        ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis = axis), ids) 
+
+        if numerix.take(self.getValue(), ids, axis = axis).shape == self.getShape():
+            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis), canInline = False)
+        else:
+            raise IndexError, '_take() must take ids that return a Variable of the same shape'
+            
+    def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
+        """
+           >>> var = Variable((1, 1))
+           >>> print var.allclose((1, 1))
+           1
+           >>> print var.allclose((1,))
+           1
+           >>> print var.allclose((1,1,1))
+           Traceback (most recent call last):
+               ...
+           ValueError
+
+        The following test is to check that the system does not run
+        out of memory.
+
+           >>> from fipy.tools import numerix
+           >>> var = Variable(numerix.ones(10000))
+           >>> var.allclose(numerix.ones(10001))
+           Traceback (most recent call last):
+               ...
+           ValueError
+           
+        """
+
+        ## This operation passes `rotateShape = False` to stop the variable being rotated. This
+        ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
+        ## out of memory.
+        ##
+        ##    >>> import Numeric
+        ##    >>> a = Numeric.ones(10000)
+        ##    >>> b = Numeric.ones(10001)
+        ##    >>> b = b[...,Numeric.NewAxis]
+        ##    >>> Numeric.allclose(a, b)
+        ##    Traceback (most recent call last):
+        ##    ...
+        ##    MemoryError: can't allocate memory for array
+        ##
+    
+
+
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
+                                               other, 
+                                               baseClass = Variable,
+                                               opShape = "number",
+                                               rotateShape = False,
+                                               canInline = False)
+        
+    def allequal(self, other):
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
+                                               other,
+                                               baseClass = Variable,
+                                               opShape = "number",
+                                               canInline = False)
+
+    def getMag(self):
+        if self.mag is None:
+	    self.mag = self.dot(self).sqrt()
+	    
+	return self.mag
+        
+    def _testBinOp(self):
+        """
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> from fipy.variables.vectorCellVariable import VectorCellVariable
@@ -2003,515 +2513,8 @@ class Variable(object):
             >>> T = Variable()
             >>> from fipy import numerix
             >>> v = numerix.exp(-T / (1. *  T))
-            
-        :Parameters:
-          - `op`: the operator function to apply (takes two arguments for `self` and `other`)
-          - `other`: the quantity to be operated with
-          - `baseClass`: the `Variable` class that the binary operator should inherit from 
-          - `opShape`: the shape that should result from the operation
-          - `valueMattersForShape`: tuple of elements that must have a particular value for the operation to succeed.
-          - `rotateShape`: whether the operator should permit rotation of the variable's shape to allow the operation to complete. This is required because some Numeric operators such as allclose() run out of memory.
         """
-        
-        # for convenience, we want to be able to treat `other` as a Variable
-        # so we record its original class for later reference
-        if type(other) is type(numerix.array(1)):
-            otherClass = None
-        else:
-            otherClass = other.__class__
-        
-        if not isinstance(other, Variable):
-            from fipy.variables.constant import _Constant
-            other = _Constant(value = other)
-
-        # If the caller has not specified a base class for the binop, 
-        # check if the member Variables know what type of Variable should
-        # result from the operation.
-        baseClass = baseClass or self._getArithmeticBaseClass(other) or other._getArithmeticBaseClass(self)
-
-
-        # This operation is unknown. Fall back on Python's reciprocal operation or error.
-        if baseClass is None:
-            return NotImplemented
-
-        mesh = self.getMesh() or other.getMesh()
-        
-        # If the caller has not specified a shape for the result, determine the 
-        # shape from the base class or from the inputs
-        opShape = opShape or baseClass._getShapeFromMesh(mesh) or self.getShape() or other.getShape()
-
-        # the magic value of "number" specifies that the operation should result in a single value,
-        # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
-        # identically to "None or ...".
-        if opShape == "number":
-            opShape = ()
-
-        var0 = self
-        var1 = other
-        
-        selfArray = self._getArrayAsOnes(object = self, valueMattersForShape = valueMattersForShape)
-        otherArray = self._getArrayAsOnes(object = other, valueMattersForShape = valueMattersForShape)
-
-        try:
-            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
-        except SyntaxError:
-            return NotImplemented
-            
-        
-        # obtain a general operator class with the desired base class
-	operatorClass = self._getOperatorVariableClass(baseClass)
-        
-        
-        # declare a binary operator class with the desired base class
-	class binOp(operatorClass):
-
-            def _calcValuePy(self):
-                if isinstance(self.var[1], Variable):
-                    val1 = self.var[1].getValue()
-                else:
-                    if type(self.var[1]) is type(''):
-                        self.var[1] = physicalField.PhysicalField(value = self.var[1])
-                    val1 = self.var[1]
-
-                return self.op(self.var[0].getValue(), val1)
-
-            def getUnit(self):
-                try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
-                except:
-                    return self._extractUnit(self._calcValuePy())
-
-            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
-                self.id = id
-                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id, freshen=freshen) + ")"
-        
-        var = [var0, var1]
-        for v in var:
-            if not v.getUnit().isDimensionless():
-                canInline = False
-        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
-        return tmpBop
-    
-    def __add__(self, other):
-        from fipy.terms.term import Term
-        if isinstance(other, Term):
-            return other + self
-        else:
-            return self._getBinaryOperatorVariable(lambda a,b: a+b, other)
-	
-    __radd__ = __add__
-
-    def __sub__(self, other):
-        from fipy.terms.term import Term
-        if isinstance(other, Term):
-            return -other + self
-        else:
-            return self._getBinaryOperatorVariable(lambda a,b: a-b, other)
-	
-    def __rsub__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
-	    
-    def __mul__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
-	
-    __rmul__ = __mul__
-	    
-    def __mod__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
-	    
-    def __pow__(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: pow(a,b), other)
-	#return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
-	    
-    def __rpow__(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: pow(b,a), other)
-        #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
-	    
-    def __div__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
-	
-    def __rdiv__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b/a, other)
-	    
-    def __neg__(self):
-	return self._getUnaryOperatorVariable(lambda a: -a)
-	
-    def __pos__(self):
-	return self
-	
-    def __abs__(self):
-        """
-
-        Following test it to fix a bug with C inline string using
-        abs() instead of fabs()
-
-            >>> print abs(Variable(2.3) - Variable(1.2))
-            1.1
-
-        """
-        
-        fabs = abs
-	return self._getUnaryOperatorVariable(lambda a: fabs(a))
-
-    def __lt__(self,other):
-	"""
-	Test if a `Variable` is less than another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a < 4)
-	    >>> b
-	    (Variable(value = 3) < 4)
-	    >>> b()
-	    1
-	    >>> a.setValue(4)
-	    >>> b()
-	    0
-            >>> print 1000000000000000000 * Variable(1) < 1.
-            0
-            >>> print 1000 * Variable(1) < 1.
-            0
-
-
-	Python automatically reverses the arguments when necessary
-	
-	    >>> 4 > Variable(value = 3)
-	    (Variable(value = 3) < 4)
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
-
-    def __le__(self,other):
-	"""
-	Test if a `Variable` is less than or equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a <= 4)
-	    >>> b
-	    (Variable(value = 3) <= 4)
-	    >>> b()
-	    1
-	    >>> a.setValue(4)
-	    >>> b()
-	    1
-	    >>> a.setValue(5)
-	    >>> b()
-	    0
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
-	
-    def __eq__(self,other):
-	"""
-	Test if a `Variable` is equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a == 4)
-	    >>> b
-	    (Variable(value = 3) == 4)
-	    >>> b()
-	    0
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a==b, other)
-	
-    def __ne__(self,other):
-	"""
-	Test if a `Variable` is not equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a != 4)
-	    >>> b
-	    (Variable(value = 3) != 4)
-	    >>> b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a!=b, other)
-	
-    def __gt__(self,other):
-	"""
-	Test if a `Variable` is greater than another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a > 4)
-	    >>> b
-	    (Variable(value = 3) > 4)
-	    >>> b()
-	    0
-	    >>> a.setValue(5)
-	    >>> b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
-	
-    def __ge__(self,other):
-	"""
-	Test if a `Variable` is greater than or equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a >= 4)
-	    >>> b
-	    (Variable(value = 3) >= 4)
-	    >>> b()
-	    0
-	    >>> a.setValue(4)
-	    >>> b()
-	    1
-	    >>> a.setValue(5)
-	    >>> b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
-
-    def __and__(self, other):
-        """
-        This test case has been added due to a weird bug that was appearing.
-
-            >>> a = Variable(value = (0, 0, 1, 1))
-            >>> b = Variable(value = (0, 1, 0, 1))
-            >>> print (a == 0) & (b == 1)
-            [0,1,0,0,]
-            >>> print a & b
-            [0,0,0,1,]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
-            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
-            >>> print (a == 0) & (b == 1)
-            [0,1,0,0,]
-            >>> print a & b
-            [0,0,0,1,]
-
-        """
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other, canInline = False)
-
-    def __or__(self, other):
-        """
-        This test case has been added due to a weird bug that was appearing.
-
-            >>> a = Variable(value = (0, 0, 1, 1))
-            >>> b = Variable(value = (0, 1, 0, 1))
-            >>> print (a == 0) | (b == 1)
-            [1,1,0,1,]
-            >>> print a | b
-            [0,1,1,1,]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
-            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
-            >>> print (a == 0) | (b == 1)
-            [1,1,0,1,]
-            >>> print a | b
-            [0,1,1,1,]
-            
-        """
-        
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other, canInline = False)
-        
-    def __len__(self):
-        return len(self.getValue())
-	
-    def __float__(self):
-        return float(self.getValue())
-
-    def arccos(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.arccos(a))
-
-    def arccosh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.arccosh(a))
-
-    def arcsin(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.arcsin(a))
-
-    def arcsinh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.arcsinh(a))
-
-    def sqrt(self):
-        """
-        
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh= Grid1D(nx=3)
-
-            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-            >>> var = VectorCellVariable(mesh=mesh, value=((0.,),(2.,),(3.,)))
-            >>> print (var.dot(var)).sqrt()
-            [ 0., 2., 3.,]
-            
-        """
-	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
-	
-    def tan(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.tan(a))
-
-    def tanh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.tanh(a))
-
-    def arctan(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.arctan(a))
-
-    def arctanh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.arctanh(a))
-            
-    def exp(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.exp(a))
-
-    def log(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.log(a))
-
-    def log10(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.log10(a))
-
-    def sin(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.sin(a))
-		
-    def sinh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.sinh(a))
-
-    def cos(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.cos(a))
-        
-    def cosh(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.cosh(a))
-
-    def floor(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.floor(a))
-
-    def ceil(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.ceil(a))
-        
-    def conjugate(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline = False)
-
-    def arctan2(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
-		
-    def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
-        
-    def reshape(self, shape):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,), canInline = False)
-        
-    def transpose(self):
-        """
-        .. attention: This routine is deprecated. 
-           It is not longer needed.
-        """
-        import warnings
-        warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
-        return self
-
-    def sum(self, index = 0):
-	if not self.sumVar.has_key(index):
-	    from sumVariable import _SumVariable
-	    self.sumVar[index] = _SumVariable(self, index)
-	
-	return self.sumVar[index]
-
-    def take(self, ids, axis = 0):
-	return numerix.take(self.getValue(), ids, axis)
-
-    def _take(self, ids, axis = 0):
-        """
-        
-        Same as take() but returns a `Variable` subclass.  This function
-        has not yet been implemented as a binary operator but is a
-        unary operator.  As a unary operator it has to return the same
-        shape as the `Variable` it is acting on.  This is not a
-        particular useful implementation of take as it stands. It is
-        good for axis permutations.
-        
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 1, ny = 1)
-           >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-           >>> var = VectorFaceVariable(value = ( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh = mesh)
-           >>> v10 = var._take((1, 0), axis = 1)
-           >>> print v10
-           [[ 2., 1.,]
-            [ 3., 2.,]
-            [ 4., 3.,]
-            [ 5., 4.,]]
-           >>> var[3, 0] = 1
-           >>> print v10
-           [[ 2., 1.,]
-            [ 3., 2.,]
-            [ 4., 3.,]
-            [ 5., 1.,]]
-           >>> isinstance(var, VectorFaceVariable)
-           True
-           >>> v0 = var._take((0,))
-           Traceback (most recent call last):
-              ...
-           IndexError: _take() must take ids that return a Variable of the same shape
-           
-        """
-
-        ## Binary operator doesn't work because ids is turned into a _Constant Variable
-        ## which contains floats and not integers. Numeric.take needs integers for ids.
-        ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis = axis), ids) 
-
-        if numerix.take(self.getValue(), ids, axis = axis).shape == self.getShape():
-            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis), canInline = False)
-        else:
-            raise IndexError, '_take() must take ids that return a Variable of the same shape'
-            
-    def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
-        """
-           >>> var = Variable((1, 1))
-           >>> print var.allclose((1, 1))
-           1
-           >>> print var.allclose((1,))
-           1
-           >>> print var.allclose((1,1,1))
-           Traceback (most recent call last):
-               ...
-           ValueError
-
-        The following test is to check that the system does not run
-        out of memory.
-
-           >>> from fipy.tools import numerix
-           >>> var = Variable(numerix.ones(10000))
-           >>> var.allclose(numerix.ones(10001))
-           Traceback (most recent call last):
-               ...
-           ValueError
-           
-        """
-
-        ## This operation passes `rotateShape = False` to stop the variable being rotated. This
-        ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
-        ## out of memory.
-        ##
-        ##    >>> import Numeric
-        ##    >>> a = Numeric.ones(10000)
-        ##    >>> b = Numeric.ones(10001)
-        ##    >>> b = b[...,Numeric.NewAxis]
-        ##    >>> Numeric.allclose(a, b)
-        ##    Traceback (most recent call last):
-        ##    ...
-        ##    MemoryError: can't allocate memory for array
-        ##
-    
-
-
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
-                                               other, 
-                                               baseClass = Variable,
-                                               opShape = "number",
-                                               rotateShape = False,
-                                               canInline = False)
-        
-    def allequal(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
-                                               other,
-                                               baseClass = Variable,
-                                               opShape = "number",
-                                               canInline = False)
-
-    def getMag(self):
-        if self.mag is None:
-	    self.mag = self.dot(self).sqrt()
-	    
-	return self.mag
+        pass
 
 def _test(): 
     import doctest
