@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/7/06 {11:59:49 AM}
+ #                                last update: 10/25/06 {4:27:27 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,10 +45,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import mayavi
-##import pyvtk
-
-from enthought.tvtk.api import tvtk as pyvtk
 from fipy.viewers.viewer import Viewer
 
 class MayaviViewer(Viewer):
@@ -95,6 +91,8 @@ class MayaviViewer(Viewer):
 
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
 
+        import mayavi
+        
         self._viewer = mayavi.mayavi()
 
         self.structures = []
@@ -136,6 +134,10 @@ class MayaviViewer(Viewer):
         coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
         coords[:,:mesh.getDim()] = mesh.getVertexCoords()
 
+        ##import pyvtk
+
+        from enthought.tvtk.api import tvtk as pyvtk
+
         return pyvtk.UnstructuredGrid(points = coords,
                                       line = cellDict[2],
                                       tetra = cellDict[4],
@@ -160,6 +162,10 @@ class MayaviViewer(Viewer):
             if name is '':
                 name = 'default'
 
+            ##import pyvtk
+
+            from enthought.tvtk.api import tvtk as pyvtk
+                
             celldata = pyvtk.CellData(pyvtk.Scalars(var[:], name = name, lookup_table = 'default'))
             data = pyvtk.VtkData(structure, "mydata", celldata)
             

@@ -1,6 +1,11 @@
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import MatplotlibViewer
+from matplotlib1DViewer import Matplotlib1DViewer
+from matplotlib2DGridViewer import Matplotlib2DGridViewer
+from matplotlib2DViewer import Matplotlib2DViewer
+from matplotlibVectorViewer import MatplotlibVectorViewer
+
+__all__ = ["Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
 def make(vars, title = None, limits = None):
     """
@@ -27,7 +32,6 @@ def make(vars, title = None, limits = None):
     from fipy.viewers import MeshDimensionError
     
     try:
-        from matplotlib1DViewer import Matplotlib1DViewer
         return Matplotlib1DViewer(vars = vars, title = title, limits = limits)
     except MeshDimensionError:
         try:

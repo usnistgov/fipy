@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 4/7/06 {11:58:02 AM} { 2:45:36 PM}
+ #                                last update: 10/25/06 {4:15:28 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
  # ###################################################################
  ##
 
-from fipy.viewers.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import GistViewer
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
 from fipy.variables.vectorFaceVariable import VectorFaceVariable

@@ -4,7 +4,7 @@
  # 
  #  FILE: "multiViewer.py"
  #                                    created: 12/17/05 {6:28:03 PM} 
- #                                last update: 12/17/05 {6:33:32 PM} 
+ #                                last update: 10/25/06 {4:10:46 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -41,7 +41,12 @@
 
 from fipy.viewers.viewer import Viewer
 
-class _MultiViewer(Viewer):
+class MultiViewer(Viewer):
+    """
+    Treat a collection of different viewers (such for different 2D plots 
+    or 1D plots with different axes) as a single viewer that will `plot()` 
+    all subviewers simultaneously.
+    """
     def __init__(self, viewers):
         if type(viewers) not in [type([]), type(())]:
             viewers = [viewers]

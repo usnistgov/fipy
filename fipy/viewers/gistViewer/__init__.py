@@ -1,6 +1,10 @@
 __docformat__ = 'restructuredtext'
 
-from gistViewer import GistViewer
+from gist1DViewer import Gist1DViewer
+from gist2DViewer import Gist2DViewer
+from gistVectorViewer import GistVectorViewer
+
+__all__ = ["Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
 def make(vars, title = None, limits = None):
     r"""
@@ -25,13 +29,10 @@ def make(vars, title = None, limits = None):
     from fipy.viewers import MeshDimensionError
     
     try:
-        from gist1DViewer import Gist1DViewer
         return Gist1DViewer(vars = vars, title = title, limits = limits)
     except MeshDimensionError:
         try:
-            from gist2DViewer import Gist2DViewer
             return Gist2DViewer(vars = vars, title = title, limits = limits)
         except MeshDimensionError:
-            from gistVectorViewer import GistVectorViewer
             return GistVectorViewer(vars = vars, title = title)
             

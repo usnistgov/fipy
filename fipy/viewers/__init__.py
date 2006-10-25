@@ -6,6 +6,14 @@ import string
 import glob
 import imp
 
+from gistViewer import *
+from gnuplotViewer import *
+from matplotlibViewer import *
+from mayaviViewer import *
+from multiViewer import MultiViewer
+from tsvViewer import TSVViewer
+
+
 # what about vector variables?
 
 class MeshDimensionError(IndexError):
@@ -88,8 +96,7 @@ def make(vars, title = None, limits = None):
         raise ImportError, "Failed to import a viewer: %s" % str(errors)        
             
     if len(viewers) > 1:
-        from fipy.viewers.multiViewer import _MultiViewer
-        return _MultiViewer(viewers = viewers)
+        return MultiViewer(viewers = viewers)
     else:
         return viewers[0]
         
