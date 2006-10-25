@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/25/06 {3:35:52 PM} 
+ #                                last update: 10/25/06 {3:37:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -962,7 +962,7 @@ class Variable(object):
         if other is None:
             return Variable
             
-        if other.__class__.__name__ is self.__class__.__name__ \
+        if other._getArithmeticBaseClass().__name__ is self._getArithmeticBaseClass().__name__ \
         or other.getShape() in ((), (1,)):
             # operating with a scalar results in the same base
             # class as self.
