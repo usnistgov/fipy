@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/25/06 {3:34:23 PM} 
+ #                                last update: 10/25/06 {3:35:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1798,6 +1798,19 @@ class Variable(object):
             >>> print isinstance(svXcv, CellVariable)
             1
         
+        `binOp` `CellVariable` * `binOp` `Variable` Scalar
+
+            >>> cvcvXsvsv = (cv * cv) * (Variable(value = 3) * Variable(value = 3))
+            >>> print cvcvXsvsv
+            [  0.,  9., 36.,]
+            >>> print isinstance(cvcvXsvsv, CellVariable)
+            1
+            >>> svsvXcvcv = (Variable(value = 3) * Variable(value = 3)) * (cv * cv)
+            >>> print svsvXcvcv
+            [  0.,  9., 36.,]
+            >>> print isinstance(svsvXcvcv, CellVariable)
+            1
+            
         `CellVariable` * `Variable` Vector
             
             >>> cvXv2v = cv * Variable(value = (3,2))
