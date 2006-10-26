@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/25/06 {3:37:25 PM} 
+ #                                last update: 10/26/06 {9:19:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,7 +118,9 @@ class Variable(object):
 	if isinstance(value, Variable):
 	    name = value.name
 	    mesh = value.mesh
-	    value = value.getValue().copy()
+	    value = value.getValue()
+            if hasattr(value, 'copy'):
+                value = value.copy()
 	    unit = None
 	    array = None
 	    
