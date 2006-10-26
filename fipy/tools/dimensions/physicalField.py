@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 5/15/06 {3:57:29 PM} 
+ #                                last update: 10/26/06 {10:19:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1441,26 +1441,34 @@ class PhysicalUnit:
         if type(other) == type(0):
             return PhysicalUnit(other*self.names, pow(self.factor, other),
                                 self.powers*other)
-        if type(other) == type(0.):
-            inv_exp = 1./other
-            rounded = int(umath.floor(inv_exp+0.5))
-            if abs(inv_exp-rounded) < 1.e-10:
-                if Numeric.logical_and.reduce(self.powers % rounded == 0):
-                    f = pow(self.factor, other)
-                    p = self.powers / rounded
-                    if reduce(lambda a, b: a and b,
-                              map(lambda x, e=rounded: x%e == 0,
-                                  self.names.values())):
-                        names = self.names/rounded
-                    else:
-                        names = _NumberDict()
-                        if f != 1.:
-                            names[str(f)] = 1
-                        for i in range(len(p)):
-                            names[_base_names[i]] = p[i]
-                    return PhysicalUnit(names, f, p)
+                                
+        other = float(other)
+        
+        rounded = int(umath.floor(other+0.5))
+        if abs(other-rounded) < 1.e-10:
+            other = int(other)
+            return PhysicalUnit(other*self.names, pow(self.factor, other),
+                                self.powers*other)
+
+        inv_exp = 1./other
+        rounded = int(umath.floor(inv_exp+0.5))
+        if abs(inv_exp-rounded) < 1.e-10:
+            if Numeric.logical_and.reduce(self.powers % rounded == 0):
+                f = pow(self.factor, other)
+                p = self.powers / rounded
+                if reduce(lambda a, b: a and b,
+                          map(lambda x, e=rounded: x%e == 0,
+                              self.names.values())):
+                    names = self.names/rounded
                 else:
-                    raise TypeError, 'Illegal exponent'
+                    names = _NumberDict()
+                    if f != 1.:
+                        names[str(f)] = 1
+                    for i in range(len(p)):
+                        names[_base_names[i]] = p[i]
+                return PhysicalUnit(names, f, p)
+            else:
+                raise TypeError, 'Illegal exponent'
         raise TypeError, 'Only integer and inverse integer exponents allowed'
 
     def conversionFactorTo(self, other):
