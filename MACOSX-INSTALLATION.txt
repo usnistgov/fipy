@@ -1,0 +1,155 @@
+===========================
+Simple Windows Installation
+===========================
+
+These instructions are for the `Windows XP`_ and `Windows 2000`_
+platforms. Please see the more general |INSTALLATION-txt| for detailed
+installation instructions.  These instructions are not the only way to
+set up |FiPy| on a Windows OS but represent the most expedient way
+from our experience to have a usable installation up and running.
+
+.. note::
+
+   These steps require downloading installation ``.exe`` binary files from
+   various web sites.  When given the choice to ``run`` (``open``) or
+   ``save`` these files it is best to simply choose ``run`` (``open``).
+
+.. include:: utils/include.txt
+
+.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/default.mspx
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
+
+
+Required Packages
+=================
+
+Python
+------
+
+http://code.enthought.com/enthon/
+
+We recommend the use of Enthought Python. This version of Python has
+some of the packages for |FiPy| already included. Download and install
+the latest version.
+
+Pysparse
+--------
+
+http://sourceforge.net/project/showfiles.php?group_id=101403
+
+Download and install the latest version of PySparse for Windows
+(pysparse-x.y.z.win32-py2.X.exe). Be sure to select the version
+compiled with the correct version of Python to match the Enthought
+installation.
+
+
+|FiPy|
+------
+
+http://www.ctcms.nist.gov/fipy/download/
+
+Download and unpack the zip file (``FiPy-x.y.win32.zip``).  Run the
+|FiPy| installer ``FiPy-x.y.win32.exe``, which should be in the base
+``FiPy-x.y`` directory.
+
+Optional Packages
+=================
+
+Gmsh
+----
+
+http://www.geuz.org/gmsh
+
+If you wish to run examples that have unstructured meshes, it is
+necessary to install Gmsh. Download and unpack the latest version of
+Gmsh for Windows. Open the unpacked folder with a browser and copy the
+``gmsh.exe`` file to ``C:\Python2X``.
+
+.. note::
+
+   This is a required package for superfill examples.
+
+PyVTK
+-----
+
+http://www.ctcms.nist.gov/fipy/download/
+
+If you wish to use Mayavi, PyVTK is a requirement.  Download and
+install the latest version from the |FiPy| downloads page
+(``PyVTK-x.y.z.win32.exe``).
+
+.. note::
+
+   This is a required package for superfill examples.
+
+Mayavi
+------
+
+Mayavi comes with Enthought Python, so no installation steps need to
+be taken. However, there seems to be a file out of place. In order to
+make Mayavi work correctly, open the
+``C:\Python2X\Lib\site-packages\vtk_python\`` directory in a browser
+and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python2X\``
+directory.
+
+.. note::
+
+   This is a required step for superfill examples.
+
+Using |FiPy| on Windows
+=======================
+
+For those that are averse to the Windows command line, the IDLE_
+environment is recommended. IDLE_ is packaged with Enthought Python
+and will appear in the Windows Program menu after installation.
+
+Interactive Viewing
+-------------------
+
+Some versions of Enthought Python have been known to have problems
+with interactive viewing. If this turns out to be the case, follow
+these instructions:
+
+   - Click on ``Start``
+   - Click on ``Programs``
+   - Click on ``Python 2.X (Enthought Edition)``
+   - Right click on ``IDLE (Python GUI)`` and click on ``Create Shortcut`` which creates ``IDLE (Python GUI)(2)``
+   - Right click on ``IDLE (Python GUI)(2)``
+   - Click on properties
+   - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
+   - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
+
+Import a module and view the results
+------------------------------------
+
+You can use the IDLE_ file browser to open the examples and run the
+module.
+
+    - Click on ``File``
+    - Click on ``Open``
+    - Open ``C:\Path\To\Base\FiPy\directory\examples\diffusion\steadyState\mesh50x50\input.py``
+
+This will open an editor, press the F5 key to run the example.
+A Matplotlib viewer should appear with rainbow stripes.
+
+Another way to use |FiPy| examples is to import the example file and
+then run any functionality it may have. For example at the IDLE_
+command line run the following code:
+
+    >>> import sys
+    >>> sys.path.append('C://Path//To//Base//FiPy//Directory')
+    >>> from examples.levelSet.electroChem.inputGold import runGold
+    >>> runGold(numberOfSteps = 100)
+
+If you have installed the optional packages, a MayaVi viewer should
+appear with a trench filling simulation.
+
+   .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
+
+   .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+
+
+
+
