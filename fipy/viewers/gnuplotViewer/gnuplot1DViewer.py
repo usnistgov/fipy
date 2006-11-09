@@ -44,7 +44,6 @@
  
 __docformat__ = 'restructuredtext'
 
-import Gnuplot
 import Numeric
 
 from gnuplotViewer import GnuplotViewer
@@ -75,6 +74,7 @@ class Gnuplot1DViewer(GnuplotViewer):
         
         tupleOfGnuplotData = ()
 
+        import Gnuplot
         for var in self.vars:
             tupleOfGnuplotData += (Gnuplot.Data(Numeric.array(var.getMesh().getCellCenters()[:,0]),
                                                 var[:],

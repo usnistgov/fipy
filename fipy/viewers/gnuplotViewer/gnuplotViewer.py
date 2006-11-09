@@ -45,8 +45,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import Gnuplot
-
 from fipy.viewers.viewer import Viewer
 
 class GnuplotViewer(Viewer):
@@ -87,6 +85,7 @@ class GnuplotViewer(Viewer):
 
         """
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        import Gnuplot
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 

@@ -43,7 +43,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import Viewer
-import pyvtk
 from fipy.tools import numerix
 
 class MayaviSurfactantViewer(Viewer):
@@ -141,6 +140,7 @@ class MayaviSurfactantViewer(Viewer):
         coords = numerix.zeros((coordinates.shape[0], 3), 'd')
         coords[:,:coordinates.shape[1]] = coordinates
 
+        import pyvtk
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data, name = name)))
@@ -148,6 +148,8 @@ class MayaviSurfactantViewer(Viewer):
     def plot(self, filename = None):
 
         structure, data = self._getStructure()
+
+        import pyvtk
         data = pyvtk.VtkData(structure, data)
 
         import tempfile

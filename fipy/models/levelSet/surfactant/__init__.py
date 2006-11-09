@@ -1,0 +1,2 @@
+from surfactantVariable import SurfactantVariable
+from surfactantEquation import SurfactantEquation

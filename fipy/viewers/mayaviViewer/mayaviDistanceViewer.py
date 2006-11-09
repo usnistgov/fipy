@@ -44,7 +44,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.viewer import Viewer
-import pyvtk
 
 class MayaviDistanceViewer(Viewer):
     
@@ -94,12 +93,15 @@ class MayaviDistanceViewer(Viewer):
 ##            argDict['poly_line'] = line
 
         data = numerix.take(self.surfactantVar, IDs)
+
+        import pyvtk
         return (pyvtk.UnstructuredGrid(points = coordinates,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data)))
         
     def plot(self, filename = None):
 
+        import pyvtk
         structure, data = self._getStructure()
         data = pyvtk.VtkData(structure, data)
 

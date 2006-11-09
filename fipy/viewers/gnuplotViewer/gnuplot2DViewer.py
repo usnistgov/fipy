@@ -45,7 +45,6 @@
 __docformat__ = 'restructuredtext'
 
 import Numeric
-import Gnuplot
 
 from gnuplotViewer import GnuplotViewer
 from fipy.meshes.grid2D import Grid2D
@@ -102,6 +101,7 @@ class Gnuplot2DViewer(GnuplotViewer):
             
         self.g('set dgrid3d %i, %i, 2' % (ny, nx))
 
+        import Gnuplot
         data = Gnuplot.Data(Numeric.array(mesh.getCellCenters()[:,0]),
                             Numeric.array(mesh.getCellCenters()[:,1]),
                             self.vars[0][:])
