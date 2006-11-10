@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/17/06 {12:02:14 PM} 
+ #                                last update: 10/26/06 {2:05:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,13 +77,13 @@ class Term:
       
 	residual = Lx - RHSvector
       
-	denom = max(abs(Lx))
-	if denom == 0:
-	    denom = max(abs(RHSvector))
-	if denom == 0:
-	    denom = 1.
-          
-	residual /= denom
+## 	denom = max(abs(Lx))
+## 	if denom == 0:
+## 	    denom = max(abs(RHSvector))
+## 	if denom == 0:
+## 	    denom = 1.
+##           
+## 	residual /= denom
       	
 	return numerix.max(abs(residual))
 
@@ -129,7 +129,7 @@ class Term:
         
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
-    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None):
+    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn = None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -151,9 +151,16 @@ class Term:
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
-        residual = self._calcResidual(var, matrix, RHSvector)
-        
+        residualFn = residualFn or self._calcResidual
+        residual = residualFn(var, matrix, RHSvector)
+##         residual = self._calcResidual(var, matrix, RHSvector)
+
+##         print "x", var
+
         self._solveLinearSystem(var, solver, matrix, RHSvector)
+
+##         print "L", matrix
+##         print "b", RHSvector
 
         return residual
 
