@@ -4,7 +4,7 @@
  # 
  # FILE: "stepper.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/10/06 {4:30:12 PM}
+ #                                 last update: 11/10/06 {4:39:52 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -97,8 +97,6 @@ class Stepper:
                                        sweepFn=sweepFn, failFn=failFn,
                                        *args, **kwargs)
                                       
-            print "dtPrev:", dtPrev, "dtTry:", dtTry
-            
             self.elapsed += dtPrev
                                 
             successFn(vardata=self.vardata, 
