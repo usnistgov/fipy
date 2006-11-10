@@ -4,7 +4,7 @@
  # 
  # FILE: "pseudoRKQSStepper.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/10/06 {4:22:29 PM}
+ #                                 last update: 11/10/06 {4:26:15 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,7 @@ class PseudoRKQSStepper(Stepper):
     in the first place, but works OK.
     """
     def __init__(self, iterates=(), safety=0.9, pgrow=-0.2, pshrink=-0.25, errcon=1.89e-4):
-        Iterator.__init__(self, iterates=iterates)
+        Stepper.__init__(self, iterates=iterates)
         self.safety = safety
         self.pgrow = pgrow
         self.pshrink = pshrink

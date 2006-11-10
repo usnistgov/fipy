@@ -4,7 +4,7 @@
  # 
  # FILE: "__init__.py"
  #                                     created: 11/1/06 {4:27:40 PM}
- #                                 last update: 11/10/06 {7:00:35 AM}
+ #                                 last update: 11/10/06 {4:25:25 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  #   mail: NIST
@@ -38,9 +38,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from iterator import Iterator
-from pseudoRKQSIterator import PseudoRKQSIterator
-from pidIterator import PIDIterator
+from stepper import Stepper
+from pseudoRKQSStepper import PseudoRKQSStepper
+from pidStepper import PIDStepper
 
 def L1norm(var, matrix, RHSvector):
     r"""
