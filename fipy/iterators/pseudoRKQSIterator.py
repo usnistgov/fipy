@@ -4,7 +4,7 @@
  # 
  # FILE: "pseudoRKQSIterator.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/9/06 {7:43:49 PM}
+ #                                 last update: 11/10/06 {8:22:09 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -55,27 +55,27 @@ class PseudoRKQSIterator(Iterator):
         self.pshrink = pshrink
         self.errcon = errcon
         
-    def _step(self, dtTry, dtMax, elapsed, sweepFn, failFn, *args, **kwargs):
+    def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
         residual = 1e100
         while residual > 1.:
-            residual = sweepFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs)
+            residual = sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs)
             
             if residual > 1.:
                 # step failed
-                failFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs)
+                failFn(iterates=self.iterates, dt=dt, *args, **kwargs)
                     
                 # revert
                 for var, eqn, bcs in self.iterates:
                     var.setValue(var.getOld())
                     
-                    dtTry = max(self.safety * dtTry * residual**self.pgrow, 0.1 * dtTry)
-                if elapsed + dtTry == elapsed:
-                    raise "step size underflow"
+                    dt = max(self.safety * dt * residual**self.pgrow, 0.1 * dt)
+                    
+                dt = self._lowerBound(dt)
 
         if residual > self.errcon:
-            dtNext = dtTry * self.safety * residual**self.pshrink
+            dtNext = dt * self.safety * residual**self.pshrink
         else:
-            dtNext = 5 * dtTry
+            dtNext = 5 * dt
             
-        return dtTry, dtNext
+        return dt, dtNext
 

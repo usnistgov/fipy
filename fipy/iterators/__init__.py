@@ -4,7 +4,7 @@
  # 
  # FILE: "__init__.py"
  #                                     created: 11/1/06 {4:27:40 PM}
- #                                 last update: 11/9/06 {7:44:28 PM}
+ #                                 last update: 11/10/06 {7:00:35 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  #   mail: NIST
@@ -82,6 +82,32 @@ def L2norm(var, matrix, RHSvector):
     denom = sqrt(add.reduce(var.getOld()**2))
     return sqrt(add.reduce((var - var.getOld())**2)) / (denom + (denom == 0))
     
+def LINFnorm(var, matrix, RHSvector):
+    r"""
+    :Parameters:
+      - `var`: The `CellVariable` in question
+      - `matrix`: *(ignored)*
+      - `RHSvector`: *(ignored)*
+      
+    :Returns: 
+      .. raw:: latex
+
+         \[
+         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}{\|\mathtt{var}^\text{old}\|_2}
+         \]
+         where $\|\vec{x}\|_2 = \sqrt{\sum_{r=1}^{n} |x_r|^2}$ is the
+         $L^2$-norm of $\vec{x}$.
+    """
+    from fipy.tools.numerix import maximum
+    denom = maximum(abs(var.getOld()))
+    return maximum(abs(var - var.getOld())) / (denom + (denom == 0))
+
+def error(var, matrix, RHSvector):
+    pass
+    
+def residual(var, matrix, RHSvector):
+    pass
+             
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls `fn(*args, **kwargs)` until the residual returned by

@@ -4,7 +4,7 @@
  # 
  # FILE: "pidIterator.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/9/06 {7:43:59 PM}
+ #                                 last update: 11/10/06 {8:20:57 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -54,10 +54,8 @@ class PIDIterator(Iterator):
            pages =   {201-231},
         }
     """
-    def __init__(self, dtMin, iterates=(), proportional=0.075, integral=0.175, derivative=0.01):
+    def __init__(self, iterates=(), proportional=0.075, integral=0.175, derivative=0.01):
         Iterator.__init__(self, iterates=iterates)
-        self.dtMin = dtMin
-        self.dtPrev = dtMin
           
         self.proportional = proportional
         self.integral = integral
@@ -66,20 +64,15 @@ class PIDIterator(Iterator):
         self.error = [1., 1., 1.]
         self.nrej = 0
         
-    def _adjustTimestep(self, dt, dtMax):
-        dt = max(dt, self.dtMin)
-        dt = min(dt, dtMax)
-        return dt
-                        
-    def _step(self, dtTry, dtMax, elapsed, sweepFn, failFn, *args, **kwargs):
+    def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
         while 1:
-            self.error[2] = sweepFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs)
+            self.error[2] = sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs)
             
             # omitting nsa > nsaMax check since it's unclear from 
             # the paper what it's supposed to do
-            if self.error[2] > 1. and dtTry > self.dtMin:
+            if self.error[2] > 1. and dt > self.dtMin:
                 # reject the timestep
-                failFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs)
+                failFn(iterates=self.iterates, dt=dt, *args, **kwargs)
                 
                 self.nrej += 1
                 
@@ -88,23 +81,19 @@ class PIDIterator(Iterator):
 
                 factor = min(1. / self.error[2], 0.8)
                 
-                dtTry = max(factor * dtTry, self.dtMin)
+                dt = self._lowerBound(factor * dt)
                 
-                self.dtPrev = dtTry**2 / self.dtPrev
+                dtPrev = dt**2 / dtPrev
             else:
                 # step succeeded
                 break
                 
-        dtNext = self.dtPrev * ((self.error[1] / self.error[2])**self.proportional 
-                                * (1. / self.error[2])**self.integral 
-                                * (self.error[1]**2 / (self.error[2] * self.error[0]))**self.derivative) 
+        dtNext = dtPrev * ((self.error[1] / self.error[2])**self.proportional 
+                           * (1. / self.error[2])**self.integral 
+                           * (self.error[1]**2 / (self.error[2] * self.error[0]))**self.derivative) 
               
-        dtNext = self._adjustTimestep(dt=dtNext, dtMax=dtMax)
-        
-        self.dtPrev = dtNext
-        
         self.error[0] = self.error[1]
         self.error[1] = self.error[2]
         
-        return dtTry, dtNext
+        return dt, dtNext
 

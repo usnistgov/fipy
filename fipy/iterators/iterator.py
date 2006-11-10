@@ -4,7 +4,7 @@
  # 
  # FILE: "iterator.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/1/06 {11:50:28 AM}
+ #                                 last update: 11/10/06 {9:13:32 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@ class Iterator:
     def __init__(self, iterates=()):
         self.iterates = iterates
         
-    def sweepFn(iterates, dtTry):
+    def sweepFn(iterates, dt):
         residual = 0
         for var, eqn, bcs in iterates:
             residual = max(residual, eqn.sweep(var=var, dt=dt, boundaryConditions=bcs))
@@ -51,39 +51,59 @@ class Iterator:
         return residual
     sweepFn = staticmethod(sweepFn)
          
-    def successFn(iterates, dt, dtTry, elapsed, *args, **kwargs):
+    def successFn(iterates, dt, dtPrev, elapsed, *args, **kwargs):
         pass
     successFn = staticmethod(successFn)
          
-    def failFn(iterates, dtTry, *args, **kwargs):
+    def failFn(iterates, dt, *args, **kwargs):
         pass
     failFn = staticmethod(failFn)
 
-    def _step(self, dtTry, dtMax, elapsed, sweepFn, failFn, *args, **kwargs):
-        sweepFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs) 
-        return dtTry, dtTry
+    def _lowerBound(self, dt):
+        dt = max(dt, self.dtMin)
+        if self.elapsed + dt == self.elapsed:
+            raise "step size underflow: %g + %g == %g" % (self.elapsed, dt, self.elapsed)
+            
+        return dt
+        
+    def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
+        sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs) 
+        return dt, dt
          
-    def step(self, dt, dtTry=None, sweepFn=None, successFn=None, failFn=None, *args, **kwargs):
+    def step(self, dt, dtTry=None, dtMin=None, dtPrev=None,
+             sweepFn=None, successFn=None, failFn=None, *args, **kwargs):
         sweepFn = sweepFn or self.sweepFn
         successFn = successFn or self.successFn
         failFn = failFn or self.failFn
      
-        dtTry = dtTry or dt
-        elapsed = 0.
+        dtTry = dtTry or dtMin or dt
+        dtPrev = dtPrev or dtMin
+        self.dtMin = dtMin or 0.
+        
+        self.elapsed = 0.
          
-        while elapsed < dt:
-            dtMax = dt - elapsed 
-            dtTry = min(dtTry, dtMax)
+        while self.elapsed < dt:
+            dtMax = dt - self.elapsed 
+            if dtTry > dtMax:
+                dtSave = dtTry
+                dtTry = dtMax
+            else:
+                dtSave = None
             
             for var, eqn, bcs in self.iterates:
                 var.updateOld()
                  
-            dtDid, dtTry = self._step(dtTry=dtTry, dtMax=dtMax, elapsed=elapsed,  
-                                      sweepFn=sweepFn, failFn=failFn,
-                                      *args, **kwargs)
-            elapsed += dtDid
+            dtPrev, dtTry = self._step(dt=dtTry, dtPrev=dtPrev,  
+                                       sweepFn=sweepFn, failFn=failFn,
+                                       *args, **kwargs)
+                                      
+            print "dtPrev:", dtPrev, "dtTry:", dtTry
+            
+            self.elapsed += dtPrev
                                 
             successFn(iterates=self.iterates, 
-                      dtTry=dtTry, elapsed=elapsed, dt=dt, *args, **kwargs)
+                      dtPrev=dtPrev, elapsed=self.elapsed, dt=dt, *args, **kwargs)
+                      
+            dtTry = max(dtTry, self.dtMin)
 
-        return dtTry
+        return dtSave or dtPrev, dtSave or dtTry
