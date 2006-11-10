@@ -4,7 +4,7 @@
  # 
  # FILE: "stepper.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/10/06 {4:21:51 PM}
+ #                                 last update: 11/10/06 {4:30:12 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -40,22 +40,22 @@
 __docformat__ = 'restructuredtext'
 
 class Stepper:
-    def __init__(self, iterates=()):
-        self.iterates = iterates
+    def __init__(self, vardata=()):
+        self.vardata = vardata
         
-    def sweepFn(iterates, dt):
+    def sweepFn(vardata, dt):
         residual = 0
-        for var, eqn, bcs in iterates:
+        for var, eqn, bcs in vardata:
             residual = max(residual, eqn.sweep(var=var, dt=dt, boundaryConditions=bcs))
              
         return residual
     sweepFn = staticmethod(sweepFn)
          
-    def successFn(iterates, dt, dtPrev, elapsed, *args, **kwargs):
+    def successFn(vardata, dt, dtPrev, elapsed, *args, **kwargs):
         pass
     successFn = staticmethod(successFn)
          
-    def failFn(iterates, dt, *args, **kwargs):
+    def failFn(vardata, dt, *args, **kwargs):
         pass
     failFn = staticmethod(failFn)
 
@@ -67,7 +67,7 @@ class Stepper:
         return dt
         
     def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
-        sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs) 
+        sweepFn(vardata=self.vardata, dt=dt, *args, **kwargs) 
         return dt, dt
          
     def step(self, dt, dtTry=None, dtMin=None, dtPrev=None,
@@ -90,7 +90,7 @@ class Stepper:
             else:
                 dtSave = None
             
-            for var, eqn, bcs in self.iterates:
+            for var, eqn, bcs in self.vardata:
                 var.updateOld()
                  
             dtPrev, dtTry = self._step(dt=dtTry, dtPrev=dtPrev,  
@@ -101,7 +101,7 @@ class Stepper:
             
             self.elapsed += dtPrev
                                 
-            successFn(iterates=self.iterates, 
+            successFn(vardata=self.vardata, 
                       dtPrev=dtPrev, elapsed=self.elapsed, dt=dt, *args, **kwargs)
                       
             dtTry = max(dtTry, self.dtMin)

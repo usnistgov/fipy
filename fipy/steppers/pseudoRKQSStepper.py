@@ -4,7 +4,7 @@
  # 
  # FILE: "pseudoRKQSStepper.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/10/06 {4:26:15 PM}
+ #                                 last update: 11/10/06 {4:30:23 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -48,8 +48,8 @@ class PseudoRKQSStepper(Stepper):
     Not really appropriate, since we're not doing Runge-Kutta steps
     in the first place, but works OK.
     """
-    def __init__(self, iterates=(), safety=0.9, pgrow=-0.2, pshrink=-0.25, errcon=1.89e-4):
-        Stepper.__init__(self, iterates=iterates)
+    def __init__(self, vardata=(), safety=0.9, pgrow=-0.2, pshrink=-0.25, errcon=1.89e-4):
+        Stepper.__init__(self, vardata=vardata)
         self.safety = safety
         self.pgrow = pgrow
         self.pshrink = pshrink
@@ -58,14 +58,14 @@ class PseudoRKQSStepper(Stepper):
     def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
         residual = 1e100
         while residual > 1.:
-            residual = sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs)
+            residual = sweepFn(vardata=self.vardata, dt=dt, *args, **kwargs)
             
             if residual > 1.:
                 # step failed
-                failFn(iterates=self.iterates, dt=dt, *args, **kwargs)
+                failFn(vardata=self.vardata, dt=dt, *args, **kwargs)
                     
                 # revert
-                for var, eqn, bcs in self.iterates:
+                for var, eqn, bcs in self.vardata:
                     var.setValue(var.getOld())
                     
                     dt = max(self.safety * dt * residual**self.pgrow, 0.1 * dt)

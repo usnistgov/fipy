@@ -4,7 +4,7 @@
  # 
  # FILE: "pidStepper.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/10/06 {4:23:10 PM}
+ #                                 last update: 11/10/06 {4:30:35 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -54,8 +54,8 @@ class PIDStepper(Stepper):
            pages =   {201-231},
         }
     """
-    def __init__(self, iterates=(), proportional=0.075, integral=0.175, derivative=0.01):
-        Stepper.__init__(self, iterates=iterates)
+    def __init__(self, vardata=(), proportional=0.075, integral=0.175, derivative=0.01):
+        Stepper.__init__(self, vardata=vardata)
           
         self.proportional = proportional
         self.integral = integral
@@ -66,17 +66,17 @@ class PIDStepper(Stepper):
         
     def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
         while 1:
-            self.error[2] = sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs)
+            self.error[2] = sweepFn(vardata=self.vardata, dt=dt, *args, **kwargs)
             
             # omitting nsa > nsaMax check since it's unclear from 
             # the paper what it's supposed to do
             if self.error[2] > 1. and dt > self.dtMin:
                 # reject the timestep
-                failFn(iterates=self.iterates, dt=dt, *args, **kwargs)
+                failFn(vardata=self.vardata, dt=dt, *args, **kwargs)
                 
                 self.nrej += 1
                 
-                for var, eqn, bcs in self.iterates:
+                for var, eqn, bcs in self.vardata:
                     var.setValue(var.getOld())
 
                 factor = min(1. / self.error[2], 0.8)
