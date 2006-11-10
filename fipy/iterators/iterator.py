@@ -4,7 +4,7 @@
  # 
  # FILE: "iterator.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 10/31/06 {1:32:39 PM}
+ #                                 last update: 11/1/06 {11:50:28 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@ class Iterator:
     def __init__(self, iterates=()):
         self.iterates = iterates
         
-    def sweepFn(iterates, dt):
+    def sweepFn(iterates, dtTry):
         residual = 0
         for var, eqn, bcs in iterates:
             residual = max(residual, eqn.sweep(var=var, dt=dt, boundaryConditions=bcs))
@@ -59,24 +59,26 @@ class Iterator:
         pass
     failFn = staticmethod(failFn)
 
-    def _step(self, dt, elapsed, sweepFn, failFn, *args, **kwargs):
-        sweepFn(iterates=self.iterates, dt=dt, *args, **kwargs) 
-        return dt, dt
+    def _step(self, dtTry, dtMax, elapsed, sweepFn, failFn, *args, **kwargs):
+        sweepFn(iterates=self.iterates, dtTry=dtTry, *args, **kwargs) 
+        return dtTry, dtTry
          
-    def step(self, dt, maxError=1e-3, sweepFn=None, successFn=None, failFn=None, *args, **kwargs):
+    def step(self, dt, dtTry=None, sweepFn=None, successFn=None, failFn=None, *args, **kwargs):
         sweepFn = sweepFn or self.sweepFn
         successFn = successFn or self.successFn
         failFn = failFn or self.failFn
      
-        dtTry = dt
+        dtTry = dtTry or dt
         elapsed = 0.
          
         while elapsed < dt:
-             
+            dtMax = dt - elapsed 
+            dtTry = min(dtTry, dtMax)
+            
             for var, eqn, bcs in self.iterates:
                 var.updateOld()
                  
-            dtDid, dtTry = self._step(dt=dtTry, elapsed=elapsed, maxError=maxError, 
+            dtDid, dtTry = self._step(dtTry=dtTry, dtMax=dtMax, elapsed=elapsed,  
                                       sweepFn=sweepFn, failFn=failFn,
                                       *args, **kwargs)
             elapsed += dtDid
@@ -84,5 +86,4 @@ class Iterator:
             successFn(iterates=self.iterates, 
                       dtTry=dtTry, elapsed=elapsed, dt=dt, *args, **kwargs)
 
-            dtTry = min(dtTry, dt - elapsed)
-
+        return dtTry
