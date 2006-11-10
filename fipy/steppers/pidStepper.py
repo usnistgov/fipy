@@ -2,9 +2,9 @@
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
  # 
- # FILE: "pidIterator.py"
+ # FILE: "pidStepper.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/10/06 {8:20:57 AM}
+ #                                 last update: 11/10/06 {4:23:10 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -37,11 +37,11 @@
  # ########################################################################
  ##
 
-from fipy.iterators.iterator import Iterator
+from fipy.steppers.stepper import Stepper
 
-class PIDIterator(Iterator):
+class PIDStepper(Stepper):
     """
-    Adaptive iterator using a PID controller, based on::
+    Adaptive stepper using a PID controller, based on::
         
         @article{PIDpaper,
            author =  {A. M. P. Valli and G. F. Carey and A. L. G. A. Coutinho},
@@ -55,7 +55,7 @@ class PIDIterator(Iterator):
         }
     """
     def __init__(self, iterates=(), proportional=0.075, integral=0.175, derivative=0.01):
-        Iterator.__init__(self, iterates=iterates)
+        Stepper.__init__(self, iterates=iterates)
           
         self.proportional = proportional
         self.integral = integral

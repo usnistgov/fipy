@@ -2,9 +2,9 @@
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
  # 
- # FILE: "pseudoRKQSIterator.py"
+ # FILE: "pseudoRKQSStepper.py"
  #                                     created: 10/31/06 {11:26:57 AM}
- #                                 last update: 11/10/06 {8:22:09 AM}
+ #                                 last update: 11/10/06 {4:22:29 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -37,11 +37,11 @@
  # ########################################################################
  ##
 
-from fipy.iterators.iterator import Iterator
+from fipy.steppers.stepper import Stepper
 
-class PseudoRKQSIterator(Iterator):
+class PseudoRKQSStepper(Stepper):
     """
-    Adaptive iterator based on the ``rkqs`` (Runge-Kutta
+    Adaptive stepper based on the ``rkqs`` (Runge-Kutta
     "quality-controlled" stepper) algorithm of Numerical Recipes in C: 2nd
     Edition, Section 16.2.
     

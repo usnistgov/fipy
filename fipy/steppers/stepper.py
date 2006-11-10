@@ -2,9 +2,9 @@
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
  # 
- # FILE: "iterator.py"
+ # FILE: "stepper.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/10/06 {9:13:32 AM}
+ #                                 last update: 11/10/06 {4:21:51 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -39,7 +39,7 @@
 
 __docformat__ = 'restructuredtext'
 
-class Iterator:
+class Stepper:
     def __init__(self, iterates=()):
         self.iterates = iterates
         
