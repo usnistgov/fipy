@@ -6,10 +6,26 @@ import string
 import glob
 import imp
 
-from gistViewer import *
-from gnuplotViewer import *
-from matplotlibViewer import *
-from mayaviViewer import *
+try:
+    from gistViewer import *
+except:
+    pass
+
+try:
+    from gnuplotViewer import *
+except:
+    pass
+
+try:
+    from matplotlibViewer import *
+except:
+    pass
+
+try:
+    from mayaviViewer import *
+except:
+    pass
+
 from multiViewer import MultiViewer
 from tsvViewer import TSVViewer
 
