@@ -725,9 +725,12 @@ class LatexFormatter:
         # Returns
         if freturn.descr() or freturn.type():
             str += ' '*4 + '\\EpydocFunctionReturns['
+            if freturn.type():
+                str += self._docstring_to_latex(freturn.type())
+            str += ']{'
             if freturn.descr():
                 str += self._docstring_to_latex(freturn.descr())
-            str += ']{%s}\n\n' % self._docstring_to_latex(freturn.type())
+            str += '}\n\n'
 
         # Raises
         if fraises:
