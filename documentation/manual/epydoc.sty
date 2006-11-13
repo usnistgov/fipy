@@ -106,8 +106,8 @@
 \newcommand{\EpydocFunctionReturns}[2][]{%
     \textbf{Return Value}
     \begin{quote}
-        \ifthenelse{\equal{##1}{}}{##2}{%
-            ##1 \textit{(type=##2)}%
+        \ifthenelse{\equal{#2}{}}{#1}{%
+            #2 \textit{(type=#1)}%
         }
     \end{quote}
     \vspace{1ex}}

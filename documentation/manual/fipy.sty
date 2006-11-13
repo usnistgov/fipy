@@ -557,6 +557,35 @@
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
+% \renewcommand{\EpydocFunctionReturns}[2][]{%
+%     \textbf{Return Value}
+%     \begin{quote}
+%         \ifthenelse{\equal{#1}{}}{#2}{%
+%             #1 \textit{(type=#2)}%
+%         }
+%     \end{quote}
+%     \vspace{1ex}}
+
+\renewcommand{\EpydocFunctionReturns}[2][]{%
+    \vspace{0.4ex}
+    \begin{list}{}{\leftmargin1.5em}\item{}%
+    \begin{cminipage}[light-gray]\textbf{Return Value}
+    \begin{quote}
+        \ifthenelse{\equal{#1}{}}{#2}{%
+            #1 \textit{(type=#2)}%
+        }
+    \end{quote}\end{cminipage}\end{list}}
+
+\renewcommand{\EpydocFunctionReturns}[2][]{%
+    \vspace{0.4ex}
+    \begin{list}{}{\leftmargin1.5em}\item{}%
+    \begin{cminipage}[light-gray]\textbf{Return Value}
+    \begin{quote}
+        \ifthenelse{\equal{#1}{}}{#2}{%
+            #2 \textit{(type=#1)}%
+        }
+    \end{quote}\end{cminipage}\end{list}}
+
 % indent on left
 \renewcommand{\EpydocFunctionOverrides}[2][0]{%
     \begin{list}{}{\leftmargin1.5em}\item{}%
