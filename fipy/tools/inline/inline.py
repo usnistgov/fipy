@@ -1,6 +1,5 @@
 import sys
 import Numeric 
-import weave
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if '--inline' in sys.argv[1:]:
@@ -8,8 +7,7 @@ def _optionalInline(inlineFn, pythonFn, *args):
     else:
 	return pythonFn(*args)
 			 
-def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
-
+def _runInline(code_in, converters=None, verbose=0, **args):
     argsKeys = args.keys()
     dimList = ['i', 'j', 'k']
           
@@ -35,10 +33,12 @@ def _runInline(code_in, converters=weave.converters.blitz, verbose=0, **args):
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
+    import weave
+        
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
-                 type_converters=converters,
+                 type_converters=converters or weave.converters.blitz,
                  compiler = 'gcc',
                  verbose = verbose,
                  extra_compile_args =['-O3'])
