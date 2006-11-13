@@ -209,11 +209,11 @@ http://pysparse.sourceforge.net
 You can `download the PySparse archive`_ or check it out via
 anonymous CVS download::
 
-    $ cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse login
+    $ cvs -d:pserver:anonymous@pysparse.cvs.sourceforge.net:/cvsroot/pysparse login
 
 and press enter at the password prompt, then::
 
-    $ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pysparse \
+    $ cvs -z3 -d:pserver:anonymous@pysparse.cvs.sourceforge.net:/cvsroot/pysparse \
     >     checkout pysparse
 
 From within the ``pysparse`` base directory, follow its included
@@ -444,13 +444,13 @@ Obtaining |FiPy|
 archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion, issue the following
 commands::
 
-    $ svn checkout http://matdl-osi.org/svn/fipy/tags/CURRENT
+    $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
 
 This will download a fairly stable version of |FiPy| (somewhere
 between version |VERSION| and HEAD). If you prefer, you can download
 |FiPy| version |VERSION| (recommended) with::
 
-    $ svn checkout http://matdl-osi.org/svn/fipy/tags/STABLE
+    $ svn checkout http://matforge.org/svn/fipy/tags/STABLE
 
 Further information about Subversion_ can be found in
 |documentation:SVN.txt| and in the `online Subversion Red Bean book`_
@@ -578,7 +578,7 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
-.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/browser
+.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
 .. include:: utils/include.txt
