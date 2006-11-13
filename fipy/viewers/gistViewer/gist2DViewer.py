@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/25/06 {4:15:13 PM} 
+ #                                last update: 10/30/06 {11:02:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,9 +48,6 @@ import Numeric
 from fipy.tools import numerix 
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
-import gist
-import colorbar
-
 class Gist2DViewer(GistViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.
@@ -91,6 +88,8 @@ class Gist2DViewer(GistViewer):
         return [vars[0]]
 
     def _plot(self):
+        import gist
+    
         gist.window(self.id, wait = 1)
         gist.animate(1)
         gist.pltitle(self.title)
@@ -129,7 +128,11 @@ class Gist2DViewer(GistViewer):
         xCoords = Numeric.take(vertexCoords[:,0], Numeric.array(vertexIDs).flat)
         yCoords = Numeric.take(vertexCoords[:,1], Numeric.array(vertexIDs).flat)
 
+        import gist
+        
         gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
+
+        import colorbar
 
         colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = self.vars[0].getName())
 
@@ -148,6 +151,8 @@ class Gist2DViewer(GistViewer):
         y0 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,0])
         x1 = numerix.take(vertexCoords[:,0], faceVertexIDs[:,1])
         y1 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,1])
+        
+        import gist
         
         gist.pldj(x0, y0, x1, y1)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 4/7/06 {4:29:14 PM}
+ #                                last update: 10/30/06 {11:01:24 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,6 @@ __docformat__ = 'restructuredtext'
 import os
 
 import Numeric
-import gist
 
 from fipy.viewers.viewer import Viewer
 
@@ -55,7 +54,6 @@ class GistViewer(Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-
     
     _id=0
     
@@ -81,6 +79,8 @@ class GistViewer(Viewer):
         self.id = GistViewer._id 
 	GistViewer._id += 1
         
+        import gist
+        
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, key):
@@ -91,6 +91,8 @@ class GistViewer(Viewer):
         return limit
         
     def plot(self, filename = None):
+        import gist
+    
         if filename is not None:
             import os.path
             root, ext = os.path.splitext(filename)
