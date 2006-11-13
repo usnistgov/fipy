@@ -4,7 +4,7 @@
  # 
  # FILE: "__init__.py"
  #                                     created: 11/1/06 {4:27:40 PM}
- #                                 last update: 11/10/06 {4:25:25 PM}
+ #                                 last update: 11/13/06 {9:27:59 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  #   mail: NIST
@@ -42,7 +42,53 @@ from stepper import Stepper
 from pseudoRKQSStepper import PseudoRKQSStepper
 from pidStepper import PIDStepper
 
-def L1norm(var, matrix, RHSvector):
+def residual(var, matrix, RHSvector):
+    r"""
+    Determines the residual for the current solution matrix and variable.
+    
+    :Parameters:
+      - `var`: The `CellVariable` in question, *prior* to solution.
+      - `matrix`: The coefficient matrix at this step/sweep
+      - `RHSvector`: The 
+      
+    :Returns: 
+      .. raw:: latex
+
+         \[
+         \|\mathsf{L}\vec{x} - \vec{b}\|_\infty
+         \]
+         where $\|\vec{\xi}\|_\infty$ is the $L^\infty$-norm of $\vec{\xi}$.
+    """
+    from fipy.tools.numerix import array, LINFnorm
+    
+    Lx = matrix * array(var)
+    return LINFnorm(Lx - RHSvector)
+    
+def error(var, matrix, RHSvector, norm):
+    r"""
+    :Parameters:
+      - `var`: The `CellVariable` in question.
+      - `matrix`: *(ignored)*
+      - `RHSvector`: *(ignored)*
+      - `norm`: A function that will normalize its `array` argument and return 
+        a single number
+      
+    :Returns: 
+      .. raw:: latex
+
+         \[
+         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_?}
+         {\|\mathtt{var}^\text{old}\|_?}
+         \]
+         where $\|\vec{x}\|_?$ is the normalization of $\vec{x}$ provided
+         by `norm()`.
+    """
+    from fipy.tools.numerix import L1norm
+    denom = L1norm(var.getOld())
+    return L1norm(var - var.getOld()) / (denom + (denom == 0))
+
+    
+def L1error(var, matrix, RHSvector):
     r"""
     :Parameters:
       - `var`: The `CellVariable` in question.
@@ -53,61 +99,53 @@ def L1norm(var, matrix, RHSvector):
       .. raw:: latex
 
          \[
-         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_1}{\|\mathtt{var}^\text{old}\|_1}
+         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_1}
+         {\|\mathtt{var}^\text{old}\|_1}
          \]
-         where $\|\vec{x}\|_1 = \sum_{r=1}^{n} |x_r|$ is the $L^1$-norm of
-         $\vec{x}$.
+         where $\|\vec{x}\|_1$ is the $L^1$-norm of $\vec{x}$.
     """
-    from fipy.tools.numerix import add
-    denom = add.reduce(abs(var.getOld()))
-    return add.reduce(abs(var - var.getOld())) / (denom + (denom == 0))
-    
-def L2norm(var, matrix, RHSvector):
-    r"""
-    :Parameters:
-      - `var`: The `CellVariable` in question
-      - `matrix`: *(ignored)*
-      - `RHSvector`: *(ignored)*
-      
-    :Returns: 
-      .. raw:: latex
-    
-         \[
-         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}{\|\mathtt{var}^\text{old}\|_2}
-         \]
-         where $\|\vec{x}\|_2 = \sqrt{\sum_{r=1}^{n} |x_r|^2}$ is the
-         $L^2$-norm of $\vec{x}$.
-    """
-    from fipy.tools.numerix import add, sqrt
-    denom = sqrt(add.reduce(var.getOld()**2))
-    return sqrt(add.reduce((var - var.getOld())**2)) / (denom + (denom == 0))
-    
-def LINFnorm(var, matrix, RHSvector):
-    r"""
-    :Parameters:
-      - `var`: The `CellVariable` in question
-      - `matrix`: *(ignored)*
-      - `RHSvector`: *(ignored)*
-      
-    :Returns: 
-      .. raw:: latex
-
-         \[
-         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}{\|\mathtt{var}^\text{old}\|_2}
-         \]
-         where $\|\vec{x}\|_2 = \sqrt{\sum_{r=1}^{n} |x_r|^2}$ is the
-         $L^2$-norm of $\vec{x}$.
-    """
-    from fipy.tools.numerix import maximum
-    denom = maximum(abs(var.getOld()))
-    return maximum(abs(var - var.getOld())) / (denom + (denom == 0))
-
-def error(var, matrix, RHSvector):
-    pass
-    
-def residual(var, matrix, RHSvector):
-    pass
+    from fipy.tools.numerix import L1norm
+    return error(var, matrix, RHSvector, L1norm)
              
+def L2error(var, matrix, RHSvector):
+    r"""
+    :Parameters:
+      - `var`: The `CellVariable` in question.
+      - `matrix`: *(ignored)*
+      - `RHSvector`: *(ignored)*
+      
+    :Returns: 
+      .. raw:: latex
+
+         \[
+         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}
+         {\|\mathtt{var}^\text{old}\|_2}
+         \]
+         where $\|\vec{x}\|_2$ is the $L^2$-norm of $\vec{x}$.
+    """
+    from fipy.tools.numerix import L2norm
+    return error(var, matrix, RHSvector, L2norm)
+             
+def LINFerror(var, matrix, RHSvector):
+    r"""
+    :Parameters:
+      - `var`: The `CellVariable` in question.
+      - `matrix`: *(ignored)*
+      - `RHSvector`: *(ignored)*
+      
+    :Returns: 
+      .. raw:: latex
+
+         \[
+         \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_\infty}
+         {\|\mathtt{var}^\text{old}\|_\infty}
+         \]
+         where $\|\vec{x}\|_\infty$ is the $L^\infty$-norm of $\vec{x}$.
+    """
+    from fipy.tools.numerix import LINFnorm
+    return error(var, matrix, RHSvector, LINFnorm)
+             
+
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls `fn(*args, **kwargs)` until the residual returned by

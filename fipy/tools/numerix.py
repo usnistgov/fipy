@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 7/21/06 {2:36:08 PM} 
+ #                                last update: 11/13/06 {10:09:16 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1209,6 +1209,47 @@ while (return_val.refcount() > 1) {
 #define MAX_DIMS 30
                      """,
                      extra_compile_args =['-O3'])
+
+    
+def L1norm(arr):
+    r"""
+    :Parameters:
+      - `arr`: The `array` to evaluate.
+      
+    :Returns: 
+      .. raw:: latex
+
+         $\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|$ is the
+         $L^1$-norm of $\mathtt{arr}$.
+    """
+    return add.reduce(abs(arr))
+    
+def L2norm(arr):
+    r"""
+    :Parameters:
+      - `arr`: The `array` to evaluate.
+      
+    :Returns: 
+      .. raw:: latex
+
+         $\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}$ is
+         the $L^2$-norm of $\mathtt{arr}$.
+    """
+    return sqrt(add.reduce(arr**2))
+    
+def LINFnorm(arr):
+    r"""
+    :Parameters:
+      - `arr`: The `array` to evaluate.
+      
+    :Returns: 
+      .. raw:: latex
+
+         $\|\mathtt{arr}\|_\infty = \[\sum_{j=1}^{n}
+         |\mathtt{arr}_j|^\infty}\]^\infty = \over{\max}{j}
+         |\mathtt{arr}_j|$ is the $L^\infty$-norm of $\mathtt{arr}$.
+    """
+    return max(abs(arr))
 
     
 def _test(): 
