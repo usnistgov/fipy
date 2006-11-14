@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 5/15/06 {4:01:27 PM} { 2:45:36 PM}
+ #                                last update: 11/10/06 {4:12:51 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,6 @@
 __docformat__ = 'restructuredtext'
 
 import pylab
-import Numeric
 from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib1DViewer(MatplotlibViewer):
@@ -57,24 +56,27 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
 
     """
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, limits = None, title = None, xlog=False, ylog=False):
         MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     
-        self.lines = [pylab.plot(*datum) for datum in self._getData()]
+        if xlog and ylog:
+            self.lines = [pylab.loglog(*datum) for datum in self._getData()]
+        elif xlog:
+            self.lines = [pylab.semilogx(*datum) for datum in self._getData()]
+        elif ylog:
+            self.lines = [pylab.semilogy(*datum) for datum in self._getData()]
+        else:
+            self.lines = [pylab.plot(*datum) for datum in self._getData()]
 
         pylab.legend([var.getName() for var in self.vars])
 
         pylab.xlim(xmin = self._getLimit('xmin'),
                    xmax = self._getLimit('xmax'))
 
-        ymin = self._getLimit('datamin')
-        if ymin is None:
-            ymin = self._getLimit('ymin')
+        ymin = self._getLimit('datamin') or self._getLimit('ymin')
         pylab.ylim(ymin=ymin)
 
-        ymax = self._getLimit('datamax')
-        if ymax is None:
-            ymax = self._getLimit('ymax')
+        ymax = self._getLimit('datamax') or self._getLimit('ymax')
         pylab.ylim(ymax=ymax)
 
         if ymax is None or ymin is None:
@@ -95,27 +97,11 @@ class Matplotlib1DViewer(MatplotlibViewer):
         return vars
 
     def _plot(self):
-
-        
-        ymin = self._getLimit('datamin')
-        if ymin is None:
-            ymin = self._getLimit('ymin')
-        if ymin is None:
-            from fipy.tools import numerix
-            ymin = numerix.min(self.vars[0])
-            for var in self.vars[1:]:
-                ymin = min(ymin, numerix.min(var))
-            pylab.ylim(ymin=ymin)
-
-        ymax = self._getLimit('datamax')
-        if ymax is None:
-            ymax = self._getLimit('ymax')
-        if ymax is None:
-            from fipy.tools import numerix
-            ymax = numerix.max(self.vars[0])
-            for var in self.vars[1:]:
-                ymax = max(ymax, numerix.max(var))
-            pylab.ylim(ymax=ymax)
+        ymin, ymax = self._autoscale(vars=self.vars, 
+                                     datamin=self._getLimit('datamin') or self._getLimit('ymin'),
+                                     datamax=self._getLimit('datamax') or self._getLimit('ymax'))
+                                    
+        pylab.ylim(ymin=ymin, ymax=ymax)
 
         for line, datum in zip(self.lines, self._getData()):
             line[0].set_xdata(datum[0])

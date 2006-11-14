@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 5/15/06 {4:02:13 PM}
+ #                                last update: 11/1/06 {5:52:02 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,7 +60,7 @@ class MatplotlibViewer(Viewer):
 
     """
         
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, limits=None, title=None):
         """
         Create a `MatplotlibViewer`.
         
@@ -85,6 +85,23 @@ class MatplotlibViewer(Viewer):
         
         pylab.title(self.title)
         
+    def _autoscale(self, vars, datamin=None, datamax=None):
+        from fipy.tools import numerix
+
+        if datamin is None:
+            datamin = 1e300
+            for var in vars:
+                datamin = min(datamin, numerix.min(var))
+
+        if datamax is None:
+            from fipy.tools import numerix
+            datamax = 1e-300
+            for var in vars:
+                datamax = max(datamax, numerix.max(var))
+                
+        return datamin, datamax
+
+
     def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
