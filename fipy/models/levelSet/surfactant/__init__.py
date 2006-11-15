@@ -1,2 +1,4 @@
 from surfactantVariable import SurfactantVariable
 from surfactantEquation import SurfactantEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
