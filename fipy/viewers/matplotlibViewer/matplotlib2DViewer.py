@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 5/15/06 {4:01:53 PM} { 2:45:36 PM}
+ #                                last update: 11/16/06 {12:03:52 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@
  
 __docformat__ = 'restructuredtext'
 
-import pylab
 from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
 
@@ -78,6 +77,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         self._plot()
         from fipy.tools.numerix import array
         
+        import pylab
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
         ##self.colorbar = pylab.colorbar(array(self.vars[0]))
@@ -130,6 +130,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         else:
             V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
 
+        import pylab
         pylab.jet()
 
         pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)

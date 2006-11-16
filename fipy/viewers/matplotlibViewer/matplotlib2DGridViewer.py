@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 5/13/06 {10:01:25 AM} { 2:45:36 PM}
+ #                                last update: 11/16/06 {12:03:30 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,8 +44,6 @@
  
 __docformat__ = 'restructuredtext'
 
-import pylab
-
 from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib2DGridViewer(MatplotlibViewer):
@@ -69,6 +67,8 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 
         """
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+
+        import pylab
 
         self.image = pylab.imshow(self._getData(),
                                   extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
@@ -111,6 +111,8 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
     
     def _plot(self):
+        import pylab
+    
         pylab.jet()
         self.image.set_data(self._getData())
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 4/7/06 {11:56:09 AM} { 2:45:36 PM}
+ #                                last update: 11/16/06 {12:04:05 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@
  
 __docformat__ = 'restructuredtext'
 
-import pylab
 from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
@@ -108,6 +107,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             U = numerix.reshape(var[:,0], shape)
             V = numerix.reshape(var[:,1], shape)
         
+        import pylab
         pylab.quiver(X, Y, U, V, 0.15)
                             
         pylab.ylim(ymin = self._getLimit('ymin'))

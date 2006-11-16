@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/1/06 {5:52:02 PM}
+ #                                last update: 11/16/06 {12:02:32 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,8 +45,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import pylab
-
 from fipy.viewers.viewer import Viewer
 
 class MatplotlibViewer(Viewer):
@@ -77,6 +75,8 @@ class MatplotlibViewer(Viewer):
 
         """
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
+
+        import pylab
 
         pylab.ion()
 
@@ -111,6 +111,8 @@ class MatplotlibViewer(Viewer):
           
         """
         
+        import pylab
+
         pylab.figure(self.id)
 
         self._plot()

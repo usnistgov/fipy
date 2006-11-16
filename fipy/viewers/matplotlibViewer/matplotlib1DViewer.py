@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/10/06 {4:12:51 PM}
+ #                                last update: 11/16/06 {12:03:03 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@
  
 __docformat__ = 'restructuredtext'
 
-import pylab
 from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib1DViewer(MatplotlibViewer):
@@ -59,6 +58,8 @@ class Matplotlib1DViewer(MatplotlibViewer):
     def __init__(self, vars, limits = None, title = None, xlog=False, ylog=False):
         MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     
+        import pylab
+        
         if xlog and ylog:
             self.lines = [pylab.loglog(*datum) for datum in self._getData()]
         elif xlog:
