@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/15/06 {3:53:48 PM} 
+ #                                last update: 11/16/06 {1:28:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,5 +72,5 @@ class LinearGMRESSolver(Solver):
         
         info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
 	
-	if (info != 0):
-	    print >> sys.stderr, 'gmres not converged'
+        self._raiseWarning(info, iter, relres)
+

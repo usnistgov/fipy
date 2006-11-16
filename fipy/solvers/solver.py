@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 5/15/06 {3:56:38 PM} 
+ #                                last update: 11/16/06 {2:36:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,7 +41,56 @@
  # ###################################################################
  ##
 
+"""
+The iterative solvers may output warnings if the solution is considered
+unsatisfactory. If you are not interested in these warnings, you can invoke
+python with a warning filter such as::
+    
+    $ python -Wignore::fipy.SolverConvergenceWarning myscript.py
+    
+If you are extremely concerned about your preconditioner for some reason, you 
+can abort whenever it has problems with::
+    
+    $ python -Werror::fipy.PreconditionerWarning myscript.py
+    
+"""
 __docformat__ = 'restructuredtext'
+
+class SolverConvergenceWarning(Warning):
+    def __init__(self, solver, iter, relres):
+        self.solver = solver
+        self.iter = iter
+        self.relres = relres
+    
+    def __str__(self):
+        return "%s failed. Iterations: %g. Relative error: %g" % (str(self.solver), self.iter, self.relres)
+
+class MaximumIterationWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "Iterations: %g. Relative error: %g" % (self.iter, self.relres)
+        
+class PreconditionerWarning(SolverConvergenceWarning):
+    pass
+    
+class IllConditionedPreconditionerWarning(PreconditionerWarning):
+    def __str__(self):
+        return "The system involving the preconditioner was ill-conditioned. Relative error: %g" % (self.relres)
+    
+class PreconditionerNotPositiveDefiniteWarning(PreconditionerWarning):
+    def __str__(self):
+        return "The preconditioning matrix does not appear to be positive definite. Relative error: %g" % (self.relres)
+    
+class MatrixIllConditionedWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "The matrix appears to be very ill-conditioned. Relative error: %g" % (self.relres)
+    
+class StagnatedSolverWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "The solver stagnated. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
+    
+class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
 
 class Solver:
     """
@@ -70,6 +119,22 @@ class Solver:
 	
     def _solve(self, L, x, b):
 	pass
+        
+    _warningList = (ScalarQuantityOutOfRangeWarning,
+                    StagnatedSolverWarning,
+                    MatrixIllConditionedWarning,
+                    PreconditionerNotPositiveDefiniteWarning,
+                    IllConditionedPreconditionerWarning,
+                    MaximumIterationWarning)
+    
+    def _raiseWarning(self, info, iter, relres):
+        # info is negative, so we list in reverse order so that 
+        # info can be used as an index from the end
+                       
+        if info < 0:
+            # is stacklevel=5 always what's needed to get to the user's scope?
+            import warnings
+            warnings.warn(self._warningList[info](self, iter, relres), stacklevel=5)
         
     def __repr__(self):
         return '%s(tolerance=%g, iterations=%g)' \

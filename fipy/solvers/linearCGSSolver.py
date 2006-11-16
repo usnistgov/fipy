@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/15/06 {3:53:42 PM} 
+ #                                last update: 11/16/06 {1:26:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,5 +82,5 @@ class LinearCGSSolver(Solver):
 ## 	L.matvec(x,y)
 ## 	print "L * x: ", y
 	
-	if (info != 0):
-	    print >> sys.stderr, 'cg not converged'
+        self._raiseWarning(info, iter, relres)
+
