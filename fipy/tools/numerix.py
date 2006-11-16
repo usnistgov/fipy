@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 11/13/06 {10:09:16 AM} 
+ #                                last update: 11/16/06 {2:03:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,11 +85,10 @@ def _isPhysical(arr):
     """
     Returns `True` if arr is a `Variable` or `PhysicalField`.
     """
-    import fipy.variables.variable
-    import fipy.tools.dimensions.physicalField
+    from fipy.variables.variable import Variable
+    from fipy.tools.dimensions.physicalField import PhysicalField
 
-    return isinstance(arr,fipy.variables.variable.Variable) \
-	or isinstance(arr,fipy.tools.dimensions.physicalField.PhysicalField)
+    return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
 def take(arr, ids, axis = 0):
     """

@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 12/22/05 {12:04:16 PM} 
+ #                                last update: 11/16/06 {2:01:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ import MA
 import Numeric
 
 from fipy.tools import numerix
-import fipy.tools.vector as vector
+from fipy.tools import vector
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
