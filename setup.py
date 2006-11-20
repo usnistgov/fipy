@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/5/06 {3:48:26 PM} 
+ #                                last update: 11/20/06 {1:11:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -663,6 +663,7 @@ dist = setup(	name = "FiPy",
                                 'fipy.models.levelSet.electroChem',
                                 'fipy.models.levelSet.surfactant',
                         'fipy.solvers',
+                        'fipy.steppers',
                         'fipy.terms',
                         'fipy.tests',
                         'fipy.tools',
