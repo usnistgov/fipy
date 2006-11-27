@@ -143,7 +143,7 @@ def runGold(faradaysConstant=9.6e4,
     cellsBelowTrench = 10
     
     from fipy.tools import numerix
-    from gapFillMesh import TrenchMesh
+    from fipy import TrenchMesh
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,

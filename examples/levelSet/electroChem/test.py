@@ -46,7 +46,6 @@ import fipy.tests.testProgram
 import inputWriteScriptHowTo
 import inputSimpleTrenchSystem
 import inputGold
-import gapFillMesh
 import inputLeveler
 
 def _suite():
@@ -54,7 +53,6 @@ def _suite():
             'inputWriteScriptHowTo',
             'inputSimpleTrenchSystem',
             'inputGold',
-            'gapFillMesh',
             'inputLeveler'
         ), base = __name__)
     

@@ -247,7 +247,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
     etaPrime = faradaysConstant * overpotential / gasConstant / temperature
 
-    from gapFillMesh import TrenchMesh
+    from fipy import TrenchMesh
     from fipy.tools import numerix
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
