@@ -12,7 +12,7 @@ Break off for radical refactoring::
 
     $ cd trunk    
     $ BRANCH=branch-refactoring_etc
-    $ FIPYROOT=svn+ssh://username@matdl-osi.org/usr/local/svn-fipy-repos/
+    $ FIPYROOT=svn+ssh://username@matforge.org/usr/local/svn-fipy-repos/
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
     $ cd ..
     $ svn co $FIPYROOT/branches/$BRANCH
@@ -171,13 +171,13 @@ Upload to the CTCMS website::
 to build the ChangeLog. You can determine the revision number LASTREV by examining the "Last Changed 
 Rev:" field given by::
 
-    $ svn info http://matdl-osi.org/svn/fipy/tags/version-x_y
+    $ svn info http://matforge.org/svn/fipy/tags/version-x_y
 
 Make an announcement to `fipy@nist.gov`_
 
 
 .. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
-.. MatDL download page: http://matdl-osi.org/fipy/wiki/FiPyFiles
+.. MatDL download page: http://matforge.org/fipy/wiki/FiPyFiles
 .. fipy@nist.gov: mailto:fipy@nist.gov
 
 ==========================================

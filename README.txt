@@ -97,8 +97,8 @@ The significant changes since version 1.0 are:
   repository. Details on how to check out the new repository are given
   in the |INSTALLATION-txt|.
 
-- The |FiPy| repository has also been moved from Sourceforge_ to the
-  `Materials Digital Library Pathway`_.
+- The |FiPy| repository has also been moved from Sourceforge_ to 
+  MatForge_.
 
 -------------------------
 Download and Installation
@@ -119,11 +119,11 @@ You can communicate with the |FiPy| developers and with other users via our
 system`_ for bugs, support requests, feature requests and
 patch submissions |citeMailingTracking|. We welcome collaborative efforts on this project.
 
-|FiPy| is a member of the
-`Materials Digital Library Pathway Open Source Initiative`_ (MatDL-OSI). 
-This National Science Foundation funded service provides management of our
-public source code repository, our bug tracking system, and a "wiki" space
-for public contributions of code snippets, discussions, and tutorials.
+|FiPy| is a member of MatForge_, a project of the `Materials Digital Library
+Pathway`_. This National Science Foundation funded service provides
+management of our public source code repository, our bug tracking system, and
+a "wiki" space for public contributions of code snippets, discussions, and
+tutorials.
 
 ------------------------
 Conventions and Notation
@@ -201,13 +201,13 @@ or a
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
 .. _NIST:                 http://www.nist.gov/
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-.. _Subversion:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/browser
+.. _Subversion:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy/report
+.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/report
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
-.. _Sourceforge:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
-.. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/fipy
-.. _Materials Digital Library Pathway Open Source Initiative: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl-osi.org/
+.. _Sourceforge:          http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
+.. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl.org
+.. _MatForge:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/
 
 .. include:: utils/include.txt
 .. include:: documentation/VERSION.txt

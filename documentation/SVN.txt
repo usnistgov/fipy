@@ -14,12 +14,12 @@ decide on your own risk tolerance when deciding which stage of
 development to track. A fresh copy of FiPy that is designated by a
 particular ``<tag>`` can be obtained with::
 
-   $ svn checkout http://matdl-osi.org/svn/fipy/<tag>
+   $ svn checkout http://matforge.org/svn/fipy/<tag>
 
 An existing SVN checkout of FiPy can be shifted to a different state of
 development by issuing the command::
 
-   $ svn switch http://matdl-osi.org/svn/fipy/<tag> .
+   $ svn switch http://matforge.org/svn/fipy/<tag> .
 
 in the base directory of the working copy. The main tags (``<tag>``)
 for FiPy, in decreasing order of stability, are:
