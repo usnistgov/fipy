@@ -132,10 +132,11 @@ class _ConvectionCoeff(VectorFaceVariable):
         alpha = Numeric.where(alpha > 0, alpha, 0)
 
         alphasum = Numeric.sum(alpha, axis = 1)
-        alphasum += (alphasum < 1e-10) * 1e-10
+        alphasum += (alphasum < 1e-100) * 1e-100
         alpha = alpha / alphasum[:,Numeric.NewAxis]
 
         phi = Numeric.reshape(Numeric.repeat(self.distanceVar, M), (Ncells, M))
+
         alpha = Numeric.where(phi > 0., 0, alpha)
 
         volumes = Numeric.array(self.mesh.getCellVolumes())

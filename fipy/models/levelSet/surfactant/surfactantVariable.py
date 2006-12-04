@@ -57,7 +57,7 @@ class SurfactantVariable(CellVariable):
 
     """
     
-    def __init__(self, value = 0., distanceVar = None, name = 'surfactant variable'):
+    def __init__(self, value = 0., distanceVar = None, name = 'surfactant variable', hasOld=False):
         """
 
         A simple 1D test:
@@ -103,12 +103,18 @@ class SurfactantVariable(CellVariable):
           - `name`: The name of the variable.
           
         """
-        
-        CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name)
 
-        self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
+
+        CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name, hasOld=False)
 
         self.distanceVar = self._requires(distanceVar)
+        self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
+
+        if hasOld:
+            self.old = self.copy()
+	else:
+            self.old = None
+
         self.interfaceSurfactantVariable = None
 
     def getInterfaceVar(self):
@@ -130,6 +136,13 @@ class SurfactantVariable(CellVariable):
         
     def _calcValue(self):
         return self.value
+
+    def copy(self):
+        return self.__class__(
+            distanceVar=self.distanceVar,
+	    name=self.name + "_old", 
+	    value=self.getValue().copy(),
+	    hasOld=False)
     
 class _InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
@@ -140,7 +153,7 @@ class _InterfaceSurfactantVariable(CellVariable):
         areas = self.surfactantVar._getDistanceVar().getCellInterfaceAreas()        
         areas = Numeric.where(areas > 1e-20, areas, 1)
         return Numeric.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
-    
+
 def _test(): 
     import doctest
     return doctest.testmod()

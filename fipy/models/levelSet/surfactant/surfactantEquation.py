@@ -94,3 +94,24 @@ class SurfactantEquation:
         self.eq.solve(var,
                       boundaryConditions = self.bc + boundaryConditions,
                       solver = solver)
+
+    def sweep(self, var, solver=LinearCGSSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+        r"""
+        Builds and solves the `Term`'s linear system once. This method
+        also recalculates and returns the residual as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+
+	"""
+
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+
+        return self.eq.sweep(var, solver=solver, boundaryConditions=self.bc + boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

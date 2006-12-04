@@ -49,6 +49,8 @@ from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.solvers.linearCGSSolver import LinearCGSSolver
+from fipy.solvers.linearLUSolver import LinearLUSolver
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -365,6 +367,25 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         for coeff in self.coeffs:
             coeff._updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
+
+    def sweep(self, var, solver=LinearLUSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+        r"""
+        Builds and solves the `AdsorbingSurfactantEquation`'s linear
+        system once. This method also recalculates and returns the
+        residual as well as applying under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+
+	"""
+        for coeff in self.coeffs:
+            coeff._updateDt(dt)
+        return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
 
 def _test(): 
     import doctest
