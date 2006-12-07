@@ -44,7 +44,7 @@
 __docformat__ = 'restructuredtext'
 
 import MA
-import Numeric
+from fipy.tools import numerix
 
 from fipy.tools import numerix
 from fipy.tools import vector
@@ -70,9 +70,9 @@ class _ConvectionCoeff(VectorFaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
-           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2),'d')
+           >>> answer = numerix.zeros((mesh._getNumberOfFaces(),2),'d')
            >>> answer[7,0] = -1
-           >>> Numeric.allclose(_ConvectionCoeff(distanceVar), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
            1
 
         Change the dimensions:
@@ -80,19 +80,19 @@ class _ConvectionCoeff(VectorFaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
            >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
            >>> answer[7,0] = -.5
-           >>> Numeric.allclose(_ConvectionCoeff(distanceVar), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
            1
 
         Two dimensional example:
 
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
            >>> distanceVar = DistanceVariable(mesh, value = (-1.5, -.5, -.5, .5))
-           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2),'d')
+           >>> answer = numerix.zeros((mesh._getNumberOfFaces(),2),'d')
            >>> answer[2,1] = -.5
            >>> answer[3,1] = -1
            >>> answer[7,0] = -.5
            >>> answer[10,0] = -1
-           >>> Numeric.allclose(_ConvectionCoeff(distanceVar), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
            1
 
         Larger grid:
@@ -101,13 +101,13 @@ class _ConvectionCoeff(VectorFaceVariable):
            >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5 , 1.5,
            ...                                           .5 , -.5, .5 ,
            ...                                           1.5, .5 , 1.5))
-           >>> answer = Numeric.zeros((mesh._getNumberOfFaces(),2), 'd')
+           >>> answer = numerix.zeros((mesh._getNumberOfFaces(),2), 'd')
            >>> answer[4,1] = .25
            >>> answer[7,1] = -.25
            >>> answer[7,1] = -.25
            >>> answer[17,0] = .25
            >>> answer[18,0] = -.25
-           >>> Numeric.allclose(_ConvectionCoeff(distanceVar), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
            1
            
         """
@@ -123,33 +123,33 @@ class _ConvectionCoeff(VectorFaceVariable):
         dim = self.mesh.getDim()
         cellFaceIDs = self.mesh._getCellFaceIDs()
      
-        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()[:,Numeric.NewAxis]
+        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()[:,numerix.NewAxis]
 
-        cellFaceNormalAreas = Numeric.array(numerix.MAtake(faceNormalAreas, cellFaceIDs).filled(fill_value = 0))
-        norms = Numeric.array(MA.array(self.mesh._getCellNormals()).filled(fill_value = 0))
+        cellFaceNormalAreas = numerix.array(numerix.MAtake(faceNormalAreas, cellFaceIDs).filled(fill_value = 0))
+        norms = numerix.array(MA.array(self.mesh._getCellNormals()).filled(fill_value = 0))
         
         alpha = numerix.dot(cellFaceNormalAreas, norms, axis = 2)
-        alpha = Numeric.where(alpha > 0, alpha, 0)
+        alpha = numerix.where(alpha > 0, alpha, 0)
 
-        alphasum = Numeric.sum(alpha, axis = 1)
+        alphasum = numerix.sum(alpha, axis = 1)
         alphasum += (alphasum < 1e-10) * 1e-10
-        alpha = alpha / alphasum[:,Numeric.NewAxis]
+        alpha = alpha / alphasum[:,numerix.NewAxis]
 
-        phi = Numeric.reshape(Numeric.repeat(self.distanceVar, M), (Ncells, M))
-        alpha = Numeric.where(phi > 0., 0, alpha)
+        phi = numerix.reshape(numerix.repeat(self.distanceVar, M), (Ncells, M))
+        alpha = numerix.where(phi > 0., 0, alpha)
 
-        volumes = Numeric.array(self.mesh.getCellVolumes())
-        alpha = alpha[:,:,Numeric.NewAxis] * volumes[:,Numeric.NewAxis,Numeric.NewAxis] * norms
+        volumes = numerix.array(self.mesh.getCellVolumes())
+        alpha = alpha[:,:,numerix.NewAxis] * volumes[:,numerix.NewAxis,numerix.NewAxis] * norms
 
-        value = Numeric.zeros(Nfaces * dim,'d')
+        value = numerix.zeros(Nfaces * dim,'d')
 
-        cellFaceIDs = (cellFaceIDs.flat * dim)[:,Numeric.NewAxis] + Numeric.resize(Numeric.arange(dim), (len(cellFaceIDs.flat),dim))
+        cellFaceIDs = (cellFaceIDs.flat * dim)[:,numerix.NewAxis] + numerix.resize(numerix.arange(dim), (len(cellFaceIDs.flat),dim))
         
         vector._putAddPy(value, cellFaceIDs.flat, alpha.flat, mask = MA.array(cellFaceIDs).flat.mask())
 
-        value = Numeric.reshape(value, (Nfaces, dim))
+        value = numerix.reshape(value, (Nfaces, dim))
 
-        return -value / self.mesh._getFaceAreas()[:,Numeric.NewAxis]
+        return -value / self.mesh._getFaceAreas()[:,numerix.NewAxis]
 
 def _test(): 
     import doctest

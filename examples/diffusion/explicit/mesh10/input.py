@@ -114,8 +114,8 @@ The result is tested against the expected profile:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[:,0]
     >>> t = timeStepDuration * steps
-    >>> import Numeric
-    >>> epsi = x / Numeric.sqrt(t * diffusionCoeff)
+    >>> from fipy.tools import numerix
+    >>> epsi = x / numerix.sqrt(t * diffusionCoeff)
     >>> import scipy
     >>> analyticalArray = scipy.special.erf(epsi/2)
     >>> print var.allclose(analyticalArray, atol = 2e-3)

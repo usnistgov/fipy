@@ -56,13 +56,13 @@ We start by defining a 1D mesh
     >>> molarVolume = PF("1.80000006366754e-05 m**3/mol")
     >>> Faraday = PF("1 Nav*e")
 
-    >>> import Numeric
+    >>> from fipy.tools import numerix
     >>> L = PF("3 nm")
     >>> nx = 1200
     >>> dx = L / nx
     >>> # nx = 200
     >>> # dx = PF("0.01 nm")
-    >>> ## dx = PF("0.001 nm") * (1.001 - 1/Numeric.cosh(Numeric.arange(-10, 10, .01)))
+    >>> ## dx = PF("0.001 nm") * (1.001 - 1/numerix.cosh(numerix.arange(-10, 10, .01)))
     >>> # L = nx * dx
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
@@ -116,7 +116,7 @@ We create four components
 
 the solvent
 
-    >>> import Numeric
+    >>> from fipy.tools import numerix
     >>> solvent = ComponentVariable(mesh = mesh, name = 'H2O', value = 1.)
     >>> CnStandardPotential = PF("34139.7265625 J/mol") / RT
     >>> CnBarrier = PF("3.6e5 J/mol") / RT
@@ -382,21 +382,21 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> ends = Numeric.take(phase, (0,-1))
-    >>> Numeric.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> ends = numerix.take(phase, (0,-1))
+    >>> numerix.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields has appropriately segregated into into
 their respective phases
 
-    >>> ends = Numeric.take(interstitials[0], (0,-1))
-    >>> Numeric.allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> ends = numerix.take(interstitials[0], (0,-1))
+    >>> numerix.allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[0], (0,-1))
-    >>> Numeric.allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> ends = numerix.take(substitutionals[0], (0,-1))
+    >>> numerix.allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = Numeric.take(substitutionals[1], (0,-1))
-    >>> Numeric.allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> ends = numerix.take(substitutionals[1], (0,-1))
+    >>> numerix.allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
 __docformat__ = 'restructuredtext'

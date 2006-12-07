@@ -100,8 +100,8 @@ class PeriodicGrid2D(Grid2D):
         ...            [1, 0],
         ...            [1, 0]]
 
-        >>> import Numeric
-        >>> Numeric.allclose(mesh._getFaceNormals(), normals)
+        >>> from fipy.tools import numerix
+        >>> numerix.allclose(mesh._getFaceNormals(), normals)
         1
 
         >>> print mesh._getCellVertexIDs()

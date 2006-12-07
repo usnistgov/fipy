@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.faceGradVariable import _FaceGradVariable
 from fipy.tools.inline import inline
@@ -81,10 +81,10 @@ class _ModFaceGradVariable(_FaceGradVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
-            normals = Numeric.array(self.mesh._getOrientedFaceNormals()),
-            id1 = Numeric.array(id1),
-            id2 = Numeric.array(id2),
-            dAP = Numeric.array(self.mesh._getCellDistances()),
+            normals = numerix.array(self.mesh._getOrientedFaceNormals()),
+            id1 = numerix.array(id1),
+            id2 = numerix.array(id2),
+            dAP = numerix.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = val,
             ni = tangents1.shape[0],

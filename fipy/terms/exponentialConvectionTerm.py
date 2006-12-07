@@ -53,8 +53,8 @@ class ExponentialConvectionTerm(ConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the exponential scheme.
-       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
+       For further details see ``\nameref{FiPy-sec:numerixalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
     """
     class _Alpha(FaceVariable):
 	def __init__(self, P):

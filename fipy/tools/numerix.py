@@ -90,21 +90,63 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
-def take(arr, ids, axis = 0):
+def take(a, indices, axis=0, fill_value = None):
     """
-    Selects the elements of `arr` corresponding to `ids`.
+    Selects the elements of `a` corresponding to `indices`.
     """
-    
-    if _isPhysical(arr):
-	return arr.take(ids, axis = axis)    
-    elif type(ids) is type(MA.array((0))):
-        return MAtake(arr, ids, axis = axis)
-    elif type(arr) is type(array((0))):
-	return NUMERIC.take(arr, ids, axis = axis)
-    elif type(arr) is type(MA.array((0))):
-	return MA.take(arr, ids, axis = axis)
+ 	   
+    if _isPhysical(a):
+        taken = a.take(indices, axis = axis)   
+    elif type(indices) is type(MA.array((0))):
+        ## Replaces `MA.take`. `MA.take` does not always work when
+        ## `indices` is a masked array.
+        ##
+        nomask = None
+        
+        taken = MA.take(a, MA.filled(indices, 0), axis = axis) 	
+        mask = MA.getmask(indices)
+
+        if mask is not nomask:
+            mask = MA.getmaskarray(indices)
+            if taken.shape != mask.shape:
+                mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
+                mask = MA.mask_or(MA.getmask(taken), mask)
+ 	       
+        if mask is not nomask:
+            taken = MA.array(data = taken, mask = mask)
+        else:
+            if MA.getmask(taken) is nomask:
+                taken = taken.filled()
+
+    elif type(a) in (type(array((0))), type(()), type([])):
+        taken = NUMERIC.take(a, indices, axis=axis)
+    elif type(a) is type(MA.array((0))):
+        taken = MA.take(a, indices, axis = axis)
     else:
-	raise TypeError, 'cannot take from object ' + str(arr)
+        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
+ 	       
+    if fill_value is not None and type(taken) is type(MA.array((0))):
+        taken = taken.filled(fill_value = fill_value)
+ 	
+    return taken
+
+## def take(arr, ids, axis = 0):
+##     """
+##     Selects the elements of `arr` corresponding to `ids`.
+##     """
+    
+##     if _isPhysical(arr):
+## 	return arr.take(ids, axis = axis)    
+##     elif type(ids) is type(MA.array((0))):
+##         return MAtake(arr, ids, axis = axis)
+##     elif type(arr) is type(array((0))):
+## 	return NUMERIC.take(arr, ids, axis = axis)
+##     elif type(arr) is type(MA.array((0))):
+## 	return MA.take(arr, ids, axis = axis)
+##     else:
+## 	raise TypeError, 'cannot take from object ' + str(arr)
+
+## take = NUMERIC.take
     
 def put(arr, ids, values):
     """
@@ -165,16 +207,19 @@ def getShape(arr):
     else:
         return array(arr).shape
 
-def sum(arr, index = 0):
+def sum(arr, axis=0):
     """
     The sum of all the elements of `arr` along the specified axis.
     """
     if _isPhysical(arr):
-	return arr.sum(index)
+	return arr.sum(axis)
     elif type(arr) is type(array((0))):
-	return NUMERIC.sum(arr, index)
+##        print
+##        print 'axis',axis
+##        print 'arr',arr
+	return NUMERIC.sum(arr, axis)
     elif type(arr) is type(MA.array((0))):
-	return MA.sum(arr, index)
+	return MA.sum(arr, axis)
     else:        
 	raise TypeError, 'cannot sum object ' + str(arr)
 
@@ -895,7 +940,7 @@ def crossProd(v1,v2):
 			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
     return NUMERIC.reshape(out, NUMERIC.shape(v1))
 
-def dot(a1, a2, axis = 1):
+def dot(a1, a2, axis=1):
     """
     return array of vector dot-products of v1 and v2
     for arrays a1 and a2 of vectors v1 and v2
@@ -933,7 +978,13 @@ def dot(a1, a2, axis = 1):
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
         return a2.dot(a1)
     else:
-        return sum((a1*a2)[:], axis)
+        return sum(a1*a2, axis)
+##     elif axis is not None:
+##         return sum(a1*a2, axis)
+##     elif (type(a1) is type(MA.array(0))) or (type(a2) is type(MA.array(0))):
+##         return MA.dot(a1, a2)
+##     else:
+##         return NUMERIC.dot(a1, a2)
 
 def sqrtDot(a1, a2):
     """Return array of square roots of vector dot-products

@@ -43,8 +43,6 @@
 """Vector utility functions that are inexplicably absent from Numeric
 """
 
-import Numeric
-
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
@@ -67,7 +65,7 @@ def sqrtDot(v1,v2):
     return numerix.sqrt(abs(numerix.sum(v1 * v2)))
 
 def _putAddPy(vector, ids, additionVector, mask = None):
-    additionVector = Numeric.array(additionVector)
+    additionVector = numerix.array(additionVector)
     if mask is None:
         for i in range(len(ids)):
             vector[ids[i]] += additionVector[i]
@@ -81,7 +79,7 @@ def _putAddIn(vector, ids, additionVector):
     inline._runInline("""
 	vector(ids(i)) += additionVector(i);
     """,
-    vector = vector, ids = ids, additionVector = Numeric.array(additionVector),
+    vector = vector, ids = ids, additionVector = numerix.array(additionVector),
     ni = len(ids))
 
 def putAdd(vector, ids, additionVector):
@@ -108,7 +106,7 @@ def prune(array, shift, start = 0):
     """
 
     takeArray = numerix.nonzero(numerix.arange(len(array)) % shift != start)
-    return Numeric.take(array, takeArray)
+    return numerix.take(array, takeArray)
 
 def _test(): 
     import doctest

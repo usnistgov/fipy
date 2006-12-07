@@ -43,7 +43,7 @@
 """1D (edge) Face in a 2D Mesh
 """
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.pyMesh.face import Face
 import fipy.tools.vector
@@ -65,7 +65,7 @@ class Face2D(Face):
 	"""Normal is perpendicular to vector between vertices.
 	"""
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
- 	norm = Numeric.array([-tangent[1],tangent[0]])
+ 	norm = numerix.array([-tangent[1],tangent[0]])
 ## 	norm = PhysicalField(value = [-tangent[1],tangent[0]])
 	norm /= fipy.tools.vector.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
@@ -76,11 +76,11 @@ class Face2D(Face):
     def _calcTangent1(self):
 	norm = self.normal
 	mag = fipy.tools.vector.sqrtDot(norm,norm)
-## 	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
-	tan1 = Numeric.array((-norm[1],norm[0]))
+## 	mag = numerix.sqrt(norm[0]**2 + norm[1]**2)
+	tan1 = numerix.array((-norm[1],norm[0]))
 ## 	tan1 = PhysicalField(value = (-norm[1],norm[0]))
 	return tan1/mag
 	    
     def _calcTangent2(self):
-	return Numeric.array((0.,0.))
+	return numerix.array((0.,0.))
 ## 	return PhysicalField(value = (0.,0.))

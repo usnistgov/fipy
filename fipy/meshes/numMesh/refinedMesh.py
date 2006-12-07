@@ -78,7 +78,7 @@ Test case:
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 
@@ -88,48 +88,48 @@ class _RefinedMesh2D(Mesh2D):
         baseNumVertices = baseMesh.getVertexCoords().shape[0]
         baseNumCells = baseMesh._getCellFaceIDs().shape[0]
         newNumVertices = baseNumVertices + len(nodeList)
-        newVertexCoords = Numeric.concatenate((baseMesh.getVertexCoords(), Numeric.take(baseMesh.getCellCenters(), nodeList)))
+        newVertexCoords = numerix.concatenate((baseMesh.getVertexCoords(), numerix.take(baseMesh.getCellCenters(), nodeList)))
         ## calculate new face vertex IDs
         cellVertexIDs = baseMesh._getOrderedCellVertexIDs()
         maxVerticesPerCell = cellVertexIDs.shape[1]
-        refinedCellVertexIDs = Numeric.take(cellVertexIDs, nodeList)
-        firstVerticesInAddedFaces = Numeric.repeat(Numeric.arange(baseNumVertices, newNumVertices), maxVerticesPerCell * Numeric.ones(len(nodeList)))
-        secondVerticesInAddedFaces = Numeric.ravel(refinedCellVertexIDs)
-        facesToAdd = Numeric.transpose([firstVerticesInAddedFaces, secondVerticesInAddedFaces])
-        newFaceVertexIDs = Numeric.concatenate((baseMesh.faceVertexIDs, facesToAdd))
+        refinedCellVertexIDs = numerix.take(cellVertexIDs, nodeList)
+        firstVerticesInAddedFaces = numerix.repeat(numerix.arange(baseNumVertices, newNumVertices), maxVerticesPerCell * numerix.ones(len(nodeList)))
+        secondVerticesInAddedFaces = numerix.ravel(refinedCellVertexIDs)
+        facesToAdd = numerix.transpose([firstVerticesInAddedFaces, secondVerticesInAddedFaces])
+        newFaceVertexIDs = numerix.concatenate((baseMesh.faceVertexIDs, facesToAdd))
         ## calc face string to face IDs
         faceVertexToFaceIDs = {}
         currIndex = 0
         for i in newFaceVertexIDs:
-            faceVertexToFaceIDs[' '.join([str(j) for j in Numeric.sort(i)])] = currIndex
+            faceVertexToFaceIDs[' '.join([str(j) for j in numerix.sort(i)])] = currIndex
             currIndex = currIndex + 1
         ## calculate new cell face IDs
-        cellIDsToKeep = Numeric.ones(baseNumCells)
-        Numeric.put(cellIDsToKeep, nodeList, 0)
-        cellFaceIDsToKeep = Numeric.compress(cellIDsToKeep, baseMesh.cellFaceIDs, 0)
-        refinedCellFaceIDs = Numeric.take(baseMesh.cellFaceIDs, nodeList)
+        cellIDsToKeep = numerix.ones(baseNumCells)
+        numerix.put(cellIDsToKeep, nodeList, 0)
+        cellFaceIDsToKeep = numerix.compress(cellIDsToKeep, baseMesh.cellFaceIDs, 0)
+        refinedCellFaceIDs = numerix.take(baseMesh.cellFaceIDs, nodeList)
         middleIndex = baseNumVertices
         newCellFaceIDs = cellFaceIDsToKeep
         for i in refinedCellVertexIDs:
             outsideFaceVertexList = [[i[x], i[x+1]] for x in range(-1, len(i) - 1)]
-            outsideFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in Numeric.sort(face)])] for face in outsideFaceVertexList]
+            outsideFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in numerix.sort(face)])] for face in outsideFaceVertexList]
             rightFaceVertexList = [[middleIndex, i[x]] for x in range(-1, len(i) - 1)]
-            rightFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in Numeric.sort(face)])] for face in rightFaceVertexList]
+            rightFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in numerix.sort(face)])] for face in rightFaceVertexList]
             leftFaceVertexList = [[middleIndex, i[x+1]] for x in range(-1, len(i) - 1)]
-            leftFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in Numeric.sort(face)])] for face in leftFaceVertexList]
-            faceArray = Numeric.transpose(Numeric.array([outsideFaceList, rightFaceList, leftFaceList]))
-            newCellFaceIDs = Numeric.concatenate((newCellFaceIDs, faceArray))
+            leftFaceList = [faceVertexToFaceIDs[' '.join([str(id) for id in numerix.sort(face)])] for face in leftFaceVertexList]
+            faceArray = numerix.transpose(numerix.array([outsideFaceList, rightFaceList, leftFaceList]))
+            newCellFaceIDs = numerix.concatenate((newCellFaceIDs, faceArray))
             middleIndex = middleIndex + 1
         newNumCells = len(newCellFaceIDs)
         ## calculate newToOldCellIDs. Used for changing variables.
-        self.newToOldCellIDs = Numeric.compress(cellIDsToKeep, Numeric.arange(baseNumCells))
+        self.newToOldCellIDs = numerix.compress(cellIDsToKeep, numerix.arange(baseNumCells))
         for i in nodeList:
-            self.newToOldCellIDs = Numeric.concatenate((self.newToOldCellIDs, [i, i, i]))
+            self.newToOldCellIDs = numerix.concatenate((self.newToOldCellIDs, [i, i, i]))
         Mesh2D.__init__(self, newVertexCoords, newFaceVertexIDs, newCellFaceIDs)
 
 class _RefinedMeshCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
-        newValues = Numeric.take(Numeric.array(oldVar), newMesh.newToOldCellIDs)
+        newValues = numerix.take(numerix.array(oldVar), newMesh.newToOldCellIDs)
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
 
 def _test():

@@ -43,7 +43,7 @@
 
 __docformat__ = "restructuredtext"
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.meshIterator import FaceIterator
@@ -96,35 +96,35 @@ class Tri2D(Mesh2D):
 	vertices = self._createVertices()
         faces = self._createFaces()
         cells = self._createCells()
-        cells = Numeric.sort(cells)
+        cells = numerix.sort(cells)
         Mesh2D.__init__(self, vertices, faces, cells)
 	self.setScale(value = scale)
         
     def _createVertices(self):
         
-        x = Numeric.arange(self.nx + 1) * self.dx
-        y = Numeric.arange(self.ny + 1) * self.dy
-        x = Numeric.resize(x, (self.numberOfCornerVertices,))
-        y = Numeric.repeat(y, self.nx + 1)
-        boxCorners = Numeric.transpose(Numeric.array((x, y)))
-        x = Numeric.arange(0.5, self.nx + 0.5) * self.dx
-        y = Numeric.arange(0.5, self.ny + 0.5) * self.dy
-        x = Numeric.resize(x, (self.numberOfCenterVertices,))
-        y = Numeric.repeat(y, self.nx)
-        boxCenters = Numeric.transpose(Numeric.array((x, y)))
-        return Numeric.concatenate((boxCorners, boxCenters))
+        x = numerix.arange(self.nx + 1) * self.dx
+        y = numerix.arange(self.ny + 1) * self.dy
+        x = numerix.resize(x, (self.numberOfCornerVertices,))
+        y = numerix.repeat(y, self.nx + 1)
+        boxCorners = numerix.transpose(numerix.array((x, y)))
+        x = numerix.arange(0.5, self.nx + 0.5) * self.dx
+        y = numerix.arange(0.5, self.ny + 0.5) * self.dy
+        x = numerix.resize(x, (self.numberOfCenterVertices,))
+        y = numerix.repeat(y, self.nx)
+        boxCenters = numerix.transpose(numerix.array((x, y)))
+        return numerix.concatenate((boxCorners, boxCenters))
     
     def _createFaces(self):
         """
         v1, v2 refer to the cells.
         Horizontel faces are first
         """
-        v1 = Numeric.arange(self.numberOfCornerVertices)
+        v1 = numerix.arange(self.numberOfCornerVertices)
         v2 = v1 + 1
-        horizontalFaces = vector.prune(Numeric.transpose(Numeric.array((v1, v2))), self.nx + 1, self.nx)
-        v1 = Numeric.arange(self.numberOfCornerVertices - (self.nx + 1))
+        horizontalFaces = vector.prune(numerix.transpose(numerix.array((v1, v2))), self.nx + 1, self.nx)
+        v1 = numerix.arange(self.numberOfCornerVertices - (self.nx + 1))
         v2 = v1 + self.nx + 1
-        verticalFaces =  Numeric.transpose(Numeric.array((v1, v2)))
+        verticalFaces =  numerix.transpose(numerix.array((v1, v2)))
 
         ## reverse some of the face orientations to obtain the correct normals
 
@@ -140,16 +140,16 @@ class Tri2D(Mesh2D):
 
         ## do the center ones now
         
-        cellCenters = Numeric.arange(self.numberOfCornerVertices, self.numberOfTotalVertices)
-        lowerLefts = vector.prune(Numeric.arange(self.numberOfCornerVertices - (self.nx + 1)), self.nx + 1, self.nx)
+        cellCenters = numerix.arange(self.numberOfCornerVertices, self.numberOfTotalVertices)
+        lowerLefts = vector.prune(numerix.arange(self.numberOfCornerVertices - (self.nx + 1)), self.nx + 1, self.nx)
         lowerRights = lowerLefts + 1
         upperLefts = lowerLefts + self.nx + 1
         upperRights = lowerLefts + self.nx + 2
-        lowerLeftFaces = Numeric.transpose(Numeric.array((cellCenters, lowerLefts)))
-        lowerRightFaces = Numeric.transpose(Numeric.array((lowerRights, cellCenters)))
-        upperLeftFaces = Numeric.transpose(Numeric.array((cellCenters, upperLefts)))
-        upperRightFaces = Numeric.transpose(Numeric.array((cellCenters, upperRights)))
-        return Numeric.concatenate((horizontalFaces, verticalFaces, lowerLeftFaces, lowerRightFaces, upperLeftFaces, upperRightFaces))
+        lowerLeftFaces = numerix.transpose(numerix.array((cellCenters, lowerLefts)))
+        lowerRightFaces = numerix.transpose(numerix.array((lowerRights, cellCenters)))
+        upperLeftFaces = numerix.transpose(numerix.array((cellCenters, upperLefts)))
+        upperRightFaces = numerix.transpose(numerix.array((cellCenters, upperRights)))
+        return numerix.concatenate((horizontalFaces, verticalFaces, lowerLeftFaces, lowerRightFaces, upperLeftFaces, upperRightFaces))
 
     def _createCells(self):
         """
@@ -159,26 +159,26 @@ class Tri2D(Mesh2D):
         self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
         self.numberOfVerticalFaces =  self.ny * (self.nx + 1)
         self.numberOfEachDiagonalFaces = self.nx * self.ny
-        bottomFaces = Numeric.arange(0, self.numberOfHorizontalFaces - self.nx)
-        topFaces = Numeric.arange(self.nx, self.numberOfHorizontalFaces)
-        leftFaces = vector.prune(Numeric.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, self.nx)
-        rightFaces = vector.prune(Numeric.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, 0)
-        lowerLeftDiagonalFaces = Numeric.arange(self.numberOfHorizontalFaces + self.numberOfVerticalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces + self.numberOfEachDiagonalFaces)
+        bottomFaces = numerix.arange(0, self.numberOfHorizontalFaces - self.nx)
+        topFaces = numerix.arange(self.nx, self.numberOfHorizontalFaces)
+        leftFaces = vector.prune(numerix.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, self.nx)
+        rightFaces = vector.prune(numerix.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, 0)
+        lowerLeftDiagonalFaces = numerix.arange(self.numberOfHorizontalFaces + self.numberOfVerticalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces + self.numberOfEachDiagonalFaces)
         lowerRightDiagonalFaces = lowerLeftDiagonalFaces + self.numberOfEachDiagonalFaces
         upperLeftDiagonalFaces = lowerRightDiagonalFaces + self.numberOfEachDiagonalFaces
         upperRightDiagonalFaces = upperLeftDiagonalFaces + self.numberOfEachDiagonalFaces
         ##faces in arrays, now get the cells
-        bottomOfBoxCells = Numeric.transpose(Numeric.array([bottomFaces, lowerRightDiagonalFaces, lowerLeftDiagonalFaces]))
-        rightOfBoxCells = Numeric.transpose(Numeric.array([rightFaces, upperRightDiagonalFaces, lowerRightDiagonalFaces]))
-        topOfBoxCells = Numeric.transpose(Numeric.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces]))
-        leftOfBoxCells = Numeric.transpose(Numeric.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces]))
-        return Numeric.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells))
+        bottomOfBoxCells = numerix.transpose(numerix.array([bottomFaces, lowerRightDiagonalFaces, lowerLeftDiagonalFaces]))
+        rightOfBoxCells = numerix.transpose(numerix.array([rightFaces, upperRightDiagonalFaces, lowerRightDiagonalFaces]))
+        topOfBoxCells = numerix.transpose(numerix.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces]))
+        leftOfBoxCells = numerix.transpose(numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces]))
+        return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells))
 
     def getFacesLeft(self):
 	"""Return list of faces on left boundary of Grid2D.
 	"""
 	return FaceIterator(mesh=self,
-                            ids=Numeric.arange(self.numberOfHorizontalFaces, 
+                            ids=numerix.arange(self.numberOfHorizontalFaces, 
                                                self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
                                                self.nx + 1))
 	
@@ -186,7 +186,7 @@ class Tri2D(Mesh2D):
 	"""Return list of faces on right boundary of Grid2D.
 	"""
 	return FaceIterator(mesh=self,
-                            ids=Numeric.arange(self.numberOfHorizontalFaces + self.nx, 
+                            ids=numerix.arange(self.numberOfHorizontalFaces + self.nx, 
                                                self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
                                                self.nx + 1))
 	
@@ -194,14 +194,14 @@ class Tri2D(Mesh2D):
 	"""Return list of faces on top boundary of Grid2D.
 	"""
 	return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.numberOfHorizontalFaces - self.nx, 
+                            ids=numerix.arange(self.numberOfHorizontalFaces - self.nx, 
                                                self.numberOfHorizontalFaces))
 	
     def getFacesBottom(self):
 	"""Return list of faces on bottom boundary of Grid2D.
 	"""
 	return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.nx))
+                            ids=numerix.arange(self.nx))
         
     def getScale(self):
 	return self.scale['length']
@@ -214,7 +214,7 @@ class Tri2D(Mesh2D):
 
 
     def _getMeshSpacing(self):
-	return Numeric.array((self.dx,self.dy))
+	return numerix.array((self.dx,self.dy))
     
     def getShape(self):
         return (self.nx, self.ny)
@@ -245,7 +245,7 @@ class Tri2D(Mesh2D):
             
             >>> mesh = Tri2D(nx = nx, ny = ny, dx = dx, dy = dy)     
             
-            >>> vertices = Numeric.array(((0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.5, 0.0),
+            >>> vertices = numerix.array(((0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.5, 0.0),
             ...                           (0.0, 2.0), (0.5, 2.0), (1.0, 2.0), (1.5, 2.0),
             ...                           (0.0, 4.0), (0.5, 4.0), (1.0, 4.0), (1.5, 4.0),
             ...                           (0.25, 1.0), (0.75, 1.0), (1.25, 1.0),
@@ -255,7 +255,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allequal(vertices, mesh._createVertices())
             1
         
-            >>> faces = Numeric.array(((1, 0), (2, 1), (3, 2),
+            >>> faces = numerix.array(((1, 0), (2, 1), (3, 2),
             ...                        (4, 5), (5, 6), (6, 7),
             ...                        (8, 9), (9, 10), (10, 11),
             ...                        (0, 4), (5, 1), (6, 2), (7, 3),
@@ -267,18 +267,18 @@ class Tri2D(Mesh2D):
             >>> numerix.allequal(faces, mesh._createFaces())
             1
 
-            >>> cells = Numeric.array(((10, 35, 23), (11, 36, 24), (12, 37, 25), (14, 38, 26), (15, 39, 27), (16, 40, 28),
+            >>> cells = numerix.array(((10, 35, 23), (11, 36, 24), (12, 37, 25), (14, 38, 26), (15, 39, 27), (16, 40, 28),
             ...                        (3, 29, 35), (4, 30, 36), (5, 31, 37), (6, 32, 38), (7, 33, 39), (8, 34, 40),
             ...                        (9, 17, 29), (10, 18, 30), (11, 19, 31), (13, 20, 32), (14, 21, 33), (15, 22, 34),
             ...                        (0, 23, 17), (1, 24, 18), (2, 25, 19), (3, 26, 20), (4, 27, 21), (5, 28, 22)))
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = Numeric.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
             >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
             1
 
-            >>> internalFaces = Numeric.array((3, 4, 5, 10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40))
+            >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40))
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
@@ -292,22 +292,22 @@ class Tri2D(Mesh2D):
             >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
             1
             
-            >>> d = (Numeric.sqrt((dx*dx)+(dy*dy))) / 2.0 ## length of diagonal edges  
-            >>> faceAreas = Numeric.array((0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+            >>> d = (numerix.sqrt((dx*dx)+(dy*dy))) / 2.0 ## length of diagonal edges  
+            >>> faceAreas = numerix.array((0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
             ...                            2, 2, 2, 2, 2, 2, 2, 2,
             ...                            d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d))
             >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
             1
             
-            >>> faceCoords = Numeric.take(vertices, faces)
+            >>> faceCoords = numerix.take(vertices, faces)
             >>> faceCenters = (faceCoords[:,0] + faceCoords[:,1]) / 2.
             >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> xc = dy  / Numeric.sqrt((dx * dx) + (dy * dy))
-            >>> yc = dx  / Numeric.sqrt((dx * dx) + (dy * dy))
+            >>> xc = dy  / numerix.sqrt((dx * dx) + (dy * dy))
+            >>> yc = dx  / numerix.sqrt((dx * dx) + (dy * dy))
             
-            >>> faceNormals = Numeric.array((( 0.0,-1.0), (0.0,-1.0), (0.0,-1.0),
+            >>> faceNormals = numerix.array((( 0.0,-1.0), (0.0,-1.0), (0.0,-1.0),
             ...                              ( 0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
             ...                              ( 0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
             ...                              (-1.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
@@ -319,30 +319,30 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellToFaceOrientations = Numeric.array(((1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1),
+            >>> cellToFaceOrientations = numerix.array(((1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1), ( 1, 1, 1),
             ...                                         (1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1), ( 1, 1,-1),
             ...                                         (1, 1,-1), (-1, 1,-1), (-1, 1,-1), ( 1, 1,-1), (-1, 1,-1), (-1, 1,-1),
             ...                                         (1,-1,-1), ( 1,-1,-1), ( 1,-1,-1), (-1,-1,-1), (-1,-1,-1), (-1,-1,-1)))
             >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
             1
                                              
-            >>> cellVolumes = Numeric.array((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+            >>> cellVolumes = numerix.array((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
             ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
             ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25))
             >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> sixth = 1.0 / 6.0
-            >>> cellCenters = Numeric.array(((5*sixth, 0.5), (11*sixth, 0.5), (17*sixth, 0.5), (5*sixth, 1.5), (11*sixth, 1.5), (17*sixth, 1.5),
+            >>> cellCenters = numerix.array(((5*sixth, 0.5), (11*sixth, 0.5), (17*sixth, 0.5), (5*sixth, 1.5), (11*sixth, 1.5), (17*sixth, 1.5),
             ...                              (0.5, 5*sixth), (1.5, 5*sixth), (2.5, 5*sixth), (0.5, 11*sixth), (1.5, 11*sixth), (2.5, 11*sixth),
             ...                              (1*sixth, 0.5), (7*sixth, 0.5), (13*sixth, 0.5), (1*sixth, 1.5), (7*sixth, 1.5), (13*sixth, 1.5),
             ...                              (0.5, 1*sixth), (1.5, 1*sixth), (2.5, 1*sixth), (0.5, 7*sixth), (1.5, 7*sixth), (2.5, 7*sixth)))
-            >>> cellCenters *= Numeric.array((dx, dy))
+            >>> cellCenters *= numerix.array((dx, dy))
             >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
             1
                                               
-            >>> yd = Numeric.sqrt(((dx/12.0)*(dx/12.0)) + ((dy/ 4.0)*(dy/ 4.0)))
-            >>> xd = Numeric.sqrt(((dx/ 4.0)*(dx/ 4.0)) + ((dy/12.0)*(dy/12.0)))
+            >>> yd = numerix.sqrt(((dx/12.0)*(dx/12.0)) + ((dy/ 4.0)*(dy/ 4.0)))
+            >>> xd = numerix.sqrt(((dx/ 4.0)*(dx/ 4.0)) + ((dy/12.0)*(dy/12.0)))
             >>> faceToCellDistances = MA.masked_values(((dy/6.0, -1), (dy/6.0, -1), (dy/6.0, -1), (dy/6.0, dy/6.0), (dy/6.0, dy/6.0), (dy/6.0, dy/6.0), (dy/6.0, -1), (dy/6.0, -1), (dy/6.0, -1),
             ...                                         (dx/6.0, -1), (dx/6.0, dx/6.0), (dx/6.0, dx/6.0), (dx/6.0, -1), (dx/6.0, -1), (dx/6.0, dx/6.0), (dx/6.0, dx/6.0), (dx/6.0, -1),
             ...                                         (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd), (yd, xd),
@@ -352,8 +352,8 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
                                               
-            >>> dd = Numeric.sqrt((dx*dx)+(dy*dy)) / 3.0
-            >>> cellDistances = Numeric.array((dy/6.0, dy/6.0, dy/6.0, dy/3.0, dy/3.0, dy/3.0, dy/6.0, dy/6.0, dy/6.0,
+            >>> dd = numerix.sqrt((dx*dx)+(dy*dy)) / 3.0
+            >>> cellDistances = numerix.array((dy/6.0, dy/6.0, dy/6.0, dy/3.0, dy/3.0, dy/3.0, dy/6.0, dy/6.0, dy/6.0,
             ...                                dx/6.0, dx/3.0, dx/3.0, dx/6.0, dx/6.0, dx/3.0, dx/3.0, dx/6.0,
             ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd,
             ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd))
@@ -364,11 +364,11 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> areaProjections = faceNormals * faceAreas[...,Numeric.NewAxis]
+            >>> areaProjections = faceNormals * faceAreas[...,numerix.NewAxis]
             >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents1 = Numeric.array(((1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
+            >>> tangents1 = numerix.array(((1.0, 0.0), (1.0, 0.0), (1.0, 0.0),
             ...                            (-1.0, 0.0), (-1.0, 0.0), (-1.0, 0.0),
             ...                            (-1.0, 0.0), (-1.0, 0.0), (-1.0, 0.0),
             ...                            (0.0, -1.0), (0.0, 1.0), (0.0, 1.0), (0.0, 1.0),
@@ -380,7 +380,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents2 = Numeric.zeros((41, 2))
+            >>> tangents2 = numerix.zeros((41, 2))
             >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
 
@@ -391,7 +391,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
             1
 
-            >>> cellToCellDistances = Numeric.array([[dx/3.0, dd, dd],
+            >>> cellToCellDistances = numerix.array([[dx/3.0, dd, dd],
             ...                                      [dx/3.0, dd, dd],
             ...                                      [dx/6.0, dd, dd],
             ...                                      [dx/3.0, dd, dd],
@@ -418,15 +418,15 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> interiorCellIDs = Numeric.array((0, 1, 3, 4, 6, 7, 8, 13, 14, 16, 17, 21, 22, 23))
+            >>> interiorCellIDs = numerix.array((0, 1, 3, 4, 6, 7, 8, 13, 14, 16, 17, 21, 22, 23))
             >>> numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
             1
 
-            >>> exteriorCellIDs = Numeric.array((2, 5, 9, 10, 11, 12, 15, 18, 19, 20))
+            >>> exteriorCellIDs = numerix.array((2, 5, 9, 10, 11, 12, 15, 18, 19, 20))
             >>> numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
             1
 
-            >>> cellNormals = Numeric.array((((1, 0), (-xc, -yc), (-xc, yc)),
+            >>> cellNormals = numerix.array((((1, 0), (-xc, -yc), (-xc, yc)),
             ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
             ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
             ...                              ((1, 0), (-xc, -yc), (-xc, yc)),
@@ -453,7 +453,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellAreaProjections = Numeric.array(((( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
+            >>> cellAreaProjections = numerix.array(((( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
             ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
             ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
             ...                                      (( dy,  0), (-dy/2.,-dx/2.), (-dy/2., dx/2.)),
@@ -480,12 +480,12 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tmp1 = Numeric.array((12, 5, 1))
-            >>> tmp2 = Numeric.array((12, 5, 4))
-            >>> tmp3 = Numeric.array((12, 4, 0))
-            >>> tmp4 = Numeric.array((12, 1, 0))
-            >>> tmp5 = Numeric.array((0, 1, 1))
-            >>> cellVertexIDs = Numeric.array((tmp1, tmp1 + 1, tmp1 + 2, tmp1 + 3 + tmp5, tmp1 + 4 + tmp5, tmp1 + 5 + tmp5,
+            >>> tmp1 = numerix.array((12, 5, 1))
+            >>> tmp2 = numerix.array((12, 5, 4))
+            >>> tmp3 = numerix.array((12, 4, 0))
+            >>> tmp4 = numerix.array((12, 1, 0))
+            >>> tmp5 = numerix.array((0, 1, 1))
+            >>> cellVertexIDs = numerix.array((tmp1, tmp1 + 1, tmp1 + 2, tmp1 + 3 + tmp5, tmp1 + 4 + tmp5, tmp1 + 5 + tmp5,
             ...                                tmp2, tmp2 + 1, tmp2 + 2, tmp2 + 3 + tmp5, tmp2 + 4 + tmp5, tmp2 + 5 + tmp5,
             ...                                tmp3, tmp3 + 1, tmp3 + 2, tmp3 + 3 + tmp5, tmp3 + 4 + tmp5, tmp3 + 5 + tmp5,
             ...                                tmp4, tmp4 + 1, tmp4 + 2, tmp4 + 3 + tmp5, tmp4 + 4 + tmp5, tmp4 + 5 + tmp5))

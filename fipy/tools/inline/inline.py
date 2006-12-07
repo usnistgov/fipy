@@ -1,5 +1,5 @@
 import sys
-import Numeric 
+from fipy.tools import numerix 
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if '--inline' in sys.argv[1:]:

@@ -35,7 +35,7 @@
  # ###################################################################
  ##
  
-import Numeric, MA
+import MA
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
 from fipy.tools import numerix
@@ -63,11 +63,11 @@ class _CellGradVariable(VectorCellVariable):
 		
 	    val(i, j) /= volumes(i);
 	""",val = val,
-            ids = Numeric.array(MA.filled(ids, 0)),
-            orientations = Numeric.array(MA.filled(orientations, 0)),
-            volumes = Numeric.array(volumes),
-            areaProj = Numeric.array(self.mesh._getAreaProjections()),
-            faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
+            ids = numerix.array(MA.filled(ids, 0)),
+            orientations = numerix.array(MA.filled(orientations, 0)),
+            volumes = numerix.array(volumes),
+            areaProj = numerix.array(self.mesh._getAreaProjections()),
+            faceValues = numerix.array(self.var.getArithmeticFaceValue()),
 	    ni = N, nj = self.mesh.getDim(), nk = M)
      
         return self._makeValue(value = val)
@@ -94,9 +94,9 @@ class _CellGradVariable(VectorCellVariable):
 
         contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = numerix.reshape(orientations, (N, M, 1))
-	grad = Numeric.array(numerix.sum(orientations * contributions, 1))
+	grad = numerix.array(numerix.sum(orientations * contributions, 1))
 
-	grad = grad / volumes[:,Numeric.NewAxis]
+	grad = grad / volumes[:,numerix.NewAxis]
 
 	return grad
 

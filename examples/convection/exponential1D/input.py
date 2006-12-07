@@ -130,7 +130,7 @@ term can be found in
 
 .. raw:: latex
 
-   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
+   Section~\ref{sec:numerixalSchemes} ``\nameref{sec:NumericalSchemes}''.
    
 .. of the manual
 

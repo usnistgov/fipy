@@ -40,7 +40,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.tools import numerix
 import fipy.tools.inline.inline as inline
@@ -94,10 +94,10 @@ class _AddOverFacesVariable(CellVariable):
             numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
             numberOfCells = NCells,
             faceVariable = self.faceVariable.getNumericValue(),
-            ids = Numeric.array(ids),
+            ids = numerix.array(ids),
             value = val,
-            orientations = Numeric.array(self.mesh._getCellFaceOrientations()),
-            cellVolume = Numeric.array(self.mesh.getCellVolumes()))
+            orientations = numerix.array(self.mesh._getCellFaceOrientations()),
+            cellVolume = numerix.array(self.mesh.getCellVolumes()))
             
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

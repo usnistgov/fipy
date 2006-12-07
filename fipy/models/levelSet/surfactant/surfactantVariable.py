@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
-import Numeric
+from fipy.tools import numerix
 
 class SurfactantVariable(CellVariable):
     """
@@ -70,7 +70,7 @@ class SurfactantVariable(CellVariable):
            ...                                     value = (-1.5, -0.5, 0.5, 941.5))
            >>> surfactantVariable = SurfactantVariable(value = 1, 
            ...                                         distanceVar = distanceVariable)
-           >>> Numeric.allclose(surfactantVariable, (0, 0., 1., 0))
+           >>> print numerix.allclose(surfactantVariable, (0, 0., 1., 0))
            1
 
         A 2D test case:
@@ -83,7 +83,7 @@ class SurfactantVariable(CellVariable):
            ...                                              1.5, 0.5, 1.5))
            >>> surfactantVariable = SurfactantVariable(value = 1, 
            ...                                         distanceVar = distanceVariable)
-           >>> Numeric.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
+           >>> print numerix.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
            1
 
         Another 2D test case:
@@ -93,8 +93,8 @@ class SurfactantVariable(CellVariable):
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> surfactantVariable = SurfactantVariable(value = 1, 
            ...                                         distanceVar = distanceVariable)
-           >>> Numeric.allclose(surfactantVariable, 
-           ...                  (0, Numeric.sqrt(2), Numeric.sqrt(2), 0))
+           >>> print numerix.allclose(surfactantVariable, 
+           ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0))
            1
 
         :Parameters:
@@ -138,8 +138,8 @@ class _InterfaceSurfactantVariable(CellVariable):
 
     def _calcValue(self):
         areas = self.surfactantVar._getDistanceVar().getCellInterfaceAreas()        
-        areas = Numeric.where(areas > 1e-20, areas, 1)
-        return Numeric.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
+        areas = numerix.where(areas > 1e-20, areas, 1)
+        return numerix.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
     
 def _test(): 
     import doctest

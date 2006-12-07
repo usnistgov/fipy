@@ -44,7 +44,7 @@
  
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from gnuplotViewer import GnuplotViewer
 
@@ -76,7 +76,7 @@ class Gnuplot1DViewer(GnuplotViewer):
 
         import Gnuplot
         for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(Numeric.array(var.getMesh().getCellCenters()[:,0]),
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[:,0]),
                                                 var[:],
                                                 title=var.getName(),
                                                 with='lines'),)

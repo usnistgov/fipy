@@ -234,7 +234,7 @@ Reverse the handedness of the mesh and check the sign
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 import MA
 import mesh
 import mesh2D
@@ -289,15 +289,15 @@ class _DataGetter:
         ##dimensions = len(self.inFile.readline().split()) - 1
         self.inFile.seek(savePos)
         
-        vertexCoords = Numeric.zeros((numVertices, coordDimensions))
-        vertexCoords = vertexCoords.astype(Numeric.Float)
+        vertexCoords = numerix.zeros((numVertices, coordDimensions))
+        vertexCoords = vertexCoords.astype(numerix.Float)
         for i in range(numVertices):
             currLineArray = self.inFile.readline().split()
             nodeToVertexIDdict[int(currLineArray[0])] = i
             vertexCoords[i] = [float(n) for n in currLineArray[1: coordDimensions + 1]]
 
         maxNode = max(nodeToVertexIDdict.keys())
-        nodeToVertexIDs = Numeric.zeros((maxNode + 1,))
+        nodeToVertexIDs = numerix.zeros((maxNode + 1,))
         for i in nodeToVertexIDdict.keys():
             nodeToVertexIDs[i] = nodeToVertexIDdict[i]
         self.nodeToVertexIDs = nodeToVertexIDs
@@ -316,13 +316,13 @@ class _DataGetter:
         numElements = int(self.inFile.readline())
         numCells = 0
         maxLength = (6 + self.dimensions)
-        elementArray = Numeric.zeros((numElements, maxLength))
+        elementArray = numerix.zeros((numElements, maxLength))
         for i in range(numElements):
             currLineArrayInt = [int(x) for x in self.inFile.readline().split()]
             elementArray[i, :len(currLineArrayInt)] = currLineArrayInt
-        validElementArray = Numeric.compress(elementArray[:, 1] == ((2 * self.dimensions) - 2), elementArray, 0)
+        validElementArray = numerix.compress(elementArray[:, 1] == ((2 * self.dimensions) - 2), elementArray, 0)
         cellNodeIDs = validElementArray[:, 5:]
-        cellVertexIDs = Numeric.take(self.nodeToVertexIDs, cellNodeIDs)        
+        cellVertexIDs = numerix.take(self.nodeToVertexIDs, cellNodeIDs)        
         self.cellVertexIDs = cellVertexIDs
         self.numCells = len(cellVertexIDs)
 
@@ -330,25 +330,25 @@ class _DataGetter:
         
         cellVertexIDs = self.cellVertexIDs
     ## compute the face vertex IDs.
-        cellFaceVertexIDs = Numeric.ones((self.numCells, self.dimensions + 1, self.dimensions))
+        cellFaceVertexIDs = numerix.ones((self.numCells, self.dimensions + 1, self.dimensions))
         cellFaceVertexIDs = -1 * cellFaceVertexIDs
 
         if (self.dimensions == 3):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :3]
-            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :2], cellVertexIDs[:, 3:]), axis = 1)
-            cellFaceVertexIDs[:, 2, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
+            cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[:, :2], cellVertexIDs[:, 3:]), axis = 1)
+            cellFaceVertexIDs[:, 2, :] = numerix.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
             cellFaceVertexIDs[:, 3, :] = cellVertexIDs[:, 1:]
         if (self.dimensions == 2):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:, :2]
-##            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
-            cellFaceVertexIDs[:, 1, :] = Numeric.concatenate((cellVertexIDs[:, 2:], cellVertexIDs[:, :1]), axis = 1)
+##            cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[:, :1], cellVertexIDs[:, 2:]), axis = 1)
+            cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[:, 2:], cellVertexIDs[:, :1]), axis = 1)
             cellFaceVertexIDs[:, 2, :] = cellVertexIDs[:, 1:]
 
         cellFaceVertexIDs = cellFaceVertexIDs[:, :, ::-1]
-        self.unsortedBaseIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
+        self.unsortedBaseIDs = numerix.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
 
-        cellFaceVertexIDs = Numeric.sort(cellFaceVertexIDs, axis = 2)
-        baseFaceVertexIDs = Numeric.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
+        cellFaceVertexIDs = numerix.sort(cellFaceVertexIDs, axis = 2)
+        baseFaceVertexIDs = numerix.reshape(cellFaceVertexIDs, (self.numCells * (self.dimensions + 1), self.dimensions))
 
         self.baseFaceVertexIDs = baseFaceVertexIDs       
         self.cellFaceVertexIDs = cellFaceVertexIDs
@@ -371,7 +371,7 @@ class _DataGetter:
 
                 currIndex = currIndex + 1
         numFaces = currIndex
-        faceVertexIDs = Numeric.zeros((numFaces, self.dimensions))
+        faceVertexIDs = numerix.zeros((numFaces, self.dimensions))
         for i in faceStrToFaceIDsUnsorted.keys():
             faceVertexIDs[faceStrToFaceIDsUnsorted[i], :] = [int(x) for x in i.split(' ')]
 
@@ -379,7 +379,7 @@ class _DataGetter:
 
     def _calcCellFaceIDs(self):
 
-        cellFaceIDs = Numeric.zeros(self.cellFaceVertexIDs.shape[:2])
+        cellFaceIDs = numerix.zeros(self.cellFaceVertexIDs.shape[:2])
         for i in range(len(self.cellFaceVertexIDs)):
             cell = self.cellFaceVertexIDs[i]
             for j in range(len(cell)):

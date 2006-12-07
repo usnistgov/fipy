@@ -2,7 +2,7 @@
 # All rights reserved.  See Legal.htm for full text and disclaimer.
 
 # ed williams' colorbar stuff
-from Numeric import *
+from numerix import *
 #from scipy_base.fastumath import *
 from arrayfns import *
 from gist import *

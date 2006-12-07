@@ -43,7 +43,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedFlux import FixedFlux

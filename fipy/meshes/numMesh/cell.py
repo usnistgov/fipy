@@ -40,7 +40,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 import fipy.tools.vector as vector
 
 class Cell:

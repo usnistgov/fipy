@@ -43,7 +43,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
@@ -70,7 +70,7 @@ class FixedFlux(BoundaryCondition):
 	"""
 	BoundaryCondition.__init__(self,faces,value)
 ## 	N = len(self.faces)
-	##self.contribution = Numeric.zeros((N,),'d')
+	##self.contribution = numerix.zeros((N,),'d')
 	# get units right
 	##self.contribution = self.contribution * self.value * self.faces[0].getArea()
 	##for i in range(N):  
@@ -86,8 +86,8 @@ class FixedFlux(BoundaryCondition):
 	  - `coeff`:    *unused*
 	"""
 
-	bb = Numeric.zeros((Ncells,),'d')
-## 	vector.putAdd(bb, self.adjacentCellIDs, -Numeric.array(self.contribution))
+	bb = numerix.zeros((Ncells,),'d')
+## 	vector.putAdd(bb, self.adjacentCellIDs, -numerix.array(self.contribution))
         vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
 	
 	return (0, bb)

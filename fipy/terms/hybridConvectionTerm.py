@@ -37,7 +37,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
@@ -53,8 +53,8 @@ class HybridConvectionTerm(ConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the hybrid scheme.
-       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
+       For further details see ``\nameref{FiPy-sec:numerixalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
     """
 
     class _Alpha(FaceVariable):
@@ -66,9 +66,9 @@ class HybridConvectionTerm(ConvectionTerm):
 	    eps = 1e-3
 	    P  = self.P[:]
 
-	    alpha = Numeric.where(                                 P > 2., (P - 1) / P,    0.)
-	    alpha = Numeric.where( Numeric.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-	    alpha = Numeric.where(                               -2. >  P,      -1 / P, alpha)
+	    alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
+	    alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)
+	    alpha = numerix.where(                               -2. >  P,      -1 / P, alpha)
 
 	    return alpha
 

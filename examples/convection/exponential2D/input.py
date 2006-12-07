@@ -84,9 +84,9 @@ We test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools import numerix
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1

@@ -144,7 +144,7 @@ mesh = Grid1D(nx = nx, dx = dx)
 
 
 value = mesh.getCellCenters()[:,0] - 1.499 * dx
-##distanceVar = DistanceVariable(mesh = mesh, value = dx * (Numeric.arange(nx) - 0.999))
+##distanceVar = DistanceVariable(mesh = mesh, value = dx * (numerix.arange(nx) - 0.999))
 distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
 ## Build the bulk diffusion equation

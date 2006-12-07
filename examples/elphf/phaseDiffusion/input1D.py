@@ -105,7 +105,7 @@ consisting of the solvent
 
 and the solute
 
-    >>> from Numeric import log, take, allclose
+    >>> from fipy.tools.numerix import log, take, allclose
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'C1',
     ...                       diffusivity = 1., barrier = 0.,

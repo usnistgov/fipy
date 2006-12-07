@@ -50,7 +50,7 @@ import superlu
 
 from fipy.solvers.solver import Solver
 from fipy.tools.sparseMatrix import _SparseMatrix
-import Numeric
+from fipy.tools import numerix
 
 class LinearLUSolver(Solver):
     """
@@ -96,8 +96,8 @@ class LinearLUSolver(Solver):
                 break
 
             errorVector = L * x - b
-            xError = Numeric.zeros(len(b),'d')
+            xError = numerix.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
-            tol = max(Numeric.absolute(xError))
+            tol = max(numerix.absolute(xError))
 

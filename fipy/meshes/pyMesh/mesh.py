@@ -43,7 +43,7 @@
 
 import sets
 
-import Numeric
+from fipy.tools import numerix
 
 import fipy.meshes.common.mesh
 
@@ -85,12 +85,12 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	    cell = cells[i]
 	    ids = cell.getFaceIDs()
 	    self.cellFaceIDs += ids
-	self.cellFaceIDs = Numeric.array(self.cellFaceIDs)
-	self.cellFaceIDs = Numeric.reshape(self.cellFaceIDs, (len(cells), self._getMaxFacesPerCell()))
+	self.cellFaceIDs = numerix.array(self.cellFaceIDs)
+	self.cellFaceIDs = numerix.reshape(self.cellFaceIDs, (len(cells), self._getMaxFacesPerCell()))
 	
     def _calcInteriorAndExteriorFaceIDs(self):
-	self.exteriorFaceIDs = Numeric.arange(len(self.interiorFaces),len(self.faces))
-	self.interiorFaceIDs = Numeric.arange(len(self.interiorFaces))
+	self.exteriorFaceIDs = numerix.arange(len(self.interiorFaces),len(self.faces))
+	self.interiorFaceIDs = numerix.arange(len(self.interiorFaces))
 	
     def _calcExteriorCellIDs(self):
 	# we want a list of unique ids
@@ -100,16 +100,16 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	cells = self.getCells()
 	N = len(cells)
 	M = self._getMaxFacesPerCell()
-	self.cellToFaceOrientations = Numeric.zeros((N,M,1))
+	self.cellToFaceOrientations = numerix.zeros((N,M,1))
 	for i in range(N):
 	    orientations = cells[i].getFaceOrientations()
-	    orientations = Numeric.reshape(orientations,(len(cells[i].getFaces()),))
+	    orientations = numerix.reshape(orientations,(len(cells[i].getFaces()),))
 	    for j in range(len(orientations)):
 		self.cellToFaceOrientations[i,j,0] = orientations[j]
 		
     def _calcAdjacentCellIDs(self):
-	self.adjacentCellIDs = (Numeric.array([face.getCellID(0) for face in self.faces]),
-				Numeric.array([face.getCellID(1) for face in self.faces]))
+	self.adjacentCellIDs = (numerix.array([face.getCellID(0) for face in self.faces]),
+				numerix.array([face.getCellID(1) for face in self.faces]))
 
     def _calcCellToCellIDs(self):
 	pass
@@ -117,7 +117,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcFaceOrientations(self):
 	faces = self.getFaces()
 	N = len(faces)
-	orientations = Numeric.zeros((N),'d')
+	orientations = numerix.zeros((N),'d')
 	for i in range(N):
 	    orientations[i] = faces[i]._getOrientation()
 	self.faceOrientations = orientations
@@ -184,7 +184,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcFaceAreas(self):
 	faces = self.getFaces()
 	N = len(faces)
-	self.faceAreas = Numeric.zeros((N),'d')
+	self.faceAreas = numerix.zeros((N),'d')
 	# get the units right
 	self.faceAreas = self.faceAreas * faces[0].getArea()
 	for i in range(N):
@@ -193,7 +193,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcCellVolumes(self):
 	cells = self.getCells()
 	N = len(cells)
-	self.cellVolumes = Numeric.zeros((N),'d')
+	self.cellVolumes = numerix.zeros((N),'d')
 	# get the units right
 	self.cellVolumes = self.cellVolumes * cells[0].getVolume()	    
 	for i in range(N):
@@ -202,7 +202,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcCellCenters(self):
 	cells = self.getCells()
 	N = len(cells)
-	self.cellCenters = Numeric.zeros((N,self.dim),'d')
+	self.cellCenters = numerix.zeros((N,self.dim),'d')
 	# get the units right
 	self.cellCenters = self.cellCenters * cells[0].getCenter()
 	for i in range(N):
@@ -211,7 +211,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcCellDistances(self):
 	faces = self.getFaces()
 	N = len(faces)
-	self.cellDistances = Numeric.zeros((N),'d')
+	self.cellDistances = numerix.zeros((N),'d')
 	# get the units right
 	self.cellDistances = self.cellDistances * faces[0].getCellDistance()
 	for i in range(N):
@@ -220,7 +220,7 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
     def _calcFaceToCellDistances(self):
 	faces = self.getFaces()
 	N = len(faces)
-	self.faceToCellDistances = Numeric.zeros((N),'d')
+	self.faceToCellDistances = numerix.zeros((N),'d')
 	# get the units right
 	self.faceToCellDistances = self.faceToCellDistances * faces[0]._getFaceToCellDistance()
 	for i in range(N):
@@ -230,27 +230,27 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
 	faces = self.getFaces()
 	N = len(faces)
 	dim = len(faces[0].getCenter())
-	self.faceNormals = Numeric.zeros((N,dim),'d')
+	self.faceNormals = numerix.zeros((N,dim),'d')
 	# get the units right
 	self.faceNormals = self.faceNormals * faces[0]._calcNormal()
 	for i in range(N):
 	    self.faceNormals[i] = faces[i]._calcNormal()
 	    
     def _calcOrientedFaceNormals(self):
-        self.orientedFaceNormals = self._getFaceNormals() * self.getFaceOrientations()[:,Numeric.NewAxis]
+        self.orientedFaceNormals = self._getFaceNormals() * self.getFaceOrientations()[:,numerix.NewAxis]
 	    
     def _calcAreaProjections(self):
-        self.areaProjections = self._getFaceNormals() * self._getFaceAreas()[:,Numeric.NewAxis] 
+        self.areaProjections = self._getFaceNormals() * self._getFaceAreas()[:,numerix.NewAxis] 
 	
     def _calcOrientedAreaProjections(self):
-	self.orientedAreaProjections = self._getAreaProjections() * self.getFaceOrientations()[:,Numeric.NewAxis]
+	self.orientedAreaProjections = self._getAreaProjections() * self.getFaceOrientations()[:,numerix.NewAxis]
 	
     def _calcFaceTangents(self):
 	faces = self.getFaces()
 	N = len(faces)
 	dim = len(faces[0].getCenter())
-	self.faceTangents1 = Numeric.zeros((N,dim),'d')
-	self.faceTangents2 = Numeric.zeros((N,dim),'d')
+	self.faceTangents1 = numerix.zeros((N,dim),'d')
+	self.faceTangents2 = numerix.zeros((N,dim),'d')
 	# get the units right
 	self.faceTangents1 = self.faceTangents1 * faces[0]._calcTangent1()
 	self.faceTangents2 = self.faceTangents2 * faces[0]._calcTangent2()

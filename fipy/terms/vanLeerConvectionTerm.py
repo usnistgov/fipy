@@ -47,7 +47,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.tools import numerix
@@ -57,11 +57,11 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 	gradUpUpwind = -gradUpwind + 2 * normalGradient
 
         avg = 0.5 * (abs(gradUpwind) + abs(gradUpUpwind))
-        min3 = Numeric.minimum(Numeric.minimum(abs(gradUpwind), abs(gradUpUpwind)), avg)
+        min3 = numerix.minimum(numerix.minimum(abs(gradUpwind), abs(gradUpUpwind)), avg)
 
-	grad = Numeric.where(gradUpwind * gradUpUpwind < 0.,
+	grad = numerix.where(gradUpwind * gradUpUpwind < 0.,
                              0., 
-                             Numeric.where(gradUpUpwind > 0.,
+                             numerix.where(gradUpUpwind > 0.,
                                            min3,
                                            -min3))
 
@@ -89,7 +89,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 
 	vol2 = numerix.take(mesh.getCellVolumes(), id2)
 	
-	self.CFL = Numeric.maximum(interiorCFL / vol2, self.CFL)
+	self.CFL = numerix.maximum(interiorCFL / vol2, self.CFL)
 
 	oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
 	    * (vol2 - interiorCFL) / interiorFaceAreas

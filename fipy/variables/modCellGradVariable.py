@@ -35,7 +35,7 @@
  # ###################################################################
  ##
  
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellGradVariable import _CellGradVariable
 from fipy.tools.inline import inline
@@ -70,13 +70,13 @@ class _ModCellGradVariable(_CellGradVariable):
             val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
         """,
         val = val,
-        ids = Numeric.array(ids),
-        orientations = Numeric.array(orientations),
-        volumes = Numeric.array(volumes),
-        areaProj = Numeric.array(self.mesh._getAreaProjections()),
-        faceValues = Numeric.array(self.var.getArithmeticFaceValue()),
+        ids = numerix.array(ids),
+        orientations = numerix.array(orientations),
+        volumes = numerix.array(volumes),
+        areaProj = numerix.array(self.mesh._getAreaProjections()),
+        faceValues = numerix.array(self.var.getArithmeticFaceValue()),
         ni = N, nj = self.mesh.getDim(), nk = M,
-        gridSpacing = Numeric.array(self.mesh._getMeshSpacing()))
+        gridSpacing = numerix.array(self.mesh._getMeshSpacing()))
         
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

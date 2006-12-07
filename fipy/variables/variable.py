@@ -44,7 +44,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import os
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.meshIterator import MeshIterator
 
@@ -98,7 +98,7 @@ class Variable(object):
 	    Variable(value = 3)
 	    >>> Variable(value = 3, unit = "m")
 	    Variable(value = PhysicalField(3,'m'))
-	    >>> Variable(value = 3, unit = "m", array = Numeric.zeros((3,2)))
+	    >>> Variable(value = 3, unit = "m", array = numerix.zeros((3,2)))
 	    Variable(value = PhysicalField([[3,3,]
 	     [3,3,]
 	     [3,3,]],'m'))
@@ -145,36 +145,36 @@ class Variable(object):
 	
     def __array__(self, t = None):
 	"""
-        Attempt to convert the `Variable` to a Numeric `array` object
+        Attempt to convert the `Variable` to a numerix `array` object
         
             >>> v = Variable(value = [2,3])
-            >>> Numeric.array(v)
+            >>> numerix.array(v)
             [ 2., 3.,]
             
         It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
         
             >>> v = Variable(value = [2,3], unit = "m")
-            >>> Numeric.array(v)
+            >>> numerix.array(v)
             Traceback (most recent call last):
                 ...
             TypeError: Numeric array value must be dimensionless
 
         Convert a list of 1 element Variables to an array
 
-            >>> Numeric.array([Variable(0), Variable(0)])
+            >>> numerix.array([Variable(0), Variable(0)])
             [[0,]
              [0,]]
             >>> print Variable(0) + Variable(0)
             0
-            >>> Numeric.array([Variable(0) + Variable(0), Variable(0)])
+            >>> numerix.array([Variable(0) + Variable(0), Variable(0)])
 
-            >>> Numeric.array([Variable(0), Variable(0) + Variable(0)])
+            >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
             [[0,]
              [0,]]
         
 	"""
-	return Numeric.array(self.getValue(), t)
+	return numerix.array(self.getValue(), t)
 	
     def copy(self):
 	"""
@@ -481,13 +481,13 @@ class Variable(object):
             elif array is not None:
                 array[:] = value
                 value = array
-            elif type(value) not in (type(None), type(Numeric.array(1)), type(MA.array(1))):
-                value = Numeric.array(value)
-                # Numeric does strange things with really large integers.
+            elif type(value) not in (type(None), type(numerix.array(1)), type(MA.array(1))):
+                value = numerix.array(value)
+                # numerix does strange things with really large integers.
                 # Even though Python knows how to do arithmetic with them,
                 # Numeric converts them to 'O' objects that it then doesn't understand.
                 if value.typecode() == 'O':
-                    value = Numeric.array(float(value))
+                    value = numerix.array(float(value))
 
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
@@ -691,10 +691,10 @@ class Variable(object):
         
         Test of _getRepresentation
 
-            >>> v1 = Variable(Numeric.array((1,2,3,4)))
-            >>> v2 = Variable(Numeric.array((5,6,7,8)))
-            >>> v3 = Variable(Numeric.array((9,10,11,12)))
-            >>> v4 = Variable(Numeric.array((13,14,15,16)))
+            >>> v1 = Variable(numerix.array((1,2,3,4)))
+            >>> v2 = Variable(numerix.array((5,6,7,8)))
+            >>> v3 = Variable(numerix.array((9,10,11,12)))
+            >>> v4 = Variable(numerix.array((13,14,15,16)))
 
             >>> (v1 * v2)._getRepresentation()
             '(Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))'
@@ -1642,11 +1642,11 @@ class Variable(object):
         ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
         ## out of memory.
         ##
-        ##    >>> import Numeric
-        ##    >>> a = Numeric.ones(10000)
-        ##    >>> b = Numeric.ones(10001)
-        ##    >>> b = b[...,Numeric.NewAxis]
-        ##    >>> Numeric.allclose(a, b)
+        ##    >>> from fipy.tools import numerix
+        ##    >>> a = numerix.ones(10000)
+        ##    >>> b = numerix.ones(10001)
+        ##    >>> b = b[...,numerix.NewAxis]
+        ##    >>> numerix.allclose(a, b)
         ##    Traceback (most recent call last):
         ##    ...
         ##    MemoryError: can't allocate memory for array

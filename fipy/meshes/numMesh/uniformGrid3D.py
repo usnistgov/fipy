@@ -58,7 +58,7 @@ class UniformGrid3D(Grid3D):
 
     Vertices: Numbered in the usual way. X coordinate changes most quickly, then Y, then Z.
     
-    *** arrays are arranged Z, Y, X because in Numeric, the final index is the one that changes the most quickly ***
+    *** arrays are arranged Z, Y, X because in numerix, the final index is the one that changes the most quickly ***
 
     Cells: Same numbering system as vertices.
 

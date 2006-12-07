@@ -46,7 +46,7 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.viewers.viewer import Viewer
 

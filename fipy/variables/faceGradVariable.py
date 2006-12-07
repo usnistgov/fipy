@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
 from fipy.tools import numerix
@@ -72,9 +72,9 @@ class _FaceGradVariable(VectorFaceVariable):
 	T1 = (t1grad1 + t1grad2) / 2.
 	T2 = (t2grad1 + t2grad2) / 2.
 	
-	N = N[:,Numeric.NewAxis]
-	T1 = T1[:,Numeric.NewAxis]
-	T2 = T2[:,Numeric.NewAxis]
+	N = N[:,numerix.NewAxis]
+	T1 = T1[:,numerix.NewAxis]
+	T2 = T2[:,numerix.NewAxis]
         
 	return normals * N + tangents1 * T1 + tangents2 * T2
 
@@ -113,7 +113,7 @@ class _FaceGradVariable(VectorFaceVariable):
             normals = self.mesh._getOrientedFaceNormals(),
             id1 = id1,
             id2 = id2,
-	    dAP = Numeric.array(self.mesh._getCellDistances()),
+	    dAP = numerix.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = val,
             ni = tangents1.shape[0],

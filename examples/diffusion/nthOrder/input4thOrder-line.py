@@ -63,7 +63,7 @@ dx = Lx / nx
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-import Numeric
+from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 var = CellVariable(mesh = mesh)
 

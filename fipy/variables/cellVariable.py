@@ -37,7 +37,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools import numerix
@@ -68,7 +68,7 @@ class CellVariable(Variable):
         if value is None:
             array = None
         else:
-            array =  Numeric.zeros(self._getShapeFromMesh(mesh),'d')
+            array =  numerix.zeros(self._getShapeFromMesh(mesh),'d')
 # 	array[:] = value
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
@@ -208,21 +208,21 @@ class CellVariable(Variable):
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
 	if self.arithmeticFaceValue is None:
@@ -248,21 +248,21 @@ class CellVariable(Variable):
             >>> # faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
-            >>> Numeric.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
 	if self.harmonicFaceValue is None:
@@ -338,7 +338,7 @@ class CellVariable(Variable):
 	    self.setValue(self.old.getValue())
 	    
     def _remesh(self, mesh):
-	self.value = Numeric.array(self.getValue(points = mesh.getCellCenters()))
+	self.value = numerix.array(self.getValue(points = mesh.getCellCenters()))
 	if self.old is not None:
 	    self.old._remesh(mesh)
 	self.mesh = mesh

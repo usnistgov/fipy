@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
@@ -73,7 +73,7 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-	Lx = matrix * Numeric.array(var[:])
+	Lx = matrix * numerix.array(var[:])
       
 	residual = Lx - RHSvector
       

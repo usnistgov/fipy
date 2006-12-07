@@ -46,7 +46,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-import Numeric
+from fipy.tools import numerix
  
 from fipy.viewers.viewer import Viewer
 from fipy.variables.cellVariable import CellVariable
@@ -196,11 +196,11 @@ class TSVViewer(Viewer):
             values = mesh.getCellCenters()
             for var in self.vars:
                 if isinstance(var, VectorCellVariable):
-                    values = Numeric.concatenate((values, Numeric.array(var)), 1)
+                    values = numerix.concatenate((values, numerix.array(var)), 1)
                 else:
     # 		this is brute force. Fix later
-    #                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
-                    values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
+    #                 values = numerix.concatenate((values, numerix.transpose(numerix.array((var,)))), 1)
+                    values = numerix.concatenate((values, numerix.transpose(numerix.array((numerix.array(var),)))), 1)
                     
             self._plot(values, f, dim)
 
@@ -208,11 +208,11 @@ class TSVViewer(Viewer):
             values = mesh.getFaceCenters()
             for var in self.vars:
                 if isinstance(var, VectorFaceVariable):
-                    values = Numeric.concatenate((values, Numeric.array(var)), 1)
+                    values = numerix.concatenate((values, numerix.array(var)), 1)
                 else:
     # 		this is brute force. Fix later
-    #                 values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((var,)))), 1)
-                    values = Numeric.concatenate((values, Numeric.transpose(Numeric.array((Numeric.array(var),)))), 1)
+    #                 values = numerix.concatenate((values, numerix.transpose(numerix.array((var,)))), 1)
+                    values = numerix.concatenate((values, numerix.transpose(numerix.array((numerix.array(var),)))), 1)
                     
             self._plot(values, f, dim)
 

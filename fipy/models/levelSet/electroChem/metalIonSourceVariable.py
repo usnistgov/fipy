@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellVariable import CellVariable
 
@@ -66,9 +66,9 @@ class _MetalIonSourceVariable(CellVariable):
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
        >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
        >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
-       >>> arr = Numeric.array(_MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
-       >>> sqrt = Numeric.sqrt(2)
-       >>> Numeric.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
+       >>> arr = numerix.array(_MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
+       >>> sqrt = numerix.sqrt(2)
+       >>> numerix.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
        1
 
     """
@@ -91,9 +91,9 @@ class _MetalIonSourceVariable(CellVariable):
         self.metalIonMolarVolume = metalIonMolarVolume
         
     def _calcValue(self):
-        ionVar = Numeric.array(self.ionVar)
-        ionVar = Numeric.where(ionVar > 1e-20, ionVar, 1e-20)        
-        return Numeric.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonMolarVolume) / ionVar
+        ionVar = numerix.array(self.ionVar)
+        ionVar = numerix.where(ionVar > 1e-20, ionVar, 1e-20)        
+        return numerix.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh .getCellVolumes() * self.metalIonMolarVolume) / ionVar
         
 def _test(): 
     import doctest

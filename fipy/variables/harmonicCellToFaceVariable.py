@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import numerix
@@ -47,8 +47,8 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
         cell2 = numerix.take(self.var,id2)
         value = ((cell2 - cell1) * alpha + cell1)
         eps = 1e-20
-        value = Numeric.where(value == 0., eps, value)
-        value = Numeric.where(value > eps, cell1 * cell2 / value, 0.)
+        value = numerix.where(value == 0., eps, value)
+        value = numerix.where(value > eps, cell1 * cell2 / value, 0.)
  
         return value
         

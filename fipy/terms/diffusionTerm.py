@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import _SparseMatrix
@@ -160,7 +160,7 @@ class DiffusionTerm(Term):
             return None
         
     def _getCoefficientMatrix(self, mesh, coeff):
-        interiorCoeff = Numeric.array(coeff)
+        interiorCoeff = numerix.array(coeff)
         
         numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
         
@@ -233,7 +233,7 @@ class DiffusionTerm(Term):
 
             mm = self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag'])
             L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
-                               mm, Numeric.zeros(N,'d'))
+                               mm, numerix.zeros(N,'d'))
                                
             del higherOrderBCs
             del mm
@@ -269,7 +269,7 @@ class DiffusionTerm(Term):
             del lowerOrderBCs
             
             L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
-                               self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag']), Numeric.zeros(N,'d'))
+                               self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
                                
             del higherOrderBCs
 
@@ -277,7 +277,7 @@ class DiffusionTerm(Term):
             
             L = _SparseMatrix(size = N)
             L.addAtDiagonal(mesh.getCellVolumes())
-            b = Numeric.zeros((N),'d')
+            b = numerix.zeros((N),'d')
             
         return (L, b)
         
@@ -426,8 +426,8 @@ class DiffusionTerm(Term):
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
-           >>> ans = Numeric.array(((8e+01, -32),(-32, 16)))
-           >>> print Numeric.allclose(Numeric.array(L), ans)
+           >>> ans = numerix.array(((8e+01, -32),(-32, 16)))
+           >>> print numerix.allclose(numerix.array(L), ans)
            1
            >>> print b
            [-8., 4.,]
@@ -447,8 +447,8 @@ class DiffusionTerm(Term):
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
-           >>> ans = Numeric.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
-           >>> print Numeric.allclose(Numeric.array(L), ans)
+           >>> ans = numerix.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
+           >>> print numerix.allclose(numerix.array(L), ans)
            1
            >>> print b
            [-24., 16.,]

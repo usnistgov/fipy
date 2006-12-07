@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable

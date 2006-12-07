@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.inline import inline
@@ -65,8 +65,8 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
        >>> mesh = Grid2D(dx = 1., nx = 3)
        >>> from fipy.variables.cellVariable import CellVariable
        >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
-       >>> arr = Numeric.array(_LevelSetDiffusionVariable(var, 1))
-       >>> Numeric.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
+       >>> arr = numerix.array(_LevelSetDiffusionVariable(var, 1))
+       >>> numerix.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
        1
 
     """
@@ -83,11 +83,11 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         self.diffusionCoeff = diffusionCoeff
     
     def _calcValuePy(self, alpha, id1, id2):
-        distance = Numeric.array(self.var)
-        cell1 = Numeric.take(distance, id1)
-        cell2 = Numeric.take(distance, id2)
+        distance = numerix.array(self.var)
+        cell1 = numerix.take(distance, id1)
+        cell2 = numerix.take(distance, id2)
 
-        return Numeric.where(cell1 < 0 or cell2 < 0,
+        return numerix.where(cell1 < 0 or cell2 < 0,
                              0,
                              self.diffusionCoeff)
                                    
@@ -104,7 +104,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 		val(i) = diffusionCoeff;
 	    }
 	""",
-	var = Numeric.array(self.var),
+	var = numerix.array(self.var),
 	val = val,
 	id1 = id1, id2 = id2,
         diffusionCoeff = self.diffusionCoeff,

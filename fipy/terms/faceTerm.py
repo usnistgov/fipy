@@ -42,7 +42,7 @@
  
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.term import Term
 import fipy.tools.vector
@@ -96,23 +96,23 @@ class FaceTerm(Term):
 
             LL,bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
             if LL != 0:
-##		b -= LL.takeDiagonal() * Numeric.array(oldArray)
-                b -= LL * Numeric.array(oldArray)
+##		b -= LL.takeDiagonal() * numerix.array(oldArray)
+                b -= LL * numerix.array(oldArray)
 	    b += bb
 
     def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt, weight):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
-        coeff = Numeric.array(self._getGeomCoeff(mesh))
+        coeff = numerix.array(self._getGeomCoeff(mesh))
         Nfac = mesh._getNumberOfFaces()
 
-        cell1Diag = Numeric.zeros((Nfac,),'d')
+        cell1Diag = numerix.zeros((Nfac,),'d')
         cell1Diag[:] = weight['cell 1 diag']
-        cell1OffDiag = Numeric.zeros((Nfac,),'d')
+        cell1OffDiag = numerix.zeros((Nfac,),'d')
         cell1OffDiag[:] = weight['cell 1 offdiag']
-        cell2Diag = Numeric.zeros((Nfac,),'d')
+        cell2Diag = numerix.zeros((Nfac,),'d')
         cell2Diag[:] = weight['cell 2 diag']
-        cell2OffDiag = Numeric.zeros((Nfac,),'d')
+        cell2OffDiag = numerix.zeros((Nfac,),'d')
         cell2OffDiag[:] = weight['cell 2 offdiag']
         
 	inline._runInline("""
@@ -122,8 +122,8 @@ class FaceTerm(Term):
             
 	    b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1(i) + cell1OffDiag(faceID) * oldArrayId2(i));
 	    b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2(i) + cell2OffDiag(faceID) * oldArrayId1(i));
-	""",oldArrayId1 = Numeric.array(oldArrayId1),
-            oldArrayId2 = Numeric.array(oldArrayId2),
+	""",oldArrayId1 = numerix.array(oldArrayId1),
+            oldArrayId2 = numerix.array(oldArrayId2),
 	    id1 = id1,
 	    id2 = id2,
 	    b = b,
@@ -132,7 +132,7 @@ class FaceTerm(Term):
 	    cell2Diag = cell2Diag,
 	    cell2OffDiag = cell2OffDiag,
 	    coeff = coeff,
-	    faceIDs = Numeric.array(interiorFaces),
+	    faceIDs = numerix.array(interiorFaces),
 	    ni = len(interiorFaces))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
@@ -161,7 +161,7 @@ class FaceTerm(Term):
 	id2 = numerix.take(id2, interiorFaces)
 	
         N = len(var)
-        b = Numeric.zeros((N),'d')
+        b = numerix.zeros((N),'d')
         L = _SparseMatrix(size = N)
 
 	weight = self._getWeight(mesh)

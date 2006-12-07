@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellVariable import Variable
 from fipy.tools import numerix
@@ -45,7 +45,7 @@ class _MagVariable(Variable):
 
         Variable.__init__(self, mesh = var.getMesh())
         self.var = self._requires(var)
-        self.result = Numeric.zeros((len(var)),'d')
+        self.result = numerix.zeros((len(var)),'d')
         
     def _calcValue(self):
 	return numerix.sqrtDot(self.var(), self.var())

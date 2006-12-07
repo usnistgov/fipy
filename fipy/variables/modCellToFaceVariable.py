@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.tools.inline import inline
 from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable

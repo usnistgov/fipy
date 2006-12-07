@@ -38,7 +38,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 import MA
 
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -245,9 +245,9 @@ class Mesh:
     def _calcInteriorCellIDs(self):
         pass
 ##	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
-##        onesWhereInterior = Numeric.zeros(self.numberOfCells)
-##        Numeric.put(onesWhereInterior, self.exteriorCells, Numeric.zeros((len(self.exteriorCellIDs))))
-##        self.interiorCellIDs = Numeric.nonzero(onesWhereInterior)
+##        onesWhereInterior = numerix.zeros(self.numberOfCells)
+##        numerix.put(onesWhereInterior, self.exteriorCells, numerix.zeros((len(self.exteriorCellIDs))))
+##        self.interiorCellIDs = numerix.nonzero(onesWhereInterior)
 ##        self.interiorCellIDs = (0,0)
         
     def _calcInteriorAndExteriorCellIDs(self):
@@ -266,7 +266,7 @@ class Mesh:
     def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
-        cellIDs = Numeric.reshape(Numeric.repeat(Numeric.arange(N), M), (N, M))
+        cellIDs = numerix.reshape(numerix.repeat(numerix.arange(N), M), (N, M))
         cellToCellIDs = self._getCellToCellIDs()
         self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
@@ -455,7 +455,7 @@ class Mesh:
         return self.cellAreas
 
     def _getCellAreaProjections(self):
-        return self.cellNormals * self._getCellAreas()[..., Numeric.NewAxis]
+        return self.cellNormals * self._getCellAreas()[..., numerix.NewAxis]
 
     """scaling"""
 
@@ -499,7 +499,7 @@ class Mesh:
             tmp = self.getCellCenters() - point
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
-        i = Numeric.argmin(Numeric.add.reduce((tmp * tmp), axis = 1))
+        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 1))
 	return i    
 
 ## pickling

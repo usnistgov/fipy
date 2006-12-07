@@ -37,7 +37,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.variables.faceVariable import FaceVariable
@@ -49,7 +49,7 @@ class VectorFaceVariable(Variable):
         if value is None:
             array = None
         else:
-            array = Numeric.zeros(self._getShapeFromMesh(mesh),'d')
+            array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 

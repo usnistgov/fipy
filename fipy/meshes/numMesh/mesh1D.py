@@ -36,14 +36,14 @@
  # ###################################################################
  ##
 
-"""Generic mesh class using Numeric to do the calculations
+"""Generic mesh class using numerix to do the calculations
 
     Meshes contain cells, faces, and vertices.
 
     This is built for a non-mixed element mesh.
 """
 
-import Numeric
+from fipy.tools import numerix
 import MA
 
 from fipy.meshes.numMesh.mesh import Mesh
@@ -51,27 +51,27 @@ from fipy.tools import vector
 
 class Mesh1D(Mesh):
     def _calcFaceAreas(self):
-        self.faceAreas = Numeric.ones(self.numberOfFaces, 'd')
+        self.faceAreas = numerix.ones(self.numberOfFaces, 'd')
 
     def _calcFaceCenters(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
-        faceVertexCoords = Numeric.take(self.vertexCoords, faceVertexIDs)
+        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs)
         if self.faceVertexIDs.mask() == None:
-            faceVertexCoordsMask = Numeric.zeros(Numeric.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
-            faceVertexCoordsMask = Numeric.reshape(Numeric.repeat(self.faceVertexIDs.mask().flat, self.dim), Numeric.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.reshape(numerix.repeat(self.faceVertexIDs.mask().flat, self.dim), numerix.shape(faceVertexCoords))
             
         self.faceCenters = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
         
     def _calcFaceNormals(self):
-        self.faceNormals = Numeric.transpose(Numeric.array((Numeric.ones(self.numberOfFaces, 'd'),)))
+        self.faceNormals = numerix.transpose(numerix.array((numerix.ones(self.numberOfFaces, 'd'),)))
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         self.faceNormals[0] = -self.faceNormals[0]
 
     def _calcFaceTangents(self):
-        self.faceTangents1 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
-        self.faceTangents2 = Numeric.zeros(self.numberOfFaces, 'd')[:, Numeric.NewAxis]
+        self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[:, numerix.NewAxis]
+        self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[:, numerix.NewAxis]
 
     def _calcHigherOrderScalings(self):
 	self.scale['area'] = 1.
@@ -79,12 +79,12 @@ class Mesh1D(Mesh):
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
-        newmesh = Mesh1D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        newmesh = Mesh1D(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
 
     def __mul__(self, factor):
         newCoords = self.vertexCoords * factor
-        newmesh = Mesh1D(newCoords, Numeric.array(self.faceVertexIDs), Numeric.array(self.cellFaceIDs))
+        newmesh = Mesh1D(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
 
     def _concatenate(self, other, smallNumber):

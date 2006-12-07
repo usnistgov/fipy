@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.term import Term
 from fipy.tools.inline import inline
@@ -85,14 +85,14 @@ class CellTerm(Term):
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
 
-	b += Numeric.array(oldArray) * Numeric.array(coeffVectors['old value']) / dt
-	b += Numeric.ones([N]) * Numeric.array(coeffVectors['b vector'])
-	L.addAtDiagonal(Numeric.ones([N]) * Numeric.array(coeffVectors['new value']) / dt)
-        L.addAtDiagonal(Numeric.ones([N]) * Numeric.array(coeffVectors['diagonal']))
+	b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
+	b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
+	L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
         N = oldArray.getMesh().getNumberOfCells()
-        updatePyArray = Numeric.zeros((N),'d')
+        updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""
             b(i) += oldArray(i) * oldCoeff(i) / dt;
@@ -101,10 +101,10 @@ class CellTerm(Term):
             updatePyArray(i) += diagCoeff(i);
         """,b = b,
             oldArray = oldArray.getNumericValue(),
-            oldCoeff = Numeric.array(coeffVectors['old value']),
-            bCoeff = Numeric.array(coeffVectors['b vector']),
-            newCoeff = Numeric.array(coeffVectors['new value']),
-            diagCoeff = Numeric.array(coeffVectors['diagonal']),
+            oldCoeff = numerix.array(coeffVectors['old value']),
+            bCoeff = numerix.array(coeffVectors['b vector']),
+            newCoeff = numerix.array(coeffVectors['new value']),
+            diagCoeff = numerix.array(coeffVectors['diagonal']),
             updatePyArray = updatePyArray,
             ni = len(updatePyArray),
             dt = dt)
@@ -113,7 +113,7 @@ class CellTerm(Term):
         
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
 	N = len(var)
-	b = Numeric.zeros((N),'d')
+	b = numerix.zeros((N),'d')
 	L = _SparseMatrix(size = N)
 	
 	coeffVectors = self._getCoeffVectors(var.getMesh())
