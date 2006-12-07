@@ -120,17 +120,23 @@ class Gist2DViewer(GistViewer):
 
         if maxVal == minVal:
             maxVal = minVal + 1e-10
+
+        
+        vertexIDs = self.mesh._getOrderedCellVertexIDs().flat
+
+        import MA
+        
+        if type(vertexIDs) is type(MA.array(0)):
+            vertexIDs = vertexIDs.compressed()
             
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
-        Nfac = self.mesh._getMaxFacesPerCell()
-        Ncells = self.mesh.getNumberOfCells()
         vertexCoords = self.mesh.getVertexCoords()
-        xCoords = Numeric.take(vertexCoords[:,0], Numeric.array(vertexIDs).flat)
-        yCoords = Numeric.take(vertexCoords[:,1], Numeric.array(vertexIDs).flat)
+        xCoords = Numeric.take(vertexCoords[:,0], vertexIDs)
+        yCoords = Numeric.take(vertexCoords[:,1], vertexIDs)
 
         import gist
-        
-        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
+
+##        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
+        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin = minVal, cmax = maxVal)
 
         import colorbar
 

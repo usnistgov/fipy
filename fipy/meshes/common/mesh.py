@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 
 import Numeric
 import MA
+from fipy.tools import numerix
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -278,6 +279,13 @@ class Mesh:
 
     def _getCellFaceIDs(self):
         return self.cellFaceIDs
+
+    def _getNumberOfFacesPerCell(self):
+        cellFaceIDs = self._getCellFaceIDs()
+        if type(cellFaceIDs) is type(MA.array(0)): 
+            return cellFaceIDs.count(axis=1)
+        else:
+            return self._getMaxFacesPerCell() * numerix.ones(len(cellFaceIDs))
 
     def getExteriorFaces(self):
 	pass

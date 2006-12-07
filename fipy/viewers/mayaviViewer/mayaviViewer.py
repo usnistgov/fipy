@@ -134,9 +134,7 @@ class MayaviViewer(Viewer):
         coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
         coords[:,:mesh.getDim()] = mesh.getVertexCoords()
 
-        ##import pyvtk
-
-        from enthought.tvtk.api import tvtk as pyvtk
+        import pyvtk
 
         return pyvtk.UnstructuredGrid(points = coords,
                                       line = cellDict[2],
@@ -162,10 +160,8 @@ class MayaviViewer(Viewer):
             if name is '':
                 name = 'default'
 
-            ##import pyvtk
+            import pyvtk
 
-            from enthought.tvtk.api import tvtk as pyvtk
-                
             celldata = pyvtk.CellData(pyvtk.Scalars(var[:], name = name, lookup_table = 'default'))
             data = pyvtk.VtkData(structure, "mydata", celldata)
             
