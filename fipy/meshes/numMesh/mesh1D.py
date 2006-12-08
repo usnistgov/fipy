@@ -44,7 +44,7 @@
 """
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.mesh import Mesh
 from fipy.tools import vector

@@ -40,7 +40,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
@@ -651,7 +651,7 @@ class Mesh(_CommonMesh):
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, -1), (0, -1), (0, -1),
             ...                                 (0, 1), (0, -1), (0, -1),
             ...                                 (1, -1), (1, -1), (1, -1), (1, -1)), -1)

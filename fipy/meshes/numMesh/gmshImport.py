@@ -235,7 +235,7 @@ Reverse the handedness of the mesh and check the sign
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 import mesh
 import mesh2D
 ## from fipy.tools.profiler.profiler import Profiler

@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
@@ -508,7 +508,7 @@ class DistanceVariable(CellVariable):
         valueOverFaces = numerix.resize(numerix.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
         interfaceNormals = numerix.MAtake(self._getInterfaceNormals(), self.cellFaceIDs)
-        import MA
+        from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
     def _getInterfaceNormals(self):

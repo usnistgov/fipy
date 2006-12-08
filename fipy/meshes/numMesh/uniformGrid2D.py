@@ -46,7 +46,7 @@
 __docformat__ = 'restructuredtext'
 
 
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid2D import Grid2D
 from fipy.meshes.meshIterator import FaceIterator
@@ -545,7 +545,7 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, -1), (1, -1), (2, -1),
             ...                                 (0, 3), (1, 4), (2, 5),
             ...                                 (3, -1), (4, -1), (5, -1),

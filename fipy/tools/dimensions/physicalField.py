@@ -103,7 +103,7 @@ __docformat__ = 'restructuredtext'
 import re, string, umath
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from NumberDict import _NumberDict
 

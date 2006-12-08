@@ -45,7 +45,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid1D import Grid1D
 from fipy.meshes.meshIterator import FaceIterator

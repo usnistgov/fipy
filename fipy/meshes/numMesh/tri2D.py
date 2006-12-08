@@ -282,7 +282,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((18, -1), (19, -1), (20, -1), (6, 21), (7, 22), (8, 23), (9, -1), (10, -1), (11, -1),
             ...                                 (12, -1), (0, 13), (1, 14), (2, -1), (15, -1), (3, 16), (4, 17), (5, -1),
             ...                                 (12, 18), (13, 19), (14, 20), (15, 21), (16, 22), (17, 23),

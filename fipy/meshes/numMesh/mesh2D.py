@@ -46,7 +46,7 @@ This is built for a non-mixed element mesh.
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 from fipy.meshes.numMesh.mesh import Mesh
 from fipy.tools import numerix
 from fipy.tools import vector

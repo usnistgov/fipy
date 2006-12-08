@@ -42,7 +42,7 @@
  
 __docformat__ = 'restructuredtext'
 
-import MA
+from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
 from advectionTerm import _AdvectionTerm

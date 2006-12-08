@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.terms.term import Term
 from fipy.tools.sparseMatrix import _SparseMatrix

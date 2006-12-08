@@ -39,7 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 

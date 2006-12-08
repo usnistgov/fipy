@@ -35,7 +35,7 @@
  # ###################################################################
  ##
  
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.variables.vectorCellVariable import VectorCellVariable
 from fipy.tools import numerix
