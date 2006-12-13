@@ -261,13 +261,13 @@ class DistanceVariable(CellVariable):
         cellToCellIDs = self.mesh._getCellToCellIDs()
 
         if deleteIslands:
-            adjVals = numerix.MAtake(self.value, cellToCellIDs)
+            adjVals = numerix.take(self.value, cellToCellIDs)
             adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,numerix.NewAxis]) > 0)
-            masksum = numerix.sum(numerix.logical_not(adjInterfaceValues.mask()), 1)
+            masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 1)
             tmp = MA.logical_and(masksum == 4, self.value > 0)
             self.value = MA.where(tmp, -1, self.value)
 
-        adjVals = numerix.MAtake(self.value, cellToCellIDs)
+        adjVals = numerix.take(self.value, cellToCellIDs)
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value[:,numerix.NewAxis]) > 0)
         dAP = self.mesh._getCellToCellDistances()
         distances = abs(self.value[:,numerix.NewAxis] * dAP / (self.value[:,numerix.NewAxis] - adjInterfaceValues))
@@ -286,13 +286,13 @@ class DistanceVariable(CellVariable):
             ns = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
             nt = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
 
-            signedDistance = MA.where(s.mask(),
+            signedDistance = MA.where(MA.getmask(s),
                                       self.value,
-                                      MA.where(t.mask(),
+                                      MA.where(MA.getmask(t),
                                                sign * s,
                                                MA.where(abs(numerix.dot(ns,nt)) < 0.9,
                                                         sign * s * t / MA.sqrt(s**2 + t**2),
-                                                        MA.where(u.mask(),
+                                                        MA.where(MA.getmask(u),
                                                                  sign * s,
                                                                  sign * s * u / MA.sqrt(s**2 + u**2)
                                                                  )
@@ -300,7 +300,7 @@ class DistanceVariable(CellVariable):
                                                )
                                       )
         else:
-            signedDistance = MA.where(s.mask(),
+            signedDistance = MA.where(MA.getmask(s),
                                       self.value,
                                       sign * s)
             
@@ -308,7 +308,7 @@ class DistanceVariable(CellVariable):
         self.value = signedDistance
 
         ## calculate interface flag
-        masksum = numerix.sum(numerix.logical_not(distances.mask()), 1)
+        masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 1)
         interfaceFlag = masksum > 0
 
         ## spread the extensionVariable to the whole interface
@@ -329,7 +329,7 @@ class DistanceVariable(CellVariable):
             self.value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
-        adjInterfaceFlag = numerix.MAtake(interfaceFlag, cellToCellIDs)
+        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs)
         hasAdjInterface = numerix.sum(adjInterfaceFlag.filled(), 1) > 0
         trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface) 
         trialIDs = list(numerix.nonzero(trialFlag))
@@ -507,7 +507,7 @@ class DistanceVariable(CellVariable):
 
         valueOverFaces = numerix.resize(numerix.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
 
-        interfaceNormals = numerix.MAtake(self._getInterfaceNormals(), self.cellFaceIDs)
+        interfaceNormals = numerix.take(self._getInterfaceNormals(), self.cellFaceIDs)
         from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
@@ -571,7 +571,7 @@ class DistanceVariable(CellVariable):
 
         """
 
-        flag = numerix.MAtake(self._getInterfaceFlag(), self.cellFaceIDs).filled(fill_value = 0)
+        flag = numerix.take(self._getInterfaceFlag(), self.cellFaceIDs).filled(fill_value = 0)
 
         flag = numerix.sum(flag, axis = 1)
         

@@ -104,6 +104,7 @@ import re, string, umath
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+from fipy.tools.numerix import umath
 
 from NumberDict import _NumberDict
 
@@ -285,8 +286,8 @@ class PhysicalField:
         # gets done.
         
         selfValue = self.value
-        if type(self.value) is type(numerix.array((0))) and self.value.typecode() == 'b':
-            selfValue = 1. * self.value
+##        if type(self.value) is type(numerix.array((0))) and self.value.typecode() == 'b':
+##            selfValue = 1. * self.value
             
         if _isVariable(other):
             return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
@@ -299,15 +300,15 @@ class PhysicalField:
                 new_value = sign1(selfValue)
             elif self.unit.isDimensionlessOrAngle():
                 otherValue = other
-                if type(other) is type(numerix.array((0))) and other.typecode() == 'b':
-                    otherValue = 1. * other
+##                if type(other) is type(numerix.array((0))) and other.typecode() == 'b':
+##                    otherValue = 1. * other
                 new_value = sign1(selfValue) + sign2(otherValue)
             else:
                 raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
         else:
             otherValue = other.value
-            if type(other.value) is type(numerix.array((0))) and other.value.typecode() == 'b':
-                otherValue = 1. * other.value
+##            if type(other.value) is type(numerix.array((0))) and other.value.typecode() == 'b':
+##                otherValue = 1. * other.value
 
             new_value = sign1(selfValue) + \
                         sign2(otherValue)*other.unit.conversionFactorTo(self.unit)
@@ -513,7 +514,7 @@ class PhysicalField:
         if not isinstance(other,PhysicalField):
             if type(other) is type(''):
                 other = PhysicalField(other)
-            elif other == 0 or self.unit.isDimensionlessOrAngle():
+            elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
                 raise TypeError, 'Incompatible types'
@@ -587,7 +588,10 @@ class PhysicalField:
             raise TypeError, 'Numeric array value must be dimensionless'
         
     def _getArray(self):
-	return self.value
+        if self.unit.isDimensionlessOrAngle():
+            return self.value
+        else:
+            raise TypeError, 'Numeric array value must be dimensionless'
 	
     def __float__(self):
         """
@@ -1284,7 +1288,7 @@ class PhysicalUnit:
 		return self.isDimensionless()
 	    else:
 		raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
-        if self.powers != other.powers:
+        if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
         return cmp(self.factor, other.factor)
 
@@ -1498,7 +1502,7 @@ class PhysicalUnit:
                 ...
             TypeError: Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor
 	"""
-        if self.powers != other.powers:
+        if not numerix.alltrue(self.powers == other.powers):
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor/other.factor
             else:
@@ -1519,7 +1523,7 @@ class PhysicalUnit:
 	    >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
 	    ['0.555556', '459.67']
 	"""
-        if self.powers != other.powers:
+        if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
 
         # let (s1,d1) be the conversion tuple from 'self' to base units

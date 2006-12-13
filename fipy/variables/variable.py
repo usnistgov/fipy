@@ -95,13 +95,13 @@ class Variable(object):
 	Create a `Variable`.
 	
 	    >>> Variable(value = 3)
-	    Variable(value = 3)
+	    Variable(value = array(3))
 	    >>> Variable(value = 3, unit = "m")
 	    Variable(value = PhysicalField(3,'m'))
 	    >>> Variable(value = 3, unit = "m", array = numerix.zeros((3,2)))
-	    Variable(value = PhysicalField([[3,3,]
-	     [3,3,]
-	     [3,3,]],'m'))
+	    Variable(value = PhysicalField(array([[3, 3],
+                   [3, 3],
+	           [3, 3]]),'m'))
 
 	:Parameters:
 	  - `value`: the initial value
@@ -148,8 +148,8 @@ class Variable(object):
         Attempt to convert the `Variable` to a numerix `array` object
         
             >>> v = Variable(value = [2,3])
-            >>> numerix.array(v)
-            [ 2., 3.,]
+            >>> print numerix.array(v)
+            [ 2.  3.]
             
         It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
@@ -175,6 +175,20 @@ class Variable(object):
         
 	"""
 	return numerix.array(self.getValue(), t)
+
+    def _get_array_interface(self):
+        return self._getArray().__array_interface__
+ 	
+    def _set_array_interface(self, value):
+        self._getArray().__array_interface__ = value
+ 	       
+    def _del_array_interface(self):
+        del self._getArray().__array_interface__
+ 	
+    __array_interface__ = property(_get_array_interface,
+                                   _set_array_interface,
+                                   _del_array_interface,
+                                   "the '__array_inteface__'")
 	
     def copy(self):
 	"""
@@ -183,23 +197,23 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = a.copy()
 	    >>> b
-	    Variable(value = 3)
+	    Variable(value = array(3))
 
 	The duplicate will not reflect changes made to the original
 	                  
 	    >>> a.setValue(5)
 	    >>> b
-	    Variable(value = 3)
+	    Variable(value = array(3))
 
         Check that this works for arrays.
 
             >>> a = Variable(value = numerix.array((0,1,2)))
             >>> b = a.copy()
             >>> b
-            Variable(value = [0,1,2,])
+            Variable(value = array([0, 1, 2]))
             >>> a[1] = 3
             >>> b
-            Variable(value = [0,1,2,])
+            Variable(value = array([0, 1, 2]))
             
 	"""
 	return Variable(value = self)
@@ -282,7 +296,7 @@ class Variable(object):
             >>> Variable(value = 3)[2]
             Traceback (most recent call last):
                   ...
-            IndexError: index out of bounds
+            IndexError: 0-d arrays can't be indexed
 
         """
         if isinstance(index, MeshIterator):
@@ -397,11 +411,11 @@ class Variable(object):
 	"Evaluate" the `Variable` and return its value
 	
 	    >>> a = Variable(value = 3)
-	    >>> a()
+	    >>> print a()
 	    3
 	    >>> b = a + 4
 	    >>> b
-	    (Variable(value = 3) + 4)
+	    (Variable(value = array(3)) + 4)
 	    >>> b()
 	    7
 	"""
@@ -412,11 +426,11 @@ class Variable(object):
         "Evaluate" the `Variable` and return its value (longhand)
         
             >>> a = Variable(value = 3)
-            >>> a.getValue()
+            >>> print a.getValue()
             3
             >>> b = a + 4
             >>> b
-            (Variable(value = 3) + 4)
+            (Variable(value = array(3)) + 4)
             >>> b.getValue()
             7
 
@@ -473,7 +487,8 @@ class Variable(object):
                     v = self.value.value
                 if type(value) in (type(1), type(1.)):
                     if type(v) is type(numerix.array(1)):
-                        if len(v) > 1:
+                        if v.shape is not ():
+##                        if len(v) > 1:
                             value = numerix.resize(float(value), (len(v),))
                     
             if unit is not None or type(value) in [type(''), type(()), type([])]:
@@ -483,11 +498,11 @@ class Variable(object):
                 value = array
             elif type(value) not in (type(None), type(numerix.array(1)), type(MA.array(1))):
                 value = numerix.array(value)
-                # numerix does strange things with really large integers.
-                # Even though Python knows how to do arithmetic with them,
-                # Numeric converts them to 'O' objects that it then doesn't understand.
-                if value.typecode() == 'O':
-                    value = numerix.array(float(value))
+##                 # numerix does strange things with really large integers.
+##                 # Even though Python knows how to do arithmetic with them,
+##                 # Numeric converts them to 'O' objects that it then doesn't understand.
+##                 if value.typecode() == 'O':
+##                     value = numerix.array(float(value))
 
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
@@ -501,23 +516,23 @@ class Variable(object):
             >>> a = Variable((1,2,3))
             >>> a.setValue(5, where = (1, 0, 1))
             >>> print a
-            [ 5., 2., 5.,]
+            [ 5.  2.  5.]
 
             >>> b = Variable((4,5,6))
             >>> a.setValue(b, where = (1, 0, 1))
             >>> print a
-            [ 4., 2., 6.,]
+            [ 4.  2.  6.]
             >>> print b
-            [ 4., 5., 6.,]
+            [ 4.  5.  6.]
             >>> a.setValue(3)
             >>> print a
-            [ 3., 3., 3.,]
+            [ 3.  3.  3.]
 
             >>> b = numerix.array((3,4,5))
             >>> a.setValue(b)
             >>> a[:] = 1
             >>> print b
-            [3,4,5,]
+            [3 4 5]
 
             >>> a.setValue((4,5,6), where = (1, 0))
             Traceback (most recent call last):
@@ -546,7 +561,7 @@ class Variable(object):
 	if isinstance(self.value, physicalField.PhysicalField):
 	    return self.value._getArray()
 	else:
-            return self.value
+            return self.getValue()
             
     def getNumericValue(self):
 	value = self.getValue()
@@ -697,7 +712,7 @@ class Variable(object):
             >>> v4 = Variable(numerix.array((13,14,15,16)))
 
             >>> (v1 * v2)._getRepresentation()
-            '(Variable(value = [1,2,3,4,]) * Variable(value = [5,6,7,8,]))'
+            '(Variable(value = array([1, 2, 3, 4])) * Variable(value = array([5, 6, 7, 8])))'
             
             >>> (v1 * v2)._getRepresentation(style='C', id = "")
             '(var0[i] * var1[i])'
@@ -762,7 +777,7 @@ class Variable(object):
             -1.0
             >>> doBCs(binOp)
             1.0
-            >>> var[0] = 0.5
+            >>> var.setValue(0.5)
             >>> print unOp.getValue()
             -0.5
             >>> unOp2 = -binOp
@@ -1007,7 +1022,7 @@ class Variable(object):
             >>> Y =  mesh.getCellCenters()[:,1]
             >>> var.setValue(Y + 1.0)
             >>> print var - Y
-            [ 1., 1., 1., 1.,]
+            [ 1.  1.  1.  1.]
 
 
 
@@ -1321,7 +1336,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a < 4)
 	    >>> b
-	    (Variable(value = 3) < 4)
+	    (Variable(value = array(3)) < 4)
 	    >>> b()
 	    1
 	    >>> a.setValue(4)
@@ -1336,7 +1351,7 @@ class Variable(object):
 	Python automatically reverses the arguments when necessary
 	
 	    >>> 4 > Variable(value = 3)
-	    (Variable(value = 3) < 4)
+	    (Variable(value = array(3)) < 4)
 	"""
 	return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
 
@@ -1347,7 +1362,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a <= 4)
 	    >>> b
-	    (Variable(value = 3) <= 4)
+	    (Variable(value = array(3)) <= 4)
 	    >>> b()
 	    1
 	    >>> a.setValue(4)
@@ -1366,7 +1381,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a == 4)
 	    >>> b
-	    (Variable(value = 3) == 4)
+	    (Variable(value = array(3)) == 4)
 	    >>> b()
 	    0
 	"""
@@ -1379,7 +1394,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a != 4)
 	    >>> b
-	    (Variable(value = 3) != 4)
+	    (Variable(value = array(3)) != 4)
 	    >>> b()
 	    1
 	"""
@@ -1392,7 +1407,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a > 4)
 	    >>> b
-	    (Variable(value = 3) > 4)
+	    (Variable(value = array(3)) > 4)
 	    >>> b()
 	    0
 	    >>> a.setValue(5)
@@ -1408,7 +1423,7 @@ class Variable(object):
 	    >>> a = Variable(value = 3)
 	    >>> b = (a >= 4)
 	    >>> b
-	    (Variable(value = 3) >= 4)
+	    (Variable(value = array(3)) >= 4)
 	    >>> b()
 	    0
 	    >>> a.setValue(4)
@@ -1427,21 +1442,21 @@ class Variable(object):
             >>> a = Variable(value = (0, 0, 1, 1))
             >>> b = Variable(value = (0, 1, 0, 1))
             >>> print (a == 0) & (b == 1)
-            [0,1,0,0,]
+            [0 1 0 0]
             >>> print a & b
-            [0,0,0,1,]
+            [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 4)
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
             >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
             >>> print (a == 0) & (b == 1)
-            [0,1,0,0,]
+            [0 1 0 0]
             >>> print a & b
-            [0,0,0,1,]
+            [0 0 0 1]
 
         """
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') & b.astype('s'), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') & b.astype('h'), other, canInline = False)
 
     def __or__(self, other):
         """
@@ -1450,22 +1465,22 @@ class Variable(object):
             >>> a = Variable(value = (0, 0, 1, 1))
             >>> b = Variable(value = (0, 1, 0, 1))
             >>> print (a == 0) | (b == 1)
-            [1,1,0,1,]
+            [1 1 0 1]
             >>> print a | b
-            [0,1,1,1,]
+            [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 4)
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
             >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
             >>> print (a == 0) | (b == 1)
-            [1,1,0,1,]
+            [1 1 0 1]
             >>> print a | b
-            [0,1,1,1,]
+            [0 1 1 1]
             
         """
         
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('s') | b.astype('s'), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline = False)
         
     def __len__(self):
         return len(self.getValue())
@@ -1494,7 +1509,7 @@ class Variable(object):
             >>> from fipy.variables.vectorCellVariable import VectorCellVariable
             >>> var = VectorCellVariable(mesh=mesh, value=((0.,),(2.,),(3.,)))
             >>> print (var.dot(var)).sqrt()
-            [ 0., 2., 3.,]
+            [ 0.  2.  3.]
             
         """
 	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
@@ -1586,16 +1601,16 @@ class Variable(object):
            >>> var = VectorFaceVariable(value = ( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh = mesh)
            >>> v10 = var._take((1, 0), axis = 1)
            >>> print v10
-           [[ 2., 1.,]
-            [ 3., 2.,]
-            [ 4., 3.,]
-            [ 5., 4.,]]
+           [[ 2.  1.]
+            [ 3.  2.]
+            [ 4.  3.]
+            [ 5.  4.]]
            >>> var[3, 0] = 1
            >>> print v10
-           [[ 2., 1.,]
-            [ 3., 2.,]
-            [ 4., 3.,]
-            [ 5., 1.,]]
+           [[ 2.  1.]
+            [ 3.  2.]
+            [ 4.  3.]
+            [ 5.  1.]]
            >>> isinstance(var, VectorFaceVariable)
            True
            >>> v0 = var._take((0,))
@@ -1644,7 +1659,7 @@ class Variable(object):
         ##
         ##    >>> from fipy.tools import numerix
         ##    >>> a = numerix.ones(10000)
-        ##    >>> b = numerix.ones(10001)
+        ##    >>> b = numeri`x.ones(10001)
         ##    >>> b = b[...,numerix.NewAxis]
         ##    >>> numerix.allclose(a, b)
         ##    Traceback (most recent call last):
@@ -1690,7 +1705,7 @@ class Variable(object):
             >>> cv = CellVariable(mesh = mesh, value = (0, 1, 2))
             >>> cvXcv = cv * cv
             >>> print cvXcv
-            [ 0., 1., 4.,]
+            [ 0.  1.  4.]
             >>> print isinstance(cvXcv, CellVariable)
             1
         
@@ -1711,16 +1726,16 @@ class Variable(object):
             >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
             >>> vcvXcv = vcv * cv
             >>> print vcvXcv
-            [[ 0., 0.,]
-             [ 1., 2.,]
-             [ 4., 6.,]]
+            [[ 0.  0.]
+             [ 1.  2.]
+             [ 4.  6.]]
             >>> print isinstance(vcvXcv, VectorCellVariable)
             1
             >>> cvXvcv = cv * vcv
             >>> print cvXvcv
-            [[ 0., 0.,]
-             [ 1., 2.,]
-             [ 4., 6.,]]
+            [[ 0.  0.]
+             [ 1.  2.]
+             [ 4.  6.]]
             >>> print isinstance(cvXvcv, VectorCellVariable)
             1
 
@@ -1740,12 +1755,12 @@ class Variable(object):
         
             >>> cvXs = cv * 3
             >>> print cvXs
-            [ 0., 3., 6.,]
+            [ 0.  3.  6.]
             >>> print isinstance(cvXs, CellVariable)
             1
             >>> sXcv = 3 * cv
             >>> print sXcv
-            [ 0., 3., 6.,]
+            [ 0.  3.  6.]
             >>> print isinstance(sXcv, CellVariable)
             1
 
@@ -1753,27 +1768,27 @@ class Variable(object):
         
             >>> cvXv2 = cv * (3,2)
             >>> print cvXv2
-            [[ 0., 0.,]
-             [ 3., 2.,]
-             [ 6., 4.,]]
+            [[ 0.  0.]
+             [ 3.  2.]
+             [ 6.  4.]]
             >>> print isinstance(cvXv2, VectorCellVariable)
             1
             >>> v2Xcv = (3,2) * cv
             >>> print v2Xcv
-            [[ 0., 0.,]
-             [ 3., 2.,]
-             [ 6., 4.,]]
+            [[ 0.  0.]
+             [ 3.  2.]
+             [ 6.  4.]]
             >>> print isinstance(v2Xcv, VectorCellVariable)
             1
             
             >>> cvXv3 = cv * (3,2,1)
             >>> print cvXv3
-            [ 0., 2., 2.,]
+            [ 0.  2.  2.]
             >>> print isinstance(cvXv3, CellVariable)
             1
             >>> v3Xcv = (3,2,1) * cv
             >>> print v3Xcv
-            [ 0., 2., 2.,]
+            [ 0.  2.  2.]
             >>> print isinstance(v3Xcv, CellVariable)
             1
             
@@ -1791,12 +1806,12 @@ class Variable(object):
         
             >>> cvXsv = cv * Variable(value = 3)
             >>> print cvXsv
-            [ 0., 3., 6.,]
+            [ 0.  3.  6.]
             >>> print isinstance(cvXsv, CellVariable)
             1
             >>> svXcv = Variable(value = 3) * cv
             >>> print svXcv
-            [ 0., 3., 6.,]
+            [ 0.  3.  6.]
             >>> print isinstance(svXcv, CellVariable)
             1
         
@@ -1804,12 +1819,12 @@ class Variable(object):
 
             >>> cvcvXsvsv = (cv * cv) * (Variable(value = 3) * Variable(value = 3))
             >>> print cvcvXsvsv
-            [  0.,  9., 36.,]
+            [  0.   9.  36.]
             >>> print isinstance(cvcvXsvsv, CellVariable)
             1
             >>> svsvXcvcv = (Variable(value = 3) * Variable(value = 3)) * (cv * cv)
             >>> print svsvXcvcv
-            [  0.,  9., 36.,]
+            [  0.   9.  36.]
             >>> print isinstance(svsvXcvcv, CellVariable)
             1
             
@@ -1817,27 +1832,27 @@ class Variable(object):
             
             >>> cvXv2v = cv * Variable(value = (3,2))
             >>> print cvXv2v
-            [[ 0., 0.,]
-             [ 3., 2.,]
-             [ 6., 4.,]]
+            [[ 0.  0.]
+             [ 3.  2.]
+             [ 6.  4.]]
             >>> print isinstance(cvXv2v, VectorCellVariable)
             1
             >>> v2vXcv = Variable(value = (3,2)) * cv
             >>> print v2vXcv
-            [[ 0., 0.,]
-             [ 3., 2.,]
-             [ 6., 4.,]]
+            [[ 0.  0.]
+             [ 3.  2.]
+             [ 6.  4.]]
             >>> print isinstance(v2vXcv, VectorCellVariable)
             1
             
             >>> cvXv3v = cv * Variable(value = (3,2,1))
             >>> print cvXv3v
-            [ 0., 2., 2.,]
+            [ 0.  2.  2.]
             >>> print isinstance(cvXv3v, CellVariable)
             1
             >>> v3vXcv = Variable(value = (3,2,1)) * cv
             >>> print v3vXcv
-            [ 0., 2., 2.,]
+            [ 0.  2.  2.]
             >>> print isinstance(v3vXcv, CellVariable)
             1
 
@@ -1855,9 +1870,9 @@ class Variable(object):
         
             >>> cvXcgv = cv * cv.getGrad()
             >>> print cvXcgv
-            [[ 0., 0.,]
-             [ 1., 0.,]
-             [ 1., 0.,]]
+            [[ 0.  0.]
+             [ 1.  0.]
+             [ 1.  0.]]
             >>> print isinstance(cvXcgv, VectorCellVariable)
             1
             
@@ -1865,7 +1880,7 @@ class Variable(object):
 
             >>> fvXfv = fv * fv
             >>> print fvXfv
-            [  0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.,]
+            [  0.   1.   4.   9.  16.  25.  36.  49.  64.  81.]
             >>> print isinstance(fvXfv, FaceVariable)
             1
 
@@ -1884,30 +1899,30 @@ class Variable(object):
 
             >>> vfvXfv = vfv * fv
             >>> print vfvXfv
-            [[  0.,  0.,]
-             [  1.,  2.,]
-             [  4.,  6.,]
-             [  9., 12.,]
-             [  4., 12.,]
-             [ 10., 20.,]
-             [ 18., 30.,]
-             [ 42., 63.,]
-             [ 16., 48.,]
-             [  9., 27.,]]
+            [[  0.   0.]
+             [  1.   2.]
+             [  4.   6.]
+             [  9.  12.]
+             [  4.  12.]
+             [ 10.  20.]
+             [ 18.  30.]
+             [ 42.  63.]
+             [ 16.  48.]
+             [  9.  27.]]
             >>> print isinstance(vfvXfv, VectorFaceVariable)
             1
             >>> fvXvfv = fv * vfv
             >>> print fvXvfv
-            [[  0.,  0.,]
-             [  1.,  2.,]
-             [  4.,  6.,]
-             [  9., 12.,]
-             [  4., 12.,]
-             [ 10., 20.,]
-             [ 18., 30.,]
-             [ 42., 63.,]
-             [ 16., 48.,]
-             [  9., 27.,]]
+            [[  0.   0.]
+             [  1.   2.]
+             [  4.   6.]
+             [  9.  12.]
+             [  4.  12.]
+             [ 10.  20.]
+             [ 18.  30.]
+             [ 42.  63.]
+             [ 16.  48.]
+             [  9.  27.]]
             >>> print isinstance(fvXvfv, VectorFaceVariable)
             1
 
@@ -1915,12 +1930,12 @@ class Variable(object):
 
             >>> fvXs = fv * 3
             >>> print fvXs
-            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(fvXs, FaceVariable)
             1
             >>> sXfv = 3 * fv
             >>> print sXfv
-            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(sXfv, FaceVariable)
             1
 
@@ -1928,30 +1943,30 @@ class Variable(object):
 
             >>> fvXv2 = fv * (3,2)
             >>> print fvXv2
-            [[  0.,  0.,]
-             [  3.,  2.,]
-             [  6.,  4.,]
-             [  9.,  6.,]
-             [ 12.,  8.,]
-             [ 15., 10.,]
-             [ 18., 12.,]
-             [ 21., 14.,]
-             [ 24., 16.,]
-             [ 27., 18.,]]
+            [[  0.   0.]
+             [  3.   2.]
+             [  6.   4.]
+             [  9.   6.]
+             [ 12.   8.]
+             [ 15.  10.]
+             [ 18.  12.]
+             [ 21.  14.]
+             [ 24.  16.]
+             [ 27.  18.]]
             >>> print isinstance(fvXv2, VectorFaceVariable)
             1
             >>> v2Xfv = (3,2) * fv
             >>> print v2Xfv
-            [[  0.,  0.,]
-             [  3.,  2.,]
-             [  6.,  4.,]
-             [  9.,  6.,]
-             [ 12.,  8.,]
-             [ 15., 10.,]
-             [ 18., 12.,]
-             [ 21., 14.,]
-             [ 24., 16.,]
-             [ 27., 18.,]]
+            [[  0.   0.]
+             [  3.   2.]
+             [  6.   4.]
+             [  9.   6.]
+             [ 12.   8.]
+             [ 15.  10.]
+             [ 18.  12.]
+             [ 21.  14.]
+             [ 24.  16.]
+             [ 27.  18.]]
             >>> print isinstance(v2Xfv, VectorFaceVariable)
             1
             
@@ -1966,12 +1981,12 @@ class Variable(object):
 
             >>> fvXv10 = fv * (9,8,7,6,5,4,3,2,1,0)
             >>> print fvXv10
-            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(fvXv10, FaceVariable)
             1
             >>> v10Xfv = (9,8,7,6,5,4,3,2,1,0) * fv
             >>> print v10Xfv
-            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(v10Xfv, FaceVariable)
             1
 
@@ -1979,12 +1994,12 @@ class Variable(object):
 
             >>> fvXsv = fv * Variable(value = 3)
             >>> print fvXsv
-            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(fvXsv, FaceVariable)
             1
             >>> svXfv = Variable(value = 3) * fv
             >>> print svXfv
-            [  0.,  3.,  6.,  9., 12., 15., 18., 21., 24., 27.,]
+            [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(svXfv, FaceVariable)
             1
 
@@ -1992,30 +2007,30 @@ class Variable(object):
             
             >>> fvXv2v = fv * Variable(value = (3,2))
             >>> print fvXv2v
-            [[  0.,  0.,]
-             [  3.,  2.,]
-             [  6.,  4.,]
-             [  9.,  6.,]
-             [ 12.,  8.,]
-             [ 15., 10.,]
-             [ 18., 12.,]
-             [ 21., 14.,]
-             [ 24., 16.,]
-             [ 27., 18.,]]
+            [[  0.   0.]
+             [  3.   2.]
+             [  6.   4.]
+             [  9.   6.]
+             [ 12.   8.]
+             [ 15.  10.]
+             [ 18.  12.]
+             [ 21.  14.]
+             [ 24.  16.]
+             [ 27.  18.]]
             >>> print isinstance(fvXv2v, VectorFaceVariable)
             1
             >>> v2vXfv = Variable(value = (3,2)) * fv
             >>> print v2vXfv
-            [[  0.,  0.,]
-             [  3.,  2.,]
-             [  6.,  4.,]
-             [  9.,  6.,]
-             [ 12.,  8.,]
-             [ 15., 10.,]
-             [ 18., 12.,]
-             [ 21., 14.,]
-             [ 24., 16.,]
-             [ 27., 18.,]]
+            [[  0.   0.]
+             [  3.   2.]
+             [  6.   4.]
+             [  9.   6.]
+             [ 12.   8.]
+             [ 15.  10.]
+             [ 18.  12.]
+             [ 21.  14.]
+             [ 24.  16.]
+             [ 27.  18.]]
             >>> print isinstance(v2vXfv, VectorFaceVariable)
             1
             
@@ -2030,12 +2045,12 @@ class Variable(object):
 
             >>> fvXv10v = fv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
             >>> print fvXv10v
-            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(fvXv10v, FaceVariable)
             1
             >>> v10vXfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * fv
             >>> print v10vXfv
-            [  0.,  8., 14., 18., 20., 20., 18., 14.,  8.,  0.,]
+            [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(v10vXfv, FaceVariable)
             1
 
@@ -2045,9 +2060,9 @@ class Variable(object):
 
             >>> vcvXvcv = vcv * vcv
             >>> print vcvXvcv
-            [[ 0., 1.,]
-             [ 1., 4.,]
-             [ 4., 9.,]]
+            [[ 0.  1.]
+             [ 1.  4.]
+             [ 4.  9.]]
             >>> print isinstance(vcvXvcv, VectorCellVariable)
             1
 
@@ -2066,16 +2081,16 @@ class Variable(object):
 
             >>> vcvXs = vcv * 3
             >>> print vcvXs
-            [[ 0., 3.,]
-             [ 3., 6.,]
-             [ 6., 9.,]]
+            [[ 0.  3.]
+             [ 3.  6.]
+             [ 6.  9.]]
             >>> print isinstance(vcvXs, VectorCellVariable)
             1
             >>> sXvcv = 3 * vcv
             >>> print sXvcv
-            [[ 0., 3.,]
-             [ 3., 6.,]
-             [ 6., 9.,]]
+            [[ 0.  3.]
+             [ 3.  6.]
+             [ 6.  9.]]
             >>> print isinstance(vcvXs, VectorCellVariable)
             1
 
@@ -2083,31 +2098,31 @@ class Variable(object):
 
             >>> vcvXv2 = vcv * (3,2)
             >>> print vcvXv2
-            [[ 0., 2.,]
-             [ 3., 4.,]
-             [ 6., 6.,]]
+            [[ 0.  2.]
+             [ 3.  4.]
+             [ 6.  6.]]
             >>> print isinstance(vcvXv2, VectorCellVariable)
             1
             >>> v2Xvcv = (3,2) * vcv
             >>> print v2Xvcv
-            [[ 0., 2.,]
-             [ 3., 4.,]
-             [ 6., 6.,]]
+            [[ 0.  2.]
+             [ 3.  4.]
+             [ 6.  6.]]
             >>> print isinstance(v2Xvcv, VectorCellVariable)
             1
             
             >>> vcvXv3 = vcv * (3,2,1)
             >>> print vcvXv3
-            [[ 0., 3.,]
-             [ 2., 4.,]
-             [ 2., 3.,]]
+            [[ 0.  3.]
+             [ 2.  4.]
+             [ 2.  3.]]
             >>> isinstance(vcvXv3, VectorCellVariable)
             1
             >>> v3Xvcv = (3,2,1) * vcv 
             >>> print v3Xvcv
-            [[ 0., 3.,]
-             [ 2., 4.,]
-             [ 2., 3.,]]
+            [[ 0.  3.]
+             [ 2.  4.]
+             [ 2.  3.]]
             >>> isinstance(v3Xvcv, VectorCellVariable)
             1
 
@@ -2124,16 +2139,16 @@ class Variable(object):
 
             >>> vcvXsv = vcv * Variable(value = 3)
             >>> print vcvXsv
-            [[ 0., 3.,]
-             [ 3., 6.,]
-             [ 6., 9.,]]
+            [[ 0.  3.]
+             [ 3.  6.]
+             [ 6.  9.]]
             >>> print isinstance(vcvXsv, VectorCellVariable)
             1
             >>> svXvcv = Variable(value = 3) * vcv
             >>> print svXvcv
-            [[ 0., 3.,]
-             [ 3., 6.,]
-             [ 6., 9.,]]
+            [[ 0.  3.]
+             [ 3.  6.]
+             [ 6.  9.]]
             >>> print isinstance(svXvcv, VectorCellVariable)
             1
 
@@ -2141,31 +2156,31 @@ class Variable(object):
             
             >>> vcvXv2v = vcv * Variable(value = (3,2))
             >>> print vcvXv2v
-            [[ 0., 2.,]
-             [ 3., 4.,]
-             [ 6., 6.,]]
+            [[ 0.  2.]
+             [ 3.  4.]
+             [ 6.  6.]]
             >>> print isinstance(vcvXv2v, VectorCellVariable)
             1
             >>> v2vXvcv = Variable(value = (3,2)) * vcv
             >>> print v2vXvcv
-            [[ 0., 2.,]
-             [ 3., 4.,]
-             [ 6., 6.,]]
+            [[ 0.  2.]
+             [ 3.  4.]
+             [ 6.  6.]]
             >>> print isinstance(v2vXvcv, VectorCellVariable)
             1
             
             >>> vcvXv3v = vcv * Variable(value = (3,2,1))
             >>> print vcvXv3v
-            [[ 0., 3.,]
-             [ 2., 4.,]
-             [ 2., 3.,]]
+            [[ 0.  3.]
+             [ 2.  4.]
+             [ 2.  3.]]
             >>> isinstance(vcvXv3v, VectorCellVariable)
             1
             >>> v3vXvcv = Variable(value = (3,2,1)) * vcv 
             >>> print v3vXvcv
-            [[ 0., 3.,]
-             [ 2., 4.,]
-             [ 2., 3.,]]
+            [[ 0.  3.]
+             [ 2.  4.]
+             [ 2.  3.]]
             >>> isinstance(v3vXvcv, VectorCellVariable)
             1
 
@@ -2183,16 +2198,16 @@ class Variable(object):
 
             >>> vfvXvfv = vfv * vfv
             >>> print vfvXvfv
-            [[  0.,  1.,]
-             [  1.,  4.,]
-             [  4.,  9.,]
-             [  9., 16.,]
-             [  1.,  9.,]
-             [  4., 16.,]
-             [  9., 25.,]
-             [ 36., 81.,]
-             [  4., 36.,]
-             [  1.,  9.,]]
+            [[  0.   1.]
+             [  1.   4.]
+             [  4.   9.]
+             [  9.  16.]
+             [  1.   9.]
+             [  4.  16.]
+             [  9.  25.]
+             [ 36.  81.]
+             [  4.  36.]
+             [  1.   9.]]
             >>> isinstance(vfvXvfv, VectorFaceVariable)
             1
 
@@ -2200,30 +2215,30 @@ class Variable(object):
 
             >>> vfvXs = vfv * 3
             >>> print vfvXs
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print isinstance(vfvXs, VectorFaceVariable)
             1
             >>> sXvfv = 3 * vfv
             >>> print sXvfv
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print isinstance(sXvfv, VectorFaceVariable)
             1
 
@@ -2231,30 +2246,30 @@ class Variable(object):
 
             >>> vfvXv2 = vfv * (3,2)
             >>> print vfvXv2
-            [[  0.,  2.,]
-             [  3.,  4.,]
-             [  6.,  6.,]
-             [  9.,  8.,]
-             [  3.,  6.,]
-             [  6.,  8.,]
-             [  9., 10.,]
-             [ 18., 18.,]
-             [  6., 12.,]
-             [  3.,  6.,]]
+            [[  0.   2.]
+             [  3.   4.]
+             [  6.   6.]
+             [  9.   8.]
+             [  3.   6.]
+             [  6.   8.]
+             [  9.  10.]
+             [ 18.  18.]
+             [  6.  12.]
+             [  3.   6.]]
             >>> print isinstance(vfvXv2, VectorFaceVariable)
             1
             >>> v2Xvfv = (3,2) * vfv
             >>> print v2Xvfv
-            [[  0.,  2.,]
-             [  3.,  4.,]
-             [  6.,  6.,]
-             [  9.,  8.,]
-             [  3.,  6.,]
-             [  6.,  8.,]
-             [  9., 10.,]
-             [ 18., 18.,]
-             [  6., 12.,]
-             [  3.,  6.,]]
+            [[  0.   2.]
+             [  3.   4.]
+             [  6.   6.]
+             [  9.   8.]
+             [  3.   6.]
+             [  6.   8.]
+             [  9.  10.]
+             [ 18.  18.]
+             [  6.  12.]
+             [  3.   6.]]
             >>> print isinstance(v2Xvfv, VectorFaceVariable)
             1
             
@@ -2270,30 +2285,30 @@ class Variable(object):
 
             >>> vfvXv10 = vfv * (9,8,7,6,5,4,3,2,1,0)
             >>> print vfvXv10
-            [[  0.,  9.,]
-             [  8., 16.,]
-             [ 14., 21.,]
-             [ 18., 24.,]
-             [  5., 15.,]
-             [  8., 16.,]
-             [  9., 15.,]
-             [ 12., 18.,]
-             [  2.,  6.,]
-             [  0.,  0.,]]
+            [[  0.   9.]
+             [  8.  16.]
+             [ 14.  21.]
+             [ 18.  24.]
+             [  5.  15.]
+             [  8.  16.]
+             [  9.  15.]
+             [ 12.  18.]
+             [  2.   6.]
+             [  0.   0.]]
             >>> isinstance(vfvXv10, VectorFaceVariable)
             1
             >>> v10Xvfv = (9,8,7,6,5,4,3,2,1,0) * vfv
             >>> print v10Xvfv
-            [[  0.,  9.,]
-             [  8., 16.,]
-             [ 14., 21.,]
-             [ 18., 24.,]
-             [  5., 15.,]
-             [  8., 16.,]
-             [  9., 15.,]
-             [ 12., 18.,]
-             [  2.,  6.,]
-             [  0.,  0.,]]
+            [[  0.   9.]
+             [  8.  16.]
+             [ 14.  21.]
+             [ 18.  24.]
+             [  5.  15.]
+             [  8.  16.]
+             [  9.  15.]
+             [ 12.  18.]
+             [  2.   6.]
+             [  0.   0.]]
             >>> isinstance(v10Xvfv, VectorFaceVariable)
             1
 
@@ -2301,30 +2316,30 @@ class Variable(object):
 
             >>> vfvXsv = vfv * Variable(value = 3)
             >>> print vfvXsv
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print isinstance(vfvXsv, VectorFaceVariable)
             1
             >>> svXvfv = Variable(value = 3) * vfv
             >>> print svXvfv
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print isinstance(svXvfv, VectorFaceVariable)
             1
 
@@ -2332,30 +2347,30 @@ class Variable(object):
             
             >>> vfvXv2v = vfv * Variable(value = (3,2))
             >>> print vfvXv2v
-            [[  0.,  2.,]
-             [  3.,  4.,]
-             [  6.,  6.,]
-             [  9.,  8.,]
-             [  3.,  6.,]
-             [  6.,  8.,]
-             [  9., 10.,]
-             [ 18., 18.,]
-             [  6., 12.,]
-             [  3.,  6.,]]
+            [[  0.   2.]
+             [  3.   4.]
+             [  6.   6.]
+             [  9.   8.]
+             [  3.   6.]
+             [  6.   8.]
+             [  9.  10.]
+             [ 18.  18.]
+             [  6.  12.]
+             [  3.   6.]]
             >>> print isinstance(vfvXv2v, VectorFaceVariable)
             1
             >>> v2vXvfv = Variable(value = (3,2)) * vfv
             >>> print v2vXvfv
-            [[  0.,  2.,]
-             [  3.,  4.,]
-             [  6.,  6.,]
-             [  9.,  8.,]
-             [  3.,  6.,]
-             [  6.,  8.,]
-             [  9., 10.,]
-             [ 18., 18.,]
-             [  6., 12.,]
-             [  3.,  6.,]]
+            [[  0.   2.]
+             [  3.   4.]
+             [  6.   6.]
+             [  9.   8.]
+             [  3.   6.]
+             [  6.   8.]
+             [  9.  10.]
+             [ 18.  18.]
+             [  6.  12.]
+             [  3.   6.]]
             >>> print isinstance(v2vXvfv, VectorFaceVariable)
             1
             
@@ -2371,30 +2386,30 @@ class Variable(object):
 
             >>> vfvXv10v = vfv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
             >>> print vfvXv10v
-            [[  0.,  9.,]
-             [  8., 16.,]
-             [ 14., 21.,]
-             [ 18., 24.,]
-             [  5., 15.,]
-             [  8., 16.,]
-             [  9., 15.,]
-             [ 12., 18.,]
-             [  2.,  6.,]
-             [  0.,  0.,]]
+            [[  0.   9.]
+             [  8.  16.]
+             [ 14.  21.]
+             [ 18.  24.]
+             [  5.  15.]
+             [  8.  16.]
+             [  9.  15.]
+             [ 12.  18.]
+             [  2.   6.]
+             [  0.   0.]]
             >>> isinstance(vfvXv10v, VectorFaceVariable)
             1
             >>> v10vXvfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * vfv
             >>> print v10vXvfv
-            [[  0.,  9.,]
-             [  8., 16.,]
-             [ 14., 21.,]
-             [ 18., 24.,]
-             [  5., 15.,]
-             [  8., 16.,]
-             [  9., 15.,]
-             [ 12., 18.,]
-             [  2.,  6.,]
-             [  0.,  0.,]]
+            [[  0.   9.]
+             [  8.  16.]
+             [ 14.  21.]
+             [ 18.  24.]
+             [  5.  15.]
+             [  8.  16.]
+             [  9.  15.]
+             [ 12.  18.]
+             [  2.   6.]
+             [  0.   0.]]
             >>> isinstance(v10vXvfv, VectorFaceVariable)
             1
 
@@ -2417,12 +2432,12 @@ class Variable(object):
             
             >>> sXv2v = 3 * Variable(value = (3,2))
             >>> print sXv2v
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(sXv2v, Variable)
             1
             >>> v2vXs = Variable(value = (3,2)) * 3
             >>> print v2vXs
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(v2vXs, Variable)
             1
             
@@ -2432,12 +2447,12 @@ class Variable(object):
 
             >>> vXsv = (3, 2) * Variable(value = 3)
             >>> print vXsv
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(vXsv, Variable)
             1
             >>> svXv = Variable(value = 3) * (3, 2)
             >>> print svXv
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(svXv, Variable)
             1
 
@@ -2445,12 +2460,12 @@ class Variable(object):
             
             >>> vXv2v = (3, 2) * Variable(value = (3,2))
             >>> print vXv2v
-            [ 9., 4.,]
+            [ 9.  4.]
             >>> print isinstance(vXv2v, Variable)
             1
             >>> v2vXv = Variable(value = (3,2)) * (3, 2)
             >>> print v2vXv
-            [ 9., 4.,]
+            [ 9.  4.]
             >>> print isinstance(v2vXv, Variable)
             1
 
@@ -2476,12 +2491,12 @@ class Variable(object):
             
             >>> svXv2v = Variable(value = 3) * Variable(value = (3,2))
             >>> print svXv2v
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(svXv2v, Variable)
             1
             >>> v2vXsv = Variable(value = (3,2)) * Variable(value = 3)
             >>> print v2vXsv
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print isinstance(v2vXsv, Variable)
             1
 
@@ -2490,7 +2505,7 @@ class Variable(object):
             
             >>> v2vXv2v = Variable(value = (3, 2)) * Variable(value = (3,2))
             >>> print v2vXv2v
-            [ 9., 4.,]
+            [ 9.  4.]
             >>> print isinstance(v2vXv2v, Variable)
             1
             

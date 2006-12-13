@@ -56,10 +56,10 @@ class Mesh1D(Mesh):
     def _calcFaceCenters(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs)
-        if self.faceVertexIDs.mask() == None:
+        if MA.getmask(self.faceVertexIDs) == None:
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
-            faceVertexCoordsMask = numerix.reshape(numerix.repeat(self.faceVertexIDs.mask().flat, self.dim), numerix.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flat, self.dim), numerix.shape(faceVertexCoords))
             
         self.faceCenters = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
         

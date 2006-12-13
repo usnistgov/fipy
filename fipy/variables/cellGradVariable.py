@@ -90,7 +90,7 @@ class _CellGradVariable(VectorCellVariable):
 ##	)
 	    
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-	contributions = numerix.MAtake(self.faceGradientContributions[:],ids.flat)
+	contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
 
         contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = numerix.reshape(orientations, (N, M, 1))

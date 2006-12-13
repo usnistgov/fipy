@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.tools import numerix
-import random
+from fipy.tools.numerix import random
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.face import Face
 import fipy.tools.vector as vector

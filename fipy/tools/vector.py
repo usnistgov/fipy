@@ -95,13 +95,13 @@ def prune(array, shift, start = 0):
     where n = 0, 1, 2, ...
 
         >>> prune(numerix.arange(10), 3, 5)
-        [0,1,2,3,4,5,6,7,8,9,]
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         >>> prune(numerix.arange(10), 3, 2)
-        [0,1,3,4,6,7,9,]
+        array([0, 1, 3, 4, 6, 7, 9])
         >>> prune(numerix.arange(10), 3)
-        [1,2,4,5,7,8,]
+        array([1, 2, 4, 5, 7, 8])
         >>> prune(numerix.arange(4, 7), 3)
-        [5,6,]
+        array([5, 6])
 
     """
 

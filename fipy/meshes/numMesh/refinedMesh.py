@@ -65,15 +65,15 @@ Test case:
    >>> refinedMesh = _RefinedMesh2D(baseMesh, [1, 3])
    >>> refinedVar = _RefinedMeshCellVariable(baseVar, refinedMesh)
    >>> print refinedMesh.getVertexCoords()
-   [[ 0., 0.,]
-    [ 6., 0.,]
-    [ 0., 6.,]
-    [ 6., 6.,]
-    [ 3., 3.,]
-    [ 3., 5.,]
-    [ 3., 1.,]]
+   [[ 0.  0.]
+    [ 6.  0.]
+    [ 0.  6.]
+    [ 6.  6.]
+    [ 3.  3.]
+    [ 3.  5.]
+    [ 3.  1.]]
    >>> print refinedVar()
-   [ 0., 2., 1., 1., 1., 3., 3., 3.,]
+   [ 0.  2.  1.  1.  1.  3.  3.  3.]
    
 """
 __docformat__ = 'restructuredtext'
@@ -93,7 +93,7 @@ class _RefinedMesh2D(Mesh2D):
         cellVertexIDs = baseMesh._getOrderedCellVertexIDs()
         maxVerticesPerCell = cellVertexIDs.shape[1]
         refinedCellVertexIDs = numerix.take(cellVertexIDs, nodeList)
-        firstVerticesInAddedFaces = numerix.repeat(numerix.arange(baseNumVertices, newNumVertices), maxVerticesPerCell * numerix.ones(len(nodeList)))
+        firstVerticesInAddedFaces = numerix.repeat(numerix.arange(baseNumVertices, newNumVertices), maxVerticesPerCell * numerix.ones(len(nodeList), 'l'))
         secondVerticesInAddedFaces = numerix.ravel(refinedCellVertexIDs)
         facesToAdd = numerix.transpose([firstVerticesInAddedFaces, secondVerticesInAddedFaces])
         newFaceVertexIDs = numerix.concatenate((baseMesh.faceVertexIDs, facesToAdd))
@@ -104,7 +104,7 @@ class _RefinedMesh2D(Mesh2D):
             faceVertexToFaceIDs[' '.join([str(j) for j in numerix.sort(i)])] = currIndex
             currIndex = currIndex + 1
         ## calculate new cell face IDs
-        cellIDsToKeep = numerix.ones(baseNumCells)
+        cellIDsToKeep = numerix.ones(baseNumCells, 'l')
         numerix.put(cellIDsToKeep, nodeList, 0)
         cellFaceIDsToKeep = numerix.compress(cellIDsToKeep, baseMesh.cellFaceIDs, 0)
         refinedCellFaceIDs = numerix.take(baseMesh.cellFaceIDs, nodeList)

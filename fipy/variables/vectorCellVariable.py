@@ -72,6 +72,8 @@ class VectorCellVariable(Variable):
         >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0),(1,1))))
         >>> answer = numerix.array(((0, 0), (1, 1), (0, 0), (1, 1), 
         ...                         (0, 0), (.5, .5), (1, 1)))
+        >>> ##print answer
+        >>> ##print var.getArithmeticFaceValue()
         >>> numerix.allclose(answer, numerix.array(var.getArithmeticFaceValue()))
         1
         """
@@ -92,25 +94,25 @@ class VectorCellVariable(Variable):
         >>> mesh = Grid2D(dx = 1., nx = 2)
         >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0),(1,1))))
         >>> print var.getHarmonicFaceValue()
-        [[ 0., 0.,]
-         [ 1., 1.,]
-         [ 0., 0.,]
-         [ 1., 1.,]
-         [ 0., 0.,]
-         [ 0., 0.,]
-         [ 1., 1.,]]
+        [[ 0.  0.]
+         [ 1.  1.]
+         [ 0.  0.]
+         [ 1.  1.]
+         [ 0.  0.]
+         [ 0.  0.]
+         [ 1.  1.]]
 
         >>> from fipy.meshes.grid2D import Grid2D
         >>> mesh = Grid2D(dx = 0.1, nx = 2)
         >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0.3),(2.,0.4))))
         >>> print var.getHarmonicFaceValue()
-        [[ 0.        , 0.3       ,]
-         [ 2.        , 0.4       ,]
-         [ 0.        , 0.3       ,]
-         [ 2.        , 0.4       ,]
-         [ 0.        , 0.3       ,]
-         [ 0.        , 0.34285714,]
-         [ 2.        , 0.4       ,]]
+        [[ 0.          0.3       ]
+         [ 2.          0.4       ]
+         [ 0.          0.3       ]
+         [ 2.          0.4       ]
+         [ 0.          0.3       ]
+         [ 0.          0.34285714]
+         [ 2.          0.4       ]]
 
         """
         

@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from RandomArray import beta
+from fipy.tools.numerix import random
 
 from fipy.variables.noiseVariable import NoiseVariable
 
@@ -125,8 +125,8 @@ class BetaNoiseVariable(NoiseVariable):
         self.beta = self._requires(beta)
     
     def _calcValue(self):
-        return beta(a = self.alpha, b = self.beta, 
-                    shape = [self.getMesh().getNumberOfCells()])
+        return random.beta(a = self.alpha, b = self.beta, 
+                           size = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

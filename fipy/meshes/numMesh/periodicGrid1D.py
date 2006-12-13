@@ -55,32 +55,32 @@ class PeriodicGrid1D(Grid1D):
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
         
         >>> print mesh.getExteriorFaces()
-        [3,]
+        [3]
 
         >>> print mesh.getFaceCellIDs()
-        [[2 ,0 ,]
-         [0 ,1 ,]
-         [1 ,2 ,]
-         [2 ,-- ,]]
+        [[2 0]
+         [0 1]
+         [1 2]
+         [2 --]]
 
         >>> print mesh._getCellDistances()
-        [ 2. , 1.5, 2.5, 1.5,]
+        [ 2.   1.5  2.5  1.5]
 
         >>> print mesh._getCellToCellDistances()
-        [[ 2. , 1.5,]
-         [ 1.5, 2.5,]
-         [ 2.5, 2. ,]]
+        [[ 2.   1.5]
+         [ 1.5  2.5]
+         [ 2.5  2. ]]
 
         >>> print mesh._getFaceNormals()
-        [[ 1.,]
-         [ 1.,]
-         [ 1.,]
-         [ 1.,]]
+        [[ 1.]
+         [ 1.]
+         [ 1.]
+         [ 1.]]
 
         >>> print mesh._getCellVertexIDs()
-        [[1,0,]
-         [2,1,]
-         [2,0,]]
+        [[1 0]
+         [2 1]
+         [2 0]]
     """
     def __init__(self, dx = 1., nx = None):
         Grid1D.__init__(self, dx = dx, nx = nx)

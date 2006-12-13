@@ -119,25 +119,25 @@ class CellVariable(Variable):
             >>> mesh = Grid1D(nx = 4)
             >>> v1 = CellVariable(value=(4,7,2,6), mesh=mesh)
             >>> print v1
-            [ 4., 7., 2., 6.,]
+            [ 4.  7.  2.  6.]
             >>> v1.setValue(4, where=(0, 0, 1, 1))
             >>> print v1
-            [ 4., 7., 4., 4.,]
+            [ 4.  7.  4.  4.]
             >>> v1.setValue((5,2,7,8), where=(0, 1, 1, 1))
             >>> print v1
-            [ 4., 2., 7., 8.,]
+            [ 4.  2.  7.  8.]
             >>> v1.setValue(3, unit = 'm')
             >>> print v1
-            [ 3., 3., 3., 3.,] m
+            [ 3.  3.  3.  3.] m
             >>> import warnings
             >>> warnings.filterwarnings("ignore", "'where' should be used instead of 'cells'", DeprecationWarning)
             >>> v1.setValue(1, cells=mesh.getCells()[2:])
             >>> warnings.resetwarnings()
             >>> print v1
-            [ 3., 3., 1., 1.,] m
+            [ 3.  3.  1.  1.] m
             >>> v1.setValue(4)
             >>> print v1
-            [ 4., 4., 4., 4.,]
+            [ 4.  4.  4.  4.]
             
 
         """
@@ -302,21 +302,21 @@ class CellVariable(Variable):
             >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
             >>> v = var1 * var2
             >>> print v
-            [  6., 12.,]
+            [  6.  12.]
             >>> var1.setValue((3,2))
             >>> print v
-            [ 9., 8.,]
+            [ 9.  8.]
             >>> print v.getOld()
-            [  6., 12.,]
+            [  6.  12.]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
             >>> v1 = var1 * 3
             >>> print v1
-            [ 9., 6.,]
+            [ 9.  6.]
             >>> print v1.getOld()
-            [ 6., 9.,]
+            [ 6.  9.]
             
         """
 	if self.old is None:

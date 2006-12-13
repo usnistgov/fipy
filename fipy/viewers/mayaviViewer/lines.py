@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+93#!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
@@ -176,7 +176,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     
     from fipy.tools import numerix
     coordinates = numerix.array(coordinates)
-    closeIDs = numerix.zeros((len(IDs), len(IDs)))
+    closeIDs = numerix.zeros((len(IDs), len(IDs)), 'l')
     vertices = []
     for ID in IDs:
         distances = numerix.zeros(len(IDs), 'd')

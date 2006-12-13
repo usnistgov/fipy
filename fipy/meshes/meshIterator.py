@@ -44,7 +44,7 @@ from fipy.tools import numerix
 class MeshIterator:
     def __init__(self, mesh, ids=(), checkIDs=False):
         self.mesh = mesh
-        if type(ids) is type(1):
+        if type(ids) is type(1) or numerix.shape(ids) is ():
             ids = (ids,)
         ids = numerix.array(ids)
         if checkIDs and not self._canContain(ids):

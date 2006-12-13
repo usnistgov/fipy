@@ -55,15 +55,15 @@ class Grid1D(Mesh1D):
     
         >>> mesh = Grid1D(nx = 3)
         >>> print mesh.getCellCenters()
-        [[ 0.5,]
-         [ 1.5,]
-         [ 2.5,]]
+        [[ 0.5]
+         [ 1.5]
+         [ 2.5]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
-        [[ 0.5,]
-         [ 2. ,]
-         [ 4.5,]]
+        [[ 0.5]
+         [ 2. ]
+         [ 4.5]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):

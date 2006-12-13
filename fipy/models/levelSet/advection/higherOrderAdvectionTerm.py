@@ -208,13 +208,13 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         dAP = mesh._getCellToCellDistances()
         
 ##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
-        adjacentGradient = numerix.MAtake(oldArray.getGrad(), mesh._getCellToCellIDs())
+        adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs())
         adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), axis = 2)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
         cellIDs = numerix.reshape(numerix.repeat(numerix.arange(mesh.getNumberOfCells()), mesh._getMaxFacesPerCell()), cellToCellIDs.shape)
-        cellIDs = MA.masked_array(cellIDs, mask = mesh._getCellToCellIDs().mask())
-        cellGradient = numerix.MAtake(oldArray.getGrad(), cellIDs)
+        cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._getCellToCellIDs()))
+        cellGradient = numerix.take(oldArray.getGrad(), cellIDs)
         cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), axis = 2)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         

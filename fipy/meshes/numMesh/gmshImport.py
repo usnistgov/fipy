@@ -97,78 +97,78 @@ Test cases:
 
    >>> newmesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
    >>> print newmesh.getVertexCoords()
-   [[ 0. , 0. , 0. ,]
-    [ 0.5, 0.5, 1. ,]
-    [ 1. , 0. , 0. ,]
-    [ 0.5, 1. , 0. ,]
-    [ 0.5, 0.5, 0.5,]]
+   [[ 0.   0.   0. ]
+    [ 0.5  0.5  1. ]
+    [ 1.   0.   0. ]
+    [ 0.5  1.   0. ]
+    [ 0.5  0.5  0.5]]
 
    >>> print newmesh._getFaceVertexIDs()
-   [[2,1,0,]
-    [4,1,0,]
-    [4,2,0,]
-    [4,2,1,]
-    [3,1,0,]
-    [4,3,0,]
-    [4,3,1,]
-    [3,2,0,]
-    [4,3,2,]
-    [3,2,1,]]
+   [[2 1 0]
+    [4 1 0]
+    [4 2 0]
+    [4 2 1]
+    [3 1 0]
+    [4 3 0]
+    [4 3 1]
+    [3 2 0]
+    [4 3 2]
+    [3 2 1]]
 
    >>> print newmesh._getCellFaceIDs()
-   [[0,1,2,3,]
-    [4,1,5,6,]
-    [7,2,5,8,]
-    [9,3,6,8,]]
+   [[0 1 2 3]
+    [4 1 5 6]
+    [7 2 5 8]
+    [9 3 6 8]]
 
    >>> mesh = GmshImporter2DIn3DSpace('fipy/meshes/numMesh/GmshTest2D.msh')
    >>> print mesh.getVertexCoords()
-   [[ 0. , 0. , 0. ,]
-    [ 1. , 0. , 0. ,]
-    [ 0.5, 0.5, 0. ,]
-    [ 0. , 1. , 0. ,]
-    [ 1. , 1. , 0. ,]
-    [ 0.5, 1.5, 0. ,]
-    [ 0. , 2. , 0. ,]
-    [ 1. , 2. , 0. ,]]
+   [[ 0.   0.   0. ]
+    [ 1.   0.   0. ]
+    [ 0.5  0.5  0. ]
+    [ 0.   1.   0. ]
+    [ 1.   1.   0. ]
+    [ 0.5  1.5  0. ]
+    [ 0.   2.   0. ]
+    [ 1.   2.   0. ]]
 
    >>> mesh = GmshImporter2D('fipy/meshes/numMesh/GmshTest2D.msh')
    >>> print mesh.getVertexCoords()
-   [[ 0. , 0. ,]
-    [ 1. , 0. ,]
-    [ 0.5, 0.5,]
-    [ 0. , 1. ,]
-    [ 1. , 1. ,]
-    [ 0.5, 1.5,]
-    [ 0. , 2. ,]
-    [ 1. , 2. ,]]
+   [[ 0.   0. ]
+    [ 1.   0. ]
+    [ 0.5  0.5]
+    [ 0.   1. ]
+    [ 1.   1. ]
+    [ 0.5  1.5]
+    [ 0.   2. ]
+    [ 1.   2. ]]
 
    >>> print mesh._getFaceVertexIDs()
-   [[2,0,]
-    [0,1,]
-    [1,2,]
-    [0,3,]
-    [3,2,]
-    [1,4,]
-    [4,2,]
-    [4,3,]
-    [3,5,]
-    [5,4,]
-    [3,6,]
-    [6,5,]
-    [5,7,]
-    [7,4,]
-    [7,6,]]
+   [[2 0]
+    [0 1]
+    [1 2]
+    [0 3]
+    [3 2]
+    [1 4]
+    [4 2]
+    [4 3]
+    [3 5]
+    [5 4]
+    [3 6]
+    [6 5]
+    [5 7]
+    [7 4]
+    [7 6]]
    
    >>> print mesh._getCellFaceIDs()
-   [[ 0, 1, 2,]
-    [ 0, 3, 4,]
-    [ 2, 5, 6,]
-    [ 7, 4, 6,]
-    [ 7, 8, 9,]
-    [ 8,10,11,]
-    [12,13, 9,]
-    [14,11,12,]]
+   [[0 1 2]
+    [0 3 4]
+    [2 5 6]
+    [7 4 6]
+    [7 8 9]
+    [8 10 11]
+    [12 13 9]
+    [14 11 12]]
 
 The following test case is to test the handedness of the mesh to check
 it does not return negative volumes. Firstly we set up a list with
@@ -290,7 +290,7 @@ class _DataGetter:
         self.inFile.seek(savePos)
         
         vertexCoords = numerix.zeros((numVertices, coordDimensions))
-        vertexCoords = vertexCoords.astype(numerix.Float)
+        vertexCoords = vertexCoords.astype('d')##numerix.Float)
         for i in range(numVertices):
             currLineArray = self.inFile.readline().split()
             nodeToVertexIDdict[int(currLineArray[0])] = i

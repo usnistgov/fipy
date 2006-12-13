@@ -52,7 +52,6 @@ from fipy.tools.inline import inline
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
-from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Grid2D(Mesh2D):
@@ -104,6 +103,7 @@ class Grid2D(Mesh2D):
         """
         v1 = numerix.arange(self.numberOfVertices)
         v2 = v1 + 1
+
         horizontalFaces = vector.prune(numerix.transpose(numerix.array((v1, v2))), self.nx + 1, self.nx)
         v1 = numerix.arange(self.numberOfVertices - (self.nx + 1))
         v2 = v1 + self.nx + 1

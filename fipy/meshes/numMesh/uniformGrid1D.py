@@ -58,9 +58,9 @@ class UniformGrid1D(Grid1D):
     
         >>> mesh = UniformGrid1D(nx = 3)
         >>> print mesh.getCellCenters()
-        [[ 0.5,]
-         [ 1.5,]
-         [ 2.5,]]
+        [[ 0.5]
+         [ 1.5]
+         [ 2.5]]
     """
     def __init__(self, dx = 1., nx = 1, origin = (0,)):
         self.dim = 1

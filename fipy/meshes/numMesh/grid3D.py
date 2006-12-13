@@ -184,7 +184,7 @@ class Grid3D(Mesh):
 
         ## left and right faces
         leftFaces = numerix.arange(self.nx * self.ny)
-        leftFaces = self._repeatWithOffset(leftFaces, self.nx * (self.ny + 1), self.nz) 
+        leftFaces = self._repeatWithOffset(leftFaces, self.nx * (self.ny + 1), self.nz)
         leftFaces = numerix.ravel(leftFaces)
         leftFaces = leftFaces + self.numberOfXYFaces
         rightFaces = leftFaces + self.nx
@@ -192,7 +192,7 @@ class Grid3D(Mesh):
         ## bottom and top faces
         bottomFaces = numerix.arange(self.nx * self.ny * self.nz)
         topFaces = bottomFaces + (self.nx * self.ny)
-        
+
         return numerix.transpose(numerix.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces)))
 
     def getFacesBottom(self):
@@ -285,7 +285,7 @@ class Grid3D(Mesh):
         return (self.nx, self.ny, self.nz)
 
     def _repeatWithOffset(self, array, offset, reps):
-        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, numerix.size(array)))
+        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, numerix.size(array))).astype('l')
         return numerix.ravel(a)
 
     def _calcFaceAreas(self):
@@ -314,10 +314,10 @@ class Grid3D(Mesh):
         
     def _calcFaceTangents(self):
         ## need to see whether order matters.
-        faceTangents1 = numerix.zeros((self.numberOfFaces, 3))
-        faceTangents1 = faceTangents1.astype(numerix.Float)
-        faceTangents2 = numerix.zeros((self.numberOfFaces, 3))
-        faceTangents2 = faceTangents2.astype(numerix.Float)
+        faceTangents1 = numerix.zeros((self.numberOfFaces, 3), 'd')
+##        faceTangents1 = faceTangents1.astype(numerix.Float)
+        faceTangents2 = numerix.zeros((self.numberOfFaces, 3), 'd')
+##        faceTangents2 = faceTangents2.astype(numerix.Float)
         ## XY faces
         faceTangents1[:self.numberOfXYFaces, 0] = 1.
         faceTangents2[:self.numberOfXYFaces, 1] = 1.
@@ -366,7 +366,9 @@ class Grid3D(Mesh):
             >>> mesh = Grid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
             
             >>> print mesh._getAdjacentCellIDs()
-            ([0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,0,1,2,3,4,5,0,0,1,2,3,3,4,5,], [0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,3,4,5,0,1,2,2,3,4,5,5,])
+            (array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0,
+                   1, 2, 3, 3, 4, 5]), array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1,
+                   2, 2, 3, 4, 5, 5]))
 
             >>> vertices = numerix.array(((0., 0., 0.), (1., 0., 0.), (2., 0., 0.), (3., 0., 0.),
             ...                           (0., 1., 0.), (1., 1., 0.), (2., 1., 0.), (3., 1., 0.),
@@ -486,20 +488,20 @@ class Grid3D(Mesh):
             1
 
             >>> print mesh._getCellToCellIDs()
-            [[-- ,1 ,-- ,3 ,-- ,-- ,]
-             [0 ,2 ,-- ,4 ,-- ,-- ,]
-             [1 ,-- ,-- ,5 ,-- ,-- ,]
-             [-- ,4 ,0 ,-- ,-- ,-- ,]
-             [3 ,5 ,1 ,-- ,-- ,-- ,]
-             [4 ,-- ,2 ,-- ,-- ,-- ,]]
+            [[-- 1 -- 3 -- --]
+             [0 2 -- 4 -- --]
+             [1 -- -- 5 -- --]
+             [-- 4 0 -- -- --]
+             [3 5 1 -- -- --]
+             [4 -- 2 -- -- --]]
 
             >>> print mesh._getCellToCellIDsFilled()
-            [[0,1,0,3,0,0,]
-             [0,2,1,4,1,1,]
-             [1,2,2,5,2,2,]
-             [3,4,0,3,3,3,]
-             [3,5,1,4,4,4,]
-             [4,5,2,5,5,5,]]
+            [[0 1 0 3 0 0]
+             [0 2 1 4 1 1]
+             [1 2 2 5 2 2]
+             [3 4 0 3 3 3]
+             [3 5 1 4 4 4]
+             [4 5 2 5 5 5]]
 
             >>> cellToCellDistances = numerix.take(cellDistances, cells)
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)

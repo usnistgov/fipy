@@ -108,10 +108,10 @@ class Mesh2D(Mesh):
         return orderedCellVertexIDs
                                                      
     def _getOrderedCellVertexIDs(self):
-        from fipy.tools.numerix import MAtake
+        from fipy.tools.numerix import take
         NFac = self._getMaxFacesPerCell()
-        cellVertexIDs0 = MAtake(self._getFaceVertexIDs()[:,0], self._getCellFaceIDs().flat)
-        cellVertexIDs1 = MAtake(self._getFaceVertexIDs()[:,1], self._getCellFaceIDs().flat)
+        cellVertexIDs0 = take(self._getFaceVertexIDs()[:,0], self._getCellFaceIDs().flat)
+        cellVertexIDs1 = take(self._getFaceVertexIDs()[:,1], self._getCellFaceIDs().flat)
         cellVertexIDs = MA.where(self.cellToFaceOrientations.flat > 0,
                                  cellVertexIDs0,
                                  cellVertexIDs1)

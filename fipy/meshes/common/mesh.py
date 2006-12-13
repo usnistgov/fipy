@@ -401,8 +401,8 @@ class Mesh:
 	pass
 
     def _calcCellAreas(self):
-        from fipy.tools.numerix import MAtake
-        self.cellAreas =  MAtake(self._getFaceAreas(), self.cellFaceIDs)
+        from fipy.tools.numerix import take
+        self.cellAreas =  take(self._getFaceAreas(), self.cellFaceIDs)
     
     """get geometry methods"""
         

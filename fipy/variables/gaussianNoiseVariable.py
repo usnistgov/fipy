@@ -44,7 +44,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from RandomArray import normal
+from fipy.tools.numerix import random
 
 from fipy.variables.noiseVariable import NoiseVariable
 from fipy.tools.numerix import sqrt
@@ -89,12 +89,13 @@ class GaussianNoiseVariable(NoiseVariable):
        value with its `setValue()` method.
     
     ..
-    
+
+           >>> import sys
+           >>> from fipy.tools.numerix import *
+
            >>> mean = 0.
            >>> variance = 4.
-           
-           >>> from fipy.tools.numerix import *
-           
+
     We generate noise on a non-uniform cartesian mesh with cell dimensions of 
     
     .. raw:: latex
@@ -155,21 +156,21 @@ class GaussianNoiseVariable(NoiseVariable):
             - `mean`: The mean of the noise distrubution,
             
               .. raw:: latex
-              
+
                  $\mu$.
             - `variance`: The variance of the noise distribution,
-            
+
               .. raw:: latex
-              
+
                  $\sigma^2$.
         """
         self.mean = mean
         self.variance = variance
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
-    
+
     def _calcValue(self):
-        return normal(self.mean, sqrt(self.variance), 
-                      shape = [self.getMesh().getNumberOfCells()])
+        return random.normal(self.mean, sqrt(self.variance),
+                             size = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

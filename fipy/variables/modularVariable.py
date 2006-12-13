@@ -110,10 +110,10 @@ class ModularVariable(CellVariable):
            >>> from fipy.variables.modularVariable import ModularVariable
            >>> var = ModularVariable(mesh = mesh, value = 1, hasOld = 1)
            >>> print var
-           [ 1., 1., 1., 1.,] 1
+           [ 1.  1.  1.  1.] 1
            >>> var.setValue(1)
            >>> print var
-           [ 1., 1., 1., 1.,] 1
+           [ 1.  1.  1.  1.] 1
 
         """
         value = self._makeValue(value = value, unit = unit, array = array)
@@ -131,7 +131,7 @@ class ModularVariable(CellVariable):
             >>> var.updateOld()
             >>> var[:] = 2
             >>> print var.getOld()
-            [ 1.,] 1
+            [ 1.] 1
             
         """
 	self.setValue(self.getValue().mod(self()))

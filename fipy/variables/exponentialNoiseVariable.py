@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from RandomArray import exponential
+from fipy.tools.numerix import random
 
 from fipy.variables.noiseVariable import NoiseVariable
 
@@ -96,7 +96,7 @@ class ExponentialNoiseVariable(NoiseVariable):
       :align: center
 
     """
-    def __init__(self, mesh, mean, name = '', hasOld = 0):
+    def __init__(self, mesh, mean=0.0, name = '', hasOld = 0):
         r"""
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
@@ -110,8 +110,8 @@ class ExponentialNoiseVariable(NoiseVariable):
         self.mean = self._requires(mean)
     
     def _calcValue(self):
-        return exponential(mean = self.mean, 
-                           shape = [self.getMesh().getNumberOfCells()])
+        return random.exponential(scale = self.mean, 
+                                  size = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

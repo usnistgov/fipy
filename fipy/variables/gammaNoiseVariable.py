@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from RandomArray import gamma
+from fipy.tools.numerix import random
 
 from fipy.variables.noiseVariable import NoiseVariable
 
@@ -124,8 +124,8 @@ class GammaNoiseVariable(NoiseVariable):
         self.rate = self._requires(rate)
     
     def _calcValue(self):
-        return gamma(a = self.rate, r = self.shape, 
-                     shape = [self.getMesh().getNumberOfCells()])
+        return random.gamma(shape=self.shape, scale=self.rate, 
+                            size=[self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

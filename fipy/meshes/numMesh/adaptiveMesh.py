@@ -137,7 +137,7 @@ class _AdaptiveMesh2D(GmshImporter2D):
 
     def _calcGeometryPoints(self):
         ## get the points to put in the geometry file
-        geometryPoints = numerix.zeros((len(self.varMesh.getVertexCoords()), 4)).astype(numerix.Float)
+        geometryPoints = numerix.zeros((len(self.varMesh.getVertexCoords()), 4), 'd')## .astype(numerix.Float)
         geometryPoints[:, :2] = self.varMesh.getVertexCoords()
         geometryPoints[:, 2] = 0
         geometryPoints[:, 3] = 1
@@ -195,7 +195,7 @@ class _AdaptiveMesh2D(GmshImporter2D):
         cellVertexIDs = numerix.reshape(cellFaceVertexIDs, (len(self.varMesh.getCellCenters()), 6))
         cellVertexIDs = numerix.sort(cellVertexIDs)
         cellVertexIDs = cellVertexIDs[:, ::2]
-        fullVertexCoords = numerix.zeros((len(self.varMesh.getVertexCoords()), 3)).astype(numerix.Float)
+        fullVertexCoords = numerix.zeros((len(self.varMesh.getVertexCoords()), 3), 'd')##.astype(numerix.Float)
         fullVertexCoords[:, :2] = self.varMesh.getVertexCoords()
         cellVertexCoords = numerix.take(fullVertexCoords, cellVertexIDs)
         cellOutputs = numerix.reshape(cellVertexCoords, (len(self.varMesh.getCellCenters()), 9))

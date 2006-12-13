@@ -35,8 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from RandomArray import uniform
-
+from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
 class UniformNoiseVariable(NoiseVariable):
@@ -84,8 +83,8 @@ class UniformNoiseVariable(NoiseVariable):
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
     
     def _calcValue(self):
-        return uniform(self.minimum, self.maximum,
-                       shape = [self.getMesh().getNumberOfCells()])
+        return random.uniform(self.minimum, self.maximum,
+                              shape = [self.getMesh().getNumberOfCells()])
 
 def _test(): 
     import doctest

@@ -136,7 +136,7 @@ class _AdvectionTerm(Term):
         cellIDs = numerix.repeat(numerix.arange(NCells)[:,numerix.NewAxis], NCellFaces, axis = 1)
         cellToCellIDs = mesh._getCellToCellIDs()
 
-        cellToCellIDs = MA.where(cellToCellIDs.mask(), cellIDs, cellToCellIDs) 
+        cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
 
         adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
