@@ -100,7 +100,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...     peclet *= 10
 
     >>> print allcloseList
-    [1, 1, 1, 1, 1, 1, 1]
+    [True, True, True, True, True, True, True]
     
 """
 __docformat__ = 'restructuredtext'

@@ -101,7 +101,8 @@ class Matplotlib1DViewer(MatplotlibViewer):
         ymin, ymax = self._autoscale(vars=self.vars, 
                                      datamin=self._getLimit('datamin') or self._getLimit('ymin'),
                                      datamax=self._getLimit('datamax') or self._getLimit('ymax'))
-                                    
+
+        import pylab                       
         pylab.ylim(ymin=ymin, ymax=ymax)
 
         for line, datum in zip(self.lines, self._getData()):

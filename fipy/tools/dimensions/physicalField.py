@@ -581,7 +581,8 @@ class PhysicalField:
         """
         if self.unit.isDimensionlessOrAngle():
             value = self.getNumericValue()
-            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
+##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
+            if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
                 return value
             else:
                 return numerix.array(self.getNumericValue(), t)
