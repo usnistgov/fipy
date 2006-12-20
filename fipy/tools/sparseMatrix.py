@@ -106,6 +106,7 @@ class _SparseMatrix:
         return s[:-1]
 	    
     def __repr__(self):
+        print '__repr__'
 	return repr(numerix.array(self))
 ## 	return self.matrix.__repr__()
 	
@@ -186,9 +187,9 @@ class _SparseMatrix:
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> numerix.allclose(numerix.array(L1 * L2), tmp)
+            >>> numerix.allclose((L1 * L2).getNumpyArray(), tmp)
             1
-             
+
         or a sparse matrix by a vector
 
             >>> tmp = numerix.array((29., 6.28318531, 2.5))       
@@ -198,8 +199,9 @@ class _SparseMatrix:
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
             1
+
             
         """
         N = self.matrix.shape[0]
@@ -213,21 +215,19 @@ class _SparseMatrix:
                 L.put(other * numerix.ones(N))
                 return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
-                o = numerix.array(other)
-                y = o.copy()
-                self.matrix.matvec(o, y)
+                y = other.copy()
+                self.matrix.matvec(other, y)
                 return y
             else:
                 raise TypeError
             
     def __rmul__(self, other):
 	if type(numerix.ones(1)) == type(other):
-            o = numerix.array(other)
-            y = o.copy()
-	    self.matrix.matvec_transp(o, y)
+            y = other.copy()
+	    self.matrix.matvec_transp(other, y)
 	    return y
 	else:
-	    return self * other
+            return self * other
 	    
     def __neg__(self):
 	"""
@@ -323,12 +323,17 @@ class _SparseMatrix:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
-    def __array__(self):
+    def getNumpyArray(self):
 	shape = self._getShape()
 	indices = numerix.indices(shape)
-	numMatrix = self.take(indices[0].flat, indices[1].flat)
-	
+        numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
 	return numerix.reshape(numMatrix, shape)
+        
+##     def __array__(self):
+## 	shape = self._getShape()
+## 	indices = numerix.indices(shape)
+##         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
+## 	return numerix.reshape(numMatrix, shape)
 
     def matvec(self, x):
         """

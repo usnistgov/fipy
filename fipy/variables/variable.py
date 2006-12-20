@@ -561,7 +561,8 @@ class Variable(object):
 	if isinstance(self.value, physicalField.PhysicalField):
 	    return self.value._getArray()
 	else:
-            return self.getValue()
+            v = self._getValue()
+            return v
             
     def getNumericValue(self):
 	value = self.getValue()
@@ -2543,6 +2544,12 @@ class Variable(object):
             >>> T = Variable()
             >>> from fipy import numerix
             >>> v = numerix.exp(-T / (1. *  T))
+
+        Following is a test case for an error when turing a binOp into an array
+
+            >>> print numerix.array(Variable(value = numerix.array([ 1.,])) * [ 1.,])
+            [ 1.]
+            
         """
         pass
 

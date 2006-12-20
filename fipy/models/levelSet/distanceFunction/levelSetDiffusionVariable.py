@@ -87,7 +87,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         cell1 = numerix.take(distance, id1)
         cell2 = numerix.take(distance, id2)
 
-        return numerix.where(cell1 < 0 or cell2 < 0,
+        return numerix.where(numerix.logical_or(cell1 < 0, cell2 < 0),
                              0,
                              self.diffusionCoeff)
                                    

@@ -46,7 +46,6 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools import numerix
 
 class DistanceVariable(CellVariable):
     r"""
@@ -96,6 +95,7 @@ class DistanceVariable(CellVariable):
        >>> from fipy.meshes.grid2D import Grid2D
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
        >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
+
        >>> var.calcDistanceFunction()
        >>> vbl = -dx * dy / numerix.sqrt(dx**2 + dy**2) / 2.
        >>> vbr = dx / 2
@@ -283,8 +283,8 @@ class DistanceVariable(CellVariable):
             t = MA.take(distances.flat, indices[:,1] + index)
             u = MA.take(distances.flat, indices[:,2] + index)
 
-            ns = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
-            nt = MA.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
+            ns = numerix.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
+            nt = numerix.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
 
             signedDistance = MA.where(MA.getmask(s),
                                       self.value,
@@ -309,7 +309,7 @@ class DistanceVariable(CellVariable):
 
         ## calculate interface flag
         masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 1)
-        interfaceFlag = masksum > 0
+        interfaceFlag = (masksum > 0).astype('l')
 
         ## spread the extensionVariable to the whole interface
         flag = True
@@ -330,11 +330,14 @@ class DistanceVariable(CellVariable):
 
         ## evaluate the trialIDs
         adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs)
-        hasAdjInterface = numerix.sum(adjInterfaceFlag.filled(), 1) > 0
-        trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface) 
+        hasAdjInterface = (numerix.sum(adjInterfaceFlag.filled(0), 1) > 0).astype('l')
+
+        trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface).astype('l')
+
         trialIDs = list(numerix.nonzero(trialFlag))
         evaluatedFlag = interfaceFlag
-        
+
+
         for id in trialIDs:
             self.value[id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
 
@@ -347,6 +350,7 @@ class DistanceVariable(CellVariable):
 
             trialIDs.remove(id)
             evaluatedFlag[id] = 1
+
 
             for adjID in MA.filled(cellToCellIDs[id], value = -1):
                 if adjID != -1:
@@ -366,7 +370,8 @@ class DistanceVariable(CellVariable):
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[id, indices[0]]
         v0 = self.value[adjIDs[indices[0]]]
-        e0 = extensionVariable[adjIDs[indices[0]]]                             
+        e0 = extensionVariable[adjIDs[indices[0]]]
+
         N = numerix.sum(adjEvaluatedFlag)
 
         index0 = indices[0]
@@ -387,6 +392,7 @@ class DistanceVariable(CellVariable):
                     N = 1
                 elif N == 3:
                     index1 = index2
+
         if N == 0:
             raise Exception 
         elif N == 1:
@@ -570,8 +576,7 @@ class DistanceVariable(CellVariable):
         1
 
         """
-
-        flag = numerix.take(self._getInterfaceFlag(), self.cellFaceIDs).filled(fill_value = 0)
+        flag = MA.filled(numerix.take(self._getInterfaceFlag(), self.cellFaceIDs), value = 0)
 
         flag = numerix.sum(flag, axis = 1)
         

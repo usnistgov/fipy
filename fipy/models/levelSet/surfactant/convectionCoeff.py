@@ -125,8 +125,8 @@ class _ConvectionCoeff(VectorFaceVariable):
      
         faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()[:,numerix.NewAxis]
 
-        cellFaceNormalAreas = numerix.array(numerix.take(faceNormalAreas, cellFaceIDs).filled(fill_value = 0))
-        norms = numerix.array(MA.array(self.mesh._getCellNormals()).filled(fill_value = 0))
+        cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs), value = 0))
+        norms = numerix.array(MA.filled(MA.array(self.mesh._getCellNormals()), value = 0))
         
         alpha = numerix.dot(cellFaceNormalAreas, norms, axis = 2)
         alpha = numerix.where(alpha > 0, alpha, 0)
@@ -143,7 +143,7 @@ class _ConvectionCoeff(VectorFaceVariable):
 
         value = numerix.zeros(Nfaces * dim,'d')
 
-        cellFaceIDs = (cellFaceIDs.flat * dim)[:,numerix.NewAxis] + numerix.resize(numerix.arange(dim), (len(cellFaceIDs.flat),dim))
+        cellFaceIDs = (cellFaceIDs.ravel() * dim)[:,numerix.NewAxis] + numerix.resize(numerix.arange(dim), (len(cellFaceIDs.flat),dim))
         
         vector._putAddPy(value, cellFaceIDs.flat, alpha.flat, mask = MA.getmask(MA.array(cellFaceIDs).flat))
 

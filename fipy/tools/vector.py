@@ -64,14 +64,15 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
     return numerix.sqrt(abs(numerix.sum(v1 * v2)))
 
-def _putAddPy(vector, ids, additionVector, mask = None):
+def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
-    if mask is None:
+ 
+    if not mask:
         for i in range(len(ids)):
             vector[ids[i]] += additionVector[i]
     else:
         for i in range(len(ids)):
-            if not mask[i]:
+             if not mask[i]:
                 vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):

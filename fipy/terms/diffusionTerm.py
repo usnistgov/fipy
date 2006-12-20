@@ -298,8 +298,8 @@ class DiffusionTerm(Term):
            -1.000000   1.000000  
             1.000000  -1.000000  
            >>> print b
-           [ 0., 0.,]
-           
+           [ 0.  0.]
+
         The coefficient must be a `FaceVariable`, a `CellVariable` (which will
         be interpolated to a `FaceVariable`), or a scalar value 
         
@@ -314,7 +314,7 @@ class DiffusionTerm(Term):
            -1.000000   1.000000  
             1.000000  -1.000000  
            >>> print b
-           [ 0., 0.,]
+           [ 0.  0.]
 
            >>> term = DiffusionTerm(coeff = CellVariable(mesh = mesh, value = 1))
            >>> coeff = term._getGeomCoeff(mesh)
@@ -326,7 +326,7 @@ class DiffusionTerm(Term):
            -1.000000   1.000000  
             1.000000  -1.000000  
            >>> print b
-           [ 0., 0.,]
+           [ 0.  0.]
 
            >>> from fipy.variables.variable import Variable
            >>> term = DiffusionTerm(coeff = Variable(value = 1))
@@ -339,8 +339,8 @@ class DiffusionTerm(Term):
            -1.000000   1.000000  
             1.000000  -1.000000  
            >>> print b
-           [ 0., 0.,]
-           
+           [ 0.  0.]
+                      
            >>> term = DiffusionTerm(coeff = ((1,2),))
 
            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
@@ -365,7 +365,7 @@ class DiffusionTerm(Term):
            -1.000000   1.000000  
             1.000000  -3.000000  
            >>> print b
-           [-3.,-8.,]
+           [-3. -8.]
 
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
         x = 2, fixed value 1, fixed curvature 0
@@ -388,8 +388,8 @@ class DiffusionTerm(Term):
             4.000000  -6.000000  
            -4.000000  10.000000  
            >>> print b
-           [  1., 21.,]
-
+           [  1.  21.]
+           
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
         x = 2, fixed value 4, fixed 3rd order -1
 
@@ -409,7 +409,7 @@ class DiffusionTerm(Term):
            -4.000000   6.000000  
             2.000000  -4.000000  
            >>> print b
-           [ 3.,-4.,]
+           [ 3. -4.]
 
         Test when dx = 0.5.
 
@@ -427,10 +427,10 @@ class DiffusionTerm(Term):
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> ans = numerix.array(((8e+01, -32),(-32, 16)))
-           >>> print numerix.allclose(numerix.array(L), ans)
+           >>> print numerix.allclose(L.getNumpyArray(), ans)
            1
            >>> print b
-           [-8., 4.,]
+           [-8.  4.]
 
         Test when dx = 0.25.
 
@@ -448,11 +448,11 @@ class DiffusionTerm(Term):
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> ans = numerix.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
-           >>> print numerix.allclose(numerix.array(L), ans)
+           >>> print numerix.allclose(L.getNumpyArray(), ans)
            1
            >>> print b
-           [-24., 16.,]
-
+           [-24.  16.]
+           
         The following tests are to check that DiffusionTerm can take any of the four
         main Variable types.
 
@@ -460,16 +460,16 @@ class DiffusionTerm(Term):
 	   >>> mesh = Tri2D(nx = 1, ny = 1)
 	   >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
 	   >>> print term._getGeomCoeff(mesh)
-	   [ 6. , 6. , 6. , 6. , 1.5, 1.5, 1.5, 1.5,]
+           [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
 	   >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
 	   >>> print term._getGeomCoeff(mesh)
-	   [ 6. , 6. , 6. , 6. , 1.5, 1.5, 1.5, 1.5,]
+           [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
 	   >>> term = DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh))
 	   >>> print term._getGeomCoeff(mesh)
-	   [ 6.   , 6.   , 3.   , 3.   , 1.125, 1.125, 1.125, 1.125,]
+           [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
 	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
 	   >>> print term._getGeomCoeff(mesh)
-	   [ 6.   , 6.   , 3.   , 3.   , 1.125, 1.125, 1.125, 1.125,]
+           [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
 	   >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
 	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
 	   >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)

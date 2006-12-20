@@ -151,20 +151,20 @@ class PhysicalField:
             
             >>> a = numerix.array(((3.,4.),(5.,6.)))
             >>> print PhysicalField(value = a, unit = "m")
-            [[ 3., 4.,]
-             [ 5., 6.,]] m
+            [[ 3.  4.]
+             [ 5.  6.]] m
          
         or a `tuple`:
             
             >>> print PhysicalField(value = ((3.,4.),(5.,6.)), unit = "m")
-            [[ 3., 4.,]
-             [ 5., 6.,]] m
+            [[ 3.  4.]
+             [ 5.  6.]] m
             
         or as a single value to be applied to every element of a supplied array:
             
             >>> print PhysicalField(value = 2., unit = "m", array = a)
-            [[ 2., 2.,]
-             [ 2., 2.,]] m
+            [[ 2.  2.]
+             [ 2.  2.]] m
          
         Every element in an array has the same unit, which is stored only
         once for the whole array.
@@ -232,9 +232,9 @@ class PhysicalField:
             >>> b = a.copy()
             >>> a[0] = 3
             >>> print a
-            [3,1,2,] m
+            [3 1 2] m
             >>> print b
-            [0,1,2,] m
+            [0 1 2] m
             
         """
         if hasattr(self.value, 'copy'):
@@ -270,7 +270,7 @@ class PhysicalField:
         
             >>> p = PhysicalField(value = (3., 3.14159), unit = "eV")
             >>> print p.tostring(precision = 3, separator = '|')
-            [ 3.   | 3.142|] eV
+            [ 3.   | 3.142] eV
         """
         from fipy.tools import numerix
         return numerix.tostring(self.value, max_line_width = max_line_width, 
@@ -484,8 +484,8 @@ class PhysicalField:
         Return the absolute value of the quantity. The `unit` is unchanged.
         
             >>> print abs(PhysicalField(((3.,-2.),(-1.,4.)), 'm'))
-            [[ 3., 2.,]
-             [ 1., 4.,]] m
+            [[ 3.  2.]
+             [ 1.  4.]] m
         """
         return self.__class__(value = abs(self.value), unit = self.unit)
 
@@ -497,8 +497,8 @@ class PhysicalField:
         Return the negative of the quantity. The `unit` is unchanged.
         
             >>> print -PhysicalField(((3.,-2.),(-1.,4.)), 'm')
-            [[-3., 2.,]
-             [ 1.,-4.,]] m
+            [[-3.  2.]
+             [ 1. -4.]] m
         """
         return self.__class__(value = -self.value, unit = self.unit)
 
@@ -539,8 +539,8 @@ class PhysicalField:
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
             >>> a[0,1] = PhysicalField("6 ft")
             >>> print a
-            [[ 3.    , 1.8288,]
-             [ 5.    , 6.    ,]] m
+            [[ 3.      1.8288]
+             [ 5.      6.    ]] m
             >>> a[1,0] = PhysicalField("2 min")
             Traceback (most recent call last):
                 ...
@@ -558,16 +558,17 @@ class PhysicalField:
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
         
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
-            [[ 2., 3.,]
-             [ 4., 5.,]]
+            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
+            [[ 2.  3.]
+             [ 4.  5.]]
          
         As a special case, fields with angular units are converted to base
         units (radians) and then assumed dimensionless.
         
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg"))
-            [[ 0.03490659, 0.05235988,]
-             [ 0.06981317, 0.08726646,]]
+            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg"))
+            [[ 0.03490659  0.05235988]
+             [ 0.06981317  0.08726646]]
+
          
         If the array is not dimensionless, the conversion fails.
         
@@ -618,7 +619,7 @@ class PhysicalField:
             >>> float(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
             Traceback (most recent call last):
                 ...
-            TypeError: only length-1 arrays can be converted to Python scalars.
+            TypeError: only length-1 arrays can be converted to Python scalars
         
         .. _Numeric: http://www.numpy.org
         """
@@ -634,21 +635,22 @@ class PhysicalField:
         
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
             >>> print a > PhysicalField("13 ft")
-            [[0,1,]
-             [1,1,]]
+            [[False True]
+             [True True]]
+
          
         Appropriately formatted dimensional quantity strings can also be
         compared.
         
             >>> print a > "13 ft"
-            [[0,1,]
-             [1,1,]]
-         
+            [[False True]
+             [True True]]
+                    
         Arrays are compared element to element
         
             >>> print a > PhysicalField(((3.,13.),(17.,6.)),"ft")
-            [[1,1,]
-             [0,1,]]
+            [[True True]
+             [False True]]
          
         Units must be compatible
         
@@ -662,7 +664,7 @@ class PhysicalField:
             >>> print a > PhysicalField(((3.,13.,4.),(17.,6.,2.)),"ft")
             Traceback (most recent call last):
                 ...
-            ValueError: frames are not aligned
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
         """
         other = self._inMyUnits(other)
         return self.value > other.value
@@ -987,7 +989,7 @@ class PhysicalField:
         Return the hyperbolic tangent of the `PhysicalField`
         
             >>> PhysicalField(1.).tanh()
-            0.76159415595576485
+            0.761594155956
         
         The units of the `PhysicalField` must be dimensionless
         
@@ -1115,7 +1117,7 @@ class PhysicalField:
         
             >>> v = PhysicalField(((5.,6.),(7.,8.)), "m")
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v)
-            [ 17., 53.,] m**2
+            [ 17.  53.] m**2
              
         """
         if not isinstance(other,PhysicalField):
@@ -1133,14 +1135,15 @@ class PhysicalField:
         The resulting `PhysicalField` array has the same units as the original.
         
             >>> print PhysicalField((1.,2.,3.),"m").take((2,0))
-            [ 3., 1.,] m
+            [ 3.  1.] m
         
         The optional third argument specifies the axis along which the selection 
         occurs, and the default value (as in the example above) is 0, the first axis.  
         
             >>> print PhysicalField(((1.,2.,3.),(4.,5.,6.)),"m").take((2,0), axis = 1)
-            [[ 3., 1.,]
-             [ 6., 4.,]] m
+            [[ 3.  1.]
+             [ 6.  4.]] m
+
         """
         return self.__class__(value = numerix.take(self.value, indices, axis), unit = self.unit)
         
@@ -1156,7 +1159,7 @@ class PhysicalField:
             >>> f = PhysicalField((1.,2.,3.),"m")
             >>> f.put((2,0), PhysicalField((2.,3.),"inch"))
             >>> print f
-            [ 0.0762, 2.    , 0.0508,] m
+            [ 0.0762  2.      0.0508] m
         
         The units of `values` must be compatible with `self`.
         
@@ -1176,8 +1179,8 @@ class PhysicalField:
         Changes the shape of `self` to that specified in `shape`
         
             >>> print PhysicalField((1.,2.,3.,4.),"m").reshape((2,2))
-            [[ 1., 2.,]
-             [ 3., 4.,]] m
+            [[ 1.  2.]
+             [ 3.  4.]] m
          
         The new shape must have the same size as the existing one.
         
@@ -1194,9 +1197,9 @@ class PhysicalField:
         specified axis (first axis by default).
         
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum()
-            [ 4., 6.,] m
+            [ 4.  6.] m
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum(1)
-            [ 3., 7.,] m
+            [ 3.  7.] m
         """
         return self.__class__(value = numerix.sum(self.value, index), unit = self.unit)
         
@@ -1552,11 +1555,12 @@ class PhysicalUnit:
 	    
 	    >>> a = PhysicalField("1. mm")
 	    >>> b = PhysicalField("1. inch")
-	    >>> a.getUnit().isCompatible(b.getUnit())
-	    [1,1,1,1,1,1,1,1,1,]
+	    >>> print a.getUnit().isCompatible(b.getUnit())
+            [True True True True True True True True True]
 	    >>> c = PhysicalField("1. K")
-	    >>> a.getUnit().isCompatible(c.getUnit())
-	    [0,1,1,1,0,1,1,1,1,]
+	    >>> print a.getUnit().isCompatible(c.getUnit())
+            [False True True True False True True True True]
+
 	"""
         return self.powers == other.powers
 

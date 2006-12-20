@@ -89,6 +89,9 @@ class CellTerm(Term):
 	b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
 	L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
+        
+## 	L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
         N = oldArray.getMesh().getNumberOfCells()
@@ -138,7 +141,7 @@ class CellTerm(Term):
             >>> vcv = VectorCellVariable(mesh = m)
             >>> vfv = VectorFaceVariable(mesh = m)
             >>> CellTerm(coeff = cv)
-            CellTerm(coeff = [ 0., 0.,])
+            CellTerm(coeff = [ 0.  0.])
             >>> CellTerm(coeff = 1)
             CellTerm(coeff = 1)
             >>> CellTerm(coeff = fv)
