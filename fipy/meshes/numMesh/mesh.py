@@ -184,9 +184,9 @@ class Mesh(_CommonMesh):
         """
         Returns a `dictionary` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
         """
-        
+
         other = other._getConcatenableMesh()
-        
+
         selfNumFaces = self.faceVertexIDs.shape[0]
         selfNumVertices = self.vertexCoords.shape[0]
         otherNumFaces = other.faceVertexIDs.shape[0]
@@ -204,12 +204,18 @@ class Mesh(_CommonMesh):
                     vertexCorrelates[j] = i
         if (vertexCorrelates == {}):
             raise MeshAdditionError, "Vertices are not aligned"
+
+        
+         
         ## compute face correlates
         faceCorrelates = {}
         for i in range(otherNumFaces):
-            currFace = other.faceVertexIDs[i]
+##          Seems to be overwriting other.faceVertexIDs with new numpy
+##            currFace = other.faceVertexIDs[i] 
+            currFace = other.faceVertexIDs[i].copy()
             keepGoing = 1
             currIndex = 0
+
             for item in currFace:
                 if(vertexCorrelates.has_key(item)):
                     currFace[currIndex] = vertexCorrelates[item]
@@ -222,7 +228,7 @@ class Mesh(_CommonMesh):
                         faceCorrelates[i] = j
         if(faceCorrelates == {}):
             raise MeshAdditionError, "Faces are not aligned"
-
+        
         faceIndicesToAdd = ()
         for i in range(otherNumFaces):
             if(not faceCorrelates.has_key(i)):
@@ -255,6 +261,7 @@ class Mesh(_CommonMesh):
 
         ## compute what the faces are that we need to add
         facesToAdd = numerix.take(other.faceVertexIDs, faceIndicesToAdd)
+
         for i in range(len(facesToAdd)):
             for j in range(len(facesToAdd[i])):
                 facesToAdd[i, j] = vertexCorrelates[facesToAdd[i, j]]
@@ -437,14 +444,21 @@ class Mesh(_CommonMesh):
 
     def _calcFaceCenters(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs)
-        if MA.getmask(self.faceVertexIDs) == None:
+
+
+        if MA.getmask(self.faceVertexIDs) is False:
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
             faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flat, self.dim), numerix.shape(faceVertexCoords))
+
+            
         faceVertexCoords = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
 
 	self.faceCenters = MA.filled(MA.average(faceVertexCoords, axis = 1))
+
+        
 
     def _calcFaceNormals(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
@@ -802,6 +816,21 @@ class Mesh(_CommonMesh):
 
             >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1
+
+            >>> dx = 1.
+            >>> dy = 1.
+            >>> nx = 10
+            >>> ny = 2
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> gridMesh = Grid2D(dx, dy, nx, ny)
+            >>> from fipy.meshes.tri2D import Tri2D
+            >>> triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
+            >>> bigMesh = gridMesh + triMesh
+            >>> volumes = numerix.ones(bigMesh.getNumberOfCells(), 'd')
+            >>> volumes[20:] = 0.25
+            >>> numerix.allclose(bigMesh.getCellVolumes(), volumes)
+            1
+            
         """
 
                       
