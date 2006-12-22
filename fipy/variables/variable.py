@@ -55,6 +55,7 @@ from fipy.tools import numerix
 from fipy.tools import parser
 
 class Variable(object):
+    
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action = "store_true"):
         _cacheAlways = False
@@ -111,6 +112,8 @@ class Variable(object):
 	  - `mesh`: the mesh that defines the geometry of this `Variable`
 
 	"""
+
+
             
 	self.requiredVariables = []
 	self.subscribedVariables = []
@@ -140,20 +143,50 @@ class Variable(object):
         self.mag = None
         self.sliceVars = {}
 
+
+##    __array_priority__ and __array_wrap__ are required to override
+##    the default behavior of numpy. If a numpy array and a Variable
+##    are in a binary operation and numpy is first, then numpy will,
+##    by default, try and do everything it can to get a a raw numpy
+##    array out of Variable. __array_wrap__ seems to have been
+##    introduced into masked array to fix this issue. __array_wrap__ is
+##    called after the operation is done so it could hurt efficiency badly.
+##    Something else needs to be done to stop the initial evaluation.
+
+    __array_priority__ = 100.0    
+
+    def __array_wrap__(self, arr, context=None):
+        """
+        Required to prevent numpy not calling the reverse binary operations.
+        Both the following tests are examples ufuncs.
+        
+           >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
+           <class 'fipy.variables.variable.binOp'>
+
+           >>> from scipy.special import gamma as Gamma
+           >>> print type(Gamma(Variable([1.0, 2.0])))
+           <type 'numpy.ndarray'>
+
+        """
+        if context is not None and len(context[1])==2:
+            return NotImplemented
+        else:
+            return arr
+
     def getMesh(self):
 	return self.mesh
 	
     def __array__(self, t = None):
 	"""
         Attempt to convert the `Variable` to a numerix `array` object
-        
+    
             >>> v = Variable(value = [2,3])
             >>> print numerix.array(v)
             [ 2.  3.]
-            
+        
         It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
-        
+    
             >>> v = Variable(value = [2,3], unit = "m")
             >>> numerix.array(v)
             Traceback (most recent call last):
@@ -172,19 +205,19 @@ class Variable(object):
             >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
             [[0,]
              [0,]]
-        
+    
 	"""
 	return numerix.array(self.getValue(), t)
 
     def _get_array_interface(self):
         return self._getArray().__array_interface__
- 	
+    
     def _set_array_interface(self, value):
         self._getArray().__array_interface__ = value
- 	       
+           
     def _del_array_interface(self):
         del self._getArray().__array_interface__
- 	
+    
     __array_interface__ = property(_get_array_interface,
                                    _set_array_interface,
                                    _del_array_interface,
@@ -286,7 +319,7 @@ class Variable(object):
     def __getitem__(self, index):
         """    
         "Evaluate" the `Variable` and return the specified element
-        
+      
             >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
             >>> print a[1,1]
             10.0 m
@@ -1290,7 +1323,10 @@ class Variable(object):
 	    
     def __mul__(self, other):
 	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
-	
+
+##    def __rmul__(self,other):
+##        print 'hello'
+    
     __rmul__ = __mul__
 	    
     def __mod__(self, other):
@@ -2549,6 +2585,11 @@ class Variable(object):
 
             >>> print numerix.array(Variable(value = numerix.array([ 1.,])) * [ 1.,])
             [ 1.]
+
+        It seems that numpy's __rmul__ coercion is very strange
+
+            >>> type(numerix.array([1., 2.]) * Variable([1., 2.]))
+            <class 'fipy.variables.variable.binOp'>
             
         """
         pass

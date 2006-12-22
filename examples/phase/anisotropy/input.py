@@ -288,7 +288,8 @@ the data and compares it with the `phase` variable.
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools.numerix import allclose
-   >>> print allclose(phase, testData)
+   >>> from fipy.tools import numerix
+   >>> print allclose(phase, numerix.array(testData))
    1
    
 """

@@ -70,7 +70,15 @@ class _SparseMatrix:
         else:
             sizeHint = sizeHint or size * bandwidth
             self.matrix = spmatrix.ll_mat(size, size, sizeHint)
-                
+
+    __array_priority__ = 100.0    
+
+    def __array_wrap__(self, arr, context=None):
+        if context is None:
+            return arr
+        else:
+            return NotImplemented
+
     def _getMatrix(self):
         return self.matrix
     

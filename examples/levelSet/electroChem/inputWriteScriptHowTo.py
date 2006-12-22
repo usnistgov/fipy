@@ -524,7 +524,8 @@ to tell if something has changed or been broken.
    >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
    ...                         'test.gz')
    >>> from fipy.tools import dump
-   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
+   >>> from fipy.tools import numerix
+   >>> print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol=1e-4)
    1
 
    >>> if __name__ == '__main__':

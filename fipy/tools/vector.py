@@ -66,14 +66,14 @@ def sqrtDot(v1,v2):
 
 def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
- 
-    if not mask:
+
+    if numerix.sometrue(mask):
         for i in range(len(ids)):
-            vector[ids[i]] += additionVector[i]
+            if not mask[i]:
+                vector[ids[i]] += additionVector[i]
     else:
         for i in range(len(ids)):
-             if not mask[i]:
-                vector[ids[i]] += additionVector[i]
+            vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):
     from fipy.tools.inline import inline
