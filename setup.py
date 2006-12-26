@@ -693,7 +693,7 @@ dist = setup(	name = "FiPy",
 if 'install' in dist.commands:
     req = []
     
-    for pkg in ['Numeric', 'spmatrix', 'superlu']:
+    for pkg in ['numpy', 'pysparse']:
         try:
             __import__(pkg)
         except ImportError, exc:
@@ -706,7 +706,7 @@ if 'install' in dist.commands:
 
     opt = []
     
-    for pkg in ['weave', 'gist', 'pyx']:
+    for pkg in ['scipy', 'matplotlib', 'gist', 'mayavi']:
         try:
             __import__(pkg)
         except ImportError, exc:

@@ -72,8 +72,6 @@ class VectorCellVariable(Variable):
         >>> var = VectorCellVariable(mesh, value = numerix.array(((0,0),(1,1))))
         >>> answer = numerix.array(((0, 0), (1, 1), (0, 0), (1, 1), 
         ...                         (0, 0), (.5, .5), (1, 1)))
-        >>> ##print answer
-        >>> ##print var.getArithmeticFaceValue()
         >>> numerix.allclose(answer, numerix.array(var.getArithmeticFaceValue()))
         1
         """

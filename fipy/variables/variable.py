@@ -207,21 +207,21 @@ class Variable(object):
              [0,]]
     
 	"""
-	return numerix.array(self.getValue(), t)
+        return numerix.array(self.getValue(), t)
 
-    def _get_array_interface(self):
-        return self._getArray().__array_interface__
+##     def _get_array_interface(self):
+##         return self._getArray().__array_interface__
     
-    def _set_array_interface(self, value):
-        self._getArray().__array_interface__ = value
+##     def _set_array_interface(self, value):
+##         self._getArray().__array_interface__ = value
            
-    def _del_array_interface(self):
-        del self._getArray().__array_interface__
+##     def _del_array_interface(self):
+##         del self._getArray().__array_interface__
     
-    __array_interface__ = property(_get_array_interface,
-                                   _set_array_interface,
-                                   _del_array_interface,
-                                   "the '__array_inteface__'")
+##     __array_interface__ = property(_get_array_interface,
+##                                    _set_array_interface,
+##                                    _del_array_interface,
+##                                    "the '__array_inteface__'")
 	
     def copy(self):
 	"""
@@ -594,8 +594,7 @@ class Variable(object):
 	if isinstance(self.value, physicalField.PhysicalField):
 	    return self.value._getArray()
 	else:
-            v = self._getValue()
-            return v
+            return self.value
             
     def getNumericValue(self):
 	value = self.getValue()

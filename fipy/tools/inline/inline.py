@@ -33,7 +33,7 @@ def _runInline(code_in, converters=None, verbose=0, **args):
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
-    import weave
+    from scipy import weave
         
     weave.inline(code,
                  args.keys(),
