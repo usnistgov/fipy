@@ -104,6 +104,7 @@ class CellTerm(Term):
             updatePyArray(i) += diagCoeff(i);
         """,b = b,
             oldArray = oldArray.getNumericValue(),
+##            oldArray = numerix.array(oldArray),
             oldCoeff = numerix.array(coeffVectors['old value']),
             bCoeff = numerix.array(coeffVectors['b vector']),
             newCoeff = numerix.array(coeffVectors['new value']),

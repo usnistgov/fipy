@@ -95,8 +95,10 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         val = self._getArray().copy()
         
         inline._runInline("""
-	    double	cell1 = var(id1(i));
-	    double	cell2 = var(id2(i));
+            int ID1 = id1(i);
+            int ID2 = id2(i);
+	    double	cell1 = var(ID1);
+	    double	cell2 = var(ID2);
 
 	    if (cell1 < 0 || cell2 < 0) {
 		val(i) = 0;

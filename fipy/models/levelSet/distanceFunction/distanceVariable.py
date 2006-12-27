@@ -482,8 +482,7 @@ class DistanceVariable(CellVariable):
            >>> print numerix.sum(distanceVariable.getCellInterfaceAreas())
            1.57984690073
            
-        """
-        
+        """        
         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value = 0))
         areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), value = 0))
         return numerix.sum(abs(numerix.dot(normals, areas, axis = 2)), axis = 1)
@@ -512,7 +511,6 @@ class DistanceVariable(CellVariable):
         dim = self.mesh.getDim()
 
         valueOverFaces = numerix.resize(numerix.repeat(self._getCellValueOverFaces(), dim), (N, M, dim))
-
         interfaceNormals = numerix.take(self._getInterfaceNormals(), self.cellFaceIDs)
         from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
@@ -619,7 +617,7 @@ class DistanceVariable(CellVariable):
            >>> numerix.allclose(distanceVariable._getLevelSetNormals(), answer)
            1
         """
-        
+
         faceGrad = self.getGrad().getArithmeticFaceValue()
         faceGradMag = numerix.array(faceGrad.getMag())
         faceGradMag = numerix.where(faceGradMag > 1e-10,
@@ -631,7 +629,6 @@ class DistanceVariable(CellVariable):
         dim = self.mesh.getDim()
         exteriorFaceIDs = (self.exteriorFaces.getIDs() * dim)[:,numerix.NewAxis] + numerix.resize(numerix.arange(dim), (len(self.exteriorFaces),dim))
         numerix.put(faceGrad, exteriorFaceIDs, numerix.zeros(numerix.getShape(exteriorFaceIDs),'d'))
-        
         return faceGrad / faceGradMag[:,numerix.NewAxis] 
 
 def _test(): 

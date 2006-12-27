@@ -209,19 +209,19 @@ class Variable(object):
 	"""
         return numerix.array(self.getValue(), t)
 
-##     def _get_array_interface(self):
-##         return self._getArray().__array_interface__
-    
-##     def _set_array_interface(self, value):
-##         self._getArray().__array_interface__ = value
-           
-##     def _del_array_interface(self):
-##         del self._getArray().__array_interface__
-    
-##     __array_interface__ = property(_get_array_interface,
-##                                    _set_array_interface,
-##                                    _del_array_interface,
-##                                    "the '__array_inteface__'")
+##    def _get_array_interface(self):
+##        return self._getArray().__array_interface__
+     
+##    def _set_array_interface(self, value):
+##        self._getArray().__array_interface__ = value
+         
+##    def _del_array_interface(self):
+##        del self._getArray().__array_interface__
+  
+##    __array_interface__ = property(_get_array_interface,
+##                                   _set_array_interface,
+##                                   _del_array_interface,
+##                                   "the '__array_inteface__'")
 	
     def copy(self):
 	"""
@@ -404,6 +404,14 @@ class Variable(object):
          if type(v) not in (type(numerix.array(1)),):
              argDict[identifier] = numerix.array(v)
          else:
+##             if len(v.shape) == 0:
+##                 if v.dtype in (numerix.array(1).dtype,):
+##                     argDict[identifier] = int(v)
+##                 elif v.dtype in (numerix.array(1.).dtype,):
+##                     argDict[identifier] = float(v)
+##                 else:
+##                     argDict[identifier] = v
+##             else:
              argDict[identifier] = v
              
          try:
@@ -411,8 +419,9 @@ class Variable(object):
          except AttributeError:
              shape = self.getShape()
 
-         if len(shape) == 0:         
-             return identifier + '[0]'
+         if len(shape) == 0:
+             return identifier + '[0]'         
+##             return identifier
          else:
              return identifier + self._getCIndexString(shape)
 
@@ -2589,6 +2598,17 @@ class Variable(object):
 
             >>> type(numerix.array([1., 2.]) * Variable([1., 2.]))
             <class 'fipy.variables.variable.binOp'>
+
+        Test inlining
+
+            >>> v0 = Variable(numerix.ones(2, 'd'))
+            >>> v1 = Variable(numerix.ones(2, 'd'))
+            >>> v = v1 * v0
+            >>> print v
+
+            >>> v0[1] = 0.5
+
+            >>> print v
             
         """
         pass

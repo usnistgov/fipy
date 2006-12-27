@@ -34,7 +34,15 @@ def _runInline(code_in, converters=None, verbose=0, **args):
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
     from scipy import weave
-        
+
+##    print code
+
+##    for key in args.keys():
+##        print key, args[key], type(args[key])
+##        if hasattr(args[key], 'dtype'):
+##            print args[key].dtype.char
+##    raw_input('before')
+
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
@@ -42,3 +50,7 @@ def _runInline(code_in, converters=None, verbose=0, **args):
                  compiler = 'gcc',
                  verbose = verbose,
                  extra_compile_args =['-O3'])
+
+##    for key in args.keys():
+##        print key, args[key], type(args[key])
+##    raw_input('after')

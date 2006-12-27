@@ -49,8 +49,10 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
         val = self._getArray().copy()
         
 	inline._runInline("""
-	    double cell2 = var(id2(i));
-	    val(i) = (var(id1(i)) - cell2) * alpha(i) + cell2;
+            int ID1 = id1(i);
+            int ID2 = id2(i);
+	    double cell2 = var(ID2);
+	    val(i) = (var(ID1) - cell2) * alpha(i) + cell2;
 	""",
 	var = self.var.getNumericValue(),
 	val = val, 

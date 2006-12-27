@@ -78,7 +78,8 @@ def _putAddPy(vector, ids, additionVector, mask = False):
 def _putAddIn(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._runInline("""
-	vector(ids(i)) += additionVector(i);
+        int ID = ids(i);
+	vector(ID) += additionVector(i);
     """,
     vector = vector, ids = ids, additionVector = numerix.array(additionVector),
     ni = len(ids))

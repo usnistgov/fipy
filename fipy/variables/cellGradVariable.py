@@ -57,8 +57,9 @@ class _CellGradVariable(VectorCellVariable):
 	    
 	    int k;
             
-	    for (k = 0; k < nk; k++) {
-		val(i, j) += orientations(i, k) * areaProj(ids(i, k), j) * faceValues(ids(i, k));
+	    for (k = 0; k < M; k++) {
+                int id = ids(i, k);
+		val(i, j) += orientations(i, k) * areaProj(id, j) * faceValues(id);
 	    }
 		
 	    val(i, j) /= volumes(i);
@@ -68,8 +69,9 @@ class _CellGradVariable(VectorCellVariable):
             volumes = numerix.array(volumes),
             areaProj = numerix.array(self.mesh._getAreaProjections()),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
-	    ni = N, nj = self.mesh.getDim(), nk = M)
-     
+            M = M,
+	    ni = N, nj = self.mesh.getDim())
+
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
         
