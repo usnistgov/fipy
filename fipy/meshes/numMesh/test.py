@@ -55,7 +55,7 @@ def _suite():
             'fipy.meshes.numMesh.grid3D',
             'fipy.meshes.numMesh.tri2D',
             'fipy.meshes.numMesh.gmshImport',
-            'fipy.meshes.numMesh.adaptiveMesh',
+##            'fipy.meshes.numMesh.adaptiveMesh',
             'fipy.meshes.numMesh.refinedMesh',
             'fipy.meshes.numMesh.periodicGrid1D',
             'fipy.meshes.numMesh.periodicGrid2D',

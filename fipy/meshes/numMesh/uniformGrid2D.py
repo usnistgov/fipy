@@ -46,7 +46,7 @@
 __docformat__ = 'restructuredtext'
 
 
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid2D import Grid2D
 from fipy.meshes.meshIterator import FaceIterator
@@ -216,7 +216,7 @@ class UniformGrid2D(Grid2D):
 
 
     def _getCellToCellIDs(self):
-        ids = MA.zeros((self.ny, self.nx, 4))
+        ids = MA.zeros((self.ny, self.nx, 4), 'l')
         indices = numerix.indices((self.ny, self.nx))
         ids[...,0] = indices[1] + (indices[0] - 1) * self.nx
         ids[...,1] = (indices[1] + 1) + indices[0] * self.nx
@@ -545,7 +545,7 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, -1), (1, -1), (2, -1),
             ...                                 (0, 3), (1, 4), (2, 5),
             ...                                 (3, -1), (4, -1), (5, -1),
@@ -677,53 +677,53 @@ class UniformGrid2D(Grid2D):
             1
             
             >>> print mesh._getFaceVertexIDs()
-            [[ 0, 1,]
-             [ 1, 2,]
-             [ 2, 3,]
-             [ 4, 5,]
-             [ 5, 6,]
-             [ 6, 7,]
-             [ 8, 9,]
-             [ 9,10,]
-             [10,11,]
-             [ 0, 4,]
-             [ 1, 5,]
-             [ 2, 6,]
-             [ 3, 7,]
-             [ 4, 8,]
-             [ 5, 9,]
-             [ 6,10,]
-             [ 7,11,]]
+            [[ 0  1]
+             [ 1  2]
+             [ 2  3]
+             [ 4  5]
+             [ 5  6]
+             [ 6  7]
+             [ 8  9]
+             [ 9 10]
+             [10 11]
+             [ 0  4]
+             [ 1  5]
+             [ 2  6]
+             [ 3  7]
+             [ 4  8]
+             [ 5  9]
+             [ 6 10]
+             [ 7 11]]
 
             >>> mesh = UniformGrid2D(nx=3)
             >>> print mesh._getAdjacentCellIDs()
-            ([0,1,2,0,1,2,0,0,1,2,], [0,1,2,0,1,2,0,1,2,2,])
+            (array([0, 1, 2, 0, 1, 2, 0, 0, 1, 2]), array([0, 1, 2, 0, 1, 2, 0, 1, 2, 2]))
             >>> print mesh.getFaceCellIDs()
-            [[0 ,-- ,]
-             [1 ,-- ,]
-             [2 ,-- ,]
-             [0 ,-- ,]
-             [1 ,-- ,]
-             [2 ,-- ,]
-             [0 ,-- ,]
-             [0 ,1 ,]
-             [1 ,2 ,]
-             [2 ,-- ,]]
+            [[0 --]
+             [1 --]
+             [2 --]
+             [0 --]
+             [1 --]
+             [2 --]
+             [0 --]
+             [0 1]
+             [1 2]
+             [2 --]]
 
             >>> mesh = UniformGrid2D(ny=3)
             >>> print mesh._getAdjacentCellIDs()
-            ([0,0,1,2,0,0,1,1,2,2,], [0,1,2,2,0,0,1,1,2,2,])
+            (array([0, 0, 1, 2, 0, 0, 1, 1, 2, 2]), array([0, 1, 2, 2, 0, 0, 1, 1, 2, 2]))
             >>> print mesh.getFaceCellIDs()
-            [[0 ,-- ,]
-             [0 ,1 ,]
-             [1 ,2 ,]
-             [2 ,-- ,]
-             [0 ,-- ,]
-             [0 ,-- ,]
-             [1 ,-- ,]
-             [1 ,-- ,]
-             [2 ,-- ,]
-             [2 ,-- ,]]
+            [[0 --]
+             [0 1]
+             [1 2]
+             [2 --]
+             [0 --]
+             [0 --]
+             [1 --]
+             [1 --]
+             [2 --]
+             [2 --]]
 
         """
 

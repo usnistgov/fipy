@@ -52,19 +52,19 @@ Here are some test cases for the model.
     ...         var.updateOld()
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 0.1)
-    >>> import Numeric
+    >>> from fipy.tools import numerix
     >>> accuracy = 1e-2
-    >>> Numeric.allclose(KMVar, params['KM'], atol = accuracy)
+    >>> print numerix.allclose(KMVar, params['KM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TMVar, params['TM'], atol = accuracy)
+    >>> print numerix.allclose(TMVar, params['TM'], atol = accuracy)
     1
-    >>> Numeric.allclose(TCVar, params['TC'], atol = accuracy)
+    >>> print numerix.allclose(TCVar, params['TC'], atol = accuracy)
     1
-    >>> Numeric.allclose(P2Var, params['P2'], atol = accuracy)
+    >>> print numerix.allclose(P2Var, params['P2'], atol = accuracy)
     1
-    >>> Numeric.allclose(P3Var, params['P3'], atol = accuracy)
+    >>> print numerix.allclose(P3Var, params['P3'], atol = accuracy)
     1
-    >>> Numeric.allclose(KCVar, params['KC'], atol = accuracy)
+    >>> print numerix.allclose(KCVar, params['KC'], atol = accuracy)
     1
 
 """
@@ -145,8 +145,8 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    import Numeric
-    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * Numeric.cos((2 * Numeric.pi * mesh.getCellCenters()[:,0]) / L)
+    from fipy.tools import numerix
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[:,0]) / L)
 
     for i in range(100):
         for var, eqn in eqs:

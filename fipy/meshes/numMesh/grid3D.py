@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh import Mesh
 from fipy.meshes.meshIterator import FaceIterator
@@ -109,46 +109,46 @@ class Grid3D(Mesh):
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
-        x = Numeric.resize(x, (self.numberOfVertices,))
+        x = numerix.resize(x, (self.numberOfVertices,))
         
         y = self._calcVertexCoordinates(self.dy, self.ny)
-        y = Numeric.repeat(y, self.nx + 1)
-        y = Numeric.resize(y, (self.numberOfVertices,))
+        y = numerix.repeat(y, self.nx + 1)
+        y = numerix.resize(y, (self.numberOfVertices,))
         
         z = self._calcVertexCoordinates(d = self.dz, n = self.nz)
-        z = Numeric.repeat(z, (self.nx + 1) * (self.ny + 1))
+        z = numerix.repeat(z, (self.nx + 1) * (self.ny + 1))
         
-        return Numeric.transpose(Numeric.array((x, y, z)))
+        return numerix.transpose(numerix.array((x, y, z)))
     
     def _createFaces(self):
         """
         XY faces are first, then XZ faces, then YZ faces
         """
         ## do the XY faces
-        v1 = Numeric.arange((self.nx + 1) * (self.ny))
+        v1 = numerix.arange((self.nx + 1) * (self.ny))
         v1 = vector.prune(v1, self.nx + 1, self.nx)
         v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz + 1) 
         v2 = v1 + 1
         v3 = v1 + (self.nx + 2)
         v4 = v1 + (self.nx + 1)
-        XYFaces = Numeric.transpose(Numeric.array((v1, v2, v3, v4)))
+        XYFaces = numerix.transpose(numerix.array((v1, v2, v3, v4)))
 
         ## do the XZ faces
-        v1 = Numeric.arange((self.nx + 1) * (self.ny + 1))
+        v1 = numerix.arange((self.nx + 1) * (self.ny + 1))
         v1 = vector.prune(v1, self.nx + 1, self.nx)
         v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz)
         v2 = v1 + 1
         v3 = v1 + ((self.nx + 1)*(self.ny + 1)) + 1
         v4 = v1 + ((self.nx + 1)*(self.ny + 1))
-        XZFaces = Numeric.transpose(Numeric.array((v1, v2, v3, v4)))
+        XZFaces = numerix.transpose(numerix.array((v1, v2, v3, v4)))
         
         ## do the YZ faces
-        v1 = Numeric.arange((self.nx + 1) * self.ny)
+        v1 = numerix.arange((self.nx + 1) * self.ny)
         v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz)
         v2 = v1 + (self.nx + 1)
         v3 = v1 + ((self.nx + 1)*(self.ny + 1)) + (self.nx + 1)                                  
         v4 = v1 + ((self.nx + 1)*(self.ny + 1))
-        YZFaces = Numeric.transpose(Numeric.array((v1, v2, v3, v4)))                           
+        YZFaces = numerix.transpose(numerix.array((v1, v2, v3, v4)))                           
 
         ## reverse some of the face orientations to obtain the correct normals
         ##tmp = horizontalFaces.copy()
@@ -165,7 +165,7 @@ class Grid3D(Mesh):
         self.numberOfYZFaces = ((self.nx + 1) * self.ny * self.nz)
         self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
         
-        return Numeric.concatenate((XYFaces, XZFaces, YZFaces))
+        return numerix.concatenate((XYFaces, XZFaces, YZFaces))
     
     def _createCells(self):
         """
@@ -177,23 +177,23 @@ class Grid3D(Mesh):
         self.numberOfCells = self.nx * self.ny * self.nz
         
         ## front and back faces
-        frontFaces = Numeric.arange(self.numberOfYZFaces)
+        frontFaces = numerix.arange(self.numberOfYZFaces)
         frontFaces = vector.prune(frontFaces, self.nx + 1, self.nx)
         frontFaces = frontFaces + self.numberOfXYFaces + self.numberOfXZFaces
         backFaces = frontFaces + 1
 
         ## left and right faces
-        leftFaces = Numeric.arange(self.nx * self.ny)
-        leftFaces = self._repeatWithOffset(leftFaces, self.nx * (self.ny + 1), self.nz) 
-        leftFaces = Numeric.ravel(leftFaces)
+        leftFaces = numerix.arange(self.nx * self.ny)
+        leftFaces = self._repeatWithOffset(leftFaces, self.nx * (self.ny + 1), self.nz)
+        leftFaces = numerix.ravel(leftFaces)
         leftFaces = leftFaces + self.numberOfXYFaces
         rightFaces = leftFaces + self.nx
 
         ## bottom and top faces
-        bottomFaces = Numeric.arange(self.nx * self.ny * self.nz)
+        bottomFaces = numerix.arange(self.nx * self.ny * self.nz)
         topFaces = bottomFaces + (self.nx * self.ny)
-        
-        return Numeric.transpose(Numeric.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces)))
+
+        return numerix.transpose(numerix.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces)))
 
     def getFacesBottom(self):
         """
@@ -204,7 +204,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=self._repeatWithOffset(Numeric.arange(self.numberOfXYFaces, 
+                            ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces, 
                                                                       self.numberOfXYFaces + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
         
@@ -217,7 +217,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=self._repeatWithOffset(Numeric.arange(self.numberOfXYFaces + (self.nx * self.ny), 
+                            ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces + (self.nx * self.ny), 
                                                                       self.numberOfXYFaces + (self.nx * self.ny) + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
         
@@ -230,7 +230,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.numberOfXYFaces - (self.nx * self.ny), 
+                            ids=numerix.arange(self.numberOfXYFaces - (self.nx * self.ny), 
                                                self.numberOfXYFaces))
         
     def getFacesFront(self):
@@ -242,7 +242,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.nx * self.ny))
+                            ids=numerix.arange(self.nx * self.ny))
 
     def getFacesLeft(self):
         """
@@ -253,7 +253,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.numberOfXYFaces + self.numberOfXZFaces, 
+                            ids=numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, 
                                                self.numberOfFaces, 
                                                self.nx + 1))
 
@@ -266,7 +266,7 @@ class Grid3D(Mesh):
             1
         """
         return FaceIterator(mesh=self, 
-                            ids=Numeric.arange(self.numberOfXYFaces + self.numberOfXZFaces + self.nx, 
+                            ids=numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces + self.nx, 
                                                self.numberOfFaces, 
                                                self.nx + 1))
         
@@ -279,45 +279,45 @@ class Grid3D(Mesh):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
 
     def _getMeshSpacing(self):
-        return Numeric.array((self.dx, self.dy, self.dz))
+        return numerix.array((self.dx, self.dy, self.dz))
     
     def getShape(self):
         return (self.nx, self.ny, self.nz)
 
     def _repeatWithOffset(self, array, offset, reps):
-        a = Numeric.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, Numeric.size(array)))
-        return Numeric.ravel(a)
+        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, numerix.size(array))).astype('l')
+        return numerix.ravel(a)
 
     def _calcFaceAreas(self):
-        XYFaceAreas = Numeric.ones(self.numberOfXYFaces)
+        XYFaceAreas = numerix.ones(self.numberOfXYFaces)
         XYFaceAreas = XYFaceAreas * self.dx * self.dy
-        XZFaceAreas = Numeric.ones(self.numberOfXZFaces)
+        XZFaceAreas = numerix.ones(self.numberOfXZFaces)
         XZFaceAreas = XZFaceAreas * self.dx * self.dz        
-        YZFaceAreas = Numeric.ones(self.numberOfYZFaces)
+        YZFaceAreas = numerix.ones(self.numberOfYZFaces)
         YZFaceAreas = YZFaceAreas * self.dy * self.dz
-        self.faceAreas =  Numeric.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
+        self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
 
     def _calcFaceNormals(self):
-        XYFaceNormals = Numeric.zeros((self.numberOfXYFaces, 3))
+        XYFaceNormals = numerix.zeros((self.numberOfXYFaces, 3))
         XYFaceNormals[(self.nx * self.ny):, 2] = 1
         XYFaceNormals[:(self.nx * self.ny), 2] = -1
-        XZFaceNormals = Numeric.zeros((self.numberOfXZFaces, 3))
-        xzd = Numeric.arange(self.numberOfXZFaces)
+        XZFaceNormals = numerix.zeros((self.numberOfXZFaces, 3))
+        xzd = numerix.arange(self.numberOfXZFaces)
         xzd = xzd % (self.nx * (self.ny + 1))
         xzd = (xzd < self.nx)
         xzd = 1 - (2 * xzd)
         XZFaceNormals[:, 1] = xzd
-        YZFaceNormals = Numeric.zeros((self.numberOfYZFaces, 3))
+        YZFaceNormals = numerix.zeros((self.numberOfYZFaces, 3))
         YZFaceNormals[:, 0] = 1
         YZFaceNormals[::self.nx + 1, 0] = -1
-        self.faceNormals = Numeric.concatenate((XYFaceNormals, XZFaceNormals, YZFaceNormals))
+        self.faceNormals = numerix.concatenate((XYFaceNormals, XZFaceNormals, YZFaceNormals))
         
     def _calcFaceTangents(self):
         ## need to see whether order matters.
-        faceTangents1 = Numeric.zeros((self.numberOfFaces, 3))
-        faceTangents1 = faceTangents1.astype(Numeric.Float)
-        faceTangents2 = Numeric.zeros((self.numberOfFaces, 3))
-        faceTangents2 = faceTangents2.astype(Numeric.Float)
+        faceTangents1 = numerix.zeros((self.numberOfFaces, 3), 'd')
+##        faceTangents1 = faceTangents1.astype(numerix.Float)
+        faceTangents2 = numerix.zeros((self.numberOfFaces, 3), 'd')
+##        faceTangents2 = faceTangents2.astype(numerix.Float)
         ## XY faces
         faceTangents1[:self.numberOfXYFaces, 0] = 1.
         faceTangents2[:self.numberOfXYFaces, 1] = 1.
@@ -366,27 +366,29 @@ class Grid3D(Mesh):
             >>> mesh = Grid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
             
             >>> print mesh._getAdjacentCellIDs()
-            ([0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,0,1,2,3,4,5,0,0,1,2,3,3,4,5,], [0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,3,4,5,0,1,2,2,3,4,5,5,])
+            (array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0,
+                   1, 2, 3, 3, 4, 5]), array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1,
+                   2, 2, 3, 4, 5, 5]))
 
-            >>> vertices = Numeric.array(((0., 0., 0.), (1., 0., 0.), (2., 0., 0.), (3., 0., 0.),
+            >>> vertices = numerix.array(((0., 0., 0.), (1., 0., 0.), (2., 0., 0.), (3., 0., 0.),
             ...                           (0., 1., 0.), (1., 1., 0.), (2., 1., 0.), (3., 1., 0.),
             ...                           (0., 2., 0.), (1., 2., 0.), (2., 2., 0.), (3., 2., 0.),
             ...                           (0., 0., 1.), (1., 0., 1.), (2., 0., 1.), (3., 0., 1.),
             ...                           (0., 1., 1.), (1., 1., 1.), (2., 1., 1.), (3., 1., 1.),
             ...                           (0., 2., 1.), (1., 2., 1.), (2., 2., 1.), (3., 2., 1.)))
-            >>> vertices *= Numeric.array((dx, dy, dz))
+            >>> vertices *= numerix.array((dx, dy, dz))
             
             >>> numerix.allequal(vertices, mesh._createVertices())
             1
         
-            >>> faces = Numeric.array(((0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (4, 5, 9, 8), (5, 6, 10, 9), (6, 7, 11, 10),
+            >>> faces = numerix.array(((0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (4, 5, 9, 8), (5, 6, 10, 9), (6, 7, 11, 10),
             ...                        (12, 13, 17, 16), (13, 14, 18, 17), (14, 15, 19, 18), (16, 17, 21, 20), (17, 18, 22, 21), (18, 19, 23, 22),
             ...                        (0, 1, 13, 12), (1, 2, 14, 13), (2, 3, 15, 14), (4, 5, 17, 16), (5, 6, 18, 17), (6, 7, 19, 18), (8, 9, 21, 20), (9, 10, 22, 21), (10, 11, 23, 22),
             ...                        (0, 4, 16, 12), (1, 5, 17, 13), (2, 6, 18, 14), (3, 7, 19, 15), (4, 8, 20, 16), (5, 9, 21, 17), (6, 10, 22, 18), (7, 11, 23, 19)))
             >>> numerix.allequal(faces, mesh._createFaces())
             1
 
-            >>> cells = Numeric.array(((21, 22, 12, 15, 0, 6),
+            >>> cells = numerix.array(((21, 22, 12, 15, 0, 6),
             ...                       (22, 23, 13, 16, 1, 7),
             ...                       (23, 24, 14, 17, 2, 8),
             ...                       (25, 26, 15, 18, 3, 9),
@@ -395,17 +397,17 @@ class Grid3D(Mesh):
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = Numeric.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
+            >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
             >>> tmp = list(mesh.getExteriorFaces())
             >>> tmp.sort()
             >>> numerix.allequal(externalFaces, tmp)
             1
 
-            >>> internalFaces = Numeric.array((15, 16, 17, 22, 23, 26, 27))
+            >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1),
             ...                                 (0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1),
             ...                                 (0, -1), (1, -1), (2, -1), (0, 3), (1, 4), (2, 5), (3, -1), (4, -1), (5, -1),
@@ -416,25 +418,25 @@ class Grid3D(Mesh):
             >>> xy = dx * dy
             >>> xz = dx * dz
             >>> yz = dy * dz
-            >>> faceAreas = Numeric.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
+            >>> faceAreas = numerix.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
             ...                            xz, xz, xz, xz, xz, xz, xz, xz, xz,
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
             >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
             1
             
-            >>> faceCoords = Numeric.take(vertices, faces)
+            >>> faceCoords = numerix.take(vertices, faces)
             >>> faceCenters = (faceCoords[:,0] + faceCoords[:,1] + faceCoords[:,2] + faceCoords[:, 3]) / 4.
             >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> faceNormals = Numeric.array(((0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1),
+            >>> faceNormals = numerix.array(((0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, -1),
             ...                              (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1),
             ...                              (0, -1, 0), (0, -1, 0), (0, -1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0),
             ...                              (-1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (-1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0)))
             >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellToFaceOrientations = Numeric.array(((1, 1, 1, 1, 1, 1),
+            >>> cellToFaceOrientations = numerix.array(((1, 1, 1, 1, 1, 1),
             ...                                         (-1, 1, 1, 1, 1, 1),
             ...                                         (-1, 1, 1, 1, 1, 1),
             ...                                         (1, 1, -1, 1, 1, 1),
@@ -443,11 +445,11 @@ class Grid3D(Mesh):
             >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
             1
                                              
-            >>> cellVolumes = Numeric.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
+            >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
             >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellCenters = Numeric.array(((dx/2.,dy/2.,dz/2.), (3.*dx/2.,dy/2.,dz/2.), (5.*dx/2.,dy/2.,dz/2.),
+            >>> cellCenters = numerix.array(((dx/2.,dy/2.,dz/2.), (3.*dx/2.,dy/2.,dz/2.), (5.*dx/2.,dy/2.,dz/2.),
             ...                              (dx/2.,3.*dy/2.,dz/2.), (3.*dx/2.,3.*dy/2.,dz/2.), (5.*dx/2.,3.*dy/2.,dz/2.)))
             >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
             1
@@ -459,7 +461,7 @@ class Grid3D(Mesh):
             >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
                                               
-            >>> cellDistances = Numeric.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
+            >>> cellDistances = numerix.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
             ...                                dy/2, dy/2, dy/2, dy, dy, dy, dy/2, dy/2, dy/2,
             ...                                dx/2, dx, dx, dx/2, dx/2, dx, dx, dx/2))
             >>> numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
@@ -469,51 +471,51 @@ class Grid3D(Mesh):
             >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> areaProjections = faceNormals * faceAreas[...,Numeric.NewAxis]
+            >>> areaProjections = faceNormals * faceAreas[...,numerix.NewAxis]
             >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents1 = Numeric.array(((1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0),
+            >>> tangents1 = numerix.array(((1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0),
             ...                            (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0),
             ...                            (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0)))
             >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents2 = Numeric.array(((0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0),
+            >>> tangents2 = numerix.array(((0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0),
             ...                            (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1),
             ...                            (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1)))
             >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> print mesh._getCellToCellIDs()
-            [[-- ,1 ,-- ,3 ,-- ,-- ,]
-             [0 ,2 ,-- ,4 ,-- ,-- ,]
-             [1 ,-- ,-- ,5 ,-- ,-- ,]
-             [-- ,4 ,0 ,-- ,-- ,-- ,]
-             [3 ,5 ,1 ,-- ,-- ,-- ,]
-             [4 ,-- ,2 ,-- ,-- ,-- ,]]
+            [[-- 1 -- 3 -- --]
+             [0 2 -- 4 -- --]
+             [1 -- -- 5 -- --]
+             [-- 4 0 -- -- --]
+             [3 5 1 -- -- --]
+             [4 -- 2 -- -- --]]
 
             >>> print mesh._getCellToCellIDsFilled()
-            [[0,1,0,3,0,0,]
-             [0,2,1,4,1,1,]
-             [1,2,2,5,2,2,]
-             [3,4,0,3,3,3,]
-             [3,5,1,4,4,4,]
-             [4,5,2,5,5,5,]]
+            [[0 1 0 3 0 0]
+             [0 2 1 4 1 1]
+             [1 2 2 5 2 2]
+             [3 4 0 3 3 3]
+             [3 5 1 4 4 4]
+             [4 5 2 5 5 5]]
 
-            >>> cellToCellDistances = Numeric.take(cellDistances, cells)
+            >>> cellToCellDistances = numerix.take(cellDistances, cells)
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> interiorCellIDs = Numeric.array(())
+            >>> interiorCellIDs = numerix.array(())
             >>> numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
             1
 
-            >>> exteriorCellIDs = Numeric.array((0, 1, 2, 3, 4, 5))
+            >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))
             >>> numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
             1
 
-            >>> cellNormals = Numeric.array((((-1, 0, 0), (1, 0, 0), (0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1)),
+            >>> cellNormals = numerix.array((((-1, 0, 0), (1, 0, 0), (0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1)),
             ...                              ((-1, 0, 0), (1, 0, 0), (0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1)),
             ...                              ((-1, 0, 0), (1, 0, 0), (0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1)),
             ...                              ((-1, 0, 0), (1, 0, 0), (0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1)),
@@ -522,13 +524,13 @@ class Grid3D(Mesh):
             >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> vv = Numeric.array(((-yz, 0, 0), (yz, 0, 0), (0, -xz, 0), (0, xz, 0), (0, 0, -xy), (0, 0, xy)))
-            >>> cellAreaProjections = Numeric.array(((vv,vv,vv,vv,vv,vv)))
+            >>> vv = numerix.array(((-yz, 0, 0), (yz, 0, 0), (0, -xz, 0), (0, xz, 0), (0, 0, -xy), (0, 0, xy)))
+            >>> cellAreaProjections = numerix.array(((vv,vv,vv,vv,vv,vv)))
             >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> cellVertexIDs = Numeric.array((17, 16, 13, 12, 5, 4, 1, 0))
-            >>> cellVertexIDs = Numeric.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
+            >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
+            >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 4, cellVertexIDs + 5, cellVertexIDs + 6))
 
 

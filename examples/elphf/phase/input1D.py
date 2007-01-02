@@ -206,9 +206,9 @@ We verify that the correct equilibrium solution is attained
 
     >>> x = mesh.getCellCenters()[:,0]
     
-    >>> import Numeric
-    >>> d = Numeric.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
-    >>> analyticalArray = (1. - Numeric.tanh((x - L/2.)/(2 * d))) / 2.
+    >>> from fipy.tools import numerix
+    >>> d = numerix.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
+    >>> analyticalArray = (1. - numerix.tanh((x - L/2.)/(2 * d))) / 2.
 
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
     1

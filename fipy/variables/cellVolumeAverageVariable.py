@@ -38,7 +38,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 
@@ -60,8 +60,8 @@ class _CellVolumeAverageVariable(Variable):
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        value = Numeric.sum(self.var * self.var.getMesh().getCellVolumes())
-        return value / Numeric.sum(self.var.getMesh().getCellVolumes())
+        value = numerix.sum(self.var * self.var.getMesh().getCellVolumes())
+        return value / numerix.sum(self.var.getMesh().getCellVolumes())
 
 def _test(): 
     import doctest

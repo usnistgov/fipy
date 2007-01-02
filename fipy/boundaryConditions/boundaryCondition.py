@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -88,8 +88,8 @@ class BoundaryCondition:
         if not (sets.Set(self.faces).issubset(sets.Set(self.faces.getMesh().getExteriorFaces()))):
             raise IndexError, 'Face list has interior faces'
 
-## 	self.adjacentCellIDs = Numeric.array([face.getCellID() for face in self.faces])
-##      self.adjacentCellIDs = Numeric.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
+## 	self.adjacentCellIDs = numerix.array([face.getCellID() for face in self.faces])
+##      self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
         self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):

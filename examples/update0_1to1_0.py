@@ -192,17 +192,17 @@ and test the solution against the analytical result
 
    $$ \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
    or 
-   \IndexSoftware{Numeric}
+   \IndexSoftware{numerix}
 
 ..
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[:,axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools import numerix
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
+    >>> numerix.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
     0
    
 If the problem is run interactively, we can view the result:
@@ -345,7 +345,7 @@ suitable):
 
 The analytical solution is unchanged, and we can test as before
 
-    >>> Numeric.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
+    >>> numerix.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
     1
     
 or we can use the slightly simpler syntax

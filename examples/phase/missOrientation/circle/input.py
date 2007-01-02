@@ -101,7 +101,7 @@ data and compares it with the `theta` variable.
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
-   >>> print numerix.allclose(testData, phase)
+   >>> print numerix.allclose(numerix.array(testData), phase)
    1
    
 """

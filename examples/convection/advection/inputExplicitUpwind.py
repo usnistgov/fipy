@@ -45,7 +45,7 @@ This example shows the failure of advecting a square pulse with a first
 order explicit upwind scheme.
 """
 
-import Numeric
+from fipy.tools import numerix
      
 from fipy.meshes.grid1D import Grid1D
 from fipy.solvers.linearCGSSolver import LinearCGSSolver
@@ -67,7 +67,7 @@ steps = 1000
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = Numeric.zeros(nx, 'd')
+startingArray = numerix.zeros(nx, 'd')
 startingArray[50:90] = 1. 
 
 var = CellVariable(

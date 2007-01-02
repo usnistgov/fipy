@@ -85,11 +85,11 @@ bench.stop('mesh')
 bench.start()
 
 from fipy.variables.cellVariable import CellVariable
-import RandomArray
+from fipy.tools.numerix import random
 
 var = CellVariable(name = "phase field",
                    mesh = mesh,
-                   value = RandomArray.random(nx * ny))
+                   value = random.random(nx * ny))
 
 bench.stop('variables')
 

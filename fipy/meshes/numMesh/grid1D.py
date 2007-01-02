@@ -45,7 +45,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from mesh1D import Mesh1D
 
@@ -55,15 +55,15 @@ class Grid1D(Mesh1D):
     
         >>> mesh = Grid1D(nx = 3)
         >>> print mesh.getCellCenters()
-        [[ 0.5,]
-         [ 1.5,]
-         [ 2.5,]]
+        [[ 0.5]
+         [ 1.5]
+         [ 2.5]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
-        [[ 0.5,]
-         [ 2. ,]
-         [ 4.5,]]
+        [[ 0.5]
+         [ 2. ]
+         [ 4.5]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
@@ -94,10 +94,10 @@ class Grid1D(Mesh1D):
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         
-        return Numeric.transpose(Numeric.array((x,)))
+        return numerix.transpose(numerix.array((x,)))
     
     def _createFaces(self):
-        return Numeric.arange(self.numberOfVertices)
+        return numerix.arange(self.numberOfVertices)
 
     def _createCells(self):
         """
@@ -105,9 +105,9 @@ class Grid1D(Mesh1D):
         f1 etc. refer to the faces
         """
         self.numberOfFaces = self.nx + 1
-        f1 = Numeric.arange(self.nx)
+        f1 = numerix.arange(self.nx)
         f2 = f1 + 1
-        return Numeric.transpose(Numeric.array((f1, f2)))
+        return numerix.transpose(numerix.array((f1, f2)))
 
     def getDim(self):
         return 1
@@ -134,7 +134,7 @@ class Grid1D(Mesh1D):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
     def _getMeshSpacing(self):
-        return Numeric.array((self.dx,))
+        return numerix.array((self.dx,))
     
     def getShape(self):
         return (self.nx,)

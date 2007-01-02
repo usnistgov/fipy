@@ -43,7 +43,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
@@ -62,7 +62,7 @@ class _AdsorptionCoeff(CellVariable):
         self.dt = 0
 
     def _calcValue(self):
-        return self.dt * Numeric.array(self.bulkVar) \
+        return self.dt * numerix.array(self.bulkVar) \
                      * self.rateConstant * self._multiplier()
 
     def _updateDt(self, dt):
@@ -88,8 +88,8 @@ class _MaxCoeff(CellVariable):
     def _calcMax(self):
         total = 0
         for var in self.vars:
-            total += Numeric.array(var.getInterfaceVar())
-        return Numeric.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
+            total += numerix.array(var.getInterfaceVar())
+        return numerix.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
 
 class _SpMaxCoeff(_MaxCoeff):
     def _calcValue(self):
@@ -99,9 +99,9 @@ class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
         val = self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
         for var in self.vars[1:]:
-            val -= self.distanceVar._getCellInterfaceFlag() * Numeric.array(var)
+            val -= self.distanceVar._getCellInterfaceFlag() * numerix.array(var)
 
-        return 1e20 * self._calcMax() * Numeric.where(val < 0, 0, val)
+        return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
 
 class AdsorbingSurfactantEquation(SurfactantEquation):
     r"""
@@ -163,8 +163,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...                                   rateConstant = k)
        >>> eqn.solve(surfactantVar, dt = dt)
        >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-       >>> Numeric.allclose(surfactantVar.getInterfaceVar(), 
-       ...                  Numeric.array((0, 0, answer, 0, 0)))
+       >>> print numerix.allclose(surfactantVar.getInterfaceVar(), 
+       ...                  numerix.array((0, 0, answer, 0, 0)))
        1
 
     The following test case is for two surfactant variables. One has more
@@ -187,7 +187,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> totalSteps = 100
        >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
        >>> distanceVar = DistanceVariable(mesh = mesh, 
-       ...                                value = dx * (Numeric.arange(5) - 1.5),
+       ...                                value = dx * (numerix.arange(5) - 1.5),
        ...                                hasOld = 1)
        >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
        ...                           distanceVar = distanceVar)
@@ -212,13 +212,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> for step in range(totalSteps):
        ...     eqn0.solve(var0, dt = dt)
        ...     eqn1.solve(var1, dt = dt)
-       >>> answer0 = 1 - Numeric.exp(-k0 * c0 * dt * totalSteps)
-       >>> answer1 = (1 - Numeric.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-       >>> Numeric.allclose(var0.getInterfaceVar(), 
-       ...                  Numeric.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
+       >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
+       >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
+       >>> print numerix.allclose(var0.getInterfaceVar(), 
+       ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
        1
-       >>> Numeric.allclose(var1.getInterfaceVar(), 
-       ...                  Numeric.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
+       >>> print numerix.allclose(var1.getInterfaceVar(), 
+       ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
        1
        >>> dt = 0.1
        >>> for step in range(10):
@@ -242,7 +242,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
        >>> eqn0.solve(var0, dt = dt)
        >>> eqn0.solve(var0, dt = dt)
-       >>> Numeric.allclose(var0.getInterfaceVar()[2], 0)
+       >>> print numerix.allclose(var0.getInterfaceVar()[2], 0)
        1
 
     The following test case is to fix a bug that allows the accelerator to
@@ -251,7 +251,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> nx = 5
        >>> ny = 5
        >>> mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
-       >>> values = Numeric.ones(mesh.getNumberOfCells(), 'd')
+       >>> values = numerix.ones(mesh.getNumberOfCells(), 'd')
        >>> values[0:nx] = -1
        >>> for i in range(ny):
        ...     values[i * nx] = -1
@@ -285,14 +285,14 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
        >>> for i in range(50):
        ...     disVar.calcDistanceFunction()
-       ...     extVar.setValue(Numeric.array(accVar.getInterfaceVar()))
+       ...     extVar.setValue(numerix.array(accVar.getInterfaceVar()))
        ...     disVar.extendVariable(extVar)
        ...     disVar.updateOld()
        ...     advEq.solve(disVar, dt = dt)
        ...     levEq.solve(levVar, dt = dt)
        ...     accEq.solve(accVar, dt = dt)
 
-       >>> Numeric.sum(accVar < -1e-10) == 0
+       >>> print numerix.sum(accVar < -1e-10) == 0
        1
    
    """

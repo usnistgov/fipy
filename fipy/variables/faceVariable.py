@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools import numerix
@@ -45,7 +45,7 @@ class FaceVariable(Variable):
         if value is None:
             array = None
         else:
-            array = Numeric.zeros(self._getShapeFromMesh(mesh),'d')
+            array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
 # 	array[:] = value
 	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 

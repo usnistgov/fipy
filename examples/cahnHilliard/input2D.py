@@ -105,10 +105,11 @@ from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx, dy, nx, ny)
 
 from fipy.variables.cellVariable import CellVariable
-import RandomArray
+from fipy.tools.numerix import random
+
 var = CellVariable(name = "phase field",
                    mesh = mesh,
-                   value = RandomArray.random(nx * ny))
+                   value = random.random(nx * ny))
 
 faceVar = var.getArithmeticFaceValue()
 doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))

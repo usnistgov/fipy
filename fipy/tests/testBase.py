@@ -36,7 +36,6 @@
  ##
 
 import unittest
-import Numeric
 
 from fipy.tools import numerix
 
@@ -71,5 +70,5 @@ class _TestBase(unittest.TestCase):
 ##	    self.it.timestep() #, maxSweeps = 10)
 ##	array = self.var.getNumericValue()
 ##	values = self.getTestValues()
-##	values = Numeric.reshape(values, Numeric.shape(array))
+##	values = numerix.reshape(values, numerix.shape(array))
 ##	self.assertArrayWithinTolerance(array, values, self.tolerance)

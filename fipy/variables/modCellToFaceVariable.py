@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.tools.inline import inline
 from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
@@ -49,12 +49,10 @@ class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
         val = self._getArray().copy()
         
         inline._runInline(self.modIn + """
-        int i;
-        for(i = 0; i < ni; i++)
-        {
-            double cell2 = var(id2(i));
-            val(i) = mod(var(id1(i)) - cell2) * alpha(i) + cell2;
-        }
+        int ID1 = id1(i);
+        int ID2 = id2(i);
+        double cell2 = var(ID2);
+        val(i) = mod(var(ID1) - cell2) * alpha(i) + cell2;
         """,var = self.var.getNumericValue(),
             val = val, 
             alpha = alpha,

@@ -35,7 +35,7 @@
  # ###################################################################
  ##
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.inline import inline

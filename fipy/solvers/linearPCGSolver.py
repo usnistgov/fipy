@@ -45,8 +45,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-import precon
-import itsolvers
+from pysparse_numpy import precon
+from pysparse_numpy import itsolvers
 
 from fipy.solvers.solver import Solver
 
@@ -66,10 +66,10 @@ class LinearPCGSolver(Solver):
     """
      
     def _solve(self, L, x, b):
-## 	print 'L:',L
-## 	print 'x:',x
-## 	print 'b:',b
-## 	raw_input('end output')
+##  	print 'L:',L
+##  	print 'x:',x
+##  	print 'b:',b
+##  	raw_input('end output')
     
 	A = L._getMatrix().to_sss()
 

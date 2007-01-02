@@ -54,9 +54,9 @@ class NoiseVariable(CellVariable):
         
         <Specific>NoiseVariable(...).getFaceGrad().getDivergence()
 
-    The `seed()` and `get_seed()` functions of the `RandomArray` module can be
-    set and query the random number generated used by all `NoiseVariable`
-    objects.
+    The `seed()` and `get_seed()` functions of the
+    `fipy.tools.numerix.random` module can be set and query the random
+    number generated used by all `NoiseVariable` objects.
     """
     def __init__(self, mesh, name = '', hasOld = 0):
         CellVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)

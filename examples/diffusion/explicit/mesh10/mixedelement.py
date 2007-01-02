@@ -84,7 +84,7 @@ import fipy.viewers
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm
 
-import Numeric
+from fipy.tools import numerix
 
 dx = 1.
 dy = 1.
@@ -143,7 +143,7 @@ boundaryConditions=(FixedValue(exteriorFaces.where(xFace ** 2 < 0.00000000000000
                     FixedValue(exteriorFaces.where((xFace - (dx * nx)) ** 2 < 0.000000000000001), (valueLeft + valueRight) * 0.5),
                     FixedValue(exteriorFaces.where((xFace - (2 * dx * nx)) ** 2 < 0.000000000000001), valueRight))
 
-answer = Numeric.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
+answer = numerix.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
         5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,
         2.74326174e-05,  1.01935828e-03,  9.76562500e-24,  1.92578125e-20,
         1.70937109e-17,  8.99433979e-15,  3.10726059e-12,  7.36603377e-10,
@@ -167,7 +167,7 @@ if __name__ == '__main__':
         if(not (step % 100)):
             print (step / 100)
     print var
-    theMask = Numeric.array([[10, 1, 20, 2]])
+    theMask = numerix.array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
     raw_input('finished')

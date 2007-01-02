@@ -43,8 +43,6 @@
 """Vector utility functions that are inexplicably absent from Numeric
 """
 
-import Numeric
-
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
@@ -66,22 +64,24 @@ def sqrtDot(v1,v2):
 ##     return Numeric.sqrt(Numeric.sum(v1*v2))
     return numerix.sqrt(abs(numerix.sum(v1 * v2)))
 
-def _putAddPy(vector, ids, additionVector, mask = None):
-    additionVector = Numeric.array(additionVector)
-    if mask is None:
-        for i in range(len(ids)):
-            vector[ids[i]] += additionVector[i]
-    else:
+def _putAddPy(vector, ids, additionVector, mask = False):
+    additionVector = numerix.array(additionVector)
+
+    if numerix.sometrue(mask):
         for i in range(len(ids)):
             if not mask[i]:
                 vector[ids[i]] += additionVector[i]
+    else:
+        for i in range(len(ids)):
+            vector[ids[i]] += additionVector[i]
 
 def _putAddIn(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._runInline("""
-	vector(ids(i)) += additionVector(i);
+        int ID = ids(i);
+	vector(ID) += additionVector(i);
     """,
-    vector = vector, ids = ids, additionVector = Numeric.array(additionVector),
+    vector = vector, ids = ids, additionVector = numerix.array(additionVector),
     ni = len(ids))
 
 def putAdd(vector, ids, additionVector):
@@ -97,18 +97,18 @@ def prune(array, shift, start = 0):
     where n = 0, 1, 2, ...
 
         >>> prune(numerix.arange(10), 3, 5)
-        [0,1,2,3,4,5,6,7,8,9,]
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         >>> prune(numerix.arange(10), 3, 2)
-        [0,1,3,4,6,7,9,]
+        array([0, 1, 3, 4, 6, 7, 9])
         >>> prune(numerix.arange(10), 3)
-        [1,2,4,5,7,8,]
+        array([1, 2, 4, 5, 7, 8])
         >>> prune(numerix.arange(4, 7), 3)
-        [5,6,]
+        array([5, 6])
 
     """
 
     takeArray = numerix.nonzero(numerix.arange(len(array)) % shift != start)
-    return Numeric.take(array, takeArray)
+    return numerix.take(array, takeArray)
 
 def _test(): 
     import doctest

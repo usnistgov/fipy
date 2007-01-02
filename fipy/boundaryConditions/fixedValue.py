@@ -47,7 +47,7 @@ __docformat__ = 'restructuredtext'
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
@@ -97,7 +97,7 @@ class FixedValue(BoundaryCondition):
         ##     self.minusCoeff = -coeff['cell 1 offdiag']
         ##     self.minusCoeff.dontCacheMe()
 	
-	bb = Numeric.zeros((Ncells,),'d')
+	bb = numerix.zeros((Ncells,),'d')
 
 	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
         

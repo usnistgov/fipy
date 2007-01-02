@@ -372,7 +372,8 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
         
         from fipy.tools import dump
-        print catalystVar.allclose(dump.read(filepath), rtol = 1e-4)
+        from fipy.tools import numerix
+        print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol = 1e-4)
     except:
         return 0
 

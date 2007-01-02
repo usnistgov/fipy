@@ -44,7 +44,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 from fipy.tools import numerix 
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
@@ -130,13 +130,16 @@ class Gist2DViewer(GistViewer):
             vertexIDs = vertexIDs.compressed()
             
         vertexCoords = self.mesh.getVertexCoords()
-        xCoords = Numeric.take(vertexCoords[:,0], vertexIDs)
-        yCoords = Numeric.take(vertexCoords[:,1], vertexIDs)
+
+        xCoords = numerix.take(vertexCoords[:,0], numerix.array(vertexIDs).flat)
+        yCoords = numerix.take(vertexCoords[:,1], numerix.array(vertexIDs).flat)
 
         import gist
+        
+        gist.plfp(numerix.array(self.vars[0]), yCoords, xCoords, Nfac * numerix.ones(Ncells), cmin = minVal, cmax = maxVal)
 
 ##        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, Nfac * Numeric.ones(Ncells), cmin = minVal, cmax = maxVal)
-        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin = minVal, cmax = maxVal)
+##        gist.plfp(Numeric.array(self.vars[0]), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin = minVal, cmax = maxVal)
 
         import colorbar
 

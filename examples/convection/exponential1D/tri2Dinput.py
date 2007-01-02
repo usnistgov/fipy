@@ -92,9 +92,9 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 1
     >>> y = mesh.getCellCenters()[:,axis]
-    >>> import Numeric
-    >>> CC = 1. - Numeric.exp(-convCoeff[axis] * y / diffCoeff)
-    >>> DD = 1. - Numeric.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> from fipy.tools import numerix
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1

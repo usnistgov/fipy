@@ -44,7 +44,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 class Cell:
     """Cell within a mesh
@@ -59,7 +59,7 @@ class Cell:
 	    
 	  - `faces`: `list` or `tuple` of bounding faces that define the cell
 	
-	  - `faceOrientations`: `list`, `tuple`, or `Numeric.array` of
+	  - `faceOrientations`: `list`, `tuple`, or `numerix.array` of
 	    orientations (+/-1) to indicate whether a face points into this
 	    face or out of it.  Can be calculated, but the mesh typically
 	    knows this information already.
@@ -67,8 +67,8 @@ class Cell:
 	  - `id`: unique identifier
 	"""
         self.faces = faces
-	self.faceOrientations = Numeric.array(faceOrientations)
-	self.faceOrientations = Numeric.reshape(faceOrientations,(len(faces),1))
+	self.faceOrientations = numerix.array(faceOrientations)
+	self.faceOrientations = numerix.reshape(faceOrientations,(len(faces),1))
         self.id = id
 	self.center = self._calcCenter()
 	self.volume = self._calcVolume()
@@ -149,7 +149,7 @@ class Cell:
 	return self.faceIDs
 	
 #    def _calcFaceIDs(self):
-#	self.faceIDs = Numeric.zeros(len(self.faces))
+#	self.faceIDs = numerix.zeros(len(self.faces))
 #	for i in range(len(self.faces)):
 #	    self.faceIDs[i] = self.faces[i].getId()
             

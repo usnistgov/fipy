@@ -21,7 +21,7 @@ ny = N
 dx = Length / nx
 dy = Length / ny
 radius = Length / 4.
-seedCenter = (Length / 2., Length / 2.)
+seedCenter = (Length / 2.,x Length / 2.)
 initialTemperature = -0.4
 from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)

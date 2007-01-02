@@ -47,7 +47,7 @@
 This module takes a FiPy mesh and creates a mesh file that can be opened in Gmsh.
 """
 
-import Numeric
+from fipy.tools import numerix
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
 
@@ -71,13 +71,13 @@ def _getElementType(vertices, dimensions):
         raise MeshExportError, "Element type unsupported by Gmsh"
 
 def _orderVertices(vertexCoords, vertices):
-    coordinates = Numeric.take(vertexCoords, vertices)
-    centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
+    coordinates = numerix.take(vertexCoords, vertices)
+    centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
-    coordinates = Numeric.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
-    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, Numeric.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
-    sortorder = Numeric.argsort(angles)
-    return Numeric.take(vertices, sortorder)
+    coordinates = numerix.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
+    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    sortorder = numerix.argsort(angles)
+    return numerix.take(vertices, sortorder)
     
 
 def exportAsMesh(mesh, filename):

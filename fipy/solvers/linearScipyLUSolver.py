@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.solvers.solver import Solver
 
@@ -82,8 +82,8 @@ class LinearScipyLUSolver(Solver):
     def _solve(self, L, x, b):
         from scipy.linalg import lu_factor, lu_solve
     
-##        x[:] = scipy.linalg.solve(Numeric.array(L), b)
-        LU = lu_factor(Numeric.array(L))
+##        x[:] = scipy.linalg.solve(numerix.array(L), b)
+        LU = lu_factor(numerix.array(L))
         x[:] = lu_solve(LU, b)
         tol = self.tolerance + 1.
 
@@ -92,10 +92,10 @@ class LinearScipyLUSolver(Solver):
                 break
 
             errorVector = L * x - b
-            LU = lu_factor(Numeric.array(L))
+            LU = lu_factor(numerix.array(L))
             xError = lu_solve(LU, errorVector)
             x[:] = x - xError
 
-            tol = max(Numeric.absolute(xError))
+            tol = max(numerix.absolute(xError))
             
             print tol

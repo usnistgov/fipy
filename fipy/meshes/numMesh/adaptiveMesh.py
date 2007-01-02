@@ -38,7 +38,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.numMesh.gmshImport import GmshImporter2D
 
@@ -49,13 +49,13 @@ def _removeDuplicates(list):
     return dict.keys()
 
 def _orderVertices(vertexCoords, vertices):
-    coordinates = Numeric.take(vertexCoords, vertices)
-    centroid = Numeric.add.reduce(coordinates) / coordinates.shape[0]
+    coordinates = numerix.take(vertexCoords, vertices)
+    centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
-    coordinates = Numeric.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
-    angles = Numeric.arctan(coordinates[:, 1] / coordinates[:, 0]) + Numeric.where(coordinates[:, 0] < 0, Numeric.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
-    sortorder = Numeric.argsort(angles)
-    return Numeric.take(vertices, sortorder)
+    coordinates = numerix.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
+    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    sortorder = numerix.argsort(angles)
+    return numerix.take(vertices, sortorder)
 
 def _bracedList(l):
     return "{%s}" % ', '.join([str(i) for i in l])
@@ -83,7 +83,7 @@ class _AdaptiveMesh2D(GmshImporter2D):
        
        >>> from fipy.variables.cellVariable import CellVariable
        >>> var = CellVariable(mesh = baseMesh, 
-       ...     value = 0.05 - (0.01 * Numeric.add.reduce(baseMesh.getCellCenters(), 
+       ...     value = 0.05 - (0.01 * numerix.add.reduce(baseMesh.getCellCenters(), 
        ...                                               axis = 1)), 
        ...     name = "characteristic lengths")
 
@@ -128,8 +128,8 @@ class _AdaptiveMesh2D(GmshImporter2D):
         ## get the exterior vertex IDs
         self.varMesh = self.variable.getMesh()
         exteriorFaces = self.varMesh.getExteriorFaces()
-        exteriorFaceVertexIDs = Numeric.take(self.varMesh.faceVertexIDs, exteriorFaces)
-        exteriorVertexIDs = Numeric.ravel(exteriorFaceVertexIDs)
+        exteriorFaceVertexIDs = numerix.take(self.varMesh.faceVertexIDs, exteriorFaces)
+        exteriorVertexIDs = numerix.ravel(exteriorFaceVertexIDs)
         exteriorVertexIDs = _removeDuplicates(exteriorVertexIDs)
         ## sort the exterior vertex IDs going counterclockwise
         exteriorVertexIDs = _orderVertices(self.varMesh.getVertexCoords(), exteriorVertexIDs)
@@ -137,22 +137,22 @@ class _AdaptiveMesh2D(GmshImporter2D):
 
     def _calcGeometryPoints(self):
         ## get the points to put in the geometry file
-        geometryPoints = Numeric.zeros((len(self.varMesh.getVertexCoords()), 4)).astype(Numeric.Float)
+        geometryPoints = numerix.zeros((len(self.varMesh.getVertexCoords()), 4), 'd')## .astype(numerix.Float)
         geometryPoints[:, :2] = self.varMesh.getVertexCoords()
         geometryPoints[:, 2] = 0
         geometryPoints[:, 3] = 1
-        geometryPoints = Numeric.take(geometryPoints, self.exteriorVertexIDs)
+        geometryPoints = numerix.take(geometryPoints, self.exteriorVertexIDs)
         self.geometryPoints = geometryPoints
 
     def _calcExteriorLines(self):
         ## get the exterior lines to put in the geometry file
-        exteriorLines = Numeric.zeros((len(self.exteriorVertexIDs), 2))
-        exteriorLines[:, 0] = Numeric.arange(len(self.exteriorVertexIDs))
-        exteriorLines[:-1, 1] = Numeric.arange(1, len(self.exteriorVertexIDs))
+        exteriorLines = numerix.zeros((len(self.exteriorVertexIDs), 2))
+        exteriorLines[:, 0] = numerix.arange(len(self.exteriorVertexIDs))
+        exteriorLines[:-1, 1] = numerix.arange(1, len(self.exteriorVertexIDs))
         exteriorLines[-1, 1] = 0
         exteriorLines = exteriorLines + 1
         ## get the line loop to put in the geometry file
-        lineLoop = Numeric.arange(len(self.exteriorVertexIDs))
+        lineLoop = numerix.arange(len(self.exteriorVertexIDs))
         lineLoop = lineLoop + 1
         self.exteriorLines = exteriorLines
         self.lineLoop = lineLoop
@@ -191,16 +191,16 @@ class _AdaptiveMesh2D(GmshImporter2D):
     
     def _createBackgroundMesh(self):
         ## create the background mesh (this works for Triangular Meshes ONLY)
-        cellFaceVertexIDs = Numeric.take(self.varMesh.faceVertexIDs, self.varMesh.cellFaceIDs)
-        cellVertexIDs = Numeric.reshape(cellFaceVertexIDs, (len(self.varMesh.getCellCenters()), 6))
-        cellVertexIDs = Numeric.sort(cellVertexIDs)
+        cellFaceVertexIDs = numerix.take(self.varMesh.faceVertexIDs, self.varMesh.cellFaceIDs)
+        cellVertexIDs = numerix.reshape(cellFaceVertexIDs, (len(self.varMesh.getCellCenters()), 6))
+        cellVertexIDs = numerix.sort(cellVertexIDs)
         cellVertexIDs = cellVertexIDs[:, ::2]
-        fullVertexCoords = Numeric.zeros((len(self.varMesh.getVertexCoords()), 3)).astype(Numeric.Float)
+        fullVertexCoords = numerix.zeros((len(self.varMesh.getVertexCoords()), 3), 'd')##.astype(numerix.Float)
         fullVertexCoords[:, :2] = self.varMesh.getVertexCoords()
-        cellVertexCoords = Numeric.take(fullVertexCoords, cellVertexIDs)
-        cellOutputs = Numeric.reshape(cellVertexCoords, (len(self.varMesh.getCellCenters()), 9))
+        cellVertexCoords = numerix.take(fullVertexCoords, cellVertexIDs)
+        cellOutputs = numerix.reshape(cellVertexCoords, (len(self.varMesh.getCellCenters()), 9))
         vertexValues = self.variable.getValue(points = self.varMesh.getVertexCoords())
-        cellVertexValues = Numeric.take(vertexValues, cellVertexIDs)
+        cellVertexValues = numerix.take(vertexValues, cellVertexIDs)
         self.cellOutputs = cellOutputs
         self.cellVertexValues = cellVertexValues
 

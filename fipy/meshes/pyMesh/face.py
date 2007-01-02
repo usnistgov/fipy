@@ -44,7 +44,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -186,15 +186,15 @@ class Face:
 	
     def _calcTangent1(self):
 	norm = self.normal
-	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
-# 	tan1 = Numeric.array((-norm[1],norm[0],0))
+	mag = numerix.sqrt(norm[0]**2 + norm[1]**2)
+# 	tan1 = numerix.array((-norm[1],norm[0],0))
 	tan1 = PhysicalField(value = (-norm[1],norm[0],0))
 	return tan1/mag
 
     def _calcTangent2(self):
 	norm = self.normal
-	mag = Numeric.sqrt(norm[0]**2 + norm[1]**2)
-# 	tan2 = Numeric.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
+	mag = numerix.sqrt(norm[0]**2 + norm[1]**2)
+# 	tan2 = numerix.array(norm[0] * norm[2], norm[1] * norm[2], -mag**2)
 	tan2 = PhysicalField(value = (norm[0] * norm[2], norm[1] * norm[2], -mag**2))
 	return tan2/mag
 	    

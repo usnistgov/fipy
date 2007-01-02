@@ -37,7 +37,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.variables.faceVariable import FaceVariable
@@ -49,7 +49,7 @@ class VectorFaceVariable(Variable):
         if value is None:
             array = None
         else:
-            array = Numeric.zeros(self._getShapeFromMesh(mesh),'d')
+            array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
 	
 	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
@@ -114,37 +114,37 @@ class VectorFaceVariable(Variable):
         vector field times scalar
 
             >>> print vfv * 3
-            [[ 0.,]
-             [ 3.,]
-             [ 6.,]
-             [ 9.,]]
+            [[ 0.]
+             [ 3.]
+             [ 6.]
+             [ 9.]]
             >>> print 3 * vfv
-            [[ 0.,]
-             [ 3.,]
-             [ 6.,]
-             [ 9.,]]
+            [[ 0.]
+             [ 3.]
+             [ 6.]
+             [ 9.]]
 
         vector field times scalar variable
 
             >>> from fipy.variables.variable import Variable
             >>> print vfv * Variable(value = 3)
-            [[ 0.,]
-             [ 3.,]
-             [ 6.,]
-             [ 9.,]]
+            [[ 0.]
+             [ 3.]
+             [ 6.]
+             [ 9.]]
             >>> print Variable(value = 3) * vfv
-            [[ 0.,]
-             [ 3.,]
-             [ 6.,]
-             [ 9.,]]
+            [[ 0.]
+             [ 3.]
+             [ 6.]
+             [ 9.]]
 
         vector field times vector field
 
             >>> print vfv * vfv
-            [[ 0.,]
-             [ 1.,]
-             [ 4.,]
-             [ 9.,]]
+            [[ 0.]
+             [ 1.]
+             [ 4.]
+             [ 9.]]
 
         vector field times cell centered field
 
@@ -163,15 +163,15 @@ class VectorFaceVariable(Variable):
         vector field times vector
 
             >>> print vfv * (2,)
-            [[ 0.,]
-             [ 2.,]
-             [ 4.,]
-             [ 6.,]]
+            [[ 0.]
+             [ 2.]
+             [ 4.]
+             [ 6.]]
             >>> print (2,) * vfv
-            [[ 0.,]
-             [ 2.,]
-             [ 4.,]
-             [ 6.,]]
+            [[ 0.]
+             [ 2.]
+             [ 4.]
+             [ 6.]]
             >>> print vfv * (2,3) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
@@ -186,67 +186,67 @@ class VectorFaceVariable(Variable):
         vector field times scalar
 
             >>> print vfv * 3
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print 3 * vfv
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
              
         vector field times scalar variable
 
             >>> from fipy.variables.variable import Variable
             >>> print vfv * Variable(value = 3)
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
             >>> print Variable(value = 3) * vfv
-            [[  0.,  3.,]
-             [  3.,  6.,]
-             [  6.,  9.,]
-             [  9., 12.,]
-             [  3.,  9.,]
-             [  6., 12.,]
-             [  9., 15.,]
-             [ 18., 27.,]
-             [  6., 18.,]
-             [  3.,  9.,]]
+            [[  0.   3.]
+             [  3.   6.]
+             [  6.   9.]
+             [  9.  12.]
+             [  3.   9.]
+             [  6.  12.]
+             [  9.  15.]
+             [ 18.  27.]
+             [  6.  18.]
+             [  3.   9.]]
 
         vector field times vector field
 
             >>> print vfv * vfv
-            [[  0.,  1.,]
-             [  1.,  4.,]
-             [  4.,  9.,]
-             [  9., 16.,]
-             [  1.,  9.,]
-             [  4., 16.,]
-             [  9., 25.,]
-             [ 36., 81.,]
-             [  4., 36.,]
-             [  1.,  9.,]]
+            [[  0.   1.]
+             [  1.   4.]
+             [  4.   9.]
+             [  9.  16.]
+             [  1.   9.]
+             [  4.  16.]
+             [  9.  25.]
+             [ 36.  81.]
+             [  4.  36.]
+             [  1.   9.]]
 
         vector field times cell centered field
 
@@ -266,27 +266,27 @@ class VectorFaceVariable(Variable):
         vector field times vector
 
             >>> print vfv * (2,3)
-            [[  0.,  3.,]
-             [  2.,  6.,]
-             [  4.,  9.,]
-             [  6., 12.,]
-             [  2.,  9.,]
-             [  4., 12.,]
-             [  6., 15.,]
-             [ 12., 27.,]
-             [  4., 18.,]
-             [  2.,  9.,]]
+            [[  0.   3.]
+             [  2.   6.]
+             [  4.   9.]
+             [  6.  12.]
+             [  2.   9.]
+             [  4.  12.]
+             [  6.  15.]
+             [ 12.  27.]
+             [  4.  18.]
+             [  2.   9.]]
             >>> print (2,3) * vfv
-            [[  0.,  3.,]
-             [  2.,  6.,]
-             [  4.,  9.,]
-             [  6., 12.,]
-             [  2.,  9.,]
-             [  4., 12.,]
-             [  6., 15.,]
-             [ 12., 27.,]
-             [  4., 18.,]
-             [  2.,  9.,]]
+            [[  0.   3.]
+             [  2.   6.]
+             [  4.   9.]
+             [  6.  12.]
+             [  2.   9.]
+             [  4.  12.]
+             [  6.  15.]
+             [ 12.  27.]
+             [  4.  18.]
+             [  2.   9.]]
             >>> print vfv * (2,3,4) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
@@ -296,54 +296,54 @@ class VectorFaceVariable(Variable):
                 ...
             TypeError: can't multiply sequence to non-int
             >>> print vfv * Variable(value = (2,3))
-            [[  0.,  3.,]
-             [  2.,  6.,]
-             [  4.,  9.,]
-             [  6., 12.,]
-             [  2.,  9.,]
-             [  4., 12.,]
-             [  6., 15.,]
-             [ 12., 27.,]
-             [  4., 18.,]
-             [  2.,  9.,]]
+            [[  0.   3.]
+             [  2.   6.]
+             [  4.   9.]
+             [  6.  12.]
+             [  2.   9.]
+             [  4.  12.]
+             [  6.  15.]
+             [ 12.  27.]
+             [  4.  18.]
+             [  2.   9.]]
             >>> print Variable(value = (2,3)) * vfv
-            [[  0.,  3.,]
-             [  2.,  6.,]
-             [  4.,  9.,]
-             [  6., 12.,]
-             [  2.,  9.,]
-             [  4., 12.,]
-             [  6., 15.,]
-             [ 12., 27.,]
-             [  4., 18.,]
-             [  2.,  9.,]]
+            [[  0.   3.]
+             [  2.   6.]
+             [  4.   9.]
+             [  6.  12.]
+             [  2.   9.]
+             [  4.  12.]
+             [  6.  15.]
+             [ 12.  27.]
+             [  4.  18.]
+             [  2.   9.]]
 
         vector field times scalar field
 
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> fv = FaceVariable(mesh = mesh, value = (0,1,2,3,4,5,6,7,8,9))
             >>> print vfv * fv
-            [[  0.,  0.,]
-             [  1.,  2.,]
-             [  4.,  6.,]
-             [  9., 12.,]
-             [  4., 12.,]
-             [ 10., 20.,]
-             [ 18., 30.,]
-             [ 42., 63.,]
-             [ 16., 48.,]
-             [  9., 27.,]]
+            [[  0.   0.]
+             [  1.   2.]
+             [  4.   6.]
+             [  9.  12.]
+             [  4.  12.]
+             [ 10.  20.]
+             [ 18.  30.]
+             [ 42.  63.]
+             [ 16.  48.]
+             [  9.  27.]]
             >>> print fv * vfv
-            [[  0.,  0.,]
-             [  1.,  2.,]
-             [  4.,  6.,]
-             [  9., 12.,]
-             [  4., 12.,]
-             [ 10., 20.,]
-             [ 18., 30.,]
-             [ 42., 63.,]
-             [ 16., 48.,]
-             [  9., 27.,]]
+            [[  0.   0.]
+             [  1.   2.]
+             [  4.   6.]
+             [  9.  12.]
+             [  4.  12.]
+             [ 10.  20.]
+             [ 18.  30.]
+             [ 42.  63.]
+             [ 16.  48.]
+             [  9.  27.]]
 
         """
         pass

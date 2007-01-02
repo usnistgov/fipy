@@ -36,7 +36,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
@@ -64,7 +64,7 @@ class UpwindConvectionTerm(ConvectionTerm):
 	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, P):
-	    alpha = Numeric.where(P > 0., 1., 0.)
+	    alpha = numerix.where(P > 0., 1., 0.)
 
 	    return PhysicalField(value = alpha)
 

@@ -49,8 +49,8 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P^\text{old} +(1-\alpha_f)\phi_A^\text{old} $ and
        $\alpha_f$ is calculated using the upwind scheme.
-       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
+       For further details see ``\nameref{FiPy-sec:numerixalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
     """
 
     def _getWeight(self, mesh):

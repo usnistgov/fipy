@@ -72,7 +72,7 @@ from fipy.meshes.gmshImport import GmshImporter2D
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 import sys
-import Numeric
+from fipy.tools import numerix
 
 valueLeft = 0.
 valueRight = 1.
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = fipy.viewers.make(vars = var)
     viewer.plot()
-    varArray = Numeric.array(var)
+    varArray = numerix.array(var)
     x = mesh.getCellCenters()[:,0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray

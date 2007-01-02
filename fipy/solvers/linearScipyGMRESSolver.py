@@ -76,23 +76,23 @@ class LinearScipyGMRESSolver(Solver):
            >>> N = 10
            >>> L = 1.
            >>> dx = L / N
-           >>> import Numeric
-           >>> a = Numeric.zeros(N, 'd')
+           >>> from fipy.tools import numerix
+           >>> a = numerix.zeros(N, 'd')
            >>> a[:] = 2 / dx
            >>> a[0] = 3 / dx
            >>> a[-1] = 3 / dx
            >>> from fipy.tools.sparseMatrix import _SparseMatrix
            >>> A = _SparseMatrix(size = N)
            >>> A.addAtDiagonal(a)
-           >>> ids = Numeric.arange(N - 1)
-           >>> A.addAt(-Numeric.ones(N - 1, 'd') / dx, ids, ids + 1)
-           >>> A.addAt(-Numeric.ones(N - 1, 'd') / dx, ids + 1, ids)
-           >>> b = Numeric.zeros(N, 'd')
+           >>> ids = numerix.arange(N - 1)
+           >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids, ids + 1)
+           >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids + 1, ids)
+           >>> b = numerix.zeros(N, 'd')
            >>> b[-1] = 2 / dx
            >>> solver = LinearScipyGMRESSolver()
-           >>> x = Numeric.zeros(N, 'd')
+           >>> x = numerix.zeros(N, 'd')
            >>> solver._solve(A, x, b)
-           >>> Numeric.allclose(x, Numeric.arange(N) * dx + dx / 2.)
+           >>> numerix.allclose(x, numerix.arange(N) * dx + dx / 2.)
            1
            
         """

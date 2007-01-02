@@ -16,4 +16,3 @@ from solver import SolverConvergenceWarning, \
      PreconditionerNotPositiveDefiniteWarning, \
      IllConditionedPreconditionerWarning, \
      MaximumIterationWarning
-

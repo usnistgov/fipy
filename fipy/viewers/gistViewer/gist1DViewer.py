@@ -44,7 +44,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
  
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
@@ -105,7 +105,7 @@ class Gist1DViewer(GistViewer):
 	arrays = []
         
 	for var in self.vars:
-            arrays.append((Numeric.array(var), Numeric.array(var.getMesh().getCellCenters()[:,0])))
+            arrays.append((numerix.array(var), numerix.array(var.getMesh().getCellCenters()[:,0])))
             
 	return arrays
 	

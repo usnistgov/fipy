@@ -39,7 +39,7 @@
  # ########################################################################
  ##
 
-import MA
+from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid3D import Grid3D
 from fipy.meshes.meshIterator import FaceIterator
@@ -58,7 +58,7 @@ class UniformGrid3D(Grid3D):
 
     Vertices: Numbered in the usual way. X coordinate changes most quickly, then Y, then Z.
     
-    *** arrays are arranged Z, Y, X because in Numeric, the final index is the one that changes the most quickly ***
+    *** arrays are arranged Z, Y, X because in numerix, the final index is the one that changes the most quickly ***
 
     Cells: Same numbering system as vertices.
 
@@ -170,7 +170,7 @@ class UniformGrid3D(Grid3D):
                                                      numerix.ravel(YZids[ ...     ,1:-1]))))
 
     def _getCellFaceOrientations(self):
-        tmp = numerix.MAtake(self.getFaceCellIDs()[...,0], self._getCellFaceIDs())
+        tmp = numerix.take(self.getFaceCellIDs()[...,0], self._getCellFaceIDs())
         return (tmp == MA.indices(tmp.shape)[0]) * 2 - 1
 
     def _getAdjacentCellIDs(self):
@@ -179,7 +179,7 @@ class UniformGrid3D(Grid3D):
                 MA.where(MA.getmaskarray(faceCellIDs[...,1]), faceCellIDs[...,0], faceCellIDs[...,1]).filled())
 
     def _getCellToCellIDs(self):
-        ids = MA.zeros((self.nz, self.ny, self.nx, 6))
+        ids = MA.zeros((self.nz, self.ny, self.nx, 6), 'l')
         indices = numerix.indices((self.nz, self.ny, self.nx))
         ids[...,0] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx - 1
         ids[...,1] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx + 1
@@ -213,7 +213,7 @@ class UniformGrid3D(Grid3D):
         return self._createVertices() + self.origin
 
     def getFaceCellIDs(self):
-        XYids = MA.zeros((self.nz + 1, self.ny, self.nx, 2))
+        XYids = MA.zeros((self.nz + 1, self.ny, self.nx, 2), 'l')
         indices = numerix.indices((self.nz + 1, self.ny, self.nx))
         XYids[...,1] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx
         XYids[...,0] = XYids[...,1] - self.nx * self.ny
@@ -221,7 +221,7 @@ class UniformGrid3D(Grid3D):
         XYids[ 0,...,1] = MA.masked
         XYids[-1,...,1] = MA.masked
         
-        XZids = MA.zeros((self.nz, self.ny + 1, self.nx, 2))
+        XZids = MA.zeros((self.nz, self.ny + 1, self.nx, 2), 'l')
         indices = numerix.indices((self.nz, self.ny + 1, self.nx))
         XZids[...,1] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx
         XZids[...,0] = XZids[...,1] - self.nx
@@ -229,7 +229,7 @@ class UniformGrid3D(Grid3D):
         XZids[..., 0,...,1] = MA.masked
         XZids[...,-1,...,1] = MA.masked
 
-        YZids = MA.zeros((self.nz, self.ny, self.nx + 1, 2))
+        YZids = MA.zeros((self.nz, self.ny, self.nx + 1, 2), 'l')
         indices = numerix.indices((self.nz, self.ny, self.nx + 1))
         YZids[...,1] = indices[2] + (indices[1] + indices[0] * self.ny) * self.nx
         YZids[...,0] = YZids[...,1] - 1
@@ -466,22 +466,25 @@ class UniformGrid3D(Grid3D):
             >>> mesh = UniformGrid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
             
             >>> print mesh._getXYFaceIDs()
-            [[[ 0, 1, 2,]
-              [ 3, 4, 5,]]
-             [[ 6, 7, 8,]
-              [ 9,10,11,]]]
+            [[[ 0  1  2]
+              [ 3  4  5]]
+            <BLANKLINE> 
+             [[ 6  7  8]
+              [ 9 10 11]]]
               
             >>> print mesh._getXZFaceIDs()
-            [ [[12,13,14,]
-              [15,16,17,]
-              [18,19,20,]]]
+            [[[12 13 14]
+              [15 16 17]
+              [18 19 20]]]
               
             >>> print mesh._getYZFaceIDs()
-            [ [[21,22,23,24,]
-              [25,26,27,28,]]]
+            [[[21 22 23 24]
+              [25 26 27 28]]]
 
             >>> print mesh._getAdjacentCellIDs()
-            ([0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,0,1,2,3,4,5,0,0,1,2,3,3,4,5,], [0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,3,4,5,0,1,2,2,3,4,5,5,])
+            (array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0,
+                   1, 2, 3, 3, 4, 5]), array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1,
+                   2, 2, 3, 4, 5, 5]))
 
             >>> vertices = numerix.array(((0., 0., 0.), (1., 0., 0.), (2., 0., 0.), (3., 0., 0.),
             ...                           (0., 1., 0.), (1., 1., 0.), (2., 1., 0.), (3., 1., 0.),
@@ -518,7 +521,7 @@ class UniformGrid3D(Grid3D):
             >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
             1
 
-            >>> import MA
+            >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1),
             ...                                 (0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1),
             ...                                 (0, -1), (1, -1), (2, -1), (0, 3), (1, 4), (2, 5), (3, -1), (4, -1), (5, -1),
@@ -596,20 +599,20 @@ class UniformGrid3D(Grid3D):
             1
 
             >>> print mesh._getCellToCellIDs()
-            [[-- ,1 ,-- ,3 ,-- ,-- ,]
-             [0 ,2 ,-- ,4 ,-- ,-- ,]
-             [1 ,-- ,-- ,5 ,-- ,-- ,]
-             [-- ,4 ,0 ,-- ,-- ,-- ,]
-             [3 ,5 ,1 ,-- ,-- ,-- ,]
-             [4 ,-- ,2 ,-- ,-- ,-- ,]]
+            [[-- 1 -- 3 -- --]
+             [0 2 -- 4 -- --]
+             [1 -- -- 5 -- --]
+             [-- 4 0 -- -- --]
+             [3 5 1 -- -- --]
+             [4 -- 2 -- -- --]]
 
             >>> print mesh._getCellToCellIDsFilled()
-            [[0,1,0,3,0,0,]
-             [0,2,1,4,1,1,]
-             [1,2,2,5,2,2,]
-             [3,4,0,3,3,3,]
-             [3,5,1,4,4,4,]
-             [4,5,2,5,5,5,]]
+            [[0 1 0 3 0 0]
+             [0 2 1 4 1 1]
+             [1 2 2 5 2 2]
+             [3 4 0 3 3 3]
+             [3 5 1 4 4 4]
+             [4 5 2 5 5 5]]
               
             >>> cellToCellDistances = numerix.take(cellDistances, cells)
             >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)

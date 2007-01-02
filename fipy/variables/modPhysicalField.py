@@ -44,12 +44,12 @@
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-import Numeric
+from fipy.tools import numerix
 
 class _ModPhysicalField(PhysicalField):
 
     def mod(self, argument):
-        return Numeric.fmod(argument + 3. * Numeric.pi, 2. * Numeric.pi) - Numeric.pi
+        return numerix.fmod(argument + 3. * numerix.pi, 2. * numerix.pi) - numerix.pi
 
     def __sub__(self, other):
         if isinstance(other, _ModPhysicalField):

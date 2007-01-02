@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.vectorFaceVariable import VectorFaceVariable
@@ -79,13 +79,13 @@ class ConvectionTerm(FaceTerm):
                 ...
             TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
             >>> ConvectionTerm(coeff = vcv)
-            ConvectionTerm(coeff = [[ 0.,]
-             [ 0.,]
-             [ 0.,]])
+            ConvectionTerm(coeff = [[ 0.]
+             [ 0.]
+             [ 0.]])
             >>> ConvectionTerm(coeff = vfv)
-            ConvectionTerm(coeff = [[ 0.,]
-             [ 0.,]
-             [ 0.,]])
+            ConvectionTerm(coeff = [[ 0.]
+             [ 0.]
+             [ 0.]])
             >>> ConvectionTerm(coeff = (1,))
             ConvectionTerm(coeff = (1,))
             >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm

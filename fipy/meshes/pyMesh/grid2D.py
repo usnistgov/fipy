@@ -44,7 +44,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-import Numeric
+from fipy.tools import numerix
 
 from fipy.meshes.pyMesh.mesh import Mesh
 from fipy.meshes.pyMesh.vertex import Vertex
@@ -149,7 +149,7 @@ class Grid2D(Mesh):
         dy=self.dy
 	for j in range(ny+1):
 	    for	i in range(nx+1):
-		vertices += (Vertex(Numeric.array([i * dx, j * dy],'d')),)
+		vertices += (Vertex(numerix.array([i * dx, j * dy],'d')),)
 ## 		vertices += (Vertex(PhysicalField(value = [i * dx, j * dy])),)
         return vertices	
 		    
