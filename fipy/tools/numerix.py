@@ -1333,6 +1333,7 @@ def getTypecode(arr):
         raise TypeError, "No typecode for object"
     
 if not hasattr(NUMERIX, 'empty'):
+    print 'defining empty'
     def empty(shape, dtype='d', order='C'):
         """
         `ones()` and `zeros()` are really slow ways to create arrays. NumPy

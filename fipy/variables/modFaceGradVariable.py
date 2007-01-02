@@ -55,29 +55,27 @@ class _ModFaceGradVariable(_FaceGradVariable):
         val = self._getArray().copy()
 
         inline._runInline(self.modIn + """
-        int i;
-        for(i = 0; i < ni; i++)
-        {
-            int j;
-            double t1grad1, t1grad2, t2grad1, t2grad2, N;
+        int j;
+        double t1grad1, t1grad2, t2grad1, t2grad2, N;
+        int ID1 = id1(i);
+        int ID2 = id2(i);
+        N = mod(var(ID2) - var(ID1)) / dAP(i);
 
-            N = mod(var(id2(i)) - var(id1(i))) / dAP(i);
-
-            t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
+        t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
-            for (j = 0; j < nj; j++) {
-                t1grad1 += tangents1(i,j) * cellGrad(id1(i),j);
-                t1grad2 += tangents1(i,j) * cellGrad(id2(i),j);
-                t2grad1 += tangents2(i,j) * cellGrad(id1(i),j);
-                t2grad2 += tangents2(i,j) * cellGrad(id2(i),j);
-            }
-            
-            for (j = 0; j < nj; j++) {
-                val(i,j) = normals(i,j) * N;
-                val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-                val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
-            }
+        for (j = 0; j < NJ; j++) {
+            t1grad1 += tangents1(i,j) * cellGrad(ID1,j);
+            t1grad2 += tangents1(i,j) * cellGrad(ID2,j);
+            t2grad1 += tangents2(i,j) * cellGrad(ID1,j);
+            t2grad2 += tangents2(i,j) * cellGrad(ID2,j);
         }
+            
+        for (j = 0; j < NJ; j++) {
+            val(i,j) = normals(i,j) * N;
+            val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
+            val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
+        }
+
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
@@ -88,7 +86,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
             var = self.var.getNumericValue(),
             val = val,
             ni = tangents1.shape[0],
-            nj = tangents1.shape[1])
+            NJ = tangents1.shape[1])
             
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

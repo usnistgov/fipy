@@ -360,40 +360,53 @@ class Variable(object):
     def _getCIndexString(self, shape):
         dimensions = len(shape)
         if dimensions == 1:
-            return '[i]'
+##            return '[i]'
+            return '(i)'
         elif dimensions == 2:
             if shape[-1] == 1:
-                return '[j]'
+##                return '[j]'
+                return '(j)'
             else:
-                return '[j * ni + i]'
+##                return '[j * ni + i]'
+                return '(j, i)'
+##                return '(i, j)'
+##                return '(j * ni + i)'
+##                return '(j + i * nj)'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
-                    return '[k]'
+                    return '(k)'
+ ##               return '[k]'
                 else:
-                    return '[k + j * nk]'
+##                    return '[k + j * nk]'
+                    return '(k + j * nk)'
+##                    return '(j, k)'
             elif shape[-2] == 1:
-                return '[k + i * nj * nk]'
+##                return '[k + i * nj * nk]'
+                return '(k + i * nj * nk)'
+##                return '(i, k)'
             else:
-                return '[k + j * nk + i * nj * nk]'
+##                return '[k + j * nk + i * nj * nk]'
+                return '(k + j * nk + i * nj * nk)'
+##                return '(i, k, j)'
 
     def _getCstring(self, argDict={}, id = "", freshen=None):
          """
          Generate the string and dictionary to be used in inline
              >>> (Variable((1)))._getCstring(argDict = {})
-             'var[0]'
+             'var'
            
              >>> (Variable((1,2,3,4)))._getCstring(argDict = {})
-             'var[i]'
+             'var(i)'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict = {})
-             'var[j * ni + i]'
+             'var(j, i)'
 
              >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict = {})
-             'var[k + j * nk + i * nj * nk]'
+             'var(k + j * nk + i * nj * nk)'
 
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict = {})
-             '(var0[0] * var1[i])'
+             '(var0 * var1(i))'
 
          freshen is ignored
          """
@@ -401,18 +414,21 @@ class Variable(object):
          identifier = 'var%s' % (id)
 
          v = self.getValue()
+
          if type(v) not in (type(numerix.array(1)),):
-             argDict[identifier] = numerix.array(v)
+             varray = numerix.array(v)
          else:
-##             if len(v.shape) == 0:
-##                 if v.dtype in (numerix.array(1).dtype,):
-##                     argDict[identifier] = int(v)
-##                 elif v.dtype in (numerix.array(1.).dtype,):
-##                     argDict[identifier] = float(v)
-##                 else:
-##                     argDict[identifier] = v
-##             else:
-             argDict[identifier] = v
+             varray = v
+
+         if len(varray.shape) == 0:
+             if varray.dtype in (numerix.array(1).dtype,):
+                 argDict[identifier] = int(varray)
+             elif varray.dtype in (numerix.array(1.).dtype,):
+                 argDict[identifier] = float(varray)
+             else:
+                 argDict[identifier] = varray
+         else:
+             argDict[identifier] = varray
              
          try:
              shape = self.opShape
@@ -420,8 +436,8 @@ class Variable(object):
              shape = self.getShape()
 
          if len(shape) == 0:
-             return identifier + '[0]'         
-##             return identifier
+##             return identifier + '(0)'         
+             return identifier
          else:
              return identifier + self._getCIndexString(shape)
 
@@ -1047,11 +1063,11 @@ class Variable(object):
         Gets the stack from _getCstring() which calls _getRepresentation()
         
             >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
-            '(var0[i] * var1[i])'
+            '(var0(i) * var1(i))'
             >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-            '(var0[j * ni + i] * var1[j * ni + i])'
+            '(var0(j, i) * var1(j, i))'
             >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
-            '((var00[i] * var01[i]) * var1[i])'
+            '((var00(i) * var01(i)) * var1(i))'
 
         The following test was implemented due to a problem with
         contiguous arrays.  The `mesh.getCellCenters()[:,1]` command
@@ -1084,7 +1100,7 @@ class Variable(object):
         dimensions = len(shape)
             
         if dimensions == 0:
-            string = 'result[0] = ' + string
+            string = 'result(0) = ' + string
             dim = ()
         else:
             string = 'result' + self._getCIndexString(shape) + ' = ' + string
@@ -1110,6 +1126,7 @@ class Variable(object):
         ## inlining. The non-inlined result is thus used the first
         ## time through.
 
+        
         if self.value is None and not hasattr(self, 'typecode'):
             self.canInline = False
             argDict['result'] = self.getValue()
@@ -1117,12 +1134,22 @@ class Variable(object):
             self.typecode = numerix.getTypecode(argDict['result'])
         else:
             if self.value is None:
-                argDict['result'] = numerix.empty(dim, self.getTypecode())
+                if self.getTypecode() == '?':
+                    argDict['result'] = numerix.empty(dim, 'b')
+                else:
+                    argDict['result'] = numerix.empty(dim, self.getTypecode())
             else:
                 argDict['result'] = self.value
 
+            resultShape = argDict['result'].shape
+            if resultShape == ():
+                argDict['result'] = numerix.reshape(argDict['result'], (1,))
+
             inline._runInline(string, converters=None, **argDict)
-                
+
+            if resultShape == ():
+                argDict['result'] = numerix.reshape(argDict['result'], resultShape)
+
         return argDict['result']
 
     
@@ -1385,7 +1412,7 @@ class Variable(object):
 	    >>> b()
 	    1
 	    >>> a.setValue(4)
-	    >>> b()
+	    >>> print b()
 	    0
             >>> print 1000000000000000000 * Variable(1) < 1.
             0
@@ -1411,10 +1438,10 @@ class Variable(object):
 	    >>> b()
 	    1
 	    >>> a.setValue(4)
-	    >>> b()
+	    >>> print b()
 	    1
 	    >>> a.setValue(5)
-	    >>> b()
+	    >>> print b()
 	    0
 	"""
 	return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
@@ -1453,10 +1480,10 @@ class Variable(object):
 	    >>> b = (a > 4)
 	    >>> b
 	    (Variable(value = array(3)) > 4)
-	    >>> b()
+	    >>> print b()
 	    0
 	    >>> a.setValue(5)
-	    >>> b()
+	    >>> print b()
 	    1
 	"""
 	return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
@@ -1472,10 +1499,10 @@ class Variable(object):
 	    >>> b()
 	    0
 	    >>> a.setValue(4)
-	    >>> b()
+	    >>> print b()
 	    1
 	    >>> a.setValue(5)
-	    >>> b()
+	    >>> print b()
 	    1
 	"""
 	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
@@ -2574,10 +2601,10 @@ class Variable(object):
             >>> alpha.getValue()
             -0.0
             >>> coeff.setValue(-10.0)
-            >>> alpha.getValue()
+            >>> print alpha.getValue()
             10.0
             >>> coeff.setValue(10.0)
-            >>> alpha.getValue()
+            >>> print alpha.getValue()
             -10.0
 
         Test to prevent divide by zero evaluation before value is
@@ -2605,11 +2632,10 @@ class Variable(object):
             >>> v1 = Variable(numerix.ones(2, 'd'))
             >>> v = v1 * v0
             >>> print v
-
+            [ 1.  1.]
             >>> v0[1] = 0.5
-
             >>> print v
-            
+            [ 1.  0.5]
         """
         pass
 

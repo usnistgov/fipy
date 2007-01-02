@@ -61,9 +61,10 @@ class _ModCellGradVariable(_CellGradVariable):
             val(i,j) = 0.;
             
             int k;
-            
-            for (k = 0; k < nk; k++) {
-                val(i, j) += orientations(i, k) * areaProj(ids(i, k), j) * faceValues(ids(i, k));
+
+            for (k = 0; k < M; k++) {
+                int ID = ids(i, k);
+                val(i, j) += orientations(i, k) * areaProj(ID, j) * faceValues(ID);
             }
                 
             val(i, j) /= volumes(i);
@@ -75,7 +76,7 @@ class _ModCellGradVariable(_CellGradVariable):
         volumes = numerix.array(volumes),
         areaProj = numerix.array(self.mesh._getAreaProjections()),
         faceValues = numerix.array(self.var.getArithmeticFaceValue()),
-        ni = N, nj = self.mesh.getDim(), nk = M,
+        ni = N, nj = self.mesh.getDim(), M = M,
         gridSpacing = numerix.array(self.mesh._getMeshSpacing()))
         
         return self._makeValue(value = val)
