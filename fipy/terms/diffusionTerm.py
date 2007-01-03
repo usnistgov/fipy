@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/3/07 {2:20:42 PM} 
+ #                                last update: 1/3/07 {2:56:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,7 @@ class DiffusionTerm(Term):
 
         :Parameters:
           - `coeff`: `Tuple` or `list` of `FaceVariables` or numbers.
-	  
+          
         """
         if type(coeff) not in (type(()), type([])):
             coeff = (coeff,)
@@ -96,15 +96,15 @@ class DiffusionTerm(Term):
             if not isinstance(self.nthCoeff, Variable):
                 self.nthCoeff = Variable(value = self.nthCoeff)
 
-	    from fipy.variables.cellVariable import CellVariable
-	    from fipy.variables.vectorCellVariable import VectorCellVariable
-	    if isinstance(self.nthCoeff, VectorCellVariable) or isinstance(self.nthCoeff, CellVariable):
-		self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
+            from fipy.variables.cellVariable import CellVariable
+            from fipy.variables.vectorCellVariable import VectorCellVariable
+            if isinstance(self.nthCoeff, VectorCellVariable) or isinstance(self.nthCoeff, CellVariable):
+                self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
 
-#	    from fipy.variables.faceVariable import FaceVariable
-#	    if not isinstance(self.nthCoeff, FaceVariable):		
-#		if self.nthCoeff.getShape() != ():
-#		    raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
+#           from fipy.variables.faceVariable import FaceVariable
+#           if not isinstance(self.nthCoeff, FaceVariable):             
+#               if self.nthCoeff.getShape() != ():
+#                   raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
 
         else:
             self.nthCoeff = None
@@ -145,13 +145,13 @@ class DiffusionTerm(Term):
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
             
-	    coeff = self.nthCoeff
-	    shape = numerix.getShape(coeff)
+            coeff = self.nthCoeff
+            shape = numerix.getShape(coeff)
 
-	    from fipy.variables.vectorFaceVariable import VectorFaceVariable
-	    if isinstance(coeff, VectorFaceVariable) \
-	    or shape == (mesh.getDim(),):
-		coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
+            from fipy.variables.vectorFaceVariable import VectorFaceVariable
+            if isinstance(coeff, VectorFaceVariable) \
+            or shape == (mesh.getDim(),):
+                coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
             tmpBop =  coeff * mesh._getFaceAreas() / mesh._getCellDistances()
             return  tmpBop
             
