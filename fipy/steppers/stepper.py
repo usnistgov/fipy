@@ -4,7 +4,7 @@
  # 
  # FILE: "stepper.py"
  #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/10/06 {4:39:52 PM}
+ #                                 last update: 11/28/06 {5:09:53 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,7 @@ class Stepper:
     def __init__(self, vardata=()):
         self.vardata = vardata
         
-    def sweepFn(vardata, dt):
+    def sweepFn(vardata, dt, *args, **kwargs):
         residual = 0
         for var, eqn, bcs in vardata:
             residual = max(residual, eqn.sweep(var=var, dt=dt, boundaryConditions=bcs))

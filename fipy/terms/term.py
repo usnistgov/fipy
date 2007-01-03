@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 10/26/06 {2:05:21 PM} 
+ #                                last update: 1/3/07 {2:35:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,30 +62,24 @@ class Term:
 
         """  
         self.coeff = coeff
-	self.geomCoeff = None
+        self.geomCoeff = None
         self._cacheMatrix = False
         self.matrix = None
         self._cacheRHSvector = False
         self.RHSvector = None
         
     def _buildMatrix(self, var, boundaryConditions, dt):
-	pass
+        pass
+
+    def _calcResidualVector(self, var, matrix, RHSvector):
+
+        Lx = matrix * Numeric.array(var[:])
+      
+        return Lx - RHSvector
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-	Lx = matrix * numerix.array(var[:])
-      
-	residual = Lx - RHSvector
-      
-## 	denom = max(abs(Lx))
-## 	if denom == 0:
-## 	    denom = max(abs(RHSvector))
-## 	if denom == 0:
-## 	    denom = 1.
-##           
-## 	residual /= denom
-      	
-	return numerix.max(abs(residual))
+        return numerix.max(abs(self._calcResidualVector(var, matrix, RHSvector)))
 
     def __buildMatrix(self, var, boundaryConditions, dt):
 
@@ -105,16 +99,16 @@ class Term:
         from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
         solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
-	array = var.getNumericValue()
-	solver._solve(matrix, array, RHSvector)
-	var[:] = array
+        array = var.getNumericValue()
+        solver._solve(matrix, array, RHSvector)
+        var[:] = array
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         does not return the residual. It should be used when the
         residual is not required.
-      	
+        
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
@@ -122,7 +116,7 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
-	"""
+        """
         self._verifyCoeffType(var)
         
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
@@ -143,11 +137,11 @@ class Term:
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
-	"""
+        """
         self._verifyCoeffType(var)
         
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
- 	
+        
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
@@ -163,6 +157,30 @@ class Term:
 ##         print "b", RHSvector
 
         return residual
+
+    def justResidualVector(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None):
+        r"""
+        Builds and the `Term`'s linear system once. This method
+        also recalculates and returns the residual as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+
+        """
+        self._verifyCoeffType(var)
+        
+        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+        
+        if underRelaxation is not None:
+            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+
+        return self._calcResidualVector(var, matrix, RHSvector)
 
     def _verifyCoeffType(self, var):
         pass
@@ -352,19 +370,19 @@ class Term:
         return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
 
     def _calcGeomCoeff(self, mesh):
-	return None
-	
+        return None
+        
     def _getGeomCoeff(self, mesh):
-	if self.geomCoeff is None:
-	    self.geomCoeff = self._calcGeomCoeff(mesh)
+        if self.geomCoeff is None:
+            self.geomCoeff = self._calcGeomCoeff(mesh)
             if self.geomCoeff is not None:
                 self.geomCoeff.dontCacheMe()
 
-	return self.geomCoeff
-	
+        return self.geomCoeff
+        
     def _getWeight(self, mesh):
-	pass
-	    
+        pass
+            
 def _test(): 
     import doctest
     return doctest.testmod()
