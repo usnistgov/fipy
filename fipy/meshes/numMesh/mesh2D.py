@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/4/06 {3:55:06 PM} 
+ #                                last update: 1/3/07 {3:09:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,8 +81,8 @@ class Mesh2D(Mesh):
         self.faceTangents2 = numerix.zeros(self.faceTangents1.shape, 'd')
 
     def _calcHigherOrderScalings(self):
-	self.scale['area'] = self.scale['length']
-	self.scale['volume'] = self.scale['length']**2
+        self.scale['area'] = self.scale['length']
+        self.scale['volume'] = self.scale['length']**2
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

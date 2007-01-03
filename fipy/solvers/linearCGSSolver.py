@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearCGSSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 11/16/06 {1:26:40 PM} 
+ #                                last update: 1/3/07 {3:11:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,19 +68,19 @@ class LinearCGSSolver(Solver):
     
     def _solve(self, L, x, b):
 
-## 	print "L: ", L
-## 	print "b: ", b
-## 	print "x: ", x
-	
-	A = L._getMatrix().to_csr()
+##      print "L: ", L
+##      print "b: ", b
+##      print "x: ", x
+        
+        A = L._getMatrix().to_csr()
 
         info, iter, relres = itsolvers.cgs(A, b, x, self.tolerance, self.iterations)
         
-## 	print info, iter, relres
-	
-## 	y = x.copy()
-## 	L.matvec(x,y)
-## 	print "L * x: ", y
-	
+##      print info, iter, relres
+        
+##      y = x.copy()
+##      L.matvec(x,y)
+##      print "L * x: ", y
+        
         self._raiseWarning(info, iter, relres)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 2/23/06 {3:59:24 PM} 
+ #                                last update: 1/3/07 {3:14:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,34 +63,34 @@ class CellTerm(Term):
         and coeff.getShape() != ():
             raise TypeError, "The coefficient must be a CellVariable or a scalar value."
 
-	Term.__init__(self, coeff = coeff)
+        Term.__init__(self, coeff = coeff)
         self.coeffVectors = None
 
     def _calcCoeffVectors(self, mesh):
-	coeff = self._getGeomCoeff(mesh)
-	weight = self._getWeight(mesh)
+        coeff = self._getGeomCoeff(mesh)
+        weight = self._getWeight(mesh)
 
-	self.coeffVectors = {
-	    'diagonal': coeff * weight['diagonal'],
-	    'old value': coeff.getOld() * weight['old value'],
-	    'b vector': coeff * weight['b vector'],
-	    'new value': coeff * weight['new value']
-	}
+        self.coeffVectors = {
+            'diagonal': coeff * weight['diagonal'],
+            'old value': coeff.getOld() * weight['old value'],
+            'b vector': coeff * weight['b vector'],
+            'new value': coeff * weight['new value']
+        }
 
     def _getCoeffVectors(self, mesh):
-	if self.coeffVectors is None:
-	    self._calcCoeffVectors(mesh)
-	return self.coeffVectors
-	
+        if self.coeffVectors is None:
+            self._calcCoeffVectors(mesh)
+        return self.coeffVectors
+        
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
 
-	b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
-	b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
-	L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+        b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
+        b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
+        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
         
-## 	L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
@@ -113,18 +113,18 @@ class CellTerm(Term):
             ni = len(updatePyArray),
             dt = dt)
 
-	L.addAtDiagonal(updatePyArray)
+        L.addAtDiagonal(updatePyArray)
         
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
-	N = len(var)
-	b = numerix.zeros((N),'d')
-	L = _SparseMatrix(size = N)
-	
-	coeffVectors = self._getCoeffVectors(var.getMesh())
+        N = len(var)
+        b = numerix.zeros((N),'d')
+        L = _SparseMatrix(size = N)
+        
+        coeffVectors = self._getCoeffVectors(var.getMesh())
 
-	inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
-	
-	return (L, b)
+        inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+        
+        return (L, b)
         
     def _test(self):
         """

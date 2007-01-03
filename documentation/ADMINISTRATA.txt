@@ -164,7 +164,7 @@ Upload to the CTCMS website::
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-`Upload the release to SourceForge`_ and to the `MatDL download page`_.  You can use, e.g.,::
+`Upload the release to SourceForge`_ and to the `MatForge download page`_.  You can use, e.g.,::
 
     $ svn log --revision HEAD:${LASTREV}
 
@@ -177,7 +177,7 @@ Make an announcement to `fipy@nist.gov`_
 
 
 .. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
-.. MatDL download page: http://matforge.org/fipy/wiki/FiPyFiles
+.. MatForge download page: http://matforge.org/fipy/wiki/FiPyFiles
 .. fipy@nist.gov: mailto:fipy@nist.gov
 
 ==========================================

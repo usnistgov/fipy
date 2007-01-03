@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/25/06 {4:14:31 PM} 
+ #                                last update: 1/3/07 {3:23:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,9 +71,9 @@ class Gist1DViewer(GistViewer):
         """
         GistViewer.__init__(self, vars = vars, limits = limits, title = title)
         
-	self.xlog = xlog
-	self.ylog = ylog
-	self.style = style
+        self.xlog = xlog
+        self.ylog = ylog
+        self.style = style
         
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
@@ -102,35 +102,35 @@ class Gist1DViewer(GistViewer):
         return limit
 
     def _getArrays(self):
-	arrays = []
+        arrays = []
         
-	for var in self.vars:
+        for var in self.vars:
             arrays.append((numerix.array(var), numerix.array(var.getMesh().getCellCenters()[:,0])))
             
-	return arrays
-	
+        return arrays
+        
     def _plotArrays(self):
-	import gist
-	
-	for array in self._getArrays():
+        import gist
+        
+        for array in self._getArrays():
             gist.plg(*array)
             
-	gist.logxy(self.xlog, self.ylog)
+        gist.logxy(self.xlog, self.ylog)
 
     def plot(self, filename = None):
         """
         Plot the `CellVariable` or list of `CellVariables` as a y vs x plot.
         """
-	import gist
+        import gist
 
-	gist.window(self.id, wait = 1, style = self.style)
-	gist.pltitle(self.title)
-	gist.animate(1)
+        gist.window(self.id, wait = 1, style = self.style)
+        gist.pltitle(self.title)
+        gist.animate(1)
 
         if self.limits != None:
             gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('datamin'), self._getLimit('datamax'))
-	    
-	self._plotArrays()
-	    
+            
+        self._plotArrays()
+            
         GistViewer.plot(self, filename = filename)
 

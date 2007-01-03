@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 9/2/05 {2:08:18 PM} 
+ #                                last update: 1/3/07 {3:20:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,6 +63,6 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
         return None
 
     class _Alpha(FaceVariable):
-	def __init__(self, P):
-	    FaceVariable.__init__(self, P.getMesh())
-	    self.value = 0.5
+        def __init__(self, P):
+            FaceVariable.__init__(self, P.getMesh())
+            self.value = 0.5

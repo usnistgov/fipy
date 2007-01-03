@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorCellVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 5/15/06 {3:58:52 PM} 
+ #                                last update: 1/3/07 {3:17:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,8 +50,8 @@ class VectorCellVariable(Variable):
             array = None
         else:
             array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
-# 	array[:] = value	
-	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+#       array[:] = value        
+        Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
         self.arithmeticFaceValue = None
         self.harmonicFaceValue = None
 
@@ -76,11 +76,11 @@ class VectorCellVariable(Variable):
         1
         """
         
-	if self.arithmeticFaceValue is None:
-	    from vectorArithmeticCellToFaceVariable import _VectorArithmeticCellToFaceVariable
-	    self.arithmeticFaceValue = _VectorArithmeticCellToFaceVariable(self)
+        if self.arithmeticFaceValue is None:
+            from vectorArithmeticCellToFaceVariable import _VectorArithmeticCellToFaceVariable
+            self.arithmeticFaceValue = _VectorArithmeticCellToFaceVariable(self)
 
-	return self.arithmeticFaceValue
+        return self.arithmeticFaceValue
 
     def getHarmonicFaceValue(self):
         """
@@ -114,17 +114,17 @@ class VectorCellVariable(Variable):
 
         """
         
-	if self.harmonicFaceValue is None:
-	    from vectorHarmonicCellToFaceVariable import _VectorHarmonicCellToFaceVariable
-	    self.harmonicFaceValue = _VectorHarmonicCellToFaceVariable(self)
+        if self.harmonicFaceValue is None:
+            from vectorHarmonicCellToFaceVariable import _VectorHarmonicCellToFaceVariable
+            self.harmonicFaceValue = _VectorHarmonicCellToFaceVariable(self)
 
-	return self.harmonicFaceValue
-	
+        return self.harmonicFaceValue
+        
     def _getVariableClass(self):
-	return VectorCellVariable
+        return VectorCellVariable
 
     def dot(self, other): 
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = CellVariable, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = CellVariable, canInline = False)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):

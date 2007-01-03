@@ -2,16 +2,49 @@
 SVN usage
 ---------
 
-This section describes the use and setup of the |FiPy| Subversion
-repository. Users can download various tagged revisions of FiPy
-depending on their needs. In general, most users will not want to
-download the very latest state of FiPy, as these files are subject to
-active development and may not behave as desired. Most users will not
-be interested in particular version numbers either, but instead with
-the degree of code stability. Different "tracking tags" are used to
-indicate different stages of FiPy development.  You will need to
-decide on your own risk tolerance when deciding which stage of
-development to track. A fresh copy of FiPy that is designated by a
+All stages of |FiPy| development are archived in a Subversion (SVN)
+repository at MatForge_. You can browse through the code at
+http://matforge.org/fipy/browser and, using an `SVN client`_, you can
+download various tagged revisions of |FiPy| depending on your needs. 
+
+.. attention:: 
+
+   Be sure to follow |INSTALLATION-txt| to obtain all the prerequisites for
+   |FiPy|.
+   
+SVN client
+==========
+
+An ``svn`` client application is needed in order to fetch files from our
+repository. This is provided on many operating systems (try executing
+``which svn``) but needs to be installed on many others. The sources to
+build Subversion, as well as links to various pre-built binaries for
+different platforms, can be obtained from http://subversion.tigris.org.
+
+Mac OS X client
+---------------
+
+You can obtain a binary installer of ``svn`` from http://www.codingmonkeys.de/mbo/
+
+Alternatively, if you are using Fink_, then you can execute the command::
+
+    $ sudo apt-get install svn-client
+    
+If you prefer a GUI, after you install ``svn``, you can obtain svnX from
+http://www.lachoseinteractive.net/en/community/subversion/svnx
+
+SVN tags
+========
+
+In general, most users will not want to download the very latest state of
+|FiPy|, as these files are subject to active development and may not behave
+as desired. Most users will not be interested in particular version numbers
+either, but instead with the degree of code stability. Different "tracking
+tags" are used to indicate different stages of |FiPy| development. You will
+need to decide on your own risk tolerance when deciding which stage of
+development to track.
+
+A fresh copy of |FiPy| that is designated by a
 particular ``<tag>`` can be obtained with::
 
    $ svn checkout http://matforge.org/svn/fipy/<tag>
@@ -42,6 +75,8 @@ for FiPy, in decreasing order of stability, are:
     repository.  FiPy is not guaranteed to pass its tests or to be in a
     consistent state when checked out under this tag.     
 
+In addition:
+
 ``tags/version-x_y``
     designates a released version x.y. Any released
     version of FiPy will be designated with a fixed tag: The current
@@ -63,6 +98,8 @@ canonical manual is the `online Subversion Red Bean book`_
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
+.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
+
 .. include:: VERSION.txt
 
 .. |citeSubversionRedBean| raw:: latex
@@ -71,3 +108,6 @@ canonical manual is the `online Subversion Red Bean book`_
 
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
+.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
+
+.. _MatForge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy

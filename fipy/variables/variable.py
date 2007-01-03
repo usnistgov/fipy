@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/07 {2:31:18 PM} 
+ #                                last update: 1/3/07 {3:15:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -266,7 +266,7 @@ class Variable(object):
 
     def getUnit(self):
         """
-        Return the unit object of `self`.	
+        Return the unit object of `self`.
             >>> Variable(value = "1 m").getUnit()
             <PhysicalUnit m>
         """

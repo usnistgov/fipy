@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 3/5/06 {4:43:21 PM} 
+ #                                last update: 1/3/07 {3:18:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,8 +46,8 @@ class FaceVariable(Variable):
             array = None
         else:
             array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
-# 	array[:] = value
-	Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
+#       array[:] = value
+        Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
 
     def setValue(self, value, faces = (), unit = None, where = None):
         if faces == ():
@@ -56,7 +56,7 @@ class FaceVariable(Variable):
             self.put(indices=faces, value=value)
 
     def _getVariableClass(self):
-	return FaceVariable
+        return FaceVariable
 
     def _getShapeFromMesh(mesh):
         """

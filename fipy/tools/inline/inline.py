@@ -3,10 +3,10 @@ from fipy.tools import numerix
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if '--inline' in sys.argv[1:]:
-	return inlineFn(*args)
+        return inlineFn(*args)
     else:
-	return pythonFn(*args)
-			 
+        return pythonFn(*args)
+                         
 def _runInline(code_in, converters=None, verbose=0, **args):
     argsKeys = args.keys()
     dimList = ['i', 'j', 'k']

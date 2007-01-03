@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 12/28/05 {11:21:33 AM} 
+ #                                last update: 1/3/07 {3:19:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,12 +88,12 @@ class ModularVariable(CellVariable):
         :Parameters:
           - `mesh`: The mesh that defines the geometry of this variable.
           - `name`: The user-readable name of the variable.
-	  - `value`: The initial value.
-	  - `unit`: The physical units of the variable.
-	  - `hasOld`: Whether a variable keeps its old variable.
-	
+          - `value`: The initial value.
+          - `unit`: The physical units of the variable.
+          - `hasOld`: Whether a variable keeps its old variable.
+        
         """
-	CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
+        CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self.arithmeticFaceValue = None
         self.grad = None
         self.faceGradNoMod = None
@@ -118,8 +118,8 @@ class ModularVariable(CellVariable):
         """
         value = self._makeValue(value = value, unit = unit, array = array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
-	self.value = _ModPhysicalField(value = value, unit = unit, array = array)
-	
+        self.value = _ModPhysicalField(value = value, unit = unit, array = array)
+        
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
@@ -134,9 +134,9 @@ class ModularVariable(CellVariable):
             [ 1.] 1
             
         """
-	self.setValue(self.getValue().mod(self()))
+        self.setValue(self.getValue().mod(self()))
         if self.old is not None:
-	    self.old.setValue(self.value.value.copy())
+            self.old.setValue(self.value.value.copy())
 
     def getGrad(self):
         r"""
@@ -149,12 +149,12 @@ class ModularVariable(CellVariable):
         as a `VectorCellVariable` (first-order gradient).
         Adjusted for a `ModularVariable`
         """
-	if self.grad is None:
+        if self.grad is None:
 
             from fipy.variables.modCellGradVariable import _ModCellGradVariable
             self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
 
-	return self.grad
+        return self.grad
 
     def getArithmeticFaceValue(self):
         r"""
@@ -168,11 +168,11 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
            
         """
-	if self.arithmeticFaceValue is None:
-	    from modCellToFaceVariable import _ModCellToFaceVariable
-	    self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
+        if self.arithmeticFaceValue is None:
+            from modCellToFaceVariable import _ModCellToFaceVariable
+            self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
- 	return self.arithmeticFaceValue
+        return self.arithmeticFaceValue
 
     def getFaceGrad(self):
         r"""
@@ -185,11 +185,11 @@ class ModularVariable(CellVariable):
         as a `VectorFaceVariable` (second-order gradient).
         Adjusted for a `ModularVariable`
         """
-	if self.faceGrad is None:
-	    from modFaceGradVariable import _ModFaceGradVariable
-	    self.faceGrad = _ModFaceGradVariable(self, self._modIn)
+        if self.faceGrad is None:
+            from modFaceGradVariable import _ModFaceGradVariable
+            self.faceGrad = _ModFaceGradVariable(self, self._modIn)
 
-	return self.faceGrad
+        return self.faceGrad
 
     def getFaceGradNoMod(self):
         r"""
@@ -221,9 +221,9 @@ class ModularVariable(CellVariable):
             return -other + self
         else:
             return self._getBinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
-	
+        
     def __rsub__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
+        return self._getBinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
 
 
 def _test(): 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/15/06 {4:17:38 PM} 
+ #                                last update: 1/3/07 {3:08:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,28 +60,28 @@ class Grid2D(Mesh2D):
     first and then vertical faces.
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
-	self.dx = PhysicalField(value = dx)
-	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-	self.dx /= scale
+        self.dx = PhysicalField(value = dx)
+        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx /= scale
         
         self.nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
         
-	self.dy = PhysicalField(value = dy)
-	if self.dy.getUnit().isDimensionless():
-	    self.dy = dy
-	else:
-	    self.dy /= scale
+        self.dy = PhysicalField(value = dy)
+        if self.dy.getUnit().isDimensionless():
+            self.dy = dy
+        else:
+            self.dy /= scale
             
         self.ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
-	
+        
         self.numberOfVertices = (self.nx + 1) * (self. ny + 1)
-	
-	vertices = self._createVertices()
+        
+        vertices = self._createVertices()
         faces = self._createFaces()
         cells = self._createCells()
         Mesh2D.__init__(self, vertices, faces, cells)
-	
-	self.setScale(value = scale)
+        
+        self.setScale(value = scale)
         
     def __repr__(self):
         return "%s(dx = %s, dy = %s, nx = %d, ny = %d)" \
@@ -154,7 +154,7 @@ class Grid2D(Mesh2D):
             cellFaceIDs(ID, 2) = cellFaceIDs(ID, 0) + ni;
             cellFaceIDs(ID, 3) = horizontalFaces + ID + j;
             cellFaceIDs(ID, 1) = cellFaceIDs(ID, 3) + 1;
-	""",
+        """,
         horizontalFaces=self.numberOfHorizontalFaces,
         cellFaceIDs=cellFaceIDs,
         ni=self.nx,
@@ -163,55 +163,55 @@ class Grid2D(Mesh2D):
         return cellFaceIDs
 
     def getFacesLeft(self):
-	"""
+        """
         Return list of faces on left boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((9, 13), mesh.getFacesLeft())
             1
-	"""
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
-	
+        
     def getFacesRight(self):
-	"""
+        """
         Return list of faces on right boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((12, 16), mesh.getFacesRight())
             1
-	"""
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-	
+        
     def getFacesTop(self):
-	"""
+        """
         Return list of faces on top boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
             1
-	"""
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-	
+        
     def getFacesBottom(self):
-	"""
+        """
         Return list of faces on bottom boundary of Grid2D.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())
             1
-	"""
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
         
     def getScale(self):
-	return self.scale['length']
-	
+        return self.scale['length']
+        
     def getPhysicalShape(self):
-	"""Return physical dimensions of Grid2D.
-	"""
-	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
+        """Return physical dimensions of Grid2D.
+        """
+        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
     def _getMeshSpacing(self):
-	return numerix.array((self.dx,self.dy))
+        return numerix.array((self.dx,self.dy))
     
     def getShape(self):
         return (self.nx, self.ny)

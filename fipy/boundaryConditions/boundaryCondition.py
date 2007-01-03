@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 3/5/06 {8:39:34 AM} 
+ #                                last update: 1/3/07 {3:01:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,13 +54,13 @@ class BoundaryCondition:
     """
     
     def __init__(self,faces,value):
-	"""
+        """
 
         The `BoundaryCondition` class should not be invoked directly.
-	
-	:Parameters:
-	    - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
-	    - `value`: The value to impose.
+        
+        :Parameters:
+            - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
+            - `value`: The value to impose.
             
         The `BoundaryCondition` class should raise an error when
         invoked with internal faces. Don't use the `BoundaryCondition`
@@ -77,10 +77,10 @@ class BoundaryCondition:
                 ...
             IndexError: Face list has repeated entries
 
-	"""
+        """
         self.faces = faces
         self.value = PhysicalField(value)
-	
+        
         import sets
         if len(sets.Set(self.faces)) < len(self.faces):
             raise IndexError, 'Face list has repeated entries'
@@ -88,35 +88,35 @@ class BoundaryCondition:
         if not (sets.Set(self.faces).issubset(sets.Set(self.faces.getMesh().getExteriorFaces()))):
             raise IndexError, 'Face list has interior faces'
 
-## 	self.adjacentCellIDs = numerix.array([face.getCellID() for face in self.faces])
+##      self.adjacentCellIDs = numerix.array([face.getCellID() for face in self.faces])
 ##      self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
         self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
 
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
-	"""Return the effect of this boundary condition on the equation
-	solution matrices.
+        """Return the effect of this boundary condition on the equation
+        solution matrices.
     
-	`_buildMatrix()` is called by each `Term` of each `Equation`.
-	
-	:Parameters:
-	    
-	  - `Ncells`:     Number of cells (to build **L** and **b**)
-	  - `MaxFaces`:   Maximum number of faces per cell (to build **L**)
-	  - `coeff`:      Contribution due to this face
-	
-	A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
-	(**L**, **b**) matrices.
-	""" 
-	pass
+        `_buildMatrix()` is called by each `Term` of each `Equation`.
+        
+        :Parameters:
+            
+          - `Ncells`:     Number of cells (to build **L** and **b**)
+          - `MaxFaces`:   Maximum number of faces per cell (to build **L**)
+          - `coeff`:      Contribution due to this face
+        
+        A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
+        (**L**, **b**) matrices.
+        """ 
+        pass
     
     def _getDerivative(self, order):
-	"""Return a tuple of the boundary conditions to apply
-	to the term and to the derivative of the term
-	"""
-	if order == 0:
-	    return self
-	else:
-	    return None
+        """Return a tuple of the boundary conditions to apply
+        to the term and to the derivative of the term
+        """
+        if order == 0:
+            return self
+        else:
+            return None
 
 
     def __repr__(self):

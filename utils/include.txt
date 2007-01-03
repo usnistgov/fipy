@@ -32,7 +32,7 @@
 
 .. |latexExamples/| raw:: latex
 
-   Part~\ref{part:Examples}
+   Part~\ref{part:Examples} ``\titleref{part:Examples}''
 
 .. |htmlExamples/| raw:: html
 

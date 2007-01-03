@@ -6,7 +6,7 @@
  # 
  #  FILE: "surfactantVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 12/22/05 {2:49:31 PM} 
+ #                                last update: 1/3/07 {3:24:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,7 +112,7 @@ class SurfactantVariable(CellVariable):
 
         if hasOld:
             self.old = self.copy()
-	else:
+        else:
             self.old = None
 
         self.interfaceSurfactantVariable = None
@@ -140,9 +140,9 @@ class SurfactantVariable(CellVariable):
     def copy(self):
         return self.__class__(
             distanceVar=self.distanceVar,
-	    name=self.name + "_old", 
-	    value=self.getValue().copy(),
-	    hasOld=False)
+            name=self.name + "_old", 
+            value=self.getValue().copy(),
+            hasOld=False)
     
 class _InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):

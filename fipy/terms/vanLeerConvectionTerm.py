@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerConvectionTerm.py"
  #                                    created: 7/14/04 {4:42:01 PM} 
- #                                last update: 3/4/06 {3:53:26 PM} 
+ #                                last update: 1/3/07 {3:22:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,47 +54,47 @@ from fipy.tools import numerix
 
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
     def _getGradient(self, normalGradient, gradUpwind):
-	gradUpUpwind = -gradUpwind + 2 * normalGradient
+        gradUpUpwind = -gradUpwind + 2 * normalGradient
 
         avg = 0.5 * (abs(gradUpwind) + abs(gradUpUpwind))
         min3 = numerix.minimum(numerix.minimum(abs(gradUpwind), abs(gradUpUpwind)), avg)
 
-	grad = numerix.where(gradUpwind * gradUpUpwind < 0.,
+        grad = numerix.where(gradUpwind * gradUpUpwind < 0.,
                              0., 
                              numerix.where(gradUpUpwind > 0.,
                                            min3,
                                            -min3))
 
-	return grad
-	
+        return grad
+        
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
-	oldArray1, oldArray2 = ExplicitUpwindConvectionTerm._getOldAdjacentValues(self, oldArray, id1, id2, dt)
-	
-	mesh = oldArray.getMesh()
+        oldArray1, oldArray2 = ExplicitUpwindConvectionTerm._getOldAdjacentValues(self, oldArray, id1, id2, dt)
+        
+        mesh = oldArray.getMesh()
 
-	interiorIDs = mesh.getInteriorFaces()
-	interiorFaceAreas = numerix.take(mesh._getFaceAreas(), interiorIDs)
-	interiorFaceNormals = numerix.take(mesh._getOrientedFaceNormals(), interiorIDs)
-	
-	# Courant-Friedrichs-Levy number
-	interiorCFL = abs(numerix.take(self._getGeomCoeff(mesh), interiorIDs)) * dt
-	
-	gradUpwind = (oldArray2 - oldArray1) / numerix.take(mesh._getCellDistances(), interiorIDs)
-	
-	vol1 = numerix.take(mesh.getCellVolumes(), id1)
-	self.CFL = interiorCFL / vol1
-	
-	oldArray1 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
-	    * (vol1 - interiorCFL) / interiorFaceAreas
+        interiorIDs = mesh.getInteriorFaces()
+        interiorFaceAreas = numerix.take(mesh._getFaceAreas(), interiorIDs)
+        interiorFaceNormals = numerix.take(mesh._getOrientedFaceNormals(), interiorIDs)
+        
+        # Courant-Friedrichs-Levy number
+        interiorCFL = abs(numerix.take(self._getGeomCoeff(mesh), interiorIDs)) * dt
+        
+        gradUpwind = (oldArray2 - oldArray1) / numerix.take(mesh._getCellDistances(), interiorIDs)
+        
+        vol1 = numerix.take(mesh.getCellVolumes(), id1)
+        self.CFL = interiorCFL / vol1
+        
+        oldArray1 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id1), interiorFaceNormals), gradUpwind) \
+            * (vol1 - interiorCFL) / interiorFaceAreas
 
-	vol2 = numerix.take(mesh.getCellVolumes(), id2)
-	
-	self.CFL = numerix.maximum(interiorCFL / vol2, self.CFL)
+        vol2 = numerix.take(mesh.getCellVolumes(), id2)
+        
+        self.CFL = numerix.maximum(interiorCFL / vol2, self.CFL)
 
-	oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
-	    * (vol2 - interiorCFL) / interiorFaceAreas
-	
-	return oldArray1, oldArray2
+        oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2), -interiorFaceNormals), -gradUpwind) \
+            * (vol2 - interiorCFL) / interiorFaceAreas
+        
+        return oldArray1, oldArray2
 
     def _getFigureOfMerit(self):
-	return min(0.2 / self.CFL)
+        return min(0.2 / self.CFL)

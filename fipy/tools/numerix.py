@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 11/16/06 {2:03:17 PM} 
+ #                                last update: 1/3/07 {3:00:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -128,7 +128,7 @@ def take(a, indices, axis=0, fill_value = None):
             if taken.shape != mask.shape:
                 mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
                 mask = MA.mask_or(MA.getmask(taken), mask)
- 	       
+               
         if mask is not nomask:
             taken = MA.array(data = taken, mask = mask)
         else:
@@ -141,10 +141,10 @@ def take(a, indices, axis=0, fill_value = None):
         taken = MA.take(a, indices, axis = axis)
     else:
         raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
- 	       
+               
     if fill_value is not None and type(taken) is type(MA.array((0))):
         taken = taken.filled(fill_value = fill_value)
- 	
+        
     return taken
 
 ## def take(arr, ids, axis = 0):
@@ -153,15 +153,15 @@ def take(a, indices, axis=0, fill_value = None):
 ##     """
     
 ##     if _isPhysical(arr):
-## 	return arr.take(ids, axis = axis)    
+##      return arr.take(ids, axis = axis)    
 ##     elif type(ids) is type(MA.array((0))):
 ##         return take(arr, ids, axis = axis)
 ##     elif type(arr) is type(array((0))):
-## 	return NUMERIX.take(arr, ids, axis = axis)
+##      return NUMERIX.take(arr, ids, axis = axis)
 ##     elif type(arr) is type(MA.array((0))):
-## 	return MA.take(arr, ids, axis = axis)
+##      return MA.take(arr, ids, axis = axis)
 ##     else:
-## 	raise TypeError, 'cannot take from object ' + str(arr)
+##      raise TypeError, 'cannot take from object ' + str(arr)
 
 ## take = NUMERIX.take
     
@@ -202,16 +202,16 @@ def put(arr, ids, values):
     """
 
     if _isPhysical(arr):
- 	return arr.put(ids, values)
+        return arr.put(ids, values)
     elif type(arr) is type(array((0))):
- 	return NUMERIX.put(arr, ids, values)
+        return NUMERIX.put(arr, ids, values)
     elif type(arr) is type(MA.array((0))):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
             return MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
         else:
             return MA.put(arr, ids, values)
     else:
-	raise TypeError, 'cannot put in object ' + str(arr)
+        raise TypeError, 'cannot put in object ' + str(arr)
 
 ## def put(arr, ids, values):
 ##     """
@@ -219,14 +219,14 @@ def put(arr, ids, values):
 ##     `ids` are set to the corresponding value of `values`.
 ##     """
 ##     if _isPhysical(arr):
-## 	return arr.put(ids, values)
+##      return arr.put(ids, values)
     
 ##     elif type(arr) is type(array((0))):
-## 	return NUMERIX.put(arr, ids, values)
+##      return NUMERIX.put(arr, ids, values)
 ##     elif type(arr) is type(MA.array((0))):
-## 	return MA.put(arr, ids, values)
+##      return MA.put(arr, ids, values)
 ##     else:
-## 	raise TypeError, 'cannot put in object ' + str(arr)
+##      raise TypeError, 'cannot put in object ' + str(arr)
     
 def reshape(arr, shape):
     """
@@ -235,13 +235,13 @@ def reshape(arr, shape):
     change).
     """
     if _isPhysical(arr):
-	return arr.reshape(shape)
+        return arr.reshape(shape)
     elif type(arr) is type(array((0))):
-	return NUMERIX.reshape(arr, tuple(shape))
+        return NUMERIX.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     else:
-	raise TypeError, 'cannot reshape object ' + str(arr)
+        raise TypeError, 'cannot reshape object ' + str(arr)
 
 def getShape(arr):
     """
@@ -277,16 +277,16 @@ def sum(arr, axis=0):
     The sum of all the elements of `arr` along the specified axis.
     """
     if _isPhysical(arr):
-	return arr.sum(axis)
+        return arr.sum(axis)
     elif type(arr) is type(array((0))):
 ##        print
 ##        print 'axis',axis
 ##        print 'arr',arr
-	return NUMERIX.sum(arr, axis)
+        return NUMERIX.sum(arr, axis)
     elif type(arr) is type(MA.array((0))):
-	return MA.sum(arr, axis)
+        return MA.sum(arr, axis)
     else:        
-	raise TypeError, 'cannot sum object ' + str(arr)
+        raise TypeError, 'cannot sum object ' + str(arr)
 
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
@@ -1115,13 +1115,13 @@ def _sqrtDotPy(a1, a2):
 ##    ni, nj = Numeric.shape(a1)
 ##    result = Numeric.zeros((ni,),'d')
 ##    inline.runInlineLoop1("""
-##	int j;
-##	result(i) = 0.;
-##	for (j = 0; j < nj; j++)
-##	{
-##	    result(i) += a1(i,j) * a2(i,j);
-##	}
-##	result(i) = sqrt(result(i));
+##      int j;
+##      result(i) = 0.;
+##      for (j = 0; j < nj; j++)
+##      {
+##          result(i) += a1(i,j) * a2(i,j);
+##      }
+##      result(i) = sqrt(result(i));
 ##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
 ##    return result
 
@@ -1130,10 +1130,10 @@ def _sqrtDotIn(a1, a2):
     
     unit1 = unit2 = 1
     if _isPhysical(a1):
-	unit1 = a1.inBaseUnits().getUnit()
+        unit1 = a1.inBaseUnits().getUnit()
         a1 = a1.getNumericValue()
     if _isPhysical(a2):
-	unit2 = a2.inBaseUnits().getUnit()
+        unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
     ni, nj = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
@@ -1141,12 +1141,12 @@ def _sqrtDotIn(a1, a2):
     inline._runInline("""
         int i;
         for (i = 0; i < ni; i++)
-	{
-	    int j;
+        {
+            int j;
             result1(i) = 0.;
             for (j = 0; j < nj; j++)
             {
-	        result1(i) += a1(i,j) * a2(i,j);
+                result1(i) += a1(i,j) * a2(i,j);
             }
             result1(i) = sqrt(result1(i));
         }
@@ -1165,8 +1165,8 @@ def _sqrtDotIn(a1, a2):
 
     
     if unit1 != 1 or unit2 != 1:
-	from fipy.tools.dimensions.physicalField import PhysicalField
-	result1 = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
+        from fipy.tools.dimensions.physicalField import PhysicalField
+        result1 = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
     return result1
 
 def allequal(first, second):
@@ -1176,13 +1176,13 @@ def allequal(first, second):
     """
     if _isPhysical(first):
         return first.allequal(second)
-## 	return MA.alltrue(first == second)
+##      return MA.alltrue(first == second)
     elif _isPhysical(second):
         return first.allequal(first)
-## 	return MA.alltrue(second == first)
+##      return MA.alltrue(second == first)
     else:
-	return MA.allequal(first, second)
-	    
+        return MA.allequal(first, second)
+            
 def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
     r"""
     Tests whether or not `first` and `second` are equal, subect to the given
@@ -1194,18 +1194,18 @@ def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
     their difference divided by `second`'s value is small compared to `rtol`.
     """
     if _isPhysical(first):
-	return first.allclose(other = second, atol = atol, rtol = rtol)
+        return first.allclose(other = second, atol = atol, rtol = rtol)
     elif _isPhysical(second):
-	return second.allclose(other = first, atol = atol, rtol = rtol)
+        return second.allclose(other = first, atol = atol, rtol = rtol)
     else:
-	return MA.allclose(first, second, atol = atol, rtol = rtol)
+        return MA.allclose(first, second, atol = atol, rtol = rtol)
 
 
 def take(a, indices, axis=0, fill_value = None):
     """
     Selects the elements of `a` corresponding to `indices`.
     """
- 	   
+           
     if _isPhysical(a):
         taken = a.take(indices, axis = axis)   
     elif type(indices) is type(MA.array((0))):
@@ -1213,7 +1213,7 @@ def take(a, indices, axis=0, fill_value = None):
         ## `indices` is a masked array.
         ##
         taken = MA.take(a, MA.filled(indices, 0), axis = axis)
- 	
+        
         mask = MA.getmask(indices)
         
         if mask is not MA.nomask:
@@ -1235,10 +1235,10 @@ def take(a, indices, axis=0, fill_value = None):
         taken = MA.take(a, indices, axis = axis)
     else:
         raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
- 	       
+               
     if fill_value is not None and type(taken) is type(MA.array((0))):
         taken = taken.filled(fill_value = fill_value)
- 	
+        
     return taken
 
 ## def MAtake(array, indices, fill = 0, axis = 0):

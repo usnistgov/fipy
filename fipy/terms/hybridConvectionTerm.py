@@ -6,7 +6,7 @@
  # 
  #  FILE: "hybridConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/22/05 {10:56:14 AM} 
+ #                                last update: 1/3/07 {3:22:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,17 +58,17 @@ class HybridConvectionTerm(ConvectionTerm):
     """
 
     class _Alpha(FaceVariable):
-	def __init__(self, P):
-	    FaceVariable.__init__(self, P.getMesh())
-	    self.P = self._requires(P)
-	    
-	def _calcValue(self):
-	    eps = 1e-3
-	    P  = self.P[:]
+        def __init__(self, P):
+            FaceVariable.__init__(self, P.getMesh())
+            self.P = self._requires(P)
+            
+        def _calcValue(self):
+            eps = 1e-3
+            P  = self.P[:]
 
-	    alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
-	    alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-	    alpha = numerix.where(                               -2. >  P,      -1 / P, alpha)
+            alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
+            alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)
+            alpha = numerix.where(                               -2. >  P,      -1 / P, alpha)
 
-	    return alpha
+            return alpha
 

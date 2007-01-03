@@ -7,7 +7,7 @@
  # 
  #  FILE: "linearPCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 11/16/06 {2:39:18 PM} 
+ #                                last update: 1/3/07 {3:13:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,16 +66,16 @@ class LinearPCGSolver(Solver):
     """
      
     def _solve(self, L, x, b):
-##  	print 'L:',L
-##  	print 'x:',x
-##  	print 'b:',b
-##  	raw_input('end output')
+##      print 'L:',L
+##      print 'x:',x
+##      print 'b:',b
+##      raw_input('end output')
     
-	A = L._getMatrix().to_sss()
+        A = L._getMatrix().to_sss()
 
-	Assor=precon.ssor(A)
+        Assor=precon.ssor(A)
 
- 	info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, self.iterations, Assor)
+        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, self.iterations, Assor)
 ##        print info, iter, relres
 
         self._raiseWarning(info, iter, relres)

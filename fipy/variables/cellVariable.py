@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 5/15/06 {3:58:41 PM} 
+ #                                last update: 1/3/07 {3:16:57 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,19 +69,19 @@ class CellVariable(Variable):
             array = None
         else:
             array =  numerix.zeros(self._getShapeFromMesh(mesh),'d')
-# 	array[:] = value
-	
-	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+#       array[:] = value
+        
+        Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
-	if hasOld:
-	    self.old = self.copy()
-	else:
+        if hasOld:
+            self.old = self.copy()
+        else:
             self.old = None
-	    
-	self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = self.volumeAverage = None
-	
+            
+        self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = self.volumeAverage = None
+        
     def _getVariableClass(self):
-	return CellVariable
+        return CellVariable
 
 ##    def setMesh(self, newMesh):
 ##        newValues = self.getValue(points = newMesh.getCellCenters())
@@ -92,25 +92,25 @@ class CellVariable(Variable):
         
         return self.__class__(
             mesh = self.mesh, 
-	    name = self.name + "_old", 
-	    value = self.getValue(),
-	    hasOld = 0)
-	    
+            name = self.name + "_old", 
+            value = self.getValue(),
+            hasOld = 0)
+            
     def __call__(self, point = None):
-	if point != None:
-	    return self[self.getMesh()._getNearestCellID(point)]
-	else:
-	    return Variable.__call__(self)
-## 	return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
-	
+        if point != None:
+            return self[self.getMesh()._getNearestCellID(point)]
+        else:
+            return Variable.__call__(self)
+##      return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
+        
     def getValue(self, points = (), cells = ()):
-	if points == () and cells == ():
-	    return Variable.getValue(self)
-	elif cells != ():
-	    return numerix.take(Variable.getValue(self), [cell.getID() for cell in cells])
-	else:
-	    return [self(point) for point in points]
-	
+        if points == () and cells == ():
+            return Variable.getValue(self)
+        elif cells != ():
+            return numerix.take(Variable.getValue(self), [cell.getID() for cell in cells])
+        else:
+            return [self(point) for point in points]
+        
     def setValue(self, value, cells = (), unit = None, where = None):
         """
         Patched values can be set by using either `cells` or `where`.
@@ -142,13 +142,13 @@ class CellVariable(Variable):
 
         """
             
-	if cells == ():
+        if cells == ():
             Variable.setValue(self, value, unit = unit, where = where)
-	else:
+        else:
             import warnings
             warnings.warn("'where' should be used instead of 'cells'", DeprecationWarning, stacklevel=2)
-	    for cell in cells:
-		self[cell.getID()] = value
+            for cell in cells:
+                self[cell.getID()] = value
 
             
     def getCellVolumeAverage(self):
@@ -170,11 +170,11 @@ class CellVariable(Variable):
             3.0
         """
 
-	if self.volumeAverage is None:
-	    from cellVolumeAverageVariable import _CellVolumeAverageVariable
-	    self.volumeAverage = _CellVolumeAverageVariable(self)
+        if self.volumeAverage is None:
+            from cellVolumeAverageVariable import _CellVolumeAverageVariable
+            self.volumeAverage = _CellVolumeAverageVariable(self)
         
-	return self.volumeAverage
+        return self.volumeAverage
 
     def getGrad(self):
         r"""
@@ -186,11 +186,11 @@ class CellVariable(Variable):
            
         as a `VectorCellVariable` (first-order gradient).
         """
-	if self.grad is None:
-	    from cellGradVariable import _CellGradVariable
-	    self.grad = _CellGradVariable(var = self, name = "%s_grad" % self.getName())
+        if self.grad is None:
+            from cellGradVariable import _CellGradVariable
+            self.grad = _CellGradVariable(var = self, name = "%s_grad" % self.getName())
         
-	return self.grad
+        return self.grad
 
     def getArithmeticFaceValue(self):
         r"""
@@ -225,11 +225,11 @@ class CellVariable(Variable):
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
-	if self.arithmeticFaceValue is None:
-	    from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
-	    self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
+        if self.arithmeticFaceValue is None:
+            from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
+            self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
-	return self.arithmeticFaceValue
+        return self.arithmeticFaceValue
 
     def getHarmonicFaceValue(self):
         r"""
@@ -265,11 +265,11 @@ class CellVariable(Variable):
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
-	if self.harmonicFaceValue is None:
-	    from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
-	    self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
+        if self.harmonicFaceValue is None:
+            from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
+            self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
-	return self.harmonicFaceValue
+        return self.harmonicFaceValue
 
     def getFaceGrad(self):
         r"""
@@ -281,11 +281,11 @@ class CellVariable(Variable):
            
         as a `VectorFaceVariable` (second-order gradient).
         """
-	if self.faceGrad is None:
-	    from faceGradVariable import _FaceGradVariable
-	    self.faceGrad = _FaceGradVariable(self)
+        if self.faceGrad is None:
+            from faceGradVariable import _FaceGradVariable
+            self.faceGrad = _FaceGradVariable(self)
 
-	return self.faceGrad
+        return self.faceGrad
 
     def getOld(self):
         """
@@ -319,30 +319,30 @@ class CellVariable(Variable):
             [ 6.  9.]
             
         """
-	if self.old is None:
-	    return self
-	else:
+        if self.old is None:
+            return self
+        else:
             return self.old
 ##             import weakref
-## 	    return weakref.proxy(self.old)
+##          return weakref.proxy(self.old)
 
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
         """
-	if self.old is not None:
+        if self.old is not None:
             self.old.setValue(self.getValue().copy())
 
     def _resetToOld(self):
-	if self.old is not None:
-	    self.setValue(self.old.getValue())
-	    
+        if self.old is not None:
+            self.setValue(self.old.getValue())
+            
     def _remesh(self, mesh):
-	self.value = numerix.array(self.getValue(points = mesh.getCellCenters()))
-	if self.old is not None:
-	    self.old._remesh(mesh)
-	self.mesh = mesh
-	self._markFresh()
+        self.value = numerix.array(self.getValue(points = mesh.getCellCenters()))
+        if self.old is not None:
+            self.old._remesh(mesh)
+        self.mesh = mesh
+        self._markFresh()
 
     def _getShapeFromMesh(mesh):
         """

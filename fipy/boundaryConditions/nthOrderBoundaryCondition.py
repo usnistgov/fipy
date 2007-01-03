@@ -6,7 +6,7 @@
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
  #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 8/10/05 {3:16:41 PM} 
+ #                                last update: 1/3/07 {3:03:59 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -82,14 +82,14 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         
         :Parameters:
             
-	  - `Ncells`:     *unused*
-	  - `MaxFaces`:   *unused*
-	  - `coeff`:      *unused*
+          - `Ncells`:     *unused*
+          - `MaxFaces`:   *unused*
+          - `coeff`:      *unused*
         """
         return (0, 0)
         
     def _getDerivative(self, order):
-	newOrder = self.order - order
+        newOrder = self.order - order
         if not self.derivative.has_key(newOrder):
             if newOrder > 1:
                 self.derivative[newOrder] = NthOrderBoundaryCondition(self.faces, self.value, newOrder)

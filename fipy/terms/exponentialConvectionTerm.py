@@ -6,7 +6,7 @@
  # 
  #  FILE: "exponentialConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/19/06 {11:17:50 AM} 
+ #                                last update: 1/3/07 {3:22:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,11 +57,11 @@ class ExponentialConvectionTerm(ConvectionTerm):
        main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
     """
     class _Alpha(FaceVariable):
-	def __init__(self, P):
-	    FaceVariable.__init__(self, P.getMesh())
-	    self.P = self._requires(P)
-	    
-	def _calcValue(self):
+        def __init__(self, P):
+            FaceVariable.__init__(self, P.getMesh())
+            self.P = self._requires(P)
+            
+        def _calcValue(self):
             """
             
             Test case added because `and` was being used instead of bitwise `&`.
@@ -75,16 +75,16 @@ class ExponentialConvectionTerm(ConvectionTerm):
                 [ 0.5  1.   0.5  0.5]
                 
             """
-	    eps = 1e-3
+            eps = 1e-3
             largeValue = 101.0
-	    P  = self.P.getNumericValue()
+            P  = self.P.getNumericValue()
 
-	    P = numerix.where(abs(P) < eps, eps, P)
-	    alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)
+            P = numerix.where(abs(P) < eps, eps, P)
+            alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)
             Pmin = numerix.where(P > largeValue + 1, largeValue + 1, P)
             alpha = numerix.where((abs(Pmin) > eps) & (Pmin <= largeValue), ((Pmin - 1) * numerix.exp(Pmin) + 1) / (Pmin * (numerix.exp(Pmin) - 1)), alpha)
 
-	    return alpha
+            return alpha
 
 def _test(): 
     import doctest

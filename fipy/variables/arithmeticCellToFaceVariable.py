@@ -6,7 +6,7 @@
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 12/22/05 {3:58:20 PM} 
+ #                                last update: 1/3/07 {3:25:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,26 +41,26 @@ from fipy.tools.inline import inline
 
 class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-	cell1 = numerix.take(self.var,id1)
-	cell2 = numerix.take(self.var,id2)
-	return (cell1 - cell2) * alpha + cell2
-	
+        cell1 = numerix.take(self.var,id1)
+        cell2 = numerix.take(self.var,id2)
+        return (cell1 - cell2) * alpha + cell2
+        
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
         
-	inline._runInline("""
+        inline._runInline("""
             int ID1 = id1(i);
             int ID2 = id2(i);
-	    double cell2 = var(ID2);
-	    val(i) = (var(ID1) - cell2) * alpha(i) + cell2;
-	""",
-	var = self.var.getNumericValue(),
-	val = val, 
-	alpha = alpha,
-	id1 = id1, id2 = id2,
-	ni = self.mesh._getNumberOfFaces())
+            double cell2 = var(ID2);
+            val(i) = (var(ID1) - cell2) * alpha(i) + cell2;
+        """,
+        var = self.var.getNumericValue(),
+        val = val, 
+        alpha = alpha,
+        id1 = id1, id2 = id2,
+        ni = self.mesh._getNumberOfFaces())
  
- 	return self._makeValue(value = val)
+        return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
 
-	
+        

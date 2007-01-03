@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 5/15/06 {3:58:57 PM} 
+ #                                last update: 1/3/07 {3:18:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,8 +50,8 @@ class VectorFaceVariable(Variable):
             array = None
         else:
             array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
-	
-	Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+        
+        Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
 
     def __call__(self, point = None):
         if point != None:
@@ -60,7 +60,7 @@ class VectorFaceVariable(Variable):
             return Variable.__call__(self)
             
     def _getVariableClass(self):
-	return VectorFaceVariable
+        return VectorFaceVariable
 
     def dot(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, baseClass = FaceVariable, canInline = False)

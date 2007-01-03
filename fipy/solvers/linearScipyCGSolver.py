@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearScipyCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/15/06 {3:55:02 PM} 
+ #                                last update: 1/3/07 {3:13:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,8 +98,8 @@ class LinearScipyCGSolver(Solver):
         from scipy.linalg.iterative import cg
         x[:], info = cg(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.iterations)
 
-	if (info != 0):
-	    print >> sys.stderr, 'cg not converged'
+        if (info != 0):
+            print >> sys.stderr, 'cg not converged'
             
     def _canSolveAssymetric(self):
         return False

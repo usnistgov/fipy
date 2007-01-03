@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 5/15/06 {3:57:06 PM} 
+ #                                last update: 1/3/07 {3:20:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,7 +100,7 @@ class ConvectionTerm(FaceTerm):
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : If a `DiffusionTerm` is given, the `ConvectionTerm` uses the diffusion coefficient to calculate the Peclet number.
         """
-	self.diffusionTerm = diffusionTerm
+        self.diffusionTerm = diffusionTerm
         self.stencil = None
         
         if not isinstance(coeff, VectorFaceVariable) \
@@ -110,8 +110,8 @@ class ConvectionTerm(FaceTerm):
         if isinstance(coeff, CellVariable) or isinstance(coeff, FaceVariable):
             raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
 
-	FaceTerm.__init__(self, coeff = coeff)
-	
+        FaceTerm.__init__(self, coeff = coeff)
+        
     def __neg__(self):
         """
         Negate the term.
@@ -122,13 +122,13 @@ class ConvectionTerm(FaceTerm):
         return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
 
     def _calcGeomCoeff(self, mesh):
-	if not isinstance(self.coeff, VectorFaceVariable):
-	    self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
+        if not isinstance(self.coeff, VectorFaceVariable):
+            self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
 
-	projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
-	
-	return projectedCoefficients.sum(1)
-	
+        projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
+        
+        return projectedCoefficients.sum(1)
+        
     def _getWeight(self, mesh):
 
         if self.stencil is None:
@@ -146,7 +146,7 @@ class ConvectionTerm(FaceTerm):
                                           'cell 2 diag'    : -(1-alpha),
                                           'cell 2 offdiag' : -alpha}}
 
-	return self.stencil
+        return self.stencil
 
     def _getDefaultSolver(self, solver):        
         if solver and not solver._canSolveAssymetric():

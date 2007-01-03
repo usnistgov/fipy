@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 12/22/05 {3:59:25 PM} 
+ #                                last update: 1/3/07 {3:24:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,70 +45,70 @@ from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 class _CellGradVariable(VectorCellVariable):
     def __init__(self, var, name = ''):
-	VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
-	self.var = self._requires(var)
+        VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
+        self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
 
-	inline._runInline("""
-	    val(i,j) = 0.;
-	    
-	    int k;
+        inline._runInline("""
+            val(i,j) = 0.;
             
-	    for (k = 0; k < M; k++) {
+            int k;
+            
+            for (k = 0; k < M; k++) {
                 int id = ids(i, k);
-		val(i, j) += orientations(i, k) * areaProj(id, j) * faceValues(id);
-	    }
-		
-	    val(i, j) /= volumes(i);
-	""",val = val,
+                val(i, j) += orientations(i, k) * areaProj(id, j) * faceValues(id);
+            }
+                
+            val(i, j) /= volumes(i);
+        """,val = val,
             ids = numerix.array(MA.filled(ids, 0)),
             orientations = numerix.array(MA.filled(orientations, 0)),
             volumes = numerix.array(volumes),
             areaProj = numerix.array(self.mesh._getAreaProjections()),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
             M = M,
-	    ni = N, nj = self.mesh.getDim())
+            ni = N, nj = self.mesh.getDim())
 
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
         
 ##    def _calcValueIn(self, N, M, ids, orientations, volumes):
-##	inline.runInline("""
-##	    val(i,j) = 0.;
-	    
-##	    int k;
-##	    for (k = 0; k < nk; k++) {
-##		val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
-##	    }
-		
-##	    val(i,j) /= volumes(i);
-##	""",
-##	val = self._getArray(), ids = ids, orientations = orientations, volumes = volumes,
-##	faceGradientContributions = self.faceGradientContributions.getNumericValue(),
-##	ni = N, nj = self.mesh.getDim(), nk = M
-##	)
-	    
+##      inline.runInline("""
+##          val(i,j) = 0.;
+            
+##          int k;
+##          for (k = 0; k < nk; k++) {
+##              val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
+##          }
+                
+##          val(i,j) /= volumes(i);
+##      """,
+##      val = self._getArray(), ids = ids, orientations = orientations, volumes = volumes,
+##      faceGradientContributions = self.faceGradientContributions.getNumericValue(),
+##      ni = N, nj = self.mesh.getDim(), nk = M
+##      )
+            
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-	contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
+        contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
 
         contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = numerix.reshape(orientations, (N, M, 1))
-	grad = numerix.array(numerix.sum(orientations * contributions, 1))
+        grad = numerix.array(numerix.sum(orientations * contributions, 1))
 
-	grad = grad / volumes[:,numerix.NewAxis]
+        grad = grad / volumes[:,numerix.NewAxis]
 
-	return grad
+        return grad
 
     def _calcValue(self):
-	N = self.mesh.getNumberOfCells()
-	M = self.mesh._getMaxFacesPerCell()
-	
-	ids = self.mesh._getCellFaceIDs()
+        N = self.mesh.getNumberOfCells()
+        M = self.mesh._getMaxFacesPerCell()
+        
+        ids = self.mesh._getCellFaceIDs()
 
-	orientations = self.mesh._getCellFaceOrientations()
-	volumes = self.mesh.getCellVolumes()
+        orientations = self.mesh._getCellFaceOrientations()
+        volumes = self.mesh.getCellVolumes()
 
-	return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)
+        return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

@@ -2,35 +2,59 @@
 Simple Mac OS X Installation
 ============================
 
-These instructions are for the `Mac OS X`_ platforms. Please see the more
-general |INSTALLATION-txt| for detailed installation instructions. These
-instructions are not the only way to set up |FiPy| on `Mac OS X`_ but
-represent the most expedient way from our experience to have a usable
+.. contents::
+   :local:
+   :depth: 2
+
+We present two comparatively simple routes to installing |FiPy| on `Mac OS
+X`_. The `Fink Installation`_ procedure is appropriate if you are already
+familiar with the Fink_ package manager. The `Binary Installation`_
+procedure is the most expedient if you have never heard of Fink_ or if
+you are not comfortable with it. Please see the more general
+|INSTALLATION-txt| for detailed installation instructions. These
+instructions are not the only ways to set up |FiPy| on `Mac OS X`_ but
+represent the most expedient ways, from our experience, to have a usable
 installation up and running.
+
+.. attention::
+
+   You must have an administrator account to install most of the following 
+   packages.
 
 .. include:: utils/include.txt
 
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
+.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
+Binary Installation
+===================
 
-Required Packages
-=================
+.. attention::
+
+   Choose this method if you have never heard of Fink_ or if you are not
+   comfortable with it for any reason. Binary installation is the fastest 
+   way to get |FiPy| up and running, but may offer less flexibility in the 
+   long run.
+   
+   .. note:: 
+   
+      If you wish to run the superfill examples, you will require the
+      MayaVi_ viewer, which is best installed via Fink_, so you should
+      follow the `Fink Installation`_ instructions.
 
 Pre-built binaries for many of the required packages are available at 
-pythonmac_.
+http://pythonmac.org/packages/py24-fat/.
 
-.. _pythonmac: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pythonmac.org/
+.. _pythonmac: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pythonmac.org/packages/py24-fat/
 
 Python
 ------
 
-http://pythonmac.org/packages/py24-fat/
-
 Python is pre-installed on `Mac OS X`_, but installation of other packages
 is much easier if you upgrade to the latest version of
-``Universal-MacPython-2.4.X-XXXX-XX-XX.dmg``. Your existing installation will
-not be harmed.
+``Universal-MacPython-2.4.X-XXXX-XX-XX.dmg`` from pythonmac_. Your existing
+installation will not be harmed.
 
 .. note::
 
@@ -42,70 +66,201 @@ not be harmed.
 Numeric
 -------
 
-http://pythonmac.org/packages/py24-fat/
-
 Download and install the latest version of the 
-``Numeric-XX.X-py2.4-macosx10.4.zip``.
-
+``Numeric-XX.X-py2.4-macosx10.4.zip`` from pythonmac_.
 
 
 matplotlib
 ----------
 
-http://matplotlib.sourceforge.net/
+In order to see simulation results, you will need a viewer. We recommend
+you download and install the latest version of
+``matplotlib-X.XX.X-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
 
-In order to see simulation results, you will need a viewer. We recommend 
-matplotlib_, which has several prerequisites:
+
+matplotlib has a few prerequisites:
 
 NumPy
 ~~~~~
 
-http://pythonmac.org/packages/py24-fat/
-
 Download and install the latest version of 
-``numpy-X.XX-py2.4-macosx10.4.mpkg.zip``.
+``numpy-X.XX-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
 
 wxPython
 ~~~~~~~~
 
-http://pythonmac.org/packages/py24-fat/
-
 Download and install the latest version of
-``wxPythonX.X-osx-unicode-X.X.X.X-universal10.4-py2.4.dmg``.
-
-matplotlib
-~~~~~~~~~~
-
-http://pythonmac.org/packages/py24-fat/
-
-Now, the actual viewer. Download and install
-the latest version of ``matplotlib-X.XX.X-py2.4-macosx10.4.mpkg.zip``. 
+``wxPythonX.X-osx-unicode-X.X.X.X-universal10.4-py2.4.dmg`` from
+pythonmac_.
 
 
-Pysparse
+PySparse
 --------
 
-http://sourceforge.net/project/showfiles.php?group_id=101403
+http://pysparse.sourceforge.net
 
-Download and install the latest version of PySparse for `Mac OS X`_
-(``pysparse-x.y.z.macosx10.4-py2.X.zip``). Be sure to select the version
-compiled with the correct version of Python to match the pythonmac 
-installation.
+Download and install the latest version of
+``pysparse-X.XX.XXX.macosx-10.4-py24.dmg`` from
+http://sourceforge.net/project/showfiles.php?group_id=101403.
 
-.. attention::
-
-   Need to provide a Mac OS X installer!!!
-   
 |FiPy|
 ------
 
-http://www.ctcms.nist.gov/fipy/download/
+http://www.ctcms.nist.gov/fipy/
 
-Download and unpack the source archive (``FiPy-x.y.tar.gz``). From within 
-the |FiPy| directory, execute the command-line instruction::
+Download and unpack the source archive (``FiPy-x.y.tar.gz``).     
 
-    $ python setup.py install
+From within the |FiPy| directory, execute the command-line instruction::
 
+    $ sudo python setup.py install
+
+.. note::
+
+   You may now choose to install `Optional Packages`_ or you may choose 
+   proceed directly to `Using FiPy on Mac OS X`_.
+
+
+
+Fink Installation
+=================
+   
+.. attention::
+
+   Choose this method if you are already familiar with Fink_ or with Linux_
+   package managers in general (such as Debian_ packages or RPMs). Fink_ 
+   installation takes considerably longer than `Binary Installation`_, but 
+   offers a wealth of other programs that can make it worthwhile.
+
+The Fink_ package manager automatically handles the many intricate
+dependencies involved in building open source software. Fink_ is based on
+the Debian_ tools and the package manager model will be familiar to Linux_
+users.
+
+.. _Debian: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org
+.. _Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.linux.org
+
+
+Xcode Development Tools
+-----------------------
+
+http://developer.apple.com/tools/xcode
+
+Some required packages are not available from Fink_ as binaries, so you 
+will need to have the developer tools for `Mac OS X`_. They may already 
+be installed in the ``/Developer/`` directory, but a different version may 
+be required by Fink_; see the recommendations at http://fink.sourceforge.net/download
+
+.. note::
+
+   Free registration with the `Apple Developer Connection`_ is required.
+   
+.. _Apple Developer Connection: 
+
+X11
+---
+
+Open the X11 application.
+
+Set your ``$DISPLAY`` environment variable to ``:0.0``.
+
+.. note:: 
+
+   If the X11 application is not already present in the
+   ``/Applications/Utilities/`` directory, it should be available as an
+   optional package on the OS installation media that came with your
+   computer.
+
+
+Fink
+----
+
+http://fink.sourceforge.net/download
+
+Ensure that Fink_ is installed and up to date for your OS.
+
+.. note::
+
+   The following steps have been tested with Fink_ 0.8.1 on `Mac OS X`_
+   10.4 "Tiger". Variations may be necessary for other OS versions.
+
+unstable tree
+~~~~~~~~~~~~~
+
+Follow the directions at http://fink.sourceforge.net/faq/usage-fink.php#unstable
+
+.. note::
+
+   We recommend that you accept all defaults presented by 
+   ``fink selfupdate``.
+
+.. note:: 
+
+   "unstable" is not as scary as it sounds. The Fink_ administrators tend 
+   to be very conservative about what packages are designated "stable".
+
+Remaining Fink packages
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Execute the following commands from Terminal application (you can use 
+``xterm`` or any other terminal application of your choosing)::
+
+    $ sudo apt-get install python
+    $ sudo apt-get install numeric-py24
+    $ fink --use-binary-dist install matplotlib-py24
+
+.. attention::
+
+   The matplotlib_ installation will automatically download and build a 
+   number of other packages. This process can take quite awhile. We 
+   recommend that you accept all defaults offered at the beginning of this 
+   process.
+   
+.. note::
+
+   If the installation of matplotlib-py24 fails for some reason, we 
+   recommend you execute the ``install`` command again.
+      
+A few changes are needed to allow matplotlib_ to run::
+
+    $ mkdir ~/.matplotlib
+    $ curl http://matplotlib.sourceforge.net/matplotlibrc \
+      > ~/.matplotlib/matplotlibrc
+
+You may now choose to either edit the "backend" configuration in
+``~/.matplotlib/matplotlibrc`` to read::
+
+    backend      : TkAgg
+    
+or you can install wxPython with::
+
+    $ fink --use-binary-dist install wxpython-py24
+    
+(the second choice takes awhile, as it needs to build things).
+
+PySparse installation
+---------------------
+
+http://pysparse.sourceforge.net
+
+Download and unpack the latest version of
+``pysparse-X.XX.XXX.tar.gz`` from
+http://sourceforge.net/project/showfiles.php?group_id=101403. From within 
+the PySparse directory, execute::
+
+    $ python setup.py build
+    $ sudo python setup.py install
+
+|FiPy| installation
+-------------------
+
+Install |FiPy|_ packages as explained above.
+
+.. note::
+
+   You may now choose to install `Optional Packages`_ or you may choose 
+   proceed directly to `Using FiPy on Mac OS X`_.
+
+   
 Optional Packages
 =================
 
@@ -114,6 +269,18 @@ ipython
 
 http://ipython.scipy.org/moin/Download
 
+.. warning::
+
+   There is a problem involving `readline` in the Python_ distribution
+   from pythonmac_ that will cause ipython to crash in response to using
+   the arrow keys. The same problem apparently exists in the Python_
+   distributed with `Mac OS X`_. 
+   
+   .. note:: 
+   
+      If you followed the `Fink Installation`_ procedure, this bug is not
+      an issue and you can safely use ipython.
+   
 This interactive Python shell is nicer to use than the default, and 
 integrates nicely with matplotlib_. Download the source and follow the 
 building and installation instructions for `Mac OS X`_.
@@ -132,86 +299,105 @@ points to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
    This is a required package for superfill examples.
 
-PyVTK
------
-
-http://www.ctcms.nist.gov/fipy/download/
-
-If you wish to use Mayavi, PyVTK is a requirement.  Download and
-install the latest version from the |FiPy| downloads page
-(``PyVTK-x.y.z.win32.exe``).
-
-.. note::
-
-   This is a required package for superfill examples.
-
-Mayavi
+MayaVi
 ------
 
-Mayavi comes with Enthought Python, so no installation steps need to
-be taken. However, there seems to be a file out of place. In order to
-make Mayavi work correctly, open the
-``C:\Python2X\Lib\site-packages\vtk_python\`` directory in a browser
-and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python2X\``
-directory.
+This is one package that is probably much easier to install via Fink_ than 
+by hand. You might attempt to follow the instructions at 
+http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite 
+out of date and did not work for us.
 
+If you have already followed the `Fink Installation`_ instructions, then 
+you can go to the command line and type::
+
+    $ sudo apt-get install mayavi-py24
+    
 .. note::
 
    This is a required step for superfill examples.
 
+.. note::
+
+   You are now ready to proceed to `Using FiPy on Mac OS X`_.
+   
+   
 Using |FiPy| on Mac OS X
 ========================
 
-We have no experience with using the IDLE_ environment on `Mac OS X`_.
+We do a substantial amount of our |FiPy| development on `Mac OS X`_, so you
+can assume that it is well-tested on this platform. We exlusively use the
+unix command line to interact with |FiPy|. The commands in |examples/| are
+written with the assumption that they will be executed from the command
+line. For instance, from within the main |FiPy| directory, you can type::
 
-For those that are averse to the Windows command line, the IDLE_
-environment is recommended. IDLE_ is packaged with Enthought Python
-and will appear in the Windows Program menu after installation.
+    $ python examples/diffusion/mesh1D.py
 
-Interactive Viewing
--------------------
+A matplotlib_ viewer should appear and you should be prompted 
+through a series of examples. 
 
-Some versions of Enthought Python have been known to have problems
-with interactive viewing. If this turns out to be the case, follow
-these instructions:
+.. note::
 
-   - Click on ``Start``
-   - Click on ``Programs``
-   - Click on ``Python 2.X (Enthought Edition)``
-   - Right click on ``IDLE (Python GUI)`` and click on ``Create Shortcut`` which creates ``IDLE (Python GUI)(2)``
-   - Right click on ``IDLE (Python GUI)(2)``
-   - Click on properties
-   - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
-   - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
+   We strongly recommend you proceed through |examples/|, but at 
+   the very least work through |examples/diffusion/mesh1D-py| to understand 
+   the notation and basic concepts of |FiPy|.
 
-Import a module and view the results
-------------------------------------
+
+IDLE Environment
+----------------
+
+For those that are averse to the command line, the IDLE_ environment is
+installed by the pythonmac_ Python_ installer and will appear in the
+MacPython 2.4 folder of the Applications folder.
+
+.. note:: We are not aware of a Fink_ package for IDLE_.
+
+.. attention:: 
+
+   We have no experience with using the IDLE_ environment on `Mac OS X`_, 
+   but the following steps do work.
 
 You can use the IDLE_ file browser to open the examples and run the
 module.
 
-    - Click on ``File``
-    - Click on ``Open``
-    - Open ``C:\Path\To\Base\FiPy\directory\examples\diffusion\steadyState\mesh50x50\input.py``
+    - Open the IDLE_ application, located in ``/Applications/MacPython 2.4/``
+    - Select the Python Shell window. 
+      You can close the Console window if it appears.
+    - Choose File > Open
+    - Select ``/Path/To/Base/FiPy/Directory/examples/diffusion/mesh1D.py`` 
+      and click the Open button
 
-This will open an editor, press the F5 key to run the example.
-A Matplotlib viewer should appear with rainbow stripes.
+The script will open in an editor window.
 
-Another way to use |FiPy| examples is to import the example file and
-then run any functionality it may have. For example at the IDLE_
-command line run the following code:
+    - Choose Run > Run Module
+    
+A matplotlib_ viewer should appear and the Python Shell should prompt you 
+through a series of examples.
+
+Another way to use |FiPy| examples is to import the example file and then
+run any functionality it may have. For example, execute the following
+commands in the Python Shell:
 
     >>> import sys
-    >>> sys.path.append('C://Path//To//Base//FiPy//Directory')
+    >>> sys.path.append('\Path\To\Base\FiPy\Directory')
     >>> from examples.levelSet.electroChem.inputGold import runGold
     >>> runGold(numberOfSteps = 100)
 
-If you have installed the optional packages, a MayaVi viewer should
+If you have installed the optional packages, a MayaVi_ viewer should
 appear with a trench filling simulation.
 
-   .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
+.. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
-   .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. |latexMesh1D-py| raw:: latex
+
+   Section~\ref{sec:Examples:diffusion:mesh1D} ``\titleref{sec:Examples:diffusion:mesh1D}''
+
+.. |htmlMesh1D-py| raw:: html
+
+   Example 7.1: "Module <code>examples.diffusion.mesh1D</code>" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |examples/diffusion/mesh1D-py| replace:: |htmlMesh1D-py| |latexMesh1D-py|
 
 
 

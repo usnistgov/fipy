@@ -69,7 +69,8 @@ install.
 
 .. note::
 
-   Simple instructions for Windows users are in |WINDOWS-INSTALLATION-txt|.
+   Simple instructions for `Mac OS X`_ users are in |MACOSX-INSTALLATION-txt|.
+   Simple instructions for Windows_ users are in |WINDOWS-INSTALLATION-txt|.
 
 The only elements of |FiPy| that are likely to be platform-dependent
 are the viewers, but at least one viewer should work on each platform.
@@ -86,7 +87,8 @@ follow explicitly any instructions given in the respective packages'
 
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Debian Linux:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
-.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/default.mspx
+.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
 .. |latexWINDOWSINSTALL| raw:: latex
@@ -98,6 +100,17 @@ follow explicitly any instructions given in the respective packages'
    the <a href="windows-installation.html">Windows Installation Guide</a>
 
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWSINSTALL| |latexWINDOWSINSTALL|
+
+.. |latexMACOSXINSTALL| raw:: latex
+
+   Section~\ref{sec:MacOSXInstallation} ``\titleref{sec:MacOSXInstallation}''
+
+.. |htmlMACOSXINSTALL| raw:: html
+
+   the <a href="macosx-installation.html">Mac OS X Installation Guide</a>
+
+
+.. |MACOSX-INSTALLATION-txt| replace:: |htmlMACOSXINSTALL| |latexMACOSXINSTALL|
 
 Required Packages
 =================

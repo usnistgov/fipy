@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 3/4/06 {12:44:42 AM}
+ #                                last update: 1/3/07 {3:02:27 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,20 +74,20 @@ class FixedValue(BoundaryCondition):
 
     
     def _buildMatrix(self, Ncells, MaxFaces, coeff):
-	"""Set boundary equal to value.
-	
-	A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
-	Term's (**L**, **b**) matrices.
-	
-	:Parameters:
-	  - `Ncells`:   Size of matrices
-	  - `MaxFaces`: bandwidth of **L**
-	  - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
+        """Set boundary equal to value.
+        
+        A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
+        Term's (**L**, **b**) matrices.
+        
+        :Parameters:
+          - `Ncells`:   Size of matrices
+          - `MaxFaces`: bandwidth of **L**
+          - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
             this exterior face
-	"""
-	
-	LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
-	LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
+        """
+        
+        LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
+        LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
         ## FixedValue's _buildMatrix() method is called for
@@ -96,15 +96,15 @@ class FixedValue(BoundaryCondition):
         ## if not hasattr(self, 'minusCoeff'):
         ##     self.minusCoeff = -coeff['cell 1 offdiag']
         ##     self.minusCoeff.dontCacheMe()
-	
-	bb = numerix.zeros((Ncells,),'d')
-
-	vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
         
-	return (LL, bb)
-	
+        bb = numerix.zeros((Ncells,),'d')
+
+        vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
+        
+        return (LL, bb)
+        
     def _getValue(self):
-	return self.value
+        return self.value
 
 
 

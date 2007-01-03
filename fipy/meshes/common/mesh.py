@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/15/06 {3:51:57 PM} 
+ #                                last update: 1/3/07 {3:07:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,14 +55,14 @@ class Mesh:
     """
 
     def __init__(self):
-	self.scale = {
-	    'length': 1.,
-	    'area': 1.,
-	    'volume': 1.
-	}
-	
-	self._calcTopology()
-	self._calcGeometry()
+        self.scale = {
+            'length': 1.,
+            'area': 1.,
+            'volume': 1.
+        }
+        
+        self._calcTopology()
+        self._calcGeometry()
     
     def __add__(self, other):
         """
@@ -228,41 +228,41 @@ class Mesh:
     """topology methods"""
     
     def _calcTopology(self):
-	self._calcInteriorAndExteriorFaceIDs()
-	self._calcInteriorAndExteriorCellIDs()
-	self._calcCellToFaceOrientations()
-	self._calcAdjacentCellIDs()
-	self._calcCellToCellIDs()
+        self._calcInteriorAndExteriorFaceIDs()
+        self._calcInteriorAndExteriorCellIDs()
+        self._calcCellToFaceOrientations()
+        self._calcAdjacentCellIDs()
+        self._calcCellToCellIDs()
         self._calcCellToCellIDsFilled()
        
     """calc topology methods"""
-	
+        
     def _calcInteriorAndExteriorFaceIDs(self):
-	pass
+        pass
 
     def _calcExteriorCellIDs(self):
-	pass
-	
+        pass
+        
     def _calcInteriorCellIDs(self):
         pass
-##	self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
+##      self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
 ##        onesWhereInterior = numerix.zeros(self.numberOfCells)
 ##        numerix.put(onesWhereInterior, self.exteriorCells, numerix.zeros((len(self.exteriorCellIDs))))
 ##        self.interiorCellIDs = numerix.nonzero(onesWhereInterior)
 ##        self.interiorCellIDs = (0,0)
         
     def _calcInteriorAndExteriorCellIDs(self):
-	self._calcExteriorCellIDs()
-	self._calcInteriorCellIDs()
+        self._calcExteriorCellIDs()
+        self._calcInteriorCellIDs()
 
     def _calcCellToFaceOrientations(self):
-	pass
+        pass
 
     def _calcAdjacentCellIDs(self):
-	pass
+        pass
 
     def _calcCellToCellIDs(self):
-	pass
+        pass
 
     def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
@@ -288,28 +288,28 @@ class Mesh:
             return self._getMaxFacesPerCell() * numerix.ones(len(cellFaceIDs))
 
     def getExteriorFaces(self):
-	pass
+        pass
 
     def getInteriorFaces(self):
         pass
-	
+        
     def _getExteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
-	return self.exteriorCellIDs
+        return self.exteriorCellIDs
 
     def _getInteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
-	return self.interiorCellIDs
+        return self.interiorCellIDs
 
     def _getCellFaceOrientations(self):
         return self.cellToFaceOrientations
 
     def getNumberOfCells(self):
-	return self.numberOfCells
+        return self.numberOfCells
     
     def _getNumberOfVertices(self):
         return len(self.vertexCoords[:,0])
-	
+        
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs
 
@@ -317,12 +317,12 @@ class Mesh:
         return self.dim
 
     def _getCellsByID(self, ids = None):
-	pass
-	    
+        pass
+            
     def getCells(self, filter = None, ids = None, **args):
-	"""Return `Cell` objects of `Mesh`."""
-	cells = self._getCellsByID(ids)
-	
+        """Return `Cell` objects of `Mesh`."""
+        cells = self._getCellsByID(ids)
+        
         if filter is not None:
             cells = [cell for cell in cells if filter(cell, **args)]
 
@@ -332,81 +332,81 @@ class Mesh:
         pass
     
     def getFaces(self, filter = None, **args):
-	"""Return `Face` objects of `Mesh`."""
-	faces = self._getFaces()
-	
+        """Return `Face` objects of `Mesh`."""
+        faces = self._getFaces()
+        
         if filter is not None:
-	    return [face for face in faces if filter(face, **args)]
+            return [face for face in faces if filter(face, **args)]
 
         return faces
 
     def _getMaxFacesPerCell(self):
-	pass
+        pass
 
     def _getNumberOfFaces(self):
-	return self.numberOfFaces
+        return self.numberOfFaces
 
     def _getCellToCellIDs(self):
         return self.cellToCellIDs
 
     def _getCellToCellIDsFilled(self):
         return self.cellToCellIDsFilled
-	
+        
     """geometry methods"""
     
     def _calcGeometry(self):
-	self._calcFaceAreas()
-	self._calcFaceNormals()
-	self._calcOrientedFaceNormals()
-	self._calcCellVolumes()
-	self._calcCellCenters()
-	self._calcFaceToCellDistances()
-	self._calcCellDistances()        
-	self._calcFaceTangents()
-	self._calcCellToCellDistances()
-	self._calcScaledGeometry()
+        self._calcFaceAreas()
+        self._calcFaceNormals()
+        self._calcOrientedFaceNormals()
+        self._calcCellVolumes()
+        self._calcCellCenters()
+        self._calcFaceToCellDistances()
+        self._calcCellDistances()        
+        self._calcFaceTangents()
+        self._calcCellToCellDistances()
+        self._calcScaledGeometry()
         self._calcCellAreas()
        
     """calc geometry methods"""
     
     def _calcFaceAreas(self):
-	pass
-	
+        pass
+        
     def _calcFaceNormals(self):
-	pass
-	
+        pass
+        
     def _calcOrientedFaceNormals(self):
-	pass
-	
+        pass
+        
     def _calcCellVolumes(self):
-	pass
-	
+        pass
+        
     def _calcCellCenters(self):
-	pass
-	
+        pass
+        
     def _calcFaceToCellDistances(self):
-	pass
+        pass
 
     def _calcCellDistances(self):
-	pass
+        pass
         
     def _calcAreaProjections(self):
-	pass
+        pass
 
     def _calcOrientedAreaProjections(self):
-	pass
+        pass
 
     def _calcFaceTangents(self):
-	pass
+        pass
 
     def _calcFaceToCellDistanceRatio(self):
-	pass
+        pass
 
     def _calcFaceAspectRatios(self):
-	self.faceAspectRatios = self._getFaceAreas() / self._getCellDistances()
+        self.faceAspectRatios = self._getFaceAreas() / self._getCellDistances()
 
     def _calcCellToCellDistances(self):
-	pass
+        pass
 
     def _calcCellAreas(self):
         from fipy.tools.numerix import take
@@ -419,12 +419,12 @@ class Mesh:
 
     def _getFaceNormals(self):
         return self.faceNormals
-	
+        
     def getCellVolumes(self):
-	return self.scaledCellVolumes
+        return self.scaledCellVolumes
 
     def getCellCenters(self):
-	return self.scaledCellCenters
+        return self.scaledCellCenters
 
     def _getFaceToCellDistances(self):
         return self.scaledFaceToCellDistances
@@ -449,12 +449,12 @@ class Mesh:
 
     def _getFaceTangents2(self):
         return self.faceTangents2
-	
+        
     def _getFaceAspectRatios(self):
-	return self.faceAspectRatios
+        return self.faceAspectRatios
     
     def _getCellToCellDistances(self):
-	return self.scaledCellToCellDistances
+        return self.scaledCellToCellDistances
 
     def _getCellNormals(self):
         return self.cellNormals
@@ -471,36 +471,36 @@ class Mesh:
         self.scale['length'] = PhysicalField(value = value)
         if self.scale['length'].getUnit().isDimensionless():
             self.scale['length'] = 1
-	self._calcHigherOrderScalings()
-	self._calcScaledGeometry()
+        self._calcHigherOrderScalings()
+        self._calcScaledGeometry()
 
     def _calcHigherOrderScalings(self):
-	self.scale['area'] = self.scale['length']**2
-	self.scale['volume'] = self.scale['length']**3
+        self.scale['area'] = self.scale['length']**2
+        self.scale['volume'] = self.scale['length']**3
 
     def _calcScaledGeometry(self):
-	self.scaledFaceAreas = self.scale['area'] * self.faceAreas
-	self.scaledCellVolumes = self.scale['volume'] * self.cellVolumes
-	self.scaledCellCenters = self.scale['length'] * self.cellCenters
-	
-	self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
-	self.scaledCellDistances = self.scale['length'] * self.cellDistances
-	self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
-	
-	self._calcAreaProjections()
-	self._calcOrientedAreaProjections()
-	self._calcFaceToCellDistanceRatio()
-	self._calcFaceAspectRatios()
-	
+        self.scaledFaceAreas = self.scale['area'] * self.faceAreas
+        self.scaledCellVolumes = self.scale['volume'] * self.cellVolumes
+        self.scaledCellCenters = self.scale['length'] * self.cellCenters
+        
+        self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
+        self.scaledCellDistances = self.scale['length'] * self.cellDistances
+        self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
+        
+        self._calcAreaProjections()
+        self._calcOrientedAreaProjections()
+        self._calcFaceToCellDistanceRatio()
+        self._calcFaceAspectRatios()
+        
     """point to cell distances"""
     
     def _getPointToCellDistances(self, point):
-	tmp = self.getCellCenters() - PhysicalField(point)
-	from fipy.tools import numerix
-	return numerix.sqrtDot(tmp, tmp)
+        tmp = self.getCellCenters() - PhysicalField(point)
+        from fipy.tools import numerix
+        return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
-	return self._getCellsByID([self._getNearestCellID(point)])[0]
+        return self._getCellsByID([self._getNearestCellID(point)])[0]
 
     def _getNearestCellID(self, point):
         try:
@@ -508,7 +508,7 @@ class Mesh:
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
         i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 1))
-	return i    
+        return i    
 
 ## pickling
 

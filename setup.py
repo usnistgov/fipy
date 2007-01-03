@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/20/06 {1:11:55 PM} 
+ #                                last update: 11/22/06 {2:54:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -226,6 +226,7 @@ class build_docs (Command):
                                           'examples/README'], 
                                      'startlower': 
                                          ['WINDOWS-INSTALLATION',
+                                          'MACOSX-INSTALLATION',
                                           'examples/levelSet/electroChem/README']}
                                          
                                      

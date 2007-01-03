@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/06 {3:45:21 PM} 
+ #                                last update: 12/11/06 {11:18:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -209,7 +209,7 @@ The source term is
 
    \begin{align*}
    S =
-   -\frac{\partial f}{\partial \phi} &= \frac{W}{2}g'(\phi) + L\frac{T-T_M}{T_M}p'(\phi) \\
+   -\frac{\partial f}{\partial \phi} &= -\frac{W}{2}g'(\phi) - L\frac{T-T_M}{T_M}p'(\phi) \\
    &= -\left[W\phi(1-\phi)(1-2\phi) + L\frac{T-T_M}{T_M}30\phi^2(1-\phi)^2\right] \\
    &= m_\phi\phi(1-\phi)
    \end{align*}
@@ -439,6 +439,30 @@ run-time between the fully explicit source and the optimized semi-implicit
 source, the benefit of 60% fewer sweeps should be obvious for larger
 systems and longer iterations.
     
+-----
+
+Newton's method
+
+    >>> dphase = CellVariable(name="dphase", mesh=mesh)
+    >>> residual = CellVariable(name="residual", mesh=mesh)
+    >>> ## jacobian = diffusionTerm + S1 * dphase * (S1 > 0) + ImplicitSourceTerm(coeff = S1 * (S1 < 0)) + residual
+    >>> jacobian = diffusionTerm + ImplicitSourceTerm(coeff = S1) + residual
+
+    >>> phase.setValue(1.)
+    >>> phase.setValue(0., where=x > L/2)
+
+    >>> for i in range(4000):
+    ...     residual.setValue(eq.justResidualVector(var=phase))
+    ...     res = jacobian.sweep(var = dphase)
+    ...     phase.setValue(phase() + 1 * dphase())
+    ... ##     viewer.plot()
+    ...     print i, res
+    ... if __name__ == '__main__':
+    ...     viewer.plot()
+    ...     raw_input("Newton's method, semi-implicit. Press <return> to proceed...")
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    1
+
 -----
 
 This example has focused on just the region of the phase field interface in

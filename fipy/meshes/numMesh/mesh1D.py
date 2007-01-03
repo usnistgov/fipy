@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 4/1/05 {5:39:10 PM} 
+ #                                last update: 1/3/07 {3:04:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,8 +74,8 @@ class Mesh1D(Mesh):
         self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[:, numerix.NewAxis]
 
     def _calcHigherOrderScalings(self):
-	self.scale['area'] = 1.
-	self.scale['volume'] = self.scale['length']
+        self.scale['area'] = 1.
+        self.scale['volume'] = self.scale['length']
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

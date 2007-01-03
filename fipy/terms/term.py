@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/3/07 {2:35:16 PM} 
+ #                                last update: 1/3/07 {3:15:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -261,7 +261,7 @@ class Term:
         else:
             from fipy.terms.binaryTerm import _AdditionTerm
             return _AdditionTerm(term1 = self, term2 = other)
-	    
+            
     __radd__ = __add__
     
     def __neg__(self):

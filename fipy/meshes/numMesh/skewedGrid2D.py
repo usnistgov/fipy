@@ -6,7 +6,7 @@
  # 
  #  FILE: "SkewedGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/15/06 {3:42:14 PM} 
+ #                                last update: 1/3/07 {3:10:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,20 +59,20 @@ class SkewedGrid2D(Mesh2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0):
         self.nx = nx
         self.ny = ny
-	
-	self.dx = PhysicalField(value = dx)
-	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-	self.dx /= scale
-	
-	self.dy = PhysicalField(value = dy)
-	if self.dy.getUnit().isDimensionless():
-	    self.dy = dy
-	else:
-	    self.dy /= scale
-	
+        
+        self.dx = PhysicalField(value = dx)
+        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx /= scale
+        
+        self.dy = PhysicalField(value = dy)
+        if self.dy.getUnit().isDimensionless():
+            self.dy = dy
+        else:
+            self.dy /= scale
+        
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
-	
-	vertices = self._createVertices()
+        
+        vertices = self._createVertices()
         changedVertices = numerix.zeros(vertices.shape)
         changedVertices = changedVertices.astype(numerix.Float)
         for i in range(len(vertices)):
@@ -85,8 +85,8 @@ class SkewedGrid2D(Mesh2D):
         faces = self._createFaces()
         cells = self._createCells()
         Mesh2D.__init__(self, changedVertices, faces, cells)
-	
-	self.setScale(value = scale)
+        
+        self.setScale(value = scale)
         
     def _createVertices(self):
         x = numerix.arange(self.nx + 1) * self.dx
@@ -135,35 +135,35 @@ class SkewedGrid2D(Mesh2D):
         return numerix.transpose(numerix.array((f1, f2, f3, f4)))
 
     def getFacesLeft(self):
-	"""Return list of faces on left boundary of Grid2D.
-	"""
-	return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
+        """Return list of faces on left boundary of Grid2D.
+        """
+        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
     
     def getFacesRight(self):
-	"""Return list of faces on right boundary of Grid2D.
-	"""
+        """Return list of faces on right boundary of Grid2D.
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-	
+        
     def getFacesTop(self):
-	"""Return list of faces on top boundary of Grid2D.
-	"""
+        """Return list of faces on top boundary of Grid2D.
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-	
+        
     def getFacesBottom(self):
-	"""Return list of faces on bottom boundary of Grid2D.
-	"""
+        """Return list of faces on bottom boundary of Grid2D.
+        """
         return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
         
     def getScale(self):
-	return self.scale['length']
-	
+        return self.scale['length']
+        
     def getPhysicalShape(self):
-	"""Return physical dimensions of Grid2D.
-	"""
-	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
+        """Return physical dimensions of Grid2D.
+        """
+        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
     def _getMeshSpacing(self):
-	return numerix.array((self.dx,self.dy))
+        return numerix.array((self.dx,self.dy))
     
     def getShape(self):
         return (self.nx, self.ny)

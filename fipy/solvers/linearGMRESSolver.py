@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 11/16/06 {1:28:05 PM} 
+ #                                last update: 1/3/07 {3:12:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,11 +66,11 @@ class LinearGMRESSolver(Solver):
     
     def _solve(self, L, x, b):
 
-	A = L._getMatrix().to_csr()
+        A = L._getMatrix().to_csr()
         
         Assor=precon.jacobi(L._getMatrix())
         
         info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
-	
+        
         self._raiseWarning(info, iter, relres)
 

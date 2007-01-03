@@ -6,7 +6,7 @@
  # 
  #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/15/06 {3:54:41 PM} 
+ #                                last update: 1/3/07 {3:12:44 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,7 +78,7 @@ class LinearLUSolver(Solver):
 
         """
         
-	Solver.__init__(self, tolerance = tolerance, steps = steps)
+        Solver.__init__(self, tolerance = tolerance, steps = steps)
 
     def _solve(self, L, x, b):
         diag = L.takeDiagonal()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/30/06 {11:01:24 AM}
+ #                                last update: 1/3/07 {3:23:40 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ class GistViewer(Viewer):
         self.mesh = self.vars[0].getMesh()
 
         self.id = GistViewer._id 
-	GistViewer._id += 1
+        GistViewer._id += 1
         
         import gist
         

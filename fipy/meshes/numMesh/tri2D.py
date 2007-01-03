@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 5/15/06 {3:42:34 PM} 
+ #                                last update: 1/3/07 {3:11:20 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -78,27 +78,27 @@ class Tri2D(Mesh2D):
         """
         self.nx = nx
         self.ny = ny
-	
-	self.dx = PhysicalField(value = dx)
-	scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-	self.dx /= scale
-	
-	self.dy = PhysicalField(value = dy)
-	if self.dy.getUnit().isDimensionless():
-	    self.dy = dy
-	else:
-	    self.dy /= scale
-	
+        
+        self.dx = PhysicalField(value = dx)
+        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx /= scale
+        
+        self.dy = PhysicalField(value = dy)
+        if self.dy.getUnit().isDimensionless():
+            self.dy = dy
+        else:
+            self.dy /= scale
+        
         self.numberOfCornerVertices = (self.nx + 1) * (self. ny + 1)
         self.numberOfCenterVertices = self.nx * self.ny
         self.numberOfTotalVertices = self.numberOfCornerVertices + self.numberOfCenterVertices
-	
-	vertices = self._createVertices()
+        
+        vertices = self._createVertices()
         faces = self._createFaces()
         cells = self._createCells()
         cells = numerix.sort(cells)
         Mesh2D.__init__(self, vertices, faces, cells)
-	self.setScale(value = scale)
+        self.setScale(value = scale)
         
     def _createVertices(self):
         
@@ -175,46 +175,46 @@ class Tri2D(Mesh2D):
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells))
 
     def getFacesLeft(self):
-	"""Return list of faces on left boundary of Grid2D.
-	"""
-	return FaceIterator(mesh=self,
+        """Return list of faces on left boundary of Grid2D.
+        """
+        return FaceIterator(mesh=self,
                             ids=numerix.arange(self.numberOfHorizontalFaces, 
                                                self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
                                                self.nx + 1))
-	
+        
     def getFacesRight(self):
-	"""Return list of faces on right boundary of Grid2D.
-	"""
-	return FaceIterator(mesh=self,
+        """Return list of faces on right boundary of Grid2D.
+        """
+        return FaceIterator(mesh=self,
                             ids=numerix.arange(self.numberOfHorizontalFaces + self.nx, 
                                                self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
                                                self.nx + 1))
-	
+        
     def getFacesTop(self):
-	"""Return list of faces on top boundary of Grid2D.
-	"""
-	return FaceIterator(mesh=self, 
+        """Return list of faces on top boundary of Grid2D.
+        """
+        return FaceIterator(mesh=self, 
                             ids=numerix.arange(self.numberOfHorizontalFaces - self.nx, 
                                                self.numberOfHorizontalFaces))
-	
+        
     def getFacesBottom(self):
-	"""Return list of faces on bottom boundary of Grid2D.
-	"""
-	return FaceIterator(mesh=self, 
+        """Return list of faces on bottom boundary of Grid2D.
+        """
+        return FaceIterator(mesh=self, 
                             ids=numerix.arange(self.nx))
         
     def getScale(self):
-	return self.scale['length']
-	
+        return self.scale['length']
+        
     def getPhysicalShape(self):
-	"""Return physical dimensions of Grid2D.
-	"""
-	return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
+        """Return physical dimensions of Grid2D.
+        """
+        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
 
 
     def _getMeshSpacing(self):
-	return numerix.array((self.dx,self.dy))
+        return numerix.array((self.dx,self.dy))
     
     def getShape(self):
         return (self.nx, self.ny)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 12/22/05 {4:00:55 PM} 
+ #                                last update: 1/3/07 {3:21:52 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -59,33 +59,33 @@ class UpwindConvectionTerm(ConvectionTerm):
        main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
     class _Alpha(FaceVariable):
-	def __init__(self, P):
-	    FaceVariable.__init__(self, mesh = P.getMesh())
-	    self.P = self._requires(P)
-	    
-	def _calcValuePy(self, P):
-	    alpha = numerix.where(P > 0., 1., 0.)
+        def __init__(self, P):
+            FaceVariable.__init__(self, mesh = P.getMesh())
+            self.P = self._requires(P)
+            
+        def _calcValuePy(self, P):
+            alpha = numerix.where(P > 0., 1., 0.)
 
-	    return PhysicalField(value = alpha)
+            return PhysicalField(value = alpha)
 
-	def _calcValueIn(self, P):
+        def _calcValueIn(self, P):
             alpha = self._getArray().copy()
-	    inline._runInline("""
-		alpha(i) = 0.5;
-		
-		if (P(i) > 0.) {
-		    alpha(i) = 1.;
-		} else {
-		    alpha(i) = 0.;
-		}
-	    """,
-	    alpha = alpha, P = P,
-	    ni = len(self.mesh.getFaces())
-	    )
+            inline._runInline("""
+                alpha(i) = 0.5;
+                
+                if (P(i) > 0.) {
+                    alpha(i) = 1.;
+                } else {
+                    alpha(i) = 0.;
+                }
+            """,
+            alpha = alpha, P = P,
+            ni = len(self.mesh.getFaces())
+            )
      
             return self._makeValue(value = alpha)
 
-	def _calcValue(self):
-	    P  = self.P.getNumericValue()
+        def _calcValue(self):
+            P  = self.P.getNumericValue()
 
-	    return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
+            return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
