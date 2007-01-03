@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/5/06 {10:55:50 AM} 
+ #                                last update: 1/3/07 {2:20:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -456,28 +456,28 @@ class DiffusionTerm(Term):
         The following tests are to check that DiffusionTerm can take any of the four
         main Variable types.
 
-	   >>> from fipy.meshes.tri2D import Tri2D
-	   >>> mesh = Tri2D(nx = 1, ny = 1)
-	   >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
-	   >>> print term._getGeomCoeff(mesh)
+           >>> from fipy.meshes.tri2D import Tri2D
+           >>> mesh = Tri2D(nx = 1, ny = 1)
+           >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
+           >>> print term._getGeomCoeff(mesh)
            [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
-	   >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
-	   >>> print term._getGeomCoeff(mesh)
+           >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
+           >>> print term._getGeomCoeff(mesh)
            [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
-	   >>> term = DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh))
-	   >>> print term._getGeomCoeff(mesh)
+           >>> term = DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh))
+           >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
-	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
-	   >>> print term._getGeomCoeff(mesh)
+           >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+           >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
-	   >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
-	   >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
-	   >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
-	   >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
-	   1
-	   >>> term = DiffusionTerm(((0.5, 1),))
-	   >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
-	   1
+           >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
+           >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+           >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
+           >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
+           1
+           >>> term = DiffusionTerm(((0.5, 1),))
+           >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
+           1
 
         """
         pass

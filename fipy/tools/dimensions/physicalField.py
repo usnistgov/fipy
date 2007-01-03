@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 10/26/06 {10:19:37 AM} 
+ #                                last update: 1/3/07 {2:25:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1215,11 +1215,11 @@ class PhysicalField:
         their difference divided by `other`'s value is small compared to `rtol`.        
         """
         other = self._inMyUnits(other)
-	if atol is None:
-	    atol = PhysicalField(1.e-5, self.getUnit())
-	else:
-	    atol = self._inMyUnits(atol)
-	    
+        if atol is None:
+            atol = PhysicalField(1.e-5, self.getUnit())
+        else:
+            atol = self._inMyUnits(atol)
+            
         return MA.allclose(self.value, other.value, atol = atol.value, rtol = rtol)
 
     def allequal(self, other):
@@ -1235,20 +1235,20 @@ class PhysicalUnit:
     """
 
     def __init__(self, names, factor, powers, offset=0):
-	"""
-	This class is not generally not instantiated by users of this module, 
-	but rather it is created in the process of constructing a `PhysicalField`.
-	
-	:Parameters:
-	  - `names`: the name of the unit
-	  - `factor`: the multiplier between the unit and the fundamental SI unit
-	  - `powers`: a nine-element `list`, `tuple`, or Numeric_ `array` representing
-	    the fundamental SI units of ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
-	  - `offset`: the displacement between the zero-point of the unit and the zero-point
-	    of the corresponding fundamental SI unit.
-		      
-	.. _Numeric: http://www.numpy.org
-	"""
+        """
+        This class is not generally not instantiated by users of this module, 
+        but rather it is created in the process of constructing a `PhysicalField`.
+        
+        :Parameters:
+          - `names`: the name of the unit
+          - `factor`: the multiplier between the unit and the fundamental SI unit
+          - `powers`: a nine-element `list`, `tuple`, or Numeric_ `array` representing
+            the fundamental SI units of ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
+          - `offset`: the displacement between the zero-point of the unit and the zero-point
+            of the corresponding fundamental SI unit.
+            
+        .. _Numeric: http://www.numpy.org
+        """
         if type(names) == type(''):
             self.names = _NumberDict()
             self.names[names] = 1
@@ -1259,18 +1259,18 @@ class PhysicalUnit:
         self.powers = numerix.array(powers)
 
     def __repr__(self):
-	"""
-	Return representation of a physical unit
-	
-	    >>> PhysicalUnit('m',   1.,    [1,0,0,0,0,0,0,0,0])
-	    <PhysicalUnit m>
-	"""
+        """
+        Return representation of a physical unit
+        
+            >>> PhysicalUnit('m',   1.,    [1,0,0,0,0,0,0,0,0])
+            <PhysicalUnit m>
+        """
         return '<PhysicalUnit ' + self.name() + '>'
 
     __str__ = __repr__
 
     def __cmp__(self, other):
-	"""
+        """
         Determine if units are identical
         
             >>> a = PhysicalField("1. m")
@@ -1286,18 +1286,18 @@ class PhysicalUnit:
             Traceback (most recent call last):
                 ...
             TypeError: PhysicalUnits can only be compared with other PhysicalUnits
-	"""
+        """
         if not isinstance(other,PhysicalUnit):
-	    if other == 1:
-		return self.isDimensionless()
-	    else:
-		raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
+            if other == 1:
+                return self.isDimensionless()
+            else:
+                raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
         if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
         return cmp(self.factor, other.factor)
 
     def __mul__(self, other):
-	"""
+        """
         Multiply units together
         
             >>> a = PhysicalField("1. m")
@@ -1328,7 +1328,7 @@ class PhysicalUnit:
             TypeError: cannot multiply units with non-zero offset
             >>> e.getUnit() * f.inBaseUnits().getUnit()
             <PhysicalUnit kB*K>
-	"""
+        """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
             raise TypeError, "cannot multiply units with non-zero offset"
         if isinstance(other,PhysicalUnit):
@@ -1349,8 +1349,8 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. m")
             >>> b = PhysicalField("3. ft")
-	    >>> a.getUnit() / b.getUnit()
-	    <PhysicalUnit m/ft>
+            >>> a.getUnit() / b.getUnit()
+            <PhysicalUnit m/ft>
             >>> a.getUnit() / b.inBaseUnits().getUnit()
             <PhysicalUnit 1>
             >>> c = PhysicalField("1. s")
@@ -1479,7 +1479,7 @@ class PhysicalUnit:
         raise TypeError, 'Only integer and inverse integer exponents allowed'
 
     def conversionFactorTo(self, other):
-	"""
+        """
         Return the multiplication factor between two physical units
         
             >>> a = PhysicalField("1. mm")
@@ -1505,7 +1505,7 @@ class PhysicalUnit:
             Traceback (most recent call last):
                 ...
             TypeError: Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor
-	"""
+        """
         if not numerix.alltrue(self.powers == other.powers):
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor/other.factor
@@ -1519,14 +1519,14 @@ class PhysicalUnit:
         return self.factor/other.factor
 
     def conversionTupleTo(self, other): # added 1998/09/29 GPW
-	"""
-	Return a `tuple` of the multiplication factor and offset between two physical units
-	
-	    >>> a = PhysicalField("1. K").getUnit()
-	    >>> b = PhysicalField("1. degF").getUnit()
-	    >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
-	    ['0.555556', '459.67']
-	"""
+        """
+        Return a `tuple` of the multiplication factor and offset between two physical units
+        
+            >>> a = PhysicalField("1. K").getUnit()
+            >>> b = PhysicalField("1. degF").getUnit()
+            >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
+            ['0.555556', '459.67']
+        """
         if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
 
@@ -1550,72 +1550,72 @@ class PhysicalUnit:
         return (factor, offset)
 
     def isCompatible (self, other):     # added 1998/10/01 GPW
-	"""
-	Returns a list of which fundamental SI units are compatible between
-	`self` and `other`
-	    
-	    >>> a = PhysicalField("1. mm")
-	    >>> b = PhysicalField("1. inch")
-	    >>> print a.getUnit().isCompatible(b.getUnit())
+        """
+        Returns a list of which fundamental SI units are compatible between
+        `self` and `other`
+            
+            >>> a = PhysicalField("1. mm")
+            >>> b = PhysicalField("1. inch")
+            >>> print a.getUnit().isCompatible(b.getUnit())
             [True True True True True True True True True]
-	    >>> c = PhysicalField("1. K")
-	    >>> print a.getUnit().isCompatible(c.getUnit())
+            >>> c = PhysicalField("1. K")
+            >>> print a.getUnit().isCompatible(c.getUnit())
             [False True True True False True True True True]
-
-	"""
+            
+        """
         return self.powers == other.powers
 
     def isDimensionless(self):
-	"""
-	Returns `True` if the unit is dimensionless
-	    
-	    >>> PhysicalField("1. m/m").getUnit().isDimensionless()
-	    1
-	    >>> PhysicalField("1. inch").getUnit().isDimensionless()
-	    0
-	"""
+        """
+        Returns `True` if the unit is dimensionless
+            
+            >>> PhysicalField("1. m/m").getUnit().isDimensionless()
+            1
+            >>> PhysicalField("1. inch").getUnit().isDimensionless()
+            0
+        """
         return not numerix.logical_or.reduce(self.powers)
 
     def isAngle(self):
-	"""
-	Returns `True` if the unit is an angle
-	    
-	    >>> PhysicalField("1. deg").getUnit().isAngle()
-	    1
-	    >>> PhysicalField("1. rad").getUnit().isAngle()
-	    1
-	    >>> PhysicalField("1. inch").getUnit().isAngle()
-	    0
-	"""
+        """
+        Returns `True` if the unit is an angle
+            
+            >>> PhysicalField("1. deg").getUnit().isAngle()
+            1
+            >>> PhysicalField("1. rad").getUnit().isAngle()
+            1
+            >>> PhysicalField("1. inch").getUnit().isAngle()
+            0
+        """
         return self.powers[7] == 1 and \
                numerix.add.reduce(self.powers) == 1
                
     def isDimensionlessOrAngle(self):
-	"""
-	Returns `True` if the unit is dimensionless or an angle
-	    
-	    >>> PhysicalField("1. m/m").getUnit().isDimensionlessOrAngle()
-	    1
-	    >>> PhysicalField("1. deg").getUnit().isDimensionlessOrAngle()
-	    1
-	    >>> PhysicalField("1. rad").getUnit().isDimensionlessOrAngle()
-	    1
-	    >>> PhysicalField("1. inch").getUnit().isDimensionlessOrAngle()
-	    0
-	"""
+        """
+        Returns `True` if the unit is dimensionless or an angle
+            
+            >>> PhysicalField("1. m/m").getUnit().isDimensionlessOrAngle()
+            1
+            >>> PhysicalField("1. deg").getUnit().isDimensionlessOrAngle()
+            1
+            >>> PhysicalField("1. rad").getUnit().isDimensionlessOrAngle()
+            1
+            >>> PhysicalField("1. inch").getUnit().isDimensionlessOrAngle()
+            0
+        """
         return self.isDimensionless() or self.isAngle()
                    
     def setName(self, name):
-	"""
-	Set the name of the unit to `name`
-	
-	    >>> a = PhysicalField("1. m/s").getUnit()
-	    >>> a
-	    <PhysicalUnit m/s>
-	    >>> a.setName('meterpersecond')
-	    >>> a
-	    <PhysicalUnit meterpersecond>
-	"""
+        """
+        Set the name of the unit to `name`
+        
+            >>> a = PhysicalField("1. m/s").getUnit()
+            >>> a
+            <PhysicalUnit m/s>
+            >>> a.setName('meterpersecond')
+            >>> a
+            <PhysicalUnit meterpersecond>
+        """
         self.names = _NumberDict()
         self.names[name] = 1
 
@@ -1707,9 +1707,9 @@ def _Scale(quantity, scaling):
         
     or a value-unit string convertable to a `PhysicalField`
     
-	>>> print round(_Scale("1. inch", PhysicalField("1. mm")), 6)
-	25.4
-	
+        >>> print round(_Scale("1. inch", PhysicalField("1. mm")), 6)
+        25.4
+        
     or a dimensionless number. A dimensionless number is left alone. 
            
         >>> print round(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6)

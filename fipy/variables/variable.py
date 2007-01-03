@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/26/06 {9:19:38 AM} 
+ #                                last update: 1/3/07 {2:31:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,76 +70,76 @@ class Variable(object):
     Using a `Variable` in a mathematical expression will create an automatic
     dependency `Variable`, e.g.,
     
-	>>> a = Variable(value = 3)
-	>>> b = 4 * a
-	>>> b
-	(Variable(value = 3) * 4)
-	>>> b()
-	12
-	
+        >>> a = Variable(value = 3)
+        >>> b = 4 * a
+        >>> b
+        (Variable(value = 3) * 4)
+        >>> b()
+        12
+        
     Changes to the value of a `Variable` will automatically trigger changes in
     any dependent `Variable` objects
     
-	>>> a.setValue(5)
-	>>> b
-	(Variable(value = 5) * 4)
-	>>> b()
-	20
-	
+        >>> a.setValue(5)
+        >>> b
+        (Variable(value = 5) * 4)
+        >>> b()
+        20
+        
     """
     
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
     
     def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
-	"""
-	Create a `Variable`.
-	
-	    >>> Variable(value = 3)
-	    Variable(value = array(3))
-	    >>> Variable(value = 3, unit = "m")
-	    Variable(value = PhysicalField(3,'m'))
-	    >>> Variable(value = 3, unit = "m", array = numerix.zeros((3,2)))
-	    Variable(value = PhysicalField(array([[3, 3],
+        """
+        Create a `Variable`.
+        
+            >>> Variable(value = 3)
+            Variable(value = array(3))
+            >>> Variable(value = 3, unit = "m")
+            Variable(value = PhysicalField(3,'m'))
+            >>> Variable(value = 3, unit = "m", array = numerix.zeros((3,2)))
+            Variable(value = PhysicalField(array([[3, 3],
                    [3, 3],
-	           [3, 3]]),'m'))
+                   [3, 3]]),'m'))
 
-	:Parameters:
-	  - `value`: the initial value
-	  - `unit`: the physical units of the `Variable`
-	  - `array`: the storage array for the `Variable`
-	  - `name`: the user-readable name of the `Variable`
-	  - `mesh`: the mesh that defines the geometry of this `Variable`
-
-	"""
+        :Parameters:
+          - `value`: the initial value
+          - `unit`: the physical units of the `Variable`
+          - `array`: the storage array for the `Variable`
+          - `name`: the user-readable name of the `Variable`
+          - `mesh`: the mesh that defines the geometry of this `Variable`
+          
+        """
 
 
             
-	self.requiredVariables = []
-	self.subscribedVariables = []
+        self.requiredVariables = []
+        self.subscribedVariables = []
 
-	if isinstance(value, Variable):
-	    name = value.name
-	    mesh = value.mesh
-	    value = value.getValue()
+        if isinstance(value, Variable):
+            name = value.name
+            mesh = value.mesh
+            value = value.getValue()
             if hasattr(value, 'copy'):
                 value = value.copy()
-	    unit = None
-	    array = None
-	    
-	self._setValue(value = value, unit = unit, array = array)
-	
+            unit = None
+            array = None
+            
+        self._setValue(value = value, unit = unit, array = array)
+        
         self.name = name
-	self.mesh = mesh
-		
+        self.mesh = mesh
+                
         self._cached = cached
 
-	self.stale = 1
-	self._markFresh()
+        self.stale = 1
+        self._markFresh()
         
-	self.sumVar = {}
-	self.faceDifferences = {}
-	self.laplacian = {}
+        self.sumVar = {}
+        self.faceDifferences = {}
+        self.laplacian = {}
         self.mag = None
         self.sliceVars = {}
 
@@ -174,10 +174,10 @@ class Variable(object):
             return arr
 
     def getMesh(self):
-	return self.mesh
-	
+        return self.mesh
+        
     def __array__(self, t = None):
-	"""
+        """
         Attempt to convert the `Variable` to a numerix `array` object
     
             >>> v = Variable(value = [2,3])
@@ -205,8 +205,8 @@ class Variable(object):
             >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
             [[0,]
              [0,]]
-    
-	"""
+             
+        """
         return numerix.array(self.getValue(), t)
 
 ##    def _get_array_interface(self):
@@ -222,24 +222,24 @@ class Variable(object):
 ##                                   _set_array_interface,
 ##                                   _del_array_interface,
 ##                                   "the '__array_inteface__'")
-	
+        
     def copy(self):
-	"""
-	Make an duplicate of the `Variable`
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = a.copy()
-	    >>> b
-	    Variable(value = array(3))
+        """
+        Make an duplicate of the `Variable`
+        
+            >>> a = Variable(value = 3)
+            >>> b = a.copy()
+            >>> b
+            Variable(value = array(3))
 
-	The duplicate will not reflect changes made to the original
-	                  
-	    >>> a.setValue(5)
-	    >>> b
-	    Variable(value = array(3))
-
+        The duplicate will not reflect changes made to the original
+                          
+            >>> a.setValue(5)
+            >>> b
+            Variable(value = array(3))
+            
         Check that this works for arrays.
-
+        
             >>> a = Variable(value = numerix.array((0,1,2)))
             >>> b = a.copy()
             >>> b
@@ -248,8 +248,8 @@ class Variable(object):
             >>> b
             Variable(value = array([0, 1, 2]))
             
-	"""
-	return Variable(value = self)
+        """
+        return Variable(value = self)
 
 
     def _getUnitAsOne(self):
@@ -260,32 +260,32 @@ class Variable(object):
 
     def _extractUnit(self, value):
         if isinstance(value, physicalField.PhysicalField):
-	    return value.getUnit()
-	else:
+            return value.getUnit()
+        else:
             return physicalField._unity 
 
     def getUnit(self):
-	"""
-	Return the unit object of `self`.	
-	    >>> Variable(value = "1 m").getUnit()
-	    <PhysicalUnit m>
-	"""
+        """
+        Return the unit object of `self`.	
+            >>> Variable(value = "1 m").getUnit()
+            <PhysicalUnit m>
+        """
         return self._extractUnit(self.getValue())
-	
+        
     def inBaseUnits(self):
-	"""
-	Return the value of the `Variable` with all units reduced to 
-	their base SI elements.
-	
-	    >>> e = Variable(value = "2.7 Hartree*Nav")
-	    >>> print e.inBaseUnits()
-	    7088849.01085 kg*m**2/s**2/mol
-	"""
-	value = self.getValue()
-	if isinstance(value, physicalField.PhysicalField):
-	    return value.inBaseUnits()
-	else:
-	    return value
+        """
+        Return the value of the `Variable` with all units reduced to 
+        their base SI elements.
+        
+            >>> e = Variable(value = "2.7 Hartree*Nav")
+            >>> print e.inBaseUnits()
+            7088849.01085 kg*m**2/s**2/mol
+        """
+        value = self.getValue()
+        if isinstance(value, physicalField.PhysicalField):
+            return value.inBaseUnits()
+        else:
+            return value
 
     def inUnitsOf(self, *units):
         """
@@ -345,16 +345,16 @@ class Variable(object):
         self.name = name
     
     def __str__(self):
-	return str(self.getValue())
-	    
+        return str(self.getValue())
+            
     def __repr__(self):
         s = self.__class__.__name__ + '('
-	if len(self.name) > 0:
-	    s += 'name = "' + self.name + '", '
-	s += 'value = ' + `self.getValue()`
-	if self.mesh:
-	    s += ', mesh = ' + `self.mesh`
-	s += ')'
+        if len(self.name) > 0:
+            s += 'name = "' + self.name + '", '
+        s += 'value = ' + `self.getValue()`
+        if self.mesh:
+            s += ', mesh = ' + `self.mesh`
+        s += ')'
         return s
 
     def _getCIndexString(self, shape):
@@ -463,21 +463,21 @@ class Variable(object):
             self.getValue()
         numerix.put(self.value, indices, value)
         self._markFresh()
-	
+        
     def __call__(self):
-	"""
-	"Evaluate" the `Variable` and return its value
-	
-	    >>> a = Variable(value = 3)
-	    >>> print a()
-	    3
-	    >>> b = a + 4
-	    >>> b
-	    (Variable(value = array(3)) + 4)
-	    >>> b()
-	    7
-	"""
-	return self.getValue()
+        """
+        "Evaluate" the `Variable` and return its value
+        
+            >>> a = Variable(value = 3)
+            >>> print a()
+            3
+            >>> b = a + 4
+            >>> b
+            (Variable(value = array(3)) + 4)
+            >>> b()
+            7
+        """
+        return self.getValue()
 
     def getValue(self):
         """
@@ -606,27 +606,27 @@ class Variable(object):
 
         if where is not None:
             tmp = numerix.where(where, tmp, self.getValue())
-	self._setValue(value = tmp, unit = unit, array = array)
-	self._markFresh()
-	
+        self._setValue(value = tmp, unit = unit, array = array)
+        self._markFresh()
+        
     def _setNumericValue(self, value):
-	if isinstance(self.value, physicalField.PhysicalField):
-	    self.value.value = value
-	else:
-	    self.value = value
-	
+        if isinstance(self.value, physicalField.PhysicalField):
+            self.value.value = value
+        else:
+            self.value = value
+        
     def _getArray(self):
-	if isinstance(self.value, physicalField.PhysicalField):
-	    return self.value._getArray()
-	else:
+        if isinstance(self.value, physicalField.PhysicalField):
+            return self.value._getArray()
+        else:
             return self.value
             
     def getNumericValue(self):
-	value = self.getValue()
-	if isinstance(value, physicalField.PhysicalField):
-	    return value.getNumericValue()
-	else:
-	    return value
+        value = self.getValue()
+        if isinstance(value, physicalField.PhysicalField):
+            return value.getNumericValue()
+        else:
+            return value
             
     def _getShapeFromMesh(mesh):
         """
@@ -702,32 +702,32 @@ class Variable(object):
             subscriber()._markStale() 
 
     def _markFresh(self):
-	self.stale = 0
+        self.stale = 0
         self.__markStale()
 
     def _markStale(self):
-	if not self.stale:
-	    self.stale = 1
+        if not self.stale:
+            self.stale = 1
             self.__markStale()
-	    
+            
     def _requires(self, var):
-	if isinstance(var, Variable):
-	    self.requiredVariables.append(var)
-	    var._requiredBy(self)
-	    self._markStale()
-	return var
-	    
+        if isinstance(var, Variable):
+            self.requiredVariables.append(var)
+            var._requiredBy(self)
+            self._markStale()
+        return var
+            
     def _requiredBy(self, var):
-	assert isinstance(var, Variable)
+        assert isinstance(var, Variable)
         
         # we retain a weak reference to avoid a memory leak 
         # due to circular references between the subscriber
         # and the subscribee
         import weakref
         self.subscribedVariables.append(weakref.ref(var))
-	
+        
     def _getVariableClass(self):
-	return Variable
+        return Variable
         
     def _getOperatorVariableClass(self, baseClass = None, canInline = True):
         """
@@ -843,13 +843,13 @@ class Variable(object):
             0.5
 
         """
-	if baseClass is None:
+        if baseClass is None:
             baseClass = self._getVariableClass()
-	class OperatorVariable(baseClass):
-	    def __init__(self, op, var, mesh = None, opShape = (), canInline = canInline):
+        class OperatorVariable(baseClass):
+            def __init__(self, op, var, mesh = None, opShape = (), canInline = canInline):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
-		self.op = op
-		self.var = var
+                self.op = op
+                self.var = var
                 self.opShape = opShape
                 self.canInline = canInline  #allows for certain functions to opt out of --inline
                 baseClass.__init__(self, value = None, mesh = mesh)
@@ -859,8 +859,8 @@ class Variable(object):
                         self.canInline = False
                         break
 
-		for aVar in self.var:
-		    self._requires(aVar)
+                for aVar in self.var:
+                    self._requires(aVar)
                 
                 self.old = None
                 self.dontCacheMe()
@@ -907,7 +907,7 @@ class Variable(object):
                   
                 return s
                     
-	    def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
+            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
                 """
                 :Parameters:
                     
@@ -916,29 +916,29 @@ class Variable(object):
                 """
                 import opcode
                 
-		bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
-	
-		def _popIndex():
-		    return bytecodes.pop(0) + bytecodes.pop(0) * 256
-		
-		stack = []
-		    
-		unop = {
-		    10: "+", 11: "-", 12: "not ", 15: "~"
-		}
-		
-		binop = {
-		    19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
-			    62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
-		}
-		
-   		while len(bytecodes) > 0:
-		    bytecode = bytecodes.pop(0)
-		    if opcode.opname[bytecode] == 'UNARY_CONVERT':
-			stack.append("`" + stack.pop() + "`")
-		    elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
-			stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
-		    elif opcode.opname[bytecode] == 'RETURN_VALUE':
+                bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+        
+                def _popIndex():
+                    return bytecodes.pop(0) + bytecodes.pop(0) * 256
+                
+                stack = []
+                    
+                unop = {
+                    10: "+", 11: "-", 12: "not ", 15: "~"
+                }
+                
+                binop = {
+                    19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
+                            62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
+                }
+                
+                while len(bytecodes) > 0:
+                    bytecode = bytecodes.pop(0)
+                    if opcode.opname[bytecode] == 'UNARY_CONVERT':
+                        stack.append("`" + stack.pop() + "`")
+                    elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
+                        stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+                    elif opcode.opname[bytecode] == 'RETURN_VALUE':
                         s = stack.pop()
                         if style == 'C':
                             return s.replace('numerix.', '').replace('arc', 'a')
@@ -946,14 +946,14 @@ class Variable(object):
                             return s
                     elif opcode.opname[bytecode] == 'LOAD_CONST':
                         stack.append(self.op.func_code.co_consts[_popIndex()])
-		    elif opcode.opname[bytecode] == 'LOAD_ATTR':
-			stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
-		    elif opcode.opname[bytecode] == 'COMPARE_OP':
-			stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
-		    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
+                    elif opcode.opname[bytecode] == 'LOAD_ATTR':
+                        stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
+                    elif opcode.opname[bytecode] == 'COMPARE_OP':
+                        stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
+                    elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
                         counter = _popIndex()
-			stack.append(self.op.func_code.co_names[counter])
-		    elif opcode.opname[bytecode] == 'LOAD_FAST':
+                        stack.append(self.op.func_code.co_names[counter])
+                    elif opcode.opname[bytecode] == 'LOAD_FAST':
                         if style == "__repr__":
                             stack.append(repr(self.var[_popIndex()]))
                         elif style == "name":
@@ -988,23 +988,23 @@ class Variable(object):
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
                     elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
-			args = []
-			for j in range(bytecodes.pop(1)):
-			    # keyword parameters
-			    args.insert(0, stack.pop(-2) + " = " + stack.pop())
-			for j in range(bytecodes.pop(0)):
-			    # positional parameters
-			    args.insert(0, stack.pop())
-			stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+                        args = []
+                        for j in range(bytecodes.pop(1)):
+                            # keyword parameters
+                            args.insert(0, stack.pop(-2) + " = " + stack.pop())
+                        for j in range(bytecodes.pop(0)):
+                            # positional parameters
+                            args.insert(0, stack.pop())
+                        stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                     elif opcode.opname[bytecode] == 'LOAD_DEREF':
                         free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                         stack.append(free[_popIndex()])
-		    elif unop.has_key(bytecode):
-			stack.append(unop[bytecode] + stack.pop())
-		    elif binop.has_key(bytecode):
-			stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
-		    else:
-			raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
+                    elif unop.has_key(bytecode):
+                        stack.append(unop[bytecode] + stack.pop())
+                    elif binop.has_key(bytecode):
+                        stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+                    else:
+                        raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
                     
             def __repr__(self):
                 return self._getRepresentation()
@@ -1015,7 +1015,7 @@ class Variable(object):
                     name = self._getRepresentation(style = "name")
                 return name
                 
-	    def copy(self):
+            def copy(self):
                 return self.__class__(
                     op = self.op,
                     var = self.var,
@@ -1027,8 +1027,8 @@ class Variable(object):
             def getShape(self):
                 return baseClass.getShape(self) or self.opShape
 
-	return OperatorVariable
-	
+        return OperatorVariable
+        
     def _getArithmeticBaseClass(self, other = None):
         """
         Given `self` and `other`, return the desired base
@@ -1154,15 +1154,15 @@ class Variable(object):
 
     
     def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
-	"""
+        """
         Check that getUnit() works fot unOp
 
             >>> (-Variable(value = "1 m")).getUnit()
             <PhysicalUnit m>
             
-	"""
+        """
         
-	class unOp(self._getOperatorVariableClass(baseClass)):
+        class unOp(self._getOperatorVariableClass(baseClass)):
             def _calcValuePy(self):
                 return self.op(self.var[0].getValue())
 
@@ -1175,7 +1175,7 @@ class Variable(object):
         if not self.getUnit().isDimensionless():
             canInline = False
 
-	return unOp(op = op, var = [self], opShape = self.getShape(), canInline = canInline)
+        return unOp(op = op, var = [self], opShape = self.getShape(), canInline = canInline)
 
     def _getArrayAsOnes(object, valueMattersForShape = ()): 
         """ 
@@ -1304,11 +1304,11 @@ class Variable(object):
             
         
         # obtain a general operator class with the desired base class
-	operatorClass = self._getOperatorVariableClass(baseClass)
+        operatorClass = self._getOperatorVariableClass(baseClass)
         
         
         # declare a binary operator class with the desired base class
-	class binOp(operatorClass):
+        class binOp(operatorClass):
 
             def _calcValuePy(self):
                 if isinstance(self.var[1], Variable):
@@ -1343,7 +1343,7 @@ class Variable(object):
             return other + self
         else:
             return self._getBinaryOperatorVariable(lambda a,b: a+b, other)
-	
+        
     __radd__ = __add__
 
     def __sub__(self, other):
@@ -1352,41 +1352,41 @@ class Variable(object):
             return -other + self
         else:
             return self._getBinaryOperatorVariable(lambda a,b: a-b, other)
-	
+        
     def __rsub__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
-	    
+        return self._getBinaryOperatorVariable(lambda a,b: b-a, other)
+            
     def __mul__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
+        return self._getBinaryOperatorVariable(lambda a,b: a*b, other)
 
 ##    def __rmul__(self,other):
 ##        print 'hello'
     
     __rmul__ = __mul__
-	    
+            
     def __mod__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
-	    
+        return self._getBinaryOperatorVariable(lambda a,b: a%b, other)
+            
     def __pow__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: pow(a,b), other)
-	#return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
-	    
+        #return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
+            
     def __rpow__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: pow(b,a), other)
         #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
-	    
+            
     def __div__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
-	
+        return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
+        
     def __rdiv__(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: b/a, other)
-	    
+        return self._getBinaryOperatorVariable(lambda a,b: b/a, other)
+            
     def __neg__(self):
-	return self._getUnaryOperatorVariable(lambda a: -a)
-	
+        return self._getUnaryOperatorVariable(lambda a: -a)
+        
     def __pos__(self):
-	return self
-	
+        return self
+        
     def __abs__(self):
         """
 
@@ -1399,113 +1399,113 @@ class Variable(object):
         """
         
         fabs = abs
-	return self._getUnaryOperatorVariable(lambda a: fabs(a))
+        return self._getUnaryOperatorVariable(lambda a: fabs(a))
 
     def __lt__(self,other):
-	"""
-	Test if a `Variable` is less than another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a < 4)
-	    >>> b
-	    (Variable(value = array(3)) < 4)
-	    >>> b()
-	    1
-	    >>> a.setValue(4)
-	    >>> print b()
-	    0
+        """
+        Test if a `Variable` is less than another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a < 4)
+            >>> b
+            (Variable(value = array(3)) < 4)
+            >>> b()
+            1
+            >>> a.setValue(4)
+            >>> print b()
+            0
             >>> print 1000000000000000000 * Variable(1) < 1.
             0
             >>> print 1000 * Variable(1) < 1.
             0
 
 
-	Python automatically reverses the arguments when necessary
-	
-	    >>> 4 > Variable(value = 3)
-	    (Variable(value = array(3)) < 4)
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
+        Python automatically reverses the arguments when necessary
+        
+            >>> 4 > Variable(value = 3)
+            (Variable(value = array(3)) < 4)
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
 
     def __le__(self,other):
-	"""
-	Test if a `Variable` is less than or equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a <= 4)
-	    >>> b
-	    (Variable(value = array(3)) <= 4)
-	    >>> b()
-	    1
-	    >>> a.setValue(4)
-	    >>> print b()
-	    1
-	    >>> a.setValue(5)
-	    >>> print b()
-	    0
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
-	
+        """
+        Test if a `Variable` is less than or equal to another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a <= 4)
+            >>> b
+            (Variable(value = array(3)) <= 4)
+            >>> b()
+            1
+            >>> a.setValue(4)
+            >>> print b()
+            1
+            >>> a.setValue(5)
+            >>> print b()
+            0
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a<=b, other)
+        
     def __eq__(self,other):
-	"""
-	Test if a `Variable` is equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a == 4)
-	    >>> b
-	    (Variable(value = array(3)) == 4)
-	    >>> b()
-	    0
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a==b, other)
-	
+        """
+        Test if a `Variable` is equal to another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a == 4)
+            >>> b
+            (Variable(value = array(3)) == 4)
+            >>> b()
+            0
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a==b, other)
+        
     def __ne__(self,other):
-	"""
-	Test if a `Variable` is not equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a != 4)
-	    >>> b
-	    (Variable(value = array(3)) != 4)
-	    >>> b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a!=b, other)
-	
+        """
+        Test if a `Variable` is not equal to another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a != 4)
+            >>> b
+            (Variable(value = array(3)) != 4)
+            >>> b()
+            1
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a!=b, other)
+        
     def __gt__(self,other):
-	"""
-	Test if a `Variable` is greater than another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a > 4)
-	    >>> b
-	    (Variable(value = array(3)) > 4)
-	    >>> print b()
-	    0
-	    >>> a.setValue(5)
-	    >>> print b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
-	
+        """
+        Test if a `Variable` is greater than another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a > 4)
+            >>> b
+            (Variable(value = array(3)) > 4)
+            >>> print b()
+            0
+            >>> a.setValue(5)
+            >>> print b()
+            1
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a>b, other)
+        
     def __ge__(self,other):
-	"""
-	Test if a `Variable` is greater than or equal to another quantity
-	
-	    >>> a = Variable(value = 3)
-	    >>> b = (a >= 4)
-	    >>> b
-	    (Variable(value = array(3)) >= 4)
-	    >>> b()
-	    0
-	    >>> a.setValue(4)
-	    >>> print b()
-	    1
-	    >>> a.setValue(5)
-	    >>> print b()
-	    1
-	"""
-	return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
+        """
+        Test if a `Variable` is greater than or equal to another quantity
+        
+            >>> a = Variable(value = 3)
+            >>> b = (a >= 4)
+            >>> b
+            (Variable(value = array(3)) >= 4)
+            >>> b()
+            0
+            >>> a.setValue(4)
+            >>> print b()
+            1
+            >>> a.setValue(5)
+            >>> print b()
+            1
+        """
+        return self._getBinaryOperatorVariable(lambda a,b: a>=b, other)
 
     def __and__(self, other):
         """
@@ -1556,7 +1556,7 @@ class Variable(object):
         
     def __len__(self):
         return len(self.getValue())
-	
+        
     def __float__(self):
         return float(self.getValue())
 
@@ -1584,22 +1584,22 @@ class Variable(object):
             [ 0.  2.  3.]
             
         """
-	return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
-	
+        return self._getUnaryOperatorVariable(lambda a: numerix.sqrt(a))
+        
     def tan(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.tan(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.tan(a))
 
     def tanh(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.tanh(a))
 
     def arctan(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.arctan(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.arctan(a))
 
     def arctanh(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.arctanh(a))
             
     def exp(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.exp(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.exp(a))
 
     def log(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.log(a))
@@ -1608,13 +1608,13 @@ class Variable(object):
         return self._getUnaryOperatorVariable(lambda a: numerix.log10(a))
 
     def sin(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.sin(a))
-		
+        return self._getUnaryOperatorVariable(lambda a: numerix.sin(a))
+                
     def sinh(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.sinh(a))
 
     def cos(self):
-	return self._getUnaryOperatorVariable(lambda a: numerix.cos(a))
+        return self._getUnaryOperatorVariable(lambda a: numerix.cos(a))
         
     def cosh(self):
         return self._getUnaryOperatorVariable(lambda a: numerix.cosh(a))
@@ -1630,9 +1630,9 @@ class Variable(object):
 
     def arctan2(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
-		
+                
     def dot(self, other):
-	return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
         
     def reshape(self, shape):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,), canInline = False)
@@ -1647,14 +1647,14 @@ class Variable(object):
         return self
 
     def sum(self, index = 0):
-	if not self.sumVar.has_key(index):
-	    from sumVariable import _SumVariable
-	    self.sumVar[index] = _SumVariable(self, index)
-	
-	return self.sumVar[index]
+        if not self.sumVar.has_key(index):
+            from sumVariable import _SumVariable
+            self.sumVar[index] = _SumVariable(self, index)
+        
+        return self.sumVar[index]
 
     def take(self, ids, axis = 0):
-	return numerix.take(self.getValue(), ids, axis)
+        return numerix.take(self.getValue(), ids, axis)
 
     def _take(self, ids, axis = 0):
         """
@@ -1757,9 +1757,9 @@ class Variable(object):
 
     def getMag(self):
         if self.mag is None:
-	    self.mag = self.dot(self).sqrt()
-	    
-	return self.mag
+            self.mag = self.dot(self).sqrt()
+            
+        return self.mag
         
     def _testBinOp(self):
         """
