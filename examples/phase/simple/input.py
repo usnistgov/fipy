@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 12/11/06 {11:18:49 PM} 
+ #                                last update: 1/3/07 {4:53:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -457,7 +457,7 @@ Newton's method
     ...     phase.setValue(phase() + 1 * dphase())
     ... ##     viewer.plot()
     ...     print i, res
-    ... if __name__ == '__main__':
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Newton's method, semi-implicit. Press <return> to proceed...")
     >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
