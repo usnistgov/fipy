@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/3/07 {3:15:10 PM} 
+ #                                last update: 1/3/07 {4:32:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,7 +43,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -73,7 +72,7 @@ class Term:
 
     def _calcResidualVector(self, var, matrix, RHSvector):
 
-        Lx = matrix * Numeric.array(var[:])
+        Lx = matrix * numerix.array(var[:])
       
         return Lx - RHSvector
 
