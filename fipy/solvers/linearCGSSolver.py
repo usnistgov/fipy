@@ -44,8 +44,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse_numpy import precon
-from pysparse_numpy import itsolvers
+from pysparse import precon
+from pysparse import itsolvers
 
 from fipy.solvers.solver import Solver
 

@@ -42,7 +42,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from pysparse_numpy import spmatrix
+from pysparse import spmatrix
 
 from fipy.tools import numerix
 
