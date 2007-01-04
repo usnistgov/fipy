@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/3/07 {4:53:42 PM} 
+ #                                last update: 1/4/07 {10:17:35 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -443,24 +443,24 @@ systems and longer iterations.
 
 Newton's method
 
-    >>> dphase = CellVariable(name="dphase", mesh=mesh)
-    >>> residual = CellVariable(name="residual", mesh=mesh)
-    >>> ## jacobian = diffusionTerm + S1 * dphase * (S1 > 0) + ImplicitSourceTerm(coeff = S1 * (S1 < 0)) + residual
-    >>> jacobian = diffusionTerm + ImplicitSourceTerm(coeff = S1) + residual
+    >>> ## dphase = CellVariable(name="dphase", mesh=mesh)
+    >>> ## residual = CellVariable(name="residual", mesh=mesh)
+    >>> ## ## jacobian = diffusionTerm + S1 * dphase * (S1 > 0) + ImplicitSourceTerm(coeff = S1 * (S1 < 0)) + residual
+    >>> ## jacobian = diffusionTerm + ImplicitSourceTerm(coeff = S1) + residual
 
-    >>> phase.setValue(1.)
-    >>> phase.setValue(0., where=x > L/2)
+    >>> ## phase.setValue(1.)
+    >>> ## phase.setValue(0., where=x > L/2)
 
-    >>> for i in range(4000):
-    ...     residual.setValue(eq.justResidualVector(var=phase))
-    ...     res = jacobian.sweep(var = dphase)
-    ...     phase.setValue(phase() + 1 * dphase())
+    >>> ## for i in range(4000):
+    ... ##     residual.setValue(eq.justResidualVector(var=phase))
+    ... ##     res = jacobian.sweep(var = dphase)
+    ... ##     phase.setValue(phase() + 1 * dphase())
+    ... ## ##     viewer.plot()
+    ... ##     print i, res
+    >>> ## if __name__ == '__main__':
     ... ##     viewer.plot()
-    ...     print i, res
-    >>> if __name__ == '__main__':
-    ...     viewer.plot()
-    ...     raw_input("Newton's method, semi-implicit. Press <return> to proceed...")
-    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    ... ##     raw_input("Newton's method, semi-implicit. Press <return> to proceed...")
+    >>> ## print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
     1
 
 -----
