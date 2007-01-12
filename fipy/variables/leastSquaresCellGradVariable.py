@@ -66,19 +66,11 @@ class _LeastSquaresCellGradVariable(VectorCellVariable):
 
         mat = numerix.sum(mat, axis=1)
 
-##        print 'value',value
-##        print 'neighborValue',neighborValue
-##        print 'neighborValue - value',neighborValue - value[...,numerix.newaxis]
-        
         vec = numerix.sum((neighborValue - value[...,numerix.newaxis])[...,numerix.newaxis] * cellDistanceNormals, axis=1)
 
         if D == 1:
-            print 'vec',vec
-            print 'mat',mat
             vec[:,0] = vec[:,0] / mat[:, 0, 0]
         elif D == 2:
-##            print 'mat',mat
-##            print 'vec',vec
             divisor = mat[:,0,0] * mat[:,1,1] - mat[:,0,1] * mat[:,1,0]
             gradx = (vec[:,0] * mat[:,1,1] - vec[:,1] * mat[:,0,1]) / divisor
             grady = (vec[:,1] * mat[:,0,0] - vec[:,0] * mat[:,1,0]) / divisor

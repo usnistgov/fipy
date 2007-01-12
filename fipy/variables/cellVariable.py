@@ -223,13 +223,15 @@ class CellVariable(Variable):
 
         Tests
 
-            >>> CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
+            >>> from fipy import Grid2D
+            >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
             [[8.0 1.2]
              [8.0 2.0]
              [24.0 1.2]
              [24.0 2.0]]
 
-            >>> CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
+            >>> from fipy import Grid1D
+            >>> print CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
             [[0.461538461538]
              [0.8]
              [1.2]]
