@@ -186,11 +186,62 @@ class CellVariable(Variable):
            
         as a `VectorCellVariable` (first-order gradient).
         """
-        if self.grad is None:
-            from cellGradVariable import _CellGradVariable
-            self.grad = _CellGradVariable(var = self, name = "%s_grad" % self.getName())
+        return self.getGaussGrad()
+
+    def getGaussGrad(self):
+        r"""
+        Return
+
+        .. raw:: latex
+
+            $ \frac{1}{V_P} \sum_f \vec{n} \phi_f A_f $
+
+        as a `VectorCellVariable` (first-order gradient).
+            
+        """
+        if not hasattr(self, 'gaussGrad'):
+            from gaussCellGradVariable import _GaussCellGradVariable
+            self.gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.getName())
         
-        return self.grad
+        return self.gaussGrad
+
+    def getLeastSquaresGrad(self):
+        r"""
+        Return
+
+        .. raw:: latex
+
+            $\nabla \phi$, which is determined by solving for $\nabla
+            \phi$ in the following matrix equation, $$ \nabla \phi \cdot \sum_f
+            d_{AP}^2 \vec{n}_{AP} \otimes \vec{n}_{AP} = \sum_f
+            d_{AP}^2 \left( \vec{n} \cdot \nabla \phi \right)_{AP} $$
+            The matrix equation is derived by minimizing the following
+            least squares sum, $$ F \left( \phi_x, \phi_y \right) =
+            \sqrt{\sum_f \left( d_{AP} \vec{n}_{AP} \cdot \nabla \phi
+            - d_{AP} \left( \vec{n}_{AP} \cdot \nabla \phi
+            \right)_{AP} \right)^2 } $$
+
+        Tests
+
+            >>> CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
+            [[8.0 1.2]
+             [8.0 2.0]
+             [24.0 1.2]
+             [24.0 2.0]]
+
+            >>> CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
+            [[0.461538461538]
+             [0.8]
+             [1.2]]
+
+        """
+
+        if not hasattr(self, 'leastSquaresGrad'):
+            from leastSquaresCellGradVariable import _LeastSquaresCellGradVariable
+            self.leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, name = "%s_least_squares_grad" % self.getName())
+        
+        return self.leastSquaresGrad
+
 
     def getArithmeticFaceValue(self):
         r"""
