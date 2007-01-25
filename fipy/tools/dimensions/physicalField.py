@@ -100,7 +100,7 @@ recommended values from CODATA_. Other conversion factors
 """
 __docformat__ = 'restructuredtext'
 
-import re, string, umath
+import re, string
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA

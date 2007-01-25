@@ -324,6 +324,24 @@ class CellVariable(Variable):
 
         return self.harmonicFaceValue
 
+    def getFaceValue(self, func=None):
+        r"""
+        Returns a `FaceVariable` whose value is evaluated by the function provided.
+        
+            >>> mesh = Grid1D(nx=2)
+            >>> var = CellVariable(value=(0, 1), mesh=mesh)
+            >>> print var.getFaceValue()
+            [ 0.  0.5  1.]
+            >>> print var.getFaceValue(lambda a, b: numerix.minimum(a,b))
+            [ 0.  0.  1.]
+            
+        """
+        if func is None:
+            return self.getArithmeticFaceValue()
+        else:
+            from callBackCellToFaceVariable import _CallBackCellToFaceVariable
+            return _CallBackCellToFaceVariable(self, func)
+
     def getFaceGrad(self):
         r"""
         Return
