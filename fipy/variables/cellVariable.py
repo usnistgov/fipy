@@ -327,11 +327,12 @@ class CellVariable(Variable):
     def getFaceValue(self, func=None):
         r"""
         Returns a `FaceVariable` whose value is evaluated by the function provided.
-        
+
+            >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx=2)
             >>> var = CellVariable(value=(0, 1), mesh=mesh)
             >>> print var.getFaceValue()
-            [ 0.  0.5  1.]
+            [ 0.   0.5  1. ]
             >>> print var.getFaceValue(lambda a, b: numerix.minimum(a,b))
             [ 0.  0.  1.]
             
