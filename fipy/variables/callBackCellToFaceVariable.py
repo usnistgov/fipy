@@ -39,14 +39,15 @@ from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import numerix
 
 class _CallBackCellToFaceVariable(_CellToFaceVariable):
-    def __init__(self, var, func):
+    def __init__(self, var, func, **args):
         _CellToFaceVariable.__init__(self, var)
         self.func = func
+        self.args = args
         
     def _calcValuePy(self, alpha, id1, id2):
         cell1 = numerix.take(self.var,id1)
         cell2 = numerix.take(self.var,id2)
-        return self.func(cell1, cell2)
+        return self.func(cell1, cell2, **self.args)
 
     _calcValueIn = _calcValuePy
     

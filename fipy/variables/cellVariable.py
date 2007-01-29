@@ -324,7 +324,7 @@ class CellVariable(Variable):
 
         return self.harmonicFaceValue
 
-    def getFaceValue(self, func=None):
+    def getFaceValue(self, func=None, **args):
         r"""
         Returns a `FaceVariable` whose value is evaluated by the function provided.
 
@@ -341,7 +341,7 @@ class CellVariable(Variable):
             return self.getArithmeticFaceValue()
         else:
             from callBackCellToFaceVariable import _CallBackCellToFaceVariable
-            return _CallBackCellToFaceVariable(self, func)
+            return _CallBackCellToFaceVariable(self, func, **args)
 
     def getFaceGrad(self):
         r"""
