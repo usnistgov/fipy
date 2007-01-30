@@ -45,11 +45,14 @@ class _LeastSquaresCellGradVariable(VectorCellVariable):
     def __init__(self, var, name = ''):
         VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
         self.var = self._requires(var)
-                    
+
+    def _getNeighborValue(self, ):
+        return numerix.take(numerix.array(self.var), self.mesh._getCellToCellIDs())
+
     def _calcValue(self):
         cellToCellDistances = self.mesh._getCellToCellDistances()
         cellNormals = self.mesh._getCellNormals()
-        neighborValue = numerix.take(numerix.array(self.var), self.mesh._getCellToCellIDs())
+        neighborValue = self._getNeighborValue()
         value = numerix.array(self.var)
         cellDistanceNormals = cellToCellDistances[...,numerix.newaxis] * cellNormals
 

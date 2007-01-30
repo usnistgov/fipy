@@ -351,13 +351,25 @@ class CellVariable(Variable):
         
            \( \nabla \phi \)
            
-        as a `VectorFaceVariable` (second-order gradient).
+        as a `VectorFaceVariable` using differencing for the normal direction(second-order gradient).
         """
         if self.faceGrad is None:
             from faceGradVariable import _FaceGradVariable
             self.faceGrad = _FaceGradVariable(self)
 
         return self.faceGrad
+
+    def getFaceGradAverage(self):
+        r"""
+        Return
+        
+        .. raw:: latex
+        
+           \( \nabla \phi \)
+           
+        as a `VectorFaceVariable` using averaging for the normal direction(second-order gradient)
+        """
+        return self.getGrad().getArithmeticFaceValue()
 
     def getOld(self):
         """
