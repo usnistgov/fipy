@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/20/07 {4:13:36 PM} 
+ #                                last update: 1/30/07 {5:20:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1446,7 +1446,7 @@ def LINFnorm(arr):
       .. raw:: latex
 
          $\|\mathtt{arr}\|_\infty = [\sum_{j=1}^{n}
-         |\mathtt{arr}_j|^\infty}]^\infty = \over{\max}{j}
+         |\mathtt{arr}_j|^\infty]^\infty = \over{\max}{j}
          |\mathtt{arr}_j|$ is the $L^\infty$-norm of $\mathtt{arr}$.
     """
     return max(abs(arr))
