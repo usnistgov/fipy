@@ -116,8 +116,8 @@ The result is tested against the expected profile:
     >>> t = timeStepDuration * steps
     >>> from fipy.tools import numerix
     >>> epsi = x / numerix.sqrt(t * diffusionCoeff)
-    >>> import scipy
-    >>> analyticalArray = scipy.special.erf(epsi/2)
+    >>> from scipy.special import erf
+    >>> analyticalArray = erf(epsi/2)
     >>> print var.allclose(analyticalArray, atol = 2e-3)
     1
     
