@@ -63,11 +63,12 @@ installation will not be harmed.
    need to adjust your ``$path`` variable so that this version of 
    ``python`` is found before the pre-installed version.
 
-Numeric
--------
+NumPy
+-----
 
-Download and install the latest version of the 
-``Numeric-XX.X-py2.4-macosx10.4.zip`` from pythonmac_.
+Download and install the latest version of 
+``numpy-X.XX-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
+
 
 
 matplotlib
@@ -78,13 +79,7 @@ you download and install the latest version of
 ``matplotlib-X.XX.X-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
 
 
-matplotlib has a few prerequisites:
-
-NumPy
-~~~~~
-
-Download and install the latest version of 
-``numpy-X.XX-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
+matplotlib requires:
 
 wxPython
 ~~~~~~~~
