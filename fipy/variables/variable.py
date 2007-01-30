@@ -360,35 +360,22 @@ class Variable(object):
     def _getCIndexString(self, shape):
         dimensions = len(shape)
         if dimensions == 1:
-##            return '[i]'
             return '(i)'
         elif dimensions == 2:
             if shape[-1] == 1:
-##                return '[j]'
                 return '(j)'
             else:
-##                return '[j * ni + i]'
                 return '(j, i)'
-##                return '(i, j)'
-##                return '(j * ni + i)'
-##                return '(j + i * nj)'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
                     return '(k)'
- ##               return '[k]'
                 else:
-##                    return '[k + j * nk]'
                     return '(k + j * nk)'
-##                    return '(j, k)'
             elif shape[-2] == 1:
-##                return '[k + i * nj * nk]'
                 return '(k + i * nj * nk)'
-##                return '(i, k)'
             else:
-##                return '[k + j * nk + i * nj * nk]'
                 return '(k + j * nk + i * nj * nk)'
-##                return '(i, k, j)'
 
     def _getCstring(self, argDict={}, id = "", freshen=None):
          """
@@ -773,25 +760,25 @@ class Variable(object):
             '(Variable(value = array([1, 2, 3, 4])) * Variable(value = array([5, 6, 7, 8])))'
             
             >>> (v1 * v2)._getRepresentation(style='C', id = "")
-            '(var0[i] * var1[i])'
+            '(var0(i) * var1(i))'
             
             >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id = "")
-            '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
+            '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
             
             >>> (v1 - v2)._getRepresentation(style='C', id = "")
-            '(var0[i] - var1[i])'
+            '(var0(i) - var1(i))'
 
             >>> (v1 / v2)._getRepresentation(style='C', id = "")
-            '(var0[i] / var1[i])'
+            '(var0(i) / var1(i))'
 
             >>> (v1 - 1)._getRepresentation(style='C', id = "")
-            '(var0[i] - var1[0])'
+            '(var0(i) - var1)'
                 
             >>> (5 * v2)._getRepresentation(style='C', id = "")
-            '(var0[i] * var1[0])'
+            '(var0(i) * var1)'
 
             >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id = "")
-            '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
+            '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
 
         Check that getUnit() works for a binOp
 
