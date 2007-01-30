@@ -282,10 +282,11 @@ class Mesh:
 
     def _getNumberOfFacesPerCell(self):
         cellFaceIDs = self._getCellFaceIDs()
-        if type(cellFaceIDs) is type(MA.array(0)): 
-            return cellFaceIDs.count(axis=1)
+        if type(cellFaceIDs) is type(MA.array(0)):
+            ## bug in count returns float values when there is no mask
+            return numerix.array(cellFaceIDs.count(axis=1), 'l')
         else:
-            return self._getMaxFacesPerCell() * numerix.ones(len(cellFaceIDs))
+            return self._getMaxFacesPerCell() * numerix.ones(len(cellFaceIDs), 'l')
 
     def getExteriorFaces(self):
         pass

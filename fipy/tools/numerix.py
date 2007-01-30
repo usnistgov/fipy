@@ -965,7 +965,7 @@ def max(arr):
     """
 
     if type(arr) in (type(array(0)), type(MA.array(0)), type(()), type([])) or \
-       (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
+           (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
         return pythonmax(arr)
     else:
         return pythonmax(array(arr))

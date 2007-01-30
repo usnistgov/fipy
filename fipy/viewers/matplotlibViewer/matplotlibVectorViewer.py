@@ -108,7 +108,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             V = numerix.reshape(var[:,1], shape)
         
         import pylab
-        pylab.quiver(X, Y, U, V, 0.15)
+        pylab.quiver2(X, Y, U, V, 0.15)
                             
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))

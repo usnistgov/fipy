@@ -86,7 +86,7 @@ class GistVectorViewer(GistViewer):
 	vy = numerix.array(var[...,1])
 	
         maxVec = numerix.max(var.getMag())
-        maxGrid = numerix.max(numerix.max(var.getMesh()._getCellToCellDistances()))
+        maxGrid = numerix.max(var.getMesh()._getCellDistances())
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)
         

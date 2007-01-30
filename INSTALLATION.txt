@@ -322,7 +322,11 @@ displays both 1D X-Y type plots and 2D contour plots for both
 structured and unstructured data. It does not display 3D
 data. Although stated as working on Windows, it does not seem to do a
 good job of rendering on this platform. Pygist_ works fine on other
-common platforms. 
+common platforms.
+
+.. note::
+
+   Pygist requires the old Numeric module to be installed.
 
 .. warning:: 
 

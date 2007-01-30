@@ -73,8 +73,8 @@ class SkewedGrid2D(Mesh2D):
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
         
         vertices = self._createVertices()
-        changedVertices = numerix.zeros(vertices.shape)
-        changedVertices = changedVertices.astype(numerix.Float)
+        changedVertices = numerix.zeros(vertices.shape, 'd')
+##        changedVertices = changedVertices.astype(numerix.Float)
         for i in range(len(vertices)):
             if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (i / nx+1) != 0 and (i / nx+1) != ny):
                 changedVertices[i, 0] = vertices[i, 0] + (rand * ((random.random() * 2) - 1))

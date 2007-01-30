@@ -130,18 +130,17 @@ if __name__ == '__main__':
     
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
-    PNViewer = make(PNView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
+    PNViewer = make(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     KMView = KMVar / KMVar.getCellVolumeAverage()
     KMView.setName('KM')
-    KMViewer = make(KMView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
+    KMViewer = make(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     TMView = TMVar / TMVar.getCellVolumeAverage()
     TMView.setName('TM')
-    TMViewer = make(TMView, limits = {'maxval' : 2., 'minval' : 0.}, title = '')
+    TMViewer = make(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
 
     for i in range(100):
-        print i
         for var, eqn in eqs:
             var.updateOld()
         for var, eqn in eqs:
@@ -159,9 +158,9 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    PNViewer.plot()
-    KMViewer.plot()
-    TMViewer.plot()
+        PNViewer.plot()
+        KMViewer.plot()
+        TMViewer.plot()
 
     raw_input("finished")
 

@@ -93,7 +93,7 @@ class Gnuplot2DViewer(GnuplotViewer):
         self.g('set pm3d at st solid')
         mesh = self.vars[0].getMesh()
 
-        if isinstance(mesh, Grid2D):
+        if isinstance(mesh, Grid2D.__class__):
             nx, ny = mesh.getShape()
         else:
             N = int(numerix.sqrt(mesh.getNumberOfCells()))

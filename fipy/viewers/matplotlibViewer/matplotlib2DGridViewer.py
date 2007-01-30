@@ -109,11 +109,16 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
     def _getData(self):
         from fipy.tools.numerix import array, reshape
         return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
-    
+
     def _plot(self):
         import pylab
-    
         pylab.jet()
+        
+        if self._getLimit('datamin') is None or self._getLimit('datamax') is None:
+            datamin, datamax = self._autoscale([self.vars[0]], datamin=self._getLimit('datamin'), datamax=self._getLimit('datamax'))
+
+            pylab.clim(vmax=datamax, vmin=datamin)
+
         self.image.set_data(self._getData())
 
         

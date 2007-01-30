@@ -95,7 +95,7 @@ class MatplotlibViewer(Viewer):
 
         if datamax is None:
             from fipy.tools import numerix
-            datamax = 1e-300
+            datamax = -1e300
             for var in vars:
                 datamax = max(datamax, numerix.max(var))
                 
@@ -117,6 +117,7 @@ class MatplotlibViewer(Viewer):
 
         self._plot()
         pylab.draw()
-        
+
         if filename is not None:
             pylab.savefig(filename)
+
