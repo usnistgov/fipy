@@ -360,6 +360,14 @@ class UniformGrid2D(Grid2D):
         faceToCellDistanceRatios[(self.numberOfHorizontalFaces + self.nx)::(self.nx + 1)] = 1.
         return faceToCellDistanceRatios
 
+    def _getFaceToCellDistances(self):
+        faceToCellDistances = numerix.zeros((self.numberOfFaces, 2), 'd')
+        distances = self._getCellDistances()
+        ratios = self._getFaceToCellDistanceRatio()
+        faceToCellDistances[:,0] = distances * ratios
+        faceToCellDistances[:,1] = distances * (1 - ratios)
+        return faceToCellDistances
+
     def _getOrientedAreaProjections(self):
         return self._getAreaProjections()
 
@@ -500,7 +508,7 @@ class UniformGrid2D(Grid2D):
     
     def _calcScaledGeometry(self):
         pass
-        
+
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
