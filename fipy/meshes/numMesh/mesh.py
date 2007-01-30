@@ -534,6 +534,9 @@ class Mesh(_CommonMesh):
     def _getOrderedCellVertexIDs(self):
         return self._getCellVertexIDs()
 
+    def _getCellDistanceNormals(self):
+        return self.getCellDistanceVectors() / self.getCellDistances()
+        
     def _getCellVertexIDs(self):
 
         ## Get all the vertices from all the faces for each cell
