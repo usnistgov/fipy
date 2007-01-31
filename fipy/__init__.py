@@ -1,4 +1,5 @@
-__version__ = "1.2"
+import os
+execfile(os.path.join(__path__[0], '__version__.py'))
 
 from boundaryConditions import *
 from meshes import *
