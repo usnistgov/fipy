@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 11/22/06 {2:54:35 PM} 
+ #                                last update: 1/31/07 {1:23:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -210,6 +210,19 @@ class build_docs (Command):
                               writer = writer,
                               settings_overrides = settings)
                               
+            translated = open(destination_path, 'r')
+            lines = []
+            
+            for line in translated:
+                import re
+                line = re.sub(r'\\tableofcontents', r'% this automatically generated line conflicts with minitoc\r% \\tableofcontents', line)
+                lines.append(line)
+                
+            translated.close()
+            translated = open(destination_path, 'w')
+            translated.writelines(lines)
+            translated.close()
+
             # mark modification time of output file as mod time of reST file
             os.utime(destination_path, (os.path.getatime(source_path), os.path.getmtime(source_path)))
 
