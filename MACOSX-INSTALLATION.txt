@@ -96,7 +96,8 @@ http://pysparse.sourceforge.net
 
 Download and install the latest version of
 ``pysparse-X.XX.XXX.macosx-10.4-py24.dmg`` from
-http://sourceforge.net/project/showfiles.php?group_id=101403.
+
+    http://sourceforge.net/project/showfiles.php?group_id=101403.
 
 |FiPy|
 ------
@@ -239,8 +240,10 @@ http://pysparse.sourceforge.net
 
 Download and unpack the latest version of
 ``pysparse-X.XX.XXX.tar.gz`` from
-http://sourceforge.net/project/showfiles.php?group_id=101403. From within 
-the PySparse directory, execute::
+
+    http://sourceforge.net/project/showfiles.php?group_id=101403
+
+From within the PySparse directory, execute::
 
     $ python setup.py build
     $ sudo python setup.py install
@@ -381,7 +384,7 @@ If you have installed the optional packages, a MayaVi_ viewer should
 appear with a trench filling simulation.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. |FiPy| replace:: |latexFiPy| |htmlFiPy| 
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
 .. |latexMesh1D-py| raw:: latex
