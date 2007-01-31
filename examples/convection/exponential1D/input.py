@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:06:34 PM} 
+ #                                last update: 1/31/07 {11:20:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -130,7 +130,7 @@ term can be found in
 
 .. raw:: latex
 
-   Section~\ref{sec:numerixalSchemes} ``\nameref{sec:NumericalSchemes}''.
+   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
    
 .. of the manual
 

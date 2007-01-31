@@ -6,7 +6,7 @@
  # 
  #  FILE: "hybridConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/3/07 {3:22:38 PM} 
+ #                                last update: 1/31/07 {11:21:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,8 +53,8 @@ class HybridConvectionTerm(ConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the hybrid scheme.
-       For further details see ``\nameref{FiPy-sec:numerixalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
+       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
 
     class _Alpha(FaceVariable):

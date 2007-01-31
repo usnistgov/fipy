@@ -6,7 +6,7 @@
  # 
  #  FILE: "centralDiffConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/3/07 {3:20:06 PM} 
+ #                                last update: 1/31/07 {11:20:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,8 +52,8 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
 
        where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
        $\alpha_f$ is calculated using the central differencing scheme.
-       For further details see ``\nameref{FiPy-sec:numerixalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:numerixalSchemes}]{FiPyGuide}.
+       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
+       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
     
     def _getDefaultSolver(self, solver):
