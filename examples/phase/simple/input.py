@@ -441,30 +441,6 @@ systems and longer iterations.
     
 -----
 
-Newton's method
-
-    >>> ## dphase = CellVariable(name="dphase", mesh=mesh)
-    >>> ## residual = CellVariable(name="residual", mesh=mesh)
-    >>> ## ## jacobian = diffusionTerm + S1 * dphase * (S1 > 0) + ImplicitSourceTerm(coeff = S1 * (S1 < 0)) + residual
-    >>> ## jacobian = diffusionTerm + ImplicitSourceTerm(coeff = S1) + residual
-
-    >>> ## phase.setValue(1.)
-    >>> ## phase.setValue(0., where=x > L/2)
-
-    >>> ## for i in range(4000):
-    ... ##     residual.setValue(eq.justResidualVector(var=phase))
-    ... ##     res = jacobian.sweep(var = dphase)
-    ... ##     phase.setValue(phase() + 1 * dphase())
-    ... ## ##     viewer.plot()
-    ... ##     print i, res
-    >>> ## if __name__ == '__main__':
-    ... ##     viewer.plot()
-    ... ##     raw_input("Newton's method, semi-implicit. Press <return> to proceed...")
-    >>> ## print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    1
-
------
-
 This example has focused on just the region of the phase field interface in
 equilibrium. Problems of interest, though, usually involve the dynamics of one phase
 transforming to another. To that end, let us recast the problem using
@@ -624,7 +600,7 @@ thickness
     ...     print "The SciPy library is unavailable to fit the interface \
     ... thickness and velocity"
 
-    >>> print abs(1 - V_fit / velocity) < 3e-2
+    >>> print abs(1 - V_fit / velocity) < 3.3e-2
     True
     >>> print abs(1 - d_fit / delta) < 2e-2
     True
