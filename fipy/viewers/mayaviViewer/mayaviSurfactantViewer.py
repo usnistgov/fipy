@@ -141,6 +141,15 @@ class MayaviSurfactantViewer(Viewer):
         coords[:,:coordinates.shape[1]] = coordinates
 
         import pyvtk
+
+        ## making lists as pyvtk doesn't know what to do with numpy arrays
+
+        coords = list(coords)
+        coords = map(lambda coord: [float(coord[0]),float(coord[1]), float(coord[2])], coords)
+
+        data = list(data)
+        data = map(lambda item: float(item), data)
+        
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data, name = name)))
