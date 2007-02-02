@@ -6,7 +6,7 @@
  # 
  #  FILE: "orthoerror.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {3:35:20 PM} 
+ #                                last update: 2/2/07 {8:48:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,31 +48,30 @@ for each mesh and displays them in a graph, allowing the relationship of error t
 For more information, see the documentation for AdaptiveMesh.
 """
 
-import sys
-import os
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
-from fipy.meshes.numMesh.tri2D import Tri2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-from fipy.meshes.numMesh.gmshImport import GmshImporter2D
-from fipy.tools import numerix
-
-valueLeft = 0.
-valueRight = 1.
-
-meshList = []
-RMSNonOrthoList = []
-RMSErrorList = []
-
-for i in range(1, 501):
-    meshList = meshList + [SkewedGrid2D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, rand = (0.001 * i))]
-
-
 if __name__ == '__main__':
     
+    import sys
+    import os
+
+    from fipy.meshes.grid2D import Grid2D
+    from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
+    from fipy.meshes.numMesh.tri2D import Tri2D
+    from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    from fipy.variables.cellVariable import CellVariable
+    from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+    from fipy.tools import numerix
+
+    valueLeft = 0.
+    valueRight = 1.
+
+    meshList = []
+    RMSNonOrthoList = []
+    RMSErrorList = []
+
+    for i in range(1, 501):
+        meshList = meshList + [SkewedGrid2D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, rand = (0.001 * i))]
+
     for mesh in meshList:
         var = CellVariable(name = "solution variable",
                            mesh = mesh,

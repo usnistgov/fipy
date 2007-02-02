@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:43:34 PM} { 1:23:41 PM}
+ #                                last update: 2/2/07 {8:53:18 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,39 +83,39 @@ Advect the interface and check the position.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
-
-height = 0.5
-Lx = 0.4
-Ly = 1.
-dx = 0.01
-velocity = 1.
-cfl = 0.1
-
-nx = int(Lx / dx)
-ny = int(Ly / dx)
-timeStepDuration = cfl * dx / velocity
-steps = 200
-
-mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
-
-var = DistanceVariable(
-    name = 'level set variable',
-    mesh = mesh,
-    value = -1,
-    hasOld = 1
-    )
-
-x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
-
-var.calcDistanceFunction()
-
-advEqn = buildAdvectionEquation(velocity)
-                        
 if __name__ == '__main__':
+    from fipy.meshes.grid2D import Grid2D
+    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+    from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+
+    height = 0.5
+    Lx = 0.4
+    Ly = 1.
+    dx = 0.01
+    velocity = 1.
+    cfl = 0.1
+
+    nx = int(Lx / dx)
+    ny = int(Ly / dx)
+    timeStepDuration = cfl * dx / velocity
+    steps = 200
+
+    mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
+
+    var = DistanceVariable(
+        name = 'level set variable',
+        mesh = mesh,
+        value = -1,
+        hasOld = 1
+        )
+
+    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
+
+    var.calcDistanceFunction()
+
+    advEqn = buildAdvectionEquation(velocity)
+
     import fipy.viewers
     viewer = fipy.viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
 

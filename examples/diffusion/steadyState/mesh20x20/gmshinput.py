@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/3/06 {11:31:28 PM} 
+ #                                last update: 2/2/07 {8:51:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,65 +51,66 @@ the non-orthogonality error, this uses a SkewedGrid2D, which is a
 Grid2D with each interior vertex moved in a random direction.
 
 """
-import sys
-import os
-
-from fipy.tools import numerix
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.skewedGrid2D import SkewedGrid2D
-from fipy.meshes.tri2D import Tri2D
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.meshes.gmshImport import GmshImporter2D
-
-valueLeft = 0.
-valueRight = 1.
-
-mesh = SkewedGrid2D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, rand = 0.1)
-
-var = CellVariable(name = "solution variable",
-                   mesh = mesh,
-                   value = valueLeft)
-
-viewer = fipy.viewers.make(vars = var)
-
-def leftSide(face):
-    a = face.getCenter()[0]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def rightSide(face):
-    a = face.getCenter()[0]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def bottomSide(face):
-    a = face.getCenter()[1]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def topSide(face):
-    a = face.getCenter()[1]
-    if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-
-ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
-                                                         FixedValue(mesh.getFacesRight(), valueRight)))
 
 if __name__ == '__main__':
+    import sys
+    import os
+
+    from fipy.tools import numerix
+
+    from fipy.meshes.grid2D import Grid2D
+    from fipy.meshes.skewedGrid2D import SkewedGrid2D
+    from fipy.meshes.tri2D import Tri2D
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    from fipy.boundaryConditions.fixedFlux import FixedFlux
+    from fipy.variables.cellVariable import CellVariable
+    import fipy.viewers
+    from fipy.meshes.gmshImport import GmshImporter2D
+
+    valueLeft = 0.
+    valueRight = 1.
+
+    mesh = SkewedGrid2D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, rand = 0.1)
+
+    var = CellVariable(name = "solution variable",
+                       mesh = mesh,
+                       value = valueLeft)
+
+    viewer = fipy.viewers.make(vars = var)
+
+    def leftSide(face):
+        a = face.getCenter()[0]
+        if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
+            return 1
+        else:
+            return 0
+
+    def rightSide(face):
+        a = face.getCenter()[0]
+        if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
+            return 1
+        else:
+            return 0
+
+    def bottomSide(face):
+        a = face.getCenter()[1]
+        if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
+            return 1
+        else:
+            return 0
+
+    def topSide(face):
+        a = face.getCenter()[1]
+        if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
+            return 1
+        else:
+            return 0
+
+    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+
+    ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
+                                                             FixedValue(mesh.getFacesRight(), valueRight)))
+
     varArray = numerix.array(var)
     x = mesh.getCellCenters()[:,0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20

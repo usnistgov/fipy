@@ -6,7 +6,7 @@
  # 
  # FILE: "cahnHilliard.py"
  #                                     created: 1/18/06 {2:36:12 PM}
- #                                 last update: 1/18/06 {4:03:44 PM}
+ #                                 last update: 2/2/07 {8:46:11 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -49,104 +49,106 @@ Cahn-Hilliard equation. Run:
 """
 __docformat__ = 'restructuredtext'
 
-import time
+if __name__ == "__main__":
+    
+    import time
 
-from fipy.tools.parser import parse
+    from fipy.tools.parser import parse
 
-from benchmarker import Benchmarker
-bench = Benchmarker()
+    from benchmarker import Benchmarker
+    bench = Benchmarker()
 
-numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
+    numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 
 
-bench.start()
+    bench.start()
 
-import fipy.tools.numerix as numerix
+    import fipy.tools.numerix as numerix
 
-nx = int(numerix.sqrt(numberOfElements))
-ny = int(numerix.sqrt(numberOfElements))
+    nx = int(numerix.sqrt(numberOfElements))
+    ny = int(numerix.sqrt(numberOfElements))
 
-steps = 10
+    steps = 10
 
-dx = 2.
-dy = 2.
+    dx = 2.
+    dy = 2.
 
-L = dx * nx
+    L = dx * nx
 
-asq = 1.0
-epsilon = 1
-diffusionCoeff = 1
+    asq = 1.0
+    epsilon = 1
+    diffusionCoeff = 1
 
-from fipy.meshes.grid2D import Grid2D
-mesh = Grid2D(dx, dy, nx, ny)
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(dx, dy, nx, ny)
 
-bench.stop('mesh')
+    bench.stop('mesh')
 
-bench.start()
+    bench.start()
 
-from fipy.variables.cellVariable import CellVariable
-from fipy.tools.numerix import random
+    from fipy.variables.cellVariable import CellVariable
+    from fipy.tools.numerix import random
 
-var = CellVariable(name = "phase field",
-                   mesh = mesh,
-                   value = random.random(nx * ny))
+    var = CellVariable(name = "phase field",
+                       mesh = mesh,
+                       value = random.random(nx * ny))
 
-bench.stop('variables')
+    bench.stop('variables')
 
-bench.start()
+    bench.start()
 
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
+    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+    from fipy.terms.transientTerm import TransientTerm
 
-faceVar = var.getArithmeticFaceValue()
-doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
+    faceVar = var.getArithmeticFaceValue()
+    doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
-diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
-diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
-eqch = TransientTerm() - diffTerm2 - diffTerm4
+    diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
+    diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
+    eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-bench.stop('terms')
+    bench.stop('terms')
 
-bench.start()
+    bench.start()
 
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
-##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
-solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
+    from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    from fipy.solvers.linearLUSolver import LinearLUSolver
+    ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
+    solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 
-bench.stop('solver')
+    bench.stop('solver')
 
-bench.start()
+    bench.start()
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-BCs = (FixedFlux(mesh.getFacesRight(), 0),
-       FixedFlux(mesh.getFacesLeft(), 0),
-       NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesTop(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesBottom(), 0, 3))
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    from fipy.boundaryConditions.fixedFlux import FixedFlux
+    from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
+    BCs = (FixedFlux(mesh.getFacesRight(), 0),
+           FixedFlux(mesh.getFacesLeft(), 0),
+           NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
+           NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3),
+           NthOrderBoundaryCondition(mesh.getFacesTop(), 0, 3),
+           NthOrderBoundaryCondition(mesh.getFacesBottom(), 0, 3))
 
-bench.stop('BCs')
+    bench.stop('BCs')
 
-dexp=-5
+    dexp=-5
 
-dt = numerix.exp(dexp)
-dt = min(100, dt)
-dexp += 0.01
-var.updateOld()
-eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-
-bench.start()
-
-for step in range(steps):
     dt = numerix.exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()
     eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
-            
-bench.stop('solve')
 
-print bench.report(numberOfElements=numberOfElements, steps=steps)
+    bench.start()
+
+    for step in range(steps):
+        dt = numerix.exp(dexp)
+        dt = min(100, dt)
+        dexp += 0.01
+        var.updateOld()
+        eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
+                
+    bench.stop('solve')
+
+    print bench.report(numberOfElements=numberOfElements, steps=steps)

@@ -6,7 +6,7 @@
  # 
  # FILE: "superfill.py"
  #                                     created: 1/19/06 {4:09:41 PM}
- #                                 last update: 1/18/06 {4:17:53 PM}
+ #                                 last update: 2/2/07 {8:47:12 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -50,215 +50,195 @@ electrochemistry superfill problem. Run:
 """
 __docformat__ = 'restructuredtext'
 
-faradaysConstant = 9.6e4
-gasConstant = 8.314
-transferCoefficient = 0.5
-rateConstant0 = 1.76
-rateConstant3 = -245e-6
-catalystDiffusion = 1e-9
-siteDensity = 9.8e-6
-molarVolume = 7.1e-6,
-charge = 2
-metalDiffusionCoefficient = 5.6e-10
-temperature = 298.
-overpotential = -0.3
-bulkMetalConcentration = 250.
-catalystConcentration = 5e-3
-catalystCoverage = 0.
-currentDensity0 = 0.26
-currentDensity1 = 45.
-cflNumber = 0.2
-numberOfCellsInNarrowBand = 10
-cellsBelowTrench = 10
-cellSize = 0.1e-7
-trenchDepth = 0.5e-6
-aspectRatio = 2.
-trenchSpacing = 0.6e-6
-boundaryLayerDepth = 0.3e-6
-
-from fipy.tools.parser import parse
-
-numberOfElements = parse('--numberOfElements', action = 'store',
-    type = 'int', default = -1)
-
-from benchmarker import Benchmarker
-bench = Benchmarker()
-
-numberOfSteps = 5
-
-bench.start()
-
-import fipy.tools.numerix as numerix
-if numberOfElements != -1:
-    pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
-    sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
-          / (2 * numberOfElements)
-    cellSize = pos + numerix.sqrt(pos**2 + sqr)
-else:
+if __name__ == "__main__":
+    
+    faradaysConstant = 9.6e4
+    gasConstant = 8.314
+    transferCoefficient = 0.5
+    rateConstant0 = 1.76
+    rateConstant3 = -245e-6
+    catalystDiffusion = 1e-9
+    siteDensity = 9.8e-6
+    molarVolume = 7.1e-6,
+    charge = 2
+    metalDiffusionCoefficient = 5.6e-10
+    temperature = 298.
+    overpotential = -0.3
+    bulkMetalConcentration = 250.
+    catalystConcentration = 5e-3
+    catalystCoverage = 0.
+    currentDensity0 = 0.26
+    currentDensity1 = 45.
+    cflNumber = 0.2
+    numberOfCellsInNarrowBand = 10
+    cellsBelowTrench = 10
     cellSize = 0.1e-7
+    trenchDepth = 0.5e-6
+    aspectRatio = 2.
+    trenchSpacing = 0.6e-6
+    boundaryLayerDepth = 0.3e-6
 
-yCells = cellsBelowTrench \
-         + int((trenchDepth + boundaryLayerDepth) / cellSize)
+    from fipy.tools.parser import parse
 
-xCells = int(trenchSpacing / 2 / cellSize)
-from fipy.meshes.grid2D import Grid2D
-mesh = Grid2D(dx = cellSize,
-              dy = cellSize,
-              nx = xCells,
-              ny = yCells)
+    numberOfElements = parse('--numberOfElements', action = 'store',
+        type = 'int', default = -1)
 
-bench.stop('mesh')
+    from benchmarker import Benchmarker
+    bench = Benchmarker()
 
-bench.start()
+    numberOfSteps = 5
 
-narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-from fipy.models.levelSet.distanceFunction.distanceVariable import \
-    DistanceVariable        
+    bench.start()
 
-distanceVar = DistanceVariable(
-   name = 'distance variable',
-   mesh = mesh,
-   value = -1,
-   narrowBandWidth = narrowBandWidth,
-   hasOld = 1)
+    import fipy.tools.numerix as numerix
+    if numberOfElements != -1:
+        pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
+        sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
+              / (2 * numberOfElements)
+        cellSize = pos + numerix.sqrt(pos**2 + sqr)
+    else:
+        cellSize = 0.1e-7
 
-bottomHeight = cellsBelowTrench * cellSize
-trenchHeight = bottomHeight + trenchDepth
-trenchWidth = trenchDepth / aspectRatio
-sideWidth = (trenchSpacing - trenchWidth) / 2
-x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-distanceVar.setValue(1, where=(y > trenchHeight) 
-                              | ((y > bottomHeight) 
-                                 & (x < xCells * cellSize - sideWidth)))
+    yCells = cellsBelowTrench \
+             + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
-distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
-from fipy.models.levelSet.surfactant.surfactantVariable import \
-    SurfactantVariable
+    xCells = int(trenchSpacing / 2 / cellSize)
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(dx = cellSize,
+                  dy = cellSize,
+                  nx = xCells,
+                  ny = yCells)
 
-catalystVar = SurfactantVariable(
-    name = "catalyst variable",
-    value = catalystCoverage,
-    distanceVar = distanceVar)
+    bench.stop('mesh')
 
-from fipy.variables.cellVariable import CellVariable
-bulkCatalystVar = CellVariable(
-    name = 'bulk catalyst variable',
-    mesh = mesh,
-    value = catalystConcentration)
+    bench.start()
 
-from fipy.variables.cellVariable import CellVariable
-metalVar = CellVariable(
-    name = 'metal variable',
-    mesh = mesh,
-    value = bulkMetalConcentration)
+    narrowBandWidth = numberOfCellsInNarrowBand * cellSize
+    from fipy.models.levelSet.distanceFunction.distanceVariable import \
+        DistanceVariable        
 
-bench.stop('variables')
+    distanceVar = DistanceVariable(
+       name = 'distance variable',
+       mesh = mesh,
+       value = -1,
+       narrowBandWidth = narrowBandWidth,
+       hasOld = 1)
 
-bench.start()
+    bottomHeight = cellsBelowTrench * cellSize
+    trenchHeight = bottomHeight + trenchDepth
+    trenchWidth = trenchDepth / aspectRatio
+    sideWidth = (trenchSpacing - trenchWidth) / 2
+    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    distanceVar.setValue(1, where=(y > trenchHeight) 
+                                  | ((y > bottomHeight) 
+                                     & (x < xCells * cellSize - sideWidth)))
 
-expoConstant = -transferCoefficient * faradaysConstant \
-               / (gasConstant * temperature)
+    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    from fipy.models.levelSet.surfactant.surfactantVariable import \
+        SurfactantVariable
 
-tmp = currentDensity1 \
-      * catalystVar.getInterfaceVar()
+    catalystVar = SurfactantVariable(
+        name = "catalyst variable",
+        value = catalystCoverage,
+        distanceVar = distanceVar)
 
-exchangeCurrentDensity = currentDensity0 + tmp
-expo = numerix.exp(expoConstant * overpotential)
-currentDensity = expo * exchangeCurrentDensity * metalVar \
-                 / bulkMetalConcentration
+    from fipy.variables.cellVariable import CellVariable
+    bulkCatalystVar = CellVariable(
+        name = 'bulk catalyst variable',
+        mesh = mesh,
+        value = catalystConcentration)
 
-depositionRateVariable = currentDensity * molarVolume \
-                         / (charge * faradaysConstant)
+    from fipy.variables.cellVariable import CellVariable
+    metalVar = CellVariable(
+        name = 'metal variable',
+        mesh = mesh,
+        value = bulkMetalConcentration)
 
-extensionVelocityVariable = CellVariable(
-    name = 'extension velocity',
-    mesh = mesh,
-    value = depositionRateVariable)   
+    bench.stop('variables')
 
-from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-            import AdsorbingSurfactantEquation
+    bench.start()
 
-surfactantEquation = AdsorbingSurfactantEquation(
-    surfactantVar = catalystVar,
-    distanceVar = distanceVar,
-    bulkVar = bulkCatalystVar,
-    rateConstant = rateConstant0 \
-                   + rateConstant3 * overpotential**3)
+    expoConstant = -transferCoefficient * faradaysConstant \
+                   / (gasConstant * temperature)
 
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-               import buildHigherOrderAdvectionEquation
+    tmp = currentDensity1 \
+          * catalystVar.getInterfaceVar()
 
-advectionEquation = buildHigherOrderAdvectionEquation(
-    advectionCoeff = extensionVelocityVariable)
+    exchangeCurrentDensity = currentDensity0 + tmp
+    expo = numerix.exp(expoConstant * overpotential)
+    currentDensity = expo * exchangeCurrentDensity * metalVar \
+                     / bulkMetalConcentration
 
-from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-                     import buildMetalIonDiffusionEquation
+    depositionRateVariable = currentDensity * molarVolume \
+                             / (charge * faradaysConstant)
 
-metalEquation = buildMetalIonDiffusionEquation(
-    ionVar = metalVar,
-    distanceVar = distanceVar,
-    depositionRate = depositionRateVariable,
-    diffusionCoeff = metalDiffusionCoefficient,
-    metalIonMolarVolume = molarVolume,
-)
+    extensionVelocityVariable = CellVariable(
+        name = 'extension velocity',
+        mesh = mesh,
+        value = depositionRateVariable)   
 
-from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-                import buildSurfactantBulkDiffusionEquation
+    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
+                import AdsorbingSurfactantEquation
 
-bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
-    bulkVar = bulkCatalystVar,
-    distanceVar = distanceVar,
-    surfactantVar = catalystVar,
-    diffusionCoeff = catalystDiffusion,
-    rateConstant = rateConstant0 * siteDensity
-)
+    surfactantEquation = AdsorbingSurfactantEquation(
+        surfactantVar = catalystVar,
+        distanceVar = distanceVar,
+        bulkVar = bulkCatalystVar,
+        rateConstant = rateConstant0 \
+                       + rateConstant3 * overpotential**3)
 
-bench.stop('terms')
+    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
+                   import buildHigherOrderAdvectionEquation
 
-bench.start()
+    advectionEquation = buildHigherOrderAdvectionEquation(
+        advectionCoeff = extensionVelocityVariable)
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-metalEquationBCs = (
-        FixedValue(
-            mesh.getFacesTop(),
-            bulkMetalConcentration
-        ),
+    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
+                         import buildMetalIonDiffusionEquation
+
+    metalEquation = buildMetalIonDiffusionEquation(
+        ionVar = metalVar,
+        distanceVar = distanceVar,
+        depositionRate = depositionRateVariable,
+        diffusionCoeff = metalDiffusionCoefficient,
+        metalIonMolarVolume = molarVolume,
     )
 
-catalystBCs = (
-        FixedValue(
-            mesh.getFacesTop(),
-            catalystConcentration
-        ),)
+    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
+                    import buildSurfactantBulkDiffusionEquation
 
-bench.stop('BCs')
+    bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
+        bulkVar = bulkCatalystVar,
+        distanceVar = distanceVar,
+        surfactantVar = catalystVar,
+        diffusionCoeff = catalystDiffusion,
+        rateConstant = rateConstant0 * siteDensity
+    )
 
-levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
-                              / (cellSize * cflNumber * 2))
+    bench.stop('terms')
 
-step = 0
+    bench.start()
 
-if step % levelSetUpdateFrequency == 0:
-    distanceVar.calcDistanceFunction()
+    from fipy.boundaryConditions.fixedValue import FixedValue
+    metalEquationBCs = (
+            FixedValue(
+                mesh.getFacesTop(),
+                bulkMetalConcentration
+            ),
+        )
 
-extensionVelocityVariable.setValue(depositionRateVariable())
+    catalystBCs = (
+            FixedValue(
+                mesh.getFacesTop(),
+                catalystConcentration
+            ),)
 
-distanceVar.updateOld()
-catalystVar.updateOld()
-metalVar.updateOld()
-bulkCatalystVar.updateOld()
-distanceVar.extendVariable(extensionVelocityVariable)
-dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
-advectionEquation.solve(distanceVar, dt = dt)
-surfactantEquation.solve(catalystVar, dt = dt)
-metalEquation.solve(metalVar, dt = dt,
-                    boundaryConditions = metalEquationBCs)
-bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                           boundaryConditions = catalystBCs)
+    bench.stop('BCs')
 
-bench.start()
-  
-for step in range(numberOfSteps):
+    levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
+                                  / (cellSize * cflNumber * 2))
+
+    step = 0
 
     if step % levelSetUpdateFrequency == 0:
         distanceVar.calcDistanceFunction()
@@ -276,8 +256,30 @@ for step in range(numberOfSteps):
     metalEquation.solve(metalVar, dt = dt,
                         boundaryConditions = metalEquationBCs)
     bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                  boundaryConditions = catalystBCs)
+                               boundaryConditions = catalystBCs)
 
-bench.stop('solve')
+    bench.start()
+      
+    for step in range(numberOfSteps):
 
-print bench.report(numberOfElements=numberOfElements, steps=numberOfSteps)
+        if step % levelSetUpdateFrequency == 0:
+            distanceVar.calcDistanceFunction()
+
+        extensionVelocityVariable.setValue(depositionRateVariable())
+
+        distanceVar.updateOld()
+        catalystVar.updateOld()
+        metalVar.updateOld()
+        bulkCatalystVar.updateOld()
+        distanceVar.extendVariable(extensionVelocityVariable)
+        dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+        advectionEquation.solve(distanceVar, dt = dt)
+        surfactantEquation.solve(catalystVar, dt = dt)
+        metalEquation.solve(metalVar, dt = dt,
+                            boundaryConditions = metalEquationBCs)
+        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
+                                      boundaryConditions = catalystBCs)
+
+    bench.stop('solve')
+
+    print bench.report(numberOfElements=numberOfElements, steps=numberOfSteps)

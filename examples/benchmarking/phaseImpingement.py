@@ -6,7 +6,7 @@
  # 
  # FILE: "phaseImpingement.py"
  #                                     created: 1/18/06 {2:35:59 PM}
- #                                 last update: 1/18/06 {3:55:17 PM}
+ #                                 last update: 2/2/07 {8:46:58 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -49,139 +49,141 @@ This example benchmarks the speed and memory usage of solving the
     $ python setup.py efficiency_test
 """
 __docformat__ = 'restructuredtext'
- 
-from fipy.tools.parser import parse
 
-from benchmarker import Benchmarker
-bench = Benchmarker()
+if __name__ == "__main__":
+    
+    from fipy.tools.parser import parse
 
-numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
+    from benchmarker import Benchmarker
+    bench = Benchmarker()
 
-bench.start()
+    numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 
-import fipy.tools.numerix as numerix
+    bench.start()
 
-steps = 10
-nx = int(numerix.sqrt(numberOfElements))
-ny = nx
-Lx = 2.5 * nx / 100.
-dx = Lx / nx
+    import fipy.tools.numerix as numerix
 
-from fipy.meshes.grid2D import Grid2D
-mesh = Grid2D(dx,dx,nx,nx)
+    steps = 10
+    nx = int(numerix.sqrt(numberOfElements))
+    ny = nx
+    Lx = 2.5 * nx / 100.
+    dx = Lx / nx
 
-bench.stop('mesh')
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(dx,dx,nx,nx)
 
-timeStepDuration = 0.02
-phaseTransientCoeff = 0.1
-thetaSmallValue = 1e-6
-beta = 1e5
-mu = 1e3
-thetaTransientCoeff = 0.01
-gamma= 1e3
-epsilon = 0.008
-s = 0.01
-alpha = 0.015
-temperature = 10.
+    bench.stop('mesh')
 
-bench.start()
+    timeStepDuration = 0.02
+    phaseTransientCoeff = 0.1
+    thetaSmallValue = 1e-6
+    beta = 1e5
+    mu = 1e3
+    thetaTransientCoeff = 0.01
+    gamma= 1e3
+    epsilon = 0.008
+    s = 0.01
+    alpha = 0.015
+    temperature = 10.
 
-from fipy.variables.cellVariable import CellVariable
-phase = CellVariable(
-    name = 'PhaseField',
-    mesh = mesh,
-    value = 0.
-    )
+    bench.start()
 
-from fipy.variables.modularVariable import ModularVariable
-pi = numerix.pi
-theta = ModularVariable(
-    name = 'Theta',
-    mesh = mesh,
-    value = -pi + 0.0001,
-    hasOld = 1
-    )
+    from fipy.variables.cellVariable import CellVariable
+    phase = CellVariable(
+        name = 'PhaseField',
+        mesh = mesh,
+        value = 0.
+        )
 
-x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
-                         (Lx, 0., -2. * pi / 3.), 
-                         (0., Lx, -2. * pi / 3. + 0.3), 
-                         (Lx, Lx,  2. * pi / 3.)):
-    segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
-    phase.setValue(1., where=segment)
-    theta.setValue(thetaValue, where=segment)
+    from fipy.variables.modularVariable import ModularVariable
+    pi = numerix.pi
+    theta = ModularVariable(
+        name = 'Theta',
+        mesh = mesh,
+        value = -pi + 0.0001,
+        hasOld = 1
+        )
 
-bench.stop('variables')
+    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
+                             (Lx, 0., -2. * pi / 3.), 
+                             (0., Lx, -2. * pi / 3. + 0.3), 
+                             (Lx, Lx,  2. * pi / 3.)):
+        segment = (x - a)**2 + (y - b)**2 < (Lx / 2.)**2
+        phase.setValue(1., where=segment)
+        theta.setValue(thetaValue, where=segment)
 
-bench.start()
+    bench.stop('variables')
+
+    bench.start()
 
 
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+    from fipy.terms.transientTerm import TransientTerm
+    from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
+    from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
-def buildPhaseEquation(phase, theta):
+    def buildPhaseEquation(phase, theta):
 
-    mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
-    thetaMag = theta.getOld().getGrad().getMag()
-    implicitSource = mPhiVar * (phase - (mPhiVar < 0))
-    implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
+        mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
+        thetaMag = theta.getOld().getGrad().getMag()
+        implicitSource = mPhiVar * (phase - (mPhiVar < 0))
+        implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-    return TransientTerm(phaseTransientCoeff) == \
-              ExplicitDiffusionTerm(alpha**2) \
-              - ImplicitSourceTerm(implicitSource) \
-              + (mPhiVar > 0) * mPhiVar * phase
+        return TransientTerm(phaseTransientCoeff) == \
+                  ExplicitDiffusionTerm(alpha**2) \
+                  - ImplicitSourceTerm(implicitSource) \
+                  + (mPhiVar > 0) * mPhiVar * phase
 
-phaseEq = buildPhaseEquation(phase, theta)
-def buildThetaEquation(phase, theta):
+    phaseEq = buildPhaseEquation(phase, theta)
+    def buildThetaEquation(phase, theta):
 
-    phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
-    phaseModSq = phaseMod * phaseMod
-    expo = epsilon * beta * theta.getGrad().getMag()
-    expo = (expo < 100.) * (expo - 100.) + 100.
-    pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
+        phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
+        phaseModSq = phaseMod * phaseMod
+        expo = epsilon * beta * theta.getGrad().getMag()
+        expo = (expo < 100.) * (expo - 100.) + 100.
+        pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
 
-    phaseFace = phase.getArithmeticFaceValue()
-    phaseSq = phaseFace * phaseFace
-    gradMag = theta.getFaceGrad().getMag()
-    eps = 1. / gamma / 10.
-    gradMag += (gradMag < eps) * eps
-    IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
-    diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
+        phaseFace = phase.getArithmeticFaceValue()
+        phaseSq = phaseFace * phaseFace
+        gradMag = theta.getFaceGrad().getMag()
+        eps = 1. / gamma / 10.
+        gradMag += (gradMag < eps) * eps
+        IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
+        diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
-    thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
-    sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
+        thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
+        sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
 
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
-               ImplicitDiffusionTerm(diffusionCoeff) \
-               + sourceCoeff
+        from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+        return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
+                   ImplicitDiffusionTerm(diffusionCoeff) \
+                   + sourceCoeff
 
-thetaEq = buildThetaEquation(phase, theta)
+    thetaEq = buildThetaEquation(phase, theta)
 
-bench.stop('terms')
+    bench.stop('terms')
 
-theta.updateOld()
-phase.updateOld()
-thetaEq.solve(theta, dt = timeStepDuration)
-phaseEq.solve(phase, dt = timeStepDuration)
-
-bench.start()
-
-##from profiler import Profiler
-##from profiler import calibrate_profiler
-##fudge = calibrate_profiler(10000)
-##profile = Profiler('profile-HEAD-i686', fudge=fudge)
-
-for i in range(steps):
     theta.updateOld()
     phase.updateOld()
     thetaEq.solve(theta, dt = timeStepDuration)
     phaseEq.solve(phase, dt = timeStepDuration)
 
-##profile.stop()
+    bench.start()
 
-bench.stop('solve')
+    ##from profiler import Profiler
+    ##from profiler import calibrate_profiler
+    ##fudge = calibrate_profiler(10000)
+    ##profile = Profiler('profile-HEAD-i686', fudge=fudge)
 
-print bench.report(numberOfElements=numberOfElements, steps=steps)
+    for i in range(steps):
+        theta.updateOld()
+        phase.updateOld()
+        thetaEq.solve(theta, dt = timeStepDuration)
+        phaseEq.solve(phase, dt = timeStepDuration)
+
+    ##profile.stop()
+
+    bench.stop('solve')
+
+    print bench.report(numberOfElements=numberOfElements, steps=steps)

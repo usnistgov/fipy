@@ -6,7 +6,7 @@
  # 
  # FILE: "mesh.py"
  #                                     created: 1/18/06 {4:01:30 PM}
- #                                 last update: 1/18/06 {5:14:13 PM}
+ #                                 last update: 2/2/07 {8:46:42 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -47,24 +47,26 @@ This example benchmarks the speed and memory usage of creating a mesh. Run:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.parser import parse
+if __name__ == "__main__":
+        
+    from fipy.tools.parser import parse
 
-from benchmarker import Benchmarker
-bench = Benchmarker()
+    from benchmarker import Benchmarker
+    bench = Benchmarker()
 
-numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 100)
+    numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 100)
 
-bench.start()
+    bench.start()
 
-from fipy.tools import numerix
-nx = int(numerix.sqrt(numberOfElements))
-ny = nx
-dx = 1.
-dy = 1.
+    from fipy.tools import numerix
+    nx = int(numerix.sqrt(numberOfElements))
+    ny = nx
+    dx = 1.
+    dy = 1.
 
-from fipy.meshes.grid2D import Grid2D
-mesh = Grid2D(nx = nx, ny = nx, dx = dx, dy = dy)
+    from fipy.meshes.grid2D import Grid2D
+    mesh = Grid2D(nx = nx, ny = nx, dx = dx, dy = dy)
 
-bench.stop('mesh')
+    bench.stop('mesh')
 
-print bench.report(numberOfElements=numberOfElements)
+    print bench.report(numberOfElements=numberOfElements)
