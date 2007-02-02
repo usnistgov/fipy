@@ -53,7 +53,8 @@ Python
 
 Python is pre-installed on `Mac OS X`_, but installation of other packages
 is much easier if you upgrade to the latest version of
-``Universal-MacPython-2.4.X-XXXX-XX-XX.dmg`` from pythonmac_. Your existing
+``python-2.4.X-XXXX-XX-XX.dmg`` from pythonmac_ (or possibly some variant on 
+``Universal-MacPython-2.4.X-XXXX-XX-XX.dmg``). Your existing
 installation will not be harmed.
 
 .. note::
@@ -92,12 +93,10 @@ pythonmac_.
 PySparse
 --------
 
-http://pysparse.sourceforge.net
+http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and install the latest version of
-``pysparse-X.XX.XXX.macosx-10.4-py24.dmg`` from
-
-    http://sourceforge.net/project/showfiles.php?group_id=101403.
+``pysparse-X.XX.XXX.macosx-10.4-py24.dmg``
 
 |FiPy|
 ------
@@ -108,6 +107,7 @@ Download and unpack the source archive (``FiPy-x.y.tar.gz``).
 
 From within the |FiPy| directory, execute the command-line instruction::
 
+    $ python setup.py build
     $ sudo python setup.py install
 
 .. note::
@@ -201,7 +201,6 @@ Execute the following commands from Terminal application (you can use
 ``xterm`` or any other terminal application of your choosing)::
 
     $ sudo apt-get install python
-    $ sudo apt-get install numeric-py24
     $ fink --use-binary-dist install matplotlib-py24
 
 .. attention::
@@ -236,12 +235,10 @@ or you can install wxPython with::
 PySparse installation
 ---------------------
 
-http://pysparse.sourceforge.net
+http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and unpack the latest version of
-``pysparse-X.XX.XXX.tar.gz`` from
-
-    http://sourceforge.net/project/showfiles.php?group_id=101403
+``pysparse-X.XX.XXX.tar.gz``
 
 From within the PySparse directory, execute::
 
@@ -258,7 +255,8 @@ Install |FiPy|_ packages as explained above.
    You may now choose to install `Optional Packages`_ or you may choose 
    proceed directly to `Using FiPy on Mac OS X`_.
 
-   
+..
+
 Optional Packages
 =================
 
@@ -314,10 +312,35 @@ you can go to the command line and type::
 
    This is a required step for superfill examples.
 
+SciPy
+-----
+
+http://www.scipy.org/
+
+This is a very powerful set of tools that augments the capabilities of 
+|FiPy|. Although not required for using |FiPy|, some tests will fail if it 
+is not present:
+
+    * If you followed the `Binary Installation`_ procedure, you can obtain
+      SciPy from pythonmac_.
+
+      .. warning::
+
+         The latest version we tried from pythonmac_,
+         ``scipy-0.5.1-py2.4-macosx10.4.mpkg.zip``, was apparently not linked
+         correctly and does not work properly, c.f. 
+
+             http://projects.scipy.org/pipermail/scipy-user/2007-January/010820.html
+
+    * If you followed the `Fink Installation`_ procedure, then you should be
+      able to type::
+
+          $ sudo apt-get install scipy-py24
+
 .. note::
 
    You are now ready to proceed to `Using FiPy on Mac OS X`_.
-   
+      
    
 Using |FiPy| on Mac OS X
 ========================
@@ -384,7 +407,7 @@ If you have installed the optional packages, a MayaVi_ viewer should
 appear with a trench filling simulation.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
-.. |FiPy| replace:: |latexFiPy| |htmlFiPy| 
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy| 
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
 .. |latexMesh1D-py| raw:: latex
