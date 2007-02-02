@@ -24,14 +24,17 @@ different platforms, can be obtained from http://subversion.tigris.org.
 Mac OS X client
 ---------------
 
-You can obtain a binary installer of ``svn`` from http://www.codingmonkeys.de/mbo/
+You can obtain a binary installer of ``svn`` from 
+
+    http://www.codingmonkeys.de/mbo/
 
 Alternatively, if you are using Fink_, then you can execute the command::
 
     $ sudo apt-get install svn-client
     
 If you prefer a GUI, after you install ``svn``, you can obtain svnX from
-http://www.lachoseinteractive.net/en/community/subversion/svnx
+
+    http://www.lachoseinteractive.net/en/community/subversion/svnx
 
 SVN tags
 ========
