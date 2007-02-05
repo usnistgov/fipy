@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/2/07 {8:53:18 AM} { 1:23:41 PM}
+ #                                last update: 2/5/07 {2:44:13 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,39 @@ This example creates a trench with the following zero level set:
     $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; L_y / 5 \le y \le 3 Ly / 5  \\text{and} x = L_x / 2 $$
     $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; y = 3 Ly / 5  \\text{and} x \le L_x / 2 $$
 
+..
+
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+    >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+
+    >>> height = 0.5
+    >>> Lx = 0.4
+    >>> Ly = 1.
+    >>> dx = 0.01
+    >>> velocity = 1.
+    >>> cfl = 0.1
+
+    >>> nx = int(Lx / dx)
+    >>> ny = int(Ly / dx)
+    >>> timeStepDuration = cfl * dx / velocity
+    >>> steps = 200
+
+    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
+
+    >>> var = DistanceVariable(name = 'level set variable',
+    ...                        mesh = mesh,
+    ...                        value = -1,
+    ...                        hasOld = 1
+    ...                        )
+
+    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
+
+    >>> var.calcDistanceFunction()
+
+    >>> advEqn = buildAdvectionEquation(velocity)
+
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
@@ -69,9 +102,17 @@ for the initial position of the interface:
 
 Advect the interface and check the position.
 
-   >>> for step in range(steps):
-   ...     var.updateOld()
-   ...     advEqn.solve(var, dt = timeStepDuration)
+    >>> if __name__ == '__main__':
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
+    ...     
+    ...     viewer.plot()
+
+    >>> for step in range(steps):
+    ...     var.updateOld()
+    ...     advEqn.solve(var, dt = timeStepDuration)
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
 
    >>> distanceMoved = timeStepDuration * steps * velocity
    >>> answer = answer - distanceMoved
@@ -79,51 +120,11 @@ Advect the interface and check the position.
    >>> var.setValue(numerix.where(var < 0., 0., var))
    >>> print var.allclose(answer, atol = 1e-1)
    1
- 
+
 """
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
-    from fipy.meshes.grid2D import Grid2D
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
-
-    height = 0.5
-    Lx = 0.4
-    Ly = 1.
-    dx = 0.01
-    velocity = 1.
-    cfl = 0.1
-
-    nx = int(Lx / dx)
-    ny = int(Ly / dx)
-    timeStepDuration = cfl * dx / velocity
-    steps = 200
-
-    mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
-
-    var = DistanceVariable(
-        name = 'level set variable',
-        mesh = mesh,
-        value = -1,
-        hasOld = 1
-        )
-
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-    var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
-
-    var.calcDistanceFunction()
-
-    advEqn = buildAdvectionEquation(velocity)
-
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
-
-    viewer.plot()
-
-    for step in range(steps):
-        var.updateOld()
-        advEqn.solve(var, dt = timeStepDuration)
-        viewer.plot()
-
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())
     raw_input('finished')
