@@ -35,29 +35,6 @@ def _runInline(code_in, converters=None, verbose=0, **args):
 
     from scipy import weave
 
-
-##    code = """{ result(0) = (var0(0) >= var1(0)); }"""
-
-##     print code
-
-
-##     for key in args.keys():
-##         print key, args[key], type(args[key])
-     
-##    raw_input("press key to continue")
-##         if hasattr(args[key], 'dtype'):
-##             print args[key].dtype.char
-##     raw_input('before')
-
-##     print converters or weave.converters.blitz
-
-##     code = """
-##     int i;
-##     for(i=0;i<ni;i++) {
-##     result(i) = (var0(i) * var1(i));
-##     }
-##     """
-    
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
@@ -66,6 +43,3 @@ def _runInline(code_in, converters=None, verbose=0, **args):
                  verbose = verbose,
                  extra_compile_args =['-O3'])
 
-##     for key in args.keys():
-##         print key, args[key], type(args[key])
-##     raw_input('after')
