@@ -58,7 +58,7 @@ compiled with the correct version of Python_ to match the
 http://www.ctcms.nist.gov/fipy/download/
 
 Download and unpack the zip file (``FiPy-x.y.win32.zip``).  Run the
-|FiPy| installer ``FiPy-x.y.win32.exe``, which should be in the base
+|FiPy| installer ``FiPy-x.y.win32.exe``, which is in the base
 ``FiPy-x.y`` directory.
 
 Optional Packages
@@ -78,6 +78,11 @@ Gmsh for Windows. Open the unpacked folder with a browser and copy the
 
    This is a required package for superfill examples.
 
+.. warning::
+
+   |FiPy| does not currently work with version 2.0 or higher of Gmsh.
+   Be certain to use older versions.
+
 PyVTK
 -----
 
@@ -95,11 +100,7 @@ MayaVi
 ------
 
 MayaVi comes with `Enthought Python`_, so no installation steps need to
-be taken. However, there seems to be a file out of place. In order to
-make MayaVi work correctly, open the
-``C:\Python2X\Lib\site-packages\vtk_python\`` directory in a browser
-and move ``vtkRenderingPythonTkWidgets.dll`` to the ``C:\Python2X\``
-directory.
+be taken.
 
 .. note::
 
@@ -108,16 +109,20 @@ directory.
 Using |FiPy| on Windows
 =======================
 
-For those that are averse to the Windows command line, the IDLE_
-environment is recommended. IDLE_ is packaged with `Enthought Python`_
-and will appear in the Windows Program menu after installation.
+Both the IDLE_ and Ipython_ environments are packaged with `Enthought
+Python`_. Ipython_ is recommended over IDLE_ with some caveats that
+will be outlined below. Both of these environments will appear in the
+Windows Program menu after installation. The following videos may be
+useful for explaining the use of Ipython_ on Windows:
+
+http://showmedo.com/videos/series?name=PythonIPythonSeries
 
 Interactive Viewing
 -------------------
 
-Some versions of `Enthought Python`_ have been known to have problems
-with interactive viewing. If this turns out to be the case, follow
-these instructions:
+Ipython_ works well with Matplotlib_, but does not seem to display the
+Mayavi_ viewer correctly. IDLE_ has problems with interactive viewing,
+but this can be remedied by the following:
 
    - Click on ``Start``
    - Click on ``Programs``
@@ -128,18 +133,45 @@ these instructions:
    - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
    - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
-Import a module and view the results
-------------------------------------
+Testing
+-------
 
-You can use the IDLE_ file browser to open the examples and run the
-module.
+If you have a working copy of the source, not an installed version of
+|FiPy|, you can run the tests using Ipython_ from the base |FiPy|
+directory, by typing
+
+    >>> run setup.py test 
+
+in the Ipython_ shell. There does not seem to be a good way to run the
+tests using IDLE_.
+
+Running Examples
+----------------
+
+Running the |FiPy| examples can be problematic in Ipython_ as there
+seems to be a bug with the execution of the doctest environment. One
+way to overcome this is to extract the example doctests to regular
+script files using:
+
+    >>> run setup.py copy_script --From=path/to/doctest/script.py --To=script.py``
+
+and then execute using:
+
+    >>> run script.py
+
+You can edit python files with the edit command:
+
+    >>> edit script.py
+
+Yoou can also use IDLE_ to run the examples. You can use the IDLE_
+file browser to open the examples and run the module.
 
     - Click on ``File``
     - Click on ``Open``
     - Open ``C:\Path\To\Base\FiPy\directory\examples\diffusion\steadyState\mesh50x50\input.py``
 
-This will open an editor, press the F5 key to run the example.
-A matplotlib_ viewer should appear with rainbow stripes.
+This will open an editor, press the F5 key to run the example.  A
+matplotlib_ viewer should appear with rainbow stripes.
 
 Another way to use |FiPy| examples is to import the example file and
 then run any functionality it may have. For example at the IDLE_
@@ -156,6 +188,7 @@ appear with a trench filling simulation.
 .. _matplotlib: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. _Ipython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ipython.scipy.org
 
 
 

@@ -453,6 +453,11 @@ It is possible to create irregular meshes with this package.
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
+.. warning::
+
+   Version 2.0 of Gmsh does not currently work with |FiPy|. Please use
+   earlier versions.
+
 ----------------
 Obtaining |FiPy|
 ----------------
