@@ -34,13 +34,13 @@ def make(vars, title = None, limits = None):
     try:
         return Matplotlib1DViewer(vars = vars, title = title, limits = limits)
     except MeshDimensionError:
+##        try:
+##            from matplotlib2DGridViewer import Matplotlib2DGridViewer
+##            return Matplotlib2DGridViewer(vars=vars, title=title, limits=limits)
+##        except MeshDimensionError:
         try:
-            from matplotlib2DGridViewer import Matplotlib2DGridViewer
-            return Matplotlib2DGridViewer(vars=vars, title=title, limits=limits)
+            from matplotlib2DViewer import Matplotlib2DViewer
+            return Matplotlib2DViewer(vars = vars, title = title, limits = limits)
         except MeshDimensionError:
-            try:
-                from matplotlib2DViewer import Matplotlib2DViewer
-                return Matplotlib2DViewer(vars = vars, title = title, limits = limits)
-            except MeshDimensionError:
-                from matplotlibVectorViewer import MatplotlibVectorViewer
-                return MatplotlibVectorViewer(vars = vars, title = title)
+            from matplotlibVectorViewer import MatplotlibVectorViewer
+            return MatplotlibVectorViewer(vars = vars, title = title)
