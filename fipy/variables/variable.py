@@ -2585,14 +2585,14 @@ class Variable(object):
 
             >>> coeff = Variable()
             >>> alpha = Alpha(-coeff / 1)
-            >>> alpha.getValue()
-            -0.0
+            >>> print numerix.allclose(alpha.getValue(), 0.0)
+            True
             >>> coeff.setValue(-10.0)
-            >>> print alpha.getValue()
-            10.0
+            >>> print numerix.allclose(alpha.getValue(), 10)
+            True
             >>> coeff.setValue(10.0)
-            >>> print alpha.getValue()
-            -10.0
+            >>> print numerix.allclose(alpha.getValue(), -10)
+            True
 
         Test to prevent divide by zero evaluation before value is
         requested.  The request is caused by the Variable requiring
