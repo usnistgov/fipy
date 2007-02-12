@@ -19,9 +19,13 @@ Contributors
     and the electrochemical interface.
 
 Alex Mont
-    is a student at `Montgomery Blair High School`_.  Alex developed the
-    `PyxViewer` and the `Gmsh` import and export modules.
+    developed the `PyxViewer` and the `Gmsh` import and export modules while 
+    he was a student at `Montgomery Blair High School`_.
 
+Katie Travis
+    is a student at `Smith College`_. Katie developed the automated 
+    ``--inline`` optimization code for ``Variable`` objects. 
+  
 
 
 .. include:: ../utils/include.txt
@@ -38,6 +42,8 @@ Alex Mont
 .. _National Institute of Standards and Technology:                http://www.nist.gov/
 
 .. _Montgomery Blair High School:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.mbhs.edu/
+
+.. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler
