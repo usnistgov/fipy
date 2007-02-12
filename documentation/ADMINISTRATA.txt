@@ -116,8 +116,6 @@ Change the version number in fipy/__init__.py
 
 Check items in TODOLIST.txt
 
-Tag the repository as appropriate (see `SVN practices`_ above).
-
 Check out a clean copy of the desired release::
 
     $ svn co $FIPYROOT/trunk CLEAN
@@ -155,6 +153,8 @@ Combine the windows installer and examples into one tar ball.
     $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults --formats=zip
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
     $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
+
+Tag the repository as appropriate (see `SVN practices`_ above).
 
 Upload to the CTCMS website::
 
