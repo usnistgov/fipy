@@ -64,6 +64,13 @@ installation will not be harmed.
    need to adjust your ``$path`` variable so that this version of 
    ``python`` is found before the pre-installed version.
 
+.. note::
+
+   Another option is ActivePython_, which probably is the most heavily 
+   supported installation on the Mac, but seems to lack `readline` support.
+
+.. _ActivePython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.activestate.com/Products/ActivePython/
+
 NumPy
 -----
 
@@ -265,18 +272,6 @@ ipython
 
 http://ipython.scipy.org/moin/Download
 
-.. warning::
-
-   There is a problem involving `readline` in the Python_ distribution
-   from pythonmac_ that will cause ipython to crash in response to using
-   the arrow keys. The same problem apparently exists in the Python_
-   distributed with `Mac OS X`_. 
-   
-   .. note:: 
-   
-      If you followed the `Fink Installation`_ procedure, this bug is not
-      an issue and you can safely use ipython.
-   
 This interactive Python shell is nicer to use than the default, and 
 integrates nicely with matplotlib_. Download the source and follow the 
 building and installation instructions for `Mac OS X`_.
@@ -321,26 +316,43 @@ This is a very powerful set of tools that augments the capabilities of
 |FiPy|. Although not required for using |FiPy|, some tests will fail if it 
 is not present:
 
-    * If you followed the `Binary Installation`_ procedure, you can obtain
-      SciPy from pythonmac_.
+    * If you followed the `Binary Installation`_ procedure, there are a few 
+      different choices for obtaining prebuilt binaries of SciPy, each with 
+      their own issues: 
 
-      .. warning::
+          - We presently recommend obtaining SciPy from the ScipySuperpack_
 
-         The latest version we tried from pythonmac_,
-         ``scipy-0.5.1-py2.4-macosx10.4.mpkg.zip``, was apparently not linked
-         correctly and does not work properly, c.f. 
+            .. warning:: 
 
-             http://projects.scipy.org/pipermail/scipy-user/2007-January/010820.html
+               We do *not* recommend installing the other components from the
+               ScipySuperpack_. In particular, matplotlib_ was not usable
+               when we tried it.
+
+          - pythonmac_ includes a build of SciPy, but the latest version we
+            tried from pythonmac_, ``scipy-0.5.1-py2.4-macosx10.4.mpkg.zip
+            (MD5: 15daecd1b5709f04a41154102269359f)``, was apparently not
+            linked correctly and does not work properly, c.f.
+
+                http://projects.scipy.org/pipermail/scipy-user/2007-January/010820.html
+
+          - We *may* provide builds of SciPy from `our own site`_ if we 
+            conclude that we can better serve |FiPy| users that way.
 
     * If you followed the `Fink Installation`_ procedure, then you should be
       able to type::
 
           $ sudo apt-get install scipy-py24
 
+
+.. _ScipySuperpack: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trichech.us/?page_id=4
+
+.. _our own site: http://www.ctcms.nist.gov/fipy/download/
+
 .. note::
 
    You are now ready to proceed to `Using FiPy on Mac OS X`_.
       
+   
    
 Using |FiPy| on Mac OS X
 ========================
