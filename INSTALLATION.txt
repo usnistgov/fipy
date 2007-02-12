@@ -162,7 +162,8 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   |FiPy| requires at least version 2.3 of Python_.
+   |FiPy| requires at least version 2.3 of Python_ and has not yet
+    been tested with version 2.5.
 
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
@@ -170,43 +171,30 @@ If necessary, you can download_ and install it for your platform
 
    \cite{PythonDownload}
 
-Numeric
--------
+Numpy
+-----
 
 .. raw:: latex
 
-   \IndexSoftware{Numeric}
+   \IndexSoftware{Numpy}
 
 http://sourceforge.net/projects/numpy
 
-Obtain and install the Numeric_ package. |FiPy| requires at least
-version 23.1 of Numeric_. `Numeric Windows installers`_ are available.
+Obtain and install the Numpy_ package. |FiPy| requires at least
+version 1.0 of Numpy_.
 
 .. attention::
 
-   |FiPy| cannot presently use the newer numarray_ or NumPy_ packages. Due to
-   a quirk of history, the Numeric_ package has been casually referred to as
-   "numpy" for many years, but it is distinct from (although related to)
-   NumPy_.
+   |FiPy| no longer uses the older Numeric_ or numarray_ packages.
 
    .. raw:: latex
 
       \IndexSoftware{numarray}
-      \IndexSoftware{NumPy}
-
-.. note:: 
-
-   Because of a peculiarity_ in the way that Numeric_ is structured, the
-   ``--home=<dir>`` installation option described in Privileges_ will not
-   work quite as intended.  To correct this problem, add
-   ``<dir>/lib/python/Numeric`` to your ``PYTHONPATH`` environment
-   variable.
+      \IndexSoftware{Numeric}
 
 .. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 .. _numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
-.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
-.. _peculiarity: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/mailman?fn=scipy-dev/2002-December/thread.html#1443
-.. _Numeric Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
+.. _Numpy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
 
 PySparse
 --------
@@ -253,6 +241,10 @@ installers`_ are available.
 
        $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
 
+.. warning::
+
+   |FiPy| requires version 1.0 or higher of Pysparse.
+
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -281,9 +273,8 @@ Matplotlib_ is a Python_ package that displays publication quality
 results. It displays both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
 It works on all common platforms and produces publication quality hard
-copies. Version 0.72.1 or higher is required. `Matplotlib
-installers for specific platforms`_ are available 
-|citeMatplotlibDownload|.
+copies. Version 0.72.1 or higher is required. `Matplotlib installers
+for specific platforms`_ are available |citeMatplotlibDownload|.
 
 .. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
 .. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
@@ -315,14 +306,16 @@ Pygist
    \IndexSoftware{Pygist}
    \IndexSoftware{gist}
 
-http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+http://hifweb.lbl.gov/public/software/gist/
 
 The Pygist_ package can be used to display simulation results. It
 displays both 1D X-Y type plots and 2D contour plots for both
 structured and unstructured data. It does not display 3D
 data. Although stated as working on Windows, it does not seem to do a
 good job of rendering on this platform. Pygist_ works fine on other
-common platforms.
+common platforms. Pygist_ no longer seems to be under development, but
+is still recommended as a fast light weight alternative to
+Matplotlib_.
 
 .. note::
 
@@ -464,7 +457,7 @@ Obtaining |FiPy|
 
 |FiPy| is freely available for download via Subversion_ or as a `compressed
 archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion, issue the following
-commands::
+command::
 
     $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
 

@@ -47,58 +47,10 @@ Even if you don't read manuals...
 What's new in version |VERSION|
 -----------------------------------
 
-The significant changes since version 1.0 are:
+The significant changes since version 1.1 are:
 
-- Memory efficiency has been improved in a number of ways, but most
-  significantly by:
-
-  * not caching all intermediate ``Variable`` values.
-  * introducing ``UniformGrid`` classes that calculate geometric
-    arrays on the fly.
-
-  Details of these improvements are presented in |EFFICIENCY-txt|.
-
-- Installation on Windows has been made considerably easier by
-  constructing executable installers for |FiPy| and its
-  dependencies. Instructions for Windows installation can be found in
-  |WINDOWS-INSTALLATION-txt|.
-
-- The arithmetic for ``Variable`` subclasses now works, and returns
-  sensible answers. For example, ``VectorCellVariable * CellVariable``
-  returns a ``VectorCellVariable``.
-
-- ``PeriodicGrid`` meshes have been implemented. Currently, however,
-  there and no examples of their use in the manual.
-
-- Many of the examples have been completely rewritten
-
-  * A basic 1D diffusion problem now serves as a general tutorial for 
-    setting up any problem in |FiPy|. 
-  * Several more phase field examples have been added that should make it 
-    clearer how to get from the simple 1D case to the more elaborate 
-    multicomponent, multidimensional, and anisotropic models.
-  * The "Superfill" examples have been substantially improved with better
-    functionality and documentation.
-  * An example of fluid flow with the classic Stokes moving lid has been 
-    added.
-
-- A clear distinction has been made between solving an equation via `solve()`
-  and iterating an non-linear equation to solution via `sweep()`. An extensive 
-  explanation of the concepts involved has been added to |the FAQ|.
-
-- Added a `MultiViewer` class that automatically groups several viewers 
-  together if the variables couldn't be displayed by a single viewer.
-
-- The abbreviated syntax ``from fipy import Class`` or ``from fipy import *``
-  promised in version 1.0 actually works now. The examples all still use the
-  fully qualified names.
-
-- The repository has been converted from a CVS to a Subversion_
-  repository. Details on how to check out the new repository are given
-  in the |INSTALLATION-txt|.
-
-- The |FiPy| repository has also been moved from Sourceforge_ to 
-  MatForge_.
+- |FiPy| has been updated to use the Python Numpy module. |FiPy| no
+  longer works with the older Numeric module.
 
 -------------------------
 Download and Installation
