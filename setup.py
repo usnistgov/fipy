@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 1/31/07 {4:15:31 PM} 
+ #                                last update: 2/12/07 {3:03:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -380,6 +380,7 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
             for f in ['menu.html', 'meta.html', 'logo.html', 'extra.html']:
                 shutil.copyfile(os.path.join(dir, f), os.path.join(tmp, f))
             shutil.move(os.path.join(tmp, 'readme.html'), os.path.join(tmp, 'index.html'))
+            shutil.move(os.path.join(tmp, 'examples', 'levelSet', 'electroChem', 'readme.html'), os.path.join(tmp, 'electrochem.html'))
             
             print "merging files"
             os.system("/Library/WebServer/Documents/CSS/ctcmsWeb.py %s %s" % (tmp, dir))
