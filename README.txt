@@ -49,6 +49,8 @@ What's new in version |VERSION|
 
 The significant changes since version 1.1 are:
 
+- ``--inline`` automatically generates C code from ``Variable`` expressions.
+
 - |FiPy| has been updated to use the Python_ NumPy_ module. |FiPy| no
   longer works with the older Numeric_ module.
 

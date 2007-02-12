@@ -390,14 +390,8 @@ http://www.scipy.org/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
-SciPy_ package. `SciPy installers for specific platforms`_ 
-|citeSciPyDownload| are available.
-
-.. attention::
-
-   SciPy_ is undergoing a lot of development lately but, as yet, |FiPy| still
-   requires "old SciPy". Be sure to install version 0.3.x of
-   ``SciPy_complete``.
+SciPy_ package. `SciPy downlaod instructions`_ 
+|citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
 
 .. note:: 
 
@@ -406,7 +400,7 @@ SciPy_ package. `SciPy installers for specific platforms`_
 
 .. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
 .. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
-.. _SciPy installers for specific platforms:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=27747&package_id=19531&release_id=389739
+.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
 .. |citeSciPyDownload| raw:: latex
 
    \cite{SciPyDownload}
@@ -523,6 +517,13 @@ removing key``" in |the FAQ|).
    or::
 
        $ export PYTHONPATH=.:${PYTHONPATH}
+
+.. attention::
+
+   You can expect three test failures in 
+   ``fipy.variables.variable.Variable.__array__`` with the message::
+
+       ValueError: setting an array element with a sequence.
        
 -----------------
 Installing |FiPy|
