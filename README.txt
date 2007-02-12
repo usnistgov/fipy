@@ -49,8 +49,11 @@ What's new in version |VERSION|
 
 The significant changes since version 1.1 are:
 
-- |FiPy| has been updated to use the Python Numpy module. |FiPy| no
-  longer works with the older Numeric module.
+- |FiPy| has been updated to use the Python_ NumPy_ module. |FiPy| no
+  longer works with the older Numeric_ module.
+
+.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
+.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 
 -------------------------
 Download and Installation

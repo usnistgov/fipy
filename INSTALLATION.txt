@@ -119,24 +119,6 @@ Required Packages
 
    |FiPy| will not run if the following items are not installed.
 
-.. attention::
-
-   On some platforms, it may be possible to satisfy most, if not all,
-   of the following prerequisites by installing the "Enthought 
-   Edition of Python (Enthon)". We are aware of `Enthon for Windows`_ 
-   |citeEnthonWindows| and `Enthon for Mac OS X`_ |citeEnthonMacOSX|.
-
-   .. _Enthon for Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.enthought.com/python/
-   .. _Enthon for Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?http://www.scipy.org/wikis/featurerequests/MacEnthon
-   .. |citeEnthonWindows| raw:: latex
-
-      \cite{EnthonWindows}
-
-   .. |citeEnthonMacOSX| raw:: latex
-
-      \cite{EnthonMacOSX}
-
-
 Python
 ------
 
@@ -171,17 +153,17 @@ If necessary, you can download_ and install it for your platform
 
    \cite{PythonDownload}
 
-Numpy
+NumPy
 -----
 
 .. raw:: latex
 
-   \IndexSoftware{Numpy}
+   \IndexSoftware{NumPy}
 
-http://sourceforge.net/projects/numpy
+http://sourceforge.net/projects/numpy/
 
-Obtain and install the Numpy_ package. |FiPy| requires at least
-version 1.0 of Numpy_.
+Obtain and install the NumPy_ package. |FiPy| requires at least
+version 1.0 of NumPy_.
 
 .. attention::
 
@@ -194,7 +176,7 @@ version 1.0 of Numpy_.
 
 .. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
 .. _numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
-.. _Numpy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
+.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
 
 PySparse
 --------
@@ -243,7 +225,7 @@ installers`_ are available.
 
 .. warning::
 
-   |FiPy| requires version 1.0 or higher of Pysparse.
+   |FiPy| requires version 1.0 or higher of PySparse_.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
@@ -317,7 +299,7 @@ common platforms. Pygist_ no longer seems to be under development, but
 is still recommended as a fast light weight alternative to
 Matplotlib_.
 
-.. note::
+.. attention::
 
    Pygist requires the old Numeric module to be installed.
 
@@ -373,7 +355,7 @@ The MayaVi_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing. The `Enthon for Windows`_ version of python is
-recommended for Windows users who wish to use MayaVi_.
+recommended for Windows_ users who wish to use MayaVi_.
 
 .. warning::
 
@@ -388,6 +370,7 @@ recommended for Windows users who wish to use MayaVi_.
 
 .. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 .. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
+.. _Enthon for Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.enthought.com/python/
 
 Recommended Packages
 ====================
