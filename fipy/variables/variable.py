@@ -686,8 +686,9 @@ class Variable(object):
         
     def __markStale(self):
         for subscriber in self.getSubscribedVariables():
-            subscriber()._markStale() 
-
+            if subscriber() is not None:
+                subscriber()._markStale() 
+                
     def _markFresh(self):
         self.stale = 0
         self.__markStale()
