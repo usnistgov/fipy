@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 5/15/06 {4:02:28 PM} 
+ #                                last update: 2/21/07 {1:54:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -99,11 +99,25 @@ class Viewer:
         for key in limits.keys():
             self.limits[key] = limits[key]
         
-    def _getLimit(self, key):
-        if self.limits and self.limits.has_key(key):
-            limit = self.limits[key]
-        else:
-            limit = None
+    def _getLimit(self, keys):
+        """
+        Return the limit associated with the first available key in `keys`
+        
+        :Parameters:
+          - `keys`: a `tuple`, `list`, or single key string that identifies
+            the limit of interest
+            
+        :Returns:
+          the value of the limit or `None`
+        """
+        if not (isinstance(keys, list) or isinstance(keys, tuple)):
+            keys = (keys,)
+        limit = None
+        for key in keys:
+            if self.limits and self.limits.has_key(key):
+                limit = self.limits[key]
+            if limit is not None:
+                break
             
         return limit
         

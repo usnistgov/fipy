@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/3/07 {3:23:22 PM} 
+ #                                last update: 2/21/07 {12:19:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,21 +86,6 @@ class Gist1DViewer(GistViewer):
             raise MeshDimensionError, "Can only plot 1D data"
         return vars
         
-    def _getLimit(self, key):
-        subs = {'ymin': 'datamin', 'ymax': 'datamax'}
-        
-        if subs.has_key(key):
-            limit = GistViewer._getLimit(self, key = subs[key])
-            if limit == 'e':
-                limit = GistViewer._getLimit(self, key = key)
-        else:
-            limit = GistViewer._getLimit(self, key = key)
-            if limit == 'e':
-                subs = {'datamin': 'ymin', 'datamax': 'ymax'}
-                limit = GistViewer._getLimit(self, key = key)
-            
-        return limit
-
     def _getArrays(self):
         arrays = []
         
@@ -128,7 +113,10 @@ class Gist1DViewer(GistViewer):
         gist.animate(1)
 
         if self.limits != None:
-            gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('datamin'), self._getLimit('datamax'))
+            gist.limits(self._getLimit('xmin'), 
+                        self._getLimit('xmax'), 
+                        self._getLimit(('datamin', 'ymin')), 
+                        self._getLimit(('datamax', 'ymax')))
             
         self._plotArrays()
             

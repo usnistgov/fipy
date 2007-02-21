@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:03:03 PM}
+ #                                last update: 2/21/07 {12:08:39 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,11 +74,9 @@ class Matplotlib1DViewer(MatplotlibViewer):
         pylab.xlim(xmin = self._getLimit('xmin'),
                    xmax = self._getLimit('xmax'))
 
-        ymin = self._getLimit('datamin') or self._getLimit('ymin')
-        pylab.ylim(ymin=ymin)
-
-        ymax = self._getLimit('datamax') or self._getLimit('ymax')
-        pylab.ylim(ymax=ymax)
+        ymin = self._getLimit(('datamin', 'ymin'))
+        ymax = self._getLimit(('datamax', 'ymax'))
+        pylab.ylim(ymin=ymin, ymax=ymax)
 
         if ymax is None or ymin is None:
             import warnings
@@ -99,8 +97,8 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
     def _plot(self):
         ymin, ymax = self._autoscale(vars=self.vars, 
-                                     datamin=self._getLimit('datamin') or self._getLimit('ymin'),
-                                     datamax=self._getLimit('datamax') or self._getLimit('ymax'))
+                                     datamin=self._getLimit(('datamin', 'ymin')), 
+                                     datamax=self._getLimit(('datamax', 'ymax')))
 
         import pylab                       
         pylab.ylim(ymin=ymin, ymax=ymax)

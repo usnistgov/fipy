@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/30/06 {11:02:43 AM} 
+ #                                last update: 2/21/07 {12:24:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,21 +104,21 @@ class Gist2DViewer(GistViewer):
         """
         self._plot()
 
-        minVal = self._getLimit('datamin')
-        maxVal = self._getLimit('datamax')
+        datamin = self._getLimit(('datamin', 'zmin'))
+        datamax = self._getLimit(('datamax', 'zmax'))
         
-        if minVal == 'e':
-            minVal = min(self.vars[0][:])
-            for var in self.vars[1:]:
-                minVal = min(minVal, numerix.min(var[:]))
+        if datamin == 'e':
+            datamin = None
+        
+        if datamax == 'e':
+            datamax = None
+            
+        datamin, datamax = self._autoscale(vars=self.vars,
+                                           datamin=datamin,
+                                           datamax=datamax)
 
-        if maxVal == 'e':
-            maxVal = numerix.max(self.vars[0][:])
-            for var in self.vars[1:]:
-                maxVal = max(maxVal, numerix.max(var[:]))
-
-        if maxVal == minVal:
-            maxVal = minVal + 1e-10
+        if datamax == datamin:
+            datamax = datamin + 1e-10
 
         
         vertexIDs = self.mesh._getOrderedCellVertexIDs().flat
@@ -136,11 +136,11 @@ class Gist2DViewer(GistViewer):
         import gist
 
         import Numeric
-        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin = minVal, cmax = maxVal)
+        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin=datamin, cmax=datamax)
 
         import colorbar
 
-        colorbar._color_bar(minz = minVal, maxz = maxVal, ncol=240, zlabel = self.vars[0].getName())
+        colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].getName())
 
         GistViewer.plot(self, filename = filename)
 

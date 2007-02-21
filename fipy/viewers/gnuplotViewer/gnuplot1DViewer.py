@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {5:54:17 PM} { 2:45:36 PM}
+ #                                last update: 2/21/07 {1:41:34 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,8 +69,7 @@ class Gnuplot1DViewer(GnuplotViewer):
     """
     def _plot(self):
 
-        self.g('set yrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
-        self.g('set yrange [' + self._getLimit('datamin')  + ':' + self._getLimit('datamax') + ']')
+        self.g('set yrange [' + self._getLimit(('datamin', 'ymin', 'zmin'))  + ':' + self._getLimit(('datamax', 'ymin', 'zmax')) + ']')
         
         tupleOfGnuplotData = ()
 

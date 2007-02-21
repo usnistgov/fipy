@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:03:52 PM} { 2:45:36 PM}
+ #                                last update: 2/21/07 {1:45:14 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -109,37 +109,29 @@ class Matplotlib2DViewer(MatplotlibViewer):
         Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
         Z = numerix.reshape(self.vars[0][:], shape)
         
-        minz = numerix.min(self.vars[0])
-        for limit in ('zmin', 'datamin'):
-            value = self._getLimit(limit)
-            if value is not None:
-                minz = min(minz, value)
-                
-        maxz = numerix.max(self.vars[0])
-        for limit in ('zmax', 'datamax'):
-            value = self._getLimit(limit)
-            if value is not None:
-                maxz = max(maxz, value)
+        zmin, zmax = self._autoscale(vars=self.vars,
+                                     datamin=self._getLimit(('datamin', 'zmin')),
+                                     datamax=self._getLimit(('datamax', 'zmax')))
 
         numberOfContours = 10
         smallNumber = 1e-7
-        diff = maxz - minz
+        diff = zmax - zmin
         
         if diff < smallNumber:            
-            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + minz
+            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + zmin
         else:
-            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + minz
+            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + zmin
 
         import pylab
         pylab.jet()
 
         pylab.contourf(X, Y, numerix.reshape(self.vars[0][:], shape), V)
 
-        pylab.xlim(xmin = self._getLimit('xmin'))
-        pylab.xlim(xmax = self._getLimit('xmax'))
+        pylab.xlim(xmin=self._getLimit('xmin'),
+                   xmax=self._getLimit('xmax'))
 
-        pylab.ylim(ymin = self._getLimit('ymin'))
-        pylab.ylim(ymax = self._getLimit('ymax'))
+        pylab.ylim(ymin=self._getLimit('ymin'),
+                   ymax=self._getLimit('ymax'))
 
 
         

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:31:38 PM} { 2:45:36 PM}
+ #                                last update: 2/21/07 {1:41:55 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ class Gnuplot2DViewer(GnuplotViewer):
             
     def _plot(self):
 
-        self.g('set cbrange [' + self._getLimit('zmin')  + ':' + self._getLimit('zmax') + ']')
+        self.g('set cbrange [' + self._getLimit(('datamin', 'zmin'))  + ':' + self._getLimit(('datamax', 'zmax')) + ']')
         self.g('set view map')
         self.g('set style data pm3d')
         self.g('set pm3d at st solid')

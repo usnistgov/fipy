@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:03:30 PM} { 2:45:36 PM}
+ #                                last update: 2/21/07 {12:15:05 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,8 +73,8 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         self.image = pylab.imshow(self._getData(),
                                   extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                           self._getLimit('ymin'), self._getLimit('ymax')),
-                                  vmin=self._getLimit('datamin'),
-                                  vmax=self._getLimit('datamax'))
+                                  vmin=self._getLimit(keys=('datamin', 'zmin')),
+                                  vmax=self._getLimit(keys=('datamax', 'zmax')))
                                           
         pylab.title(self.vars[0].getName())
 
@@ -85,11 +85,11 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
     def _getLimit(self, key):
         limit = MatplotlibViewer._getLimit(self, key)
         if limit is None:
-            if key == 'xmin' or key == 'ymin':
+            if 'xmin' in key or 'ymin' in key:
                 limit = 0
-            elif key == 'xmax':
+            elif 'xmax' in key:
                 limit = float(self.vars[0].getMesh().getPhysicalShape()[0])
-            elif key == 'ymax':
+            elif 'ymax' in key:
                 limit = float(self.vars[0].getMesh().getPhysicalShape()[1])
         return limit
         
@@ -113,9 +113,13 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
     def _plot(self):
         import pylab
         pylab.jet()
-        
-        if self._getLimit('datamin') is None or self._getLimit('datamax') is None:
-            datamin, datamax = self._autoscale([self.vars[0]], datamin=self._getLimit('datamin'), datamax=self._getLimit('datamax'))
+
+        datamin = self._getLimit(('datamin', 'zmin')) 
+        datamax = self._getLimit(('datamax', 'zmax')) 
+        if datamin is None or datamax is None:
+            datamin, datamax = self._autoscale(vars=self.vars, 
+                                               datamin=datamin, 
+                                               datamax=datamax)
 
             pylab.clim(vmax=datamax, vmin=datamin)
 
