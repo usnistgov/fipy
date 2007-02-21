@@ -686,8 +686,9 @@ class Variable(object):
         
     def __markStale(self):
         for subscriber in self.getSubscribedVariables():
-            if subscriber() is not None:
-                subscriber()._markStale() 
+            ## If an AttributeError is thrown here, it may be due to subscriber() being None.
+            ## See <https://www.matforge.org/fipy/ticket/118> for more explanation.
+            subscriber()._markStale()
                 
     def _markFresh(self):
         self.stale = 0
