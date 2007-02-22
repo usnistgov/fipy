@@ -132,7 +132,7 @@ class _ConvectionCoeff(VectorFaceVariable):
         alpha = numerix.where(alpha > 0, alpha, 0)
 
         alphasum = numerix.sum(alpha, axis = 1)
-        alphasum += (alphasum < 1e-100) * 1e-100
+        alphasum += (alphasum < 1e-100) * 1.0
         alpha = alpha / alphasum[:,numerix.NewAxis]
 
         phi = numerix.reshape(numerix.repeat(self.distanceVar, M), (Ncells, M))
