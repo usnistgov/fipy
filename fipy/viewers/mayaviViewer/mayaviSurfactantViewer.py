@@ -87,20 +87,21 @@ class MayaviSurfactantViewer(Viewer):
 
     def _getStructure(self):
 
-        maxX = numerix.max(self.distanceVar.getMesh().getFaceCenters()[:,0])
-        minX = numerix.min(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        ##maxX = numerix.max(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        ##minX = numerix.min(self.distanceVar.getMesh().getFaceCenters()[:,0])
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
+        
         coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs)
         coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
-        shiftedCoords[:,0] = -coordinates[:,0] + (maxX - minX)
+        shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
+
         from lines import _getOrderedLines
-        print numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 3
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
@@ -149,7 +150,7 @@ class MayaviSurfactantViewer(Viewer):
 
         data = list(data)
         data = map(lambda item: float(item), data)
-        
+
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),
                 pyvtk.PointData(pyvtk.Scalars(data, name = name)))
