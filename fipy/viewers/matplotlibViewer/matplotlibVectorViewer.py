@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:04:05 PM} { 2:45:36 PM}
+ #                                last update: 2/26/07 {12:29:15 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             U = numerix.reshape(var[:N,0], shape)
             V = numerix.reshape(var[:N,1], shape)
         elif isinstance(var, VectorCellVariable):
-            shape = (mesh.getShape()[1], mesh.getShape[0])
+            shape = (mesh.getShape()[1], mesh.getShape()[0])
             X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
             Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
             U = numerix.reshape(var[:,0], shape)
