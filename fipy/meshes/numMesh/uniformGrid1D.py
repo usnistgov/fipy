@@ -61,6 +61,7 @@ class UniformGrid1D(Grid1D):
         [[ 0.5]
          [ 1.5]
          [ 2.5]]
+         
     """
     def __init__(self, dx = 1., nx = 1, origin = (0,)):
         self.dim = 1
@@ -101,6 +102,20 @@ class UniformGrid1D(Grid1D):
                       cellFaceIDs = self._createCells())
                       
     def _concatenate(self, other, smallNumber):
+        """
+        Following test was added due to a bug in adding Meshes.
+        
+            >>> a = UnifiormGrid1D(nx=10) + 10
+            >>> print a.getCellCenters()[0,0]
+            10.5
+            >>> b = 10 + UnifiormGrid1D(nx=10)
+            >>> print b.getCellCenters()[0,0]
+            10.5
+            >>> c =  UnifiormGrid1D(nx=10) + (UnifiormGrid1D(nx=10) + 10)
+            >>> print c.getCellCenters()[-1,0]
+            19.5
+            
+        """
         return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
         
 ##     get topology methods
