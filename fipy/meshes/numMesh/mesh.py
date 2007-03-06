@@ -78,10 +78,14 @@ class Mesh(_CommonMesh):
         else:
             return self._translate(other)
 
+    __radd__ = __add__
+    
     def __mul__(self, factor):
         newCoords = self.vertexCoords * factor
         newmesh = Mesh(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
+
+    __rmul__ = __mul__
 
     def _concatenate(self, other, smallNumber):
         return Mesh(**self._getAddedMeshValues(other, smallNumber))
@@ -214,8 +218,7 @@ class Mesh(_CommonMesh):
 ##            currFace = other.faceVertexIDs[i] 
             currFace = other.faceVertexIDs[i].copy()
             keepGoing = 1
-            currIndex = 0
-
+            currIndex = 0 
             for item in currFace:
                 if(vertexCorrelates.has_key(item)):
                     currFace[currIndex] = vertexCorrelates[item]
@@ -279,6 +282,7 @@ class Mesh(_CommonMesh):
         """Determines if two lists contain the same set of elements, although they may be in different orders. Does not work if one list contains duplicates of an element.
         """
         res = 0
+ 
         if (len(first) == len(second)):
             res = 1
         for i in first:
