@@ -62,7 +62,7 @@ class _LeastSquaresCellGradVariable(VectorCellVariable):
 
         mat = numerix.zeros((N, M, D, D), 'd')
 
-        ## good god! numpy.outer should have and axis argument!!!
+        ## good god! numpy.outer should have an axis argument!!!
         for i in range(D):
             for j in range(D):
                 mat[:,:,i,j] = cellDistanceNormals[:, :, i] * cellDistanceNormals[:, :, j]
