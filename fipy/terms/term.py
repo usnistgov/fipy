@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 1/3/07 {4:32:08 PM} 
+ #                                last update: 3/15/07 {3:17:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,6 +82,12 @@ class Term:
 
     def __buildMatrix(self, var, boundaryConditions, dt):
 
+        self._verifyCoeffType(var)
+        
+        if numerix.getShape(dt) != ():
+            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
+        dt = float(dt)
+    
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
@@ -116,8 +122,6 @@ class Term:
            - `dt`: The time step size.
 
         """
-        self._verifyCoeffType(var)
-        
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
         self._solveLinearSystem(var, solver, matrix, RHSvector)
@@ -137,8 +141,6 @@ class Term:
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        self._verifyCoeffType(var)
-        
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
         if underRelaxation is not None:
@@ -148,7 +150,7 @@ class Term:
         residual = residualFn(var, matrix, RHSvector)
 ##         residual = self._calcResidual(var, matrix, RHSvector)
 
-##         print "x", var
+##         print "x", var 
 
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
@@ -172,8 +174,6 @@ class Term:
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        self._verifyCoeffType(var)
-        
         matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
         if underRelaxation is not None:
