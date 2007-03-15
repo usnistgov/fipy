@@ -55,7 +55,7 @@ class MayaviSurfactantViewer(Viewer):
 
     """
         
-    def __init__(self, distanceVar, surfactantVar = None, levelSetValue = 0., limits = None, title = None, smooth = 0, zoomFactor = 1.):
+    def __init__(self, distanceVar, surfactantVar=None, levelSetValue=0., limits=None, title=None, smooth=0, zoomFactor=1., animate=False):
         """
         Create a `MayaviDistanceViewer`.
         
@@ -70,6 +70,8 @@ class MayaviSurfactantViewer(Viewer):
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
+          - `animate`: whether to show only the initial condition and the 
+            moving top boundary or to show all contours (Default)
         """
 
         Viewer.__init__(self, vars = [], limits = limits, title = title)
@@ -82,6 +84,11 @@ class MayaviSurfactantViewer(Viewer):
             self.surfactantVar = surfactantVar
         self.smooth = smooth
         self.zoomFactor = zoomFactor
+
+        self.animate = animate
+        if animate:
+            self._initialCondition = None
+
         if distanceVar.getMesh().getDim() != 2:
             raise 'The MayaviIsoViewer only works for 2D meshes.'
 
@@ -160,19 +167,40 @@ class MayaviSurfactantViewer(Viewer):
         structure, data = self._getStructure()
 
         import pyvtk
+        import tempfile
+        import os
+
+        if self.animate:
+            if self._initialCondition is None:
+                data = pyvtk.VtkData(structure, 0)
+                (f, tempFileName) = tempfile.mkstemp('.vtk')
+                data.tofile(tempFileName)
+                self._viewer.open_vtk(tempFileName, config=0) 
+                os.close(f)
+                os.remove(tempFileName)
+
+                self._viewer.load_module('SurfaceMap', 0)
+
+                rw = self._viewer.get_render_window()
+                rw.z_plus_view()
+
+                self._initialCondition = self._viewer.get_current_dvm_name()
+            else:
+                self._viewer.mayavi.del_dvm(self._viewer.get_current_dvm_name())
+
         data = pyvtk.VtkData(structure, data)
 
-        import tempfile
         (f, tempFileName) = tempfile.mkstemp('.vtk')
         data.tofile(tempFileName)
         self._viewer.open_vtk(tempFileName, config=0)
 
-        import os
         os.close(f)
         os.remove(tempFileName)
         self._viewer.load_module('SurfaceMap', 0)
-        rw = self._viewer.get_render_window()
-        rw.z_plus_view()
+
+        if not self.animate:
+            rw = self._viewer.get_render_window()
+            rw.z_plus_view()
 
         ## display legend
         dvm = self._viewer.get_current_dvm()

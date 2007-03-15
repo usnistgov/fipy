@@ -224,7 +224,7 @@ def runGold(faradaysConstant=9.6e4,
             
             from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (
-                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True),)
             
         except:
             
