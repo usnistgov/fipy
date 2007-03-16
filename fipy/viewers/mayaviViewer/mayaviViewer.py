@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/16/07 {10:42:55 AM}
+ #                                last update: 3/16/07 {1:05:45 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,7 +102,7 @@ class MayaviViewer(Viewer):
                                        
     def _getStructure(self, mesh):
 
-        cellVertexIDs = mesh._getOrderedCellVertexIDs()
+        cellVertexIDs = [int(ID) for ID in mesh._getOrderedCellVertexIDs()]
 
         from fipy.tools import numerix
         lengths = len(cellVertexIDs[0]) - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=1)
@@ -116,7 +116,7 @@ class MayaviViewer(Viewer):
         else:
 
             if mesh.getDim() == 3:
-                print "Warning: The Matayvi viewer may or may not render 3D meshes correctly"
+                print "Warning: The Mayavi viewer may or may not render 3D meshes correctly"
                 print "The method Mesh._getOrderedCellVertexIDs() needs to be fixed to return the"
                 print "correct ordering for 3D meshes that fits with pyvtk paradigm."
 
