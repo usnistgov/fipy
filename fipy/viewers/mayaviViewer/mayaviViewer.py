@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/16/07 {1:09:48 PM}
+ #                                last update: 3/16/07 {1:14:16 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -162,7 +162,7 @@ class MayaviViewer(Viewer):
 
             import pyvtk
 
-            celldata = pyvtk.CellData(pyvtk.Scalars(var[:], name = name, lookup_table = 'default'))
+            celldata = pyvtk.CellData(pyvtk.Scalars([float(val) for val in var[:]], name = name, lookup_table = 'default'))
             data = pyvtk.VtkData(structure, "mydata", celldata)
             
             (f, fileName) = tempfile.mkstemp('.vtk')
