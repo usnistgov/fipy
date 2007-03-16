@@ -133,6 +133,7 @@ class MayaviViewer(Viewer):
                 
         coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
         coords[:,:mesh.getDim()] = mesh.getVertexCoords()
+        coords = [[float(axis) for axis in coord] for coord in coords]
 
         import pyvtk
 
@@ -162,7 +163,7 @@ class MayaviViewer(Viewer):
 
             import pyvtk
 
-            celldata = pyvtk.CellData(pyvtk.Scalars([float(val) for val in var[:]], name = name, lookup_table = 'default'))
+            celldata = pyvtk.CellData(pyvtk.Scalars([float(val) for val in var()], name = name, lookup_table = 'default'))
             data = pyvtk.VtkData(structure, "mydata", celldata)
             
             (f, fileName) = tempfile.mkstemp('.vtk')
