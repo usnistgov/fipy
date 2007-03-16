@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/16/07 {1:05:45 PM}
+ #                                last update: 3/16/07 {1:09:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,7 +102,7 @@ class MayaviViewer(Viewer):
                                        
     def _getStructure(self, mesh):
 
-        cellVertexIDs = [int(ID) for ID in mesh._getOrderedCellVertexIDs()]
+        cellVertexIDs = [[int(ID) for ID in IDs] for IDs in mesh._getOrderedCellVertexIDs()]
 
         from fipy.tools import numerix
         lengths = len(cellVertexIDs[0]) - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=1)
