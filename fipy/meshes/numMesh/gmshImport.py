@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 3/19/07 {5:14:26 PM}
+ #                                last update: 3/19/07 {6:03:58 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -263,10 +263,7 @@ class _DataGetter:
         self.fileType = self.getFileType()
         
         vertexCoords = self._calcVertexCoords(self.coordDimensions)
-        if self.fileType == 1:
-            self._calcType1CellVertexIDs()
-        else:
-            self._calcType2CellVertexIDs()
+        self._calcCellVertexIDs()
 
         self._calcBaseFaceVertexIDs()
         faceVertexIDs = self._calcFaceVertexIDs()
@@ -329,30 +326,7 @@ class _DataGetter:
         self.nodeToVertexIDs = nodeToVertexIDs
         return vertexCoords[:,:coordDimensions]
         
-##     def _calcCellVertexIDs(self):
-##         """
-##         Get the elements.
-##         
-##         .. note:: all we care about are the three-dimensional elements (cells).
-##         
-##         .. note:: so far this only supports tetrahedral and triangular meshes.
-##         """
-##         a = self.inFile.readline() ## skip the $ENDNOD
-##         a = self.inFile.readline() ## skip the $ELM
-##         numElements = int(self.inFile.readline())
-##         numCells = 0
-##         maxLength = (6 + self.dimensions)
-##         elementArray = numerix.zeros((numElements, maxLength))
-##         for i in range(numElements):
-##             currLineArrayInt = [int(x) for x in self.inFile.readline().split()]
-##             elementArray[i, :len(currLineArrayInt)] = currLineArrayInt
-##         validElementArray = numerix.compress(elementArray[:, 1] == ((2 * self.dimensions) - 2), elementArray, 0)
-##         cellNodeIDs = validElementArray[:, 5:]
-##         cellVertexIDs = numerix.take(self.nodeToVertexIDs, cellNodeIDs)        
-##         self.cellVertexIDs = cellVertexIDs
-##         self.numCells = len(cellVertexIDs)
-
-    def _calcType1CellVertexIDs(self):
+    def _calcCellVertexIDs(self):
         """
         Get the elements.
         
@@ -360,7 +334,10 @@ class _DataGetter:
         
         .. note:: so far this only supports tetrahedral and triangular meshes.
         """
-        elementLines = self.getTagData("$ELM", "$ENDELM")
+        if self.fileType == 1:
+            elementLines = self.getTagData("$ELM", "$ENDELM")
+        else:
+            elementLines = self.getTagData("$Elements", "$EndElements")
         
         numElements = int(elementLines[0])
         if numElements != len(elementLines[1:]):
@@ -369,60 +346,30 @@ class _DataGetter:
         cellNodeIDs = []
         for element in elementLines[1:]:
             elementInfo = [int(x) for x in element.split()]
-            if elementInfo[1] in (1, 15):
+            elementType = elementInfo[1]
+            if elementType in (1, 15):
                 continue
-            elif elementInfo[1] in (2, 4):
-                if ((self.dimensions == 2 and elementInfo[1] == 4) 
-                    or (self.dimensions == 3 and elementInfo[1] == 2)):
+            elif elementType in (2, 4):
+                if ((self.dimensions == 2 and elementType == 4) 
+                    or (self.dimensions == 3 and elementType == 2)):
                     continue
                     
-                numNodes = elementInfo[4]
                     
-                if len(elementInfo) != 5 + numNodes:
-                    raise IndexError, "Number of nodes (%d) not as expected (%d) for element type %d" % (len(elementInfo) - 5, numNodes, elementInfo[1])
-                    
-                cellNodeIDs.append(elementInfo[5:])
-            else:
-                raise TypeError, "Can't understand element type %d. Only triangle (2) or tetrahedron (4) are allowed" % elementInfo[1]
-                
-        cellVertexIDs = numerix.take(self.nodeToVertexIDs, numerix.array(cellNodeIDs))        
-        self.cellVertexIDs = cellVertexIDs
-        self.numCells = len(cellVertexIDs)
-
-    def _calcType2CellVertexIDs(self):
-        """
-        Get the elements.
-        
-        .. note:: all we care about are the three-dimensional elements (cells).
-        
-        .. note:: so far this only supports tetrahedral and triangular meshes.
-        """
-        elementLines = self.getTagData("$Elements", "$EndElements")
-        
-        numElements = int(elementLines[0])
-        if numElements != len(elementLines[1:]):
-            raise IndexError, "Number of elements (%d) does not match number promised (%d)" % (numElements, len(elementLines[1:]))
-
-        cellNodeIDs = []
-        for element in elementLines[1:]:
-            elementInfo = [int(x) for x in element.split()]
-            if elementInfo[1] in (1, 15):
-                continue
-            elif elementInfo[1] in (2, 4):
-                if ((self.dimensions == 2 and elementInfo[1] == 4) 
-                    or (self.dimensions == 3 and elementInfo[1] == 2)):
-                    continue
-                
-                if elementInfo[1] == 2:
-                    numNodes = 3
+                if self.fileType == 1:
+                    numNodes = elementInfo[4]
+                    skip = 5
                 else:
-                    numNodes = 4
+                    if elementType == 2:
+                        numNodes = 3
+                    else:
+                        numNodes = 4
+                    skip = 3 + elementInfo[2]
+
                     
-                tags = elementInfo[2]
-                if len(elementInfo) != 3 + tags + numNodes:
-                    raise IndexError, "Number of nodes (%d) not as expected (%d) for element type %d" % (len(elementInfo) - 3 - tags, numNodes, elementInfo[1])
-                    
-                cellNodeIDs.append(elementInfo[3+tags:])
+                if len(elementInfo) != skip + numNodes:
+                    raise IndexError, "Number of nodes (%d) not as expected (%d) for element type %d" % (len(elementInfo) - skip, numNodes, elementType)
+
+                cellNodeIDs.append(elementInfo[skip:])
             else:
                 raise TypeError, "Can't understand element type %d. Only triangle (2) or tetrahedron (4) are allowed" % elementInfo[1]
                 
