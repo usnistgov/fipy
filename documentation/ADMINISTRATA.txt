@@ -11,7 +11,7 @@ Branches
 Break off for radical refactoring::
 
     $ cd trunk    
-    $ BRANCH=branch-refactoring_etc
+    $ BRANCH=refactoring_etc
     $ FIPYROOT=svn+ssh://username@matforge.org/usr/local/svn-fipy-repos/
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
     $ cd ..
