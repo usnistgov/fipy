@@ -444,7 +444,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         from fipy.tools import dump
         data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
         N = mesh.getFineMesh().getNumberOfCells()
-        print numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3)
+        return numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0)
     except:
         return 0
     
