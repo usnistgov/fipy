@@ -85,21 +85,21 @@ class MatplotlibViewer(Viewer):
         
         pylab.title(self.title)
         
-    def _autoscale(self, vars, datamin=None, datamax=None):
-        from fipy.tools import numerix
+##    def _autoscale(self, vars, datamin=None, datamax=None):
+##        from fipy.tools import numerix
 
-        if datamin is None:
-            datamin = 1e300
-            for var in vars:
-                datamin = min(datamin, numerix.min(var))
+##        if datamin is None:
+##            datamin = 1e300
+##            for var in vars:
+##                datamin = min(datamin, numerix.min(var))
 
-        if datamax is None:
-            from fipy.tools import numerix
-            datamax = -1e300
-            for var in vars:
-                datamax = max(datamax, numerix.max(var))
+##        if datamax is None:
+##            from fipy.tools import numerix
+##            datamax = -1e300
+##            for var in vars:
+##                datamax = max(datamax, numerix.max(var))
                 
-        return datamin, datamax
+##        return datamin, datamax
 
 
     def plot(self, filename = None):

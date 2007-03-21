@@ -127,3 +127,19 @@ class Viewer:
         """
         pass
 
+    def _autoscale(self, vars, datamin=None, datamax=None):
+        from fipy.tools import numerix
+
+        if datamin is None:
+            datamin = 1e300
+            for var in vars:
+                datamin = min(datamin, numerix.min(var))
+
+        if datamax is None:
+            from fipy.tools import numerix
+            datamax = -1e300
+            for var in vars:
+                datamax = max(datamax, numerix.max(var))
+                
+        return datamin, datamax
+

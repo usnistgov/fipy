@@ -83,8 +83,8 @@ class GistViewer(Viewer):
         
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
-    def _getLimit(self, key):
-        limit = Viewer._getLimit(self, key = key)
+    def _getLimit(self, keys):
+        limit = Viewer._getLimit(self, keys=keys)
         if limit is None:
             limit = 'e'
             
