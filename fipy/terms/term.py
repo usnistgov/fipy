@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/15/07 {3:17:39 PM} 
+ #                                last update: 3/23/07 {8:03:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -261,7 +261,19 @@ class Term:
             from fipy.terms.binaryTerm import _AdditionTerm
             return _AdditionTerm(term1 = self, term2 = other)
             
-    __radd__ = __add__
+    def __radd__(self, other):
+        r"""
+        Add a number or variable to a `Term`.
+
+           >>> 10. + Term(coeff = 1.)
+           (_ExplicitSourceTerm(coeff = 10.0) + Term(coeff = 1.0))
+        """
+        
+        if self._otherIsZero(other):
+            return self
+        else:
+            from fipy.terms.binaryTerm import _AdditionTerm
+            return _AdditionTerm(term1 = other, term2 = self)
     
     def __neg__(self):
         r"""
@@ -288,30 +300,28 @@ class Term:
         Subtract a `Term` from a `Term`, number or variable.
 
            >>> Term(coeff = 1.) - 10.
-           (Term(coeff = 1.0) - _ExplicitSourceTerm(coeff = 10.0))
+           (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = -10.0))
            >>> Term(coeff = 1.) - Term(coeff = 2.)
-           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           (Term(coeff = 1.0) + Term(coeff = -2.0))
            
         """        
         if self._otherIsZero(other):
             return self
         else:
-            from fipy.terms.binaryTerm import _SubtractionTerm
-            return _SubtractionTerm(term1 = self, term2 = other)
+            return self + (-other)
 
     def __rsub__(self, other):
         r"""
         Subtract a `Term`, number or variable from a `Term`.
 
            >>> 10. - Term(coeff = 1.)
-           (_ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
+           (_ExplicitSourceTerm(coeff = 10.0) + Term(coeff = -1.0))
 
         """        
         if self._otherIsZero(other):
-            return self
+            return -self
         else:
-            from fipy.terms.binaryTerm import _SubtractionTerm
-            return _SubtractionTerm(term1 = other, term2 = self)
+            return other + (-self)
         
     def __eq__(self, other):
         r"""
@@ -319,44 +329,29 @@ class Term:
         following does not return `False.`
 
            >>> Term(coeff = 1.) == Term(coeff = 2.)
-           (Term(coeff = 1.0) == Term(coeff = 2.0))
+           (Term(coeff = 1.0) + Term(coeff = -2.0))
 
         it is equivalent to,
 
            >>> Term(coeff = 1.) - Term(coeff = 2.)
-           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           (Term(coeff = 1.0) + Term(coeff = -2.0))
 
-        A `Term` should equate with a float. 
-        
-        .. attention:: 
-            
-           This does not work due to sign difficulties.
-           
-        ..
+        A `Term` can also equate with a number. 
 
            >>> Term(coeff = 1.) == 1.  
-           False
+           (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = -1.0))
            
         Likewise for integers.
 
            >>> Term(coeff = 1.) == 1
-           False
+           (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = -1))
            
         """
 
         if self._otherIsZero(other):
             return self
         else:
-            if not isinstance(other, Term):
-                return False
-            else:
-                from fipy.terms.binaryTerm import _EquationTerm
-                return _EquationTerm(term1 = self, term2 = other)
-
-                # because of the semantics of comparisons in Python,
-                # the following test doesn't work
-                ##         if isinstance(self, _EquationTerm) or isinstance(other, _EquationTerm):
-                ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
+            return self - other
 
     def __repr__(self):
         """
@@ -366,7 +361,7 @@ class Term:
            Term(coeff = 123.456)
 
         """
-        return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
+        return "%s(coeff = %s)" % (self.__class__.__name__, repr(self.coeff))
 
     def _calcGeomCoeff(self, mesh):
         return None
