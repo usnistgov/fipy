@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 1/3/07 {3:14:48 PM} 
+ #                                last update: 3/8/07 {12:21:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,8 +65,10 @@ class CellTerm(Term):
 
         Term.__init__(self, coeff = coeff)
         self.coeffVectors = None
+        self._var = None
 
-    def _calcCoeffVectors(self, mesh):
+    def _calcCoeffVectors(self, var):
+        mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
 
@@ -77,9 +79,10 @@ class CellTerm(Term):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, mesh):
-        if self.coeffVectors is None:
-            self._calcCoeffVectors(mesh)
+    def _getCoeffVectors(self, var):
+        if self.coeffVectors is None or var != self._var:
+            self._var = var
+            self._calcCoeffVectors(var)
         return self.coeffVectors
         
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
@@ -120,7 +123,7 @@ class CellTerm(Term):
         b = numerix.zeros((N),'d')
         L = _SparseMatrix(size = N)
         
-        coeffVectors = self._getCoeffVectors(var.getMesh())
+        coeffVectors = self._getCoeffVectors(var)
 
         inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
         
