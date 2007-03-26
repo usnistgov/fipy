@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 8/9/05 {3:43:47 PM} 
+ #                                last update: 3/23/07 {7:49:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@
 from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-class _BinaryTerm(Term):
+class _AdditionTerm(Term):
     def __init__(self, term1, term2):
 
 	if isinstance(term1, Term):
@@ -65,38 +65,50 @@ class _BinaryTerm(Term):
 	
 	termMatrix, termRHSvector = self.term2._buildMatrix(var, boundaryConditions, dt = dt)
 
-	matrix = self._operator()(matrix,termMatrix)
-	RHSvector = self._operator()(RHSvector,termRHSvector)
+	matrix = matrix + termMatrix
+	RHSvector = RHSvector + termRHSvector
 	
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver):
         return self.term1._getDefaultSolver(solver) or self.term2._getDefaultSolver(solver)
 
+    def __repr__(self):
+        return "%s + %s" % (repr(self.term1), repr(self.term2))
 
-class _AdditionTerm(_BinaryTerm):
-    def __repr__(self):
-        return "(%s + %s)" % (repr(self.term1), repr(self.term2))
-        
-    def _operator(self):
-	return lambda a,b: a + b
-	
-class _SubtractionTerm(_BinaryTerm):
-    def __repr__(self):
-        return "(%s - %s)" % (repr(self.term1), repr(self.term2))
-        
-    def _operator(self):
-	return lambda a,b: a - b
+    def __neg__(self):
+        r"""
+         Negate a `Term`.
 
-class _EquationTerm(_SubtractionTerm):
-    def __repr__(self):
-        return "(%s == %s)" % (repr(self.term1), repr(self.term2))
-        
-    def __nonzero__(self):
-        if self.term1.__class__ != self.term2.__class__:
-            return False
-        elif self.term1.coeff != self.term2.coeff:
-            return False
-        else:
-            return True
-        
+           >>> -(Term(coeff=1.) - Term(coeff=2.)
+           (Term(coeff = -1.0) + Term(coeff = 2.0))
+
+        """
+        return (-self.term1) + (-self.term2)
+
+## class _AdditionTerm(_BinaryTerm):
+##     def __repr__(self):
+##         return "(%s + %s)" % (repr(self.term1), repr(self.term2))
+##         
+##     def _operator(self):
+## 	return lambda a,b: a + b
+## 	
+## class _SubtractionTerm(_BinaryTerm):
+##     def __repr__(self):
+##         return "(%s - %s)" % (repr(self.term1), repr(self.term2))
+##         
+##     def _operator(self):
+## 	return lambda a,b: a - b
+## 
+## class _EquationTerm(_SubtractionTerm):
+##     def __repr__(self):
+##         return "(%s == %s)" % (repr(self.term1), repr(self.term2))
+##         
+##     def __nonzero__(self):
+##         if self.term1.__class__ != self.term2.__class__:
+##             return False
+##         elif self.term1.coeff != self.term2.coeff:
+##             return False
+##         else:
+##             return True
+##         
