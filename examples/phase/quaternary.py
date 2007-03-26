@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {3:11:15 PM} 
+ #                                last update: 3/22/07 {5:53:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -266,7 +266,7 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
     >>> mPhi = -((1 - 2 * phase) * barrier + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * barrier - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
 .. raw:: latex
 
@@ -284,7 +284,7 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
     >>> phase.gradientEnergy = 25
     >>> phase.equation = TransientTerm(coeff=1/phase.mobility) \
     ...   == ImplicitDiffusionTerm(coeff=phase.gradientEnergy) \
-    ...      + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    ...      + S0 + ImplicitSourceTerm(coeff = S1)
 
 -----
 

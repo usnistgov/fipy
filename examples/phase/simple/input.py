@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/4/07 {10:17:35 AM} 
+ #                                last update: 3/26/07 {3:01:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -230,11 +230,11 @@ After solving this equation
     
 we obtain the surprising result that |phase| is zero everywhere.
 
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    0
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Fully explicit source. Press <return> to proceed...")
-    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    0
 
 .. image:: examples/phase/simple/explicit.pdf
    :scale: 50
@@ -276,17 +276,17 @@ transient term from
     ...     eq.solve(var = phase)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
+
+After 13 time steps, the solution has converged to the analytical solution
+
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    1
     >>> if __name__ == '__main__':
     ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
 
 .. image:: examples/phase/simple/relaxation.pdf
    :scale: 50
    :align: center
-
-After 13 time steps, the solution has converged to the analytical solution
-
-    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    1
 
 .. note:: The solution is only found accurate to
 
@@ -372,11 +372,11 @@ iterations at the same time step to reach a converged solution).
     
     >>> for i in range(8):
     ...     eq.solve(var = phase)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    1
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Kobayashi, semi-implicit. Press <return> to proceed...")
-    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    1
 
 In general, the best convergence is obtained when the linearization gives a
 good representation of the relationship between the source and the
@@ -418,6 +418,8 @@ or
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
     >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
     >>> implicitSource = ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    >>> ## S0 = mPhi * phase * (1 - phase) - S1 * phase
+    >>> ## implicitSource = ImplicitSourceTerm(coeff = S1)
     >>> eq = diffusionTerm + S0 + implicitSource
     
 Using this scheme, where the coefficient of the implicit source term is
@@ -428,11 +430,11 @@ tangent to the source, we reach convergence in only 5 sweeps
     
     >>> for i in range(5):
     ...     eq.solve(var = phase)
+    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+    1
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input("Tangent, semi-implicit. Press <return> to proceed...")
-    >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
-    1
 
 Although, for this simple problem, there is no appreciable difference in
 run-time between the fully explicit source and the optimized semi-implicit
@@ -511,9 +513,9 @@ form of the source term shown above
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
     >>> eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
-    ...                         + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    ...                         + S0 + ImplicitSourceTerm(coeff = S1)
 
 In order to separate the effect of forming the phase field interface
 from the kinetics of moving it, we first equilibrate at the melting
