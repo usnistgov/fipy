@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/3/07 {3:20:33 PM} 
+ #                                last update: 3/22/07 {5:48:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,7 +133,7 @@ class ConvectionTerm(FaceTerm):
 
         if self.stencil is None:
 
-            if self.diffusionTerm == None:
+            if self.diffusionTerm is None:
                 diffCoeff = 1e-20
             else:
                 diffCoeff = self.diffusionTerm._getGeomCoeff(mesh)
