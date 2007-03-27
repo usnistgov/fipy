@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/07 {3:15:42 PM} 
+ #                                last update: 3/27/07 {2:29:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,9 +57,9 @@ from fipy.tools import parser
 class Variable(object):
     
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
-    if parser.parse("--no-cache", action = "store_true"):
+    if parser.parse("--no-cache", action="store_true"):
         _cacheAlways = False
-    if parser.parse("--cache", action = "store_true"):
+    if parser.parse("--cache", action="store_true"):
         _cacheAlways = True
 
     _cacheNever = False
@@ -70,10 +70,10 @@ class Variable(object):
     Using a `Variable` in a mathematical expression will create an automatic
     dependency `Variable`, e.g.,
     
-        >>> a = Variable(value = 3)
+        >>> a = Variable(value=3)
         >>> b = 4 * a
         >>> b
-        (Variable(value = 3) * 4)
+        (Variable(value=3) * 4)
         >>> b()
         12
         
@@ -82,7 +82,7 @@ class Variable(object):
     
         >>> a.setValue(5)
         >>> b
-        (Variable(value = 5) * 4)
+        (Variable(value=5) * 4)
         >>> b()
         20
         
@@ -91,16 +91,16 @@ class Variable(object):
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
     
-    def __init__(self, value=0., unit = None, array = None, name = '', mesh = None, cached = 1):
+    def __init__(self, value=0., unit=None, array=None, name='', mesh=None, cached=1):
         """
         Create a `Variable`.
         
-            >>> Variable(value = 3)
-            Variable(value = array(3))
-            >>> Variable(value = 3, unit = "m")
-            Variable(value = PhysicalField(3,'m'))
-            >>> Variable(value = 3, unit = "m", array = numerix.zeros((3,2)))
-            Variable(value = PhysicalField(array([[3, 3],
+            >>> Variable(value=3)
+            Variable(value=array(3))
+            >>> Variable(value=3, unit="m")
+            Variable(value=PhysicalField(3,'m'))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2)))
+            Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
 
@@ -127,7 +127,7 @@ class Variable(object):
             unit = None
             array = None
             
-        self._setValue(value = value, unit = unit, array = array)
+        self._setValue(value=value, unit=unit, array=array)
         
         self.name = name
         self.mesh = mesh
@@ -176,18 +176,18 @@ class Variable(object):
     def getMesh(self):
         return self.mesh
         
-    def __array__(self, t = None):
+    def __array__(self, t=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
     
-            >>> v = Variable(value = [2,3])
+            >>> v = Variable(value=[2,3])
             >>> print numerix.array(v)
             [ 2.  3.]
         
         It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
     
-            >>> v = Variable(value = [2,3], unit = "m")
+            >>> v = Variable(value=[2,3], unit="m")
             >>> numerix.array(v)
             Traceback (most recent call last):
                 ...
@@ -227,29 +227,29 @@ class Variable(object):
         """
         Make an duplicate of the `Variable`
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = a.copy()
             >>> b
-            Variable(value = array(3))
+            Variable(value=array(3))
 
         The duplicate will not reflect changes made to the original
                           
             >>> a.setValue(5)
             >>> b
-            Variable(value = array(3))
+            Variable(value=array(3))
             
         Check that this works for arrays.
         
-            >>> a = Variable(value = numerix.array((0,1,2)))
+            >>> a = Variable(value=numerix.array((0,1,2)))
             >>> b = a.copy()
             >>> b
-            Variable(value = array([0, 1, 2]))
+            Variable(value=array([0, 1, 2]))
             >>> a[1] = 3
             >>> b
-            Variable(value = array([0, 1, 2]))
+            Variable(value=array([0, 1, 2]))
             
         """
-        return Variable(value = self)
+        return Variable(value=self)
 
 
     def _getUnitAsOne(self):
@@ -267,7 +267,7 @@ class Variable(object):
     def getUnit(self):
         """
         Return the unit object of `self`.
-            >>> Variable(value = "1 m").getUnit()
+            >>> Variable(value="1 m").getUnit()
             <PhysicalUnit m>
         """
         return self._extractUnit(self.getValue())
@@ -277,7 +277,7 @@ class Variable(object):
         Return the value of the `Variable` with all units reduced to 
         their base SI elements.
         
-            >>> e = Variable(value = "2.7 Hartree*Nav")
+            >>> e = Variable(value="2.7 Hartree*Nav")
             >>> print e.inBaseUnits()
             7088849.01085 kg*m**2/s**2/mol
         """
@@ -306,7 +306,7 @@ class Variable(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = Variable(value = 314159., unit = 's')
+            >>> t = Variable(value=314159., unit='s')
             >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
             ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
         """
@@ -320,13 +320,13 @@ class Variable(object):
         """    
         "Evaluate" the `Variable` and return the specified element
       
-            >>> a = Variable(value = ((3.,4.),(5.,6.)), unit = "m") + "4 m"
+            >>> a = Variable(value=((3.,4.),(5.,6.)), unit="m") + "4 m"
             >>> print a[1,1]
             10.0 m
 
         It is an error to slice a `Variable` whose `value` is not sliceable
 
-            >>> Variable(value = 3)[2]
+            >>> Variable(value=3)[2]
             Traceback (most recent call last):
                   ...
             IndexError: 0-d arrays can't be indexed
@@ -348,14 +348,15 @@ class Variable(object):
         return str(self.getValue())
             
     def __repr__(self):
-        s = self.__class__.__name__ + '('
         if len(self.name) > 0:
-            s += 'name = "' + self.name + '", '
-        s += 'value = ' + `self.getValue()`
-        if self.mesh:
-            s += ', mesh = ' + `self.mesh`
-        s += ')'
-        return s
+            return self.name
+        else:
+            s = self.__class__.__name__ + '('
+            s += 'value=' + `self.getValue()`
+            if self.mesh:
+                s += ', mesh=' + `self.mesh`
+            s += ')'
+            return s
 
     def _getCIndexString(self, shape):
         dimensions = len(shape)
@@ -377,22 +378,22 @@ class Variable(object):
             else:
                 return '(k + j * nk + i * nj * nk)'
 
-    def _getCstring(self, argDict={}, id = "", freshen=None):
+    def _getCstring(self, argDict={}, id="", freshen=None):
          """
          Generate the string and dictionary to be used in inline
-             >>> (Variable((1)))._getCstring(argDict = {})
+             >>> (Variable((1)))._getCstring(argDict={})
              'var'
            
-             >>> (Variable((1,2,3,4)))._getCstring(argDict = {})
+             >>> (Variable((1,2,3,4)))._getCstring(argDict={})
              'var(i)'
        
-             >>> (Variable(((1,2),(3,4))))._getCstring(argDict = {})
+             >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
              'var(j, i)'
 
-             >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict = {})
+             >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
              'var(k + j * nk + i * nj * nk)'
 
-             >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict = {})
+             >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict={})
              '(var0 * var1(i))'
 
          freshen is ignored
@@ -428,12 +429,12 @@ class Variable(object):
          else:
              return identifier + self._getCIndexString(shape)
 
-    def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
+    def tostring(self, max_line_width=None, precision=None, suppress_small=None, separator=' '):
         return numerix.tostring(self.getValue(), 
-                                max_line_width = max_line_width,
-                                precision = precision, 
-                                suppress_small = suppress_small, 
-                                separator = separator)
+                                max_line_width=max_line_width,
+                                precision=precision, 
+                                suppress_small=suppress_small, 
+                                separator=separator)
         
     def __setitem__(self, index, value):
         if isinstance(index, MeshIterator):
@@ -455,12 +456,12 @@ class Variable(object):
         """
         "Evaluate" the `Variable` and return its value
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> print a()
             3
             >>> b = a + 4
             >>> b
-            (Variable(value = array(3)) + 4)
+            (Variable(value=array(3)) + 4)
             >>> b()
             7
         """
@@ -470,12 +471,12 @@ class Variable(object):
         """
         "Evaluate" the `Variable` and return its value (longhand)
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> print a.getValue()
             3
             >>> b = a + 4
             >>> b
-            (Variable(value = array(3)) + 4)
+            (Variable(value=array(3)) + 4)
             >>> b.getValue()
             7
 
@@ -484,9 +485,9 @@ class Variable(object):
         if self.stale or not self._isCached() or self.value is None:
             value = self._calcValue()
             if self._isCached():
-                self._setValue(value = value)
+                self._setValue(value=value)
             else:
-                self._setValue(value = None)
+                self._setValue(value=None)
             self._markFresh()
         else:
             value = self.value
@@ -496,22 +497,22 @@ class Variable(object):
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         
-    def cacheMe(self, recursive = False):
+    def cacheMe(self, recursive=False):
         self._cached = True
         if recursive:
             for var in self.requiredVariables:
-                var.cacheMe(recursive = True)
+                var.cacheMe(recursive=True)
                 
-    def dontCacheMe(self, recursive = False):
+    def dontCacheMe(self, recursive=False):
         self._cached = False
         if recursive:
             for var in self.requiredVariables:
-                var.dontCacheMe(recursive = False)
+                var.dontCacheMe(recursive=False)
 
-    def _setValue(self, value, unit = None, array = None):
-        self.value = self._makeValue(value = value, unit = unit, array = array)
+    def _setValue(self, value, unit=None, array=None):
+        self.value = self._makeValue(value=value, unit=unit, array=array)
      
-    def _makeValue(self, value, unit = None, array = None):
+    def _makeValue(self, value, unit=None, array=None):
 
         ## --inline code often returns spurious results with noncontiguous
         ## arrays. A test case was put in _execInline(). The best fix turned out to
@@ -537,7 +538,7 @@ class Variable(object):
                             value = numerix.resize(float(value), (len(v),))
                     
             if unit is not None or type(value) in [type(''), type(()), type([])]:
-                value = PF(value = value, unit = unit, array = array)
+                value = PF(value=value, unit=unit, array=array)
             elif array is not None:
                 array[:] = value
                 value = array
@@ -554,17 +555,17 @@ class Variable(object):
             
         return value
 
-    def setValue(self, value, unit = None, array = None, where = None):
+    def setValue(self, value, unit=None, array=None, where=None):
         """
         Set the value of the Variable. Can take a masked array.
 
             >>> a = Variable((1,2,3))
-            >>> a.setValue(5, where = (1, 0, 1))
+            >>> a.setValue(5, where=(1, 0, 1))
             >>> print a
             [ 5.  2.  5.]
 
             >>> b = Variable((4,5,6))
-            >>> a.setValue(b, where = (1, 0, 1))
+            >>> a.setValue(b, where=(1, 0, 1))
             >>> print a
             [ 4.  2.  6.]
             >>> print b
@@ -579,7 +580,7 @@ class Variable(object):
             >>> print b
             [3 4 5]
 
-            >>> a.setValue((4,5,6), where = (1, 0))
+            >>> a.setValue((4,5,6), where=(1, 0))
             Traceback (most recent call last):
                 ....
             ValueError: array dimensions must agree
@@ -593,7 +594,7 @@ class Variable(object):
 
         if where is not None:
             tmp = numerix.where(where, tmp, self.getValue())
-        self._setValue(value = tmp, unit = unit, array = array)
+        self._setValue(value=tmp, unit=unit, array=array)
         self._markFresh()
         
     def _setNumericValue(self, value):
@@ -625,24 +626,24 @@ class Variable(object):
         
     def getShape(self):
         """
-            >>> Variable(value = 3).getShape()
+            >>> Variable(value=3).getShape()
             ()
-            >>> Variable(value = (3,)).getShape()
+            >>> Variable(value=(3,)).getShape()
             (1,)
-            >>> Variable(value = (3,4)).getShape()
+            >>> Variable(value=(3,4)).getShape()
             (2,)
             
-            >>> Variable(value = "3 m").getShape()
+            >>> Variable(value="3 m").getShape()
             ()
-            >>> Variable(value = (3,), unit = "m").getShape()
+            >>> Variable(value=(3,), unit="m").getShape()
             (1,)
-            >>> Variable(value = (3,4), unit = "m").getShape()
+            >>> Variable(value=(3,4), unit="m").getShape()
             (2,)
 
             >>> from fipy.meshes.grid2D import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> mesh = Grid2D(nx = 2, ny = 3)
-            >>> var = CellVariable(mesh = mesh)
+            >>> mesh = Grid2D(nx=2, ny=3)
+            >>> var = CellVariable(mesh=mesh)
             >>> var.getShape()
             (6,)
             >>> var.getArithmeticFaceValue().getShape()
@@ -718,9 +719,9 @@ class Variable(object):
     def _getVariableClass(self):
         return Variable
         
-    def _getOperatorVariableClass(self, baseClass = None, canInline = True):
+    def _getOperatorVariableClass(self, baseClass=None, canInline=True):
         """
-            >>> a = Variable(value = 1)
+            >>> a = Variable(value=1)
 
             >>> c = -a
             >>> b = c.getOld() + 3
@@ -759,35 +760,35 @@ class Variable(object):
             >>> v4 = Variable(numerix.array((13,14,15,16)))
 
             >>> (v1 * v2)._getRepresentation()
-            '(Variable(value = array([1, 2, 3, 4])) * Variable(value = array([5, 6, 7, 8])))'
+            '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
             
-            >>> (v1 * v2)._getRepresentation(style='C', id = "")
+            >>> (v1 * v2)._getRepresentation(style='C', id="")
             '(var0(i) * var1(i))'
             
-            >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id = "")
+            >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
             '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
             
-            >>> (v1 - v2)._getRepresentation(style='C', id = "")
+            >>> (v1 - v2)._getRepresentation(style='C', id="")
             '(var0(i) - var1(i))'
 
-            >>> (v1 / v2)._getRepresentation(style='C', id = "")
+            >>> (v1 / v2)._getRepresentation(style='C', id="")
             '(var0(i) / var1(i))'
 
-            >>> (v1 - 1)._getRepresentation(style='C', id = "")
+            >>> (v1 - 1)._getRepresentation(style='C', id="")
             '(var0(i) - var1)'
                 
-            >>> (5 * v2)._getRepresentation(style='C', id = "")
+            >>> (5 * v2)._getRepresentation(style='C', id="")
             '(var0(i) * var1)'
 
-            >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id = "")
+            >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
             '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
 
         Check that getUnit() works for a binOp
 
-            >>> (Variable(value = "1 m") * Variable(value = "1 s")).getUnit()
+            >>> (Variable(value="1 m") * Variable(value="1 s")).getUnit()
             <PhysicalUnit s*m>
 
-            >>> (Variable(value = "1 m") / Variable(value = "0 s")).getUnit()
+            >>> (Variable(value="1 m") / Variable(value="0 s")).getUnit()
             <PhysicalUnit m/s>
 
             >>> a = -((Variable() * Variable()).sin())
@@ -806,8 +807,8 @@ class Variable(object):
             >>> ##elif style == "C":
             >>> ##    counter = _popIndex()
             >>> ##    if not self.var[counter]._isCached():
-            >>> ##        stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
-            >>> ##        self.var[counter].value = None
+            >>> ##        stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
+            >>> ##        self.var[counter].value=None
 
         This is the test that fails if the last line above is removed
         from `_getRepresentation()`, the `binOp.getValue()` statement
@@ -835,13 +836,13 @@ class Variable(object):
         if baseClass is None:
             baseClass = self._getVariableClass()
         class OperatorVariable(baseClass):
-            def __init__(self, op, var, mesh = None, opShape = (), canInline = canInline):
+            def __init__(self, op, var, mesh=None, opShape=(), canInline=canInline):
                 mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
                 self.op = op
                 self.var = var
                 self.opShape = opShape
                 self.canInline = canInline  #allows for certain functions to opt out of --inline
-                baseClass.__init__(self, value = None, mesh = mesh)
+                baseClass.__init__(self, value=None, mesh=mesh)
                 self.name = ''
                 for var in self.var:    #C does not accept units
                     if not var.getUnit().isDimensionless():
@@ -882,13 +883,13 @@ class Variable(object):
                         else:
                             oldVar.append(v)
                     
-                    self.old = self.__class__(op = self.op, var = oldVar, mesh = self.getMesh(), opShape=self.opShape, canInline=self.canInline)
+                    self.old = self.__class__(op=self.op, var=oldVar, mesh=self.getMesh(), opShape=self.opShape, canInline=self.canInline)
                                   
                 return self.old
          
-            def _getCstring(self, argDict = {}, id = "", freshen=False):
+            def _getCstring(self, argDict={}, id="", freshen=False):
                 if self.canInline: # and not self._isCached():
-                    s = self._getRepresentation(style = "C", argDict = argDict, id = id, freshen=freshen)
+                    s = self._getRepresentation(style="C", argDict=argDict, id=id, freshen=freshen)
                 else:
                     s = baseClass._getCstring(self, argDict=argDict, id=id)
                 if freshen:
@@ -896,7 +897,7 @@ class Variable(object):
                   
                 return s
                     
-            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
+            def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
                 """
                 :Parameters:
                     
@@ -968,11 +969,11 @@ class Variable(object):
                         elif style == "C":
                             counter = _popIndex()
                             if not self.var[counter]._isCached():
-                                stack.append(self.var[counter]._getCstring(argDict, id = id + str(counter), freshen=freshen))
+                                stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
                                 self.var[counter].value = None
                             else:
                                 stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, \
-                                                                                               id = id + str(counter),\
+                                                                                               id=id + str(counter),\
                                                                                                freshen=False))
                         else:
                             raise SyntaxError, "Unknown style: %s" % style
@@ -1001,7 +1002,7 @@ class Variable(object):
             def getName(self):
                 name = baseClass.getName(self)
                 if len(name) == 0:
-                    name = self._getRepresentation(style = "name")
+                    name = self._getRepresentation(style="name")
                 return name
                 
             def copy(self):
@@ -1018,7 +1019,7 @@ class Variable(object):
 
         return OperatorVariable
         
-    def _getArithmeticBaseClass(self, other = None):
+    def _getArithmeticBaseClass(self, other=None):
         """
         Given `self` and `other`, return the desired base
         class for an operation result.
@@ -1064,8 +1065,8 @@ class Variable(object):
         causes the inline routine to return senseless results.
         
             >>> from fipy import Grid2D, CellVariable
-            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-            >>> var = CellVariable(mesh = mesh, value = 0.)
+            >>> mesh = Grid2D(dx=1., dy=1., nx=2, ny=2)
+            >>> var = CellVariable(mesh=mesh, value=0.)
             >>> Y =  mesh.getCellCenters()[:,1]
             >>> var.setValue(Y + 1.0)
             >>> print var - Y
@@ -1079,7 +1080,7 @@ class Variable(object):
     
         from fipy.tools.inline import inline
         argDict = {}
-        string = self._getCstring(argDict = argDict, freshen=True) + ';'
+        string = self._getCstring(argDict=argDict, freshen=True) + ';'
         
         try:
             shape = self.opShape
@@ -1142,11 +1143,11 @@ class Variable(object):
         return argDict['result']
 
     
-    def _getUnaryOperatorVariable(self, op, baseClass = None, canInline = True):
+    def _getUnaryOperatorVariable(self, op, baseClass=None, canInline=True):
         """
         Check that getUnit() works fot unOp
 
-            >>> (-Variable(value = "1 m")).getUnit()
+            >>> (-Variable(value="1 m")).getUnit()
             <PhysicalUnit m>
             
         """
@@ -1164,9 +1165,9 @@ class Variable(object):
         if not self.getUnit().isDimensionless():
             canInline = False
 
-        return unOp(op = op, var = [self], opShape = self.getShape(), canInline = canInline)
+        return unOp(op=op, var=[self], opShape=self.getShape(), canInline=canInline)
 
-    def _getArrayAsOnes(object, valueMattersForShape = ()): 
+    def _getArrayAsOnes(object, valueMattersForShape=()): 
         """ 
         For the purposes of assembling the binop, we are only
         interested in the shape of the operation result, not the result
@@ -1212,7 +1213,7 @@ class Variable(object):
         return (var0, var1)
     _rotateShape = staticmethod(_rotateShape)
     
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
+    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape=True):
         try:
             # check if applying the operation to the inputs will produce the desired shape
             if numerix.getShape(op(var0Array, var1Array)) != opShape:
@@ -1236,7 +1237,7 @@ class Variable(object):
             
         return (var0, var1)
 
-    def _getBinaryOperatorVariable(self, op, other, baseClass = None, opShape = None, valueMattersForShape = (), rotateShape = True, canInline = True):
+    def _getBinaryOperatorVariable(self, op, other, baseClass=None, opShape=None, valueMattersForShape=(), rotateShape=True, canInline=True):
         """
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
@@ -1256,7 +1257,7 @@ class Variable(object):
         
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
-            other = _Constant(value = other)
+            other = _Constant(value=other)
 
         # If the caller has not specified a base class for the binop, 
         # check if the member Variables know what type of Variable should
@@ -1283,8 +1284,8 @@ class Variable(object):
         var0 = self
         var1 = other
         
-        selfArray = self._getArrayAsOnes(object = self, valueMattersForShape = valueMattersForShape)
-        otherArray = self._getArrayAsOnes(object = other, valueMattersForShape = valueMattersForShape)
+        selfArray = self._getArrayAsOnes(object=self, valueMattersForShape=valueMattersForShape)
+        otherArray = self._getArrayAsOnes(object=other, valueMattersForShape=valueMattersForShape)
 
         try:
             var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
@@ -1304,7 +1305,7 @@ class Variable(object):
                     val1 = self.var[1].getValue()
                 else:
                     if type(self.var[1]) is type(''):
-                        self.var[1] = physicalField.PhysicalField(value = self.var[1])
+                        self.var[1] = physicalField.PhysicalField(value=self.var[1])
                     val1 = self.var[1]
 
                 return self.op(self.var[0].getValue(), val1)
@@ -1315,15 +1316,15 @@ class Variable(object):
                 except:
                     return self._extractUnit(self._calcValuePy())
 
-            def _getRepresentation(self, style = "__repr__", argDict = {}, id = id, freshen=False):
+            def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
                 self.id = id
-                return "(" + operatorClass._getRepresentation(self, style = style, argDict = argDict, id = id, freshen=freshen) + ")"
+                return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
         
         var = [var0, var1]
         for v in var:
             if not v.getUnit().isDimensionless():
                 canInline = False
-        tmpBop = binOp(op = op, var = [var0, var1], opShape = opShape, canInline = canInline)
+        tmpBop = binOp(op=op, var=[var0, var1], opShape=opShape, canInline=canInline)
         return tmpBop
     
     def __add__(self, other):
@@ -1358,11 +1359,11 @@ class Variable(object):
             
     def __pow__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: pow(a,b), other)
-        #return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline = False)
+        #return self._getBinaryOperatorVariable(lambda a,b: a**b, other, canInline=False)
             
     def __rpow__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: pow(b,a), other)
-        #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline = False)
+        #return self._getBinaryOperatorVariable(lambda a,b: b**a, other, canInline=False)
             
     def __div__(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: a/b, other)
@@ -1394,10 +1395,10 @@ class Variable(object):
         """
         Test if a `Variable` is less than another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a < 4)
             >>> b
-            (Variable(value = array(3)) < 4)
+            (Variable(value=array(3)) < 4)
             >>> b()
             1
             >>> a.setValue(4)
@@ -1411,8 +1412,8 @@ class Variable(object):
 
         Python automatically reverses the arguments when necessary
         
-            >>> 4 > Variable(value = 3)
-            (Variable(value = array(3)) < 4)
+            >>> 4 > Variable(value=3)
+            (Variable(value=array(3)) < 4)
         """
         return self._getBinaryOperatorVariable(lambda a,b: a<b, other)
 
@@ -1420,10 +1421,10 @@ class Variable(object):
         """
         Test if a `Variable` is less than or equal to another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a <= 4)
             >>> b
-            (Variable(value = array(3)) <= 4)
+            (Variable(value=array(3)) <= 4)
             >>> b()
             1
             >>> a.setValue(4)
@@ -1439,10 +1440,10 @@ class Variable(object):
         """
         Test if a `Variable` is equal to another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a == 4)
             >>> b
-            (Variable(value = array(3)) == 4)
+            (Variable(value=array(3)) == 4)
             >>> b()
             0
         """
@@ -1452,10 +1453,10 @@ class Variable(object):
         """
         Test if a `Variable` is not equal to another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a != 4)
             >>> b
-            (Variable(value = array(3)) != 4)
+            (Variable(value=array(3)) != 4)
             >>> b()
             1
         """
@@ -1465,10 +1466,10 @@ class Variable(object):
         """
         Test if a `Variable` is greater than another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a > 4)
             >>> b
-            (Variable(value = array(3)) > 4)
+            (Variable(value=array(3)) > 4)
             >>> print b()
             0
             >>> a.setValue(5)
@@ -1481,10 +1482,10 @@ class Variable(object):
         """
         Test if a `Variable` is greater than or equal to another quantity
         
-            >>> a = Variable(value = 3)
+            >>> a = Variable(value=3)
             >>> b = (a >= 4)
             >>> b
-            (Variable(value = array(3)) >= 4)
+            (Variable(value=array(3)) >= 4)
             >>> b()
             0
             >>> a.setValue(4)
@@ -1500,40 +1501,40 @@ class Variable(object):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value = (0, 0, 1, 1))
-            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> a = Variable(value=(0, 0, 1, 1))
+            >>> b = Variable(value=(0, 1, 0, 1))
             >>> print (a == 0) & (b == 1)
             [0 1 0 0]
             >>> print a & b
             [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 4)
+            >>> mesh = Grid1D(nx=4)
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
-            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
             >>> print (a == 0) & (b == 1)
             [0 1 0 0]
             >>> print a & b
             [0 0 0 1]
 
         """
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') & b.astype('h'), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') & b.astype('h'), other, canInline=False)
 
     def __or__(self, other):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value = (0, 0, 1, 1))
-            >>> b = Variable(value = (0, 1, 0, 1))
+            >>> a = Variable(value=(0, 0, 1, 1))
+            >>> b = Variable(value=(0, 1, 0, 1))
             >>> print (a == 0) | (b == 1)
             [1 1 0 1]
             >>> print a | b
             [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 4)
+            >>> mesh = Grid1D(nx=4)
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value = (0, 0, 1, 1), mesh = mesh)
-            >>> b = CellVariable(value = (0, 1, 0, 1), mesh = mesh)
+            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
             >>> print (a == 0) | (b == 1)
             [1 1 0 1]
             >>> print a | b
@@ -1541,7 +1542,7 @@ class Variable(object):
             
         """
         
-        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline=False)
         
     def __len__(self):
         return len(self.getValue())
@@ -1615,16 +1616,16 @@ class Variable(object):
         return self._getUnaryOperatorVariable(lambda a: numerix.ceil(a))
         
     def conjugate(self):
-        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline = False)
+        return self._getUnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
 
     def arctan2(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
                 
     def dot(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline=False)
         
     def reshape(self, shape):
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape = (shape,), canInline = False)
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape=(shape,), canInline=False)
         
     def transpose(self):
         """
@@ -1635,17 +1636,17 @@ class Variable(object):
         warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
         return self
 
-    def sum(self, index = 0):
+    def sum(self, index=0):
         if not self.sumVar.has_key(index):
             from sumVariable import _SumVariable
             self.sumVar[index] = _SumVariable(self, index)
         
         return self.sumVar[index]
 
-    def take(self, ids, axis = 0):
+    def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
 
-    def _take(self, ids, axis = 0):
+    def _take(self, ids, axis=0):
         """
         
         Same as take() but returns a `Variable` subclass.  This function
@@ -1657,10 +1658,10 @@ class Variable(object):
         
 
            >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 1, ny = 1)
+           >>> mesh = Grid2D(nx=1, ny=1)
            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-           >>> var = VectorFaceVariable(value = ( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh = mesh)
-           >>> v10 = var._take((1, 0), axis = 1)
+           >>> var = VectorFaceVariable(value=( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh=mesh)
+           >>> v10 = var._take((1, 0), axis=1)
            >>> print v10
            [[ 2.  1.]
             [ 3.  2.]
@@ -1683,14 +1684,14 @@ class Variable(object):
 
         ## Binary operator doesn't work because ids is turned into a _Constant Variable
         ## which contains floats and not integers. Numeric.take needs integers for ids.
-        ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis = axis), ids) 
+        ## return self._getBinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
 
-        if numerix.take(self.getValue(), ids, axis = axis).shape == self.getShape():
-            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis = axis), canInline = False)
+        if numerix.take(self.getValue(), ids, axis=axis).shape == self.getShape():
+            return self._getUnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
         else:
             raise IndexError, '_take() must take ids that return a Variable of the same shape'
             
-    def allclose(self, other, rtol = 1.e-10, atol = 1.e-10):
+    def allclose(self, other, rtol=1.e-10, atol=1.e-10):
         """
            >>> var = Variable((1, 1))
            >>> print var.allclose((1, 1))
@@ -1730,19 +1731,19 @@ class Variable(object):
     
 
 
-        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol = atol, rtol = rtol), 
+        return self._getBinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol=atol, rtol=rtol), 
                                                other, 
-                                               baseClass = Variable,
-                                               opShape = "number",
-                                               rotateShape = False,
-                                               canInline = False)
+                                               baseClass=Variable,
+                                               opShape="number",
+                                               rotateShape=False,
+                                               canInline=False)
         
     def allequal(self, other):
         return self._getBinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
                                                other,
-                                               baseClass = Variable,
-                                               opShape = "number",
-                                               canInline = False)
+                                               baseClass=Variable,
+                                               opShape="number",
+                                               canInline=False)
 
     def getMag(self):
         if self.mag is None:
@@ -1758,12 +1759,12 @@ class Variable(object):
             >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
             
             >>> from fipy.meshes.grid2D import Grid2D
-            >>> mesh = Grid2D(nx = 3)
+            >>> mesh = Grid2D(nx=3)
             
             
         `CellVariable` * CellVariable
         
-            >>> cv = CellVariable(mesh = mesh, value = (0, 1, 2))
+            >>> cv = CellVariable(mesh=mesh, value=(0, 1, 2))
             >>> cvXcv = cv * cv
             >>> print cvXcv
             [ 0.  1.  4.]
@@ -1772,7 +1773,7 @@ class Variable(object):
         
         `CellVariable` * FaceVariable
         
-            >>> fv = FaceVariable(mesh = mesh, value = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+            >>> fv = FaceVariable(mesh=mesh, value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
             >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
@@ -1784,7 +1785,7 @@ class Variable(object):
             
         `CellVariable` * VectorCellVariable
         
-            >>> vcv = VectorCellVariable(mesh = mesh, value = ((0,1),(1,2),(2,3)))
+            >>> vcv = VectorCellVariable(mesh=mesh, value=((0,1),(1,2),(2,3)))
             >>> vcvXcv = vcv * cv
             >>> print vcvXcv
             [[ 0.  0.]
@@ -1802,7 +1803,7 @@ class Variable(object):
 
         `CellVariable` * VectorFaceVariable
 
-            >>> vfv = VectorFaceVariable(mesh = mesh, value = ((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
+            >>> vfv = VectorFaceVariable(mesh=mesh, value=((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)))
             >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
@@ -1865,12 +1866,12 @@ class Variable(object):
 
         `CellVariable` * `Variable` Scalar
         
-            >>> cvXsv = cv * Variable(value = 3)
+            >>> cvXsv = cv * Variable(value=3)
             >>> print cvXsv
             [ 0.  3.  6.]
             >>> print isinstance(cvXsv, CellVariable)
             1
-            >>> svXcv = Variable(value = 3) * cv
+            >>> svXcv = Variable(value=3) * cv
             >>> print svXcv
             [ 0.  3.  6.]
             >>> print isinstance(svXcv, CellVariable)
@@ -1878,12 +1879,12 @@ class Variable(object):
         
         `binOp` `CellVariable` * `binOp` `Variable` Scalar
 
-            >>> cvcvXsvsv = (cv * cv) * (Variable(value = 3) * Variable(value = 3))
+            >>> cvcvXsvsv = (cv * cv) * (Variable(value=3) * Variable(value=3))
             >>> print cvcvXsvsv
             [  0.   9.  36.]
             >>> print isinstance(cvcvXsvsv, CellVariable)
             1
-            >>> svsvXcvcv = (Variable(value = 3) * Variable(value = 3)) * (cv * cv)
+            >>> svsvXcvcv = (Variable(value=3) * Variable(value=3)) * (cv * cv)
             >>> print svsvXcvcv
             [  0.   9.  36.]
             >>> print isinstance(svsvXcvcv, CellVariable)
@@ -1891,14 +1892,14 @@ class Variable(object):
             
         `CellVariable` * `Variable` Vector
             
-            >>> cvXv2v = cv * Variable(value = (3,2))
+            >>> cvXv2v = cv * Variable(value=(3,2))
             >>> print cvXv2v
             [[ 0.  0.]
              [ 3.  2.]
              [ 6.  4.]]
             >>> print isinstance(cvXv2v, VectorCellVariable)
             1
-            >>> v2vXcv = Variable(value = (3,2)) * cv
+            >>> v2vXcv = Variable(value=(3,2)) * cv
             >>> print v2vXcv
             [[ 0.  0.]
              [ 3.  2.]
@@ -1906,22 +1907,22 @@ class Variable(object):
             >>> print isinstance(v2vXcv, VectorCellVariable)
             1
             
-            >>> cvXv3v = cv * Variable(value = (3,2,1))
+            >>> cvXv3v = cv * Variable(value=(3,2,1))
             >>> print cvXv3v
             [ 0.  2.  2.]
             >>> print isinstance(cvXv3v, CellVariable)
             1
-            >>> v3vXcv = Variable(value = (3,2,1)) * cv
+            >>> v3vXcv = Variable(value=(3,2,1)) * cv
             >>> print v3vXcv
             [ 0.  2.  2.]
             >>> print isinstance(v3vXcv, CellVariable)
             1
 
-            >>> cvXv4v = cv * Variable(value = (3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> cvXv4v = cv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v4vXcv = Variable(value = (3,2,1,0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> v4vXcv = Variable(value=(3,2,1,0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -2053,12 +2054,12 @@ class Variable(object):
 
         `FaceVariable` * `Variable` Scalar
 
-            >>> fvXsv = fv * Variable(value = 3)
+            >>> fvXsv = fv * Variable(value=3)
             >>> print fvXsv
             [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(fvXsv, FaceVariable)
             1
-            >>> svXfv = Variable(value = 3) * fv
+            >>> svXfv = Variable(value=3) * fv
             >>> print svXfv
             [  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
             >>> print isinstance(svXfv, FaceVariable)
@@ -2066,7 +2067,7 @@ class Variable(object):
 
         `FaceVariable` * `Variable` Vector
             
-            >>> fvXv2v = fv * Variable(value = (3,2))
+            >>> fvXv2v = fv * Variable(value=(3,2))
             >>> print fvXv2v
             [[  0.   0.]
              [  3.   2.]
@@ -2080,7 +2081,7 @@ class Variable(object):
              [ 27.  18.]]
             >>> print isinstance(fvXv2v, VectorFaceVariable)
             1
-            >>> v2vXfv = Variable(value = (3,2)) * fv
+            >>> v2vXfv = Variable(value=(3,2)) * fv
             >>> print v2vXfv
             [[  0.   0.]
              [  3.   2.]
@@ -2095,21 +2096,21 @@ class Variable(object):
             >>> print isinstance(v2vXfv, VectorFaceVariable)
             1
             
-            >>> fvXv3v = fv * Variable(value = (3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> fvXv3v = fv * Variable(value=(3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXfv = Variable(value = (3,2,1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> v3vXfv = Variable(value=(3,2,1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
 
-            >>> fvXv10v = fv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
+            >>> fvXv10v = fv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
             >>> print fvXv10v
             [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(fvXv10v, FaceVariable)
             1
-            >>> v10vXfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * fv
+            >>> v10vXfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * fv
             >>> print v10vXfv
             [  0.   8.  14.  18.  20.  20.  18.  14.   8.   0.]
             >>> print isinstance(v10vXfv, FaceVariable)
@@ -2198,14 +2199,14 @@ class Variable(object):
 
         `VectorCellVariable` * `Variable` Scalar
 
-            >>> vcvXsv = vcv * Variable(value = 3)
+            >>> vcvXsv = vcv * Variable(value=3)
             >>> print vcvXsv
             [[ 0.  3.]
              [ 3.  6.]
              [ 6.  9.]]
             >>> print isinstance(vcvXsv, VectorCellVariable)
             1
-            >>> svXvcv = Variable(value = 3) * vcv
+            >>> svXvcv = Variable(value=3) * vcv
             >>> print svXvcv
             [[ 0.  3.]
              [ 3.  6.]
@@ -2215,14 +2216,14 @@ class Variable(object):
 
         `VectorCellVariable` * `Variable` Vector
             
-            >>> vcvXv2v = vcv * Variable(value = (3,2))
+            >>> vcvXv2v = vcv * Variable(value=(3,2))
             >>> print vcvXv2v
             [[ 0.  2.]
              [ 3.  4.]
              [ 6.  6.]]
             >>> print isinstance(vcvXv2v, VectorCellVariable)
             1
-            >>> v2vXvcv = Variable(value = (3,2)) * vcv
+            >>> v2vXvcv = Variable(value=(3,2)) * vcv
             >>> print v2vXvcv
             [[ 0.  2.]
              [ 3.  4.]
@@ -2230,14 +2231,14 @@ class Variable(object):
             >>> print isinstance(v2vXvcv, VectorCellVariable)
             1
             
-            >>> vcvXv3v = vcv * Variable(value = (3,2,1))
+            >>> vcvXv3v = vcv * Variable(value=(3,2,1))
             >>> print vcvXv3v
             [[ 0.  3.]
              [ 2.  4.]
              [ 2.  3.]]
             >>> isinstance(vcvXv3v, VectorCellVariable)
             1
-            >>> v3vXvcv = Variable(value = (3,2,1)) * vcv 
+            >>> v3vXvcv = Variable(value=(3,2,1)) * vcv 
             >>> print v3vXvcv
             [[ 0.  3.]
              [ 2.  4.]
@@ -2245,11 +2246,11 @@ class Variable(object):
             >>> isinstance(v3vXvcv, VectorCellVariable)
             1
 
-            >>> vcvXv4v = vcv * Variable(value = (3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> vcvXv4v = vcv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v4vXvcv = Variable(value = (3,2,1,0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> v4vXvcv = Variable(value=(3,2,1,0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -2375,7 +2376,7 @@ class Variable(object):
 
         `VectorFaceVariable` * `Variable` Scalar
 
-            >>> vfvXsv = vfv * Variable(value = 3)
+            >>> vfvXsv = vfv * Variable(value=3)
             >>> print vfvXsv
             [[  0.   3.]
              [  3.   6.]
@@ -2389,7 +2390,7 @@ class Variable(object):
              [  3.   9.]]
             >>> print isinstance(vfvXsv, VectorFaceVariable)
             1
-            >>> svXvfv = Variable(value = 3) * vfv
+            >>> svXvfv = Variable(value=3) * vfv
             >>> print svXvfv
             [[  0.   3.]
              [  3.   6.]
@@ -2406,7 +2407,7 @@ class Variable(object):
 
         `VectorFaceVariable` * `Variable` Vector
             
-            >>> vfvXv2v = vfv * Variable(value = (3,2))
+            >>> vfvXv2v = vfv * Variable(value=(3,2))
             >>> print vfvXv2v
             [[  0.   2.]
              [  3.   4.]
@@ -2420,7 +2421,7 @@ class Variable(object):
              [  3.   6.]]
             >>> print isinstance(vfvXv2v, VectorFaceVariable)
             1
-            >>> v2vXvfv = Variable(value = (3,2)) * vfv
+            >>> v2vXvfv = Variable(value=(3,2)) * vfv
             >>> print v2vXvfv
             [[  0.   2.]
              [  3.   4.]
@@ -2435,17 +2436,17 @@ class Variable(object):
             >>> print isinstance(v2vXvfv, VectorFaceVariable)
             1
             
-            >>> vfvXv3v = vfv * Variable(value = (2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> vfvXv3v = vfv * Variable(value=(2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXvfv = Variable(value = (2,1,0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> v3vXvfv = Variable(value=(2,1,0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
 
 
-            >>> vfvXv10v = vfv * Variable(value = (9,8,7,6,5,4,3,2,1,0))
+            >>> vfvXv10v = vfv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
             >>> print vfvXv10v
             [[  0.   9.]
              [  8.  16.]
@@ -2459,7 +2460,7 @@ class Variable(object):
              [  0.   0.]]
             >>> isinstance(vfvXv10v, VectorFaceVariable)
             1
-            >>> v10vXvfv = Variable(value = (9,8,7,6,5,4,3,2,1,0)) * vfv
+            >>> v10vXvfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * vfv
             >>> print v10vXvfv
             [[  0.   9.]
              [  8.  16.]
@@ -2478,12 +2479,12 @@ class Variable(object):
             
         Scalar * `Variable` Scalar
 
-            >>> sXsv = 3 * Variable(value = 3)
+            >>> sXsv = 3 * Variable(value=3)
             >>> print sXsv
             9
             >>> print isinstance(sXsv, Variable)
             1
-            >>> svXs = Variable(value = 3) * 3
+            >>> svXs = Variable(value=3) * 3
             >>> print svXs
             9
             >>> print isinstance(svXs, Variable)
@@ -2491,12 +2492,12 @@ class Variable(object):
 
         Scalar * `Variable` Vector
             
-            >>> sXv2v = 3 * Variable(value = (3,2))
+            >>> sXv2v = 3 * Variable(value=(3,2))
             >>> print sXv2v
             [ 9.  6.]
             >>> print isinstance(sXv2v, Variable)
             1
-            >>> v2vXs = Variable(value = (3,2)) * 3
+            >>> v2vXs = Variable(value=(3,2)) * 3
             >>> print v2vXs
             [ 9.  6.]
             >>> print isinstance(v2vXs, Variable)
@@ -2506,12 +2507,12 @@ class Variable(object):
             
         Vector * `Variable` Scalar
 
-            >>> vXsv = (3, 2) * Variable(value = 3)
+            >>> vXsv = (3, 2) * Variable(value=3)
             >>> print vXsv
             [ 9.  6.]
             >>> print isinstance(vXsv, Variable)
             1
-            >>> svXv = Variable(value = 3) * (3, 2)
+            >>> svXv = Variable(value=3) * (3, 2)
             >>> print svXv
             [ 9.  6.]
             >>> print isinstance(svXv, Variable)
@@ -2519,22 +2520,22 @@ class Variable(object):
 
         Vector * `Variable` Vector
             
-            >>> vXv2v = (3, 2) * Variable(value = (3,2))
+            >>> vXv2v = (3, 2) * Variable(value=(3,2))
             >>> print vXv2v
             [ 9.  4.]
             >>> print isinstance(vXv2v, Variable)
             1
-            >>> v2vXv = Variable(value = (3,2)) * (3, 2)
+            >>> v2vXv = Variable(value=(3,2)) * (3, 2)
             >>> print v2vXv
             [ 9.  4.]
             >>> print isinstance(v2vXv, Variable)
             1
 
-            >>> vXv3v = (3, 2, 1) * Variable(value = (3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
-            >>> v3vXv = Variable(value = (3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL 
+            >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL 
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -2542,7 +2543,7 @@ class Variable(object):
 
         `Variable` Scalar * `Variable` Scalar
 
-            >>> svXsv = Variable(value = 3) * Variable(value = 3)
+            >>> svXsv = Variable(value=3) * Variable(value=3)
             >>> print svXsv
             9
             >>> print isinstance(svXsv, Variable)
@@ -2550,12 +2551,12 @@ class Variable(object):
 
         `Variable` Scalar * `Variable` Vector
             
-            >>> svXv2v = Variable(value = 3) * Variable(value = (3,2))
+            >>> svXv2v = Variable(value=3) * Variable(value=(3,2))
             >>> print svXv2v
             [ 9.  6.]
             >>> print isinstance(svXv2v, Variable)
             1
-            >>> v2vXsv = Variable(value = (3,2)) * Variable(value = 3)
+            >>> v2vXsv = Variable(value=(3,2)) * Variable(value=3)
             >>> print v2vXsv
             [ 9.  6.]
             >>> print isinstance(v2vXsv, Variable)
@@ -2564,13 +2565,13 @@ class Variable(object):
             
         `Variable` Vector * `Variable` Vector
             
-            >>> v2vXv2v = Variable(value = (3, 2)) * Variable(value = (3,2))
+            >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3,2))
             >>> print v2vXv2v
             [ 9.  4.]
             >>> print isinstance(v2vXv2v, Variable)
             1
             
-            >>> v3vXv2v = Variable(value = (3, 2, 1)) * Variable(value = (3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                   ...
             TypeError: can't multiply sequence to non-int
@@ -2607,7 +2608,7 @@ class Variable(object):
 
         Following is a test case for an error when turing a binOp into an array
 
-            >>> print numerix.array(Variable(value = numerix.array([ 1.,])) * [ 1.,])
+            >>> print numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,])
             [ 1.]
 
         It seems that numpy's __rmul__ coercion is very strange
