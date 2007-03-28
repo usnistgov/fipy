@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 8/9/05 {4:15:47 PM} 
+ #                                last update: 3/27/07 {5:53:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> valueRight = 1.
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(name = "solution variabke", mesh=mesh, value=valueLeft)
+    >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
