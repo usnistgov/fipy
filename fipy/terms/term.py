@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/27/07 {5:56:19 PM} 
+ #                                last update: 3/28/07 {10:29:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -238,9 +238,6 @@ class Term:
         else:
             return False
             
-    def _concatenate(self, other):
-        return self.__class__(coeff=self.coeff + other.coeff)
-
     def __add__(self, other):
         r"""
         Add a `Term` to another `Term`, number or variable.
@@ -248,7 +245,7 @@ class Term:
            >>> Term(coeff=1.) + 10.
            10.0 + Term(coeff=1.0) == 0
            >>> Term(coeff=1.) + Term(coeff=2.)
-           Term(coeff=3.0) == 0
+           Term(coeff=3.0)
 
         """
         from fipy.terms.binaryTerm import _Equation
@@ -257,6 +254,8 @@ class Term:
             return self
         elif isinstance(other, _Equation):
             return other + self
+        elif self.__class__ == other.__class__:
+            return self.__class__(coeff=self.coeff + other.coeff)
         else:
             eq = _Equation()
             eq += self
@@ -304,7 +303,7 @@ class Term:
            >>> Term(coeff=1.) - 10.
            -10.0 + Term(coeff=1.0) == 0
            >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0) == 0
+           Term(coeff=-1.0)
            
         """        
         if self._otherIsZero(other):
@@ -331,12 +330,12 @@ class Term:
         following does not return `False.`
 
            >>> Term(coeff=1.) == Term(coeff=2.)
-           Term(coeff=-1.0) == 0
+           Term(coeff=-1.0)
 
         it is equivalent to,
 
            >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0) == 0
+           Term(coeff=-1.0)
 
         A `Term` can also equate with a number. 
 

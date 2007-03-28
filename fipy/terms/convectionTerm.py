@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/28/07 {8:43:15 AM} 
+ #                                last update: 3/28/07 {10:17:10 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -165,12 +165,14 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
 
-    def _concatenate(self, other):
-        if other.__class__ != self.__class__:
-            raise TypeError, "ConvectionTerms must use the same scheme: %s != %s" % (self.__class__.__name__, other.__class__.__name__)
+    def __add__(self, other):
+        if isinstance(other, ConvectionTerm):
+            if other.__class__ != self.__class__:
+                raise TypeError, "ConvectionTerms must use the same scheme: %s != %s" % (self.__class__.__name__, other.__class__.__name__)
+            return self.__class__(coeff=self.coeff + other.coeff)
         else:
-            return FaceTerm._concatenate(self, other)
-        
+            return FaceTerm.__add__(self, other)
+
 def _test(): 
     import doctest
     return doctest.testmod()

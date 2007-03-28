@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/27/07 {11:06:00 PM} 
+ #                                last update: 3/28/07 {10:24:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -190,22 +190,23 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def _concatenate(self, other):
-        coeff = [0] * max(len(self.coeff), len(other.coeff))
-        for i in range(len(self.coeff)):
-            coeff[i] += self.coeff[i]
-        for i in range(len(other.coeff)):
-            coeff[i] += other.coeff[i]
-        return self.__class__(coeff=coeff)
-
-##     def _concatenate(self, other):
-##         coeff = [0] * max(len(self.coeff), len(other.coeff))
-##         for i in range(len(self.coeff)):
-##             coeff[len(coeff) - 1 - i] += self.coeff[i]
-##         for i in range(len(other.coeff)):
-##             coeff[len(coeff) - 1 - i] += other.coeff[i]
-##         coeff.reverse()
-##         return self.__class__(coeff=coeff)
+    def __add__(self, other):
+        if isinstance(other, DiffusionTerm):
+            from fipy.terms.collectedDiffusionTerm import CollectedDiffusionTerm
+            if isinstance(other, CollectedDiffusionTerm):
+                return other + self
+            elif other.order == self.order and self.order <= 2:
+                if self.order == 0:
+                    return self
+                elif self.order == 2:
+                    return self.__class__(coeff=self.coeff[0] + other.coeff[0])
+            else:
+                term = CollectedDiffusionTerm()
+                term += self
+                term += other
+                return term
+        else:
+            return Term.__add__(self, other)
 
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1., master=None):
         mesh = var.getMesh()

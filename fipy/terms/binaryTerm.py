@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/27/07 {11:09:17 PM} 
+ #                                last update: 3/28/07 {10:54:20 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,9 +47,6 @@ from fipy.terms import TransientTerm, ImplicitDiffusionTerm, \
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-from fipy.tools import numerix
-from fipy.tools.sparseMatrix import _SparseMatrix
-
 class _Equation(Term):
     def __init__(self):
         self.orderedKeys = ["TransientTerm", "ImplicitDiffusionTerm", 
@@ -73,6 +70,9 @@ class _Equation(Term):
           + [k for k in self.terms.keys() if k not in self.orderedKeys]
 
     def _buildMatrix(self, var, boundaryConditions, dt, master=None):
+        from fipy.tools import numerix
+        from fipy.tools.sparseMatrix import _SparseMatrix
+
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
         self.matrix = _SparseMatrix(size=N)
@@ -122,7 +122,7 @@ class _Equation(Term):
            >>> Term(coeff=1.) + 10. + Term(2.)
            10.0 + Term(coeff=3.0) == 0
            >>> Term(coeff=1.) + Term(coeff=2.) + Term(coeff=3.)
-           Term(coeff=6.0) == 0
+           Term(coeff=6.0)
 
         """
         if self._otherIsZero(other):
@@ -137,7 +137,7 @@ class _Equation(Term):
         if self.terms[key] is None:
             self.terms[key] = other
         else:
-            self.terms[key] = self.terms[key]._concatenate(other)
+            self.terms[key] = self.terms[key] + other
         
     def __iadd__(self, other):
         if other is not None:
@@ -164,7 +164,7 @@ class _Equation(Term):
          Negate a `Term`.
 
            >>> -(Term(coeff=1.) - Term(coeff=2.))
-           Term(coeff=1.0) == 0
+           Term(coeff=1.0)
 
         """
         dup = self.copy()
