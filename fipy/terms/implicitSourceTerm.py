@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 3/23/07 {7:55:10 AM} 
+ #                                last update: 3/27/07 {11:47:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,19 +55,13 @@ class ImplicitSourceTerm(SourceTerm):
 
     `coeff` value.       
     """
-    def _calcCoeffVectors(self, var):
+    def _calcCoeffVectors(self, var, master=None):
         coeff = self._getGeomCoeff(var.getMesh())
-
-##         self.coeffVectors = {
-##             'diagonal': coeff * (coeff > 0),
-##             'old value': 0,
-##             'b vector': -coeff * var * (coeff < 0),
-##             'new value': 0
-##         }
-
+        from fipy.tools.numerix import sign
+        combinedSign = self._diagonalSign * sign(coeff)
         self.coeffVectors = {
-            'diagonal': coeff * (coeff < 0),
+            'diagonal': coeff * (combinedSign >= 0),
             'old value': 0,
-            'b vector': -coeff * var * (coeff > 0),
+            'b vector': -coeff * var * (combinedSign < 0),
             'new value': 0
         }

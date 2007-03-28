@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/3/07 {2:56:49 PM} 
+ #                                last update: 3/27/07 {11:06:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,11 +118,11 @@ class DiffusionTerm(Term):
         """
         Negate the term.
 
-           >>> -DiffusionTerm(coeff = [1.])
-           DiffusionTerm(coeff = [-1.0])
+           >>> -DiffusionTerm(coeff=[1.])
+           DiffusionTerm(coeff=[-1.0])
 
            >>> -DiffusionTerm()
-           DiffusionTerm(coeff = [-1.0])
+           DiffusionTerm(coeff=[-1.0])
            
         """
         negatedCoeff = list(self.coeff)
@@ -190,7 +190,24 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _concatenate(self, other):
+        coeff = [0] * max(len(self.coeff), len(other.coeff))
+        for i in range(len(self.coeff)):
+            coeff[i] += self.coeff[i]
+        for i in range(len(other.coeff)):
+            coeff[i] += other.coeff[i]
+        return self.__class__(coeff=coeff)
+
+##     def _concatenate(self, other):
+##         coeff = [0] * max(len(self.coeff), len(other.coeff))
+##         for i in range(len(self.coeff)):
+##             coeff[len(coeff) - 1 - i] += self.coeff[i]
+##         for i in range(len(other.coeff)):
+##             coeff[len(coeff) - 1 - i] += other.coeff[i]
+##         coeff.reverse()
+##         return self.__class__(coeff=coeff)
+
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., master=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -202,7 +219,8 @@ class DiffusionTerm(Term):
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
                                                                                  boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt)
+                                                                                 dt = dt,
+                                                                                 master=master)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/23/07 {7:49:25 AM} 
+ #                                last update: 3/27/07 {11:09:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,73 +42,143 @@
  ##
 
 from fipy.terms.term import Term
+from fipy.terms import TransientTerm, ImplicitDiffusionTerm, \
+  ExplicitDiffusionTerm, ImplicitSourceTerm
+from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-class _AdditionTerm(Term):
-    def __init__(self, term1, term2):
+from fipy.tools import numerix
+from fipy.tools.sparseMatrix import _SparseMatrix
 
-	if isinstance(term1, Term):
-	    if not isinstance(term2, Term):
-		term2 = _ExplicitSourceTerm(coeff = term2)
-	elif isinstance(term2, Term):
-	    term1 = _ExplicitSourceTerm(coeff = term1)
-	else:
-	    raise "No terms!"
-	
-	self.term1 = term1
-	self.term2 = term2
+class _Equation(Term):
+    def __init__(self):
+        self.orderedKeys = ["TransientTerm", "ImplicitDiffusionTerm", 
+          "ExplicitDiffusionTerm", "ConvectionTerm", "ImplicitSourceTerm", 
+          "_ExplicitSourceTerm"]
+
+        self.terms = {}
+        
+        for type in self.orderedKeys:
+            self.terms[type] = None
 	    
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, boundaryConditions, dt):
-	matrix, RHSvector = self.term1._buildMatrix(var, boundaryConditions, dt = dt)
-	
-	termMatrix, termRHSvector = self.term2._buildMatrix(var, boundaryConditions, dt = dt)
+    def copy(self):
+        eq = _Equation()
+        eq.terms = self.terms
+        return eq
+        
+    def orderedPlusOtherKeys(self):
+        return self.orderedKeys \
+          + [k for k in self.terms.keys() if k not in self.orderedKeys]
 
-	matrix = matrix + termMatrix
-	RHSvector = RHSvector + termRHSvector
+    def _buildMatrix(self, var, boundaryConditions, dt, master=None):
+        N = len(var)
+        self.RHSvector = numerix.zeros((N,),'d')
+        self.matrix = _SparseMatrix(size=N)
+
+        for key in self.orderedPlusOtherKeys():
+            term = self.terms[key]
+            if term is not None:
+                termMatrix, termRHSvector = term._buildMatrix(var, 
+                                                              boundaryConditions, 
+                                                              dt=dt, master=self)
+
+                self.matrix += termMatrix
+                self.RHSvector += termRHSvector
 	
+        matrix = self.matrix
+        RHSvector = self.RHSvector
+        if not self._cacheMatrix:
+            self.matrix = None
+        if not self._cacheRHSvector:
+            self.RHSvector = None
+            
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver):
-        return self.term1._getDefaultSolver(solver) or self.term2._getDefaultSolver(solver)
+        for key in self.orderedPlusOtherKeys():
+            term = self.terms[key]
+            if term is not None:
+                solver = term._getDefaultSolver(solver)
+                if solver is not None:
+                    return solver
+                
+        return None
 
     def __repr__(self):
-        return "%s + %s" % (repr(self.term1), repr(self.term2))
+        reprs = []
+        for key in self.orderedPlusOtherKeys():
+            term = self.terms[key]
+            if term is not None:
+                reprs.append(repr(term))
+                
+        return " + ".join(reprs) + " == 0"
 
+    def __add__(self, other):
+        r"""
+        Add a `Term` to another `Term`, number or variable.
+
+           >>> Term(coeff=1.) + 10. + Term(2.)
+           10.0 + Term(coeff=3.0) == 0
+           >>> Term(coeff=1.) + Term(coeff=2.) + Term(coeff=3.)
+           Term(coeff=6.0) == 0
+
+        """
+        if self._otherIsZero(other):
+            return self
+        else:
+            dup = self.copy()
+            dup += other
+                
+            return dup
+        
+    def _appendTerm(self, other, key):
+        if self.terms[key] is None:
+            self.terms[key] = other
+        else:
+            self.terms[key] = self.terms[key]._concatenate(other)
+        
+    def __iadd__(self, other):
+        if other is not None:
+            if not isinstance(other, Term):
+                self._appendTerm(_ExplicitSourceTerm(coeff=other), "_ExplicitSourceTerm")
+            elif isinstance(other, _Equation):
+                for key in other.terms.keys():
+                    self += other.terms[key]
+            else:
+                appended = False
+                for key in self.terms.keys():
+                    if eval("isinstance(other, %s)" % key):
+                        self._appendTerm(other, key)
+                        appended = True
+                        break
+                        
+                if not appended:
+                    self.terms[other.__class__.__name__] = other
+        
+        return self
+        
     def __neg__(self):
         r"""
          Negate a `Term`.
 
-           >>> -(Term(coeff=1.) - Term(coeff=2.)
-           (Term(coeff = -1.0) + Term(coeff = 2.0))
+           >>> -(Term(coeff=1.) - Term(coeff=2.))
+           Term(coeff=1.0) == 0
 
         """
-        return (-self.term1) + (-self.term2)
+        dup = self.copy()
+        
+        for key, term in self.terms.iteritems():
+            if term is not None:
+                dup.terms[key] = -term
+                
+        return dup
 
-## class _AdditionTerm(_BinaryTerm):
-##     def __repr__(self):
-##         return "(%s + %s)" % (repr(self.term1), repr(self.term2))
-##         
-##     def _operator(self):
-## 	return lambda a,b: a + b
-## 	
-## class _SubtractionTerm(_BinaryTerm):
-##     def __repr__(self):
-##         return "(%s - %s)" % (repr(self.term1), repr(self.term2))
-##         
-##     def _operator(self):
-## 	return lambda a,b: a - b
-## 
-## class _EquationTerm(_SubtractionTerm):
-##     def __repr__(self):
-##         return "(%s == %s)" % (repr(self.term1), repr(self.term2))
-##         
-##     def __nonzero__(self):
-##         if self.term1.__class__ != self.term2.__class__:
-##             return False
-##         elif self.term1.coeff != self.term2.coeff:
-##             return False
-##         else:
-##             return True
-##         
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+

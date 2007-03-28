@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/3/07 {3:21:27 PM} 
+ #                                last update: 3/27/07 {5:57:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -149,7 +149,7 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., master=None):
         """Implicit portion considers
         """
 
@@ -163,6 +163,12 @@ class FaceTerm(Term):
         N = len(var)
         b = numerix.zeros((N),'d')
         L = _SparseMatrix(size = N)
+
+        if master is not None:
+            from fipy.tools.numerix import sign, add
+            self._diagonalSign.setValue(sign(add.reduce(master.matrix.takeDiagonal())))
+        else:
+            self._diagonalSign.setValue(1)
 
         weight = self._getWeight(mesh)
 

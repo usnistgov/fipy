@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/22/07 {5:48:19 PM} 
+ #                                last update: 3/28/07 {8:43:15 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ class ConvectionTerm(FaceTerm):
              [ 0.]
              [ 0.]])
             >>> ConvectionTerm(coeff = (1,))
-            ConvectionTerm(coeff = (1,))
+            ConvectionTerm(coeff=(1,))
             >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var = cv)
             >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
@@ -103,8 +103,7 @@ class ConvectionTerm(FaceTerm):
         self.diffusionTerm = diffusionTerm
         self.stencil = None
         
-        if not isinstance(coeff, VectorFaceVariable) \
-        and isinstance(coeff, VectorCellVariable):
+        if isinstance(coeff, VectorCellVariable):
             coeff = coeff.getArithmeticFaceValue()
             
         if isinstance(coeff, CellVariable) or isinstance(coeff, FaceVariable):
@@ -116,15 +115,20 @@ class ConvectionTerm(FaceTerm):
         """
         Negate the term.
 
-           >>> -ConvectionTerm(coeff = 1.0)
-           ConvectionTerm(coeff = -1.0)
+           >>> -ConvectionTerm(coeff=1.0)
+           ConvectionTerm(coeff=-1.0)
         """
-        return self.__class__(coeff = -self.coeff, diffusionTerm = self.diffusionTerm)
+        try:
+            coeff = -self.coeff
+        except:
+            coeff = -numerix.array(self.coeff)
+
+        return self.__class__(coeff=coeff, diffusionTerm=self.diffusionTerm)
 
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, VectorFaceVariable):
-            self.coeff = VectorFaceVariable(mesh = mesh, value = self.coeff)
-
+            self.coeff = VectorFaceVariable(mesh=mesh, value=self.coeff)
+        
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
         return projectedCoefficients.sum(1)
@@ -139,7 +143,8 @@ class ConvectionTerm(FaceTerm):
                 diffCoeff = self.diffusionTerm._getGeomCoeff(mesh)
                 diffCoeff = diffCoeff * (diffCoeff != 0.) + 1e-20 * (diffCoeff == 0.)
                 
-            alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+##             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+            alpha = self._Alpha(self._diagonalSign * self._getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),
@@ -160,6 +165,12 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
 
+    def _concatenate(self, other):
+        if other.__class__ != self.__class__:
+            raise TypeError, "ConvectionTerms must use the same scheme: %s != %s" % (self.__class__.__name__, other.__class__.__name__)
+        else:
+            return FaceTerm._concatenate(self, other)
+        
 def _test(): 
     import doctest
     return doctest.testmod()
