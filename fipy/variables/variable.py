@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/27/07 {2:29:51 PM} 
+ #                                last update: 3/28/07 {10:12:44 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -120,7 +120,7 @@ class Variable(object):
 
         if isinstance(value, Variable):
             name = value.name
-            mesh = value.mesh
+            mesh = mesh or value.mesh
             value = value.getValue()
             if hasattr(value, 'copy'):
                 value = value.copy()
@@ -837,7 +837,9 @@ class Variable(object):
             baseClass = self._getVariableClass()
         class OperatorVariable(baseClass):
             def __init__(self, op, var, mesh=None, opShape=(), canInline=canInline):
-                mesh = mesh or var[0].getMesh() or (len(var) > 1 and var[1].getMesh())
+                mesh = mesh or var[0].getMesh()
+                if mesh is None and len(var) > 1:
+                    mesh = var[1].getMesh()
                 self.op = op
                 self.var = var
                 self.opShape = opShape
@@ -1264,7 +1266,7 @@ class Variable(object):
         # result from the operation.
         baseClass = baseClass or self._getArithmeticBaseClass(other) or other._getArithmeticBaseClass(self)
 
-
+        
         # This operation is unknown. Fall back on Python's reciprocal operation or error.
         if baseClass is None:
             return NotImplemented
