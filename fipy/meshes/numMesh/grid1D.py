@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/15/06 {3:52:46 PM} 
+ #                                last update: 3/27/07 {2:38:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -89,7 +89,7 @@ class Grid1D(Mesh1D):
         self.setScale(value = scale)
         
     def __repr__(self):
-        return "%s(dx = %s, nx = %d)" % (self.__class__.__name__, `self.dx`, self.nx)
+        return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, `self.dx`, self.nx)
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)

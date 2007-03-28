@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/30/07 {5:20:18 PM} 
+ #                                last update: 3/27/07 {2:16:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,14 +42,14 @@ The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
 
    >>> from fipy.variables.variable import Variable
-   >>> var = Variable(value = 0)
+   >>> var = Variable(value=0)
 
 Take the tangent of such a variable. The returned value is itself a
 `Variable`.
 
    >>> v = tan(var)
    >>> v
-   numerix.tan(Variable(value = array(0)))
+   numerix.tan(Variable(value=array(0)))
    >>> print float(v)
    0.0
 
@@ -107,20 +107,20 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
-def take(a, indices, axis=0, fill_value = None):
+def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
     """
  	   
     if _isPhysical(a):
-        taken = a.take(indices, axis = axis)   
+        taken = a.take(indices, axis=axis)   
     elif type(indices) is type(MA.array((0))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
         ##
         nomask = None
         
-        taken = MA.take(a, MA.filled(indices, 0), axis = axis) 	
+        taken = MA.take(a, MA.filled(indices, 0), axis=axis) 	
         mask = MA.getmask(indices)
 
         if mask is not nomask:
@@ -130,7 +130,7 @@ def take(a, indices, axis=0, fill_value = None):
                 mask = MA.mask_or(MA.getmask(taken), mask)
                
         if mask is not nomask:
-            taken = MA.array(data = taken, mask = mask)
+            taken = MA.array(data=taken, mask=mask)
         else:
             if MA.getmask(taken) is nomask:
                 taken = taken.filled()
@@ -138,28 +138,28 @@ def take(a, indices, axis=0, fill_value = None):
     elif type(a) in (type(array((0))), type(()), type([])):
         taken = NUMERIX.take(a, indices, axis=axis)
     elif type(a) is type(MA.array((0))):
-        taken = MA.take(a, indices, axis = axis)
+        taken = MA.take(a, indices, axis=axis)
     else:
         raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
                
     if fill_value is not None and type(taken) is type(MA.array((0))):
-        taken = taken.filled(fill_value = fill_value)
+        taken = taken.filled(fill_value=fill_value)
         
     return taken
 
-## def take(arr, ids, axis = 0):
+## def take(arr, ids, axis=0):
 ##     """
 ##     Selects the elements of `arr` corresponding to `ids`.
 ##     """
     
 ##     if _isPhysical(arr):
-##      return arr.take(ids, axis = axis)    
+##      return arr.take(ids, axis=axis)    
 ##     elif type(ids) is type(MA.array((0))):
-##         return take(arr, ids, axis = axis)
+##         return take(arr, ids, axis=axis)
 ##     elif type(arr) is type(array((0))):
-##      return NUMERIX.take(arr, ids, axis = axis)
+##      return NUMERIX.take(arr, ids, axis=axis)
 ##     elif type(arr) is type(MA.array((0))):
-##      return MA.take(arr, ids, axis = axis)
+##      return MA.take(arr, ids, axis=axis)
 ##     else:
 ##      raise TypeError, 'cannot take from object ' + str(arr)
 
@@ -256,7 +256,7 @@ def getShape(arr):
         ()
         >>> getShape(Variable(1.))
         ()
-        >>> getShape(Variable(1., unit = "m"))
+        >>> getShape(Variable(1., unit="m"))
         ()
         >>> getShape(Variable("1 m"))
         ()
@@ -300,7 +300,7 @@ def isInt(arr):
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
-def tostring(arr, max_line_width = None, precision = None, suppress_small = None, separator = ' ', array_output = 0):
+def tostring(arr, max_line_width=None, precision=None, suppress_small=None, separator=' ', array_output=0):
     r"""
     Returns a textual representation of a number or field of numbers.  Each
     dimension is indicated by a pair of matching square brackets (`[]`), within
@@ -346,10 +346,10 @@ def tostring(arr, max_line_width = None, precision = None, suppress_small = None
     """
 
     if _isPhysical(arr):
-        return arr.tostring(max_line_width = max_line_width, 
-                            precision = precision, 
-                            suppress_small = suppress_small, 
-                            separator = separator)
+        return arr.tostring(max_line_width=max_line_width, 
+                            precision=precision, 
+                            suppress_small=suppress_small, 
+                            separator=separator)
     elif isinstance(arr, NUMERIX.ndarray) and arr.shape != ():
         return NUMERIX.array2string(arr,
                                     precision=precision,
@@ -360,13 +360,15 @@ def tostring(arr, max_line_width = None, precision = None, suppress_small = None
         from numpy.core.arrayprint import _floatFormat, _formatFloat
 ##      _floatFormat seems to be broken
 ##         if isinstance(arr, NUMERIX.ndarray):
-##             format, length = _floatFormat(arr, precision = precision, suppress_small = suppress_small)
+##             format, length = _floatFormat(arr, precision=precision, 
+##                                           suppress_small=suppress_small)
 ##         else:
-##             format, length = _floatFormat(NUMERIX.array(arr), precision = precision, suppress_small = suppress_small)
-        return _formatFloat(arr, format = '%%1.%df' % precision)
+##             format, length = _floatFormat(NUMERIX.array(arr), 
+##                                           precision=precision, suppress_small=suppress_small)
+        return _formatFloat(arr, format='%%1.%df' % precision)
     elif isInt(arr):
         from numpy.core.arrayprint import _formatInteger
-        return _formatInteger(arr, format = '%d')
+        return _formatInteger(arr, format='%d')
     else:        
         raise TypeError, 'cannot convert ' + str(arr) + ' to string'
         
@@ -386,7 +388,7 @@ def arccos(arr):
        
     ..
     
-        >>> print tostring(arccos(0.0), precision = 3)
+        >>> print tostring(arccos(0.0), precision=3)
         1.571
          
     If SciPy has been loaded, the next test will return `NaN`, otherwise it will
@@ -398,11 +400,11 @@ def arccos(arr):
         ...     print 1
         1
 
-        >>> print tostring(arccos(array((0,0.5,1.0))), precision = 3)
+        >>> print tostring(arccos(array((0,0.5,1.0))), precision=3)
         [ 1.571  1.047  0.   ]
         >>> from fipy.variables.variable import Variable
-        >>> arccos(Variable(value = (0,0.5,1.0)))
-        numerix.arccos(Variable(value = array([ 0. ,  0.5,  1. ])))
+        >>> arccos(Variable(value=(0,0.5,1.0)))
+        numerix.arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
         
     .. attention:: 
         
@@ -410,7 +412,7 @@ def arccos(arr):
        
     ..
        
-        >>> print tostring(arccos(Variable(value = (0,0.5,1.0))), precision = 3)
+        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
         [ 1.571  1.047  0.   ]
         
     """
@@ -443,12 +445,12 @@ def arccosh(arr):
         ...     print 1
         1
 
-        >>> print tostring(arccosh(array((1,2,3))), precision = 3)
+        >>> print tostring(arccosh(array((1,2,3))), precision=3)
         [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
-        >>> arccosh(Variable(value = (1,2,3)))
-        numerix.arccosh(Variable(value = array([ 1.,  2.,  3.])))
-        >>> print tostring(arccosh(Variable(value = (1,2,3))), precision = 3)
+        >>> arccosh(Variable(value=(1,2,3)))
+        numerix.arccosh(Variable(value=array([ 1.,  2.,  3.])))
+        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
         [ 0.     1.317  1.763]
     """
     if _isPhysical(arr):
@@ -468,7 +470,7 @@ def arcsin(arr):
        
     ..
     
-        >>> print tostring(arcsin(1.0), precision = 3)
+        >>> print tostring(arcsin(1.0), precision=3)
         1.571
          
     If SciPy has been loaded, the next test will return `NaN`, otherwise it will
@@ -480,11 +482,11 @@ def arcsin(arr):
         ...     print 1
         1
 
-        >>> print tostring(arcsin(array((0,0.5,1.0))), precision = 3)
+        >>> print tostring(arcsin(array((0,0.5,1.0))), precision=3)
         [ 0.     0.524  1.571]
         >>> from fipy.variables.variable import Variable
-        >>> arcsin(Variable(value = (0,0.5,1.0)))
-        numerix.arcsin(Variable(value = array([ 0. ,  0.5,  1. ])))
+        >>> arcsin(Variable(value=(0,0.5,1.0)))
+        numerix.arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
         
     .. attention:: 
         
@@ -492,7 +494,7 @@ def arcsin(arr):
        
     ..
         
-        >>> print tostring(arcsin(Variable(value = (0,0.5,1.0))), precision = 3)
+        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
         [ 0.     0.524  1.571]
     """
     if _isPhysical(arr):
@@ -512,14 +514,14 @@ def arcsinh(arr):
        
     ..
 
-        >>> print tostring(arcsinh(1.0), precision = 3)
+        >>> print tostring(arcsinh(1.0), precision=3)
         0.881
-        >>> print tostring(arcsinh(array((1,2,3))), precision = 3)
+        >>> print tostring(arcsinh(array((1,2,3))), precision=3)
         [ 0.881  1.444  1.818]
         >>> from fipy.variables.variable import Variable
-        >>> arcsinh(Variable(value = (1,2,3)))
-        numerix.arcsinh(Variable(value = array([ 1.,  2.,  3.])))
-        >>> print tostring(arcsinh(Variable(value = (1,2,3))), precision = 3)
+        >>> arcsinh(Variable(value=(1,2,3)))
+        numerix.arcsinh(Variable(value=array([ 1.,  2.,  3.])))
+        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
         [ 0.881  1.444  1.818]
     """
     if _isPhysical(arr):
@@ -539,13 +541,13 @@ def arctan(arr):
        
     ..
     
-        >>> print tostring(arctan(1.0), precision = 3)
+        >>> print tostring(arctan(1.0), precision=3)
         0.785
-        >>> print tostring(arctan(array((0,0.5,1.0))), precision = 3)
+        >>> print tostring(arctan(array((0,0.5,1.0))), precision=3)
         [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
-        >>> arctan(Variable(value = (0,0.5,1.0)))
-        numerix.arctan(Variable(value = array([ 0. ,  0.5,  1. ])))
+        >>> arctan(Variable(value=(0,0.5,1.0)))
+        numerix.arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
         
     .. attention:: 
         
@@ -553,7 +555,7 @@ def arctan(arr):
        
     ..
     
-        >>> print tostring(arctan(Variable(value = (0,0.5,1.0))), precision = 3)
+        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
         [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
@@ -573,13 +575,13 @@ def arctan2(arr, other):
        
     ..
 
-        >>> print tostring(arctan2(3.0, 3.0), precision = 3)
+        >>> print tostring(arctan2(3.0, 3.0), precision=3)
         0.785
-        >>> print tostring(arctan2(array((0, 1, 2)), 2), precision = 3)
+        >>> print tostring(arctan2(array((0, 1, 2)), 2), precision=3)
         [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
-        >>> arctan2(Variable(value = (0, 1, 2)), 2)
-        (numerix.arctan2(Variable(value = array([ 0.,  1.,  2.])), 2))
+        >>> arctan2(Variable(value=(0, 1, 2)), 2)
+        (numerix.arctan2(Variable(value=array([ 0.,  1.,  2.])), 2))
         
     .. attention:: 
         
@@ -587,7 +589,7 @@ def arctan2(arr, other):
        
     ..
 
-        >>> print tostring(arctan2(Variable(value = (0, 1, 2)), 2), precision = 3)
+        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
         [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
@@ -595,7 +597,7 @@ def arctan2(arr, other):
     elif _isPhysical(other):
         from fipy.tools.dimensions import physicalField
 
-        return physicalField.PhysicalField(value = arr, unit = "rad").arctan2(other)
+        return physicalField.PhysicalField(value=arr, unit="rad").arctan2(other)
     elif type(arr) is type(array((0))):
         return NUMERIX.arctan2(arr,other)
     else:
@@ -612,14 +614,14 @@ def arctanh(arr):
        
     ..
     
-        >>> print tostring(arctanh(0.5), precision = 3)
+        >>> print tostring(arctanh(0.5), precision=3)
         0.549
-        >>> print tostring(arctanh(array((0,0.25,0.5))), precision = 3)
+        >>> print tostring(arctanh(array((0,0.25,0.5))), precision=3)
         [ 0.     0.255  0.549]
         >>> from fipy.variables.variable import Variable
-        >>> arctanh(Variable(value = (0,0.25,0.5)))
-        numerix.arctanh(Variable(value = array([ 0.  ,  0.25,  0.5 ])))
-        >>> print tostring(arctanh(Variable(value = (0,0.25,0.5))), precision = 3)
+        >>> arctanh(Variable(value=(0,0.25,0.5)))
+        numerix.arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
+        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
         [ 0.     0.255  0.549]
     """
     if _isPhysical(arr):
@@ -639,14 +641,14 @@ def cos(arr):
        
     ..
 
-        >>> print tostring(cos(2*pi/6), precision = 3)
+        >>> print tostring(cos(2*pi/6), precision=3)
         0.5  
-        >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision = 3, suppress_small = 1)
+        >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
-        >>> cos(Variable(value = (0,2*pi/6,pi/2), unit = "rad"))
-        numerix.cos(Variable(value = PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-        >>> print tostring(cos(Variable(value = (0,2*pi/6,pi/2), unit = "rad")), suppress_small = 1)
+        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+        numerix.cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
+        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
         [ 1.   0.5  0. ]
     """
     if _isPhysical(arr):
@@ -668,12 +670,12 @@ def cosh(arr):
 
         >>> print cosh(0)
         1.0
-        >>> print tostring(cosh(array((0,1,2))), precision = 3)
+        >>> print tostring(cosh(array((0,1,2))), precision=3)
         [ 1.     1.543  3.762]
         >>> from fipy.variables.variable import Variable
-        >>> cosh(Variable(value = (0,1,2)))
-        numerix.cosh(Variable(value = array([ 0.,  1.,  2.])))
-        >>> print tostring(cosh(Variable(value = (0,1,2))), precision = 3)
+        >>> cosh(Variable(value=(0,1,2)))
+        numerix.cosh(Variable(value=array([ 0.,  1.,  2.])))
+        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
         [ 1.     1.543  3.762]
     """
     if _isPhysical(arr):
@@ -693,14 +695,14 @@ def tan(arr):
        
     ..
 
-        >>> print tostring(tan(pi/3), precision = 3)
+        >>> print tostring(tan(pi/3), precision=3)
         1.732
-        >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision = 3)
+        >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision=3)
         [ 0.     1.732 -1.732]
         >>> from fipy.variables.variable import Variable
-        >>> tan(Variable(value = (0,pi/3,2*pi/3), unit = "rad"))
-        numerix.tan(Variable(value = PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
-        >>> print tostring(tan(Variable(value = (0,pi/3,2*pi/3), unit = "rad")), precision = 3)
+        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+        numerix.tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
+        >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
         [ 0.     1.732 -1.732]
     """
     if _isPhysical(arr):
@@ -720,14 +722,14 @@ def tanh(arr):
        
     ..
 
-        >>> print tostring(tanh(1), precision = 3)
+        >>> print tostring(tanh(1), precision=3)
         0.762
-        >>> print tostring(tanh(array((0,1,2))), precision = 3)
+        >>> print tostring(tanh(array((0,1,2))), precision=3)
         [ 0.     0.762  0.964]
         >>> from fipy.variables.variable import Variable
-        >>> tanh(Variable(value = (0,1,2)))
-        numerix.tanh(Variable(value = array([ 0.,  1.,  2.])))
-        >>> print tostring(tanh(Variable(value = (0,1,2))), precision = 3)
+        >>> tanh(Variable(value=(0,1,2)))
+        numerix.tanh(Variable(value=array([ 0.,  1.,  2.])))
+        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
         [ 0.     0.762  0.964]
     """
     if _isPhysical(arr):
@@ -752,9 +754,9 @@ def log10(arr):
         >>> print log10(array((0.1,1,10)))
         [-1.  0.  1.]
         >>> from fipy.variables.variable import Variable
-        >>> log10(Variable(value = (0.1,1,10)))
-        numerix.log10(Variable(value = array([  0.1,   1. ,  10. ])))
-        >>> print log10(Variable(value = (0.1,1,10)))
+        >>> log10(Variable(value=(0.1,1,10)))
+        numerix.log10(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print log10(Variable(value=(0.1,1,10)))
         [-1.  0.  1.]
     """
     if _isPhysical(arr):
@@ -779,9 +781,9 @@ def sin(arr):
         >>> print sin(array((0,pi/6,pi/2)))
         [ 0.   0.5  1. ]
         >>> from fipy.variables.variable import Variable
-        >>> sin(Variable(value = (0,pi/6,pi/2), unit = "rad"))
-        numerix.sin(Variable(value = PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-        >>> print sin(Variable(value = (0,pi/6,pi/2), unit = "rad"))
+        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        numerix.sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
+        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
         [ 0.   0.5  1. ]
     """
     if _isPhysical(arr):
@@ -803,12 +805,12 @@ def sinh(arr):
 
         >>> print sinh(0)
         0.0
-        >>> print tostring(sinh(array((0,1,2))), precision = 3)
+        >>> print tostring(sinh(array((0,1,2))), precision=3)
         [ 0.     1.175  3.627]
         >>> from fipy.variables.variable import Variable
-        >>> sinh(Variable(value = (0,1,2)))
-        numerix.sinh(Variable(value = array([ 0.,  1.,  2.])))
-        >>> print tostring(sinh(Variable(value = (0,1,2))), precision = 3)
+        >>> sinh(Variable(value=(0,1,2)))
+        numerix.sinh(Variable(value=array([ 0.,  1.,  2.])))
+        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
         [ 0.     1.175  3.627]
     """
     if _isPhysical(arr):
@@ -828,14 +830,14 @@ def sqrt(arr):
        
     ..
 
-        >>> print tostring(sqrt(2), precision = 3)
+        >>> print tostring(sqrt(2), precision=3)
         1.414
-        >>> print tostring(sqrt(array((1,2,3))), precision = 3)
+        >>> print tostring(sqrt(array((1,2,3))), precision=3)
         [ 1.     1.414  1.732]
         >>> from fipy.variables.variable import Variable
-        >>> sqrt(Variable(value = (1, 2, 3), unit = "m**2"))
-        numerix.sqrt(Variable(value = PhysicalField(array([ 1.,  2.,  3.]),'m**2')))
-        >>> print tostring(sqrt(Variable(value = (1, 2, 3), unit = "m**2")), precision = 3)
+        >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
+        numerix.sqrt(Variable(value=PhysicalField(array([ 1.,  2.,  3.]),'m**2')))
+        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
         [ 1.     1.414  1.732] m
 
     """
@@ -861,9 +863,9 @@ def floor(arr):
         >>> print floor(array((-1.5,2,2.5)))
         [-2.  2.  2.]
         >>> from fipy.variables.variable import Variable
-        >>> floor(Variable(value = (-1.5,2,2.5), unit = "m**2"))
-        numerix.floor(Variable(value = PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print floor(Variable(value = (-1.5,2,2.5), unit = "m**2"))
+        >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        numerix.floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
         [-2.  2.  2.] m**2
 
     """
@@ -889,9 +891,9 @@ def ceil(arr):
         >>> print ceil(array((-1.5,2,2.5)))
         [-1.  2.  3.]
         >>> from fipy.variables.variable import Variable
-        >>> ceil(Variable(value = (-1.5,2,2.5), unit = "m**2"))
-        numerix.ceil(Variable(value = PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print ceil(Variable(value = (-1.5,2,2.5), unit = "m**2"))
+        >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        numerix.ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
         [-1.  2.  3.] m**2
 
     """
@@ -931,14 +933,14 @@ def log(arr):
        
     ..
 
-        >>> print tostring(log(10), precision = 3)
+        >>> print tostring(log(10), precision=3)
         2.303
-        >>> print tostring(log(array((0.1,1,10))), precision = 3)
+        >>> print tostring(log(array((0.1,1,10))), precision=3)
         [-2.303  0.     2.303]
         >>> from fipy.variables.variable import Variable
-        >>> log(Variable(value = (0.1,1,10)))
-        numerix.log(Variable(value = array([  0.1,   1. ,  10. ])))
-        >>> print tostring(log(Variable(value = (0.1,1,10))), precision = 3)
+        >>> log(Variable(value=(0.1,1,10)))
+        numerix.log(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
         [-2.303  0.     2.303]
     """
     if _isPhysical(arr):
@@ -954,12 +956,12 @@ def max(arr):
     max function
 
     >>> from fipy.tools.dimensions.physicalField import PhysicalField
-    >>> print max(PhysicalField(value = (0.1, -0.2, 0.3), unit = 'm'))
+    >>> print max(PhysicalField(value=(0.1, -0.2, 0.3), unit='m'))
     0.3 m
     >>> print max(array((0.1, -0.2, 0.3)))
     0.3
     >>> from fipy.variables.variable import Variable
-    >>> print max(Variable(value = (0.1, -0.2, 0.3)))
+    >>> print max(Variable(value=(0.1, -0.2, 0.3)))
     0.3
     
     """
@@ -976,7 +978,7 @@ def min(arr):
     min function
 
     >>> from fipy.tools.dimensions.physicalField import PhysicalField
-    >>> print min(PhysicalField(value = (0.1, -0.2, 0.3), unit = 'm'))
+    >>> print min(PhysicalField(value=(0.1, -0.2, 0.3), unit='m'))
     -0.2 m
     >>> print min(array((0.1, -0.2, 0.3)))
     -0.2
@@ -1007,7 +1009,7 @@ def conjugate(arr):
         >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
         1
         >>> from fipy.variables.variable import Variable
-        >>> var = conjugate(Variable(value = (3 + 4j, -2j, 10), unit = "ohm"))
+        >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
         >>> print var.getUnit()
         <PhysicalUnit ohm>
         >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
@@ -1166,7 +1168,7 @@ def _sqrtDotIn(a1, a2):
     
     if unit1 != 1 or unit2 != 1:
         from fipy.tools.dimensions.physicalField import PhysicalField
-        result1 = PhysicalField(value = result, unit = (unit1 * unit2)**0.5)
+        result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
     return result1
 
 def allequal(first, second):
@@ -1183,7 +1185,7 @@ def allequal(first, second):
     else:
         return MA.allequal(first, second)
             
-def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
+def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""
     Tests whether or not `first` and `second` are equal, subect to the given
     relative and absolute tolerances, such that::
@@ -1194,25 +1196,25 @@ def allclose(first, second, rtol = 1.e-5, atol = 1.e-8):
     their difference divided by `second`'s value is small compared to `rtol`.
     """
     if _isPhysical(first):
-        return first.allclose(other = second, atol = atol, rtol = rtol)
+        return first.allclose(other=second, atol=atol, rtol=rtol)
     elif _isPhysical(second):
-        return second.allclose(other = first, atol = atol, rtol = rtol)
+        return second.allclose(other=first, atol=atol, rtol=rtol)
     else:
-        return MA.allclose(first, second, atol = atol, rtol = rtol)
+        return MA.allclose(first, second, atol=atol, rtol=rtol)
 
 
-def take(a, indices, axis=0, fill_value = None):
+def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
     """
            
     if _isPhysical(a):
-        taken = a.take(indices, axis = axis)   
+        taken = a.take(indices, axis=axis)   
     elif type(indices) is type(MA.array((0))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
         ##
-        taken = MA.take(a, MA.filled(indices, 0), axis = axis)
+        taken = MA.take(a, MA.filled(indices, 0), axis=axis)
         
         mask = MA.getmask(indices)
         
@@ -1224,7 +1226,7 @@ def take(a, indices, axis=0, fill_value = None):
 
         
         if mask is not MA.nomask:
-            taken = MA.array(data = taken, mask = mask)
+            taken = MA.array(data=taken, mask=mask)
         else:
             if MA.getmask(taken) is MA.nomask:
                 taken = taken.filled()
@@ -1232,16 +1234,16 @@ def take(a, indices, axis=0, fill_value = None):
     elif type(a) in (type(array((0))), type(()), type([])):
         taken = NUMERIX.take(a, indices, axis=axis)
     elif type(a) is type(MA.array((0))):
-        taken = MA.take(a, indices, axis = axis)
+        taken = MA.take(a, indices, axis=axis)
     else:
         raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
                
     if fill_value is not None and type(taken) is type(MA.array((0))):
-        taken = taken.filled(fill_value = fill_value)
+        taken = taken.filled(fill_value=fill_value)
         
     return taken
 
-## def MAtake(array, indices, fill = 0, axis = 0):
+## def MAtake(array, indices, fill=0, axis=0):
 ##     """
 ##     Replaces `MA.take`. `MA.take` does not always work when
 ##     `indices` is a masked array.
@@ -1249,7 +1251,7 @@ def take(a, indices, axis=0, fill_value = None):
        
 ##     """
 
-##     tmp = MA.take(array, MA.filled(indices, fill), axis = axis)
+##     tmp = MA.take(array, MA.filled(indices, fill), axis=axis)
 
 ##     if hasattr(indices, 'mask'):
 ##         if indices.mask() is not None and tmp.shape != indices.mask().shape:
@@ -1261,7 +1263,7 @@ def take(a, indices, axis=0, fill_value = None):
 ##     else:
 ##         mask = None
         
-##     return MA.array(data = tmp, mask = mask)
+##     return MA.array(data=tmp, mask=mask)
 
 def indices(dimensions, typecode=None):
     """indices(dimensions,typecode=None) returns an array representing a grid
@@ -1403,9 +1405,9 @@ while (return_val.refcount() > 1) {
                      local_dict.keys(),
                      local_dict=local_dict,
                      type_converters=weave.converters.blitz,
-                     compiler = 'gcc',
-                     verbose = 0,
-                     support_code = """
+                     compiler='gcc',
+                     verbose=0,
+                     support_code="""
 #define MAX_DIMS 30
                      """,
                      extra_compile_args =['-O3'])
