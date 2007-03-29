@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 6/7/04 {2:33:34 PM} 
- #                                last update: 3/27/07 {5:18:50 PM} 
+ #                                last update: 3/29/07 {12:27:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ def _suite():
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',
-            'binaryTerm'
+            'equation'
         ), base = __name__)
 
 if __name__ == '__main__':

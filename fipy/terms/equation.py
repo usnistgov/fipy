@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "binaryTerm.py"
+ #  FILE: "equation.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/29/07 {10:40:51 AM} 
+ #                                last update: 3/29/07 {12:27:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

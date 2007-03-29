@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/29/07 {10:40:41 AM} 
+ #                                last update: 3/29/07 {12:27:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -248,7 +248,7 @@ class Term:
            Term(coeff=3.0)
 
         """
-        from fipy.terms.binaryTerm import _Equation
+        from fipy.terms.equation import _Equation
         
         if self._otherIsZero(other):
             return self
