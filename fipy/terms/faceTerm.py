@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/28/07 {11:17:38 PM} 
+ #                                last update: 3/29/07 {10:42:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,8 +54,8 @@ class FaceTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff = 1.):
-        Term.__init__(self, coeff = coeff)
+    def __init__(self, coeff=1.):
+        Term.__init__(self, coeff=coeff)
         self.coeffMatrix = None
             
     def _getCoeffMatrix(self, mesh, weight):
@@ -136,7 +136,7 @@ class FaceTerm(Term):
             ni = len(interiorFaces))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
-        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt = dt)
+        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
 
         cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
         cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
@@ -149,7 +149,7 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., master=None):
+    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
         """Implicit portion considers
         """
 
@@ -164,13 +164,13 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = _SparseMatrix(size = N)
 
-        if master is not None:
+        if equation is not None:
             from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(master.matrix.takeDiagonal())))
+            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
         else:
             self._diagonalSign.setValue(1)
 
-        weight = self._getWeight(mesh, master=master)
+        weight = self._getWeight(mesh, equation=equation)
 
         if weight.has_key('implicit'):
             self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)

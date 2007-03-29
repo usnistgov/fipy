@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 3/27/07 {5:56:16 PM} 
+ #                                last update: 3/29/07 {10:40:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -119,16 +119,16 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, boundaryConditions=(), dt=1., master=None):
+    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
         L = _SparseMatrix(size=N)
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?
-        if master is not None:
+        if equation is not None:
             from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(master.matrix.takeDiagonal())))
+            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
         else:
             self._diagonalSign.setValue(1)
             

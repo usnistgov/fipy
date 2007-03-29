@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/28/07 {4:42:10 PM} 
+ #                                last update: 3/29/07 {10:40:51 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,7 +76,7 @@ class _Equation(Term):
         else:
             return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)
         
-    def _buildMatrix(self, var, boundaryConditions, dt, master=None):
+    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
         from fipy.tools.sparseMatrix import _SparseMatrix
 
@@ -89,7 +89,7 @@ class _Equation(Term):
             if term is not None:
                 termMatrix, termRHSvector = term._buildMatrix(var, 
                                                               boundaryConditions, 
-                                                              dt=dt, master=self)
+                                                              dt=dt, equation=self)
 
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector

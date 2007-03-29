@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/28/07 {10:24:43 AM} 
+ #                                last update: 3/29/07 {10:40:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -208,7 +208,7 @@ class DiffusionTerm(Term):
         else:
             return Term.__add__(self, other)
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., master=None):
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., equation=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -221,7 +221,7 @@ class DiffusionTerm(Term):
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
                                                                                  boundaryConditions = lowerOrderBCs, 
                                                                                  dt = dt,
-                                                                                 master=master)
+                                                                                 equation=equation)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()

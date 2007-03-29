@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/28/07 {10:29:45 AM} 
+ #                                last update: 3/29/07 {10:40:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,7 +68,7 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
-    def _buildMatrix(self, var, boundaryConditions, dt, master=None):
+    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
         pass
 
     def _calcResidualVector(self, var, matrix, RHSvector):

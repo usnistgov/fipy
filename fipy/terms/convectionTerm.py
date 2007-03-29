@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {9:46:49 AM} 
+ #                                last update: 3/29/07 {10:40:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -122,16 +122,16 @@ class ConvectionTerm(FaceTerm):
         
         return projectedCoefficients.sum(1)
         
-    def _getWeight(self, mesh, master=None):
+    def _getWeight(self, mesh, equation=None):
 
         if self.stencil is None:
 
             small = 1e-20
             
-            if master is None:
+            if equation is None:
                 diffCoeff = small
             else:
-                diffCoeff = master._getDiffusiveGeomCoeff(mesh)
+                diffCoeff = equation._getDiffusiveGeomCoeff(mesh)
                 if diffCoeff is None:
                     diffCoeff = small
                 else:

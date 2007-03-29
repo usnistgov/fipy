@@ -4,7 +4,7 @@
  # 
  # FILE: "collectedDiffusionTerm.py"
  #                                     created: 3/28/07 {8:44:05 AM}
- #                                 last update: 3/28/07 {10:50:17 AM}
+ #                                 last update: 3/29/07 {10:40:49 AM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  #   mail: NIST
@@ -68,7 +68,7 @@ class CollectedDiffusionTerm(DiffusionTerm):
         
         return dup
         
-    def _buildMatrix(self, var, boundaryConditions, dt, master=None):
+    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
         from fipy.tools.sparseMatrix import _SparseMatrix
         
@@ -80,7 +80,7 @@ class CollectedDiffusionTerm(DiffusionTerm):
             if term is not None:
                 termMatrix, termRHSvector = term._buildMatrix(var, 
                                                               boundaryConditions, 
-                                                              dt=dt, master=master)
+                                                              dt=dt, equation=equation)
 
                 matrix += termMatrix
                 RHSvector += termRHSvector
