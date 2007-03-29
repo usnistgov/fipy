@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/28/07 {10:12:44 AM} 
+ #                                last update: 3/28/07 {4:29:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -687,9 +687,14 @@ class Variable(object):
         
     def __markStale(self):
         for subscriber in self.getSubscribedVariables():
-            ## If an AttributeError is thrown here, it may be due to subscriber() being None.
-            ## See <https://www.matforge.org/fipy/ticket/118> for more explanation.
-            subscriber()._markStale()
+            if subscriber() is not None:
+                ## Even though getSubscribedVariables() strips out dead 
+                ## references, subscriber() might still be dead due to the 
+                ## vagaries of garbage collection and the possibility that 
+                ## later subscribedVariables were removed, changing the 
+                ## dependencies of this subscriber. 
+                ## See <https://www.matforge.org/fipy/ticket/118> for more explanation.
+                subscriber()._markStale()
                 
     def _markFresh(self):
         self.stale = 0
