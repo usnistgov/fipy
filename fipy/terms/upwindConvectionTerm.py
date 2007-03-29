@@ -6,7 +6,7 @@
  # 
  #  FILE: "upwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/3/07 {3:21:52 PM} 
+ #                                last update: 3/29/07 {10:34:34 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -64,7 +64,7 @@ class UpwindConvectionTerm(ConvectionTerm):
             self.P = self._requires(P)
             
         def _calcValuePy(self, P):
-            alpha = numerix.where(P > 0., 1., 0.)
+            alpha = numerix.where(P < 0., 1., 0.)
 
             return PhysicalField(value = alpha)
 
@@ -73,7 +73,7 @@ class UpwindConvectionTerm(ConvectionTerm):
             inline._runInline("""
                 alpha(i) = 0.5;
                 
-                if (P(i) > 0.) {
+                if (P(i) < 0.) {
                     alpha(i) = 1.;
                 } else {
                     alpha(i) = 0.;

@@ -6,7 +6,7 @@
  # 
  #  FILE: "binaryTerm.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/28/07 {10:54:20 AM} 
+ #                                last update: 3/28/07 {4:42:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,15 +42,15 @@
  ##
 
 from fipy.terms.term import Term
-from fipy.terms import TransientTerm, ImplicitDiffusionTerm, \
+from fipy.terms import TransientTerm, DiffusionTerm, \
   ExplicitDiffusionTerm, ImplicitSourceTerm
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
 class _Equation(Term):
     def __init__(self):
-        self.orderedKeys = ["TransientTerm", "ImplicitDiffusionTerm", 
-          "ExplicitDiffusionTerm", "ConvectionTerm", "ImplicitSourceTerm", 
+        self.orderedKeys = ["TransientTerm", "ExplicitDiffusionTerm", 
+          "DiffusionTerm", "ConvectionTerm", "ImplicitSourceTerm", 
           "_ExplicitSourceTerm"]
 
         self.terms = {}
@@ -69,6 +69,13 @@ class _Equation(Term):
         return self.orderedKeys \
           + [k for k in self.terms.keys() if k not in self.orderedKeys]
 
+
+    def _getDiffusiveGeomCoeff(self, mesh):
+        if self.terms["DiffusionTerm"] is None:
+            return None
+        else:
+            return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)
+        
     def _buildMatrix(self, var, boundaryConditions, dt, master=None):
         from fipy.tools import numerix
         from fipy.tools.sparseMatrix import _SparseMatrix

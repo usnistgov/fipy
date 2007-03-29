@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitUpwindConvectionTerm.py"
  #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/31/07 {11:21:02 AM} 
+ #                                last update: 3/28/07 {10:58:18 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -53,8 +53,8 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
        main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
 
-    def _getWeight(self, mesh):
-        weight = UpwindConvectionTerm._getWeight(self, mesh)
+    def _getWeight(self, mesh, master=None):
+        weight = UpwindConvectionTerm._getWeight(self, mesh, master=master)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']

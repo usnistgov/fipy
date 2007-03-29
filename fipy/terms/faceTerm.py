@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/27/07 {5:57:15 PM} 
+ #                                last update: 3/28/07 {11:17:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -170,7 +170,7 @@ class FaceTerm(Term):
         else:
             self._diagonalSign.setValue(1)
 
-        weight = self._getWeight(mesh)
+        weight = self._getWeight(mesh, master=master)
 
         if weight.has_key('implicit'):
             self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
