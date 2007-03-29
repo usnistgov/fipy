@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/22/07 {5:53:50 PM} 
+ #                                last update: 3/29/07 {11:50:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -356,11 +356,9 @@ interstitial diffusion equations, we arrange in canonical form as before:
     ...     convectionCoeff *= (Cj.diffusivity
     ...                         / (1. + CkSum.getHarmonicFaceValue()))
     ...                         
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff=convectionCoeff, 
-    ...                                             diffusionTerm=diffusionTerm)
-    ...                                             
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm()
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----
 
@@ -413,11 +411,9 @@ The canonical form of the substitutional diffusion equations is
     ...     convectionCoeff *= (Cj.diffusivity
     ...                         / (1. - CkSum.getHarmonicFaceValue()))
     ...                         
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff=convectionCoeff, 
-    ...                                             diffusionTerm=diffusionTerm)
-    ...                                             
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm() 
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----
 

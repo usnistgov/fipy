@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/26/07 {3:01:23 PM} 
+ #                                last update: 3/29/07 {11:32:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -194,7 +194,6 @@ We treat the diffusion term
 ..
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffusionTerm = ImplicitDiffusionTerm(coeff = kappa)
 
 .. note::
     
@@ -222,7 +221,7 @@ The simplest approach is to add this source explicitly
 
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> S0 = mPhi * phase * (1 - phase)
-    >>> eq = S0 + diffusionTerm
+    >>> eq = S0 + ImplicitDiffusionTerm(coeff=kappa)
     
 After solving this equation
 
@@ -267,7 +266,7 @@ transient term from
 ..
     
     >>> from fipy.terms.transientTerm import TransientTerm
-    >>> eq = TransientTerm() == diffusionTerm + S0
+    >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=kappa) + S0
     
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L/2)
@@ -351,7 +350,7 @@ Kobayashi:
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
     >>> implicitSource = ImplicitSourceTerm(coeff = S1)
-    >>> eq = diffusionTerm + S0 + implicitSource
+    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 + implicitSource
     
 .. note:: Because `mPhi` is a variable field, the quantities `(mPhi > 0)`
    and `(mPhi < 0)` evaluate to variable *fields* of ones and zeroes, instead of 
@@ -420,7 +419,7 @@ or
     >>> implicitSource = ImplicitSourceTerm(coeff = S1 * (S1 < 0))
     >>> ## S0 = mPhi * phase * (1 - phase) - S1 * phase
     >>> ## implicitSource = ImplicitSourceTerm(coeff = S1)
-    >>> eq = diffusionTerm + S0 + implicitSource
+    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 + implicitSource
     
 Using this scheme, where the coefficient of the implicit source term is
 tangent to the source, we reach convergence in only 5 sweeps

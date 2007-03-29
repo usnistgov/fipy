@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:20:39 PM} 
+ #                                last update: 3/29/07 {11:48:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -236,11 +236,9 @@ and we create the diffustion equation for the solute as in
     ...         solvent.getHarmonicFaceValue() * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                             diffusionTerm = diffusionTerm)
-    ...                                            
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm()
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
     
     >>> for Cj in interstitials:
     ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
@@ -253,11 +251,9 @@ and we create the diffustion equation for the solute as in
     ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()) * \
     ...         (phaseTransformation + electromigration)
     ...
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                             diffusionTerm = diffusionTerm)
-    ...                                            
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm()
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 And Poisson's equation
 

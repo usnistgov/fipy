@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 1/31/07 {11:20:38 AM} 
+ #                                last update: 3/29/07 {11:44:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,12 +118,10 @@ instance must be passed to the convection term.
 ..
 
    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-   >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
-   
    >>> from fipy.terms.exponentialConvectionTerm \
    ...     import ExponentialConvectionTerm
-   >>> eq = diffTerm + ExponentialConvectionTerm(coeff=convCoeff,
-   ...                                           diffusionTerm=diffTerm)
+   >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+   ...       + ExponentialConvectionTerm(coeff=convCoeff))
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in 

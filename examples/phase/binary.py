@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/16/06 {1:31:28 PM}
+ #                                 last update: 3/29/07 {11:45:46 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -408,7 +408,6 @@ or
     >>> Dl = Variable(value=1e-5) # cm**2 / s
     >>> Ds = Variable(value=1e-9) # cm**2 / s
     >>> D = (Dl - Ds) * phase.getArithmeticFaceValue() + Dl
-    >>> diffusion = ImplicitDiffusionTerm(coeff=D)
 
     >>> phaseTransformationVelocity = \
     ...  ((enthalpyB - enthalpyA) * p(phase).getFaceGrad()
@@ -422,9 +421,9 @@ or
 ..
     
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> diffusionEq = TransientTerm() == diffusion \
-    ...   + PowerLawConvectionTerm(coeff=phaseTransformationVelocity,
-    ...                            diffusionTerm=diffusion)
+    >>> diffusionEq = (TransientTerm() 
+    ...                == ImplicitDiffusionTerm(coeff=D)
+    ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
 
 -----
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:20:51 PM} 
+ #                                last update: 3/29/07 {11:50:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,11 +115,9 @@ We define the convection-diffusion equation with source
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm \
     ...     import ExponentialConvectionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
-    >>> eq = diffTerm \
-    ...      + ExponentialConvectionTerm(coeff=convCoeff, 
-    ...                                  diffusionTerm=diffTerm) \
-    ...      + sourceCoeff
+    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...       + ExponentialConvectionTerm(coeff=convCoeff)
+    ...       + sourceCoeff)
     
 .. raw:: latex
 
