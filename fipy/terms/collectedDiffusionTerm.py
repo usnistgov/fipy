@@ -4,7 +4,7 @@
  # 
  # FILE: "collectedDiffusionTerm.py"
  #                                     created: 3/28/07 {8:44:05 AM}
- #                                 last update: 3/29/07 {10:40:49 AM}
+ #                                 last update: 3/29/07 {12:25:22 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  #   mail: NIST
@@ -127,5 +127,12 @@ class CollectedDiffusionTerm(DiffusionTerm):
                 dup.orders.append(-term)
                 
         return dup
+        
+    def _getGeomCoeff(mesh):
+        # index is order / 2
+        if self.orders[1] is not None:
+            return self.orders[1]._getGeomCoeff(mesh)
+        else:
+            return None
 
 
