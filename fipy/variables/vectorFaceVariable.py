@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 1/3/07 {3:18:45 PM} 
+ #                                last update: 3/30/07 {1:16:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,20 @@ class VectorFaceVariable(Variable):
             
         return self.divergence
         
-    def _getShapeFromMesh(mesh):
+    def setValue(self, value, unit = None, array = None, where = None):
+        if where is not None:
+            shape = numerix.getShape(where)
+            if shape != self._getShapeFromMesh(mesh=self.getMesh()) \
+              and shape == (self.getMesh()._getNumberOfFaces(),):
+                dim = self.getMesh().getDim()
+                if dim == 1:
+                    where = where[..., numerix.NewAxis]
+                else:
+                    where = numerix.repeat(where, self.getMesh().getDim())
+            
+        return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
+    
+    def _getShapeFromMesh(mesh=None):
         """
         Return the shape of this variable type, given a particular mesh.
         """
