@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:32:28 AM} 
+ #                                last update: 3/30/07 {10:25:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -349,8 +349,8 @@ Kobayashi:
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
-    >>> implicitSource = ImplicitSourceTerm(coeff = S1)
-    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 + implicitSource
+    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
+    ...   + ImplicitSourceTerm(coeff = S1)
     
 .. note:: Because `mPhi` is a variable field, the quantities `(mPhi > 0)`
    and `(mPhi < 0)` evaluate to variable *fields* of ones and zeroes, instead of 
@@ -415,11 +415,9 @@ or
 
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
-    >>> implicitSource = ImplicitSourceTerm(coeff = S1 * (S1 < 0))
-    >>> ## S0 = mPhi * phase * (1 - phase) - S1 * phase
-    >>> ## implicitSource = ImplicitSourceTerm(coeff = S1)
-    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 + implicitSource
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
+    >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
+    ...   + ImplicitSourceTerm(coeff = S1)
     
 Using this scheme, where the coefficient of the implicit source term is
 tangent to the source, we reach convergence in only 5 sweeps

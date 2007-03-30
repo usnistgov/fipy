@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:48:34 AM} 
+ #                                last update: 3/30/07 {10:20:01 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -206,14 +206,13 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
     >>> mXi = -(30 * phase * (1 - phase) * enthalpy +  4 * (0.5 - phase) * barrier)
     >>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
     >>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
-    >>> S0 = mXi * phase * (1 - phase) - phase * S1 * (S1 < 0)
+    >>> S0 = mXi * phase * (1 - phase) - phase * S1
     
-    >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
     
 and we create the diffustion equation for the solute as in 
 ``examples.elphf.diffusion.input1D``
 
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     
     >>> from fipy.variables.faceVariable import FaceVariable

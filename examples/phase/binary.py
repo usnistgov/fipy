@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 3/29/07 {11:45:46 AM}
+ #                                 last update: 3/30/07 {10:23:40 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -272,7 +272,7 @@ We can now linearize the source exactly as before
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
 Using the same gradient energy coefficient and phase field mobility
 
@@ -294,7 +294,7 @@ we define the phase field equation
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     >>> phaseEq = TransientTerm(1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
-    ...   + S0 + ImplicitSourceTerm(coeff=S1 * (S1 < 0))
+    ...   + S0 + ImplicitSourceTerm(coeff=S1)
 
 -----
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:47:29 AM} 
+ #                                last update: 3/30/07 {10:22:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -152,9 +152,9 @@ and create the diffustion equations for the different species as in
     ...             +  4 * (0.5 - phase) * barrier)
     ...     dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
     ...     S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
-    ...     S0 = mXi * phase * (1 - phase) - phase * S1 * (S1 < 0)
+    ...     S0 = mXi * phase * (1 - phase) - phase * S1
     ... 
-    ...     phase.equation -= S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    ...     phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
     ... 
     ...     for Cj in substitutionals:
     ...         CkSum = ComponentVariable(mesh = mesh, value = 0.)
