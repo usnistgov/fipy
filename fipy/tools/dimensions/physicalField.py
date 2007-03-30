@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 3/24/07 {9:19:51 AM} 
+ #                                last update: 1/3/07 {2:25:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -111,7 +111,7 @@ from NumberDict import _NumberDict
 # Class definitions
 
 
-class PhysicalField(object):
+class PhysicalField:
     """
     Physical field or quantity with units
     """
@@ -554,27 +554,6 @@ class PhysicalField(object):
         else:
             self.value[index] = value
             
-    __array_priority__ = 100.0    
-
-    def __array_wrap__(self, arr, context=None):
-        """
-        Required to prevent numpy not calling the reverse binary operations.
-        Both the following tests are examples ufuncs.
-        
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
-           <class 'fipy.variables.variable.binOp'>
-
-           >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(PhysicalField([1.0, 2.0])))
-           <type 'numpy.ndarray'>
-
-        """
-        if (context is not None and len(context[1])==2) or not self.unit.isDimensionlessOrAngle():
-            return NotImplemented
-        else:
-            return PhysicalField(value=arr)
-
-
     def __array__(self, t = None):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
@@ -596,15 +575,19 @@ class PhysicalField(object):
             >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m"))
             Traceback (most recent call last):
                 ...
-            TypeError: numerix array value must be dimensionless
+            TypeError: Numeric array value must be dimensionless
         
         .. _Numeric: http://www.numpy.org
         """
-        value = self.getNumericValue()
-        if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
-            return value
+        if self.unit.isDimensionlessOrAngle():
+            value = self.getNumericValue()
+##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
+            if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
+                return value
+            else:
+                return numerix.array(self.getNumericValue(), t)
         else:
-            return numerix.array(self.getNumericValue(), t)
+            raise TypeError, 'Numeric array value must be dimensionless'
         
     def _getArray(self):
         if self.unit.isDimensionlessOrAngle():
