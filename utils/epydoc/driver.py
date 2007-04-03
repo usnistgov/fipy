@@ -4,7 +4,7 @@
  # 
  #  FILE: "driver.py"
  #                                    created: 3/17/05 {11:55:06 AM} 
- #                                last update: 3/18/05 {10:18:14 AM} 
+ #                                last update: 3/20/07 {3:45:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ def epylatex(module_names, options = {}):
     # Build their documentation
     docmap = epydoc.cli._make_docmap(modules, options)
     
-    _latex(docmap, options)
+    epydoc.cli.write_latex(docmap, options, 'latex')
     
     if epydoc.cli._encountered_internal_error:
         estr = ("!! An internal error occured.  To see the exception "+

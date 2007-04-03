@@ -58,31 +58,6 @@ from epydoc.objdoc import ClassDoc, Var, Raise, ObjDoc
 #   - longtable: multi-page tables (for var lists)
 #   - tocbibind: add the index to the table of contents
 #   - amssymb: extra math symbols.
-## _LATEX_HEADER = r"""
-## \documentclass{article}
-## \usepackage{alltt, parskip, fancyheadings, boxedminipage}
-## \usepackage{makeidx, multirow, longtable, tocbibind, amssymb}
-## \usepackage{fullpage}
-## %\usepackage[headings]{fullpage}
-## \begin{document}
-## 
-## \setlength{\parindent}{0ex}
-## \setlength{\fboxrule}{2\fboxrule}
-## \newlength{\BCL} % base class length, for base trees.
-## 
-## \pagestyle{fancy}
-## \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
-## \renewcommand{\subsectionmark}[1]{\markright{#1}}
-## 
-## \newenvironment{Ventry}[1]%
-##   {\begin{list}{}{%
-##     \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
-##     \settowidth{\labelwidth}{\texttt{#1:}}%
-##     \setlength{\leftmargin}{\labelsep}%
-##     \addtolength{\leftmargin}{\labelwidth}}}%
-##   {\end{list}}
-## """.strip()
-
 _LATEX_HEADER = r"""
 \documentclass{article}
 
@@ -317,24 +292,6 @@ class LatexFormatter:
             
         str += _LATEX_HEADER % ','.join(opts) + '\n'
 
-##         if self._index:
-##             str = re.sub(r'(\\begin{document})', '\\makeindex\n\\1', str)
-
-##         if self._hyperref:
-##             hyperref = (r'\\usepackage[usenames]{color}\n' +
-##                         r'\\definecolor{darkblue}{rgb}{0,0.05,0.35}\n' +
-##                         r'\\usepackage[dvips, pagebackref, ' +
-##                         'pdftitle={%s}, ' % (self._prj_name or '') +
-##                         'pdfcreator={epydoc %s}, ' % epydoc.__version__ +
-##                         'bookmarks=true, bookmarksopen=false, '+
-##                         'pdfpagemode=UseOutlines, colorlinks=true, '+
-##                         'linkcolor=black, anchorcolor=black, '+
-##                         'citecolor=black, filecolor=black, '+
-##                         'menucolor=black, pagecolor=black, '+
-##                         'urlcolor=darkblue]{hyperref}\n')
-##             str = re.sub(r'(\\begin{document})',
-##                          hyperref + '\\1', str)
-
         str += self._start_of('Title')
         str += '\\title{%s}\n' % self._text_to_latex(self._prj_name, 1)
         str += '\\author{API Documentation}\n'
@@ -352,6 +309,8 @@ class LatexFormatter:
         # If we're listing classes separately, put them after all the
         # modules.
         if self._list_classes_separately:
+            uids = self._filter(self._docmap.keys())
+            uids.sort()
             for uid in uids:
                 if uid.is_class():
                     if self._excluded(uid): continue
@@ -426,8 +385,6 @@ class LatexFormatter:
         else:
             seclevel = 1
             str += self._section('Class %s' % self._dotted(uid.shortname()), seclevel, uid)
-        
-##         str += '    \\label{%s}\n' % self._uid_to_label(uid)
 
         # The class base tree.
         if doc.bases():
@@ -492,7 +449,7 @@ class LatexFormatter:
             for cls in group:
                 str += self._class_list_line(cls)
             if name is not None:
-                str += '  \end{EpydocClassSubList}\n'
+                str += '  \\end{EpydocClassSubList}\n'
         
         return str + '\\end{EpydocClassList}'                
 
@@ -701,13 +658,10 @@ class LatexFormatter:
             str += ' '*4+'\\begin{EpydocFunctionParameters}{%s}\n' % (longest*'x')
             for param in fparam:
                 if param.listed_under(): continue
-##                 str += ' '*10+'\\item[' + self._dotted(param.name())
                 str += ' '*10+'\\item[' + self._text_to_latex(param.name())
                 if param.shared_descr_params():
                     for p in param.shared_descr_params():
-##                         str += ', %s' % self._dotted(p.name())
                         str += ', %s' % self._text_to_latex(p.name())
-##                 str += ']\n\n'
                 str += ']'
                 if param.descr():
                     str += self._docstring_to_latex(param.descr(), 10)
@@ -788,6 +742,10 @@ class LatexFormatter:
     # Inheritance lists
     #////////////////////////////////////////////////////////////
     
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!! JEG - This seems to have no counterpart in epydoc 3
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
     def _inheritance_list(self, links, cls):
         # Group the objects by defining class
         inh_dict = {}
@@ -825,7 +783,6 @@ class LatexFormatter:
 
         if not inh_dict: return ''
 
-##         str = '\\begin{EpydocInheritanceList}\n'
         str = ''
         inh_items = inh_dict.items()
         inh_items.sort(lambda a,b: cmp(a[0], b[0]))
@@ -833,7 +790,6 @@ class LatexFormatter:
             str += ('  \\EpydocInheritanceItemLine{%s}{%s}\n' % 
                 (self._hyperlink(base, base.shortname()),
                 ',\n'.join([' '*4 + self._hyperlink(link.target(), link.name()) for link in obj_links])))
-##         str += '\\end{EpydocInheritanceList}\n'
         str += '\n\n'
         return str
 
@@ -1063,9 +1019,6 @@ class LatexFormatter:
         str = str.replace('^', '{\\textasciicircum}')
         str = str.replace('~', '{\\textasciitilde}')
         str = str.replace('\0', r'{\textbackslash}')
-##         str = str.replace('.', '\\dothyp{}')
-        
-##         str = str.replace('.', '.\-')
 
         # replace spaces with non-breaking spaces
         if nbsp: str = str.replace(' ', '~')
@@ -1102,7 +1055,6 @@ class LatexFormatter:
     def _section(self, title, depth, uid = None):
         sec = _SECTIONS[depth+self._top_section]
         text = (('%s\n\n' % sec) % title) 
-##         text = (('%s\n\n' % sec) % self._text_to_latex(title)) 
         if uid:
             text += self._hypertarget(uid, "")
         return text               
@@ -1110,7 +1062,6 @@ class LatexFormatter:
     def _sectionstar(self, title, depth, uid = None):
         sec = _STARSECTIONS[depth+self._top_section]
         text = (('%s\n\n' % sec) % title) 
-##         text = (('%s\n\n' % sec) % self._text_to_latex(title)) 
         if uid:
             text += self._hypertarget(uid, "")
         return text               

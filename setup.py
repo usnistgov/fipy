@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 2/12/07 {3:03:34 PM} 
+ #                                last update: 3/20/07 {3:54:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,8 +112,10 @@ class build_docs (Command):
         self._initializeDirectory(dir = dir, type = 'latex')
         dir = os.path.join(dir, 'latex')
         
-        from utils.epydoc import driver
-        driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
+##         from utils.epydoc import driver
+##         driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
+        
+        os.system("epydoc --latex --output %s --no-sub-modules fipy/" % dir)
         
         savedir = os.getcwd()
         try:
@@ -269,9 +271,10 @@ class build_docs (Command):
 ##                             'examples/cahnHilliard/'
 ##                             ]
                                
-                from utils.epydoc import driver
-                driver.epylatex(module_names = ['examples/'], options = {'target':dir})
-                
+##                 from utils.epydoc import driver
+##                 driver.epylatex(module_names = ['examples/'], options = {'target':dir})
+                os.system("epydoc --latex --output %s examples/" % dir)
+
         if self.html:
             dir = os.path.join('documentation', 'manual', 'api')
             self._initializeDirectory(dir = dir, type = 'html')
@@ -300,7 +303,8 @@ if sys.modules.has_key('epydoc.uid'):
     sys.modules['epydoc.uid']._name_to_uid = {}
 
 from utils.epydoc import driver
-driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
+## driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
+os.system("epydoc --latex --output %s --no-sub-modules  documentation/manual/tutorial/fipy/" % dir)
 """)
 
         if self.guide or self.apis:
