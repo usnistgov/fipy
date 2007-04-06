@@ -1,0 +1,118 @@
+Python Docstrings
+=================
+
+.. $Id: manual-docstring.txt 1575 2007-03-08 21:28:07Z edloper $
+
+Python documentation strings (or *docstrings*) provide a convenient way of
+associating documentation with Python modules, functions, classes, and methods.
+An object's docsting is defined by including a string constant as the first
+statement in the object's definition. For example, the following function
+defines a docstring:
+
+.. python::
+
+    def x_intercept(m, b):
+        """
+        Return the x intercept of the line y=m*x+b.  The x intercept of a
+        line is the point at which it crosses the x axis (y=0).
+        """
+        return -b/m
+
+Docstrings can be accessed from the interpreter and from Python programs
+using the "``__doc__``" attribute:
+
+.. python::
+
+    >>> print x_intercept.__doc__
+        Return the x intercept of the line y=m*x+b.  The x intercept of a
+        line is the point at which it crosses the x axis (y=0).
+
+The pydoc_ module, which became part of `the standard library`__ in Python 2.1,
+can be used to display information about a Python object, including its
+docstring:
+
+.. _pydoc: http://web.lfw.org/python/pydoc.html
+.. __: http://www.python.org/doc/current/lib/module-pydoc.html
+
+.. python::
+
+    >>> from pydoc import help
+
+    >>> help(x_intercept)
+    Help on function x_intercept in module __main__:
+
+    x_intercept(m, b)
+        Return the x intercept of the line y=m*x+b.  The x intercept of a
+        line is the point at which it crosses the x axis (y=0).
+
+For more information about Python docstrings, see the `Python Tutorial`__ or
+the O'Reilly Network article `Python Documentation Tips and Tricks`__.
+
+.. __: http://www.python.org/doc/current/tut/node6.html#docstrings
+.. __: http://www.onlamp.com/lpt/a/python/2001/05/17/docstrings.html
+
+
+Variable docstrings
+-------------------
+
+..
+    [xx] this should be somewhere else, i guess...
+
+Python don't support directly docstrings on variables: there is no attribute
+that can be attached to variables and retrieved interactively like the
+``__doc__`` attribute on modules, classes and functions.
+
+While the language doesn't directly provides for them, Epydoc supports
+*variable docstrings*: if a variable assignment statement is immediately
+followed by a bare string literal, then that assignment is treated as a
+docstring for that variable. In classes, variable assignments at the class
+definition level are considered class variables; and assignments to instance
+variables in the constructor (``__init__``) are considered instance variables:
+
+.. python::
+
+    class A:
+        x = 22
+        """Docstring for class variable A.x"""
+
+        def __init__(self, a):
+            self.y = a
+            """Docstring for instance variable A.y
+
+Variables may also be documented using *comment docstrings*. If a variable
+assignment is immediately preceeded by a comment whose lines begin with the
+special marker '``#:``', or is followed on the same line by such a comment,
+then it is treated as a docstring for that variable:
+
+.. python::
+
+    #: docstring for x
+    x = 22
+    x = 22 #: docstring for x
+
+Notice that variable docstrings are only available for documentation when the
+source code is available for *parsing*: it is not possible to retrieve variable
+
+
+Items visibility
+----------------
+
+Any Python object (modules, classes, functions, variables...) can be *public*
+or *private*. Usually the object name decides the object visibility: objects
+whose name starts with an underscore and doesn't end with an underscore are
+considered private. All the other objects (including the "magic functions" such
+as ``__add__``) are public.
+
+For each module and class, Epydoc generates pages with both public and private
+methods. A Javascript snippet allows you to toggle the visibility of private
+objects.
+
+If a module wants to hide some of the objects it contains (either defined in
+the module itself or imported from other modules), it can explicitly list the
+names if its `public names`_ in the ``__all__`` variable.
+
+.. _public names: http://www.python.org/doc/2.4.3/ref/import.html
+
+If a module defines the ``__all__`` variable, Epydoc uses its content to decide
+if the module objects are public or private.
+

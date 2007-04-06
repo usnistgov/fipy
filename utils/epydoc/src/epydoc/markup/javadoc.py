@@ -129,7 +129,8 @@ class ParsedJavadocDocstring(ParsedDocstring):
             else:
                 # Get the field argument (if appropriate).
                 if tag in self._ARG_FIELDS:
-                    (arg, body) = pieces[i].strip().split(None, 1)
+                    subpieces = pieces[i].strip().split(None, 1)+['','']
+                    (arg, body) = subpieces[:2]
                 else:
                     (arg, body) = (None, pieces[i])
 
@@ -146,7 +147,10 @@ class ParsedJavadocDocstring(ParsedDocstring):
                 parsed_body = ParsedJavadocDocstring(body)
                 fields.append(Field(tag, arg, parsed_body))
 
-        return (descr, fields)
+        if pieces[0].strip():
+            return (descr, fields)
+        else:
+            return (None, fields)
 
     #////////////////////////////////////////////////////////////
     # HTML Output.
@@ -215,14 +219,30 @@ class ParsedJavadocDocstring(ParsedDocstring):
     def to_plaintext(self, docstring_linker, **options):
         return self._docstring
 
+    _SUMMARY_RE = re.compile(r'(\s*[\w\W]*?\.)(\s|$)')
+
     # Jeff's hack to get summary working
     def summary(self):
-        m = re.match(r'(\s*[\w\W]*?\.)(\s|$)', self._docstring)
+        # Drop tags
+        doc = "\n".join([ row for row in self._docstring.split('\n')
+                          if not row.lstrip().startswith('@') ])
+
+        m = self._SUMMARY_RE.match(doc)
         if m:
-            return ParsedJavadocDocstring(m.group(1))
+            other = doc[m.end():]
+            return (ParsedJavadocDocstring(m.group(1)),
+                    other != '' and not other.isspace())
+            
         else:
-            summary = self._docstring.split('\n', 1)[0]+'...'
-            return ParsedJavadocDocstring(summary)
+            parts = doc.strip('\n').split('\n', 1)
+            if len(parts) == 1:
+                summary = parts[0]
+                other = False
+            else:
+                summary = parts[0] + '...'
+                other = True
+            
+            return ParsedJavadocDocstring(summary), other
         
 #     def concatenate(self, other):
 #         if not isinstance(other, ParsedJavadocDocstring):

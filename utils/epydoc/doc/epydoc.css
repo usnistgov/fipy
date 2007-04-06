@@ -7,40 +7,30 @@
  */
 
 /*===================================================================*/
-/* Define a simple 3-level color scheme.  These tags aren't usually */
-/* used directly, but they define the basic colors used by many */
-/* other tags (e.g., body = .dark) */
-
-.white   { background: #ffffff; color: #000000; }
-.light   { background: #c8e0e8; color: #000000; }
-.medium  { background: #b2c0c0; color: #000000; }
-.dark    { background: #8098a0; color: #000000; }
-.darkest { background: #607880; color: #b8d0d0; }
-
-.grayf { background: #f0f0f0; color: #000000; }
-.grayc { background: #c0c0c0; color: #000000; }
-.gray9 { background: #909090; color: #000000; }
-.gray6 { background: #606060; color: #000000; }
-.gray3 { background: #303030; color: #000000; }
-
-/*===================================================================*/
 /* Default body appearance */
 
-body    { background: #b0c8d0; color: #000000; }        /* = .dark */
+body    { background: #b4ccd4; color: #000000; }
 
 @media print {
   body { font-family: times,serif; font-size: 10pt; }
 }
 
 @media screen {
-  body    { background: #b0c8d0; color: #000000; }        /* = .dark */
+  body    { background: #204060; color: #000000; }
+  div.body { 
+    background: white; color: black;
+/*    background: #c8e0e8; color: #000000;*/
+    padding: 0 1em 0 1em;
+    border: 2px solid black;
+/*    border: 2px groove #c0d0d0;*/
+  }
 }
 
 /*===================================================================*/
 /* Headlines. */
 
-h1 { color: #000060; background: transparent; 
-     font-size: 180%; font-weight: bold; text-align: center; }
+h1 { font-size: 180%; font-weight: bold; text-align: center;
+     padding: .1em; margin: 0; border-bottom: 2px solid black;}
 h2 { font-size: 150%; font-weight: bold; }
 h3 { font-size: 140%; font-weight: bold; font-style: italic; }
 h4 { font-size: 130%; font-weight: bold; font-style: italic; }
@@ -53,33 +43,39 @@ h4 { font-size: 130%; font-weight: bold; font-style: italic; }
 .right { text-align: right; }
 
 /*===================================================================*/
-/* Tables.  td = normal table cell; th = table header cell; */
-/* th.secondary = secondary table header cell. */
+/* Tables */
 
-/* Add 'border="1" cellspacing="0" cellpadding="3" width="100%"' as */
-/* properties to most tables, rather than defining borders for td, */
-/* etc.  That way, the tables are still legible in old browsers. */
-
-table        { background: #ffffff; color: #000000; }   /* = .white */
-th           { background: #c8e0e8; color: #000000;     /* = .light */
-               font-weight: bold; }
-th.secondary { background: #ffffff; color: #000000;      /* = .white */
+table        { background: #ffffff; color: #000000; border: 1px solid black;}
+th           { background: #70b0ff; color: #000000;
+               font-weight: bold; border: 1px solid black; }
+td { border: 1px solid black; background: #e8f0f8; color: #000000; }
+th.secondary { background: #ffffff; color: #000000;
                font-weight: bold; font-style: italic; }
-table.transparent { background: transparent; color: #000000; }
 
-/* I use tables to show screenshots. */
-.screenshot  { background: #c8e0e8; color: #000000; }   /* = .light */
+/* Tables used for placement */
+table.transparent { background: transparent; border-width: 0; }
+td.transparent    { background: transparent; border-width: 0; }
 
-/* Sometimes we want transparent tables, for positioning. */
-.transparent { background: transparent; }
+/* Tables used for screenshots */
+.screenshot  { background: #c8e0e8; color: #000000; }
 
 th.index { background: red; }
 
 /*===================================================================*/
 /* Lists. */
-/* I just want to remove the space around lists.. :-/ */
 
-/* UL, OL { margin-top: -0.7em; margin-bottom: -0.5em; } */
+ul.nomargin { margin-top: 0; margin-bottom: 0; }
+
+/*===================================================================*/
+/* Index page. */
+
+#documentation-box table { margin-top: 0.7em; }
+#documentation-box ul, #documentation-box ol
+  { margin: 0; padding: 0 0 0 2em; font-size: 90%;}
+#documentation-box td { padding: 0 0 1em 0; }
+#documentation-box p { margin: 0; padding: 0; }
+#feedback-box ul
+  { margin: 0.5em 0 0.7em 2em; padding: 0; }
 
 /*===================================================================*/
 /* Link colors. */
@@ -88,28 +84,35 @@ a:link        { background: transparent; color: #104060; }
 a:visited     { background: transparent; color: #082840; } 
 
 /*===================================================================*/
+/* Date stamp. */
+
+.datestamp { font-size: 70%; color: #e0f0ff; }
+
+/*===================================================================*/
 /* Generic box.  Usually used with DIV. */
 
 .box {
-    background: #c8e0e8; color: #000000;                /* = .light */
+    background: #e8f0f8; color: black; 
     border: 2px solid #000000;
-    margin: 1em 0em 1em 0em;
-    padding: 0em 1em 0em 1em;
+    margin: 1em 0 1em 0;
+    padding: 0 10px 0 10px;
 }
 
 .box-title {
-    color: #003800; 
-  /*background: transparent; */  /* (This confuses netscape 4.x) */
+    background: #70b0ff;
     text-align: center;
-    font-weight: normal; 
-    font-size: 150%;
-    margin: 0em 0em 0.2em 0em;
-    border-style: solid;
-    border-color: #000000;
-    border-width: 0 0 1px 0;
+    font-weight: bold;
+    font-size: 125%;
+    margin: 0 -10px 0 -10px;
+    padding: 0 10px 0 10px;
+    border-bottom: 2px solid black;
 }
 
+.doclist { padding: 0; margin: 0 0 0 1em; }
+
 .caption { font-style: italic; text-align: center; }
+
+dl.faq dt { font-weight: bold; }
 
 /*===================================================================*/
 /* Screen output. */
@@ -118,10 +121,18 @@ a:visited     { background: transparent; color: #082840; }
 /*     - (more will be added as I use them) */
 
 .screen {
-    background: #c8e0e8; color: #000000;                /* = .light */
+    background: #e8f0f8; color: black; 
     border: 2px solid #000000;
-    margin: 1em 0em 1em 0em;
-    padding: 0em 1em 0em 1em;
+    margin: 1em 0 1em 0;
+    padding: 0 1em 0 1em;
+    font-family: monospace;
+}
+
+.screen2 {
+    background: #c8d8e0; color: black; 
+    border: 2px solid #000000;
+    margin: 1em 0 1em 0;
+    padding: 0 1em 0 1em;
     font-family: monospace;
 }
 
@@ -143,15 +154,24 @@ b.error { background: transparent; color: #700000; }
 b.error i { background: transparent; color: #604000; }
 
 /*===================================================================*/
-/* Navigation box (used as a footer).  Implemented with a table. */
+/* Navigation box */
 
-.navbox { 
-    background: #688088; color: #d8f0f0;
-    border: 2px groove #c0d0d0; 
+table.navbox {
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+}
+td.nav {
+  border: 2px outset #70b0ff;
+  background: #70b0ff; color: black;
+  font-weight: bold;
+}
+td.navselect {
+  background: #4888d8; color: white;
 }
 
-a.nav:link    { background: transparent; color: #d8f0f0; }
-a.nav:visited { background: transparent; color: #d8f0f0; }
+a.nav:link    { text-decoration: none; }
+a.nav:visited { text-decoration: none; }
 
 /*===================================================================*/
 /* End of stylesheet */

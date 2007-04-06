@@ -30,16 +30,16 @@ Installing
 ~~~~~~~~~~
     To install epydoc, use make:
 
-        [user epydoc-2.0]$ su
+        [user epydoc-3.0]$ su
         Password:
-        [root epydoc-2.0]# make install
-        [root epydoc-2.0]# make installdocs
+        [root epydoc-3.0]# make install
+        [root epydoc-3.0]# make installdocs
 
     Or use the distutils setup.py script:
 
-        [user epydoc-2.0]$ su
+        [user epydoc-3.0]$ su
         Password:
-        [root epydoc-2.0]# python setup.py install
+        [root epydoc-3.0]# python setup.py install
 
     For complete installation instructions, including instructions on
     how to install from RPM package, Debian package, or the windows

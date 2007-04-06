@@ -1,0 +1,45 @@
+==================
+      Epydoc
+==================
+-------------------------------------------------
+Automatic API Documentation Generation for Python
+-------------------------------------------------
+
+.. $Id: manual.txt 1559 2007-02-27 06:42:46Z edloper $
+
+:Author: `Edward Loper <edloper@gradient.cis.upenn.edu>`__
+
+:Version: 3.0b1
+
+:Abstract:
+    Epydoc is a tool for generating API documentation for Python modules,
+    based on their docstrings. For an example of epydoc's output, see the API
+    documentation for epydoc itself (html_, pdf_). A lightweight markup language
+    called epytext_ can be used to format docstrings, and to add information
+    about specific fields, such as parameters and instance variables. Epydoc
+    also understands docstrings written in reStructuredText_, Javadoc_, and
+    plaintext. For a more extensive example of epydoc's output, see the `API
+    documentation for Python 2.4`_.
+
+.. _html:       http://epydoc.sourceforge.net/api/
+.. _pdf:        http://epydoc.sourceforge.net/epydoc.pdf
+.. _epytext:    `The Epytext Markup Language`_
+.. _reStructuredText:
+                http://docutils.sourceforge.net/rst.html
+.. _JavaDoc:    http://java.sun.com/j2se/javadoc/
+.. _API documentation for Python 2.4:
+                http://epydoc.sourceforge.net/stdlib/
+
+.. contents::
+.. section-numbering::
+
+
+.. Include the document chapters
+
+.. include:: manual-install.txt
+.. include:: manual-usage.txt
+.. include:: manual-docstring.txt
+.. include:: manual-epytext.txt
+.. include:: manual-fields.txt
+.. include:: manual-othermarkup.txt
+.. include:: manual-reference.txt

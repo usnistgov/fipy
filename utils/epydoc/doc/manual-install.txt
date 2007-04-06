@@ -1,0 +1,163 @@
+Installing Epydoc
+=================
+
+.. $Id: manual-install.txt 1541 2007-02-20 09:49:56Z dvarrazzo $
+
+Downloading Epydoc
+------------------
+
+Epydoc can be downloaded from the `SourceForge download page`_. Epydoc is
+available in five formats:
+
+* RPM (``.noarch.rpm``)
+* Windows installer (``.win32.exe``)
+* Source install (``.tar.gz``)
+* Source install (``.zip``)
+* Source RPM (``.src.rpm``)
+
+.. _SourceForge download page:
+   http://sourceforge.net/project/showfiles.php?group_id=32455
+
+If you are installing on RedHat, I recommend that you use the RPM file. If you
+are installing on Windows, I recommended that you use the windows installer.
+Otherwise, you should use one of the source install files.
+
+
+Getting Epydoc from Subversion
+------------------------------
+
+If you wish to keep up on the latest developments, you can get the latest
+version of epydoc from the `subversion repository`_::
+
+    [/home/edloper]$ svn co https://svn.sourceforge.net/svnroot/epydoc/trunk/epydoc epydoc
+    [/home/edloper]$ ls epydoc
+    Makefile  doc  man  sandbox  src
+
+This will create a directory named ``epydoc`` containing the latest version of
+epydoc. The ``epydoc`` package itself is in ``epydoc/src/epydoc`` (so adding
+``epydoc/src`` to your ``PYTHONPATH`` will let you use it). You should
+periodically update your copy of the subversion repository, to make sure you
+have all the latest changes::
+
+    [/home/edloper/epydoc]$ svn up
+
+You can browse the subversion repository here__.
+
+.. _subversion repository: http://sourceforge.net/svn/?group_id=32455
+.. __: http://svn.sourceforge.net/viewcvs.cgi/epydoc/trunk/epydoc/
+
+
+Installing from the RPM File
+----------------------------
+
+1. Download the RPM file to a directory of your choice.
+2. Use rpm to install the new package. ::
+
+      [/tmp]$ su
+      Password:
+      [/tmp]# rpm -i epydoc-3.0beta1.noarch.rpm
+
+3. Once epydoc is installed, you can delete the RPM file. ::
+
+      [/tmp]# rm epydoc-3.0beta1.rpm
+
+
+Installing from the Windows Installer
+-------------------------------------
+
+1. Download and run ``epydoc-3.0beta1.win32.exe``.
+2. Follow the on-screen instructions. Epydoc will be installed in the epydoc
+   subdirectory of your Python installation directory (typically
+   ``C:\Python24\``).
+3. The Windows installer creates two scripts in the ``Scripts`` subdirectory of
+   your Python installation directory: ``epydoc.pyw`` opens the graphical user
+   interface, and ``epydoc.py`` calls the command line interface. If you'd
+   like, you can create shortcuts from these scripts to more convenient
+   locations (such as your desktop or start menu).
+4. Once epydoc is installed, you can delete ``epydoc-3.0beta1.win32.exe``.
+
+
+Installing from the Source Distribution (using make)
+----------------------------------------------------
+
+1. Download an epydoc source distribution to a directory of your choice, and
+   uncompress it. ::
+
+      [/tmp]$ wget -q http://prdownloads.sourceforge.net/epydoc/epydoc-3.0beta1.tar.gz
+      [/tmp]$ gunzip epydoc-3.0beta1.tar.gz
+      [/tmp]$ tar -xvf epydoc-3.0beta1.tar
+
+2. Use ``make install`` in the ``eydoc-3.0beta1/`` directory to install
+   epydoc. ::
+
+      [/tmp]$ cd epydoc-3.0beta1/
+      [/tmp/epydoc-3.0beta1]$ su
+      Password:
+      [/tmp/epydoc-3.0beta1]# make install
+      running install
+      running build
+      [...]
+      copying build/scripts/epydoc -> /usr/bin
+      changing mode of /usr/bin/epydoc to 100775
+
+3. If you'd like to keep a local copy of the documentation, then use ``make
+   installdocs``. By default, this will install the documentation to
+   ``/usr/share/doc/`` and the man pages to ``/usr/share/man/``. If you would
+   prefer to install documentation to different directories (such as
+   ``/usr/lib/doc``), then edit the ``MAN`` and ``DOC`` variables at the top of
+   ``Makefile`` before running ``make installdocs``. ::
+
+      [/tmp/epydoc-3.0beta1]# make installdocs
+
+4. Once epydoc is installed, you can delete the installation directory and the
+   source distribution file. ::
+
+      [/tmp/epydoc-3.0beta1]# cd ..
+      [/tmp]# rm -r epydoc-3.0beta1
+      [/tmp]# rm epydoc-3.0beta1.tar
+
+
+Installing from the Source Distribution (without make)
+------------------------------------------------------
+
+1. Download an epydoc source distribution to a directory of your choice, and
+   uncompress it. ::
+
+      [/tmp]$ wget -q http://prdownloads.sourceforge.net/epydoc/epydoc-3.0beta1.tar.gz
+      [/tmp]$ gunzip epydoc-3.0beta1.tar.gz
+      [/tmp]$ tar -xvf epydoc-3.0beta1.tar
+
+2. Use the ``setup.py`` script in the ``eydoc-3.0beta1/`` directory to install
+   epydoc. ::
+
+      [/tmp]$ cd epydoc-3.0beta1/
+      [/tmp/epydoc-3.0beta1]$ su
+      Password:
+      [/tmp/epydoc-3.0beta1]# python setup.py install
+      running install
+      running build
+      [...]
+      copying build/scripts/epydoc -> /usr/bin
+      changing mode of /usr/bin/epydoc to 100775
+      [/tmp/epydoc-3.0beta1]# cd ..
+      [/tmp]#
+
+3. If you'd like to keep a local copy of the documentation, then copy it to a
+   permanant location, such as ``/usr/share/doc/``. You may also want to copy
+   the man pages to a permanant location, such as ``/usr/share/man/``. ::
+
+      [/tmp]# cp -r epydoc-3.0beta1/doc/ /usr/share/doc/epydoc/
+      [/tmp]# cp epydoc-3.0beta1/man/* /usr/share/man/
+
+4. Once epydoc is installed, you can delete the installation directory and the
+   source distribution file. ::
+
+      [/tmp]# rm -r epydoc-3.0beta1
+      [/tmp]# rm epydoc-3.0beta1.tar
+
+
+Installing on Debian
+--------------------
+
+Epydoc 2.1 is available as a testing debian package (``python-epydoc``). The
+epydoc documentation is also available as a package (``epydoc-doc``).

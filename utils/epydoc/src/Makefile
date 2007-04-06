@@ -13,6 +13,9 @@ LIB = /usr/share
 MAN = ${LIB}/man/
 DOC = ${LIB}/doc/
 
+# What version of python to use?
+PYTHON = python
+
 ##//////////////////////////////////////////////////////////////////////
 ## Makefile
 ##//////////////////////////////////////////////////////////////////////
@@ -23,7 +26,7 @@ usage:
 	@echo "  make installdocs -- Install the documentation for epydoc"
 
 install:
-	python setup.py install
+	$(PYTHON) setup.py install
 
 docs: installdocs
 installdocs:
@@ -66,23 +69,23 @@ bdist: rpmdist windist
 gztardist:
 	test -e doc || ln -s ../webpage doc
 	test -e man || ln -s ../man man
-	python setup.py -q sdist --format=gztar
+	$(PYTHON) setup.py -q sdist --format=gztar
 
 # Produce dist/$(NAME)-$(VERSION).tar.gz
 zipdist:
 	test -e doc || ln -s ../webpage doc
 	test -e man || ln -s ../man man
-	python setup.py -q sdist --format=zip
+	$(PYTHON) setup.py -q sdist --format=zip
 
 # Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
 # Produce dist/$(NAME)-$(VERSION)-1.src.rpm
 rpmdist:
 	test -e doc || ln -s ../webpage doc
 	test -e man || ln -s ../man man
-	python setup.py -q bdist --format=rpm
+	$(PYTHON) setup.py -q bdist --format=rpm
 
 # Produce dist/$(NAME)-$(VERSION).win32.exe
 windist:
 	test -e doc || ln -s ../webpage doc
 	test -e man || ln -s ../man man
-	python setup.py -q bdist --format=wininst
+	$(PYTHON) setup.py -q bdist --format=wininst

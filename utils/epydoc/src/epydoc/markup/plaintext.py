@@ -10,7 +10,10 @@
 Parser for plaintext docstrings.  Plaintext docstrings are rendered as
 verbatim output, preserving all whitespace.
 """
+__docformat__ = 'epytext en'
+
 from epydoc.markup import *
+from epydoc.util import plaintext_to_html, plaintext_to_latex
 
 def parse_docstring(docstring, errors, **options):
     """
@@ -25,6 +28,7 @@ def parse_docstring(docstring, errors, **options):
 class ParsedPlaintextDocstring(ParsedDocstring):
     def __init__(self, text, **options):
         self._verbatim = options.get('verbatim', 1)
+        if text is None: raise ValueError, 'Bad text value (expected a str)'
         self._text = text
 
     def to_html(self, docstring_linker, **options):
@@ -40,15 +44,30 @@ class ParsedPlaintextDocstring(ParsedDocstring):
             return ParsedDocstring.to_latex(self, docstring_linker, **options)
 
     def to_plaintext(self, docstring_linker, **options):
-        return self._text
+        if 'indent' in options:
+            indent = options['indent']
+            lines = self._text.split('\n')
+            return '\n'.join([' '*indent+l for l in lines])+'\n'
+        return self._text+'\n'
     
+    _SUMMARY_RE = re.compile(r'(\s*[\w\W]*?(?:\.(\s|$)|[\n][\t ]*[\n]))')
+
     def summary(self):
-        m = re.match(r'(\s*[\w\W]*?\.)(\s|$)', self._text)
+        m = self._SUMMARY_RE.match(self._text)
         if m:
-            return ParsedPlaintextDocstring(m.group(1), verbatim=0)
+            other = self._text[m.end():]
+            return (ParsedPlaintextDocstring(m.group(1), verbatim=0),
+                    other != '' and not other.isspace())
         else:
-            summary = self._text.split('\n', 1)[0]+'...'
-            return ParsedPlaintextDocstring(summary, verbatim=0)
+            parts = self._text.strip('\n').split('\n', 1)
+            if len(parts) == 1:
+                summary = parts[0]
+                other = False
+            else:
+                summary = parts[0] + '...'
+                other = True
+                
+            return ParsedPlaintextDocstring(summary, verbatim=0), other
         
 #     def concatenate(self, other):
 #         if not isinstance(other, ParsedPlaintextDocstring):

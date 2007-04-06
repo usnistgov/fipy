@@ -3,11 +3,11 @@
 # Edward Loper
 #
 # Created [01/30/01 05:18 PM]
-# $Id$
+# $Id: html_help.py 1239 2006-07-05 11:29:50Z edloper $
 #
 
 """
-Default help file for the HTML outputter (L{epydoc.html}).
+Default help file for the HTML outputter (L{epydoc.docwriter.html}).
 
 @type HTML_HELP: C{string}
 @var HTML_HELP: The contents of the HTML body for the default
@@ -17,7 +17,7 @@ __docformat__ = 'epytext en'
 
 # Expects: {'this_project': name}
 HTML_HELP = '''
-<h1 class="help"> API Documentation </h1>
+<h1 class="epydoc"> API Documentation </h1>
 
 <p> This document contains the API (Application Programming Interface)
 documentation for %(this_project)s.  Documentation for the Python

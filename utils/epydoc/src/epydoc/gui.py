@@ -10,11 +10,11 @@
 """
 Graphical interface to epydoc.  This interface might be useful for
 systems where it's inconvenient to use the command-line interface
-(such as Windows).  It supports all of the features that are supported
-by the command-line interface.  It also supports loading and saving of
-X{project files}, which store a set of related modules, and the
-options that should be used to generate the documentation for those
-modules.
+(such as Windows).  It supports many (but not all) of the features
+that are supported by the command-line interface.  It also supports
+loading and saving of X{project files}, which store a set of related
+modules, and the options that should be used to generate the
+documentation for those modules.
 
 Usage::
     epydocgui [OPTIONS] [FILE.prj | MODULES...]
@@ -24,6 +24,9 @@ Usage::
     -V, --version             Print the version of epydoc.
     -h, -?, --help, --usage   Display this usage message
     --debug                   Do not suppress error messages
+
+@todo: Use ini-style project files, rather than pickles (using the
+same format as the CLI).
 """
 __docformat__ = 'epytext en'
 
@@ -138,44 +141,66 @@ ADs=
 ## MessageIO
 ##/////////////////////////////////////////////////////////////////////////
 
-class _PipeIO:
-    """
-    A file-like class that captures strings and prints them.  For
-    thread safety, it monotonically increases _data (is this
-    necessary?).
-    """
-    def __init__(self):
+from epydoc import log
+from epydoc.util import wordwrap
+class GUILogger(log.Logger):
+    _STAGES = [40, 7, 1, 3, 30, 1, 2, 100]
+    
+    def __init__(self, progress, cancel):
+        self._progress = progress
+        self._cancel = cancel
         self.clear()
 
     def clear(self):
-        self._data = []
+        self._messages = []
         self._n = 0
-        self.softspace = 0
+        self._stage = 0
+        self._message_blocks = []
+        
+    def log(self, level, message):
+        message = wordwrap(str(message)).rstrip() + '\n'
+        if self._message_blocks:
+            self._message_blocks[-1][-1].append( (level, message) )
+        else:
+            self._messages.append( (level, message) )
 
-    def write(self, str):
-        # If we detect an exception, then start writing everything to
-        # the real stderr.
-        global DEBUG
-        if str.startswith('Traceback') or str.startswith('Exception'):
-            DEBUG = 1
-        if DEBUG: sys.__stderr__.write(str)
+    def start_block(self, header):
+        self._message_blocks.append( (header, []) )
 
-        # Save the data.
-        self._data.append(str)
+    def end_block(self):
+        header, messages = self._message_blocks.pop()
+        if messages:
+            self._messages.append( ('uline', ' '*75+'\n') )
+            self.log('header', header)
+            self._messages += messages
+            self._messages.append( ('uline', ' '*75+'\n') )
+        
+    def start_progress(self, header=None):
+        self.log(log.INFO, header)
+        self._stage += 1
+        
+    def end_progress(self):
+        pass
+    
+    def progress(self, percent, message=''):
+        if self._cancel[0]: exit_thread()
+        i = self._stage - 1
+        p = ((sum(self._STAGES[:i]) + percent*self._STAGES[i]) /
+             float(sum(self._STAGES)))
+        self._progress[0] = p
         
     def read(self):
-        if self._n >= len(self._data):
-            return None
+        if self._n >= len(self._messages):
+            return None, None
         else:
-            str = self._data[self._n]
             self._n += 1
-            return str
-
+            return self._messages[self._n-1]
+        
 ##/////////////////////////////////////////////////////////////////////////
 ## THREADED DOCUMENTER
 ##/////////////////////////////////////////////////////////////////////////
 
-def document(options, progress, cancel):
+def document(options, cancel, done):
     """
     Create the documentation for C{modules}, using the options
     specified by C{options}.  C{document} is designed to be started in
@@ -183,107 +208,45 @@ def document(options, progress, cancel):
 
     @param options: The options to use for generating documentation.
         This includes keyword options that can be given to
-        L{html.HTMLFormatter}, as well as the option C{outdir}, which
+        L{docwriter.html.HTMLWriter}, as well as the option C{target}, which
         controls where the output is written to.
     @type options: C{dictionary}
-    @param progress: This first element of this list will be modified
-        by C{document} to reflect its progress.  This first element
-        will be a number between 0 and 1 while C{document} is creating
-        the documentation; and the string C{"done"} once it finishes
-        creating the documentation.
-    @type progress: C{list}
     """
-    progress[0] = 0.02
-    from epydoc.html import HTMLFormatter
-    from epydoc.objdoc import DocMap, report_param_mismatches
-    from epydoc.imports import import_module, find_modules
-    from epydoc.objdoc import set_default_docformat
+    from epydoc.docwriter.html import HTMLWriter
+    from epydoc.docbuilder import build_doc_index
+    import epydoc.docstringparser
 
     # Set the default docformat.
-    set_default_docformat(options.get('docformat', 'epytext'))
+    docformat = options.get('docformat', 'epytext')
+    epydoc.docstringparser.DEFAULT_DOCFORMAT = docformat
 
     try:
-        # Import the modules.
-        modnames = options['modules']
-        # First, expand packages.
-        for name in modnames[:]:
-            if os.path.isdir(name):
-                modnames.remove(name)
-                new_modules = find_modules(name)
-                if new_modules: modnames += new_modules
-                sys.stderr.write('!!!Error: %r is not a pacakge\n!!!' % name)
-                
-        modules = []
-        for (name, num) in zip(modnames, range(len(modnames))):
-            if cancel[0]: exit_thread()
-            sys.stderr.write('***Importing %s\n***' % name)
-            try:
-                module = import_module(name)
-                if module not in modules: modules.append(module)
-            except ImportError, e:
-                sys.stderr.write('!!!Error importing %s: %s\n!!!' % (name, e))
-            progress[0] += (IMPORT_PROGRESS*0.98)/len(modnames)
-        
-        # Create the documentation map.
-        verbosity = 0
-        document_bases = 1
-        document_autogen_vars = 1
-        inheritance_groups = (options['inheritance'] == 'grouped')
-        inherit_groups = (options['inheritance'] != 'grouped')
-        d = DocMap(verbosity, document_bases, document_autogen_vars,
-                   inheritance_groups, inherit_groups)
-    
-        # Build the documentation.
-        for (module, num) in zip(modules, range(len(modules))):
-            if cancel[0]: exit_thread()
-            sys.stderr.write('***Building docs for %s\n***' % module.__name__)
-            d.add(module)
-            progress[0] += (BUILD_PROGRESS*0.98)/len(modules)
-
-        # Report any param inheritance mismatches.
-        report_param_mismatches(d)
-
-        # Create the HTML formatter.
-        htmldoc = HTMLFormatter(d, **options)
-        numfiles = htmldoc.num_files()
-    
-        # Set up the progress callback.
-        n = htmldoc.num_files()
-        def progress_callback(path, numfiles=numfiles,
-                              progress=progress, cancel=cancel, num=[1]):
-            if cancel[0]: exit_thread()
-
-            # Find the short name of the file we're writing.
-            (dir, file) = os.path.split(path)
-            (root, d) = os.path.split(dir)
-            if d in ('public', 'private'): fname = os.path.join(d, file)
-            else: fname = file
-                
-            sys.stderr.write('***Writing %s\n***' % fname)
-            progress[0] += (WRITE_PROGRESS*0.98)/numfiles
-            num[0] += 1
-    
-        # Write the documentation.
-        htmldoc.write(options.get('outdir', 'html'), progress_callback)
+        parse = options['introspect_or_parse'] in ('parse', 'both')
+        introspect = options['introspect_or_parse'] in ('introspect', 'both')
+        docindex = build_doc_index(options['modules'], parse, introspect)
+        html_writer = HTMLWriter(docindex, **options)
+        log.start_progress('Writing HTML docs to %r' % options['target'])
+        html_writer.write(options['target'])
+        log.end_progress()
     
         # We're done.
-        sys.stderr.write('***Finished!\n***')
-        progress[0] = 'done'
+        log.warning('Finished!')
+        done[0] = 'done'
 
     except SystemExit:
         # Cancel.
-        sys.stderr.write('!!!Cancel!\n!!!')
-        progress[0] = 'cancel'
+        log.error('Cancelled!')
+        done[0] ='cancel'
         raise
     except Exception, e:
         # We failed.
-        sys.stderr.write('!!!Internal error: %s\n!!!' % e)
-        progress[0] = 'cancel'
+        log.error('Internal error: %s' % e)
+        done[0] ='cancel'
         raise
     except:
         # We failed.
-        sys.stderr.write('!!!Internal error\n!!!')
-        progress[0] = 'cancel'
+        log.error('Internal error!')
+        done[0] ='cancel'
         raise
     
 ##/////////////////////////////////////////////////////////////////////////
@@ -299,6 +262,7 @@ class EpydocGUI:
         self._progress = [None]
         self._cancel = [0]
         self._filename = None
+        self._init_dir = None
 
         # Store a copy of sys.modules, so that we can restore it
         # later.  This is useful for making sure that we reload
@@ -314,6 +278,7 @@ class EpydocGUI:
         self._root.bind('<Control-q>', self.destroy)
         self._root.bind('<Alt-q>', self.destroy)
         self._root.bind('<Alt-x>', self.destroy)
+        self._root.bind('<Control-x>', self.destroy)
         #self._root.bind('<Control-d>', self.destroy)
         self._root.title('Epydoc')
         self._rootframe = Frame(self._root, background=BG_COLOR,
@@ -342,10 +307,9 @@ class EpydocGUI:
         self._init_messages(msgsframe, ctrlframe)
         self._init_bindings()
 
-        # Replace stderr with a _PipeIO stream, so we can capture
-        # messages.
-        self._errpipe = _PipeIO()
-        sys.stderr = self._errpipe
+        # Set up logging
+        self._logger = GUILogger(self._progress, self._cancel)
+        log.register_logger(self._logger)
 
         # Open the messages pane by default.
         self._messages_toggle()
@@ -404,6 +368,10 @@ class EpydocGUI:
         self._module_entry = Entry(mframe3, **ENTRY_CONFIG)
         self._module_entry.pack(side='left', fill='x', expand=1)
         self._module_entry.bind('<Return>', self._entry_module)
+        self._module_delete = Button(mframe3, text="Remove",
+                                     command=self._delete_module,
+                                     **BUTTON_CONFIG) 
+        self._module_delete.pack(side='right', expand=0, padx=2)
         self._module_browse = Button(mframe3, text="Browse",
                                      command=self._browse_module,
                                      **BUTTON_CONFIG) 
@@ -548,7 +516,7 @@ class EpydocGUI:
         div = Frame(oframe2, background=BG_COLOR, border=1, relief='sunk')
         div.pack(ipady=1, fill='x', padx=4, pady=2)
 
-        Label(oframe2, text="CSS Stylesheets", font='helvetica -16',
+        Label(oframe2, text="CSS Stylesheet", font='helvetica -16',
               **COLOR_CONFIG).pack(anchor='w')
         oframe6 = Frame(oframe2, background=BG_COLOR)
         oframe6.pack(fill='x')
@@ -652,6 +620,26 @@ class EpydocGUI:
         b.grid(row=row, column=3, sticky='w')
         row += 1
 
+        # Separater
+        Frame(oframe7, background=BG_COLOR).grid(row=row, column=1, pady=3)
+        row += 1
+
+        # --parse-only, --introspect-only
+        l = Label(oframe7, text="Get docs from:", **COLOR_CONFIG)
+        l.grid(row=row, column=0, sticky='e')
+        iop_var = self._introspect_or_parse_var = StringVar(self._root)
+        self._introspect_or_parse_var.set('both')
+        b = Radiobutton(oframe7, var=iop_var, text='Parsing',
+                        value='parse', **CBUTTON_CONFIG)
+        b.grid(row=row, column=1, sticky='w')
+        b = Radiobutton(oframe7, var=iop_var, text='Introspecting',
+                        value='introspect', **CBUTTON_CONFIG)
+        b.grid(row=row, column=2, sticky='w')
+        b = Radiobutton(oframe7, var=iop_var, text='Both',
+                        value='both', **CBUTTON_CONFIG)
+        b.grid(row=row, column=3, sticky='w')
+        row += 1
+
         #==================== oframe5 ====================
         # --help-file FILE
         row = 0
@@ -673,7 +661,7 @@ class EpydocGUI:
                                    **BUTTON_CONFIG)
         self._help_browse.grid(row=row, column=3, sticky='ew', padx=2)
         
-        from epydoc.css import STYLESHEETS
+        from epydoc.docwriter.html_css import STYLESHEETS
         items = STYLESHEETS.items()
         def _css_sort(css1, css2):
             if css1[0] == 'default': return -1
@@ -685,36 +673,38 @@ class EpydocGUI:
         # -c CSS, --css CSS
         # --private-css CSS
         row = 0
-        l = Label(oframe6, text="Public", **COLOR_CONFIG)
-        l.grid(row=row, column=0, sticky='e')
-        l = Label(oframe6, text="Private", **COLOR_CONFIG)
-        l.grid(row=row, column=1, sticky='w')
+        #l = Label(oframe6, text="Public", **COLOR_CONFIG)
+        #l.grid(row=row, column=0, sticky='e')
+        #l = Label(oframe6, text="Private", **COLOR_CONFIG)
+        #l.grid(row=row, column=1, sticky='w')
         row += 1
         css_var = self._css_var = StringVar(self._root)
         css_var.set('default')
-        private_css_var = self._private_css_var = StringVar(self._root)
-        private_css_var.set('default')
+        #private_css_var = self._private_css_var = StringVar(self._root)
+        #private_css_var.set('default')
         for (name, (sheet, descr)) in items:
             b = Radiobutton(oframe6, var=css_var, value=name, **CBUTTON_CONFIG)
             b.grid(row=row, column=0, sticky='e')
-            b = Radiobutton(oframe6, var=private_css_var, value=name, 
-                            text=name, **CBUTTON_CONFIG)
-            b.grid(row=row, column=1, sticky='w')
+            #b = Radiobutton(oframe6, var=private_css_var, value=name, 
+            #                text=name, **CBUTTON_CONFIG)
+            #b.grid(row=row, column=1, sticky='w')
             l = Label(oframe6, text=descr, **COLOR_CONFIG)
-            l.grid(row=row, column=2, sticky='w')
+            l.grid(row=row, column=1, sticky='w')
             row += 1
-        b = Radiobutton(oframe6, var=css_var, value='-other-', 
+        b = Radiobutton(oframe6, var=css_var, value='-other-',
                         **CBUTTON_CONFIG)
         b.grid(row=row, column=0, sticky='e')
-        b = Radiobutton(oframe6, text='Select File', var=private_css_var, 
-                        value='-other-', **CBUTTON_CONFIG)
-        b.grid(row=row, column=1, sticky='w')
+        #b = Radiobutton(oframe6, text='Select File', var=private_css_var, 
+        #                value='-other-', **CBUTTON_CONFIG)
+        #b.grid(row=row, column=1, sticky='w')
+        #l = Label(oframe6, text='Select File', **COLOR_CONFIG)
+        #l.grid(row=row, column=1, sticky='w')
         self._css_entry = Entry(oframe6, **ENTRY_CONFIG)
-        self._css_entry.grid(row=row, column=2, sticky='ew')
+        self._css_entry.grid(row=row, column=1, sticky='ew')
         self._css_browse = Button(oframe6, text="Browse",
                                   command=self._browse_css,
                                   **BUTTON_CONFIG) 
-        self._css_browse.grid(row=row, column=3, sticky='ew', padx=2)
+        self._css_browse.grid(row=row, column=2, sticky='ew', padx=2)
 
     def _init_bindings(self):
         self._root.bind('<Delete>', self._delete_module)
@@ -741,11 +731,11 @@ class EpydocGUI:
     def _messages_toggle(self, *e):
         if self._messages_visible:
             self._msgsframe.forget()
-            self._message_button['image'] = self._downImage
+            self._message_button['image'] = self._rightImage
             self._messages_visible = 0
         else:
             self._msgsframe.pack(fill='both', side='bottom', expand=1)
-            self._message_button['image'] = self._upImage
+            self._message_button['image'] = self._leftImage
             self._messages_visible = 1
 
     def _configure(self, event):
@@ -770,8 +760,10 @@ class EpydocGUI:
                   ('Python extension', '.so'),
                   ('All files', '*')]
         filename = askopenfilename(filetypes=ftypes, title=title,
-                                   defaultextension='.py')
+                                   defaultextension='.py',
+                                   initialdir=self._init_dir)
         if not filename: return
+        self._init_dir = os.path.dirname(filename)
         self.add_module(filename, check=1)
         
     def _browse_css(self, *e):
@@ -819,31 +811,33 @@ class EpydocGUI:
         self._root = None
 
     def add_module(self, name, check=0):
-        from epydoc.imports import import_module, find_modules
+        from epydoc.util import is_package_dir, is_pyname, is_module_file
+        from epydoc.docintrospecter import get_value_from_name
+        from epydoc.docintrospecter import get_value_from_filename
 
-        # First, expand packages.
-        if os.path.isdir(name):
-            module_names = find_modules(name)
-            if not module_names:
-                sys.stderr.write('!!!Error: %r is not a pacakge\n!!!' % name)
-                self._update_messages()
-                self._root.bell()
-        else:
-            module_names = [name]
-
-        for name in module_names:
+        if (os.path.isfile(name) or is_package_dir(name) or is_pyname(name)):
             # Check that it's a good module, if requested.
             if check:
-                try: import_module(name)
+                try:
+                    if is_module_file(name) or is_package_dir(name):
+                        get_value_from_filename(name)
+                    elif os.path.isfile(name):
+                        get_value_from_scriptname(name)
+                    else:
+                        get_value_from_name(name)
                 except ImportError, e:
-                    print >>sys.stderr, e
+                    log.error(e)
                     self._update_messages()
                     self._root.bell()
-                    continue
-
+                    return
+            
             # Add the module to the list of modules.
             self._module_list.insert('end', name)
             self._module_list.yview('end')
+        else:
+            log.error("Couldn't find %r" % name)
+            self._update_messages()
+            self._root.bell()
         
     def mainloop(self, *args, **kwargs):
         self._root.mainloop(*args, **kwargs)
@@ -855,7 +849,8 @@ class EpydocGUI:
         options['prj_url'] = self._url_entry.get() or None
         options['docformat'] = self._docformat_var.get()
         options['inheritance'] = self._inheritance_var.get()
-        options['outdir'] = self._out_entry.get() or 'html'
+        options['introspect_or_parse'] = self._introspect_or_parse_var.get()
+        options['target'] = self._out_entry.get() or 'html'
         options['frames'] = self._frames_var.get()
         options['private'] = self._private_var.get()
         options['show_imports'] = self._imports_var.get()
@@ -867,10 +862,10 @@ class EpydocGUI:
             options['css'] = self._css_entry.get() or 'default'
         else:
             options['css'] = self._css_var.get() or 'default'
-        if self._private_css_var.get() == '-other-':
-            options['private_css'] = self._css_entry.get() or 'default'
-        else:
-            options['private_css'] = self._private_css_var.get() or 'default'
+        #if self._private_css_var.get() == '-other-':
+        #    options['private_css'] = self._css_entry.get() or 'default'
+        #else:
+        #    options['private_css'] = self._private_css_var.get() or 'default'
         return options
     
     def _go(self, *e):
@@ -886,13 +881,13 @@ class EpydocGUI:
         opts = self._getopts()
         self._progress[0] = 0.0
         self._cancel[0] = 0
-        args = (opts, self._progress, self._cancel)
+        args = (opts, self._cancel, self._progress)
 
         # Clear the messages window.
         self._messages['state'] = 'normal'
         self._messages.delete('0.0', 'end')
         self._messages['state'] = 'disabled'
-        self._errpipe.clear()
+        self._logger.clear()
 
         # Restore the module list.  This will force re-loading of
         # anything that we're documenting.
@@ -900,10 +895,7 @@ class EpydocGUI:
             if m not in self._old_modules:
                 del sys.modules[m]
 
-        # Reset the uid cache (otherwise, we would get UID conflicts,
-        # since we just re-loaded everything).
-        from epydoc.uid import reset_uid_cache
-        reset_uid_cache()
+        # [xx] Reset caches??
     
         # Start documenting
         start_new_thread(document, args)
@@ -915,38 +907,44 @@ class EpydocGUI:
         self._update(dt, self._afterid)
 
     def _update_messages(self):
-        # Update messages (using the _PipeIO that we installed on
-        # sys.stderr).
         while 1:
-            data = self._errpipe.read()
+            level, data = self._logger.read()
             if data is None: break
             self._messages['state'] = 'normal'
-            if data.startswith('***') and data.endswith('***'):
-                self._messages.insert('end', data[3:-3], 'message')
-            elif data.startswith('!!!') and data.endswith('!!!'):
-                self._messages.insert('end', data[3:-3], 'guierror')
-            else:
-                if data == '\n':
-                    if self._last_tag != 'header2':
-                        self._messages.insert('end', '\n', self._last_tag)
-                elif data == '='*75:
-                    if self._messages.get('end-3c', 'end') == '\n\n\n':
-                        self._messages.delete('end-1c')
-                    self._in_header = 1
-                    self._messages.insert('end', ' '*75, 'uline header')
-                    self._last_tag = 'header'
-                elif data == '-'*75:
-                    self._in_header = 0
-                    self._last_tag = 'header2'
-                elif self._in_header:
-                    self._messages.insert('end', data, 'header')
-                    self._last_tag = 'header'
-                elif re.match(r'\s*(L\d+:|-)?\s*Warning: ', data):
-                    self._messages.insert('end', data, 'warning')
-                    self._last_tag = 'warning'
-                else:
-                    self._messages.insert('end', data, 'error')
-                    self._last_tag = 'error'
+            if level == 'header':
+                self._messages.insert('end', data, 'header')
+            elif level == 'uline':
+                self._messages.insert('end', data, 'uline header')
+            elif level >= log.ERROR:
+                data= data.rstrip()+'\n\n'
+                self._messages.insert('end', data, 'guierror')
+            elif level >= log.DOCSTRING_WARNING:
+                data= data.rstrip()+'\n\n'
+                self._messages.insert('end', data, 'warning')
+            elif log >= log.INFO:
+                data= data.rstrip()+'\n\n'
+                self._messages.insert('end', data, 'message')
+#                 if data == '\n':
+#                     if self._last_tag != 'header2':
+#                         self._messages.insert('end', '\n', self._last_tag)
+#                 elif data == '='*75:
+#                     if self._messages.get('end-3c', 'end') == '\n\n\n':
+#                         self._messages.delete('end-1c')
+#                     self._in_header = 1
+#                     self._messages.insert('end', ' '*75, 'uline header')
+#                     self._last_tag = 'header'
+#                 elif data == '-'*75:
+#                     self._in_header = 0
+#                     self._last_tag = 'header2'
+#                 elif self._in_header:
+#                     self._messages.insert('end', data, 'header')
+#                     self._last_tag = 'header'
+#                 elif re.match(r'\s*(L\d+:|-)?\s*Warning: ', data):
+#                     self._messages.insert('end', data, 'warning')
+#                     self._last_tag = 'warning'
+#                 else:
+#                     self._messages.insert('end', data, 'error')
+#                     self._last_tag = 'error'
 
             self._messages['state'] = 'disabled'
             self._messages.yview('end')
@@ -982,6 +980,7 @@ class EpydocGUI:
         self._url_entry.delete(0, 'end')
         self._docformat_var.set('epytext')
         self._inheritance_var.set('grouped')
+        self._introspect_or_parse_var.set('both')
         self._out_entry.delete(0, 'end')
         self._module_entry.delete(0, 'end')
         self._css_entry.delete(0, 'end')
@@ -990,9 +989,10 @@ class EpydocGUI:
         self._private_var.set(1)
         self._imports_var.set(0)
         self._css_var.set('default')
-        self._private_css_var.set('default')
+        #self._private_css_var.set('default')
         self._help_var.set('default')
         self._filename = None
+        self._init_dir = None
 
     def _open(self, *e):
         title = 'Open project'
@@ -1004,7 +1004,7 @@ class EpydocGUI:
         self.open(filename)
 
     def open(self, prjfile):
-        from epydoc.css import STYLESHEETS
+        from epydoc.docwriter.html_css import STYLESHEETS
         self._filename = prjfile
         try:
             opts = load(open(prjfile, 'r'))
@@ -1026,6 +1026,8 @@ class EpydocGUI:
 
             self._docformat_var.set(opts.get('docformat', 'epytext'))
             self._inheritance_var.set(opts.get('inheritance', 'grouped'))
+            self._introspect_or_parse_var.set(
+                opts.get('introspect_or_parse', 'both'))
 
             self._help_entry.delete(0, 'end')
             if opts.get('help') is None:
@@ -1035,7 +1037,7 @@ class EpydocGUI:
                 self._help_entry.insert(0, opts.get('help'))
                 
             self._out_entry.delete(0, 'end')
-            self._out_entry.insert(0, opts.get('outdir', 'html'))
+            self._out_entry.insert(0, opts.get('target', 'html'))
 
             self._frames_var.set(opts.get('frames', 1))
             self._private_var.set(opts.get('private', 1))
@@ -1048,14 +1050,14 @@ class EpydocGUI:
                 self._css_var.set('-other-')
                 self._css_entry.insert(0, opts.get('css', 'default'))
 
-            if opts.get('private_css', 'default') in STYLESHEETS.keys():
-                self._private_css_var.set(opts.get('private_css', 'default'))
-            else:
-                self._private_css_var.set('-other-')
-                self._css_entry.insert(0, opts.get('private_css', 'default'))
+            #if opts.get('private_css', 'default') in STYLESHEETS.keys():
+            #    self._private_css_var.set(opts.get('private_css', 'default'))
+            #else:
+            #    self._private_css_var.set('-other-')
+            #    self._css_entry.insert(0, opts.get('private_css', 'default'))
                                                    
         except Exception, e:
-            sys.stderr.write('!!!Error opening %s: %s\n!!!' % (prjfile, e))
+            log.error('Error opening %s: %s' % (prjfile, e))
             self._root.bell()
         
     def _save(self, *e):
@@ -1065,10 +1067,9 @@ class EpydocGUI:
             dump(opts, open(self._filename, 'w'))
         except Exception, e:
             if self._filename is None:
-                sys.stderr.write('!!!Error saving: %s\n!!!' %  e)
+                log.error('Error saving: %s' %  e)
             else:
-                sys.stderr.write('!!!Error saving %s: %s\n!!!' %
-                                 (self._filename, e))
+                log.error('Error saving %s: %s' % (self._filename, e))
             self._root.bell()
              
     def _saveas(self, *e):
@@ -1104,12 +1105,12 @@ def _usage():
     print
     sys.exit(0)
 
-def _error(str):
-    str = '%s; run "%s -h" for usage' % (str, os.path.basename(sys.argv[0]))
-    if len(str) > 80:
-        i = str.rfind(' ', 0, 80)
-        if i>0: str = str[:i]+'\n'+str[i+1:]
-    print >>sys.stderr, str
+def _error(s):
+    s = '%s; run "%s -h" for usage' % (s, os.path.basename(sys.argv[0]))
+    if len(s) > 80:
+        i = s.rfind(' ', 0, 80)
+        if i>0: s = s[:i]+'\n'+s[i+1:]
+    print >>sys.stderr, s
     sys.exit(1)
     
 def gui():

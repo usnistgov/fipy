@@ -1,0 +1,356 @@
+Using Epydoc
+============
+
+.. $Id: manual-usage.txt 1554 2007-02-27 03:31:56Z edloper $
+
+Epydoc provides two user interfaces:
+
+* The command line interface, which is accessed via a script named ``epydoc``
+  (or ``epydoc.py`` on Windows)
+* The graphical interface, which is accessed via a script named ``epydocgui``
+  (or ``epydoc.pyw`` on Windows).
+
+Epydoc can also be accessed programmatically; see ``epydoc's API
+documentation`` for more information.
+
+.. _epydoc's API documentation: http://epydoc.sourceforge.net/api/
+
+
+The Command Line Interface
+--------------------------
+
+The ``epydoc`` script extracts API documentation for a set of Python objects,
+and writes it using a selected output format. Objects can be named using dotted
+names, module filenames, or package directory names. (On Windows, this script
+is named ``epydoc.py``.)
+
+Command Line Usage (Abbreviated)
+''''''''''''''''''''''''''''''''
+
+.. parsed-literal::
+
+    epydoc [--html|--pdf] [-o *DIR*] [--parse-only|--introspect-only] [-v|-q]
+           [--name *NAME*] [--url *URL*] [--docformat *NAME*] [--graph *GRAPHTYPE*]
+           [--inheritance *STYLE*] [--config *FILE*] *OBJECTS...*
+
+*OBJECTS...*
+    A list of the Python objects that should be documented. Objects can be
+    specified using dotted names (such as ``os.path``), module filenames (such
+    as ``epydoc/epytext.py``), or package directory names (such as ``epydoc/``).
+    Packages are expanded to include all sub-modules and sub-packages.
+
+.. container:: epydoc-usage
+
+ --html
+     Generate HTML output. (default) 
+ --pdf
+     Generate Adobe Acrobat (PDF) output, using LaTeX.
+ -o DIR, --output DIR, --target DIR
+     The output directory.
+ --parse-only, --introspect-only
+     By default, epydoc will gather information about each Python object using
+     two methods: parsing the object's source code; and importing the object and
+     directly introspecting it. Epydoc combines the information obtained from
+     these two methods to provide more complete and accurate documentation.
+     However, if you wish, you can tell epydoc to use only one or the other of
+     these methods. For example, if you are running epydoc on untrusted code,
+     you should use the ``--parse-only`` option.
+ -v, -q
+     Increase (``-v``) or decrease (``-q``) the verbosity of the output. These
+     options may be repeated to further increase or decrease verbosity.
+     Docstring markup warnings are supressed unless ``-v`` is used at least once.
+ --name NAME
+     The documented project's name.
+ --url URL
+     The documented project's URL.
+ --docformat NAME
+     The markup language that should be used by default to process modules'
+     docstrings. This is only used for modules that do not define the special
+     ``__docformat__`` variable; it is recommended that you explicitly specify
+     ``__docformat__`` in all your modules.
+ --graph GRAPHTYPE
+     Include graphs of type *GRAPHTYPE* in the generated output. Graphs are
+     generated using the Graphviz ``dot`` executable. If this executable is not
+     on the path, then use ``--dotpath`` to specify its location. This option
+     may be repeated to include multiple graph types in the output. To include
+     all graphs, use ``--graph all``. The available graph types are:
+ 
+     * **classtree**: displays each class's base classes and subclasses;
+     * **callgraph**: displays the callers and callees of each function or
+       method. These graphs are based on profiling information, which must be
+       specified using the ``--pstate`` option.
+     * **umlclass**: displays each class's base classes and subclasses, using
+       UML style. Methods and attributes are listed in the classes where they
+       are defined. If type information is available about attributes (via the
+       ``@type`` field), then those types are displayed as separate classes, and
+       the attributes are displayed as associations.
+ --inheritance STYLE
+     The format that should be used to display inherited methods, variables, and
+     properties. Currently, three styles are supported. To see an example of each style,
+     click on it:
+ 
+     * grouped_: Inherited objects are gathered into groups, based on which
+       class they are inherited from.
+     * listed_: Inherited objects are listed in a short list at the end of the
+       summary table.
+     * included_: Inherited objects are mixed in with non-inherited objects.
+ 
+ --config FILE
+     Read the given configuration file, which can contain both options and
+     Python object names. This option may be used multiple times, if you wish
+     to use multiple configuration files. See `Configuration Files`_ for more
+     information.
+ 
+.. _grouped:    http://epydoc.sourceforge.net/examples/grouped/
+                        inh_example.Programmer-class.html
+.. _listed:     http://epydoc.sourceforge.net/examples/listed/
+                        inh_example.Programmer-class.html
+.. _included:   http://epydoc.sourceforge.net/examples/included/
+                        inh_example.Programmer-class.html
+
+The complete list of command line options is available in the `Command Line
+Usage`_ section.
+
+
+Examples
+''''''''
+
+The following command will generate HTML documentation for the ``sys`` module,
+and write it to the directory ``sys_docs``::
+
+    [epydoc]$ epydoc --html sys -o sys_docs 
+
+The following commands are used to produce the API documentation for epydoc
+itself. The first command writes html output to the directory ``html/api``,
+using ``epydoc`` as the project name and ``http://epydoc.sourcforge.net`` as
+the project URL. The ``white`` CSS style is used; inheritance is displayed
+using the listed style; and all graphs are included in the output. The second
+command writes pdf output to the file ``api.pdf`` in the directory
+``latex/api``, using ``Epydoc`` as the project name. ::
+
+    [epydoc]$ epydoc -v -o html/api --name epydoc --css white \
+                     --url http://epydoc.sourceforge.net \
+                     --inheritance listed --graph all src/epydoc
+    [epydoc]$ epydoc -v -o latex/api --pdf --name "Epydoc" src/epydoc
+
+
+Configuration Files
+'''''''''''''''''''
+
+Configuration files, specified using the ``--config`` option, may be used to
+specify both the list of objects to document, and the options that should be
+used to document them. Configuration files are read using the standard
+ConfigParser_ module. The following is a simple example of a configuration
+file.
+
+.. parsed-literal::
+
+    **[epydoc]** *# Epydoc section marker (required by ConfigParser)*
+
+    *# Information about the project.*
+    **name: My Cool Project**
+    **url: http://cool.project/**
+
+    *# The list of modules to document.  Modules can be named using*
+    *# dotted names, module filenames, or package directory names.*
+    *# This option may be repeated.*
+    **modules: sys, os.path, re**
+    **modules: my/project/driver.py**
+
+    *# Write html output to the directory "apidocs"*
+    **output: html**
+    **target: apidocs/**
+
+    *# Include all automatically generated graphs.  These graphs are*
+    *# generated using Graphviz dot.*
+    **graph: all**
+    **dotpath: /usr/local/bin/dot**
+
+A `more complete example`_, including all of the supported options, is also
+available.
+
+.. _ConfigParser: http://docs.python.org/lib/module-ConfigParser.html
+.. _more complete example: `Sample Configuration File`_ 
+
+
+The Graphical Interface
+-----------------------
+Epydoc also includes a graphical interface, for systems where command line
+interfaces are not convenient (such as Windows). The graphical interface can
+be invoked with the ``epydocgui`` command, or with ``epydoc.pyw`` in the
+``Scripts`` subdirectory of the Python installation directory under Windows.
+Currently, the graphical interface can only generate HTML output.
+
+.. image:: epydoc_gui.png
+   :align: center
+
+Use the **Add** box to specify what objects you wish to document. Objects can
+be specified using dotted names (such as ``os.path``), module filenames (such
+as ``epydoc/epytext.py``), or package directory names (such as ``epydoc/``).
+Packages are expanded to include all sub-modules and sub-packages. Once you
+have added all of the modules that you wish to document, press the **Start**
+button. Epydoc's progress will be displayed on the progress bar.
+
+To customize the output, click on the **Options** arrow at the bottom of the
+window. This opens the options pane, which contains fields corresponding to
+each command line option.
+
+.. image:: epydoc_guiconfig.png
+   :align: center
+
+The epydoc graphical interface can save and load *project files*, which record
+the set of modules and the options that you have selected. Select
+**File->Save** to save the current modules and options to a project file; and
+**File->Open** to open a previously saved project file. (These project files do
+not currently use the same format as the configuration files used by the
+command line interface.)
+
+For more information, see the ``epydocgui(1)`` man page.
+
+
+Documentation Completeness Checks
+---------------------------------
+
+The ``epydoc`` script can be used to check the completeness of the reference
+documentation. In particular, it will check that every module, class, method,
+and function has a description; that every parameter has a description and a
+type; and that every variable has a type. If the ``-p`` option is used, then
+these checks are run on both public and private objects; otherwise, the checks
+are only run on public objects.
+
+``epydoc`` ``--check`` [``-p``] *MODULES...*
+
+*MODULES...*
+    A list of the modules that should be checked. Modules may be specified
+    using either filenames (such as ``epydoc/epytext.py``) or module names
+    (such as ``os.path``). The filename for a package is its ``__init__.py``
+    file.
+
+-p
+    Run documentation completeness checks on private objects.
+
+For each object that fails a check, epydoc will print a warning. For example,
+some of the warnings generated when checking the completeness of the
+documentation for epydoc's private objects are::
+
+    epydoc.html.HTML_Doc._dom_link_to_html........No docs
+    epydoc.html.HTML_Doc._module..................No type
+    epydoc.html.HTML_Doc._link_to_html.link.......No descr
+    epydoc.html.HTML_Doc._author.return...........No type
+    epydoc.html.HTML_Doc._author.authors..........No descr, No type
+    epydoc.html.HTML_Doc._author.container........No descr, No type
+    epydoc.html.HTML_Doc._base_tree.uid...........No descr, No type
+    epydoc.html.HTML_Doc._base_tree.width.........No descr, No type
+    epydoc.html.HTML_Doc._base_tree.postfix.......No descr, No type
+
+If you'd like more fine-grained control over what gets checked, or you would
+like to check other fields (such as the author or version), then you should
+use the :epydoc:`DocChecker` class directly.
+
+
+HTML Files
+----------
+
+Every Python module and class is documented in its own file. Index files, tree
+files, a help file, and a frames-based table of contents are also created.
+The following list describes each of the files generated by epydoc:
+
+``index.html``
+    The standard entry point for the documentation. Normally, ``index.html``
+    is a copy of the frames file (``frames.html``). But if the ``--no-frames``
+    option is used, then ``index.html`` is a copy of the API documentation home
+    page, which is normally the documentation page for the top-level package or
+    module (or the trees page if there is no top-level package or module).
+
+*module*\ ``-module.html``
+    The API documentation for a module. *module* is the complete dotted name of
+    the module, such as `sys` or `epydoc.epytext`.
+
+*class*\ ``-class.html``
+    The API documentation for a class, exception, or type. *class* is the
+    complete dotted name of the class, such as ``epydoc.epytext.Token`` or
+    ``array.ArrayType``.
+
+*module*\ ``-pysrc.html``
+    A page with the module colorized source code, with links back to the
+    objects main documentation pages. The creation of the colorized source
+    pages can be controlled using the options_ ``--show-sourcecode`` and
+    ``--no-sourcecode``.
+
+    .. _options: Command Line Usage_
+
+``module-tree.html``
+    The documented module hierarchy.
+
+``class-tree.html``
+    The documented classes hierarchy.
+
+``identifier-index.html``
+    The index of all the identifiers found in the documented items.
+
+``term-index.html``
+    The index of all the term definition found in the docstrings. Term
+    definitions are created using the `Indexed Terms`_ markup.
+
+``bug-index.html``
+    The index of all the known bug in the documented sources. Bugs are marked
+    using the ``@bug`` tag.
+
+``todo-index.html``
+    The index of all the to-do items in the documented sources. They are
+    marked using the ``@todo`` tag.
+
+``help.html``
+    The help page for the project. This page explains how to use and navigate
+    the webpage produced by epydoc.
+
+``epydoc-log.html``
+    A page with the log of the epydoc execution. It is available clicking on
+    the timestamp below each page, if the documentation was created using the
+    ``--include-log`` option. The page also contains the list of the options
+    enabled when the documentation was created.
+
+``api-objects.txt``
+    A text file containing each available item and the URL where it is
+    documented. Each item takes a file line and it is separated by the URL by
+    a ``tab`` charecter. Such file can be used to create `external API links`_.
+
+``redirect.html``
+    A page containing Javascript code that redirect the browser to the
+    documentation page indicated by the accessed fragment. For example
+    opening the page ``redirect.html#epydoc.apidoc.DottedName`` the browser
+    will be redirected to the page ``epydoc.apidoc.DottedName-class.html``.
+
+``frames.html``
+    The main frames file. Two frames on the left side of the window contain a
+    table of contents, and the main frame on the right side of the window
+    contains API documentation pages.
+
+``toc.html``
+    The top-level table of contents page. This page is displayed in the
+    upper-left frame of frames.html, and provides links to the
+    ``toc-everything.html`` and ``toc-module-module.html`` pages.
+
+``toc-everything.html``
+    The table of contents for the entire project. This page is displayed in
+    the lower-left frame of frames.html, and provides links to every class,
+    type, exception, function, and variable defined by the project.
+
+``toc-``\ *module*\ ``-module.html``
+    The table of contents for a module. This page is displayed in the
+    lower-left frame of frames.html, and provides links to every class, type,
+    exception, function, and variable defined by the module. module is the
+    complete dotted name of the module, such as ``sys`` or ``epydoc.epytext``.
+
+``epydoc.css``
+    The CSS stylesheet used to display all HTML pages.
+
+
+CSS Stylesheets
+---------------
+
+Epydoc creates a CSS stylesheet (``epydoc.css``) when it builds the API
+documentation for a project. You can specify which stylesheet should be used
+using the ``--css`` command-line option. If you do not specify a stylesheet,
+and one is already present, epydoc will use that stylesheet; otherwise, it will
+use the default stylesheet.

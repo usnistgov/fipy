@@ -1,102 +1,220 @@
+# epydoc
 #
-# epydoc package file
+# Copyright (C) 2005 Edward Loper
+# Author: Edward Loper <edloper@loper.org>
+# URL: <http://epydoc.sf.net>
 #
-# A python documentation Module
-# Edward Loper
-#
-# Created [01/30/01 05:18 PM]
 # $Id$
-#
 
 """
 Automatic Python reference documentation generator.  Epydoc processes
 Python modules and docstrings to generate formatted API documentation,
 in the form of HTML pages.  Epydoc can be used via a command-line
-interface (L{epydoc.cli}) and a graphical interface (L{epydoc.gui}).
-Both interfaces let the user specify a set of modules to document, and
-produce API documentation using the following steps:
+interface (`epydoc.cli`) and a graphical interface (`epydoc.gui`).
+Both interfaces let the user specify a set of modules or other objects
+to document, and produce API documentation using the following steps:
 
-  1. Import the requested modules, using L{epydoc.imports}.
-  2. Construct documentation for each object, using L{epydoc.objdoc}.
-     - L{epydoc.uid} is used to create unique identifiers for each
-       object.
-     - The L{epydoc.markup} package is used to parse the objects'
-       documentation strings.
-  3. Generate output, using L{epydoc.html} or L{epydoc.latex}.
-     - L{epydoc.css} is used to generate the CSS stylehseet for HTML output.
-     - L{epydoc.help} is used to generate the help page for HTML output.
-     - L{epydoc.colorize} is used to colorize doctest blocks and
-       regular expressions variable values for HTML output.
+1. Extract basic information about the specified objects, and objects
+   that are related to them (such as the values defined by a module).
+   This can be done via introspection, parsing, or both:
 
-@group Interface Modules: cli, gui
-@group Inspection Modules: uid, objdoc, imports
-@group Docstring Parsing Modules: markup
-@group Documentation Output Modules: html, css, help, colorize,
-       latex, man
-@group Testing Modules: checker, test
+   * *Introspection* imports the objects, and examines them directly
+     using Python's introspection mechanisms.
+  
+   * *Parsing* reads the Python source files that define the objects,
+     and extracts information from those files.
 
-@sort: cli, gui, uid, objdoc, imports, markup, html, css, help,
-       colorize, latex, man
+2. Combine and process that information.
 
-@author: U{Edward Loper<edloper@gradient.cis.upenn.edu>}
-@requires: Python 2.1+, or Python 2.0 with
-    U{C{inspect.py}<http://lfw.org/python/inspect.html>}.
-@version: 2.1
-@see: U{The epydoc webpage<http://epydoc.sourceforge.net>}
-@see: U{The epytext markup language
-    manual<http://epydoc.sourceforge.net/epytext.html>}
+   * **Merging**: Merge the information obtained from introspection &
+     parsing each object into a single structure.
+     
+   * **Linking**: Replace any \"pointers\" that were created for
+     imported variables with the documentation that they point to.
+     
+   * **Naming**: Assign unique *canonical names* to each of the
+     specified objects, and any related objects.
+     
+   * **Docstrings**: Parse the docstrings of each of the specified
+     objects.
+     
+   * **Inheritance**: Add variables to classes for any values that
+     they inherit from their base classes.
 
-@todo: Consider other names for C{@undocumented}:
-    C{@bypass}, C{@nodoc}, C{@exclude}, C{@omit}?
+3. Generate output.  Output can be generated in a variety of formats:
 
-@todo 3.0: Support encodings.
-@todo 3.0: Refactor L{epydoc.objdoc.ObjDoc}:
-    - C{ObjDoc}s will contain info about objects, but not gather it.
-    - An C{inspection} module will gather info via inspection.
-    - A new C{parsing} module will provide an alternative, gathering
-      info by parsing python files.
-    - C{Var} will be replaced by C{VarDoc}, a subclass of C{ObjDoc}.
-    - Structure C{ObjDoc}s in a directed acyclic graph, rather than
-      using a links and a dictionary?  Are non-directed cycles a
-      problem?  Interaction of the access hierarchy (a.b.c) and
-      the base class hierarchy?  What does pydoc do?
-@todo 3.0: Create a better default top_page than trees.html.
-@todo 3.0: Add the man-page style outputter. (epyman)
-@todo 3.0: Docstring inheritance for overridden properties.
-@todo 3.0: Optimize epytext
-    - Use classes instead of minidom nodes?
-@todo 3.0: Rewrite C{epydoc.uid.findUID} to be more robust.
+   * An HTML webpage.
+  
+   * A LaTeX document (which can be rendered as a PDF file)
 
-@license: IBM Open Source License
-@copyright: (C) 2003 Edward Loper
+   * A plaintext description.
 
-@newfield contributor: Contributor, Contributors (Alphabetical Order)
-@contributor: U{Glyph Lefkowitz <mailto:glyph@twistedmatrix.com>}
-@contributor: U{Edward Loper <mailto:edloper@gradient.cis.upenn.edu>}
-@contributor: U{Bruce Mitchener <mailto:bruce@cubik.org>}
-@contributor: U{Simon Pamies <mailto:spamies@bipbap.de>}
-@contributor: U{Christian Reis <mailto:kiko@async.com.br>}
-@contributor: U{Jeff O'Halloran <mailto:jeff@ohalloran.ca>}
+.. digraph:: Overview of epydoc's architecture
+   :caption: The boxes represent steps in epydoc's processing chain.
+             Arrows are annotated with the data classes used to
+             communicate between steps.  The lines along the right
+             side mark what portions of the processing chain are
+             initiated by build_doc_index() and cli().  Click on
+             any item to see its documentation.
+             
+   /*
+                  Python module or value                 *       *
+                      /           \                      |       |
+                     V             V                     |       |
+            introspect_docs()  parse_docs()              |       |
+                        \        /                       |       |
+                         V      V                        |       |
+                        merge_docs()                     |       |
+                             |              build_doc_index()  cli()
+                             V                           |       |
+                       link_imports()                    |       |
+                             |                           |       |
+                             V                           |       |
+                    assign_canonical_names()             |       |
+                             |                           |       |
+                             V                           |       |
+                      parse_docstrings()                 |       |
+                             |                           |       |
+                             V                           |       |
+                       inherit_docs()                    *       |
+                      /      |        \                          |
+                     V       V         V                         |
+                HTMLWriter LaTeXWriter PlaintextWriter           *
+   */
 
-@var __license__: The license governing the use and distribution of
-    epydoc.
+   ranksep = 0.1;
+   node [shape="box", height="0", width="0"]
+   
+   { /* Task nodes */
+     node [fontcolor=\"#000060\"]
+     introspect  [label="Introspect value:\\nintrospect_docs()",
+                  href="<docintrospecter.introspect_docs>"]
+     parse       [label="Parse source code:\\nparse_docs()",
+                  href="<docparser.parse_docs>"]
+     merge       [label="Merge introspected & parsed docs:\\nmerge_docs()",
+                  href="<docbuilder.merge_docs>", width="2.5"]
+     link        [label="Link imports:\\nlink_imports()",
+                  href="<docbuilder.link_imports>", width="2.5"]
+     name        [label="Assign names:\\nassign_canonical_names()",
+                  href="<docbuilder.assign_canonical_names>", width="2.5"]
+     docstrings  [label="Parse docstrings:\\nparse_docstring()",
+                  href="<docstringparser.parse_docstring>", width="2.5"]
+     inheritance [label="Inherit docs from bases:\\ninherit_docs()",
+                  href="<docbuilder.inherit_docs>", width="2.5"]
+     write_html  [label="Write HTML output:\\nHTMLWriter",
+                 href="<docwriter.html>"]
+     write_latex  [label="Write LaTeX output:\\nLaTeXWriter",
+                 href="<docwriter.latex>"]
+     write_text  [label="Write text output:\\nPlaintextWriter",
+                 href="<docwriter.plaintext>"]
+   }
+
+   { /* Input & Output nodes */
+     node [fontcolor=\"#602000\", shape="plaintext"]
+     input [label="Python module or value"]
+     output [label="DocIndex", href="<apidoc.DocIndex>"]
+   }
+
+   { /* Graph edges */
+     edge [fontcolor=\"#602000\"]
+     input -> introspect
+     introspect -> merge [label="APIDoc", href="<apidoc.APIDoc>"]
+     input -> parse
+     parse -> merge [label="APIDoc", href="<apidoc.APIDoc>"]
+     merge -> link [label=" DocIndex", href="<apidoc.DocIndex>"]
+     link -> name [label=" DocIndex", href="<apidoc.DocIndex>"]
+     name -> docstrings [label=" DocIndex", href="<apidoc.DocIndex>"]
+     docstrings -> inheritance [label=" DocIndex", href="<apidoc.DocIndex>"]
+     inheritance -> output
+     output -> write_html
+     output -> write_latex
+     output -> write_text
+   }
+
+   { /* Task collections */
+     node [shape="circle",label="",width=.1,height=.1]
+     edge [fontcolor="black", dir="none", fontcolor=\"#000060\"]
+     l3 -> l4 [label=" epydoc.\\l docbuilder.\\l build_doc_index()",
+               href="<docbuilder.build_doc_index>"]
+     l1 -> l2 [label=" epydoc.\\l cli()", href="<cli>"]
+   }
+   { rank=same; l1 l3 input }
+   { rank=same; l2 write_html }
+   { rank=same; l4 output }
+
+Package Organization
+====================
+The epydoc package contains the following subpackages and modules:
+
+.. packagetree::
+   :style: UML
+
+The user interfaces are provided by the `gui` and `cli` modules.
+The `apidoc` module defines the basic data types used to record
+information about Python objects.  The programmatic interface to
+epydoc is provided by `docbuilder`.  Docstring markup parsing is
+handled by the `markup` package, and output generation is handled by
+the `docwriter` package.  See the submodule list for more
+information about the submodules and subpackages.
+
+:group User Interface: gui, cli
+:group Basic Data Types: apidoc
+:group Documentation Generation: docbuilder, docintrospecter, docparser
+:group Docstring Processing: docstringparser, markup
+:group Output Generation: docwriter
+:group Completeness Checking: checker
+:group Miscellaneous: log, util, test, compat
+
+:author: `Edward Loper <edloper@gradient.cis.upenn.edu>`__
+:requires: Python 2.3+
+:version: 3.0 beta 1
+:see: `The epydoc webpage <http://epydoc.sourceforge.net>`__
+:see: `The epytext markup language
+    manual <http://epydoc.sourceforge.net/epytext.html>`__
+
+:todo: Create a better default top_page than trees.html.
+:todo: Fix trees.html to work when documenting non-top-level
+       modules/packages
+:todo: Implement @include
+:todo: Optimize epytext
+:todo: More doctests
+:todo: When introspecting, limit how much introspection you do (eg,
+       don't construct docs for imported modules' vars if it's
+       not necessary)
+
+:bug: UserDict.* is interpreted as imported .. why??
+
+:license: IBM Open Source License
+:copyright: |copy| 2006 Edward Loper
+
+:newfield contributor: Contributor, Contributors (Alphabetical Order)
+:contributor: `Glyph Lefkowitz  <mailto:glyph@twistedmatrix.com>`__
+:contributor: `Edward Loper  <mailto:edloper@gradient.cis.upenn.edu>`__
+:contributor: `Bruce Mitchener  <mailto:bruce@cubik.org>`__
+:contributor: `Jeff O'Halloran  <mailto:jeff@ohalloran.ca>`__
+:contributor: `Simon Pamies  <mailto:spamies@bipbap.de>`__
+:contributor: `Christian Reis  <mailto:kiko@async.com.br>`__
+:contributor: `Daniele Varrazzo  <mailto:daniele.varrazzo@gmail.com>`__
+
+.. |copy| unicode:: 0xA9 .. copyright sign
 """
-__docformat__ = 'epytext en'
+__docformat__ = 'restructuredtext en'
 
-# General info
-__version__ = '2.1'
+__version__ = '3.0beta1'
+"""The version of epydoc"""
+
 __author__ = 'Edward Loper <edloper@gradient.cis.upenn.edu>'
+"""The primary author of eypdoc"""
+
 __url__ = 'http://epydoc.sourceforge.net'
+"""The URL for epydoc's homepage"""
+
 __license__ = 'IBM Open Source License'
+"""The license governing the use and distribution of epydoc"""
 
-# To do:
-#   - Change html to write directly to files, instead of building up strings
-#      and then writing them?
-
-# Issues
-#   - curses.wrapper names both a function and a module; how to
-#     distinguish them?  Of course, we can't even *access* the module,
-#     since "import curses.wrapper" gives us a function. :-/
+# [xx] this should probably be a private variable:
+DEBUG = False
+"""True if debugging is turned on."""
 
 # Changes needed for docs:
 #   - document the method for deciding what's public/private

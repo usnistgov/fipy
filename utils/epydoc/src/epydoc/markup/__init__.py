@@ -45,14 +45,9 @@ Markup errors are represented using L{ParseError}s.  These exception
 classes record information about the cause, location, and severity of
 each error.
 
-The C{epydoc.markup} module also defines several utility functions,
-such as L{wordwrap}, L{plaintext_to_latex}, and L{plaintext_to_html},
-which are used by several different markup language parsers.
-
 @sort: parse, ParsedDocstring, Field, DocstringLinker
 @group Errors and Warnings: ParseError
-@group Utility Functions: wordwrap, plaintet_to_html, plaintext_to_latex,
-    parse_type_of
+@group Utility Functions: parse_type_of
 @var SCRWIDTH: The default width with which text will be wrapped
       when formatting the output of the parser.
 @type SCRWIDTH: C{int}
@@ -61,7 +56,10 @@ which are used by several different markup language parsers.
 __docformat__ = 'epytext en'
 
 import re, types, sys
-from epydoc.imports import import_module
+from epydoc import log
+from epydoc.util import plaintext_to_html, plaintext_to_latex
+import epydoc
+from epydoc.compat import *
 
 ##################################################
 ## Contents
@@ -78,6 +76,40 @@ from epydoc.imports import import_module
 ##################################################
 ## Dispatcher
 ##################################################
+
+_markup_language_registry = {
+    'restructuredtext': 'epydoc.markup.restructuredtext',
+    'epytext': 'epydoc.markup.epytext',
+    'plaintext': 'epydoc.markup.plaintext',
+    'javadoc': 'epydoc.markup.javadoc',
+    }
+
+def register_markup_language(name, parse_function):
+    """
+    Register a new markup language named C{name}, which can be parsed
+    by the function C{parse_function}.
+
+    @param name: The name of the markup language.  C{name} should be a
+    simple identifier, such as C{'epytext'} or C{'restructuredtext'}.
+    Markup language names are case insensitive.
+
+    @param parse_function: A function which can be used to parse the
+        markup language, and returns a L{ParsedDocstring}.  It should
+        have the following signature:
+
+            >>> def parse(s, errors):
+            ...     'returns a ParsedDocstring'
+
+        Where:
+            - C{s} is the string to parse.  (C{s} will be a unicode
+              string.)
+            - C{errors} is a list; any errors that are generated
+              during docstring parsing should be appended to this
+              list (as L{ParseError} objects).
+    """
+    _markup_language_registry[name.lower()] = parse_function
+
+MARKUP_LANGUAGES_USED = set()
 
 def parse(docstring, markup='plaintext', errors=None, **options):
     """
@@ -113,26 +145,49 @@ def parse(docstring, markup='plaintext', errors=None, **options):
 
     # Is the markup language valid?
     if not re.match(r'\w+', markup):
-        _parse_warn('Warning: Bad markup language name: %s' % markup)
+        _parse_warn('Bad markup language name %r.  Treating '
+                    'docstrings as plaintext.' % markup)
+        import epydoc.markup.plaintext as plaintext
         return plaintext.parse_docstring(docstring, errors, **options)
 
     # Is the markup language supported?
-    try: exec('from epydoc.markup.%s import parse_docstring' % markup)
-    except:
-        _parse_warn('Warning: Unsupported markup language: %s' % markup)
+    if markup not in _markup_language_registry:
+        _parse_warn('Unsupported markup language %r.  Treating '
+                    'docstrings as plaintext.' % markup)
+        import epydoc.markup.plaintext as plaintext
         return plaintext.parse_docstring(docstring, errors, **options)
+
+    # Get the parse function.
+    parse_docstring = _markup_language_registry[markup]
+
+    # If it's a string, then it names a function to import.
+    if isinstance(parse_docstring, basestring):
+        try: exec('from %s import parse_docstring' % parse_docstring)
+        except ImportError, e:
+            _parse_warn('Error importing %s for markup language %s: %s' %
+                        (parse_docstring, markup, e))
+            import epydoc.markup.plaintext as plaintext
+            return plaintext.parse_docstring(docstring, errors, **options)
+        _markup_language_registry[markup] = parse_docstring
+
+    # Keep track of which markup languages have been used so far.
+    MARKUP_LANGUAGES_USED.add(markup)
 
     # Parse the docstring.
     try: parsed_docstring = parse_docstring(docstring, errors, **options)
     except KeyboardInterrupt: raise
     except Exception, e:
-        errors.append(ParseError('Internal error: %s' % e))
+        if epydoc.DEBUG: raise
+        log.error('Internal error while parsing a docstring: %s; '
+                  'treating docstring as plaintext' % e)
+        import epydoc.markup.plaintext as plaintext
         return plaintext.parse_docstring(docstring, errors, **options)
 
     # Check for fatal errors.
     fatal_errors = [e for e in errors if e.is_fatal()]
     if fatal_errors and raise_on_error: raise fatal_errors[0]
     if fatal_errors:
+        import epydoc.markup.plaintext as plaintext
         return plaintext.parse_docstring(docstring, errors, **options)
 
     return parsed_docstring
@@ -145,10 +200,9 @@ def _parse_warn(estr):
     printed, then do nothing.
     """
     global _parse_warnings
-    if _parse_warnings.has_key(estr): return
+    if estr in _parse_warnings: return
     _parse_warnings[estr] = 1
-    if sys.stderr.softspace: print >>sys.stderr
-    print >>sys.stderr, estr
+    log.warning(estr)
 
 ##################################################
 ## ParsedDocstring
@@ -191,7 +245,8 @@ class ParsedDocstring:
         
         @return: A tuple C{(M{body}, M{fields})}, where C{M{body}} is
             the main body of this docstring, and C{M{fields}} is a list
-            of its fields.
+            of its fields.  If the resulting body is empty, return
+            C{None} for the body.
         @rtype: C{(L{ParsedDocstring}, list of L{Field})}
         @param errors: A list where any errors generated during
             splitting will be stored.  If no list is specified, then
@@ -203,12 +258,14 @@ class ParsedDocstring:
 
     def summary(self):
         """
-        @return: A short summary of this docstring.  Typically, the
-            summary consists of the first sentence of the docstring.
-        @rtype: L{ParsedDocstring}
+        @return: A pair consisting of a short summary of this docstring and a
+            boolean value indicating whether there is further documentation
+            in addition to the summary. Typically, the summary consists of the
+            first sentence of the docstring.
+        @rtype: (L{ParsedDocstring}, C{bool})
         """
         # Default behavior:
-        return self
+        return self, False
 
     def concatenate(self, other):
         """
@@ -282,7 +339,8 @@ class ParsedDocstring:
 ##################################################
 class ConcatenatedDocstring:
     def __init__(self, *parsed_docstrings):
-        self._parsed_docstrings = parsed_docstrings
+        self._parsed_docstrings = [pds for pds in parsed_docstrings
+                                   if pds is not None]
         
     def split_fields(self, errors=None):
         bodies = []
@@ -307,11 +365,13 @@ class ConcatenatedDocstring:
         latexstring = ''
         for doc in self._parsed_docstrings:
             latexstring += doc.to_latex(docstring_linker, **options)
+        return latexstring
 
     def to_plaintext(self, docstring_linker, **options):
         textstring = ''
         for doc in self._parsed_docstrings:
             textstring += doc.to_plaintext(docstring_linker, **options)
+        return textstring
 
     def index_terms(self):
         terms = []
@@ -477,6 +537,9 @@ class ParseError(Exception):
         @rtype: C{None}
         """
         self._offset = offset
+
+    def descr(self):
+        return self._descr
     
     def __str__(self):
         """
@@ -488,14 +551,9 @@ class ParseError(Exception):
         @rtype: C{string}
         """
         if self._linenum is not None:
-            str = '%5s: ' % ('L'+`self._linenum+self._offset`)
+            return 'Line %s: %s' % (self._linenum+self._offset, self.descr())
         else:
-            str = '     - '
-        if self._fatal:
-            str += 'Error: '
-        else:
-            str += 'Warning: '
-        return str + wordwrap(self._descr, 7, startindex=len(str))[:-1]
+            return self.descr()
     
     def __repr__(self):
         """
@@ -531,94 +589,6 @@ class ParseError(Exception):
 ##################################################
 # These are used by multiple markup parsers
 
-# Default screen width, for word-wrapping
-SCRWIDTH = 73
-
-def wordwrap(str, indent=0, right=SCRWIDTH, startindex=0):
-    """
-    Word-wrap the given string.  All sequences of whitespace are
-    converted into spaces, and the string is broken up into lines,
-    where each line begins with C{indent} spaces, followed by one or
-    more (space-deliniated) words whose length is less than
-    C{right-indent}.  If a word is longer than C{right-indent}
-    characters, then it is put on its own line.
-
-    @param str: The string that should be word-wrapped.
-    @type str: C{int}
-    @param indent: The left margin of the string.  C{indent} spaces
-        will be inserted at the beginning of every line.
-    @type indent: C{int}
-    @param right: The right margin of the string.
-    @type right: C{int}
-    @type startindex: C{int}
-    @param startindex: The index at which the first line starts.  This
-        is useful if you want to include other contents on the first
-        line. 
-    @return: A word-wrapped version of C{str}.
-    @rtype: C{string}
-    """
-    words = str.split()
-    out_str = ' '*(indent-startindex)
-    charindex = max(indent, startindex)
-    for word in words:
-        if charindex+len(word) > right and charindex > 0:
-            out_str += '\n' + ' '*indent
-            charindex = indent
-        out_str += word+' '
-        charindex += len(word)+1
-    return out_str.rstrip()+'\n'
-
-def plaintext_to_html(str):
-    """
-    @return: An HTML string that encodes the given plaintext string.
-    In particular, special characters (such as C{'<'} and C{'&'})
-    are escaped.
-    @rtype: C{string}
-    """
-    str = str.replace('&', '&amp;').replace('"', '&quot;')
-    str = str.replace('<', '&lt;').replace('>', '&gt;')
-    return str.replace('@', '&#64;')
-
-def plaintext_to_latex(str, nbsp=0, breakany=0):
-    """
-    @return: A LaTeX string that encodes the given plaintext string.
-    In particular, special characters (such as C{'$'} and C{'_'})
-    are escaped, and tabs are expanded.
-    @rtype: C{string}
-    @param breakany: Insert hyphenation marks, so that LaTeX can
-    break the resulting string at any point.  This is useful for
-    small boxes (e.g., the type box in the variable list table).
-    @param nbsp: Replace every space with a non-breaking space
-    (C{'~'}).
-    """
-    # These get converted to hyphenation points later
-    if breakany: str = re.sub('(.)', '\\1\1', str)
-
-    # These get converted to \textbackslash later.
-    str = str.replace('\\', '\0')
-
-    # Expand tabs
-    str = str.expandtabs()
-
-    # These elements need to be backslashed.
-    str = re.sub(r'([#$&%_\${}])', r'\\\1', str)
-
-    # These elements have special names.
-    str = str.replace('|', '{\\textbar}')
-    str = str.replace('<', '{\\textless}')
-    str = str.replace('>', '{\\textgreater}')
-    str = str.replace('^', '{\\textasciicircum}')
-    str = str.replace('~', '{\\textasciitilde}')
-    str = str.replace('\0', r'{\textbackslash}')
-
-    # replace spaces with non-breaking spaces
-    if nbsp: str = str.replace(' ', '~')
-
-    # Convert \1's to hyphenation points.
-    if breakany: str = str.replace('\1', r'\-')
-    
-    return str
-
 def parse_type_of(obj):
     """
     @return: A C{ParsedDocstring} that encodes the type of the given
@@ -651,11 +621,3 @@ def parse_type_of(obj):
         code.appendChild(doc.createTextNode(type(obj).__name__))
     return ParsedEpytextDocstring(doc)
 
-##################################################
-## Sub-module Imports
-##################################################
-# By default, just import plaintext.  That way we don't have to wait
-# for other modules (esp restructuredtext) to load if we're not going
-# to use them.
-
-import plaintext

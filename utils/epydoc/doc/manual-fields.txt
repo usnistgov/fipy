@@ -1,0 +1,537 @@
+Epydoc Fields
+=============
+
+.. $Id: manual-fields.txt 1554 2007-02-27 03:31:56Z edloper $
+
+Fields are used to describe specific properties of a documented object. For
+example, fields can be used to define the parameters and return value of a
+function; the instance variables of a class; and the author of a module. Each
+field consists of a *tag*, an optional *argument*, and a *body*.
+
+* The *tag* is a case-insensitive word that indicates what kind of
+  documentation is given by the field.
+* The optional *argument* specifies what object, parameter, or group is
+  documented by the field.
+* The *body* contains the main contents of the field.
+
+
+Field Markup
+------------
+
+Each docstring markup langauge marks fields differently. The following table
+shows the basic fields syntax for each markup language. For more information,
+see the definition of field syntax for each markup language.
+
+
+.. list-table::
+   :header-rows: 1
+
+   *  - Epytext
+      - reStructuredText
+      - Javadoc
+
+   *  - .. parsed-literal::
+
+            @\ *tag*: *body*...
+            @\ *tag* *arg*: *body*...
+
+      - .. parsed-literal::
+
+            :\ *tag*: *body*...
+            :\ *tag* *arg*: *body*...
+
+      - .. parsed-literal::
+
+            @\ *tag* *body*...
+            @\ *tag* *arg* *body*...
+
+   *  - `Definition of epytext fields`__
+      - `Definition of ReStructuredText fields`__
+      - `Definition of Javadoc fields`__
+
+.. __: Fields_
+.. __: http://docutils.sourceforge.net/spec/rst/reStructuredText.html
+        #field-lists
+.. __: http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html
+        #javadoctags
+
+
+Supported Fields
+----------------
+
+The following table lists the fields that epydoc currently recognizes. Field
+tags are written using epytext markup; if you are using a different markup
+language, then you should adjust the markup accordingly.
+
+
+Functions and Methods parameters
+''''''''''''''''''''''''''''''''
+
+``@param`` *p*: ...
+    A description of the parameter *p* for a function or method.
+
+``@type`` *p*: ...
+    The expected type for the parameter *p*.
+
+``@return``: ...
+    The return value for a function or method.
+
+``@rtype``: ...
+    The type of the return value for a function or method.
+
+``@keyword`` *p*: ...
+    A description of the keyword parameter *p*.
+
+``@raise`` *e*: ...
+    A description of the circumstances under which a function or method
+    raises exception *e*.
+
+These tags can be used to specify attributes of parameters and return value
+of function and methods. These tags are usually put in the the docstring of the
+function to be documented.
+
+.. note:: **constructor parameters**
+
+    In C extension modules, extension classes cannot have a docstring attached
+    to the ``__init__`` function; consequently it is not possible to document
+    parameters and exceptions raised by the class constructor. To overcome this
+    shortcoming, the tags ``@param``, ``@keyword``, ``@type``, ``@exception``
+    are also allowed to appear in the class docstring. In this case they refer
+    to constructor parameters.
+
+``@param`` fields should be used to document any explicit parameter
+(including the keyword parameter). ``@keyword`` fields should only be used
+for non-explicit keyword parameters:
+
+.. python::
+
+    def plant(seed, *tools, **options):
+        """
+        @param seed: The seed that should be planted.
+        @param tools: Tools that should be used to plant the seed.
+        @param options: Any extra options for the planting.
+
+        @keyword dig_deep: Plant the seed deep under ground.
+        @keyword soak: Soak the seed before planting it.
+        """
+        #[...]
+
+Since the ``@type`` field allows for arbitrary text, it does not
+automatically create a crossreference link to the specified type, and is
+not written in fixed-width font by default. If you want to create a
+crossreference link to the type, or to write the type in a fixed-width
+font, then you must use inline markup:
+
+.. python::
+
+    def ponder(person, time):
+        """
+        @param person: Who should think.
+        @type person: L{Person} or L{Animal}
+        @param time: How long they should think.
+        @type time: C{int} or C{float}
+        """
+        #[...]
+
+
+Variables parameters
+''''''''''''''''''''
+
+``@ivar`` *v*: ...
+    A description of the class instance variable *v*.
+
+``@cvar`` *v*: ...
+    A description of the static class variable *v*.
+
+``@var`` *v*: ...
+    A description of the module variable *v*.
+
+``@type`` *v*: ...
+    The type of the variable *v*.
+
+These tags are usually put in a module or class docstring. If the sources can
+be parsed by Epydoc it is also possible to document the variable in their own
+docstrings: see `variable docstrings`_
+
+Epydoc considers class variables the ones defined directly defined in the
+class body. A common Python idiom is to create instance variables settings
+their default value in the class instead of the constructor (hopefully if the
+default is immutable...).
+
+If you want to force Epydoc to classify as instance variable one whose default
+value is set at class level, you can describe it using the tag ``@ivar`` in the
+context of a variable docstring:
+
+.. python::
+
+    class B:
+        y = 42
+        """@ivar: This is an instance variable."""
+
+
+Properties parameters
+'''''''''''''''''''''
+
+``@type``: ...
+    The type of the property.
+
+The ``@type`` tag can be attached toa property docstring to specify its type.
+
+
+Grouping and Sorting
+'''''''''''''''''''''
+
+``@group`` *g*: *c1,...,cn*
+    Organizes a set of related children of a module or class into a group.
+    *g* is the name of the group; and *c1,...,cn* are the names of the
+    children in the group. To define multiple groups, use multiple group
+    fields.
+
+``@sort``: *c1,...,cn*
+    Specifies the sort order for the children of a module or class.
+    *c1,...,cn* are the names of the children, in the order in which they
+    should appear. Any children that are not included in this list will
+    appear after the children from this list, in alphabetical order.
+
+These tags can be used to present groups of related items in a logical way.
+They apply to modules and classes docstrings.
+
+For the ``@group`` and ``@sort`` tags, asterisks (``*``) can be used to
+specify multiple children at once. An asterisk in a child name will match
+any substring:
+
+.. python::
+
+    class widget(size, weight, age):
+        """
+        @group Tools: zip, zap, *_tool
+        @group Accessors: get_*
+        @sort: get_*, set_*, unpack_*, cut
+        """
+        #[...]
+
+.. note:: **group markers**
+
+    It is also possible to group set of related items enclosing them
+    into special comment starting with the *group markers* '``#{``' and '``#}``'
+    The group title can be specified after the opening group marker. Example:
+
+    .. python::
+
+        #{ Database access functions
+
+        def read(id):
+            #[...]
+
+        def store(item):
+            #[...]
+
+        def delete(id):
+            #[...]
+
+        # groups can't be nested, so a closing marker is not required here.
+
+        #{ Web publish functions
+
+        def get(request):
+            #[...]
+
+        def post(request):
+            #[...]
+
+        #}
+
+
+Notes and Warnings
+''''''''''''''''''
+
+``@note``: ...
+    A note about an object. Multiple note fields may be used to list
+    separate notes.
+
+``@attention``: ...
+    An important note about an object. Multiple attention fields may be
+    used to list separate notes.
+
+``@bug``: ...
+    A description of a bug in an object. Multiple bug fields may be used to
+    report separate bugs.
+
+    .. note::
+
+        If any ``@bug`` field is used, the HTML writer will generate a the page
+        ``bug-index.html``, containing links to all the items tagged with
+        the field.
+
+``@warning``: ...
+    A warning about an object. Multiple warning fields may be used to
+    report separate warnings.
+
+
+Status
+''''''
+
+``@version``: ...
+    The current version of an object.
+
+``@todo`` [*ver*]: ...
+    A planned change to an object. If the optional argument ver is given,
+    then it specifies the version for which the change will be made.
+    Multiple todo fields may be used if multiple changes are planned.
+
+    .. note::
+
+        If any ``@todo`` field is used, the HTML writer will generate a the
+        page ``todo-index.html``, containing links to all the items tagged
+        with the field.
+
+
+``@deprecated``: ...
+    Indicates that an object is deprecated. The body of the field describe
+    the reason why the object is deprecated.
+
+``@since``: ...
+    The date or version when an object was first introduced.
+
+``@status``: ...
+    The current status of an object.
+
+``@change``: ...
+    A change log entry for this object.
+
+``@permission``: ...
+    The object access permission, for systems such Zope/Plone supporting
+    this concept. It may be used more than once to specify multiple
+    permissions.
+
+
+Formal Conditions
+'''''''''''''''''
+
+``@requires``: ...
+    A requirement for using an object. Multiple requires fields may be
+    used if an object has multiple requirements.
+
+``@precondition``: ...
+    A condition that must be true before an object is used. Multiple
+    precondition fields may be used if an object has multiple preconditions.
+
+``@postcondition``: ...
+    A condition that is guaranteed to be true after an object is used.
+    Multiple postcondition fields may be used if an object has multiple
+    postconditions.
+
+``@invariant``: ...
+    A condition which should always be true for an object. Multiple
+    invariant fields may be used if an object has multiple invariants.
+
+
+Bibliographic Information
+'''''''''''''''''''''''''
+
+``@author``: ...
+    The author(s) of an object. Multiple author fields may be used if an
+    object has multiple authors.
+
+``@organization``: ...
+    The organization that created or maintains an object.
+
+``@copyright``: ...
+    The copyright information for an object.
+
+``@license``: ...
+    The licensing information for an object.
+
+``@contact``: ...
+    Contact information for the author or maintainer of a module, class,
+    function, or method. Multiple contact fields may be used if an object
+    has multiple contacts.
+
+
+Other fields
+''''''''''''
+
+``@summary``: ...
+    A summary description for an object. This description overrides the
+    default summary (which is constructed from the first sentence of the
+    object's description).
+
+``@see``: ...
+    A description of a related topic. see fields typically use
+    documentation crossreference links or external hyperlinks that link to
+    the related topic.
+
+
+Fields synonyms
+---------------
+
+Several fields have *synonyms*, or alternate tags. The following table lists
+all field synonyms. Field tags are written using epytext markup; if you are
+using a different markup language, then you should adjust the markup
+accordingly.
+
+
+.. list-table::
+   :header-rows: 1
+
+   * - Name
+     - Synonims
+
+   * - ``@param`` *p*: ...
+     - | ``@parameter`` *p*: ...
+       | ``@arg`` *p*: ...
+       | ``@argument`` *p*: ...
+
+   * - ``@return``: ...
+     - ``@returns``: ...
+
+   * - ``@rtype``: ...
+     - ``@returntype``: ...
+
+   * - ``@raise`` *e*: ...
+     - | ``@raises`` *e*: ...
+       | ``@except`` *e*: ...
+       | ``@exception`` *e*: ...
+
+   * - ``@keyword`` *p*: ...
+     - | ``@kwarg`` *p*: ...
+       | ``@kwparam`` *p*: ...
+
+   * - ``@ivar`` *v*: ...
+     - ``@ivariable`` *v*: ...
+
+   * - ``@cvar`` *v*: ...
+     - ``@cvariable`` *v*: ...
+
+   * - ``@var`` *v*: ...
+     - ``@variable`` *v*: ...
+
+   * - ``@see``: ...
+     - ``@seealso``: ...
+
+   * - ``@warning``: ...
+     - ``@warn``: ...
+
+   * - ``@requires``: ...
+     - | ``@require``: ...
+       | ``@requirement``: ...
+
+   * - ``@precondition``: ...
+     - ``@precond``: ...
+
+   * - ``@postcondition``: ...
+     - ``@postcond``: ...
+
+   * - ``@organization``: ...
+     - ``@org``: ...
+
+   * - ``@copyright``: ...
+     - ``@(c)``: ...
+
+   * - ``@change``: ...
+     - ``@changed``: ...
+
+
+Module metadata variables
+-------------------------
+
+Some module variables are commonly used as module metadata. Epydoc can use the
+value provided by these variables as alternate form for tags. The following
+table lists the recognized variables and the tag they replace. Customized
+metadata variables can be added using the method described in `Adding New
+Fields`_.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Tag
+     - Variable
+
+   * - ``@author``
+     - ``__author__``
+
+   * - ``@authors``
+     - ``__authors__``
+
+   * - ``@contact``
+     - ``__contact__``
+
+   * - ``@copyright``
+     - ``__copyright__``
+
+   * - ``@license``
+     - ``__license__``
+
+   * - ``@deprecated``
+     - ``__deprecated__``
+
+   * - ``@date``
+     - ``__date__``
+
+   * - ``@version``
+     - ``__version__``
+
+
+Adding New Fields
+-----------------
+
+New fields can be defined for the docstrings in a module using the special
+``@newfield`` tag (or its synonym, ``@deffield``). This tag has the following
+syntax:
+
+ .. parsed-literal::
+
+    @newfield *tag*: *label* [, *plural* ]
+
+Where *tag* is the new tag that's being defined; *label* is a string that will
+be used to mark this field in the generated output; and plural is the plural form
+of label, if different.
+
+New fields can be defined in any Python module. If they are defined in a
+package, it will be possible to use the newly defined tag from every package
+submodule.
+
+Each new field will also define a `metadata variable`_ which can be used
+to set the field value instead of the tag. For example, if a *revision*
+tag has been defined with::
+
+    @newfield revision: Revision
+
+then it will be possible to set a value for the field using a module variable:
+
+.. python::
+
+    __revision__ = "1234"
+
+.. _metadata variable: `Module metadata variables`_
+
+The following example illustrates how the @newfield can be used:
+Docstring Input	Rendered Output
+
+
+.. list-table::
+   :header-rows: 1
+
+   * - Docstring Input
+     - Rendered Output
+
+   * - .. python::
+
+        """
+        @newfield corpus: Corpus, Corpora
+        """
+
+        def example():
+            """
+            @corpus: Bob's wordlist.
+            @corpus: The British National Corpus.
+            """
+            [...]
+
+     -  **Corpora:**
+
+        * Bob's wordlist.
+        * The British National Corpus.
+
+.. Note:: The module-level variable ``__extra_epydoc_fields__`` is deprecated;
+          use ``@newfield`` instead.

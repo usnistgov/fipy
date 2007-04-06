@@ -3,9 +3,10 @@
 <title>The Epytext Markup Language</title>
 <link rel="stylesheet" href="epydoc.css" type="text/css"/>
 </head>
-<!-- $Id: epytext.html 567 2003-07-21 06:41:56Z edloper $ -->
+<!-- $Id: epytext.html 1211 2006-04-10 19:38:37Z edloper $ -->
 
 <body>
+<div class="body">
 <h1>The Epytext Markup Language</h1>
 
 <a name="overview"/>
@@ -61,7 +62,7 @@ one or more lines of text.  Paragraphs must be left justified (i.e.,
 every line must have the same indentation).  The following example
 illustrates how paragraphs can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -103,7 +104,7 @@ characters, so that its left margin lines up with the right side of
 the bullet.  The following example illustrates a simple ordered
 list. </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -141,7 +142,7 @@ other block types must follow on separate lines. </p>
 <p> Every list must be separated from surrounding blocks by
 indentation: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -170,7 +171,7 @@ parent list item by indentation.  In particular, the following
 docstring generates an error, since the sublist is not separated from
 the paragraph in its parent list item by indentation: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -190,7 +191,7 @@ the paragraph in its parent list item by indentation: </p>
 
 <p> The following example illustrates how lists can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -240,7 +241,7 @@ you must either ensure that it is not at the beginning of the line,
 or use <a href="#escaping">escaping</a> to prevent epytext from
 treating it as markup: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -294,7 +295,7 @@ child blocks. </p>
 
 <p> The following example illustrates how sections can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -344,7 +345,7 @@ whose indentation is equal to or less than that of the paragraph that
 introduces them.  The following example shows how literal blocks can
 be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -387,7 +388,7 @@ delimited from surrounding blocks by blank lines.  Doctest blocks may
 not contain blank lines.  The following example shows how doctest
 blocks can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -449,7 +450,7 @@ newline is considered a field. </p>
 <p> The following example illustrates how fields can be
 used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -538,7 +539,7 @@ mathematical expressions are rendered in italics.  But those defaults
 may be changed by modifying the CSS stylesheet.  The following example
 illustrates how the four basic markup types can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -587,7 +588,7 @@ targets is ignored.  In particular, URL targets may be split over
 multiple lines.  The following example illustrates how URLs can be
 used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td rowspan="2">
 <pre>
@@ -630,7 +631,7 @@ object names is ignored.  In particular, object names may be split
 over multiple lines.  The following example illustrates how
 documentation crossreference links can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td rowspan="2">
 <pre>
@@ -688,7 +689,7 @@ in the index.  The term itself will be italicized; and a link will be
 created from the index page to the location of the term in the text.
 The following example illustrates how index terms can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td rowspan="2">
 <pre>
@@ -705,7 +706,7 @@ The following example illustrates how index terms can be used: </p>
 
 </td></tr><tr><td>
 
-  <table border="1" cellpadding="3" cellspacing="0" width="100%" class="grayf">
+  <table border="1" cellpadding="3" cellspacing="0" width="95%" class="grayf">
     <tr>
       <th colspan="2" class="grayc">Index</th></tr>
       <tr><td width="15%">index&nbsp;term</td>
@@ -729,7 +730,7 @@ symbol code that specifies what character should be produced.  The
 following example illustrates how symbols can be used to generate
 special characters: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td rowspan="2">
 <pre>
@@ -756,8 +757,7 @@ special characters: </p>
 they can make it harder to read your docstring in plaintext.  In
 general, symbols should be used sparingly.  For a complete list of the
 symbols that are currently supported, see the reference documentation
-for <a href=
-"http://syse.local/~edloper/epydoc/public/epydoc.epytext-module.html#SYMBOLS"
+for <a href="api/public/epydoc.markup.epytext-module.html#SYMBOLS"
 >epydoc.epytext.SYMBOLS</a>. </p>
 
 <a name="escaping"/>
@@ -777,7 +777,7 @@ left curly brace ("<code>{</code>"); and "<code>E{rb}</code>" produces
 a right curly brace ("<code>}</code>").  The following example
 illustrates how escaping can be used: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td rowspan="2">
 <pre>
@@ -803,6 +803,46 @@ illustrates how escaping can be used: </p>
 </td></tr>
 </table>
 
+<a name="graphs"/>
+<h3> 3.7. Graphs </h3>
+
+<p> The inline markup construct "<code>G{</code><i>graphtype</i>
+<i>args...</i>}</code>" is used to insert automatically generated
+graphs.  The following graphs generation constructions are currently
+defines:</p>
+
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
+<tr><th width="10%">Markup</th><th width="90%">Description</th></tr>
+
+  <tr valign="top">
+    <td><pre>G{classtree <code class="user">classes...</code>}</pre></td>
+    <td> Display a class hierarchy for the given class or classes
+    (including all superclasses &amp; subclasses).  If no class is
+    specified, and the directive is used in a class's docstring, then
+    that class's class hierarchy will be displayed.  </td></tr>
+
+  <tr valign="top">
+    <td><pre>G{packagetree <code class="user">modules...</code>}</pre></td>
+    <td> Display a package hierarchy for the given module or modules
+    (including all subpackages and submodules).  If no module is
+    specified, and the directive is used in a module's docstring, then
+    that module's package hierarchy will be displayed.  </td></tr>
+
+  <tr valign="top">
+    <td><pre>G{impotgraph <code class="user">modules...</code>}</pre></td>
+    <td> Display an import graph for the given module or modules.  If
+    no module is specified, and the directive is used in a module's
+    docstring, then that module's import graph will be displayed.
+    </td></tr>
+
+  <tr valign="top">
+    <td><pre>G{callgraph <code class="user">functions...</code>}</pre></td>
+    <td> Display a call graph for the given function or functions.  If
+    no function is specified, and the directive is used in a
+    function's docstring, then that function's call graph will be
+    displayed.  </td></tr>
+</table>
+
 <!-- =========== CHARACTERS ============= -->
 <a name="characters"/>
 <h2> 4. Characters </h2>
@@ -826,7 +866,7 @@ called <i>content characters</i>.  Content characters are always
 displayed as-is.  In particular, HTML codes are <i>not</i> passed
 through.  For example, consider the following example: </p>
 
-<table border="1" cellspacing="0" cellpadding="3" width="100%">
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
   <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
   <tr valign="top"><td>
 <pre>
@@ -1005,28 +1045,32 @@ string.</b> <br />
 
 </ul>
 
+</div>
 <table width="100%" class="navbox" cellpadding="1" cellspacing="0">
   <tr>
-  <td align="center" width="20%">
-    <a class="nav" href="index.html">[Epydoc]</a></td>
-  <td align="center" width="20%">
-    <a class="nav" href="installing.html">[Installing]</a></td>
-  <td align="center" width="20%">
-    <a class="nav" href="using.html">[Using]</a></td>
-<!--  <td align="center" width="20%">
-    <a class="nav" href="epytext.html">[Epytext]</a></td>-->
-  <td align="center" width="20%">
-    <a class="nav" href="http://www.cis.upenn.edu/~edloper/">[Author]</a></td>
-  <td align="center" width="20%">
-    <a href="http://sourceforge.net/projects/epydoc"> 
-    <img src="sflogo.png" 
+  <a class="nav" href="index.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="index.html">
+    Home</a></td></a>
+  <a class="nav" href="installing.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="installing.html">
+    Installing Epydoc</a></td></a>
+  <a class="nav" href="using.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="using.html">
+    Using Epydoc</a></td></a>
+  <a class="nav" href="epytext.html">
+    <td align="center" width="20%" class="navselect" class="nav">
+    <a class="nav" href="epytext.html">
+    Epytext</a></td></a>
+  <td align="center" width="20%" class="nav">
+    
+    <A href="http://sourceforge.net/projects/epydoc"> 
+    <IMG src="sflogo.png" 
     width="88" height="26" border="0" alt="SourceForge"
-    align="top"/></a></td>
+    align="top"/></A></td>
     </tr>
 </table>
-
-<font size="-1">
-<!-- hhmts start --> Last modified: Sat Jul 19 01:51:38 EDT 2003 <!-- hhmts end -->
-</font>
 </body>
 </html>

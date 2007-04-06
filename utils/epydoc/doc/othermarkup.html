@@ -3,9 +3,9 @@
 <title>Alternate Markup Languages</title>
 <link rel="stylesheet" href="epydoc.css" type="text/css"/>
 </head>
-<!-- $Id: othermarkup.html 573 2003-07-21 06:50:49Z edloper $ -->
+<!-- $Id: othermarkup.html 1526 2007-02-17 04:30:49Z dvarrazzo $ -->
 <body>
-
+<div class="body">
 <h1>Alternate Markup Languages</h1>
 
 <p> Epydoc's default markup language is <a
@@ -16,7 +16,7 @@ alternate markup languages: </p>
 
 <ul>
   <li><b><a href="http://docutils.sourceforge.net/rst.html"
-  >ReStructuredText</a></b> is an "easy-to-read,
+  >reStructuredText</a></b> is an "easy-to-read,
   what-you-see-is-what-you-get plaintext markup syntax."  It is more
   powerful than epytext (e.g., it includes markup for tables and
   footnotes); but it is also more complex, and sometimes harder to
@@ -58,32 +58,106 @@ expression package <code>re</code>, which uses plaintext markup: </p>
 <code class="prompt">[epydoc]$</code> epydoc --docformat plaintext re
 </pre></div>
 
-<h2>ReStructuredText</h2>
+<a name="restructuredtext">
+<h2>reStructuredText</h2></a>
 
-<p> ReStructuredText is a markup language that was developed in
+<p> reStructuredText is a markup language that was developed in
 conjunction with <a
 href="http://docutils.sourceforge.net">Docutils</a>.  In order to
-parse ReStructuredText docstrings, Docutils 0.3 or higher must be
-installed.  If Docutils is not installed, then ReStructuredText
-docstrings will be rendered as plaintet.  Docutils can be downloaded
+parse reStructuredText docstrings, Docutils 0.3 or higher must be
+installed.  If Docutils is not installed, then reStructuredText
+docstrings will be rendered as plaintext.  Docutils can be downloaded
 from the <a
 href="http://sourceforge.net/project/showfiles.php?group_id=38414">Docutils
 SourceForge page</a>. </p>
 
-<p> Currently, epydoc only has proper support for HTML output for
-ReStructuredText docstrings; other output formats will be rendered
-using the Docutils <code>Document.astext()</code> method, and won't
-look as good.  (If someone wants to add proper LaTeX support, I'd be
-happy to <a
-href="http://sourceforge.net/tracker/?func=add&group_id=32455&atid=405620">accept
-patches</a>.) </p>
-
 <p> In addition to the <a href="fields.html#fields">standard set of
-fields</a>, the ReStructruedText parser also supports
+fields</a>, the reStructruedText parser also supports
 <i>consolidated</i> fields, which combine the documentation for
 several objects into a single field.  For more information, see the
-markup-specific notes for <a href="fields.html#rst">ReStructuredText
+markup-specific notes for <a href="fields.html#rst">reStructuredText
 fields</a>. </p>
+
+<p> The epydoc reStructuredText reader also defines several custom <a
+href="http://docutils.sourceforge.net/docs/user/rst/quickref.html#directives">directives</a>,
+which can be used to automatically generate a variety of graphs.  The
+following custom directives are currently defined:</p>
+
+<table border="1" cellspacing="0" cellpadding="3" width="95%">
+<tr><th width="10%">Directive</th><th width="90%">Description</th></tr>
+
+<tr valign="top"><td><pre>
+.. classtree:: [<code class="user">classes...</code>]
+    :dir: <code class="user">up|down|left|right</code>
+</pre></td>
+<td>
+Display a class hierarchy for the given class or classes (including
+all superclasses &amp; subclasses).  If no class is specified, and the
+directive is used in a class's docstring, then that class's class
+hierarchy will be displayed.  The <code>dir</code> option specifies
+the orientation for the graph (default=<code>down</code>).
+</td></tr>
+
+<tr valign="top"><td><pre>
+.. packagetree:: [<code class="user">modules...</code>]
+    :dir: <code class="user">up|down|left|right</code>
+    :style: <code class="user">uml|tree</code>
+</pre></td>
+<td>
+Display a package hierarchy for the given module or modules (including
+all subpackages and submodules).  If no module is specified, and the
+directive is used in a module's docstring, then that module's package
+hierarchy will be displayed.  The <code>dir</code> option specifies
+the orientation for the graph (default=<code>down</code>).  The
+<code>style</code> option specifies whether packages should be
+displayed in a tree, or using nested UML symbols.
+</td></tr>
+
+<tr valign="top"><td><pre>
+.. importgraph:: [<code class="user">modules...</code>]
+    :dir: <code class="user">up|down|left|right</code>
+</pre></td>
+<td>
+Display an import graph for the given module or modules.  If no module
+is specified, and the directive is used in a module's docstring, then
+that module's import graph will be displayed.  The <code>dir</code>
+option specifies the orientation for the graph
+(default=<code>left</code>).
+</td></tr>
+
+<tr valign="top"><td><pre>
+.. callgraph:: [<code class="user">functions...</code>]
+    :dir: <code class="user">up|down|left|right</code>
+</pre></td>
+<td>
+Display a call graph for the given function or functions.  If no function
+is specified, and the directive is used in a function's docstring, then
+that function's call graph will be displayed.  The
+<code>dir</code> option specifies the orientation for the graph
+(default=<code>right</code>).
+</td></tr>
+
+<tr valign="top"><td><pre>
+.. dotgraph:: [<code class="user">title...</code>]
+    :caption: <code class="user">text...</code>
+    <code class="user">graph...</code>
+</pre></td>
+<td>
+
+Display a custom Graphviz dot graph.  The body of the directive
+(<code>graph...</code>) should contain the body of a dot graph.  The
+optional <code>title</code> argument, if specified, is used as the
+title of the graph.  The optional <code>caption</code> option can be
+used to provide a caption for the graph.
+
+
+</td></tr>
+
+
+</table>
+
+
+
 
 <h2>Javadoc</h2>
 
@@ -109,28 +183,32 @@ fields</a>. </p>
   <code>@group</code>. </li>
 </ul>
 
+</div>
 <table width="100%" class="navbox" cellpadding="1" cellspacing="0">
   <tr>
-  <td align="center" width="16.6%">
-    <a class="nav" href="index.html">[Epydoc]</a></td>
-  <td align="center" width="16.6%">
-    <a class="nav" href="installing.html">[Installing]</a></td>
-  <td align="center" width="16.6%">
-    <a class="nav" href="using.html">[Using]</a></td>
-  <td align="center" width="16.6%">
-    <a class="nav" href="epytext.html">[Epytext]</a></td>
-  <td align="center" width="16.6%">
-    <a class="nav" href="http://www.cis.upenn.edu/~edloper/">[Author]</a></td>
-  <td align="center" width="16.6%">
-    <a href="http://sourceforge.net/projects/epydoc"> 
-    <img src="sflogo.png" 
+  <a class="nav" href="index.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="index.html">
+    Home</a></td></a>
+  <a class="nav" href="installing.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="installing.html">
+    Installing Epydoc</a></td></a>
+  <a class="nav" href="using.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="using.html">
+    Using Epydoc</a></td></a>
+  <a class="nav" href="epytext.html">
+    <td align="center" width="20%" class="nav">
+    <a class="nav" href="epytext.html">
+    Epytext</a></td></a>
+  <td align="center" width="20%" class="nav">
+    
+    <A href="http://sourceforge.net/projects/epydoc"> 
+    <IMG src="sflogo.png" 
     width="88" height="26" border="0" alt="SourceForge"
-    align="top"/></a></td>
+    align="top"/></A></td>
     </tr>
 </table>
-
-<font size="-1">
-<!-- hhmts start --> Last modified: Sat Jul 19 12:06:58 EDT 2003 <!-- hhmts end -->
-</font>
 </body>
 </html>
