@@ -174,6 +174,9 @@ def plaintext_to_latex(str, nbsp=0, breakany=0):
     @param nbsp: Replace every space with a non-breaking space
     (C{'~'}).
     """
+    # Protect special LaTeX command(s)
+    str = re.sub(r'\\(EpydocDottedName){([^}]*)}', r'@SLASH\1@LEFT\2@RIGHT', str)
+    
     # These get converted to hyphenation points later
     if breakany: str = re.sub('(.)', '\\1\1', str)
 
@@ -199,6 +202,10 @@ def plaintext_to_latex(str, nbsp=0, breakany=0):
 
     # Convert \1's to hyphenation points.
     if breakany: str = str.replace('\1', r'\-')
+    
+    str = re.sub('@SLASH', r'\\', str)
+    str = re.sub('@LEFT', '{', str)
+    str = re.sub('@RIGHT', '}', str)
     
     return str
 

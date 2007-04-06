@@ -542,39 +542,12 @@ class _EpydocLaTeXTranslator(LaTeXTranslator):
     settings = None
     def __init__(self, document, docstring_linker):
         # Set the document's settings.
-        settings = OptionParser([LaTeXWriter()]).get_default_values()
-        document.settings = settings
+        if self.settings is None:
+            settings = OptionParser([LaTeXWriter()]).get_default_values()
+            self.__class__.settings = settings
+        document.settings = self.settings
 
         LaTeXTranslator.__init__(self, document)
-        self._linker = docstring_linker
-
-        # Start at section level 3.
-        self.section_level = 3
-
-    # Handle interpreted text (crossreferences)
-    def visit_title_reference(self, node):
-        target = self.encode(node.astext())
-        xref = self._linker.translate_identifier_xref(target, target)
-        self.body.append(xref)
-        raise SkipNode
-
-    def visit_document(self, node): pass
-    def depart_document(self, node): pass
-    
-    def visit_admonition(self, node, name=''):
-        self.body.append('\\begin{reSTadmonition}[%s]\n' % self.language.labels[name])
-        
-    def depart_admonition(self, node=None):
-        self.body.append('\\end{reSTadmonition}\n');
-
-        
-class _EpydocHTMLTranslator(HTMLTranslator):
-    def __init__(self, document, docstring_linker):
-        # Set the document's settings.
-        settings = OptionParser([HTMLWriter()]).get_default_values()
-        document.settings = settings
-    
-        HTMLTranslator.__init__(self, document)
         self._linker = docstring_linker
 
         # Start at section level 3.  (Unfortunately, we now have to
@@ -602,6 +575,12 @@ class _EpydocHTMLTranslator(HTMLTranslator):
     def visit_doctest_block(self, node):
         self.body.append(doctest_to_latex(node[0].astext()))
         raise SkipNode()
+
+    def visit_admonition(self, node, name=''):
+        self.body.append('\\begin{reSTadmonition}[%s]\n' % self.language.labels[name])
+        
+    def depart_admonition(self, node=None):
+        self.body.append('\\end{reSTadmonition}\n');
 
 class _EpydocHTMLTranslator(HTMLTranslator):
     settings = None
@@ -912,4 +891,3 @@ def _construct_callgraph(docindex, context, linker, arguments, options):
         docs = [context]
     return call_graph(docs, docindex, linker, context, **options)
   
-

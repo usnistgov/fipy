@@ -27,75 +27,8 @@ import epydoc.markup
 class LatexWriter:
     PREAMBLE = [
         "\\documentclass{article}",
-        "\\usepackage{alltt, parskip, fancyhdr, boxedminipage}",
-        "\\usepackage{makeidx, multirow, longtable, tocbibind, amssymb}",
-        "\\usepackage{fullpage}",
-        "\\usepackage[usenames]{color}",
-        # Fix the heading position -- without this, the headings generated
-        # by the fancyheadings package sometimes overlap the text.
-        "\\setlength{\\headheight}{16pt}",
-        "\\setlength{\\headsep}{24pt}",
-        "\\setlength{\\topmargin}{-\\headsep}",
-        # By default, do not indent paragraphs.
-        "\\setlength{\\parindent}{0ex}",
-        # Double the standard size boxedminipage outlines.
-        "\\setlength{\\fboxrule}{2\\fboxrule}",
-        # Create a 'base class' length named BCL for use in base trees.
-        "\\newlength{\\BCL} % base class length, for base trees.",
-        # Display the section & subsection names in a header.
-        "\\pagestyle{fancy}",
-        "\\renewcommand{\\sectionmark}[1]{\\markboth{#1}{}}",
-        "\\renewcommand{\\subsectionmark}[1]{\\markright{#1}}",
-        # Colorization for python source code
-        "\\definecolor{py@keywordcolour}{rgb}{1,0.45882,0}",
-        "\\definecolor{py@stringcolour}{rgb}{0,0.666666,0}",
-        "\\definecolor{py@commentcolour}{rgb}{1,0,0}",
-        "\\definecolor{py@ps1colour}{rgb}{0.60784,0,0}",
-        "\\definecolor{py@ps2colour}{rgb}{0.60784,0,1}",
-        "\\definecolor{py@inputcolour}{rgb}{0,0,0}",
-        "\\definecolor{py@outputcolour}{rgb}{0,0,1}",
-        "\\definecolor{py@exceptcolour}{rgb}{1,0,0}",
-        "\\definecolor{py@defnamecolour}{rgb}{1,0.5,0.5}",
-        "\\definecolor{py@builtincolour}{rgb}{0.58039,0,0.58039}",
-        "\\definecolor{py@identifiercolour}{rgb}{0,0,0}",
-        "\\definecolor{py@linenumcolour}{rgb}{0.4,0.4,0.4}",
-        "\\definecolor{py@inputcolour}{rgb}{0,0,0}",
-        "% Prompt",
-        "\\newcommand{\\pysrcprompt}[1]{\\textcolor{py@ps1colour}"
-            "{\\small\\textbf{#1}}}",
-        "\\newcommand{\\pysrcmore}[1]{\\textcolor{py@ps2colour}"
-            "{\\small\\textbf{#1}}}",
-        "% Source code",
-        "\\newcommand{\\pysrckeyword}[1]{\\textcolor{py@keywordcolour}"
-            "{\\small\\textbf{#1}}}",
-        "\\newcommand{\\pysrcbuiltin}[1]{\\textcolor{py@builtincolour}"
-            "{\\small\\textbf{#1}}}",
-        "\\newcommand{\\pysrcstring}[1]{\\textcolor{py@stringcolour}"
-            "{\\small\\textbf{#1}}}",
-        "\\newcommand{\\pysrcdefname}[1]{\\textcolor{py@defnamecolour}"
-            "{\\small\\textbf{#1}}}",
-        "\\newcommand{\\pysrcother}[1]{\\small\\textbf{#1}}",
-        "% Comments",
-        "\\newcommand{\\pysrccomment}[1]{\\textcolor{py@commentcolour}"
-            "{\\small\\textbf{#1}}}",
-        "% Output",
-        "\\newcommand{\\pysrcoutput}[1]{\\textcolor{py@outputcolour}"
-            "{\\small\\textbf{#1}}}",
-        "% Exceptions",
-        "\\newcommand{\\pysrcexcept}[1]{\\textcolor{py@exceptcolour}"
-            "{\\small\\textbf{#1}}}",
-        # Define new environment for displaying parameter lists.
-        textwrap.dedent("""\
-        \\newenvironment{Ventry}[1]%
-         {\\begin{list}{}{%
-           \\renewcommand{\\makelabel}[1]{\\texttt{##1:}\\hfil}%
-           \\settowidth{\\labelwidth}{\\texttt{#1:}}%
-           \\setlength{\\leftmargin}{\\labelsep}%
-           \\addtolength{\\leftmargin}{\\labelwidth}}}%
-         {\\end{list}}"""),
+        "\\usepackage[%s]{epydoc}",
         ]
-
-    HRULE = '\\rule{\\textwidth}{0.5\\fboxrule}\n\n'
 
     SECTIONS = ['\\part{%s}', '\\chapter{%s}', '\\section{%s}',
                 '\\subsection{%s}', '\\subsubsection{%s}',
@@ -115,6 +48,7 @@ class LatexWriter:
         self._list_classes_separately=kwargs.get('list_classes_separately',0)
         self._inheritance = kwargs.get('inheritance', 'listed')
         self._exclude = kwargs.get('exclude', 1)
+        self._list_submodules = kwargs.get('list_submodules', 1)
         self._top_section = 2
         self._index_functions = 1
         self._hyperref = 1
@@ -275,13 +209,20 @@ class LatexWriter:
         out('\\end{document}\n\n')
 
     def write_preamble(self, out):
-        out('\n'.join(self.PREAMBLE))
+        # If we're generating an index, add it to the preamble.
+        if self._index:
+            out('\n'.join(self.PREAMBLE) % 'index')
+        else:
+            out('\n'.join(self.PREAMBLE) % '')    
         out('\n')
         
         # Set the encoding.
         out('\\usepackage[%s]{inputenc}' % self.get_latex_encoding())
 
         # If we're generating hyperrefs, add the appropriate packages.
+        # !!!!!!!!!!!!!!!!!!!!!!
+        # !!! JEG - this needs to be the last thing in the preamble
+        # !!!!!!!!!!!!!!!!!!!!!!
         if self._hyperref:
             out('\\definecolor{UrlColor}{rgb}{0,0.08,0.45}\n')
             out('\\usepackage[dvips, pagebackref, pdftitle={%s}, '
@@ -292,10 +233,6 @@ class LatexWriter:
                 'pagecolor=black, urlcolor=UrlColor]{hyperref}\n' %
                 (self._prj_name or '', epydoc.__version__))
             
-        # If we're generating an index, add it to the preamble.
-        if self._index:
-            out("\\makeindex\n")
-
         # If restructuredtext was used, then we need to extend
         # the prefix to include LatexTranslator.head_prefix.
         if 'restructuredtext' in epydoc.markup.MARKUP_LANGUAGES_USED:
@@ -307,7 +244,7 @@ class LatexWriter:
                     'babel', 'hyperref', 'color', 'alltt', 'parskip',
                     'fancyhdr', 'boxedminipage', 'makeidx',
                     'multirow', 'longtable', 'tocbind', 'assymb',
-                    'fullpage'):
+                    'fullpage', 'inputenc'):
                     pass
                 else:
                     out(line)
@@ -326,10 +263,8 @@ class LatexWriter:
 
         # Add a section marker.
         out(self.section('%s %s' % (self.doc_kind(doc),
-                                    doc.canonical_name)))
-
-        # Label our current location.
-        out('    \\label{%s}\n' % self.label(doc))
+                                    self._dotted(doc.canonical_name)),
+                         ref=doc))
 
         # Add the module's description.
         if doc.descr not in (None, UNKNOWN):
@@ -339,7 +274,7 @@ class LatexWriter:
         self.write_standard_fields(out, doc)
 
         # If it's a package, list the sub-modules.
-        if doc.submodules != UNKNOWN and doc.submodules:
+        if self._list_submodules and doc.submodules != UNKNOWN and doc.submodules:
             self.write_module_list(out, doc)
 
         # Contents.
@@ -370,14 +305,13 @@ class LatexWriter:
         if self._list_classes_separately:
             seclevel = 0
             out(self.section('%s %s' % (self.doc_kind(doc),
-                                        doc.canonical_name), seclevel))
+                                        self._dotted(doc.canonical_name)), 
+                             seclevel, ref=doc))
         else:
             seclevel = 1
             out(self.section('%s %s' % (self.doc_kind(doc),
-                                        doc.canonical_name[-1]), seclevel))
-
-        # Label our current location.
-        out('    \\label{%s}\n' % self.label(doc))
+                                        self._dotted(doc.canonical_name[-1])), 
+                             seclevel, ref=doc))
 
         # Add our base list.
         if doc.bases not in (UNKNOWN, None) and len(doc.bases) > 0:
@@ -385,7 +319,7 @@ class LatexWriter:
 
         # The class's known subclasses
         if doc.subclasses not in (UNKNOWN, None) and len(doc.subclasses) > 0:
-            sc_items = [plaintext_to_latex('%s' % sc.canonical_name)
+            sc_items = [self._hyperlink(sc, '%s' % sc.canonical_name)
                         for sc in doc.subclasses]
             out(self._descrlist(sc_items, 'Known Subclasses', short=1))
 
@@ -432,20 +366,19 @@ class LatexWriter:
         self.write_start_of(out, 'Modules')
         
         out(self.section('Modules', 1))
-        out('\\begin{itemize}\n')
-        out('\\setlength{\\parskip}{0ex}\n')
+        out('\\begin{EpydocModuleList}\n')
 
         for group_name in doc.group_names():
             if not doc.submodule_groups[group_name]: continue
             if group_name:
-                out('  \\item \\textbf{%s}\n' % group_name)
-                out('  \\begin{itemize}\n')
+                out('  \\item %s\n' % group_name)
+                out('  \\begin{EpydocModuleSubList}\n')
             for submodule in doc.submodule_groups[group_name]:
                 self.write_module_tree_item(out, submodule)
             if group_name:
-                out('  \end{itemize}\n')
+                out('  \end{EpydocModuleSubList}\n')
 
-        out('\\end{itemize}\n\n')
+        out('\\end{EpydocModuleList}\n\n')
 
     def write_module_tree_item(self, out, doc, depth=0):
         """
@@ -453,19 +386,17 @@ class LatexWriter:
         
         @rtype: C{string}
         """
-        out(' '*depth + '\\item \\textbf{')
-        out(plaintext_to_latex(doc.canonical_name[-1]) +'}')
+        out(' '*depth + '\\item[%s]' % self._hyperlink(doc, doc.canonical_name[-1]))
+
         if doc.summary not in (None, UNKNOWN):
-            out(': %s\n' % self.docstring_to_latex(doc.summary))
+            out(' %s\n' % self.docstring_to_latex(doc.summary))
         if self._crossref:
-            out('\n  \\textit{(Section \\ref{%s}' % self.label(doc))
-            out(', p.~\\pageref{%s})}\n\n' % self.label(doc))
+            out('\\CrossRef{%s}\n\n' % self.label(doc))
         if doc.submodules != UNKNOWN and doc.submodules:
-            out(' '*depth + '  \\begin{itemize}\n')
-            out(' '*depth + '\\setlength{\\parskip}{0ex}\n')
+            out(' '*depth + '  \\begin{EpydocModuleSubList}\n')
             for submodule in doc.submodules:
                 self.write_module_tree_item(out, submodule, depth+4)
-            out(' '*depth + '  \\end{itemize}\n')
+            out(' '*depth + '  \\end{EpydocModuleSubList}\n')
 
     #////////////////////////////////////////////////////////////
     #{ Base class trees
@@ -476,7 +407,7 @@ class LatexWriter:
             width = self._find_tree_width(doc)+2
             linespec = []
             s = ('&'*(width-4)+'\\multicolumn{2}{l}{\\textbf{%s}}\n' %
-                   plaintext_to_latex('%s'%self._base_name(doc)))
+                   self._dotted('%s'%self._base_name(doc)))
             s += '\\end{tabular}\n\n'
             top = 1
         else:
@@ -511,7 +442,7 @@ class LatexWriter:
         return width
 
     def _base_tree_line(self, doc, width, linespec):
-        base_name = plaintext_to_latex(self._base_name(doc))
+        base_name = self._dotted(self._base_name(doc))
         
         # linespec is a list of booleans.
         s = '%% Line for %s, linespec=%s\n' % (base_name, linespec)
@@ -521,7 +452,7 @@ class LatexWriter:
         # The base class name.
         s += ('\\multicolumn{%s}{r}{' % labelwidth)
         s += '\\settowidth{\\BCL}{%s}' % base_name
-        s += '\\multirow{2}{\\BCL}{%s}}\n' % base_name
+        s += '\\multirow{2}{\\BCL}{%s}}\n' % self._hyperlink(doc, self._base_name(doc))
 
         # The vertical bars for other base classes (top half)
         for vbar in linespec:
@@ -561,31 +492,29 @@ class LatexWriter:
         # Write a header.
         self.write_start_of(out, 'Classes')
         out(self.section('Classes', 1))
-        out('\\begin{itemize}')
-        out('  \\setlength{\\parskip}{0ex}\n')
+        out('\\begin{EpydocClassList}\n')
 
         for name, var_docs in groups:
             if name:
-                out('  \\item \\textbf{%s}\n' % name)
-                out('  \\begin{itemize}\n')
+                out('  \\item[%s]\n' % name)
+                out('  \\begin{EpydocClassSubList}\n')
             # Add the lines for each class
             for var_doc in var_docs:
                 self.write_class_list_line(out, var_doc)
             if name:
-                out('  \\end{itemize}\n')
+                out('  \\end{EpydocClassSubList}\n')
 
-        out('\\end{itemize}\n')
+        out('\\end{EpydocClassList}\n')
 
     def write_class_list_line(self, out, var_doc):
         if var_doc.value in (None, UNKNOWN): return # shouldn't happen
         doc = var_doc.value
-        out('  ' + '\\item \\textbf{')
-        out(plaintext_to_latex(var_doc.name) + '}')
+        out('  ' + '\\item[%s]' % self._hyperlink(var_doc.target, 
+                                                  var_doc.name))
         if doc.summary not in (None, UNKNOWN):
             out(': %s\n' % self.docstring_to_latex(doc.summary))
         if self._crossref:
-            out(('\n  \\textit{(Section \\ref{%s}' % self.label(doc)))
-            out((', p.~\\pageref{%s})}\n\n' % self.label(doc)))
+            out(('\CrossRef{%s}\n\n' % self.label(doc)))
         
     #////////////////////////////////////////////////////////////
     #{ Function List
@@ -608,40 +537,35 @@ class LatexWriter:
 
         for name, var_docs in groups:
             if name:
-                out('\n%s\\large{%s}\n' % (self.HRULE, name))
+                out('\\begin{EpydocFunctionGroup}[%s]\n' % (name or ''))
             for var_doc in var_docs:
                 self.write_func_list_box(out, var_doc)
             # [xx] deal with inherited methods better????
             #if (self._inheritance == 'listed' and
             #    isinstance(container, ClassDoc)):
             #    out(self._inheritance_list(group, container.uid()))
+            if name:
+                out('\\end{EpydocFunctionGroup}\n')
+
             
     def write_func_list_box(self, out, var_doc):
         func_doc = var_doc.value
         is_inherited = (var_doc.overrides not in (None, UNKNOWN))
 
+        out('\\begin{EpydocFunction}')
+        # Function signature.
+        out('%s\n\n' % self.function_signature(var_doc))
+
         # nb: this gives the containing section, not a reference
         # directly to the function.
         if not is_inherited:
-            out('    \\label{%s}\n' % self.label(func_doc))
             out('    %s\n' % self.indexterm(func_doc))
 
-        # Start box for this function.
-        out('    \\vspace{0.5ex}\n\n')
-        out('    \\begin{boxedminipage}{\\textwidth}\n\n')
-
-        # Function signature.
-        out('    %s\n\n' % self.function_signature(var_doc))
-
-        if (func_doc.docstring not in (None, UNKNOWN) and
-            func_doc.docstring.strip() != ''):
-            out('    \\vspace{-1.5ex}\n\n')
-            out('    \\rule{\\textwidth}{0.5\\fboxrule}\n')
-        
         # Description
         if func_doc.descr not in (None, UNKNOWN):
+            out(' '*4 + '\\begin{EpydocDocstring}\n')
             out(self.docstring_to_latex(func_doc.descr, 4))
-            out('    \\vspace{1ex}\n\n')
+            out(' '*4 + '\\end{EpydocDocstring}\n')
 
         # Parameters
         if func_doc.arg_descrs or func_doc.arg_types:
@@ -650,9 +574,7 @@ class LatexWriter:
             for names, descrs in func_doc.arg_descrs:
                 longest = max([longest]+[len(n) for n in names])
             # Table header.
-            out(' '*6+'\\textbf{Parameters}\n')
-            out(' '*6+'\\begin{quote}\n')
-            out('        \\begin{Ventry}{%s}\n\n' % (longest*'x'))
+            out(' '*6+'\\begin{EpydocFunctionParameters}{%s}\n' % (longest*'x'))
             # Params that have @type but not @param info:
             unseen_types = set(func_doc.arg_types)
             # List everything that has a @param:
@@ -660,6 +582,9 @@ class LatexWriter:
                 arg_name = plaintext_to_latex(', '.join(arg_names))
                 out('%s\\item[%s]\n\n' % (' '*10, arg_name))
                 out(self.docstring_to_latex(arg_descr, 10))
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                # !!! JEG - this loop needs abstracting
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 for arg_name in arg_names:
                     arg_typ = func_doc.arg_types.get(arg_name)
                     if arg_typ is not None:
@@ -669,92 +594,85 @@ class LatexWriter:
                             lhs = 'type of %s' % arg_name
                         rhs = self.docstring_to_latex(arg_typ).strip()
                         out('%s\\textit{(%s=%s)}\n\n' % (' '*12, lhs, rhs))
-            out('        \\end{Ventry}\n\n')
-            out(' '*6+'\\end{quote}\n\n')
-            out('    \\vspace{1ex}\n\n')
+            out(' '*6+'\\end{EpydocFunctionParameters}\n\n')
                 
         # Returns
         rdescr = func_doc.return_descr
         rtype = func_doc.return_type
         if rdescr not in (None, UNKNOWN) or rtype not in (None, UNKNOWN):
-            out(' '*6+'\\textbf{Return Value}\n')
-            out(' '*6+'\\begin{quote}\n')
+            out(' '*6+'\\EpydocFunctionReturns')
+            if rtype not in (None, UNKNOWN):
+                out('[%s]' % self.docstring_to_latex(rtype, 6).strip())
             if rdescr not in (None, UNKNOWN):
-                out(self.docstring_to_latex(rdescr, 6))
-                if rtype not in (None, UNKNOWN):
-                    out(' '*6+'\\textit{(type=%s)}\n\n' %
-                        self.docstring_to_latex(rtype, 6).strip())
-            elif rtype not in (None, UNKNOWN):
-                out(self.docstring_to_latex(rtype, 6))
-            out(' '*6+'\\end{quote}\n\n')
-            out('    \\vspace{1ex}\n\n')
+                out('{%s}' % self.docstring_to_latex(rdescr, 6))
+            else:
+                out('{}')
+            out('\n\n')
 
         # Raises
         if func_doc.exception_descrs not in (None, UNKNOWN, [], ()):
-            out(' '*6+'\\textbf{Raises}\n')
-            out(' '*6+'\\begin{quote}\n')
-            out('        \\begin{description}\n\n')
+            out(' '*6+'\\begin{EpydocFunctionRaises}\n')
             for name, descr in func_doc.exception_descrs:
-                out(' '*10+'\\item[\\texttt{%s}]\n\n' %
+                out(' '*10+'\\item[%s]\n\n' %
                     plaintext_to_latex('%s' % name))
                 out(self.docstring_to_latex(descr, 10))
-            out('        \\end{description}\n\n')
-            out(' '*6+'\\end{quote}\n\n')
-            out('    \\vspace{1ex}\n\n')
+            out(' '*6+'\\end{EpydocFunctionRaises}\n\n')
 
         ## Overrides
         if var_doc.overrides not in (None, UNKNOWN):
-            out('      Overrides: ' +
-                plaintext_to_latex('%s'%var_doc.overrides.canonical_name))
+            out('\\EpydocFunctionOverrides')
             if (func_doc.docstring in (None, UNKNOWN) and
                 var_doc.overrides.value.docstring not in (None, UNKNOWN)):
-                out(' \textit{(inherited documentation)}')
-            out('\n\n')
+                out('[1]')
+            out('{%s}\n\n' 
+                % self._hyperlink(var_doc.overrides, 
+                                  '%s' % var_doc.overrides.canonical_name))
 
         # Add version, author, warnings, requirements, notes, etc.
         self.write_standard_fields(out, func_doc)
 
-        out('    \\end{boxedminipage}\n\n')
+        out('    \\end{EpydocFunction}\n\n')
 
     def function_signature(self, var_doc):
         func_doc = var_doc.value
         func_name = var_doc.name
         
+        s = '{%s}{' % self._hypertarget(var_doc, func_name)
+        
         # This should never happen, but just in case:
-        if func_doc in (None, UNKNOWN):
-            return ('\\raggedright \\textbf{%s}(...)' %
-                    plaintext_to_latex(func_name))
-            
-        if func_doc.posargs == UNKNOWN:
-            args = ['...']
-        else:
-            args = [self.func_arg(name, default) for (name, default)
-                    in zip(func_doc.posargs, func_doc.posarg_defaults)]
-        if func_doc.vararg:
-            if func_doc.vararg == '...':
-                args.append('\\textit{...}')
+        if func_doc not in (None, UNKNOWN):
+            if func_doc.posargs == UNKNOWN:
+                args = ['\\GenericArg{}']
             else:
-                args.append('*\\textit{%s}' %
-                            plaintext_to_latex(func_doc.vararg))
-        if func_doc.kwarg:
-            args.append('**\\textit{%s}' %
-                        plaintext_to_latex(func_doc.kwarg))
-        return ('\\raggedright \\textbf{%s}(%s)' %
-                (plaintext_to_latex(func_name), ', '.join(args)))
+                args = [self.func_arg(name, default) for (name, default)
+                        in zip(func_doc.posargs, func_doc.posarg_defaults)]
+            if func_doc.vararg:
+                if func_doc.vararg == '...':
+                    args.append('\\GenericArg{}')
+                else:
+                    args.append('\\VarArg{%s}' % plaintext_to_latex(func_doc.vararg))
+            if func_doc.kwarg:
+                args.append('\\KWArg{%s}' % plaintext_to_latex(func_doc.kwarg))
+            
+        s += '%\n    \\and '.join(args)
+        s += '}%\n'
+        
+        return s
 
     def func_arg(self, name, default):
-        s = '\\textit{%s}' % plaintext_to_latex(self._arg_name(name))
+        s = '\\Param'
+        
         if default is not None:
-            s += '=\\texttt{%s}' % default.summary_pyval_repr().to_latex(None)
+            s += "[%s]" % default.summary_pyval_repr().to_latex(None)
+        s += '{%s}' % self._arg_name(name)
+
         return s
-    
+
     def _arg_name(self, arg):
         if isinstance(arg, basestring):
-            return arg
-        elif len(arg) == 1:
-            return '(%s,)' % self._arg_name(arg[0])
+            return plaintext_to_latex(arg)
         else:
-            return '(%s)' % (', '.join([self._arg_name(a) for a in arg]))
+            return '\\ArgList{%s}' % '\\and '.join([self._arg_name(a) for a in arg])
 
     #////////////////////////////////////////////////////////////
     #{ Variable List
@@ -776,30 +694,11 @@ class LatexWriter:
         self.write_start_of(out, heading)
         out('  '+self.section(heading, seclevel))
 
-        out('\\begin{longtable}')
-        out('{|p{.30\\textwidth}|')
-        out('p{.62\\textwidth}|l}\n')
-        out('\\cline{1-2}\n')
-
-        # Set up the headers & footer (this makes the table span
-        # multiple pages in a happy way).
-        out('\\cline{1-2} ')
-        out('\\centering \\textbf{Name} & ')
-        out('\\centering \\textbf{Description}& \\\\\n')
-        out('\\cline{1-2}\n')
-        out('\\endhead')
-        out('\\cline{1-2}')
-        out('\\multicolumn{3}{r}{\\small\\textit{')
-        out('continued on next page}}\\\\')
-        out('\\endfoot')
-        out('\\cline{1-2}\n')
-        out('\\endlastfoot')
+        out('\\begin{Epydoc%sList}\n' % ''.join(heading.split()))
 
         for name, var_docs in groups:
             if name:
-                out('\\multicolumn{2}{|l|}{')
-                out('\\textbf{%s}}\\\\\n' % name)
-                out('\\cline{1-2}\n')
+                out('\\EpydocInternalHeader{%s}\n' % name)
             for var_doc in var_docs:
                 if isinstance(var_doc, PropertyDoc):
                     self.write_property_list_line(out, var_doc)
@@ -810,47 +709,43 @@ class LatexWriter:
             #    isinstance(container, ClassDoc)):
             #    out(self._inheritance_list(group, container.uid()))
 
-        out('\\end{longtable}\n\n')
+        out('\\end{Epydoc%sList}\n\n' % ''.join(heading.split()))
     
     def write_var_list_line(self, out, var_doc):
-        out('\\raggedright ')
-        out(plaintext_to_latex(var_doc.name, nbsp=True, breakany=True))
-        out(' & ')
         has_descr = var_doc.descr not in (None, UNKNOWN)
         has_type = var_doc.type_descr not in (None, UNKNOWN)
-        has_value = var_doc.value is not UNKNOWN
-        if has_type or has_value:
-            out('\\raggedright ')
+        has_repr = (var_doc.value not in (None, UNKNOWN) and
+                    (var_doc.value.parse_repr is not UNKNOWN or
+                     var_doc.value.pyval_repr() is not UNKNOWN))
+                     
+        out('\\EpydocVariable{%s}{' % self._hypertarget(var_doc, 
+                                                        var_doc.name))
         if has_descr:
             out(self.docstring_to_latex(var_doc.descr, 10).strip())
-            if has_type or has_value: out('\n\n')
-        if has_value:
-            out('\\textbf{Value:} \n{\\tt %s}' %
-                var_doc.value.summary_pyval_repr().to_latex(None))
+        out('}{')
+        if has_repr:
+            out(var_doc.value.summary_pyval_repr().to_latex(None))
+        out('}{')
         if has_type:
-            ptype = self.docstring_to_latex(var_doc.type_descr, 12).strip()
-            out('%s\\textit{(type=%s)}' % (' '*12, ptype))
-        out('&\\\\\n')
-        out('\\cline{1-2}\n')
+            out(self.docstring_to_latex(var_doc.type_descr, 12).strip())
+        out('}\n')
 
     def write_property_list_line(self, out, var_doc):
         prop_doc = var_doc.value
-        out('\\raggedright ')
-        out(plaintext_to_latex(var_doc.name, nbsp=True, breakany=True))
-        out(' & ')
+        out('\\EpydocProperty{%s}{%s}{' 
+            % (self._hypertarget(var_doc, var_doc.shortname), 
+               plaintext_to_latex(var_doc.name, nbsp=True, breakany=True)))
+
+        
         has_descr = prop_doc.descr not in (None, UNKNOWN)
         has_type = prop_doc.type_descr not in (None, UNKNOWN)
-        if has_descr or has_type:
-            out('\\raggedright ')
         if has_descr:
             out(self.docstring_to_latex(prop_doc.descr, 10).strip())
-            if has_type: out('\n\n')
+        out('}{')
         if has_type:
             ptype = self.docstring_to_latex(prop_doc.type_descr, 12).strip()
-            out('%s\\textit{(type=%s)}' % (' '*12, ptype))
         # [xx] List the fget/fset/fdel functions?
-        out('&\\\\\n')
-        out('\\cline{1-2}\n')
+        out('}\n')
 
     #////////////////////////////////////////////////////////////
     #{ Standard Fields
@@ -893,18 +788,17 @@ class LatexWriter:
         if plural is None: plural = singular
         if len(items) == 0: return ''
         if len(items) == 1 and singular is not None:
-            return '\\textbf{%s:} %s\n\n' % (singular, items[0])
+            return '\\EpydocDescriptionItem{%s}{%s}\n\n' % (singular, items[0])
         if short:
-            s = '\\textbf{%s:}\n' % plural
-            items = [item.strip() for item in items]
-            return s + ',\n    '.join(items) + '\n\n'
+            s = '\\begin{EpydocDescriptionShortList}{%s}%%\n    ' % plural
+            s += '%\n    \\and '.join([item.strip() for item in items])
+            s += '%\n\\end{EpydocDescriptionShortList}\n\n'
+            return s
         else:
-            s = '\\textbf{%s:}\n' % plural
-            s += '\\begin{quote}\n'
-            s += '  \\begin{itemize}\n\n  \item\n'
-            s += '    \\setlength{\\parskip}{0.6ex}\n'
-            s += '\n\n  \item '.join(items)
-            return s + '\n\n\\end{itemize}\n\n\\end{quote}\n\n'
+            s = '\\begin{EpydocDescriptionLongList}{%s}%%\n' % plural
+            s += '\n\n'.join(['  \item %s%%' % item for item in items])
+            s += '\n\\end{EpydocDescriptionLongList}\n\n'
+            return s
 
 
     #////////////////////////////////////////////////////////////
@@ -942,18 +836,22 @@ class LatexWriter:
 
     def write_start_of(self, out, section_name):
         out('\n' + 75*'%' + '\n')
-        out('%%' + ((71-len(section_name))/2)*' ')
-        out(section_name)
-        out(((72-len(section_name))/2)*' ' + '%%\n')
+        out('%%' + section_name.center(71) + '%%\n')
         out(75*'%' + '\n\n')
 
-    def section(self, title, depth=0):
+    def section(self, title, depth=0, ref=None):
         sec = self.SECTIONS[depth+self._top_section]
-        return (('%s\n\n' % sec) % plaintext_to_latex(title))                
+        text = (('%s\n\n' % sec) % title)
+        if ref:
+            text += self._hypertarget(ref, "")
+        return text
     
-    def sectionstar(self, title, depth):
+    def sectionstar(self, title, depth, ref=None):
         sec = self.STARSECTIONS[depth+self._top_section]
-        return (('%s\n\n' % sec) % plaintext_to_latex(title))
+        text = (('%s\n\n' % sec) % plaintext_to_latex(title))
+        if ref:
+            text += self._hypertarget(ref, "")
+        return text
 
     def doc_kind(self, doc):
         if isinstance(doc, ModuleDoc) and doc.is_package == True:
@@ -984,28 +882,54 @@ class LatexWriter:
             return ''
 
         pieces = []
-        while doc is not None:
+        
+        if isinstance(doc, ClassDoc):
+            classCrossRef = '\\index{\\EpydocIndex[%s]{%s}|see{%%s}}\n' \
+              % (self.doc_kind(doc).lower(), 
+                 self._dotted('%s' % doc.canonical_name))
+        else:
+            classCrossRef = None
+
+        while isinstance(doc, ClassDoc) or isinstance(doc, RoutineDoc):
             if doc.canonical_name == UNKNOWN:
                 return '' # Give up.
-            pieces.append('%s \\textit{(%s)}' %
-                          (plaintext_to_latex('%s'%doc.canonical_name),
-                           self.doc_kind(doc).lower()))
+            pieces.append('\\EpydocIndex[%s]{%s}' %
+                          (self.doc_kind(doc).lower(), 
+                           self._dotted('%s' % doc.canonical_name)))
             doc = self.docindex.container(doc)
             if doc == UNKNOWN:
                 return '' # Give up.
 
         pieces.reverse()
         if pos == 'only':
-            return '\\index{%s}\n' % '!'.join(pieces)
+            term = '\\index{%s}\n' % '!'.join(pieces)
         elif pos == 'start':
-            return '\\index{%s|(}\n' % '!'.join(pieces)
+            term = '\\index{%s|(}\n' % '!'.join(pieces)
         elif pos == 'end':
-            return '\\index{%s|)}\n' % '!'.join(pieces)
+            term = '\\index{%s|)}\n' % '!'.join(pieces)
         else:
             raise AssertionError('Bad index position %s' % pos)
         
+        if pos in ['only', 'start'] and classCrossRef is not None:
+            term += classCrossRef % ('\\EpydocIndex[%s]{%s}' % (self.doc_kind(doc).lower(), 
+                                                                self._dotted('%s'%doc.canonical_name)))
+            
+        return term
+
     def label(self, doc):
         return ':'.join(doc.canonical_name)
+        
+    def _hyperlink(self, target, name):
+        return '\\EpydocHyperlink{%s}{%s}' % (self.label(target), self._dotted(name))
+
+    def _hypertarget(self, uid, sig):
+        return '\\EpydocHypertarget{%s}{%s}' % (self.label(uid), self._dotted(sig))
+
+    def _dotted(self, name):
+        return '\\EpydocDottedName{%s}' % name
+
+
+
 
     #: Map the Python encoding representation into mismatching LaTeX ones.
     latex_encodings = {

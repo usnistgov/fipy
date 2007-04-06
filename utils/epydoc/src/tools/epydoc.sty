@@ -1,0 +1,357 @@
+% epydoc.sty  ver 3.0beta1    06-Apr-2007   Jonathan Guyer   guyer@nist.gov
+
+% This software was developed at the National Institute of Standards
+% and Technology by employees of the Federal Government in the course
+% of their official duties.  Pursuant to title 17 Section 105 of the
+% United States Code this software is not subject to copyright
+% protection and is in the public domain.  FiPy is an experimental
+% system.  NIST assumes no responsibility whatsoever for its use by
+% other parties, and makes no guarantees, expressed or implied, about
+% its quality, reliability, or any other characteristic.  We would
+% appreciate acknowledgement if the software is used.
+% 
+% This software can be redistributed and/or modified freely
+% provided that any derivative works bear some notice that they are 
+% derived from it, and any modified versions bear some notice that
+% they have been modified.
+
+
+\NeedsTeXFormat{LaTeX2e}%
+\ProvidesClass{epydoc}[2007/04/06 v3.0beta1 Epydoc Python Documentation]
+
+\newif\if@doIndex
+\@doIndexfalse
+\DeclareOption{index}{\@doIndextrue}
+
+\ProcessOptions\relax
+
+\RequirePackage{alltt, boxedminipage}
+\RequirePackage{multirow, longtable, amssymb}
+\RequirePackage[headings]{fullpage}
+\RequirePackage[usenames]{color}
+
+\@ifclassloaded{memoir}{%
+    \RequirePackage[other,notbib]{tocbibind}
+}{%
+    \if@doIndex
+        \RequirePackage{makeidx}
+    \fi
+    \RequirePackage{parskip}
+    \RequirePackage{fancyhdr}
+    \RequirePackage[other]{tocbibind}
+    \pagestyle{fancy}
+}
+
+\if@doIndex
+    \makeindex
+\fi
+
+% Fix the heading position -- without this, the headings generated
+% by the fancyheadings package sometimes overlap the text.
+\setlength{\headheight}{16pt}
+\setlength{\headsep}{24pt}
+\setlength{\topmargin}{-\headsep}
+
+% By default, do not indent paragraphs.
+\setlength{\parindent}{0ex}
+% Double the standard size boxedminipage outlines.
+\setlength{\fboxrule}{2\fboxrule}
+% Create a 'base class' length named BCL for use in base trees.
+\newlength{\BCL} % base class length, for base trees.
+
+% Display the section & subsection names in a header.
+
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
+% Colorization for python source code
+\definecolor{py@keywordcolour}{rgb}{1,0.45882,0}
+\definecolor{py@stringcolour}{rgb}{0,0.666666,0}
+\definecolor{py@commentcolour}{rgb}{1,0,0}
+\definecolor{py@ps1colour}{rgb}{0.60784,0,0}
+\definecolor{py@ps2colour}{rgb}{0.60784,0,1}
+\definecolor{py@inputcolour}{rgb}{0,0,0}
+\definecolor{py@outputcolour}{rgb}{0,0,1}
+\definecolor{py@exceptcolour}{rgb}{1,0,0}
+\definecolor{py@defnamecolour}{rgb}{1,0.5,0.5}
+\definecolor{py@builtincolour}{rgb}{0.58039,0,0.58039}
+\definecolor{py@identifiercolour}{rgb}{0,0,0}
+\definecolor{py@linenumcolour}{rgb}{0.4,0.4,0.4}
+\definecolor{py@inputcolour}{rgb}{0,0,0}
+% Prompt
+\newcommand{\pysrcprompt}[1]{\textcolor{py@ps1colour}{\small\textbf{#1}}}
+\newcommand{\pysrcmore}[1]{\textcolor{py@ps2colour}{\small\textbf{#1}}}
+% Source code
+\newcommand{\pysrckeyword}[1]{\textcolor{py@keywordcolour}{\small\textbf{#1}}}
+\newcommand{\pysrcbuiltin}[1]{\textcolor{py@builtincolour}{\small\textbf{#1}}}
+\newcommand{\pysrcstring}[1]{\textcolor{py@stringcolour}{\small\textbf{#1}}}
+\newcommand{\pysrcdefname}[1]{\textcolor{py@defnamecolour}{\small\textbf{#1}}}
+\newcommand{\pysrcother}[1]{\small\textbf{#1}}
+% Comments
+\newcommand{\pysrccomment}[1]{\textcolor{py@commentcolour}{\small\textbf{#1}}}
+% Output
+\newcommand{\pysrcoutput}[1]{\textcolor{py@outputcolour}{\small\textbf{#1}}}
+% Exceptions
+\newcommand{\pysrcexcept}[1]{\textcolor{py@exceptcolour}{\small\textbf{#1}}}
+% Define new environment for displaying parameter lists.
+\newenvironment{Ventry}[1]%
+  {\begin{list}{}{%
+    \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
+    \settowidth{\labelwidth}{\texttt{#1:}}%
+    \setlength{\leftmargin}{\labelsep}%
+    \addtolength{\leftmargin}{\labelwidth}}}%
+  {\end{list}}
+
+%====== Begin definitions to replicate hard-coded formatting from epydoc ======%
+  
+\RequirePackage{ifthen}
+
+\newcommand{\EpydocHyperlink}[2]{#2}
+    
+\newcommand{\EpydocHypertarget}[2]{\label{#1}#2}
+
+\newcommand{\EpydocIndex}[2][]{%
+    #2 %
+    \ifthenelse{\equal{#1}{}}{}{\textit{(\MakeLowercase{#1})}}}
+    
+\newenvironment{EpydocFunctionGroup}[1][]{%
+    \ifthenelse{\equal{#1}{}}{}{%
+    \rule{\textwidth}{0.5\fboxrule}
+
+    {\large #1}
+    
+    }}
+    {}
+    
+\newenvironment{EpydocFunction}[2]{%
+    \newcommand{\and}{, }%
+    \newcommand{\VarArg}[1]{*\textit{##1}}%
+    \newcommand{\GenericArg}{\textit{\ldots}}%
+    \newcommand{\KWArg}[1]{**\textit{##1}}%
+    \newcommand{\ArgList}[1]{(##1)}%
+    \newcommand{\Param}[2][]{%
+        \textit{##2}%
+        \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+    \vspace{0.5ex}
+    \def\@EpydocFunctionLine{%
+        \vspace{-1.5ex}
+            \rule{\textwidth}{0.5\fboxrule}
+        \aftergroup\def\aftergroup\@EpydocFunctionLine\aftergroup{\aftergroup}}%
+    \begin{boxedminipage}{\textwidth}
+        \raggedright \textbf{#1}(#2)}
+    {\end{boxedminipage}}
+
+\newenvironment{EpydocDocstring}{%
+    \@EpydocFunctionLine}
+    {\vspace{1ex}}
+
+\newenvironment{EpydocFunctionSignature}[1]{%
+    \renewcommand{\and}{, }%
+    \newcommand{\VarArg}[1]{*\textit{##1}}%
+    \newcommand{\GenericArg}{\textit{\ldots}}%
+    \newcommand{\KWArg}[1]{**\textit{##1}}%
+    \newcommand{\Param}[2][]{%
+        \textit{##2}%
+        \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+    \raggedright{\bfseries #1}(}
+    {)}
+    
+\newenvironment{EpydocFunctionParameters}[1]{%
+    \@EpydocFunctionLine
+    \textbf{Parameters}%
+    \begin{quote}
+    \begin{Ventry}{#1}}
+    {\end{Ventry}
+    \end{quote}
+    }
+    
+\newcommand{\EpydocFunctionReturns}[2][]{%
+    \@EpydocFunctionLine
+    \textbf{Return Value}%
+    \begin{quote}
+        \gdef\@EpydocReturnType{#1}
+        \gdef\@EpydocReturnDescription{#2}
+        \ifx\@EpydocReturnType\empty
+            \@EpydocReturnDescription
+        \else
+            \ifx\@EpydocReturnDescription\empty
+                \textit{\@EpydocReturnType}
+            \else
+                \@EpydocReturnDescription \textit{(type=\@EpydocReturnType)}
+            \fi
+        \fi
+    \end{quote}
+    }
+
+\newenvironment{EpydocFunctionRaises}{%
+    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+       \normalfont\itshape ##1}
+    \@EpydocFunctionLine
+    \textbf{Raises}
+    \begin{quote}
+        \begin{description}
+    }
+    {\end{description}
+    \end{quote}
+    }
+
+\newcommand{\EpydocFunctionOverrides}[2][0]{%
+    \@EpydocFunctionLine
+    Overrides: #2 %
+    \ifthenelse{#1=1}{\textit{(inherited documentation)}{}}}
+    
+\newcommand{\EpydocInheritanceItem}[2]{Inherited from #1: #2}
+
+\newenvironment{EpydocInheritanceList}{%
+    \renewcommand{\item}[1][]{\textbf{Inherited from ##1:}}}
+    {}
+
+\newcommand{\EpydocDescriptionItem}[2]{%
+    \textbf{#1:} #2}
+
+\newenvironment{EpydocDescriptionShortList}[1]{%
+    \newcommand{\and}{, }%
+    \textbf{#1: }}
+    {}
+
+\newenvironment{EpydocDescriptionLongList}[1]{%
+    \textbf{#1:}
+    \begin{quote}
+        \begin{itemize}
+            \setlength{\parskip}{0.6ex}}
+    {	\end{itemize}
+    \end{quote}}
+
+\newenvironment{EpydocClassList}{%
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+
+\newenvironment{EpydocClassSubList}{%
+    \newcommand{\CrossRef}[1]{%
+        \textit{(Section \ref{##1}, p.~\pageref{##1})}}
+    \begin{itemize}
+        \renewcommand{\makelabel}[1]{\textbf{##1}}
+    \setlength{\parskip}{0ex}}
+    {\end{itemize}}
+    
+\newenvironment{EpydocModuleList}{%
+    \newcommand{\CrossRef}[1]{%
+        \textit{(Section \ref{##1}, p.~\pageref{##1})}}%
+    \begin{itemize}
+        \rmfamily\bfseries%
+    \setlength{\parskip}{0ex}%
+    }
+    {\end{itemize}}
+
+\newenvironment{EpydocModuleSubList}{%
+    \begin{itemize}
+        \rmfamily\mdseries%
+        \renewcommand{\makelabel}[1]{%
+        \csname\@itemitem\endcsname\space\bfseries##1\mdseries:}%
+    \setlength{\parskip}{0ex}%
+    }
+    {\end{itemize}}
+
+\newenvironment{@EpydocGeneralList}{%
+    \newcommand{\EpydocInternalHeader}[1]{%
+        \multicolumn{2}{|l|}{\textbf{##1}} \\
+         \hline}%
+    \newcommand{\EpydocInheritanceItemLine}[2]{%
+        \multicolumn{2}{|p{\textwidth}|}{%
+            \textbf{Inherited from {##1}: ##2}}}
+    \begin{longtable}{|p{.30\textwidth}|p{.62\textwidth}|}
+    % Set up the headers & footer (this makes the table span
+    % multiple pages in a happy way).
+    \hline 
+    \centering \textbf{Name} & \centering \textbf{Description} 
+    \tabularnewline
+    \hline
+    \endhead\hline\multicolumn{2}{r}{\small\textit{continued on next page}}\\\endfoot\hline
+    \endlastfoot}
+    {\end{longtable}}
+
+\newenvironment{EpydocVariablesList}{%
+    \newenvironment{EpydocLongValue}{%
+        \begin{alltt}}
+        {\end{alltt}}%
+    \newcommand{\EpydocShortValue}[1]{\texttt{##1}}
+    \newcommand{\EpydocVariable}[4]{%
+        \gdef\@EpydocVariableName{##1}%
+        \gdef\@EpydocVariableDescription{##2}%
+        \gdef\@EpydocVariableValue{##3}%
+        \gdef\@EpydocVariableType{##4}%
+        \raggedright \@EpydocVariableName & %
+        \raggedright \@EpydocVariableDescription %
+        \ifx\@EpydocVariableValue\empty\relax%
+            \ifx\@EpydocVariableType\empty\else%
+            \ifx\@EpydocVariableDescription\empty\else
+
+            \fi%
+            \textit{(type=\texttt{\@EpydocVariableType})}%
+            \fi%
+        \else\relax%
+            \ifx\@EpydocVariableDescription\empty\else
+
+            \fi%
+            \textbf{Value:} \texttt{\@EpydocVariableValue}%
+            \ifx\@EpydocVariableType\empty\else%
+            \textit{(type=\texttt{\@EpydocVariableType})}%
+            \fi%
+        \fi%
+        \tabularnewline
+        \hline}
+    \begin{@EpydocGeneralList}}
+    {\end{@EpydocGeneralList}}
+
+\newenvironment{EpydocClassVariablesList}{%
+    \begin{EpydocVariablesList}}
+    {\end{EpydocVariablesList}}
+
+\newenvironment{EpydocInstanceVariablesList}{%
+    \begin{EpydocVariablesList}}
+    {\end{EpydocVariablesList}}
+
+\newenvironment{EpydocPropertiesList}{%
+    \newcommand{\EpydocProperty}[2]{%
+        \raggedright ##1 &
+        \ifthenelse{\equal{##2}{}}{}{\raggedright ##2}
+        & \\
+        \cline{1-2}}
+    \begin{EpydocVariablesList}}
+    {\end{EpydocVariablesList}}
+
+\newenvironment{reSTadmonition}[1][]{%
+    \begin{center}\begin{sffamily}
+        \begin{lrbox}{\@tempboxa}
+            \begin{minipage}{\admonitionwidth}
+                \textbf{\large #1}
+                \vspace{2mm}
+    }
+    {
+        \end{minipage}
+    \end{lrbox}
+    \fbox{\usebox{\@tempboxa}}
+    \end{sffamily}
+    \end{center}
+    }
+
+% display style for Python modules. Allows non-hyphenated wrapping at 
+% . module separators. Rest is a simplified version of url.sty's tt 
+% style.
+\RequirePackage{url}
+\def\Url@pydo{% style assignments for tt fonts or T1 encoding
+\def\UrlBreaks{\do\]\do\)\do\_}%
+\def\UrlBigBreaks{\do@url@hyp\do\.}%
+% \def\UrlNoBreaks{\do\(\do\[\do\{\do\<\do\_}% (unnecessary)
+\def\UrlNoBreaks{\do\(\do\[\do\{\do\<}% (unnecessary)
+\def\UrlSpecials{\do\ {\ }}%
+\def\UrlOrds{\do\*\do\-\do\~}% any ordinary characters that aren't usually
+}
+
+\def\url@pystyle{%
+\@ifundefined{selectfont}{\def\UrlFont{\rm}}{\def\UrlFont{\rmfamily}}\Url@pydo
+}
+\newcommand\pymodule{\begingroup \urlstyle{py}\Url}
+\newcommand\EpydocDottedName[1]{\texorpdfstring{\protect\pymodule{#1}}{#1}}

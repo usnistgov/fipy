@@ -136,7 +136,8 @@ OPTION_DEFAULTS = dict(
     list_classes_separately=False, graph_font=None, graph_font_size=None,
     include_source_code=True, pstat_files=[], simple_term=False, fail_on=None,
     exclude=[], exclude_parse=[], exclude_introspect=[],
-    external_api=[],external_api_file=[],external_api_root=[])
+    external_api=[],external_api_file=[],external_api_root=[], 
+    list_submodules=True)
 
 def parse_arguments():
     # Construct the option parser.
@@ -331,6 +332,14 @@ def parse_arguments():
         help=("When generating LaTeX or PDF output, list each class in "
               "its own section, instead of listing them under their "
               "containing module."))
+
+    output_group.add_option(
+        '--sub-modules', action='store_true', dest='list_submodules',
+        help=("List submodules of a module in LaTeX output."))
+
+    output_group.add_option(
+        '--no-sub-modules', action='store_false', dest='list_submodules',
+        help=("Omit submodules of a module in LaTeX output."))
 
     # The group of external API options.
     # Skip if the module couldn't be imported (usually missing docutils)
