@@ -3,11 +3,7 @@
 # Edward Loper
 #
 # Created [04/10/01 12:00 AM]
-<<<<<<< .working
 # $Id$
-=======
-# $Id$
->>>>>>> .merge-right.r2134
 #
 
 """
@@ -1731,11 +1727,6 @@ class ParsedEpytextDocstring(ParsedDocstring):
         }
     
     def __init__(self, dom_tree):
-<<<<<<< .working
-        if isinstance(dom_tree, Document):
-            dom_tree = dom_tree.childNodes[0]
-=======
->>>>>>> .merge-right.r2134
         self._tree = dom_tree
         # Caching:
         self._html = self._latex = self._plaintext = None
@@ -1777,16 +1768,10 @@ class ParsedEpytextDocstring(ParsedDocstring):
         str = re.sub(r'\s\s+', '-', str)
         return "index-"+re.sub("[^a-zA-Z0-9]", "_", str)
 
-<<<<<<< .working
-    def _to_html(self, tree, linker, indent=0, seclevel=0):
-        if isinstance(tree, Text):
-            return plaintext_to_html(tree.data)
-=======
     def _to_html(self, tree, linker, directory, docindex, context,
                  indent=0, seclevel=0):
         if isinstance(tree, basestring):
             return plaintext_to_html(tree)
->>>>>>> .merge-right.r2134
 
         if tree.tag == 'epytext': indent -= 2
         if tree.tag == 'section': seclevel += 1
@@ -1796,23 +1781,8 @@ class ParsedEpytextDocstring(ParsedDocstring):
                                    indent+2, seclevel)
                     for c in tree.children]
     
-<<<<<<< .working
-        # Get rid of unnecessary <P>...</P> tags; they introduce extra
-        # space on most browsers that we don't want.
-        for i in range(len(children)-1):
-            if (not isinstance(tree.childNodes[i], Text) and
-                tree.childNodes[i].tagName == 'para' and
-                (isinstance(tree.childNodes[i+1], Text) or
-                 tree.childNodes[i+1].tagName != 'para')):
-                children[i] = ' '*(indent+2)+children[i][5+indent:-5]+'\n'
-        if (tree.hasChildNodes() and
-            not isinstance(tree.childNodes[-1], Text) and
-            tree.childNodes[-1].tagName == 'para'):
-            children[-1] = ' '*(indent+2)+children[-1][5+indent:-5]+'\n'
-=======
         # Construct the HTML string for the variables.
         childstr = ''.join(variables)
->>>>>>> .merge-right.r2134
     
         # Perform the approriate action for the DOM tree type.
         if tree.tag == 'para':
@@ -1924,13 +1894,8 @@ class ParsedEpytextDocstring(ParsedDocstring):
             
     
     def _to_latex(self, tree, linker, indent=0, seclevel=0, breakany=0):
-<<<<<<< .working
-        if isinstance(tree, Text):
-            return plaintext_to_latex(tree.data, breakany=breakany)
-=======
         if isinstance(tree, basestring):
             return plaintext_to_latex(tree, breakany=breakany)
->>>>>>> .merge-right.r2134
 
         if tree.tag == 'section': seclevel += 1
     
@@ -2100,11 +2065,7 @@ class ParsedEpytextDocstring(ParsedDocstring):
         return self._terms
 
     def _index_terms(self, tree, terms):
-<<<<<<< .working
-        if tree is None or isinstance(tree, Text):
-=======
         if tree is None or isinstance(tree, basestring):
->>>>>>> .merge-right.r2134
             return
         
         if tree.tag == 'indexed':
