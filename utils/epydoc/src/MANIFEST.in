@@ -1,0 +1,6 @@
+include LICENSE.TXT
+include README.TXT
+recursive-include doc *.html *.css *.png
+recursive-include man *.1
+include scripts/*
+include Makefile

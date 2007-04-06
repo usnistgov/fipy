@@ -1,0 +1,605 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Epydoc Fields</title>
+<link rel="stylesheet" href="epydoc.css" type="text/css"/>
+</head>
+<!-- $Id: fields.html 643 2004-03-09 05:07:52Z edloper $ -->
+<body>
+
+<h1>Epydoc Fields</h1>
+
+<p> Fields are used to describe specific properties of a documented
+object.  For example, fields can be used to define the parameters and
+return value of a function; the instance variables of a class; and the
+author of a module.  Each field consists of a <i>tag</i>, an optional
+<i>argument</i>, and a <i>body</i>. </p>
+
+<ul>
+  <li> The <i>tag</i> is a case-insensitive word that indicates what
+  kind of documentaiton is given by the field. </li>
+  <li> The optional <i>argument</i> specifies what object, parameter,
+  or group is documented by the field. </li>
+  <li> The <i>body</i> contains the main contents of the field. </li>
+  </ul>
+
+<h2> 1. Field Markup </h2>
+
+<p> Each docstring markup langauge marks fields differently.  The
+following table shows the basic fields syntax for each markup
+language.  For more information, see the definition of field syntax
+for each markup language. </p>
+
+<center>
+<table border="1" cellspacing="0" cellpadding="3">
+  <tr>
+    <th width="33%">Epytext</th>
+    <th width="33%">ReStructuredText</th>
+    <th width="33%">Javadoc</th>
+  </tr>
+  <tr>
+    <td>
+      <code>@<i>tag</i>: <i>body</i></code>...</br>
+      <code>@<i>tag</i> <i>arg</i>: <i>body</i></code>...</br>
+    </td>
+    <td>
+      <code>:<i>tag</i>: <i>body</i></code>...</br>
+      <code>:<i>tag</i> <i>arg</i>: <i>body</i></code>...</br>
+    </td>
+    <td>
+      <code>@<i>tag</i> <i>body</i></code>...</br>
+      <code>@<i>tag</i> <i>arg</i> <i>body</i></code>...</br>
+    </td>
+  </tr>
+<tr>
+<td align="center"><a
+href="epytext.html#fieldlist">Definition of<br/>epytext fields</a></td>
+<td align="center"><a
+href="http://docutils.sourceforge.net/spec/rst/reStructuredText.html#field-lists">Definition of<br/>ReStructuredText fields</a></td>
+<td align="center"><a
+href="http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html#javadoctags">Definition of<br/>Javadoc fields</a></td>
+</tr>
+</table>
+</center>
+
+<a name="fields"></a>
+<h2> 2. Supported Fields</h2>
+
+<p> The following table lists the fields that epydoc currently
+recognizes.  Field tags are written using epytext markup; if you are
+using a different markup language, then you should adjust the markup
+accordingly. </p>
+
+
+<table border="1" cellspacing="0" cellpadding="3" width="100%">
+  <!-- ========== Functions & Methods ========== -->
+  <tr><th colspan="2" align="left">Functions and Methods
+  <i>(function or method docstrings)</i></th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>param</b>&nbsp;<i>p</i>:</code>&nbsp;... </td><td>
+    A description of the parameter <code><i>p</i></code> for a
+    function or method. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>type</b>&nbsp;<i>p</i>:</code>&nbsp;... </td><td>
+    The expected type for the parameter
+    <code><i>p</i></code>. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>return</b>:</code>&nbsp;... </td><td>
+    The return value for a function or method. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>rtype</b>:</code>&nbsp;... </td><td>
+    The type of the return value for a function or method. </td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>keyword</b>&nbsp;<i>p</i>:</code>&nbsp;... </td><td>
+    A description of the keyword parameter <code><i>p</i></code>.
+    </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>raise</b>&nbsp;<i>e</i>:</code>&nbsp;... </td><td>
+    A description of the circumstances under which a function or
+    method raises exception <code><i>e</i></code>. </td></tr>
+
+  <!-- ========== Variables ========== -->
+  <tr><th colspan="2" align="left">Variables
+  <i>(module or class docstrings)</i></th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>ivar</b>&nbsp;<i>v</i>:</code>&nbsp;... </td><td>
+    A description of the class instance variable
+    <code><i>v</i></code>. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>cvar</b>&nbsp;<i>v</i>:</code>&nbsp;... </td><td>
+    A description of the static class variable
+    <code><i>v</i></code>. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>var</b>&nbsp;<i>v</i>:</code>&nbsp;... </td><td>
+    A description of the module variable
+    <code><i>v</i></code>. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>type</b>&nbsp;<i>v</i>:</code>&nbsp;... </td><td>
+    The type of the variable
+    <code><i>v</i></code>. </td></tr>
+
+    <!-- This does exist, but leave it out to avoid confusion: -->
+    <!-- 
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>type</b>&nbsp;<i>p</i>:</code>&nbsp;... </td><td>
+    The type of the property
+    <code><i>p</i></code>. </td></tr>
+    -->
+  
+  <!-- ========== Properties ========== -->
+  <tr><th colspan="2" align="left">Properties
+  <i>(property docstrings)</i></th></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>type</b>:</code>&nbsp;... </td><td>
+    The type of the property. </td></tr>
+  
+  <!-- ========== Grouping & Sorting ========== -->
+  <tr><th colspan="2" align="left">Grouping and Sorting
+  <i>(module, class, function, or method docstrings)</i></th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>group</b>&nbsp;<i>g</i>:&nbsp;<i>c<sub>1</sub
+    >,...,c<sub>n</sub></i></code> </td><td>
+    Organizes a set of related children of a module or class into a group.
+    <code><i>g</i></code> is the name of the group; and
+    <code><i>c<sub>1</sub>,...,c<sub>n</sub></i></code> are the names
+    of the children in the group.  To define multiple groups, use
+    multiple <code>group</code> fields.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>sort</b>:&nbsp;<i>c<sub>1</sub
+    >,...,c<sub>n</sub></i></code> </td><td>
+    Specifies the sort order for the children of a module or class.
+    <code><i>c<sub>1</sub>,...,c<sub>n</sub></i></code> are the names
+    of the children, in the order in which they should appear.  Any
+    children that are not included in this list will appear after
+    the children from this list, in alphabetical order.
+    </td></tr>
+        
+  <!-- ========== Related Topics ========== -->
+  <tr><th colspan="2" align="left">Related Topics</th></tr>
+  <tr><td width="10%" align="left" valign="top"> <code>@<b>see</b>:</code>&nbsp;... </td><td>
+    A description of a related topic.  <code>see</code> fields
+    typically use documentation crossreference links or external
+    hyperlinks that link to the related topic. </td></tr>
+    
+  <!-- ========== Notes & Warnings ========== -->
+  <tr><th colspan="2" align="left">Notes and Warnings</th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>note</b>:</code>&nbsp;... </td><td> 
+    A note about an object.  Multiple
+    <code>note</code> fields may be used to list separate
+    notes.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>attention</b>:</code>&nbsp;... </td><td> 
+    An important note about an object.  Multiple
+    <code>attention</code> fields may be used to list separate
+    notes.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>bug</b>:</code>&nbsp;... </td><td> 
+    A description of a bug in an object.
+    Multiple <code>bug</code> fields may be used to report separate
+    bugs.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>warning</b>:</code>&nbsp;... </td><td> 
+    A warning about an object.  Multiple
+    <code>warning</code> fields may be used to report separate
+    warnings.</td></tr>
+
+  <!-- ========== Status ========== -->
+  <tr><th colspan="2" align="left">Status</th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>version</b>:</code>&nbsp;... </td><td>
+    The current version of an object. </td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>todo</b> [<i>ver</i>]:</code>&nbsp;... </td><td> A planned
+  change to an object.  If the optional argument <code><i>ver</i></code>
+  is given, then it specifies the version for which the change will be
+  made.  Multiple <code>todo</code> fields may be used if multiple
+  changes are planned. </td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>depreciated</b>:</code>&nbsp;... </td><td> 
+    Indicates that an object is
+    depreciated.  The body of the field describe the reason why
+    the object is depreciated.</td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>since</b>:</code>&nbsp;... </td><td> 
+    The date or version when an object was
+    first introduced.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>status</b>:</code>&nbsp;... </td><td> 
+    The current status of an object.</td></tr>
+    
+  <!-- ========== Formal Conditions ========== -->
+  <tr><th colspan="2" align="left">Formal Conditions</th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>requires</b>:</code>&nbsp;... </td><td> 
+    A requirement for using an object.  Multiple <code>requires</code>
+    fields may be used if an object has multiple
+    requirements.</td></tr>
+    
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>precondition</b>:</code>&nbsp;... </td><td> 
+    A condition that must be true before an object is used.  Multiple
+    <code>precondition</code> fields may be used if an object has
+    multiple preconditions.</td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>postcondition</b>:</code>&nbsp;... </td><td> 
+    A condition that is guaranteed to be true after an object is used.
+    Multiple <code>postcondition</code> fields may be used if an
+    object has multiple postconditions.</td></tr>
+
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>invariant</b>:</code>&nbsp;... </td><td> 
+    A condition which should always be true for an object.  Multiple
+    <code>invariant</code> fields may be used if an object has
+    multiple invariants.</td></tr>
+
+  <!-- ========== Bibliographic Info ========== -->
+  <tr><th colspan="2" align="left">Bibliographic Information</th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>author</b>:</code>&nbsp;... </td><td> The author(s) of an
+    object.  Multiple <code>author</code>
+    fields may be used if an object has multiple authors.</td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>organiation</b>:</code>&nbsp;... </td><td> The
+    organization that created or maintains an
+    object. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>copyright</b>:</code>&nbsp;... </td><td> The copyright
+      information for an object. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>license</b>:</code>&nbsp;... </td><td> The licensing
+    information for an object. </td></tr>
+  
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>contact</b>:</code>&nbsp;... </td><td> Contact information
+    for the author or maintainer of a module, class, function, or
+    method.  Multiple <code>contact</code> fields may be used if an
+    object has multiple contacts.</td></tr>
+
+  <!-- ========== Summarization ========== -->
+  <tr><th colspan="2" align="left">Summarization</th></tr>
+  <tr><td width="10%" align="left" valign="top">
+  <code>@<b>summary</b>:</code>&nbsp;... </td><td> A summary
+  description for an object.  This description overrides the default
+  summary (which is constructed from the first sentence of the
+  object's description). </td></tr>
+  
+</table>
+
+<h3> 2.1. Notes on Supported Fields</h3>
+
+<ul>
+
+<li> <p> <code>@param</code> fields should be used to document any
+explicit parameter (including the keyword parameter).
+<code>@keyword</code> fields should only be used for non-explicit
+keyword parameters: </p>
+
+<div class="screen"><pre>
+<code class="keyword">def</code> <code class="function">plant</code>(seed, *tools, **options):
+    <code class="string">"""</code>
+    <code class="field">@param seed:</code> The seed that should be planted.
+    <code class="field">@param tools:</code> Tools that should be used to plant the seed.
+    <code class="field">@param options:</code> Any extra options for the planting.
+
+    <code class="field">@keyword dig_deep:</code> Plant the seed deep under ground.
+    <code class="field">@keyword soak:</code> Soak the seed before planting it.
+    """</code>
+    <i>[...]</i>
+</pre></div>
+</li>
+
+<li> <p> For the <code>@group</code> and <code>@sort</code> tags,
+asterisks (<code>*</code>) can be used to specify multiple children at
+once.  An asterisk in a child name will match any substring: </p>
+
+<div class="screen"><pre>
+<code class="keyword">class</code> <code class="function">widget</code>(size, weight, age):
+    <code class="string">"""</code>
+    <code class="field">@group Tools:</code> zip, zap, *_tool
+    <code class="field">@group Accessors:</code> get_*
+    <code class="field">@sort:</code> get_*, set_*, unpack_*, cut
+    """</code>
+    <i>[...]</i>
+</pre></div>
+</li>
+
+<li> <p> Since the <code>@type</code> field allows for arbitrary text,
+it does not automatically create a crossreference link to the
+specified type, and is not written in fixed-width font by default.  If
+you want to create a crossreference link to the type, or to write the
+type in a fixed-width font, then you must use inline markup: </p>
+
+<div class="screen"><pre>
+<code class="keyword">def</code> <code class="function">ponder</code>(person, time):
+    <code class="string">"""</code>
+    <code class="field">@param person:</code> Who should think.
+    <code class="field">@type person:</code> L{Person} or L{Animal}
+    <code class="field">@param time:</code> How long they should think.
+    <code class="field">@type time:</code> C{int} or C{float}
+    """</code>
+    <i>[...]</i>
+</pre></div>
+
+</li>
+</ul>
+
+<h2>3. Field Synonyms</h2>
+
+<p> Several fields have "synonyms," or alternate tags.  The following
+table lists all field synonyms.  Field tags are written using epytext
+markup; if you are using a different markup language, then you should
+adjust the markup accordingly. </p>
+
+<center>
+<table class="transparent">
+<tr valign="top"><td>
+  <table border="1" cellspacing="0" cellpadding="3">
+    <tr><th width="50%">Name</th><th width="50%">Synonyms</th></tr>
+    <tr><td align="left" valign="top">
+      <b><code>@param&nbsp;<i>p</i>:</code>&nbsp;...</b> </td>
+      <td><code>@parameter&nbsp;<i>p</i>:</code>&nbsp;...</br>
+      <code>@arg&nbsp;<i>p</i>:</code>&nbsp;...</br>
+      <code>@argument&nbsp;<i>p</i>:</code>&nbsp;...</td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@return:</code>&nbsp;...</b> </td><td>
+      <code>@returns:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@rtype:</code>&nbsp;...</b> </td><td>
+      <code>@returntype:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@raise&nbsp;<i>e</i>:</code>&nbsp;...</b> </td>
+      <td><code>@raises&nbsp;<i>e</i>:</code>&nbsp;...</br>
+      <code>@except&nbsp;<i>e</i>:</code>&nbsp;...</br>
+      <code>@exception&nbsp;<i>e</i>:</code>&nbsp;...</td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@keyword&nbsp;<i>p</i>:</code>&nbsp;...</b> </td><td>
+      <code>@kwarg&nbsp;<i>p</i>:</code>&nbsp;... <br/>
+      <code>@kwparam&nbsp;<i>p</i>:</code>&nbsp;... <br/></td></tr>
+      
+    <tr><td align="left" valign="top">
+      <b><code>@ivar&nbsp;<i>v</i>:</code>&nbsp;...</b> </td><td>
+      <code>@ivariable&nbsp;<i>v</i>:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@cvar&nbsp;<i>v</i>:</code>&nbsp;...</b> </td><td>
+      <code>@cvariable&nbsp;<i>v</i>:</code>&nbsp;... </td></tr>
+    
+  </table></td><td width="20"></td><td>
+  <table border="1" cellspacing="0" cellpadding="3">
+    <tr><th width="50%">Name</th><th width="50%">Synonyms</th></tr>
+    <tr><td align="left" valign="top">
+      <b><code>@var&nbsp;<i>v</i>:</code>&nbsp;...</b> </td><td>
+      <code>@variable&nbsp;<i>v</i>:</code>&nbsp;... </td></tr>
+  
+    <tr><td align="left" valign="top">
+      <b><code>@see:</code>&nbsp;...</b> </td><td>
+      <code>@seealso:</code>&nbsp;... </td></tr>
+  
+    <tr><td align="left" valign="top">
+      <b><code>@warning:</code>&nbsp;...</b> </td><td>
+      <code>@warn:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@requires:</code>&nbsp;...</b> </td><td>
+      <code>@require:</code>&nbsp;... </br>
+      <code>@requirement:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@precondition:</code>&nbsp;...</b> </td><td>
+      <code>@precond:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@postcondition:</code>&nbsp;...</b> </td><td>
+      <code>@postcod:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@organization:</code>&nbsp;...</b> </td><td>
+      <code>@org:</code>&nbsp;... </td></tr>
+    
+    <tr><td align="left" valign="top">
+      <b><code>@copyright:</code>&nbsp;...</b> </td><td>
+      <code>@(c):</code>&nbsp;... </td></tr>
+  </table>
+</td></tr></table>
+</center>
+
+<h2> 4. Adding New Fields</h2>
+
+<p> New fields can be defined for the docstrings in a module with the
+special module-level variable "<code>__extra_epydoc_fields__</code>".
+This variable should contain a list of field specifications, where
+each field specification is one of the following: </p>
+
+<ul>
+  <li> A single string, which defines both the tag and the label for
+  the field. </li>
+  
+  <li> A tuple <code>(tag, label)</code>, where <code>tag</code> is
+  the field's tag, and <code>label</code> is its label.
+  
+  <li> A tuple <code>(tag, singular, plural)</code>, where
+  <code>tag</code> is the field's tag, <code>singular</code> is the
+  label that is used when the field has one entry, and
+  <code>plural</code> is the label that is used when the field has
+  multiple entries. </li>
+</ul>
+
+<p> The following example illustrates how the special variable
+"<code>__extra_epydoc_fields__"</code> can be used: </p>
+
+<table border="1" cellspacing="0" cellpadding="3" width="100%">
+  <tr><th width="50%">Docstring Input</th><th width="50%">Rendered Output</th>
+  <tr valign="top"><td>
+<pre>
+__extra_epydoc_fields__ = [
+    ('corpus', 'Corpus', 'Corpora')]
+
+<code class="keyword">def</code> <code class="function">example</code>():
+    <code class="string">"""
+    <code class="field">@corpus:</code> Bob's wordlist.
+    <code class="field">@corpus:</code> The British National Corpus.
+    """</code>
+    <i>[...]</i>
+</pre>
+</td><td>
+    <p><b>Corpora:</b>
+      <ul>
+        <li> Bob's wordlist. </li>
+        <li> The British National Corpus. </li>
+      </ul>
+    </p>
+</td></tr>
+</table>
+
+<p> New fields can also be defined for an individual docstring, using
+the special <code>@newfield</code> field.  In particular,
+"<code>@newfield <i>tag</i>: <i>label</i> [, <i>plural</i>]</code>" will
+define a new field, whose tag is <code><i>tag</i></code>; and which is
+labeled in output documentation as <code><i>label</i></code>.  The
+optional argument <code><i>plural</i></code> specifies the label that
+should be used if the field has multiple entries. </p>
+
+<h2> 5. Markup-Specific Notes </h2>
+
+<p> For the most part, fields are treated identically, regardless of
+what markup language is used to encode them.  However, there are a few
+minor differences, which are intended to accomodate existing standards
+for each markup language.  In particular: </p>
+
+<ul>
+  <li> ReStructuredText supports an extra group of fields, called
+  <i>consolidated fields</i>, which combine the documentation for
+  several objects into a single field. </li>
+  <li> Javadoc uses a special syntax for the body of the
+  <code>@see</code> fields. </li>
+  <li> Javadoc does not support multi-word arguments. </li>
+</ul>
+
+<p> For more information about these differences, read the subsections
+below. </p>
+
+<a name="rst"></a>
+<h3> 5.1. ReStructuredText Fields </h3>
+
+<p> In ReStructuredText, a single field can be used to encode the
+documentation for a group of related items.  For example, a single
+<code>:Parameters:</code> field is often used to describe all of the
+parameters for a function or method: </p>
+
+<div class="screen"><pre>
+<code class="keyword">def</code> <code class="function">fox_speed</code>(size, weight, age):
+    <code class="string">"""
+    Return the maximum speed for a fox.
+
+    <code class="field">:Parameters:</code>
+      - `size`: The size of the fox (in meters)
+      - `weight`: The weight of the fox (in stones)
+      - `age`: The age of the fox (in years)
+    """</code>
+    <i>[...]</i>
+</pre></div>
+
+<p> These types of combined fields are called <i>consolidated
+fields</i>, and epydoc automatically divides them into their
+constituant <i>basic fields</i>.  The following consolidated
+fields are currently supported by epydoc: </p>
+
+<center>
+<table class="transparent">
+<tr valign="top"><td>
+  <table border="1" cellspacing="0" cellpadding="3">
+  <tr><th>Consolidated<br />Field Tag</th>
+    <th>Corresponding<br />Base Field Tag</th></tr>
+  <tr><td><code>:Parameters:</code></td>
+    <td><code>:param:</code></td>
+  <tr><td><code>:Exceptions:</code></td>
+    <td><code>:except:</code></td>
+  <tr><td><code>:Groups:</code></td>
+    <td><code>:group:</code></td>
+  <tr><td><code>:Keywords:</code></td>
+    <td><code>:keyword:</code></td>
+  </table></td><td width="20"></td><td>
+  <table border="1" cellspacing="0" cellpadding="3">
+  <tr><th>Consolidated<br />Field Tag</th>
+    <th>Corresponding<br />Base Field Tag</th></tr>
+  <tr><td><code>:Variables:</code></td>
+    <td><code>:var:</code></td>
+  <tr><td><code>:Ivariables:</code></td>
+    <td><code>:ivar:</code></td>
+  <tr><td><code>:Cvariables:</code></td>
+    <td><code>:cvar:</code></td>
+  <tr><td><code>:Types:</code></td>
+    <td><code>:type:</code></td>
+</table>
+</td></tr></table>
+</center>
+
+<p> Consolidated fields are required to contain a single list, where
+each list item begins with a paragraph that begins with an <a
+href="http://docutils.sourceforge.net/spec/rst/reStructuredText.html#interpreted-text"><i>interpreted
+text</i></a> string (<code>`...`</code>).  </p>
+
+<h3> 5.2. Javadoc Fields </h3>
+
+<p> For compatibility with Javadoc, every <code>@see</code> field is
+assumed to contain a single crossreference link, unless its body
+is quoted, or it start with an HTML tag.  See <a
+href="http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html#@see">the
+Javadoc reference manual</a> for more information about how the
+<code>@see</code> field is encoded in Javadoc. </p>
+
+<p> Because Javadoc does not mark end of the optional argument, field
+arguments must contain exactly one word.  Thus, multi-word arguments
+are not available in Javadoc.  In particular, all group names must
+be single words. </p>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr>
+  <td align="center" width="16.6%">
+    <a class="nav" href="index.html">[Epydoc]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="installing.html">[Installing]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="using.html">[Using]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="epytext.html">[Epytext]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="http://www.cis.upenn.edu/~edloper/">[Author]</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/epydoc"> 
+    <img src="sflogo.png" 
+    width="88" height="26" border="0" alt="SourceForge"
+    align="top"/></a></td>
+    </tr>
+</table>
+
+<font size="-1">
+<!-- hhmts start --> Last modified: Sun Feb 29 00:45:51 EST 2004 <!-- hhmts end -->
+</font>
+</body>
+</html>

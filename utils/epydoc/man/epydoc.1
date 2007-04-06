@@ -1,0 +1,907 @@
+.\"
+.\" Epydoc command line interface man page.
+.\" $Id: epydoc.1 562 2003-07-21 06:38:21Z edloper $
+.\"
+.TH EPYDOC 1 
+.SH NAME
+epydoc \- generate API documentation from Python docstrings
+.\" ================== SYNOPSIS ====================
+.SH SYNOPSIS
+.HP 7
+.B epydoc
+.RB [ \-\-html " | " \-\-latex " | " \-\-dvi " | " \-\-ps " | " \-\-pdf ]
+.RB [ \-o
+.IR dir ]
+.RB [ \-\-docformat
+.IR format ]
+.RB [ \-n
+.IR name ]
+.RB [ \-u
+.IR url ]
+.RB [ \-t
+.IR  page ]
+.RB [ \-c
+.IR sheet ]
+.RB [ \-\-private\-css
+.IR sheet ]
+.RB [ \-\-navlink
+.IR html ]
+.RB [ \-\-help\-file
+.IR file ]
+.RB [ \-\-private ]
+.RB [ \-\-no\-private ]
+.RB [ \-\-inheritance
+.IR style ]
+.RB [ \-\-show\-imports ]
+.RB [ \-\-builtins ]
+.RB [ \-\-ignore\-param\-mismatch ]
+.RB [ \-\-separate-classes ]
+.RB [ \-q ]
+.RB [ \-v ]
+.IB modules ...
+.HP 7
+.B epydoc
+.B \-\-check
+.RB [ \-\-tests
+.BR tests ]
+.RB [ \-\-private ]
+.RB [ \-\-builtins ]
+.RB [ \-\-ignore\-param\-mismatch ]
+.RB [ \-q ]
+.RB [ \-v ]
+.IB modules ...
+.PP
+.B epydoc \-h
+.RI [ topic ]
+.PP
+.B epydoc \-V
+.\" ================== DESCRIPTION ====================
+.SH DESCRIPTION
+.B epydoc
+generates API documentation for Python modules and packages, based on
+their docstrings.  A lightweight markup language called
+.B epytext
+can be used to format docstrings, and to add information about
+specific fields, such as parameters and instance variables.  Epydoc
+also understands docstrings written in ReStructuredText, Javadoc, and
+plaintext.  Currently, epydoc supports two basic output formats: HTML
+and LaTeX.
+.PP
+The HTML API documentation produced by 
+.B epydoc
+consists of a set of HTML files.  Two subdirectories are created for
+the public and private documentation.  Within each subdirectory,
+every class and module is documented in its own file.  An index file,
+a trees file, a help file, and a frames-based table of contents are
+also created.
+.PP
+The LaTeX API documentation produced by
+.B epydoc
+consists of a main LaTeX file, and a LaTeX file for each module.  If
+you use the
+.BR \-\-dvi ,
+.BR \-\-ps ,
+or
+.B \-\-pdf
+options, then
+.B epydoc
+will invoke external commands to convert the LaTeX output to the
+requested format.  Note that the LaTeX files containing the
+documentation for individual modules can be included as chapters or
+sections of other LaTeX documents, using the LaTeX
+.B \\\\include
+command.  If you wish to include individual classes in other LaTeX
+documents, then use the
+.B \-\-separate\-classes
+option to produce a separate LaTeX file for each class.
+.PP
+.B epydoc
+can also be used to check the completeness of the API documentation.
+By default, it checks that every public package, module, class,
+method, and function has a docstring description.  The
+.B \-\-tests
+option can be used to specify additional tests to perform.
+.\" ================== OPTIONS ====================
+.SH OPTIONS
+Options are divided into five categories: action selection options;
+HTML documentation generation options; LaTeX documentation generation
+options; documentation checking options; and other options.  All
+options must preceed the list of modules.
+.PP
+.B ACTION SELECTION OPTIONS
+.RS 4
+.TP
+.B \-\-html
+Generate HTML output. (default)
+.TP
+.B \-\-latex
+Generate LaTeX output.
+.TP
+.B \-\-dvi
+Generate dvi output.  This option first creates LaTeX output, and then
+uses
+.B latex
+and
+.B makeindex
+to convert the LaTeX files into a single
+.B dvi
+file.
+.TP
+.B \-\-ps
+Generate postscript output.  This option first creates LaTeX output,
+and then uses
+.BR latex ,
+.BR makeindex ,
+and
+.BR dvips
+to convert the LaTeX files into a single postscript file.
+.TP
+.B \-\-pdf
+Generate Adobe Acrobat
+.RB ( pdf )
+output.  This option first creates LaTeX output, and then uses
+.BR latex ,
+.BR makeindex ,
+.BR dvips ,
+and
+.BR ps2pdf
+to convert the LaTeX files into a single
+.B pdf
+file.
+.TP
+.B \-\-check
+Perform completeness checks on the documentation.
+.RE
+.PP
+.B HTML DOCUMENTATION GENERATION OPTIONS 
+.RS 4
+.TP
+.IR modules ...
+The list of the modules that should be documented.  Modules can be
+specified using module names (such as
+.BR os.path ),
+filenames (such as
+.BR epydoc/epytext.py ),
+or directory names (such as
+.BR epydoc/ ).
+Directory names specify packages, and are expanded to include
+all sub-modules and sub-packages.
+.TP
+.B \-\-builtins
+Add the builtin modules (as defined by sys.builtin_module_names) to
+the list of modules to document.
+.TP
+.BI "\-c " sheet ", \-\-css " sheet
+CSS stylesheet for HTML files containing public API documentation.  If
+.I sheet
+is a file, then the stylesheet is copied from that file; otherwise,
+.I sheet
+is taken to be the name of a built\-in stylesheet.  For a list of
+the built\-in stylesheets, run
+.BR "epydoc \-\-help css" .
+If a CSS stylesheet is not specified, then the default stylesheet is
+used.
+.TP
+.BI "\-\-docformat " format
+Set the default value for
+.B __docformat__
+to
+.IR format .
+.B __docformat__
+is a module variable that specifies the markup language for the
+docstrings in a module.  Its value consists of the name of a markup
+language, optionally followed by a language code (such as
+.B en
+for English).  For a list of the markup languages currently recognized
+by epydoc, run
+.BR "epydoc \-\-help docformat" .
+.TP
+.BI "\-\-help\-file " file
+A file containing the body of the help page for the HTML output.
+Navigation bars will be added at the top and bottom of this help file.
+If no file is specified, then a default help file is used.
+.TP
+.B \-\-ignore\-param\-mismatch
+Do not issue warnings when a method's parameters do not match the
+parameters of the base class method that it overrides.
+.TP
+.BI "\-\-inheritance " format
+The format that should be used to display inherited methods,
+variables, and properties in the "summary" tables.
+If
+.I format
+is "grouped," then inherited objects are gathered into groups, based
+on which class that they are inherited from.  If
+.I format
+is "listed," then inherited objects are listed in a short list at the
+end of the summary table.  If
+.I format
+is "included," then inherited objects are mixed in with non-inherited
+objects.  The default format for HTML output is "grouped."
+.TP
+.BI "\-n " name ", \-\-name " name
+The name of the project whose documentation is being generated.  This
+is used in the index page's title, and in the help page.  It is also
+used to create the homepage link on the navigation bar, if the
+.B \-\-navlink
+option is not used.
+.TP
+.BI "\-\-navlink " html
+HTML code for the homepage link on the navigation bar.  If this HTML
+code contains any hyperlinks
+.RB ( "<a href=...>" ),
+then it will be inserted verbatim.  If
+it does not contain any hperlinks, and a project url is specified
+(with
+.BR \-\-url ),
+then a hyperlink to the specified URL is added to the link.
+.TP
+.B \-\-no\-frames
+Do not display the frames-based table of contents on the main
+API documentation page
+.RB ( index.html ).
+This option just changes the default view; the user can still access
+the frames-based table of contents by clicking on
+.B frames
+in the navigation bar.
+.TP
+.BI "\-o " dir ", \-\-output " dir ", \-\-target " dir
+The output directory for HTML files.  By default, HTML files are
+written to the
+.B html
+directory.
+.TP
+.B \-\-private, \-\-no\-private
+These options control whether documentation is generated for private
+objects.  By default, HTML documentation includes private objects, and
+users can choose whether to view private objects or not, by clicking
+on "show private" and "hide private" links.  But if you want to
+discourage users from directly accessing private objects, then you may
+prefer not to generate documentation for private objects.  The
+.B \-\-no\-private
+option is also useful if you want to generate documentation more
+quickly, since epydoc will only need to produce half as many HTML
+pages.
+.TP
+.BI "\-\-private\-css " sheet
+CSS stylesheet for HTML files containing private API documentation.
+If
+.I sheet
+is a file, then the stylesheet is copied from that file;
+otherwise, 
+.I sheet
+is taken to be the name of a built\-in stylesheet.  For a list of the
+built\-in stylesheets, run 
+.BR "epydoc \-\-help css" .
+If a CSS stylesheet is not specified, then epydoc
+copies the stylesheet for public API documentation (see
+.BR \-\-css ).
+.TP
+.B \-q, \-\-quiet
+Produce quiet output.  If
+.B \-q
+is used multiple times, it produces successively more quiet output (by
+suppressing warning messages).
+.TP
+.B \-\-show\-imports
+Include a list of the classes, functions, and variables that each
+module imports on the module documentation pages.
+.TP
+.BI "\-t " page ", \-\-top " page
+The top page for the documentation. 
+.I page
+can be the name of a documented module or a class; the name of a file
+containing a documented module; an absolute URL (starting
+with "http:"); or one of the special names
+.BR trees.html ,
+.BR indices.html ", or"
+.BR help.html ,
+indicating the corresponding API documentation pages.
+.TP
+.BI "\-u " url ", \-\-url " url
+The URL of the project's homepage.  This URL is used by the homepage
+link on the navigation bar.
+.TP
+.B \-v, \-\-verbose
+Produce verbose output.  If
+.B \-v
+is used multiple times, it produces successively more verbose output.
+.RE
+.PP
+.B LATEX DOCUMENTATION GENERATION OPTIONS
+.RS 4
+LaTeX documentation generation options are used when producing LaTeX,
+postscript (ps), or pdf output.
+.TP
+.IR modules ...
+The list of the modules that should be documented.  Modules can be
+specified using module names (such as
+.BR os.path ),
+filenames (such as
+.BR epydoc/epytext.py ),
+or directory names (such as
+.BR epydoc/ ).
+Directory names specify packages, and are expanded to include
+all sub-modules and sub-packages.
+.TP
+.B \-\-builtins
+Add the builtin modules (as defined by sys.builtin_module_names) to
+the list of modules to document.
+.TP
+.BI "\-\-docformat " format
+Set the default value for
+.B __docformat__
+to
+.IR format .
+.B __docformat__
+is a module variable that specifies the markup language for the
+docstrings in a module.  Its value consists of the name of a markup
+language, optionally followed by a language code (such as
+.B en
+for English).  For a list of the markup languages currently recognized
+by epydoc, run
+.BR "epydoc \-\-help docformat" .
+.TP
+.B \-\-ignore\-param\-mismatch
+Do not issue warnings when a method's parameters do not match the
+parameters of the base class method that it overrides.
+.TP
+.BI "\-\-inheritance " format
+The format that should be used to display inherited methods,
+variables, and properties.
+If
+.I format
+is "grouped," then inherited objects are gathered into groups, based
+on which class that they are inherited from.  If
+.I format
+is "listed," then inherited objects are listed in a short list at the
+end of their section.  If
+.I format
+is "included," then inherited objects are mixed in with non-inherited
+objects.  The default format for LaTeX output is "listed."
+.TP
+.BI "\-n " name ", \-\-name " name
+The name of the project whose documentation is being generated.  This
+is used on the title page, in the page header, and in the pdf metadata.
+.TP
+.BI "\-o " dir ", \-\-output " dir ", \-\-target " dir
+The output directory.  By default, HTML files are
+written to the
+.B html
+directory, and LaTeX files are written to the
+.B latex
+directory.
+.TP
+.B \-\-private, \-\-no\-private
+These options control whether documentation is generated for private
+objects.  By default, LaTeX output only includes documentation for
+public objects.
+.TP
+.B \-q, \-\-quiet
+Produce quiet output.  If
+.B \-q
+is used multiple times, it produces successively more quiet output (by
+suppressing warning messages).
+.TP
+.B \-\-separate\-classes
+Describe all classes in a separate section of the documentation,
+instead of including them in the documentation for their modules.
+This creates a separate LaTeX file for each class, so it can also be
+useful if you want to include the documentation for one or two classes
+as sections of your own LaTeX document.
+.TP
+.B \-v, \-\-verbose
+Produce verbose output.  If
+.B \-v
+is used multiple times, it produces successively more verbose output.
+.RE
+.PP
+.B DOCUMENTATION COMPLETENESS CHECKING OPTIONS
+.RS 4
+The
+.B \-\-check
+option is used to perform completeness checks on the documentation of
+your project.  By default, epydoc checks to make sure that all public
+objects have docstrings.  Additional checks can be added with the
+.B \-\-tests
+option.
+.TP
+.IR modules ...
+The list of the modules whose documentation should be checked.
+Modules can  be specified using module names (such as
+.BR os.path ),
+filenames (such as
+.BR epydoc/epytext.py ),
+or directory names (such as
+.BR epydoc/ ).
+Directory names specify packages, and are expanded to include
+all sub-modules and sub-packages.
+.TP
+.B \-\-ignore\-param\-mismatch
+Do not issue warnings when a method's parameters do not match the
+parameters of the base class method that it overrides.
+.TP
+.B \-\-private
+Perform checks on private objects
+.TP
+.B \-q, \-\-quiet
+Produce quiet output.  If
+.B \-q
+is used multiple times, it produces successively more quiet output (by
+suppressing warning messages).
+.TP
+.BI "\-\-tests " tests  ", \-\-checks " tests
+Perform additional tests on the documentation.  For a list of the
+additional tests that are available, run
+.BR "epydoc --help tests" .
+.TP
+.B \-v, \-\-verbose
+Produce verbose output.  If
+.B \-v
+is used multiple times, it produces successively more verbose output.
+.RE
+.PP
+.B OTHER OPTIONS
+.RS 4
+.TP
+.B \-h, \-\-help, \-\-usage, \-?
+Display a usage message.
+.TP
+.BI "\-h " topic ", \-\-help " topic
+Display information about a specific topic.  Currently,
+information is available about the following topics:
+.BR css ", " version ", and " usage .
+.TP
+.B \-V, \-\-version
+Print the version of Epydoc.
+.RE
+.\" ================== EXAMPLES ====================
+.SH EXAMPLES
+.TP
+.BR "epydoc \-n " epydoc " \-u " "http://epydoc.sf.net epydoc/"
+Generate the HTML API documentation for the epydoc package and all of
+its submodules, and write the output to the
+.B html
+directory.  In the headers and footers, use
+.B epydoc
+as the project name, and
+.B http://epydoc.sf.net
+as the project URL.
+.TP
+.BR "epydoc \-\-pdf \-n " epydoc " epydoc/"
+Generate the LaTeX API documentation for the epydoc package and all of
+its submodules, and write the output to the
+.B latex
+directory.
+.TP
+.BR "epydoc \-o "api " \-\-css " blue " \-\-private\-css " "green sys"
+Generate API documentation for the
+.B sys
+module, and write the output to the
+.B api
+directory.  Use different stylesheets for the public and private
+versions of the documentation.
+.\" ================== HTML FILES ====================
+.SH HTML FILES
+The HTML API documentation produced by 
+.B epydoc
+consists of the following files:
+.RS 4
+.TP
+.B index.html
+The standard entry point for the documentation.  Normally,
+.B index.html
+is a copy of the frames file
+.RB ( frames.html ).
+But if the
+.B \-\-no\-frames
+option is used, then
+.B index.html
+is a copy of the API documentation home page, which is normally the
+documentation page for the top-level package or module (or the trees
+page if there is no top-level package or module).
+.TP
+.IB module \-module.html
+The API documentation for a module.  
+.I module
+is the complete dotted name of the module, such as 
+.B sys
+or
+.BR epydoc.epytext .
+.TP
+.IB class \-class.html
+The API documentation for a class, exception, or type.
+.I class
+is the complete dotted name of the class, such as
+.B epydoc.epytext.Token
+or
+.BR array.ArrayType .
+.TP
+.B trees.html
+The module and class hierarchies.
+.TP
+.B indices.html
+The term and identifier indices.
+.TP
+.B help.html
+The help page for the project.  This page explains how to use and
+navigate the webpage produced by epydoc.
+.TP
+.B frames.html
+The main frames file.  Two frames on the left side of the window
+contain a table of contents, and the main frame on the right side of
+the window contains API documentation pages.
+.TP
+.B toc.html
+The top\-level table of contents page.  This page is displayed in the
+upper\-left frame of
+.BR frames.html ,
+and provides links to the
+.B toc\-everything.html
+and 
+.BI toc\- module \-module.html
+pages.
+.TP
+.B toc\-everything.html
+The table of contents for the entire project.  This page is displayed
+in the lower\-left frame of
+.BR frames.html ,
+and provides links to every class, type, exception, function, and
+variable defined by the project.
+.TP
+.BI toc\- module \-module.html
+The table of contents for a module.  This page is displayed in the
+lower\-left frame of
+.BR frames.html ,
+and provides links to every class, type, exception, function, and
+variable defined by the module.
+.I module
+is the complete dotted name of the module, such as 
+.B sys
+or
+.BR epydoc.epytext .
+.TP
+.B epydoc.css
+The CSS stylesheet used to display all HTML pages.
+.RE
+.PP
+By default,
+.B epydoc
+creates two subdirectories in the output directory:
+.B public
+and
+.BR private .
+Each directory contains all of the files specified above.
+But if the
+.B \-\-no\-private
+option is used, then no subdirectories are created, and the public
+documentation is written directly to the output directory.
+.\" ================== LATEX FILES ====================
+.SH LATEX FILES
+The LaTeX API documentation produced by
+.B epydoc
+consists of the following files:
+.RS 4
+.TP
+.B api.pdf
+An Adobe Acrobat (pdf) file containing the complete API documentation.
+This file is only generated if you use the
+.B \-\-pdf
+option.
+.TP
+.B api.tex
+The top-level LaTeX file.  This file imports the other LaTeX files, to
+create a single unified document.
+.TP
+.B api.dvi
+A dvi file containing the complete API documentation.  This file is
+only generated if you use the 
+.B \-\-dvi
+option, the
+.B \-\-ps
+option, or the
+.B \-\-pdf
+option.
+.TP
+.B api.ps
+A postscript file containing the complete API documentation.  This
+file is only generated if you use the
+.B \-\-ps
+option or the
+.B \-\-pdf
+option.
+.TP
+.IB module -module.tex
+The API documentation for a module.
+.I module
+is the complete dotted name of the module, such as
+.B sys or
+.BR epydoc.epytext .
+.TP
+.IB class -class.tex
+The API documentation for a class, exception, or type.
+.I class
+is the complete dotted name of the class, such as
+.B epydoc.epytext.Token
+or array.ArrayType.  These class documentation files are only created
+if the
+.B \-\-separate\-classes
+option is used; otherwise, the documentation for each class is
+included in its module's documentation file.
+.RE
+.\" ================== DIAGNOSTICS ====================
+.SH DIAGNOSTICS
+Errors are divided into five categories: import errors; epytext
+errors; epytext warnings; field warnings; and inspection errors.
+Whenver epydoc encounters an error, it issues a warning message that
+describes the error, and attempts to continue generating
+documentation.
+.PP
+Import errors indicate that epydoc was unable to import a module.
+Import errors typically prevent epydoc from generating documentation
+for the module in question.  Epydoc can generate the following import
+errors:
+.RS 4
+.TP
+.BI "Bad module name " module
+Epydoc attempted to import
+.IR module ,
+but
+.I module
+is not a valid name for a Python module.
+.TP
+.BI "Could not find a UID for " link-target
+Epydoc was unable to find the object referred to by an inline link
+construction
+.RB ( "L{...}" ).
+This is usually caused by a typo in the link.
+.TP
+.BI "Could not import " module
+Epydoc attempted to import
+.IR module ,
+but it failed.  This typically occurs when
+.I module
+raises an exception.
+.TP
+.IB file " does not exist"
+Epydoc attempted to import the module contained in
+.IR file ,
+but
+.I file
+does not exist.
+.RE
+.PP
+Epytext errors are caused by epytext docstrings that contain invalid
+markup.  Whenever an epytext error is detected, the docstring in
+question is treated as a plaintext docstring.  Epydoc can generate the
+following epytext errors:
+.RS 4
+.TP
+.B Bad link target.
+The target specified for an inline link contruction
+.RB ( "L{...}" )
+is not well-formed.  Link targets must be valid python identifiers.
+.TP
+.B Bad uri target.
+The target specified for an inline uri contruction
+.RB ( "U{...}" )
+is not well-formed.  This typically occurs if inline markup is nested
+inside the URI target.  
+.TP
+.B Fields must be at the top level.
+The list of fields
+.RB "(" @param ", etc.)"
+is contained by some other
+block structure (such as a list or a section).
+.TP
+.B Fields must be the final elements.
+The list of fields
+.RB "(" @param ", etc.)"
+is not at the end of a docstring.
+.TP
+.B Headings must occur at top level.
+The heading is contianed in some other block structure (such as a
+list).
+.TP
+.B Improper doctest block indentation.
+The doctest block dedents past the indentation of its initial prompt
+line.
+.TP
+.B Improper heading indentation.
+The heading for a section is not left-aligned with the paragraphs in
+the section that contains it.
+.TP
+.B Improper paragraph indentation.
+The paragraphs within a block are not left-aligned.  This error is
+often generated when plaintext docstrings are parsed using epytext.
+.TP
+.B Invalid escape.
+An unknown escape sequence was used with the inline escape construction
+.RB ( "E{...}" ).
+.TP
+.B Lists must be indented.
+An unindented line immediately following a paragraph starts with a
+list bullet.  Epydoc is not sure whether you meant to start a new list
+item, or meant for a paragraph to include a word that looks like a
+bullet.  If you intended the former, then indent the list.  If you
+intended the latter, then change the word-wrapping of the paragraph,
+or escape the first character of the word that looks like a bullet.
+.TP
+.B Unbalanced '{'.
+The docstring contains unbalanced braces.  Epytext requires that all
+braces must be balanced.  To include a single unbalanced brace, use
+the escape sequences E{lb} (left brace) and E{rb} (right brace).
+.TP
+.B Unbalanced '}'.
+The docstring contains unbalanced braces.  Epytext requires that all
+braces must be balanced.  To include a single unbalanced brace, use
+the escape sequences E{lb} (left brace) and E{rb} (right brace).
+.TP
+.B Unknown inline markup tag.
+An unknown tag was used with the inline markup construction (
+.IB x {...}
+).
+.TP
+.B Wrong underline character for heading.
+The underline character used for this section heading does not
+indicate an appopriate section level.  The "=" character should be
+used to underline sections; "-" for subsections; and "~" for
+subsubsections.
+.RE
+.PP
+Epytext warnings are caused by epytext docstrings that contain
+questionable or suspicious markup.  Epytext warnings do
+.B not
+prevent the docstring in question from being parsed.  Epydoc can
+generate the following epytext warnings:
+.RS 4
+.TP
+.B Possible mal-formatted field item.
+Epytext detected a line that looks like a field item, but is not
+correctly formatted.  This typically occurs when the trailing colon
+(":") is not included in the field tag.
+.TP
+.B Possible heading typo.
+Epytext detected a pair of lines that looks like a heading, but the
+number of underline characters does not match the number of characters
+in the heading.  The number of characters in these two lines must
+match exactly for them to be considered a heading.
+.RE
+.PP
+Field warnings are caused by epytext docstrings containing invalid
+fields.  The contents of the invalid field are generally ignored.  
+Epydoc can generate the following field warnings:
+.RS 4
+.TP
+.BI "@param for unknown parameter " param .
+A @param field was used to specify the type for a parameter that is
+not included in the function's signature.  This is typically caused by
+a typo in the parameter name.
+.TP
+.IB tag " did not expect an argument."
+The field tag
+.I tag
+was used with an argument, but it does not take one.
+.TP
+.IB tag " expected an argument."
+The field tag
+.I tag
+was used without an argument, but it requires one.
+.TP
+.BI "@type for unknown parameter " param .
+A @type field was used to specify the type for a parameter that is not
+included in the function's signature.  This is typically
+caused by a typo in the parameter name.
+.TP
+.BI "@type for unknown variable " var .
+A @type field was used to specify the type for a variable, but no
+other information is known about the variable.  This is typically
+caused by a typo in the variable name.
+.TP
+.BI "Unknown field tag " tag .
+A docstring contains a field with the unknown tag
+.IR tag .
+.TP
+.BI "Redefinition of " field .
+Multiple field tags define the value of
+.I field
+in the same docstring, but
+.I field
+can only take a single value.
+.RE
+.PP
+Inspection errors are generated if epydoc encounters problems while
+attempting to inspect the properties of a documented object.  Most of
+inspection errors do not prevent epydoc from documenting the object in
+question.  Epydoc can generate the following inspection errors:
+.RS 4
+.TP
+.BI "The parameters of " inhmethod " do not match " basemethod .
+The parameters of the undocumented method
+.I inhmethod 
+do not match the parameters of the base class method
+.I basemethod
+that it overrides.  As a result,
+.I inhmethod
+does not inherit documentation from
+.IR basemethod .
+If the difference in parameters is intentional, then you can eliminate
+the warning by adding a (possibly empty) docstring to
+.IR inhmethod .
+.TP
+.BI "Docmap cannot add a " type
+Epydoc attempted to document an object with an unknown type.  This
+error is typically generated by packages and modules that manipulate
+the import mechanism, such that importing a module produces some other
+type of object.
+.TP
+.BI "UID conflict detected: " uid
+Two different objects were assigned the same unique identifier by
+epydoc.  This can cause epydoc to substitute the documentation of one
+object with the documentation of another object that is assigned the
+same unique identifier.  However, this will usually only cause
+problems if the two objects with the same unique identifiers are both
+modules or classes, in which case the API documentation page for one
+object will overwrite the API documentation page for the other object.
+.TP
+.IB object " appears in multiple builtin modules"
+While attempting to determine which module defines the builtin object
+.IR object ,
+epydoc encountered multiple candidates, and was unable to decide which
+candidate was correct.  In this case, epydoc arbitrarily chooses the
+first candidate that it finds.
+.TP
+.IB object " appears in multiple .py modules"
+While attempting to determine which module defines the builtin object
+.IR object ,
+epydoc encountered multiple candidates, and was unable to decide which
+candidate was correct.  In this case, epydoc arbitrarily chooses the
+first candidate that it finds.
+.TP
+.IB object " appears in multiple .so modules"
+While attempting to determine which module defines the builtin object
+.IR object ,
+epydoc encountered multiple candidates, and was unable to decide which
+candidate was correct.  In this case, epydoc arbitrarily chooses the
+first candidate that it finds.
+.TP
+.BI "Could not find a module for " object
+Epydoc was unable to determine which module defines 
+.IR object .
+If
+.I object
+is a function, then this will prevent epydoc from generating any
+documentation for
+.IR object ,
+since it does not know what page to put the documentation on.
+Otherwise, this will prevent the documentation for
+.I object
+from including a link to its containing module.
+.RE
+.\" ================== EXIT STATUS ====================
+.SH EXIT STATUS
+.TP
+.B 0
+Successful program execution.
+.TP
+.B 1
+Usage error.
+.TP
+.B other
+Internal error (Python exception).
+.\" ================== AUTHOR ====================
+.SH AUTHOR
+Epydoc was written by Edward Loper.  This man page was originally
+written by Moshe Zadka, and is currently maintained by Edward Loper.
+.\" ================== BUGS ====================
+.SH BUGS
+Report bugs to <edloper@gradient.cis.upenn.edu>.
+.\" ================== SEE ALSO ====================
+.SH SEE ALSO
+.BR epydocgui (1)
+.TP
+.B The epydoc webpage
+<http://epydoc.sourceforge.net>
+.TP
+.B The epytext markup language manual
+<http://epydoc.sourceforge.net/epytext.html>

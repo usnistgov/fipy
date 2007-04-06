@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Epydoc: Frequently Asked Questions</title>
+<link rel="stylesheet" href="epydoc.css" type="text/css"/>
+</head>
+<!-- $Id: faq.html 602 2003-09-07 23:49:56Z edloper $ -->
+<body>
+
+<body>
+<h1>Frequently Asked Questions</h1>
+<center><i>(Average question asking frequency: 0.03)</i></center>
+
+<dl>
+  <!-- ================================================== -->
+  <dt> <p><b>Q:</b> Javadoc has too much caffeine; ReStructuredText is
+  capitalized weirdly; and Epydoc just isn't cool enough.  Will you
+  add support for my favorite markup language <i>xyz</i>?</p>
+
+  <dd> <p>No, but you can!  ...</p> </dd>
+  <!-- ================================================== -->
+  <dt> <p><b>Q:</b> The HTML output looks ugly to me.  How can I change
+  it?</p> </dt>
+
+  <dd><p>The CSS stylesheet can be used to modify the colors, fonts,
+  etc. that are used by epydoc.  If your objections have to do with
+  the actual layout of the pages, then I'd be happy to hear your
+  suggestions for improving it; but I'm fairly happy with the layout,
+  and probably won't make changes unless I agree that they improve the
+  appearance significantly.</p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q:</b> I'm documenting a large project.  How can I make
+    epydoc go faster? </p></dt>
+  <dd><p>Try the following options: </p>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr><th align="left"> <code>&#8722;&#8722;inheritance=listed</code></th><td>
+      In summary tables, show inherited objects as a short
+      list.</td></tr>
+      <tr><th align="left"> <code>&#8722;&#8722;no&#8722;private</code></th><td> Don't
+      create documentation for private objects</td></tr>
+      <tr><th align="left">
+      <code>&#8722;&#8722;docformat=plaintext</code></th><td> Format docstrings
+      as plaintext, instead of epytext<br />(Docstrings will be rendered
+      verbatim).</td></tr>
+    </table>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q:</b> Why does epydoc get confused when I include a
+  backslash in a docstring?</p></dt>
+
+  <dd><p>A Python docstring is a string, and is interpreted like any
+    other string.  In particular, Python interprets "\n" as a newline,
+    "\t" as a tab, etc.  If you want to include backslashes in your
+    docstring (e.g. because you want to talk about regular expressions
+    or newline characters), you should use a raw string.  E.g.:</p>
+
+    <div class="screen"><pre>
+<code class="prompt">&gt;&gt;&gt;</code> <code class="keyword">f</code>(x):
+<code class="prompt">...</code>     r<code class="string">"""</code>
+<code class="prompt">...</code>     <code class="string">Return true if x matches the regexp '\w+\s*\w+'.</code>
+<code class="prompt">...</code>     <code class="string">"""</code>
+    </pre></div>
+  </dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q:</b> I've found a bug in epydoc!  Where should I report it?
+    </p></dt>
+  <dd><p> Use the <a
+  href="http://sourceforge.net/tracker/?func=add&group_id=32455&atid=405618">Sourceforge
+  bug tracker</a> to report bugs.  If you want to hear back when I fix
+  it, be sure to either log in to Sourceforge, or include your email
+  address in the bug report.
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q:</b> I'd like to help!  What can I do?
+    </p></dt>
+  <dd><p> If there are any features that you want to add to Epydoc,
+    I'd be happy to accept patches.  Patches should be submitted with
+    the <a
+    href="http://sourceforge.net/tracker/?func=add&group_id=32455&atid=405620">Sourceforge
+    patch tracker</a> (be sure to describe what your patch does!).  If
+    you plan to make several changes, I could also add you as a
+    developer on Sourceforge.  Email me if you're interested. </p>
+
+    <p> For a list of additions that I'd like to make to Epydoc, see
+    the todo list in the <a href="api/">Epydoc reference
+    documentation</a>.
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: New fields?</b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: Change latex output?</b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: relate to other projects?</b>
+    - why dictionary
+    - why uids
+    - why parsing
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: devel stuff?</b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: latex dies?</b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: exclude something?</b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+  <dt><p><b>Q: </b>
+    </p></dt>
+  <dd><p>
+    </p></dd>
+  <!-- ================================================== -->
+</dl>
+
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr>
+  <td align="center" width="16.6%">
+    <a class="nav" href="index.html">[Epydoc]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="installing.html">[Installing]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="using.html">[Using]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="epytext.html">[Epytext]</a></td>
+  <td align="center" width="16.6%">
+    <a class="nav" href="http://www.cis.upenn.edu/~edloper/">[Author]</a></td>
+  <td align="center" width="16.6%">
+    <A href="http://sourceforge.net/projects/epydoc"> 
+    <IMG src="sflogo.png" 
+    width="88" height="26" border="0" alt="SourceForge"
+    align="top"/></A></td>
+    </tr>
+</table>
+
+<font size="-1">
+<!-- hhmts start --> Last modified: Fri Jul 25 02:40:12 XXX 2003 <!-- hhmts end -->
+</font>
+</body>
+</html>
