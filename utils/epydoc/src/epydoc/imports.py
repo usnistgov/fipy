@@ -4,7 +4,7 @@
 # Edward Loper
 #
 # Created [10/06/02 02:14 AM]
-# $Id: imports.py 603 2003-09-07 23:54:51Z edloper $
+# $Id$
 #
 
 """
@@ -180,7 +180,7 @@ def _import_module(name):
         except SystemExit, e:
             raise ImportError('Error importing %r: %s' % (name, e))
         except:
-            raise ImportError('Error importing %r')
+            raise ImportError('Error importing %r' % name)
         
         # If "name" has a package component, then we have to manually
         # go down the package tree.

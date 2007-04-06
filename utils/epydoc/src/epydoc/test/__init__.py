@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
-# $Id: __init__.py 407 2002-11-07 20:47:11Z edloper $
+# $Id$
 
 """
 Unit tests for the NLTK modules.

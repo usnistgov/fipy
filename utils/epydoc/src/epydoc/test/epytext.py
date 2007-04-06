@@ -3,7 +3,7 @@
 # Edward Loper
 #
 # Created [10/30/02 12:06 PM]
-# $Id: epytext.py 552 2003-07-21 06:21:49Z edloper $
+# $Id$
 #
 
 """

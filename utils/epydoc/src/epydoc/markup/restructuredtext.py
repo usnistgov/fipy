@@ -3,7 +3,7 @@
 # Edward Loper
 #
 # Created [06/28/03 02:52 AM]
-# $Id: restructuredtext.py 640 2004-03-09 05:02:50Z edloper $
+# $Id$
 #
 
 """
@@ -71,10 +71,12 @@ from xml.dom.minidom import *
 from docutils.core import publish_string
 from docutils.writers import Writer
 from docutils.writers.html4css1 import HTMLTranslator, Writer as HTMLWriter
+from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
 from docutils.readers.standalone import Reader as StandaloneReader
 from docutils.utils import new_document
 from docutils.nodes import NodeVisitor, Text, SkipChildren
 from docutils.nodes import SkipNode, TreeCopyVisitor
+from docutils.frontend import OptionParser
 import docutils.nodes
 
 from epydoc.markup import *
@@ -106,7 +108,6 @@ def parse_docstring(docstring, errors, **options):
     @rtype: L{ParsedDocstring}
     """
     writer = _DocumentPseudoWriter()
-    writer.settings_spec = HTMLWriter.settings_spec
     reader = _EpydocReader(errors) # Outputs errors to the list.
     publish_string(docstring, writer=writer, reader=reader)
     return ParsedRstDocstring(writer.document)
@@ -139,17 +140,23 @@ class ParsedRstDocstring(ParsedDocstring):
         self._document.walk(visitor)
         return visitor.summary
 
-    def concatenate(self, other):
-        result = self._document.copy()
-        for child in self._document.children + other._document.children:
-            visitor = TreeCopyVisitor(self._document)
-            child.walkabout(visitor)
-            result.append(visitor.get_tree_copy())
-        return ParsedRstDocstring(result)
+#     def concatenate(self, other):
+#         result = self._document.copy()
+#         for child in self._document.children + other._document.children:
+#             visitor = TreeCopyVisitor(self._document)
+#             child.walkabout(visitor)
+#             result.append(visitor.get_tree_copy())
+#         return ParsedRstDocstring(result)
         
     def to_html(self, docstring_linker, **options):
         # Inherit docs
         visitor = _EpydocHTMLTranslator(self._document, docstring_linker)
+        self._document.walkabout(visitor)
+        return ''.join(visitor.body)
+
+    def to_latex(self, docstring_linker, **options):
+        # Inherit docs
+        visitor = _EpydocLaTeXTranslator(self._document, docstring_linker)
         self._document.walkabout(visitor)
         return ''.join(visitor.body)
 
@@ -353,8 +360,41 @@ class _SplitFieldsTranslator(NodeVisitor):
     def unknown_visit(self, node):
         'Ignore all unknown nodes'
 
+class _EpydocLaTeXTranslator(LaTeXTranslator):
+    def __init__(self, document, docstring_linker):
+        # Set the document's settings.
+        settings = OptionParser([LaTeXWriter()]).get_default_values()
+        document.settings = settings
+
+        LaTeXTranslator.__init__(self, document)
+        self._linker = docstring_linker
+
+        # Start at section level 3.
+        self.section_level = 3
+
+    # Handle interpreted text (crossreferences)
+    def visit_title_reference(self, node):
+        target = self.encode(node.astext())
+        xref = self._linker.translate_identifier_xref(target, target)
+        self.body.append(xref)
+        raise SkipNode
+
+    def visit_document(self, node): pass
+    def depart_document(self, node): pass
+    
+    def visit_admonition(self, node, name=''):
+        self.body.append('\\begin{reSTadmonition}[%s]\n' % self.language.labels[name])
+        
+    def depart_admonition(self, node=None):
+        self.body.append('\\end{reSTadmonition}\n');
+
+        
 class _EpydocHTMLTranslator(HTMLTranslator):
     def __init__(self, document, docstring_linker):
+        # Set the document's settings.
+        settings = OptionParser([HTMLWriter()]).get_default_values()
+        document.settings = settings
+    
         HTMLTranslator.__init__(self, document)
         self._linker = docstring_linker
 
@@ -395,4 +435,3 @@ class _EpydocHTMLTranslator(HTMLTranslator):
         
         return HTMLTranslator.starttag(self, node, tagname, suffix,
                                        infix, **attributes)
-

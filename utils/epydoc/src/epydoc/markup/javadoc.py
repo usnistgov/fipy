@@ -3,7 +3,7 @@
 # Edward Loper
 #
 # Created [07/03/03 12:37 PM]
-# $Id: javadoc.py 640 2004-03-09 05:02:50Z edloper $
+# $Id$
 #
 
 """
@@ -224,7 +224,7 @@ class ParsedJavadocDocstring(ParsedDocstring):
             summary = self._docstring.split('\n', 1)[0]+'...'
             return ParsedJavadocDocstring(summary)
         
-    def concatenate(self, other):
-        if not isinstance(other, ParsedJavadocDocstring):
-            raise ValueError, 'Could not concatenate docstrings'
-        return ParsedJavadocDocstring(self._docstring+other._docstring)
+#     def concatenate(self, other):
+#         if not isinstance(other, ParsedJavadocDocstring):
+#             raise ValueError, 'Could not concatenate docstrings'
+#         return ParsedJavadocDocstring(self._docstring+other._docstring)

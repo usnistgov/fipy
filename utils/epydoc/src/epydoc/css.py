@@ -3,7 +3,7 @@
 # Edward Loper
 #
 # Created [01/30/01 05:18 PM]
-# $Id: css.py 639 2004-03-09 05:01:50Z edloper $
+# $Id$
 #
 
 """
@@ -30,20 +30,15 @@ import re
 ## Basic stylesheets
 ############################################################
 
-# Black on white, with blue highlights.  This is similar to how
-# javadoc looks.
-_WHITE = """
-/* Body color */ 
-body               { background: #ffffff; color: #000000; } 
- 
+
+# Base stylesheet -- just the layout details
+_LAYOUT = """
+
 /* Tables */ 
-table.summary, table.details, table.index
-                   { background: #e8f0f8; color: #000000; } 
+table.help         { margin-left: auto; margin-right: auto; }
 tr.summary, tr.details, tr.index
-                   { background: #70b0f0; color: #000000;  
-                     text-align: left; font-size: 120%; } 
-tr.group           { background: #c0e0f8; color: #000000;
-                     text-align: left; font-size: 120%;
+                   { text-align: left; font-size: 120%; } 
+tr.group           { text-align: left; font-size: 120%;
                      font-style: italic; } 
 
 /* Documentation page titles */
@@ -51,32 +46,90 @@ h2.module          { margin-top: 0.2em; }
 h2.class           { margin-top: 0.2em; }
  
 /* Headings */
+hq.help            { text-align: center; }
 h1.heading         { font-size: +140%; font-style: italic;
                      font-weight: bold; }
 h2.heading         { font-size: +125%; font-style: italic;
                      font-weight: bold; }
 h3.heading         { font-size: +110%; font-style: italic;
                      font-weight: normal; }
-                    
+h1.tocheading      { text-align: center; font-size: large; margin: 0; }
+h2.tocheading      { font-size: large; margin: 0.5em 0 0 0; }
+
+/* Table of contents */
+p.toc              { margin: 0; padding: 0; }
+
 /* Base tree */
 pre.base-tree      { font-size: 80%; margin: 0; }
 
 /* Details Sections */
-table.func-details { background: #e8f0f8; color: #000000;
-                     border: 2px groove #c0d0d0;
+table.func-details { border-width: 2px; border-style groove;
                      padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.func-detail     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
-
-table.var-details  { background: #e8f0f8; color: #000000;
-                     border: 2px groove #c0d0d0;
+h3.func-detail     { margin: 0 0 1em 0; }
+table.var-details  { border-width: 2px; border-style groove;
                      padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.var-details     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
+h3.var-details     { margin: 0 0 1em 0; }
 
 /* Function signatures */
-.sig               { background: transparent; color: #000000;
-                     font-weight: bold; }  
+.sig               { font-weight: bold; }  
+
+/* Doctest blocks */
+.py-prompt         { font-weight: bold;}
+pre.doctestblock   { padding: .5em; margin: 1em;
+                     border-width: 1px; border-style: solid; }
+table pre.doctestblock
+                   { padding: .5em; margin: 1em;
+                     border-width: 1px; border-style: solid; }
+
+/* Variable values */
+pre.variable       { padding: .5em; margin: 0;
+                     border-width: 1px; border-style: solid; }
+
+/* Navigation bar */ 
+table.navbar       { border-width: 2px; border-style: groove; }
+.nomargin          { margin: 0; }
+
+/* Links */ 
+a.navbar:link      { text-decoration: none; }  
+a.navbar:visited   { text-decoration: none; }  
+
+/* Lists */
+ul { margin-top: 0; }
+
+/* Misc. */
+.footer            { font-size: 85%; }
+.header            { font-size: 85%; }
+.breadcrumbs       { font-size: 85%; font-weight: bold; }
+.options           { font-size: 70%; }
+.rtype, .ptype, .vtype 
+                   { font-size: 85%; }
+dt                 { font-weight: bold; }
+.small             { font-size: 85%; }
+"""
+
+# Black on white, with blue highlights.  This is similar to how
+# javadoc looks.
+_WHITE = _LAYOUT + """
+/* Body color */ 
+body               { background: #ffffff; color: #000000; } 
+ 
+/* Tables */ 
+table.summary, table.details, table.index
+                   { background: #e8f0f8; color: #000000; } 
+tr.summary, tr.details, tr.index
+                   { background: #70b0f0; color: #000000; } 
+tr.group           { background: #c0e0f8; color: #000000; } 
+
+/* Details Sections */
+table.func-details { background: #e8f0f8; color: #000000;
+                     border-color: #c0d0d0; }
+h3.func-detail     { background: transparent; color: #000000; }
+table.var-details  { background: #e8f0f8; color: #000000;
+                     border-color: #c0d0d0; }
+h3.var-details     { background: transparent; color: #000000; }
+
+/* Function signatures */
+.sig               { background: transparent; color: #000000; }
 .sig-name          { background: transparent; color: #006080; }  
 .sig-arg, .sig-kwarg, .sig-vararg
                    { background: transparent; color: #008060; }  
@@ -88,24 +141,20 @@ h3.var-details     { background: transparent; color: #000000;
 
 /* Doctest blocks */
 .py-src            { background: transparent; color: #000000; }
-.py-prompt         { background: transparent; color: #005050;
-                     font-weight: bold;}
+.py-prompt         { background: transparent; color: #005050; }
 .py-string         { background: transparent; color: #006030; }
 .py-comment        { background: transparent; color: #003060; }
 .py-keyword        { background: transparent; color: #600000; }
 .py-output         { background: transparent; color: #404040; }
 pre.doctestblock   { background: #f4faff; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 table pre.doctestblock
                    { background: #dce4ec; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 
 /* Variable values */
 pre.variable       { background: #dce4ec; color: #000000;
-                     padding: .5em; margin: 0;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 .variable-linewrap { background: transparent; color: #604000; }
 .variable-ellipsis { background: transparent; color: #604000; }
 .variable-quote    { background: transparent; color: #604000; }
@@ -117,70 +166,50 @@ pre.variable       { background: #dce4ec; color: #000000;
 
 /* Navigation bar */ 
 table.navbar       { background: #a0c0ff; color: #0000ff;
-                     border: 2px groove #c0d0d0; }
+                     border-color: #c0d0d0; }
 th.navbar          { background: #a0c0ff; color: #0000ff; } 
 th.navselect       { background: #70b0ff; color: #000000; } 
-.nomargin          { margin: 0; }
 
 /* Links */ 
 a:link             { background: transparent; color: #0000ff; }  
 a:visited          { background: transparent; color: #204080; }  
-a.navbar:link      { background: transparent; color: #0000ff; 
-                     text-decoration: none; }  
-a.navbar:visited   { background: transparent; color: #204080; 
-                     text-decoration: none; }  
-
-/* Lists */
-ul { margin-top: 0; }
+a.navbar:link      { background: transparent; color: #0000ff; }
+a.navbar:visited   { background: transparent; color: #204080; }
 """
 
 # Black on steel blue (old version)
-_OLD_BLUE = """
+_OLD_BLUE = _LAYOUT + """
 /* Body color */ 
 body               { background: #88a0a8; color: #000000; } 
  
 /* Tables */ 
 table.summary, table.details, table.index
                    { background: #a8c0c8; color: #000000; } 
-tr.summary         { background: #c0e0e0; color: #000000;
-                     text-align: left; font-size: 120%; } 
+tr.summary         { background: #c0e0e0; color: #000000; }
 tr.details, tr.index
-                   { background: #c0e0e0; color: #000000;
-                     text-align: center; font-size: 120%; }
-tr.group           { background: #bad8e0; color: #000000;
-                     text-align: left; font-size: 120%; } 
+                   { background: #c0e0e0; color: #000000; }
+tr.group           { background: #bad8e0; color: #000000; }
 
 /* Documentation page titles */
 h2.module          { margin-top: 0.2em; }
 h2.class           { margin-top: 0.2em ; }
  
 /* Headings */
-h1.heading         { font-size: +140%; font-style: italic;
-                     font-weight: bold; color: #002040; }
-h2.heading         { font-size: +125%; font-style: italic;
-                     font-weight: bold; color: #002040; }
-h3.heading         { font-size: +110%; font-style: italic;
-                     font-weight: normal; color: #002040; }
-
-/* Base tree */
-pre.base-tree      { font-size: 80%; margin: 0; }
+h1.heading         { background: transparent; color: #002040; }
+h2.heading         { background: transparent; color: #002040; }
+h3.heading         { background: transparent; color: #002040; }
 
 /* Details Sections */
 table.func-details { background: #a8c0c8; color: #000000;
-                     border: 2px groove #c0d0d0;
-                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.func-detail     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
+                     border-color: #c0d0d0; }
+h3.func-detail     { background: transparent; color: #000000; }
 
 table.var-details  { background: #a8c0c8; color: #000000;
-                     border: 2px groove #c0d0d0;
-                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.var-details     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
+                     border-color: #c0d0d0; }
+h3.var-details     { background: transparent; color: #000000; }
 
 /* Function signatures */
-.sig               { background: transparent; color: #000000;
-                     font-weight: bold; }  
+.sig               { background: transparent; color: #000000; }
 .sig-name          { background: transparent; color: #006080; }  
 .sig-arg, .sig-kwarg, .sig-vararg
                    { background: transparent; color: #008060; }  
@@ -192,24 +221,20 @@ h3.var-details     { background: transparent; color: #000000;
 
 /* Doctest blocks */
 .py-src            { background: transparent; color: #000000; }
-.py-prompt         { background: transparent; color: #005050;
-                     font-weight: bold;}
+.py-prompt         { background: transparent; color: #005050; }
 .py-string         { background: transparent; color: #006030; }
 .py-comment        { background: transparent; color: #003060; }
 .py-keyword        { background: transparent; color: #600000; }
 .py-output         { background: transparent; color: #404040; }
-pre.doctestblock   { background: #90a8b0; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+pre.doctestblock   { background: #90a8b0; color: #000000; }
+                     border-color: #708890; }
 table pre.doctestblock
                    { background: #b0c8d0; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
  
 /* Variable values */
 pre.variable       { background: #b0c8d0; color: #000000; 
-                     padding: .5em; margin: 0;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 .variable-linewrap { background: transparent; color: #604000; }
 .variable-ellipsis { background: transparent; color: #604000; }
 .variable-quote    { background: transparent; color: #604000; }
@@ -221,72 +246,50 @@ pre.variable       { background: #b0c8d0; color: #000000;
  
 /* Navigation bar */ 
 table.navbar       { background: #607880; color: #b8d0d0;
-                     border: 2px groove #c0d0d0; }
-th.navbar          { background: #607880; color: #b8d0d0;
-                     font-weight: normal; } 
-th.navselect       { background: #88a0a8; color: #000000;
-                     font-weight: normal; } 
-.nomargin          { margin: 0; }
+                     border-color: #c0d0d0; }
+th.navbar          { background: #607880; color: #b8d0d0; }
+th.navselect       { background: #88a0a8; color: #000000; }
  
 /* Links */ 
 a:link             { background: transparent; color: #104060; }  
 a:visited          { background: transparent; color: #082840; }  
-a.navbar:link      { background: transparent; color: #b8d0d0;
-                     text-decoration: none; }  
-a.navbar:visited   { background: transparent; color: #b8d0d0;
-                     text-decoration: none; }
-
-/* Lists */
-ul { margin-top: 0; }
+a.navbar:link      { background: transparent; color: #b8d0d0; }
+a.navbar:visited   { background: transparent; color: #b8d0d0; }
 """
 
 # Black on steel blue (new version: higher contrast)
-_BLUE = """
+_BLUE = _LAYOUT + """
 /* Body color */
 body               { background: #b0c8d0; color: #000000; } 
  
 /* Tables */ 
 table.summary, table.details, table.index
                    { background: #c8e0e8; color: #000000; } 
-tr.summary         { background: #dcf4fc; color: #000000;
-                     text-align: left; font-size: 120%; } 
+tr.summary         { background: #dcf4fc; color: #000000; }
 tr.details, tr.index
-                   { background: #dcf4fc; color: #000000;
-                     text-align: center; font-size: 120%; }
-tr.group           { background: #bad8e0; color: #000000;
-                     text-align: left; font-size: 120%; } 
+                   { background: #dcf4fc; color: #000000; }
+tr.group           { background: #bad8e0; color: #000000; }
 
 /* Documentation page titles */
 h2.module          { margin-top: 0.2em; }
 h2.class           { margin-top: 0.2em ; }
  
 /* Headings */
-h1.heading         { font-size: +140%; font-style: italic;
-                     font-weight: bold; color: #002060; }
-h2.heading         { font-size: +125%; font-style: italic;
-                     font-weight: bold; color: #002060; }
-h3.heading         { font-size: +110%; font-style: italic;
-                     font-weight: normal; color: #002060; }
-
-/* Base tree */
-pre.base-tree      { font-size: 80%; margin: 0; }
+h1.heading         { background: transparent; color: #002060; }
+h2.heading         { background: transparent; color: #002060; }
+h3.heading         { background: transparent; color: #002060; }
 
 /* Details Sections */
 table.func-details { background: #c8e0e8; color: #000000;
-                     border: 2px groove #c0d0d0;
-                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.func-detail     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
+                     border-color: #c0d0d0; }
+h3.func-detail     { background: transparent; color: #000000; }
 
 table.var-details  { background: #c8e0e8; color: #000000;
-                     border: 2px groove #ffffff;
-                     padding: 0 1em 0 1em; margin: 0.4em 0 0 0; }
-h3.var-details     { background: transparent; color: #000000;
-                     margin: 0 0 1em 0; }
+                     border-color: #ffffff; }
+h3.var-details     { background: transparent; color: #000000; }
 
 /* Function signatures */
-.sig               { background: transparent; color: #000000;
-                     font-weight: bold; }  
+.sig               { background: transparent; color: #000000; }
 .sig-name          { background: transparent; color: #006080; }  
 .sig-arg, .sig-kwarg, .sig-vararg
                    { background: transparent; color: #008060; }  
@@ -298,24 +301,20 @@ h3.var-details     { background: transparent; color: #000000;
 
 /* Doctest blocks */
 .py-src            { background: transparent; color: #000000; }
-.py-prompt         { background: transparent; color: #006070;
-                     font-weight: bold;}
+.py-prompt         { background: transparent; color: #006070; }
 .py-string         { background: transparent; color: #007050; }
 .py-comment        { background: transparent; color: #004080; }
 .py-keyword        { background: transparent; color: #800000; }
 .py-output         { background: transparent; color: #484848; }
 pre.doctestblock   { background: #c8e0e8; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 table pre.doctestblock
                    { background: #c0d8e0; color: #000000; 
-                     padding: .5em; margin: 1em;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
  
 /* Variable values */
 pre.variable       { background: #c0d8e0; color: #000000; 
-                     padding: .5em; margin: 0;
-                     border: 1px solid #708890; }
+                     border-color: #708890; }
 .variable-linewrap { background: transparent; color: #705000; }
 .variable-ellipsis { background: transparent; color: #705000; }
 .variable-quote    { background: transparent; color: #705000; }
@@ -327,23 +326,15 @@ pre.variable       { background: #c0d8e0; color: #000000;
  
 /* Navigation bar */ 
 table.navbar       { background: #688088; color: #d8f0f0;
-                     border: 2px groove #c0d0d0; }
-th.navbar          { background: #688088; color: #d8f0f0;
-                     font-weight: normal; } 
-th.navselect       { background: #88a0a8; color: #000000;
-                     font-weight: normal; } 
-.nomargin          { margin: 0; }
+                     border-color: #c0d0d0; }
+th.navbar          { background: #688088; color: #d8f0f0; }
+th.navselect       { background: #88a0a8; color: #000000; }
  
 /* Links */ 
 a:link             { background: transparent; color: #104060; }  
 a:visited          { background: transparent; color: #082840; }  
-a.navbar:link      { background: transparent; color: #d8f0f0;
-                     text-decoration: none; }  
-a.navbar:visited   { background: transparent; color: #d8f0f0;
-                     text-decoration: none; }
-
-/* Lists */
-ul { margin-top: 0; }
+a.navbar:link      { background: transparent; color: #d8f0f0; }
+a.navbar:visited   { background: transparent; color: #d8f0f0; }
 """
 
 ############################################################
@@ -392,5 +383,5 @@ STYLESHEETS = {
     'black': (_BLACK, "White on black, with blue highlights"),
     'grayscale': (_GRAYSCALE, "Grayscale black on white"),
     'default': (_WHITE, "Default stylesheet (=white)"),
-    'none': ('', "An empty stylesheet"),
+    'none': (_LAYOUT, "A base stylesheet (no color modifications)"),
     }

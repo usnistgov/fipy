@@ -5,7 +5,7 @@
 # Edward Loper
 #
 # Created [01/30/01 05:18 PM]
-# $Id: __init__.py 649 2004-03-20 17:33:16Z edloper $
+# $Id$
 #
 
 """

@@ -3,7 +3,7 @@
 # Edward Loper
 #
 # Created [04/10/01 12:00 AM]
-# $Id: plaintext.py 640 2004-03-09 05:02:50Z edloper $
+# $Id$
 #
 
 """
@@ -50,10 +50,10 @@ class ParsedPlaintextDocstring(ParsedDocstring):
             summary = self._text.split('\n', 1)[0]+'...'
             return ParsedPlaintextDocstring(summary, verbatim=0)
         
-    def concatenate(self, other):
-        if not isinstance(other, ParsedPlaintextDocstring):
-            raise ValueError, 'Could not concatenate docstrings'
-        text = self._text+other._text
-        options = self._options.copy()
-        options.update(other._options)
-        return ParsedPlaintextDocstring(text, options)
+#     def concatenate(self, other):
+#         if not isinstance(other, ParsedPlaintextDocstring):
+#             raise ValueError, 'Could not concatenate docstrings'
+#         text = self._text+other._text
+#         options = self._options.copy()
+#         options.update(other._options)
+#         return ParsedPlaintextDocstring(text, options)

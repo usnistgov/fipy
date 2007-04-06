@@ -4,7 +4,7 @@
 # Edward Loper
 #
 # Created [01/30/01 05:18 PM]
-# $Id: man.py 544 2003-07-18 15:46:28Z edloper $
+# $Id$
 #
 
 """

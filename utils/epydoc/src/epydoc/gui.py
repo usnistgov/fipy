@@ -4,7 +4,7 @@
 # Edward Loper
 #
 # Created [03/15/02 10:31 PM]
-# $Id: gui.py 646 2004-03-19 19:01:37Z edloper $
+# $Id$
 #
 
 """
