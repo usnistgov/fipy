@@ -52,6 +52,7 @@ class LatexWriter:
         self._top_section = 2
         self._index_functions = 1
         self._hyperref = 1
+        self._pdflatex = kwargs.get('pdflatex', 0)
 
         #: The Python representation of the encoding.
         #: Update L{latex_encodings} in case of mismatch between it and
@@ -225,13 +226,19 @@ class LatexWriter:
         # !!!!!!!!!!!!!!!!!!!!!!
         if self._hyperref:
             out('\\definecolor{UrlColor}{rgb}{0,0.08,0.45}\n')
-            out('\\usepackage[dvips, pagebackref, pdftitle={%s}, '
+            
+            if self._pdflatex:
+                driver = 'pdftex'
+            else:
+                driver = 'dvips'
+                
+            out('\\usepackage[%s, pagebackref, pdftitle={%s}, '
                 'pdfcreator={epydoc %s}, bookmarks=true, '
                 'bookmarksopen=false, pdfpagemode=UseOutlines, '
                 'colorlinks=true, linkcolor=black, anchorcolor=black, '
                 'citecolor=black, filecolor=black, menucolor=black, '
                 'pagecolor=black, urlcolor=UrlColor]{hyperref}\n' %
-                (self._prj_name or '', epydoc.__version__))
+                (driver, self._prj_name or '', epydoc.__version__))
             
         # If restructuredtext was used, then we need to extend
         # the prefix to include LatexTranslator.head_prefix.

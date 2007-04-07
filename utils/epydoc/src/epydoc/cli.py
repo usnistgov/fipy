@@ -14,7 +14,8 @@ Command-line interface for epydoc.  Abbreviated Usage::
      NAMES...                  The Python modules to document.
      --html                    Generate HTML output (default).
      --latex                   Generate LaTeX output.
-     --pdf                     Generate pdf output, via LaTeX.
+     --pdf                     Generate pdf output, via LaTeX -> dvips -> ps2pdf.
+     --pdflatex                Generate pdf output, via pdfLaTeX
      -o DIR, --output DIR      The output directory.
      --inheritance STYLE       The format for showing inherited objects.
      -V, --version             Print the version of epydoc.
@@ -84,7 +85,7 @@ except:
 
 INHERITANCE_STYLES = ('grouped', 'listed', 'included')
 GRAPH_TYPES = ('classtree', 'callgraph', 'umlclasstree')
-ACTIONS = ('html', 'text', 'latex', 'dvi', 'ps', 'pdf', 'check')
+ACTIONS = ('html', 'text', 'latex', 'dvi', 'ps', 'pdf', 'pdflatex', 'check')
 DEFAULT_DOCFORMAT = 'epytext'
 PROFILER = 'hotshot' #: Which profiler to use: 'hotshot' or 'profile'
 
@@ -198,7 +199,11 @@ def parse_arguments():
 
     action_group.add_option("--pdf",
         action="store_const", dest="action", const="pdf",
-        help="Write PDF output.")
+        help="Write PDF output archaicly.")
+
+    action_group.add_option("--pdflatex",
+        action="store_const", dest="action", const="pdflatex",
+        help="Write PDF output directly.")
 
     action_group.add_option("--check",
         action="store_const", dest="action", const="check",
@@ -672,6 +677,7 @@ def main(options, names):
         elif options.action == 'dvi': stages += [60,30]
         elif options.action == 'ps': stages += [60,40]
         elif options.action == 'pdf': stages += [60,50]
+        elif options.action == 'pdflatex': stages += [60,30]
         elif options.action == 'check': stages += [10]
         elif options.action == 'pickle': stages += [10]
         else: raise ValueError, '%r not supported' % options.action
@@ -774,7 +780,7 @@ def main(options, names):
     # Perform the specified action.
     if options.action == 'html':
         write_html(docindex, options)
-    elif options.action in ('latex', 'dvi', 'ps', 'pdf'):
+    elif options.action in ('latex', 'dvi', 'ps', 'pdf', 'pdflatex'):
         write_latex(docindex, options, options.action)
     elif options.action == 'text':
         write_text(docindex, options)
@@ -863,6 +869,7 @@ def write_latex(docindex, options, format):
     if format == 'dvi': steps = 4
     elif format == 'ps': steps = 5
     elif format == 'pdf': steps = 6
+    elif format == 'pdflatex': steps = 4
     
     log.start_progress('Processing LaTeX docs')
     oldpath = os.path.abspath(os.curdir)
@@ -876,33 +883,40 @@ def write_latex(docindex, options, format):
                 if os.path.exists('apidoc.%s' % ext):
                     os.remove('apidoc.%s' % ext)
 
+            if format == 'pdflatex':
+                latex = 'pdflatex'
+                process = 'pdfLaTeX'
+            else:
+                latex = 'latex'
+                process = 'LaTeX'
+                    
             # The first pass generates index files.
-            running = 'latex'
-            log.progress(0./steps, 'LaTeX: First pass')
-            run_subprocess('latex api.tex')
+            running = latex
+            log.progress(0./steps, '%s: First pass' % process)
+            run_subprocess('%s api.tex' % latex)
 
             # Build the index.
             running = 'makeindex'
-            log.progress(1./steps, 'LaTeX: Build index')
+            log.progress(1./steps, '%s: Build index' % process)
             run_subprocess('makeindex api.idx')
 
             # The second pass generates our output.
-            running = 'latex'
-            log.progress(2./steps, 'LaTeX: Second pass')
-            out, err = run_subprocess('latex api.tex')
+            running = latex
+            log.progress(2./steps, '%s: Second pass' % process)
+            out, err = run_subprocess('%s api.tex' % latex)
             
             # The third pass is only necessary if the second pass
             # changed what page some things are on.
-            running = 'latex'
+            running = latex
             if _RERUN_LATEX_RE.match(out):
-                log.progress(3./steps, 'LaTeX: Third pass')
-                out, err = run_subprocess('latex api.tex')
+                log.progress(3./steps, '%s: Third pass' % process)
+                out, err = run_subprocess('%s api.tex' % latex)
  
             # A fourth path should (almost?) never be necessary.
-            running = 'latex'
+            running = latex
             if _RERUN_LATEX_RE.match(out):
-                log.progress(3./steps, 'LaTeX: Fourth pass')
-                run_subprocess('latex api.tex')
+                log.progress(3./steps, '%s: Fourth pass' % process)
+                run_subprocess('%s api.tex' % latex)
 
             # If requested, convert to postscript.
             if format in ('ps', 'pdf'):
@@ -918,6 +932,7 @@ def write_latex(docindex, options, format):
                     'ps2pdf -sPAPERSIZE#letter -dMaxSubsetPct#100 '
                     '-dSubsetFonts#true -dCompatibilityLevel#1.2 '
                     '-dEmbedAllFonts#true api.ps api.pdf')
+                    
         except RunSubprocessError, e:
             if running == 'latex':
                 e.out = re.sub(r'(?sm)\A.*?!( LaTeX Error:)?', r'', e.out)
