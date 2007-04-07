@@ -390,7 +390,7 @@ http://www.scipy.org/
 
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the weave_ module of the
-SciPy_ package. `SciPy downlaod instructions`_ 
+SciPy_ package. `SciPy download instructions`_ 
 |citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
 
 .. note:: 
