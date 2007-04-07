@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 3/20/07 {3:54:28 PM} 
+ #                                last update: 4/4/07 {9:00:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,7 +115,7 @@ class build_docs (Command):
 ##         from utils.epydoc import driver
 ##         driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
         
-        os.system("epydoc --latex --output %s --no-sub-modules fipy/" % dir)
+        os.system("epydoc --latex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
         
         savedir = os.getcwd()
         try:

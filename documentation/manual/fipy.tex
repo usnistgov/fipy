@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 12/1/06 {7:59:57 AM} 
+ %                                last update: 4/3/07 {6:08:21 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -209,7 +209,6 @@ and the Center for Theoretical and Computational Materials Science
 \part{Examples}
 \label{part:Examples}
 
-% \chapter{Usage}
 \input{examples/readme}
 
 \settocdepth{chapter} 
@@ -220,34 +219,17 @@ and the Center for Theoretical and Computational Materials Science
 
 \input{examples/latex/examples.diffusion.mesh1D-module}
 \label{sec:Examples:diffusion:mesh1D}
-% \newpage
 \input{examples/latex/examples.diffusion.mesh20x20-module}
-% \newpage
 \input{examples/latex/examples.diffusion.circle-module}
-% \newpage
 \input{examples/latex/examples.diffusion.electrostatics-module}
-% \newpage
 \input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
-% \newpage
 
 \chapter{Convection Examples}
 
 \input{examples/latex/examples.convection.exponential1D.input-module}
-% \newpage
-% \input{examples/latex/examples.convection.exponential1DBack.input-module}
-% \newpage
 \input{examples/latex/examples.convection.exponential1DSource.input-module}
-% \newpage
-% \input{examples/latex/examples.convection.exponential2D.input-module}
-% \newpage
-% \input{examples/latex/examples.convection.powerLaw1D.input-module}
-% \newpage
 
 \chapter{Phase Field Examples}
-
-% \section*{Solidification Examples}
-% \addstarredsection{Solidification Examples}
-% \addcontentsline{toc}{section}{Solidification Examples} 
 
 The phase field method is a ``diffuse interface'' technique for
 modeling phase transformations and interface motion. Several good
@@ -260,22 +242,9 @@ review articles have been written on the subject
 
 \input{examples/latex/examples.phase.anisotropy.input-module}
 \label{sec:anisotropy}
-% \newpage
 \input{examples/latex/examples.phase.impingement.mesh40x1.input-module}
-% \newpage
-% \input{examples/latex/examples.phase.impingement.mesh20x20.base-module}
-% \newpage
 \input{examples/latex/examples.phase.impingement.mesh20x20.input-module}
 \label{sec:impingement}
-% \newpage
-% \input{examples/latex/examples.phase.impingement.restart.input-module}
-% \newpage
-% \input{examples/latex/examples.phase.missOrientation.circle.input-module}
-% \newpage
-% \input{examples/latex/examples.phase.missOrientation.mesh1D.input-module}
-% \newpage
-% \input{examples/latex/examples.phase.missOrientation.modCircle.input-module}
-% \newpage
 
 % \section*{Electrochemistry Examples}
 % \addstarredsection{Electrochemistry Examples} 
@@ -306,41 +275,15 @@ used in \FiPy{} can be found in Sethian's Level Set
 book~\cite{levelSetBook}.
 
 \input{examples/latex/examples.levelSet.distanceFunction.oneD.input-module}
-% \newpage
-% \input{examples/latex/examples.levelSet.distanceFunction.square.input-module}
-% \newpage
 \input{examples/latex/examples.levelSet.distanceFunction.circle.input-module}
-% \newpage
-% \input{examples/latex/examples.levelSet.distanceFunction.interior.input-module}
-% \newpage
 \input{examples/latex/examples.levelSet.advection.mesh1D.input-module}
-% \newpage
 \input{examples/latex/examples.levelSet.advection.circle.input-module}
-% \newpage
 
 \newpage
 \section*{Superconformal Electrodeposition Examples}
 \addcontentsline{toc}{section}{Superconformal Electrodeposition Examples} 
 
 \input{examples/levelset/electrochem/readme}
-
-%Electroplating is a deposition method widely used to fill high-aspect
-%ratio features without seams or voids through the process of
-%superconformal deposition, also called ``superfill.''  This process
-%has been demonstrated to depend critically on the inclusion of
-%additives in the electrolyte.  Recent publications propose ``Curvature
-%Enhanced Accelerator Coverage'' (CEAC) as the mechanism behind the
-%superfilling process~\cite{NIST:damascene:2001}.  In this mechanism,
-%molecules that accelerate local metal deposition displace molecules
-%that inhibit local metal deposition on the metal/electrolyte
-%interface. For electrolytes that yield superconformal filling of fine
-%features, this buildup happens relatively slowly because the
-%concentration of accelerator species is much more dilute compared to
-%the inhibitor species in the electrolyte.  The mechanism that leads to
-%the increased rate of metal deposition along the bottom of the filling
-%trench is the concurrent local increase of the accelerator coverage
-%due to decreasing local surface area, which scales with the local
-%curvature (hence the name of the mechanism).
 
 \input{examples/latex/examples.levelSet.electroChem.inputSimpleTrenchSystem-module}
 \input{examples/latex/examples.levelSet.electroChem.inputGold-module}
