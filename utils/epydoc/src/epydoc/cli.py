@@ -115,6 +115,11 @@ HELP_TOPICS = {
         '\n'.join(['  %10s: %s' % (key, descr)
                    for (key, (sheet, descr))
                    in CSS_STYLESHEETS.items()])),
+##     'sty': textwrap.dedent(
+##         'The following built-in LaTeX style files are available:\n' +
+##         '\n'.join(['  %10s: %s' % (key, descr)
+##                    for (key, (sheet, descr))
+##                    in CSS_STYLESHEETS.items()])),
     #'checks': textwrap.dedent('''\
     #
     #    '''),
@@ -138,7 +143,7 @@ OPTION_DEFAULTS = dict(
     include_source_code=True, pstat_files=[], simple_term=False, fail_on=None,
     exclude=[], exclude_parse=[], exclude_introspect=[],
     external_api=[],external_api_file=[],external_api_root=[], 
-    list_submodules=True)
+    list_submodules=True, copy_tex_styles=True)
 
 def parse_arguments():
     # Construct the option parser.
@@ -304,6 +309,11 @@ def parse_arguments():
         help="The CSS stylesheet.  STYLESHEET can be either a "
         "builtin stylesheet or the name of a CSS file.")
 
+    output_group.add_option("--sty",
+        dest="sty", metavar="LATEXSTYLE",
+        help="The LaTeX style file.  LATEXSTYLE can be either a "
+        "builtin style file or the name of a .sty file.")
+
     output_group.add_option("--url",
         dest="prj_url", metavar="URL",
         help="The documented project's URL (for the navigation bar).")
@@ -345,6 +355,15 @@ def parse_arguments():
     output_group.add_option(
         '--no-sub-modules', action='store_false', dest='list_submodules',
         help=("Omit submodules of a module in LaTeX output."))
+
+    output_group.add_option("--tex-cannot-find-styles",
+        action="store_true", dest="copy_tex_styles",
+        help="Copy LaTeX style files into output directory. (default)")
+
+    output_group.add_option("--tex-can-find-styles",
+        action="store_false", dest="copy_tex_styles",
+        help="Omit LaTeX style files from output directory.")
+
 
     # The group of external API options.
     # Skip if the module couldn't be imported (usually missing docutils)

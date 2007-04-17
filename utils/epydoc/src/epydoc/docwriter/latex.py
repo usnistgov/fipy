@@ -23,6 +23,7 @@ from epydoc import log
 from epydoc import markup
 from epydoc.util import plaintext_to_latex
 import epydoc.markup
+from epydoc.docwriter.dotgraph import *
 
 class LatexWriter:
     PREAMBLE = [
@@ -52,7 +53,9 @@ class LatexWriter:
         self._top_section = 2
         self._index_functions = 1
         self._hyperref = 1
-        self._pdflatex = kwargs.get('pdflatex', 0)
+        self._pdflatex = kwargs.get('action', '') == "pdflatex"
+        self._graph_types = kwargs.get('graphs', ()) or ()
+        """Graphs that we should include in our output."""
 
         #: The Python representation of the encoding.
         #: Update L{latex_encodings} in case of mismatch between it and
@@ -270,7 +273,7 @@ class LatexWriter:
 
         # Add a section marker.
         out(self.section('%s %s' % (self.doc_kind(doc),
-                                    self._dotted(doc.canonical_name)),
+                                    _dotted(doc.canonical_name)),
                          ref=doc))
 
         # Add the module's description.
@@ -300,6 +303,19 @@ class LatexWriter:
         # Mark the end of the module (for the index)
         out('    ' + self.indexterm(doc, 'end'))
 
+    def render_graph(self, graph):
+        if graph is None: return ''
+        graph.caption = graph.title = None
+        if self._pdflatex:
+            return graph.to_dot2tex()
+##             image_url = '%s.ps' % graph.uid
+##             image_file = os.path.join(self._directory, image_url)
+##             return graph.to_pdf(image_file, image_url)
+        else:
+            image_url = '%s.eps' % graph.uid
+            image_file = os.path.join(self._directory, image_url)
+            return graph.to_latex(image_file, image_url)
+
     def write_class(self, out, doc):
         if self._list_classes_separately:
             self.write_header(out, doc)
@@ -312,23 +328,39 @@ class LatexWriter:
         if self._list_classes_separately:
             seclevel = 0
             out(self.section('%s %s' % (self.doc_kind(doc),
-                                        self._dotted(doc.canonical_name)), 
+                                        _dotted(doc.canonical_name)), 
                              seclevel, ref=doc))
         else:
             seclevel = 1
             out(self.section('%s %s' % (self.doc_kind(doc),
-                                        self._dotted(doc.canonical_name[-1])), 
+                                        _dotted(doc.canonical_name[-1])), 
                              seclevel, ref=doc))
 
-        # Add our base list.
-        if doc.bases not in (UNKNOWN, None) and len(doc.bases) > 0:
-            out(self.base_tree(doc))
+        if ((doc.bases not in (UNKNOWN, None) and len(doc.bases) > 0) or
+            (doc.subclasses not in (UNKNOWN,None) and len(doc.subclasses)>0)):
+            # Display bases graphically, if requested.
+            if 'umlclasstree' in self._graph_types:
+##                 linker = self._LatexDocstringLinker()
+                graph = uml_class_tree_graph(doc, self._docstring_linker, doc)
+                out(self.render_graph(graph))
+                
+            elif 'classtree' in self._graph_types:
+##                 linker = self._LatexDocstringLinker()
+                graph = class_tree_graph([doc], self._docstring_linker, doc)
+                out(self.render_graph(graph))
 
-        # The class's known subclasses
-        if doc.subclasses not in (UNKNOWN, None) and len(doc.subclasses) > 0:
-            sc_items = [self._hyperlink(sc, '%s' % sc.canonical_name)
-                        for sc in doc.subclasses]
-            out(self._descrlist(sc_items, 'Known Subclasses', short=1))
+            # Otherwise, use ascii-art.
+            else:
+        
+                # Add our base list.
+                if doc.bases not in (UNKNOWN, None) and len(doc.bases) > 0:
+                    out(self.base_tree(doc))
+
+                # The class's known subclasses
+                if doc.subclasses not in (UNKNOWN, None) and len(doc.subclasses) > 0:
+                    sc_items = [_hyperlink(sc, '%s' % sc.canonical_name)
+                                for sc in doc.subclasses]
+                    out(self._descrlist(sc_items, 'Known Subclasses', short=1))
 
         # The class's description.
         if doc.descr not in (None, UNKNOWN):
@@ -393,12 +425,12 @@ class LatexWriter:
         
         @rtype: C{string}
         """
-        out(' '*depth + '\\item[%s]' % self._hyperlink(doc, doc.canonical_name[-1]))
+        out(' '*depth + '\\item[%s]' % _hyperlink(doc, doc.canonical_name[-1]))
 
         if doc.summary not in (None, UNKNOWN):
             out(' %s\n' % self.docstring_to_latex(doc.summary))
         if self._crossref:
-            out('\\CrossRef{%s}\n\n' % self.label(doc))
+            out('\\CrossRef{%s}\n\n' % _label(doc))
         if doc.submodules != UNKNOWN and doc.submodules:
             out(' '*depth + '  \\begin{EpydocModuleSubList}\n')
             for submodule in doc.submodules:
@@ -414,7 +446,7 @@ class LatexWriter:
             width = self._find_tree_width(doc)+2
             linespec = []
             s = ('&'*(width-4)+'\\multicolumn{2}{l}{\\textbf{%s}}\n' %
-                   self._dotted('%s'%self._base_name(doc)))
+                   _dotted('%s'%self._base_name(doc)))
             s += '\\end{tabular}\n\n'
             top = 1
         else:
@@ -449,7 +481,7 @@ class LatexWriter:
         return width
 
     def _base_tree_line(self, doc, width, linespec):
-        base_name = self._dotted(self._base_name(doc))
+        base_name = _dotted(self._base_name(doc))
         
         # linespec is a list of booleans.
         s = '%% Line for %s, linespec=%s\n' % (base_name, linespec)
@@ -459,7 +491,7 @@ class LatexWriter:
         # The base class name.
         s += ('\\multicolumn{%s}{r}{' % labelwidth)
         s += '\\settowidth{\\BCL}{%s}' % base_name
-        s += '\\multirow{2}{\\BCL}{%s}}\n' % self._hyperlink(doc, self._base_name(doc))
+        s += '\\multirow{2}{\\BCL}{%s}}\n' % _hyperlink(doc, self._base_name(doc))
 
         # The vertical bars for other base classes (top half)
         for vbar in linespec:
@@ -516,12 +548,12 @@ class LatexWriter:
     def write_class_list_line(self, out, var_doc):
         if var_doc.value in (None, UNKNOWN): return # shouldn't happen
         doc = var_doc.value
-        out('  ' + '\\item[%s]' % self._hyperlink(var_doc.target, 
-                                                  var_doc.name))
+        out('  ' + '\\item[%s]' % _hyperlink(var_doc.target, 
+                                             var_doc.name))
         if doc.summary not in (None, UNKNOWN):
             out(': %s\n' % self.docstring_to_latex(doc.summary))
         if self._crossref:
-            out(('\CrossRef{%s}\n\n' % self.label(doc)))
+            out(('\CrossRef{%s}\n\n' % _label(doc)))
         
     #////////////////////////////////////////////////////////////
     #{ Function List
@@ -632,8 +664,8 @@ class LatexWriter:
                 var_doc.overrides.value.docstring not in (None, UNKNOWN)):
                 out('[1]')
             out('{%s}\n\n' 
-                % self._hyperlink(var_doc.overrides, 
-                                  '%s' % var_doc.overrides.canonical_name))
+                % _hyperlink(var_doc.overrides, 
+                             '%s' % var_doc.overrides.canonical_name))
 
         # Add version, author, warnings, requirements, notes, etc.
         self.write_standard_fields(out, func_doc)
@@ -644,7 +676,7 @@ class LatexWriter:
         func_doc = var_doc.value
         func_name = var_doc.name
         
-        s = '{%s}{' % self._hypertarget(var_doc, func_name)
+        s = '{%s}{' % _hypertarget(var_doc, func_name)
         
         # This should never happen, but just in case:
         if func_doc not in (None, UNKNOWN):
@@ -725,8 +757,8 @@ class LatexWriter:
                     (var_doc.value.parse_repr is not UNKNOWN or
                      var_doc.value.pyval_repr() is not UNKNOWN))
                      
-        out('\\EpydocVariable{%s}{' % self._hypertarget(var_doc, 
-                                                        var_doc.name))
+        out('\\EpydocVariable{%s}{' % _hypertarget(var_doc, 
+                                                   var_doc.name))
         if has_descr:
             out(self.docstring_to_latex(var_doc.descr, 10).strip())
         out('}{')
@@ -740,7 +772,7 @@ class LatexWriter:
     def write_property_list_line(self, out, var_doc):
         prop_doc = var_doc.value
         out('\\EpydocProperty{%s}{%s}{' 
-            % (self._hypertarget(var_doc, var_doc.shortname), 
+            % (_hypertarget(var_doc, var_doc.shortname), 
                plaintext_to_latex(var_doc.name, nbsp=True, breakany=True)))
 
         
@@ -820,6 +852,23 @@ class LatexWriter:
         def translate_identifier_xref(self, identifier, label=None):
             if label is None: label = markup.plaintext_to_latex(identifier)
             return '\\texttt{%s}' % label
+        # [xx] Should this be added to the DocstringLinker interface???
+        # Currently, this is *only* used by dotgraph.
+        def url_for(self, identifier):
+            return None
+##             if isinstance(identifier, (basestring, DottedName)):
+##                 doc = self.docindex.find(identifier, self.container)
+##                 if doc:
+##                     return identifier
+##                 else:
+##                     return None
+##                 
+##             elif isinstance(identifier, APIDoc):
+##                 return ':'.join(identifier.canonical_name)
+##                 doc = identifier
+##                 
+##             else:
+##                 raise TypeError('Expected string or APIDoc')
     _docstring_linker = _LatexDocstringLinker()
     
     def docstring_to_latex(self, docstring, indent=0, breakany=0):
@@ -850,14 +899,14 @@ class LatexWriter:
         sec = self.SECTIONS[depth+self._top_section]
         text = (('%s\n\n' % sec) % title)
         if ref:
-            text += self._hypertarget(ref, "")
+            text += _hypertarget(ref, "")
         return text
     
     def sectionstar(self, title, depth, ref=None):
         sec = self.STARSECTIONS[depth+self._top_section]
         text = (('%s\n\n' % sec) % plaintext_to_latex(title))
         if ref:
-            text += self._hypertarget(ref, "")
+            text += _hypertarget(ref, "")
         return text
 
     def doc_kind(self, doc):
@@ -893,7 +942,7 @@ class LatexWriter:
         if isinstance(doc, ClassDoc):
             classCrossRef = '\\index{\\EpydocIndex[%s]{%s}|see{%%s}}\n' \
               % (self.doc_kind(doc).lower(), 
-                 self._dotted('%s' % doc.canonical_name))
+                 _dotted('%s' % doc.canonical_name))
         else:
             classCrossRef = None
 
@@ -902,7 +951,7 @@ class LatexWriter:
                 return '' # Give up.
             pieces.append('\\EpydocIndex[%s]{%s}' %
                           (self.doc_kind(doc).lower(), 
-                           self._dotted('%s' % doc.canonical_name)))
+                           _dotted('%s' % doc.canonical_name)))
             doc = self.docindex.container(doc)
             if doc == UNKNOWN:
                 return '' # Give up.
@@ -919,24 +968,9 @@ class LatexWriter:
         
         if pos in ['only', 'start'] and classCrossRef is not None:
             term += classCrossRef % ('\\EpydocIndex[%s]{%s}' % (self.doc_kind(doc).lower(), 
-                                                                self._dotted('%s'%doc.canonical_name)))
+                                                                _dotted('%s'%doc.canonical_name)))
             
         return term
-
-    def label(self, doc):
-        return ':'.join(doc.canonical_name)
-        
-    def _hyperlink(self, target, name):
-        return '\\EpydocHyperlink{%s}{%s}' % (self.label(target), self._dotted(name))
-
-    def _hypertarget(self, uid, sig):
-        return '\\EpydocHypertarget{%s}{%s}' % (self.label(uid), self._dotted(sig))
-
-    def _dotted(self, name):
-        return '\\EpydocDottedName{%s}' % name
-
-
-
 
     #: Map the Python encoding representation into mismatching LaTeX ones.
     latex_encodings = {
@@ -950,3 +984,31 @@ class LatexWriter:
         """
         enc = self._encoding.lower()
         return self.latex_encodings.get(enc, enc)
+
+        
+def _label(doc):
+    return ':'.join(doc.canonical_name)
+    
+def _hyperlink(target, name):
+    return '\\EpydocHyperlink{%s}{%s}' % (_label(target), _dotted(name))
+
+def _hypertarget(uid, sig):
+    return '\\EpydocHypertarget{%s}{%s}' % (_label(uid), _dotted(sig))
+
+def _dotted(name):
+    return '\\EpydocDottedName{%s}' % name
+
+
+############################################################
+## Style file table
+############################################################
+
+STYLESHEETS = {
+    'epydoc': (_WHITE, "Black on white, with blue highlights"),
+    'blue': (_BLUE, "Black on steel blue"),
+    'green': (_GREEN, "Black on green"),
+    'black': (_BLACK, "White on black, with blue highlights"),
+    'grayscale': (_GRAYSCALE, "Grayscale black on white"),
+    'default': (_WHITE, "Default stylesheet (=white)"),
+#    'none': (_LAYOUT, "A base stylesheet (no color modifications)"),
+    }

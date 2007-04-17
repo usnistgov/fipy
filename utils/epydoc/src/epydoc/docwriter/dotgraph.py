@@ -188,6 +188,62 @@ class DotGraph:
         if center: s += '</center>'
         return s
 
+    def to_latex(self, image_file, image_url, center=True):
+        """
+        Return the LaTeX code that should be uesd to display this graph
+        """
+##         f = file("%s.dot" % os.path.splitext(image_file)[0], 'w')
+##         f.write(self.to_dotfile())
+##         f.close()
+        
+        self._run_dot('-Tps', '-o%s' % image_file)
+        
+        if center: s = '\\begin{center}\n'
+        s += '  \\includegraphics{%s}\n' % os.path.splitext(image_url)[0]
+        if center: s += '\\end{center}'
+        return s
+
+    def to_pdf(self, image_file, image_url, center=True):
+        """
+        Return the pdfLaTeX code that should be uesd to display this graph
+        """
+        f = file("%s.dot" % os.path.splitext(image_file)[0], 'w')
+        f.write(self.to_dotfile())
+        f.close()
+        
+        self._run_dot('-Tps2', '-o%s' % image_file)
+        
+        from subprocess import Popen
+        pdf_file = "%s.pdf" % os.path.splitext(image_file)[0]
+        pipe = Popen("ps2pdf %s %s" % (image_file, pdf_file), shell=True)
+        out, err = pipe.communicate(None)
+        
+        os.remove(image_file)
+            
+        if center: s = '\\begin{center}\n'
+        s += '  \\includegraphics{%s}\n' % os.path.splitext(image_url)[0]
+        if center: s += '\\end{center}'
+        return s
+
+    def to_dot2tex(self, center=True):
+        """
+        Return the pdfLaTeX code that should be uesd to display this graph
+        """
+        f = file("%s.dot" % self.uid, 'w')
+        f.write(self.to_dotfile())
+        f.close()
+        
+        result, err = run_subprocess(("dot2tex.py", "-t", "raw", "--preproc", 
+                                      "--docpreamble", "\\usepackage[index]{fipy}"),
+                                     self.to_dotfile())
+        result, err = run_subprocess(("dot2tex.py", "--figonly", "-t", "raw"),
+                                     result)
+
+        if center:
+            result = '\\begin{center}\n%s\n\\end{center}' % result
+
+        return result
+
     def link(self, docstring_linker):
         """
         Replace any href attributes whose value is ``<name>`` with 
@@ -1008,7 +1064,7 @@ def class_tree_graph(bases, linker, context=None, **options):
     hierarchy for the given classes.
     """
     graph = DotGraph('Class Hierarchy for %s' % name_list(bases, context),
-                     body='ranksep=0.3\n',
+                     body='ranksep=0.3\nsize="5,5"\n',
                      edge_defaults={'sametail':True, 'dir':'none'})
 
     # Options
@@ -1202,8 +1258,10 @@ def call_graph(api_docs, docindex, linker, context=None, **options):
             if options.get('add_callees', False):
                 func_set.update(docindex.callees.get(func_doc, ()))
 
+##     graph = DotGraph('Call Graph for %s' % name_list(api_docs, context),
+##                      node_defaults={'shape':'box', 'width': 0, 'height': 0})
     graph = DotGraph('Call Graph for %s' % name_list(api_docs, context),
-                     node_defaults={'shape':'box', 'width': 0, 'height': 0})
+                     node_defaults={'shape':'box'})
     
     # Options
     if options.get('dir', 'LR') != 'TB': # default: left-to-right
@@ -1278,6 +1336,8 @@ def specialize_valdoc_node(node, val_doc, context, url):
     Update the style attributes of `node` to reflext its type
     and context.
     """
+    from epydoc.docwriter import latex
+
     # We can only use html-style nodes if dot_version>2.
     dot_version = get_dot_version()
     
@@ -1299,28 +1359,37 @@ def specialize_valdoc_node(node, val_doc, context, url):
         node['html_label'] = MODULE_NODE_HTML % (color, color, url,
                                                  val_doc.canonical_name,
                                                  node['label'])
-        node['width'] = node['height'] = 0
+        node['texlbl'] = latex._hyperlink(val_doc, node['label'])
+##         texlbl = latex._hyperlink(val_doc, val_doc.canonical_name)
+##         node['label'] = texlbl.replace('\\', '\\\\')
+##         node['width'] = node['height'] = 0
         node.port = 'body'
 
     elif isinstance(val_doc, RoutineDoc):
         node['shape'] = 'box'
         node['style'] = 'rounded'
-        node['width'] = 0
-        node['height'] = 0
+##         node['width'] = 0
+##         node['height'] = 0
         node['label'] = '%s()' % node['label']
         node['tooltip'] = node['label']
         if val_doc == context:
             node['fillcolor'] = SELECTED_BG
-            node['style'] = 'filled,rounded,bold'
+##             node['style'] = 'filled,rounded,bold'
+            node['style'] = 'rounded corners, shade'
             
     else:
-        node['shape'] = 'box' 
+        node['shape'] = 'rectangle' 
         node['width'] = 0
-        node['height'] = 0
+##         node['height'] = 0
         node['tooltip'] = node['label']
+        node['texlbl'] = latex._hyperlink(val_doc, node['label'])
+##         texlbl = latex._hyperlink(val_doc, val_doc.canonical_name)
+##         node['label'] = texlbl.replace('\\', '\\\\')
         if val_doc == context:
-            node['fillcolor'] = SELECTED_BG
-            node['style'] = 'filled,bold'
+            node['fillcolor'] = 'blue'
+##             node['style'] = 'filled,bold'
+##             node['shading'] = 'ball'
+            node['style'] = 'ball color = gray'
 
 def name_list(api_docs, context=None):
     if context is not None:

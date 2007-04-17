@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/4/07 {9:00:22 AM} 
+ #                                last update: 4/13/07 {9:15:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,10 +100,10 @@ class build_docs (Command):
             
         os.makedirs(dir)
         
-    def _epydocFiles(self, module, dir = None, type = 'latex'):
+    def _epydocFiles(self, module, dir = None, type = 'pdflatex'):
         dir = os.path.join(dir, type)
         
-        command = "epydoc --" + type + " --output " + dir + " --name FiPy " + module
+        command = "epydoc --" + type + " --output " + dir + "--graph=umlclasstree --name FiPy " + module
         
         os.system(command)
 
@@ -115,7 +115,7 @@ class build_docs (Command):
 ##         from utils.epydoc import driver
 ##         driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
         
-        os.system("epydoc --latex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
+        os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
         
         savedir = os.getcwd()
         try:
@@ -284,8 +284,10 @@ class build_docs (Command):
             # build the package/module/class example documentation
             
             dir = os.path.join('documentation', 'manual', 'tutorial')
-            self._initializeDirectory(dir = dir, type = 'latex')
-            dir = os.path.join(dir, 'latex')
+##             self._initializeDirectory(dir = dir, type = 'latex')
+##             dir = os.path.join(dir, 'latex')
+            self._initializeDirectory(dir = dir, type = 'pdflatex')
+            dir = os.path.join(dir, 'pdflatex')
 
             # to avoid a collision between the real fipy namespace
             # and the fictional fipy namespace we use for the illustration
@@ -302,9 +304,9 @@ if sys.modules.has_key('epydoc.uid'):
     sys.modules['epydoc.uid']._variable_uids = {}
     sys.modules['epydoc.uid']._name_to_uid = {}
 
-from utils.epydoc import driver
+## from epydoc import driver
 ## driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
-os.system("epydoc --latex --output %s --no-sub-modules  documentation/manual/tutorial/fipy/" % dir)
+os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=classtree  documentation/manual/tutorial/fipy/" % dir)
 """)
 
         if self.guide or self.apis:
