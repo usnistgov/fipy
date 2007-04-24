@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 3/30/07 {2:09:35 PM} 
+ #                                last update: 4/24/07 {9:36:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,11 +78,10 @@ class VectorFaceVariable(Variable):
             if shape != self._getShapeFromMesh(mesh=self.getMesh()) \
               and shape == (self.getMesh()._getNumberOfFaces(),):
                 dim = self.getMesh().getDim()
-                if dim == 1:
-                    where = where[..., numerix.NewAxis]
-                else:
-                    where = numerix.repeat(where, self.getMesh().getDim())
-            
+                where = where[..., numerix.NewAxis]
+                if dim > 1:
+                    where = numerix.repeat(where, self.getMesh().getDim(), axis=1)
+        
         return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
     
     def _getShapeFromMesh(mesh):
