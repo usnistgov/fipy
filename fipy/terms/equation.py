@@ -6,7 +6,7 @@
  # 
  #  FILE: "equation.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 3/29/07 {12:27:40 PM} 
+ #                                last update: 4/20/07 {11:33:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,11 +107,11 @@ class _Equation(Term):
         for key in self.orderedPlusOtherKeys():
             term = self.terms[key]
             if term is not None:
-                solver = term._getDefaultSolver(solver)
-                if solver is not None:
-                    return solver
+                defaultsolver = term._getDefaultSolver(solver)
+                if defaultsolver is not None:
+                    return defaultsolver
                 
-        return None
+        return solver
 
     def __repr__(self):
         reprs = []
