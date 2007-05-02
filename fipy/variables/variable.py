@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 3/28/07 {4:29:58 PM} 
+ #                                last update: 5/1/07 {2:09:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -429,7 +429,7 @@ class Variable(object):
          else:
              return identifier + self._getCIndexString(shape)
 
-    def tostring(self, max_line_width=None, precision=None, suppress_small=None, separator=' '):
+    def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
         return numerix.tostring(self.getValue(), 
                                 max_line_width=max_line_width,
                                 precision=precision, 
@@ -1757,6 +1757,31 @@ class Variable(object):
             self.mag = self.dot(self).sqrt()
             
         return self.mag
+    
+    def __getstate__(self):
+        """
+        Used internally to collect the necessary information to ``pickle`` the 
+        `Variable` to persistent storage.
+        """
+        return {
+            'value': self.getValue(),
+            'unit': self.getUnit(),
+            'array': None,
+            'name': self.name,
+            'mesh': self.mesh,
+            'cached': self._cached
+        }
+        
+    def __setstate__(self, dict):
+        """
+        Used internally to create a new `Variable` from ``pickled`` 
+        persistent storage.
+        """
+        
+        import sys
+        self._refcount = sys.getrefcount(self)
+
+        self.__init__(**dict)
         
     def _testBinOp(self):
         """
