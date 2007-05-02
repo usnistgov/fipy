@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/3/07 {2:25:47 PM} 
+ #                                last update: 4/30/07 {11:37:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -264,7 +264,7 @@ class PhysicalField:
             return (self.__class__.__name__ + '(' + `self.value` + ',' + 
                     `self.unit.name()` + ')')
 
-    def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
+    def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
         """
         Return human-readable form of a physical quantity
         

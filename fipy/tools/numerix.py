@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 3/27/07 {2:16:15 PM} 
+ #                                last update: 4/30/07 {11:38:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -300,7 +300,7 @@ def isInt(arr):
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
-def tostring(arr, max_line_width=None, precision=None, suppress_small=None, separator=' ', array_output=0):
+def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separator=' ', array_output=0):
     r"""
     Returns a textual representation of a number or field of numbers.  Each
     dimension is indicated by a pair of matching square brackets (`[]`), within
