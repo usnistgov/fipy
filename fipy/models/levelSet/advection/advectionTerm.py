@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 3/2/06 {10:50:56 AM} 
+ #                                last update: 3/29/07 {10:39:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -123,7 +123,7 @@ class _AdvectionTerm(Term):
         Term.__init__(self)
         self.geomCoeff = coeff
         
-    def _buildMatrix(self, var, boundaryCondtions = (), dt = None):
+    def _buildMatrix(self, var, boundaryCondtions=(), dt=None, equation=None):
 
         oldArray = var.getOld()
 

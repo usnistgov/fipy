@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 1/17/06 {12:01:09 PM} 
+ #                                last update: 3/28/07 {10:17:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,3 +54,8 @@ class SourceTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()
 
+    def __add__(self, other):
+        if isinstance(other, SourceTerm):
+            return self.__class__(coeff=self.coeff + other.coeff)
+        else:
+            return CellTerm.__add__(self, other)

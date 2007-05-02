@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {8:41:19 PM} 
+ #                                last update: 3/29/07 {11:49:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -147,11 +147,9 @@ We create one diffusion equation for each substitutional component
     ...     convectionCoeff = CkSum.getFaceGrad() \
     ...                       * (Cj.diffusivity / (1. - CkFaceSum))
     ...
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff = Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff = convectionCoeff, 
-    ...                                           diffusionTerm = diffusionTerm)
-    ...                                            
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm()
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 If we are running interactively, we create a viewer to see the results 
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitDiffusionTerm.py"
  #                                    created: 11/27/03 {11:39:03 AM} 
- #                                last update: 8/15/05 {10:44:33 AM} 
+ #                                last update: 3/29/07 {10:40:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,6 @@ class ExplicitDiffusionTerm(DiffusionTerm):
 
     """
     
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
-        L, b = DiffusionTerm._buildMatrix(self, var.getOld(), boundaryConditions = boundaryConditions, dt = dt)
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., equation=None):
+        L, b = DiffusionTerm._buildMatrix(self, var.getOld(), boundaryConditions = boundaryConditions, dt = dt, equation=equation)
         return (0, b - L * var[:])

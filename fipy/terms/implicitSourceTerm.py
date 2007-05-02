@@ -6,7 +6,7 @@
  # 
  #  FILE: "implicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 9/2/05 {10:45:31 AM} 
+ #                                last update: 3/29/07 {10:40:42 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,14 +53,15 @@ class ImplicitSourceTerm(SourceTerm):
 
        \[ \int_V \phi S \,dV \simeq \phi_P S_P V_P \] where $S$ is the
 
-    `coeff` value and in general should be negative to maintain
-    stability.       
+    `coeff` value.       
     """
-    def _getWeight(self, mesh):
-	return {
-	    'b vector':   0, 
-	    'new value':  0, 
-	    'old value':  0,
-            'diagonal' :  1 
-	}
-
+    def _calcCoeffVectors(self, var, equation=None):
+        coeff = self._getGeomCoeff(var.getMesh())
+        from fipy.tools.numerix import sign
+        combinedSign = self._diagonalSign * sign(coeff)
+        self.coeffVectors = {
+            'diagonal': coeff * (combinedSign >= 0),
+            'old value': 0,
+            'b vector': -coeff * var * (combinedSign < 0),
+            'new value': 0
+        }

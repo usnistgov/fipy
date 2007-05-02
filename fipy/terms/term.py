@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/15/07 {3:17:39 PM} 
+ #                                last update: 3/29/07 {12:27:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,8 +66,9 @@ class Term:
         self.matrix = None
         self._cacheRHSvector = False
         self.RHSvector = None
+        self._diagonalSign = Variable(value=1)
         
-    def _buildMatrix(self, var, boundaryConditions, dt):
+    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
         pass
 
     def _calcResidualVector(self, var, matrix, RHSvector):
@@ -94,13 +95,6 @@ class Term:
         return self._buildMatrix(var, boundaryConditions, dt)
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
-
-        if self._cacheMatrix:
-            self.matrix = matrix
-
-        if self._cacheRHSvector:
-            self.RHSvector = RHSvector
-
         from fipy.solvers.linearPCGSolver import LinearPCGSolver
 
         solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
@@ -126,7 +120,7 @@ class Term:
         
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
-    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn = None):
+    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -159,7 +153,7 @@ class Term:
 
         return residual
 
-    def justResidualVector(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None):
+    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None):
         r"""
         Builds and the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -243,42 +237,61 @@ class Term:
             return True
         else:
             return False
-
+            
     def __add__(self, other):
         r"""
         Add a `Term` to another `Term`, number or variable.
 
-           >>> Term(coeff = 1.) + 10.
-           (Term(coeff = 1.0) + _ExplicitSourceTerm(coeff = 10.0))
-           >>> Term(coeff = 1.) + Term(coeff = 2.)
-           (Term(coeff = 1.0) + Term(coeff = 2.0))
+           >>> Term(coeff=1.) + 10.
+           10.0 + Term(coeff=1.0) == 0
+           >>> Term(coeff=1.) + Term(coeff=2.)
+           Term(coeff=3.0)
 
         """
+        from fipy.terms.equation import _Equation
         
         if self._otherIsZero(other):
             return self
+        elif isinstance(other, _Equation):
+            return other + self
+        elif self.__class__ == other.__class__:
+            return self.__class__(coeff=self.coeff + other.coeff)
         else:
-            from fipy.terms.binaryTerm import _AdditionTerm
-            return _AdditionTerm(term1 = self, term2 = other)
+            eq = _Equation()
+            eq += self
+            eq += other
+            return eq
             
-    __radd__ = __add__
+    def __radd__(self, other):
+        r"""
+        Add a number or variable to a `Term`.
+
+           >>> 10. + Term(coeff=1.)
+           10.0 + Term(coeff=1.0) == 0
+        """
+        return self + other
     
     def __neg__(self):
         r"""
          Negate a `Term`.
 
-           >>> -Term(coeff = 1.)
-           Term(coeff = -1.0)
+           >>> -Term(coeff=1.)
+           Term(coeff=-1.0)
 
         """
-        return self.__class__(coeff = -self.coeff)
+        try:
+            coeff = -self.coeff
+        except:
+            coeff = -numerix.array(self.coeff)
+
+        return self.__class__(coeff=coeff)
 
     def __pos__(self):
         r"""
         Posate a `Term`.
 
-           >>> +Term(coeff = 1.)
-           Term(coeff = 1.0)
+           >>> +Term(coeff=1.)
+           Term(coeff=1.0)
 
         """
         return self
@@ -287,86 +300,76 @@ class Term:
         r"""
         Subtract a `Term` from a `Term`, number or variable.
 
-           >>> Term(coeff = 1.) - 10.
-           (Term(coeff = 1.0) - _ExplicitSourceTerm(coeff = 10.0))
-           >>> Term(coeff = 1.) - Term(coeff = 2.)
-           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           >>> Term(coeff=1.) - 10.
+           -10.0 + Term(coeff=1.0) == 0
+           >>> Term(coeff=1.) - Term(coeff=2.)
+           Term(coeff=-1.0)
            
         """        
         if self._otherIsZero(other):
             return self
         else:
-            from fipy.terms.binaryTerm import _SubtractionTerm
-            return _SubtractionTerm(term1 = self, term2 = other)
+            return self + (-other)
 
     def __rsub__(self, other):
         r"""
         Subtract a `Term`, number or variable from a `Term`.
 
-           >>> 10. - Term(coeff = 1.)
-           (_ExplicitSourceTerm(coeff = 10.0) - Term(coeff = 1.0))
+           >>> 10. - Term(coeff=1.)
+           10.0 + Term(coeff=-1.0) == 0
 
         """        
         if self._otherIsZero(other):
-            return self
+            return -self
         else:
-            from fipy.terms.binaryTerm import _SubtractionTerm
-            return _SubtractionTerm(term1 = other, term2 = self)
+            return other + (-self)
         
     def __eq__(self, other):
         r"""
         This method allows `Terms` to be equated in a natural way. Note that the
         following does not return `False.`
 
-           >>> Term(coeff = 1.) == Term(coeff = 2.)
-           (Term(coeff = 1.0) == Term(coeff = 2.0))
+           >>> Term(coeff=1.) == Term(coeff=2.)
+           Term(coeff=-1.0)
 
         it is equivalent to,
 
-           >>> Term(coeff = 1.) - Term(coeff = 2.)
-           (Term(coeff = 1.0) - Term(coeff = 2.0))
+           >>> Term(coeff=1.) - Term(coeff=2.)
+           Term(coeff=-1.0)
 
-        A `Term` should equate with a float. 
-        
-        .. attention:: 
-            
-           This does not work due to sign difficulties.
-           
-        ..
+        A `Term` can also equate with a number. 
 
-           >>> Term(coeff = 1.) == 1.  
-           False
+           >>> Term(coeff=1.) == 1.  
+           -1.0 + Term(coeff=1.0) == 0
            
         Likewise for integers.
 
-           >>> Term(coeff = 1.) == 1
-           False
+           >>> Term(coeff=1.) == 1
+           -1 + Term(coeff=1.0) == 0
+           
+        Equating to zero is allowed, of course
+        
+            >>> Term(coeff=1.) == 0
+            Term(coeff=1.0)
+            >>> 0 == Term(coeff=1.)
+            Term(coeff=1.0)
            
         """
 
         if self._otherIsZero(other):
             return self
         else:
-            if not isinstance(other, Term):
-                return False
-            else:
-                from fipy.terms.binaryTerm import _EquationTerm
-                return _EquationTerm(term1 = self, term2 = other)
-
-                # because of the semantics of comparisons in Python,
-                # the following test doesn't work
-                ##         if isinstance(self, _EquationTerm) or isinstance(other, _EquationTerm):
-                ##             raise SyntaxError, "Can't equate an equation with a term: %s == %s" % (str(self), str(other))
+            return self - other
 
     def __repr__(self):
         """
         The representation of a `Term` object is given by,
         
            >>> print Term(123.456)
-           Term(coeff = 123.456)
+           Term(coeff=123.456)
 
         """
-        return "%s(coeff = %s)" % (self.__class__.__name__, str(self.coeff))
+        return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
 
     def _calcGeomCoeff(self, mesh):
         return None

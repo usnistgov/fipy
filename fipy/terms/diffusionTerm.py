@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 1/3/07 {2:56:49 PM} 
+ #                                last update: 3/29/07 {10:40:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,11 +118,11 @@ class DiffusionTerm(Term):
         """
         Negate the term.
 
-           >>> -DiffusionTerm(coeff = [1.])
-           DiffusionTerm(coeff = [-1.0])
+           >>> -DiffusionTerm(coeff=[1.])
+           DiffusionTerm(coeff=[-1.0])
 
            >>> -DiffusionTerm()
-           DiffusionTerm(coeff = [-1.0])
+           DiffusionTerm(coeff=[-1.0])
            
         """
         negatedCoeff = list(self.coeff)
@@ -190,7 +190,25 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def __add__(self, other):
+        if isinstance(other, DiffusionTerm):
+            from fipy.terms.collectedDiffusionTerm import CollectedDiffusionTerm
+            if isinstance(other, CollectedDiffusionTerm):
+                return other + self
+            elif other.order == self.order and self.order <= 2:
+                if self.order == 0:
+                    return self
+                elif self.order == 2:
+                    return self.__class__(coeff=self.coeff[0] + other.coeff[0])
+            else:
+                term = CollectedDiffusionTerm()
+                term += self
+                term += other
+                return term
+        else:
+            return Term.__add__(self, other)
+
+    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., equation=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -202,7 +220,8 @@ class DiffusionTerm(Term):
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
                                                                                  boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt)
+                                                                                 dt = dt,
+                                                                                 equation=equation)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()

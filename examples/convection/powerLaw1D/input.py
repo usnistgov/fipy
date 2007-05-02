@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 8/9/05 {4:15:47 PM} 
+ #                                last update: 3/29/07 {11:38:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,10 +70,9 @@ uses the `PowerLawConvectionTerm` rather than the
     >>> convCoeff = (10.,)
     
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
-
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> eq = diffTerm + PowerLawConvectionTerm(coeff = convCoeff, diffusionTerm = diffTerm)
+    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions)

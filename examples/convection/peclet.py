@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 8/9/05 {4:15:47 PM} 
+ #                                last update: 3/29/07 {11:44:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> valueRight = 1.
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(name = "solution variabke", mesh=mesh, value=valueLeft)
+    >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
@@ -82,8 +82,9 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> while peclet < 1e4:
     ...     var[:] = valueLeft
     ...     diffCoeff = convCoeff * dx / peclet
-    ...     diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...     eq = TransientTerm(1e-4) == diffTerm + PowerLawConvectionTerm(coeff=convCoeff, diffusionTerm=diffTerm)
+    ...     eq = (TransientTerm(1e-4) 
+    ...           == ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...           + PowerLawConvectionTerm(coeff=convCoeff))
     ...     eq.solve(var=var, boundaryConditions=boundaryConditions) ##, solver=GMRES())
     ...     x = mesh.getCellCenters()[...,0]
     ...     arg0 = -convCoeff * x / diffCoeff

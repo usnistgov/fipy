@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 1/3/07 {3:14:48 PM} 
+ #                                last update: 3/29/07 {10:40:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,20 +53,23 @@ class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff = 1.):
+    def __init__(self, coeff=1.):
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):
-            coeff = Variable(value = coeff)
+            from fipy.variables.constant import _Constant
+            coeff = _Constant(value=coeff)
 
         from fipy.variables.cellVariable import CellVariable
         if not isinstance(coeff, CellVariable) \
         and coeff.getShape() != ():
             raise TypeError, "The coefficient must be a CellVariable or a scalar value."
 
-        Term.__init__(self, coeff = coeff)
+        Term.__init__(self, coeff=coeff)
         self.coeffVectors = None
+        self._var = None
 
-    def _calcCoeffVectors(self, mesh):
+    def _calcCoeffVectors(self, var):
+        mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
 
@@ -77,9 +80,10 @@ class CellTerm(Term):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, mesh):
-        if self.coeffVectors is None:
-            self._calcCoeffVectors(mesh)
+    def _getCoeffVectors(self, var):
+        if self.coeffVectors is None or var != self._var:
+            self._var = var
+            self._calcCoeffVectors(var=var)
         return self.coeffVectors
         
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
@@ -102,25 +106,33 @@ class CellTerm(Term):
             b(i) += bCoeff(i);
             updatePyArray(i) += newCoeff(i) / dt;
             updatePyArray(i) += diagCoeff(i);
-        """,b = b,
-            oldArray = oldArray.getNumericValue(),
-##            oldArray = numerix.array(oldArray),
-            oldCoeff = numerix.array(coeffVectors['old value']),
-            bCoeff = numerix.array(coeffVectors['b vector']),
-            newCoeff = numerix.array(coeffVectors['new value']),
-            diagCoeff = numerix.array(coeffVectors['diagonal']),
-            updatePyArray = updatePyArray,
-            ni = len(updatePyArray),
-            dt = dt)
+        """,b=b,
+            oldArray=oldArray.getNumericValue(),
+##            oldArray=numerix.array(oldArray),
+            oldCoeff=numerix.array(coeffVectors['old value']),
+            bCoeff=numerix.array(coeffVectors['b vector']),
+            newCoeff=numerix.array(coeffVectors['new value']),
+            diagCoeff=numerix.array(coeffVectors['diagonal']),
+            updatePyArray=updatePyArray,
+            ni=len(updatePyArray),
+            dt=dt)
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1.):
+    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = _SparseMatrix(size = N)
+        L = _SparseMatrix(size=N)
         
-        coeffVectors = self._getCoeffVectors(var.getMesh())
+        # The sign of the matrix diagonal doesn't seem likely to change
+        # after initialization, but who knows?
+        if equation is not None:
+            from fipy.tools.numerix import sign, add
+            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
+        else:
+            self._diagonalSign.setValue(1)
+            
+        coeffVectors = self._getCoeffVectors(var=var)
 
         inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
         
@@ -136,28 +148,28 @@ class CellTerm(Term):
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> from fipy.variables.vectorCellVariable import VectorCellVariable
             >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-            >>> m = Grid1D(nx = 2)
-            >>> cv = CellVariable(mesh = m)
-            >>> fv = FaceVariable(mesh = m)
-            >>> vcv = VectorCellVariable(mesh = m)
-            >>> vfv = VectorFaceVariable(mesh = m)
-            >>> CellTerm(coeff = cv)
-            CellTerm(coeff = [ 0.  0.])
-            >>> CellTerm(coeff = 1)
-            CellTerm(coeff = 1)
-            >>> CellTerm(coeff = fv)
+            >>> m = Grid1D(nx=2)
+            >>> cv = CellVariable(mesh=m)
+            >>> fv = FaceVariable(mesh=m)
+            >>> vcv = VectorCellVariable(mesh=m)
+            >>> vfv = VectorFaceVariable(mesh=m)
+            >>> CellTerm(coeff=cv)
+            CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            >>> CellTerm(coeff=1)
+            CellTerm(coeff=1)
+            >>> CellTerm(coeff=fv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a CellVariable or a scalar value.
-            >>> CellTerm(coeff = vcv)
+            >>> CellTerm(coeff=vcv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a CellVariable or a scalar value.
-            >>> CellTerm(coeff = vfv)
+            >>> CellTerm(coeff=vfv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a CellVariable or a scalar value.
-            >>> CellTerm(coeff = (1,))
+            >>> CellTerm(coeff=(1,))
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a CellVariable or a scalar value.

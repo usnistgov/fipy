@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/16/06 {1:31:28 PM}
+ #                                 last update: 3/30/07 {10:23:40 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -272,7 +272,7 @@ We can now linearize the source exactly as before
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
 Using the same gradient energy coefficient and phase field mobility
 
@@ -294,7 +294,7 @@ we define the phase field equation
     >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     >>> phaseEq = TransientTerm(1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
-    ...   + S0 + ImplicitSourceTerm(coeff=S1 * (S1 < 0))
+    ...   + S0 + ImplicitSourceTerm(coeff=S1)
 
 -----
 
@@ -408,7 +408,6 @@ or
     >>> Dl = Variable(value=1e-5) # cm**2 / s
     >>> Ds = Variable(value=1e-9) # cm**2 / s
     >>> D = (Dl - Ds) * phase.getArithmeticFaceValue() + Dl
-    >>> diffusion = ImplicitDiffusionTerm(coeff=D)
 
     >>> phaseTransformationVelocity = \
     ...  ((enthalpyB - enthalpyA) * p(phase).getFaceGrad()
@@ -422,9 +421,9 @@ or
 ..
     
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> diffusionEq = TransientTerm() == diffusion \
-    ...   + PowerLawConvectionTerm(coeff=phaseTransformationVelocity,
-    ...                            diffusionTerm=diffusion)
+    >>> diffusionEq = (TransientTerm() 
+    ...                == ImplicitDiffusionTerm(coeff=D)
+    ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
 
 -----
 

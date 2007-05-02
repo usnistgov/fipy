@@ -6,7 +6,7 @@
  # 
  #  FILE: "vectorFaceVariable.py"
  #                                    created: 12/9/03 {3:22:07 PM} 
- #                                last update: 3/30/07 {1:16:47 PM} 
+ #                                last update: 4/24/07 {9:36:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,13 +45,13 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
 class VectorFaceVariable(Variable):
-    def __init__(self,mesh,name = '',value=0., unit = None):
+    def __init__(self, mesh, name='', value=0., unit=None):
         if value is None:
             array = None
         else:
             array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
         
-        Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+        Variable.__init__(self, mesh=mesh, name=name, value=value, unit=unit, array=array)
 
     def __call__(self, point = None):
         if point != None:
@@ -78,14 +78,13 @@ class VectorFaceVariable(Variable):
             if shape != self._getShapeFromMesh(mesh=self.getMesh()) \
               and shape == (self.getMesh()._getNumberOfFaces(),):
                 dim = self.getMesh().getDim()
-                if dim == 1:
-                    where = where[..., numerix.NewAxis]
-                else:
-                    where = numerix.repeat(where, self.getMesh().getDim())
-            
+                where = where[..., numerix.NewAxis]
+                if dim > 1:
+                    where = numerix.repeat(where, self.getMesh().getDim(), axis=1)
+        
         return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
     
-    def _getShapeFromMesh(mesh=None):
+    def _getShapeFromMesh(mesh):
         """
         Return the shape of this variable type, given a particular mesh.
         """
