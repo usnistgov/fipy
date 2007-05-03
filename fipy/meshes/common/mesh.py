@@ -49,7 +49,7 @@ class Mesh:
     Generic mesh class defining implementation-agnostic behavior.
 
     Make changes to mesh here first, then implement specific implementations in
-    `pyMesh` and `numMesh`.
+    `numMesh`.
 
     Meshes contain cells, faces, and vertices.
     """
