@@ -105,13 +105,13 @@ class UniformGrid1D(Grid1D):
         """
         Following test was added due to a bug in adding Meshes.
         
-            >>> a = UnifiormGrid1D(nx=10) + 10
+            >>> a = UniformGrid1D(nx=10) + 10
             >>> print a.getCellCenters()[0,0]
             10.5
-            >>> b = 10 + UnifiormGrid1D(nx=10)
+            >>> b = 10 + UniformGrid1D(nx=10)
             >>> print b.getCellCenters()[0,0]
             10.5
-            >>> c =  UnifiormGrid1D(nx=10) + (UnifiormGrid1D(nx=10) + 10)
+            >>> c =  UniformGrid1D(nx=10) + (UnifiormGrid1D(nx=10) + 10)
             >>> print c.getCellCenters()[-1,0]
             19.5
             
