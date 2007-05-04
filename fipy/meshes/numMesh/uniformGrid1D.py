@@ -111,7 +111,7 @@ class UniformGrid1D(Grid1D):
             >>> b = 10 + UniformGrid1D(nx=10)
             >>> print b.getCellCenters()[0,0]
             10.5
-            >>> c =  UniformGrid1D(nx=10) + (UnifiormGrid1D(nx=10) + 10)
+            >>> c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
             >>> print c.getCellCenters()[-1,0]
             19.5
             
