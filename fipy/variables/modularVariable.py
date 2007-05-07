@@ -146,7 +146,7 @@ class ModularVariable(CellVariable):
         
            \( \nabla \phi \)
            
-        as a `VectorCellVariable` (first-order gradient).
+        as a rank-1 `CellVariable` (first-order gradient).
         Adjusted for a `ModularVariable`
         """
         if self.grad is None:
@@ -182,7 +182,7 @@ class ModularVariable(CellVariable):
         
            \( \nabla \phi \)
            
-        as a `VectorFaceVariable` (second-order gradient).
+        as a rank-1 `FaceVariable` (second-order gradient).
         Adjusted for a `ModularVariable`
         """
         if self.faceGrad is None:
@@ -198,7 +198,7 @@ class ModularVariable(CellVariable):
         
            \( \nabla \phi \)
            
-        as a `VectorFaceVariable` (second-order gradient).
+        as a rank-1 `FaceVariable` (second-order gradient).
         Not adjusted for a `ModularVariable`
         """
         
@@ -220,10 +220,10 @@ class ModularVariable(CellVariable):
         if isinstance(other, Term):
             return -other + self
         else:
-            return self._getBinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
+            return self._BinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
         
     def __rsub__(self, other):
-        return self._getBinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
 
 
 def _test(): 

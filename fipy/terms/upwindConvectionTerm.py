@@ -97,23 +97,14 @@ class UpwindConvectionTerm(ConvectionTerm):
             >>> mesh = Grid1D(nx=L, dx=1.)
             >>> var = CellVariable(mesh=mesh)
 
-            >>> convCoeff = VectorFaceVariable(mesh=mesh)
+            >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh)
             >>> x = mesh.getFaceCenters()[...,0]
             >>> convCoeff.setValue(-1e+6, where=x < 6)
             >>> diffCoeff.setValue(1e+3, where=x > 6)
             >>> print convCoeff
-            [[-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [       0.]
-             [       0.]
-             [       0.]
-             [       0.]
-             [       0.]]
+            [[-1000000. -1000000. -1000000. -1000000. -1000000. -1000000.        0.
+                     0.        0.        0.        0.]]
             >>> print diffCoeff
             [    0.     0.     0.     0.     0.     0.     0.  1000.  1000.  1000.
               1000.]
@@ -126,27 +117,22 @@ class UpwindConvectionTerm(ConvectionTerm):
             >>> boundary = 5.5
             >>> analytical = ((x - boundary) / (L - boundary)) * (x > boundary)
 
-            >>> eqn = UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=dTerm) == dTerm
+            >>> eqn = UpwindConvectionTerm(coeff=convCoeff) == dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=-dTerm) == dTerm
-            >>> eqn.solve(var, boundaryConditions=BCs)
-            >>> print var.allclose(analytical, atol=1e-3)
-            1
-
-            >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, dt = 1e+10, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff) +  dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1

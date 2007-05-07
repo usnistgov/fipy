@@ -37,13 +37,13 @@
 
 from fipy.tools import numerix
 
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
 
-class _FaceGradVariable(VectorFaceVariable):
+class _FaceGradVariable(FaceVariable):
     def __init__(self, var):
-        VectorFaceVariable.__init__(self, var.getMesh())
+        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
         self.var = self._requires(var)
 
     def _calcValue(self):        

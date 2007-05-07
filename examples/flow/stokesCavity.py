@@ -133,14 +133,14 @@ Declare the variables.
 
 .. raw:: latex
 
-   The velocity is required as a \Class{VectorFaceVariable} for calculating
+   The velocity is required as a rank-1 \Class{FaceVariable} for calculating
    the mass flux. This is a somewhat clumsy aspect of the \FiPy{}
    interface that needs improvement.
 
 ..
 
-    >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-    >>> velocity = VectorFaceVariable(mesh=mesh)
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> velocity = FaceVariable(mesh=mesh, rank=1)
 
 Build the Stokes equations.
 

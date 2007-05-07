@@ -37,15 +37,15 @@
  
 from fipy.tools.numerix import MA
 
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
 from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
-class _GaussCellGradVariable(VectorCellVariable):
-    def __init__(self, var, name = ''):
-        VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
+class _GaussCellGradVariable(CellVariable):
+    def __init__(self, var, name=''):
+        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
@@ -73,32 +73,15 @@ class _GaussCellGradVariable(VectorCellVariable):
             ni = N, nj = self.mesh.getDim())
 
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
-        
-##    def _calcValueIn(self, N, M, ids, orientations, volumes):
-##      inline.runInline("""
-##          val(i,j) = 0.;
-            
-##          int k;
-##          for (k = 0; k < nk; k++) {
-##              val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
-##          }
-                
-##          val(i,j) /= volumes(i);
-##      """,
-##      val = self._getArray(), ids = ids, orientations = orientations, volumes = volumes,
-##      faceGradientContributions = self.faceGradientContributions.getNumericValue(),
-##      ni = N, nj = self.mesh.getDim(), nk = M
-##      )
             
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
+        contributions = numerix.take(self.faceGradientContributions[:], ids.flat)
 
         contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = numerix.reshape(orientations, (N, M, 1))
         grad = numerix.array(numerix.sum(orientations * contributions, 1))
 
-        grad = grad / volumes[:,numerix.NewAxis]
+        grad = grad / volumes[:]
 
         return grad
 

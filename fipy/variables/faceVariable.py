@@ -35,26 +35,10 @@
  # ###################################################################
  ##
 
+from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
-from fipy.variables.variable import Variable
-from fipy.tools import numerix
-
-class FaceVariable(Variable):
-    def __init__(self, mesh, name = '', value=0., unit = None):
-        if value is None:
-            array = None
-        else:
-            array = numerix.zeros(self._getShapeFromMesh(mesh),'d')
-#       array[:] = value
-        Variable.__init__(self,mesh = mesh, name = name, value = value, unit = unit, array = array)
-
-    def setValue(self, value, faces = (), unit = None, where = None):
-        if faces == ():
-            Variable.setValue(self, value, unit = unit, where = where)
-        else:
-            self.put(indices=faces, value=value)
-
+class FaceVariable(_MeshVariable):
     def _getVariableClass(self):
         return FaceVariable
 
@@ -73,16 +57,24 @@ class FaceVariable(Variable):
         if other is None:
             return FaceVariable
             
-        # a FaceVariable operating with a vector will produce a VectorFaceVariable
-        if numerix.getShape(other) == (self.getMesh().getDim(),):
-            from fipy.variables.vectorFaceVariable import VectorFaceVariable
-            return VectorFaceVariable
-        else:
-            return Variable._getArithmeticBaseClass(self, other)
+##         # a FaceVariable operating with a vector will produce a rank-1 FaceVariable
+##         if numerix.getShape(other) == (self.getMesh().getDim(),):
+##             from fipy.variables.vectorFaceVariable import VectorFaceVariable
+##             return VectorFaceVariable
+##         else:
+##             return _MeshVariable._getArithmeticBaseClass(self, other)
+        return _MeshVariable._getArithmeticBaseClass(self, other)
 
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
-        from fipy.variables.vectorFaceVariable import VectorFaceVariable
-        if isinstance(var1, VectorFaceVariable) and self.getMesh() == var1.getMesh():
-            return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-        else:
-            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
+##     def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
+##         if (isinstance(var1, FaceVariable) and var1.getRank() == 1) and self.getMesh() == var1.getMesh():
+##             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
+##         else:
+##             return _MeshVariable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
+
+    def getDivergence(self):
+        if not hasattr(self, 'divergence'):
+            from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
+            self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
+            
+        return self.divergence
+        

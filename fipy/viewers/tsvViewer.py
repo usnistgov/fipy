@@ -50,9 +50,7 @@ from fipy.tools import numerix
  
 from fipy.viewers.viewer import Viewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.variables.vectorCellVariable import VectorCellVariable
 from fipy.variables.faceVariable import FaceVariable
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class TSVViewer(Viewer):
     """
@@ -75,7 +73,7 @@ class TSVViewer(Viewer):
     
     All variables must have the same mesh.
         
-    It tries to do something reasonable with `VectorCellVariable` and `VectorFaceVariable` objects.
+    It tries to do something reasonable with rank-1 `CellVariable` and `FaceVariable` objects.
 
     """
     _axis = ["x", "y", "z"]
@@ -85,8 +83,8 @@ class TSVViewer(Viewer):
         Creates a `TSVViewer`.
         
         :Parameters:
-          - `vars`: A `tuple` ot `list` of `CellVariable`, `VectorCellVariable`,
-            `FaceVariable`, `VectorFaceVariable` objects.
+          - `vars`: A `tuple` ot `list` of `CellVariable`,
+            `FaceVariable`, objects.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
             A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer 
@@ -180,7 +178,7 @@ class TSVViewer(Viewer):
             
         for var in self.vars:
             name = var.getName()
-            if isinstance(var, VectorCellVariable) or isinstance(var, VectorFaceVariable):
+            if (isinstance(var, CellVariable) or isinstance(var, FaceVariable)) and var.getRank() == 1:
                 for index in range(dim):
                     headings.extend(["%s_%s" % (name, self._axis[index])])
             else:
@@ -189,13 +187,13 @@ class TSVViewer(Viewer):
         f.write("\t".join(headings))
         f.write("\n")
         
-        cellVars = [var for var in self.vars if isinstance(var, CellVariable) or isinstance(var, VectorCellVariable)]
-        faceVars = [var for var in self.vars if isinstance(var, FaceVariable) or isinstance(var, VectorFaceVariable)]
+        cellVars = [var for var in self.vars if isinstance(var, CellVariable)]
+        faceVars = [var for var in self.vars if isinstance(var, FaceVariable)]
         
         if len(cellVars) > 0:
             values = mesh.getCellCenters()
             for var in self.vars:
-                if isinstance(var, VectorCellVariable):
+                if isinstance(var, CellVariable) and var.getRank() == 1:
                     values = numerix.concatenate((values, numerix.array(var)), 1)
                 else:
     # 		this is brute force. Fix later
@@ -207,7 +205,7 @@ class TSVViewer(Viewer):
         if len(faceVars) > 0:
             values = mesh.getFaceCenters()
             for var in self.vars:
-                if isinstance(var, VectorFaceVariable):
+                if isinstance(var, FaceVariable) and var.getRank() == 1:
                     values = numerix.concatenate((values, numerix.array(var)), 1)
                 else:
     # 		this is brute force. Fix later

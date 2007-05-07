@@ -37,13 +37,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.variables.variable import Variable
+from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
         
-class CellVariable(Variable):
+class CellVariable(_MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.
     
@@ -64,29 +62,71 @@ class CellVariable(Variable):
         
     """
     
-    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
-        if value is None:
-            array = None
-        else:
-            array =  numerix.zeros(self._getShapeFromMesh(mesh),'d')
-#       array[:] = value
-        
-        Variable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, array = array)
+    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
+        _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
+                               rank=rank, elementshape=elementshape, unit=unit)
 
         if hasOld:
             self.old = self.copy()
         else:
             self.old = None
             
-        self.arithmeticFaceValue = self.harmonicFaceValue = self.grad = self.faceGrad = self.volumeAverage = None
-        
     def _getVariableClass(self):
         return CellVariable
+        
+    def _OperatorVariable(self, baseClass=None):
+        """
+            >>> a = Variable(value=1)
 
-##    def setMesh(self, newMesh):
-##        newValues = self.getValue(points = newMesh.getCellCenters())
-##        self.mesh = newMesh
-##        self.setValue(newValues)
+            >>> c = -a
+            >>> b = c.getOld() + 3
+            >>> print b
+            2
+            >>> b.getTypecode()
+            'l'
+            
+        replacing with the same thing is no problem
+        
+            >>> a.setValue(3)
+            >>> b = c.getOld() + 3
+            >>> print b
+            0
+            
+        replacing with multiple copies causes the reference counting problem
+        
+            >>> a.setValue(3)
+            >>> b = (c + c).getOld() + 3
+            >>> print b
+            -3
+            
+        the order matters
+        
+            >>> b = (c + c).getOld() + 3
+            >>> a.setValue(2)
+            >>> print b
+            -1
+        """
+        baseClass = _MeshVariable._OperatorVariableClass(self, 
+                                                         baseClass=baseClass)
+                                     
+        class _CellOperatorVariable(baseClass):
+            def getOld(self):
+                if self.old is None:
+                    oldVar = []
+                    for v in self.var:
+                        if hasattr(v, "getOld"):
+                            oldVar.append(v.getOld())
+                        else:
+                            oldVar.append(v)
+                    
+                    self.old = self.__class__(op=self.op, var=oldVar, 
+                                              mesh=self.getMesh(), 
+                                              opShape=self.opShape, 
+                                              canInline=self.canInline)
+                                  
+                return self.old
+                
+        return _CellOperatorVariable
         
     def copy(self):
         
@@ -95,61 +135,6 @@ class CellVariable(Variable):
             name = self.name + "_old", 
             value = self.getValue(),
             hasOld = 0)
-            
-    def __call__(self, point = None):
-        if point != None:
-            return self[self.getMesh()._getNearestCellID(point)]
-        else:
-            return Variable.__call__(self)
-##      return (self[i[0]] * self[i[1]] * (d[i[0]] + d[i[1]])) / (self[i[0]] * d[i[0]] + self[i[1]] * d[i[1]])
-        
-    def getValue(self, points = (), cells = ()):
-        if points == () and cells == ():
-            return Variable.getValue(self)
-        elif cells != ():
-            return numerix.take(Variable.getValue(self), [cell.getID() for cell in cells])
-        else:
-            return [self(point) for point in points]
-        
-    def setValue(self, value, cells = (), unit = None, where = None):
-        """
-        Patched values can be set by using either `cells` or `where`.
-
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 4)
-            >>> v1 = CellVariable(value=(4,7,2,6), mesh=mesh)
-            >>> print v1
-            [ 4.  7.  2.  6.]
-            >>> v1.setValue(4, where=(0, 0, 1, 1))
-            >>> print v1
-            [ 4.  7.  4.  4.]
-            >>> v1.setValue((5,2,7,8), where=(0, 1, 1, 1))
-            >>> print v1
-            [ 4.  2.  7.  8.]
-            >>> v1.setValue(3, unit = 'm')
-            >>> print v1
-            [ 3.  3.  3.  3.] m
-            >>> import warnings
-            >>> warnings.filterwarnings("ignore", "'where' should be used instead of 'cells'", DeprecationWarning)
-            >>> v1.setValue(1, cells=mesh.getCells()[2:])
-            >>> warnings.resetwarnings()
-            >>> print v1
-            [ 3.  3.  1.  1.] m
-            >>> v1.setValue(4)
-            >>> print v1
-            [ 4.  4.  4.  4.]
-            
-
-        """
-            
-        if cells == ():
-            Variable.setValue(self, value, unit = unit, where = where)
-        else:
-            import warnings
-            warnings.warn("'where' should be used instead of 'cells'", DeprecationWarning, stacklevel=2)
-            for cell in cells:
-                self[cell.getID()] = value
-
             
     def getCellVolumeAverage(self):
         r"""
@@ -170,7 +155,7 @@ class CellVariable(Variable):
             3.0
         """
 
-        if self.volumeAverage is None:
+        if not hasattr(self, 'volumeAverage'):
             from cellVolumeAverageVariable import _CellVolumeAverageVariable
             self.volumeAverage = _CellVolumeAverageVariable(self)
         
@@ -184,7 +169,7 @@ class CellVariable(Variable):
         
            \( \nabla \phi \)
            
-        as a `VectorCellVariable` (first-order gradient).
+        as a rank-1 `CellVariable` (first-order gradient).
         """
         return self.getGaussGrad()
 
@@ -196,7 +181,7 @@ class CellVariable(Variable):
 
             $ \frac{1}{V_P} \sum_f \vec{n} \phi_f A_f $
 
-        as a `VectorCellVariable` (first-order gradient).
+        as a rank-1 `CellVariable` (first-order gradient).
             
         """
         if not hasattr(self, 'gaussGrad'):
@@ -278,7 +263,7 @@ class CellVariable(Variable):
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
-        if self.arithmeticFaceValue is None:
+        if not hasattr(self, 'arithmeticFaceValue'):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
@@ -318,7 +303,7 @@ class CellVariable(Variable):
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
             1
         """
-        if self.harmonicFaceValue is None:
+        if not hasattr(self, 'harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
@@ -351,9 +336,9 @@ class CellVariable(Variable):
         
            \( \nabla \phi \)
            
-        as a `VectorFaceVariable` using differencing for the normal direction(second-order gradient).
+        as a rank-1 `FaceVariable` using differencing for the normal direction(second-order gradient).
         """
-        if self.faceGrad is None:
+        if not hasattr(self, 'faceGrad'):
             from faceGradVariable import _FaceGradVariable
             self.faceGrad = _FaceGradVariable(self)
 
@@ -367,7 +352,7 @@ class CellVariable(Variable):
         
            \( \nabla \phi \)
            
-        as a `VectorFaceVariable` using averaging for the normal direction(second-order gradient)
+        as a rank-1 `FaceVariable` using averaging for the normal direction(second-order gradient)
         """
         return self.getGrad().getArithmeticFaceValue()
 
@@ -421,13 +406,6 @@ class CellVariable(Variable):
         if self.old is not None:
             self.setValue(self.old.getValue())
             
-    def _remesh(self, mesh):
-        self.value = numerix.array(self.getValue(points = mesh.getCellCenters()))
-        if self.old is not None:
-            self.old._remesh(mesh)
-        self.mesh = mesh
-        self._markFresh()
-
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this variable type, given a particular mesh.
@@ -443,23 +421,26 @@ class CellVariable(Variable):
         if other is None:
             return CellVariable
             
-        # A CellVariable operating with a vector will produce a VectorCellVariable.
-        # As a special case, if the number of cells equals the number of spatial dimensions,
-        # treat tuple of that length as a vector, rather than as a list of scalars.
-        if not isinstance(other, CellVariable) \
-        and numerix.getShape(other) == (self.getMesh().getDim(),) \
-        and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
-            from fipy.variables.vectorCellVariable import VectorCellVariable
-            return VectorCellVariable
-        else:
-            return Variable._getArithmeticBaseClass(self, other)
+##         # A rank-0 CellVariable operating with a vector will produce a rank-1 CellVariable.
+##         # As a special case, if the number of cells equals the number of spatial dimensions,
+##         # treat tuple of that length as a vector, rather than as a list of scalars.
+##         if not isinstance(other, CellVariable) \
+##         and numerix.getShape(other) == (self.getMesh().getDim(),) \
+##         and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
+##             from fipy.variables.vectorCellVariable import VectorCellVariable
+##             return VectorCellVariable
+##         else:
+##             return _MeshVariable._getArithmeticBaseClass(self, other)
+            
+        return _MeshVariable._getArithmeticBaseClass(self, other)
 
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
-        from fipy.variables.vectorCellVariable import VectorCellVariable
-        if isinstance(var1, VectorCellVariable) and self.getMesh() == var1.getMesh():
-            return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-        else:
-            return Variable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
+            
+##     def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
+##         from fipy.variables.vectorCellVariable import VectorCellVariable
+##         if isinstance(var1, VectorCellVariable) and self.getMesh() == var1.getMesh():
+##             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
+##         else:
+##             return _MeshVariable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
 
 ##pickling
             

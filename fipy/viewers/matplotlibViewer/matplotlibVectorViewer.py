@@ -46,13 +46,13 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
 
 class MatplotlibVectorViewer(MatplotlibViewer):
     """
-    Displays a vector plot of a 2D `VectorCellVariable` or
-    `VectorFaceVariable` object using Matplotlib_
+    Displays a vector plot of a 2D rank-1 `CellVariable` or
+    `FaceVariable` object using Matplotlib_
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
@@ -79,8 +79,8 @@ class MatplotlibVectorViewer(MatplotlibViewer):
 
         vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
                 if (isinstance(var.getMesh(), Grid2D) \
-                    and (isinstance(var, VectorFaceVariable) \
-                         or isinstance(var, VectorCellVariable)))]
+                    and (isinstance(var, FaceVariable) \
+                         or isinstance(var, CellVariable)) and var.getRank() == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Grid2D instance"
@@ -92,7 +92,8 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         var = self.vars[0]
         mesh = var.getMesh()
 
-        if isinstance(var, VectorFaceVariable):
+        
+        if isinstance(var, FaceVariable):
             ## only displays horizontel faces since quiver() takes a grid
             shape = (mesh.getShape()[1] + 1, mesh.getShape()[0])
             N = shape[0] * shape[1]
@@ -100,7 +101,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             Y = numerix.reshape(mesh.getFaceCenters()[:N,1], shape)
             U = numerix.reshape(var[:N,0], shape)
             V = numerix.reshape(var[:N,1], shape)
-        elif isinstance(var, VectorCellVariable):
+        elif isinstance(var, CellVariable):
             shape = (mesh.getShape()[1], mesh.getShape()[0])
             X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
             Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)

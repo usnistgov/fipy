@@ -272,6 +272,23 @@ def getShape(arr):
     else:
         return array(arr).shape
 
+def rank(a):
+    """
+    Get the rank of sequence a (the number of dimensions, not a matrix rank)
+    The rank of a scalar is zero.
+    
+    .. note::
+        
+       The rank of a `MeshVariable` is for any single element. E.g., A
+       `CellVariable` containing scalars at each cell, and defined on a 9
+       element `Grid1D`, has rank 0. If it is defined on a 3x3 `Grid2D`, it is
+       still rank 0.
+    """
+    if hasattr(a, "getRank"):
+        return a.getRank()
+    else:
+        return NUMERIX.rank(a)
+        
 def sum(arr, axis=0):
     """
     The sum of all the elements of `arr` along the specified axis.
@@ -1050,7 +1067,7 @@ def crossProd(v1,v2):
 			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
     return NUMERIX.reshape(out, NUMERIX.shape(v1))
 
-def dot(a1, a2, axis=1):
+def dot(a1, a2, axis=0):
     """
     return array of vector dot-products of v1 and v2
     for arrays a1 and a2 of vectors v1 and v2
@@ -1061,23 +1078,25 @@ def dot(a1, a2, axis=1):
 
        >>> from fipy.meshes.grid2D import Grid2D
        >>> mesh = Grid2D(nx=2, ny=1)
-       >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-       >>> v1 = VectorCellVariable(mesh=mesh, value=((0,1),(1,2)))
-       >>> v2 = array(((0,1),(1,2)))
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
+       >>> v2 = array(((0,1),(2, 3)))
        >>> dot(v1, v2)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> dot(v2, v1)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
+       >>> print rank(dot(v2, v1))
+       0
        >>> print dot(v1, v2)
-       [ 1.  5.]
+       [  4.  10.]
        >>> dot(v1, v1)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> print dot(v1, v1)
-       [ 1.  5.]
+       [  4.  10.]
        >>> type(dot(v2, v2))
        <type 'numpy.ndarray'>
        >>> print dot(v2, v2)
-       [1 5]
+       [ 4 10]
        
     
     """
@@ -1317,12 +1336,16 @@ def getTypecode(arr):
         >>> getTypecode(Variable(1))
         'l'
         >>> getTypecode([0])
+        'l'
+        >>> getTypecode("a")
         Traceback (most recent call last):
               ...
         TypeError: No typecode for object
 
     """
-
+    if type(arr) in (type(()), type([])):
+        arr = array(arr)
+    
     if hasattr(arr, 'getTypecode'):
         return arr.getTypecode()
     elif hasattr(arr, 'dtype'): ## type(arr) is type(array(0)):

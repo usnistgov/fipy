@@ -44,8 +44,8 @@
 
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
-from fipy.variables.vectorCellVariable import VectorCellVariable
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
 
 from fipy.tools import numerix
 
@@ -57,8 +57,8 @@ class GistVectorViewer(GistViewer):
     def _getSuitableVars(self, vars):
         vars = [var for var in GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 \
-              and (isinstance(var, VectorFaceVariable) \
-                   or isinstance(var, VectorCellVariable)))]
+              and (isinstance(var, FaceVariable) \
+                   or isinstance(var, CellVariable)) and var.getRank() == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 2D vector data"
@@ -74,9 +74,9 @@ class GistVectorViewer(GistViewer):
 	
         var = self.vars[0]
         
-        if isinstance(var, VectorFaceVariable):
+        if isinstance(var, FaceVariable):
             centers = var.getMesh().getFaceCenters()
-        elif isinstance(var, VectorCellVariable):
+        elif isinstance(var, CellVariable):
             centers = var.getMesh().getCellCenters()
 	
 	gist.plmesh(numerix.array([centers[...,1],centers[...,1]]), 

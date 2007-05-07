@@ -49,9 +49,9 @@ from fipy.tools import numerix
 from fipy.tools import numerix
 from fipy.tools import vector
 
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.faceVariable import FaceVariable
 
-class _ConvectionCoeff(VectorFaceVariable):
+class _ConvectionCoeff(FaceVariable):
     """
     
     Convection coefficient for the `ConservativeSurfactantEquation`.
@@ -112,7 +112,7 @@ class _ConvectionCoeff(VectorFaceVariable):
            
         """
         
-        VectorFaceVariable.__init__(self, distanceVar.getMesh(), name = 'surfactant convection')
+        FaceVariable.__init__(self, mesh=distanceVar.getMesh(), name='surfactant convection', rank=1)
         self.distanceVar = self._requires(distanceVar)
 
     def _calcValue(self):

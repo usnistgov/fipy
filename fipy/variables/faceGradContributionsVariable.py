@@ -35,15 +35,15 @@
  # ###################################################################
  ##
  
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
-class _FaceGradContributions(VectorCellVariable):
+class _FaceGradContributions(CellVariable):
     def __init__(self, var):
-        VectorCellVariable.__init__(self, var.getMesh())
+        CellVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        return self.mesh._getAreaProjections()[:] * self.var.getArithmeticFaceValue().getNumericValue()[:,numerix.NewAxis]
+        return self.mesh._getAreaProjections()[:] * self.var.getArithmeticFaceValue().getNumericValue()
     
 

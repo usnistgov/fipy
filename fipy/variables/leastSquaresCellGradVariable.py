@@ -35,15 +35,15 @@
  # ###################################################################
  ##
  
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.vectorCellVariable import CellVariable
 from fipy.tools import numerix
 
-class _LeastSquaresCellGradVariable(VectorCellVariable):
+class _LeastSquaresCellGradVariable(CellVariable):
     """
     Look at CellVariable.getLeastSquarseGrad() for documentation
     """
     def __init__(self, var, name = ''):
-        VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
+        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
         self.var = self._requires(var)
 
     def _getNeighborValue(self, ):
