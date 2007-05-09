@@ -91,7 +91,7 @@ def putAdd(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
-def prune(array, shift, start = 0):
+def prune(array, shift, start=0, axis=0):
     """
     removes elements with indices i = start + shift * n
     where n = 0, 1, 2, ...
@@ -107,8 +107,8 @@ def prune(array, shift, start = 0):
 
     """
 
-    takeArray = numerix.nonzero(numerix.arange(len(array)) % shift != start)
-    return numerix.take(array, takeArray)
+    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)
+    return numerix.take(array, takeArray, axis=axis)
 
 def _test(): 
     import doctest
