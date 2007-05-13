@@ -45,7 +45,6 @@
 This test file generates lots of different SkewedGrid2D meshes, each with a different non-orthogonality,
 and runs a 1D diffusion problem on them all. It ocmputes the RMS non-orthogonality and the RMS error
 for each mesh and displays them in a graph, allowing the relationship of error to non-orthogonality to be investigated.
-For more information, see the documentation for AdaptiveMesh.
 """
 
 if __name__ == '__main__':
