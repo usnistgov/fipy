@@ -1059,13 +1059,12 @@ def crossProd(v1,v2):
     ..
 
     """
-    v1n = NUMERIX.reshape(v1, (-1, 3))
-    v2n = NUMERIX.reshape(v2, (-1, 3))
+    v1n = array(v1)
+    v2n = array(v2)
 
-    out = NUMERIX.transpose(array((v1n[:,1] * v2n[:,2] - v1n[:,2] * v2n[:,1],
-			    v1n[:,2] * v2n[:,0] - v1n[:,0] * v2n[:,2],
-			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
-    return NUMERIX.reshape(out, NUMERIX.shape(v1))
+    return array((v1n[1] * v2n[2] - v1n[2] * v2n[1],
+                  v1n[2] * v2n[0] - v1n[0] * v2n[2],
+                  v1n[0] * v2n[1] - v1n[1] * v2n[0]))
 
 def dot(a1, a2, axis=0):
     """
@@ -1240,7 +1239,7 @@ def take(a, indices, axis=0, fill_value=None):
         if mask is not MA.nomask:
             mask = MA.getmaskarray(indices)
             if taken.shape != mask.shape:
-                mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
+                mask = MA.repeat(mask[NewAxis, ...], taken.shape[0], axis=0)
                 mask = MA.mask_or(MA.getmask(taken), mask)
 
         

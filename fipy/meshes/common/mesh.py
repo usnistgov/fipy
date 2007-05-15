@@ -267,7 +267,7 @@ class Mesh:
     def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
-        cellIDs = numerix.reshape(numerix.repeat(numerix.arange(N), M), (N, M))
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
         self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
@@ -464,7 +464,7 @@ class Mesh:
         return self.cellAreas
 
     def _getCellAreaProjections(self):
-        return self.cellNormals * self._getCellAreas()[..., numerix.NewAxis]
+        return self.cellNormals * self._getCellAreas()
 
     """scaling"""
 

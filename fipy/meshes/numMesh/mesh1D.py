@@ -53,25 +53,15 @@ class Mesh1D(Mesh):
     def _calcFaceAreas(self):
         self.faceAreas = numerix.ones(self.numberOfFaces, 'd')
 
-    def _calcFaceCenters(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
-        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs)
-        if MA.getmask(self.faceVertexIDs) == None:
-            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
-        else:
-            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flat, self.dim), numerix.shape(faceVertexCoords))
-            
-        self.faceCenters = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
-        
     def _calcFaceNormals(self):
-        self.faceNormals = numerix.transpose(numerix.array((numerix.ones(self.numberOfFaces, 'd'),)))
+        self.faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        self.faceNormals[0] = -self.faceNormals[0]
+        self.faceNormals[...,0] = -self.faceNormals[...,0]
 
     def _calcFaceTangents(self):
-        self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[:, numerix.NewAxis]
-        self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[:, numerix.NewAxis]
+        self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
 
     def _calcHigherOrderScalings(self):
         self.scale['area'] = 1.
