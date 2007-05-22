@@ -106,15 +106,6 @@ class _MeshVariable(Variable):
         else:
             Variable.__setitem__(self, index, value)
         
-    def _getOpShape(self, baseClass, other):
-        """
-        Determine the shape from the base class or from the inputs
-        """
-        mesh = self.getMesh() or other.getMesh()
-        
-        return (baseClass._getShapeFromMesh(mesh) 
-                or Variable._getOpShape(self, baseClass, other))
-
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
@@ -142,6 +133,15 @@ class _MeshVariable(Variable):
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 
+    def _binky(self, opShape, operatorClass, other):
+        newOpShape, baseClass, newOther = Variable._binky(self, opShape, operatorClass, other)
+        
+        if ((newOpShape is None or baseClass is None)
+            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().getDim())):
+                newOpShape, baseClass, newOther = Variable._binky(self, opShape, operatorClass, other[..., numerix.newaxis])
+
+        return (newOpShape, baseClass, newOther)
+
     def _OperatorVariableClass(self, baseClass=None):
         baseClass = Variable._OperatorVariableClass(self, baseClass=baseClass)
                                      
@@ -152,8 +152,11 @@ class _MeshVariable(Variable):
                               [getattr(v, "mesh", None) for v in var])
                 opShape = reduce(lambda a, b: a or b, 
                                  [opShape] + [getattr(v, "opShape", None) for v in var])
-                elementshape = reduce(lambda a, b: a or b, 
-                                      [getattr(v, "elementshape", None) for v in var])
+                if opShape is not None:
+                    elementshape = opShape[:-1]
+                else:
+                    elementshape = reduce(lambda a, b: a or b, 
+                                          [getattr(v, "elementshape", None) for v in var])
 
                 baseClass.__init__(self, mesh=mesh, op=op, var=var, 
                                    opShape=opShape, canInline=canInline,
@@ -166,7 +169,7 @@ class _MeshVariable(Variable):
         return _MeshOperatorVariable
                           
     def getRank(self):
-        return len(self.elementshape)
+        return len(self.getShape()) - 1
         
     def setValue(self, value, unit = None, array = None, where = None):
         if where is not None:
@@ -178,10 +181,25 @@ class _MeshVariable(Variable):
         
         return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
 
-    def dot(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, 
-                                            canInline=False)
-
+    def _sumClass(self, axis):
+        """
+        if we sum along the mesh elements, then this is no longer a `_MeshVariable`,
+        otherwise we get back a `_MeshVariable` of the same class, but lower rank.
+        """
+        if axis == len(self.getShape()) or axis == -1:
+            return Variable._OperatorVariableClass(self, baseClass=Variable)
+        else:
+            return self._OperatorVariableClass()
+        
+    def _getitemClass(self, index):
+        shape = self.getShape()
+        indexshape = numerix._indexShape(index=index, arrayShape=shape)
+        if (len(indexshape) > 0
+            and indexshape[-1] == shape[-1]):
+            return self._OperatorVariableClass()
+        else:
+            return Variable._OperatorVariableClass(self, baseClass=Variable)
+        
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the 

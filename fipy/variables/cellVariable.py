@@ -51,7 +51,7 @@ class CellVariable(_MeshVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> var.setValue(mesh.getCellCenters()[...,0] * mesh.getCellCenters()[...,1])
+        >>> var.setValue(mesh.getCellCenters()[0] * mesh.getCellCenters()[1])
 
         >>> from fipy.tools import dump        
         >>> (f, filename) = dump.write(var, extension = '.gz')
@@ -74,14 +74,16 @@ class CellVariable(_MeshVariable):
     def _getVariableClass(self):
         return CellVariable
         
-    def _OperatorVariable(self, baseClass=None):
+    def _OperatorVariableClass(self, baseClass=None):
         """
-            >>> a = Variable(value=1)
+            >>> from fipy.meshes.grid1D import Grid1D
+
+            >>> a = CellVariable(mesh=Grid1D(nx=1), value=1)
 
             >>> c = -a
             >>> b = c.getOld() + 3
             >>> print b
-            2
+            [ 2.]
             >>> b.getTypecode()
             'l'
             
@@ -90,21 +92,21 @@ class CellVariable(_MeshVariable):
             >>> a.setValue(3)
             >>> b = c.getOld() + 3
             >>> print b
-            0
+            [ 0.]
             
         replacing with multiple copies causes the reference counting problem
         
             >>> a.setValue(3)
             >>> b = (c + c).getOld() + 3
             >>> print b
-            -3
+            [-3.]
             
         the order matters
         
             >>> b = (c + c).getOld() + 3
             >>> a.setValue(2)
             >>> print b
-            -1
+            [-1.]
         """
         baseClass = _MeshVariable._OperatorVariableClass(self, 
                                                          baseClass=baseClass)
@@ -120,7 +122,6 @@ class CellVariable(_MeshVariable):
                             oldVar.append(v)
                     
                     self.old = self.__class__(op=self.op, var=oldVar, 
-                                              mesh=self.getMesh(), 
                                               opShape=self.opShape, 
                                               canInline=self.canInline)
                                   
@@ -210,16 +211,12 @@ class CellVariable(_MeshVariable):
 
             >>> from fipy import Grid2D
             >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
-            [[8.0 1.2]
-             [8.0 2.0]
-             [24.0 1.2]
-             [24.0 2.0]]
+            [[8.0 8.0 24.0 24.0]
+             [1.2 2.0 1.2 2.0]]
 
             >>> from fipy import Grid1D
             >>> print CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
-            [[0.461538461538]
-             [0.8]
-             [1.2]]
+            [[0.461538461538 0.8 1.2]]
 
         """
 
@@ -246,21 +243,21 @@ class CellVariable(_MeshVariable):
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
         """
         if not hasattr(self, 'arithmeticFaceValue'):
@@ -286,21 +283,21 @@ class CellVariable(_MeshVariable):
             >>> # faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces()[0]]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
         """
         if not hasattr(self, 'harmonicFaceValue'):
@@ -308,25 +305,6 @@ class CellVariable(_MeshVariable):
             self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
         return self.harmonicFaceValue
-
-    def getFaceValue(self, func=None, **args):
-        r"""
-        Returns a `FaceVariable` whose value is evaluated by the function provided.
-
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx=2)
-            >>> var = CellVariable(value=(0, 1), mesh=mesh)
-            >>> print var.getFaceValue()
-            [ 0.   0.5  1. ]
-            >>> print var.getFaceValue(lambda a, b: numerix.minimum(a,b))
-            [ 0.  0.  1.]
-            
-        """
-        if func is None:
-            return self.getArithmeticFaceValue()
-        else:
-            from callBackCellToFaceVariable import _CallBackCellToFaceVariable
-            return _CallBackCellToFaceVariable(self, func, **args)
 
     def getFaceGrad(self):
         r"""
@@ -421,26 +399,7 @@ class CellVariable(_MeshVariable):
         if other is None:
             return CellVariable
             
-##         # A rank-0 CellVariable operating with a vector will produce a rank-1 CellVariable.
-##         # As a special case, if the number of cells equals the number of spatial dimensions,
-##         # treat tuple of that length as a vector, rather than as a list of scalars.
-##         if not isinstance(other, CellVariable) \
-##         and numerix.getShape(other) == (self.getMesh().getDim(),) \
-##         and (self.getMesh().getNumberOfCells(),) != (self.getMesh().getDim(),):
-##             from fipy.variables.vectorCellVariable import VectorCellVariable
-##             return VectorCellVariable
-##         else:
-##             return _MeshVariable._getArithmeticBaseClass(self, other)
-            
         return _MeshVariable._getArithmeticBaseClass(self, other)
-
-            
-##     def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
-##         from fipy.variables.vectorCellVariable import VectorCellVariable
-##         if isinstance(var1, VectorCellVariable) and self.getMesh() == var1.getMesh():
-##             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-##         else:
-##             return _MeshVariable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
 
 ##pickling
             
