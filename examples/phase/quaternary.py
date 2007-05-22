@@ -429,7 +429,7 @@ We start with a sharp phase boundary
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L / 2)
 

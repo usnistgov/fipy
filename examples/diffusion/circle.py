@@ -179,7 +179,7 @@ faces. These are used as the boundary condition fixed values.
 ..
 
     >>> from fipy.tools import numerix
-    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[...,0],
+    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[0],
     ...                                mesh.getExteriorFaces())
 
 .. raw:: latex
@@ -234,7 +234,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
-    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
     >>> t = timeStepDuration * steps
 
     >>> phiAnalytical = CellVariable(name="analytical value",

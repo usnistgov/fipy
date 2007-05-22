@@ -153,7 +153,7 @@ This problem has the analytical solution
 
 We verify that the correct equilibrium is attained
 
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = (x**2)/2 - 2*x
 
     >>> print potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
@@ -179,7 +179,7 @@ Next, we segregate all of the electrons to right side of the domain
     
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> interstitials[0].setValue(0.)
     >>> interstitials[0].setValue(1., where=x > L / 2.)
 

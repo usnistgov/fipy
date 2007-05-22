@@ -48,7 +48,7 @@ number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-   >>> x = mesh.getCellCenters()[:,0]
+   >>> x = mesh.getCellCenters()[0]
    >>> from fipy.tools import numerix
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)

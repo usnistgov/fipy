@@ -79,7 +79,7 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        return numerix.max(abs(self._calcResidualVector(var, matrix, RHSvector)))
+        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
     def __buildMatrix(self, var, boundaryConditions, dt):
 

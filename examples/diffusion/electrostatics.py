@@ -184,7 +184,7 @@ Next, we segregate all of the electrons to right side of the domain
     
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> electrons.setValue(0.)
     >>> electrons.setValue(1., where=x > L / 2.)
 

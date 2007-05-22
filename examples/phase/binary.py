@@ -430,7 +430,7 @@ or
 We initialize the phase field to a step function in the middle of the domain
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0., where=mesh.getCellCenters()[...,0] > L/2.)
+    >>> phase.setValue(0., where=mesh.getCellCenters()[0] > L/2.)
 
 .. raw:: latex
 
@@ -546,7 +546,7 @@ SciPy can be used.
 We plot the result against the sharp interface solution
 
     >>> sharp = CellVariable(name="sharp", mesh=mesh)
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> sharp.setValue(Cs, where=x < L * fraction)
     >>> sharp.setValue(Cl, where=x >= L * fraction)
 

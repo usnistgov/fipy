@@ -250,10 +250,10 @@ solution. This argument cannot be passed to `solve()`.
     ...     ap[:] = -xmat.takeDiagonal()
     ...
     ...     ## update the face velocities based on starred values
-    ...     velocity[:,0] = xVelocity.getArithmeticFaceValue()
-    ...     velocity[:,1] = yVelocity.getArithmeticFaceValue()
+    ...     velocity[0] = xVelocity.getArithmeticFaceValue()
+    ...     velocity[1] = yVelocity.getArithmeticFaceValue()
     ...     for id in mesh.getExteriorFaces():
-    ...         velocity[id,:] = 0.
+    ...         velocity[...,id] = 0.
     ...
     ...     ## solve the pressure correction equation
     ...     pressureCorrectionEq.cacheRHSvector()
@@ -264,9 +264,9 @@ solution. This argument cannot be passed to `solve()`.
     ...     pressure.setValue(pressure + pressureRelaxation * \
     ...                                            (pressureCorrection - pressureCorrection[0]))
     ...     ## update the velocity using the corrected pressure
-    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[:,0] / \
+    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
     ...                                                ap * mesh.getCellVolumes())
-    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[:,1] / \
+    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
     ...                                                ap * mesh.getCellVolumes())
     ...
     ...     if __name__ == '__main__':
@@ -292,11 +292,11 @@ Test values in the last cell.
 ..
 
     >>> from fipy.tools import numerix
-    >>> numerix.allclose(pressure[-1], 145.233883763)
+    >>> numerix.allclose(pressure[...,-1], 145.233883763)
     1
-    >>> numerix.allclose(xVelocity[-1], 0.24964673696)
+    >>> numerix.allclose(xVelocity[...,-1], 0.24964673696)
     1
-    >>> numerix.allclose(yVelocity[-1], -0.164498041783)
+    >>> numerix.allclose(yVelocity[...,-1], -0.164498041783)
     1
 
 """

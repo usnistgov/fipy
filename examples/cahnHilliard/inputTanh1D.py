@@ -185,7 +185,7 @@ The solution to this 1D problem over an infinite domain is given by,
     >>> from fipy.tools import numerix
     >>> a = numerix.sqrt(asq)
     >>> answer = 1 / (1 + 
-    ...     numerix.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
+    ...     numerix.exp(-a * (mesh.getCellCenters()[0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 

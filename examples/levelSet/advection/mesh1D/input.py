@@ -97,7 +97,7 @@ Construct a `distanceVariable` object.
    ...                        mesh=mesh,
    ...                        value=-1,
    ...                        hasOld=1)
-   >>> var.setValue(1, where=mesh.getCellCenters()[...,0] > interfacePosition)
+   >>> var.setValue(1, where=mesh.getCellCenters()[0] > interfacePosition)
    >>> var.calcDistanceFunction()
    
 The `advectionEquation` is constructed.
@@ -141,7 +141,7 @@ The result can be tested with the following code:
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> x = mesh.getCellCenters()[:,0]
+   >>> x = mesh.getCellCenters()[0]
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
    >>> from fipy.tools import numerix
