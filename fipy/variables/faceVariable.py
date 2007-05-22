@@ -57,19 +57,7 @@ class FaceVariable(_MeshVariable):
         if other is None:
             return FaceVariable
             
-##         # a FaceVariable operating with a vector will produce a rank-1 FaceVariable
-##         if numerix.getShape(other) == (self.getMesh().getDim(),):
-##             from fipy.variables.vectorFaceVariable import VectorFaceVariable
-##             return VectorFaceVariable
-##         else:
-##             return _MeshVariable._getArithmeticBaseClass(self, other)
         return _MeshVariable._getArithmeticBaseClass(self, other)
-
-##     def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape = True):
-##         if (isinstance(var1, FaceVariable) and var1.getRank() == 1) and self.getMesh() == var1.getMesh():
-##             return self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-##         else:
-##             return _MeshVariable._verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape)
 
     def getDivergence(self):
         if not hasattr(self, 'divergence'):
