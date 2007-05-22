@@ -41,8 +41,8 @@ from fipy.tools.inline import inline
 
 class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-        cell1 = numerix.take(self.var,id1)
-        cell2 = numerix.take(self.var,id2)
+        cell1 = numerix.take(self.var, id1, axis=-1)
+        cell2 = numerix.take(self.var, id2, axis=-1)
         return (cell1 - cell2) * alpha + cell2
         
     def _calcValueIn(self, alpha, id1, id2):

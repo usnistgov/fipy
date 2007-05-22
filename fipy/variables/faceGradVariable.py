@@ -62,19 +62,19 @@ class _FaceGradVariable(FaceVariable):
         
       
         
-        grad1 = numerix.take(cellGrad,id1)
-        grad2 = numerix.take(cellGrad,id2)
-        t1grad1 = numerix.sum(tangents1*grad1,1)
-        t1grad2 = numerix.sum(tangents1*grad2,1)
-        t2grad1 = numerix.sum(tangents2*grad1,1)
-        t2grad2 = numerix.sum(tangents2*grad2,1)
+        grad1 = numerix.take(cellGrad, id1, axis=1)
+        grad2 = numerix.take(cellGrad, id2, axis=1)
+        t1grad1 = numerix.sum(tangents1*grad1,0)
+        t1grad2 = numerix.sum(tangents1*grad2,0)
+        t2grad1 = numerix.sum(tangents2*grad1,0)
+        t2grad2 = numerix.sum(tangents2*grad2,0)
         
         T1 = (t1grad1 + t1grad2) / 2.
         T2 = (t2grad1 + t2grad2) / 2.
         
-        N = N[:,numerix.NewAxis]
-        T1 = T1[:,numerix.NewAxis]
-        T2 = T2[:,numerix.NewAxis]
+##         N = N[:,numerix.NewAxis]
+##         T1 = T1[:,numerix.NewAxis]
+##         T2 = T2[:,numerix.NewAxis]
         
         return normals * N + tangents1 * T1 + tangents2 * T2
 

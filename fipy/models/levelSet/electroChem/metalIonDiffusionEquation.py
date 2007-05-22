@@ -124,7 +124,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
-       >>> answer = gradient * (mesh.getCellCenters()[...,0] - L - dx * 3 / 2) \
+       >>> answer = gradient * (mesh.getCellCenters()[0] - L - dx * 3 / 2) \
        ...          + cinf
        >>> answer[0] = 1
        >>> numerix.allclose(answer, numerix.array(ionVar))

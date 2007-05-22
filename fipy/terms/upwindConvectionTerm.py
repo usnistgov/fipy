@@ -99,8 +99,8 @@ class UpwindConvectionTerm(ConvectionTerm):
 
             >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh)
-            >>> x = mesh.getFaceCenters()[...,0]
-            >>> convCoeff.setValue(-1e+6, where=x < 6)
+            >>> x = mesh.getFaceCenters()[0]
+            >>> convCoeff.setValue((-1e+6,), where=x < 6)
             >>> diffCoeff.setValue(1e+3, where=x > 6)
             >>> print convCoeff
             [[-1000000. -1000000. -1000000. -1000000. -1000000. -1000000.        0.
@@ -113,7 +113,7 @@ class UpwindConvectionTerm(ConvectionTerm):
             ...        FixedValue(value=0., faces=mesh.getFacesLeft()))
             >>> dTerm = DiffusionTerm(1000)
 
-            >>> x = mesh.getCellCenters()[...,0]
+            >>> x = mesh.getCellCenters()[0]
             >>> boundary = 5.5
             >>> analytical = ((x - boundary) / (L - boundary)) * (x > boundary)
 

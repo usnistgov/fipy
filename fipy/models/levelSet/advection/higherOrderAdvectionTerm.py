@@ -158,19 +158,19 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
         >>> mesh = Grid1D(dx = 1., nx = 5)
         >>> vel = 1.
-        >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[:,0]**2)
+        >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
         >>> L, b = _AdvectionTerm(vel)._buildMatrix(coeff)
         
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[:,0][1:-1])
+        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
         0
 
     The higher order term is spot on.
 
         >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff)
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[:,0][1:-1])
+        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
         1
 
     The `_HigherOrderAdvectionTerm` will also resolve a circular field with
@@ -184,20 +184,20 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         >>> vel = 1.
-        >>> x = mesh.getCellCenters()[:,0]
-        >>> y = mesh.getCellCenters()[:,1]
+        >>> x = mesh.getCellCenters()[0]
+        >>> y = mesh.getCellCenters()[1]
         >>> r = numerix.sqrt(x**2 + y**2)
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print numerix.max(error)
+        >>> print error.max()
         0.123105625618
 
     The maximum error is large (about 12 %) for the first order advection.
 
         >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff)
         >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print numerix.max(error)
+        >>> print error.max()
         0.0201715476597
 
     The maximum error is 2 % when using a higher order contribution.
@@ -208,14 +208,14 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         dAP = mesh._getCellToCellDistances()
         
 ##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
-        adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs())
-        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), axis = 2)
+        adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs(), axis=-1)
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), axis=0)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
-        cellIDs = numerix.reshape(numerix.repeat(numerix.arange(mesh.getNumberOfCells()), mesh._getMaxFacesPerCell()), cellToCellIDs.shape)
+        cellIDs = numerix.repeat(numerix.arange(mesh.getNumberOfCells())[numerix.newaxis, ...], mesh._getMaxFacesPerCell(), axis=0)
         cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._getCellToCellIDs()))
-        cellGradient = numerix.take(oldArray.getGrad(), cellIDs)
-        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), axis = 2)
+        cellGradient = numerix.take(oldArray.getGrad(), cellIDs, axis=-1)
+        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), axis=0)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2

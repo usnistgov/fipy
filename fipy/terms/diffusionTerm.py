@@ -144,7 +144,7 @@ class DiffusionTerm(Term):
 
             from fipy.variables.faceVariable import FaceVariable
             if (isinstance(coeff, FaceVariable) and coeff.getRank() == 1) \
-            or shape == (mesh.getDim(),):
+            or shape == (mesh.getDim(),1):
                 coeff = FaceVariable(mesh=mesh, value=mesh._getFaceNormals()**2, rank=1).dot(coeff)
             tmpBop =  coeff * mesh._getFaceAreas() / mesh._getCellDistances()
             return  tmpBop
@@ -161,17 +161,17 @@ class DiffusionTerm(Term):
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
         coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
-        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 1))
+        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
         interiorFaces = mesh.getInteriorFaces()
         
-        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces)
+        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 
-        interiorCoeff = -numerix.take(coeff, interiorFaces)
-        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,0], interiorFaceCellIDs[...,1])
-        interiorCoeff = -numerix.take(coeff, interiorFaces)
-        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,1], interiorFaceCellIDs[...,0])
+        interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
+        interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
         
         return coefficientMatrix
         
@@ -476,17 +476,21 @@ class DiffusionTerm(Term):
            >>> print term._getGeomCoeff(mesh)
            [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
            >>> term = DiffusionTerm(CellVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
            >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
            >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
            >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
            >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
            1
            >>> term = DiffusionTerm(((0.5, 1),))
+           >>> term = DiffusionTerm((((0.5,), (1,)),))
            >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
            1
 

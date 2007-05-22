@@ -1118,7 +1118,7 @@ class PhysicalField:
         
             >>> v = PhysicalField(((5.,6.),(7.,8.)), "m")
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v)
-            [ 17.  53.] m**2
+            [ 26.  44.] m**2
              
         """
         if not isinstance(other,PhysicalField):

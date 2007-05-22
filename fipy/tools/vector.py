@@ -68,21 +68,22 @@ def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
 
     if numerix.sometrue(mask):
-        for i in range(len(ids)):
-            if not mask[i]:
-                vector[ids[i]] += additionVector[i]
+        for i in range(ids.shape[-1]):
+            if not mask[...,i]:
+                vector[...,ids[...,i]] += additionVector[...,i]
     else:
-        for i in range(len(ids)):
-            vector[ids[i]] += additionVector[i]
+        for i in range(ids.shape[-1]):
+            vector[...,ids[...,i]] += additionVector[...,i]
 
+### !!! THIS NEEDS WORK !!! ###
 def _putAddIn(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._runInline("""
-        int ID = ids(i);
-	vector(ID) += additionVector(i);
+        int ID = ids[i];
+	vector[ID] += additionVector[i];
     """,
-    vector = vector, ids = ids, additionVector = numerix.array(additionVector),
-    ni = len(ids))
+    vector=vector, ids=ids, additionVector=numerix.array(additionVector),
+    ni = len(ids.flat))
 
 def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing

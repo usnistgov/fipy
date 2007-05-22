@@ -75,9 +75,7 @@ class ConvectionTerm(FaceTerm):
                 ...
             TypeError: The coefficient must be a vector value.
             >>> ConvectionTerm(coeff = vcv)
-            ConvectionTerm(coeff=_VectorArithmeticCellToFaceVariable(value=array([[ 0.],
-                   [ 0.],
-                   [ 0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> ConvectionTerm(coeff = vfv)
             ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> ConvectionTerm(coeff = (1,))
@@ -114,7 +112,7 @@ class ConvectionTerm(FaceTerm):
         
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
-        return projectedCoefficients.sum(1)
+        return projectedCoefficients.sum(0)
         
     def _getWeight(self, mesh, equation=None):
 

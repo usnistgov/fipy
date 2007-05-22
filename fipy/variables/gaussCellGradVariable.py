@@ -75,14 +75,15 @@ class _GaussCellGradVariable(CellVariable):
         return self._makeValue(value = val)
             
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        contributions = numerix.take(self.faceGradientContributions[:], ids.flat)
+        contributions = numerix.take(self.faceGradientContributions, ids.flat, axis=1)
 
-        contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
-        orientations = numerix.reshape(orientations, (N, M, 1))
+        contributions = numerix.reshape(contributions, (self.mesh.getDim(), M, N))
+        orientations = numerix.reshape(orientations, (1, M, N))
+        
         grad = numerix.array(numerix.sum(orientations * contributions, 1))
 
-        grad = grad / volumes[:]
-
+        grad = grad / volumes
+        
         return grad
 
     def _calcValue(self):
