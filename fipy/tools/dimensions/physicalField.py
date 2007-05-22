@@ -111,7 +111,7 @@ from NumberDict import _NumberDict
 # Class definitions
 
 
-class PhysicalField:
+class PhysicalField(object):
     """
     Physical field or quantity with units
     """
@@ -1171,10 +1171,12 @@ class PhysicalField:
         """
         numerix.put(self.value, indices, self._inMyUnits(values).value)
       
-    def getShape(self):
+    def _getShape(self):
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
+    shape = property(fget=_getShape, doc="Tuple of array dimensions.")
+
     def reshape(self, shape):
         """
         Changes the shape of `self` to that specified in `shape`

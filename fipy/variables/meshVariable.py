@@ -114,31 +114,41 @@ class _MeshVariable(Variable):
         return None
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
-    def getShape(self):
+    def _getShape(self):
         """
             >>> from fipy.meshes.grid2D import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=2, ny=3)
             >>> var = CellVariable(mesh=mesh)
-            >>> var.getShape()
+            >>> var.shape
             (6,)
-            >>> var.getArithmeticFaceValue().getShape()
+            >>> var.getArithmeticFaceValue().shape
             (17,)
-            >>> var.getGrad().getShape()
+            >>> var.getGrad().shape
             (2, 6)
-            >>> var.getFaceGrad().getShape()
+            >>> var.getFaceGrad().shape
             (2, 17)
         """
-        return (Variable.getShape(self) 
+        return (Variable._getShape(self) 
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 
-    def _binky(self, opShape, operatorClass, other):
-        newOpShape, baseClass, newOther = Variable._binky(self, opShape, operatorClass, other)
+    def _shapeClassAndOther(self, opShape, operatorClass, other):
+        """
+        Determine the shape of the result, the base class of the result, and (if
+        necessary) a modified form of `other` that is suitable for the
+        operation.
+        
+        By default, returns the result of the generic
+        `Variable._shapeClassAndOther()`, but if that fails, and if each
+        dimension of `other` is exactly the `Mesh` dimension, do what the user
+        probably "meant" and project `other` onto the `Mesh`.
+        """
+        newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
         if ((newOpShape is None or baseClass is None)
             and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().getDim())):
-                newOpShape, baseClass, newOther = Variable._binky(self, opShape, operatorClass, other[..., numerix.newaxis])
+                newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
         return (newOpShape, baseClass, newOther)
 
@@ -169,12 +179,12 @@ class _MeshVariable(Variable):
         return _MeshOperatorVariable
                           
     def getRank(self):
-        return len(self.getShape()) - 1
+        return len(self.shape) - 1
         
     def setValue(self, value, unit = None, array = None, where = None):
         if where is not None:
             shape = numerix.getShape(where)
-            if shape != self.getShape() \
+            if shape != self.shape \
               and shape == self._getShapeFromMesh(mesh=self.getMesh()):
                 for dim in self.elementshape:
                     where = numerix.repeat(where[numerix.newaxis, ...], repeats=dim, axis=0)
@@ -186,16 +196,15 @@ class _MeshVariable(Variable):
         if we operate along the mesh elements, then this is no longer a `_MeshVariable`,
         otherwise we get back a `_MeshVariable` of the same class, but lower rank.
         """
-        if axis is None or axis == len(self.getShape()) or axis == -1:
+        if axis is None or axis == len(self.shape) or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
         else:
             return self._OperatorVariableClass()
 
     def _getitemClass(self, index):
-        shape = self.getShape()
-        indexshape = numerix._indexShape(index=index, arrayShape=shape)
+        indexshape = numerix._indexShape(index=index, arrayShape=self.shape)
         if (len(indexshape) > 0
-            and indexshape[-1] == shape[-1]):
+            and indexshape[-1] == self.shape[-1]):
             return self._OperatorVariableClass()
         else:
             return Variable._OperatorVariableClass(self, baseClass=Variable)

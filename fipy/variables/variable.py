@@ -395,7 +395,7 @@ class Variable(object):
          try:
              shape = self.opShape
          except AttributeError:
-             shape = self.getShape()
+             shape = self.shape
 
          if len(shape) == 0:
 ##             return identifier + '(0)'         
@@ -589,26 +589,34 @@ class Variable(object):
         else:
             return value
             
-    def getShape(self):
+    def _getShape(self):
         """
-            >>> Variable(value=3).getShape()
+            >>> Variable(value=3).shape
             ()
-            >>> Variable(value=(3,)).getShape()
+            >>> Variable(value=(3,)).shape
             (1,)
-            >>> Variable(value=(3,4)).getShape()
+            >>> Variable(value=(3,4)).shape
             (2,)
             
-            >>> Variable(value="3 m").getShape()
+            >>> Variable(value="3 m").shape
             ()
-            >>> Variable(value=(3,), unit="m").getShape()
+            >>> Variable(value=(3,), unit="m").shape
             (1,)
-            >>> Variable(value=(3,4), unit="m").getShape()
+            >>> Variable(value=(3,4), unit="m").shape
             (2,)
         """
         if self.value is not None:
             return numerix.getShape(self.value)
         else:
             return ()
+            
+    def __getShape(self):
+        """
+        This little shenanegan is necessary because properties don't inherit
+        """
+        return self._getShape()
+        
+    shape = property(fget=__getShape, doc="Tuple of array dimensions.")
 
     def getTypecode(self):
         """
@@ -708,7 +716,7 @@ class Variable(object):
         try:
             shape = self.opShape
         except AttributeError:
-            shape = self.getShape()
+            shape = self.shape
 
         dimensions = len(shape)
             
@@ -766,12 +774,12 @@ class Variable(object):
         return argDict['result']
 
     def _broadcastShape(self, other):
-        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.getShape(), other.getShape())
+        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.shape, other.shape)
         
         return broadcastshape
         
-##         selfshape = self.getShape()
-##         othershape = other.getShape()
+##         selfshape = self.shape
+##         othershape = other.shape
 ##         
 ##         if len(selfshape) > len(othershape):
 ##             othershape = (1,) * (len(selfshape) - len(othershape)) + othershape
@@ -826,13 +834,8 @@ class Variable(object):
         # If the caller has not specified a shape for the result, determine the 
         # shape from the base class or from the inputs
         if opShape is None:
-            opShape = self.getShape()
+            opShape = self.shape
         
-        # the magic value of "number" specifies that the operation should result in a single value,
-        # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
-        # identically to "None or ...".
-##         if opShape == "number":
-##             opShape = ()
         if opShape is None:
             return NotImplemented
 
@@ -841,7 +844,12 @@ class Variable(object):
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit)
 
-    def _binky(self, opShape, operatorClass, other):
+    def _shapeClassAndOther(self, opShape, operatorClass, other):
+        """
+        Determine the shape of the result, the base class of the result, and (if
+        necessary) a modified form of `other` that is suitable for the
+        operation.
+        """
         # If the caller has not specified a base class for the binop, 
         # check if the member Variables know what type of Variable should
         # result from the operation.
@@ -851,12 +859,6 @@ class Variable(object):
         # shape from the base class or from the inputs
         if opShape is None:
             opShape = self._broadcastShape(other)
-
-##         # the magic value of "number" specifies that the operation should result in a single value,
-##         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
-##         # identically to "None or ...".
-##         if opShape == "number":
-##             opShape = ()
 
         return (opShape, baseClass, other)
         
@@ -872,31 +874,10 @@ class Variable(object):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
 
-##         # If the caller has not specified a base class for the binop, 
-##         # check if the member Variables know what type of Variable should
-##         # result from the operation.
-##         baseClass = operatorClass or self._getArithmeticBaseClass(other)
-
-##         # This operation is unknown. Fall back on Python's reciprocal operation or error.
-##         if baseClass is None:
-##             return NotImplemented
-
-##         # If the caller has not specified a shape for the result, determine the 
-##         # shape from the base class or from the inputs
-##         opShape = opShape or self._broadcastShape(other)
-        
-        opShape, baseClass, other = self._binky(opShape, operatorClass, other)
+        opShape, baseClass, other = self._shapeClassAndOther(opShape, operatorClass, other)
         
         if opShape is None or baseClass is None:
             return NotImplemented
-            
-##         # the magic value of "number" specifies that the operation should result in a single value,
-##         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
-##         # identically to "None or ...".
-##         if opShape == "number":
-##             opShape = ()
-##         elif opShape is None:
-##             return NotImplemented
     
         for v in [self, other]:
             if not v.getUnit().isDimensionless():
@@ -1199,7 +1180,10 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
                 
     def dot(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b), 
+                                            other, 
+                                            opShape=self._broadcastShape(other)[1:],
+                                            canInline=False)
         
     def reshape(self, shape):
         return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opshape=shape, canInline=False)
@@ -1225,7 +1209,7 @@ class Variable(object):
             if axis is None:
                 opShape = ()
             else:
-                opShape=self.getShape()[:axis] + self.getShape()[axis+1:]
+                opShape=self.shape[:axis] + self.shape[axis+1:]
                 
             opdict[axis] = self._UnaryOperatorVariable(op,
                                                        operatorClass=self._axisClass(axis=axis), 
@@ -1269,7 +1253,7 @@ class Variable(object):
         """
         return self._UnaryOperatorVariable(lambda a: a[index], 
                                            operatorClass=self._getitemClass(index=index), 
-                                           opShape=numerix._indexShape(index=index, arrayShape=self.getShape()),
+                                           opShape=numerix._indexShape(index=index, arrayShape=self.shape),
                                            unit=self.getUnit(),
                                            canInline=False)
 
@@ -1314,7 +1298,7 @@ class Variable(object):
         ## which contains floats and not integers. Numeric.take needs integers for ids.
         ## return self._BinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
 
-        if numerix.take(self.getValue(), ids, axis=axis).shape == self.getShape():
+        if numerix.take(self.getValue(), ids, axis=axis).shape == self.shape:
             return self._UnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
         else:
             raise IndexError, '_take() must take ids that return a Variable of the same shape'

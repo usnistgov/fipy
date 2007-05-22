@@ -61,7 +61,7 @@ class CellTerm(Term):
 
         from fipy.variables.cellVariable import CellVariable
         if ((isinstance(coeff, CellVariable) and coeff.getRank() != 0)
-            or (not isinstance(coeff, CellVariable) and coeff.getShape() != ())):
+            or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
         Term.__init__(self, coeff=coeff)

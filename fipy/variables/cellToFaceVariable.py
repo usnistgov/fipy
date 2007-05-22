@@ -42,7 +42,7 @@ from fipy.tools.inline import inline
 
 class _CellToFaceVariable(FaceVariable):
     def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), elementshape=var.getShape()[:-1])
+        FaceVariable.__init__(self, mesh=var.getMesh(), elementshape=var.shape[:-1])
         self.var = self._requires(var)
 
     def _calcValue(self):

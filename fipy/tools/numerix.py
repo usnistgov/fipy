@@ -216,16 +216,14 @@ def getShape(arr):
         >>> getShape(Variable("1 m"))
         ()
     """
-    if _isPhysical(arr):
-        return arr.getShape()
-    elif type(arr) in (type(array(0)), type(MA.array(0))):
+    if hasattr(arr, "shape"):
         return arr.shape
     elif type(arr) in (type(()), type([])):
         return (len(arr),)
     elif type(arr) in (type(1), type(1.)):
         return ()
     else:
-        return array(arr).shape
+        raise AttributeError, "No attribute 'shape'"
 
 def rank(a):
     """
