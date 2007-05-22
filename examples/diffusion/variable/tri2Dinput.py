@@ -86,7 +86,7 @@ var = CellVariable(
 from fipy.variables.faceVariable import FaceVariable
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 
-x = mesh.getFaceCenters()[...,0]
+x = mesh.getFaceCenters()[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
