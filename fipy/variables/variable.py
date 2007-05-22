@@ -144,7 +144,7 @@ class Variable(object):
         Both the following tests are examples ufuncs.
         
            >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
-           <class 'fipy.variables.variable.binOp'>
+           <class 'fipy.variables.binaryOperatorVariable.binOp'>
 
            >>> from scipy.special import gamma as Gamma
            >>> print type(Gamma(Variable([1.0, 2.0])))
@@ -296,24 +296,24 @@ class Variable(object):
         else:
             return value
 
-    def __getitem__(self, index):
-        """    
-        "Evaluate" the `Variable` and return the specified element
-      
-            >>> a = Variable(value=((3.,4.),(5.,6.)), unit="m") + "4 m"
-            >>> print a[1,1]
-            10.0 m
-
-        It is an error to slice a `Variable` whose `value` is not sliceable
-
-            >>> Variable(value=3)[2]
-            Traceback (most recent call last):
-                  ...
-            IndexError: 0-d arrays can't be indexed
-
-        """
-        return (self.getValue())[index]
-                           
+##     def __getitem__(self, index):
+##         """    
+##         "Evaluate" the `Variable` and return the specified element
+##       
+##            >>> ## a = Variable(value=((3.,4.),(5.,6.)), unit="m") + "4 m"
+##            >>> ## print a[1,1]
+##             10.0 m
+## 
+##         It is an error to slice a `Variable` whose `value` is not sliceable
+## 
+##            >>> ## Variable(value=3)[2]
+##             Traceback (most recent call last):
+##                   ...
+##             IndexError: 0-d arrays can't be indexed
+## 
+##         """
+##         return (self.getValue())[index]
+                            
     def getName(self):
         return self.name
         
@@ -553,7 +553,7 @@ class Variable(object):
             >>> a.setValue((4,5,6), where=(1, 0))
             Traceback (most recent call last):
                 ....
-            ValueError: array dimensions must agree
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
             
         """
 
@@ -676,41 +676,6 @@ class Variable(object):
     def _getVariableClass(self):
         return Variable
         
-    def _OperatorVariableClass(self, baseClass=None):
-        from fipy.variables import operatorVariable
-        
-        baseClass = baseClass or self._getVariableClass()
-        return operatorVariable._OperatorVariableClass(baseClass=baseClass)
-        
-    def _getArithmeticBaseClass(self, other=None):
-        """
-        Given `self` and `other`, return the desired base
-        class for an operation result.
-        """
-        if other is None:
-            return Variable
-            
-        if (other._getArithmeticBaseClass().__name__ is self._getArithmeticBaseClass().__name__
-            or other.getShape() in ((), (1,))):
-            # operating with a scalar results in the same base
-            # class as self.
-            return self._getArithmeticBaseClass()
-        elif self.getShape() == other.getShape():
-            # If self and other have the same base class, result has that base class.
-            # If self derives from other, result has self's base class.
-            # If other derives from self, result has other's base class.
-            # If self and other don't have a common base, we don't know how to combine them.
-            from fipy.variables.constant import _Constant
-            if isinstance(self, other._getArithmeticBaseClass()) or isinstance(other, _Constant):
-                return self._getArithmeticBaseClass()
-            elif isinstance(other, self._getArithmeticBaseClass()) or isinstance(self, _Constant):
-                return other._getArithmeticBaseClass()
-            else:
-                return None
-        else:
-            # If self and other have different shapes, we don't know how to combine them.
-            return None
-
     def _execInline(self):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
@@ -723,14 +688,14 @@ class Variable(object):
             '((var00(i) * var01(i)) * var1(i))'
 
         The following test was implemented due to a problem with
-        contiguous arrays.  The `mesh.getCellCenters()[:,1]` command
+        contiguous arrays.  The `mesh.getCellCenters()[1]` command
         introduces a non-contiguous array into the `Variable` and this
         causes the inline routine to return senseless results.
         
             >>> from fipy import Grid2D, CellVariable
             >>> mesh = Grid2D(dx=1., dy=1., nx=2, ny=2)
             >>> var = CellVariable(mesh=mesh, value=0.)
-            >>> Y =  mesh.getCellCenters()[:,1]
+            >>> Y =  mesh.getCellCenters()[1]
             >>> var.setValue(Y + 1.0)
             >>> print var - Y
             [ 1.  1.  1.  1.]
@@ -800,195 +765,149 @@ class Variable(object):
 
         return argDict['result']
 
-    
-    def _UnaryOperatorVariable(self, op, operatorClass=None, canInline=True):
+    def _broadcastShape(self, other):
+        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.getShape(), other.getShape())
+        
+        return broadcastshape
+        
+##         selfshape = self.getShape()
+##         othershape = other.getShape()
+##         
+##         if len(selfshape) > len(othershape):
+##             othershape = (1,) * (len(selfshape) - len(othershape)) + othershape
+##         elif len(selfshape) < len(othershape):
+##             selfshape = (1,) * (len(othershape) - len(selfshape)) + selfshape
+##         
+##         if numerix.logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(selfshape, othershape)]):
+##             return tuple([max(s,o) for s,o in zip(selfshape, othershape)])
+##         else:
+##             return None
+            
+    def _getArithmeticBaseClass(self, other=None):
         """
-        Check that getUnit() works fot unOp
+        Given `self` and `other`, return the desired base class for an operation
+        result.
+        """
+        if other is None:
+            return Variable
+            
+        if self._broadcastShape(other) is not None:
+            # If self and other have the same base class, result has that base class.
+            # If self derives from other, result has self's base class.
+            # If other derives from self, result has other's base class.
+            # If self and other don't have a common base, we don't know how to combine them.
+            from fipy.variables.constant import _Constant
+            if isinstance(self, other._getArithmeticBaseClass()) or isinstance(other, _Constant):
+                return self._getArithmeticBaseClass()
+            else:
+                return None
+        else:
+            # If self and other have un-broadcastable shapes, we don't know how to combine them.
+            return None
+
+    def _OperatorVariableClass(self, baseClass=None):
+        from fipy.variables import operatorVariable
+        
+        baseClass = baseClass or self._getVariableClass()
+        return operatorVariable._OperatorVariableClass(baseClass=baseClass)
+            
+    def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
+        """
+        Check that getUnit() works for unOp
 
             >>> (-Variable(value="1 m")).getUnit()
             <PhysicalUnit m>
             
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
-        class unOp(operatorClass):
-            def _calcValuePy(self):
-                return self.op(self.var[0].getValue())
+        from fipy.variables import unaryOperatorVariable
+        unOp = unaryOperatorVariable._UnaryOperatorVariable(operatorClass)
+        
+        # If the caller has not specified a shape for the result, determine the 
+        # shape from the base class or from the inputs
+        if opShape is None:
+            opShape = self.getShape()
+        
+        # the magic value of "number" specifies that the operation should result in a single value,
+        # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
+        # identically to "None or ...".
+##         if opShape == "number":
+##             opShape = ()
+        if opShape is None:
+            return NotImplemented
 
-            def getUnit(self):
-                try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
-                except:
-                    return self._extractUnit(self.op(self._calcValue()))
-                
         if not self.getUnit().isDimensionless():
             canInline = False
 
-        return unOp(op=op, var=[self], opShape=self.getShape(), canInline=canInline)
+        return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit)
 
-    def _getArrayAsOnes(object, valueMattersForShape=()): 
-        """ 
-        For the purposes of assembling the binop, we are only
-        interested in the shape of the operation result, not the result
-        itself.  Some operations (e.g. division) will fail if an input
-        happens to have been initialized with zeros, even though it
-        will not actually contain zeros by the time a value is
-        requested.  Setting the arrays of `self` and `other` to 1
-        should always pass?
-        
-        reshape() is one case where the value cannot be substituted, so
-        the shape must be included in valueMattersForShape.
-        """
-        
-        if object not in valueMattersForShape:
-            a = numerix.ones(object.getShape())
-        else:
-            a = object._getArray()
-            
-        return a
-
-    _getArrayAsOnes = staticmethod(_getArrayAsOnes)
-
-    def _rotateShape(op, var0, var1, var0array, var1array, opShape):
-        """
-        A scalar `Variable` multiplying/dividing a vector `Variable` will
-        fail because the scalar field has shape (N,) and the vector field has shape (N, D)
-        This manipulation will give the scalar field shape (N, 1), which will
-        allow the desired operator shape of (N, D).
-        
-        We *only* do this rotation if var1array is rank 1.
-        """
-        if len(var1array.shape) == 1:
-            try:
-                if numerix.getShape(op(var0array, var1array[..., numerix.NewAxis])) != opShape:
-                    raise ValueError
-                from fipy.variables.newAxisVariable import _NewAxisVariable
-                var1 = _NewAxisVariable(var1)
-            except (ValueError, IndexError):
-                raise SyntaxError
-        else:
-            raise SyntaxError
-                
-        return (var0, var1)
-    _rotateShape = staticmethod(_rotateShape)
+    def _binky(self, opShape, operatorClass, other):
+        # If the caller has not specified a base class for the binop, 
+        # check if the member Variables know what type of Variable should
+        # result from the operation.
+        baseClass = operatorClass or self._getArithmeticBaseClass(other)
     
-    def _verifyShape(self, op, var0, var1, var0Array, var1Array, opShape, otherClass, rotateShape=True):
-        try:
-            # check if applying the operation to the inputs will produce the desired shape
-            if numerix.getShape(op(var0Array, var1Array)) != opShape:
-                raise ValueError
+        # If the caller has not specified a shape for the result, determine the 
+        # shape from the base class or from the inputs
+        if opShape is None:
+            opShape = self._broadcastShape(other)
 
-        except ValueError:
-            if rotateShape:
-                try:
-                    # check if changing var1 from a row variable to a column variable
-                    # will produce the desired shape
-                    (var0, var1) = self._rotateShape(op, var0, var1, var0Array, var1Array, opShape)
-                except SyntaxError:
-                    if not (otherClass and issubclass(otherClass, Variable)):
-                        # check if changing var0 from a row variable to a column variable
-                        # will produce the desired shape
-                        (var1, var0) = self._rotateShape(op, var1, var0, var1Array, var0Array, opShape)
-                    else:
-                        raise SyntaxError
-            else:
-                raise ValueError
-            
-        return (var0, var1)
+##         # the magic value of "number" specifies that the operation should result in a single value,
+##         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
+##         # identically to "None or ...".
+##         if opShape == "number":
+##             opShape = ()
 
-    def _getOpShape(self, baseClass, other):
-        """
-        Determine the shape from the inputs
-        """
-        return self.getShape() or other.getShape()
-
-    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, 
-                                valueMattersForShape=(), rotateShape=True, 
-                                canInline=True):
+        return (opShape, baseClass, other)
+        
+    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
           - `other`: the quantity to be operated with
           - `operatorClass`: the `Variable` class that the binary operator should inherit from 
           - `opShape`: the shape that should result from the operation
-          - `valueMattersForShape`: tuple of elements that must have a particular value for the operation to succeed.
-          - `rotateShape`: whether the operator should permit rotation of the variable's shape to allow the operation to complete. This is required because some Numeric operators such as allclose() run out of memory.
         """
-        
-        # for convenience, we want to be able to treat `other` as a Variable
-        # so we record its original class for later reference
-        if type(other) is type(numerix.array(1)):
-            otherClass = None
-        else:
-            otherClass = other.__class__
-        
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
 
-        # If the caller has not specified a base class for the binop, 
-        # check if the member Variables know what type of Variable should
-        # result from the operation.
-        baseClass = operatorClass or self._getArithmeticBaseClass(other) or other._getArithmeticBaseClass(self)
+##         # If the caller has not specified a base class for the binop, 
+##         # check if the member Variables know what type of Variable should
+##         # result from the operation.
+##         baseClass = operatorClass or self._getArithmeticBaseClass(other)
 
-        # This operation is unknown. Fall back on Python's reciprocal operation or error.
-        if baseClass is None:
-            return NotImplemented
+##         # This operation is unknown. Fall back on Python's reciprocal operation or error.
+##         if baseClass is None:
+##             return NotImplemented
 
-        # If the caller has not specified a shape for the result, determine the 
-        # shape from the base class or from the inputs
-        opShape = opShape or self._getOpShape(baseClass, other)
-
-        # the magic value of "number" specifies that the operation should result in a single value,
-        # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
-        # identically to "None or ...".
-        if opShape == "number":
-            opShape = ()
-
-        var0 = self
-        var1 = other
+##         # If the caller has not specified a shape for the result, determine the 
+##         # shape from the base class or from the inputs
+##         opShape = opShape or self._broadcastShape(other)
         
-        selfArray = self._getArrayAsOnes(object=self, valueMattersForShape=valueMattersForShape)
-        otherArray = self._getArrayAsOnes(object=other, valueMattersForShape=valueMattersForShape)
-
-        try:
-            var0, var1 = self._verifyShape(op, var0, var1, selfArray, otherArray, opShape, otherClass, rotateShape)
-        except SyntaxError:
+        opShape, baseClass, other = self._binky(opShape, operatorClass, other)
+        
+        if opShape is None or baseClass is None:
             return NotImplemented
             
-        
-        # obtain a general operator class with the desired base class
-        operatorClass = operatorClass or self._OperatorVariableClass(baseClass)
-        
-        
-        # declare a binary operator class with the desired base class
-        class binOp(operatorClass):
-
-            def _calcValuePy(self):
-                if isinstance(self.var[1], Variable):
-                    val1 = self.var[1].getValue()
-                else:
-                    if type(self.var[1]) is type(''):
-                        self.var[1] = physicalField.PhysicalField(value=self.var[1])
-                    val1 = self.var[1]
-
-                return self.op(self.var[0].getValue(), val1)
-
-            def getUnit(self):
-                try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
-                except:
-                    return self._extractUnit(self._calcValuePy())
-
-            def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
-                self.id = id
-                return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
-        
-        var = [var0, var1]
-        for v in var:
+##         # the magic value of "number" specifies that the operation should result in a single value,
+##         # regardless of the shapes of the inputs. This hack is necessary because "() or ..." is treated
+##         # identically to "None or ...".
+##         if opShape == "number":
+##             opShape = ()
+##         elif opShape is None:
+##             return NotImplemented
+    
+        for v in [self, other]:
             if not v.getUnit().isDimensionless():
                 canInline = False
                 
-        return binOp(op=op, var=[var0, var1], opShape=opShape, canInline=canInline)
+        # obtain a general operator class with the desired base class
+        operatorClass = operatorClass or self._OperatorVariableClass(baseClass)
+        from fipy.variables import binaryOperatorVariable
+        binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
+        
+        return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit)
     
     def __add__(self, other):
         from fipy.terms.term import Term
@@ -1019,11 +938,9 @@ class Variable(object):
             
     def __pow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other)
-        #return self._BinaryOperatorVariable(lambda a,b: a**b, other, canInline=False)
             
     def __rpow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
-        #return self._BinaryOperatorVariable(lambda a,b: b**a, other, canInline=False)
             
     def __div__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
@@ -1229,7 +1146,7 @@ class Variable(object):
             >>> mesh= Grid1D(nx=3)
 
             >>> from fipy.variables.cellVariable import CellVariable
-            >>> var = CellVariable(mesh=mesh, value=((0.,),(2.,),(3.,)), rank=1)
+            >>> var = CellVariable(mesh=mesh, value=((0., 2., 3.),), rank=1)
             >>> print (var.dot(var)).sqrt()
             [ 0.  2.  3.]
             
@@ -1285,7 +1202,7 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b), other, canInline=False)
         
     def reshape(self, shape):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, valueMattersForShape=(shape,), canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opshape=shape, canInline=False)
         
     def transpose(self):
         """
@@ -1296,14 +1213,44 @@ class Variable(object):
         warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
         return self
 
-    def sum(self, index=0):
+    def _sumClass(self, axis):
+        return self._OperatorVariableClass()
+                                    
+    def sum(self, axis=0):
         if not hasattr(self, "sumVar"):
             self.sumVar = {}
-        if not self.sumVar.has_key(index):
-            from sumVariable import _SumVariable
-            self.sumVar[index] = _SumVariable(self, index)
+        if not self.sumVar.has_key(axis):
+            self.sumVar[axis] = self._UnaryOperatorVariable(lambda a: numerix.sum(a, axis=axis), 
+                                                            operatorClass=self._sumClass(axis=axis), 
+                                                            opShape=self.getShape()[:axis] + self.getShape()[axis+1:],
+                                                            canInline=False)
         
-        return self.sumVar[index]
+        return self.sumVar[axis]
+
+    def _getitemClass(self, index):
+        return self._OperatorVariableClass()
+
+    def __getitem__(self, index):
+        """    
+        "Evaluate" the `Variable` and return the specified element
+      
+            >>> a = Variable(value=((3.,4.),(5.,6.)), unit="m") + "4 m"
+            >>> print a[1,1]
+            10.0 m
+
+        It is an error to slice a `Variable` whose `value` is not sliceable
+
+            >>> Variable(value=3)[2]
+            Traceback (most recent call last):
+                  ...
+            IndexError: 0-d arrays can't be indexed
+
+        """
+        return self._UnaryOperatorVariable(lambda a: a[index], 
+                                           operatorClass=self._getitemClass(index=index), 
+                                           opShape=numerix._indexShape(index=index, arrayShape=self.getShape()),
+                                           unit=self.getUnit(),
+                                           canInline=False)
 
     def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
@@ -1322,19 +1269,15 @@ class Variable(object):
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx=1, ny=1)
            >>> from fipy.variables.faceVariable import FaceVariable
-           >>> var = FaceVariable(value=( (1, 2), (2, 3), (3, 4), (4, 5) ), mesh=mesh, rank=1)
-           >>> v10 = var._take((1, 0), axis=1)
+           >>> var = FaceVariable(value=((1, 2, 3, 4), (2, 3, 4, 5)), mesh=mesh, rank=1)
+           >>> v10 = var._take((1, 0), axis=0)
            >>> print v10
-           [[ 2.  1.]
-            [ 3.  2.]
-            [ 4.  3.]
-            [ 5.  4.]]
-           >>> var[3, 0] = 1
+           [[ 2.  3.  4.  5.]
+            [ 1.  2.  3.  4.]]
+           >>> var[0, 3] = 1
            >>> print v10
-           [[ 2.  1.]
-            [ 3.  2.]
-            [ 4.  3.]
-            [ 5.  1.]]
+           [[ 2.  3.  4.  5.]
+            [ 1.  2.  3.  1.]]
            >>> isinstance(var, FaceVariable)
            True
            >>> print var.getRank()
@@ -1365,41 +1308,24 @@ class Variable(object):
            >>> print var.allclose((1,1,1))
            Traceback (most recent call last):
                ...
-           ValueError
+           ValueError: shape mismatch: objects cannot be broadcast to a single shape
 
         The following test is to check that the system does not run
         out of memory.
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> var.allclose(numerix.ones(10001))
+           >>> print var.allclose(numerix.ones(10001))
            Traceback (most recent call last):
                ...
-           ValueError
+           ValueError: shape mismatch: objects cannot be broadcast to a single shape
            
         """
-
-        ## This operation passes `rotateShape = False` to stop the variable being rotated. This
-        ## is due to the following strange behaviour in Numeric.allclose. The following code snippet runs
-        ## out of memory.
-        ##
-        ##    >>> from fipy.tools import numerix
-        ##    >>> a = numerix.ones(10000)
-        ##    >>> b = numerix.ones(10001)
-        ##    >>> b = b[...,numerix.NewAxis]
-        ##    >>> numerix.allclose(a, b)
-        ##    Traceback (most recent call last):
-        ##    ...
-        ##    MemoryError: can't allocate memory for array
-        ##
-    
-
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
         return self._BinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol=atol, rtol=rtol), 
                                             other, 
                                             operatorClass=operatorClass,
-                                            opShape="number",
-                                            rotateShape=False,
+                                            opShape=(),
                                             canInline=False)
         
     def allequal(self, other):
@@ -1407,7 +1333,7 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: numerix.allequal(a,b), 
                                             other,
                                             operatorClass=operatorClass,
-                                            opShape="number",
+                                            opShape=(),
                                             canInline=False)
 
     def getMag(self):
