@@ -135,10 +135,10 @@ class MayaviSurfactantViewer(Viewer):
                         if len(arr.shape) > 1:
                             for i in range(len(arr[0])):                            
                                 arrI = arr[:,i].copy()
-                                numerix.put(arrI[:], line, tmp[:,i])
+                                numerix.put(arrI, line, tmp[:,i])
                                 arr[:,i] = arrI
                         else:
-                            numerix.put(arrI[:], line, tmp[:])
+                            numerix.put(arrI, line, tmp)
 
         name = self.title
         name = name.strip()

@@ -58,7 +58,7 @@ class _AddOverFacesVariable(CellVariable):
     def _calcValuePy(self):
         ids = self.mesh._getCellFaceIDs()
         
-        contributions = numerix.take(self.faceVariable[:], ids.flat)
+        contributions = numerix.take(self.faceVariable, ids.flat)
 
         NCells = self.mesh.getNumberOfCells()
 

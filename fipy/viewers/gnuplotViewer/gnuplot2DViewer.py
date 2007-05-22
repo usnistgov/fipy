@@ -104,6 +104,6 @@ class Gnuplot2DViewer(GnuplotViewer):
         import Gnuplot
         data = Gnuplot.Data(numerix.array(mesh.getCellCenters()[:,0]),
                             numerix.array(mesh.getCellCenters()[:,1]),
-                            self.vars[0][:])
+                            self.vars[0].getValue())
 
         self.g.splot(data)

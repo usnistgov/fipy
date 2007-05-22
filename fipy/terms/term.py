@@ -73,7 +73,7 @@ class Term:
 
     def _calcResidualVector(self, var, matrix, RHSvector):
 
-        Lx = matrix * numerix.array(var[:])
+        Lx = matrix * numerix.array(var)
       
         return Lx - RHSvector
 

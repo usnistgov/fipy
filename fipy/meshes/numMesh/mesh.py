@@ -162,7 +162,7 @@ class Mesh(_CommonMesh):
         ## get the cells adjacent to faces1
         faceCellIDs = MA.take(self.faceCellIDs[0], faces1)
         ## get all the adjacent faces for those particular cells
-        cellFaceIDs = numerix.take(self.cellFaceIDs[:], faceCellIDs, axis=1)
+        cellFaceIDs = numerix.take(self.cellFaceIDs, faceCellIDs, axis=1)
         for i in range(cellFaceIDs.shape[0]):
             ## if the faces is a member of faces1 then change the face to point at
             ## faces0

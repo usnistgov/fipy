@@ -209,7 +209,7 @@ class ModularVariable(CellVariable):
                     self.modVar = self._requires(modVar)
                     
                 def _calcValue(self):
-                    return self.modVar[:]
+                    return self.modVar.getValue()
 
             self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
 

@@ -44,6 +44,6 @@ class _FaceGradContributions(CellVariable):
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        return self.mesh._getAreaProjections()[:] * self.var.getArithmeticFaceValue().getNumericValue()
+        return self.mesh._getAreaProjections() * self.var.getArithmeticFaceValue().getNumericValue()
     
 
