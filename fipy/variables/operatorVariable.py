@@ -5,8 +5,9 @@
  # FILE: "operatorVariable.py"
  #                                     created: 5/6/07 {10:53:26 AM}
  #                                 last update: 5/6/07 {10:53:26 AM}
- # Author: Jonathan Guyer
- # E-mail: <guyer@nist.gov>
+ # Author: Jonathan Guyer <guyer@nist.gov>
+ # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ # Author: James Warren   <jwarren@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
  #  
@@ -33,93 +34,12 @@
 from fipy.variables.variable import Variable
 
 def _OperatorVariableClass(baseClass=None):
-    """
-    Test of _getRepresentation
-
-        >>> v1 = Variable(numerix.array((1,2,3,4)))
-        >>> v2 = Variable(numerix.array((5,6,7,8)))
-        >>> v3 = Variable(numerix.array((9,10,11,12)))
-        >>> v4 = Variable(numerix.array((13,14,15,16)))
-
-        >>> (v1 * v2)._getRepresentation()
-        '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
-        
-        >>> (v1 * v2)._getRepresentation(style='C', id="")
-        '(var0(i) * var1(i))'
-        
-        >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
-        '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
-        
-        >>> (v1 - v2)._getRepresentation(style='C', id="")
-        '(var0(i) - var1(i))'
-
-        >>> (v1 / v2)._getRepresentation(style='C', id="")
-        '(var0(i) / var1(i))'
-
-        >>> (v1 - 1)._getRepresentation(style='C', id="")
-        '(var0(i) - var1)'
-            
-        >>> (5 * v2)._getRepresentation(style='C', id="")
-        '(var0(i) * var1)'
-
-        >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
-        '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
-
-    Check that getUnit() works for a binOp
-
-        >>> (Variable(value="1 m") * Variable(value="1 s")).getUnit()
-        <PhysicalUnit s*m>
-
-        >>> (Variable(value="1 m") / Variable(value="0 s")).getUnit()
-        <PhysicalUnit m/s>
-
-        >>> a = -((Variable() * Variable()).sin())
-
-    Check that getTypeCode() works as expected.
-
-        >>> a = Variable(1.) * Variable(1)
-        >>> a.getTypecode()
-        'd'
-
-    The following test is to correct an `--inline` bug that was
-    being thrown by the Cahn-Hilliard example. The fix for this
-    bug was to add the last line to the following code in
-    `_getRepresentation()`.
-    
-        >>> ##elif style == "C":
-        >>> ##    counter = _popIndex()
-        >>> ##    if not self.var[counter]._isCached():
-        >>> ##        stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
-        >>> ##        self.var[counter].value=None
-
-    This is the test that fails if the last line above is removed
-    from `_getRepresentation()`, the `binOp.getValue()` statement
-    below will return `1.0` and not `0.5`.
-        
-        >>> from fipy import numerix
-        >>> def doBCs(binOp):
-        ...     unOp1 = -binOp
-        ...     print binOp.getValue()
-        >>> var = Variable(1.)
-        >>> binOp = 1. * var
-        >>> unOp = -binOp
-        >>> print unOp.getValue()
-        -1.0
-        >>> doBCs(binOp)
-        1.0
-        >>> var.setValue(0.5)
-        >>> print unOp.getValue()
-        -0.5
-        >>> unOp2 = -binOp
-        >>> print binOp.getValue()
-        0.5
-
-    """
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
+            self.unit = unit
             self.canInline = canInline  #allows for certain functions to opt out of --inline
             baseClass.__init__(self, value=None, *args, **kwargs)
             self.name = ''
@@ -162,6 +82,7 @@ def _OperatorVariableClass(baseClass=None):
                 
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             """
+
             :Parameters:
                 
               - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
@@ -282,6 +203,86 @@ def _OperatorVariableClass(baseClass=None):
     
 def _testBinOp(self):
     """
+    Test of _getRepresentation
+    
+        >>> v1 = Variable((1,2,3,4))
+        >>> v2 = Variable((5,6,7,8))
+        >>> v3 = Variable((9,10,11,12))
+        >>> v4 = Variable((13,14,15,16))
+
+        >>> (v1 * v2)._getRepresentation()
+        '(Variable(value=array([ 1.,  2.,  3.,  4.])) * Variable(value=array([ 5.,  6.,  7.,  8.])))'
+        
+        >>> (v1 * v2)._getRepresentation(style='C', id="")
+        '(var0(i) * var1(i))'
+        
+        >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
+        '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
+        
+        >>> (v1 - v2)._getRepresentation(style='C', id="")
+        '(var0(i) - var1(i))'
+
+        >>> (v1 / v2)._getRepresentation(style='C', id="")
+        '(var0(i) / var1(i))'
+
+        >>> (v1 - 1)._getRepresentation(style='C', id="")
+        '(var0(i) - var1)'
+            
+        >>> (5 * v2)._getRepresentation(style='C', id="")
+        '(var0(i) * var1)'
+
+        >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
+        '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
+        
+    Check that getUnit() works for a binOp
+
+        >>> (Variable(value="1 m") * Variable(value="1 s")).getUnit()
+        <PhysicalUnit s*m>
+
+        >>> (Variable(value="1 m") / Variable(value="0 s")).getUnit()
+        <PhysicalUnit m/s>
+
+        >>> a = -((Variable() * Variable()).sin())
+
+    Check that getTypeCode() works as expected.
+
+        >>> a = Variable(1.) * Variable(1)
+        >>> a.getTypecode()
+        'd'
+
+    The following test is to correct an `--inline` bug that was
+    being thrown by the Cahn-Hilliard example. The fix for this
+    bug was to add the last line to the following code in
+    `_getRepresentation()`.
+    
+        >>> ##elif style == "C":
+        >>> ##    counter = _popIndex()
+        >>> ##    if not self.var[counter]._isCached():
+        >>> ##        stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
+        >>> ##        self.var[counter].value=None
+
+    This is the test that fails if the last line above is removed
+    from `_getRepresentation()`, the `binOp.getValue()` statement
+    below will return `1.0` and not `0.5`.
+        
+        >>> from fipy import numerix
+        >>> def doBCs(binOp):
+        ...     unOp1 = -binOp
+        ...     print binOp.getValue()
+        >>> var = Variable(1.)
+        >>> binOp = 1. * var
+        >>> unOp = -binOp
+        >>> print unOp.getValue()
+        -1.0
+        >>> doBCs(binOp)
+        1.0
+        >>> var.setValue(0.5)
+        >>> print unOp.getValue()
+        -0.5
+        >>> unOp2 = -binOp
+        >>> print binOp.getValue()
+        0.5
+
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.variables.faceVariable import FaceVariable
         
@@ -301,32 +302,30 @@ def _testBinOp(self):
     `CellVariable` * FaceVariable
     
         >>> fv = FaceVariable(mesh=mesh, value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-        >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> fvXcv = fv * cv
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
-        >>> cvXfv = cv * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+        TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
+        >>> cvXfv = cv * fv 
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
+        TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
         
     rank-0 `CellVariable` * rank-1 `CellVariable`
     
-        >>> vcv = CellVariable(mesh=mesh, value=((0,1),(1,2),(2,3)), rank=1)
+        >>> vcv = CellVariable(mesh=mesh, value=((0, 1, 2), (1, 2, 3)), rank=1)
         >>> vcvXcv = vcv * cv
         >>> print vcvXcv
-        [[ 0.  0.]
-         [ 1.  2.]
-         [ 4.  6.]]
+        [[ 0.  1.  4.]
+         [ 0.  2.  6.]]
         >>> print isinstance(vcvXcv, CellVariable)
         1
         >>> print vcvXcv.getRank()
         1
         >>> cvXvcv = cv * vcv
         >>> print cvXvcv
-        [[ 0.  0.]
-         [ 1.  2.]
-         [ 4.  6.]]
+        [[ 0.  1.  4.]
+         [ 0.  2.  6.]]
         >>> print isinstance(cvXvcv, CellVariable)
         1
         >>> print cvXvcv.getRank()
@@ -334,15 +333,16 @@ def _testBinOp(self):
 
     `CellVariable` * rank-1 `FaceVariable`
 
-        >>> vfv = FaceVariable(mesh=mesh, value=((0,1),(1,2),(2,3),(3,4),(1,3),(2,4),(3,5),(6,9),(2,6),(1,3)), rank=1)
-        >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vfv = FaceVariable(mesh=mesh, value=((0,1,2,3,1,2,3,6,2,1),
+        ...                                      (1,2,3,4,3,4,5,9,6,3)), rank=1)
+        >>> vfvXcv = vfv * cv
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
-        >>> cvXvfv = cv * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+        TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
+        >>> cvXvfv = cv * vfv
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
+        TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
 
     `CellVariable` * Scalar
     
@@ -361,18 +361,24 @@ def _testBinOp(self):
     
         >>> cvXv2 = cv * (3,2)
         >>> print cvXv2
-        [[ 0.  0.]
-         [ 3.  2.]
-         [ 6.  4.]]
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
+        >>> cvXv2 = cv * [[3], [2]]
+        >>> print cvXv2
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
         >>> print isinstance(cvXv2, CellVariable)
         1
         >>> print cvXv2.getRank()
         1
         >>> v2Xcv = (3,2) * cv
         >>> print v2Xcv
-        [[ 0.  0.]
-         [ 3.  2.]
-         [ 6.  4.]]
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
+        >>> v2Xcv = [[3], [2]] * cv
+        >>> print v2Xcv
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
         >>> print isinstance(v2Xcv, CellVariable)
         1
         >>> print v2Xcv.getRank()
@@ -429,18 +435,21 @@ def _testBinOp(self):
         
         >>> cvXv2v = cv * Variable(value=(3,2))
         >>> print cvXv2v
-        [[ 0.  0.]
-         [ 3.  2.]
-         [ 6.  4.]]
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
+        >>> cvXv2v = cv * Variable(value=((3,),(2,)))
+        >>> print cvXv2v
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
         >>> print isinstance(cvXv2v, CellVariable)
         1
         >>> print cvXv2v.getRank()
         1
         >>> v2vXcv = Variable(value=(3,2)) * cv
+        >>> v2vXcv = Variable(value=((3,),(2,))) * cv
         >>> print v2vXcv
-        [[ 0.  0.]
-         [ 3.  2.]
-         [ 6.  4.]]
+        [[ 0.  3.  6.]
+         [ 0.  2.  4.]]
         >>> print isinstance(v2vXcv, CellVariable)
         1
         >>> print v2vXcv.getRank()
@@ -471,9 +480,8 @@ def _testBinOp(self):
     
         >>> cvXcgv = cv * cv.getGrad()
         >>> print cvXcgv
-        [[ 0.  0.]
-         [ 1.  0.]
-         [ 1.  0.]]
+        [[ 0.  1.  1.]
+         [ 0.  0.  0.]]
         >>> print isinstance(cvXcgv, CellVariable)
         1
         >>> print cvXcgv.getRank()
@@ -502,32 +510,16 @@ def _testBinOp(self):
 
         >>> vfvXfv = vfv * fv
         >>> print vfvXfv
-        [[  0.   0.]
-         [  1.   2.]
-         [  4.   6.]
-         [  9.  12.]
-         [  4.  12.]
-         [ 10.  20.]
-         [ 18.  30.]
-         [ 42.  63.]
-         [ 16.  48.]
-         [  9.  27.]]
+        [[  0.   1.   4.   9.   4.  10.  18.  42.  16.   9.]
+         [  0.   2.   6.  12.  12.  20.  30.  63.  48.  27.]]
         >>> print isinstance(vfvXfv, FaceVariable)
         1
         >>> print vfvXfv.getRank()
         1
         >>> fvXvfv = fv * vfv
         >>> print fvXvfv
-        [[  0.   0.]
-         [  1.   2.]
-         [  4.   6.]
-         [  9.  12.]
-         [  4.  12.]
-         [ 10.  20.]
-         [ 18.  30.]
-         [ 42.  63.]
-         [ 16.  48.]
-         [  9.  27.]]
+        [[  0.   1.   4.   9.   4.  10.  18.  42.  16.   9.]
+         [  0.   2.   6.  12.  12.  20.  30.  63.  48.  27.]]
         >>> print isinstance(fvXvfv, FaceVariable)
         1
         >>> print fvXvfv.getRank()
@@ -550,32 +542,24 @@ def _testBinOp(self):
 
         >>> fvXv2 = fv * (3,2)
         >>> print fvXv2
-        [[  0.   0.]
-         [  3.   2.]
-         [  6.   4.]
-         [  9.   6.]
-         [ 12.   8.]
-         [ 15.  10.]
-         [ 18.  12.]
-         [ 21.  14.]
-         [ 24.  16.]
-         [ 27.  18.]]
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
+        >>> fvXv2 = fv * ((3,),(2,))
+        >>> print fvXv2
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
         >>> print isinstance(fvXv2, FaceVariable)
         1
         >>> print fvXv2.getRank()
         1
         >>> v2Xfv = (3,2) * fv
         >>> print v2Xfv
-        [[  0.   0.]
-         [  3.   2.]
-         [  6.   4.]
-         [  9.   6.]
-         [ 12.   8.]
-         [ 15.  10.]
-         [ 18.  12.]
-         [ 21.  14.]
-         [ 24.  16.]
-         [ 27.  18.]]
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
+        >>> v2Xfv = ((3,),(2,)) * fv
+        >>> print v2Xfv
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
         >>> print isinstance(v2Xfv, FaceVariable)
         1
         >>> print v2Xfv.getRank()
@@ -618,32 +602,24 @@ def _testBinOp(self):
         
         >>> fvXv2v = fv * Variable(value=(3,2))
         >>> print fvXv2v
-        [[  0.   0.]
-         [  3.   2.]
-         [  6.   4.]
-         [  9.   6.]
-         [ 12.   8.]
-         [ 15.  10.]
-         [ 18.  12.]
-         [ 21.  14.]
-         [ 24.  16.]
-         [ 27.  18.]]
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
+        >>> fvXv2v = fv * Variable(value=((3,),(2,)))
+        >>> print fvXv2v
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
         >>> print isinstance(fvXv2v, FaceVariable)
         1
         >>> print fvXv2v.getRank()
         1
         >>> v2vXfv = Variable(value=(3,2)) * fv
         >>> print v2vXfv
-        [[  0.   0.]
-         [  3.   2.]
-         [  6.   4.]
-         [  9.   6.]
-         [ 12.   8.]
-         [ 15.  10.]
-         [ 18.  12.]
-         [ 21.  14.]
-         [ 24.  16.]
-         [ 27.  18.]]
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
+        >>> v2vXfv = Variable(value=((3,),(2,))) * fv
+        >>> print v2vXfv
+        [[  0.   3.   6.   9.  12.  15.  18.  21.  24.  27.]
+         [  0.   2.   4.   6.   8.  10.  12.  14.  16.  18.]]
         >>> print isinstance(v2vXfv, FaceVariable)
         1
         >>> print v2vXfv.getRank()
@@ -675,9 +651,8 @@ def _testBinOp(self):
 
         >>> vcvXvcv = vcv * vcv
         >>> print vcvXvcv
-        [[ 0.  1.]
-         [ 1.  4.]
-         [ 4.  9.]]
+        [[ 0.  1.  4.]
+         [ 1.  4.  9.]]
         >>> print isinstance(vcvXvcv, CellVariable)
         1
         >>> print vcvXvcv.getRank()
@@ -698,18 +673,16 @@ def _testBinOp(self):
 
         >>> vcvXs = vcv * 3
         >>> print vcvXs
-        [[ 0.  3.]
-         [ 3.  6.]
-         [ 6.  9.]]
+        [[ 0.  3.  6.]
+         [ 3.  6.  9.]]
         >>> print isinstance(vcvXs, CellVariable)
         1
         >>> print vcvXs.getRank()
         1
         >>> sXvcv = 3 * vcv
         >>> print sXvcv
-        [[ 0.  3.]
-         [ 3.  6.]
-         [ 6.  9.]]
+        [[ 0.  3.  6.]
+         [ 3.  6.  9.]]
         >>> print isinstance(vcvXs, CellVariable)
         1
         >>> print vcvXs.getRank()
@@ -719,18 +692,24 @@ def _testBinOp(self):
 
         >>> vcvXv2 = vcv * (3,2)
         >>> print vcvXv2
-        [[ 0.  2.]
-         [ 3.  4.]
-         [ 6.  6.]]
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
+        >>> vcvXv2 = vcv * ((3,),(2,))
+        >>> print vcvXv2
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
         >>> print isinstance(vcvXv2, CellVariable)
         1
         >>> print vcvXv2.getRank()
         1
         >>> v2Xvcv = (3,2) * vcv
         >>> print v2Xvcv
-        [[ 0.  2.]
-         [ 3.  4.]
-         [ 6.  6.]]
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
+        >>> v2Xvcv = ((3,),(2,)) * vcv
+        >>> print v2Xvcv
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
         >>> print isinstance(v2Xvcv, CellVariable)
         1
         >>> print v2Xvcv.getRank()
@@ -738,18 +717,16 @@ def _testBinOp(self):
         
         >>> vcvXv3 = vcv * (3,2,1)
         >>> print vcvXv3
-        [[ 0.  3.]
-         [ 2.  4.]
-         [ 2.  3.]]
+        [[ 0.  2.  2.]
+         [ 3.  4.  3.]]
         >>> isinstance(vcvXv3, CellVariable)
         1
         >>> print vcvXv3.getRank()
         1
         >>> v3Xvcv = (3,2,1) * vcv 
         >>> print v3Xvcv
-        [[ 0.  3.]
-         [ 2.  4.]
-         [ 2.  3.]]
+        [[ 0.  2.  2.]
+         [ 3.  4.  3.]]
         >>> isinstance(v3Xvcv, CellVariable)
         1
         >>> print v3Xvcv.getRank()
@@ -768,18 +745,16 @@ def _testBinOp(self):
 
         >>> vcvXsv = vcv * Variable(value=3)
         >>> print vcvXsv
-        [[ 0.  3.]
-         [ 3.  6.]
-         [ 6.  9.]]
+        [[ 0.  3.  6.]
+         [ 3.  6.  9.]]
         >>> print isinstance(vcvXsv, CellVariable)
         1
         >>> print vcvXsv.getRank()
         1
         >>> svXvcv = Variable(value=3) * vcv
         >>> print svXvcv
-        [[ 0.  3.]
-         [ 3.  6.]
-         [ 6.  9.]]
+        [[ 0.  3.  6.]
+         [ 3.  6.  9.]]
         >>> print isinstance(svXvcv, CellVariable)
         1
         >>> print svXvcv.getRank()
@@ -789,18 +764,24 @@ def _testBinOp(self):
         
         >>> vcvXv2v = vcv * Variable(value=(3,2))
         >>> print vcvXv2v
-        [[ 0.  2.]
-         [ 3.  4.]
-         [ 6.  6.]]
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
+        >>> vcvXv2v = vcv * Variable(value=((3,),(2,)))
+        >>> print vcvXv2v
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
         >>> print isinstance(vcvXv2v, CellVariable)
         1
         >>> print vcvXv2v.getRank()
         1
         >>> v2vXvcv = Variable(value=(3,2)) * vcv
         >>> print v2vXvcv
-        [[ 0.  2.]
-         [ 3.  4.]
-         [ 6.  6.]]
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
+        >>> v2vXvcv = Variable(value=((3,),(2,))) * vcv
+        >>> print v2vXvcv
+        [[ 0.  3.  6.]
+         [ 2.  4.  6.]]
         >>> print isinstance(v2vXvcv, CellVariable)
         1
         >>> print v2vXvcv.getRank()
@@ -808,18 +789,16 @@ def _testBinOp(self):
         
         >>> vcvXv3v = vcv * Variable(value=(3,2,1))
         >>> print vcvXv3v
-        [[ 0.  3.]
-         [ 2.  4.]
-         [ 2.  3.]]
+        [[ 0.  2.  2.]
+         [ 3.  4.  3.]]
         >>> isinstance(vcvXv3v, CellVariable)
         1
         >>> print vcvXv3v.getRank()
         1
         >>> v3vXvcv = Variable(value=(3,2,1)) * vcv 
         >>> print v3vXvcv
-        [[ 0.  3.]
-         [ 2.  4.]
-         [ 2.  3.]]
+        [[ 0.  2.  2.]
+         [ 3.  4.  3.]]
         >>> isinstance(v3vXvcv, CellVariable)
         1
         >>> print v3vXvcv.getRank()
@@ -839,16 +818,8 @@ def _testBinOp(self):
 
         >>> vfvXvfv = vfv * vfv
         >>> print vfvXvfv
-        [[  0.   1.]
-         [  1.   4.]
-         [  4.   9.]
-         [  9.  16.]
-         [  1.   9.]
-         [  4.  16.]
-         [  9.  25.]
-         [ 36.  81.]
-         [  4.  36.]
-         [  1.   9.]]
+        [[  0.   1.   4.   9.   1.   4.   9.  36.   4.   1.]
+         [  1.   4.   9.  16.   9.  16.  25.  81.  36.   9.]]
         >>> isinstance(vfvXvfv, FaceVariable)
         1
         >>> print vfvXvfv.getRank()
@@ -858,32 +829,16 @@ def _testBinOp(self):
 
         >>> vfvXs = vfv * 3
         >>> print vfvXs
-        [[  0.   3.]
-         [  3.   6.]
-         [  6.   9.]
-         [  9.  12.]
-         [  3.   9.]
-         [  6.  12.]
-         [  9.  15.]
-         [ 18.  27.]
-         [  6.  18.]
-         [  3.   9.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  3.   6.   9.  12.   9.  12.  15.  27.  18.   9.]]
         >>> print isinstance(vfvXs, FaceVariable)
         1
         >>> print vfvXs.getRank()
         1
         >>> sXvfv = 3 * vfv
         >>> print sXvfv
-        [[  0.   3.]
-         [  3.   6.]
-         [  6.   9.]
-         [  9.  12.]
-         [  3.   9.]
-         [  6.  12.]
-         [  9.  15.]
-         [ 18.  27.]
-         [  6.  18.]
-         [  3.   9.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  3.   6.   9.  12.   9.  12.  15.  27.  18.   9.]]
         >>> print isinstance(sXvfv, FaceVariable)
         1
         >>> print sXvfv.getRank()
@@ -893,32 +848,16 @@ def _testBinOp(self):
 
         >>> vfvXv2 = vfv * (3,2)
         >>> print vfvXv2
-        [[  0.   2.]
-         [  3.   4.]
-         [  6.   6.]
-         [  9.   8.]
-         [  3.   6.]
-         [  6.   8.]
-         [  9.  10.]
-         [ 18.  18.]
-         [  6.  12.]
-         [  3.   6.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  2.   4.   6.   8.   6.   8.  10.  18.  12.   6.]]
         >>> print isinstance(vfvXv2, FaceVariable)
         1
         >>> print vfvXv2.getRank()
         1
         >>> v2Xvfv = (3,2) * vfv
         >>> print v2Xvfv
-        [[  0.   2.]
-         [  3.   4.]
-         [  6.   6.]
-         [  9.   8.]
-         [  3.   6.]
-         [  6.   8.]
-         [  9.  10.]
-         [ 18.  18.]
-         [  6.  12.]
-         [  3.   6.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  2.   4.   6.   8.   6.   8.  10.  18.  12.   6.]]
         >>> print isinstance(v2Xvfv, FaceVariable)
         1
         >>> print v2Xvfv.getRank()
@@ -936,32 +875,16 @@ def _testBinOp(self):
 
         >>> vfvXv10 = vfv * (9,8,7,6,5,4,3,2,1,0)
         >>> print vfvXv10
-        [[  0.   9.]
-         [  8.  16.]
-         [ 14.  21.]
-         [ 18.  24.]
-         [  5.  15.]
-         [  8.  16.]
-         [  9.  15.]
-         [ 12.  18.]
-         [  2.   6.]
-         [  0.   0.]]
+        [[  0.   8.  14.  18.   5.   8.   9.  12.   2.   0.]
+         [  9.  16.  21.  24.  15.  16.  15.  18.   6.   0.]]
         >>> isinstance(vfvXv10, FaceVariable)
         1
         >>> print vfvXv10.getRank()
         1
         >>> v10Xvfv = (9,8,7,6,5,4,3,2,1,0) * vfv
         >>> print v10Xvfv
-        [[  0.   9.]
-         [  8.  16.]
-         [ 14.  21.]
-         [ 18.  24.]
-         [  5.  15.]
-         [  8.  16.]
-         [  9.  15.]
-         [ 12.  18.]
-         [  2.   6.]
-         [  0.   0.]]
+        [[  0.   8.  14.  18.   5.   8.   9.  12.   2.   0.]
+         [  9.  16.  21.  24.  15.  16.  15.  18.   6.   0.]]
         >>> isinstance(v10Xvfv, FaceVariable)
         1
         >>> print v10Xvfv.getRank()
@@ -971,32 +894,16 @@ def _testBinOp(self):
 
         >>> vfvXsv = vfv * Variable(value=3)
         >>> print vfvXsv
-        [[  0.   3.]
-         [  3.   6.]
-         [  6.   9.]
-         [  9.  12.]
-         [  3.   9.]
-         [  6.  12.]
-         [  9.  15.]
-         [ 18.  27.]
-         [  6.  18.]
-         [  3.   9.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  3.   6.   9.  12.   9.  12.  15.  27.  18.   9.]]
         >>> print isinstance(vfvXsv, FaceVariable)
         1
         >>> print vfvXsv.getRank()
         1
         >>> svXvfv = Variable(value=3) * vfv
         >>> print svXvfv
-        [[  0.   3.]
-         [  3.   6.]
-         [  6.   9.]
-         [  9.  12.]
-         [  3.   9.]
-         [  6.  12.]
-         [  9.  15.]
-         [ 18.  27.]
-         [  6.  18.]
-         [  3.   9.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  3.   6.   9.  12.   9.  12.  15.  27.  18.   9.]]
         >>> print isinstance(svXvfv, FaceVariable)
         1
         >>> print svXvfv.getRank()
@@ -1006,32 +913,16 @@ def _testBinOp(self):
         
         >>> vfvXv2v = vfv * Variable(value=(3,2))
         >>> print vfvXv2v
-        [[  0.   2.]
-         [  3.   4.]
-         [  6.   6.]
-         [  9.   8.]
-         [  3.   6.]
-         [  6.   8.]
-         [  9.  10.]
-         [ 18.  18.]
-         [  6.  12.]
-         [  3.   6.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  2.   4.   6.   8.   6.   8.  10.  18.  12.   6.]]
         >>> print isinstance(vfvXv2v, FaceVariable)
         1
         >>> print vfvXv2v.getRank()
         1
         >>> v2vXvfv = Variable(value=(3,2)) * vfv
         >>> print v2vXvfv
-        [[  0.   2.]
-         [  3.   4.]
-         [  6.   6.]
-         [  9.   8.]
-         [  3.   6.]
-         [  6.   8.]
-         [  9.  10.]
-         [ 18.  18.]
-         [  6.  12.]
-         [  3.   6.]]
+        [[  0.   3.   6.   9.   3.   6.   9.  18.   6.   3.]
+         [  2.   4.   6.   8.   6.   8.  10.  18.  12.   6.]]
         >>> print isinstance(v2vXvfv, FaceVariable)
         1
         >>> print v2vXvfv.getRank()
@@ -1049,32 +940,16 @@ def _testBinOp(self):
 
         >>> vfvXv10v = vfv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
         >>> print vfvXv10v
-        [[  0.   9.]
-         [  8.  16.]
-         [ 14.  21.]
-         [ 18.  24.]
-         [  5.  15.]
-         [  8.  16.]
-         [  9.  15.]
-         [ 12.  18.]
-         [  2.   6.]
-         [  0.   0.]]
+        [[  0.   8.  14.  18.   5.   8.   9.  12.   2.   0.]
+         [  9.  16.  21.  24.  15.  16.  15.  18.   6.   0.]]
         >>> isinstance(vfvXv10v, FaceVariable)
         1
         >>> print vfvXv10v.getRank()
         1
         >>> v10vXvfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * vfv
         >>> print v10vXvfv
-        [[  0.   9.]
-         [  8.  16.]
-         [ 14.  21.]
-         [ 18.  24.]
-         [  5.  15.]
-         [  8.  16.]
-         [  9.  15.]
-         [ 12.  18.]
-         [  2.   6.]
-         [  0.   0.]]
+        [[  0.   8.  14.  18.   5.   8.   9.  12.   2.   0.]
+         [  9.  16.  21.  24.  15.  16.  15.  18.   6.   0.]]
         >>> isinstance(v10vXvfv, FaceVariable)
         1
         >>> print v10vXvfv.getRank()
@@ -1135,14 +1010,14 @@ def _testBinOp(self):
         >>> print isinstance(v2vXv, Variable)
         1
 
-        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2))
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
-        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL 
+        TypeError: can't multiply sequence by non-int
+        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1)
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
+        TypeError: can't multiply sequence by non-int
         
 
     `Variable` Scalar * `Variable` Scalar
@@ -1175,10 +1050,10 @@ def _testBinOp(self):
         >>> print isinstance(v2vXv2v, Variable)
         1
         
-        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2))
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence to non-int
+        TypeError: unsupported operand type(s) for *: 'Variable' and 'Variable'
 
     Test for weird bug that was appearing in inline. Caused by the intermediate
     operators not getting marked fresh.
@@ -1218,7 +1093,7 @@ def _testBinOp(self):
     It seems that numpy's __rmul__ coercion is very strange
 
         >>> type(numerix.array([1., 2.]) * Variable([1., 2.]))
-        <class 'fipy.variables.variable.binOp'>
+        <class 'fipy.variables.binaryOperatorVariable.binOp'>
 
     Test inlining
 
