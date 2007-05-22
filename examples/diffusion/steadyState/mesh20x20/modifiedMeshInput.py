@@ -53,7 +53,7 @@ The result is again tested in the same way:
 
     >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = 20
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
@@ -88,7 +88,7 @@ var = CellVariable(name = "solution variable",
                    value = valueLeft)
 
 exteriorFaces = mesh.getExteriorFaces()
-xFace = exteriorFaces.getCenters()[...,0]
+xFace = exteriorFaces.getCenters()[0]
 boundaryConditions = (FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000001), valueLeft),
                       FixedValue(exteriorFaces.where((xFace - 20) ** 2 < 0.000000000000001), valueRight))
                       
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     viewer = fipy.viewers.make(vars = var)
     viewer.plot()
     varArray = numerix.array(var)
-    x = mesh.getCellCenters()[:,0]
+    x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = "absolute error",

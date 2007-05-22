@@ -193,7 +193,7 @@ diffusion problem is given by
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
     >>> from fipy.tools.numerix import sqrt
 
@@ -479,7 +479,7 @@ coefficient on the mesh faces
 
     >>> from fipy.variables.faceVariable import FaceVariable
     >>> D = FaceVariable(mesh=mesh, value=1.0)
-    >>> x = mesh.getFaceCenters()[...,0]
+    >>> x = mesh.getFaceCenters()[0]
     >>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
@@ -521,13 +521,10 @@ The analytical solution is simply
    x + 18 L / 4 & \text{for \( 3 L / 4 \le x < L \),}
    \end{cases} \]
    or
-   \IndexModule{numerix}
-   \IndexFunction{where}
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
-    >>> from fipy.tools.numerix import where
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(x)
     >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
     ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
@@ -627,7 +624,7 @@ diffusivity cases
    
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(1. - sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the

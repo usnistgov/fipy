@@ -284,19 +284,13 @@ solution. This argument cannot be passed to `solve()`.
 
 Test values in the last cell.
 
-.. raw:: latex
-
-   \IndexModule{numerix}
-   \IndexFunction{allclose}
-
 ..
 
-    >>> from fipy.tools import numerix
-    >>> numerix.allclose(pressure[...,-1], 145.233883763)
+    >>> print pressure[...,-1].allclose(145.233883763)
     1
-    >>> numerix.allclose(xVelocity[...,-1], 0.24964673696)
+    >>> print xVelocity[...,-1].allclose(0.24964673696)
     1
-    >>> numerix.allclose(yVelocity[...,-1], -0.164498041783)
+    >>> print yVelocity[...,-1].allclose(-0.164498041783)
     1
 
 """

@@ -105,8 +105,8 @@ Initialise the `distanceVariable` to be a circular distance function.
 ..
 
    >>> from fipy.tools import numerix
-   >>> initialArray = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 +
-   ...                             (mesh.getCellCenters()[:,1] - L / 2.)**2) - \
+   >>> initialArray = numerix.sqrt((mesh.getCellCenters()[0] - L / 2.)**2 +
+   ...                             (mesh.getCellCenters()[1] - L / 2.)**2) - \
    ...                             radius
    >>> var.setValue(initialArray)
 

@@ -112,7 +112,7 @@ by
 The result is tested against the expected profile:
     
     >>> Lx = nx * dx
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
     >>> from fipy.tools import numerix
     >>> epsi = x / numerix.sqrt(t * diffusionCoeff)

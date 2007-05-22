@@ -277,7 +277,7 @@ diffusion problem.
                                                     
 The values at the elements should be equal to their `x` coordinate
 
-    >>> print phi.allclose(mesh.getCellCenters()[...,0], atol = 0.02)
+    >>> print phi.allclose(mesh.getCellCenters()[0], atol = 0.02)
     1
 
 Display the results if run as a script.

@@ -145,7 +145,7 @@ This problem has the analytical solution
 
 ..
 
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> analytical = CellVariable(mesh=mesh, name="analytical solution", 
     ...                           value=(x**2)/2 - 2*x)
 

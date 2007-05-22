@@ -357,7 +357,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         bulkCatalystVar.updateOld()
 
         distanceVar.extendVariable(extensionVelocityVariable)
-        dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt) 
         surfactantEquation.solve(catalystVar, dt = dt)

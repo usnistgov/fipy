@@ -94,8 +94,8 @@ class MayaviSurfactantViewer(Viewer):
 
     def _getStructure(self):
 
-        ##maxX = numerix.max(self.distanceVar.getMesh().getFaceCenters()[:,0])
-        ##minX = numerix.min(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
+        ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
@@ -109,7 +109,7 @@ class MayaviSurfactantViewer(Viewer):
 
 
         from lines import _getOrderedLines
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 10)
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -117,7 +117,7 @@ class MayaviSurfactantViewer(Viewer):
 
         tmpIDs = numerix.nonzero(data > 0.0001)
         if len(tmpIDs) > 0:
-            val = numerix.min(numerix.take(data, tmpIDs))
+            val = numerix.take(data, tmpIDs).min()
         else:
             val = 0.0001
             
@@ -215,16 +215,16 @@ class MayaviSurfactantViewer(Viewer):
         
         xmax = self._getLimit('datamax')
         if xmax is None:
-            xmax = numerix.max(self.surfactantVar)
+            xmax = self.surfactantVar.max()
             
         xmin = self._getLimit('datamin')
         if xmin is None:
-            xmin = numerix.min(self.surfactantVar)
+            xmin = self.surfactantVar.min()
             
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((numerix.min(self.surfactantVar), numerix.max(self.surfactantVar)))
+        slh.v_range_var.set((self.surfactantVar.min(), self.surfactantVar.max()))
         slh.set_v_range_var()
         
         self._viewer.Render()

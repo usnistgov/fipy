@@ -322,21 +322,21 @@ iterating to equilibrium
     ...             residual = 0.
     ...                 
     ...             phase.equation.solve(var = phase, dt = dt)
-    ...             # print phase.name, numerix.max(phase.equation.residual)
-    ...             residual = max(numerix.max(phase.equation.residual), residual)
+    ...             # print phase.name, phase.equation.residual.max()
+    ...             residual = max(phase.equation.residual.max(), residual)
     ...             phase.residual[:] = phase.equation.residual
     ...    
     ...             potential.equation.solve(var = potential, dt = dt, boundaryConditions = bcs)
-    ...             # print potential.name, numerix.max(potential.equation.residual)
-    ...             residual = max(numerix.max(potential.equation.residual), residual)
+    ...             # print potential.name, potential.equation.residual.max()
+    ...             residual = max(potential.equation.residual.max(), residual)
     ...             potential.residual[:] = potential.equation.residual
     ...    
     ...             for Cj in substitutionals + interstitials:
     ...                 Cj.equation.solve(var = Cj, 
     ...                                   dt = dt,
     ...                                   solver = solver)
-    ...                 # print Cj.name, numerix.max(Cj.equation.residual)
-    ...                 residual = max(numerix.max(Cj.equation.residual), residual)
+    ...                 # print Cj.name, Cj.equation.residual.max()
+    ...                 residual = max(Cj.equation.residual.max(), residual)
     ...                 Cj.residual[:] = Cj.equation.residual
     ...    
     ...             # print

@@ -133,13 +133,13 @@ class Viewer:
         if datamin is None:
             datamin = 1e300
             for var in vars:
-                datamin = min(datamin, numerix.min(var))
+                datamin = min(datamin, var.min())
 
         if datamax is None:
             from fipy.tools import numerix
             datamax = -1e300
             for var in vars:
-                datamax = max(datamax, numerix.max(var))
+                datamax = max(datamax, var.max())
                 
         return datamin, datamax
 

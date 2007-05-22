@@ -66,7 +66,7 @@ conservation of surfactant:
    >>> for step in range(steps):
    ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
    ...     distanceVariable.extendVariable(velocity)
-   ...     timeStepDuration = cfl * dx / numerix.max(velocity)
+   ...     timeStepDuration = cfl * dx / velocity.max()
    ...     distanceVariable.updateOld()
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    ...     surfactantEquation.solve(surfactantVariable)
@@ -81,13 +81,8 @@ Next test for the correct local value of surfactant:
    >>> finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
    >>> answer = initialSurfactantValue * initialRadius / finalRadius
    >>> coverage = surfactantVariable.getInterfaceVar()
-   >>> error = 0.
-   >>> size = 0
-   >>> for i in range(len(coverage)):
-   ...     if coverage[i] > 1e-3:
-   ...         error += (coverage[i] / answer - 1.)**2
-   ...         size += 1
-   >>> print numerix.sqrt(error / size) < 0.04
+   >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04
    1
 
 Test for the correct position of the interface:

@@ -145,7 +145,7 @@ We can again test against the analytical solution
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
     >>> from fipy.tools.numerix import sqrt
 
@@ -181,7 +181,7 @@ We can also solve the steady-state problem directly
 and test the result against the expected linear composition profile:
 
     >>> L = nx * dx
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / L
     >>> print phi.allclose(analyticalArray, rtol = 2e-10, atol = 2e-10)
     1

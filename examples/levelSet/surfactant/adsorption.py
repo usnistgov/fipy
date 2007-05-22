@@ -107,9 +107,9 @@ Compare the analaytical and numerical results:
 
    >>> theta = surfactantVar.getInterfaceVar()[1]
 
-   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)
+   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
    1
-   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)
+   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
    1
 
 

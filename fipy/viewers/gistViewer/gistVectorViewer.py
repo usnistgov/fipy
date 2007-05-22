@@ -52,7 +52,7 @@ from fipy.tools import numerix
 class GistVectorViewer(GistViewer):
     
     def __init__(self, vars, title = ''):
-	GistViewer.__init__(self, vars=vars, title=title)
+        GistViewer.__init__(self, vars=vars, title=title)
         
     def _getSuitableVars(self, vars):
         vars = [var for var in GistViewer._getSuitableVars(self, vars) \
@@ -64,29 +64,29 @@ class GistVectorViewer(GistViewer):
             raise MeshDimensionError, "Can only plot 2D vector data"
         # this viewer can only display one variable
         return [vars[0]]
-	
+        
     def plot(self, filename = None):
-	import gist
+        import gist
 
         gist.window(self.id, wait = 1)
-	gist.pltitle(self.title)
+        gist.pltitle(self.title)
         gist.animate(1)
-	
+        
         var = self.vars[0]
         
         if isinstance(var, FaceVariable):
             centers = var.getMesh().getFaceCenters()
         elif isinstance(var, CellVariable):
             centers = var.getMesh().getCellCenters()
-	
-	gist.plmesh(numerix.array([centers[...,1],centers[...,1]]), 
-                    numerix.array([centers[...,0],centers[...,0]]))
+        
+        gist.plmesh(numerix.array([centers[1],centers[1]]), 
+                    numerix.array([centers[0],centers[0]]))
 
-	vx = numerix.array(var[...,0])
-	vy = numerix.array(var[...,1])
-	
-        maxVec = numerix.max(var.getMag())
-        maxGrid = numerix.max(var.getMesh()._getCellDistances())
+        vx = numerix.array(var[0])
+        vy = numerix.array(var[1])
+        
+        maxVec = var.getMag().max()
+        maxGrid = var.getMesh()._getCellDistances().max()
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)
         

@@ -56,7 +56,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 
     >>> valueLeft = 0
     >>> valueRight = 1
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> Lx = nx * dx
     >>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> from fipy.variables.cellVariable import CellVariable
