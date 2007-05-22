@@ -1213,20 +1213,41 @@ class Variable(object):
         warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
         return self
 
-    def _sumClass(self, axis):
+    def _axisClass(self, axis):
         return self._OperatorVariableClass()
-                                    
-    def sum(self, axis=0):
-        if not hasattr(self, "sumVar"):
-            self.sumVar = {}
-        if not self.sumVar.has_key(axis):
-            self.sumVar[axis] = self._UnaryOperatorVariable(lambda a: numerix.sum(a, axis=axis), 
-                                                            operatorClass=self._sumClass(axis=axis), 
-                                                            opShape=self.getShape()[:axis] + self.getShape()[axis+1:],
-                                                            canInline=False)
-        
-        return self.sumVar[axis]
 
+    def _axisOperator(self, opname, op, axis=None):
+        if not hasattr(self, opname):
+            setattr(self, opname, {})
+            
+        opdict = getattr(self, opname)
+        if not opdict.has_key(axis):
+            if axis is None:
+                opShape = ()
+            else:
+                opShape=self.getShape()[:axis] + self.getShape()[axis+1:]
+                
+            opdict[axis] = self._UnaryOperatorVariable(op,
+                                                       operatorClass=self._axisClass(axis=axis), 
+                                                       opShape=opShape,
+                                                       canInline=False)
+        
+        return opdict[axis]
+
+    def sum(self, axis=None):
+        return self._axisOperator(opname="sumVar", 
+                                  op=lambda a: numerix.sum(a, axis=axis), 
+                                  axis=axis)
+                                    
+    def max(self, axis=None):
+        return self._axisOperator(opname="maxVar", 
+                                  op=lambda a: a.max(axis=axis), 
+                                  axis=axis)
+                                  
+    def min(self, axis=None):
+        return self._axisOperator(opname="minVar", 
+                                  op=lambda a: a.min(axis=axis), 
+                                  axis=axis)
     def _getitemClass(self, index):
         return self._OperatorVariableClass()
 

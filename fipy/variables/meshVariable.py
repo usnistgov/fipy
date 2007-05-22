@@ -181,16 +181,16 @@ class _MeshVariable(Variable):
         
         return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
 
-    def _sumClass(self, axis):
+    def _axisClass(self, axis):
         """
-        if we sum along the mesh elements, then this is no longer a `_MeshVariable`,
+        if we operate along the mesh elements, then this is no longer a `_MeshVariable`,
         otherwise we get back a `_MeshVariable` of the same class, but lower rank.
         """
-        if axis == len(self.getShape()) or axis == -1:
+        if axis is None or axis == len(self.getShape()) or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
         else:
             return self._OperatorVariableClass()
-        
+
     def _getitemClass(self, index):
         shape = self.getShape()
         indexshape = numerix._indexShape(index=index, arrayShape=shape)
