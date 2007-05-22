@@ -272,7 +272,7 @@ if __name__ == "__main__":
         metalVar.updateOld()
         bulkCatalystVar.updateOld()
         distanceVar.extendVariable(extensionVelocityVariable)
-        dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable.max()
         advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt,

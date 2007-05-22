@@ -163,7 +163,7 @@ if __name__ == '__main__':
         print 'step',step
         velocity.setValue(surfactantVariable.getInterfaceVar() * k)
         distanceVariable.extendVariable(velocity)
-        timeStepDuration = cfl * dx / numerix.max(velocity)
+        timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable)

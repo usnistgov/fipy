@@ -422,9 +422,9 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
                                                0),
                                  0)
 
-        dt = cflNumber * cellSize / numerix.max(extOnInt)
+        dt = cflNumber * cellSize / extOnInt.max()
 
-        id = numerix.max(numerix.nonzero(distanceVar._getInterfaceFlag()))
+        id = numerix.nonzero(distanceVar._getInterfaceFlag()).max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
