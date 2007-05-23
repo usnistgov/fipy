@@ -366,7 +366,7 @@ class Variable(object):
             if shape[-1] == 1:
                 return '[j]'
             else:
-                return '[j, i]'
+                return '[j * ni + i]'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
@@ -388,7 +388,7 @@ class Variable(object):
              'var[i]'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
-             'var[j, i]'
+             'var[j * ni + i]'
 
              >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
              'var[k + j * nk + i * nj * nk]'
@@ -1062,7 +1062,7 @@ class Variable(object):
             >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
             '(var0[i] * var1[i])'
             >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-            '(var0[j, i] * var1[j, i])'
+            '(var0[j * ni + i] * var1[j * ni + i])'
             >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
             '((var00[i] * var01[i]) * var1[i])'
 
@@ -2659,6 +2659,34 @@ class Variable(object):
             >>> v0[1] = 0.5
             >>> print v
             [ 1.   0.5]
+
+        Test inline indexing
+
+            >>> mesh = Grid2D(nx=3, ny=3)
+            >>> v1 = CellVariable(mesh=mesh, value=numerix.arange(9))
+            >>> a = v1 * (1, -1)
+            >>> print a
+            [[ 0. -0.]
+             [ 1. -1.]
+             [ 2. -2.]
+             [ 3. -3.]
+             [ 4. -4.]
+             [ 5. -5.]
+             [ 6. -6.]
+             [ 7. -7.]
+             [ 8. -8.]]
+            >>> v1[0] = 0
+            >>> print a
+            [[ 0. -0.]
+             [ 1. -1.]
+             [ 2. -2.]
+             [ 3. -3.]
+             [ 4. -4.]
+             [ 5. -5.]
+             [ 6. -6.]
+             [ 7. -7.]
+             [ 8. -8.]]
+
         """
         pass
 
