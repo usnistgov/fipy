@@ -54,13 +54,13 @@ class _VectorHarmonicCellToFaceVariable(_VectorCellToFaceVariable):
         val = self._getArray().copy()
         
         inline._runInline("""
-            int ID2 = id2(i);
-            int ID1 = id1(i);
-            double cell2 = var(ID2,j);
-            double cell1 = var(ID1,j);
-            val(i,j) = (cell1 - cell2) * alpha(i) + cell2;
-            if (val(i,j) != 0) {
-                val(i,j) = cell1 * cell2 / val(i,j);
+            int ID2 = id2[i];
+            int ID1 = id1[i];
+            double cell2 = var[ID2 * nj + j];
+            double cell1 = var[ID1 * nj + j];
+            val[i * nj  + j] = (cell1 - cell2) * alpha[i] + cell2;
+            if (val[i * nj + j] != 0) {
+                val[i * nj + j] = cell1 * cell2 / val[i * nj + j];
             }
         """,
         var = self.var.getNumericValue(),

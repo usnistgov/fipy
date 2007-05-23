@@ -35,11 +35,29 @@ def _runInline(code_in, converters=None, verbose=0, **args):
 
     from scipy import weave
 
+##    code = """
+##       int i;
+##       for(i=0;i<ni;i++) {
+##           jasgj
+##           result[i] = 0.0;
+##           result[i] = (var0[i] * var1[i]);
+##       }
+##    """
+
+##    print 'code',code
+##    for key in args.keys():
+##        print 'key',key,'args[key]',type(args[key]), args[key]
+
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
-                 type_converters=converters or weave.converters.blitz,
+                 type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',
-                 verbose = verbose,
+                 force=0,
+                 verbose = 0 or verbose,
                  extra_compile_args =['-O3'])
+
+
+##    print 'result',args['result']
+##    raw_input()
 

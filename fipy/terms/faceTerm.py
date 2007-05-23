@@ -69,7 +69,7 @@ class FaceTerm(Term):
 
     def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
         coeffMatrix = self._getCoeffMatrix(mesh, weight)
-        
+
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces),    id1, id1)
         L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces), id1, id2)
         L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
@@ -116,12 +116,12 @@ class FaceTerm(Term):
         cell2OffDiag[:] = weight['cell 2 offdiag']
         
         inline._runInline("""
-            long int faceID = faceIDs(i);
-            long int cellID1 = id1(i);
-            long int cellID2 = id2(i);
+            long int faceID = faceIDs[i];
+            long int cellID1 = id1[i];
+            long int cellID2 = id2[i];
             
-            b(cellID1) += -coeff(faceID) * (cell1Diag(faceID) * oldArrayId1(i) + cell1OffDiag(faceID) * oldArrayId2(i));
-            b(cellID2) += -coeff(faceID) * (cell2Diag(faceID) * oldArrayId2(i) + cell2OffDiag(faceID) * oldArrayId1(i));
+            b[cellID1] += -coeff[faceID] * (cell1Diag[faceID] * oldArrayId1[i] + cell1OffDiag[faceID] * oldArrayId2[i]);
+            b[cellID2] += -coeff[faceID] * (cell2Diag[faceID] * oldArrayId2[i] + cell2OffDiag[faceID] * oldArrayId1[i]);
         """,oldArrayId1 = numerix.array(oldArrayId1),
             oldArrayId2 = numerix.array(oldArrayId2),
             id1 = id1,

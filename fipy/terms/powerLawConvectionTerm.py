@@ -98,24 +98,24 @@ class PowerLawConvectionTerm(ConvectionTerm):
             alpha = self._getArray().copy()
             
 	    inline._runInline("""
-		if (fabs(P(i)) < eps) {
-		    P(i) = eps;
+		if (fabs(P[i]) < eps) {
+		    P[i] = eps;
 		}
 		
-		alpha(i) = 0.5;
+		alpha[i] = 0.5;
 		
-		if (P(i) > 10.) {
-		    alpha(i) = (P(i) - 1.) / P(i);
-		} else if (10. >= P(i) && P(i) > eps) {
-		    double	tmp = (1. - P(i) / 10.);
+		if (P[i] > 10.) {
+		    alpha[i] = (P[i] - 1.) / P[i];
+		} else if (10. >= P[i] && P[i] > eps) {
+		    double	tmp = (1. - P[i] / 10.);
 		    double	tmpSqr = tmp * tmp;
-		    alpha(i) = ((P(i) - 1.) + tmpSqr*tmpSqr*tmp) / P(i);
-		} else if (-eps > P(i) && P(i) >= -10.) {
-		    double	tmp = (1. + P(i) / 10.);
+		    alpha[i] = ((P[i] - 1.) + tmpSqr*tmpSqr*tmp) / P[i];
+		} else if (-eps > P[i] && P[i] >= -10.) {
+		    double	tmp = (1. + P[i] / 10.);
 		    double	tmpSqr = tmp * tmp;
-		    alpha(i) = (tmpSqr*tmpSqr*tmp - 1.) / P(i);
-		} else if (P(i) < -10.) {
-		    alpha(i) = -1. / P(i);
+		    alpha[i] = (tmpSqr*tmpSqr*tmp - 1.) / P[i];
+		} else if (P[i] < -10.) {
+		    alpha[i] = -1. / P[i];
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,

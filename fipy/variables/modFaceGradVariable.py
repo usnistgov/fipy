@@ -57,23 +57,25 @@ class _ModFaceGradVariable(_FaceGradVariable):
         inline._runInline(self.modIn + """
         int j;
         double t1grad1, t1grad2, t2grad1, t2grad2, N;
-        int ID1 = id1(i);
-        int ID2 = id2(i);
-        N = mod(var(ID2) - var(ID1)) / dAP(i);
+        int ID1 = id1[i];
+        int ID2 = id2[i];
+        N = mod(var[ID2] - var[ID1]) / dAP[i];
 
         t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
         for (j = 0; j < NJ; j++) {
-            t1grad1 += tangents1(i,j) * cellGrad(ID1,j);
-            t1grad2 += tangents1(i,j) * cellGrad(ID2,j);
-            t2grad1 += tangents2(i,j) * cellGrad(ID1,j);
-            t2grad2 += tangents2(i,j) * cellGrad(ID2,j);
+            int arrayID = i * NJ + j;
+            t1grad1 += tangents1[arrayID] * cellGrad[ID1 * NJ + j];
+            t1grad2 += tangents1[arrayID] * cellGrad[ID2 * NJ + j];
+            t2grad1 += tangents2[arrayID] * cellGrad[ID1 * NJ + j];
+            t2grad2 += tangents2[arrayID] * cellGrad[ID2 * NJ + j];
         }
             
         for (j = 0; j < NJ; j++) {
-            val(i,j) = normals(i,j) * N;
-            val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-            val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
+            int arrayID = i * NJ + j;
+            val[arrayID] = normals[arrayID] * N;
+            val[arrayID] += tangents1[arrayID] * (t1grad1 + t1grad2) / 2.;
+            val[arrayID] += tangents2[arrayID] * (t2grad1 + t2grad2) / 2.;
         }
 
         """,tangents1 = tangents1,

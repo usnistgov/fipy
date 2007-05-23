@@ -51,10 +51,10 @@ class _VectorArithmeticCellToFaceVariable(_VectorCellToFaceVariable):
         val = self._getArray().copy()
         
         inline._runInline("""
-            int ID1 = id1(i);
-            int ID2 = id2(i);
-            double cell2 = var(ID2,j);
-            val(i,j) = (var(ID1,j) - cell2) * alpha(i) + cell2;
+            int ID1 = id1[i];
+            int ID2 = id2[i];
+            double cell2 = var[ID2 * nj + j];
+            val[i * nj + j] = (var[ID1 * nj + j] - cell2) * alpha[i] + cell2;
         """,
         var = self.var.getNumericValue(),
         val = val,

@@ -361,22 +361,22 @@ class Variable(object):
     def _getCIndexString(self, shape):
         dimensions = len(shape)
         if dimensions == 1:
-            return '(i)'
+            return '[i]'
         elif dimensions == 2:
             if shape[-1] == 1:
-                return '(j)'
+                return '[j]'
             else:
-                return '(j, i)'
+                return '[j, i]'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
-                    return '(k)'
+                    return '[k]'
                 else:
-                    return '(k + j * nk)'
+                    return '[k + j * nk]'
             elif shape[-2] == 1:
-                return '(k + i * nj * nk)'
+                return '[k + i * nj * nk]'
             else:
-                return '(k + j * nk + i * nj * nk)'
+                return '[k + j * nk + i * nj * nk]'
 
     def _getCstring(self, argDict={}, id="", freshen=None):
          """
@@ -385,16 +385,16 @@ class Variable(object):
              'var'
            
              >>> (Variable((1,2,3,4)))._getCstring(argDict={})
-             'var(i)'
+             'var[i]'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
-             'var(j, i)'
+             'var[j, i]'
 
              >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
-             'var(k + j * nk + i * nj * nk)'
+             'var[k + j * nk + i * nj * nk]'
 
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict={})
-             '(var0 * var1(i))'
+             '(var0 * var1[i])'
 
          freshen is ignored
          """
@@ -768,25 +768,25 @@ class Variable(object):
             '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
             
             >>> (v1 * v2)._getRepresentation(style='C', id="")
-            '(var0(i) * var1(i))'
+            '(var0[i] * var1[i])'
             
             >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
-            '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
+            '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
             
             >>> (v1 - v2)._getRepresentation(style='C', id="")
-            '(var0(i) - var1(i))'
+            '(var0[i] - var1[i])'
 
             >>> (v1 / v2)._getRepresentation(style='C', id="")
-            '(var0(i) / var1(i))'
+            '(var0[i] / var1[i])'
 
             >>> (v1 - 1)._getRepresentation(style='C', id="")
-            '(var0(i) - var1)'
+            '(var0[i] - var1)'
                 
             >>> (5 * v2)._getRepresentation(style='C', id="")
-            '(var0(i) * var1)'
+            '(var0[i] * var1)'
 
             >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
-            '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
+            '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
 
         Check that getUnit() works for a binOp
 
@@ -997,7 +997,7 @@ class Variable(object):
                         free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                         stack.append(free[_popIndex()])
                     elif unop.has_key(bytecode):
-                        stack.append(unop[bytecode] + stack.pop())
+                        stack.append(unop[bytecode] + '(' + stack.pop() + ')')
                     elif binop.has_key(bytecode):
                         stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                     else:
@@ -1060,11 +1060,11 @@ class Variable(object):
         Gets the stack from _getCstring() which calls _getRepresentation()
         
             >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
-            '(var0(i) * var1(i))'
+            '(var0[i] * var1[i])'
             >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-            '(var0(j, i) * var1(j, i))'
+            '(var0[j, i] * var1[j, i])'
             >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
-            '((var00(i) * var01(i)) * var1(i))'
+            '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with
         contiguous arrays.  The `mesh.getCellCenters()[:,1]` command
@@ -1097,7 +1097,7 @@ class Variable(object):
         dimensions = len(shape)
             
         if dimensions == 0:
-            string = 'result(0) = ' + string
+            string = 'result[0] = ' + string
             dim = ()
         else:
             string = 'result' + self._getCIndexString(shape) + ' = ' + string
@@ -1139,6 +1139,7 @@ class Variable(object):
                 argDict['result'] = self.value
 
             resultShape = argDict['result'].shape
+
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], (1,))
 
