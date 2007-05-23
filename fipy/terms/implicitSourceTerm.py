@@ -43,6 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.sourceTerm import SourceTerm
+from fipy.tools import numerix
 
 class ImplicitSourceTerm(SourceTerm):
     r"""
@@ -61,7 +62,7 @@ class ImplicitSourceTerm(SourceTerm):
         combinedSign = self._diagonalSign * sign(coeff)
         self.coeffVectors = {
             'diagonal': coeff * (combinedSign >= 0),
-            'old value': 0,
+            'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
             'b vector': -coeff * var * (combinedSign < 0),
-            'new value': 0
+            'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
