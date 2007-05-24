@@ -263,7 +263,7 @@ class DistanceVariable(CellVariable):
         if deleteIslands:
             adjVals = numerix.take(self.value, cellToCellIDs)
             adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
-            masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 1)
+            masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 0)
             tmp = MA.logical_and(masksum == 4, self.value > 0)
             self.value = MA.where(tmp, -1, self.value)
 
