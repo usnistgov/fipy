@@ -49,12 +49,24 @@ def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
 
     if numerix.sometrue(mask):
-        for i in range(ids.shape[-1]):
-            if not mask[...,i]:
-                vector[...,ids[...,i]] += additionVector[...,i]
+        if len(vector.shape) < len(additionVector.shape):
+            for j in range(vector.shape[0]):
+                for id, value, masked in zip(ids.flat, additionVector[j].flat, mask.flat):
+                    if not masked:
+                        vector[j].flat[id] += value
+        else:
+            for id, value, masked in zip(ids.flat, additionVector.flat, mask.flat):
+                if not masked:
+                    vector.flat[id] += value
+
     else:
-        for i in range(ids.shape[-1]):
-            vector[...,ids[...,i]] += additionVector[...,i]
+        if len(vector.shape) < len(additionVector.shape):
+            for j in range(vector.shape[0]):
+                for id, value in zip(ids.flat, additionVector[j].flat):
+                    vector[j].flat[id] += value
+        else:
+            for id, value in zip(ids.flat, additionVector.flat):
+                vector.flat[id] += value
 
 ### !!! THIS NEEDS WORK !!! ###
 def _putAddIn(vector, ids, additionVector):
