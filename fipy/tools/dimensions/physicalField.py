@@ -1171,11 +1171,11 @@ class PhysicalField(object):
         """
         numerix.put(self.value, indices, self._inMyUnits(values).value)
       
-    def _getShape(self):
+    def getShape(self):
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
-    shape = property(fget=_getShape, doc="Tuple of array dimensions.")
+    shape = property(fget=getShape, doc="Tuple of array dimensions.")
 
     def reshape(self, shape):
         """

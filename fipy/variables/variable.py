@@ -589,7 +589,7 @@ class Variable(object):
         else:
             return value
             
-    def _getShape(self):
+    def getShape(self):
         """
             >>> Variable(value=3).shape
             ()
@@ -610,13 +610,7 @@ class Variable(object):
         else:
             return ()
             
-    def __getShape(self):
-        """
-        This little shenanegan is necessary because properties don't inherit
-        """
-        return self._getShape()
-        
-    shape = property(fget=__getShape, doc="Tuple of array dimensions.")
+    shape = property(fget=lambda self: self.getShape(), doc="Tuple of array dimensions.")
 
     def getTypecode(self):
         """
@@ -774,7 +768,7 @@ class Variable(object):
         return argDict['result']
 
     def _broadcastShape(self, other):
-        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.shape, other.shape)
+        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.shape, numerix.getShape(other))
         
         return broadcastshape
         
@@ -1179,10 +1173,16 @@ class Variable(object):
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
                 
-    def dot(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b), 
+    def dot(self, other, opShape=None, operatorClass=None, axis=0):
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value=other)
+        if opShape is None:
+            opShape = self._broadcastShape(other)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b, axis=axis), 
                                             other, 
-                                            opShape=self._broadcastShape(other)[1:],
+                                            opShape=opShape[1:],
+                                            operatorClass=operatorClass,
                                             canInline=False)
         
     def reshape(self, shape):

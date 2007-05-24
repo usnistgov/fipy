@@ -196,8 +196,8 @@ def _OperatorVariableClass(baseClass=None):
                 opShape = self.opShape,
                 canInline = self.canInline)
  
-        def _getShape(self):
-            return baseClass._getShape(self) or self.opShape
+        def getShape(self):
+            return baseClass.getShape(self) or self.opShape
 
     return _OperatorVariable
     
