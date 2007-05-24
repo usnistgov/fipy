@@ -71,7 +71,7 @@ periodic wave wraps around the mesh.
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
 should do better than this.
     
-    >>> var1.max() > 0.77
+    >>> print var1.max() > 0.77
     1
     
 """
