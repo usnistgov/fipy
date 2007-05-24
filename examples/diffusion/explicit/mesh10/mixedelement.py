@@ -68,7 +68,7 @@ A loop is required to execute the necessary time steps:
 The result is again tested in the same way:
 
     >>> Lx = (2 * nx * dx)
-    >>> x = bigMesh.getCellCenters()[:,0]
+    >>> x = bigMesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> ## print var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
     >>> print var.allclose(answer)
@@ -96,7 +96,8 @@ timeStepDuration = 0.005
 steps = 10000
 
 gridMesh = Grid2D(dx, dy, nx, ny)
-triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
+## triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
+triMesh = Tri2D(dx, dy, nx, 1) + ((dx*nx,), (0,))
 bigMesh = gridMesh + triMesh
 
 ## filter functions
@@ -137,7 +138,7 @@ var = CellVariable(
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
 exteriorFaces = bigMesh.getExteriorFaces()
-xFace = exteriorFaces.getCenters()[...,0]
+xFace = exteriorFaces.getCenters()[0]
 
 boundaryConditions=(FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000001), valueLeft),
                     FixedValue(exteriorFaces.where((xFace - (dx * nx)) ** 2 < 0.000000000000001), (valueLeft + valueRight) * 0.5),

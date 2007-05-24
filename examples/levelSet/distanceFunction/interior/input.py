@@ -91,20 +91,17 @@ Ly = ny * dy
 
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 
-initialArray = -numerix.ones(nx * ny, 'd')
-
-positiveCells = mesh.getCells(filter = lambda cell: (cell.getCenter()[0] < dx) or (cell.getCenter()[0] > (Lx - dx)) or (cell.getCenter()[1] < dy) or (cell.getCenter()[1] > (Ly - dy)))
-
-for cell in positiveCells:
-    initialArray[cell.getID()] = 1.
-
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = initialArray,
+    value = -1,
     hasOld = 1
     )
 
+x, y = mesh.getCellCenters()
+var.setValue(1, where=((x < dx) | (x > (Lx - dx))
+                       | (y < dy) | (y > (Ly - dy))))
+             
 var.calcDistanceFunction()
 
 if __name__ == '__main__':

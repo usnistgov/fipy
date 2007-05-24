@@ -234,7 +234,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
-    >>> x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
+    >>> x, y = mesh.getCellCenters()
     >>> t = timeStepDuration * steps
 
     >>> phiAnalytical = CellVariable(name="analytical value",
@@ -277,7 +277,7 @@ diffusion problem.
                                                     
 The values at the elements should be equal to their `x` coordinate
 
-    >>> print phi.allclose(mesh.getCellCenters()[0], atol = 0.02)
+    >>> print phi.allclose(x, atol = 0.02)
     1
 
 Display the results if run as a script.
