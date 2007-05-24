@@ -35,6 +35,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.meshIterator import MeshIterator
 from fipy.variables.variable import Variable
+from fipy.variables.constant import _Constant
 from fipy.tools import numerix
 
 class _MeshVariable(Variable):
@@ -71,6 +72,10 @@ class _MeshVariable(Variable):
         else:
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),'d')
+            if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
+                if not isinstance(value, Variable):
+                    value = _Constant(value)
+                value = value[..., numerix.newaxis]
                                   
         if isinstance(value, _MeshVariable):
             mesh = mesh or value.mesh
@@ -114,7 +119,7 @@ class _MeshVariable(Variable):
         return None
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
-    def _getShape(self):
+    def getShape(self):
         """
             >>> from fipy.meshes.grid2D import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
@@ -129,10 +134,18 @@ class _MeshVariable(Variable):
             >>> var.getFaceGrad().shape
             (2, 17)
         """
-        return (Variable._getShape(self) 
+        return (Variable.getShape(self) 
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 
+    def dot(self, other):
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value=other)
+
+        opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
+        return Variable.dot(self, other=other, opShape=opShape, operatorClass=self._OperatorVariableClass(baseClass), axis=-2)
+        
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if
