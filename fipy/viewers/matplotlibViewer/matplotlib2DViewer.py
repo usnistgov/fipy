@@ -104,9 +104,9 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         mesh = self.vars[0].getMesh()
         shape = mesh.getShape()
-        shape = (shape[1], shape[0])
-        X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
-        Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
+        X, Y = mesh.getCellCenters()
+        X = numerix.reshape(X, shape)
+        Y = numerix.reshape(Y, shape)
         Z = numerix.reshape(self.vars[0].getValue(), shape)
         
         zmin, zmax = self._autoscale(vars=self.vars,
@@ -125,7 +125,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         import pylab
         pylab.jet()
 
-        pylab.contourf(X, Y, numerix.reshape(self.vars[0].getValue(), shape), V)
+        pylab.contourf(X, Y, Z, V)
 
         pylab.xlim(xmin=self._getLimit('xmin'),
                    xmax=self._getLimit('xmax'))

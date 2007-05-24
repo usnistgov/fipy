@@ -84,7 +84,7 @@ class Matplotlib1DViewer(MatplotlibViewer):
 
     def _getData(self):
         from fipy.tools.numerix import array
-        return [[array(var.getMesh().getCellCenters()[...,0]), array(var)] for var in self.vars]
+        return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
         vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]

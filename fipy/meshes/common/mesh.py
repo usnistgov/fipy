@@ -508,7 +508,7 @@ class Mesh:
             tmp = self.getCellCenters() - point
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
-        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 1))
+        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 0))
         return i    
 
 ## pickling

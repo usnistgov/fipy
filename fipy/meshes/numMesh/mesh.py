@@ -488,7 +488,7 @@ class Mesh(_CommonMesh):
         
     def _calcFaceToCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
-        tmp -= MA.repeat(self.faceCenters[:,numerix.NewAxis,...], 2, 1)
+        tmp -= MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
         self.faceToCellDistances = numerix.sqrtDot(tmp, tmp)
 
     def _calcCellDistances(self):
