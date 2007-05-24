@@ -45,6 +45,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.terms.faceTerm import FaceTerm
+from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
@@ -86,6 +87,19 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> m2 = Grid2D(nx=2, ny=1)
+            >>> cv2 = CellVariable(mesh=m2)
+            >>> vcv2 = CellVariable(mesh=m2, rank=1)
+            >>> vfv2 = FaceVariable(mesh=m2, rank=1)
+            >>> ConvectionTerm(coeff=vcv2)
+            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> ConvectionTerm(coeff=vfv2)
+            ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
 
         
         :Parameters:
@@ -97,8 +111,8 @@ class ConvectionTerm(FaceTerm):
             warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)
 
         self.stencil = None
-
-        if numerix.rank(coeff) != 1:
+        
+        if isinstance(coeff, _MeshVariable) and coeff.getRank() != 1:
             raise TypeError, "The coefficient must be a vector value."
 
         if isinstance(coeff, CellVariable):
@@ -108,7 +122,7 @@ class ConvectionTerm(FaceTerm):
         
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, FaceVariable):
-            self.coeff = FaceVariable(mesh=mesh, value=self.coeff)
+            self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
         
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
