@@ -47,9 +47,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+
 from fipy.meshes.numMesh.mesh import Mesh
-from fipy.tools import numerix
-from fipy.tools import vector
 
 
 def _orderVertices(vertexCoords, vertices):

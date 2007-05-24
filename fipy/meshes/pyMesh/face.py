@@ -46,7 +46,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Face:
@@ -148,7 +147,7 @@ class Face:
 	p1 = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[2:-1]:
 	    p2=vertex.getCoordinates().copy()
-	    a += vector.crossProd(p1,p2)
+	    a += numerix.crossProd(p1,p2)
 	    p1 = p2
 	return abs(a/2.)
         
@@ -177,8 +176,8 @@ class Face:
 	"""
 	t1 = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
 	t2 = self.vertices[2].getCoordinates() - self.vertices[1].getCoordinates()
-	norm = vector.crossProd(t1,t2)
-	norm /= vector.sqrtDot(norm,norm)
+	norm = numerix.crossProd(t1,t2)
+	norm /= numerix.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
 	
@@ -225,7 +224,7 @@ class Face:
 ##            vec=self.cells[1].getCenter()-self.cells[0].getCenter()
 ##        else:
 ##            vec=self.center-self.cells[0].getCenter()        
-##        return vector.sqrtDot(vec,vec)
+##        return numerix.sqrtDot(vec,vec)
 
     def _calcCellDistance(self):
 	"""Calculate the distance between adjacent `Cell` centers.
@@ -237,15 +236,15 @@ class Face:
             vec=self.cellCenters[0]-self.cellCenters[1]
         else:
             vec=self.center-self.cellCenters[0]        
-        return vector.sqrtDot(vec,vec)
+        return numerix.sqrtDot(vec,vec)
 
 ##    def _calcFaceToCellDistance(self, cell):
 ##        vec=self.center-cell.getCenter()        
-##        return vector.sqrtDot(vec,vec)
+##        return numerix.sqrtDot(vec,vec)
 
     def _calcFaceToCellDistance(self, id):
         vec=self.center - self.cellCenters[id]
-        return vector.sqrtDot(vec,vec)
+        return numerix.sqrtDot(vec,vec)
 
 ##    def _setFaceToCellDistances(self):
 ##        faceToCellDistances = ()

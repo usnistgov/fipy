@@ -47,7 +47,6 @@ from fipy.tools import numerix
 from fipy.meshes.numMesh.mesh import Mesh
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
-from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 

@@ -47,7 +47,6 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.mesh import Mesh
-from fipy.tools import vector
 
 class Mesh1D(Mesh):
     def _calcFaceAreas(self):
