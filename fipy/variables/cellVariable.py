@@ -137,6 +137,12 @@ class CellVariable(_MeshVariable):
             value = self.getValue(),
             hasOld = 0)
             
+    def __call__(self, point=None):
+        if point is not None:
+            return self[self.getMesh()._getNearestCellID(point)]
+        else:
+            return _MeshVariable.__call__(self)
+
     def getCellVolumeAverage(self):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
