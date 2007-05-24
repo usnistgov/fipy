@@ -130,8 +130,8 @@ class Gist2DViewer(GistViewer):
             
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[0], numerix.array(vertexIDs).flat)
-        yCoords = numerix.take(vertexCoords[1], numerix.array(vertexIDs).flat)
+        xCoords = numerix.take(vertexCoords[0], numerix.array(vertexIDs).flat, axis=1)
+        yCoords = numerix.take(vertexCoords[1], numerix.array(vertexIDs).flat, axis=1)
 
         import gist
 
@@ -153,10 +153,10 @@ class Gist2DViewer(GistViewer):
         faceVertexIDs = self.mesh._getFaceVertexIDs()
         vertexCoords = self.mesh.getVertexCoords()
         
-        x0 = numerix.take(vertexCoords[0], faceVertexIDs[0])
-        y0 = numerix.take(vertexCoords[1], faceVertexIDs[0])
-        x1 = numerix.take(vertexCoords[0], faceVertexIDs[1])
-        y1 = numerix.take(vertexCoords[1], faceVertexIDs[1])
+        x0 = numerix.take(vertexCoords[0], faceVertexIDs[0], axis=1)
+        y0 = numerix.take(vertexCoords[1], faceVertexIDs[0], axis=1)
+        x1 = numerix.take(vertexCoords[0], faceVertexIDs[1], axis=1)
+        y1 = numerix.take(vertexCoords[1], faceVertexIDs[1], axis=1)
         
         import gist
         
