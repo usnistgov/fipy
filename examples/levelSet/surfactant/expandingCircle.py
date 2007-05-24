@@ -91,13 +91,8 @@ Test for the correct position of the interface:
    >>> y = mesh.getCellCenters()[1]
    >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
    >>> solution = radius - distanceVariable
-   >>> error = 0.
-   >>> size = 0
-   >>> for i in range(len(coverage)):
-   ...     if coverage[i] > 1e-3:
-   ...         error += (solution[i] / finalRadius - 1.)**2
-   ...         size += 1
-   >>> print numerix.sqrt(error / size) < 0.02
+   >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
+   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02
    1
 
 """
@@ -177,14 +172,8 @@ if __name__ == '__main__':
         finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.getInterfaceVar()
-        error = 0.
-        size = 0
-        for i in range(len(coverage)):
-            if coverage[i] > 1e-3:
-                error += (coverage[i] / answer - 1.)**2
-                size += 1
-
-        print 'error',numerix.sqrt(error / size)
+        error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+        print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
 
 
         
