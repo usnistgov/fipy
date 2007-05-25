@@ -305,11 +305,11 @@ def _testBinOp(self):
         >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
+        TypeError: can't multiply sequence to non-int
         >>> cvXfv = cv * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
+        TypeError: can't multiply sequence to non-int
         
     rank-0 `CellVariable` * rank-1 `CellVariable`
     
@@ -338,11 +338,11 @@ def _testBinOp(self):
         >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
+        TypeError: can't multiply sequence to non-int
         >>> cvXvfv = cv * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
+        TypeError: can't multiply sequence to non-int
 
     `CellVariable` * Scalar
     
@@ -1013,11 +1013,11 @@ def _testBinOp(self):
         >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence by non-int
+        TypeError: can't multiply sequence to non-int
         >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: can't multiply sequence by non-int
+        TypeError: can't multiply sequence to non-int
         
 
     `Variable` Scalar * `Variable` Scalar
@@ -1053,7 +1053,7 @@ def _testBinOp(self):
         >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
-        TypeError: unsupported operand type(s) for *: 'Variable' and 'Variable'
+        TypeError: can't multiply sequence to non-int
 
     Test for weird bug that was appearing in inline. Caused by the intermediate
     operators not getting marked fresh.
