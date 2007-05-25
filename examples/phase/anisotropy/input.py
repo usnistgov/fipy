@@ -205,7 +205,7 @@ is created from the `phase` and `temperature` variables.
     
 using `getFaceGrad()`. The axes are rotated ninety degrees.
 
-    >>> dxi = phase.getFaceGrad().dot(((0,1),(-1,0)))
+    >>> dxi = phase.getFaceGrad().dot(((0,-1),(1,0)))
     >>> anisotropySource = (A * dxi).getDivergence()
 
 The phase equation can now be constructed.
