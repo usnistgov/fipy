@@ -71,7 +71,7 @@ class BetaNoiseVariable(NoiseVariable):
     
            >>> from fipy.variables.cellVariable import CellVariable
            >>> betadist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[...,0]
+           >>> x = histogram.getMesh().getCellCenters()[0]
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers

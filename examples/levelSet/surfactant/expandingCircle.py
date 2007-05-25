@@ -87,8 +87,7 @@ Next test for the correct local value of surfactant:
 
 Test for the correct position of the interface:
 
-   >>> x = mesh.getCellCenters()[0]
-   >>> y = mesh.getCellCenters()[1]
+   >>> x, y = mesh.getCellCenters()
    >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
    >>> solution = radius - distanceVariable
    >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
@@ -117,10 +116,11 @@ steps = 20
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
+x, y = mesh.getCellCenters()
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = numerix.sqrt((mesh.getCellCenters()[0] - L / 2.)**2 + (mesh.getCellCenters()[1] - L / 2.)**2) - initialRadius,
+    value = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - initialRadius,
     hasOld = 1)
 
 initialSurfactantValue =  1.

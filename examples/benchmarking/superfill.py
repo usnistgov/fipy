@@ -128,7 +128,7 @@ if __name__ == "__main__":
     trenchHeight = bottomHeight + trenchDepth
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     distanceVar.setValue(1, where=(y > trenchHeight) 
                                   | ((y > bottomHeight) 
                                      & (x < xCells * cellSize - sideWidth)))

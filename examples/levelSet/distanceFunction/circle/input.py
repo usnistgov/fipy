@@ -91,7 +91,7 @@ Construct a `distanceVariable` object.
    ...                        value=-1,
    ...                        hasOld=1)
 
-   >>> x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
+   >>> x, y = mesh.getCellCenters()
    >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
 
    >>> var.calcDistanceFunction()

@@ -76,7 +76,7 @@ This example creates a trench with the following zero level set:
     ...                        hasOld = 1
     ...                        )
 
-    >>> x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
+    >>> x, y = mesh.getCellCenters()
     >>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
 
     >>> var.calcDistanceFunction()
@@ -86,8 +86,6 @@ This example creates a trench with the following zero level set:
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
-   >>> x = mesh.getCellCenters()[0]
-   >>> y = mesh.getCellCenters()[1]
    >>> import fipy.tools.numerix as numerix
    >>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
    >>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)

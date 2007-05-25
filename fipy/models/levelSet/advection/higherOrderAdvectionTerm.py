@@ -184,8 +184,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         >>> vel = 1.
-        >>> x = mesh.getCellCenters()[0]
-        >>> y = mesh.getCellCenters()[1]
+        >>> x, y = mesh.getCellCenters()
         >>> r = numerix.sqrt(x**2 + y**2)
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff)

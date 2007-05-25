@@ -75,12 +75,11 @@ class GistVectorViewer(GistViewer):
         var = self.vars[0]
         
         if isinstance(var, FaceVariable):
-            centers = var.getMesh().getFaceCenters()
+            x, y = var.getMesh().getFaceCenters()
         elif isinstance(var, CellVariable):
-            centers = var.getMesh().getCellCenters()
+            x, y = var.getMesh().getCellCenters()
         
-        gist.plmesh(numerix.array([centers[1],centers[1]]), 
-                    numerix.array([centers[0],centers[0]]))
+        gist.plmesh(numerix.array([y, y]), numerix.array([x, y]))
 
         vx = numerix.array(var[0])
         vy = numerix.array(var[1])

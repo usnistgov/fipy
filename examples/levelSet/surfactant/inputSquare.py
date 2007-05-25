@@ -95,7 +95,7 @@ distanceVariable = DistanceVariable(
     hasOld = 1
     )
 
-x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
+x, y = mesh.getCellCenters()
 distanceVariable.setValue(-1, where=((x0 < x) & (x < x1)) & ((x0 < y) & (y < x1)))
 
 

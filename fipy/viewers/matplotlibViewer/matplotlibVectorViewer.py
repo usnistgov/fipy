@@ -97,16 +97,16 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             ## only displays horizontel faces since quiver() takes a grid
             shape = (mesh.getShape()[1] + 1, mesh.getShape()[0])
             N = shape[0] * shape[1]
-            X = numerix.reshape(mesh.getFaceCenters()[:N,0], shape)
-            Y = numerix.reshape(mesh.getFaceCenters()[:N,1], shape)
+            X = numerix.reshape(mesh.getFaceCenters()[0,:N], shape)
+            Y = numerix.reshape(mesh.getFaceCenters()[1,:N], shape)
             U = numerix.reshape(var[:N,0], shape)
             V = numerix.reshape(var[:N,1], shape)
         elif isinstance(var, CellVariable):
             shape = (mesh.getShape()[1], mesh.getShape()[0])
-            X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
-            Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
-            U = numerix.reshape(var[:,0], shape)
-            V = numerix.reshape(var[:,1], shape)
+            X = numerix.reshape(mesh.getCellCenters()[0], shape)
+            Y = numerix.reshape(mesh.getCellCenters()[1], shape)
+            U = numerix.reshape(var[0], shape)
+            V = numerix.reshape(var[1], shape)
         
         import pylab
         pylab.quiver2(X, Y, U, V, 0.15)

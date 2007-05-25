@@ -111,7 +111,8 @@ distanceVariable = DistanceVariable(
     hasOld = 1
     )
 
-cellRadius = numerix.sqrt((mesh.getCellCenters()[0] - L / 2.)**2 + (mesh.getCellCenters()[1] - L / 2.)**2)
+x, y = mesh.getCellCenters()
+cellRadius = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2)
 distanceVariable.setValue(cellRadius - initialRadius)
 
 initialSurfactantValue =  1.

@@ -68,7 +68,7 @@ We start by defining a 1D mesh
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
     >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> # L = mesh.getCellCenters()[-1] - mesh.getCellCenters()[0]
+    >>> # L = mesh.getCellCenters()[0,-1] - mesh.getCellCenters()[0,0]
 
 
 We create the phase field
@@ -177,7 +177,7 @@ and the solvent and a liquid phase rich in the two substitutional species
 
 Once again, we start with a sharp phase boundary
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(x < L / 2)
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)

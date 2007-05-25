@@ -104,9 +104,9 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 ..
 
+   >>> x, y = mesh.getCellCenters()
    >>> from fipy.tools import numerix
-   >>> initialArray = numerix.sqrt((mesh.getCellCenters()[0] - L / 2.)**2 +
-   ...                             (mesh.getCellCenters()[1] - L / 2.)**2) - \
+   >>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - \
    ...                             radius
    >>> var.setValue(initialArray)
 
@@ -154,7 +154,7 @@ The result can be tested with the following commands.
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> x = numerix.array(mesh.getCellCenters())
+   >>> x = numerix.array(mesh.getCellCenters()[0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
    >>> answer = numerix.where(answer < 0., -1001., answer)

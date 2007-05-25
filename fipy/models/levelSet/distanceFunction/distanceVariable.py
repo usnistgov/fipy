@@ -474,8 +474,8 @@ class DistanceVariable(CellVariable):
 	
            >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)
            >>> r = 0.25
-           >>> rad = numerix.sqrt((mesh.getCellCenters()[0] - .5)**2 
-           ...                    + (mesh.getCellCenters()[1] - .5)**2) - r
+           >>> x, y = mesh.getCellCenters()
+           >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
            >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
            >>> print numerix.sum(distanceVariable.getCellInterfaceAreas())
            1.57984690073

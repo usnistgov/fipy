@@ -82,7 +82,7 @@ if __name__ == '__main__':
                                                                  FixedValue(mesh.getFacesRight(), valueRight)))
 
         varArray = numerix.array(var)
-        x = mesh.getCellCenters()[:,0]
+        x = mesh.getCellCenters()[0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._getNonOrthogonality()

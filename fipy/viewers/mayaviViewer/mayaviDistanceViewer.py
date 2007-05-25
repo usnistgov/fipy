@@ -159,7 +159,7 @@ if __name__ == '__main__':
     from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
     var = DistanceVariable(mesh = mesh, value = -1)
     
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     
     var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
     var.calcDistanceFunction()

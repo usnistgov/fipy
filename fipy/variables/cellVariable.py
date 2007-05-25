@@ -51,7 +51,8 @@ class CellVariable(_MeshVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> var.setValue(mesh.getCellCenters()[0] * mesh.getCellCenters()[1])
+        >>> x, y = mesh.getCellCenters()
+        >>> var.setValue(x * y)
 
         >>> from fipy.tools import dump        
         >>> (f, filename) = dump.write(var, extension = '.gz')

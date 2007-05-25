@@ -181,7 +181,7 @@ we verify that the concentrations have become uniform
 We now rerun the problem with an initial condition that only has a
 concentration step in one corner.
 
-    >>> x, y = mesh.getCellCenters()[0], mesh.getCellCenters()[1]
+    >>> x, y = mesh.getCellCenters()
     >>> substitutionals[0].setValue(0.3)
     >>> substitutionals[0].setValue(0.6, where=(x > L / 2.) & (y > L / 2.))
     >>> substitutionals[1].setValue(0.6)

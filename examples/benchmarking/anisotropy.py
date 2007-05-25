@@ -43,7 +43,7 @@ if __name__ == "__main__":
     theta = 0.
     from fipy.variables.cellVariable import CellVariable
     phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     phase.setValue(1., where=(x - seedCenter[0])**2 + (y - seedCenter[1])**2 < radius**2)
     temperature = CellVariable(
         name='temperature',

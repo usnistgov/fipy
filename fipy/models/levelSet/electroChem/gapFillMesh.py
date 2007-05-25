@@ -307,8 +307,7 @@ class TrenchMesh(GapFillMesh):
                              transitionRegionHeight = transitionHeight)
 
     def getElectrolyteMask(self):
-        x = self.getCellCenters()[0]
-        y = self.getCellCenters()[1]
+        x, y = self.getCellCenters()
         
         Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
 
