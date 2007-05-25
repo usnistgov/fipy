@@ -302,11 +302,11 @@ def _testBinOp(self):
     `CellVariable` * FaceVariable
     
         >>> fv = FaceVariable(mesh=mesh, value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-        >>> fvXcv = fv * cv
+        >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
-        >>> cvXfv = cv * fv 
+        >>> cvXfv = cv * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
@@ -335,11 +335,11 @@ def _testBinOp(self):
 
         >>> vfv = FaceVariable(mesh=mesh, value=((0,1,2,3,1,2,3,6,2,1),
         ...                                      (1,2,3,4,3,4,5,9,6,3)), rank=1)
-        >>> vfvXcv = vfv * cv
+        >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: unsupported operand type(s) for *: 'FaceVariable' and 'CellVariable'
-        >>> cvXvfv = cv * vfv
+        >>> cvXvfv = cv * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: unsupported operand type(s) for *: 'CellVariable' and 'FaceVariable'
@@ -1010,11 +1010,11 @@ def _testBinOp(self):
         >>> print isinstance(v2vXv, Variable)
         1
 
-        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2))
+        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence by non-int
-        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1)
+        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence by non-int
@@ -1050,7 +1050,7 @@ def _testBinOp(self):
         >>> print isinstance(v2vXv2v, Variable)
         1
         
-        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2))
+        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: unsupported operand type(s) for *: 'Variable' and 'Variable'
