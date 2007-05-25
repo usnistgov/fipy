@@ -66,44 +66,28 @@ class ModularVariable(CellVariable):
 
     Obtaining the gradient.
 
-        >>> print numerix.allclose(v1.getGrad(), (pi/3, pi/3))
+        >>> print numerix.allclose(v1.getGrad(), ((pi/3, pi/3),))
         1
 
     Obtaining the gradient at the faces.
 
-        >>> print numerix.allclose(v1.getFaceGrad(), [[0], [2*pi/3], [0]])
+        >>> print numerix.allclose(v1.getFaceGrad(), ((0, 2*pi/3, 0),))
         1
         
     Obtaining the gradient at the faces but without modular
     arithmetic.
 
-        >>> print numerix.allclose(v1.getFaceGradNoMod(), [[0], [-4*pi/3], [0]])
+        >>> print numerix.allclose(v1.getFaceGradNoMod(), ((0, -4*pi/3, 0),))
         1
         
     """    
-    def __init__(self, mesh, name = '', value=0., unit = None, hasOld = 0):
-        """
-        Creates a `ModularVariable` object.
-
-        :Parameters:
-          - `mesh`: The mesh that defines the geometry of this variable.
-          - `name`: The user-readable name of the variable.
-          - `value`: The initial value.
-          - `unit`: The physical units of the variable.
-          - `hasOld`: Whether a variable keeps its old variable.
-        
-        """
-        CellVariable.__init__(self, mesh = mesh, name = name, value = value, unit = unit, hasOld = hasOld)
-        self.arithmeticFaceValue = None
-        self.grad = None
-        self.faceGradNoMod = None
         
     _modIn = """
     # define pi 3.141592653589793
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
 
-    def _setValue(self, value, unit = None, array = None):
+    def _setValue(self, value, unit=None, array=None):
         """
            >>> from fipy.meshes.grid1D import Grid1D
            >>> mesh = Grid1D(nx = 4)
@@ -116,9 +100,9 @@ class ModularVariable(CellVariable):
            [ 1.  1.  1.  1.] 1
 
         """
-        value = self._makeValue(value = value, unit = unit, array = array)
+        value = self._makeValue(value=value, unit=unit, array=array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
-        self.value = _ModPhysicalField(value = value, unit = unit, array = array)
+        self.value = _ModPhysicalField(value=value, unit=unit, array=array)
         
     def updateOld(self):
         """
@@ -127,7 +111,7 @@ class ModularVariable(CellVariable):
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 1)
-            >>> var = ModularVariable(mesh = mesh, value = 1, hasOld = 1)
+            >>> var = ModularVariable(mesh=mesh, value=1, hasOld=1)
             >>> var.updateOld()
             >>> var[:] = 2
             >>> print var.getOld()
@@ -149,8 +133,7 @@ class ModularVariable(CellVariable):
         as a rank-1 `CellVariable` (first-order gradient).
         Adjusted for a `ModularVariable`
         """
-        if self.grad is None:
-
+        if not hasattr(self, 'grad'):
             from fipy.variables.modCellGradVariable import _ModCellGradVariable
             self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
 
@@ -168,7 +151,7 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
            
         """
-        if self.arithmeticFaceValue is None:
+        if not hasattr(self, 'arithmeticFaceValue'):
             from modCellToFaceVariable import _ModCellToFaceVariable
             self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
@@ -185,7 +168,7 @@ class ModularVariable(CellVariable):
         as a rank-1 `FaceVariable` (second-order gradient).
         Adjusted for a `ModularVariable`
         """
-        if self.faceGrad is None:
+        if not hasattr(self, 'faceGrad'):
             from modFaceGradVariable import _ModFaceGradVariable
             self.faceGrad = _ModFaceGradVariable(self, self._modIn)
 
@@ -202,7 +185,7 @@ class ModularVariable(CellVariable):
         Not adjusted for a `ModularVariable`
         """
         
-        if self.faceGradNoMod is None:
+        if not hasattr(self, 'faceGradNoMod'):
             class NonModularTheta(CellVariable):
                 def __init__(self, modVar):
                     CellVariable.__init__(self, mesh = modVar.getMesh())
