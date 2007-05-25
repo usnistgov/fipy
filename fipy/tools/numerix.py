@@ -1362,6 +1362,13 @@ def _compressIndexSubspaces(index, i, broadcastshape = ()):
             break
         else:
             element = array(element, intp)
+
+            # numpy accepts tuples of lists of floats, but not arrays of
+            # floats. This test is more liberal than that, but has the
+            # benefit of not being insane. Unfortunately, NumPy will throw
+            # errors later, on evaluation, that should ideally be caught here.
+            #    raise IndexError "arrays used as indices must be of integer (or boolean) type"
+            
             broadcastshape = _broadcastShape(broadcastshape, element.shape)
             if broadcastshape is None:
                 raise ValueError, "shape mismatch: objects cannot be broadcast to a single shape"
@@ -1395,12 +1402,26 @@ def _indexShape(index, arrayShape):
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.
+
+    .. note::
+        
+       The following test should throw::
+           
+           Traceback (most recent call last):
+               ...
+           IndexError: arrays used as indices must be of integer (or boolean) type
+
+       but it's not straightforward to achieve that. Moreover, NumPy is not even
+       consistent, accepting a `tuple` or `list` of `float`, but not a `float`
+       `array`. If it's absolutely crucial to obtain that result, see the
+       comment in `_compressIndexSubspaces()`.
+       
+    ..
+    
         >>> ind = zeros((2,3,5), float)
         >>> _indexShape(index=NUMERIX.index_exp[...,ind], 
         ...             arrayShape=(10,20,30,40,50))
-        Traceback (most recent call last):
-            ...
-        IndexError: arrays used as indices must be of integer (or boolean) type
+        (10, 20, 30, 40, 2, 3, 5)
 
     "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
     will be treated as full slice (':') objects. The Ellipsis object is replaced
