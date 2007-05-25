@@ -60,9 +60,25 @@ class FaceVariable(_MeshVariable):
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
     def getDivergence(self):
+        """
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> mesh = Grid2D(nx=3, ny=2)
+            >>> var = CellVariable(mesh=mesh, value=range(mesh.getNumberOfCells()))
+            >>> print var.getFaceGrad().getDivergence()
+            [ 4.  3.  2. -2. -3. -4.]
+            
+        """
         if not hasattr(self, 'divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
             self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
             
         return self.divergence
         
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 
+
