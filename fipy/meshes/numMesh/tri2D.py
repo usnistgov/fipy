@@ -214,7 +214,7 @@ class Tri2D(Mesh2D):
 
 
     def _getMeshSpacing(self):
-        return numerix.array((self.dx,self.dy))
+        return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
     
     def getShape(self):
         return (self.nx, self.ny)

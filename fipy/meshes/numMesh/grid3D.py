@@ -278,7 +278,7 @@ class Grid3D(Mesh):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
 
     def _getMeshSpacing(self):
-        return numerix.array((self.dx, self.dy, self.dz))
+        return numerix.array((self.dx, self.dy, self.dz))[...,numerix.newaxis]
     
     def getShape(self):
         return (self.nx, self.ny, self.nz)

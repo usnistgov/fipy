@@ -130,7 +130,7 @@ class Grid1D(Mesh1D):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
     def _getMeshSpacing(self):
-        return numerix.array((self.dx,))
+        return numerix.array((self.dx,))[...,numerix.newaxis]
     
     def getShape(self):
         return (self.nx,)

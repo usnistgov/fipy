@@ -104,7 +104,7 @@ if __name__ == "__main__":
         hasOld = 1
         )
 
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
                              (Lx, 0., -2. * pi / 3.), 
                              (0., Lx, -2. * pi / 3. + 0.3), 
