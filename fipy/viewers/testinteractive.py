@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
+ #  FILE: "testinteractive.py"
  #                                    created: 11/10/03 {3:23:47 PM}
  #                                last update: 4/1/05 {2:47:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -40,15 +40,16 @@
  ##
 
 """
-Test implementation of the viewers
+Interactively test the viewers
 """
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-        'mayaviViewer.lines',
+    return _LateImportDocTestSuite(testModuleNames = (
+        'gistViewer.test',
+        'matplotlibViewer.test',
         ), base = __name__)
     
 if __name__ == '__main__':

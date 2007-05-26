@@ -438,10 +438,13 @@ class test(Command):
     # List of option tuples: long name, short name (None if no short
     # name), and help string.
     user_options = [('inline', None, "run FiPy with inline compilation enabled"),
-                    ('all', None, "run all FiPy tests (default)"),
+                    ('all', None, "run all non-interactive FiPy tests (default)"),
+                    ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
                     ('examples', None, "test FiPy examples"),
                     ('modules', None, "test FiPy code modules"),
+                    ('viewers', None, "test FiPy viewer modules (requires user input)"),
                     ('terse', None, "give limited output during tests"),
+                    ('verbose', None, "give considerable output during tests"),
                     ('cache', None, "run FiPy with Variable caching"),
                     ('no-cache', None, "run FiPy without Variable caching"),
                    ]
@@ -452,10 +455,10 @@ class test(Command):
         self.verbosity = 0
         self.terse = False
         self.all = False
-        self.doExamples = True
-        self.doModules = True
+        self.really_all = False
         self.examples = False
         self.modules = False
+        self.viewers = False
         self.cache = False
         self.no_cache = True
 
@@ -464,23 +467,34 @@ class test(Command):
             self.verbosity = 2
         if self.terse:
             self.verbosity = 1
-        if self.all:
+        if not (self.examples or self.modules or self.viewers):
+            self.all = True
+        if self.all or self.really_all:
             self.examples = True
             self.modules = True
-        if self.examples and not self.modules:
-            self.doModules = False
-        if self.modules and not self.examples:
-            self.doExamples = False
+        if self.really_all:
+            self.viewers = True
         
     def run (self):
         import unittest
         theSuite = unittest.TestSuite()
-        
-        if self.doModules:
+
+        if self.viewers:
+            import fipy.viewers.testinteractive
+            print "*" * 60
+            print "*" + "".center(58) + "*"
+            print "*" + "ATTENTION".center(58) + "*"
+            print "*" + "".center(58) + "*"
+            print "*" + "Some of the following tests require user interaction".center(58) + "*"
+            print "*" + "".center(58) + "*"
+            print "*" * 60
+            theSuite.addTest(fipy.viewers.testinteractive._suite())
+
+        if self.modules:
             import fipy.test
             theSuite.addTest(fipy.test._suite())
         
-        if self.doExamples:
+        if self.examples:
             import examples.test
             theSuite.addTest(examples.test._suite())
         

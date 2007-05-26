@@ -39,16 +39,18 @@
  # ###################################################################
  ##
 
-"""
-Test implementation of the viewers
+"""Test numeric implementation of the mesh
 """
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-        'mayaviViewer.lines',
+    return _LateImportDocTestSuite(interactiveDocTestModuleNames=(
+        'matplotlib1DViewer',
+        'matplotlib2DViewer',
+        'matplotlib2DGridViewer',
+        'matplotlibVectorViewer',
         ), base = __name__)
     
 if __name__ == '__main__':

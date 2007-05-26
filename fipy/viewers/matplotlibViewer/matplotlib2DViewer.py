@@ -63,6 +63,17 @@ class Matplotlib2DViewer(MatplotlibViewer):
         """
         Creates a `Matplotlib2DViewer`.
         
+        >>> from fipy import *
+        >>> mesh = Grid2D(nx=50, ny=100)
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> viewer = Matplotlib2DViewer(vars=var, 
+        ...                             limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                             title="Matplotlib2DViewer test")
+        >>> viewer.plot()
+        >>> raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ''
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -133,5 +144,8 @@ class Matplotlib2DViewer(MatplotlibViewer):
         pylab.ylim(ymin=self._getLimit('ymin'),
                    ymax=self._getLimit('ymax'))
 
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
 
         
