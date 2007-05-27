@@ -61,18 +61,24 @@ def _getScript(name = '__main__'):
 def execButNoTest(name='__main__'):
     module = sys.modules.get(name)
     
-    tests = doctest.DocTestFinder().find(module)
-    if not tests:
-        raise ValueError("no tests found")
-    tests = [doctest.script_from_examples(t.docstring) for t in tests]
 
     # the syntax of doctest changed substantially between Python 2.3 and 2.4
     # <http://sourceforge.net/tracker/index.php?func=detail&aid=1120348&group_id=118428&atid=681141>
     if sys.version_info >= (2, 4):
+        tests = doctest.DocTestFinder().find(module)
+        tests = [doctest.script_from_examples(t.docstring) for t in tests]
+        
         # Python 2.4 returns comments, too, and doesn't always end in a \n,
         # which chokes exec/compile. Arguably a bug in Python.
         # <http://sourceforge.net/tracker/index.php?func=detail&aid=1172785&group_id=5470&atid=105470>
         tests = [t + '\n' for t in tests]
+    else:
+        tests = doctest._find_tests(module, "")
+        tests = [source, expect, dummy in doctest._extract_examples(t) for t in tests]
+        tests = [source for source, expect, dummy in tests]
+
+    if not tests:
+        raise ValueError("no tests found")
 
     for t in tests:
         exec(t)
