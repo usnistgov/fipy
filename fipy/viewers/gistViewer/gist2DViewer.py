@@ -57,6 +57,30 @@ class Gist2DViewer(GistViewer):
         """
         Creates a `Gist2DViewer`.
         
+        >>> from fipy import *
+        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> vw = Gist2DViewer(vars=var, 
+        ...                   limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                   title="Gist2DViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+        ''
+
+        >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> vw = Gist2DViewer(vars=var, 
+        ...                   limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                   title="Gist2DViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+
         :Parameters:
           - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
             Only the first 2D `CellVariable` will be plotted.
