@@ -59,6 +59,47 @@ class MayaviSurfactantViewer(Viewer):
         """
         Create a `MayaviDistanceViewer`.
         
+            >>> from fipy import *
+            >>> dx = 1.
+            >>> dy = 1.
+            >>> nx = 11
+            >>> ny = 11
+            >>> Lx = ny * dy
+            >>> Ly = nx * dx
+            >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+            >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+            >>> var = DistanceVariable(mesh = mesh, value = -1)
+        
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+
+            >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
+            >>> var.calcDistanceFunction()
+            >>> vw = MayaviSurfactantViewer(var, smooth = 2)
+            >>> if locals().has_key('vw'):
+            ...     vw.plot()
+            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+            ...     del vw
+            ''
+
+            >>> var = DistanceVariable(mesh = mesh, value = -1)
+
+            >>> var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
+            >>> var.calcDistanceFunction()
+            >>> vw = MayaviSurfactantViewer(var)
+            >>> if locals().has_key('vw'):
+            ...     vw.plot()
+            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+            ...     del vw
+            ''
+
+            >>> vw = MayaviSurfactantViewer(var, smooth = 2)
+
+            >>> if locals().has_key('vw'):
+            ...     vw.plot()
+            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+            ...     del vw
+            ''
+        
         :Parameters:
 
           - `distanceVar`: a `DistanceVariable` object.
@@ -232,33 +273,6 @@ class MayaviSurfactantViewer(Viewer):
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
-if __name__ == '__main__':
-    dx = 1.
-    dy = 1.
-    nx = 11
-    ny = 11
-    Lx = ny * dy
-    Ly = nx * dx
-    from fipy.meshes.grid2D import Grid2D
-    mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    var = DistanceVariable(mesh = mesh, value = -1)
-    
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-
-    var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
-    var.calcDistanceFunction()
-    viewer = MayaviSurfactantViewer(var, smooth = 2)
-    viewer.plot()
-    raw_input("press key to continue")
-
-    var = DistanceVariable(mesh = mesh, value = -1)
-
-    var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
-    var.calcDistanceFunction()
-    viewer = MayaviSurfactantViewer(var)
-    viewer.plot()
-    raw_input("press key to continue")
-
-    viewer = MayaviSurfactantViewer(var, smooth = 2)
-    viewer.plot()
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

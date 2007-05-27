@@ -131,3 +131,7 @@ class Gnuplot2DViewer(GnuplotViewer):
                             self.vars[0][:])
 
         self.g.splot(data)
+
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

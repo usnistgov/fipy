@@ -198,3 +198,6 @@ class Gist2DViewer(GistViewer):
 
         gist.fma()
 
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

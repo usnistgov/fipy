@@ -135,3 +135,6 @@ class Gist1DViewer(GistViewer):
             
         GistViewer.plot(self, filename = filename)
 
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

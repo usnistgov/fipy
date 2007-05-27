@@ -96,3 +96,6 @@ class Gnuplot1DViewer(GnuplotViewer):
 
         apply(self.g.plot, tupleOfGnuplotData)
     
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

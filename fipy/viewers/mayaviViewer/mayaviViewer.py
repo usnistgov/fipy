@@ -251,11 +251,6 @@ class MayaviViewer(Viewer):
             self._viewer.renwin.save_png(filename)
 
 
-if __name__ == '__main__':
-##     from fipy.meshes.grid1D import Grid1D
-    from fipy.variables.cellVariable import CellVariable
-##     vars = [CellVariable(value = range(3), mesh = Grid1D(nx = 3, dx = 1.))]
-
 ##     from fipy.meshes.tri2D import Tri2D
 ##     triMesh = Tri2D()
 ##     from fipy.meshes.grid2D import Grid2D
@@ -266,14 +261,6 @@ if __name__ == '__main__':
 ##     compositeMesh += (0, 2)
 ##     vars += [CellVariable(value = range(7), mesh = compositeMesh)]
     
-    vars = []
-    from fipy.meshes.grid3D import Grid3D
-    mesh3D = Grid3D(nx = 3)
-    mesh3D += (0, 0, 2)
-    vars += [CellVariable(value = range(3), mesh = mesh3D)]
-
-    viewer = MayaviViewer(vars)
-    viewer.plot()
-    raw_input("finished")
-    
-    
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

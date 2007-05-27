@@ -145,3 +145,6 @@ class GistVectorViewer(GistViewer):
     def getArray(self):
         pass
         
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
