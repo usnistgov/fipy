@@ -54,6 +54,20 @@ class Gnuplot1DViewer(GnuplotViewer):
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
     wrapper available to download (Gnuplot.py_).
+    
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[...,0]
+        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
+        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
+        >>> vw = Gnuplot1DViewer(vars=(var1, var2), 
+        ...                      limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                      title="Gnuplot1DViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+        ''
 
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
 

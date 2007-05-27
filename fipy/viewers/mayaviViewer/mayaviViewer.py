@@ -52,6 +52,44 @@ class MayaviViewer(Viewer):
     The `MayaviViewer` creates viewers with the Mayavi_ python
     plotting package.
 
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[...,0]
+        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
+        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
+        >>> vw = MayaviViewer(vars=(var1, var2), 
+        ...                   limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                   title="MayaviViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+        ''
+        
+        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> vw = MayaviViewer(vars=var, 
+        ...                   limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                   title="MayaviViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+        ''
+
+        >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
+        >>> x, y, z = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1], mesh.getCellCenters()[...,2]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y z)$", value=numerix.sin(x * y * z))
+        >>> vw = MayaviViewer(vars=var, 
+        ...                   limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                   title="MayaviViewer test")
+        >>> if locals().has_key('vw'):
+        ...     vw.plot()
+        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
+        ...     del vw
+        ''
+
     .. _Mayavi: http://mayavi.sourceforge.net/
 
     Issues with the `MayaviViewer` are
