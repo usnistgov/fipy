@@ -64,6 +64,7 @@ class Gist2DViewer(GistViewer):
         >>> viewer = Gist2DViewer(vars=var, 
         ...                       limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="Gist2DViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 
@@ -73,6 +74,7 @@ class Gist2DViewer(GistViewer):
         >>> viewer = Gist2DViewer(vars=var, 
         ...                       limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="Gist2DViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 

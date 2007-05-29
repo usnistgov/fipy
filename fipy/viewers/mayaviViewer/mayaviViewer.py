@@ -60,6 +60,7 @@ class MayaviViewer(Viewer):
         >>> viewer = MayaviViewer(vars=(var1, var2), 
         ...                       limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="MayaviViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
         
@@ -69,6 +70,7 @@ class MayaviViewer(Viewer):
         >>> viewer = MayaviViewer(vars=var, 
         ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="MayaviViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 
@@ -78,6 +80,7 @@ class MayaviViewer(Viewer):
         >>> viewer = MayaviViewer(vars=var, 
         ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="MayaviViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 

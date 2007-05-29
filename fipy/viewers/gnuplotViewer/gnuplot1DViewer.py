@@ -63,6 +63,7 @@ class Gnuplot1DViewer(GnuplotViewer):
         >>> viewer = Gnuplot1DViewer(vars=(var1, var2), 
         ...                          limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
         ...                          title="Gnuplot1DViewer test")
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 

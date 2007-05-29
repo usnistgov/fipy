@@ -67,6 +67,7 @@ class MayaviDistanceViewer(Viewer):
         >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
         >>> var.calcDistanceFunction()
         >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 
@@ -79,6 +80,7 @@ class MayaviDistanceViewer(Viewer):
         >>> var.setValue(1, where=positive)
         >>> var.calcDistanceFunction()
         >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer.plot()
         >>> viewer._promptForOpinion()
         >>> del viewer
 

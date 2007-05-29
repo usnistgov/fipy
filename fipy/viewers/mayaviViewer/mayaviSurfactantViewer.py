@@ -75,6 +75,7 @@ class MayaviSurfactantViewer(Viewer):
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
             >>> viewer = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
 
@@ -83,10 +84,12 @@ class MayaviSurfactantViewer(Viewer):
             >>> var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
             >>> var.calcDistanceFunction()
             >>> viewer = MayaviSurfactantViewer(var)
+            >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
 
-            >>> vw = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
         
