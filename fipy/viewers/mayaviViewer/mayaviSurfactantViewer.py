@@ -74,31 +74,21 @@ class MayaviSurfactantViewer(Viewer):
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
-            >>> vw = MayaviSurfactantViewer(var, smooth = 2)
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer._promptForOpinion()
+            >>> del viewer
 
             >>> var = DistanceVariable(mesh = mesh, value = -1)
 
             >>> var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
             >>> var.calcDistanceFunction()
-            >>> vw = MayaviSurfactantViewer(var)
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = MayaviSurfactantViewer(var)
+            >>> viewer._promptForOpinion()
+            >>> del viewer
 
             >>> vw = MayaviSurfactantViewer(var, smooth = 2)
-
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer._promptForOpinion()
+            >>> del viewer
         
         :Parameters:
 

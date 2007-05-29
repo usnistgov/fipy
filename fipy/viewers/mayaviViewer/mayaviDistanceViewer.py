@@ -66,26 +66,21 @@ class MayaviDistanceViewer(Viewer):
     
         >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
         >>> var.calcDistanceFunction()
-        >>> vw = MayaviDistanceViewer(var)
-        >>> if locals().has_key('vw'):
-        ...     vw.plot()
-        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-        ...     del vw
-        ''
+        >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer._promptForOpinion()
+        >>> del viewer
 
         >>> var = DistanceVariable(mesh = mesh, value = -1)
         >>> positive = (y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2))
         >>> minY = numerix.minimum.reduce(numerix.compress(positive, y))
-
         >>> print 'minY',minY
+        minY 0.5
+
         >>> var.setValue(1, where=positive)
         >>> var.calcDistanceFunction()
-        >>> vw = MayaviDistanceViewer(var)
-        >>> if locals().has_key('vw'):
-        ...     vw.plot()
-        ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-        ...     del vw
-        ''
+        >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer._promptForOpinion()
+        >>> del viewer
 
     .. _Mayavi: http://mayavi.sourceforge.net/
 

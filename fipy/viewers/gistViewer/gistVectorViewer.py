@@ -57,44 +57,32 @@ class GistVectorViewer(GistViewer):
             >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
             >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> vw = GistVectorViewer(vars=var.getGrad(), 
-            ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                       title="GistVectorViewer test")
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer._promptForOpinion()
+            >>> del viewer
 
-            >>> vw = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                       title="GistVectorViewer test")
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer._promptForOpinion()
+            >>> del viewer
             
             >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
             >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> vw = GistVectorViewer(vars=var.getGrad(), 
-            ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                       title="GistVectorViewer test")
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer._promptForOpinion()
+            >>> del viewer
 
-            >>> vw = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                       title="GistVectorViewer test")
-            >>> if locals().has_key('vw'):
-            ...     vw.plot()
-            ...     raw_input("Describe any problems with this figure or hit Return: ").strip()
-            ...     del vw
-            ''
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer._promptForOpinion()
+            >>> del viewer
 
         """
 	GistViewer.__init__(self, vars=vars, title=title)
