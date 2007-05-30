@@ -83,12 +83,12 @@ class _AddOverFacesVariable(CellVariable):
         for(i = 0; i < numberOfCells; i++)
           {
           int j;
-          value(i) = 0.;
+          value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              value(i) += orientations(i,j) * faceVariable(ids(i,j));
+              value[i] += orientations[i * numberOfCellFaces + j] * faceVariable[ids[i * numberOfCellFaces + j]];
             }
-            value(i) = value(i) / cellVolume(i);
+            value[i] = value[i] / cellVolume[i];
           }
         """,
             numberOfCellFaces = self.mesh._getMaxFacesPerCell(),

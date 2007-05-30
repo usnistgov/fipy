@@ -1079,22 +1079,18 @@ def _sqrtDotIn(a1, a2):
     if _isPhysical(a2):
         unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
-    ni, nj = NUMERIX.shape(a1)
+    ni, NJ = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
 
     inline._runInline("""
-        int i;
-        for (i = 0; i < ni; i++)
+        int j;
+        result1[i] = 0.;
+        for (j = 0; j < NJ; j++)
         {
-            int j;
-            result1(i) = 0.;
-            for (j = 0; j < nj; j++)
-            {
-                result1(i) += a1(i,j) * a2(i,j);
-            }
-            result1(i) = sqrt(result1(i));
+            result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
         }
-    """,result1 = result1, a1 = a1, a2 = a2, ni = ni, nj = nj)
+        result1[i] = sqrt(result1[i]);        
+    """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
 
 
     ##result = inline._runInline("""
@@ -1282,26 +1278,26 @@ if not hasattr(NUMERIX, 'empty'):
         """
         `ones()` and `zeros()` are really slow ways to create arrays. NumPy
         provides a routine:
-            
+          
             empty((d1,...,dn),dtype=float,order='C') will return a new array of
             shape (d1,...,dn) and given type with all its entries
             uninitialized. This can be faster than zeros.
-            
+          
         We approximate this routine when unavailable, but note that `order` is
         ignored when using Numeric.
         """
         from fipy.tools.inline import inline
 
         return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
-    
+  
     def _emptyPy(shape, dtype):
         return NUMERIX.zeros(shape, dtype)
 
     def _emptyIn(shape, dtype):
         from scipy import weave
-        
+      
         local_dict = {'shape': shape, 'dtype': dtype}
-        
+      
         code = """
 PyObject *op;
 PyArrayObject *ret;

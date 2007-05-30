@@ -102,10 +102,10 @@ class CellTerm(Term):
         updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""
-            b(i) += oldArray(i) * oldCoeff(i) / dt;
-            b(i) += bCoeff(i);
-            updatePyArray(i) += newCoeff(i) / dt;
-            updatePyArray(i) += diagCoeff(i);
+            b[i] += oldArray[i] * oldCoeff[i] / dt;
+            b[i] += bCoeff[i];
+            updatePyArray[i] += newCoeff[i] / dt;
+            updatePyArray[i] += diagCoeff[i];
         """,b=b,
             oldArray=oldArray.getNumericValue(),
 ##            oldArray=numerix.array(oldArray),

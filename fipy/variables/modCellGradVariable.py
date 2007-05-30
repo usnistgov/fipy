@@ -58,17 +58,17 @@ class _ModCellGradVariable(_GaussCellGradVariable):
         val = self._getArray().copy()
         
         inline._runInline(self.modIn + """
-            val(i,j) = 0.;
+            val[i * nj + j] = 0.;
             
             int k;
 
             for (k = 0; k < M; k++) {
-                int ID = ids(i, k);
-                val(i, j) += orientations(i, k) * areaProj(ID, j) * faceValues(ID);
+                int ID = ids[i * M + k];
+                val[i * nj + j] += orientations[i * M + k] * areaProj[ID * nj + j] * faceValues[ID];
             }
                 
-            val(i, j) /= volumes(i);
-            val(i, j) = mod(val(i,j) * gridSpacing(j)) /  gridSpacing(j);
+            val[i * nj + j] /= volumes[i];
+            val[i * nj + j] = mod(val[i * nj + j] * gridSpacing[j]) /  gridSpacing[j];
         """,
         val = val,
         ids = numerix.array(ids),
