@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -115,18 +116,26 @@ class TrilinosSolver(Solver):
                            Each will be passed to AztecOO.SetAztecOption 
                            before solving. 
 
-         - `MLOptions`: Additional options to pass to ML. A dictionary
-                        of {option:value} pairs. This will be passed to
-                        ML.SetParameterList.
+         - `MLOptions`: Options to pass to ML. A dictionary of {option:value} 
+                        pairs. This will be passed to ML.SetParameterList. 
 
          - `IFPACKPreconditionerType`: Which IFPACK preconditioner to use.
                                        Only applicable when preconditioner
-                                       is set to "IFPACK".
+                                       is set to "IFPACK". Currently can be
+                                       'ILU', 'ILUT', 'IC', 'ICT', 'Amesos'.
 
          - `IFPACKOptions`: Additional options to pass to IFPACK. A 
                             dictionary of {option:value} pairs. It will
                             be passed to SetParameters() on the 
                             preconditioner object.
+
+          Only those IFPACK preconditioners which can be created through the 
+          Factory.Create() method are currently supported.
+
+          Sample invocation:
+          mySolver = TrilinosSolver(solverPackage=AztecOO, 
+                        solverName=AZ_cg, preconditioner="ML",
+                        MLOptions={"smoother: type": "symmetric Gauss-Seidel"})
 
           For detailed information on the parameters for AztecOO, see 
           http://trilinos.sandia.gov/packages/aztecoo/AztecOOUserGuide.pdf
@@ -196,6 +205,7 @@ class TrilinosSolver(Solver):
         elif self.solverPackage == AztecOO:
             Solver = AztecOO.AztecOO(A, LHS, RHS)
             Solver.SetAztecOption(AztecOO.AZ_solver, self.solverName)
+
             if self.preconditioner == "ML":
                 Prec = ML.MultiLevelPreconditioner(A, False)
                 Prec.SetParameterList(self.MLOptions)
@@ -210,6 +220,7 @@ class TrilinosSolver(Solver):
                 Solver.SetPrecOperator(Prec)
             else:
                 Solver.SetAztecOption(AztecOO.AZ_precond, self.preconditioner)
+                
             Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_warnings)
             for option, value in self.AztecOptions:
                 Solver.SetAztecOption(option, value)
