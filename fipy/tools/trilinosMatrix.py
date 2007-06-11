@@ -4,12 +4,13 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "sparseMatrix.py"
- #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/07 {3:03:32 PM} 
+ #  FILE: "trilinosMatrix.py"
+ #                                    created: 06/08/07
+ #                                last update: 06/11/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,20 +37,21 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2007-06-11 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from pysparse import spmatrix
+from PyTrilinos import Epetra
+from PyTrilinos import EpetraExt
 
 from fipy.tools import numerix
 
 class _SparseMatrix:
     
     """
-    _SparseMatrix class wrapper for pysparse.
+    _SparseMatrix class wrapper for a PyTrilinos Epetra.FECrsMatrix.
     _SparseMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
@@ -68,11 +70,23 @@ class _SparseMatrix:
         if matrix != None:
             self.matrix = matrix
         else:
-            sizeHint = sizeHint or size * bandwidth
-            self.matrix = spmatrix.ll_mat(size, size, sizeHint)
+            bandwidth = bandwidth or (sizeHint+size-1)/size
+            self.comm = Epetra.PyComm()
+            self.map = Epetra.Map(size, 0, self.comm)
+            self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, bandwidth)
 
     __array_priority__ = 100.0    
 
+    # It would be nice if FillComplete() and Filled() never needed to be called
+    # outside of this class. However, until this is all worked out, I would much
+    # rather be warned when it does any automatic FillComplete()s. 
+    def FillComplete():
+        self.matrix.FillComplete()
+
+    def Filled():
+        return self.matrix.Filled()
+
+    # What does this do?
     def __array_wrap__(self, arr, context=None):
         if context is None:
             return arr
@@ -82,54 +96,110 @@ class _SparseMatrix:
     def _getMatrix(self):
         return self.matrix
     
+    # All operations that require getting data out of the matrix need to muddle around
+    # with FillComplete to make sure they work. Warnings will mark the spot. 
     def copy(self):
-        return _SparseMatrix(matrix = self.matrix.copy())
+        if self.Filled():
+            return _SparseMatrix(Epetra.FECrsMatrix(self.matrix))
+        else: 
+            warnings.warn("""Matrix should have FillComplete called on it before being 
+                             copied. FillComplete will now be called on this matrix.""",
+                             UserWarning, stacklevel=2)
+            self.FillComplete()
+            return _SparseMatrix(Epetra.FECrsMatrix(self.matrix))
+            
         
     def __getitem__(self, index):
-        m = self.matrix[index]
-        if type(m) is type(0) or type(m) is type(0.):
-            return m
+        if self.matrix.Filled():
+            return self.matrix[index]
         else:
-            return _SparseMatrix(matrix = m)
+            import warnings
+            warnings.warn("""Matrix should have FillComplete called on it before being 
+                             accessed. FillComplete will be called on the matrix.""",
+                             UserWarning, stacklevel=2)
+            self.FillComplete()
+            return self.matrix[index]
         
     def __str__(self):
-        s = ""
-        cellWidth = 11
-        shape = self._getShape()
-        for j in range(shape[1]):
-            for i in range(shape[0]):
-                v = self[j,i]
-                if v == 0:
-                    s += "---".center(cellWidth)
-                else:
-                    exp = numerix.log(abs(v))
-                    if abs(exp) <= 4:
-                        if exp < 0:
-                            s += ("%9.6f" % v).ljust(cellWidth)
-                        else:
-                            s += ("%9.*f" % (6,v)).ljust(cellWidth)
+        if not self.Filled():
+            return self.matrix.__str__()
+        else:
+            s = ""
+            cellWidth = 11
+            shape = self._getShape()
+            for j in range(shape[1]):
+                for i in range(shape[0]):
+                    v = self[j,i]
+                    if v == 0:
+                        s += "---".center(cellWidth)
                     else:
-                        s += ("%9.2e" % v).ljust(cellWidth)
-            s += "\n"
-        return s[:-1]
+                        exp = numerix.log(abs(v))
+                        if abs(exp) <= 4:
+                            if exp < 0:
+                                s += ("%9.6f" % v).ljust(cellWidth)
+                            else:
+                                s += ("%9.*f" % (6,v)).ljust(cellWidth)
+                        else:
+                            s += ("%9.2e" % v).ljust(cellWidth)
+                s += "\n"
+            return s[:-1]
             
     def __repr__(self):
-        print '__repr__'
-        return repr(numerix.array(self))
-## 	return self.matrix.__repr__()
+ 	    return self.matrix.__repr__()
         
     def __setitem__(self, index, value):
         self.matrix[index] = value
         
+
+    # Addition is tricky. 
+    # Trilinos interface is as such:
+    # A can be added into B, where B is a matrix, but this will automatically 
+    # FillComplete() B; A has to be Filled() beforehand. If B is filled beforehand,
+    # this may or may not crash, depending on whether things are being added into 
+    # spots in B that were not there before. 
+    # Have to really finesse it to make it look like two things can (sometimes) be 
+    # just added.
+
+    # Not much of a choice in iadd - you know which one has to be modified.
+    # Have to check that the other is filled first. 
+    # iadd sums the second argument into the first
     def _iadd(self, L, other, sign = 1):
         if other != 0:
-            L.shift(sign, other._getMatrix())
-        
+            if not other.matrix.Filled():
+                import warnings
+                warnings.warn("""Matrix must be FillComplete()d before being added""",
+                                 UserWarning, stacklevel=2)
+                other.FillComplete()
+
+            if EpetraExt.Add(other.getMatrix(), False,sign,L,1) < 0:
+                import warnings
+                warnings.warn("""EpetraExt.Add returned failure in _iadd""",
+                                 UserWarning, stacklevel=2)
         return self
 
+   
+    # To add two things while modifying neither, both must be FillCompleted
     def _add(self, other, sign = 1):
-        L = self.matrix.copy()
-        self._iadd(L, other, sign)
+        if not self.matrix.Filled():
+            import warnings
+            warnings.warn("""Matrix must be FillComplete()d before being added""",
+                             UserWarning, stacklevel=2)
+            self.FillComplete()
+        if not other.matrix.Filled():
+            import warnings
+            warnings.warn("""Matrix must be FillComplete()d before being added""",
+                             UserWarning, stacklevel=2)
+            other.FillComplete()
+        
+        # make the one with more nonzeros the right-hand operand so that the addition
+        # is likely to succeed
+        if self.matrix.NumGlobalNonZeros() > other.matrix.NumGlobalNonZeros():
+            L = Epetra.FECrsMatrix(other.matrix)
+            other._iadd(L, self, sign)
+        else:
+            L = Epetra.FECrsMatrix(self.matrix)
+            self._iadd(L, other, sign)
+            
         return _SparseMatrix(matrix = L)
 
     def __add__(self, other):
@@ -157,32 +227,31 @@ class _SparseMatrix:
         if other is 0:
             return self
         else:
-            L = self.matrix.copy()
-            L.shift(1, other._getMatrix())
-            return _SparseMatrix(matrix = L)
+            return self._add(other)
+            # Why don't they do this in the pysparse wrapper?
         
     __radd__ = __add__
 
     def __sub__(self, other):
-
         if other is 0:
             return self
         else:
-            L = self.matrix.copy()
-            L.shift(-1, other._getMatrix())
-            return _SparseMatrix(matrix = L)
+            return self._add(other, sign=-1)
 
     def __rsub__(self, other):
         if other is 0:
             return -self
-    #IS THIS A BUG? Needs an else?
+        else:
+            return other.add(self, sign=-1)
+    # Check this, its different than the pysparse wrapper, pysparse didn't have the else
         
     def __iadd__(self, other):
         return self._iadd(self._getMatrix(), other)
         
-    def _isub__(self, other):
+    def __isub__(self, other):
         return self._iadd(self._getMatrix(), other, -1)
-    # Should this be __isub__?
+    # Check whether this should be _isub_ or __isub__ or _isub__
+    # it's _isub__ in the pysparse wrapper. Does it matter? Is this ever used?
         
     def __mul__(self, other):
         """
@@ -214,28 +283,47 @@ class _SparseMatrix:
 
             
         """
-        N = self.matrix.shape[0]
+        N = self.matrix.NumGlobalCols()
 
         if isinstance(other, _SparseMatrix):
-            return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+            if isinstance(other._getMatrix(), Epetra.RowMatrix):
+                if not self.matrix.Filled():
+                    import warnings
+                    warnings.warn("Matrix must be FillComplete()d before being added",
+                                   UserWarning, stacklevel=2)
+                    self.FillComplete()
+                if not other.matrix.Filled():
+                    import warnings
+                    warnings.warn("Matrix must be FillComplete()d before being added",
+                                   UserWarning, stacklevel=2)
+                    other.FillComplete()
+
+                result = Epetra.FECrsMatrix(Epetra.Copy, self.map, 0)
+
+                EpetraExt.Multiply(self.matrix, False, other.matrix, False, result)
+                return _SparseMatrix(matrix = result)
+            else:
+                raise TypeError
+                
         else:
             shape = numerix.shape(other)
             if shape == ():
-                L = spmatrix.ll_mat(N, N, N)
-                L.put(other * numerix.ones(N))
-                return _SparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
+                result = self.copy()
+                result.matrix.Scale(other)
             elif shape == (N,):
-                y = other.copy()
-                self.matrix.matvec(other, y)
-                return y
+                y = Epetra.Vector(other)
+                result = Epetra.Vector(self.map)
+                self.matrix.Multiply(False, y, result)
+                return result
             else:
                 raise TypeError
-            
+           
     def __rmul__(self, other):
         if type(numerix.ones(1)) == type(other):
-            y = other.copy()
-            self.matrix.matvec_transp(other, y)
-            return y
+            y = Epetra.Vector(other)
+            result = Epetra.Vector(self.map)
+            self.matrix.Multiply(True, y, result)
+            return result
         else:
             return self * other
             
@@ -257,7 +345,8 @@ class _SparseMatrix:
 ## 	return self.matrix.__eq__(other._getMatrix())
 
     def _getShape(self):
-        return self.matrix.shape
+        N = self.matrix.NumGlobalCols()
+        return (N,N)
         
 ##     def transpose(self):
 ##         pass
@@ -273,7 +362,7 @@ class _SparseMatrix:
                 ---     3.141593      ---    
              2.500000      ---        ---    
         """
-        self.matrix.put(vector, id1, id2)
+        self.matrix.InsertGlobalValues(id1, id2, vector)
 
     def putDiagonal(self, vector):
         """
@@ -292,8 +381,8 @@ class _SparseMatrix:
                 ---        ---     3.141593  
         """
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self.matrix.NumGlobalRows())
+            tmp = numerix.zeros((self.matrix.NumGlobalRows), 'd')
             tmp[:] = vector
             self.put(tmp, ids, ids)
         else:
@@ -301,14 +390,28 @@ class _SparseMatrix:
             self.put(vector, ids, ids)
 
     def take(self, id1, id2):
-        vector = numerix.zeros(len(id1), 'd')
-        self.matrix.take(vector, id1, id2)
-        return vector
+        import warnings
+        warnings.warn("""Trying to take from a Trilinos Matrix. That doesn't work.""",
+                         UserWarning, stacklevel=2)
+       #vector = numerix.zeros(len(id1), 'd')
+       #self.matrix.take(vector, id1, id2)
+       #return vector
 
     def takeDiagonal(self):
-        ids = numerix.arange(self._getShape()[0])
-        return self.take(ids, ids)
-
+        if self.Filled():
+            result = Epetra.Vector(self.map)
+            self.matrix.ExtractDiagonalCopy(result)
+            return result
+        else: 
+            import warnings
+            warnings.warn("""Matrix should have FillComplete called on it before being 
+                             copied. FillComplete will now be called on this matrix.""",
+                             UserWarning, stacklevel=2)
+            self.FillComplete()
+            result = Epetra.Vector(self.map)
+            self.matrix.ExtractDiagonalCopy(result)
+            return result
+    
     def addAt(self, vector, id1, id2):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
@@ -321,23 +424,26 @@ class _SparseMatrix:
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-        self.matrix.update_add_at(vector, id1, id2)
+        self.matrix.InsertGlobalValues(id1, id2, vector)
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self.matrix.GetGlobalRows())
+            tmp = numerix.zeros((self.matrix.GetGlobalRows(),), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
-    def getNumpyArray(self):
-        shape = self._getShape()
-        indices = numerix.indices(shape)
-        numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
-        return numerix.reshape(numMatrix, shape)
+    # Requires Take. This is a problem. If all of these are used a bunch, I might
+    # have to put in a very inefficient, python-loopy take.    
+
+   #def getNumpyArray(self):
+   #    shape = self._getShape()
+   #    indices = numerix.indices(shape)
+   #    numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
+   #    return numerix.reshape(numMatrix, shape)
         
 ##     def __array__(self):
 ##      shape = self._getShape()
@@ -345,11 +451,11 @@ class _SparseMatrix:
 ##         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
 ##      return numerix.reshape(numMatrix, shape)
 
-    def matvec(self, x):
-        """
-        This method is required for scipy solvers.
-        """
-        return self * x
+#   def matvec(self, x)
+#       """
+#       This method is required for scipy solvers.
+#       """
+#       return self * x
     
 
 class _SparseIdentityMatrix(_SparseMatrix):

@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "trilinosSolver.py"
- #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:11:54 PM} 
+ #                                    created: 06/07/07 
+ #                                last update: 06/11/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,7 @@ from PyTrilinos import AztecOO
 from PyTrilinos import ML
 from PyTrilinos import IFPACK
 
-import numpy
+from fipy.tools import numerix
 
 class TrilinosSolver(Solver):
 
@@ -180,12 +180,15 @@ class TrilinosSolver(Solver):
         #                Epetra.IntSerialDenseVector(range(0,m)),\
         #                Epetra.IntSerialDenseVector(range(0,n)),\
         #                Epetra.SerialDenseMatrix(L.getNumpyArray()))
-        # Replaced with writing to/reading from matrixmarket format
+        # Replaced with writing to/reading from matrixmarket format temporary file
+        
+        import tempfile
+        import os
+        filename = tempfile.mktemp(suffix=".mm")
+        L._getMatrix().export_mtx(filename)
+        (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
+        os.remove(filename)
 
-        # Yeah, it's using a hardcoded filename, not good. It's a stopgap measure anyway...
-        # keep the file in tmp to not need to do network stuff to access the home directory
-        L._getMatrix().export_mtx("/tmp/A.mm")
-        (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix("/tmp/A.mm", Map)
         A.FillComplete()
         A.OptimizeStorage()
         return A
@@ -226,4 +229,4 @@ class TrilinosSolver(Solver):
                 Solver.SetAztecOption(option, value)
             Solver.Iterate(self.iterations,self.tolerance) 
         
-        x = numpy.array(LHS)
+        x = numerix.array(LHS)
