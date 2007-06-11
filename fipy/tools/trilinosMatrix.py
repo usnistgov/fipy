@@ -70,7 +70,8 @@ class _SparseMatrix:
         if matrix != None:
             self.matrix = matrix
         else:
-            bandwidth = bandwidth or (sizeHint+size-1)/size
+            if sizeHint is not None and bandwidth != 0:
+                bandwidth = (sizeHint + size - 1)/size 
             self.comm = Epetra.PyComm()
             self.map = Epetra.Map(size, 0, self.comm)
             self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, bandwidth)
@@ -80,10 +81,10 @@ class _SparseMatrix:
     # It would be nice if FillComplete() and Filled() never needed to be called
     # outside of this class. However, until this is all worked out, I would much
     # rather be warned when it does any automatic FillComplete()s. 
-    def FillComplete():
+    def FillComplete(self):
         self.matrix.FillComplete()
 
-    def Filled():
+    def Filled(self):
         return self.matrix.Filled()
 
     # What does this do?
@@ -171,10 +172,24 @@ class _SparseMatrix:
                                  UserWarning, stacklevel=2)
                 other.FillComplete()
 
-            if EpetraExt.Add(other.getMatrix(), False,sign,L,1) < 0:
-                import warnings
-                warnings.warn("""EpetraExt.Add returned failure in _iadd""",
-                                 UserWarning, stacklevel=2)
+            if L.Filled() and other.matrix.NumGlobalNonzeros() > self.matrix.NumGlobalNonzeros():
+                tempMatrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, (other.matrix.NumGlobalNonzeros()/L.NumGlobalRows())+1)
+                if EpetraExt.Add(other.matrix, False, sign, tempMatrix, 1) < 0:
+                    import warnings
+                    warnings.warn("""EpetraExt.Add returned failure in _iadd, tempadd#1""",
+                                     UserWarning, stacklevel=2)
+
+                if EpetraExt.Add(L, False, 1, tempMatrix, 1) < 0:
+                    import warnings
+                    warnings.warn("""EpetraExt.Add returned failure in _iadd, tempadd#2""",
+                                     UserWarning, stacklevel=2)
+
+                L = tempMatrix
+            else:
+                if EpetraExt.Add(other._getMatrix(), False,sign,L,1) < 0:
+                    import warnings
+                    warnings.warn("""EpetraExt.Add returned failure in _iadd""",
+                                    UserWarning, stacklevel=2)
         return self
 
    
@@ -193,7 +208,7 @@ class _SparseMatrix:
         
         # make the one with more nonzeros the right-hand operand so that the addition
         # is likely to succeed
-        if self.matrix.NumGlobalNonZeros() > other.matrix.NumGlobalNonZeros():
+        if self.matrix.NumGlobalNonzeros() > other.matrix.NumGlobalNonzeros():
             L = Epetra.FECrsMatrix(other.matrix)
             other._iadd(L, self, sign)
         else:
@@ -405,7 +420,7 @@ class _SparseMatrix:
         else: 
             import warnings
             warnings.warn("""Matrix should have FillComplete called on it before being 
-                             copied. FillComplete will now be called on this matrix.""",
+                             read. FillComplete will now be called on this matrix.""",
                              UserWarning, stacklevel=2)
             self.FillComplete()
             result = Epetra.Vector(self.map)
