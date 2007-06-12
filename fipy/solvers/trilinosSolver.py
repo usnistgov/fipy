@@ -45,9 +45,6 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse import precon
-from pysparse import itsolvers
-
 from fipy.solvers.solver import Solver
 
 # These imports should go into try-except blocks, to see what packages
@@ -95,8 +92,8 @@ class TrilinosSolver(Solver):
                                         AztecOO.AZ_gmres,
                                         AztecOO.AZ_gmres_condnum,
                                         AztecOO.AZ_cgs,
-                                        AZ_tfqmr,
-                                        AZ_bicgstab
+                                        AztecOO.AZ_tfqmr,
+                                        AztecOO.AZ_bicgstab
                           Default - 'Klu'
 
           - `preconditioner`: Which of the AztecOO preconditioners to use. 
@@ -109,7 +106,7 @@ class TrilinosSolver(Solver):
                                         AztecOO.AZ_dom_decomp,
                                         'ML',
                                         'IFPACK'
-                              Default - AZ_none
+                              Default - AztecOO.AZ_none
 
          - `AztecOptions`: Additional options to pass to Aztec.
                            A dictionary of {option: value} pairs. 
@@ -157,6 +154,7 @@ class TrilinosSolver(Solver):
                 
         Solver.__init__(self, tolerance=tolerance, 
                         iterations=iterations, steps=steps)
+
         self.solverPackage = solverPackage
         self.solverName = solverName
         self.preconditioner = preconditioner
@@ -195,7 +193,12 @@ class TrilinosSolver(Solver):
     
     def _solve(self, L, x, b):
 
-        A = self._makeTrilinosMatrix(L)
+        if not isinstance(L._getMatrix(), Epetra.RowMatrix):
+            A = self._makeTrilinosMatrix(L)
+        else:
+            A = L._getMatrix()
+            A.FillComplete()
+            A.OptimizeStorage()
 
         RHS = Epetra.Vector(b)
         LHS = Epetra.Vector(x)
