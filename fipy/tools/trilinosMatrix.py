@@ -326,6 +326,12 @@ class _SparseMatrix:
                 result = self.copy()
                 result.matrix.Scale(other)
             elif shape == (N,):
+                if not self.matrix.Filled():
+                    import warnings
+                    warnings.warn("Matrix must be FillComplete()d before being multiplied",
+                                   UserWarning, stacklevel=2)
+                    self.FillComplete()
+
                 y = Epetra.Vector(other)
                 result = Epetra.Vector(self.map)
                 self.matrix.Multiply(False, y, result)
