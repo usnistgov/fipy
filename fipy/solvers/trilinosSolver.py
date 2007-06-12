@@ -55,113 +55,15 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
 from PyTrilinos import AztecOO
-from PyTrilinos import ML
-from PyTrilinos import IFPACK
 
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):
 
     """
-    This solver is an interface to most of the solvers and preconditioners available through PyTrilinos.
+    .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, \
-                 solverPackage=Amesos, solverName="Klu",\
-                 preconditioner=AztecOO.AZ_none, AztecOptions={},
-                 MLOptions = {},
-                 IFPACKPreconditionerType="ILU", IFPACKOptions={}):
-        """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
-
-          - `solverPackage`: Which of the Trilinos packages the solver 
-                             is to be from.
-
-                             Currently supported - Amesos, AztecOO
-                             Default - Amesos
-
-          - `solverName`: Which of the solvers from the package to use. 
-                          Currently supported - 
-                            Amesos:     'Klu', 'LAPACK'
-                            AztecOO:    AztecOO.AZ_cg,
-                                        AZtecOO.AZ_cg_condnum,
-                                        AztecOO.AZ_gmres,
-                                        AztecOO.AZ_gmres_condnum,
-                                        AztecOO.AZ_cgs,
-                                        AztecOO.AZ_tfqmr,
-                                        AztecOO.AZ_bicgstab
-                          Default - 'Klu'
-
-          - `preconditioner`: Which of the AztecOO preconditioners to use. 
-                              Supported:
-                                        AztecOO.AZ_none,
-                                        AztecOO.AZ_Jacobi,
-                                        AztecOO.AZ_Neumann,
-                                        AztecOO.AZ_ls,
-                                        AztecOO.AZ_sym_GS,
-                                        AztecOO.AZ_dom_decomp,
-                                        'ML',
-                                        'IFPACK'
-                              Default - AztecOO.AZ_none
-
-         - `AztecOptions`: Additional options to pass to Aztec.
-                           A dictionary of {option: value} pairs. 
-                           Each will be passed to AztecOO.SetAztecOption 
-                           before solving. 
-
-         - `MLOptions`: Options to pass to ML. A dictionary of {option:value} 
-                        pairs. This will be passed to ML.SetParameterList. 
-
-         - `IFPACKPreconditionerType`: Which IFPACK preconditioner to use.
-                                       Only applicable when preconditioner
-                                       is set to "IFPACK". Currently can be
-                                       'ILU', 'ILUT', 'IC', 'ICT', 'Amesos'.
-
-         - `IFPACKOptions`: Additional options to pass to IFPACK. A 
-                            dictionary of {option:value} pairs. It will
-                            be passed to SetParameters() on the 
-                            preconditioner object.
-
-          Only those IFPACK preconditioners which can be created through the 
-          Factory.Create() method are currently supported.
-
-          Sample invocation:
-          mySolver = TrilinosSolver(solverPackage=AztecOO, 
-                        solverName=AZ_cg, preconditioner="ML",
-                        MLOptions={"smoother: type": "symmetric Gauss-Seidel"})
-
-          For detailed information on the parameters for AztecOO, see 
-          http://trilinos.sandia.gov/packages/aztecoo/AztecOOUserGuide.pdf
-
-          For detailed information on the parameters for ML, see
-          http://trilinos.sandia.gov/packages/ml/documentation.html
-
-          For detailed information on the options for IFPACK, and for 
-          a list of the available preconditioners, see
-          http://trilinos.sandia.gov/packages/ifpack/IfpackUserGuide.pdf
-
-          Notes - to use the AztecOO options, you need to have called 
-                  "from PyTrilinos import AztecOO" explicity to be able
-                  to pass Aztec solvers and options.
-
-         """
-                
-        # Former default was MLList = {"max levels" : 4, "smoother: type" : "symmetric Gauss-Seidel", "aggregation: type" : "Uncoupled"} (parameters kept for reference for now)
-                
-        Solver.__init__(self, tolerance=tolerance, 
-                        iterations=iterations, steps=steps)
-
-        self.solverPackage = solverPackage
-        self.solverName = solverName
-        self.preconditioner = preconditioner
-        self.AztecOptions = AztecOptions
-        self.MLOptions = MLOptions
-        self.IFPACKOptions = IFPACKOptions
-        self.IFPACKPreconditionerType = IFPACKPreconditionerType
     
     def _makeTrilinosMatrix(self, L):
         """ 
@@ -203,33 +105,7 @@ class TrilinosSolver(Solver):
         RHS = Epetra.Vector(b)
         LHS = Epetra.Vector(x)
 
-        if self.solverPackage == Amesos:
-            Factory = Amesos.Factory()
-            Problem = Epetra.LinearProblem(A, LHS, RHS)
-            Solver = Factory.Create(self.solverName, Problem)
-            Solver.Solve()
-        elif self.solverPackage == AztecOO:
-            Solver = AztecOO.AztecOO(A, LHS, RHS)
-            Solver.SetAztecOption(AztecOO.AZ_solver, self.solverName)
-
-            if self.preconditioner == "ML":
-                Prec = ML.MultiLevelPreconditioner(A, False)
-                Prec.SetParameterList(self.MLOptions)
-                Prec.ComputePreconditioner()
-                Solver.SetPrecOperator(Prec)
-            elif self.preconditioner == "IFPACK":
-                Factory = IFPACK.Factory()
-                Prec = Factory.Create(self.IFPACKPreconditionerType, A)
-                Prec.SetParameters(self.IFPACKOptions)
-                Prec.Initialize()
-                Prec.Compute()
-                Solver.SetPrecOperator(Prec)
-            else:
-                Solver.SetAztecOption(AztecOO.AZ_precond, self.preconditioner)
-                
-            Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_warnings)
-            for option, value in self.AztecOptions:
-                Solver.SetAztecOption(option, value)
-            Solver.Iterate(self.iterations,self.tolerance) 
-        
+        self._applyTrilinosSolver(A, LHS, RHS)
         x = numerix.array(LHS)
+
+        
