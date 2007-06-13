@@ -413,6 +413,7 @@ class _SparseMatrix:
             if self._getMatrix().NumGlobalNonzeros() == 0:
                 self._getMatrix().InsertGlobalValues(id1, id2, vector)
             else:
+                self._getMatrix().InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
                 self._getMatrix().FillComplete()
                 if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
