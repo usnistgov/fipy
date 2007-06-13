@@ -47,14 +47,8 @@ import sys
 
 from fipy.solvers.solver import Solver
 
-# These imports should go into try-except blocks, to see what packages
-# actually exist. Requires Epetra and EpetraExt, and one of Amesos/AztecOO
-# Ideally, that'll also determine the default options?
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
-from PyTrilinos import Amesos
-from PyTrilinos import AztecOO
 
 from fipy.tools import numerix
 
@@ -84,10 +78,22 @@ class TrilinosSolver(Solver):
         
         import tempfile
         import os
+
         filename = tempfile.mktemp(suffix=".mm")
         L._getMatrix().export_mtx(filename)
         (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
-        os.remove(filename)
+        
+        # File on disk replaced with pipe (NOT REPLACED - NOT WORKING)
+        #os.mkfifo(filename)
+        #pid = os.fork()     
+        #
+        #if(pid == 0):
+        #    L._getMatrix().export_mtx(filename)
+        #    sys.exit(0)
+        #
+        #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
+        #
+        #os.waitpid(pid, 0)
 
         A.FillComplete()
         A.OptimizeStorage()
@@ -107,5 +113,3 @@ class TrilinosSolver(Solver):
 
         self._applyTrilinosSolver(A, LHS, RHS)
         x = numerix.array(LHS)
-
-        

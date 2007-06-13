@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosSolver.py"
+ #  FILE: "trilinosGeneralSolver.py"
  #                                    created: 06/07/07 
  #                                last update: 06/11/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -58,12 +58,12 @@ from PyTrilinos import AztecOO
 
 from fipy.tools import numerix
 
-class TrilinosSolver(Solver):
+class TrilinosGeneralSolver(Solver):
 
     """
     This solver is an interface to most of the solvers and preconditioners available through PyTrilinos.
-    Most of its functionality should be available through its subclasses. 
-    Eventually, this will become a purely abstract class.
+    It will eventually be replaced by a group of subclasses of the TrilinosSolver, but is available for
+    now until they are implemented.
 
     """
     
@@ -162,7 +162,8 @@ class TrilinosSolver(Solver):
         self.MLOptions = MLOptions
         self.IFPACKOptions = IFPACKOptions
         self.IFPACKPreconditionerType = IFPACKPreconditionerType
-    
+
+
     def _makeTrilinosMatrix(self, L):
         """ 
         Takes in a pySparse matrix and returns an Epetra.CrsMatrix . 
@@ -182,9 +183,24 @@ class TrilinosSolver(Solver):
         
         import tempfile
         import os
+
         filename = tempfile.mktemp(suffix=".mm")
+
         L._getMatrix().export_mtx(filename)
         (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
+
+        # File on disk replaced with pipe (NOT REPLACED - NOT WORKING)
+        #os.mkfifo(filename)
+        #pid = os.fork()     
+        #
+        #if(pid == 0):
+        #    L._getMatrix().export_mtx(filename)
+        #    sys.exit(0)
+        #
+        #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
+        #
+        #os.waitpid(pid, 0)
+
         os.remove(filename)
 
         A.FillComplete()
