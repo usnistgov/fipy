@@ -150,10 +150,11 @@ class Grid2D(Mesh2D):
         
         inline._runInline("""
             int ID = j * ni + i;
-            cellFaceIDs(ID, 0) = ID;
-            cellFaceIDs(ID, 2) = cellFaceIDs(ID, 0) + ni;
-            cellFaceIDs(ID, 3) = horizontalFaces + ID + j;
-            cellFaceIDs(ID, 1) = cellFaceIDs(ID, 3) + 1;
+            int arrayID = ID * 4;
+            cellFaceIDs[arrayID + 0] = ID;
+            cellFaceIDs[arrayID + 2] = cellFaceIDs[arrayID + 0] + ni;
+            cellFaceIDs[arrayID + 3] = horizontalFaces + ID + j;
+            cellFaceIDs[arrayID + 1] = cellFaceIDs[arrayID + 3] + 1;
         """,
         horizontalFaces=self.numberOfHorizontalFaces,
         cellFaceIDs=cellFaceIDs,

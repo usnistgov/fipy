@@ -50,6 +50,39 @@ class MayaviDistanceViewer(Viewer):
     """
     The `MayaviDistanceViewer` creates a viewer with the Mayavi_ python
     plotting package that displays a `DistanceVariable`.
+    
+        >>> from fipy import *
+        >>> dx = 1.
+        >>> dy = 1.
+        >>> nx = 100
+        >>> ny = 100
+        >>> Lx = ny * dy
+        >>> Ly = nx * dx
+        >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+        >>> ## from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+        >>> var = DistanceVariable(mesh = mesh, value = -1)
+    
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    
+        >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
+        >>> var.calcDistanceFunction()
+        >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
+        >>> var = DistanceVariable(mesh = mesh, value = -1)
+        >>> positive = (y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2))
+        >>> minY = numerix.minimum.reduce(numerix.compress(positive, y))
+        >>> print 'minY',minY
+        minY 0.5
+
+        >>> var.setValue(1, where=positive)
+        >>> var.calcDistanceFunction()
+        >>> viewer = MayaviDistanceViewer(var)
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
 
     .. _Mayavi: http://mayavi.sourceforge.net/
 
@@ -147,33 +180,7 @@ class MayaviDistanceViewer(Viewer):
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
-if __name__ == '__main__':
-    dx = 1.
-    dy = 1.
-    nx = 100
-    ny = 100
-    Lx = ny * dy
-    Ly = nx * dx
-    from fipy.meshes.grid2D import Grid2D
-    mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    var = DistanceVariable(mesh = mesh, value = -1)
-    
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
-    
-    var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
-    var.calcDistanceFunction()
-    viewer = MayaviDistanceViewer(var)
-    viewer.plot()
-    raw_input("press key to continue")
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
 
-    var = DistanceVariable(mesh = mesh, value = -1)
-    positive = (y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2))
-    minY = numerix.minimum.reduce(numerix.compress(positive, y))
-
-    print 'minY',minY
-    var.setValue(1, where=positive)
-    var.calcDistanceFunction()
-    viewer = MayaviDistanceViewer(var)
-    viewer.plot()
-    raw_input("press key to continue")

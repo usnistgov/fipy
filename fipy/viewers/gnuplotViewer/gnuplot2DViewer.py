@@ -72,6 +72,27 @@ class Gnuplot2DViewer(GnuplotViewer):
         """
         Creates a `Gnuplot2DViewer`.
         
+            >>> from fipy import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = Gnuplot2DViewer(vars=var, 
+            ...                          limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+            ...                          title="Gnuplot2DViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = Gnuplot2DViewer(vars=var, 
+            ...                          limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+            ...                          title="Gnuplot2DViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -107,3 +128,7 @@ class Gnuplot2DViewer(GnuplotViewer):
                             self.vars[0][:])
 
         self.g.splot(data)
+
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

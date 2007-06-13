@@ -107,64 +107,6 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
-def take(a, indices, axis=0, fill_value=None):
-    """
-    Selects the elements of `a` corresponding to `indices`.
-    """
- 	   
-    if _isPhysical(a):
-        taken = a.take(indices, axis=axis)   
-    elif type(indices) is type(MA.array((0))):
-        ## Replaces `MA.take`. `MA.take` does not always work when
-        ## `indices` is a masked array.
-        ##
-        nomask = None
-        
-        taken = MA.take(a, MA.filled(indices, 0), axis=axis) 	
-        mask = MA.getmask(indices)
-
-        if mask is not nomask:
-            mask = MA.getmaskarray(indices)
-            if taken.shape != mask.shape:
-                mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
-                mask = MA.mask_or(MA.getmask(taken), mask)
-               
-        if mask is not nomask:
-            taken = MA.array(data=taken, mask=mask)
-        else:
-            if MA.getmask(taken) is nomask:
-                taken = taken.filled()
-
-    elif type(a) in (type(array((0))), type(()), type([])):
-        taken = NUMERIX.take(a, indices, axis=axis)
-    elif type(a) is type(MA.array((0))):
-        taken = MA.take(a, indices, axis=axis)
-    else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
-               
-    if fill_value is not None and type(taken) is type(MA.array((0))):
-        taken = taken.filled(fill_value=fill_value)
-        
-    return taken
-
-## def take(arr, ids, axis=0):
-##     """
-##     Selects the elements of `arr` corresponding to `ids`.
-##     """
-    
-##     if _isPhysical(arr):
-##      return arr.take(ids, axis=axis)    
-##     elif type(ids) is type(MA.array((0))):
-##         return take(arr, ids, axis=axis)
-##     elif type(arr) is type(array((0))):
-##      return NUMERIX.take(arr, ids, axis=axis)
-##     elif type(arr) is type(MA.array((0))):
-##      return MA.take(arr, ids, axis=axis)
-##     else:
-##      raise TypeError, 'cannot take from object ' + str(arr)
-
-## take = NUMERIX.take
-    
 def put(arr, ids, values):
     """
     The opposite of `take`.  The values of `arr` at the locations
@@ -1137,22 +1079,18 @@ def _sqrtDotIn(a1, a2):
     if _isPhysical(a2):
         unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
-    ni, nj = NUMERIX.shape(a1)
+    ni, NJ = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
 
     inline._runInline("""
-        int i;
-        for (i = 0; i < ni; i++)
+        int j;
+        result1[i] = 0.;
+        for (j = 0; j < NJ; j++)
         {
-            int j;
-            result1(i) = 0.;
-            for (j = 0; j < nj; j++)
-            {
-                result1(i) += a1(i,j) * a2(i,j);
-            }
-            result1(i) = sqrt(result1(i));
+            result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
         }
-    """,result1 = result1, a1 = a1, a2 = a2, ni = ni, nj = nj)
+        result1[i] = sqrt(result1[i]);        
+    """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
 
 
     ##result = inline._runInline("""
@@ -1340,26 +1278,26 @@ if not hasattr(NUMERIX, 'empty'):
         """
         `ones()` and `zeros()` are really slow ways to create arrays. NumPy
         provides a routine:
-            
+          
             empty((d1,...,dn),dtype=float,order='C') will return a new array of
             shape (d1,...,dn) and given type with all its entries
             uninitialized. This can be faster than zeros.
-            
+          
         We approximate this routine when unavailable, but note that `order` is
         ignored when using Numeric.
         """
         from fipy.tools.inline import inline
 
         return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
-    
+  
     def _emptyPy(shape, dtype):
         return NUMERIX.zeros(shape, dtype)
 
     def _emptyIn(shape, dtype):
         from scipy import weave
-        
+      
         local_dict = {'shape': shape, 'dtype': dtype}
-        
+      
         code = """
 PyObject *op;
 PyArrayObject *ret;

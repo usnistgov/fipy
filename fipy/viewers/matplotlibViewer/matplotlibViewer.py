@@ -121,3 +121,6 @@ class MatplotlibViewer(Viewer):
         if filename is not None:
             pylab.savefig(filename)
 
+    def _validFileExtensions(self):
+        return [".eps", ".jpg", ".png"]
+        

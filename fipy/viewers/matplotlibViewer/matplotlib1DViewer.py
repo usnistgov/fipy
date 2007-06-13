@@ -50,6 +50,20 @@ class Matplotlib1DViewer(MatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
+    
+        >>> from fipy import *
+        >>> from fipy.tools.numerix import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[...,0]
+        >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
+        >>> k = Variable(name="k")
+        >>> viewer = Matplotlib1DViewer(vars=(sin(k * xVar), cos(k * xVar / pi)), 
+        ...                             limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                             title="Matplotlib1DViewer test")
+        >>> for kval in numerix.arange(0,0.3,0.03):
+        ...     k.setValue(kval)
+        ...     viewer.plot()
+        >>> viewer._promptForOpinion()
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
@@ -107,3 +121,6 @@ class Matplotlib1DViewer(MatplotlibViewer):
             line[0].set_xdata(datum[0])
             line[0].set_ydata(datum[1])
             
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

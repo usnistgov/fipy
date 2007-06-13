@@ -52,6 +52,38 @@ class MayaviViewer(Viewer):
     The `MayaviViewer` creates viewers with the Mayavi_ python
     plotting package.
 
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[...,0]
+        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
+        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
+        >>> viewer = MayaviViewer(vars=(var1, var2), 
+        ...                       limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+        
+        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> viewer = MayaviViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
+        >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
+        >>> x, y, z = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1], mesh.getCellCenters()[...,2]
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y z)$", value=numerix.sin(x * y * z))
+        >>> viewer = MayaviViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
     .. _Mayavi: http://mayavi.sourceforge.net/
 
     Issues with the `MayaviViewer` are
@@ -212,11 +244,9 @@ class MayaviViewer(Viewer):
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
+        def _validFileExtensions(self):
+            return [".png"]
 
-if __name__ == '__main__':
-##     from fipy.meshes.grid1D import Grid1D
-    from fipy.variables.cellVariable import CellVariable
-##     vars = [CellVariable(value = range(3), mesh = Grid1D(nx = 3, dx = 1.))]
 
 ##     from fipy.meshes.tri2D import Tri2D
 ##     triMesh = Tri2D()
@@ -228,14 +258,6 @@ if __name__ == '__main__':
 ##     compositeMesh += (0, 2)
 ##     vars += [CellVariable(value = range(7), mesh = compositeMesh)]
     
-    vars = []
-    from fipy.meshes.grid3D import Grid3D
-    mesh3D = Grid3D(nx = 3)
-    mesh3D += (0, 0, 2)
-    vars += [CellVariable(value = range(3), mesh = mesh3D)]
-
-    viewer = MayaviViewer(vars)
-    viewer.plot()
-    raw_input("finished")
-    
-    
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

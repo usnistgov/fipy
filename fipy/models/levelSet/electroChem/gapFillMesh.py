@@ -51,7 +51,7 @@ class GapFillMesh(Mesh2D):
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[:,1]
+        >>> centers = mesh.getCellCenters()[:,1].copy() ## the copy makes the array contigous for inlining
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
@@ -236,7 +236,7 @@ class TrenchMesh(GapFillMesh):
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[:,1]
+        >>> centers = mesh.getCellCenters()[:,1].copy() ## ensure contiguous array for inlining
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)

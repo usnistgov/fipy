@@ -52,6 +52,43 @@ from fipy.tools import numerix
 class GistVectorViewer(GistViewer):
     
     def __init__(self, vars, title = ''):
+        """
+            >>> from fipy import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+            
+            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+        """
 	GistViewer.__init__(self, vars=vars, title=title)
         
     def _getSuitableVars(self, vars):
@@ -100,3 +137,6 @@ class GistVectorViewer(GistViewer):
     def getArray(self):
         pass
         
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

@@ -157,28 +157,28 @@ class UniformGrid2D(Grid2D):
         inline._runInline("""
             int ID = j * ni + i;
 
-            faceCellIDs0(ID) = ID - ni;
-            faceCellIDs1(ID) = ID;
+            faceCellIDs0[ID] = ID - ni;
+            faceCellIDs1[ID] = ID;
 
-            faceCellIDs0(ID + Nhor + j) = ID - 1;
-            faceCellIDs1(ID + Nhor + j) = ID;
+            faceCellIDs0[ID + Nhor + j] = ID - 1;
+            faceCellIDs1[ID + Nhor + j] = ID;
 
             if (j == 0) {
-                faceCellIDs0(ID) = ID;
+                faceCellIDs0[ID] = ID;
             }
 
             if (j == nj - 1) {
-                faceCellIDs0(ID + ni) = ID;
-                faceCellIDs1(ID + ni) = ID;
+                faceCellIDs0[ID + ni] = ID;
+                faceCellIDs1[ID + ni] = ID;
             }
 
             if (i == 0) {
-                faceCellIDs0(ID + Nhor + j) = ID;
+                faceCellIDs0[ID + Nhor + j] = ID;
             }
 
             if ( i == ni - 1 ) {
-                faceCellIDs0(ID + Nhor + j + 1) = ID;
-                faceCellIDs1(ID + Nhor + j + 1) = ID;
+                faceCellIDs0[ID + Nhor + j + 1] = ID;
+                faceCellIDs1[ID + Nhor + j + 1] = ID;
             }
             
         """,
@@ -253,32 +253,32 @@ class UniformGrid2D(Grid2D):
         mask = numerix.zeros((self.numberOfFaces, 2))
         
         inline._runInline("""
-            int ID = j * ni + i;
+            int ID = j * ni + i;            
 
-            faceCellIDs(ID, 0) = ID - ni;
-            faceCellIDs(ID, 1) = ID;
+            faceCellIDs[ID * 2 + 0] = ID - ni;
+            faceCellIDs[ID * 2 + 1] = ID;
 
-            faceCellIDs(ID + Nhor + j, 0) = ID - 1;
-            faceCellIDs(ID + Nhor + j, 1) = ID;
+            faceCellIDs[(ID + Nhor + j) * 2 + 0] = ID - 1;
+            faceCellIDs[(ID + Nhor + j) * 2 + 1] = ID;
 
             if (j == 0) {
-                faceCellIDs(ID, 0) = ID;
-                mask(ID, 1) = 1;
+                faceCellIDs[ID * 2 + 0] = ID;
+                mask[ID * 2 + 1] = 1;
             }
 
             if (j == nj - 1) {
-                faceCellIDs(ID + ni, 0) = ID;
-                mask(ID + ni, 1) = 1;
+                faceCellIDs[(ID + ni) * 2 + 0] = ID;
+                mask[(ID + ni) * 2 + 1] = 1;
             }
 
             if (i == 0) {
-                faceCellIDs(ID + Nhor + j, 0) = ID;
-                mask(ID + Nhor + j, 1) = 1;
+                faceCellIDs[(ID + Nhor + j) * 2 + 0] = ID;
+                mask[(ID + Nhor + j) * 2 + 1] = 1;
             }
 
             if ( i == ni - 1 ) {
-                faceCellIDs(ID + Nhor + j + 1, 0) = ID;
-                mask(ID + Nhor + j + 1, 1) = 1;
+                faceCellIDs[(ID + Nhor + j + 1) * 2 + 0] = ID;
+                mask[(ID + Nhor + j + 1) * 2 + 1] = 1;
             }
         """,
         Nhor=self.numberOfHorizontalFaces,
@@ -382,13 +382,13 @@ class UniformGrid2D(Grid2D):
 
         inline._runInline("""
             if (i < nx) {
-                areaProjections(i, 1) = -dx;
+                areaProjections[i *2 + 1] = -dx;
             } else if (i < Nhor) {
-                areaProjections(i, 1) = dx;
+                areaProjections[i * 2 + 1] = dx;
             } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                areaProjections(i, 0) = -dy;
+                areaProjections[i * 2 + 0] = -dy;
             } else {
-                areaProjections(i, 0) = dy;
+                areaProjections[i * 2 + 0] = dy;
            }
         """,
         dx = self.dx,
