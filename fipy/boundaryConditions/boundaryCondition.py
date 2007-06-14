@@ -92,17 +92,17 @@ class BoundaryCondition:
 ##      self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
         self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
 
-    def _buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation
         solution matrices.
     
         `_buildMatrix()` is called by each `Term` of each `Equation`.
         
         :Parameters:
-            
-          - `Ncells`:     Number of cells (to build **L** and **b**)
-          - `MaxFaces`:   Maximum number of faces per cell (to build **L**)
-          - `coeff`:      Contribution due to this face
+          - `SparseMatrix`: Sparse matrix class to use
+          - `Ncells`:       Number of cells (to build **L** and **b**)
+          - `MaxFaces`:     Maximum number of faces per cell (to build **L**)
+          - `coeff`:        Contribution due to this face
         
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
         (**L**, **b**) matrices.

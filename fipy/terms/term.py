@@ -68,7 +68,7 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
-    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         pass
 
     def _calcResidualVector(self, var, matrix, RHSvector):
@@ -81,7 +81,7 @@ class Term:
 
         return numerix.max(abs(self._calcResidualVector(var, matrix, RHSvector)))
 
-    def __buildMatrix(self, var, boundaryConditions, dt):
+    def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
 
         self._verifyCoeffType(var)
         
@@ -92,15 +92,20 @@ class Term:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        return self._buildMatrix(var, boundaryConditions, dt)
+        return self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
-        from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
-        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
         array = var.getNumericValue()
         solver._solve(matrix, array, RHSvector)
         var[:] = array
+
+    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
+        from fipy.solvers.linearPCGSolver import LinearPCGSolver
+        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
+        
+        matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
+        return (solver, matrix, RHSvector)
+
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
@@ -116,8 +121,9 @@ class Term:
            - `dt`: The time step size.
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
     def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
@@ -135,7 +141,7 @@ class Term:
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
@@ -168,7 +174,7 @@ class Term:
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)

@@ -142,3 +142,7 @@ class Solver:
 
     def _canSolveAssymetric(self):
         return True
+
+    def _getMatrixClass(self):
+        from fipy.tools.pysparseMatrix import _PysparseMatrix
+        return _PysparseMatrix

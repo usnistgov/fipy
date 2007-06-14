@@ -66,6 +66,9 @@ class TrilinosSolver(Solver):
         """
         Comm = Epetra.PyComm() # For now, no args, Communicator is serial
         m,n = L._getMatrix().shape 
+
+        import sys
+        sys.exit(0)
         
         Map = Epetra.Map(m, 0, Comm)
 
@@ -113,3 +116,7 @@ class TrilinosSolver(Solver):
 
         self._applyTrilinosSolver(A, LHS, RHS)
         x = numerix.array(LHS)
+
+    def _getMatrixClass(self):
+        from fipy.tools.trilinosMatrix import _TrilinosMatrix
+        return _TrilinosMatrix

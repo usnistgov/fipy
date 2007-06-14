@@ -85,6 +85,9 @@ class _PysparseMatrix(_SparseMatrix):
             return m
         else:
             return _PysparseMatrix(matrix = m)
+
+    def __iadd__(self, other):
+            return self._iadd(self._getMatrix(), other)
         
     def _iadd(self, L, other, sign = 1):
         if other != 0:
@@ -133,6 +136,9 @@ class _PysparseMatrix(_SparseMatrix):
             L = self.matrix.copy()
             L.shift(-1, other._getMatrix())
             return _PysparseMatrix(matrix = L)
+
+    def __isub__(self, other):
+            return self._iadd(self._getMatrix(), other, -1)
 
     def __mul__(self, other):
         """

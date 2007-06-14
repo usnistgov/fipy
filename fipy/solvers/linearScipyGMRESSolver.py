@@ -81,15 +81,15 @@ class LinearScipyGMRESSolver(Solver):
            >>> a[:] = 2 / dx
            >>> a[0] = 3 / dx
            >>> a[-1] = 3 / dx
-           >>> from fipy.tools.sparseMatrix import _SparseMatrix
-           >>> A = _SparseMatrix(size = N)
+           >>> solver = LinearScipyGMRESSolver()
+           >>> SparseMatrix = solver._getMatrixClass()
+           >>> A = SparseMatrix(size = N)
            >>> A.addAtDiagonal(a)
            >>> ids = numerix.arange(N - 1)
            >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids, ids + 1)
            >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids + 1, ids)
            >>> b = numerix.zeros(N, 'd')
            >>> b[-1] = 2 / dx
-           >>> solver = LinearScipyGMRESSolver()
            >>> x = numerix.zeros(N, 'd')
            >>> solver._solve(A, x, b)
            >>> numerix.allclose(x, numerix.arange(N) * dx + dx / 2.)

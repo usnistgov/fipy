@@ -255,3 +255,6 @@ class TrilinosGeneralSolver(Solver):
                 Solver.SetAztecOption(option, value)
             Solver.Iterate(self.iterations,self.tolerance) 
         
+    def _getMatrixClass(self):
+        from fipy.tools.trilinosMatrix import _TrilinosMatrix
+        return _TrilinosMatrix

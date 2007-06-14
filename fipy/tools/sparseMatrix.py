@@ -110,6 +110,9 @@ class _SparseMatrix:
         
     __radd__ = __add__
 
+    def __iadd__(self, other):
+        pass
+
     def __sub__(self, other):
         pass
 
@@ -117,11 +120,9 @@ class _SparseMatrix:
     def __rsub__(self, other):
         return -(__sub__(self, other))
         
-    def __iadd__(self, other):
-        return self._iadd(self._getMatrix(), other)
         
     def __isub__(self, other):
-        return self._iadd(self._getMatrix(), other, -1)
+        pass
         
     def __mul__(self, other):
         pass

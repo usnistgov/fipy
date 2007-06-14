@@ -48,7 +48,6 @@ from fipy.terms.term import Term
 import fipy.tools.vector
 from fipy.tools import numerix
 from fipy.tools.inline import inline
-from fipy.tools.sparseMatrix import _SparseMatrix
 
 class FaceTerm(Term):
     """
@@ -67,7 +66,7 @@ class FaceTerm(Term):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def _implicitBuildMatrix(self, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
+    def _implicitBuildMatrix(self, SparseMatrix, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
         coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces),    id1, id1)
@@ -79,11 +78,11 @@ class FaceTerm(Term):
         M = mesh._getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
-            LL, bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
+            LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
             L += LL
             b += bb
 
-    def _explicitBuildMatrix(self, oldArray, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
+    def _explicitBuildMatrix(self, SparseMatrix, oldArray, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
 
         coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
@@ -94,7 +93,7 @@ class FaceTerm(Term):
 
         for boundaryCondition in boundaryConditions:
 
-            LL,bb = boundaryCondition._buildMatrix(N, M, coeffMatrix)
+            LL,bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
             if LL != 0:
 ##              b -= LL.takeDiagonal() * numerix.array(oldArray)
                 b -= LL * numerix.array(oldArray)
@@ -149,7 +148,7 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         """Implicit portion considers
         """
 
@@ -162,7 +161,7 @@ class FaceTerm(Term):
         
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = _SparseMatrix(size = N)
+        L = SparseMatrix(size = N)
 
         if equation is not None:
             from fipy.tools.numerix import sign, add
@@ -173,10 +172,10 @@ class FaceTerm(Term):
         weight = self._getWeight(mesh, equation=equation)
 
         if weight.has_key('implicit'):
-            self._implicitBuildMatrix(L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
+            self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
         if weight.has_key('explicit'):
-            self._explicitBuildMatrix(var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+            self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
         return (L, b)
 
