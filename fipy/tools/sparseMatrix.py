@@ -99,12 +99,6 @@ class _SparseMatrix:
     def __setitem__(self, index, value):
         pass
         
-    def _iadd(self, L, other):
-        pass
-
-    def _add(self, other):
-        pass
-
     def __add__(self, other):
         pass
         

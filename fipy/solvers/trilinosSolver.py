@@ -43,9 +43,8 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from fipy.solvers.solver import Solver
+from fipy.tools.trilinosMatrix import _TrilinosMatrix
 
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
@@ -67,9 +66,6 @@ class TrilinosSolver(Solver):
         Comm = Epetra.PyComm() # For now, no args, Communicator is serial
         m,n = L._getMatrix().shape 
 
-        import sys
-        sys.exit(0)
-        
         Map = Epetra.Map(m, 0, Comm)
 
         #A = Epetra.FECrsMatrix(Epetra.Copy, Map, n)
@@ -92,6 +88,7 @@ class TrilinosSolver(Solver):
         #
         #if(pid == 0):
         #    L._getMatrix().export_mtx(filename)
+        #    import sys
         #    sys.exit(0)
         #
         #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
@@ -104,7 +101,7 @@ class TrilinosSolver(Solver):
     
     def _solve(self, L, x, b):
 
-        if not isinstance(L._getMatrix(), Epetra.RowMatrix):
+        if not isinstance(L, _TrilinosMatrix):
             A = self._makeTrilinosMatrix(L)
         else:
             A = L._getMatrix()
@@ -118,5 +115,7 @@ class TrilinosSolver(Solver):
         x = numerix.array(LHS)
 
     def _getMatrixClass(self):
-        from fipy.tools.trilinosMatrix import _TrilinosMatrix
         return _TrilinosMatrix
+
+    def _applyTrilinosSolver():
+        pass

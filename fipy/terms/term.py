@@ -102,7 +102,7 @@ class Term:
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         from fipy.solvers.linearPCGSolver import LinearPCGSolver
         solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
-        
+
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
 
@@ -142,7 +142,6 @@ class Term:
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-        
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 

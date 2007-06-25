@@ -47,10 +47,6 @@ import sys
 
 from fipy.solvers.solver import Solver
 
-# These imports should go into try-except blocks, to see what packages
-# actually exist. Requires Epetra and EpetraExt, and one of Amesos/AztecOO
-# Ideally, that'll also determine the default options?
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
@@ -61,9 +57,10 @@ from fipy.tools import numerix
 class TrilinosGeneralSolver(Solver):
 
     """
-    This solver is an interface to most of the solvers and preconditioners available through PyTrilinos.
-    It will eventually be replaced by a group of subclasses of the TrilinosSolver, but is available for
-    now until they are implemented.
+    This solver is an interface to most of the solvers and preconditioners
+    available through PyTrilinos.  It will eventually be replaced by a group of
+    subclasses of the TrilinosSolver, but is available for now until they are
+    implemented.
 
     """
     
