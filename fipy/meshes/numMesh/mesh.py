@@ -470,6 +470,8 @@ class Mesh(_CommonMesh):
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
         norm = numerix.crossProd(t1, t2)
+        ## reordering norm's internal memory for inlining
+        norm = norm.copy()
         norm = norm / numerix.sqrtDot(norm, norm)
         
         self.faceNormals = -norm

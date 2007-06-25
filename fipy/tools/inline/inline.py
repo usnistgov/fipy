@@ -35,11 +35,15 @@ def _runInline(code_in, converters=None, verbose=0, **args):
 
     from scipy import weave
 
+    for key in args.keys():
+        if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
+            args[key] = args[key].astype('B')
+            
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
-                 type_converters=converters or weave.converters.blitz,
+                 type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',
-                 verbose = verbose,
+                 force=0,
+                 verbose = 0 or verbose,
                  extra_compile_args =['-O3'])
-

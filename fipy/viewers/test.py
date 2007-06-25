@@ -39,7 +39,8 @@
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
+"""
+Test implementation of the viewers
 """
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite

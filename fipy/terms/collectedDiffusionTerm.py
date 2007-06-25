@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -128,7 +130,7 @@ class CollectedDiffusionTerm(DiffusionTerm):
                 
         return dup
         
-    def _getGeomCoeff(mesh):
+    def _getGeomCoeff(self, mesh):
         # index is order / 2
         if self.orders[1] is not None:
             return self.orders[1]._getGeomCoeff(mesh)

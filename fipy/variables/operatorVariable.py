@@ -174,7 +174,7 @@ def _OperatorVariableClass(baseClass=None):
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
                 elif unop.has_key(bytecode):
-                    stack.append(unop[bytecode] + stack.pop())
+                    stack.append(unop[bytecode] + '(' + stack.pop() + ')')
                 elif binop.has_key(bytecode):
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
@@ -211,28 +211,28 @@ def _testBinOp(self):
         >>> v4 = Variable((13,14,15,16))
 
         >>> (v1 * v2)._getRepresentation()
-        '(Variable(value=array([ 1.,  2.,  3.,  4.])) * Variable(value=array([ 5.,  6.,  7.,  8.])))'
+        '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
         
         >>> (v1 * v2)._getRepresentation(style='C', id="")
-        '(var0(i) * var1(i))'
+        '(var0[i] * var1[i])'
         
         >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
-        '((var00(i) * var01(i)) + (var10(i) * var11(i)))'
+        '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
         
         >>> (v1 - v2)._getRepresentation(style='C', id="")
-        '(var0(i) - var1(i))'
+        '(var0[i] - var1[i])'
 
         >>> (v1 / v2)._getRepresentation(style='C', id="")
-        '(var0(i) / var1(i))'
+        '(var0[i] / var1[i])'
 
         >>> (v1 - 1)._getRepresentation(style='C', id="")
-        '(var0(i) - var1)'
+        '(var0[i] - var1)'
             
         >>> (5 * v2)._getRepresentation(style='C', id="")
-        '(var0(i) * var1)'
+        '(var0[i] * var1)'
 
         >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
-        '(((var000(i) / var001(i)) - (var010(i) * var011(i))) + (var10(i) * var11(i)))'
+        '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
         
     Check that getUnit() works for a binOp
 
@@ -1105,6 +1105,20 @@ def _testBinOp(self):
         >>> v0[1] = 0.5
         >>> print v
         [ 1.   0.5]
+        
+    Test inline indexing
+
+        >>> mesh = Grid2D(nx=3, ny=3)
+        >>> v1 = CellVariable(mesh=mesh, value=numerix.arange(9))
+        >>> a = v1 * (1, -1)
+        >>> print a
+        [[ 0.  1.  2.  3.  4.  5.  6.  7.  8.]
+         [-0. -1. -2. -3. -4. -5. -6. -7. -8.]]
+        >>> v1[0] = 0
+        >>> print a
+        [[ 0.  1.  2.  3.  4.  5.  6.  7.  8.]
+         [-0. -1. -2. -3. -4. -5. -6. -7. -8.]]
+
     """
     pass
 

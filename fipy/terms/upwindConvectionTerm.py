@@ -65,24 +65,23 @@ class UpwindConvectionTerm(ConvectionTerm):
             
         def _calcValuePy(self, P):
             alpha = numerix.where(P > 0., 1., 0.)
-
             return PhysicalField(value = alpha)
 
         def _calcValueIn(self, P):
             alpha = self._getArray().copy()
             inline._runInline("""
-                alpha(i) = 0.5;
+                alpha[i] = 0.5;
                 
-                if (P(i) > 0.) {
-                    alpha(i) = 1.;
+                if (P[i] > 0.) {
+                    alpha[i] = 1.;
                 } else {
-                    alpha(i) = 0.;
+                    alpha[i] = 0.;
                 }
             """,
             alpha = alpha, P = P,
             ni = len(self.mesh.getFaces())
             )
-     
+
             return self._makeValue(value = alpha)
 
         def _calcValue(self):

@@ -35,8 +35,6 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
-
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
@@ -60,8 +58,6 @@ class _FaceGradVariable(FaceVariable):
         tangents2 = self.mesh._getFaceTangents2()
         cellGrad = self.var.getGrad().getNumericValue()
         
-      
-        
         grad1 = numerix.take(cellGrad, id1, axis=1)
         grad2 = numerix.take(cellGrad, id2, axis=1)
         t1grad1 = numerix.sum(tangents1*grad1,0)
@@ -71,10 +67,6 @@ class _FaceGradVariable(FaceVariable):
         
         T1 = (t1grad1 + t1grad2) / 2.
         T2 = (t2grad1 + t2grad2) / 2.
-        
-##         N = N[:,numerix.NewAxis]
-##         T1 = T1[:,numerix.NewAxis]
-##         T2 = T2[:,numerix.NewAxis]
         
         return normals * N + tangents1 * T1 + tangents2 * T2
 
@@ -90,24 +82,26 @@ class _FaceGradVariable(FaceVariable):
         inline._runInline("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
-            int ID1 = id1(i);
-            int ID2 = id2(i);
+            int ID1 = id1[i];
+            int ID2 = id2[i];
             
-            N = (var(ID2) - var(ID1)) / dAP(i);
+            N = (var[ID2] - var[ID1]) / dAP[i];
 
             t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
             for (j = 0; j < NJ; j++) {
-                t1grad1 += tangents1(i,j) * cellGrad(ID1,j);
-                t1grad2 += tangents1(i,j) * cellGrad(ID2,j);
-                t2grad1 += tangents2(i,j) * cellGrad(ID1,j);
-                t2grad2 += tangents2(i,j) * cellGrad(ID2,j);
+                int arrayID = i * NJ + j;
+                t1grad1 += tangents1[arrayID] * cellGrad[ID1 * NJ + j];
+                t1grad2 += tangents1[arrayID] * cellGrad[ID2 * NJ + j];
+                t2grad1 += tangents2[arrayID] * cellGrad[ID1 * NJ + j];
+                t2grad2 += tangents2[arrayID] * cellGrad[ID2 * NJ + j];
             }
             
             for (j = 0; j < NJ; j++) {
-                val(i,j) = normals(i,j) * N;
-                val(i,j) += tangents1(i,j) * (t1grad1 + t1grad2) / 2.;
-                val(i,j) += tangents2(i,j) * (t2grad1 + t2grad2) / 2.;
+                int arrayID = i * NJ + j;
+                val[arrayID] = normals[arrayID] * N;
+                val[arrayID] += tangents1[arrayID] * (t1grad1 + t1grad2) / 2.;
+                val[arrayID] += tangents2[arrayID] * (t2grad1 + t2grad2) / 2.;
             }
         """,tangents1 = tangents1,
             tangents2 = tangents2,

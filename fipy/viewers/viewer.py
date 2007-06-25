@@ -142,4 +142,23 @@ class Viewer:
                 datamax = max(datamax, var.max().getValue())
                 
         return datamin, datamax
+        
+    def _validFileExtensions(self):
+        return []
+        
+    def _promptForOpinion(self, prompt="Describe any problems with this figure or hit Return: "):
+        # This method is usually invoked from a test, which can have a weird
+        # state; In particular, it may have a special `raw_input` to allow user
+        # interaction during the test.
+        import inspect
+        raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
+        
+        opinion = raw_input(prompt)
+        if len(opinion.strip()) > 0:
+            extensions = ", ".join(self._validFileExtensions())
+            if len(extensions) > 0:
+                extensions = " (%s)" % extensions
+            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions)
+            self.plot(snapshot)
+            print opinion
 

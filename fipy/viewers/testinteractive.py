@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "modCellToFaceVariable.py"
- #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 5/18/06 {8:39:15 PM} 
+ #  FILE: "testinteractive.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 4/1/05 {2:47:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,36 +28,31 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.tools import numerix
+"""
+Interactively test the viewers
+"""
 
-from fipy.tools.inline import inline
-from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
-    def __init__(self, var, modIn):
-        _ArithmeticCellToFaceVariable.__init__(self,var)
-        self.modIn = modIn
-        
-    def  _calcValueIn(self, alpha, id1, id2):
-        val = self._getArray().copy()
-        
-        inline._runInline(self.modIn + """
-        int ID1 = id1[i];
-        int ID2 = id2[i];
-        double cell2 = var[ID2];
-        val[i] = mod(var[ID1] - cell2) * alpha[i] + cell2;
-        """,var = self.var.getNumericValue(),
-            val = val, 
-            alpha = alpha,
-            id1 = id1, id2 = id2,
-            ni = self.mesh._getNumberOfFaces())
-            
-        return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+def _suite():
+    return _LateImportDocTestSuite(testModuleNames = (
+        'gistViewer.test',
+        'gnuplotViewer.test',
+        'matplotlibViewer.test',
+        'mayaviViewer.test',
+        ), base = __name__)
+    
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')

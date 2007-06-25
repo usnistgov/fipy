@@ -51,8 +51,8 @@ class FaceVariable(_MeshVariable):
         
     def _getArithmeticBaseClass(self, other = None):
         """
-        Given `self` and `other`, return the desired base
-        class for an operation result.
+        Given `self` and `other`, return the desired base class for an operation
+        result.
         """
         if other is None:
             return FaceVariable

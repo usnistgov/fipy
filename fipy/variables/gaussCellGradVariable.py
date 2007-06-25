@@ -53,16 +53,17 @@ class _GaussCellGradVariable(CellVariable):
         val = self._getArray().copy()
 
         inline._runInline("""
-            val(i,j) = 0.;
+            val[i * nj + j] = 0.;
             
             int k;
             
             for (k = 0; k < M; k++) {
-                int id = ids(i, k);
-                val(i, j) += orientations(i, k) * areaProj(id, j) * faceValues(id);
+                int id = ids[i * M + k];
+
+                val[i * nj + j] += orientations[i * M + k] * areaProj[id * nj +  j] * faceValues[id];
             }
                 
-            val(i, j) /= volumes(i);
+            val[i * nj + j] /= volumes[i];
         """,val = val,
             ids = numerix.array(MA.filled(ids, 0)),
             orientations = numerix.array(MA.filled(orientations, 0)),

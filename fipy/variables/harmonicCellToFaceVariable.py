@@ -54,15 +54,15 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
         
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
-        
+
         inline._runInline("""
-            double	cell1 = var(id1(i));
-            double	cell2 = var(id2(i));
-            double	tmp = ((cell2 - cell1) * alpha(i) + cell1);
+            double	cell1 = var[id1[i]];
+            double	cell2 = var[id2[i]];
+            double	tmp = ((cell2 - cell1) * alpha[i] + cell1);
             if (tmp != 0) {
-                val(i) = cell1 * cell2 / tmp;
+                val[i] = cell1 * cell2 / tmp;
             } else {
-                val(i) = tmp;
+                val[i] = tmp;
             }
         """,
         var = self.var.getNumericValue(),

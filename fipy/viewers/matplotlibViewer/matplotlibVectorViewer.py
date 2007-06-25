@@ -62,6 +62,30 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         """
         Creates a `Matplotlib2DViewer`.
         
+            >>> from fipy import *
+            >>> from fipy.tools.numerix import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k")
+            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getGrad(), 
+            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
+            ...                                 title="MatplotlibVectorViewer test")
+            >>> for kval in numerix.arange(0,10,1):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getFaceGrad(), 
+            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
+            ...                                 title="MatplotlibVectorViewer test")
+            >>> for kval in numerix.arange(0,10,1):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -94,13 +118,13 @@ class MatplotlibVectorViewer(MatplotlibViewer):
 
         
         if isinstance(var, FaceVariable):
-            ## only displays horizontel faces since quiver() takes a grid
+            ## only displays horizontal faces since quiver() takes a grid
             shape = (mesh.getShape()[1] + 1, mesh.getShape()[0])
             N = shape[0] * shape[1]
             X = numerix.reshape(mesh.getFaceCenters()[0,:N], shape)
             Y = numerix.reshape(mesh.getFaceCenters()[1,:N], shape)
-            U = numerix.reshape(var[:N,0], shape)
-            V = numerix.reshape(var[:N,1], shape)
+            U = numerix.reshape(numerix.array(var[0,:N]), shape)
+            V = numerix.reshape(numerix.array(var[1,:N]), shape)
         elif isinstance(var, CellVariable):
             shape = (mesh.getShape()[1], mesh.getShape()[0])
             X = numerix.reshape(mesh.getCellCenters()[0], shape)
@@ -114,5 +138,6 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))
 
-
-        
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

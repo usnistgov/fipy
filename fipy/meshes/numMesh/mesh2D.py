@@ -76,6 +76,8 @@ class Mesh2D(Mesh):
 
     def _calcFaceTangents(self):
         tmp = numerix.array((-self.faceNormals[1], self.faceNormals[0]))
+        ## copy required to get internal memory ordering correct for inlining.
+        tmp = tmp.copy()
         mag = numerix.sqrtDot(tmp, tmp)
         self.faceTangents1 = tmp / mag
         self.faceTangents2 = numerix.zeros(self.faceTangents1.shape, 'd')

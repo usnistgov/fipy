@@ -335,22 +335,22 @@ class Variable(object):
     def _getCIndexString(self, shape):
         dimensions = len(shape)
         if dimensions == 1:
-            return '(i)'
+            return '[i]'
         elif dimensions == 2:
             if shape[-1] == 1:
-                return '(j)'
+                return '[j]'
             else:
-                return '(j, i)'
+                return '[j * ni + i]'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
-                    return '(k)'
+                    return '[k]'
                 else:
-                    return '(k + j * nk)'
+                    return '[k + j * nk]'
             elif shape[-2] == 1:
-                return '(k + i * nj * nk)'
+                return '[k + i * nj * nk]'
             else:
-                return '(k + j * nk + i * nj * nk)'
+                return '[k + j * nk + i * nj * nk]'
 
     def _getCstring(self, argDict={}, id="", freshen=None):
          """
@@ -359,16 +359,16 @@ class Variable(object):
              'var'
            
              >>> (Variable((1,2,3,4)))._getCstring(argDict={})
-             'var(i)'
+             'var[i]'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
-             'var(j, i)'
+             'var[j * ni + i]'
 
              >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
-             'var(k + j * nk + i * nj * nk)'
+             'var[k + j * nk + i * nj * nk]'
 
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict={})
-             '(var0 * var1(i))'
+             '(var0 * var1[i])'
 
          freshen is ignored
          """
@@ -493,8 +493,6 @@ class Variable(object):
             
         PF = physicalField.PhysicalField
 
-        from fipy.tools.numerix import MA
-
         if not isinstance(value, PF):
             
             if getattr(self, 'value', None) is not None:
@@ -512,7 +510,7 @@ class Variable(object):
             elif array is not None:
                 array[:] = value
                 value = array
-            elif type(value) not in (type(None), type(numerix.array(1)), type(MA.array(1))):
+            elif type(value) not in (type(None), type(numerix.array(1)), type(numerix.MA.array(1))):
                 value = numerix.array(value)
 ##                 # numerix does strange things with really large integers.
 ##                 # Even though Python knows how to do arithmetic with them,
@@ -683,11 +681,11 @@ class Variable(object):
         Gets the stack from _getCstring() which calls _getRepresentation()
         
             >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
-            '(var0(i) * var1(i))'
+            '(var0[i] * var1[i])'
             >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-            '(var0(j, i) * var1(j, i))'
+            '(var0[j * ni + i] * var1[j * ni + i])'
             >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
-            '((var00(i) * var01(i)) * var1(i))'
+            '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with
         contiguous arrays.  The `mesh.getCellCenters()[1]` command
@@ -715,7 +713,7 @@ class Variable(object):
         dimensions = len(shape)
             
         if dimensions == 0:
-            string = 'result(0) = ' + string
+            string = 'result[0] = ' + string
             dim = ()
         else:
             string = 'result' + self._getCIndexString(shape) + ' = ' + string
@@ -757,6 +755,7 @@ class Variable(object):
                 argDict['result'] = self.value
 
             resultShape = argDict['result'].shape
+
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], (1,))
 
