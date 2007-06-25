@@ -146,3 +146,14 @@ class Solver:
     def _getMatrixClass(self):
         from fipy.tools.pysparseMatrix import _PysparseMatrix
         return _PysparseMatrix
+
+    def setPreconditioner(self, preconditioner):
+        """
+        Define which preconditioner the solver should use.
+        Only available for Trilinos solvers.
+        
+        :Parameters:
+        - `preconditioner`: the preconditioner object to use.
+        """
+        import warnings 
+        warnings.warn("This solver does not support user-specified preconditioners. That functionality is only available in the Trilinos solvers.", UserWarning, stacklevel=2)

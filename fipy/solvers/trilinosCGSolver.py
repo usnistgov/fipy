@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosLUSolver.py"
- #                                    created: 06/07/07 
- #                                last update: 06/11/07 
+ #  FILE: "trilinosCGSolver.py"
+ #                                    created: 06/25/07 
+ #                                last update: 06/25/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,7 +37,7 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2007-06-12 MLG 1.0 original
+ #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -45,28 +45,21 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.trilinosSolver import TrilinosSolver
-
-try: 
-    from PyTrilinos import Epetra
-except:
-    raise(ImportError, 
-          "Failed to import Epetra, required for all Trilinos solvers.")
+from fipy.solvers.trilinosAztecOOSolver import TrilinosAztecOOSolver
 
 try:
-    from PyTrilinos import Amesos
+    from PyTrilinos import AztecOO
 except:
     raise(ImportError,
-          "Failed to import Amesos, required for the LU solver.")
+          "Failed to import AztecOO.")
 
-from fipy.tools import numerix
-
-class TrilinosLUSolver(TrilinosSolver):
+class TrilinosCGSolver(TrilinosAztecOOSolver):
 
     """
-    An interface to the Amesos KLU solver in Trilinos.
+    This is an interface to the conjugate gradient solver in Trilinos.
 
     """
+      
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
         """
         :Parameters:
@@ -74,25 +67,7 @@ class TrilinosLUSolver(TrilinosSolver):
         - `iterations`: The maximum number of iterative steps to perform.
         - `steps`: A deprecated name for `iterations`.
         """
-        TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps)
-        self.Factory = Amesos.Factory()
-
-       
-    def _applyTrilinosSolver(self, A, LHS, RHS):
-        Problem = Epetra.LinearProblem(A, LHS, RHS)
-        Solver = self.Factory.Create("Klu", Problem)
-        Solver.Solve()
-
-
-    def setPreconditioner(self, preconditioner):
-        """
-        Define which preconditioner the solver should use.
-        Only available for Trilinos solvers.
-
-        :Parameters:
-        - `preconditioner`: the preconditioner object to use.
-        """
-        import warnings
-        warnings.warn("This solver does not support user-specified preconditioners. That functionality is only available for iterative solvers.", UserWarning, stacklevel=2)
+        TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
+                                       iterations=iterations, steps=steps)
+        self.solver = AztecOO.AZ_cg
 

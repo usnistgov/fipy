@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosSolver.py"
+ #  FILE: "trilinosMLTest.py"
  #                                    created: 06/07/07 
  #                                last update: 06/11/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -73,7 +73,7 @@ class TrilinosMLTest(TrilinosSolver):
 
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None, MLOptions={}):
+    def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
