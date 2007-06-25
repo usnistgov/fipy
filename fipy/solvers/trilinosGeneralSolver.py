@@ -83,7 +83,7 @@ class TrilinosGeneralSolver(Solver):
 
           - `solverName`: Which of the solvers from the package to use. 
                           Currently supported - 
-                            Amesos:     'Klu', 'LAPACK'
+                            Amesos:     'Klu', 'Lapack'
                             AztecOO:    AztecOO.AZ_cg,
                                         AztecOO.AZ_cg_condnum,
                                         AztecOO.AZ_gmres,
