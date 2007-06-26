@@ -46,6 +46,7 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.solver import Solver
+from fipy.preconditioners.preconditioner import Preconditioner
 
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
@@ -66,7 +67,7 @@ class TrilinosGeneralSolver(Solver):
     
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, \
                  solverPackage=Amesos, solverName="Klu",\
-                 preconditioner=AztecOO.AZ_none, AztecOptions={},
+                 precon=AztecOO.AZ_Jacobi, AztecOptions={},
                  MLOptions = {},
                  IFPACKPreconditionerType="ILU", IFPACKOptions={}):
         """
@@ -93,17 +94,19 @@ class TrilinosGeneralSolver(Solver):
                                         AztecOO.AZ_bicgstab
                           Default - 'Klu'
 
-          - `preconditioner`: Which of the AztecOO preconditioners to use. 
-                              Supported:
-                                        AztecOO.AZ_none,
-                                        AztecOO.AZ_Jacobi,
-                                        AztecOO.AZ_Neumann,
-                                        AztecOO.AZ_ls,
-                                        AztecOO.AZ_sym_GS,
-                                        AztecOO.AZ_dom_decomp,
-                                        'ML',
-                                        'IFPACK'
-                              Default - AztecOO.AZ_none
+          - `precond`: Which of the AztecOO preconditioners to use. 
+                       Supported:
+                                 AztecOO.AZ_none,
+                                 AztecOO.AZ_Jacobi,
+                                 AztecOO.AZ_Neumann,
+                                 AztecOO.AZ_ls,
+                                 AztecOO.AZ_sym_GS,
+                                 AztecOO.AZ_dom_decomp,
+                                 'ML',
+                                 'IFPACK'
+                       Default - AztecOO.AZ_Jacobi
+
+                       It can also be passed a Fipy Preconditioner object.
 
          - `AztecOptions`: Additional options to pass to Aztec.
                            A dictionary of {option: value} pairs. 
@@ -150,11 +153,11 @@ class TrilinosGeneralSolver(Solver):
         # Former default was MLList = {"max levels" : 4, "smoother: type" : "symmetric Gauss-Seidel", "aggregation: type" : "Uncoupled"} (parameters kept for reference for now)
                 
         Solver.__init__(self, tolerance=tolerance, 
-                        iterations=iterations, steps=steps)
+                        iterations=iterations, steps=steps, precon=None)
 
         self.solverPackage = solverPackage
         self.solverName = solverName
-        self.preconditioner = preconditioner
+        self.preconditioner = precon
         self.AztecOptions = AztecOptions
         self.MLOptions = MLOptions
         self.IFPACKOptions = IFPACKOptions
@@ -229,8 +232,9 @@ class TrilinosGeneralSolver(Solver):
         elif self.solverPackage == AztecOO:
             Solver = AztecOO.AztecOO(A, LHS, RHS)
             Solver.SetAztecOption(AztecOO.AZ_solver, self.solverName)
-
-            if self.preconditioner == "ML":
+            if isinstance(self.preconditioner, Preconditioner):
+                self.preconditioner._Apply(solver=Solver, matrix=A)
+            elif self.preconditioner == "ML":
                 from PyTrilinos import ML
                 Prec = ML.MultiLevelPreconditioner(A, False)
                 Prec.SetParameterList(self.MLOptions)

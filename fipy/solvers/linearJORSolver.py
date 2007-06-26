@@ -53,7 +53,7 @@ class LinearJORSolver(Solver):
     non-symmetric coefficient matrix.
 
     """
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0, precon=None):
         """
         The `Solver` class should not be invoked directly.
 
@@ -64,7 +64,7 @@ class LinearJORSolver(Solver):
           - `relaxation`: The relaxation.
           
         """
-        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps)
+        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.relaxation = relaxation
         
     def _solve(self, L, x, b):

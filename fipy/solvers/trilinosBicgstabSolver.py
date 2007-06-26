@@ -46,6 +46,7 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinosAztecOOSolver import TrilinosAztecOOSolver
+from fipy.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 try:
     from PyTrilinos import AztecOO
@@ -60,14 +61,15 @@ class TrilinosBicgstabSolver(TrilinosAztecOOSolver):
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
         - `iterations`: The maximum number of iterative steps to perform.
         - `steps`: A deprecated name for `iterations`.
+        - `precon`: Preconditioner to use.
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
-                                       iterations=iterations, steps=steps)
+                                       iterations=iterations, steps=steps, precon=precon)
         self.solver = AztecOO.AZ_bicgstab
 

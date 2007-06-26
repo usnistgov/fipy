@@ -8,10 +8,6 @@ from linearScipyLUSolver import LinearScipyLUSolver
 from linearScipyCGSolver import LinearScipyCGSolver
 from linearScipyGMRESSolver import LinearScipyGMRESSolver
 
-from trilinosLUSolver import TrilinosLUSolver
-from trilinosGeneralSolver import TrilinosGeneralSolver
-from trilinosMLTest import TrilinosMLTest
-
 from solver import SolverConvergenceWarning, \
      PreconditionerWarning, \
      ScalarQuantityOutOfRangeWarning, \

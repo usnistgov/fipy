@@ -66,7 +66,7 @@ class LinearLUSolver(Solver):
     
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None):
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None):
         """
         Creates a `LinearLUSolver`.
 
@@ -74,11 +74,11 @@ class LinearLUSolver(Solver):
           - `tolerance`: The required error tolerance.
           - `iterations`: The number of LU decompositions to perform.
           - `steps`: A deprecated name for `iterations`.
-            For large systems a number of steps is generally required.
+            For large systems a number of iterations is generally required.
 
         """
         
-        Solver.__init__(self, tolerance = tolerance, steps = steps)
+        Solver.__init__(self, tolerance = tolerance, steps = steps, precon = precon)
 
     def _solve(self, L, x, b):
         diag = L.takeDiagonal()

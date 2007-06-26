@@ -99,7 +99,7 @@ class Solver:
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=None):
         """
         Create a `Solver` object.
 
@@ -107,18 +107,26 @@ class Solver:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
           - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use. This parameter is only available for
+                      Trilinos solvers. 
 
         """
-	self.tolerance = tolerance
+        self.tolerance = tolerance
         if steps is not None:
             import warnings
             warnings.warn("'iterations' should be used instead of 'steps'", DeprecationWarning, stacklevel=2)
             self.iterations = steps
         else:
             self.iterations = iterations
+
+        if precon is not None:
+            import warnings
+            warnings.warn("This solver (%s) does not support user-specified preconditioners. That functionality is only available in some Trilinos solvers." % self.__repr__(), UserWarning, stacklevel=2)
+
+        self.preconditioner = precon
 	
     def _solve(self, L, x, b):
-	pass
+        pass
         
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,
@@ -146,14 +154,3 @@ class Solver:
     def _getMatrixClass(self):
         from fipy.tools.pysparseMatrix import _PysparseMatrix
         return _PysparseMatrix
-
-    def setPreconditioner(self, preconditioner):
-        """
-        Define which preconditioner the solver should use.
-        Only available for Trilinos solvers.
-        
-        :Parameters:
-        - `preconditioner`: the preconditioner object to use.
-        """
-        import warnings 
-        warnings.warn("This solver does not support user-specified preconditioners. That functionality is only available in the Trilinos solvers.", UserWarning, stacklevel=2)

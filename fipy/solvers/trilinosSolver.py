@@ -57,18 +57,6 @@ class TrilinosSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
-        """
-        :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-    """
-        TrilinosSolver.__init__(self, tolerance=tolerance,
-                                      iterations=iterations, steps=steps)
-        self.preconditioner = None
-
     
     def _makeTrilinosMatrix(self, L):
         """ 
@@ -131,13 +119,3 @@ class TrilinosSolver(Solver):
 
     def _applyTrilinosSolver(self):
         pass
-
-    def setPreconditioner(self, preconditioner)
-    """
-    Define which preconditioner the solver should use.
-    Only available for Trilinos solvers.
-
-    :Parameters:
-    - `preconditioner`: the preconditioner object to use.
-    """
-        self.preconditioner = preconditioner

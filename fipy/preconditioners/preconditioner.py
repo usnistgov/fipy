@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosAztecOOSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #  FILE: "preconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,40 +44,19 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
-from fipy.solvers.trilinosSolver import TrilinosSolver
-from fipy.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-
-try:
-    from PyTrilinos import AztecOO
-except:
-    raise(ImportError,
-          "Failed to import AztecOO.")
-
-class TrilinosAztecOOSolver(TrilinosSolver):
-
+class Preconditioner:
     """
-    :Warning: This class is abstract, always create on of its subclasses.
-
+    The base Preconditioner class.
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
-      
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
-        """
-        :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner object to use. 
-        """
-        TrilinosSolver.__init__(self, tolerance=tolerance,
-                                      iterations=iterations, steps=steps, precon=None)
-        self.preconditioner = precon
 
-    def _applyTrilinosSolver(self, A, LHS, RHS):
-        Solver = AztecOO.AztecOO(A, LHS, RHS)
-        Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
-        if self.preconditioner is not None:
-            self.preconditioner._ApplyToSolver(solver=Solver, matrix=A)
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_warnings)
-        Solver.Iterate(self.iterations, self.tolerance)
+    def __init__(self):
+        """
+        Create a `Preconditioner` object.
+        """
+        pass
+	
+    def _ApplyToSolver(self, solver, matrix):
+        pass
+        

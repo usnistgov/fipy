@@ -67,7 +67,7 @@ class TrilinosLUSolver(TrilinosSolver):
     An interface to the Amesos KLU solver in Trilinos.
 
     """
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=None):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
@@ -75,7 +75,12 @@ class TrilinosLUSolver(TrilinosSolver):
         - `steps`: A deprecated name for `iterations`.
         """
         TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps)
+                                iterations=iterations, steps=steps, precon=None)
+
+        if precon is not None:
+            import warnings
+            warnings.warn("Trilinos KLU solver does not accept preconditioners.",
+                           UserWarning, stacklevel=2)
         self.Factory = Amesos.Factory()
 
        
@@ -83,16 +88,3 @@ class TrilinosLUSolver(TrilinosSolver):
         Problem = Epetra.LinearProblem(A, LHS, RHS)
         Solver = self.Factory.Create("Klu", Problem)
         Solver.Solve()
-
-
-    def setPreconditioner(self, preconditioner):
-        """
-        Define which preconditioner the solver should use.
-        Only available for Trilinos solvers.
-
-        :Parameters:
-        - `preconditioner`: the preconditioner object to use.
-        """
-        import warnings
-        warnings.warn("This solver does not support user-specified preconditioners. That functionality is only available for iterative solvers.", UserWarning, stacklevel=2)
-
