@@ -234,7 +234,7 @@ If running interactively, we create viewers to display the results
 This problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
 
     >>> dt = 10000

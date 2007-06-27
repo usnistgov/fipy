@@ -46,7 +46,7 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.solver import Solver
-from fipy.preconditioners.preconditioner import Preconditioner
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt

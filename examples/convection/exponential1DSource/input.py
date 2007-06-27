@@ -125,7 +125,7 @@ We define the convection-diffusion equation with source
 
 ..
     
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> eq.solve(var = var, 
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearLUSolver(tolerance = 1.e-15))
@@ -169,7 +169,7 @@ If the problem is run interactively, we can view the result:
 """
 __docformat__ = 'restructuredtext'
 
-## from fipy.solvers.linearCGSSolver import LinearCGSSolver
+## from fipy.solvers import *
 ## solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
 
 

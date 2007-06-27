@@ -45,8 +45,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.trilinosSolver import TrilinosSolver
-from fipy.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 try:
     from PyTrilinos import AztecOO

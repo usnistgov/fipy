@@ -1,3 +1,5 @@
+from preconditioners import *
+
 from linearCGSSolver import LinearCGSSolver
 from linearPCGSolver import LinearPCGSolver
 from linearGMRESSolver import LinearGMRESSolver

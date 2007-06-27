@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #  FILE: "multilevelSGSPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,34 +44,26 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-
-try:
-    from PyTrilinos import AztecOO
-except:
-    raise(ImportError,
-          "Failed to import AztecOO.")
-
-class LinearPCGSolver(TrilinosAztecOOSolver):
-
+class MultilevelSGSPreconditioner(Preconditioner):
     """
-    This is an interface to the gmres solver in Trilinos, using a jacobi
-    preconditioner.
-
+    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing
+    
     """
-      
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
+    def __init__(self, levels=10):
         """
-        :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner to use.
-        """
-        TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
-                                       iterations=iterations, steps=steps, precon=precon)
-        self.solver = AztecOO.AZ_gmres
+        Initialize the multilevel preconditioner
 
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
+
+    def _ApplyToSolver(self, solver, matrix):
+         
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 1, "smoother: type" : "symmetric Gauss-Seidel"})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        

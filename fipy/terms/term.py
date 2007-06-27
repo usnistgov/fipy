@@ -46,6 +46,7 @@ from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.solvers import *
 
 class Term:
     """
@@ -100,7 +101,6 @@ class Term:
         var[:] = array
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        from fipy.solvers.linearPCGSolver import LinearPCGSolver
         solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)

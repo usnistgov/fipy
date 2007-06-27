@@ -5,7 +5,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "jacobiPreconditioner.py"
+ #  FILE: "icPreconditioner.py"
  #                                    created: 06/25/07
  #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -38,20 +38,25 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
+ #  2007-06-26 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from PyTrilinos import AztecOO
-from fipy.preconditioners.preconditioner import Preconditioner
+from PyTrilinos import IFPACK
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-class JacobiPreconditioner(Preconditioner):
+class ICPreconditioner(Preconditioner):
     """
-    Jacobi Preconditioner for Trilinos solvers
+    Incomplete Cholesky Preconditioner from IFPACK for Trilinos Solvers
     
     """
 
     def _ApplyToSolver(self, solver, matrix):
-        solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_Jacobi)
+        Factory = IFPACK.Factory()
+        Prec = Factory.Create("IC", matrix)
+        Prec.Initialize()
+        Prec.Compute()
+        solver.SetPrecOperator(Prec)
+        

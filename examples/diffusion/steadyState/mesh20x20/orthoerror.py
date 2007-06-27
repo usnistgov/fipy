@@ -56,7 +56,7 @@ if __name__ == '__main__':
     from fipy.meshes.grid2D import Grid2D
     from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
     from fipy.meshes.numMesh.tri2D import Tri2D
-    from fipy.solvers.linearPCGSolver import LinearPCGSolver
+    from fipy.solvers import *
     from fipy.boundaryConditions.fixedValue import FixedValue
     from fipy.variables.cellVariable import CellVariable
     from fipy.meshes.numMesh.gmshImport import GmshImporter2D

@@ -72,9 +72,6 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
 
-    >>> ##from fipy.solvers.linearCGSSolver import LinearCGSSolver
-    >>> ##from fipy.solvers.linearScipyGMRESSolver import LinearScipyGMRESSolver as GMRES
-
     >>> convCoeff = 1.0
     >>> peclet = 1e-3
     >>> from fipy.tools import numerix
@@ -85,7 +82,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...     eq = (TransientTerm(1e-4) 
     ...           == ImplicitDiffusionTerm(coeff=diffCoeff)
     ...           + PowerLawConvectionTerm(coeff=convCoeff))
-    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) ##, solver=GMRES())
+    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
     ...     x = mesh.getCellCenters()[...,0]
     ...     arg0 = -convCoeff * x / diffCoeff
     ...     arg0 = numerix.where(arg0 < -200, -200, arg0)

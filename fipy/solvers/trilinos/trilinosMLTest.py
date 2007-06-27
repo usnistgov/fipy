@@ -45,7 +45,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.trilinosSolver import TrilinosSolver
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
 try:
     from PyTrilinos import Epetra

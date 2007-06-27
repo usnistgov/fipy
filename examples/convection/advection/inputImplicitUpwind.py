@@ -48,7 +48,7 @@ order implicit upwind scheme.
 from fipy.tools import numerix
      
 from fipy.meshes.grid1D import Grid1D
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers import *
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
 from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm

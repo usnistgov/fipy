@@ -126,11 +126,11 @@ class CellTerm(Term):
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?
-        #if equation is not None:
-        #    from fipy.tools.numerix import sign, add
-        #    self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        #else:
-        #    self._diagonalSign.setValue(1)
+        if equation is not None:
+            from fipy.tools.numerix import sign, add
+            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
+        else:
+            self._diagonalSign.setValue(1)
             
         coeffVectors = self._getCoeffVectors(var=var)
 

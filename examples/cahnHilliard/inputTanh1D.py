@@ -167,7 +167,7 @@ we create the Cahn-Hilliard equation:
    
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 
 The solution to this 1D problem over an infinite domain is given by,

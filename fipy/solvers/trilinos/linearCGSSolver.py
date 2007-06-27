@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosCGSSolver.py"
+ #  FILE: "linearCGSSolver.py"
  #                                    created: 06/25/07 
  #                                last update: 06/25/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -45,8 +45,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 try:
     from PyTrilinos import AztecOO
@@ -54,7 +54,7 @@ except:
     raise(ImportError,
           "Failed to import AztecOO.")
 
-class TrilinosCGSSolver(TrilinosAztecOOSolver):
+class LinearCGSSolver(TrilinosAztecOOSolver):
 
     """
     This is an interface to the cgs solver in Trilinos, 

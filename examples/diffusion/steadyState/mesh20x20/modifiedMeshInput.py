@@ -64,7 +64,7 @@ in it will not be able to find the mesh file.
 
 """
 
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.solvers import *
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers

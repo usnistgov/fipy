@@ -111,8 +111,7 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.solvers.linearPCGSolver import LinearPCGSolver
-    from fipy.solvers.linearLUSolver import LinearLUSolver
+    from fipy.solvers import *
     ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
     solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 

@@ -82,7 +82,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosLUSolver.py"
+ #  FILE: "linearLUSolver.py"
  #                                    created: 06/07/07 
  #                                last update: 06/11/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -45,7 +45,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.trilinosSolver import TrilinosSolver
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
 try: 
     from PyTrilinos import Epetra
@@ -59,9 +59,7 @@ except:
     raise(ImportError,
           "Failed to import Amesos, required for the LU solver.")
 
-from fipy.tools import numerix
-
-class TrilinosLUSolver(TrilinosSolver):
+class LinearLUSolver(TrilinosSolver):
 
     """
     An interface to the Amesos KLU solver in Trilinos.

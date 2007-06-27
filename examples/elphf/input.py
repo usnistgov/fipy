@@ -280,10 +280,9 @@ If running interactively, we create viewers to display the results
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> solver = LinearCGSSolver(tolerance = 1e-3)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue

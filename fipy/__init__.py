@@ -16,4 +16,3 @@ from tools import *
 from variables import *
 from viewers import *
 from models import *
-from preconditioners import *

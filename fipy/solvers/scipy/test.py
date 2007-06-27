@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
 ## 
- # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "multilevelSGSPreconditioner.py"
- #                                    created: 06/25/07
- #                                last update: 06/25/07
+ #  FILE: "test.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 4/1/05 {2:49:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -38,32 +36,20 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
+ #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-from PyTrilinos import ML
-from fipy.preconditioners.preconditioner import Preconditioner
+def _suite():
+    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
+            'linearGMRESSolver',
+            'linearCGSolver',
+        ), base = __name__)
 
-class MultilevelSGSPreconditioner(Preconditioner):
-    """
-    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing
+    return theSuite
     
-    """
-    def __init__(self, levels=10):
-        """
-        Initialize the multilevel preconditioner
-
-        - `levels`: Maximum number of levels
-        """
-        self.levels = levels
-
-    def _ApplyToSolver(self, solver, matrix):
-         
-        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
-        self.Prec.SetParameterList({"output": 1, "smoother: type" : "symmetric Gauss-Seidel"})
-        self.Prec.ComputePreconditioner()
-        solver.SetPrecOperator(self.Prec)
-        
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')

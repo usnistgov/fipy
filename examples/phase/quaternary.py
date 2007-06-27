@@ -463,7 +463,7 @@ and again iterate to equilibrium
 
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver(tolerance=1e-3)
 
     >>> dt = 10000

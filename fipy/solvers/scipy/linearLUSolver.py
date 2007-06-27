@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearScipyLUSolver.py"
+ #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
  #                                last update: 1/3/07 {3:13:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -46,14 +46,14 @@ from fipy.tools import numerix
 
 from fipy.solvers.solver import Solver
 
-class LinearScipyLUSolver(Solver):
+class LinearLUSolver(Solver):
     """
     
-    The `LinearScipyLUSolver` solves a linear system of equations
+    The `LinearLUSolver` solves a linear system of equations
     using LU-factorisation. This method solves systems of general
     non-symmetric matrices with partial pivoting.
 
-    The `LinearScipyLUSolver` is a wrapper class for the the SciPy_
+    The `LinearLUSolver` is a wrapper class for the the SciPy_
     `scipy.linalg.lu_solve()` method.
     
     .. warning::
