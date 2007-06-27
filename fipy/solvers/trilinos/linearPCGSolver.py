@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosBicgstabSolver.py"
+ #  FILE: "trilinosPCGSolver.py"
  #                                    created: 06/25/07 
  #                                last update: 06/25/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -54,10 +54,11 @@ except:
     raise(ImportError,
           "Failed to import AztecOO.")
 
-class TrilinosBicgstabSolver(TrilinosAztecOOSolver):
+class TrilinosPCGSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the biconjugate gradient stabilized solver in Trilinos.
+    This is an interface to the conjugate gradient solver in Trilinos, 
+    using a Jacobi preconditioner.
 
     """
       
@@ -71,5 +72,5 @@ class TrilinosBicgstabSolver(TrilinosAztecOOSolver):
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)
-        self.solver = AztecOO.AZ_bicgstab
+        self.solver = AztecOO.AZ_cg
 

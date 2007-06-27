@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearScipyGMRESSolver.py"
+ #  FILE: "linearCGSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:14:10 PM} 
+ #                                last update: 1/3/07 {3:13:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,16 +46,15 @@ import sys
 
 from fipy.solvers.solver import Solver
 
-class LinearScipyGMRESSolver(Solver):
+class LinearCGSolver(Solver):
     """
     
-    The `LinearScipyGMRESSolver` solves a linear system of equations
-    using the generalised minimal residual method (GMRES) with no
-    GMRES solves systems with a general non-symmetric coefficient
-    matrix.
+    The `LinearCGSolver` solves a linear system of equations
+    using the conjugent gradient. It solves a system with a symmetric
+    coefficient matrix.
 
-    The `LinearScipyGMRESSolver` is a wrapper class for the the
-    Scipy_ `linalg.iterative.gmres()` method.
+    The `LinearCGSolver` is a wrapper class for the the Scipy_
+    `scipy.linalg.iterative.cg()` method.
 
     .. warning::
 
@@ -81,7 +80,7 @@ class LinearScipyGMRESSolver(Solver):
            >>> a[:] = 2 / dx
            >>> a[0] = 3 / dx
            >>> a[-1] = 3 / dx
-           >>> solver = LinearScipyGMRESSolver()
+           >>> solver = LinearCGSolver()
            >>> SparseMatrix = solver._getMatrixClass()
            >>> A = SparseMatrix(size = N)
            >>> A.addAtDiagonal(a)
@@ -96,11 +95,15 @@ class LinearScipyGMRESSolver(Solver):
            1
            
         """
-        from scipy.linalg.iterative import gmres
-        x[:], info = gmres(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.iterations)
+        from scipy.linalg.iterative import cg
+        x[:], info = cg(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.iterations)
 
         if (info != 0):
-            print >> sys.stderr, 'gmres not converged'
+            print >> sys.stderr, 'cg not converged'
+            
+    def _canSolveAssymetric(self):
+        return False
+
 
 def _test(): 
     import doctest

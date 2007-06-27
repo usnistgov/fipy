@@ -57,7 +57,8 @@ except:
 class TrilinosCGSSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the cgs solver in Trilinos.
+    This is an interface to the cgs solver in Trilinos, 
+    using a Jacobi Preconditioner by default.
 
     """
       
