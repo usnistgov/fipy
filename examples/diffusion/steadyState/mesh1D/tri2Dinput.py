@@ -70,9 +70,9 @@ compare with the numerical result,
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
 Finally the analytical and numerical results are compared with a
-tolerance of `1e-10`. 
+tolerance of `1e-8`. 
 
-    >>> print var.allclose(analyticalArray)
+    >>> print var.allclose(analyticalArray, atol=1e-8)
     1
 
 """

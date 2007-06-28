@@ -308,7 +308,7 @@ extracts the data and compares it with the `theta` variable.
    >>> import fipy.tools.dump as dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
-   >>> print theta.allclose(numerix.array(testData))
+   >>> print theta.allclose(numerix.array(testData), atol=1e-8)
    1
 """
 __docformat__ = 'restructuredtext'

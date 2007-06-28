@@ -43,7 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` with `nx = 10` and `ny = 10`.
+`./examples/diffusion/convection/exponential1D/input.py` with `nx = 10` and `ny = 10`.
 
     >>> L = 10.
     >>> nx = 10
@@ -76,7 +76,7 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = LinearGMRESSolver(tolerance = 1.e-15, iterations = 2000))
     
 The analytical solution test for this problem is given by:
 

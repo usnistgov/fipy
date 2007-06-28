@@ -83,9 +83,13 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
     >>> from fipy.solvers import *
+    >>> try:
+    ...     solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000, precon=MultilevelSGSPreconditioner())
+    ... except:
+    ...     solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000)
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))
+    ...          solver = solver)
 
 The analytical solution test for this problem is given by:
 

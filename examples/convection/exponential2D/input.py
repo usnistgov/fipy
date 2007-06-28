@@ -76,7 +76,7 @@ mesh with `nx = 10` and `ny = 10`:
     >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = LinearGMRESSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 

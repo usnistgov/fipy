@@ -46,7 +46,7 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.solvers.trilinos.preconditioners.domDecompPreconditioner import DomDecompPreconditioner
 
 try:
     from PyTrilinos import AztecOO
@@ -57,12 +57,12 @@ except:
 class LinearCGSSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the cgs solver in Trilinos, 
-    using a Jacobi Preconditioner by default.
+    This is an interface to the cgs solver in Trilinos, using a Domain
+    Decomposition Preconditioner by default.
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=DomDecompPreconditioner()):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
