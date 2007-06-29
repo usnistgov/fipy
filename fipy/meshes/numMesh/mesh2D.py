@@ -70,7 +70,8 @@ class Mesh2D(Mesh):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         self.faceNormals = t1.copy()
-        mag = numerix.sqrtDot(t1, t1)
+##         mag = numerix.sqrtDot(t1, t1)
+        mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
         self.faceNormals[0] = -t1[1] / mag
         self.faceNormals[1] = t1[0] / mag
 
