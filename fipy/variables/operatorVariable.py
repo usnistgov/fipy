@@ -197,7 +197,11 @@ def _OperatorVariableClass(baseClass=None):
                 canInline = self.canInline)
  
         def getShape(self):
-            return baseClass.getShape(self) or self.opShape
+            if self.opShape is not None:
+                return self.opShape
+            else:
+                return baseClass.getShape(self)
+##             return baseClass.getShape(self) or self.opShape
 
     return _OperatorVariable
     

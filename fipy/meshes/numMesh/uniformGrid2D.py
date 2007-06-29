@@ -253,32 +253,33 @@ class UniformGrid2D(Grid2D):
         mask = numerix.zeros((2, self.numberOfFaces))
         
         inline._runInline("""
-            int ID = j * ni + i;            
+            int ID = j * ni + i; 
+            int rowlength = ni * nj + Nhor + nj;
 
-            faceCellIDs[ID * 2 + 0] = ID - ni;
-            faceCellIDs[ID * 2 + 1] = ID;
+            faceCellIDs[ID + 0 * rowlength] = ID - ni;
+            faceCellIDs[ID + 1 * rowlength] = ID;
 
-            faceCellIDs[(ID + Nhor + j) * 2 + 0] = ID - 1;
-            faceCellIDs[(ID + Nhor + j) * 2 + 1] = ID;
+            faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID - 1;
+            faceCellIDs[ID + Nhor + j + 1 * rowlength] = ID;
 
             if (j == 0) {
-                faceCellIDs[ID * 2 + 0] = ID;
-                mask[ID * 2 + 1] = 1;
+                faceCellIDs[ID + 0 * rowlength] = ID;
+                mask[ID + 1 * rowlength] = 1;
             }
 
             if (j == nj - 1) {
-                faceCellIDs[(ID + ni) * 2 + 0] = ID;
-                mask[(ID + ni) * 2 + 1] = 1;
+                faceCellIDs[ID + ni + 0 * rowlength] = ID;
+                mask[ID + ni + 1 * rowlength] = 1;
             }
 
             if (i == 0) {
-                faceCellIDs[(ID + Nhor + j) * 2 + 0] = ID;
-                mask[(ID + Nhor + j) * 2 + 1] = 1;
+                faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID;
+                mask[ID + Nhor + j + 1 * rowlength] = 1;
             }
 
             if ( i == ni - 1 ) {
-                faceCellIDs[(ID + Nhor + j + 1) * 2 + 0] = ID;
-                mask[(ID + Nhor + j + 1) * 2 + 1] = 1;
+                faceCellIDs[ID + Nhor + j + 1 + 0 * rowlength] = ID;
+                mask[ID + Nhor + j + 1 + 1 * rowlength] = 1;
             }
         """,
         Nhor=self.numberOfHorizontalFaces,
@@ -382,13 +383,13 @@ class UniformGrid2D(Grid2D):
 
         inline._runInline("""
             if (i < nx) {
-                areaProjections[i *2 + 1] = -dx;
+                areaProjections[i + 1 * ni] = -dx;
             } else if (i < Nhor) {
-                areaProjections[i * 2 + 1] = dx;
+                areaProjections[i + 1 * ni] = dx;
             } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                areaProjections[i * 2 + 0] = -dy;
+                areaProjections[i + 0 * ni] = -dy;
             } else {
-                areaProjections[i * 2 + 0] = dy;
+                areaProjections[i + 0 * ni] = dy;
            }
         """,
         dx = self.dx,

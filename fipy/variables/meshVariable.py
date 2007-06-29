@@ -173,8 +173,12 @@ class _MeshVariable(Variable):
                          *args, **kwargs):
                 mesh = reduce(lambda a, b: a or b, 
                               [getattr(v, "mesh", None) for v in var])
-                opShape = reduce(lambda a, b: a or b, 
-                                 [opShape] + [getattr(v, "opShape", None) for v in var])
+                for shape in [opShape] + [getattr(v, "opShape", None) for v in var]:
+                    if shape is not None:
+                        opShape = shape
+                        break
+##                 opShape = reduce(lambda a, b: a or b, 
+##                                  [opShape] + [getattr(v, "opShape", None) for v in var])
                 if opShape is not None:
                     elementshape = opShape[:-1]
                 else:

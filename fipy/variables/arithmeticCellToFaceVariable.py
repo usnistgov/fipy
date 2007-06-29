@@ -48,18 +48,20 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
         
-        inline._runInline("""
-            int ID1 = id1[i];
-            int ID2 = id2[i];
-            double cell2 = var[ID2];
-            val[i] = (var[ID1] - cell2) * alpha[i] + cell2;
+        inline._runIterateElementInline("""
+            int ID1 = ITEM(id1, i, NULL);
+            int ID2 = ITEM(id2, i, NULL);
+            double cell1 = ITEM(var, ID1, vec);
+            double cell2 = ITEM(var, ID2, vec);
+            ITEM(val, i, vec) = (cell1 - cell2) * ITEM(alpha, i, NULL) + cell2;
         """,
         var = self.var.getNumericValue(),
         val = val, 
         alpha = alpha,
         id1 = id1, id2 = id2,
+        shape=numerix.array(numerix.shape(val)),
         ni = self.mesh._getNumberOfFaces())
- 
+
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
 

@@ -52,18 +52,16 @@ class _GaussCellGradVariable(CellVariable):
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
 
-        inline._runInline("""
-            val[i * nj + j] = 0.;
-            
-            int k;
-            
-            for (k = 0; k < M; k++) {
-                int id = ids[i * M + k];
+        inline._runIterateElementInline("""
+            ITEM(val, i, vec) = 0.;
 
-                val[i * nj + j] += orientations[i * M + k] * areaProj[id * nj +  j] * faceValues[id];
+            int k;
+            for (k = 0; k < M; k++) {
+                int id = ITEM(ids, i, &k);
+                ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
                 
-            val[i * nj + j] /= volumes[i];
+            ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
         """,val = val,
             ids = numerix.array(MA.filled(ids, 0)),
             orientations = numerix.array(MA.filled(orientations, 0)),
@@ -71,7 +69,8 @@ class _GaussCellGradVariable(CellVariable):
             areaProj = numerix.array(self.mesh._getAreaProjections()),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
             M = M,
-            ni = N, nj = self.mesh.getDim())
+            ni = N, 
+            shape=numerix.array(numerix.shape(val)))
 
         return self._makeValue(value = val)
             

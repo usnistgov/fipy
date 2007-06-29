@@ -1013,7 +1013,7 @@ def _sqrtDotIn(a1, a2):
     if _isPhysical(a2):
         unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
-    ni, NJ = NUMERIX.shape(a1)
+    NJ, ni = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
 
     inline._runInline("""
@@ -1021,7 +1021,8 @@ def _sqrtDotIn(a1, a2):
         result1[i] = 0.;
         for (j = 0; j < NJ; j++)
         {
-            result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
+            // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
+            result1[i] += a1[i + j * ni] * a2[i + j * ni];
         }
         result1[i] = sqrt(result1[i]);        
     """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)

@@ -78,7 +78,7 @@ class _AddOverFacesVariable(CellVariable):
           value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              value[i] += orientations[i * numberOfCellFaces + j] * faceVariable[ids[i * numberOfCellFaces + j]];
+              value[i] += orientations[i + j * numberOfCells] * faceVariable[ids[i + j * numberOfCells]];
             }
             value[i] = value[i] / cellVolume[i];
           }

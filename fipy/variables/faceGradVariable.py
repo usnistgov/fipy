@@ -79,30 +79,24 @@ class _FaceGradVariable(FaceVariable):
  
         val = self._getArray().copy()
 
-        inline._runInline("""
+        inline._runIterateElementInline("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
-            int ID1 = id1[i];
-            int ID2 = id2[i];
+            int ID1 = ITEM(id1, i, NULL);
+            int ID2 = ITEM(id2, i, NULL);
             
-            N = (var[ID2] - var[ID1]) / dAP[i];
+            N = (ITEM(var, ID2, NULL) - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
 
             t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
-            for (j = 0; j < NJ; j++) {
-                int arrayID = i * NJ + j;
-                t1grad1 += tangents1[arrayID] * cellGrad[ID1 * NJ + j];
-                t1grad2 += tangents1[arrayID] * cellGrad[ID2 * NJ + j];
-                t2grad1 += tangents2[arrayID] * cellGrad[ID1 * NJ + j];
-                t2grad2 += tangents2[arrayID] * cellGrad[ID2 * NJ + j];
-            }
+            t1grad1 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID1, vec);
+            t1grad2 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID2, vec);
+            t2grad1 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID1, vec);
+            t2grad2 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID2, vec);
             
-            for (j = 0; j < NJ; j++) {
-                int arrayID = i * NJ + j;
-                val[arrayID] = normals[arrayID] * N;
-                val[arrayID] += tangents1[arrayID] * (t1grad1 + t1grad2) / 2.;
-                val[arrayID] += tangents2[arrayID] * (t2grad1 + t2grad2) / 2.;
-            }
+            ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
+            ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
+            ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
@@ -112,8 +106,8 @@ class _FaceGradVariable(FaceVariable):
             dAP = numerix.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = val,
-            ni = tangents1.shape[0],
-            NJ = tangents1.shape[1])
+            ni = tangents1.shape[1],
+            shape=numerix.array(numerix.shape(tangents1)))
             
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
