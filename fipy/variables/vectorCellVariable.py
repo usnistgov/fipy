@@ -65,7 +65,7 @@ class VectorCellVariable(Variable):
         if where is not None:
             shape = numerix.getShape(where)
             if shape != self._getShapeFromMesh(mesh=self.getMesh()) \
-              and shape == (self.getMesh()._getNumberOfCells(),):
+              and shape == (self.getMesh().getNumberOfCells(),):
                 dim = self.getMesh().getDim()
                 if dim == 1:
                     where = where[..., numerix.NewAxis]
