@@ -47,9 +47,9 @@ import sys
 from pysparse import precon
 from pysparse import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
-class LinearGMRESSolver(Solver):
+class LinearGMRESSolver(PysparseSolver):
     """
     
     The `LinearGMRESSolver` solves a linear system of equations using the

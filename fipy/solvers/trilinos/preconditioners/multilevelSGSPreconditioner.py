@@ -67,3 +67,5 @@ class MultilevelSGSPreconditioner(Preconditioner):
         self.Prec.ComputePreconditioner()
         solver.SetPrecOperator(self.Prec)
         
+
+        

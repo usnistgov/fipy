@@ -70,9 +70,6 @@ class TrilinosMLTest(TrilinosSolver):
     """
     This solver class does not actually solve the system, but outputs 
     information about what ML preconditioner settings will work best.
-
-    Will probably be removed by the time this gets integrated in
-
     """
     
     def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}, ):

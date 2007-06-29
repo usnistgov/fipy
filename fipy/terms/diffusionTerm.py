@@ -304,8 +304,7 @@ class DiffusionTerm(Term):
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
            >>> from fipy.meshes.grid1D import Grid1D
-           >>> from fipy.solvers.solver import Solver
-           >>> SparseMatrix = Solver()._getMatrixClass()
+           >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
            >>> mesh = Grid1D(dx = 1., nx = 2)
            >>> term = DiffusionTerm(coeff = (1,))
            >>> coeff = term._getGeomCoeff(mesh)

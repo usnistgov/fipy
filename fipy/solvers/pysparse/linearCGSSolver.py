@@ -47,9 +47,9 @@ import sys
 from pysparse import precon
 from pysparse import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
-class LinearCGSSolver(Solver):
+class LinearCGSSolver(PysparseSolver):
 
     """
 

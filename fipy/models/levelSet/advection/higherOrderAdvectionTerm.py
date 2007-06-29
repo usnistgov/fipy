@@ -96,7 +96,8 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     Here are some simple test cases for this problem:
 
         >>> from fipy.meshes.grid1D import Grid1D
-        >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
+        >>> from fipy.solvers import *
+        >>> SparseMatrix = LinearPCGSolver()._getMatrixClass()
         >>> mesh = Grid1D(dx = 1., nx = 3) 
    
     Trivial test:

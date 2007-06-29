@@ -94,6 +94,8 @@ class TrilinosSolver(Solver):
         #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
         #
         #os.waitpid(pid, 0)
+        
+        os.remove(filename)
 
         A.FillComplete()
         A.OptimizeStorage()

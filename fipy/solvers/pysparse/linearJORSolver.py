@@ -42,10 +42,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class LinearJORSolver(Solver):
+class LinearJORSolver(PysparseSolver):
     """
     
     The `LinearJORSolver` solves a linear system of equations using

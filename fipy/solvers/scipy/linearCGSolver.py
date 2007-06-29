@@ -44,9 +44,9 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 
-class LinearCGSolver(Solver):
+class LinearCGSolver(ScipySolver):
     """
     
     The `LinearCGSolver` solves a linear system of equations

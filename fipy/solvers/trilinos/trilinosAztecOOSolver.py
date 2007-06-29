@@ -76,7 +76,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
     def _applyTrilinosSolver(self, A, LHS, RHS):
         Solver = AztecOO.AztecOO(A, LHS, RHS)
         Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
         if self.preconditioner is not None:
             self.preconditioner._ApplyToSolver(solver=Solver, matrix=A)
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
         Solver.Iterate(self.iterations, self.tolerance)

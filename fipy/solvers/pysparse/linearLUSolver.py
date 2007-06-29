@@ -48,11 +48,10 @@ from pysparse import precon
 from pysparse import itsolvers
 from pysparse import superlu
 
-from fipy.solvers.solver import Solver
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
 
-class LinearLUSolver(Solver):
+class LinearLUSolver(PysparseSolver):
     """
     
     The `LinearLUSolver` solves a linear system of equations using
@@ -78,7 +77,7 @@ class LinearLUSolver(Solver):
 
         """
         
-        Solver.__init__(self, tolerance = tolerance, steps = steps, precon = precon)
+        PysparseSolver.__init__(self, tolerance = tolerance, steps = steps, precon = precon)
 
     def _solve(self, L, x, b):
         diag = L.takeDiagonal()

@@ -152,5 +152,4 @@ class Solver:
         return True
 
     def _getMatrixClass(self):
-        from fipy.tools.pysparseMatrix import _PysparseMatrix
-        return _PysparseMatrix
+        pass

@@ -44,9 +44,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 
-class LinearLUSolver(Solver):
+class LinearLUSolver(ScipySolver):
     """
     
     The `LinearLUSolver` solves a linear system of equations
@@ -77,7 +77,7 @@ class LinearLUSolver(Solver):
             For large systems a number of iterations is generally required.
 
         """
-        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        ScipySolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
 
     def _solve(self, L, x, b):
         from scipy.linalg import lu_factor, lu_solve

@@ -48,9 +48,9 @@ import sys
 from pysparse import precon
 from pysparse import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
-class LinearPCGSolver(Solver):
+class LinearPCGSolver(PysparseSolver):
     """
     
     The `LinearPCGSolver` solves a linear system of equations using the

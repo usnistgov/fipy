@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearGMRESSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #  FILE: "scioySolver.py"
+ #                                    created: 06/28/07
+ #                                last update: 06/29/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -37,40 +37,21 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
+ #  2007-06-28 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from fipy.tools.pysparseMatrix import _PysparseMatrix
+from fipy.solvers.solver import Solver
 
-from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-
-try:
-    from PyTrilinos import AztecOO
-except:
-    raise(ImportError,
-          "Failed to import AztecOO.")
-
-class LinearGMRESSolver(TrilinosAztecOOSolver):
-
+class ScipySolver(Solver):
     """
-    This is an interface to the gmres solver in Trilinos, using a Jacobi
-    preconditioner by default.
-
+    The base `ScipySolver` class.
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
-      
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
-        """
-        :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner to use.
-        """
-        TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
-                                       iterations=iterations, steps=steps, precon=precon)
-        self.solver = AztecOO.AZ_gmres
 
+    def _getMatrixClass(self):
+        return _PysparseMatrix

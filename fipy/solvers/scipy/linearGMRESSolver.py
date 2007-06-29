@@ -44,9 +44,9 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 
-class LinearGMRESSolver(Solver):
+class LinearGMRESSolver(ScipySolver):
     """
     
     The `LinearGMRESSolver` solves a linear system of equations
