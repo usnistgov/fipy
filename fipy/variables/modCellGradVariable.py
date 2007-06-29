@@ -57,28 +57,28 @@ class _ModCellGradVariable(_GaussCellGradVariable):
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
         
-        inline._runInline(self.modIn + """
-            val[i + j * ni] = 0.;
-            
-            int k;
+        inline._runIterateElementInline(self.modIn + """
+            ITEM(val, i, vec) = 0.;
 
+            int k;
             for (k = 0; k < M; k++) {
-                int ID = ids[i + k * ni];
-                val[i + j * ni] += orientations[i + k * ni] * areaProj[ID + j * ni] * faceValues[ID];
+                int id = ITEM(ids, i, &k);
+                ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
                 
-            val[i + j * ni] /= volumes[i];
-            val[i + j * ni] = mod(val[i + j * ni] * gridSpacing[j]) /  gridSpacing[j];
-        """,
-        val = val,
-        ids = numerix.array(ids),
-        orientations = numerix.array(orientations),
-        volumes = numerix.array(volumes),
-        areaProj = numerix.array(self.mesh._getAreaProjections()),
-        faceValues = numerix.array(self.var.getArithmeticFaceValue()),
-        ni = N, nj = self.mesh.getDim(), M = M,
-        gridSpacing = numerix.array(self.mesh._getMeshSpacing()))
-        
+            ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
+            ITEM(val, i, vec) = mod(ITEM(val, i, vec) * gridSpacing[vec[0]]) /  gridSpacing[vec[0]];
+        """,val = val,
+            ids = numerix.array(ids),
+            orientations = numerix.array(orientations),
+            volumes = numerix.array(volumes),
+            areaProj = numerix.array(self.mesh._getAreaProjections()),
+            faceValues = numerix.array(self.var.getArithmeticFaceValue()),
+            M = M,
+            ni = N, 
+            gridSpacing = numerix.array(self.mesh._getMeshSpacing()),
+            shape=numerix.array(numerix.shape(val)))
+            
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())
 
