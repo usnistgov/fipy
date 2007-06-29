@@ -1180,7 +1180,7 @@ class Variable(object):
             opShape = self._broadcastShape(other)
         return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b, axis=axis), 
                                             other, 
-                                            opShape=opShape[1:],
+                                            opShape=opShape[:axis]+opShape[axis+1:],
                                             operatorClass=operatorClass,
                                             canInline=False)
         
