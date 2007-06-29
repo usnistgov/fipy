@@ -5,7 +5,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "scioySolver.py"
+ #  FILE: "scipySolver.py"
  #                                    created: 06/28/07
  #                                last update: 06/29/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
