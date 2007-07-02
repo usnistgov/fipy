@@ -128,8 +128,8 @@ Declare the variables.
     >>> from fipy.variables.cellVariable import CellVariable
     >>> pressure = CellVariable(mesh=mesh, name='pressure')
     >>> pressureCorrection = CellVariable(mesh=mesh)
-    >>> ## xVelocity = CellVariable(mesh=mesh, name='X velocity')
-    >>> ## yVelocity = CellVariable(mesh=mesh, name='Y velocity')
+    >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
+    >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
 .. raw:: latex
 
@@ -139,8 +139,8 @@ Declare the variables.
 
 ..
 
-    >>> ## from fipy.variables.faceVariable import FaceVariable
-    >>> velocity = CellVariable(mesh=mesh, rank=1)
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> velocity = FaceVariable(mesh=mesh, rank=1)
 
 Build the Stokes equations.
 
@@ -213,7 +213,7 @@ Set up the viewers,
 
     >>> if __name__ == '__main__':
     ...     from fipy.viewers import make
-    ...     viewer = make(vars=(pressure, velocity))
+    ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
 
 Below, we iterate for a set number of sweeps. We use the `sweep()`
 method instead of `solve()` because we require the residual for
@@ -237,12 +237,12 @@ solution. This argument cannot be passed to `solve()`.
     ...
     ...     ## solve the Stokes equations to get starred values
     ...     xVelocityEq.cacheMatrix()
-    ...     xres = xVelocityEq.sweep(var=velocity[0],
+    ...     xres = xVelocityEq.sweep(var=xVelocity,
     ...                              boundaryConditions=bcsX,
     ...                              underRelaxation=velocityRelaxation)
     ...     xmat = xVelocityEq.getMatrix()
     ...
-    ...     yres = yVelocityEq.sweep(var=velocity[1],
+    ...     yres = yVelocityEq.sweep(var=yVelocity,
     ...                              boundaryConditions=bcsY,
     ...                              underRelaxation=velocityRelaxation)
     ...
@@ -250,9 +250,10 @@ solution. This argument cannot be passed to `solve()`.
     ...     ap[:] = -xmat.takeDiagonal()
     ...
     ...     ## update the face velocities based on starred values
-    ... ##     velocity[0] = xVelocity.getArithmeticFaceValue()
-    ... ##     velocity[1] = yVelocity.getArithmeticFaceValue()
-    ...     velocity[..., mesh.getExteriorFaces()] = 0.
+    ...     velocity[0] = xVelocity.getArithmeticFaceValue()
+    ...     velocity[1] = yVelocity.getArithmeticFaceValue()
+    ...     for id in mesh.getExteriorFaces():
+    ...         velocity[...,id] = 0.
     ...
     ...     ## solve the pressure correction equation
     ...     pressureCorrectionEq.cacheRHSvector()
@@ -263,7 +264,9 @@ solution. This argument cannot be passed to `solve()`.
     ...     pressure.setValue(pressure + pressureRelaxation * \
     ...                                            (pressureCorrection - pressureCorrection[0]))
     ...     ## update the velocity using the corrected pressure
-    ...     velocity.setValue(velocity - pressureCorrection.getGrad() / \
+    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
+    ...                                                ap * mesh.getCellVolumes())
+    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
     ...                                                ap * mesh.getCellVolumes())
     ...
     ...     if __name__ == '__main__':
@@ -285,9 +288,9 @@ Test values in the last cell.
 
     >>> print pressure[...,-1].allclose(145.233883763)
     1
-    >>> print velocity[0,-1].allclose(0.24964673696)
+    >>> print xVelocity[...,-1].allclose(0.24964673696)
     1
-    >>> print velocity[1,-1].allclose(-0.164498041783)
+    >>> print yVelocity[...,-1].allclose(-0.164498041783)
     1
 
 """
