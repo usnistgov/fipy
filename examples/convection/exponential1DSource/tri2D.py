@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "tri2Dinput.py"
+ #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:39:40 AM} 
+ #                                last update: 3/29/07 {11:38:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,62 +43,78 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/inpuy.py` with `nx = 10` and `ny = 10`.
+`./examples/diffusion/convection/exponential1D/mesh1D.py` but uses a constant source
+value such that,
+
+.. raw:: latex
+
+    $$ S_c = 1. $$
+
+Here the axes are reversed (`nx = 1`, `ny = 1000`) and
+
+.. raw:: latex
+
+    $$ \\vec{u} = (0, 10) $$
+
+.. 
 
     >>> L = 10.
-    >>> nx = 10
-    >>> ny = 10
+    >>> nx = 1
+    >>> ny = 1000
     >>> from fipy.meshes.tri2D import Tri2D
-    >>> mesh = Tri2D(L / nx, L / ny, nx, ny)
-
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
+    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
+    
+    >>> valueBottom = 0.
+    >>> valueTop = 1.
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
-    ...                    value = valueLeft)
+    ...                    value = valueBottom)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
-    ...     FixedValue(mesh.getFacesRight(), valueRight),
+    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
+    ...     FixedValue(mesh.getFacesTop(), valueTop),
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,0.)
-    
+    >>> convCoeff = (0., 10.)
+    >>> sourceCoeff = 1.
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff))
+    >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
+    ...       - ExponentialConvectionTerm(coeff = convCoeff))
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
-    
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+
 The analytical solution test for this problem is given by:
 
-   >>> axis = 0
-   >>> x = mesh.getCellCenters()[axis]
-   >>> from fipy.tools import numerix
-   >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = CC / DD
-   >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
-   1
-   
-   >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var)
-   ...     viewer.plot()
+    >>> axis = 1
+    >>> y = mesh.getCellCenters()[axis]
+    >>> AA = -sourceCoeff * y / convCoeff[axis]
+    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
+    >>> from fipy.tools.numerix import exp
+    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+    >>> analyticalArray = AA + BB * CC / DD
+    >>> print var.allclose(analyticalArray, atol = 1e-5) 
+    1
+    
+    >>> if __name__ == '__main__':
+    ...     import fipy.viewers
+    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
-     
+
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     
     raw_input('finished')
-    

@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:38:55 AM} 
+ #                                last update: 3/29/07 {11:23:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,14 +43,14 @@
 """
 
 This example solves the steady-state convection-diffusion equation as
-described in `examples/diffusion/convection/exponential1D/input.py` but
-uses the `PowerLawConvectionTerm` rather than the
-`ExponentialConvectionTerm`.
-
+described in `examples/diffusion/convection/exponential1D/mesh1D.py` on a 2D
+mesh with `nx = 10` and `ny = 10`:
+    
     >>> L = 10.
-    >>> nx = 1000
-    >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx = L / nx, nx = nx)
+    >>> nx = 10
+    >>> ny = 10
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -67,16 +67,16 @@ uses the `PowerLawConvectionTerm` rather than the
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,)
-    
+    >>> convCoeff = (10.,0.)
+
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + PowerLawConvectionTerm(coeff=convCoeff))
+    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
+    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions)
-
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 
@@ -86,21 +86,20 @@ We test the solution against the analytical result:
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2) 
+    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1
-   
-If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     viewer = fipy.viewers.make(vars = var)
     ...     viewer.plot()
 """
-     
 __docformat__ = 'restructuredtext'
+     
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     
     raw_input('finished')
+    

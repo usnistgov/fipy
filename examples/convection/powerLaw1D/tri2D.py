@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
  #                                last update: 3/29/07 {11:37:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -43,7 +43,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/input.py` but uses the
+`./examples/diffusion/convection/exponential1D/mesh1D.py` but uses the
 `PowerLawConvectionTerm` rather than the `ExponentialConvectionTerm` instatiator.
 
     >>> L = 10.

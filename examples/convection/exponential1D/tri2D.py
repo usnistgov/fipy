@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:38:31 AM} 
+ #                                last update: 3/29/07 {11:37:16 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,12 +43,8 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/input.py` but uses a constant source
-value such that,
-
-.. raw:: latex
-
-    $$ S_c = 1. $$
+`./examples/diffusion/convection/exponential1D/input.py` but uses a 
+`Tri2D` mesh.
 
 Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
@@ -80,30 +76,26 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     >>> diffCoeff = 1.
     >>> convCoeff = (0., 10.)
-    >>> sourceCoeff = 1.
 
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
-    ...       - ExponentialConvectionTerm(coeff = convCoeff))
+    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-
+    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))
 
 The analytical solution test for this problem is given by:
 
     >>> axis = 1
     >>> y = mesh.getCellCenters()[axis]
-    >>> AA = -sourceCoeff * y / convCoeff[axis]
-    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> from fipy.tools.numerix import exp
-    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
-    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = AA + BB * CC / DD
-    >>> print var.allclose(analyticalArray, atol = 1e-5) 
+    >>> from fipy.tools import numerix
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> analyticalArray = CC / DD
+    >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1
     
     >>> if __name__ == '__main__':

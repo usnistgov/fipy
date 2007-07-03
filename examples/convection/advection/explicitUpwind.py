@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputImpicitUpwind.py"
+ #  FILE: "explicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {4:57:54 PM} 
+ #                                last update: 8/12/05 {9:53:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,16 +42,16 @@
 
 """ 
 This example shows the failure of advecting a square pulse with a first
-order implicit upwind scheme.
+order explicit upwind scheme.
 """
 
 from fipy.tools import numerix
      
 from fipy.meshes.grid1D import Grid1D
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers
-from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 
@@ -60,8 +60,8 @@ valueRight = 0.
 L = 10.
 nx = 400
 dx = L / nx
-cfl = 0.01
-velocity = 1.
+cfl = 0.1
+velocity = -1.
 timeStepDuration = cfl * dx / abs(velocity)
 steps = 1000
 
@@ -81,20 +81,18 @@ boundaryConditions = (
     )
 
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
+from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 
-eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
+eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
     viewer = fipy.viewers.make(vars=(var,))
-    viewer.plot()
-    raw_input("press key to continue")
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
                  boundaryConditions = boundaryConditions,
-                 solver = LinearLUSolver(tolerance = 1.e-15))
+                 solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
         viewer.plot()
     viewer.plot()
     raw_input('finished')

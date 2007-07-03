@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:50:05 AM} 
+ #                                last update: 3/29/07 {11:44:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,21 +42,24 @@
 
 r"""
 
-Like ``examples/diffusion/convection/exponential1D/input.py``
-this example solves a steady-state convection-diffusion equation, but adds a constant source, 
+This example solves the steady-state convection-diffusion equation
+given by:
 
 .. raw:: latex
 
-     $S_0 = 1$, such that
+   $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0 $$
 
-     $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0. $$
+with coefficients
 
-..
+.. raw:: latex
+
+   $D = 1$ and $\vec{u} = (10,)$,
+   
+or
 
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,)
-    >>> sourceCoeff = 1.
-
+    
 We define a 1D mesh
 
 .. raw:: latex
@@ -65,10 +68,10 @@ We define a 1D mesh
 
 ..
 
-    >>> nx = 1000
     >>> L = 10.
+    >>> nx = 10
     >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx=L / 1000, nx=nx)
+    >>> mesh = Grid1D(dx=L / nx, nx=nx)
 
 and impose the boundary conditions
 
@@ -80,15 +83,15 @@ and impose the boundary conditions
    \end{cases} $$ 
    or
    \IndexClass{FixedValue}
-   
+
 ..
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
     ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
     ...     )
 
 The solution variable is initialized to `valueLeft`:
@@ -100,10 +103,12 @@ The solution variable is initialized to `valueLeft`:
 ..
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(name="variable", mesh=mesh)
+    >>> var = CellVariable(mesh=mesh, name = "variable")
 
-
-We define the convection-diffusion equation with source
+The equation is created with the `ImplicitDiffusionTerm` and
+`ExponentialConvectionTerm`. The scheme used by the convection term
+needs to calculate a Peclet number and thus the diffusion term
+instance must be passed to the convection term.
 
 .. raw:: latex
 
@@ -112,30 +117,34 @@ We define the convection-diffusion equation with source
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm \
-    ...     import ExponentialConvectionTerm
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff)
-    ...       + sourceCoeff)
-    
+   >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+   >>> from fipy.terms.exponentialConvectionTerm \
+   ...     import ExponentialConvectionTerm
+   >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+   ...       + ExponentialConvectionTerm(coeff=convCoeff))
+   
+More details of the benefits and drawbacks of each type of convection
+term can be found in 
+
 .. raw:: latex
 
-   \IndexClass{LinearLUSolver}
+   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
+   
+.. of the manual
 
-..
-    
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
-    >>> eq.solve(var = var, 
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15))
-    
-and test the solution against the analytical result:
-    
+Essentially, the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will
+both handle most types of convection-diffusion cases, with the
+`PowerLawConvectionTerm` being more efficient.
+
+We solve the equation
+
+   >>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+   
+and test the solution against the analytical result
+
 .. raw:: latex
 
-   $$ \phi = -\frac{S_0 x}{u_x} 
-   + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
+   $$ \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
    or
    \IndexModule{numerix}
    \IndexFunction{exp}
@@ -144,15 +153,13 @@ and test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> AA = -sourceCoeff * x / convCoeff[axis]
-    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
     >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = AA + BB * CC / DD
-    >>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
+    >>> analyticalArray = CC / DD
+    >>> print var.allclose(analyticalArray)
     1
-         
+   
 If the problem is run interactively, we can view the result:
 
 .. raw:: latex
@@ -165,16 +172,11 @@ If the problem is run interactively, we can view the result:
     ...     from fipy.viewers import make
     ...     viewer = make(vars=var)
     ...     viewer.plot()
-
 """
 __docformat__ = 'restructuredtext'
-
-## from fipy.solvers.linearCGSSolver import LinearCGSSolver
-## solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-
-
+     
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
+    
     raw_input('finished')

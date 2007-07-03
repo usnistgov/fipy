@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputExplicitUpwind.py"
+ #  FILE: "vanLeerUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
  #                                last update: 5/18/06 {8:40:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>

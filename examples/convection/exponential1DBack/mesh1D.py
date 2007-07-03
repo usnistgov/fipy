@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:23:48 AM} 
+ #                                last update: 3/29/07 {11:40:06 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,15 +42,19 @@
 
 """
 
-This example solves the steady-state convection-diffusion equation as
-described in `examples/diffusion/convection/exponential1D/input.py` on a 2D
-mesh with `nx = 10` and `ny = 10`:
-    
+This example solves the steady-state convection-diffusion equation as described in::
+`examples/diffusion/convection/exponential1D/input.py` but with
+
+.. raw:: latex
+
+    $ \\vec{u} = (-10,)$.
+
+..
+
     >>> L = 10.
-    >>> nx = 10
-    >>> ny = 10
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
+    >>> nx = 1000
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
@@ -67,11 +71,12 @@ mesh with `nx = 10` and `ny = 10`:
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,0.)
-
+    >>> convCoeff = (-10.,)
+    
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-    >>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
+    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
     >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
@@ -88,7 +93,7 @@ We test the solution against the analytical result:
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1
-
+   
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     viewer = fipy.viewers.make(vars = var)
@@ -96,7 +101,6 @@ We test the solution against the analytical result:
 """
 __docformat__ = 'restructuredtext'
      
-
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())

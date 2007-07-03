@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:37:16 AM} 
+ #                                last update: 3/29/07 {11:38:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,67 +42,61 @@
 
 """
 
-This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/input.py` but uses a 
-`Tri2D` mesh.
-
-Here the axes are reversed (`nx = 1`, `ny = 1000`) and
-
-.. raw:: latex
-
-    $$ \\vec{u} = (0, 10) $$
-
-.. 
+This example solves the steady-state convection-diffusion equation as
+described in `examples/diffusion/convection/exponential1D/mesh1D.py` but
+uses the `PowerLawConvectionTerm` rather than the
+`ExponentialConvectionTerm`.
 
     >>> L = 10.
-    >>> nx = 1
-    >>> ny = 1000
-    >>> from fipy.meshes.tri2D import Tri2D
-    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
-    
-    >>> valueBottom = 0.
-    >>> valueTop = 1.
+    >>> nx = 1000
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = L / nx, nx = nx)
+
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
-    ...                    value = valueBottom)
+    ...                    value = valueLeft)
 
     >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
-    ...     FixedValue(mesh.getFacesTop(), valueTop),
+    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
+    ...     FixedValue(mesh.getFacesRight(), valueRight),
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (0., 10.)
-
+    >>> convCoeff = (10.,)
+    
     >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
+    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff))
+    ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))
+    ...          boundaryConditions = boundaryConditions)
 
-The analytical solution test for this problem is given by:
 
-    >>> axis = 1
-    >>> y = mesh.getCellCenters()[axis]
+We test the solution against the analytical result:
+
+    >>> axis = 0
+    >>> x = mesh.getCellCenters()[axis]
     >>> from fipy.tools import numerix
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
+    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
-    >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
+    >>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2) 
     1
-    
+   
+If the problem is run interactively, we can view the result:
+
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
     ...     viewer = fipy.viewers.make(vars = var)
     ...     viewer.plot()
 """
+     
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
