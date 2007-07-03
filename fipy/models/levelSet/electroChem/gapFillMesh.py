@@ -59,7 +59,6 @@ class GapFillMesh(Mesh2D):
         1
         >>> print globalError < 0.02
         1
-
     """
     
     def __init__(self, cellSize = None, desiredDomainWidth = None, desiredDomainHeight = None, desiredFineRegionHeight = None, transitionRegionHeight = None):
@@ -244,7 +243,6 @@ class TrenchMesh(GapFillMesh):
         1
         >>> print globalError < 0.02
         1
-
     """
 
     def __init__(self,

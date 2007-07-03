@@ -47,21 +47,12 @@ import sys
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
-try:
-    from PyTrilinos import Epetra
-    from PyTrilinos import EpetraExt
-    from PyTrilinos import Amesos
-    from PyTrilinos import AztecOO
-    from PyTrilinos import ML
-except:
-    raise(ImportError, 
-          """Epetra, EpetraExt, Amesos, AztecOO, and ML must be available from
-             PyTrilinos to use multilevel preconditioners.""")
-    
-try:
-    from PyTrilinos import IFPACK
-except:
-    pass
+from PyTrilinos import Epetra
+from PyTrilinos import EpetraExt
+from PyTrilinos import Amesos
+from PyTrilinos import AztecOO
+from PyTrilinos import ML
+from PyTrilinos import IFPACK
 
 from fipy.tools import numerix
 

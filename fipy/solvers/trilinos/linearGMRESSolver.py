@@ -48,11 +48,7 @@ import sys
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
-try:
-    from PyTrilinos import AztecOO
-except:
-    raise(ImportError,
-          "Failed to import AztecOO.")
+from PyTrilinos import AztecOO
 
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 

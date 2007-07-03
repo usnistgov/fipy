@@ -57,6 +57,6 @@ class Preconditioner:
         """
         pass
 	
-    def _ApplyToSolver(self, solver, matrix):
+    def _applyToSolver(self, solver, matrix):
         pass
         

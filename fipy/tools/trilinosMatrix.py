@@ -49,7 +49,7 @@ from PyTrilinos import EpetraExt
 from fipy.tools.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix
 
-# This matrix class now passes all of the tests. 
+# This matrix class now passes the tests. 
 
 # Current inadequacies:
 
@@ -64,7 +64,7 @@ from fipy.tools import numerix
 # 3) put currently not guaranteed to work for non-empty matrices that do not
 # have all the target spots occupied. 
 #
-# None of these situations currently come up in FiPy; tests do not give any of 
+# None of these situations currently come up in FiPy; tests do not reveal any of 
 # the warnings that guard for those. 
 
 class _TrilinosMatrix(_SparseMatrix):
@@ -92,7 +92,15 @@ class _TrilinosMatrix(_SparseMatrix):
             if sizeHint is not None and bandwidth == 0:
                 bandwidth = (sizeHint + size - 1)/size 
             self.comm = Epetra.PyComm()
-            self.map = Epetra.Map(size, 0, self.comm)
+            if self.comm.NumProc() == 1:
+                self.parallel = False
+                self.map = Epetra.Map(size, 0, self.comm)
+            else:
+                self.parallel = True
+                self.startRow = self.comm.MyPID()*size/self.comm.NumProc()
+                self.endRow = (self.comm.MyPID()+1)*size/self.comm.NumProc()
+                self.map = Epetra.Map(size, range(self.startRow, self.endRow), 0, self.comm)
+
             self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, bandwidth*3/2)
             # Leave extra bandwidth, to handle multiple insertions into the
             # same spot. It's memory-inefficient, but it'll get cleaned up when
@@ -324,6 +332,20 @@ class _TrilinosMatrix(_SparseMatrix):
         N = self._getMatrix().NumGlobalCols()
         return (N,N)
         
+    def localizeToProcessor(self, row, col, val):
+        if(self.parallel):
+            tuples = zip(row, col, val)
+            filtered = filter(lambda x: self.startRow <= x[0] and x[0] < self.endRow , tuples)
+            if filtered is not None and len(filtered) > 0:
+                row, col, val = zip( *filtered)
+            else:
+                row, col, val = (), (), ()
+            return row, col, val
+        else:
+            return row, col, val
+            
+            
+        
     def put(self, vector, id1, id2):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
@@ -335,12 +357,15 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593      ---    
              2.500000      ---        ---    
         """
+
+        id1, id2, vector = self.localizeToProcessor(id1, id2, vector)
+        
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                 import warnings
                 warnings.warn("ReplaceGlobalValues returned error code in put", 
                                UserWarning, stacklevel=2)
-                # Possible different algorithm, to guarantee that it does not fail:
+                # Possible different algorithm, to guarantee success:
                 # 
                 # Make a new matrix, 
                 # Use addAt to put the values in it, 
@@ -431,6 +456,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
+        id1, id2, vector = self.localizeToProcessor(id1, id2, vector)
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:
@@ -448,6 +474,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 # Would incur performance costs, and since FiPy does not use 
                 # this function in such a way as would generate these errors,
                 # I have not implemented the change.
+
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:

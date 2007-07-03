@@ -53,7 +53,7 @@ class ICPreconditioner(Preconditioner):
     
     """
 
-    def _ApplyToSolver(self, solver, matrix):
+    def _applyToSolver(self, solver, matrix):
         Factory = IFPACK.Factory()
         Prec = Factory.Create("IC", matrix)
         Prec.Initialize()

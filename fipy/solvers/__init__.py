@@ -8,11 +8,11 @@ from solver import SolverConvergenceWarning, \
      IllConditionedPreconditionerWarning, \
      MaximumIterationWarning
 
-if '--trilinos' in sys.argv[1:]:
+if '--Trilinos' in sys.argv[1:]:
     from fipy.solvers.trilinos import *
-elif '--pysparse' in sys.argv[1:]:
+elif '--Pysparse' in sys.argv[1:]:
     from fipy.solvers.pysparse import *
-elif '--scipy' in sys.argv[1:]:
+elif '--Scipy' in sys.argv[1:]:
     from fipy.solvers.scipy import *
 else:
     import os
@@ -49,4 +49,4 @@ else:
                 pass
 
         if not foundSolvers:
-            raise ImportError, "Could not import any solver package." 
+            raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 

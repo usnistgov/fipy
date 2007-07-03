@@ -74,9 +74,13 @@ This example solves the steady-state convection-diffusion equation as described 
     ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
     >>> from fipy.solvers import *
+    >>> try: 
+    ...     solver = LinearCGSSolver(tolerance=1e-15, iterations=2000, precon=MultilevelSGSPreconditioner())
+    ... except:
+    ...     solver = LinearCGSSolver(tolerance=1e-15, iterations=2000)
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = solver)
 
 The analytical solution test for this problem is given by:
 

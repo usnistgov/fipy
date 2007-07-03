@@ -60,8 +60,8 @@ class MultilevelSGSPreconditioner(Preconditioner):
         """
         self.levels = levels
 
-    def _ApplyToSolver(self, solver, matrix):
-         
+    def _applyToSolver(self, solver, matrix):
+        
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
         self.Prec.SetParameterList({"output": 0, "smoother: type" : "symmetric Gauss-Seidel"})
         self.Prec.ComputePreconditioner()

@@ -47,17 +47,8 @@ import sys
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
-try: 
-    from PyTrilinos import Epetra
-except:
-    raise(ImportError, 
-          "Failed to import Epetra, required for all Trilinos solvers.")
-
-try:
-    from PyTrilinos import Amesos
-except:
-    raise(ImportError,
-          "Failed to import Amesos, required for the LU solver.")
+from PyTrilinos import Epetra
+from PyTrilinos import Amesos
 
 class LinearLUSolver(TrilinosSolver):
 

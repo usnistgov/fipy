@@ -1,3 +1,3 @@
-from jacobiPreconditioner import JacobiPreconditioner
 from multilevelSGSPreconditioner import MultilevelSGSPreconditioner
+from jacobiPreconditioner import JacobiPreconditioner
 from icPreconditioner import ICPreconditioner

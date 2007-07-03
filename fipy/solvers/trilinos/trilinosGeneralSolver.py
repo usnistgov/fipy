@@ -66,7 +66,7 @@ class TrilinosGeneralSolver(Solver):
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, \
                  solverPackage=Amesos, solverName="Klu",\
                  precon=AztecOO.AZ_Jacobi, AztecOptions={},
-                 MLOptions = {},
+                 MLOptions = {"output" : 0},
                  IFPACKPreconditionerType="ILU", IFPACKOptions={}):
         """
         :Parameters:
@@ -231,7 +231,7 @@ class TrilinosGeneralSolver(Solver):
             Solver = AztecOO.AztecOO(A, LHS, RHS)
             Solver.SetAztecOption(AztecOO.AZ_solver, self.solverName)
             if isinstance(self.preconditioner, Preconditioner):
-                self.preconditioner._Apply(solver=Solver, matrix=A)
+                self.preconditioner._applyToSolver(solver=Solver, matrix=A)
             elif self.preconditioner == "ML":
                 from PyTrilinos import ML
                 Prec = ML.MultiLevelPreconditioner(A, False)
@@ -249,7 +249,7 @@ class TrilinosGeneralSolver(Solver):
             else:
                 Solver.SetAztecOption(AztecOO.AZ_precond, self.preconditioner)
                 
-            Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_warnings)
+            Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
             for option, value in self.AztecOptions:
                 Solver.SetAztecOption(option, value)
             Solver.Iterate(self.iterations,self.tolerance) 

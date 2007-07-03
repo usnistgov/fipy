@@ -48,11 +48,7 @@ import sys
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
-try:
-    from PyTrilinos import AztecOO
-except:
-    raise(ImportError,
-          "Failed to import AztecOO.")
+from PyTrilinos import AztecOO
 
 class TrilinosAztecOOSolver(TrilinosSolver):
 
@@ -74,9 +70,17 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.preconditioner = precon
 
     def _applyTrilinosSolver(self, A, LHS, RHS):
+        print "LHS is" 
+        print LHS
+        print "RHS is"
+        print RHS
+        A.GlobalAssemble()
+        print A
         Solver = AztecOO.AztecOO(A, LHS, RHS)
         Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+        #Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
         if self.preconditioner is not None:
-            self.preconditioner._ApplyToSolver(solver=Solver, matrix=A)
+            self.preconditioner._applyToSolver(solver=Solver, matrix=A)
         Solver.Iterate(self.iterations, self.tolerance)
+        print "LHS2 is" 
+        print LHS
