@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/2/06 {1:54:41 PM}
+ #                                last update: 7/3/07 {4:52:50 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -291,7 +291,7 @@ we iterate the solution in time, plotting as we go if running interactively,
 
 The solution is compared with test data. The test data was created
 with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for
-phase field modeling. The following code opens the file `test.gz`
+phase field modeling. The following code opens the file `mesh40x1Data.gz`
 extracts the data and compares it with the `theta` variable.
 
 .. raw:: latex
@@ -301,7 +301,7 @@ extracts the data and compares it with the `theta` variable.
 ..
 
    >>> import os
-   >>> testFile = 'test.gz'
+   >>> testFile = 'mesh40x1Data.gz'
    >>> import examples.phase.impingement.mesh40x1
    >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0],
    ...                         testFile)

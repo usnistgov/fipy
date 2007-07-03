@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/12/06 {9:19:20 PM} 
+ #                                last update: 7/3/07 {4:57:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,7 @@
 
 r"""
 
-In this example a phase equation is solved in one dimension with a
+In this example a phase equation is solved in 1 dimension with a
 missorientation present. The phase equation is given by:
 
 .. raw:: latex
@@ -61,20 +61,20 @@ The initial conditions are:
 
 .. raw:: latex
 
-   \begin{align*}
-   \phi &= 1 \qquad \forall x  \\
-   \theta &= \begin{cases}
-   2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
-   -2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
-   \end{cases} \\
-   T &= 1 \qquad \forall x 
-   \end{align*}
+    \begin{align*}
+    \phi &= 1 \qquad \text{for $0 \le x \le L$} \\
+    \theta &= \begin{cases}
+    1 & \text{for $0 \le x \le L/2$} \\
+    0 & \text{for $L/2 < x \le L$}
+    \end{cases} \\
+    T &= 1 \qquad \text{for $0 \le x \le L$}
+    \end{align*}
 
 and boundary conditions
 
 .. raw:: latex
 
-   $\phi = 1$ for $x = 0$ and $x = L$.
+    $\phi = 1$ for $x = 0$ and $x = L$.
 
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
@@ -90,18 +90,18 @@ The solution is allowed to evolve for `steps = 100` time steps.
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `test.gz` extracts the
+modeling. The following code opens the file `mesh1DData.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation.modCircle
-   >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'test.gz')
+   >>> import examples.phase.missOrientation.mesh1D
+   >>> filepath = os.path.join(examples.phase.missOrientation.mesh1D.__path__[0], 'mesh1DData.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
    >>> print numerix.allclose(numerix.array(testData), phase)
    1
-
+   
 """
 __docformat__ = 'restructuredtext'
 
@@ -109,27 +109,24 @@ steps = 100
 timeStepDuration = 0.02
 L = 1.5
 nx = 100
-ny = 100
 temperature = 1.
 phaseTransientCoeff = 0.1
 epsilon = 0.008
 s = 0.01
 alpha = 0.015
+temperature = 1.
 
 dx = L / nx
-dy = L / ny
 
-from fipy.meshes.grid2D import Grid2D
-mesh = Grid2D(dx, dy, nx, ny)
+from fipy.meshes.grid1D import Grid1D
+mesh = Grid1D(dx = dx, nx = nx)
 
 from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 from fipy.variables.modularVariable import ModularVariable
-from fipy.tools import numerix
-theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
-x, y = mesh.getCellCenters()
-theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
+theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
+theta.setValue(0., where=mesh.getCellCenters()[0] > L / 2.)
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
@@ -145,7 +142,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
           + (mPhiVar > 0) * mPhiVar * phase
 
 if __name__ == '__main__':
-
+   
    import fipy.viewers
    phaseViewer = fipy.viewers.make(vars = phase)
    phaseViewer.plot()
