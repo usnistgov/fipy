@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 4/5/05 {5:55:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -43,7 +43,7 @@
 r"""
 
 This input file again solves a 1D diffusion problem as in
-``examples/diffusion/steadyState/mesh1D/input.py``,     
+``examples/diffusion/steadyState/mesh1D.py``,     
 the difference being that this transient example is solved explicitly.
 
 We create a 1D mesh:

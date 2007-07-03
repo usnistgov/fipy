@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "tri2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 5/15/06 {2:24:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -43,7 +43,7 @@
 """
 
 This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D/input.py`. The difference in
+`./examples/diffusion/steadyState/mesh1D.py`. The difference in
 this example is that the solution method is explicit. The equation
 used is the `ExplicitDiffusionEquation`. In this case many steps have
 to be taken to reach equilibrum. The `timeStepDuration` parameter
