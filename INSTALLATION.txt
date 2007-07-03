@@ -321,26 +321,13 @@ Matplotlib_.
 
 .. note::
 
-   Pygist_ can have problems finding color pallets, such as "``heat.gp``"
-   and "``work.gs``", when installed locally. A fix for this problem is to
-   copy the required pallets into the local directory. The color
-   pallets are in "``src/gist/g``" of the base Pygist_ installation.
+   Pygist_ can have problems finding color pallets, such as "``heat.gp``" and
+   "``work.gs``", when installed locally. You may need to set the
+   ``GISTPATH`` environment variable to point to the directory containing
+   these files (you may find it as "``g/``" within the directory you
+   specified for ``--home``).
 
-.. warning::
-
-   If Pygist_ is installed in a local directory a further path may
-   have to be added to the PYTHONPATH environment variable. For
-   example, if
-
-       $ python setup.py install --home=/some/directory/some/where
-
-   then both /some/directory/some/where and
-   /some/directory/some/where/lib/python/gist are required to be added to
-   the PYTHONPATH. e.g.
-
-       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python/gist
-
-.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 
 MayaVi
 ------
