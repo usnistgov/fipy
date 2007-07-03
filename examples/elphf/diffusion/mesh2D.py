@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:49:27 AM} 
+ #                                last update: 3/29/07 {11:49:10 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,52 +41,22 @@
  ##
 
 r"""
-A simple 1D example to test the setup of the multi-component diffusion
-equations.  The diffusion equation for each species in single-phase
-multicomponent system can be expressed as
+The same three-component diffusion problem as introduced in::
+`examples/elphf/diffusion/mesh1D.py` but in 2D:
 
-.. raw:: latex
-
-   \begin{equation*}
-       \label{eq:elphf:substitutional}
-       \frac{\partial C_j}{\partial t}
-       = D_{jj}\nabla^2 C_j
-         + D_{j}\nabla\cdot 
-           \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
-               \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
-   \end{equation*}
-
-
-where 
-
-.. raw:: latex
-
-   $C_j$ is the concentration of the $j^\text{th}$ species,
-   $t$ is time,
-   $D_{jj}$ is the self-diffusion coefficient of the $j^\text{th}$ species,
-   and $\sum_{\substack{i=2\\ i \neq j}}^{n-1}$ represents the summation
-   over all substitutional species in the system, excluding the solvent and 
-   the component of interest.
-
-..
-
-We solve the problem on a 1D mesh
-
-    >>> nx = 400
-    >>> dx = 0.01
+    >>> nx = 40
+    >>> dx = 1.
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
 One component in this ternary system will be designated the "solvent"
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', 
-    ...                  standardPotential = 0., barrier = 0., 
-    ...                  diffusivity = None, valence = 0, equation = None):
-    ...         CellVariable.__init__(self, mesh = mesh, value = value, 
-    ...                               name = name)
+    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
+    ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
+    ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
     ...         self.standardPotential = standardPotential
     ...         self.barrier = barrier
     ...         self.diffusivity = diffusivity
@@ -94,11 +64,9 @@ One component in this ternary system will be designated the "solvent"
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), 
-    ...                               value = self.getValue(), 
+    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
     ...                               name = self.getName(), 
-    ...                               standardPotential = 
-    ...                                   self.standardPotential, 
+    ...                               standardPotential = self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
@@ -121,6 +89,23 @@ simply by providing a `Tuple` or `list` of components
     >>> for component in substitutionals:
     ...     solvent -= component
 
+Although we are not interested in them for this problem, we create one field to represent the "phase" (1 everywhere) 
+
+    >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1.)
+    
+and one field to represent the electrostatic potential (0 everywhere)
+
+    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
+
+Althought it is constant in this problem, in later problems we will need the following 
+functions of the phase field
+
+    >>> def pPrime(xi):
+    ...     return 30. * (xi * (1 - xi))**2
+        
+    >>> def gPrime(xi):
+    ...     return 2 * xi * (1 - xi) * (1 - 2 * xi)
+    
 We separate the solution domain into two different concentration regimes
 
     >>> x = mesh.getCellCenters()[0]
@@ -144,8 +129,16 @@ We create one diffusion equation for each substitutional component
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
-    ...     convectionCoeff = CkSum.getFaceGrad() \
-    ...                       * (Cj.diffusivity / (1. - CkFaceSum))
+    ...     counterDiffusion = CkSum.getFaceGrad()
+    ...     phaseTransformation = \
+    ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
+    ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) \
+    ...             * phase.getFaceGrad()
+    ...     electromigration = Cj.valence * potential.getFaceGrad()
+    ...     convectionCoeff = counterDiffusion \
+    ...         + solvent.getHarmonicFaceValue() \
+    ...             * (phaseTransformation + electromigration)
+    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
     ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
@@ -155,10 +148,11 @@ If we are running interactively, we create a viewer to see the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(
-    ...         vars = [solvent] + substitutionals,
-    ...         limits = {'datamin': 0, 'datamax': 1})
-    ...     viewer.plot()
+    ...     viewers = [fipy.viewers.make(vars = field, 
+    ...                                  limits = {'datamin': 0, 'datamax': 1}) 
+    ...                for field in [solvent] + substitutionals]
+    ...     for viewer in viewers:
+    ...         viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
@@ -173,7 +167,8 @@ Now, we iterate the problem to equilibrium, plotting as we go
     ...                           dt = 10000,
     ...                           solver = solver)
     ...     if __name__ == '__main__':
-    ...         viewer.plot()
+    ...         for viewer in viewers:
+    ...             viewer.plot()
 
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
@@ -182,6 +177,37 @@ we verify that the concentrations have become uniform
     1
     >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
     1
+    
+We now rerun the problem with an initial condition that only has a
+concentration step in one corner.
+
+    >>> x, y = mesh.getCellCenters()
+    >>> substitutionals[0].setValue(0.3)
+    >>> substitutionals[0].setValue(0.6, where=(x > L / 2.) & (y > L / 2.))
+    >>> substitutionals[1].setValue(0.6)
+    >>> substitutionals[1].setValue(0.3, where=(x > L / 2.) & (y > L / 2.))
+    
+We iterate the problem to equilibrium again
+
+    >>> for i in range(40):
+    ...     for Cj in substitutionals:
+    ...         Cj.updateOld()
+    ...     for Cj in substitutionals:
+    ...         Cj.equation.solve(var = Cj, 
+    ...                           dt = 10000,
+    ...                           solver = solver)
+    ...     if __name__ == '__main__':
+    ...         for viewer in viewers:
+    ...             viewer.plot()
+
+and verify that the correct uniform concentrations are achieved
+
+    >>> substitutionals[0].allclose(0.375, rtol = 1e-7, atol = 1e-7).getValue()
+    1
+    >>> substitutionals[1].allclose(0.525, rtol = 1e-7, atol = 1e-7).getValue()
+    1
+
+
 """
 __docformat__ = 'restructuredtext'
 

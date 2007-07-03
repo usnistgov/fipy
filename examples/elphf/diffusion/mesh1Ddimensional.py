@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input2D.py"
+ #  FILE: "mesh1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:49:10 AM} 
+ #                                last update: 3/29/07 {11:48:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,48 +40,61 @@
  # ###################################################################
  ##
 
-r"""
-The same three-component diffusion problem as introduced in::
-`examples/elphf/diffusion/input1D.py` but in 2D:
+r""" 
+In this example, we present the same three-component diffusion problem 
+introduced in ``examples/elphf/diffusion/mesh1D.py``
+but we demonstrate FiPy's facility to use dimensional quantities.
+
+    >>> import warnings
+    >>> warnings.warn("\n\n\tSupport for physical dimensions is incomplete.\n\tIt is not possible to solve dimensional equations.\n")
+
+    >>> from fipy.tools.dimensions.physicalField import PhysicalField
+
+We solve the problem on a 40 mm long 1D mesh
 
     >>> nx = 40
-    >>> dx = 1.
+    >>> dx = PhysicalField(1.,"mm")
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(dx = dx, nx = nx)
 
-One component in this ternary system will be designated the "solvent"
+Again, one component in this ternary system will be designated the "solvent"
 
+    >>> from fipy.variables.variable import Variable
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
-    ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
-    ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
-    ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name)
-    ...         self.standardPotential = standardPotential
-    ...         self.barrier = barrier
-    ...         self.diffusivity = diffusivity
+    ...     def __init__(self, mesh, value = 0., name = '', 
+    ...                  standardPotential = 0., barrier = 0., 
+    ...                  diffusivity = None, valence = 0, equation = None):
+    ...         CellVariable.__init__(self, mesh = mesh, value = value, 
+    ...                               name = name)
+    ...         self.standardPotential = Variable(standardPotential)
+    ...         self.barrier = Variable(barrier)
+    ...         self.diffusivity = Variable(diffusivity)
     ...         self.valence = valence
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
+    ...         return self.__class__(mesh = self.getMesh(), 
+    ...                               value = self.getValue(), 
     ...                               name = self.getName(), 
-    ...                               standardPotential = self.standardPotential, 
+    ...                               standardPotential = 
+    ...                                   self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
     ...                               equation = self.equation)
 
-    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
+    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = "1 mol/m**3")
 
 We can create an arbitrary number of components,
 simply by providing a `Tuple` or `list` of components
 
     >>> substitutionals = [
-    ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = 1., 
-    ...                       standardPotential = 1., barrier = 1.),
-    ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = 1.,
-    ...                       standardPotential = 1., barrier = 1.),
+    ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = "1e-9 m**2/s", 
+    ...                       standardPotential = 1., barrier = 1., value = "0.3 mol/m**3"),
+    ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = "1e-9 m**2/s",
+    ...                       standardPotential = 1., barrier = 1., value = "0.6 mol/m**3"),
     ...     ]
 
     >>> interstitials = []
@@ -89,30 +102,13 @@ simply by providing a `Tuple` or `list` of components
     >>> for component in substitutionals:
     ...     solvent -= component
 
-Although we are not interested in them for this problem, we create one field to represent the "phase" (1 everywhere) 
-
-    >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1.)
-    
-and one field to represent the electrostatic potential (0 everywhere)
-
-    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
-
-Althought it is constant in this problem, in later problems we will need the following 
-functions of the phase field
-
-    >>> def pPrime(xi):
-    ...     return 30. * (xi * (1 - xi))**2
-        
-    >>> def gPrime(xi):
-    ...     return 2 * xi * (1 - xi) * (1 - 2 * xi)
-    
 We separate the solution domain into two different concentration regimes
 
     >>> x = mesh.getCellCenters()[0]
-    >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6, where=x > L / 2)
-    >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3, where=x > L / 2)
+    >>> substitutionals[0].setValue("0.3 mol/m**3")
+    >>> substitutionals[0].setValue("0.6 mol/m**3", where=x > L / 2)
+    >>> substitutionals[1].setValue("0.6 mol/m**3")
+    >>> substitutionals[1].setValue("0.3 mol/m**3", where=x > L / 2)
 
 We create one diffusion equation for each substitutional component
 
@@ -129,30 +125,21 @@ We create one diffusion equation for each substitutional component
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
-    ...     counterDiffusion = CkSum.getFaceGrad()
-    ...     phaseTransformation = \
-    ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
-    ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) \
-    ...             * phase.getFaceGrad()
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
-    ...     convectionCoeff = counterDiffusion \
-    ...         + solvent.getHarmonicFaceValue() \
-    ...             * (phaseTransformation + electromigration)
-    ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
+    ...     convectionCoeff = CkSum.getFaceGrad() \
+    ...                       * (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
     ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
+    ...                    + PowerLawConvectionTerm(coeff = convectionCoeff))
 
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     viewers = [fipy.viewers.make(vars = field, 
-    ...                                  limits = {'datamin': 0, 'datamax': 1}) 
-    ...                for field in [solvent] + substitutionals]
-    ...     for viewer in viewers:
-    ...         viewer.plot()
+    ...     viewer = fipy.viewers.make(
+    ...         vars = [solvent] + substitutionals,
+    ...         limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
@@ -164,52 +151,28 @@ Now, we iterate the problem to equilibrium, plotting as we go
     ...         Cj.updateOld()
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj, 
-    ...                           dt = 10000,
+    ...                           dt = "1000 s",
     ...                           solver = solver)
     ...     if __name__ == '__main__':
-    ...         for viewer in viewers:
-    ...             viewer.plot()
+    ...         viewer.plot()
 
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> print substitutionals[0].getScaled().allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> print substitutionals[1].getScaled().allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
     
-We now rerun the problem with an initial condition that only has a
-concentration step in one corner.
-
-    >>> x, y = mesh.getCellCenters()
-    >>> substitutionals[0].setValue(0.3)
-    >>> substitutionals[0].setValue(0.6, where=(x > L / 2.) & (y > L / 2.))
-    >>> substitutionals[1].setValue(0.6)
-    >>> substitutionals[1].setValue(0.3, where=(x > L / 2.) & (y > L / 2.))
+.. note::
     
-We iterate the problem to equilibrium again
-
-    >>> for i in range(40):
-    ...     for Cj in substitutionals:
-    ...         Cj.updateOld()
-    ...     for Cj in substitutionals:
-    ...         Cj.equation.solve(var = Cj, 
-    ...                           dt = 10000,
-    ...                           solver = solver)
-    ...     if __name__ == '__main__':
-    ...         for viewer in viewers:
-    ...             viewer.plot()
-
-and verify that the correct uniform concentrations are achieved
-
-    >>> substitutionals[0].allclose(0.375, rtol = 1e-7, atol = 1e-7).getValue()
-    1
-    >>> substitutionals[1].allclose(0.525, rtol = 1e-7, atol = 1e-7).getValue()
-    1
-
-
+   The absolute tolerance `atol` must be in units compatible with the value to 
+   be checked, but the relative tolerance `rtol` is dimensionless.
 """
 __docformat__ = 'restructuredtext'
+
 
 if __name__ == '__main__':
     ## from fipy.tools.profiler.profiler import Profiler

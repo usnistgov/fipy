@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input1Ddimensional.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:48:52 AM} 
+ #                                last update: 3/29/07 {11:49:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,27 +40,46 @@
  # ###################################################################
  ##
 
-r""" 
-In this example, we present the same three-component diffusion problem 
-introduced in ``examples/elphf/diffusion/input1D.py``
-but we demonstrate FiPy's facility to use dimensional quantities.
+r"""
+A simple 1D example to test the setup of the multi-component diffusion
+equations.  The diffusion equation for each species in single-phase
+multicomponent system can be expressed as
 
-    >>> import warnings
-    >>> warnings.warn("\n\n\tSupport for physical dimensions is incomplete.\n\tIt is not possible to solve dimensional equations.\n")
+.. raw:: latex
 
-    >>> from fipy.tools.dimensions.physicalField import PhysicalField
+   \begin{equation*}
+       \label{eq:elphf:substitutional}
+       \frac{\partial C_j}{\partial t}
+       = D_{jj}\nabla^2 C_j
+         + D_{j}\nabla\cdot 
+           \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+               \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+   \end{equation*}
 
-We solve the problem on a 40 mm long 1D mesh
 
-    >>> nx = 40
-    >>> dx = PhysicalField(1.,"mm")
+where 
+
+.. raw:: latex
+
+   $C_j$ is the concentration of the $j^\text{th}$ species,
+   $t$ is time,
+   $D_{jj}$ is the self-diffusion coefficient of the $j^\text{th}$ species,
+   and $\sum_{\substack{i=2\\ i \neq j}}^{n-1}$ represents the summation
+   over all substitutional species in the system, excluding the solvent and 
+   the component of interest.
+
+..
+
+We solve the problem on a 1D mesh
+
+    >>> nx = 400
+    >>> dx = 0.01
     >>> L = nx * dx
     >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
-Again, one component in this ternary system will be designated the "solvent"
+One component in this ternary system will be designated the "solvent"
 
-    >>> from fipy.variables.variable import Variable
     >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', 
@@ -68,9 +87,9 @@ Again, one component in this ternary system will be designated the "solvent"
     ...                  diffusivity = None, valence = 0, equation = None):
     ...         CellVariable.__init__(self, mesh = mesh, value = value, 
     ...                               name = name)
-    ...         self.standardPotential = Variable(standardPotential)
-    ...         self.barrier = Variable(barrier)
-    ...         self.diffusivity = Variable(diffusivity)
+    ...         self.standardPotential = standardPotential
+    ...         self.barrier = barrier
+    ...         self.diffusivity = diffusivity
     ...         self.valence = valence
     ...         self.equation = equation
     ...
@@ -85,16 +104,16 @@ Again, one component in this ternary system will be designated the "solvent"
     ...                               valence = self.valence,
     ...                               equation = self.equation)
 
-    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = "1 mol/m**3")
+    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
 
 We can create an arbitrary number of components,
 simply by providing a `Tuple` or `list` of components
 
     >>> substitutionals = [
-    ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = "1e-9 m**2/s", 
-    ...                       standardPotential = 1., barrier = 1., value = "0.3 mol/m**3"),
-    ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = "1e-9 m**2/s",
-    ...                       standardPotential = 1., barrier = 1., value = "0.6 mol/m**3"),
+    ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = 1., 
+    ...                       standardPotential = 1., barrier = 1.),
+    ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = 1.,
+    ...                       standardPotential = 1., barrier = 1.),
     ...     ]
 
     >>> interstitials = []
@@ -105,10 +124,10 @@ simply by providing a `Tuple` or `list` of components
 We separate the solution domain into two different concentration regimes
 
     >>> x = mesh.getCellCenters()[0]
-    >>> substitutionals[0].setValue("0.3 mol/m**3")
-    >>> substitutionals[0].setValue("0.6 mol/m**3", where=x > L / 2)
-    >>> substitutionals[1].setValue("0.6 mol/m**3")
-    >>> substitutionals[1].setValue("0.3 mol/m**3", where=x > L / 2)
+    >>> substitutionals[0].setValue(0.3)
+    >>> substitutionals[0].setValue(0.6, where=x > L / 2)
+    >>> substitutionals[1].setValue(0.6)
+    >>> substitutionals[1].setValue(0.3, where=x > L / 2)
 
 We create one diffusion equation for each substitutional component
 
@@ -130,7 +149,7 @@ We create one diffusion equation for each substitutional component
     ...
     ...     Cj.equation = (TransientTerm()
     ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...                    + PowerLawConvectionTerm(coeff = convectionCoeff))
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 If we are running interactively, we create a viewer to see the results 
 
@@ -151,7 +170,7 @@ Now, we iterate the problem to equilibrium, plotting as we go
     ...         Cj.updateOld()
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj, 
-    ...                           dt = "1000 s",
+    ...                           dt = 10000,
     ...                           solver = solver)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
@@ -159,20 +178,12 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> print substitutionals[0].getScaled().allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
     1
-    >>> print substitutionals[1].getScaled().allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
     1
-    
-.. note::
-    
-   The absolute tolerance `atol` must be in units compatible with the value to 
-   be checked, but the relative tolerance `rtol` is dimensionless.
 """
 __docformat__ = 'restructuredtext'
-
 
 if __name__ == '__main__':
     ## from fipy.tools.profiler.profiler import Profiler
