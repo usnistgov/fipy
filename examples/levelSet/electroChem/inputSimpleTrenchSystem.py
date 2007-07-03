@@ -238,7 +238,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     distanceVar.setValue(1, where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
@@ -357,7 +357,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         bulkCatalystVar.updateOld()
 
         distanceVar.extendVariable(extensionVelocityVariable)
-        dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt) 
         surfactantEquation.solve(catalystVar, dt = dt)

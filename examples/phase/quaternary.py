@@ -66,7 +66,7 @@ system of multiple components. Once again, we'll focus on 1D.
 ..
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> phase = CellVariable(mesh=mesh, name='phase', value=1, hasOld=1)
+    >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
 .. raw:: latex
 
@@ -429,7 +429,7 @@ We start with a sharp phase boundary
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L / 2)
 

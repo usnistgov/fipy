@@ -144,7 +144,7 @@ The domain is seeded with a circular solidified region with parameters
 `seedCenter` and `radius` representing the center and radius of the
 seed.
    
-    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> x, y = mesh.getCellCenters()
     >>> phase.setValue(1., where=((x - seedCenter[0])**2 
     ...                           + (y - seedCenter[1])**2) < radius**2)
 
@@ -203,11 +203,9 @@ is created from the `phase` and `temperature` variables.
     given by $(\xi_x, \xi_y) = (-\phi_y, \phi_x)$,
     is constructed by first obtaining $\nabla \phi$
     
-using `getFaceGrad()`. The axes are then swapped using
-`_take((1,0))` and finally the vector is multiplied by `(-1, 1)` to
-negate the x component.
+using `getFaceGrad()`. The axes are rotated ninety degrees.
 
-    >>> dxi = phase.getFaceGrad()._take((1, 0), axis = 1) * (-1, 1)
+    >>> dxi = phase.getFaceGrad().dot(((0,-1),(1,0)))
     >>> anisotropySource = (A * dxi).getDivergence()
 
 The phase equation can now be constructed.
@@ -250,10 +248,10 @@ the phase and temperature fields
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     phaseViewer = make(vars=phase)
-    ...     temperatureViewer = make(vars=temperature,
-    ...                              limits={'datamin': -0.5, 'datamax': 0.5})
+    ...     from fipy import viewers
+    ...     phaseViewer = viewers.make(vars=phase)
+    ...     temperatureViewer = viewers.make(vars=temperature,
+    ...                                      limits={'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 
@@ -287,9 +285,7 @@ the data and compares it with the `phase` variable.
    >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'test.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
-   >>> from fipy.tools.numerix import allclose
-   >>> from fipy.tools import numerix
-   >>> print allclose(phase, numerix.array(testData))
+   >>> print phase.allclose(testData)
    1
    
 """

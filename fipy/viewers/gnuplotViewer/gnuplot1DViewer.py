@@ -87,8 +87,8 @@ class Gnuplot1DViewer(GnuplotViewer):
 
         import Gnuplot
         for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[:,0]),
-                                                var[:],
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[0]),
+                                                var.getValue(),
                                                 title=var.getName(),
                                                 with='lines'),)
 

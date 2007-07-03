@@ -128,7 +128,7 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 from fipy.variables.modularVariable import ModularVariable
 from fipy.tools import numerix
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
-x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+x, y = mesh.getCellCenters()
 theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm

@@ -89,7 +89,7 @@ Construct a `distanceVariable` object.
    ...                        mesh=mesh,
    ...                        value=-1,
    ...                        hasOld=1)
-   >>> x = mesh.getCellCenters()[...,0]
+   >>> x = mesh.getCellCenters()[0]
    >>> var.setValue(1, where=x > dx * nx / 2)
  
 Once the initial positive and negative regions have been initialized

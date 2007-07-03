@@ -75,13 +75,8 @@ The result can be tested with the following code:
    >>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
    >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
    >>> coverage = surfactantVariable * mesh.getCellVolumes() / areas
-   >>> error = 0.
-   >>> size = 0
-   >>> for i in range(len(coverage)):
-   ...     if coverage[i] > 1e-3:
-   ...         error += (coverage[i] / answer - 1.)**2
-   ...         size += 1            
-   >>> print numerix.sqrt(error / size)
+   >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
    0.00813776069241
 
 """
@@ -116,7 +111,8 @@ distanceVariable = DistanceVariable(
     hasOld = 1
     )
 
-cellRadius = numerix.sqrt((mesh.getCellCenters()[:,0] - L / 2.)**2 + (mesh.getCellCenters()[:,1] - L / 2.)**2)
+x, y = mesh.getCellCenters()
+cellRadius = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2)
 distanceVariable.setValue(cellRadius - initialRadius)
 
 initialSurfactantValue =  1.

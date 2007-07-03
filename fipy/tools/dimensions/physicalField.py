@@ -111,7 +111,7 @@ from NumberDict import _NumberDict
 # Class definitions
 
 
-class PhysicalField:
+class PhysicalField(object):
     """
     Physical field or quantity with units
     """
@@ -196,8 +196,13 @@ class PhysicalField:
             value = [PhysicalField(item,unit) for item in value]
             if unit is None:
                 unit = value[0].unit
-            value = [item.inUnitsOf(unit) / PhysicalField(1,unit) for item in value]
-            value = numerix.array(value)
+            normalized = []
+            for item in value:
+                if item.unit == unit:
+                    normalized += [item.value]
+                else:
+                    normalized += [item.inUnitsOf(unit).value]
+            value = numerix.array(normalized)
             
         if unit is None:
             unit = _unity
@@ -1118,7 +1123,7 @@ class PhysicalField:
         
             >>> v = PhysicalField(((5.,6.),(7.,8.)), "m")
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v)
-            [ 17.  53.] m**2
+            [ 26.  44.] m**2
              
         """
         if not isinstance(other,PhysicalField):
@@ -1175,6 +1180,8 @@ class PhysicalField:
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
+    shape = property(fget=getShape, doc="Tuple of array dimensions.")
+
     def reshape(self, shape):
         """
         Changes the shape of `self` to that specified in `shape`

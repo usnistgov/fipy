@@ -81,7 +81,7 @@ This example solves the steady-state convection-diffusion equation as described 
 The analytical solution test for this problem is given by:
 
     >>> axis = 0
-    >>> x = mesh.getCellCenters()[:,axis]
+    >>> x = mesh.getCellCenters()[axis]
     >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)

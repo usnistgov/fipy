@@ -47,3 +47,76 @@ def _runInline(code_in, converters=None, verbose=0, **args):
                  force=0,
                  verbose = 0 or verbose,
                  extra_compile_args =['-O3'])
+
+                 
+def _runIterateElementInline(code_in, converters=None, verbose=0, **args):
+    loops = """
+int i;
+for(i=0; i < ni; i++) {
+
+"""
+
+    enders = ""
+    
+    shape = args['shape']
+    rank = len(shape) - 1
+    for dim in range(rank):
+        loops += "\t" * (dim + 1) + "for (vec[%(dim)d]=0; vec[%(dim)d] < shape[%(dim)d]; vec[%(dim)d]++) {\n" % {'dim': dim}
+        enders += "\n" + "\t" * (rank - dim) + "}"
+        
+    enders += """
+
+}
+"""
+        
+    code = """
+    #define ITEM(arr,i,vec) (arr[arrayIndex(arr##_array, i, vec)])
+                    
+    int vec[%(rank)d];
+    %(loops)s%(indent)s%(code)s%(enders)s
+                    
+    #undef ITEM
+    """ % {
+        'rank': rank, 
+        'loops': loops, 
+        'indent': "\t" * rank, 
+        'code': code_in, 
+        'enders': enders
+    }
+
+    from scipy import weave
+
+    for key in args.keys():
+        if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
+            args[key] = args[key].astype('B')
+            
+    weave.inline(code,
+                 args.keys(),
+                 local_dict=args,
+                 type_converters=None, #weave.converters.blitz,
+                 compiler = 'gcc',
+                 force=0,
+                 verbose = 0 or verbose,
+                 extra_compile_args =['-O3'],
+                 support_code="""
+                 
+// returns the index (accounting for strides) of the tensor element vec 
+// in position i of array
+//
+// array holds a tensor at each position i
+// vec identifies a particular element in that tensor
+static int arrayIndex(PyArrayObject* array, int i, int vec[])
+{
+    int index = array->strides[array->nd-1] * i;
+    
+    if (vec != NULL) {
+        int j;
+        for (j=0; j < array->nd - 1; j++) {
+            index += array->strides[j] * vec[j];
+        }
+    }
+    
+    return index / array->descr->elsize;
+}
+                 """)
+

@@ -90,7 +90,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 The analytical solution test for this problem is given by:
 
     >>> axis = 1
-    >>> y = mesh.getCellCenters()[:,axis]
+    >>> y = mesh.getCellCenters()[axis]
     >>> from fipy.tools import numerix
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)

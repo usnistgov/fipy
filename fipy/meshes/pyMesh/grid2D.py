@@ -312,4 +312,4 @@ class Grid2D(Mesh):
             return Mesh._getFaceToCellDistances(self) * self.getScale()
 
     def _getMeshSpacing(self):
-	return PhysicalField(value = (self.dx * self.getScale(),self.dy * self.getScale()))
+	return PhysicalField(value = ((self.dx * self.getScale(),),(self.dy * self.getScale(),)))

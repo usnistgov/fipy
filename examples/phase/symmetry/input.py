@@ -80,7 +80,7 @@ We create a square domain
   
 First set the values as given in the above equation:
 
-    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> x, y = mesh.getCellCenters()
     >>> var.setValue(x * y)
 
     >>> if __name__ == '__main__':
@@ -101,9 +101,9 @@ Next, extract the corresponding cells from each region in the correct order:
 
     >>> for cell in bottomLeftCells:
     ...     x, y = cell.getCenter()
-    ...     bottomRightCells += (mesh.getNearestCell((L - x, y)),)            
-    ...     topRightCells += (mesh.getNearestCell((L - x , L - y)),)
-    ...     topLeftCells += (mesh.getNearestCell((x , L - y)),)
+    ...     bottomRightCells += (mesh.getNearestCell(((L - x,), (y,))),)            
+    ...     topRightCells += (mesh.getNearestCell(((L - x,), (L - y,))),)
+    ...     topLeftCells += (mesh.getNearestCell(((x,), (L - y,))),)
 
 The method `mesh.getNearestCell((x, y))` finds the nearest cell to
 the given coordinate. The cells are then set to the symmetry value:
@@ -132,9 +132,9 @@ The following code tests the results with a different algorithm:
     ...         x = dx * (i + 0.5)
     ...         y = dx * (j + 0.5)
     ...         testResult[i, j] = x * y
-    ...         bottomRight[i,j] = var((L - x, y))
-    ...         topLeft[i,j] = var((x, L - y))
-    ...         topRight[i,j] = var((L - x, L - y))
+    ...         bottomRight[i,j] = var(((L - x,), (y,)))
+    ...         topLeft[i,j] = var(((x,), (L - y,)))
+    ...         topRight[i,j] = var(((L - x,), (L - y,)))
     >>> numerix.allclose(testResult, bottomRight, atol = 1e-10)
     1
     >>> numerix.allclose(testResult,topLeft, atol = 1e-10)

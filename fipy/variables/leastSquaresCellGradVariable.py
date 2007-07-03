@@ -35,15 +35,15 @@
  # ###################################################################
  ##
  
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
-class _LeastSquaresCellGradVariable(VectorCellVariable):
+class _LeastSquaresCellGradVariable(CellVariable):
     """
     Look at CellVariable.getLeastSquarseGrad() for documentation
-    """
+     """
     def __init__(self, var, name = ''):
-        VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
+        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
         self.var = self._requires(var)
 
     def _getNeighborValue(self, ):
@@ -54,35 +54,35 @@ class _LeastSquaresCellGradVariable(VectorCellVariable):
         cellNormals = self.mesh._getCellNormals()
         neighborValue = self._getNeighborValue()
         value = numerix.array(self.var)
-        cellDistanceNormals = cellToCellDistances[...,numerix.newaxis] * cellNormals
+        cellDistanceNormals = cellToCellDistances * cellNormals
 
         N = self.mesh.getNumberOfCells()
         M = self.mesh._getMaxFacesPerCell()
         D = self.mesh.getDim()
 
-        mat = numerix.zeros((N, M, D, D), 'd')
+        mat = numerix.zeros((D, D, M, N), 'd')
 
         ## good god! numpy.outer should have an axis argument!!!
         for i in range(D):
             for j in range(D):
-                mat[:,:,i,j] = cellDistanceNormals[:, :, i] * cellDistanceNormals[:, :, j]
+                mat[i,j] = cellDistanceNormals[i] * cellDistanceNormals[j]
 
-        mat = numerix.sum(mat, axis=1)
+        mat = numerix.sum(mat, axis=2)
 
-        vec = numerix.sum((neighborValue - value[...,numerix.newaxis])[...,numerix.newaxis] * cellDistanceNormals, axis=1)
+        vec = numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1)
 
         if D == 1:
-            vec[:,0] = vec[:,0] / mat[:, 0, 0]
+            vec[0] = vec[0] / mat[0, 0]
         elif D == 2:
-            divisor = mat[:,0,0] * mat[:,1,1] - mat[:,0,1] * mat[:,1,0]
-            gradx = (vec[:,0] * mat[:,1,1] - vec[:,1] * mat[:,0,1]) / divisor
-            grady = (vec[:,1] * mat[:,0,0] - vec[:,0] * mat[:,1,0]) / divisor
-            vec[:,0] = gradx
-            vec[:,1] = grady
+            divisor = mat[0,0] * mat[1,1] - mat[0,1] * mat[1,0]
+            gradx = (vec[0] * mat[1,1] - vec[1] * mat[1,0]) / divisor
+            grady = (vec[1] * mat[0,0] - vec[0] * mat[0,1]) / divisor
+            vec[0] = gradx
+            vec[1] = grady
         else:
             ## very stuppy! numerix.linalg.solve should have an axis argument!!!        
             for i in range(N):
-                vec[i] = numerix.linalg.solve(mat[i],vec[i])
+                vec[...,i] = numerix.linalg.solve(mat[...,i],vec[...,i])
 
         return vec
 

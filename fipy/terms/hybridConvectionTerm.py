@@ -64,7 +64,7 @@ class HybridConvectionTerm(ConvectionTerm):
             
         def _calcValue(self):
             eps = 1e-3
-            P  = self.P[:]
+            P  = self.P
 
             alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
             alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)

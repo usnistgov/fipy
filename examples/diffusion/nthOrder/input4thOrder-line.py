@@ -49,7 +49,7 @@
    having a high matrix condition number. Better solvers such as
    multigrid solvers are required.
 
-   >>> print var.allclose(mesh.getCellCenters()[:,0], atol = 10.)
+   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10.)
    1
 
 """

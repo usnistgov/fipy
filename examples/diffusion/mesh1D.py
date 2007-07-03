@@ -86,7 +86,7 @@ parameter `dx` refers to the grid spacing (set to unity here).
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name="solution variable", 
     ...                    mesh=mesh,
-    ...                    value=0)
+    ...                    value=0.)
 
 We'll let
 
@@ -193,7 +193,7 @@ diffusion problem is given by
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
     >>> from fipy.tools.numerix import sqrt
 
@@ -479,7 +479,7 @@ coefficient on the mesh faces
 
     >>> from fipy.variables.faceVariable import FaceVariable
     >>> D = FaceVariable(mesh=mesh, value=1.0)
-    >>> x = mesh.getFaceCenters()[...,0]
+    >>> x = mesh.getFaceCenters()[0]
     >>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
@@ -521,13 +521,10 @@ The analytical solution is simply
    x + 18 L / 4 & \text{for \( 3 L / 4 \le x < L \),}
    \end{cases} \]
    or
-   \IndexModule{numerix}
-   \IndexFunction{where}
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
-    >>> from fipy.tools.numerix import where
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(x)
     >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
     ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
@@ -572,8 +569,8 @@ solved and `phi[1]` through `phi[4]` will display the result of taking the
 corresponding number of sweeps (`phi[1]` being equivalent to not sweeping
 at all).
 
-    >>> valueLeft = 1
-    >>> valueRight = 0
+    >>> valueLeft = 1.
+    >>> valueRight = 0.
     >>> phi = [
     ...     CellVariable(name="solution variable",
     ...                  mesh=mesh,
@@ -603,7 +600,7 @@ we would simply write
    
 as
 
-    >>> D0 = 1
+    >>> D0 = 1.
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 .. note::
@@ -627,7 +624,7 @@ diffusivity cases
    
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(1. - sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the

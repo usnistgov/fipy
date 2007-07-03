@@ -58,17 +58,9 @@ class _AddOverFacesVariable(CellVariable):
     def _calcValuePy(self):
         ids = self.mesh._getCellFaceIDs()
         
-        contributions = numerix.take(self.faceVariable[:], ids.flat)
+        contributions = numerix.take(self.faceVariable, ids)
 
-        NCells = self.mesh.getNumberOfCells()
-
-        contributions = numerix.reshape(contributions,(NCells,-1))
-        
-        orientations = numerix.reshape(self.mesh._getCellFaceOrientations(),(NCells,-1))
-
-##         orientations = Numeric.array(orientations)
-        
-        return numerix.sum(contributions * orientations,1) / self.mesh.getCellVolumes()
+        return numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0) / self.mesh.getCellVolumes()
         
     def _calcValueIn(self):
 
@@ -86,7 +78,7 @@ class _AddOverFacesVariable(CellVariable):
           value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              value[i] += orientations[i * numberOfCellFaces + j] * faceVariable[ids[i * numberOfCellFaces + j]];
+              value[i] += orientations[i + j * numberOfCells] * faceVariable[ids[i + j * numberOfCells]];
             }
             value[i] = value[i] / cellVolume[i];
           }

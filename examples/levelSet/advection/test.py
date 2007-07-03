@@ -48,7 +48,6 @@ def _suite():
             'mesh1D.input',
             'circle.input',
             'trench.input',
-##            'circle.adaptiveMeshInput',
 ##            'circle.altTestInput',
         ), base = __name__)
     

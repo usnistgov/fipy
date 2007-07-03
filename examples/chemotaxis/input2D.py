@@ -146,8 +146,7 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    x = mesh.getCellCenters()[:,0]
-    y = mesh.getCellCenters()[:,1]
+    x, y = mesh.getCellCenters()
 
     from fipy.tools.numerix import sqrt
     RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)

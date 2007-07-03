@@ -96,7 +96,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 The analytical solution test for this problem is given by:
 
     >>> axis = 1
-    >>> y = mesh.getCellCenters()[:,axis]
+    >>> y = mesh.getCellCenters()[axis]
     >>> AA = -sourceCoeff * y / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
     >>> from fipy.tools.numerix import exp

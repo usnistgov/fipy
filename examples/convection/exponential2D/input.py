@@ -81,7 +81,7 @@ mesh with `nx = 10` and `ny = 10`:
 We test the solution against the analytical result:
 
     >>> axis = 0
-    >>> x = mesh.getCellCenters()[:,axis]
+    >>> x = mesh.getCellCenters()[axis]
     >>> from fipy.tools import numerix
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)

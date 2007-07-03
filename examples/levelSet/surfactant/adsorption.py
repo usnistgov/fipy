@@ -107,9 +107,9 @@ Compare the analaytical and numerical results:
 
    >>> theta = surfactantVar.getInterfaceVar()[1]
 
-   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)
+   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
    1
-   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)
+   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
    1
 
 
@@ -143,7 +143,7 @@ mesh = Grid1D(nx = nx, dx = dx)
 ## build the distance variable
 
 
-value = mesh.getCellCenters()[:,0] - 1.499 * dx
+value = mesh.getCellCenters()[0] - 1.499 * dx
 ##distanceVar = DistanceVariable(mesh = mesh, value = dx * (numerix.arange(nx) - 0.999))
 distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
@@ -170,7 +170,7 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 
 ## Build the analytical solutions,
 
-x = mesh.getCellCenters()[1:,0] - dx
+x = mesh.getCellCenters()[0,1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)

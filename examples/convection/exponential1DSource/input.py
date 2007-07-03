@@ -143,7 +143,7 @@ and test the solution against the analytical result:
 ..
 
     >>> axis = 0
-    >>> x = mesh.getCellCenters()[:,axis]
+    >>> x = mesh.getCellCenters()[axis]
     >>> AA = -sourceCoeff * x / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
     >>> from fipy.tools.numerix import exp

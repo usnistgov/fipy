@@ -144,11 +144,10 @@ Build the mesh:
    \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexFunction{exp}
-   \IndexFunction{max}
 
 ..
 
-   >>> from fipy.tools.numerix import sqrt, exp, max
+   >>> from fipy.tools.numerix import sqrt, exp
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
    ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
@@ -211,7 +210,7 @@ region will be negative.
    >>> trenchWidth = trenchDepth / aspectRatio
    >>> sideWidth = (trenchSpacing - trenchWidth) / 2
    
-   >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+   >>> x, y = mesh.getCellCenters()
    >>> distanceVar.setValue(1, where=(y > trenchHeight) 
    ...                               | ((y > bottomHeight) 
    ...                                  & (x < xCells * cellSize - sideWidth)))
@@ -501,7 +500,7 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     metalVar.updateOld()
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
-   ...     dt = cflNumber * cellSize / max(extensionVelocityVariable)
+   ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
    ...     advectionEquation.solve(distanceVar, dt=dt)
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,

@@ -126,7 +126,7 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 from fipy.variables.modularVariable import ModularVariable
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
-theta.setValue(0., where=mesh.getCellCenters()[...,0] > L / 2.)
+theta.setValue(0., where=mesh.getCellCenters()[0] > L / 2.)
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)

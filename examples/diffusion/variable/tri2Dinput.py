@@ -48,7 +48,7 @@ number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-   >>> x = mesh.getCellCenters()[:,0]
+   >>> x = mesh.getCellCenters()[0]
    >>> from fipy.tools import numerix
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)
@@ -86,7 +86,7 @@ var = CellVariable(
 from fipy.variables.faceVariable import FaceVariable
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 
-x = mesh.getFaceCenters()[...,0]
+x = mesh.getFaceCenters()[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),

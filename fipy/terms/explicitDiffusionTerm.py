@@ -60,4 +60,4 @@ class ExplicitDiffusionTerm(DiffusionTerm):
     
     def _buildMatrix(self, var, boundaryConditions = (), dt = 1., equation=None):
         L, b = DiffusionTerm._buildMatrix(self, var.getOld(), boundaryConditions = boundaryConditions, dt = dt, equation=equation)
-        return (0, b - L * var[:])
+        return (0, b - L * var.getValue())

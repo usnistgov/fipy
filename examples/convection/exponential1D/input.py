@@ -152,7 +152,7 @@ and test the solution against the analytical result
 ..
 
     >>> axis = 0
-    >>> x = mesh.getCellCenters()[:,axis]
+    >>> x = mesh.getCellCenters()[axis]
     >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)

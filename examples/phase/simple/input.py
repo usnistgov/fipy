@@ -121,7 +121,7 @@ and set a step-function initial condition
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L/2)
     
@@ -179,7 +179,7 @@ The analytical solution for this steady-state phase field problem, in an infinit
 
 ..
 
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> from fipy.tools.numerix import tanh, sqrt
     >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
@@ -456,7 +456,7 @@ and thus must redeclare |phase| on the new mesh
     >>> phase = CellVariable(name="phase",
     ...                      mesh=mesh,
     ...                      hasOld=1)
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L/2)
 
@@ -591,7 +591,7 @@ thickness
     ...         V, d = p
     ...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
     ...     from scipy.optimize import leastsq
-    ...     x =  mesh.getCellCenters()[...,0]
+    ...     x =  mesh.getCellCenters()[0]
     ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
     ...                                   args=(phase(), x, elapsed))
     ... except ImportError:

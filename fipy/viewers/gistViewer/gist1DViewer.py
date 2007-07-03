@@ -102,7 +102,7 @@ class Gist1DViewer(GistViewer):
         arrays = []
         
         for var in self.vars:
-            arrays.append((numerix.array(var), numerix.array(var.getMesh().getCellCenters()[:,0])))
+            arrays.append((numerix.array(var), numerix.array(var.getMesh().getCellCenters()[0])))
             
         return arrays
         

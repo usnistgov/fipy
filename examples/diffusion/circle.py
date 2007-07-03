@@ -125,7 +125,7 @@ Using this mesh, we can construct a solution variable
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
-    ...                    value = 0)
+    ...                    value = 0.)
 
 We can now create a viewer to see the mesh (only the `Gist2DViewer` is
 capable of displaying variables on this sort of irregular mesh)
@@ -179,7 +179,7 @@ faces. These are used as the boundary condition fixed values.
 ..
 
     >>> from fipy.tools import numerix
-    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[...,0],
+    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[0],
     ...                                mesh.getExteriorFaces())
 
 .. raw:: latex
@@ -234,7 +234,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
-    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> x, y = mesh.getCellCenters()
     >>> t = timeStepDuration * steps
 
     >>> phiAnalytical = CellVariable(name="analytical value",
@@ -277,7 +277,7 @@ diffusion problem.
                                                     
 The values at the elements should be equal to their `x` coordinate
 
-    >>> print phi.allclose(mesh.getCellCenters()[...,0], atol = 0.02)
+    >>> print phi.allclose(x, atol = 0.02)
     1
 
 Display the results if run as a script.

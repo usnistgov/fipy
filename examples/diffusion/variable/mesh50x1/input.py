@@ -51,7 +51,7 @@ with the number of cells set to `nx = 50`.
 A simple analytical answer can be used to test the result:
 
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-   >>> x = mesh.getCellCenters()[:,0]
+   >>> x = mesh.getCellCenters()[0]
    >>> values = x + 18. * L / 4.
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
    >>> values = numerix.where(x < L / 4., x, values)
@@ -86,7 +86,7 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-x = mesh.getFaceCenters()[:,0]
+x = mesh.getFaceCenters()[0]
 middleFaces = numerix.logical_or(x < L / 4.,x >= 3. * L / 4.)
 diffCoeff = numerix.where(middleFaces, 1., 0.1)
 

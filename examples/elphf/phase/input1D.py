@@ -165,7 +165,7 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
 We separate the phase field into electrode and electrolyte regimes
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0., where=mesh.getCellCenters()[...,0] > L / 2)
+    >>> phase.setValue(0., where=mesh.getCellCenters()[0] > L / 2)
 
 Even though we are solving the steady-state problem
 
@@ -204,7 +204,7 @@ with an interfacial thickness
    
 We verify that the correct equilibrium solution is attained
 
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     
     >>> from fipy.tools import numerix
     >>> d = numerix.sqrt(phase.gradientEnergy / (2 * solvent.barrier))

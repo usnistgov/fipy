@@ -71,7 +71,7 @@ periodic wave wraps around the mesh.
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
 should do better than this.
     
-    >>> numerix.max(var1) > 0.77
+    >>> print var1.max() > 0.77
     1
     
 """
@@ -134,6 +134,6 @@ if __name__ == '__main__':
     newVar2[:nx / 4] = var2[nx / 4:]
     newVar2[nx / 4:] = var2[:nx / 4]
 
-    print 'maximum absolute difference between periodic and non-periodic grids:',numerix.max(abs(var1[nx / 4:3 * nx / 4] - newVar2))
+    print 'maximum absolute difference between periodic and non-periodic grids:',abs(var1[nx / 4:3 * nx / 4] - newVar2).max()
 
     raw_input('finished')
