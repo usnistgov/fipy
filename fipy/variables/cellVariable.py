@@ -84,7 +84,7 @@ class CellVariable(_MeshVariable):
             >>> c = -a
             >>> b = c.getOld() + 3
             >>> print b
-            [ 2.]
+            [2]
             >>> b.getTypecode()
             'l'
             
@@ -93,21 +93,21 @@ class CellVariable(_MeshVariable):
             >>> a.setValue(3)
             >>> b = c.getOld() + 3
             >>> print b
-            [ 0.]
+            [0]
             
         replacing with multiple copies causes the reference counting problem
         
             >>> a.setValue(3)
             >>> b = (c + c).getOld() + 3
             >>> print b
-            [-3.]
+            [-3]
             
         the order matters
         
             >>> b = (c + c).getOld() + 3
             >>> a.setValue(2)
             >>> print b
-            [-1.]
+            [-1]
         """
         baseClass = _MeshVariable._OperatorVariableClass(self, 
                                                          baseClass=baseClass)
@@ -356,21 +356,21 @@ class CellVariable(_MeshVariable):
             >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
             >>> v = var1 * var2
             >>> print v
-            [  6.  12.]
+            [ 6 12]
             >>> var1.setValue((3,2))
             >>> print v
-            [ 9.  8.]
+            [9 8]
             >>> print v.getOld()
-            [  6.  12.]
+            [ 6 12]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
             >>> v1 = var1 * 3
             >>> print v1
-            [ 9.  6.]
+            [9 6]
             >>> print v1.getOld()
-            [ 6.  9.]
+            [6 9]
             
         """
         if self.old is None:

@@ -96,17 +96,17 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     This is the test case,
 
-       >>> from fipy.tools import numerix
        >>> from fipy.meshes.grid1D import Grid1D
        >>> nx = 11
        >>> dx = 1.
        >>> mesh = Grid1D(nx = nx, dx = dx)
+       >>> x, = mesh.getCellCenters()
        >>> from fipy.variables.cellVariable import CellVariable
-       >>> ionVar = CellVariable(mesh = mesh, value = 1)
+       >>> ionVar = CellVariable(mesh = mesh, value = 1.)
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
        ...     import DistanceVariable
        >>> disVar = DistanceVariable(mesh = mesh, 
-       ...                           value = numerix.arange(11) - 0.99,
+       ...                           value = (x - 0.5) - 0.99,
        ...                           hasOld = 1)
 
        >>> v = 1.
@@ -124,10 +124,9 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
-       >>> answer = gradient * (mesh.getCellCenters()[0] - L - dx * 3 / 2) \
-       ...          + cinf
+       >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
        >>> answer[0] = 1
-       >>> numerix.allclose(answer, numerix.array(ionVar))
+       >>> print ionVar.allclose(answer)
        1
 
     :Parameters:

@@ -196,8 +196,13 @@ class PhysicalField(object):
             value = [PhysicalField(item,unit) for item in value]
             if unit is None:
                 unit = value[0].unit
-            value = [item.inUnitsOf(unit) / PhysicalField(1,unit) for item in value]
-            value = numerix.array(value)
+            normalized = []
+            for item in value:
+                if item.unit == unit:
+                    normalized += [item.value]
+                else:
+                    normalized += [item.inUnitsOf(unit).value]
+            value = numerix.array(normalized)
             
         if unit is None:
             unit = _unity

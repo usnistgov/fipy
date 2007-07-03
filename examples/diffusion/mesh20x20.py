@@ -68,7 +68,7 @@ We create a `CellVariable` and initialize it to zero:
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
-    ...                    value = 0)
+    ...                    value = 0.)
 
 and then create a diffusion equation.  This is solved by default with an
 iterative conjugate gradient solver.  

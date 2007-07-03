@@ -86,7 +86,7 @@ parameter `dx` refers to the grid spacing (set to unity here).
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name="solution variable", 
     ...                    mesh=mesh,
-    ...                    value=0)
+    ...                    value=0.)
 
 We'll let
 
@@ -569,8 +569,8 @@ solved and `phi[1]` through `phi[4]` will display the result of taking the
 corresponding number of sweeps (`phi[1]` being equivalent to not sweeping
 at all).
 
-    >>> valueLeft = 1
-    >>> valueRight = 0
+    >>> valueLeft = 1.
+    >>> valueRight = 0.
     >>> phi = [
     ...     CellVariable(name="solution variable",
     ...                  mesh=mesh,
@@ -600,7 +600,7 @@ we would simply write
    
 as
 
-    >>> D0 = 1
+    >>> D0 = 1.
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 .. note::

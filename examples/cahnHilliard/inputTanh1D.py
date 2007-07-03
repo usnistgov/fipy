@@ -96,7 +96,7 @@ and create the solution variable
     >>> var = CellVariable(
     ...     name="phase field",
     ...     mesh=mesh,
-    ...     value=1)
+    ...     value=1.)
 
 The boundary conditions for this problem are
 

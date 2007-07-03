@@ -125,7 +125,7 @@ Using this mesh, we can construct a solution variable
     >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
-    ...                    value = 0)
+    ...                    value = 0.)
 
 We can now create a viewer to see the mesh (only the `Gist2DViewer` is
 capable of displaying variables on this sort of irregular mesh)

@@ -162,7 +162,7 @@ class Variable(object):
     
             >>> v = Variable(value=[2,3])
             >>> print numerix.array(v)
-            [ 2.  3.]
+            [2 3]
         
         It is an error to convert a dimensional `Variable` to a 
         Numeric `array`
@@ -503,7 +503,7 @@ class Variable(object):
                     if type(v) is type(numerix.array(1)):
                         if v.shape is not ():
 ##                        if len(v) > 1:
-                            value = numerix.resize(float(value), (len(v),))
+                            value = numerix.resize(value, v.shape).astype(v.dtype)
                     
             if unit is not None or type(value) in [type(''), type(()), type([])]:
                 value = PF(value=value, unit=unit, array=array)
@@ -530,17 +530,17 @@ class Variable(object):
             >>> a = Variable((1,2,3))
             >>> a.setValue(5, where=(1, 0, 1))
             >>> print a
-            [ 5.  2.  5.]
+            [5 2 5]
 
             >>> b = Variable((4,5,6))
             >>> a.setValue(b, where=(1, 0, 1))
             >>> print a
-            [ 4.  2.  6.]
+            [4 2 6]
             >>> print b
-            [ 4.  5.  6.]
+            [4 5 6]
             >>> a.setValue(3)
             >>> print a
-            [ 3.  3.  3.]
+            [3 3 3]
 
             >>> b = numerix.array((3,4,5))
             >>> a.setValue(b)
@@ -1276,12 +1276,12 @@ class Variable(object):
            >>> var = FaceVariable(value=((1, 2, 3, 4), (2, 3, 4, 5)), mesh=mesh, rank=1)
            >>> v10 = var._take((1, 0), axis=0)
            >>> print v10
-           [[ 2.  3.  4.  5.]
-            [ 1.  2.  3.  4.]]
+           [[2 3 4 5]
+            [1 2 3 4]]
            >>> var[0, 3] = 1
            >>> print v10
-           [[ 2.  3.  4.  5.]
-            [ 1.  2.  3.  1.]]
+           [[2 3 4 5]
+            [1 2 3 1]]
            >>> isinstance(var, FaceVariable)
            True
            >>> print var.getRank()
@@ -1302,7 +1302,7 @@ class Variable(object):
         else:
             raise IndexError, '_take() must take ids that return a Variable of the same shape'
             
-    def allclose(self, other, rtol=1.e-10, atol=1.e-10):
+    def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
            >>> var = Variable((1, 1))
            >>> print var.allclose((1, 1))

@@ -374,7 +374,7 @@ def arccosh(arr):
         [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
         >>> arccosh(Variable(value=(1,2,3)))
-        numerix.arccosh(Variable(value=array([ 1.,  2.,  3.])))
+        numerix.arccosh(Variable(value=array([1, 2, 3])))
         >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
         [ 0.     1.317  1.763]
     """
@@ -445,7 +445,7 @@ def arcsinh(arr):
         [ 0.881  1.444  1.818]
         >>> from fipy.variables.variable import Variable
         >>> arcsinh(Variable(value=(1,2,3)))
-        numerix.arcsinh(Variable(value=array([ 1.,  2.,  3.])))
+        numerix.arcsinh(Variable(value=array([1, 2, 3])))
         >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
         [ 0.881  1.444  1.818]
     """
@@ -506,7 +506,7 @@ def arctan2(arr, other):
         [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
         >>> arctan2(Variable(value=(0, 1, 2)), 2)
-        (numerix.arctan2(Variable(value=array([ 0.,  1.,  2.])), 2))
+        (numerix.arctan2(Variable(value=array([0, 1, 2])), 2))
         
     .. attention:: 
         
@@ -599,7 +599,7 @@ def cosh(arr):
         [ 1.     1.543  3.762]
         >>> from fipy.variables.variable import Variable
         >>> cosh(Variable(value=(0,1,2)))
-        numerix.cosh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.cosh(Variable(value=array([0, 1, 2])))
         >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
         [ 1.     1.543  3.762]
     """
@@ -653,7 +653,7 @@ def tanh(arr):
         [ 0.     0.762  0.964]
         >>> from fipy.variables.variable import Variable
         >>> tanh(Variable(value=(0,1,2)))
-        numerix.tanh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.tanh(Variable(value=array([0, 1, 2])))
         >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
         [ 0.     0.762  0.964]
     """
@@ -734,7 +734,7 @@ def sinh(arr):
         [ 0.     1.175  3.627]
         >>> from fipy.variables.variable import Variable
         >>> sinh(Variable(value=(0,1,2)))
-        numerix.sinh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.sinh(Variable(value=array([0, 1, 2])))
         >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
         [ 0.     1.175  3.627]
     """
@@ -761,7 +761,7 @@ def sqrt(arr):
         [ 1.     1.414  1.732]
         >>> from fipy.variables.variable import Variable
         >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
-        numerix.sqrt(Variable(value=PhysicalField(array([ 1.,  2.,  3.]),'m**2')))
+        numerix.sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
         >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
         [ 1.     1.414  1.732] m
 
@@ -951,11 +951,11 @@ def dot(a1, a2, axis=0):
        >>> print rank(dot(v2, v1))
        0
        >>> print dot(v1, v2)
-       [  4.  10.]
+       [ 4 10]
        >>> dot(v1, v1)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> print dot(v1, v1)
-       [  4.  10.]
+       [ 4 10]
        >>> type(dot(v2, v2))
        <type 'numpy.ndarray'>
        >>> print dot(v2, v2)

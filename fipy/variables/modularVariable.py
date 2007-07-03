@@ -92,7 +92,7 @@ class ModularVariable(CellVariable):
            >>> from fipy.meshes.grid1D import Grid1D
            >>> mesh = Grid1D(nx = 4)
            >>> from fipy.variables.modularVariable import ModularVariable
-           >>> var = ModularVariable(mesh = mesh, value = 1, hasOld = 1)
+           >>> var = ModularVariable(mesh = mesh, value = 1., hasOld = 1)
            >>> print var
            [ 1.  1.  1.  1.] 1
            >>> var.setValue(1)

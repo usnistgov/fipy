@@ -71,7 +71,8 @@ class _MeshVariable(Variable):
             array = None
         else:
             array = numerix.zeros(self.elementshape 
-                                  + self._getShapeFromMesh(mesh),'d')
+                                  + self._getShapeFromMesh(mesh),
+                                  numerix.obj2sctype(numerix.array(value)))
             if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
                 if not isinstance(value, Variable):
                     value = _Constant(value)

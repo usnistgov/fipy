@@ -90,8 +90,8 @@ dx = 1.
 
 mesh = Tri2D(dx = dx, nx = nx)
 
-valueLeft = 0
-valueRight = 1
+valueLeft = 0.
+valueRight = 1.
 var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))
