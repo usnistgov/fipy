@@ -66,7 +66,7 @@ system of multiple components. Once again, we'll focus on 1D.
 ..
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> phase = CellVariable(mesh=mesh, name='phase', value=1, hasOld=1)
+    >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
 .. raw:: latex
 
