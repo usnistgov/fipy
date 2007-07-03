@@ -4,13 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputGold.py"
+ #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:45:35 PM} { 1:23:41 PM}
+ #                                last update: 7/3/07 {4:36:57 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -46,14 +45,14 @@ This input file
 
 .. raw:: latex
 
-    \label{inputGold} is a demonstration of the use of \FiPy{} for
+    \label{gold} is a demonstration of the use of \FiPy{} for
     modeling gold superfill. The material properties and experimental
     parameters used are roughly those that have been previously
     published~\cite{NIST:damascene:2005}.
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/inputGold.py
+    $ examples/levelSet/electroChem/gold.py
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
@@ -68,7 +67,7 @@ python command line),
 
 ..
 
-    >>> from examples.levelSet.electroChem.inputGold import runGold
+    >>> from examples.levelSet.electroChem.gold import runGold
 
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,

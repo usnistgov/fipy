@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "trench.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
  #                                last update: 2/5/07 {2:44:13 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>

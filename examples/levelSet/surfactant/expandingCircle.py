@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 8/2/05 {5:04:15 PM} { 1:23:41 PM}
+ #                                last update: 7/3/07 {4:40:55 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

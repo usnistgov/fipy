@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputWriteScriptHowTo.py"
+ #  FILE: "howToWriteAScript.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:49:35 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -45,21 +45,21 @@ r"""
 
 .. raw:: latex
 
-    \label{inputWriteScriptHowTo} This input file demonstrates how to
+    \label{howToWriteAScript} This input file demonstrates how to
     create a new superfill script if the existing suite of scripts do
     not meet the required needs. It provides the functionality of
-    Example~\ref{inputSimpleTrench}.
+    Example~\ref{simpleTrenchSytem}.
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/input.py --numberOfElements=10000 --numberOfSteps=800
+    $ examples/levelSet/electroChem/howToWriteAScript.py --numberOfElements=10000 --numberOfSteps=800
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
 simulation. To obtain this example in a plain script file in order to
 edit and run type::
 
-    $ python setup.py copy_script --From examples/levelSet/electroChem/input.py --To myScript.py
+    $ python setup.py copy_script --From examples/levelSet/electroChem/howToWriteAScript.py --To myScript.py
 
 in the base FiPy directory. The file `myScript.py` will contain the
 script.
@@ -71,7 +71,7 @@ instantiation of various objects and are the same as those explained in
 
 .. raw:: latex
 
-    Example~\ref{inputSimpleTrench}.
+    Example~\ref{simpleTrenchSystem}.
 
 The following parameters (all in S.I. units)  represent,
 

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "inputLeveler.py"
+ #  FILE: "leveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
  #                                last update: 5/15/06 {2:45:49 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
@@ -46,7 +46,7 @@ This input file
 
 .. raw:: latex
 
-    \label{inputLeveler} is a demonstration of the use of \FiPy{} for
+    \label{leveler} is a demonstration of the use of \FiPy{} for
     modeling copper superfill with leveler and accelerator
     additives. The material properties and experimental parameters
     used are roughly those that have been previously
@@ -54,7 +54,7 @@ This input file
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/inputLeveler.py
+    $ examples/levelSet/electroChem/leveler.py
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
@@ -69,7 +69,7 @@ python command line),
 
 ..
 
-    >>> from examples.levelSet.electroChem.inputLeveler import runLeveler
+    >>> from examples.levelSet.electroChem.leveler import runLeveler
 
 and then the function can be executed with a different number of time
 steps by changing the `numberOfSteps` argument as follows,
@@ -99,7 +99,7 @@ construct the mesh.
 
     The following is a complete description of the equations for the
     model described here. Any equations that have been omitted are the
-    same as those given in Example~\ref{inputSimpleTrench}. The
+    same as those given in Example~\ref{simpleTrenchSystem}. The
     current density is governed by $$ i = \frac{ c_m }{ c_m^\infty }
     \sum_{ j } \left[ i_j \theta_j \left( \exp{ \frac{-\alpha_j F \eta
     }{ R T }} - \exp{ \frac{ \left( 1 - \alpha_j \right) F \eta}{ R T

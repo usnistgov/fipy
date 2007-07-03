@@ -4,15 +4,15 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:35:11 PM} { 1:23:41 PM}
+ #                                last update: 5/15/06 {2:44:56 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -41,42 +41,34 @@
  ##
 
 r"""
-This example first solves the distance function equation in one dimension:
+
+Here we create a level set variable in one dimension. The level set
+variable calculates its value over the domain to be the distance from
+the zero level set. This can be represented succinctly in the
+following equation with a boundary condition at the zero level set
+such that,
 
 .. raw:: latex
 
-    $$ |\nabla \phi| = 1 $$
+    $$ \frac{\partial \phi}{\partial x} = 1 $$
 
-with
-
-.. raw:: latex
-
-    $\phi = 0$ at $x = L / 5$.
-
-The variable is then advected with,
+with the boundary condition,
 
 .. raw:: latex
 
-    $$ \frac{ \partial \phi } { \partial t} + \vec{u} \cdot \nabla \phi = 0 $$
-
-The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
+    $\phi = 0$ at $x = L / 2$.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
-   >>> velocity = 1.
-   >>> dx = 1.
+   >>> dx = 0.5
    >>> nx = 10
-   >>> timeStepDuration = 1.
-   >>> steps = 2
-   >>> L = nx * dx
-   >>> interfacePosition = L / 5.
 
 Construct the mesh.
 
 .. raw:: latex
 
-   \IndexClass{Grid1D}
+   \IndexClass{Grid2D}
 
 ..
 
@@ -97,22 +89,16 @@ Construct a `distanceVariable` object.
    ...                        mesh=mesh,
    ...                        value=-1,
    ...                        hasOld=1)
-   >>> var.setValue(1, where=mesh.getCellCenters()[0] > interfacePosition)
+   >>> x = mesh.getCellCenters()[0]
+   >>> var.setValue(1, where=x > dx * nx / 2)
+ 
+Once the initial positive and negative regions have been initialized
+the `calcDistanceFunction()` method can be used to recalculate `var`
+as a distance function from the zero level set.
+   
    >>> var.calcDistanceFunction()
    
-The `advectionEquation` is constructed.
-
-.. raw:: latex
-
-   \IndexFunction{buildAdvectionEquation}
-
-..
-
-   >>> from fipy.models.levelSet.advection.advectionEquation import \
-   ...     buildAdvectionEquation
-   >>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
-
-The problem can then be solved by executing a serious of time steps.
+The problem can then be solved by executing the `solve()` method of the equation.
 
 .. raw:: latex
 
@@ -123,14 +109,10 @@ The problem can then be solved by executing a serious of time steps.
    >>> if __name__ == '__main__':
    ...     from fipy.viewers import make
    ...     viewer = make(vars=var,
-   ...                   limits={'datamin': -10., 'datamax': 10.})
+   ...                   limits={'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
-   ...     for step in range(steps):
-   ...         var.updateOld()
-   ...         advEqn.solve(var, dt=timeStepDuration)
-   ...         viewer.plot()
 
-The result can be tested with the following code:
+The result can be tested with the following commands.
 
 .. raw:: latex
 
@@ -138,18 +120,10 @@ The result can be tested with the following code:
 
 ..
 
-   >>> for step in range(steps):
-   ...     var.updateOld()
-   ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> x = mesh.getCellCenters()[0]
-   >>> distanceTravelled = timeStepDuration * steps * velocity
-   >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
    >>> from fipy.tools import numerix
-   >>> answer = numerix.where(x < distanceTravelled, 
-   ...                        x[0] - interfacePosition, answer)
-   >>> print var.allclose(answer)
+   >>> print numerix.allclose(var, x - dx * nx / 2)
    1
-   
+
 """
 __docformat__ = 'restructuredtext'
 

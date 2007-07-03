@@ -46,7 +46,7 @@ This input file
 
 .. raw:: latex
 
-    \label{inputSimpleTrench} is a demonstration of the use of \FiPy{}
+    \label{simpleTrenchSystem} is a demonstration of the use of \FiPy{}
     for modeling electrodeposition using the CEAC mechanism. The
     material properties and experimental parameters used are roughly
     those that have been previously
@@ -54,7 +54,7 @@ This input file
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/inputSimpleTrenchSystem.py
+    $ examples/levelSet/electroChem/simpleTrenchSystem.py
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
@@ -68,7 +68,7 @@ imported (at the python command line),
 
 ..
 
-    >>> from examples.levelSet.electroChem.inputSimpleTrenchSystem import runSimpleTrenchSystem
+    >>> from examples.levelSet.electroChem.simpleTrenchSystem import runSimpleTrenchSystem
 
 and then the function can be run with a different number of time steps
 with the `numberOfSteps` argument as follows,
@@ -81,7 +81,7 @@ Change the `displayViewers` argument to `True` if you wish to see the
 .. raw:: latex
 
     results displayed on the
-    screen. Example~\ref{inputWriteScriptHowTo} gives explanation for
+    screen. Example~\ref{howToWriteAScript} gives explanation for
     writing new scripts or modifying existing scripts that are
     encapsulated by functions.
 

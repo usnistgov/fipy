@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input.py"
+ #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {8:30:35 PM} { 1:23:41 PM}
+ #                                last update: 7/3/07 {4:40:45 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
