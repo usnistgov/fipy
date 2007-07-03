@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:47:24 PM} { 5:14:21 PM}
+ #                                last update: 7/3/07 {5:11:43 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -280,9 +280,9 @@ the data and compares it with the `phase` variable.
 
 ..
 
-   >>> import examples.phase.anisotropy
+   >>> import examples.phase
    >>> import os
-   >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'anisotropyData.gz')
+   >>> filepath = os.path.join(examples.phase.__path__[0], 'anisotropyData.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> print phase.allclose(testData)

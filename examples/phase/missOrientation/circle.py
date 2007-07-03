@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {4:57:57 PM} 
+ #                                last update: 7/3/07 {5:10:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,8 +96,8 @@ modeling. The following code opens the file `circleData.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation.circle
-   >>> filepath = os.path.join(examples.phase.missOrientation.circle.__path__[0], 'circleData.gz')
+   >>> import examples.phase.missOrientation
+   >>> filepath = os.path.join(examples.phase.missOrientation.__path__[0], 'circleData.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix

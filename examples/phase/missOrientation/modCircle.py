@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCircle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {4:58:16 PM} 
+ #                                last update: 7/3/07 {5:11:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,8 +94,8 @@ modeling. The following code opens the file `modCircleData.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation.modCircle
-   >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'modCircleData.gz')
+   >>> import examples.phase.missOrientation
+   >>> filepath = os.path.join(examples.phase.missOrientation.__path__[0], 'modCircleData.gz')
    >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix

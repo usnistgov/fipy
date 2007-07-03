@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/3/07 {4:51:33 PM}
+ #                                last update: 7/3/07 {5:09:40 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -260,9 +260,9 @@ data and compares it with the `theta` variable.
 
     >>> import os
     >>> testFile = 'mesh20x20Data.gz'
-    >>> import examples.phase.impingement.mesh20x20
+    >>> import examples.phase.impingement
     >>> import gzip
-    >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], 
+    >>> filepath = os.path.join(examples.phase.impingement.__path__[0], 
     ...                         testFile)
     >>> filestream = gzip.open(filepath,'r')
     >>> import cPickle

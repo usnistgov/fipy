@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:52:50 PM}
+ #                                last update: 7/3/07 {5:09:07 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -302,10 +302,10 @@ extracts the data and compares it with the `theta` variable.
 
    >>> import os
    >>> testFile = 'mesh40x1Data.gz'
-   >>> import examples.phase.impingement.mesh40x1
-   >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0],
+   >>> import examples.phase.impingement
+   >>> filepath = os.path.join(examples.phase.impingement.__path__[0],
    ...                         testFile)
-   >>> import fipy.tools.dump as dump
+   >>> from fipy.tools import dump
    >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
    >>> print theta.allclose(numerix.array(testData))
