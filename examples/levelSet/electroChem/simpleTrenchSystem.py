@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/18/06 {8:41:56 PM} { 1:23:41 PM}
+ #                                last update: 7/3/07 {6:02:28 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -368,12 +368,10 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     try:
         import os
-        import examples.levelSet.electroChem
-        filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 'test.gz')
+        filepath = os.path.splitext(__file__)[0] + '.gz'
         
         from fipy.tools import dump
-        from fipy.tools import numerix
-        print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol = 1e-4)
+        print catalystVar.allclose(dump.read(filepath), rtol = 1e-4)
     except:
         return 0
 

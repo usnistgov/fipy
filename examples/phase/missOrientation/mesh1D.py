@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {5:11:01 PM} 
+ #                                last update: 7/3/07 {6:00:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,16 +90,13 @@ The solution is allowed to evolve for `steps = 100` time steps.
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `mesh1DData.gz` extracts the
+modeling. The following code opens the file `mesh1D.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation
-   >>> filepath = os.path.join(examples.phase.missOrientation.__path__[0], 'mesh1DData.gz')
    >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
-   >>> from fipy.tools import numerix
-   >>> print numerix.allclose(numerix.array(testData), phase)
+   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> print phase.allclose(testData)
    1
    
 """

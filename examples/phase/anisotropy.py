@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {5:11:43 PM} { 5:14:21 PM}
+ #                                last update: 7/3/07 {6:05:08 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -269,7 +269,7 @@ we iterate the solution in time, plotting as we go if running interactively,
 
 The solution is compared with test data. The test data was created for
 ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase
-field modeling. The following code opens the file ``anisotropyData.gz`` extracts
+field modeling. The following code opens the file ``anisotropy.gz`` extracts
 the data and compares it with the `phase` variable.
 
 .. raw:: latex
@@ -280,11 +280,9 @@ the data and compares it with the `phase` variable.
 
 ..
 
-   >>> import examples.phase
    >>> import os
-   >>> filepath = os.path.join(examples.phase.__path__[0], 'anisotropyData.gz')
    >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
+   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
    >>> print phase.allclose(testData)
    1
    

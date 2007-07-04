@@ -6,7 +6,7 @@
  # 
  #  FILE: "leveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:45:49 PM} { 1:23:41 PM}
+ #                                last update: 7/3/07 {6:03:44 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -438,11 +438,10 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         totalTime += dt
 
     try:
-        testFile = 'testLeveler.gz'
         import os
         import examples.levelSet.electroChem
         from fipy.tools import dump
-        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
+        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         N = mesh.getFineMesh().getNumberOfCells()
         return numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
     except:

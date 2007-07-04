@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {5:09:07 PM}
+ #                                last update: 7/3/07 {6:08:13 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -291,7 +291,7 @@ we iterate the solution in time, plotting as we go if running interactively,
 
 The solution is compared with test data. The test data was created
 with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for
-phase field modeling. The following code opens the file `mesh40x1Data.gz`
+phase field modeling. The following code opens the file `mesh40x1.gz`
 extracts the data and compares it with the `theta` variable.
 
 .. raw:: latex
@@ -301,14 +301,9 @@ extracts the data and compares it with the `theta` variable.
 ..
 
    >>> import os
-   >>> testFile = 'mesh40x1Data.gz'
-   >>> import examples.phase.impingement
-   >>> filepath = os.path.join(examples.phase.impingement.__path__[0],
-   ...                         testFile)
    >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
-   >>> from fipy.tools import numerix
-   >>> print theta.allclose(numerix.array(testData))
+   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> print theta.allclose(testData)
    1
 """
 __docformat__ = 'restructuredtext'

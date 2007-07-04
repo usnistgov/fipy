@@ -6,7 +6,7 @@
  # 
  #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:36:57 PM} 
+ #                                last update: 7/4/07 {10:43:21 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -273,8 +273,7 @@ def runGold(faradaysConstant=9.6e4,
     try:
         from fipy.tools import dump
         import os
-        import examples.levelSet.electroChem
-        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
+        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         n = mesh.getFineMesh().getNumberOfCells()
         print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
     except:

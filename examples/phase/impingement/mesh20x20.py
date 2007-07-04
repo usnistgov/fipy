@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/3/07 {5:09:40 PM}
+ #                                last update: 7/3/07 {6:06:46 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -255,16 +255,12 @@ by the phase
 
 The solution will be tested against data that was created with ``steps
 = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `mesh20x20Data.gz` extracts the
+modeling. The following code opens the file `mesh20x20.gz` extracts the
 data and compares it with the `theta` variable.
 
     >>> import os
-    >>> testFile = 'mesh20x20Data.gz'
-    >>> import examples.phase.impingement
     >>> import gzip
-    >>> filepath = os.path.join(examples.phase.impingement.__path__[0], 
-    ...                         testFile)
-    >>> filestream = gzip.open(filepath,'r')
+    >>> filestream = gzip.open(os.path.splitext(__file__)[0] + '.gz','r')
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
