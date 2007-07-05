@@ -58,14 +58,14 @@ class GistVectorViewer(GistViewer):
             >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
             >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
 
             >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()
@@ -75,7 +75,7 @@ class GistVectorViewer(GistViewer):
             >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
             >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()

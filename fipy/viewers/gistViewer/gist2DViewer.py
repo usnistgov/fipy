@@ -62,7 +62,7 @@ class Gist2DViewer(GistViewer):
         >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
         >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
         >>> viewer = Gist2DViewer(vars=var, 
-        ...                       limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="Gist2DViewer test")
         >>> viewer.plot()
         >>> viewer._promptForOpinion()
@@ -72,7 +72,7 @@ class Gist2DViewer(GistViewer):
         >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
         >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
         >>> viewer = Gist2DViewer(vars=var, 
-        ...                       limits={'ymin':10, 'ymax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
         ...                       title="Gist2DViewer test")
         >>> viewer.plot()
         >>> viewer._promptForOpinion()
