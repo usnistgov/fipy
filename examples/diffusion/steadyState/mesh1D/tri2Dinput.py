@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:33:06 PM} 
+ #                                last update: 7/5/07 {7:59:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -93,7 +93,6 @@ var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = viewers.make(vars = var)
     viewer.plot()
