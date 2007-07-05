@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/5/07 {8:31:48 AM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {3:37:46 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -120,9 +120,9 @@ class Matplotlib2DViewer(MatplotlibViewer):
         mesh = self.vars[0].getMesh()
         shape = mesh.getShape()
         X, Y = mesh.getCellCenters()
-        X = numerix.reshape(X, shape)
-        Y = numerix.reshape(Y, shape)
-        Z = numerix.reshape(self.vars[0].getValue(), shape)
+        X = X.reshape(shape, order="FORTRAN")
+        Y = Y.reshape(shape, order="FORTRAN")
+        Z = self.vars[0].getValue().reshape(shape, order="FORTRAN")
         
         zmin, zmax = self._autoscale(vars=self.vars,
                                      datamin=self._getLimit(('datamin', 'zmin')),
