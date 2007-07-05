@@ -18,7 +18,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this document is not subject to copyright
- # protection and is in the public domain.  doctest.py <2>
+ # protection and is in the public domain.  doctestPlus.py
  # is an experimental work.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
@@ -80,7 +80,7 @@ def execButNoTest(name='__main__'):
         raise ValueError("no tests found")
 
     for t in tests:
-        exec(t)
+        exec t
         
 class _LateImportDocTestCase(_LateImportTestCase):
     def _getTestSuite(self, module):
