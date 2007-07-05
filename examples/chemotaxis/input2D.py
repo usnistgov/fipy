@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/13/05 {4:22:56 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {5:53:22 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -69,11 +69,7 @@ Here are some test cases for the model.
 """
 
 from parameters import parameters
-from fipy.meshes.grid2D import Grid2D
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 params = parameters['case 2']
 
@@ -126,19 +122,17 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    from fipy.viewers import make
-    
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
-    PNViewer = make(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    PNViewer = viewers.make(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     KMView = KMVar / KMVar.getCellVolumeAverage()
     KMView.setName('KM')
-    KMViewer = make(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    KMViewer = viewers.make(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     TMView = TMVar / TMVar.getCellVolumeAverage()
     TMView.setName('TM')
-    TMViewer = make(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    TMViewer = viewers.make(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
 
     for i in range(100):
         for var, eqn in eqs:
@@ -148,8 +142,7 @@ if __name__ == '__main__':
 
     x, y = mesh.getCellCenters()
 
-    from fipy.tools.numerix import sqrt
-    RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
+    RVar[:] = L / numerix.sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     
     for i in range(100):
         for var, eqn in eqs:

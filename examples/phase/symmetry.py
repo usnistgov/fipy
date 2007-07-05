@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:14:17 PM} 
+ #                                last update: 7/5/07 {6:57:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,7 @@ We wish to create 4 symmetric regions such that
     
 We create a square domain
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy import *
 
     >>> N = 20
     >>> L = 1.
@@ -75,7 +75,6 @@ We create a square domain
     ...    nx = N,
     ...    ny = N)
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "test", mesh = mesh)
   
 First set the values as given in the above equation:
@@ -84,7 +83,6 @@ First set the values as given in the above equation:
     >>> var.setValue(x * y)
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
     ...     viewer.plot()
 
@@ -122,7 +120,6 @@ the given coordinate. The cells are then set to the symmetry value:
 
 The following code tests the results with a different algorithm:
 
-    >>> from fipy.tools import numerix
     >>> testResult = numerix.zeros((N / 2, N / 2), 'd')
     >>> bottomRight = numerix.zeros((N / 2, N / 2), 'd')
     >>> topLeft = numerix.zeros((N / 2, N / 2), 'd')

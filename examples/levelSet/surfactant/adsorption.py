@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 8/2/05 {4:58:59 PM} 
+ #                                last update: 7/5/07 {6:50:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -116,12 +116,7 @@ Compare the analaytical and numerical results:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
-from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from fipy import *
 
 # parameter values
 
@@ -136,7 +131,6 @@ dt = 0.001
 
 ## build the mesh
 
-from fipy.meshes.grid1D import Grid1D
 dx = L / (nx - 1.5)
 mesh = Grid1D(nx = nx, dx = dx)
 

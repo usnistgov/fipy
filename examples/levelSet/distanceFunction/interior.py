@@ -6,7 +6,7 @@
  # 
  #  FILE: "interior.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {4:59:55 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:45:56 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,10 +76,7 @@ Do the tests:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+from fipy import *
 
 dx = 1.
 dy = 1.

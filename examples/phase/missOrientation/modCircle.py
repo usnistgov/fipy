@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCircle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {7:12:43 PM} 
+ #                                last update: 7/5/07 {6:55:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,13 +94,14 @@ modeling. The following code opens the file `modCircle.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> from fipy.tools import dump
    >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
    >>> print phase.allclose(testData)
    1
 
 """
 __docformat__ = 'restructuredtext'
+
+from fipy import *
 
 steps = 100
 timeStepDuration = 0.02
@@ -116,26 +117,19 @@ alpha = 0.015
 dx = L / nx
 dy = L / ny
 
-from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx, dy, nx, ny)
 
-from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.variables.modularVariable import ModularVariable
-from fipy.tools import numerix
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
 x, y = mesh.getCellCenters()
 theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.getOld().getGrad().getMag()
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 phaseEq = TransientTerm(phaseTransientCoeff) == \
           ExplicitDiffusionTerm(alpha**2) \
           - ImplicitSourceTerm(implicitSource) \

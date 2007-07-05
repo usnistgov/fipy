@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 1/12/06 {9:39:34 PM} 
+ #                                last update: 7/5/07 {6:36:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,6 @@ number of cells set to `nx = 10`.
 A simple analytical answer can be used to test the result:
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[0]
-   >>> from fipy.tools import numerix
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)
    >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
@@ -57,12 +56,7 @@ A simple analytical answer can be used to test the result:
 
 """
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.meshes.tri2D import Tri2D
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 10
 ny = 1
@@ -83,7 +77,6 @@ var = CellVariable(
     mesh = mesh,
     value = valueLeft)
 
-from fipy.variables.faceVariable import FaceVariable
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 
 x = mesh.getFaceCenters()[0]
@@ -94,6 +87,6 @@ boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
     viewer.plot()
     raw_input('finished')

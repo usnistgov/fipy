@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:40:45 PM}
+ #                                last update: 7/5/07 {6:50:10 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,13 +62,7 @@ Advect the interface and check the position.
 """
 __docformat__ = 'restructuredtext'
 
-import fipy.tools.numerix as numerix
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+from fipy import *
 
 L = 1.
 dx = 0.1

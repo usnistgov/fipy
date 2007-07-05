@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:49:27 AM} 
+ #                                last update: 7/5/07 {6:37:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,12 +75,12 @@ We solve the problem on a 1D mesh
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
+
+    >>> from fipy import *
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 One component in this ternary system will be designated the "solvent"
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', 
     ...                  standardPotential = 0., barrier = 0., 
@@ -131,12 +131,6 @@ We separate the solution domain into two different concentration regimes
 
 We create one diffusion equation for each substitutional component
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> for Cj in substitutionals:
     ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
@@ -162,7 +156,6 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
     
     >>> for i in range(40):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1Ddimensional.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:48:52 AM} 
+ #                                last update: 7/5/07 {6:37:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,20 +48,17 @@ but we demonstrate FiPy's facility to use dimensional quantities.
     >>> import warnings
     >>> warnings.warn("\n\n\tSupport for physical dimensions is incomplete.\n\tIt is not possible to solve dimensional equations.\n")
 
-    >>> from fipy.tools.dimensions.physicalField import PhysicalField
+    >>> from fipy import *
 
 We solve the problem on a 40 mm long 1D mesh
 
     >>> nx = 40
     >>> dx = PhysicalField(1.,"mm")
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 Again, one component in this ternary system will be designated the "solvent"
 
-    >>> from fipy.variables.variable import Variable
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', 
     ...                  standardPotential = 0., barrier = 0., 
@@ -112,12 +109,6 @@ We separate the solution domain into two different concentration regimes
 
 We create one diffusion equation for each substitutional component
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> for Cj in substitutionals:
     ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
@@ -143,7 +134,6 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
     
     >>> for i in range(40):

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:27:49 PM} 
+ #                                last update: 7/5/07 {6:04:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,9 +60,10 @@ We create an appropriate mesh
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 1000
     >>> dx = L / nx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and initialize the solution variable to 0
@@ -73,7 +74,6 @@ and initialize the solution variable to 0
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh=mesh, name='solution variable')
     
 For this problem, we impose the boundary conditions:
@@ -102,10 +102,6 @@ or
 
 ..
     
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
-    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
-    ...     import NthOrderBoundaryCondition
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
     ...        FixedFlux(faces=mesh.getFacesRight(), value=alpha2),
     ...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
@@ -119,7 +115,6 @@ We initialize the steady-state equation
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eq = ImplicitDiffusionTerm(coeff=(1, 1)) == 0
     
 and use the `LinearLUSolver` for stability. 
@@ -129,8 +124,6 @@ and use the `LinearLUSolver` for stability.
    \IndexClass{LinearLUSolver}
 
 ..
-
-    >>> from fipy.solvers import *
 
 We perform one implicit timestep to achieve steady state
    
@@ -163,8 +156,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=(var, analytical))
+    ...     viewer = viewers.make(vars=(var, analytical))
     ...     viewer.plot()
 
 .. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf

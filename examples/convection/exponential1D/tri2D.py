@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:37:16 AM} 
+ #                                last update: 7/5/07 {5:56:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,21 +54,20 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
 .. 
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 1
     >>> ny = 1000
-    >>> from fipy.meshes.tri2D import Tri2D
     >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
     
     >>> valueBottom = 0.
     >>> valueTop = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueBottom)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesBottom(), valueBottom),
     ...     FixedValue(mesh.getFacesTop(), valueTop),
@@ -77,12 +76,9 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> diffCoeff = 1.
     >>> convCoeff = (0., 10.)
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))
@@ -91,7 +87,6 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 1
     >>> y = mesh.getCellCenters()[axis]
-    >>> from fipy.tools import numerix
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD

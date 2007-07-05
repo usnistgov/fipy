@@ -6,7 +6,7 @@
  # 
  #  FILE: "mixedelement.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/5/06 {6:47:36 AM} 
+ #                                last update: 7/5/07 {6:01:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,16 +75,7 @@ The result is again tested in the same way:
     1
 
 """
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.tri2D import Tri2D
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
-
-from fipy.tools import numerix
+from fipy import *
 
 dx = 1.
 dy = 1.
@@ -161,7 +152,7 @@ answer = numerix.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.1
         0.00000000e+00,  1.55453500e-09,  6.18653630e-05,  8.85109369e-02])
 
 if __name__ == '__main__':
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
     for step in range(steps):
         var.updateOld()        
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)

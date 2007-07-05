@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/7/05 {4:34:20 PM} 
+ #                                last update: 7/5/07 {6:33:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,11 +79,7 @@ tolerance of `1e-10`.
 
 __docformat__ = 'restructuredtext'
 
-from fipy.variables.cellVariable import CellVariable
-from fipy.boundaryConditions.fixedValue import FixedValue
-import fipy.viewers
-from fipy.meshes.tri2D import Tri2D
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 50
 dx = 1.
@@ -99,6 +95,6 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh
 if __name__ == '__main__':
     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
     viewer.plot()
     raw_input("finished")

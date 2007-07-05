@@ -6,7 +6,7 @@
  # 
  #  FILE: "input1DpoissonRightCharge.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 1/12/06 {8:27:59 PM} 
+ #                                last update: 7/5/07 {6:42:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,10 +43,11 @@
 r"""
 A simple 1D example to test the setup of the Poisson equation.
 
+    >>> from fipy import *
+
     >>> nx = 200
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 The dimensionless Poisson equation is
@@ -71,7 +72,6 @@ where
 
 We will be solving for the electrostatic potential
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
     >>> permittivity = 1.
 
@@ -118,14 +118,12 @@ multiple interstitial species:
 Because Poisson's equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
 
     >>> charge = 0.
     >>> for Cj in interstitials + substitutionals:
     ...     charge += Cj * Cj.valence
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) \
     ...                      + charge == 0
 
@@ -200,7 +198,6 @@ which now has the analytical solution
 
 We verify that the correct equilibrium is attained
     
-    >>> from fipy.tools import numerix
     >>> analyticalArray = numerix.where(x < L/2, -x, ((x-1)**2)/2 - x)
 
     >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()

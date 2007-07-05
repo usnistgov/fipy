@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/3/07 {6:02:28 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:49:28 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -216,15 +216,13 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
-    from fipy.meshes.grid2D import Grid2D
+    from fipy import *
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
                   ny = yCells)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-    from fipy.models.levelSet.distanceFunction.distanceVariable import \
-         DistanceVariable        
 
     distanceVar = DistanceVariable(
         name = 'distance variable',
@@ -243,16 +241,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
-    from fipy.models.levelSet.surfactant.surfactantVariable import \
-         SurfactantVariable
-    
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
         value = catalystCoverage,
         distanceVar = distanceVar)
     
-    from fipy.variables.cellVariable import CellVariable
-
     bulkCatalystVar = CellVariable(
         name = 'bulk catalyst variable',
         mesh = mesh,
@@ -283,24 +276,14 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         mesh = mesh,
         value = depositionRateVariable)   
 
-    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-                import AdsorbingSurfactantEquation
-
     surfactantEquation = AdsorbingSurfactantEquation(
         surfactantVar = catalystVar,
         distanceVar = distanceVar,
         bulkVar = bulkCatalystVar,
         rateConstant = rateConstant0 + rateConstant3 * overpotential**3)
 
-    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-                   import buildHigherOrderAdvectionEquation
-
     advectionEquation = buildHigherOrderAdvectionEquation(
         advectionCoeff = extensionVelocityVariable)
-
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-                         import buildMetalIonDiffusionEquation
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -311,9 +294,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     )
 
     metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
-
-    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-                    import buildSurfactantBulkDiffusionEquation
 
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
@@ -327,13 +307,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
         except:
-            from fipy.viewers import make
             viewers = (
-                make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-                make(catalystVar.getInterfaceVar()))
+                viewers.make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+                viewers.make(catalystVar.getInterfaceVar()))
     else:
         viewers = ()
 
@@ -370,7 +348,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         
-        from fipy.tools import dump
         print catalystVar.allclose(dump.read(filepath), rtol = 1e-4)
     except:
         return 0

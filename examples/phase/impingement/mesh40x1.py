@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {6:08:13 PM}
+ #                                last update: 7/5/07 {6:54:07 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,10 +54,11 @@ Lobkovsky and Carter
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 40
     >>> Lx = 2.5 * nx / 100.
     >>> dx = Lx / nx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
         
 This problem simulates the wet boundary that forms between grains of different 
@@ -136,7 +137,6 @@ and is initially solid everywhere
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(
     ...     name='phase field',
     ...     mesh=mesh,
@@ -166,7 +166,6 @@ subtraction operator between two angles.
 
 ..
 
-    >>> from fipy.variables.modularVariable import ModularVariable
     >>> theta = ModularVariable(
     ...     name='theta',
     ...     mesh=mesh,
@@ -187,10 +186,6 @@ The `phase` equation is built in the following way.
    \IndexClass{ImplicitSourceTerm}
 
 ..
-
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 
@@ -250,7 +245,6 @@ Finally the `theta` equation can be constructed.
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
     ...           ImplicitDiffusionTerm(diffusionCoeff) \
     ...           + sourceCoeff
@@ -267,13 +261,12 @@ and orientation variables.
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     phaseViewer = make(vars=phase, 
-    ...                        limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = viewers.make(vars=phase, 
+    ...                                limits={'datamin': 0., 'datamax': 1.})
     ...     from fipy.tools.numerix import pi
-    ...     thetaProductViewer = make(vars=theta,
-    ...                               limits={'datamin': -pi, 
-    ...                                       'datamax': pi})
+    ...     thetaProductViewer = viewers.make(vars=theta,
+    ...                                       limits={'datamin': -pi, 
+    ...                                               'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 
@@ -301,7 +294,6 @@ extracts the data and compares it with the `theta` variable.
 ..
 
    >>> import os
-   >>> from fipy.tools import dump
    >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
    >>> print theta.allclose(testData)
    1

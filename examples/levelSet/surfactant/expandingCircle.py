@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:40:55 PM}
+ #                                last update: 7/5/07 {6:50:15 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,14 +97,7 @@ Test for the correct position of the interface:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.variables.cellVariable import CellVariable
+from fipy import *
 
 L = 1.
 nx = 50

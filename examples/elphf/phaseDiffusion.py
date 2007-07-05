@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/30/07 {10:22:34 AM} 
+ #                                last update: 7/5/07 {6:42:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,15 +47,15 @@ with a binary diffusion problem, such as described in the ternary example
 ``examples/elphf/diffusion/input1D.py``,
 on a 1D mesh
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = 1.
     >>> phase.gradientEnergy = 0.025
@@ -73,7 +73,6 @@ and a dummy electrostatic potential field
 
 We start with a binary substitutional system
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', 
     ...                  standardPotential = 0., barrier = 0., 
@@ -131,13 +130,6 @@ and create the diffustion equations for the different species as in
 ``examples.elphf.diffusion.input1D``
 
     >>> def makeEquations(phase, substitutionals, interstitials):
-    ...     from fipy.terms.transientTerm import TransientTerm
-    ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    ...     from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-    ...     from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    ...
-    ...     from fipy.variables.faceVariable import FaceVariable
-    ...
     ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...         == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
     ...         - (permitivityPrime / 2.) \
@@ -224,8 +216,6 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
-    ...
     ...     viewer = viewers.make(vars = [phase, solvent] \
     ...                                  + substitutionals + interstitials,
     ...                           limits = {'datamin': 0, 'datamax': 1})
@@ -234,7 +224,6 @@ If running interactively, we create viewers to display the results
 This problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
 
     >>> dt = 10000

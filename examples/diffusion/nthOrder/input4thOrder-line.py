@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:27:14 PM} 
+ #                                last update: 7/5/07 {6:03:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,7 +55,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid1D import Grid1D
+from fipy import *
 
 Lx = 1.
 nx = 100000
@@ -63,15 +63,8 @@ dx = Lx / nx
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-from fipy.tools import numerix
-from fipy.variables.cellVariable import CellVariable
 var = CellVariable(mesh = mesh)
 
-from fipy.solvers import *
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
-     
 eq = ImplicitDiffusionTerm((1.0, 1.0))
 
 BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
@@ -86,8 +79,7 @@ if __name__ == '__main__':
              boundaryConditions = BCs,
              solver = solver)
     
-    from fipy.viewers import make
-    viewer = make(var)
+    viewer = viewers.make(var)
     viewer.plot()
 
     raw_input("finished")

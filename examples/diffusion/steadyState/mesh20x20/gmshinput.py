@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/2/07 {8:51:09 AM} 
+ #                                last update: 7/5/07 {6:32:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,16 +56,7 @@ if __name__ == '__main__':
     import sys
     import os
 
-    from fipy.tools import numerix
-
-    from fipy.meshes.grid2D import Grid2D
-    from fipy.meshes.skewedGrid2D import SkewedGrid2D
-    from fipy.meshes.tri2D import Tri2D
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.boundaryConditions.fixedFlux import FixedFlux
-    from fipy.variables.cellVariable import CellVariable
-    import fipy.viewers
-    from fipy.meshes.gmshImport import GmshImporter2D
+    from fipy import *
 
     valueLeft = 0.
     valueRight = 1.
@@ -76,7 +67,7 @@ if __name__ == '__main__':
                        mesh = mesh,
                        value = valueLeft)
 
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
 
     def leftSide(face):
         a = face.getCenter()[0]
@@ -105,8 +96,6 @@ if __name__ == '__main__':
             return 1
         else:
             return 0
-
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
     ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                              FixedValue(mesh.getFacesRight(), valueRight)))

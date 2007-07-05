@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {6:05:08 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {6:54:22 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,6 +55,8 @@ Warren, Kobayashi, Lobkovsky and Carter
 
 ..
 
+    >>> from fipy import *
+
     >>> numberOfCells = 40
     >>> Length = numberOfCells * 2.5 / 100.
     >>> nx = numberOfCells
@@ -64,7 +66,6 @@ Warren, Kobayashi, Lobkovsky and Carter
     >>> radius = Length / 4.
     >>> seedCenter = (Length / 2., Length / 2.)
     >>> initialTemperature = -0.4
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
     
 Dendritic growth will not be observed with this small test system. If
@@ -132,7 +133,6 @@ the `phase` variable is initialized as a liquid,
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
 
 The `hasOld` flag keeps the old value of the variable. This is
@@ -218,9 +218,6 @@ The phase equation can now be constructed.
 
 ..
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
     ...     ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
     ...     ((mVar > 0.) * mVar * phase + anisotropySource)
@@ -233,7 +230,6 @@ The temperature equation is built in the following way,
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> temperatureEq = TransientTerm() == \
     ...                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
     ...                 (phase - phase.getOld()) / timeStepDuration
@@ -248,7 +244,6 @@ the phase and temperature fields
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     phaseViewer = viewers.make(vars=phase)
     ...     temperatureViewer = viewers.make(vars=temperature,
     ...                                      limits={'datamin': -0.5, 'datamax': 0.5})
@@ -281,7 +276,6 @@ the data and compares it with the `phase` variable.
 ..
 
    >>> import os
-   >>> from fipy.tools import dump
    >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
    >>> print phase.allclose(testData)
    1

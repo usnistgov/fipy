@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:55:56 PM} 
+ #                                last update: 7/5/07 {6:35:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,14 +92,7 @@ A simple analytical answer can be used to test the result:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.meshes.grid2D import Grid2D
-from fipy.solvers import *
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 2
 
@@ -128,7 +121,6 @@ boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
 if __name__ == '__main__':
     ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
     
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
+    viewer = viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
     viewer.plot()
     raw_input('finished')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:41:02 PM}
+ #                                last update: 7/5/07 {6:50:16 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,13 +82,7 @@ The result can be tested with the following code:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+from fipy import *
 
 L = 1.
 nx = 50

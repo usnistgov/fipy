@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/3/07 {6:06:46 PM}
+ #                                last update: 7/5/07 {6:54:08 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,12 +69,13 @@ with different initial conditions and a 2D mesh:
 
 ..
     
+    >>> from fipy import *
+
     >>> steps = numberOfSteps
     >>> from fipy.tools.numerix import sqrt
     >>> N = int(sqrt(numberOfElements))
     >>> L = 2.5 * N / 100.
     >>> dL = L / N
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 The initial conditions are given by
@@ -119,7 +120,6 @@ and is initialized to liquid everywhere
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name='phase field', mesh=mesh)
 
 The orientation is initialized to a uniform value to denote the
@@ -133,7 +133,6 @@ randomly oriented liquid phase
 
 ..
 
-    >>> from fipy.variables.modularVariable import ModularVariable
     >>> from fipy.tools.numerix import pi
     >>> theta = ModularVariable(
     ...     name='theta',
@@ -166,10 +165,6 @@ so that it can be reused later.
    \IndexClass{ImplicitSourceTerm}
 
 ..
-
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     >>> def buildPhaseEquation(phase, theta):
     ...
@@ -218,7 +213,6 @@ evaluation of the face gradient without the modular operators.
     ...     thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
     ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
     ...
-    ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
     ...                ImplicitDiffusionTerm(diffusionCoeff) \
     ...                + sourceCoeff
@@ -243,9 +237,8 @@ by the phase
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     phaseViewer = make(vars=phase,
-    ...                        limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = viewers.make(vars=phase,
+    ...                                limits={'datamin': 0., 'datamax': 1.})
     ...     thetaProd = -pi + phase * (theta + pi)
     ...     thetaProductViewer = make(vars=thetaProd,
     ...                               limits={'datamin': -pi, 
@@ -327,7 +320,6 @@ We save the variables to disk.
 
 ..
 
-    >>> from fipy.tools import dump
     >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
     
 and then recall them to test the data pickling mechanism

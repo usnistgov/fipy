@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:50:55 AM} 
+ #                                last update: 7/5/07 {6:57:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,10 +51,11 @@ system of multiple components. Once again, we'll focus on 1D.
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 .. raw:: latex
@@ -65,7 +66,6 @@ system of multiple components. Once again, we'll focus on 1D.
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
 .. raw:: latex
@@ -276,10 +276,6 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
 
 ..
     
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> phase.mobility = 1.
     >>> phase.gradientEnergy = 25
     >>> phase.equation = TransientTerm(coeff=1/phase.mobility) \
@@ -338,8 +334,6 @@ interstitial diffusion equations, we arrange in canonical form as before:
    \IndexClass{PowerLawConvectionTerm}
 
 ..
-
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
 
     >>> for Cj in interstitials:
     ...     phaseTransformation = (rho.getHarmonicFaceValue() / (R * T)) \
@@ -448,7 +442,6 @@ If we're running interactively, we create a viewer
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = [phase] \
     ...                                  + interstitials + substitutionals \
     ...                                  + [solvent],
@@ -463,7 +456,6 @@ and again iterate to equilibrium
 
 ..
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver(tolerance=1e-3)
 
     >>> dt = 10000

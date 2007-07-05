@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/30/07 {10:25:39 AM} 
+ #                                last update: 7/5/07 {6:57:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,6 +83,8 @@ and for the interpolation function is
 
 We create a 1D solution mesh
 
+    >>> from fipy import *
+
     >>> L = 1.
     >>> nx = 400
     >>> dx = L / nx
@@ -93,7 +95,6 @@ We create a 1D solution mesh
 
 ..
     
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field variable
@@ -104,7 +105,6 @@ We create the phase field variable
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name = "phase",
     ...                      mesh = mesh)
 
@@ -191,10 +191,6 @@ We treat the diffusion term
   implicitly, 
   \IndexClass{ImplicitDiffusionTerm}
 
-..
-
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-
 .. note::
     
    "Diffusion" in |FiPy| is not limited to the movement of atoms, but
@@ -265,7 +261,6 @@ transient term from
 
 ..
     
-    >>> from fipy.terms.transientTerm import TransientTerm
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=kappa) + S0
     
     >>> phase.setValue(1.)
@@ -346,7 +341,6 @@ Kobayashi:
 
 ..
 
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
     >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
@@ -470,7 +464,6 @@ and thus must redeclare |phase| on the new mesh
 
     >>> Lv = 2350 # J / cm**3
     >>> Tm = 1728. # K
-    >>> from fipy.variables.variable import Variable
     >>> T = Variable(value=Tm)
     >>> enthalpy = Lv * (T - Tm) / Tm # J / cm**3
     

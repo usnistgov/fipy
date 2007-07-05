@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:35:11 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:44:14 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,6 +64,8 @@ The scheme used in the `AdvectionTerm` preserves the `var` as a distance functio
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
+   >>> from fipy import *
+
    >>> velocity = 1.
    >>> dx = 1.
    >>> nx = 10
@@ -80,7 +82,6 @@ Construct the mesh.
 
 ..
 
-   >>> from fipy.meshes.grid1D import Grid1D
    >>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
@@ -91,8 +92,6 @@ Construct a `distanceVariable` object.
 
 ..
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
-   ...     import DistanceVariable
    >>> var = DistanceVariable(name='level set variable',
    ...                        mesh=mesh,
    ...                        value=-1,
@@ -108,8 +107,6 @@ The `advectionEquation` is constructed.
 
 ..
 
-   >>> from fipy.models.levelSet.advection.advectionEquation import \
-   ...     buildAdvectionEquation
    >>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
@@ -121,9 +118,8 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers import make
-   ...     viewer = make(vars=var,
-   ...                   limits={'datamin': -10., 'datamax': 10.})
+   ...     viewer = viewers.make(vars=var,
+   ...                           limits={'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()
@@ -144,7 +140,6 @@ The result can be tested with the following code:
    >>> x = mesh.getCellCenters()[0]
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
-   >>> from fipy.tools import numerix
    >>> answer = numerix.where(x < distanceTravelled, 
    ...                        x[0] - interfacePosition, answer)
    >>> print var.allclose(answer)

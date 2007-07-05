@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 3/30/07 {10:23:40 AM}
+ #                                 last update: 7/5/07 {6:54:20 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,10 +49,11 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 5e-6 # cm
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 .. raw:: latex
@@ -76,7 +77,6 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 
 .. raw:: latex
@@ -96,7 +96,6 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    
 ..
 
-    >>> from fipy.variables.variable import Variable
     >>> T = Variable(name="temperature")
 
 .. raw:: latex
@@ -289,10 +288,6 @@ we define the phase field equation
 
 ..
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> phaseEq = TransientTerm(1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
     ...   + S0 + ImplicitSourceTerm(coeff=S1)
 
@@ -420,7 +415,6 @@ or
 
 ..
     
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> diffusionEq = (TransientTerm() 
     ...                == ImplicitDiffusionTerm(coeff=D)
     ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
@@ -557,7 +551,6 @@ We plot the result against the sharp interface solution
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars=(phase, C, sharp), 
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
@@ -589,7 +582,6 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver(tolerance=1e-10)
 
     >>> phase.updateOld()

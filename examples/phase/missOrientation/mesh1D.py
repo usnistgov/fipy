@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {6:00:11 PM} 
+ #                                last update: 7/5/07 {6:55:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,13 +94,14 @@ modeling. The following code opens the file `mesh1D.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> from fipy.tools import dump
    >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
    >>> print phase.allclose(testData)
    1
    
 """
 __docformat__ = 'restructuredtext'
+
+from fipy import *
 
 steps = 100
 timeStepDuration = 0.02
@@ -115,24 +116,18 @@ temperature = 1.
 
 dx = L / nx
 
-from fipy.meshes.grid1D import Grid1D
 mesh = Grid1D(dx = dx, nx = nx)
 
-from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.variables.modularVariable import ModularVariable
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
 theta.setValue(0., where=mesh.getCellCenters()[0] > L / 2.)
 
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.getOld().getGrad().getMag()
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 phaseEq = TransientTerm(phaseTransientCoeff) == \
           ExplicitDiffusionTerm(alpha**2) \
           - ImplicitSourceTerm(implicitSource) \

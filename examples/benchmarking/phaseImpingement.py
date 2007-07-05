@@ -6,7 +6,7 @@
  # 
  # FILE: "phaseImpingement.py"
  #                                     created: 1/18/06 {2:35:59 PM}
- #                                 last update: 2/2/07 {8:46:58 AM}
+ #                                 last update: 7/5/07 {5:48:30 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -52,6 +52,7 @@ __docformat__ = 'restructuredtext'
 
 if __name__ == "__main__":
     
+    from fipy import *
     from fipy.tools.parser import parse
 
     from benchmarker import Benchmarker
@@ -69,7 +70,6 @@ if __name__ == "__main__":
     Lx = 2.5 * nx / 100.
     dx = Lx / nx
 
-    from fipy.meshes.grid2D import Grid2D
     mesh = Grid2D(dx,dx,nx,nx)
 
     bench.stop('mesh')
@@ -88,14 +88,12 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.variables.cellVariable import CellVariable
     phase = CellVariable(
         name = 'PhaseField',
         mesh = mesh,
         value = 0.
         )
 
-    from fipy.variables.modularVariable import ModularVariable
     pi = numerix.pi
     theta = ModularVariable(
         name = 'Theta',
@@ -118,10 +116,6 @@ if __name__ == "__main__":
     bench.start()
 
 
-
-    from fipy.terms.transientTerm import TransientTerm
-    from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     def buildPhaseEquation(phase, theta):
 
@@ -155,7 +149,6 @@ if __name__ == "__main__":
         thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
         sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
 
-        from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
         return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
                    ImplicitDiffusionTerm(diffusionCoeff) \
                    + sourceCoeff

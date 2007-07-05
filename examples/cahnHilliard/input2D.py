@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/15/05 {7:03:06 PM}
+ #                                last update: 7/5/07 {5:51:15 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -101,10 +101,10 @@ asq = 1.0
 epsilon = 1
 diffusionCoeff = 1
 
-from fipy.meshes.grid2D import Grid2D
+from fipy import *
+
 mesh = Grid2D(dx, dy, nx, ny)
 
-from fipy.variables.cellVariable import CellVariable
 from fipy.tools.numerix import random
 
 var = CellVariable(name = "phase field",
@@ -114,19 +114,13 @@ var = CellVariable(name = "phase field",
 faceVar = var.getArithmeticFaceValue()
 doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
 diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
 diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-from fipy.solvers import *
 ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
 solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
 BCs = (FixedFlux(mesh.getFacesRight(), 0),
        FixedFlux(mesh.getFacesLeft(), 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),

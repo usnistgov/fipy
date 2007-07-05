@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {4:54:33 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {5:52:35 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,7 +52,6 @@ Here are some test cases for the model.
     ...         var.updateOld()
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 0.1)
-    >>> from fipy.tools import numerix
     >>> accuracy = 1e-2
     >>> print numerix.allclose(KMVar, params['KM'], atol = accuracy)
     1
@@ -70,11 +69,8 @@ Here are some test cases for the model.
 """
 
 from parameters import parameters
-from fipy.meshes.grid1D import Grid1D
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+
+from fipy import *
 
 params = parameters['case 2']
 
@@ -145,7 +141,6 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    from fipy.tools import numerix
     RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[0]) / L)
 
     for i in range(100):

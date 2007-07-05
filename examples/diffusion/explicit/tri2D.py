@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:24:15 PM} 
+ #                                last update: 7/5/07 {6:01:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,15 +75,7 @@ The result is again tested in the same way:
 
 """
 
-from fipy.tools import numerix
-
-from fipy.meshes.tri2D import Tri2D
-from fipy.solvers import *
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
+from fipy import *
 
 dx = 1.
 dy = 1.
@@ -124,7 +116,7 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
     viewer.plot()
     raw_input('finished')
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {8:40:51 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:45:48 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,9 +84,7 @@ Do the tests:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+from fipy import *
 
 dx = 0.5
 dy = 2.

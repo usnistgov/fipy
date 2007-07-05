@@ -6,7 +6,7 @@
  # 
  #  FILE: "orthoerror.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/2/07 {8:48:41 AM} 
+ #                                last update: 7/5/07 {6:32:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,14 +52,7 @@ if __name__ == '__main__':
     import sys
     import os
 
-    from fipy.meshes.grid2D import Grid2D
-    from fipy.meshes.numMesh.skewedGrid2D import SkewedGrid2D
-    from fipy.meshes.numMesh.tri2D import Tri2D
-    from fipy.solvers import *
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.variables.cellVariable import CellVariable
-    from fipy.meshes.numMesh.gmshImport import GmshImporter2D
-    from fipy.tools import numerix
+    from fipy import *
 
     valueLeft = 0.
     valueRight = 1.
@@ -75,8 +68,6 @@ if __name__ == '__main__':
         var = CellVariable(name = "solution variable",
                            mesh = mesh,
                            value = valueLeft)
-
-        from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
         ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                                  FixedValue(mesh.getFacesRight(), valueRight)))

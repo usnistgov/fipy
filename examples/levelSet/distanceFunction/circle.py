@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:44:02 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:45:57 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,8 @@ and the boundary condition for a circle is given by,
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
+   >>> from fipy import *
+
    >>> dx = 1.
    >>> dy = 1.
    >>> nx = 11
@@ -73,7 +75,6 @@ Construct the mesh.
 
 ..
 
-   >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 Construct a `distanceVariable` object.
@@ -84,8 +85,6 @@ Construct a `distanceVariable` object.
 
 ..
 
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
-   ...     import DistanceVariable
    >>> var = DistanceVariable(name='level set variable',
    ...                        mesh=mesh,
    ...                        value=-1,
@@ -103,7 +102,6 @@ Construct a `distanceVariable` object.
 ..
 
    >>> if __name__ == '__main__':
-   ...     from fipy import viewers
    ...     viewer = viewers.make(vars = var, 
    ...                           limits = {'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
@@ -119,7 +117,6 @@ The result can be tested with the following commands.
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
-   >>> from fipy.tools import numerix
    >>> m1 = dY * dX / numerix.sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2

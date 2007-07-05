@@ -7,8 +7,7 @@ if __name__ == "__main__":
 
     bench.start()
 
-    ## from fipy.meshes.numMesh.grid1D import Grid1D
-    from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D as Grid1D
+    from fipy import *
 
     N = 100000
     L = 10.
@@ -19,7 +18,6 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.variables.cellVariable import CellVariable
     C = CellVariable(mesh = mesh)
     C.setValue(1, where=abs(mesh.getCellCenters()[0] - L/2.) < L / 10.)
 
@@ -29,8 +27,6 @@ if __name__ == "__main__":
 
     D = 1.
 
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    from fipy.terms.transientTerm import TransientTerm
     eq = TransientTerm() == ImplicitDiffusionTerm(coeff = D)
 
     bench.stop('terms')

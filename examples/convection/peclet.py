@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:44:59 AM} 
+ #                                last update: 7/5/07 {5:59:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,35 +48,26 @@ working with Peclet numbers over 1. LinearLUSOlver is now the default
 for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
 
+    >>> from fipy import *
+
     >>> L = 1.
     >>> nx = 1000
     >>> dx =  L / nx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx , nx=nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
     ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = var)
-
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> from fipy.terms.transientTerm import TransientTerm
-
-    >>> ##from fipy.solvers import *
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3
-    >>> from fipy.tools import numerix
     >>> allcloseList = []
     >>> while peclet < 1e4:
     ...     var[:] = valueLeft

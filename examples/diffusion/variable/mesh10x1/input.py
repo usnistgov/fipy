@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:10:27 PM} 
+ #                                last update: 7/5/07 {6:36:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,13 +78,13 @@ In this example
 We create a 1D mesh of the appropriate size
 
     >>> dx = L / nx
-    >>> from fipy.meshes.grid1D import Grid1D
+
+    >>> from fipy import *
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and initialize the solution variable to `valueLeft`:
     
     >>> valueLeft = 0.
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
     ...     name = "solution variable",
     ...     mesh = mesh,
@@ -96,7 +96,6 @@ exists on the faces of the cells and thus has to be the length of the
 faces.  It is created in the following way:
 
     >>> x = mesh.getFaceCenters()[0]
-    >>> from fipy.tools import numerix
     >>> outerFaces = numerix.logical_or(x < L / 4., x >= 3. * L / 4.)
     >>> diffCoeff = numerix.where(outerFaces, 1., 0.1)
 
@@ -107,15 +106,12 @@ and a fixed flux of
     
 to the right:
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
     ...                       FixedFlux(mesh.getFacesRight(),fluxRight))
 
 We iterate one time step to implicitly find the steady state
 solution:
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var,
     ...     boundaryConditions = boundaryConditions)
 
@@ -141,8 +137,7 @@ or
 If the problem is run interactively, we can view the result:
    
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var,
+    ...     viewer = viewers.make(vars = var,
     ...         limits = {'datamax': L + 18. * L / 4.})
     ...     viewer.plot()
 """

@@ -6,7 +6,7 @@
  # 
  #  FILE: "trench.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/5/07 {2:44:13 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {6:45:59 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,9 +52,7 @@ This example creates a trench with the following zero level set:
 
 ..
 
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+    >>> from fipy import *
 
     >>> height = 0.5
     >>> Lx = 0.4

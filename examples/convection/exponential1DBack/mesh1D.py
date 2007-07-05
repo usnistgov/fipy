@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:40:06 AM} 
+ #                                last update: 7/5/07 {5:56:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,20 +51,19 @@ This example solves the steady-state convection-diffusion equation as described 
 
 ..
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 1000
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
@@ -73,12 +72,9 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> diffCoeff = 1.
     >>> convCoeff = (-10.,)
     
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
@@ -87,7 +83,6 @@ We test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> from fipy.tools import numerix
     >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD

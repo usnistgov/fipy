@@ -6,7 +6,7 @@
  # 
  #  FILE: "impicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/7/05 {4:57:54 PM} 
+ #                                last update: 7/5/07 {5:54:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,15 +45,7 @@ This example shows the failure of advecting a square pulse with a first
 order implicit upwind scheme.
 """
 
-from fipy.tools import numerix
-     
-from fipy.meshes.grid1D import Grid1D
-from fipy.solvers import *
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
+from fipy import *
 
 valueLeft = 0.
 valueRight = 0.
@@ -80,14 +72,11 @@ boundaryConditions = (
     FixedValue(mesh.getFacesRight(), valueRight)
     )
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-
 eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = fipy.viewers.make(vars=(var,))
+    viewer = viewers.make(vars=(var,))
     viewer.plot()
     raw_input("press key to continue")
     for step in range(steps):

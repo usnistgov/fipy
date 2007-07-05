@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/30/07 {10:20:01 AM} 
+ #                                last update: 7/5/07 {6:39:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,13 +50,12 @@ Parameters from `2004/January/21/elphf0214`
 
 We start by defining a 1D mesh
 
-    >>> from fipy.tools.dimensions.physicalField import PhysicalField as PF
+    >>> from fipy import PhysicalField as PF
     
     >>> RT = (PF("1 Nav*kB") * PF("298 K"))
     >>> molarVolume = PF("1.80000006366754e-05 m**3/mol")
     >>> Faraday = PF("1 Nav*e")
 
-    >>> from fipy.tools import numerix
     >>> L = PF("3 nm")
     >>> nx = 1200
     >>> dx = L / nx
@@ -64,7 +63,6 @@ We start by defining a 1D mesh
     >>> # dx = PF("0.01 nm")
     >>> ## dx = PF("0.001 nm") * (1.001 - 1/numerix.cosh(numerix.arange(-10, 10, .01)))
     >>> # L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
     >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
@@ -75,7 +73,6 @@ We create the phase field
 
     >>> timeStep = PF("1e-12 s")
     
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = PF("1 m**3/J/s") / (molarVolume / (RT * timeStep))
     >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.getScale()**2 * RT / molarVolume)
@@ -94,7 +91,6 @@ We create the phase field
 
 We create four components
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., barrier = 0., diffusivity = None, valence = 0, equation = None, hasOld = 1):
     ...         self.standardPotential = standardPotential
@@ -116,7 +112,6 @@ We create four components
 
 the solvent
 
-    >>> from fipy.tools import numerix
     >>> solvent = ComponentVariable(mesh = mesh, name = 'H2O', value = 1.)
     >>> CnStandardPotential = PF("34139.7265625 J/mol") / RT
     >>> CnBarrier = PF("3.6e5 J/mol") / RT
@@ -187,10 +182,6 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> mesh.setScale(1)
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
     ...     - (permitivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
@@ -213,9 +204,6 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
 and we create the diffustion equation for the solute as in 
 ``examples.elphf.diffusion.input1D``
 
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> for Cj in substitutionals:
     ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
@@ -266,7 +254,6 @@ If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
     ...     import fipy.viewers
-    ...     from fipy.viewers.gistViewer.gist1DViewer import Gist1DViewer
     ...
     ...     phaseViewer = fipy.viewers.make(vars = phase,
     ...                                     limits = {'datamin': 0, 'datamax': 1})
@@ -280,12 +267,10 @@ If running interactively, we create viewers to display the results
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
 
     >>> solver = LinearCGSSolver(tolerance = 1e-3)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
 
     >>> phase.residual = CellVariable(mesh = mesh)
@@ -294,7 +279,6 @@ iterating to equilibrium
     ...     Cj.residual = CellVariable(mesh = mesh)
     >>> residualViewer = fipy.viewers.make(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
     
-    >>> from fipy.viewers.tsvViewer import TSVViewer
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
     
     >>> dt = substitutionals[0].diffusivity * 100
