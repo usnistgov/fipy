@@ -48,16 +48,16 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(
         docTestModuleNames = (
-            'fipy.variables.vectorCellVariable',
-            'fipy.variables.vectorFaceVariable',
-            'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.variable',
             'fipy.variables.cellVariable',
+            'fipy.variables.faceVariable',
+            'fipy.variables.operatorVariable',
             'fipy.variables.betaNoiseVariable',
             'fipy.variables.exponentialNoiseVariable',
             'fipy.variables.gammaNoiseVariable',
             'fipy.variables.gaussianNoiseVariable',
             'fipy.variables.uniformNoiseVariable',
+            'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.modularVariable',
         ))
     

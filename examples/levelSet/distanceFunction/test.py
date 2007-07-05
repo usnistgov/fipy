@@ -45,10 +45,10 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'oneD.input',
-            'circle.input',
-            'square.input',
-            'interior.input',
+            'mesh1D',
+            'circle',
+            'square',
+            'interior',
         ), base = __name__)
     
 if __name__ == '__main__':

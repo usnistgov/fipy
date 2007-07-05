@@ -62,7 +62,7 @@ class MayaviDistanceViewer(Viewer):
         >>> ## from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
         >>> var = DistanceVariable(mesh = mesh, value = -1)
     
-        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> x, y = mesh.getCellCenters()
     
         >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
         >>> var.calcDistanceFunction()
@@ -163,16 +163,16 @@ class MayaviDistanceViewer(Viewer):
         
         xmax = self._getLimit('datamax')
         if xmax is None:
-            xmax = numerix.max(self.surfactantVar)
+            xmax = self.surfactantVar.max()
             
         xmin = self._getLimit('datamin')
         if xmin is None:
-            xmin = numerix.min(self.surafactantVar)
+            xmin = self.surafactantVar.min()
             
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((numerix.min(var), numerix.max(var)))
+        slh.v_range_var.set((var.min(), var.max()))
         slh.set_v_range_var()
         
         self._viewer.Render()
@@ -183,4 +183,5 @@ class MayaviDistanceViewer(Viewer):
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()
+
 

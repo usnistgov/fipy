@@ -35,15 +35,13 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
-
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
 
-class _FaceGradVariable(VectorFaceVariable):
+class _FaceGradVariable(FaceVariable):
     def __init__(self, var):
-        VectorFaceVariable.__init__(self, var.getMesh())
+        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
         self.var = self._requires(var)
 
     def _calcValue(self):        
@@ -60,21 +58,15 @@ class _FaceGradVariable(VectorFaceVariable):
         tangents2 = self.mesh._getFaceTangents2()
         cellGrad = self.var.getGrad().getNumericValue()
         
-      
-        
-        grad1 = numerix.take(cellGrad,id1)
-        grad2 = numerix.take(cellGrad,id2)
-        t1grad1 = numerix.sum(tangents1*grad1,1)
-        t1grad2 = numerix.sum(tangents1*grad2,1)
-        t2grad1 = numerix.sum(tangents2*grad1,1)
-        t2grad2 = numerix.sum(tangents2*grad2,1)
+        grad1 = numerix.take(cellGrad, id1, axis=1)
+        grad2 = numerix.take(cellGrad, id2, axis=1)
+        t1grad1 = numerix.sum(tangents1*grad1,0)
+        t1grad2 = numerix.sum(tangents1*grad2,0)
+        t2grad1 = numerix.sum(tangents2*grad1,0)
+        t2grad2 = numerix.sum(tangents2*grad2,0)
         
         T1 = (t1grad1 + t1grad2) / 2.
         T2 = (t2grad1 + t2grad2) / 2.
-        
-        N = N[:,numerix.NewAxis]
-        T1 = T1[:,numerix.NewAxis]
-        T2 = T2[:,numerix.NewAxis]
         
         return normals * N + tangents1 * T1 + tangents2 * T2
 
@@ -87,30 +79,24 @@ class _FaceGradVariable(VectorFaceVariable):
  
         val = self._getArray().copy()
 
-        inline._runInline("""
+        inline._runIterateElementInline("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N;
-            int ID1 = id1[i];
-            int ID2 = id2[i];
+            int ID1 = ITEM(id1, i, NULL);
+            int ID2 = ITEM(id2, i, NULL);
             
-            N = (var[ID2] - var[ID1]) / dAP[i];
+            N = (ITEM(var, ID2, NULL) - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
 
             t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
             
-            for (j = 0; j < NJ; j++) {
-                int arrayID = i * NJ + j;
-                t1grad1 += tangents1[arrayID] * cellGrad[ID1 * NJ + j];
-                t1grad2 += tangents1[arrayID] * cellGrad[ID2 * NJ + j];
-                t2grad1 += tangents2[arrayID] * cellGrad[ID1 * NJ + j];
-                t2grad2 += tangents2[arrayID] * cellGrad[ID2 * NJ + j];
-            }
+            t1grad1 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID1, vec);
+            t1grad2 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID2, vec);
+            t2grad1 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID1, vec);
+            t2grad2 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID2, vec);
             
-            for (j = 0; j < NJ; j++) {
-                int arrayID = i * NJ + j;
-                val[arrayID] = normals[arrayID] * N;
-                val[arrayID] += tangents1[arrayID] * (t1grad1 + t1grad2) / 2.;
-                val[arrayID] += tangents2[arrayID] * (t2grad1 + t2grad2) / 2.;
-            }
+            ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
+            ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
+            ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.getGrad().getNumericValue(),
@@ -120,8 +106,8 @@ class _FaceGradVariable(VectorFaceVariable):
             dAP = numerix.array(self.mesh._getCellDistances()),
             var = self.var.getNumericValue(),
             val = val,
-            ni = tangents1.shape[0],
-            NJ = tangents1.shape[1])
+            ni = tangents1.shape[1],
+            shape=numerix.array(numerix.shape(tangents1)))
             
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

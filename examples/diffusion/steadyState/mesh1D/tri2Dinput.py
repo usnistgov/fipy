@@ -65,7 +65,7 @@ coordinates from the mesh are gathered and the length of the domain,
 `Lx`, is calculated.  An array, `analyticalArray`, is calculated to
 compare with the numerical result,
 
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> Lx = nx * dx
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
@@ -90,8 +90,8 @@ dx = 1.
 
 mesh = Tri2D(dx = dx, nx = nx)
 
-valueLeft = 0
-valueRight = 1
+valueLeft = 0.
+valueRight = 1.
 var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
 boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))

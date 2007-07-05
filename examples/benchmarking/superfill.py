@@ -128,7 +128,7 @@ if __name__ == "__main__":
     trenchHeight = bottomHeight + trenchDepth
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    x, y = mesh.getCellCenters()
     distanceVar.setValue(1, where=(y > trenchHeight) 
                                   | ((y > bottomHeight) 
                                      & (x < xCells * cellSize - sideWidth)))
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     metalVar.updateOld()
     bulkCatalystVar.updateOld()
     distanceVar.extendVariable(extensionVelocityVariable)
-    dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+    dt = cflNumber * cellSize / extensionVelocityVariable.max()
     advectionEquation.solve(distanceVar, dt = dt)
     surfactantEquation.solve(catalystVar, dt = dt)
     metalEquation.solve(metalVar, dt = dt,
@@ -272,7 +272,7 @@ if __name__ == "__main__":
         metalVar.updateOld()
         bulkCatalystVar.updateOld()
         distanceVar.extendVariable(extensionVelocityVariable)
-        dt = cflNumber * cellSize / numerix.max(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable.max()
         advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt,

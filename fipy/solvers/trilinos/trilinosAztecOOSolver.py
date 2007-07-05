@@ -70,17 +70,17 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.preconditioner = precon
 
     def _applyTrilinosSolver(self, A, LHS, RHS):
-        print "LHS is" 
-        print LHS
-        print "RHS is"
-        print RHS
-        A.GlobalAssemble()
-        print A
+        #print "LHS is" 
+        #print LHS
+        #print "RHS is"
+        #print RHS
+        #A.GlobalAssemble()
+        #print A
         Solver = AztecOO.AztecOO(A, LHS, RHS)
         Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
-        #Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=A)
         Solver.Iterate(self.iterations, self.tolerance)
-        print "LHS2 is" 
-        print LHS
+        #print "LHS2 is" 
+        #print LHS

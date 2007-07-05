@@ -146,7 +146,7 @@ if __name__ == '__main__':
             eqn.solve(var, dt = 1.)
 
     from fipy.tools import numerix
-    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[:,0]) / L)
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[0]) / L)
 
     for i in range(100):
         for var, eqn in eqs:

@@ -68,7 +68,7 @@ We start by defining a 1D mesh
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
     >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> # L = mesh.getCellCenters()[-1] - mesh.getCellCenters()[0]
+    >>> # L = mesh.getCellCenters()[0,-1] - mesh.getCellCenters()[0,0]
 
 
 We create the phase field
@@ -177,7 +177,7 @@ and the solvent and a liquid phase rich in the two substitutional species
 
 Once again, we start with a sharp phase boundary
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(x < L / 2)
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)
@@ -321,21 +321,21 @@ iterating to equilibrium
     ...             residual = 0.
     ...                 
     ...             phase.equation.solve(var = phase, dt = dt)
-    ...             # print phase.name, numerix.max(phase.equation.residual)
-    ...             residual = max(numerix.max(phase.equation.residual), residual)
+    ...             # print phase.name, phase.equation.residual.max()
+    ...             residual = max(phase.equation.residual.max(), residual)
     ...             phase.residual[:] = phase.equation.residual
     ...    
     ...             potential.equation.solve(var = potential, dt = dt, boundaryConditions = bcs)
-    ...             # print potential.name, numerix.max(potential.equation.residual)
-    ...             residual = max(numerix.max(potential.equation.residual), residual)
+    ...             # print potential.name, potential.equation.residual.max()
+    ...             residual = max(potential.equation.residual.max(), residual)
     ...             potential.residual[:] = potential.equation.residual
     ...    
     ...             for Cj in substitutionals + interstitials:
     ...                 Cj.equation.solve(var = Cj, 
     ...                                   dt = dt,
     ...                                   solver = solver)
-    ...                 # print Cj.name, numerix.max(Cj.equation.residual)
-    ...                 residual = max(numerix.max(Cj.equation.residual), residual)
+    ...                 # print Cj.name, Cj.equation.residual.max()
+    ...                 residual = max(Cj.equation.residual.max(), residual)
     ...                 Cj.residual[:] = Cj.equation.residual
     ...    
     ...             # print

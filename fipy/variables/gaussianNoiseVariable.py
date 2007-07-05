@@ -119,7 +119,7 @@ class GaussianNoiseVariable(NoiseVariable):
     
            >>> from fipy.variables.cellVariable import CellVariable
            >>> gauss = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[...,0]
+           >>> x = histogram.getMesh().getCellCenters()[0]
            >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
            
            >>> if __name__ == '__main__':

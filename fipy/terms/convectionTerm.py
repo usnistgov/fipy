@@ -45,8 +45,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.terms.faceTerm import FaceTerm
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.solvers import *
@@ -64,29 +63,23 @@ class ConvectionTerm(FaceTerm):
             >>> from fipy.meshes.grid1D import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
-            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
             >>> m = Grid1D(nx = 2)
             >>> cv = CellVariable(mesh = m)
             >>> fv = FaceVariable(mesh = m)
-            >>> vcv = VectorCellVariable(mesh = m)
-            >>> vfv = VectorFaceVariable(mesh = m)
+            >>> vcv = CellVariable(mesh=m, rank=1)
+            >>> vfv = FaceVariable(mesh=m, rank=1)
             >>> ConvectionTerm(coeff = cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+            TypeError: The coefficient must be a vector value.
             >>> ConvectionTerm(coeff = fv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+            TypeError: The coefficient must be a vector value.
             >>> ConvectionTerm(coeff = vcv)
-            ConvectionTerm(coeff=_VectorArithmeticCellToFaceVariable(value=array([[ 0.],
-                   [ 0.],
-                   [ 0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> ConvectionTerm(coeff = vfv)
-            ConvectionTerm(coeff=VectorFaceVariable(value=array([[ 0.],
-                   [ 0.],
-                   [ 0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> ConvectionTerm(coeff = (1,))
             ConvectionTerm(coeff=(1,))
             >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
@@ -94,7 +87,20 @@ class ConvectionTerm(FaceTerm):
             >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value.
+            TypeError: The coefficient must be a vector value.
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> m2 = Grid2D(nx=2, ny=1)
+            >>> cv2 = CellVariable(mesh=m2)
+            >>> vcv2 = CellVariable(mesh=m2, rank=1)
+            >>> vfv2 = FaceVariable(mesh=m2, rank=1)
+            >>> ConvectionTerm(coeff=vcv2)
+            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> ConvectionTerm(coeff=vfv2)
+            ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
 
         
         :Parameters:
@@ -107,21 +113,21 @@ class ConvectionTerm(FaceTerm):
 
         self.stencil = None
         
-        if isinstance(coeff, VectorCellVariable):
+        if isinstance(coeff, _MeshVariable) and coeff.getRank() != 1:
+            raise TypeError, "The coefficient must be a vector value."
+
+        if isinstance(coeff, CellVariable):
             coeff = coeff.getArithmeticFaceValue()
-            
-        if isinstance(coeff, CellVariable) or isinstance(coeff, FaceVariable):
-            raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
 
         FaceTerm.__init__(self, coeff = coeff)
         
     def _calcGeomCoeff(self, mesh):
-        if not isinstance(self.coeff, VectorFaceVariable):
-            self.coeff = VectorFaceVariable(mesh=mesh, value=self.coeff)
+        if not isinstance(self.coeff, FaceVariable):
+            self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
         
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
-        return projectedCoefficients.sum(1)
+        return projectedCoefficients.sum(0)
         
     def _getWeight(self, mesh, equation=None):
 
@@ -154,9 +160,9 @@ class ConvectionTerm(FaceTerm):
         return solver or LinearLUSolver()
 
     def _verifyCoeffType(self, var):
-        if not isinstance(self.coeff, VectorFaceVariable) \
+        if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
-            raise TypeError, "The coefficient must be a VectorFaceVariable, VectorCellVariable, or a vector value."
+            raise TypeError, "The coefficient must be a vector value."
 
     def __add__(self, other):
         if isinstance(other, ConvectionTerm):

@@ -142,8 +142,8 @@ class FaceTerm(Term):
         cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaces)
         cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces)
 
-        fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1[:] + cell1offdiag * oldArrayId2[:]))
-        fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2[:] + cell2offdiag * oldArrayId1[:]))
+        fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
+        fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)

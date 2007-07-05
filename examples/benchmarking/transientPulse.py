@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     from fipy.variables.cellVariable import CellVariable
     C = CellVariable(mesh = mesh)
-    C.setValue(1, where=abs(mesh.getCellCenters()[...,0] - L/2.) < L / 10.)
+    C.setValue(1, where=abs(mesh.getCellCenters()[0] - L/2.) < L / 10.)
 
     bench.stop('variables')
 

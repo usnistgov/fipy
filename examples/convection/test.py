@@ -45,16 +45,16 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'exponential1D.input',
-            'exponential1D.tri2Dinput',
-            'exponential2D.input',
-            'exponential1DBack.input',
-            'powerLaw1D.input',
-            'exponential1DSource.input',
-            'exponential2D.tri2Dinput',
-            'exponential1DSource.tri2Dinput',
-            'powerLaw1D.tri2Dinput',
-            'advection.inputVanLeerUpwind',
+            'exponential1D.mesh1D',
+            'exponential1D.tri2D',
+            'exponential2D.mesh2D',
+            'exponential1DBack.mesh1D',
+            'powerLaw1D.mesh1D',
+            'exponential1DSource.mesh1D',
+            'exponential2D.tri2D',
+            'exponential1DSource.tri2D',
+            'powerLaw1D.tri2D',
+            'advection.vanLeerUpwind',
             'peclet'
         ), base = __name__)
     

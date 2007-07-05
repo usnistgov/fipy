@@ -132,9 +132,9 @@ class _AdvectionTerm(Term):
         NCells = mesh.getNumberOfCells()
         NCellFaces = mesh._getMaxFacesPerCell()
 
-        cellValues = numerix.repeat(oldArray[:,numerix.NewAxis], NCellFaces, axis = 1)
+        cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
         
-        cellIDs = numerix.repeat(numerix.arange(NCells)[:,numerix.NewAxis], NCellFaces, axis = 1)
+        cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
         cellToCellIDs = mesh._getCellToCellIDs()
 
         cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
@@ -144,8 +144,8 @@ class _AdvectionTerm(Term):
         differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
         differences = MA.filled(differences, value = 0)
         
-        minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCells, NCellFaces)))**2, axis = 1))
-        maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCells, NCellFaces)))**2, axis = 1))
+        minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+        maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
 
         coeff = numerix.array(self._getGeomCoeff(mesh))
 
