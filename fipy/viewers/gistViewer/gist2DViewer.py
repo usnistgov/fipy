@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:30:41 AM} 
+ #                                last update: 7/5/07 {9:42:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -151,8 +151,8 @@ class Gist2DViewer(GistViewer):
             
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[0], numerix.array(vertexIDs).flat, axis=1)
-        yCoords = numerix.take(vertexCoords[1], numerix.array(vertexIDs).flat, axis=1)
+        xCoords = numerix.take(vertexCoords[0], numerix.array(vertexIDs).flat)
+        yCoords = numerix.take(vertexCoords[1], numerix.array(vertexIDs).flat)
 
         import gist
 
