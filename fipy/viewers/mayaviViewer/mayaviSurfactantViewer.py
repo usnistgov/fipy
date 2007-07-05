@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 1/12/06 {8:24:28 PM}
+ #                                last update: 7/5/07 {5:03:50 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,7 @@ class MayaviSurfactantViewer(Viewer):
         
     def __init__(self, distanceVar, surfactantVar=None, levelSetValue=0., limits=None, title=None, smooth=0, zoomFactor=1., animate=False):
         """
-        Create a `MayaviDistanceViewer`.
+        Create a `MayaviSurfactantViewer`.
         
             >>> from fipy import *
             >>> dx = 1.
