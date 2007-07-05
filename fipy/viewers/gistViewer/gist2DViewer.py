@@ -141,18 +141,12 @@ class Gist2DViewer(GistViewer):
         if datamax == datamin:
             datamax = datamin + 1e-10
 
-        
-        vertexIDs = self.mesh._getOrderedCellVertexIDs().flat
+        vertexIDs = self.mesh._getOrderedCellVertexIDs()
 
-        import MA
-        
-        if type(vertexIDs) is type(MA.array(0)):
-            vertexIDs = vertexIDs.compressed()
-            
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[0], numerix.array(vertexIDs).flat)
-        yCoords = numerix.take(vertexCoords[1], numerix.array(vertexIDs).flat)
+        xCoords = numerix.take(vertexCoords[0], vertexIDs).flatten("FORTRAN")
+        yCoords = numerix.take(vertexCoords[1], vertexIDs).flatten("FORTRAN")
 
         import gist
 

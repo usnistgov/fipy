@@ -51,7 +51,7 @@ from fipy.tools import numerix
 
 class GistVectorViewer(GistViewer):
     
-    def __init__(self, vars, title = ''):
+    def __init__(self, vars, limits=None, title = ''):
         """
             >>> from fipy import *
             >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
@@ -89,7 +89,7 @@ class GistVectorViewer(GistViewer):
             >>> del viewer
 
         """
-	GistViewer.__init__(self, vars=vars, title=title)
+	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
         
     def _getSuitableVars(self, vars):
         vars = [var for var in GistViewer._getSuitableVars(self, vars) \
@@ -121,7 +121,7 @@ class GistVectorViewer(GistViewer):
         vx = numerix.array(var[0])
         vy = numerix.array(var[1])
         
-        maxVec = var.getMag().max()
+        maxVec = var.getMag().max().getValue()
         maxGrid = var.getMesh()._getCellDistances().max()
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)

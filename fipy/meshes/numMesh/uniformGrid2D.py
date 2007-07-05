@@ -504,7 +504,7 @@ class UniformGrid2D(Grid2D):
         ids[3] = indices[0] + indices[1] * (self.nx + 1)
         ids[0] = ids[3] + 1
         
-        return numerix.reshape(ids, (4, self.numberOfCells))
+        return ids.reshape((4, self.numberOfCells), order="FORTRAN")
         
 ##     scaling
     
