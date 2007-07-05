@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/5/07 {9:56:26 AM} 
+ #                                last update: 7/5/07 {9:59:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -286,7 +286,7 @@ class Mesh:
             ## bug in count returns float values when there is no mask
             return numerix.array(cellFaceIDs.count(axis=0), 'l')
         else:
-            return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs[-1], 'l')
+            return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
 
     def getExteriorFaces(self):
         pass
