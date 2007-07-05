@@ -57,7 +57,7 @@ periodic wave wraps around the mesh.
 
     >>> newVar2 = var2.copy()
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> for step in range(steps):
     ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
     ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     viewer2 = fipy.viewers.make(vars=var2)
     viewer1.plot()
     viewer2.plot()
-    from fipy.solvers.linearLUSolver import LinearLUSolver
+    from fipy.solvers import *
 
     newVar2 = var2.copy()
 

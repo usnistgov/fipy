@@ -589,7 +589,7 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver(tolerance=1e-10)
 
     >>> phase.updateOld()

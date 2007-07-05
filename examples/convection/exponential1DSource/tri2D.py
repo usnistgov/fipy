@@ -87,7 +87,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
     ...       - ExponentialConvectionTerm(coeff = convCoeff))
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,

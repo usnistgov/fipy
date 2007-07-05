@@ -67,7 +67,7 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 var = CellVariable(mesh = mesh)
 
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers import *
 from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.transientTerm import TransientTerm

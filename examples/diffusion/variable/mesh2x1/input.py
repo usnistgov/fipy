@@ -97,7 +97,7 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.meshes.grid2D import Grid2D
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
+from fipy.solvers import *
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 

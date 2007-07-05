@@ -78,7 +78,7 @@ The result is again tested in the same way:
 from fipy.tools import numerix
 
 from fipy.meshes.tri2D import Tri2D
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers import *
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.variables.cellVariable import CellVariable
 import fipy.viewers

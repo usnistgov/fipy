@@ -120,8 +120,7 @@ diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative
 diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers import *
 ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
 solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 

@@ -72,8 +72,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> from fipy.terms.transientTerm import TransientTerm
 
-    >>> ##from fipy.solvers.linearCGSSolver import LinearCGSSolver
-    >>> ##from fipy.solvers.linearScipyGMRESSolver import LinearScipyGMRESSolver as GMRES
+    >>> ##from fipy.solvers import *
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3

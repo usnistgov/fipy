@@ -130,7 +130,7 @@ and use the `LinearLUSolver` for stability.
 
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
+    >>> from fipy.solvers import *
 
 We perform one implicit timestep to achieve steady state
    

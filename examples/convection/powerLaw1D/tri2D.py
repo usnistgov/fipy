@@ -73,7 +73,7 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))

@@ -73,7 +73,7 @@ mesh with `nx = 10` and `ny = 10`:
     >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
