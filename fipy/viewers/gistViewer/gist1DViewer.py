@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist1DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 2/21/07 {12:19:53 PM} 
+ #                                last update: 7/5/07 {9:30:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ class Gist1DViewer(GistViewer):
 
         >>> from fipy import *
         >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[...,0]
+        >>> x = mesh.getCellCenters()[0]
         >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
         >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
         >>> viewer = Gist1DViewer(vars=(var1, var2), 

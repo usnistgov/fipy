@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/21/07 {12:15:05 PM} { 2:45:36 PM}
+ #                                last update: 7/4/07 {8:24:29 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,13 +61,13 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
             >>> from fipy import *
             >>> from fipy.tools.numerix import *
             >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k")
             >>> viewer = Matplotlib2DGridViewer(vars=sin(k * xyVar),
             ...                             limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
             ...                             title="Matplotlib2DGridViewer test")
-            >>> for kval in numerix.arange(0,10,1):
+            >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/21/07 {1:41:34 PM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {9:32:26 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,7 @@ class Gnuplot1DViewer(GnuplotViewer):
     
         >>> from fipy import *
         >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[...,0]
+        >>> x = mesh.getCellCenters()[0]
         >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
         >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
         >>> viewer = Gnuplot1DViewer(vars=(var1, var2), 

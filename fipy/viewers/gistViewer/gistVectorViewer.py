@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/25/06 {4:15:28 PM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {9:30:57 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,31 +51,31 @@ from fipy.tools import numerix
 
 class GistVectorViewer(GistViewer):
     
-    def __init__(self, vars, title = ''):
+    def __init__(self, vars, limits=None, title = ''):
         """
             >>> from fipy import *
             >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> x, y = mesh.getCellCenters()
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
             >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
 
             >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()
             >>> del viewer
             
             >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> x, y = mesh.getCellCenters()
             >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
             >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
             ...                           title="GistVectorViewer test")
             >>> viewer.plot()
             >>> viewer._promptForOpinion()
@@ -89,7 +89,7 @@ class GistVectorViewer(GistViewer):
             >>> del viewer
 
         """
-	GistViewer.__init__(self, vars=vars, title=title)
+	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
         
     def _getSuitableVars(self, vars):
         vars = [var for var in GistViewer._getSuitableVars(self, vars) \
@@ -121,7 +121,7 @@ class GistVectorViewer(GistViewer):
         vx = numerix.array(var[0])
         vy = numerix.array(var[1])
         
-        maxVec = var.getMag().max()
+        maxVec = var.getMag().max().getValue()
         maxGrid = var.getMesh()._getCellDistances().max()
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)

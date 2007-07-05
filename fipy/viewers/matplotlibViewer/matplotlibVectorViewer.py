@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/26/07 {12:29:15 PM} { 2:45:36 PM}
+ #                                last update: 7/4/07 {8:17:54 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             >>> from fipy import *
             >>> from fipy.tools.numerix import *
             >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+            >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k")
             >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getGrad(), 

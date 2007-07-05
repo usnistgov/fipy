@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/16/07 {1:14:16 PM}
+ #                                last update: 7/5/07 {9:33:50 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,7 +54,7 @@ class MayaviViewer(Viewer):
 
         >>> from fipy import *
         >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[...,0]
+        >>> x = mesh.getCellCenters()[0]
         >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
         >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
         >>> viewer = MayaviViewer(vars=(var1, var2), 
@@ -65,7 +65,7 @@ class MayaviViewer(Viewer):
         >>> del viewer
         
         >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-        >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+        >>> x, y = mesh.getCellCenters()
         >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
         >>> viewer = MayaviViewer(vars=var, 
         ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
@@ -75,7 +75,7 @@ class MayaviViewer(Viewer):
         >>> del viewer
 
         >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
-        >>> x, y, z = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1], mesh.getCellCenters()[...,2]
+        >>> x, y, z = mesh.getCellCenters()
         >>> var = CellVariable(mesh=mesh, name=r"$sin(x y z)$", value=numerix.sin(x * y * z))
         >>> viewer = MayaviViewer(vars=var, 
         ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},

@@ -228,8 +228,14 @@ class TrenchMesh(GapFillMesh):
         >>> eq = DiffusionTerm()
         
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
+        >>> try: 
+        ...     from fipy.solvers import *
+        ...     solver = LinearPCGSolver(precon=MultilevelSGSPreconditioner())
+        ... except:
+        ...     solver=None
         >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
-        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
+        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)),
+        ...          solver=solver)
 
     Evaluate the result:
        
