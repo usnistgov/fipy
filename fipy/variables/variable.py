@@ -1185,7 +1185,7 @@ class Variable(object):
                                             canInline=False)
         
     def reshape(self, shape):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opshape=shape, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
         
     def transpose(self):
         """
