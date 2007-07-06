@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:37 PM} 
+ #                                last update: 7/5/07 {9:08:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -120,8 +120,7 @@ The result is tested against the expected profile:
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (var,))
+    ...     viewer = viewers.make(vars = (var,))
     ...     viewer.plot()
 """
  

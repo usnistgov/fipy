@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:33:07 PM} 
+ #                                last update: 7/5/07 {9:09:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,9 +64,8 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
     ...                                                value = initialArray)
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var,
-    ...                                limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer = viewers.make(vars = var,
+    ...                           limits = {'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
     ...     raw_input("press key to continue")
     

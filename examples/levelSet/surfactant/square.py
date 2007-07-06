@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:16:48 PM}
+ #                                last update: 7/5/07 {9:12:56 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -106,9 +106,8 @@ advectionEquation = buildHigherOrderAdvectionEquation(
     advectionCoeff = velocity)
 
 if __name__ == '__main__':
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
 
 
     distanceVariable.calcDistanceFunction()

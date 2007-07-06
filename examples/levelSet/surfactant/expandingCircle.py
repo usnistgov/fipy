@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:16:49 PM}
+ #                                last update: 7/5/07 {9:12:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -137,10 +137,9 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
-    velocityViewer = fipy.viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
+    velocityViewer = viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:16:51 PM}
+ #                                last update: 7/5/07 {9:12:59 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,9 +124,8 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
     distanceViewer.plot()
     surfactantViewer.plot()
 

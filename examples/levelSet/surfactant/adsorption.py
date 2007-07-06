@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 7/5/07 {8:16:52 PM} 
+ #                                last update: 7/5/07 {9:13:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -180,10 +180,6 @@ theta = surfactantVar.getInterfaceVar()[1]
     
 
 if __name__ == "__main__":
-
-    ## set up the viewers
-
-    import fipy.viewers
 
     ## start time stepping
 

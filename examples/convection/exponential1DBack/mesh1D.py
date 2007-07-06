@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:09:20 PM} 
+ #                                last update: 7/5/07 {9:07:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,8 +90,7 @@ We test the solution against the analytical result:
     1
    
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer = viewers.make(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

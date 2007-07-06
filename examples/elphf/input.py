@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:40 PM} 
+ #                                last update: 7/5/07 {9:11:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -253,12 +253,10 @@ And Poisson's equation
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...
-    ...     phaseViewer = fipy.viewers.make(vars = phase,
-    ...                                     limits = {'datamin': 0, 'datamax': 1})
+    ...     phaseViewer = viewers.make(vars = phase,
+    ...                                limits = {'datamin': 0, 'datamax': 1})
     ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
-    ...     potentialViewer = fipy.viewers.make(vars = potential)
+    ...     potentialViewer = viewers.make(vars = potential)
     ...     phaseViewer.plot()
     ...     concViewer.plot()
     ...     potentialViewer.plot()
@@ -277,7 +275,7 @@ iterating to equilibrium
     >>> potential.residual = CellVariable(mesh = mesh)
     >>> for Cj in substitutionals + interstitials:
     ...     Cj.residual = CellVariable(mesh = mesh)
-    >>> residualViewer = fipy.viewers.make(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
+    >>> residualViewer = viewers.make(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
     
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
     

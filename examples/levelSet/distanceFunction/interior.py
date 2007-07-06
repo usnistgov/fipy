@@ -6,7 +6,7 @@
  # 
  #  FILE: "interior.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:17:02 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {9:13:08 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -102,7 +102,6 @@ var.setValue(1, where=((x < dx) | (x > (Lx - dx))
 var.calcDistanceFunction()
 
 if __name__ == '__main__':
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
+    viewer = viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
     viewer.plot()
     raw_input('finished')

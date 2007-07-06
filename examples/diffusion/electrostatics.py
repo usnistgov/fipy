@@ -6,7 +6,7 @@
  # 
  #  FILE: "electrostatics.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 7/5/07 {6:00:48 PM} 
+ #                                last update: 7/5/07 {9:08:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -161,8 +161,7 @@ If we are running the example interactively, we view the result
 ..
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars=(charge, potential, analytical))
+    ...     viewer = viewers.make(vars=(charge, potential, analytical))
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 

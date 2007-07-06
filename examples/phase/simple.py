@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:21:34 PM} 
+ #                                last update: 7/5/07 {9:15:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -134,8 +134,7 @@ If we are running interactively, we'll want a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (phase,))
+    ...     viewer = viewers.make(vars = (phase,))
     ...     viewer.plot()
     ...     raw_input("Initial condition. Press <return> to proceed...")
 
@@ -492,7 +491,7 @@ and thus must redeclare |phase| on the new mesh
 and make a new viewer
 
     >>> if __name__ == '__main__':
-    ...     viewer2 = fipy.viewers.make(vars = (phase, analyticalArray))
+    ...     viewer2 = viewers.make(vars = (phase, analyticalArray))
     ...     viewer2.plot()
 
 Now we can redefine the transient phase field equation, using the optimal

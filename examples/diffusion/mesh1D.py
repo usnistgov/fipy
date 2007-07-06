@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 7/5/07 {8:21:46 PM} 
+ #                                last update: 7/5/07 {9:08:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -207,7 +207,7 @@ this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the "`__main__`" script, which will
 only be true if we explicitly launched it and not if it has been imported
 by another script such as the automatic tester. The function
-``fipy.viewers.make()`` returns a suitable viewer depending on available
+``viewers.make()`` returns a suitable viewer depending on available
 viewers and the dimension of the mesh.
 
 .. raw:: latex

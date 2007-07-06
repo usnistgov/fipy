@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:08:22 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {9:07:26 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -122,8 +122,6 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    import fipy.viewers
-
     v1 = KMVar / KMVar.getCellVolumeAverage()
     v2 = PN / PN.getCellVolumeAverage()
     v3 = TMVar / TMVar.getCellVolumeAverage()
@@ -131,7 +129,7 @@ if __name__ == '__main__':
     v2.setName('PN')
     v3.setName('TM')
 
-    KMViewer = fipy.viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
+    KMViewer = viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
 
     KMViewer.plot()
 
