@@ -86,6 +86,8 @@ from fipy.tools.parser import parse
 numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
+from fipy import *
+
 nx = int(sqrt(numberOfElements))
 ny = int(sqrt(numberOfElements))
 
@@ -99,8 +101,6 @@ L = dx * nx
 asq = 1.0
 epsilon = 1
 diffusionCoeff = 1
-
-from fipy import *
 
 mesh = Grid2D(dx, dy, nx, ny)
 
@@ -117,8 +117,8 @@ diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative
 diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
-solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
+##solver = LinearLUSolver(tolerance=1e-15, iterations=1000)
+solver = LinearPCGSolver(tolerance=1e-15, iterations=1000)
 
 BCs = (FixedFlux(mesh.getFacesRight(), 0),
        FixedFlux(mesh.getFacesLeft(), 0),
