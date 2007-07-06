@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 1/12/06 {9:14:17 PM} 
+ #                                last update: 7/5/07 {8:18:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,7 +62,7 @@ We wish to create 4 symmetric regions such that
     
 We create a square domain
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy import *
 
     >>> N = 20
     >>> L = 1.
@@ -75,7 +75,6 @@ We create a square domain
     ...    nx = N,
     ...    ny = N)
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "test", mesh = mesh)
   
 First set the values as given in the above equation:
@@ -84,7 +83,6 @@ First set the values as given in the above equation:
     >>> var.setValue(x * y)
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
     ...     viewer.plot()
 
@@ -122,11 +120,10 @@ the given coordinate. The cells are then set to the symmetry value:
 
 The following code tests the results with a different algorithm:
 
-    >>> from fipy.tools import numerix
-    >>> testResult = numerix.zeros((N / 2, N / 2), 'd')
-    >>> bottomRight = numerix.zeros((N / 2, N / 2), 'd')
-    >>> topLeft = numerix.zeros((N / 2, N / 2), 'd')
-    >>> topRight = numerix.zeros((N / 2, N / 2), 'd')
+    >>> testResult = zeros((N / 2, N / 2), 'd')
+    >>> bottomRight = zeros((N / 2, N / 2), 'd')
+    >>> topLeft = zeros((N / 2, N / 2), 'd')
+    >>> topRight = zeros((N / 2, N / 2), 'd')
     >>> for j in range(N / 2):
     ...     for i in range(N / 2):
     ...         x = dx * (i + 0.5)
@@ -135,11 +132,11 @@ The following code tests the results with a different algorithm:
     ...         bottomRight[i,j] = var(((L - x,), (y,)))
     ...         topLeft[i,j] = var(((x,), (L - y,)))
     ...         topRight[i,j] = var(((L - x,), (L - y,)))
-    >>> numerix.allclose(testResult, bottomRight, atol = 1e-10)
+    >>> allclose(testResult, bottomRight, atol = 1e-10)
     1
-    >>> numerix.allclose(testResult,topLeft, atol = 1e-10)
+    >>> allclose(testResult,topLeft, atol = 1e-10)
     1
-    >>> numerix.allclose(testResult,topRight, atol = 1e-10)
+    >>> allclose(testResult,topRight, atol = 1e-10)
     1
     
 """

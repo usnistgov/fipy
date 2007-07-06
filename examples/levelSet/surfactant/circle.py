@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:41:02 PM}
+ #                                last update: 7/5/07 {9:12:59 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -62,33 +62,27 @@ Also a surfactant is present of the interface, governed by the equation:
 The result can be tested with the following code:
 
 
-   >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
    >>> for step in range(steps):
    ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
    >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
    >>> print surfactantBefore.allclose(surfactantAfter)
    1
    >>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
    >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
    >>> coverage = surfactantVariable * mesh.getCellVolumes() / areas
    >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+   >>> print sqrt(sum(error) / sum(error > 0))
    0.00813776069241
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+from fipy import *
 
 L = 1.
 nx = 50
@@ -112,7 +106,7 @@ distanceVariable = DistanceVariable(
     )
 
 x, y = mesh.getCellCenters()
-cellRadius = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2)
+cellRadius = sqrt((x - L / 2.)**2 + (y - L / 2.)**2)
 distanceVariable.setValue(cellRadius - initialRadius)
 
 initialSurfactantValue =  1.
@@ -130,13 +124,12 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print 'total surfactant before:',numerix.sum(surfactantVariable * mesh.getCellVolumes())
+    print 'total surfactant before:', sum(surfactantVariable * mesh.getCellVolumes())
     
     for step in range(steps):
         surfactantVariable.updateOld()
@@ -148,7 +141,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable)
 
 
-    print 'total surfactant after:',numerix.sum(surfactantVariable * mesh.getCellVolumes())
+    print 'total surfactant after:', sum(surfactantVariable * mesh.getCellVolumes())
 
     areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -161,7 +154,7 @@ if __name__ == '__main__':
             error += (coverage[i] / answer - 1.)**2
             size += 1
             
-    error = numerix.sqrt(error / size)
+    error = sqrt(error / size)
     
     print 'error:', error
     

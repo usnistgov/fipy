@@ -6,7 +6,7 @@
  # 
  #  FILE: "electrostatics.py"
  #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 6/2/06 {12:39:41 PM} 
+ #                                last update: 7/5/07 {9:08:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,10 +50,11 @@ equation. We examine a few cases in one dimension.
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 200
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 .. raw:: latex
@@ -63,7 +64,6 @@ equation. We examine a few cases in one dimension.
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> potential = CellVariable(mesh=mesh, name='potential', value=0.)
 
 .. raw:: latex
@@ -105,7 +105,6 @@ The dimensionless Poisson equation is
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) \
     ...                      + charge == 0
 
@@ -118,7 +117,6 @@ we must constrain the solution by fixing the potential at one point:
 
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),)
 
 First, we obtain a uniform charge distribution by setting a uniform concentration
@@ -163,8 +161,7 @@ If we are running the example interactively, we view the result
 ..
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars=(charge, potential, analytical))
+    ...     viewer = viewers.make(vars=(charge, potential, analytical))
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 

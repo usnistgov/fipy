@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:23:48 AM} 
+ #                                last update: 7/5/07 {8:09:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,22 +45,21 @@
 This example solves the steady-state convection-diffusion equation as
 described in `examples/diffusion/convection/exponential1D/mesh1D.py` on a 2D
 mesh with `nx = 10` and `ny = 10`:
-    
+
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 10
     >>> ny = 10
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(L / nx, L / ny, nx, ny)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
@@ -69,11 +68,8 @@ mesh with `nx = 10` and `ny = 10`:
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,0.)
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
@@ -82,16 +78,14 @@ We test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> from fipy.tools import numerix
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer = viewers.make(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

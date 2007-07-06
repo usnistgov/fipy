@@ -6,7 +6,7 @@
  # 
  # FILE: "superfill.py"
  #                                     created: 1/19/06 {4:09:41 PM}
- #                                 last update: 2/2/07 {8:47:12 AM}
+ #                                 last update: 7/5/07 {8:09:40 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -78,6 +78,7 @@ if __name__ == "__main__":
     trenchSpacing = 0.6e-6
     boundaryLayerDepth = 0.3e-6
 
+    from fipy import *
     from fipy.tools.parser import parse
 
     numberOfElements = parse('--numberOfElements', action = 'store',
@@ -90,12 +91,11 @@ if __name__ == "__main__":
 
     bench.start()
 
-    import fipy.tools.numerix as numerix
     if numberOfElements != -1:
         pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
         sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
               / (2 * numberOfElements)
-        cellSize = pos + numerix.sqrt(pos**2 + sqr)
+        cellSize = pos + sqrt(pos**2 + sqr)
     else:
         cellSize = 0.1e-7
 
@@ -103,7 +103,6 @@ if __name__ == "__main__":
              + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
     xCells = int(trenchSpacing / 2 / cellSize)
-    from fipy.meshes.grid2D import Grid2D
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
@@ -114,8 +113,6 @@ if __name__ == "__main__":
     bench.start()
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-    from fipy.models.levelSet.distanceFunction.distanceVariable import \
-        DistanceVariable        
 
     distanceVar = DistanceVariable(
        name = 'distance variable',
@@ -134,21 +131,17 @@ if __name__ == "__main__":
                                      & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
-    from fipy.models.levelSet.surfactant.surfactantVariable import \
-        SurfactantVariable
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
         value = catalystCoverage,
         distanceVar = distanceVar)
 
-    from fipy.variables.cellVariable import CellVariable
     bulkCatalystVar = CellVariable(
         name = 'bulk catalyst variable',
         mesh = mesh,
         value = catalystConcentration)
 
-    from fipy.variables.cellVariable import CellVariable
     metalVar = CellVariable(
         name = 'metal variable',
         mesh = mesh,
@@ -165,7 +158,7 @@ if __name__ == "__main__":
           * catalystVar.getInterfaceVar()
 
     exchangeCurrentDensity = currentDensity0 + tmp
-    expo = numerix.exp(expoConstant * overpotential)
+    expo = exp(expoConstant * overpotential)
     currentDensity = expo * exchangeCurrentDensity * metalVar \
                      / bulkMetalConcentration
 
@@ -177,9 +170,6 @@ if __name__ == "__main__":
         mesh = mesh,
         value = depositionRateVariable)   
 
-    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-                import AdsorbingSurfactantEquation
-
     surfactantEquation = AdsorbingSurfactantEquation(
         surfactantVar = catalystVar,
         distanceVar = distanceVar,
@@ -187,14 +177,8 @@ if __name__ == "__main__":
         rateConstant = rateConstant0 \
                        + rateConstant3 * overpotential**3)
 
-    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-                   import buildHigherOrderAdvectionEquation
-
     advectionEquation = buildHigherOrderAdvectionEquation(
         advectionCoeff = extensionVelocityVariable)
-
-    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-                         import buildMetalIonDiffusionEquation
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -203,9 +187,6 @@ if __name__ == "__main__":
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = molarVolume,
     )
-
-    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-                    import buildSurfactantBulkDiffusionEquation
 
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
@@ -219,7 +200,6 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.boundaryConditions.fixedValue import FixedValue
     metalEquationBCs = (
             FixedValue(
                 mesh.getFacesTop(),

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:36:57 PM} 
+ #                                last update: 7/5/07 {8:56:32 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -119,6 +119,8 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
+from fipy import *
+
 def runGold(faradaysConstant=9.6e4,
             consumptionRateConstant=2.6e+6,
             molarVolume=10.21e-6,
@@ -141,21 +143,18 @@ def runGold(faradaysConstant=9.6e4,
     numberOfCellsInNarrowBand = 20
     cellsBelowTrench = 10
     
-    from fipy.tools import numerix
-    from fipy import TrenchMesh
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * taperAngle / 180.,
+                      angle = pi * taperAngle / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable        
     distanceVar = DistanceVariable(
        name = 'distance variable',
        mesh = mesh,
@@ -165,13 +164,11 @@ def runGold(faradaysConstant=9.6e4,
     distanceVar.setValue(1, where=mesh.getElectrolyteMask())
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
-    from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
         value = catalystCoverage,
         distanceVar = distanceVar)
 
-    from fipy.variables.cellVariable import CellVariable
     metalVar = CellVariable(
         name = 'metal variable',
         mesh = mesh,
@@ -188,9 +185,6 @@ def runGold(faradaysConstant=9.6e4,
         mesh = mesh,
         value = depositionRateVariable)   
 
-    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-                import AdsorbingSurfactantEquation
-
     catalystSurfactantEquation = AdsorbingSurfactantEquation(
         catalystVar,
         distanceVar = distanceVar,
@@ -198,15 +192,8 @@ def runGold(faradaysConstant=9.6e4,
         rateConstant = 0,
         consumptionCoeff = consumptionRateConstant * extensionVelocityVariable)
 
-    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-                   import buildHigherOrderAdvectionEquation
-
     advectionEquation = buildHigherOrderAdvectionEquation(
         advectionCoeff = extensionVelocityVariable)
-
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-                         import buildMetalIonDiffusionEquation
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -221,7 +208,6 @@ def runGold(faradaysConstant=9.6e4,
 
         try:
             
-            from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (
                 MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True),)
             
@@ -233,12 +219,11 @@ def runGold(faradaysConstant=9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return numerix.array(self.var[:self.mesh.getNumberOfCells()])
+                    return array(self.var[:self.mesh.getNumberOfCells()])
 
-            from fipy.viewers import make
             viewers = (
-                make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                make(PlotVariable(var = catalystVar.getInterfaceVar())))
+                viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                viewers.make(PlotVariable(var = catalystVar.getInterfaceVar())))
 
     else:
         viewers = ()
@@ -255,9 +240,9 @@ def runGold(faradaysConstant=9.6e4,
             
             distanceVar.calcDistanceFunction(deleteIslands = True)
             
-        extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
-        argmax = numerix.argmax(extensionVelocityVariable)
-        dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+        extensionVelocityVariable.setValue(array(depositionRateVariable))
+        argmx = argmax(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
         
         distanceVar.updateOld()
@@ -271,12 +256,10 @@ def runGold(faradaysConstant=9.6e4,
         step += 1
 
     try:
-        from fipy.tools import dump
         import os
-        import examples.levelSet.electroChem
-        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], 'goldData.gz'))
+        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         n = mesh.getFineMesh().getNumberOfCells()
-        print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
+        print allclose(catalystVar[:n], data[:n], atol=1.0)
     except:
         return 0
     

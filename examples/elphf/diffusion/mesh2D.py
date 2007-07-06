@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/29/07 {11:49:10 AM} 
+ #                                last update: 7/5/07 {9:11:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,15 +44,15 @@ r"""
 The same three-component diffusion problem as introduced in::
 `examples/elphf/diffusion/mesh1D.py` but in 2D:
 
+    >>> from fipy import *
+
     >>> nx = 40
     >>> dx = 1.
     >>> L = nx * dx
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
 One component in this ternary system will be designated the "solvent"
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> class ComponentVariable(CellVariable):
     ...     def __init__(self, mesh, value = 0., name = '', standardPotential = 0., 
     ...                  barrier = 0., diffusivity = None, valence = 0, equation = None):
@@ -116,12 +116,6 @@ We separate the solution domain into two different concentration regimes
 
 We create one diffusion equation for each substitutional component
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> for Cj in substitutionals:
     ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
@@ -147,16 +141,14 @@ We create one diffusion equation for each substitutional component
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewers = [fipy.viewers.make(vars = field, 
-    ...                                  limits = {'datamin': 0, 'datamax': 1}) 
+    ...     viewers = [viewers.make(vars = field, 
+    ...                             limits = {'datamin': 0, 'datamax': 1}) 
     ...                for field in [solvent] + substitutionals]
     ...     for viewer in viewers:
     ...         viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from fipy.solvers import *
     >>> solver = LinearLUSolver()
     
     >>> for i in range(40):

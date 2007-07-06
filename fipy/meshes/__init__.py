@@ -5,3 +5,6 @@ from numMesh.periodicGrid1D import PeriodicGrid1D
 from numMesh.periodicGrid2D import PeriodicGrid2D
 from numMesh.skewedGrid2D import SkewedGrid2D
 from numMesh.tri2D import Tri2D
+from numMesh.gmshImport import GmshImporter2D
+from numMesh.gmshImport import GmshImporter2DIn3DSpace
+from numMesh.gmshImport import GmshImporter3D

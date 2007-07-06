@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/5/05 {5:55:02 PM} 
+ #                                last update: 7/5/07 {9:08:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,16 +48,16 @@ the difference being that this transient example is solved explicitly.
 
 We create a 1D mesh:
     
+    >>> from fipy import *
+
     >>> nx = 100
     >>> dx = 1.
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 and we initialize a `CellVariable` to `initialValue`:
     
     >>> valueLeft = 0.
     >>> initialValue = 1.
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
     ...     name = "concentration",
     ...     mesh = mesh,
@@ -83,13 +83,10 @@ We take the diffusion coefficient
     
 We build the equation:
 
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.transientTerm import TransientTerm
     >>> eq = TransientTerm() == ExplicitDiffusionTerm(coeff = diffusionCoeff)
     
 and the boundary conditions:
     
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
 
 In this case, many steps have to be taken to reach equilibrium.  A loop is
@@ -114,8 +111,7 @@ The result is tested against the expected profile:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> from fipy.tools import numerix
-    >>> epsi = x / numerix.sqrt(t * diffusionCoeff)
+    >>> epsi = x / sqrt(t * diffusionCoeff)
     >>> from scipy.special import erf
     >>> analyticalArray = erf(epsi/2)
     >>> print var.allclose(analyticalArray, atol = 2e-3)
@@ -124,8 +120,7 @@ The result is tested against the expected profile:
 If the problem is run interactively, we can view the result:
     
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (var,))
+    ...     viewer = viewers.make(vars = (var,))
     ...     viewer.plot()
 """
  

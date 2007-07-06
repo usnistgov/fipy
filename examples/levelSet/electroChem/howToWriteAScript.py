@@ -6,7 +6,7 @@
  # 
  #  FILE: "howToWriteAScript.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:40 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -141,13 +141,11 @@ Build the mesh:
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexFunction{exp}
 
 ..
 
-   >>> from fipy.tools.numerix import sqrt, exp
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
    ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
@@ -166,7 +164,7 @@ Build the mesh:
 
 ..
 
-   >>> from fipy.meshes.grid2D import Grid2D
+   >>> from fipy import *
    >>> mesh = Grid2D(dx=cellSize,
    ...               dy=cellSize,
    ...               nx=xCells,
@@ -193,8 +191,6 @@ function
 ..
 
    >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-   >>> from fipy.models.levelSet.distanceFunction.distanceVariable import \
-   ...     DistanceVariable        
    >>> distanceVar = DistanceVariable(
    ...    name='distance variable',
    ...    mesh= mesh,
@@ -228,8 +224,6 @@ variables need to be created that govern the concentrations of various species.
 
  ..
 
-   >>> from fipy.models.levelSet.surfactant.surfactantVariable import \
-   ...     SurfactantVariable
    >>> catalystVar = SurfactantVariable(
    ...     name="catalyst variable",
    ...     value=catalystCoverage,
@@ -243,7 +237,6 @@ variables need to be created that govern the concentrations of various species.
 
 ..
 
-   >>> from fipy.variables.cellVariable import CellVariable
    >>> bulkCatalystVar = CellVariable(
    ...     name='bulk catalyst variable',
    ...     mesh=mesh,
@@ -334,8 +327,6 @@ by,
 
 ..
 
-   >>> from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-   ...             import AdsorbingSurfactantEquation
    >>> surfactantEquation = AdsorbingSurfactantEquation(
    ...     surfactantVar=catalystVar,
    ...     distanceVar=distanceVar,
@@ -357,8 +348,6 @@ by,
 
 ..
 
-   >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-   ...                import buildHigherOrderAdvectionEquation
    >>> advectionEquation = buildHigherOrderAdvectionEquation(
    ...     advectionCoeff=extensionVelocityVariable)
 
@@ -384,9 +373,6 @@ governed by,
 
 ..
 
-   >>> from fipy.boundaryConditions.fixedValue import FixedValue
-   >>> from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-   ...                      import buildMetalIonDiffusionEquation
    >>> metalEquation = buildMetalIonDiffusionEquation(
    ...     ionVar=metalVar,
    ...     distanceVar=distanceVar,
@@ -429,8 +415,6 @@ density and a jump coefficient. The boundary condition
 
 ..
 
-   >>> from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-   ...                 import buildSurfactantBulkDiffusionEquation
    >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
    ...     bulkVar=bulkCatalystVar,
    ...     distanceVar=distanceVar,
@@ -452,7 +436,6 @@ If running interactively, create viewers.
 
    >>> if __name__ == '__main__':
    ...     try:
-   ...         from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
    ...         viewers = (
    ...             MayaviSurfactantViewer(distanceVar,
    ...                                    catalystVar.getInterfaceVar(),
@@ -460,10 +443,9 @@ If running interactively, create viewers.
    ...                                    limits={ 'datamax' : 1.0, 'datamin' : 0.0 },
    ...                                    smooth=1),)
    ...     except:
-   ...         from fipy.viewers import make
    ...         viewers = (
-   ...             make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-   ...             make(catalystVar.getInterfaceVar()))
+   ...             viewers.make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+   ...             viewers.make(catalystVar.getInterfaceVar()))
    ... else:
    ...     viewers = ()
 
@@ -519,12 +501,9 @@ to tell if something has changed or been broken.
 ..
  
    >>> import os
-   >>> import examples.levelSet.electroChem
-   >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
-   ...                         'test.gz')
-   >>> from fipy.tools import dump
-   >>> from fipy.tools import numerix
-   >>> print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol=1e-4)
+   >>> filepath = os.path.join(os.path.split(__file__)[0], 
+   ...                         "simpleTrenchSystem.gz")
+   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
    1
 
    >>> if __name__ == '__main__':

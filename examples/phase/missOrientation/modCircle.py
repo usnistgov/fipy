@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCircle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {4:58:16 PM} 
+ #                                last update: 7/5/07 {9:15:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,20 +90,18 @@ The solution is allowed to evolve for `steps = 100` time steps.
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `modCircleData.gz` extracts the
+modeling. The following code opens the file `modCircle.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation.modCircle
-   >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'modCircleData.gz')
-   >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
-   >>> from fipy.tools import numerix
-   >>> print numerix.allclose(numerix.array(testData), phase)
+   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> print phase.allclose(testData)
    1
 
 """
 __docformat__ = 'restructuredtext'
+
+from fipy import *
 
 steps = 100
 timeStepDuration = 0.02
@@ -119,26 +117,19 @@ alpha = 0.015
 dx = L / nx
 dy = L / ny
 
-from fipy.meshes.grid2D import Grid2D
 mesh = Grid2D(dx, dy, nx, ny)
 
-from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.variables.modularVariable import ModularVariable
-from fipy.tools import numerix
-theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
+theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * pi / 3.)
 x, y = mesh.getCellCenters()
-theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
+theta.setValue(-2. * pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.getOld().getGrad().getMag()
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 phaseEq = TransientTerm(phaseTransientCoeff) == \
           ExplicitDiffusionTerm(alpha**2) \
           - ImplicitSourceTerm(implicitSource) \
@@ -146,8 +137,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
 
-   import fipy.viewers
-   phaseViewer = fipy.viewers.make(vars = phase)
+   phaseViewer = viewers.make(vars = phase)
    phaseViewer.plot()
    for step in range(steps):
       phaseEq.solve(phase, dt = timeStepDuration)

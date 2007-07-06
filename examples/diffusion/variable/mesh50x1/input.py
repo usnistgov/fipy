@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/4/05 {3:16:38 PM} 
+ #                                last update: 7/5/07 {8:13:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,21 +53,15 @@ A simple analytical answer can be used to test the result:
    >>> ImplicitDiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
    >>> x = mesh.getCellCenters()[0]
    >>> values = x + 18. * L / 4.
-   >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
-   >>> values = numerix.where(x < L / 4., x, values)
+   >>> values = where(x < 3. * L / 4., 10 * x - 9. * L / 4., values)
+   >>> values = where(x < L / 4., x, values)
    >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.meshes.grid1D import Grid1D
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 50
 
@@ -87,14 +81,13 @@ var = CellVariable(
     value = valueLeft)
 
 x = mesh.getFaceCenters()[0]
-middleFaces = numerix.logical_or(x < L / 4.,x >= 3. * L / 4.)
-diffCoeff = numerix.where(middleFaces, 1., 0.1)
+middleFaces = logical_or(x < L / 4.,x >= 3. * L / 4.)
+diffCoeff = where(middleFaces, 1., 0.1)
 
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedFlux(mesh.getFacesRight(),fluxRight))
 
 if __name__ == '__main__':
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
+    viewer = viewers.make(vars = var, limits = {'datamax': L + 18. * L / 4.})
     viewer.plot()
     raw_input('finished')

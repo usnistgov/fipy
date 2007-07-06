@@ -6,7 +6,7 @@
  # 
  #  FILE: "interior.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 8/2/05 {4:59:55 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {9:13:08 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,30 +56,27 @@ Do the tests:
 
    >>> dX = dx / 2.
    >>> dY = dy / 2.
-   >>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2) 
+   >>> mm = dX * dY / sqrt(dX**2 + dY**2) 
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> v1 = evalCell(dY, dX, dx, dy)[1]
    >>> v2 = max(-dY*3, -dX*3)   
-   >>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
-   ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                           dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
-   ...                           dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-   ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
+   >>> values = array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
+   ...                   dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
+   ...                   dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
+   ...                   dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
+   ...                   v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
    >>> print var.allclose(values, atol = 1e-10)
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+from fipy import *
 
 dx = 1.
 dy = 1.
@@ -105,7 +102,6 @@ var.setValue(1, where=((x < dx) | (x > (Lx - dx))
 var.calcDistanceFunction()
 
 if __name__ == '__main__':
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
+    viewer = viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
     viewer.plot()
     raw_input('finished')

@@ -6,7 +6,7 @@
  # 
  #  FILE: "expandingCircle.py"
  #                                    created: 08/10/04 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:40:55 PM}
+ #                                last update: 7/5/07 {9:12:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,7 @@ The solution for these set of equations is given by:
 The following tests can be performed. First test for global
 conservation of surfactant:
 
-   >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
    >>> totalTime = 0
    >>> for step in range(steps):
    ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
@@ -72,39 +72,32 @@ conservation of surfactant:
    ...     surfactantEquation.solve(surfactantVariable)
    ...     totalTime += timeStepDuration
    >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.getCellVolumes())
+   >>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
    >>> print surfactantBefore.allclose(surfactantAfter)
    1
 
 Next test for the correct local value of surfactant: 
 
-   >>> finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+   >>> finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
    >>> answer = initialSurfactantValue * initialRadius / finalRadius
    >>> coverage = surfactantVariable.getInterfaceVar()
    >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04
+   >>> print sqrt(sum(error) / sum(error > 0)) < 0.04
    1
 
 Test for the correct position of the interface:
 
    >>> x, y = mesh.getCellCenters()
-   >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
+   >>> radius = sqrt((x - L / 2)**2 + (y - L / 2)**2)
    >>> solution = radius - distanceVariable
    >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
-   >>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02
+   >>> print sqrt(sum(error) / sum(error > 0)) < 0.02
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-   
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.variables.cellVariable import CellVariable
+from fipy import *
 
 L = 1.
 nx = 50
@@ -120,7 +113,7 @@ x, y = mesh.getCellCenters()
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - initialRadius,
+    value = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - initialRadius,
     hasOld = 1)
 
 initialSurfactantValue =  1.
@@ -144,10 +137,9 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
-    velocityViewer = fipy.viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
+    velocityViewer = viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()
@@ -169,11 +161,11 @@ if __name__ == '__main__':
         distanceViewer.plot()
         surfactantViewer.plot()
 
-        finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+        finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.getInterfaceVar()
         error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-        print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+        print 'error', sqrt(sum(error) / sum(error > 0))
 
 
         

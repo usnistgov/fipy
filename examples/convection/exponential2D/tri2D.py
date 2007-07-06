@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:39:40 AM} 
+ #                                last update: 7/5/07 {8:09:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,21 +45,20 @@
 This example solves the steady-state convection-diffusion equation as described in
 `./examples/diffusion/convection/exponential1D/mesh1D.py` with `nx = 10` and `ny = 10`.
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 10
     >>> ny = 10
-    >>> from fipy.meshes.tri2D import Tri2D
     >>> mesh = Tri2D(L / nx, L / ny, nx, ny)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
@@ -68,30 +67,29 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,0.)
     
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
+    >>> if solverSuite() == 'Trilinos':
+    ...     solver = LinearPCGSolver(tolerance = 1.e-15, iterations = 2000)
+    ... else:
+    ...     solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000)
 
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = solver )
     
 The analytical solution test for this problem is given by:
 
    >>> axis = 0
    >>> x = mesh.getCellCenters()[axis]
-   >>> from fipy.tools import numerix
-   >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+   >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+   >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
    >>> analyticalArray = CC / DD
    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
    1
    
    >>> if __name__ == '__main__':
-   ...     import fipy.viewers
-   ...     viewer = fipy.viewers.make(vars = var)
+   ...     viewer = viewers.make(vars = var)
    ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

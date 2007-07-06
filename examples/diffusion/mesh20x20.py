@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 6/2/06 {12:38:04 PM} 
+ #                                last update: 7/5/07 {8:21:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,11 +50,12 @@ This example again solves a 1D diffusion problem as in
 
 ..
     
+    >>> from fipy import *
+
     >>> nx = 20
     >>> ny = nx
     >>> dx = 1.
     >>> dy = dx
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 We create a `CellVariable` and initialize it to zero:
@@ -65,7 +66,6 @@ We create a `CellVariable` and initialize it to zero:
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
     ...                    value = 0.)
@@ -81,8 +81,6 @@ iterative conjugate gradient solver.
 ..
 
     >>> D = 1.
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
 
 We apply Dirichlet boundary conditions
@@ -99,7 +97,6 @@ automatically applied to the top and bottom.
 
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), 
     ...                   value=valueLeft),
     ...        FixedValue(faces=mesh.getFacesRight(), 
@@ -114,7 +111,6 @@ We create a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars=phi,
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
@@ -139,7 +135,6 @@ We can again test against the analytical solution
 .. raw:: latex
 
    $\phi = 1 - \erf(x/2\sqrt{D t})$.
-   \IndexModule{numerix}
    \IndexSoftware{SciPy}
    \IndexFunction{sqrt}
 
@@ -147,8 +142,6 @@ We can again test against the analytical solution
 
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> from fipy.tools.numerix import sqrt
-
     >>> phiAnalytical = CellVariable(name="analytical value",
     ...                              mesh=mesh)
 

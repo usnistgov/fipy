@@ -6,7 +6,7 @@
  # 
  #  FILE: "trench.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 2/5/07 {2:44:13 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {9:13:12 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,9 +52,7 @@ This example creates a trench with the following zero level set:
 
 ..
 
-    >>> from fipy.meshes.grid2D import Grid2D
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    >>> from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+    >>> from fipy import *
 
     >>> height = 0.5
     >>> Lx = 0.4
@@ -86,23 +84,21 @@ This example creates a trench with the following zero level set:
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
-   >>> import fipy.tools.numerix as numerix
-   >>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
-   >>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
-   >>> d = numerix.zeros((len(x),3), 'd')
-   >>> d[:,0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
-   >>> d[:,1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
-   >>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
-   >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
-   >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
+   >>> r1 =  -sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
+   >>> r2 =  sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
+   >>> d = zeros((len(x),3), 'd')
+   >>> d[:,0] = where(x >= Lx / 2, y - Ly / 5, r1)
+   >>> d[:,1] = where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+   >>> d[:,2] = where(logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+   >>> argmins = argmin(absolute(d), axis = 1)
+   >>> answer = take(d.ravel(), arange(len(argmins))*3 + argmins)
    >>> print var.allclose(answer, atol = 1e-1)
    1
 
 Advect the interface and check the position.
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
+    ...     viewer = viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
     ...     
     ...     viewer.plot()
 
@@ -114,8 +110,8 @@ Advect the interface and check the position.
 
    >>> distanceMoved = timeStepDuration * steps * velocity
    >>> answer = answer - distanceMoved
-   >>> answer = numerix.where(answer < 0., 0., answer)
-   >>> var.setValue(numerix.where(var < 0., 0., var))
+   >>> answer = where(answer < 0., 0., answer)
+   >>> var.setValue(where(var < 0., 0., var))
    >>> print var.allclose(answer, atol = 1e-1)
    1
 

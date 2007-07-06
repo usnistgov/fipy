@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 2/2/07 {8:51:09 AM} 
+ #                                last update: 7/5/07 {9:09:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,16 +56,7 @@ if __name__ == '__main__':
     import sys
     import os
 
-    from fipy.tools import numerix
-
-    from fipy.meshes.grid2D import Grid2D
-    from fipy.meshes.skewedGrid2D import SkewedGrid2D
-    from fipy.meshes.tri2D import Tri2D
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.boundaryConditions.fixedFlux import FixedFlux
-    from fipy.variables.cellVariable import CellVariable
-    import fipy.viewers
-    from fipy.meshes.gmshImport import GmshImporter2D
+    from fipy import *
 
     valueLeft = 0.
     valueRight = 1.
@@ -76,7 +67,7 @@ if __name__ == '__main__':
                        mesh = mesh,
                        value = valueLeft)
 
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
 
     def leftSide(face):
         a = face.getCenter()[0]
@@ -106,24 +97,22 @@ if __name__ == '__main__':
         else:
             return 0
 
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-
     ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                              FixedValue(mesh.getFacesRight(), valueRight)))
 
-    varArray = numerix.array(var)
+    varArray = array(var)
     x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,
                             value = abs(errorArray))
-    errorViewer = fipy.viewers.make(vars = errorVar)
+    errorViewer = viewers.make(vars = errorVar)
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = fipy.viewers.make(vars = NonOrthoVar)
+    NOViewer = viewers.make(vars = NonOrthoVar)
     viewer.plot()
     NOViewer.plot()
 

@@ -6,7 +6,7 @@
  # 
  # FILE: "cahnHilliard.py"
  #                                     created: 1/18/06 {2:36:12 PM}
- #                                 last update: 2/2/07 {8:46:11 AM}
+ #                                 last update: 7/5/07 {8:06:35 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -53,6 +53,7 @@ if __name__ == "__main__":
     
     import time
 
+    from fipy import *
     from fipy.tools.parser import parse
 
     from benchmarker import Benchmarker
@@ -63,10 +64,8 @@ if __name__ == "__main__":
 
     bench.start()
 
-    import fipy.tools.numerix as numerix
-
-    nx = int(numerix.sqrt(numberOfElements))
-    ny = int(numerix.sqrt(numberOfElements))
+    nx = int(sqrt(numberOfElements))
+    ny = int(sqrt(numberOfElements))
 
     steps = 10
 
@@ -79,14 +78,12 @@ if __name__ == "__main__":
     epsilon = 1
     diffusionCoeff = 1
 
-    from fipy.meshes.grid2D import Grid2D
     mesh = Grid2D(dx, dy, nx, ny)
 
     bench.stop('mesh')
 
     bench.start()
 
-    from fipy.variables.cellVariable import CellVariable
     from fipy.tools.numerix import random
 
     var = CellVariable(name = "phase field",
@@ -96,9 +93,6 @@ if __name__ == "__main__":
     bench.stop('variables')
 
     bench.start()
-
-    from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    from fipy.terms.transientTerm import TransientTerm
 
     faceVar = var.getArithmeticFaceValue()
     doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
@@ -111,7 +105,6 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.solvers import *
     ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
     solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 
@@ -119,9 +112,6 @@ if __name__ == "__main__":
 
     bench.start()
 
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.boundaryConditions.fixedFlux import FixedFlux
-    from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
     BCs = (FixedFlux(mesh.getFacesRight(), 0),
            FixedFlux(mesh.getFacesLeft(), 0),
            NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
@@ -133,7 +123,7 @@ if __name__ == "__main__":
 
     dexp=-5
 
-    dt = numerix.exp(dexp)
+    dt = exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()
@@ -142,7 +132,7 @@ if __name__ == "__main__":
     bench.start()
 
     for step in range(steps):
-        dt = numerix.exp(dexp)
+        dt = exp(dexp)
         dt = min(100, dt)
         dexp += 0.01
         var.updateOld()

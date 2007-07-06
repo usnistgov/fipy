@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/30/07 {10:25:39 AM} 
+ #                                last update: 7/5/07 {9:15:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,6 +83,8 @@ and for the interpolation function is
 
 We create a 1D solution mesh
 
+    >>> from fipy import *
+
     >>> L = 1.
     >>> nx = 400
     >>> dx = L / nx
@@ -93,7 +95,6 @@ We create a 1D solution mesh
 
 ..
     
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field variable
@@ -104,7 +105,6 @@ We create the phase field variable
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name = "phase",
     ...                      mesh = mesh)
 
@@ -134,8 +134,7 @@ If we are running interactively, we'll want a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = (phase,))
+    ...     viewer = viewers.make(vars = (phase,))
     ...     viewer.plot()
     ...     raw_input("Initial condition. Press <return> to proceed...")
 
@@ -173,14 +172,12 @@ The analytical solution for this steady-state phase field problem, in an infinit
    \label{eq-phase:simple:analytical}
    \end{equation}
    or
-   \IndexModule{numerix}
    \IndexFunction{tanh}
    \IndexFunction{sqrt}
 
 ..
 
     >>> x = mesh.getCellCenters()[0]
-    >>> from fipy.tools.numerix import tanh, sqrt
     >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
 We treat the diffusion term
@@ -190,10 +187,6 @@ We treat the diffusion term
    $ \kappa_\phi \nabla^2\phi $
   implicitly, 
   \IndexClass{ImplicitDiffusionTerm}
-
-..
-
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 .. note::
     
@@ -265,7 +258,6 @@ transient term from
 
 ..
     
-    >>> from fipy.terms.transientTerm import TransientTerm
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=kappa) + S0
     
     >>> phase.setValue(1.)
@@ -346,7 +338,6 @@ Kobayashi:
 
 ..
 
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
     >>> S0 = mPhi * phase * (mPhi > 0)
     >>> S1 = mPhi * ((mPhi < 0) - phase)
     >>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
@@ -470,7 +461,6 @@ and thus must redeclare |phase| on the new mesh
 
     >>> Lv = 2350 # J / cm**3
     >>> Tm = 1728. # K
-    >>> from fipy.variables.variable import Variable
     >>> T = Variable(value=Tm)
     >>> enthalpy = Lv * (T - Tm) / Tm # J / cm**3
     
@@ -501,7 +491,7 @@ and thus must redeclare |phase| on the new mesh
 and make a new viewer
 
     >>> if __name__ == '__main__':
-    ...     viewer2 = fipy.viewers.make(vars = (phase, analyticalArray))
+    ...     viewer2 = viewers.make(vars = (phase, analyticalArray))
     ...     viewer2.plot()
 
 Now we can redefine the transient phase field equation, using the optimal

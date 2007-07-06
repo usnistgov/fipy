@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:38:55 AM} 
+ #                                last update: 7/5/07 {8:11:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,20 +47,19 @@ described in `examples/diffusion/convection/exponential1D/mesh1D.py` but
 uses the `PowerLawConvectionTerm` rather than the
 `ExponentialConvectionTerm`.
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 1000
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
@@ -69,8 +68,6 @@ uses the `PowerLawConvectionTerm` rather than the
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,)
     
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
@@ -82,9 +79,8 @@ We test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> from fipy.tools import numerix
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2) 
     1
@@ -92,8 +88,7 @@ We test the solution against the analytical result:
 If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer = viewers.make(vars = var)
     ...     viewer.plot()
 """
      

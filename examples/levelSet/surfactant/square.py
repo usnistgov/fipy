@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/3/07 {4:40:45 PM}
+ #                                last update: 7/5/07 {9:12:56 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,13 +48,13 @@ The example checks for global conservation of surfactant.
 Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction()
-   >>> initialSurfactant = numerix.sum(surfactantVariable)
+   >>> initialSurfactant = sum(surfactantVariable)
    >>> for step in range(steps):
    ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))
+   >>> print allclose(initialSurfactant, sum(surfactantVariable))
    1
  
 
@@ -62,13 +62,7 @@ Advect the interface and check the position.
 """
 __docformat__ = 'restructuredtext'
 
-import fipy.tools.numerix as numerix
-
-from fipy.meshes.grid2D import Grid2D
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.models.levelSet.advection.higherOrderAdvectionEquation import buildHigherOrderAdvectionEquation
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
+from fipy import *
 
 L = 1.
 dx = 0.1
@@ -112,15 +106,14 @@ advectionEquation = buildHigherOrderAdvectionEquation(
     advectionCoeff = velocity)
 
 if __name__ == '__main__':
-    import fipy.viewers
-    distanceViewer = fipy.viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
-    surfactantViewer = fipy.viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
+    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
+    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
 
 
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print sum(surfactantVariable)
         surfactantVariable.updateOld()
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)

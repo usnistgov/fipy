@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/15/05 {7:03:06 PM}
+ #                                last update: 7/5/07 {9:06:21 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -86,9 +86,8 @@ from fipy.tools.parser import parse
 numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
-import fipy.tools.numerix as numerix
-nx = int(numerix.sqrt(numberOfElements))
-ny = int(numerix.sqrt(numberOfElements))
+nx = int(sqrt(numberOfElements))
+ny = int(sqrt(numberOfElements))
 
 steps = numberOfSteps
 
@@ -101,10 +100,10 @@ asq = 1.0
 epsilon = 1
 diffusionCoeff = 1
 
-from fipy.meshes.grid2D import Grid2D
+from fipy import *
+
 mesh = Grid2D(dx, dy, nx, ny)
 
-from fipy.variables.cellVariable import CellVariable
 from fipy.tools.numerix import random
 
 var = CellVariable(name = "phase field",
@@ -114,19 +113,13 @@ var = CellVariable(name = "phase field",
 faceVar = var.getArithmeticFaceValue()
 doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
 diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
 diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-from fipy.solvers import *
 ##solver = LinearLUSolver(tolerance = 1e-15,steps = 1000)
 solver = LinearPCGSolver(tolerance = 1e-15,steps = 1000)
 
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.boundaryConditions.fixedFlux import FixedFlux
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
 BCs = (FixedFlux(mesh.getFacesRight(), 0),
        FixedFlux(mesh.getFacesLeft(), 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
@@ -136,14 +129,13 @@ BCs = (FixedFlux(mesh.getFacesRight(), 0),
 
 if __name__ == '__main__':
 
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
+    viewer = viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
     viewer.plot()
     
 dexp=-5
 
 for step in range(steps):
-    dt = numerix.exp(dexp)
+    dt = exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()

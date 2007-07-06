@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:44:21 AM} 
+ #                                last update: 7/5/07 {8:21:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,9 +68,10 @@ We define a 1D mesh
 
 ..
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 10
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=L / nx, nx=nx)
 
 and impose the boundary conditions
@@ -88,7 +89,6 @@ and impose the boundary conditions
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
     ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
@@ -102,7 +102,6 @@ The solution variable is initialized to `valueLeft`:
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh=mesh, name = "variable")
 
 The equation is created with the `ImplicitDiffusionTerm` and
@@ -117,9 +116,6 @@ instance must be passed to the convection term.
 
 ..
 
-   >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-   >>> from fipy.terms.exponentialConvectionTerm \
-   ...     import ExponentialConvectionTerm
    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
    ...       + ExponentialConvectionTerm(coeff=convCoeff))
    
@@ -146,14 +142,12 @@ and test the solution against the analytical result
 
    $$ \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
    or
-   \IndexModule{numerix}
    \IndexFunction{exp}
 
 ..
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
@@ -169,8 +163,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=var)
+    ...     viewer = viewers.make(vars=var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

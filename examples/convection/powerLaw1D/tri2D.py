@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:37:59 AM} 
+ #                                last update: 7/5/07 {8:11:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,20 +46,19 @@ This example solves the steady-state convection-diffusion equation as described 
 `./examples/diffusion/convection/exponential1D/mesh1D.py` but uses the
 `PowerLawConvectionTerm` rather than the `ExponentialConvectionTerm` instatiator.
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 1000
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx = L / nx, nx = nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesLeft(), valueLeft),
     ...     FixedValue(mesh.getFacesRight(), valueRight),
@@ -68,12 +67,9 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> diffCoeff = 1.
     >>> convCoeff = (10.,0.)
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
@@ -82,7 +78,6 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
@@ -90,8 +85,7 @@ The analytical solution test for this problem is given by:
     1
    
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer = viewers.make(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

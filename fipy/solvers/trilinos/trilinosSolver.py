@@ -63,7 +63,7 @@ class TrilinosSolver(Solver):
         Takes in a pySparse matrix and returns an Epetra.CrsMatrix . 
         Slow, but works. Scales linearly.
         """
-        Comm = Epetra.PyComm() # For now, no args, Communicator is serial
+        Comm = Epetra.PyComm() 
         m,n = L._getMatrix().shape 
 
         Map = Epetra.Map(m, 0, Comm)
@@ -110,22 +110,52 @@ class TrilinosSolver(Solver):
             A.FillComplete()
             A.OptimizeStorage()
 
-        A.GlobalAssemble()
 
         # Here, need to make maps (a root map and one from the matrix)
-        # Import to the Matrix's map
-        # then pass to _applyTrilinosSolver
+        
+        # Import to the Matrix's map - so that the vectors passed to ApplyTrilinosSolver
+        # are ready for TrilinosSolver application
+        if isinstance(L, _TrilinosMatrix) and L.parallel:
+            # We're in parallel mode
+            A.GlobalAssemble()
+            DistributedMap = L.map
+            if L.comm.MyPID() == 0:
+                myElements=A.NumGlobalRows()
+            else:
+                myElements=0
+            RootMap = Epetra.Map(-1, range(0, myElements), 0, L.comm)
 
-        RHS = Epetra.Vector(b)
-        LHS = Epetra.Vector(x)
+            RootToDist = Epetra.Import(DistributedMap, RootMap)
+
+            rLHS = Epetra.Vector(RootMap, x)
+            rRHS = Epetra.Vector(RootMap, b)
+
+            LHS = Epetra.Vector(DistributedMap)
+            RHS = Epetra.Vector(DistributedMap)
+            
+            LHS.Import(rLHS, RootToDist, Epetra.Insert)
+            RHS.Import(rRHS, RootToDist, Epetra.Insert)
+
+        else:
+            # Serially, just cast the vectors from numpy to Trilinos
+            RHS = Epetra.Vector(b)
+            LHS = Epetra.Vector(x)
 
         self._applyTrilinosSolver(A, LHS, RHS)
 
-        # Here, import back to unified map
-        # then, make a new map with all things on processor $i
-        # get all the values from processor 0
-        # and finally, cast to numpy
-        x = numerix.array(LHS)
+
+        if isinstance(L, _TrilinosMatrix) and L.parallel:
+            # Now, to give each processor a copy of the vector
+            
+            PersonalMap = Epetra.Map(-1, range(0, A.NumGlobalRows), 0, Comm)
+            DistToPers = Epetra.Import(PersonalMap, DistributedMap)
+
+            PersonalLHS = Epetra.Vector(PersonalMap)
+            PersonalLHS.Import(LHS, DistToPers, Epetra.Insert)
+
+            x = numerix.array(PersonalLHS)
+        else: 
+            x = numerix.array(LHS)
 
     def _getMatrixClass(self):
         return _TrilinosMatrix

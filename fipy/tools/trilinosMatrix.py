@@ -86,19 +86,22 @@ class _TrilinosMatrix(_SparseMatrix):
           - `matrix`: The starting `spmatrix` id there is one.
 
         """
+        self.comm = Epetra.PyComm()
+        self.parallel = (self.comm.NumProc() > 1)
+
+        if self.parallel:
+            self.startRow = self.comm.MyPID()*size/self.comm.NumProc()
+            self.endRow = (self.comm.MyPID()+1)*size/self.comm.NumProc()
+          
         if matrix != None:
             self.matrix = matrix
+            self.map = matrix.RowMap()
         else:
             if sizeHint is not None and bandwidth == 0:
                 bandwidth = (sizeHint + size - 1)/size 
-            self.comm = Epetra.PyComm()
-            if self.comm.NumProc() == 1:
-                self.parallel = False
+            if not self.parallel:
                 self.map = Epetra.Map(size, 0, self.comm)
             else:
-                self.parallel = True
-                self.startRow = self.comm.MyPID()*size/self.comm.NumProc()
-                self.endRow = (self.comm.MyPID()+1)*size/self.comm.NumProc()
                 self.map = Epetra.Map(size, range(self.startRow, self.endRow), 0, self.comm)
 
             self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, bandwidth*3/2)
@@ -329,7 +332,7 @@ class _TrilinosMatrix(_SparseMatrix):
             return self * other
             
     def _getShape(self):
-        N = self._getMatrix().NumGlobalCols()
+        N = self._getMatrix().NumGlobalRows()
         return (N,N)
         
     def localizeToProcessor(self, row, col, val):

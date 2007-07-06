@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:50:05 AM} 
+ #                                last update: 7/5/07 {8:21:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,9 +65,10 @@ We define a 1D mesh
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 1000
     >>> L = 10.
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=L / 1000, nx=nx)
 
 and impose the boundary conditions
@@ -85,7 +86,6 @@ and impose the boundary conditions
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
     ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
@@ -99,7 +99,6 @@ The solution variable is initialized to `valueLeft`:
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name="variable", mesh=mesh)
 
 
@@ -112,9 +111,6 @@ We define the convection-diffusion equation with source
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm \
-    ...     import ExponentialConvectionTerm
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff)
     ...       + sourceCoeff)
@@ -125,7 +121,6 @@ We define the convection-diffusion equation with source
 
 ..
     
-    >>> from fipy.solvers import *
     >>> eq.solve(var = var, 
     ...          boundaryConditions = boundaryConditions,
     ...          solver = LinearLUSolver(tolerance = 1.e-15))
@@ -137,7 +132,6 @@ and test the solution against the analytical result:
    $$ \phi = -\frac{S_0 x}{u_x} 
    + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
    or
-   \IndexModule{numerix}
    \IndexFunction{exp}
 
 ..
@@ -146,7 +140,6 @@ and test the solution against the analytical result:
     >>> x = mesh.getCellCenters()[axis]
     >>> AA = -sourceCoeff * x / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
@@ -162,16 +155,11 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=var)
+    ...     viewer = viewers.make(vars=var)
     ...     viewer.plot()
 
 """
 __docformat__ = 'restructuredtext'
-
-## from fipy.solvers import *
-## solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
-
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

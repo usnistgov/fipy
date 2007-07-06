@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/3/06 {4:48:08 PM} 
+ #                                last update: 7/5/07 {6:37:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,9 +48,7 @@ Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front
    
 """
 
-from fipy.meshes.grid3D import Grid3D
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
+from fipy import *
 
 nx = 10
 ny = 10
@@ -76,12 +74,9 @@ var = CellVariable(name = "variable",
 ##viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
 ##viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
 
-## from fipy import viewers
 ## viewer = viewers.make(vars = var)
 
 ## viewer.plot()
-
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 
 ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueSides),
                                                          FixedValue(mesh.getFacesRight(),valueSides),

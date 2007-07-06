@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 5/18/06 {8:40:11 PM} 
+ #                                last update: 7/5/07 {9:07:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,6 @@ periodic wave wraps around the mesh.
 
     >>> newVar2 = var2.copy()
 
-    >>> from fipy.solvers import *
     >>> for step in range(steps):
     ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
     ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
@@ -78,7 +77,7 @@ should do better than this.
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+from fipy import *
      
 L = 20.
 nx = 40
@@ -89,16 +88,13 @@ dt = cfl * dx / velocity
 
 steps = int(L /  4. / dt / velocity)
 
-from fipy.meshes.grid1D import Grid1D
 mesh = Grid1D(dx = dx, nx = nx)
 
-from fipy.meshes.periodicGrid1D import PeriodicGrid1D
 periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
 
-startingArray = numerix.zeros(nx, 'd')
+startingArray = zeros(nx, 'd')
 startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
 
-from fipy.variables.cellVariable import CellVariable
 var1 = CellVariable(
     name = "non-periodic",
     mesh = mesh,
@@ -109,19 +105,15 @@ var2 = CellVariable(
     mesh = periodicMesh,
     value = startingArray[:nx / 2])
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.vanLeerConvectionTerm import VanLeerConvectionTerm
 eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 
 if __name__ == '__main__':
 
-    import fipy.viewers
-    viewer1 = fipy.viewers.make(vars=var1)
-    viewer2 = fipy.viewers.make(vars=var2)
+    viewer1 = viewers.make(vars=var1)
+    viewer2 = viewers.make(vars=var2)
     viewer1.plot()
     viewer2.plot()
-    from fipy.solvers import *
 
     newVar2 = var2.copy()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/3/07 {4:51:33 PM}
+ #                                last update: 7/5/07 {8:21:37 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,18 +63,17 @@ with different initial conditions and a 2D mesh:
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexClass{Grid2D}
 
 ..
     
+    >>> from fipy import *
+
     >>> steps = numberOfSteps
-    >>> from fipy.tools.numerix import sqrt
     >>> N = int(sqrt(numberOfElements))
     >>> L = 2.5 * N / 100.
     >>> dL = L / N
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 The initial conditions are given by
@@ -119,7 +118,6 @@ and is initialized to liquid everywhere
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name='phase field', mesh=mesh)
 
 The orientation is initialized to a uniform value to denote the
@@ -128,13 +126,10 @@ randomly oriented liquid phase
 .. raw:: latex
 
    \IndexClass{ModularVariable}
-   \IndexModule{numerix}
    \IndexConstant{\pi}{pi}
 
 ..
 
-    >>> from fipy.variables.modularVariable import ModularVariable
-    >>> from fipy.tools.numerix import pi
     >>> theta = ModularVariable(
     ...     name='theta',
     ...     mesh=mesh,
@@ -167,10 +162,6 @@ so that it can be reused later.
 
 ..
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> def buildPhaseEquation(phase, theta):
     ...
     ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
@@ -193,12 +184,10 @@ evaluation of the face gradient without the modular operators.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{exp}
 
 ..
 
-    >>> from fipy.tools.numerix import exp
     >>> def buildThetaEquation(phase, theta):
     ...
     ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
@@ -218,7 +207,6 @@ evaluation of the face gradient without the modular operators.
     ...     thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
     ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
     ...
-    ...     from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
     ...                ImplicitDiffusionTerm(diffusionCoeff) \
     ...                + sourceCoeff
@@ -243,9 +231,8 @@ by the phase
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     phaseViewer = make(vars=phase,
-    ...                        limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = viewers.make(vars=phase,
+    ...                                limits={'datamin': 0., 'datamax': 1.})
     ...     thetaProd = -pi + phase * (theta + pi)
     ...     thetaProductViewer = make(vars=thetaProd,
     ...                               limits={'datamin': -pi, 
@@ -255,28 +242,22 @@ by the phase
 
 The solution will be tested against data that was created with ``steps
 = 10`` with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `mesh20x20Data.gz` extracts the
+modeling. The following code opens the file `mesh20x20.gz` extracts the
 data and compares it with the `theta` variable.
 
     >>> import os
-    >>> testFile = 'mesh20x20Data.gz'
-    >>> import examples.phase.impingement.mesh20x20
     >>> import gzip
-    >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], 
-    ...                         testFile)
-    >>> filestream = gzip.open(filepath,'r')
+    >>> filestream = gzip.open(os.path.splitext(__file__)[0] + '.gz','r')
     >>> import cPickle
     >>> testData = cPickle.load(filestream)
     >>> filestream.close()
     
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{resize}
 
 ..
 
-    >>> from fipy.tools.numerix import resize
     >>> testData = resize(testData, (mesh.getNumberOfCells(),))
     
 We step the solution in time, plotting as we go if running interactively,
@@ -331,7 +312,6 @@ We save the variables to disk.
 
 ..
 
-    >>> from fipy.tools import dump
     >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
     
 and then recall them to test the data pickling mechanism

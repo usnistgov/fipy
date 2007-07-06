@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/30/07 {10:21:27 AM} 
+ #                                last update: 7/5/07 {8:13:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,15 +90,15 @@ where
    
 We solve the problem on a 1D mesh
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(mesh = mesh, name = 'xi')
     >>> import scipy
     >>> phase.mobility = scipy.inf
@@ -133,10 +133,6 @@ We'll have no substitutional species and no interstitial species in this first e
     >>> for component in substitutionals:
     ...     solvent -= component
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-    
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
     ...     - (permittivityPrime / 2.) \
@@ -206,9 +202,8 @@ We verify that the correct equilibrium solution is attained
 
     >>> x = mesh.getCellCenters()[0]
     
-    >>> from fipy.tools import numerix
-    >>> d = numerix.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
-    >>> analyticalArray = (1. - numerix.tanh((x - L/2.)/(2 * d))) / 2.
+    >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
+    >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
 
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
     1
@@ -217,9 +212,7 @@ We verify that the correct equilibrium solution is attained
 If we are running interactively, we plot the error
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     from fipy.variables.cellVariable import CellVariable
-    ...     viewer = fipy.viewers.make(vars = (phase - \
+    ...     viewer = viewers.make(vars = (phase - \
     ...         CellVariable(name = "analytical", mesh = mesh, 
     ...                      value = analyticalArray),))
     ...     viewer.plot()

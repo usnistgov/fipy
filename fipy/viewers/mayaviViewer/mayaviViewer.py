@@ -134,14 +134,14 @@ class MayaviViewer(Viewer):
                                        
     def _getStructure(self, mesh):
 
-        cellVertexIDs = [[int(ID) for ID in IDs] for IDs in mesh._getOrderedCellVertexIDs()]
+        cellVertexIDs = mesh._getOrderedCellVertexIDs()
 
         from fipy.tools import numerix
-        lengths = len(cellVertexIDs[0]) - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=1)
+        lengths = cellVertexIDs.shape[0] - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=0)
         
         cellDict = {2 : [], 4: [], 6: [], 8: [], 'polygon' : []}
 
-        cellVertexListIDs = [list(cellVertexIDs[i][:lengths[i]]) for i in range(mesh.getNumberOfCells())]
+        cellVertexListIDs = [[int(ID) for ID in cellVertexIDs[...,i][:lengths[i]]] for i in range(mesh.getNumberOfCells())]
 
         if mesh.getDim() == 2:
             cellDict['polygon'] = cellVertexListIDs
@@ -163,9 +163,9 @@ class MayaviViewer(Viewer):
 
 
                 
-        coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
-        coords[:,:mesh.getDim()] = mesh.getVertexCoords()
-        coords = [[float(axis) for axis in coord] for coord in coords]
+        coords = numerix.zeros((3, mesh.getVertexCoords().shape[1]), 'd')
+        coords[:mesh.getDim(),:] = mesh.getVertexCoords()
+	coords = coords.swapaxes(0,1).tolist()
 
         import pyvtk
 
@@ -233,7 +233,7 @@ class MayaviViewer(Viewer):
             slh.range_var.set((xmin, xmax))
             slh.set_range_var()
 
-            slh.v_range_var.set((var.min(), var.max()))
+            slh.v_range_var.set((var.min().getValue(), var.max().getValue()))
             slh.set_v_range_var()
 
             self._viewer.Render()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/06 {1:59:35 PM}
+ #                                last update: 7/5/07 {6:43:03 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -95,6 +95,8 @@ the results of Dolfyn_
 
 some parameters are declared.
 
+    >>> from fipy import *
+
     >>> L = 1.0
     >>> N = 50
     >>> dL = L / N
@@ -114,7 +116,6 @@ Build the mesh.
    
 ..
 
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
@@ -125,7 +126,6 @@ Declare the variables.
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> pressure = CellVariable(mesh=mesh, name='pressure')
     >>> pressureCorrection = CellVariable(mesh=mesh)
     >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
@@ -139,7 +139,6 @@ Declare the variables.
 
 ..
 
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> velocity = FaceVariable(mesh=mesh, rank=1)
 
 Build the Stokes equations.
@@ -150,7 +149,6 @@ Build the Stokes equations.
    
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
     >>> yVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
     
@@ -196,7 +194,6 @@ Set up the no-slip boundary conditions
    
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
     ...        FixedValue(faces=mesh.getFacesRight(), value=0),
     ...        FixedValue(faces=mesh.getFacesBottom(), value=0),)
@@ -212,8 +209,7 @@ Set up the viewers,
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
+    ...     viewer = viewers.make(vars=(pressure, xVelocity, yVelocity, velocity))
 
 Below, we iterate for a set number of sweeps. We use the `sweep()`
 method instead of `solve()` because we require the residual for

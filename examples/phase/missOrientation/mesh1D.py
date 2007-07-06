@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/3/07 {4:57:38 PM} 
+ #                                last update: 7/5/07 {9:15:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,20 +90,18 @@ The solution is allowed to evolve for `steps = 100` time steps.
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `mesh1DData.gz` extracts the
+modeling. The following code opens the file `mesh1D.gz` extracts the
 data and compares it with the `theta` variable.
 
    >>> import os
-   >>> import examples.phase.missOrientation.mesh1D
-   >>> filepath = os.path.join(examples.phase.missOrientation.mesh1D.__path__[0], 'mesh1DData.gz')
-   >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
-   >>> from fipy.tools import numerix
-   >>> print numerix.allclose(numerix.array(testData), phase)
+   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> print phase.allclose(testData)
    1
    
 """
 __docformat__ = 'restructuredtext'
+
+from fipy import *
 
 steps = 100
 timeStepDuration = 0.02
@@ -118,24 +116,18 @@ temperature = 1.
 
 dx = L / nx
 
-from fipy.meshes.grid1D import Grid1D
 mesh = Grid1D(dx = dx, nx = nx)
 
-from fipy.variables.cellVariable import CellVariable
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-from fipy.variables.modularVariable import ModularVariable
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
 theta.setValue(0., where=mesh.getCellCenters()[0] > L / 2.)
 
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.getOld().getGrad().getMag()
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 phaseEq = TransientTerm(phaseTransientCoeff) == \
           ExplicitDiffusionTerm(alpha**2) \
           - ImplicitSourceTerm(implicitSource) \
@@ -143,8 +135,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
    
-   import fipy.viewers
-   phaseViewer = fipy.viewers.make(vars = phase)
+   phaseViewer = viewers.make(vars = phase)
    phaseViewer.plot()
    for step in range(steps):
       phaseEq.solve(phase, dt = timeStepDuration)

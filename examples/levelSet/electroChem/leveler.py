@@ -6,7 +6,7 @@
  # 
  #  FILE: "leveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:45:49 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:19:55 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -209,6 +209,8 @@ can be obtained by running this example.
 """
 __docformat__ = 'restructuredtext'
 
+from fipy import *
+
 def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, rateConstant=0.00026, initialAcceleratorCoverage=0.0, levelerDiffusionCoefficient=5e-10, numberOfSteps=400, displayRate=10, displayViewers=True):
 
     
@@ -247,20 +249,17 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
     etaPrime = faradaysConstant * overpotential / gasConstant / temperature
 
-    from fipy import TrenchMesh
-    from fipy.tools import numerix
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * 4. / 180.,
+                      angle = pi * 4. / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
@@ -270,7 +269,6 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     distanceVar.setValue(1, where=mesh.getElectrolyteMask())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
-    from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
     levelerVar = SurfactantVariable(
         name = "leveler variable",
         value = initialLevelerCoverage,
@@ -281,7 +279,6 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         value = initialAcceleratorCoverage,
         distanceVar = distanceVar)
 
-    from fipy.variables.cellVariable import CellVariable
     bulkAcceleratorVar = CellVariable(name = 'bulk accelerator variable',
                                       mesh = mesh,
                                       value = bulkAcceleratorConcentration)
@@ -297,8 +294,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         value = bulkMetalConcentration)
 
     def depositionCoeff(alpha, i0):
-        expo = numerix.exp(-alpha * etaPrime)
-        return 2 * i0 * (expo - expo * numerix.exp(etaPrime))
+        expo = exp(-alpha * etaPrime)
+        return 2 * i0 * (expo - expo * exp(etaPrime))
 
     coeffSuppressor = depositionCoeff(alphaSuppressor, i0Suppressor)
     coeffAccelerator = depositionCoeff(alphaAccelerator, i0Accelerator)
@@ -314,11 +311,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh = mesh,
         value = depositionRateVariable)   
 
-    from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation \
-             import AdsorbingSurfactantEquation
-
-    kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
-    kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
+    kAccelerator = rateConstant * exp(-alphaAdsorption * etaPrime)
+    kAcceleratorConsumption =  Bd + A / (exp(Ba * (overpotential + Vd)) + exp(Bb * (overpotential + Vd)))
     q = m * overpotential + b
 
     levelerSurfactantEquation = AdsorbingSurfactantEquation(
@@ -342,15 +336,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         otherRateConstant = kLeveler,
         consumptionCoeff = accConsumptionCoeff)
 
-    from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-         import buildHigherOrderAdvectionEquation
-
     advectionEquation = buildHigherOrderAdvectionEquation(
         advectionCoeff = extensionVelocityVariable)
-
-    from fipy.boundaryConditions.fixedValue import FixedValue
-    from fipy.models.levelSet.electroChem.metalIonDiffusionEquation \
-         import buildMetalIonDiffusionEquation
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -360,9 +347,6 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         metalIonMolarVolume = atomicVolume)
 
     metalEquationBCs = FixedValue(mesh.getTopFaces(), bulkMetalConcentration)
-
-    from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation \
-         import buildSurfactantBulkDiffusionEquation
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -399,7 +383,6 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     totalTime = 0.0
 
     if displayViewers:
-        from fipy.viewers.mayaviViewer.mayaviSurfactantViewer import MayaviSurfactantViewer
         viewers = (
             MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'accelerator coverage'),
             MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'leveler coverage'))
@@ -416,15 +399,15 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
-        extOnInt = numerix.where(distanceVar > 0,
-                                 numerix.where(distanceVar < 2 * cellSize,
-                                               extensionVelocityVariable,
-                                               0),
-                                 0)
+        extOnInt = where(distanceVar > 0,
+                         where(distanceVar < 2 * cellSize,
+                               extensionVelocityVariable,
+                               0),
+                         0)
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = numerix.nonzero(distanceVar._getInterfaceFlag()).max()
+        id = nonzero(distanceVar._getInterfaceFlag()).max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
@@ -438,13 +421,10 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         totalTime += dt
 
     try:
-        testFile = 'testLeveler.gz'
         import os
-        import examples.levelSet.electroChem
-        from fipy.tools import dump
-        data = dump.read(os.path.join(examples.levelSet.electroChem.__path__[0], testFile))
+        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         N = mesh.getFineMesh().getNumberOfCells()
-        return numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
+        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
     except:
         return 0
     

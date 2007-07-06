@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/3/06 {4:39:20 PM} 
+ #                                last update: 7/5/07 {8:11:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,20 +48,15 @@ Test case for the Grid3D.
  
    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
    >>> ImplicitDiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
-   >>> from fipy.tools import numerix
-   >>> a = numerix.array(var)
-   >>> b = numerix.array(var2)
-   >>> c = numerix.ravel(numerix.array((b, b, b)))
-   >>> print numerix.allclose(a, c)
+   >>> a = array(var)
+   >>> b = array(var2)
+   >>> c = ravel(array((b, b, b)))
+   >>> print allclose(a, c)
    1
    
 """
 
-from fipy.meshes.grid3D import Grid3D
-from fipy.meshes.grid2D import Grid2D
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 10
 ny = 5
@@ -108,7 +103,6 @@ eqn = ImplicitDiffusionTerm()
 
 if __name__ == '__main__':
     eqn.solve(var2, boundaryConditions = boundaryConditions2)
-    from fipy.viewers import make
-    viewer = make(var2)
+    viewer = viewers.make(var2)
     viewer.plot()
     raw_input("finished")

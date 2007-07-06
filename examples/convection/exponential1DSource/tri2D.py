@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:38:31 AM} 
+ #                                last update: 7/5/07 {9:07:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,21 +58,20 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
 .. 
 
+    >>> from fipy import *
+
     >>> L = 10.
     >>> nx = 1
     >>> ny = 1000
-    >>> from fipy.meshes.tri2D import Tri2D
     >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
     
     >>> valueBottom = 0.
     >>> valueTop = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "concentration",
     ...                    mesh = mesh,
     ...                    value = valueBottom)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (
     ...     FixedValue(mesh.getFacesBottom(), valueBottom),
     ...     FixedValue(mesh.getFacesTop(), valueTop),
@@ -82,12 +81,8 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> convCoeff = (0., 10.)
     >>> sourceCoeff = 1.
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
     >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
     ...       - ExponentialConvectionTerm(coeff = convCoeff))
-
-    >>> from fipy.solvers import *
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
@@ -99,7 +94,6 @@ The analytical solution test for this problem is given by:
     >>> y = mesh.getCellCenters()[axis]
     >>> AA = -sourceCoeff * y / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD
@@ -107,8 +101,7 @@ The analytical solution test for this problem is given by:
     1
     
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var)
+    ...     viewer = viewers.make(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

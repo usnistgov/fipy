@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 3/5/06 {6:36:12 AM} 
+ #                                last update: 7/5/07 {9:09:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,22 +64,15 @@ in it will not be able to find the mesh file.
 
 """
 
-from fipy.solvers import *
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-import fipy.viewers
-from fipy.meshes.gmshImport import GmshImporter2D
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-
 import sys
-from fipy.tools import numerix
+
+from fipy import *
 
 valueLeft = 0.
 valueRight = 1.
 
-import examples.diffusion.steadyState.mesh20x20
 import os.path
-mesh = GmshImporter2D(os.path.join(examples.diffusion.steadyState.mesh20x20.__path__[0], 'modifiedMesh.msh'))
+mesh = GmshImporter2D(os.path.join(os.path.split(__file__)[0], 'modifiedMesh.msh'))
 
 ##    "%s/%s" % (sys.__dict__['path'][0], "examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh"))
 
@@ -95,20 +88,20 @@ boundaryConditions = (FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = fipy.viewers.make(vars = var)
+    viewer = viewers.make(vars = var)
     viewer.plot()
-    varArray = numerix.array(var)
+    varArray = array(var)
     x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    errorViewer = fipy.viewers.make(vars = errorVar)
+    errorViewer = viewers.make(vars = errorVar)
     errorViewer.plot()
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = fipy.viewers.make(vars = NonOrthoVar)    
+    NOViewer = viewers.make(vars = NonOrthoVar)    
     NOViewer.plot()
     raw_input("finished")
