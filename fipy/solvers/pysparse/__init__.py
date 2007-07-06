@@ -1,3 +1,6 @@
+def solverSuite():
+    return 'Pysparse'
+
 from linearCGSSolver import LinearCGSSolver
 from linearPCGSolver import LinearPCGSolver
 from linearGMRESSolver import LinearGMRESSolver

@@ -1,3 +1,4 @@
 from multilevelSGSPreconditioner import MultilevelSGSPreconditioner
 from jacobiPreconditioner import JacobiPreconditioner
 from icPreconditioner import ICPreconditioner
+from domDecompPreconditioner import DomDecompPreconditioner

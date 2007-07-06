@@ -1,4 +1,7 @@
-from PyTrilinos import ML # Gets around strange Trilinos import-order bugs
+def solverSuite():
+    return 'Trilinos'
+
+from PyTrilinos import ML # Gets around strange Trilinos import-order bugs. 
 
 from preconditioners import *
 

@@ -110,10 +110,21 @@ class TrilinosSolver(Solver):
             A.FillComplete()
             A.OptimizeStorage()
 
+        A.GlobalAssemble()
+
+        # Here, need to make maps (a root map and one from the matrix)
+        # Import to the Matrix's map
+        # then pass to _applyTrilinosSolver
+
         RHS = Epetra.Vector(b)
         LHS = Epetra.Vector(x)
 
         self._applyTrilinosSolver(A, LHS, RHS)
+
+        # Here, import back to unified map
+        # then, make a new map with all things on processor $i
+        # get all the values from processor 0
+        # and finally, cast to numpy
         x = numerix.array(LHS)
 
     def _getMatrixClass(self):
