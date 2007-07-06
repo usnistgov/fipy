@@ -438,6 +438,8 @@ class test(Command):
     # List of option tuples: long name, short name (None if no short
     # name), and help string.
     user_options = [('inline', None, "run FiPy with inline compilation enabled"),
+                    ('Trilinos', None, "run FiPy using Trilinos solvers"),
+                    ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
                     ('all', None, "run all non-interactive FiPy tests (default)"),
                     ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
                     ('examples', None, "test FiPy examples"),
@@ -461,6 +463,8 @@ class test(Command):
         self.viewers = False
         self.cache = False
         self.no_cache = True
+        self.Trilinos = False
+        self.Pysparse = False
 
     def finalize_options (self):
         if self.verbose:
