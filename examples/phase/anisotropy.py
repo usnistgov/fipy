@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:54:22 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {8:21:39 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -165,7 +165,6 @@ is created from the `phase` and `temperature` variables.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexConstant{\pi}{pi}
    \IndexFunction{arctan}
    \IndexFunction{arctan2}
@@ -173,7 +172,6 @@ is created from the `phase` and `temperature` variables.
 
 ..
 
-    >>> from fipy.tools.numerix import pi, arctan, arctan2, tan
     >>> mVar = phase - 0.5 - kappa1 / pi * arctan(kappa2 * temperature)
 
 .. raw:: latex
@@ -270,7 +268,6 @@ the data and compares it with the `phase` variable.
 .. raw:: latex
 
    \IndexModule{dump}
-   \IndexModule{numerix}
    \IndexFunction{allclose}
 
 ..

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:51:15 PM}
+ #                                last update: 7/5/07 {8:09:32 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -86,9 +86,8 @@ from fipy.tools.parser import parse
 numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
 numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
 
-import fipy.tools.numerix as numerix
-nx = int(numerix.sqrt(numberOfElements))
-ny = int(numerix.sqrt(numberOfElements))
+nx = int(sqrt(numberOfElements))
+ny = int(sqrt(numberOfElements))
 
 steps = numberOfSteps
 
@@ -137,7 +136,7 @@ if __name__ == '__main__':
 dexp=-5
 
 for step in range(steps):
-    dt = numerix.exp(dexp)
+    dt = exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()

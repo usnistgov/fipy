@@ -6,7 +6,7 @@
  # 
  #  FILE: "leveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {7:23:08 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:19:55 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -254,7 +254,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * 4. / 180.,
+                      angle = pi * 4. / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
@@ -294,8 +294,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         value = bulkMetalConcentration)
 
     def depositionCoeff(alpha, i0):
-        expo = numerix.exp(-alpha * etaPrime)
-        return 2 * i0 * (expo - expo * numerix.exp(etaPrime))
+        expo = exp(-alpha * etaPrime)
+        return 2 * i0 * (expo - expo * exp(etaPrime))
 
     coeffSuppressor = depositionCoeff(alphaSuppressor, i0Suppressor)
     coeffAccelerator = depositionCoeff(alphaAccelerator, i0Accelerator)
@@ -311,8 +311,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh = mesh,
         value = depositionRateVariable)   
 
-    kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
-    kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
+    kAccelerator = rateConstant * exp(-alphaAdsorption * etaPrime)
+    kAcceleratorConsumption =  Bd + A / (exp(Ba * (overpotential + Vd)) + exp(Bb * (overpotential + Vd)))
     q = m * overpotential + b
 
     levelerSurfactantEquation = AdsorbingSurfactantEquation(
@@ -399,15 +399,15 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
-        extOnInt = numerix.where(distanceVar > 0,
-                                 numerix.where(distanceVar < 2 * cellSize,
-                                               extensionVelocityVariable,
-                                               0),
-                                 0)
+        extOnInt = where(distanceVar > 0,
+                         where(distanceVar < 2 * cellSize,
+                               extensionVelocityVariable,
+                               0),
+                         0)
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = numerix.nonzero(distanceVar._getInterfaceFlag()).max()
+        id = nonzero(distanceVar._getInterfaceFlag()).max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
@@ -424,7 +424,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         import os
         data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         N = mesh.getFineMesh().getNumberOfCells()
-        return numerix.allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
+        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
     except:
         return 0
     

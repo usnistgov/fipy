@@ -6,7 +6,7 @@
  # 
  # FILE: "cahnHilliard.py"
  #                                     created: 1/18/06 {2:36:12 PM}
- #                                 last update: 7/5/07 {5:47:42 PM}
+ #                                 last update: 7/5/07 {8:06:35 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -64,10 +64,8 @@ if __name__ == "__main__":
 
     bench.start()
 
-    import fipy.tools.numerix as numerix
-
-    nx = int(numerix.sqrt(numberOfElements))
-    ny = int(numerix.sqrt(numberOfElements))
+    nx = int(sqrt(numberOfElements))
+    ny = int(sqrt(numberOfElements))
 
     steps = 10
 
@@ -125,7 +123,7 @@ if __name__ == "__main__":
 
     dexp=-5
 
-    dt = numerix.exp(dexp)
+    dt = exp(dexp)
     dt = min(100, dt)
     dexp += 0.01
     var.updateOld()
@@ -134,7 +132,7 @@ if __name__ == "__main__":
     bench.start()
 
     for step in range(steps):
-        dt = numerix.exp(dexp)
+        dt = exp(dexp)
         dt = min(100, dt)
         dexp += 0.01
         var.updateOld()

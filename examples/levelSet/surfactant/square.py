@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:50:10 PM}
+ #                                last update: 7/5/07 {8:16:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,13 +48,13 @@ The example checks for global conservation of surfactant.
 Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction()
-   >>> initialSurfactant = numerix.sum(surfactantVariable)
+   >>> initialSurfactant = sum(surfactantVariable)
    >>> for step in range(steps):
    ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))
+   >>> print allclose(initialSurfactant, sum(surfactantVariable))
    1
  
 
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print sum(surfactantVariable)
         surfactantVariable.updateOld()
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)

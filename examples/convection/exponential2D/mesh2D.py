@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:57:57 PM} 
+ #                                last update: 7/5/07 {8:09:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,8 +78,8 @@ We test the solution against the analytical result:
 
     >>> axis = 0
     >>> x = mesh.getCellCenters()[axis]
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
     1

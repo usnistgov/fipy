@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     numberOfElements = parse('--numberOfElements', action = 'store',
                           type = 'int', default = 40)
-    N = int(numerix.sqrt(numberOfElements))
+    N = int(sqrt(numberOfElements))
 
     from benchmarker import Benchmarker
     bench = Benchmarker()
@@ -53,13 +53,13 @@ if __name__ == "__main__":
 
     bench.start()
 
-    mVar = phase - 0.5 - kappa1 / numerix.pi * \
-        numerix.arctan(kappa2 * temperature)
+    mVar = phase - 0.5 - kappa1 / pi * \
+        arctan(kappa2 * temperature)
 
     phaseY = phase.getFaceGrad().dot((0, 1))
     phaseX = phase.getFaceGrad().dot((1, 0))
-    psi = theta + numerix.arctan2(phaseY, phaseX)
-    Phi = numerix.tan(N * psi / 2)
+    psi = theta + arctan2(phaseY, phaseX)
+    Phi = tan(N * psi / 2)
     PhiSq = Phi**2
     beta = (1. - PhiSq) / (1. + PhiSq)
     betaPsi = -N * 2 * Phi / (1 + PhiSq)

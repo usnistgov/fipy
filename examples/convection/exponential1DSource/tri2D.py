@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:59:25 PM} 
+ #                                last update: 7/5/07 {8:09:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,7 +94,6 @@ The analytical solution test for this problem is given by:
     >>> y = mesh.getCellCenters()[axis]
     >>> AA = -sourceCoeff * y / convCoeff[axis]
     >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> from fipy.tools.numerix import exp
     >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = AA + BB * CC / DD

@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:54:07 PM}
+ #                                last update: 7/5/07 {8:21:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -210,7 +210,6 @@ discretization of `theta` on the circle.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{exp}
 
 ..
@@ -219,7 +218,6 @@ discretization of `theta` on the circle.
     >>> phaseModSq = phaseMod * phaseMod
     >>> expo = epsilon * beta * theta.getGrad().getMag()
     >>> expo = (expo < 100.) * (expo - 100.) + 100.
-    >>> from fipy.tools.numerix import exp
     >>> pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
 
     >>> phaseFace = phase.getArithmeticFaceValue()
@@ -255,7 +253,6 @@ and orientation variables.
 .. raw:: latex
 
    \IndexModule{viewers}
-   \IndexModule{numerix}
    \IndexConstant{\pi}{pi}
 
 ..
@@ -263,7 +260,6 @@ and orientation variables.
     >>> if __name__ == '__main__':
     ...     phaseViewer = viewers.make(vars=phase, 
     ...                                limits={'datamin': 0., 'datamax': 1.})
-    ...     from fipy.tools.numerix import pi
     ...     thetaProductViewer = viewers.make(vars=theta,
     ...                                       limits={'datamin': -pi, 
     ...                                               'datamax': pi})

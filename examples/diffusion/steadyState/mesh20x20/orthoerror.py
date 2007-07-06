@@ -6,7 +6,7 @@
  # 
  #  FILE: "orthoerror.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:32:03 PM} 
+ #                                last update: 7/5/07 {8:11:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,13 +72,13 @@ if __name__ == '__main__':
         ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                                  FixedValue(mesh.getFacesRight(), valueRight)))
 
-        varArray = numerix.array(var)
+        varArray = array(var)
         x = mesh.getCellCenters()[0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._getNonOrthogonality()
-        RMSError = (numerix.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
-        RMSNonOrtho = (numerix.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
+        RMSError = (add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
+        RMSNonOrtho = (add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGrid2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:54:25 PM} 
+ #                                last update: 7/5/07 {8:18:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ A `Grid2D` object is invoked in the following way,
 
    >>> from fipy import *
 
-   >>> nx = int(numerix.sqrt(numberOfElements))
+   >>> nx = int(sqrt(numberOfElements))
    >>> ny = nx
    >>> dx = 1.
    >>> dy = 1.
@@ -69,13 +69,13 @@ obtained.  For example the mesh volumes can be obtained with the
 `getCellVolumes()` method.
 
    >>> vols = mesh.getCellVolumes()
-   >>> numerix.allclose(dx * dy * numerix.ones(nx * ny), vols)
+   >>> allclose(dx * dy * ones(nx * ny), vols)
    1
 
 Obtain the number of cells in the mesh
 
    >>> N = mesh.getNumberOfCells()
-   >>> numerix.allclose(N, numberOfElements)
+   >>> allclose(N, numberOfElements)
    1
 
 Obtain all the left exterior faces, this is equal to `ny`.

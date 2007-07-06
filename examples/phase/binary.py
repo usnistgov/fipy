@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 7/5/07 {6:54:20 PM}
+ #                                 last update: 7/5/07 {8:21:38 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -446,12 +446,10 @@ We initialize the phase field to a step function in the middle of the domain
        - \exp\left(-\frac{L_A\left(T - T_M^A\right)}{T_M^A}\frac{V_m}{R T}\right)} \\
        C_S &= \exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right) C_L
    \end{align*}
-   \IndexModule{numerix}
    \IndexFunction{exp}
    
 ..
 
-    >>> from fipy.tools.numerix import exp
     >>> Cl = (1. - exp(-enthalpyA * Vm / (R * T))) \
     ...   / (exp(-enthalpyB * Vm / (R * T)) - exp(-enthalpyA * Vm / (R * T)))
     >>> Cs = exp(-enthalpyB * Vm / (R * T)) * Cl
@@ -484,14 +482,11 @@ SciPy can be used.
        \frac{L_B\left(T - T_M^B\right)}{T_M^B} V_m
        + R T \ln C_S - R T \ln C_L
    \end{align*}
-   \IndexModule{numerix}
    \IndexFunction{log}
    \IndexFunction{array}
 
 ..
 
-    >>> from fipy.tools.numerix import log
-    >>> from fipy.tools.numerix import array
     >>> def equilibrium(C):
     ...     return [array(enthalpyA * Vm + R * T * log(1 - C[0]) - R * T * log(1 - C[1])),
     ...             array(enthalpyB * Vm + R * T * log(C[0]) - R * T * log(C[1]))]

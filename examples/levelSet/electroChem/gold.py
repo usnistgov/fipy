@@ -6,7 +6,7 @@
  # 
  #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {7:22:39 PM} 
+ #                                last update: 7/5/07 {8:56:32 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -148,7 +148,7 @@ def runGold(faradaysConstant=9.6e4,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * taperAngle / 180.,
+                      angle = pi * taperAngle / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
@@ -219,7 +219,7 @@ def runGold(faradaysConstant=9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return numerix.array(self.var[:self.mesh.getNumberOfCells()])
+                    return array(self.var[:self.mesh.getNumberOfCells()])
 
             viewers = (
                 viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
@@ -240,9 +240,9 @@ def runGold(faradaysConstant=9.6e4,
             
             distanceVar.calcDistanceFunction(deleteIslands = True)
             
-        extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
-        argmax = numerix.argmax(extensionVelocityVariable)
-        dt = cflNumber * cellSize / extensionVelocityVariable[argmax]
+        extensionVelocityVariable.setValue(array(depositionRateVariable))
+        argmx = argmax(extensionVelocityVariable)
+        dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
         
         distanceVar.updateOld()
@@ -259,7 +259,7 @@ def runGold(faradaysConstant=9.6e4,
         import os
         data = dump.read(os.path.splitext(__file__)[0] + '.gz')
         n = mesh.getFineMesh().getNumberOfCells()
-        print numerix.allclose(catalystVar[:n], data[:n], atol=1.0)
+        print allclose(catalystVar[:n], data[:n], atol=1.0)
     except:
         return 0
     

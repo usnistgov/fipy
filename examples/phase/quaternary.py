@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:57:34 PM} 
+ #                                last update: 7/5/07 {8:21:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -222,12 +222,10 @@ and a liquid phase rich in the two substitutional species.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{log}
 
 ..
 
-    >>> from fipy.tools.numerix import log
     >>> for Cj in interstitials + substitutionals + [solvent]:
     ...     Cj.standardPotential = R * T * (log(Cj.L/rhoL) - log(Cj.S/rhoS))
 
@@ -480,13 +478,11 @@ We can confirm that the far-field phases have remained separated
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{take}
    \IndexFunction{allclose}
 
 ..
 
-    >>> from fipy.tools.numerix import take, allclose
     >>> ends = take(phase, (0,-1))
     >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1

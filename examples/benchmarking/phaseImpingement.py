@@ -6,7 +6,7 @@
  # 
  # FILE: "phaseImpingement.py"
  #                                     created: 1/18/06 {2:35:59 PM}
- #                                 last update: 7/5/07 {5:48:30 PM}
+ #                                 last update: 7/5/07 {8:06:32 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -62,10 +62,8 @@ if __name__ == "__main__":
 
     bench.start()
 
-    import fipy.tools.numerix as numerix
-
     steps = 10
-    nx = int(numerix.sqrt(numberOfElements))
+    nx = int(sqrt(numberOfElements))
     ny = nx
     Lx = 2.5 * nx / 100.
     dx = Lx / nx
@@ -94,7 +92,6 @@ if __name__ == "__main__":
         value = 0.
         )
 
-    pi = numerix.pi
     theta = ModularVariable(
         name = 'Theta',
         mesh = mesh,
@@ -136,7 +133,7 @@ if __name__ == "__main__":
         phaseModSq = phaseMod * phaseMod
         expo = epsilon * beta * theta.getGrad().getMag()
         expo = (expo < 100.) * (expo - 100.) + 100.
-        pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
+        pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
 
         phaseFace = phase.getArithmeticFaceValue()
         phaseSq = phaseFace * phaseFace

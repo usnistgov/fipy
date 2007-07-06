@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 7/5/07 {6:02:38 PM} 
+ #                                last update: 7/5/07 {8:21:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -185,14 +185,12 @@ diffusion problem is given by
 
    $\phi = 1 - \erf(x/2\sqrt{D t})$. If the \SciPy{} library is available,
    the result is tested against the expected profile: 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
 
 ..
 
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> from fipy.tools.numerix import sqrt
 
     >>> phiAnalytical = CellVariable(name="analytical value",
     ...                              mesh=mesh)
@@ -400,7 +398,6 @@ system or of time.
        \end{cases}
    \]
    we will need to declare time \( t \) as a \Class{Variable}
-   \IndexModule{numerix}
    \IndexFunction{sin}
    
 ..
@@ -409,7 +406,6 @@ system or of time.
 
 and then declare our boundary condition as a function of this `Variable`
 
-    >>> from fipy.tools.numerix import sin
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=0.5 * (1 + sin(time))),
     ...        FixedValue(faces=mesh.getFacesRight(), value=0.))
 

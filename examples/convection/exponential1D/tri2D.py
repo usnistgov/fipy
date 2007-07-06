@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:56:28 PM} 
+ #                                last update: 7/5/07 {8:09:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,8 +87,8 @@ The analytical solution test for this problem is given by:
 
     >>> axis = 1
     >>> y = mesh.getCellCenters()[axis]
-    >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
-    >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
+    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
     >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1

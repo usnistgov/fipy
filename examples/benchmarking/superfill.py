@@ -6,7 +6,7 @@
  # 
  # FILE: "superfill.py"
  #                                     created: 1/19/06 {4:09:41 PM}
- #                                 last update: 7/5/07 {5:49:34 PM}
+ #                                 last update: 7/5/07 {8:09:40 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -95,7 +95,7 @@ if __name__ == "__main__":
         pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
         sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
               / (2 * numberOfElements)
-        cellSize = pos + numerix.sqrt(pos**2 + sqr)
+        cellSize = pos + sqrt(pos**2 + sqr)
     else:
         cellSize = 0.1e-7
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
           * catalystVar.getInterfaceVar()
 
     exchangeCurrentDensity = currentDensity0 + tmp
-    expo = numerix.exp(expoConstant * overpotential)
+    expo = exp(expoConstant * overpotential)
     currentDensity = expo * exchangeCurrentDensity * metalVar \
                      / bulkMetalConcentration
 

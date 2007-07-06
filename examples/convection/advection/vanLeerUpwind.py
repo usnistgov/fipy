@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:55:04 PM} 
+ #                                last update: 7/5/07 {8:09:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,7 +92,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 
 periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
 
-startingArray = numerix.zeros(nx, 'd')
+startingArray = zeros(nx, 'd')
 startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
 
 var1 = CellVariable(

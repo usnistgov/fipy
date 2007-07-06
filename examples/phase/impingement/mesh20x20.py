@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/5/07 {6:54:08 PM}
+ #                                last update: 7/5/07 {8:21:37 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,7 +63,6 @@ with different initial conditions and a 2D mesh:
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexClass{Grid2D}
 
@@ -72,7 +71,6 @@ with different initial conditions and a 2D mesh:
     >>> from fipy import *
 
     >>> steps = numberOfSteps
-    >>> from fipy.tools.numerix import sqrt
     >>> N = int(sqrt(numberOfElements))
     >>> L = 2.5 * N / 100.
     >>> dL = L / N
@@ -128,12 +126,10 @@ randomly oriented liquid phase
 .. raw:: latex
 
    \IndexClass{ModularVariable}
-   \IndexModule{numerix}
    \IndexConstant{\pi}{pi}
 
 ..
 
-    >>> from fipy.tools.numerix import pi
     >>> theta = ModularVariable(
     ...     name='theta',
     ...     mesh=mesh,
@@ -188,12 +184,10 @@ evaluation of the face gradient without the modular operators.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{exp}
 
 ..
 
-    >>> from fipy.tools.numerix import exp
     >>> def buildThetaEquation(phase, theta):
     ...
     ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
@@ -260,12 +254,10 @@ data and compares it with the `theta` variable.
     
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{resize}
 
 ..
 
-    >>> from fipy.tools.numerix import resize
     >>> testData = resize(testData, (mesh.getNumberOfCells(),))
     
 We step the solution in time, plotting as we go if running interactively,

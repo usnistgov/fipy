@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {5:52:35 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {8:08:22 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -53,17 +53,17 @@ Here are some test cases for the model.
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 0.1)
     >>> accuracy = 1e-2
-    >>> print numerix.allclose(KMVar, params['KM'], atol = accuracy)
+    >>> print KMVar.allclose(params['KM'], atol = accuracy)
     1
-    >>> print numerix.allclose(TMVar, params['TM'], atol = accuracy)
+    >>> print TMVar.allclose(params['TM'], atol = accuracy)
     1
-    >>> print numerix.allclose(TCVar, params['TC'], atol = accuracy)
+    >>> print TCVar.allclose(params['TC'], atol = accuracy)
     1
-    >>> print numerix.allclose(P2Var, params['P2'], atol = accuracy)
+    >>> print P2Var.allclose(params['P2'], atol = accuracy)
     1
-    >>> print numerix.allclose(P3Var, params['P3'], atol = accuracy)
+    >>> print P3Var.allclose(params['P3'], atol = accuracy)
     1
-    >>> print numerix.allclose(KCVar, params['KC'], atol = accuracy)
+    >>> print KCVar.allclose(params['KC'], atol = accuracy)
     1
 
 """
@@ -141,7 +141,7 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[0]) / L)
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * cos((2 * pi * mesh.getCellCenters()[0]) / L)
 
     for i in range(100):
         for var, eqn in eqs:

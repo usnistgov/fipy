@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:42:34 PM} 
+ #                                last update: 7/5/07 {8:13:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,7 +104,6 @@ consisting of the solvent
 
 and the solute
 
-    >>> from fipy.tools.numerix import log, take, allclose
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'C1',
     ...                       diffusivity = 1., barrier = 0.,

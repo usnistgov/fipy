@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 7/5/07 {6:00:30 PM}
+ #                                last update: 7/5/07 {8:21:47 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -169,13 +169,12 @@ faces. These are used as the boundary condition fixed values.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{take}
 
 ..
 
-    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[0],
-    ...                                mesh.getExteriorFaces())
+    >>> exteriorXcoords = take(mesh.getFaceCenters()[0],
+    ...                        mesh.getExteriorFaces())
 
 .. raw:: latex
 
@@ -235,7 +234,6 @@ vertical positions
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexSoftware{SciPy}
    \IndexFunction{sqrt}
    \IndexFunction{arcsin}
@@ -243,7 +241,6 @@ vertical positions
 
 ..
 
-    >>> from fipy.tools.numerix import sqrt, arcsin, cos
     >>> x0 = radius * cos(arcsin(y))
     >>> try:
     ...     from scipy.special import erf ## This function can sometimes throw nans on OS X

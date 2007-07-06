@@ -6,7 +6,7 @@
  # 
  # FILE: "mesh.py"
  #                                     created: 1/18/06 {4:01:30 PM}
- #                                 last update: 7/5/07 {5:48:01 PM}
+ #                                 last update: 7/5/07 {8:06:34 PM}
  # Author: Jonathan Guyer
  # E-mail: <guyer@nist.gov>
  # Author: Daniel Wheeler
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     bench.start()
 
-    nx = int(numerix.sqrt(numberOfElements))
+    nx = int(sqrt(numberOfElements))
     ny = nx
     dx = 1.
     dy = 1.

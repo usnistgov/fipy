@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:45:57 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:42 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,21 +108,15 @@ Construct a `distanceVariable` object.
 
 The result can be tested with the following commands.
 
-.. raw:: latex
-
-   \IndexModule{numerix}
-
-..
-
    >>> dY = dy / 2.
    >>> dX = dx / 2.
    >>> mm = min (dX, dY)
-   >>> m1 = dY * dX / numerix.sqrt(dY**2 + dX**2)
+   >>> m1 = dY * dX / sqrt(dY**2 + dX**2)
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
    >>> v2 = evalCell(-m1, -dX, dx, dy)[0]
@@ -130,7 +124,7 @@ The result can be tested with the following commands.
    >>> v4 = evalCell(v3, dY, dx, dy)[1]
    >>> v5 = evalCell(dX, v3, dx, dy)[1]
    >>> MASK = -1000
-   >>> trialValues = numerix.MA.masked_values((
+   >>> trialValues = MA.masked_values((
    ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,

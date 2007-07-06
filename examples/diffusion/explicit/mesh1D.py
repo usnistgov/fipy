@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:04:07 PM} 
+ #                                last update: 7/5/07 {8:11:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -111,7 +111,7 @@ The result is tested against the expected profile:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> epsi = x / numerix.sqrt(t * diffusionCoeff)
+    >>> epsi = x / sqrt(t * diffusionCoeff)
     >>> from scipy.special import erf
     >>> analyticalArray = erf(epsi/2)
     >>> print var.allclose(analyticalArray, atol = 2e-3)

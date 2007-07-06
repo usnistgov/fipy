@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:57:33 PM} 
+ #                                last update: 7/5/07 {8:21:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -173,14 +173,12 @@ The analytical solution for this steady-state phase field problem, in an infinit
    \label{eq-phase:simple:analytical}
    \end{equation}
    or
-   \IndexModule{numerix}
    \IndexFunction{tanh}
    \IndexFunction{sqrt}
 
 ..
 
     >>> x = mesh.getCellCenters()[0]
-    >>> from fipy.tools.numerix import tanh, sqrt
     >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
 We treat the diffusion term

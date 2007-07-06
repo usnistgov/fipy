@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 7/5/07 {6:50:17 PM} 
+ #                                last update: 7/5/07 {8:16:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,9 +107,9 @@ Compare the analaytical and numerical results:
 
    >>> theta = surfactantVar.getInterfaceVar()[1]
 
-   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
+   >>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
    1
-   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
+   >>> allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
    1
 
 
@@ -138,7 +138,7 @@ mesh = Grid1D(nx = nx, dx = dx)
 
 
 value = mesh.getCellCenters()[0] - 1.499 * dx
-##distanceVar = DistanceVariable(mesh = mesh, value = dx * (numerix.arange(nx) - 0.999))
+##distanceVar = DistanceVariable(mesh = mesh, value = dx * (arange(nx) - 0.999))
 distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
 ## Build the bulk diffusion equation
@@ -170,10 +170,8 @@ def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
     return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
 
-import fipy.tools.numerix as numerix
-
 def currentTimeFunc(theta):
-    tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
+    tmp = -diffusion * log(1 - theta) + rateConstant * siteDensity * L * theta
     return tmp / rateConstant / diffusion/ cinf
 
 ## set up the comparison arrays

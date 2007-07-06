@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:44:15 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:44 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,14 +98,12 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
 
 ..
 
    >>> x, y = mesh.getCellCenters()
-   >>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - \
-   ...                             radius
+   >>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
    >>> var.setValue(initialArray)
 
 The `advectionEquation` is constructed.
@@ -149,12 +147,12 @@ The result can be tested with the following commands.
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> x = numerix.array(mesh.getCellCenters()[0])
+   >>> x = array(mesh.getCellCenters()[0])
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = initialArray - distanceTravelled
-   >>> answer = numerix.where(answer < 0., -1001., answer)
-   >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
-   >>> numerix.allclose(answer, solution, atol=4.7e-3)
+   >>> answer = where(answer < 0., -1001., answer)
+   >>> solution = where(answer < 0., -1001., array(var))
+   >>> allclose(answer, solution, atol=4.7e-3)
    1
 
 If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
@@ -172,8 +170,8 @@ is more accurate,
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
-   >>> numerix.allclose(answer, solution, atol=1.02e-3)
+   >>> solution = where(answer < 0., -1001., array(var))
+   >>> allclose(answer, solution, atol=1.02e-3)
    1
 
 """

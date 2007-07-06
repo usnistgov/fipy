@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:39:24 PM} 
+ #                                last update: 7/5/07 {8:13:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -61,7 +61,7 @@ We start by defining a 1D mesh
     >>> dx = L / nx
     >>> # nx = 200
     >>> # dx = PF("0.01 nm")
-    >>> ## dx = PF("0.001 nm") * (1.001 - 1/numerix.cosh(numerix.arange(-10, 10, .01)))
+    >>> ## dx = PF("0.001 nm") * (1.001 - 1/cosh(arange(-10, 10, .01)))
     >>> # L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
@@ -360,21 +360,21 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> ends = numerix.take(phase, (0,-1))
-    >>> numerix.allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> ends = take(phase, (0,-1))
+    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields has appropriately segregated into into
 their respective phases
 
-    >>> ends = numerix.take(interstitials[0], (0,-1))
-    >>> numerix.allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(interstitials[0], (0,-1))
+    >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = numerix.take(substitutionals[0], (0,-1))
-    >>> numerix.allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[0], (0,-1))
+    >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = numerix.take(substitutionals[1], (0,-1))
-    >>> numerix.allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> ends = take(substitutionals[1], (0,-1))
+    >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
 __docformat__ = 'restructuredtext'

@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 7/5/07 {6:04:05 PM} 
+ #                                last update: 7/5/07 {8:21:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -135,7 +135,6 @@ We can again test against the analytical solution
 .. raw:: latex
 
    $\phi = 1 - \erf(x/2\sqrt{D t})$.
-   \IndexModule{numerix}
    \IndexSoftware{SciPy}
    \IndexFunction{sqrt}
 
@@ -143,8 +142,6 @@ We can again test against the analytical solution
 
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> from fipy.tools.numerix import sqrt
-
     >>> phiAnalytical = CellVariable(name="analytical value",
     ...                              mesh=mesh)
 

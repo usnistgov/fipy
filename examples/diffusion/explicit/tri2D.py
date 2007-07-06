@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:01:56 PM} 
+ #                                last update: 7/5/07 {8:11:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -99,7 +99,7 @@ solver = LinearLUSolver(tolerance = 1.e-6, iterations = 100)
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedValue(mesh.getFacesRight(),valueRight))
 
-answer = numerix.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+answer = array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
                           7.05111362e-02,  7.81376523e-01,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,

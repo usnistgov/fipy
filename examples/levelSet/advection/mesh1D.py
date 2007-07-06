@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:44:14 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:43 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -128,20 +128,14 @@ The problem can then be solved by executing a serious of time steps.
 
 The result can be tested with the following code:
 
-.. raw:: latex
-
-   \IndexModule{numerix}
-
-..
-
    >>> for step in range(steps):
    ...     var.updateOld()
    ...     advEqn.solve(var, dt=timeStepDuration)
    >>> x = mesh.getCellCenters()[0]
    >>> distanceTravelled = timeStepDuration * steps * velocity
    >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
-   >>> answer = numerix.where(x < distanceTravelled, 
-   ...                        x[0] - interfacePosition, answer)
+   >>> answer = where(x < distanceTravelled, 
+   ...                x[0] - interfacePosition, answer)
    >>> print var.allclose(answer)
    1
    

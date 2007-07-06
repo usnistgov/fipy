@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:54:12 PM} 
+ #                                last update: 7/5/07 {8:09:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ steps = 1000
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = numerix.zeros(nx, 'd')
+startingArray = zeros(nx, 'd')
 startingArray[50:90] = 1. 
 
 var = CellVariable(

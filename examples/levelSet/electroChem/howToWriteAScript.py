@@ -6,7 +6,7 @@
  # 
  #  FILE: "howToWriteAScript.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:49:30 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:40 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -141,13 +141,11 @@ Build the mesh:
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexFunction{exp}
 
 ..
 
-   >>> from fipy.tools.numerix import sqrt, exp
    >>> if numberOfElements != -1:
    ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
    ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \

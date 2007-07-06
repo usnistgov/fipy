@@ -6,7 +6,7 @@
  # 
  #  FILE: "square.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:45:48 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:16:59 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,19 +60,18 @@ given by:
 
 Do the tests:
 
-   >>> import fipy.tools.numerix as numerix
    >>> def evalCell(phix, phiy, dx, dy):
    ...     aa = dy**2 + dx**2
    ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
    ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
+   ...     sqr = sqrt(bb**2 - 4. * aa * cc)
    ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
    >>> val = evalCell(-dy / 2., -dx / 2., dx, dy)[0]
    >>> v1 = evalCell(val, -3. * dx / 2., dx, dy)[0]
    >>> v2 = evalCell(-3. * dy / 2., val, dx, dy)[0]
    >>> v3 = evalCell(v2, v1, dx, dy)[0]
-   >>> v4 = dx * dy / numerix.sqrt(dx**2 + dy**2) / 2
-   >>> arr = numerix.array((
+   >>> v4 = dx * dy / sqrt(dx**2 + dy**2) / 2
+   >>> arr = array((
    ...     v3           , v2      , -3. * dy / 2.   , v2      , v3,
    ...     v1           , val     , -dy / 2.        , val     , v1           ,
    ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,

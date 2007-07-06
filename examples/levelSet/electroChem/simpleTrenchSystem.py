@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:49:28 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:55:45 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -182,6 +182,8 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
+from fipy import *
+
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,
                           transferCoefficient=0.5,
@@ -216,7 +218,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
-    from fipy import *
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
@@ -263,8 +264,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     exchangeCurrentDensity = currentDensity0 + tmp
 
-    import fipy.tools.numerix as numerix
-    expo = numerix.exp(expoConstant * overpotential)
+    expo = exp(expoConstant * overpotential)
     currentDensity = expo * exchangeCurrentDensity * metalVar \
                      / metalConcentration
 

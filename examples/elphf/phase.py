@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:39:22 PM} 
+ #                                last update: 7/5/07 {8:13:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -202,8 +202,8 @@ We verify that the correct equilibrium solution is attained
 
     >>> x = mesh.getCellCenters()[0]
     
-    >>> d = numerix.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
-    >>> analyticalArray = (1. - numerix.tanh((x - L/2.)/(2 * d))) / 2.
+    >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
+    >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
 
     >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
     1

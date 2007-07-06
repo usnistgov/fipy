@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {6:45:52 PM} { 1:23:41 PM}
+ #                                last update: 7/5/07 {8:21:41 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -112,13 +112,7 @@ The problem can then be solved by executing the `solve()` method of the equation
 
 The result can be tested with the following commands.
 
-.. raw:: latex
-
-   \IndexModule{numerix}
-
-..
-
-   >>> print numerix.allclose(var, x - dx * nx / 2)
+   >>> print allclose(var, x - dx * nx / 2)
    1
 
 """

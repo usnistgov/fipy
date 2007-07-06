@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {5:59:23 PM} 
+ #                                last update: 7/5/07 {8:18:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,11 +78,11 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...     eq.solve(var=var, boundaryConditions=boundaryConditions) ##, solver=GMRES())
     ...     x = mesh.getCellCenters()[0]
     ...     arg0 = -convCoeff * x / diffCoeff
-    ...     arg0 = numerix.where(arg0 < -200, -200, arg0)
+    ...     arg0 = where(arg0 < -200, -200, arg0)
     ...     arg1 = -convCoeff * L / diffCoeff
     ...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
-    ...     CC = 1. - numerix.exp(arg0)
-    ...     DD = 1. - numerix.exp(arg1)
+    ...     CC = 1. - exp(arg0)
+    ...     DD = 1. - exp(arg1)
     ...     analyticalArray = CC / DD
     ...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
     ...     if __name__ == '__main__':

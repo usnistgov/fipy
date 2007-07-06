@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:33:59 PM} 
+ #                                last update: 7/5/07 {8:11:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,10 +48,10 @@ Test case for the Grid3D.
  
    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
    >>> ImplicitDiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
-   >>> a = numerix.array(var)
-   >>> b = numerix.array(var2)
-   >>> c = numerix.ravel(numerix.array((b, b, b)))
-   >>> print numerix.allclose(a, c)
+   >>> a = array(var)
+   >>> b = array(var2)
+   >>> c = ravel(array((b, b, b)))
+   >>> print allclose(a, c)
    1
    
 """

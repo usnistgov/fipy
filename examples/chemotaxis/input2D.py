@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {5:53:22 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {8:08:33 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     x, y = mesh.getCellCenters()
 
-    RVar[:] = L / numerix.sqrt((x - L / 2)**2 + (y - 2 * L)**2)
+    RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     
     for i in range(100):
         for var, eqn in eqs:

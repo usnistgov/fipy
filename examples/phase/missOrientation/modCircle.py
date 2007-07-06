@@ -6,7 +6,7 @@
  # 
  #  FILE: "modCircle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:55:56 PM} 
+ #                                last update: 7/5/07 {8:18:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,9 +121,9 @@ mesh = Grid2D(dx, dy, nx, ny)
 
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
+theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * pi / 3.)
 x, y = mesh.getCellCenters()
-theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
+theta.setValue(-2. * pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.getOld().getGrad().getMag()
