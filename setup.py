@@ -507,7 +507,6 @@ class test(Command):
         
         import sys
         sys.exit(not result.wasSuccessful())
-
         
 class copy_script(Command):
     description = "copy an example script into a new editable file"
