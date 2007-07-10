@@ -79,9 +79,13 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
+    >>> if solverSuite() == 'Trilinos':
+    ...     solver = LinearPCGSolver()
+    ... else:
+    ...     solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000)
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000))
+    ...          solver = solver)
 
 The analytical solution test for this problem is given by:
 

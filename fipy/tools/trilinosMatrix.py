@@ -65,7 +65,12 @@ from fipy.tools import numerix
 # have all the target spots occupied. 
 #
 # None of these situations currently come up in FiPy; tests do not reveal any of 
-# the warnings that guard for those. 
+# the warnings that guard for those, and all tests pass.
+#
+# 4) Parallelization - currently matrix builds everything on processor 0, to be
+# redistributed later. As of now, cannot be done better without putting in
+# extremely inefficient filters to filter out unnecessary elements per
+# processor.
 
 class _TrilinosMatrix(_SparseMatrix):
     
@@ -86,25 +91,25 @@ class _TrilinosMatrix(_SparseMatrix):
           - `matrix`: The starting `spmatrix` id there is one.
 
         """
-        self.comm = Epetra.PyComm()
-        self.parallel = (self.comm.NumProc() > 1)
 
-        if self.parallel:
-            self.startRow = self.comm.MyPID()*size/self.comm.NumProc()
-            self.endRow = (self.comm.MyPID()+1)*size/self.comm.NumProc()
-          
         if matrix != None:
             self.matrix = matrix
             self.map = matrix.RowMap()
+            self.comm = matrix.Comm()
+            self.bandwidth = (matrix.NumGlobalNonzeros() + matrix.NumGlobalRows()-1)/matrix.NumGlobalRows()
         else:
+            self.comm = Epetra.PyComm()
             if sizeHint is not None and bandwidth == 0:
-                bandwidth = (sizeHint + size - 1)/size 
-            if not self.parallel:
-                self.map = Epetra.Map(size, 0, self.comm)
+                self.bandwidth = (sizeHint + size - 1)/size 
             else:
-                self.map = Epetra.Map(size, range(self.startRow, self.endRow), 0, self.comm)
+                self.bandwidth = bandwidth
+                
+            if self.comm.MyPID()==0:
+                self.map = Epetra.Map(size, range(0, size), 0, self.comm)
+            else: 
+                self.map = Epetra.Map(size, [], 0, self.comm)
 
-            self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, bandwidth*3/2)
+            self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
             # Leave extra bandwidth, to handle multiple insertions into the
             # same spot. It's memory-inefficient, but it'll get cleaned up when
             # FillComplete is called, and according to the Trilinos devs the 
@@ -286,7 +291,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
             
         """
-        N = self._getMatrix().NumGlobalCols()
+        N = self._getMatrix().NumGlobalRows()
 
         if isinstance(other, _TrilinosMatrix):
             if isinstance(other._getMatrix(), Epetra.RowMatrix):
@@ -315,10 +320,10 @@ class _TrilinosMatrix(_SparseMatrix):
                 if not self._getMatrix().Filled():
                     self._getMatrix().FillComplete()
 
-                y = Epetra.Vector(other)
+                y = _numpyToTrilinosVector(other, self.map)
                 result = Epetra.Vector(self.map)
                 self._getMatrix().Multiply(False, y, result)
-                return result
+                return _trilinosToNumpyVector(result)
             else:
                 raise TypeError
            
@@ -327,27 +332,13 @@ class _TrilinosMatrix(_SparseMatrix):
             y = Epetra.Vector(other)
             result = Epetra.Vector(self.map)
             self._getMatrix().Multiply(True, y, result)
-            return result
+            return _trilinosToNumpyVector(result)
         else:
             return self * other
             
     def _getShape(self):
         N = self._getMatrix().NumGlobalRows()
         return (N,N)
-        
-    def localizeToProcessor(self, row, col, val):
-        if(self.parallel):
-            tuples = zip(row, col, val)
-            filtered = filter(lambda x: self.startRow <= x[0] and x[0] < self.endRow , tuples)
-            if filtered is not None and len(filtered) > 0:
-                row, col, val = zip( *filtered)
-            else:
-                row, col, val = (), (), ()
-            return row, col, val
-        else:
-            return row, col, val
-            
-            
         
     def put(self, vector, id1, id2):
         """
@@ -361,8 +352,10 @@ class _TrilinosMatrix(_SparseMatrix):
              2.500000      ---        ---    
         """
 
-        id1, id2, vector = self.localizeToProcessor(id1, id2, vector)
-        
+        # All matrix building gets done on processor 0
+        if(self.comm.MyPID() > 0):
+            return
+
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                 import warnings
@@ -445,7 +438,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
         result = Epetra.Vector(self.map)
         self._getMatrix().ExtractDiagonalCopy(result)
-        return numerix.array(result)
+        return _trilinosToNumpyVector(result)
     
     def addAt(self, vector, id1, id2):
         """
@@ -459,7 +452,12 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-        id1, id2, vector = self.localizeToProcessor(id1, id2, vector)
+
+        # All matrix building gets done on processor 0
+        if(self.comm.MyPID() > 0):
+            return
+
+
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:
@@ -495,6 +493,67 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def getNumpyArray(self):
         raise NotImplemented
+
+    def _getDistributedMatrix(self):
+        """
+        Returns an equivalent Trilinos matrix, but redistributed in a more
+        efficient parallel map.
+        """
+        if self.comm.NumProc() == 1:
+            return self.matrix 
+            # No redistribution necessary in serial mode
+        else:
+            self.matrix.GlobalAssemble()
+            totalElements = self.matrix.NumGlobalRows()
+
+
+            DistributedMap = Epetra.Map(totalElements, 0, self.comm)
+            RootToDist = Epetra.Import(DistributedMap, self.map)
+
+            DistMatrix = Epetra.FECrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
+
+            DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
+
+            return DistMatrix
+
+def _numpyToTrilinosVector(v, map):
+    """
+    Takes a numpy vector and return an equivalent Trilinos vector, distributed
+    across all processors as specified by the map.
+    """
+    if(map.Comm().NumProc() == 1):
+        return Epetra.Vector(v)
+    else:
+        if map.Comm().MyPID() == 0:
+            myElements=len(v)
+        else:
+            myElements=0
+        RootMap = Epetra.Map(-1, range(0, myElements), 0, map.Comm())
+
+        RootToDist = Epetra.Import(map, RootMap)
+
+        rootVector = Epetra.Vector(RootMap, v)
+        distVector = Epetra.Vector(map)
+        distVector.Import(rootVector, RootToDist, Epetra.Insert)
+        return distVector
+
+def _trilinosToNumpyVector(v):
+    """
+    Takes a distributed Trilinos vector and gives all processors a copy of it
+    in a numpy vector.
+    """
+
+    if(v.Comm().NumProc() > 1):
+        PersonalMap = Epetra.Map(-1, range(0, v.GlobalLength()), 0, v.Comm())
+        DistToPers = Epetra.Import(PersonalMap, v.Map())
+
+        PersonalV = Epetra.Vector(PersonalMap)
+        PersonalV.Import(v, DistToPers, Epetra.Insert) #Maybe view? 
+
+        return numerix.array(PersonalV)
+
+    else:
+        return numerix.array(v)
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
@@ -519,3 +578,4 @@ def _test():
     
 if __name__ == "__main__": 
     _test() 
+

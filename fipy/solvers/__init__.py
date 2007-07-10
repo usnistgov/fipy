@@ -50,3 +50,17 @@ else:
 
         if not foundSolvers:
             raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+
+if(solverSuite() != 'Trilinos'):
+    def mainProcessor():
+        return True
+else:
+    from PyTrilinos import Epetra
+    if(Epetra.PyComm().MyPID() == 0):
+        def mainProcessor():
+            return True
+    else:
+        def mainProcessor():
+            return False
+
+
