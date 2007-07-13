@@ -74,7 +74,7 @@ BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
 
 if solverSuite() == 'Trilinos':
-    solver = LinearPCGSolver(tolerance=1e-30)
+    solver = LinearGMRESSolver(tolerance=1e-30)
     tolerance = 1e-2
 else:
     solver = LinearLUSolver(iterations=10)

@@ -101,7 +101,11 @@ class Term:
         var[:] = array
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
+        if solverSuite() == 'Trilinos':
+            defaultSolver = LinearGMRESSolver()
+        else:
+            defaultSolver = LinearPCGSolver()
+        solver = self._getDefaultSolver(solver) or solver or defaultSolver
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
@@ -116,7 +120,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
@@ -135,7 +139,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation

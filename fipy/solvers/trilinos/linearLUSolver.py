@@ -68,7 +68,7 @@ class LinearLUSolver(TrilinosSolver):
 
         if  tolerance !=0 or iterations != 0:
             import warnings
-            warnings.warn("Trilinos KLU solver currently ignores tolerance and iteration specifications and runs a single iteration.", UserWarning, stacklevel=2)
+            warnings.warn("Trilinos KLU solver currently does not accept tolerance and iteration specifications.", UserWarning, stacklevel=2)
 
         if precon is not None:
             import warnings

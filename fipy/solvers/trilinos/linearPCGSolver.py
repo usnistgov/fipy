@@ -46,19 +46,19 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
+from fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner import MultilevelSGSPreconditioner
 
 from PyTrilinos import AztecOO
 
 class LinearPCGSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the gmres solver in Trilinos, using a multilevel
-    preconditioner.
+    This is an interface to the cg solver in Trilinos, using a multilevel
+    preconditioner by default.
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelSGSPreconditioner()):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
@@ -68,4 +68,5 @@ class LinearPCGSolver(TrilinosAztecOOSolver):
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)
-        self.solver = AztecOO.AZ_gmres
+        self.solver = AztecOO.AZ_cg
+

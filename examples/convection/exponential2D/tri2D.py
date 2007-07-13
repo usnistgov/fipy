@@ -70,7 +70,7 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
     >>> if solverSuite() == 'Trilinos':
-    ...     solver = LinearPCGSolver(tolerance = 1.e-15, iterations = 2000)
+    ...     solver = LinearGMRESSolver(tolerance = 1.e-15, iterations = 2000)
     ... else:
     ...     solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000)
 

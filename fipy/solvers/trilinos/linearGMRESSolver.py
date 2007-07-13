@@ -46,19 +46,19 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
 
 from PyTrilinos import AztecOO
 
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the gmres solver in Trilinos, using a Jacobi
-    preconditioner by default.
+    This is an interface to the gmres solver in Trilinos, using a multilevel
+    preconditioner.
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
@@ -69,4 +69,3 @@ class LinearGMRESSolver(TrilinosAztecOOSolver):
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)
         self.solver = AztecOO.AZ_gmres
-

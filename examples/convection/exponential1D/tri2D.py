@@ -80,7 +80,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
     >>> if solverSuite() == 'Trilinos':
-    ...     solver = LinearPCGSolver()
+    ...     solver = LinearGMRESSolver()
     ... else:
     ...     solver = LinearCGSSolver(tolerance=1.e-15, iterations=2000)
     >>> eq.solve(var = var,
