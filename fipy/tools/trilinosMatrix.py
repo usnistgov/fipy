@@ -55,8 +55,9 @@ from fipy.tools import numerix
 
 # 1) Adding matrices - the matrix with fewer nonzeros gets added into the one
 # that has more; this works as long as it's nonzero entries are a subset of the
-# larger one's nonzero entries.  Should be true for all cases in fipy, but is
-# not true in the general case.
+# larger one's nonzero entries. Is true for all cases in fipy, but is not true
+# in the general case - this isn't a general matrix class like the pysparse
+# matrix class is.
 #
 # 2) addAt currently not guaranteed to work for fill-completed matrices, if
 # elements are being added in new spots.
@@ -65,7 +66,7 @@ from fipy.tools import numerix
 # have all the target spots occupied. 
 #
 # None of these situations currently come up in FiPy; tests do not reveal any of 
-# the warnings that guard for those, and all tests pass.
+# the warnings that guard for those, and all tests pass. 
 #
 # 4) Parallelization - currently matrix builds everything on processor 0, to be
 # redistributed later. As of now, cannot be done better without putting in
@@ -178,12 +179,12 @@ class _TrilinosMatrix(_SparseMatrix):
                 
                 if EpetraExt.Add(other._getMatrix(), False, 1, tempMatrix, 1) != 0:
                     import warnings
-                    warnings.warn("EpetraExt.Add returned error code in __iadd__ 1",
+                    warnings.warn("EpetraExt.Add returned error code in __iadd__, 1",
                                    UserWarning, stacklevel=2)
 
                 if EpetraExt.Add(self._getMatrix(), False, 1, tempMatrix, 1) != 0:
                     import warnings
-                    warnings.warn("EpetraExt.Add returned error code in __iadd__ 2",
+                    warnings.warn("EpetraExt.Add returned error code in __iadd__, 2",
                                    UserWarning, stacklevel=2)
 
                 self.matrix = tempMatrix
@@ -253,7 +254,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def __mul__(self, other):
         """
-        Multiply a sparse matrix by another sparse matrix
+        Multiply a sparse matrix by another sparse matrix.
         
             >>> L1 = _TrilinosMatrix(size = 3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))

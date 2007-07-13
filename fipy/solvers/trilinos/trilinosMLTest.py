@@ -63,7 +63,7 @@ class TrilinosMLTest(TrilinosSolver):
     information about what ML preconditioner settings will work best.
     """
     
-    def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}, ):
+    def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}, testUnsupported = False):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
@@ -72,7 +72,8 @@ class TrilinosMLTest(TrilinosSolver):
 
           - `MLOptions`: Options to pass to ML. A dictionary of {option:value} 
                          pairs. This will be passed to ML.SetParameterList. 
-                         
+          - `testUnsupported`: test smoothers that are not currently
+                         implemented in preconditioner objects
           For detailed information on the possible parameters for ML, see
           http://trilinos.sandia.gov/packages/ml/documentation.html
 
@@ -85,12 +86,23 @@ class TrilinosMLTest(TrilinosSolver):
                                 iterations=iterations, steps=steps)
 
         self.MLOptions = MLOptions
+        if not self.MLOptions.has_key("output"):
+            self.MLOptions["output"] = 0
+            
         if not self.MLOptions.has_key("test: max iters"):
             self.MLOptions["test: max iters"] = iterations
         
         if not self.MLOptions.has_key("test: tolerance"):
             self.MLOptions["test: tolerance"] = tolerance
 
+        
+        unsupportedSmoothers = ["Jacobi", "Gauss-Seidel", "block Gauss-Seidel", "ParaSails", "IFPACK", "ML"]
+
+        if not testUnsupported:
+            for smoother in unsupportedSmoothers:
+                if not self.MLOptions.has_key("test: " + smoother):
+                    self.MLOptions["test: " + smoother] = False
+            
         
     
     def _applyTrilinosSolver(self, A, LHS, RHS):
@@ -99,7 +111,8 @@ class TrilinosMLTest(TrilinosSolver):
         
         Prec.SetParameterList(self.MLOptions)
         Prec.ComputePreconditioner()
-        Prec.AnalyzeSmoothers()
-        raw_input("Results of preconditioner test shown above. Press enter to quit.")
+
+        Prec.TestSmoothers()
+        raw_input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit.")
         import sys
         sys.exit(0)

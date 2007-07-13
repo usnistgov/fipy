@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosAztecOOSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #  FILE: "multilevelSolverSmootherPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,36 +44,31 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-
-from PyTrilinos import AztecOO
-
-class TrilinosAztecOOSolver(TrilinosSolver):
-
+class MultilevelSolverSmootherPreconditioner(Preconditioner):
     """
-    :Warning: This class is abstract, always create on of its subclasses.
-
+    Multilevel preconditioner for Trilinos solvers using Aztec solvers
+    as smoothers
+    
     """
-      
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
+    def __init__(self, levels=10):
         """
-        :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner object to use. 
-        """
-        TrilinosSolver.__init__(self, tolerance=tolerance,
-                                      iterations=iterations, steps=steps, precon=None)
-        self.preconditioner = precon
+        Initialize the multilevel preconditioner
 
-    def _applyTrilinosSolver(self, A, LHS, RHS):
-        Solver = AztecOO.AztecOO(A, LHS, RHS)
-        Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
-        if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=A)
-        Solver.Iterate(self.iterations, self.tolerance)
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
+
+    def _applyToSolver(self, solver, matrix):
+        if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
+            return
+        
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec", "smoother: Aztec as solver" : True})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        
+
+        

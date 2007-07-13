@@ -1,7 +1,14 @@
-def solverSuite():
-    return 'Trilinos'
-
+# The fact that I have to do the following manipulation with the current directory is really, really bad. 
+import os
+current_working_directory_path = os.getcwd()
 from PyTrilinos import ML # Gets around strange Trilinos import-order bugs. 
+os.chdir(current_working_directory_path)
+# As best I can tell, this happens in MPI_Init, deep in Trilinos. Possibly
+# because "current directory" not well-defined in MPI between processors?
+
+# This fix relies on this being the FIRST place to import any Trilinos module.
+# The only way to import Trilinos things should be to do "from fipy.solvers
+# import *" and have it automatically import Trilinos via this file.
 
 from preconditioners import *
 
@@ -10,3 +17,9 @@ from linearPCGSolver import LinearPCGSolver
 from linearGMRESSolver import LinearGMRESSolver
 from linearLUSolver import LinearLUSolver
 from linearBicgstabSolver import LinearBicgstabSolver
+
+from trilinosMLTest import TrilinosMLTest
+
+def solverSuite():
+    return 'Trilinos'
+
