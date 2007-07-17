@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 2/21/07 {1:54:03 PM} 
+ #                                last update: 7/17/07 {8:26:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,13 +133,13 @@ class Viewer:
         if datamin is None:
             datamin = 1e300
             for var in vars:
-                datamin = min(datamin, var.min().getValue())
+                datamin = min(datamin, min(var))
 
         if datamax is None:
             from fipy.tools import numerix
             datamax = -1e300
             for var in vars:
-                datamax = max(datamax, var.max().getValue())
+                datamax = max(datamax, max(var))
                 
         return datamin, datamax
         
