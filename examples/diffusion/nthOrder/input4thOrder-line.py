@@ -50,7 +50,7 @@
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
 
-   >>> print var.allclose(mesh.getCellCenters()[0], atol = tolerance)
+   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10)
    1
 
 """
@@ -74,11 +74,9 @@ BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
 
 if solverSuite() == 'Trilinos':
-    solver = LinearGMRESSolver(tolerance=1e-30)
-    tolerance = 1e-2
+    solver = LinearGMRESSolver(tolerance=1e-30, precon=MultilevelDDPreconditioner())
 else:
     solver = LinearLUSolver(iterations=10)
-    tolerance = 10
 
 if __name__ == '__main__':
     eq.solve(var,
@@ -88,5 +86,5 @@ if __name__ == '__main__':
     viewer = viewers.make(var)
     viewer.plot()
 
-    print var.allclose(mesh.getCellCenters()[0], atol = tolerance)
+    print var.allclose(mesh.getCellCenters()[0], atol = 10)
     raw_input("finished")

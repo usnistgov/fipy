@@ -48,10 +48,10 @@ def _suite():
                                        'missOrientation.test',
                                    ),
                                    docTestModuleNames = (
-                                       'simple',
-                                       'anisotropy',
                                        'binary',
+                                       'anisotropy',
                                        'quaternary',
+                                       'simple',
                                        'symmetry'
                                    ), 
                                    base = __name__)
