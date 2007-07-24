@@ -80,8 +80,6 @@ class TrilinosMLTest(TrilinosSolver):
           Currently, passing options to Aztec through ML is not supported.
          """
                 
-        # Former default was MLList = {"max levels" : 4, "smoother: type" : "symmetric Gauss-Seidel", "aggregation: type" : "Uncoupled"} (parameters kept for reference for now)
-                
         TrilinosSolver.__init__(self, tolerance=tolerance, 
                                 iterations=iterations, steps=steps)
 

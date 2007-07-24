@@ -77,7 +77,7 @@ class LinearLUSolver(PysparseSolver):
 
         """
         
-        PysparseSolver.__init__(self, tolerance = tolerance, steps = steps, precon = precon)
+        PysparseSolver.__init__(self, tolerance = tolerance, iterations=iterations, steps = steps, precon = precon)
 
     def _solve(self, L, x, b):
         diag = L.takeDiagonal()
@@ -86,17 +86,18 @@ class LinearLUSolver(PysparseSolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        tol = self.tolerance + 1.
-
         LU = superlu.factorize(L._getMatrix().to_csr())
 
+        #tol = self.tolerance + 1
         for iteration in range(self.iterations):
+            errorVector = L * x - b
+            tol = max(numerix.absolute(errorVector))
+            #print iteration, tol
+
             if tol <= self.tolerance:
                 break
 
-            errorVector = L * x - b
             xError = numerix.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
-            tol = max(numerix.absolute(xError))
-
+            #tol = max(numerix.absolute(xError))

@@ -59,8 +59,9 @@ class TrilinosGeneralSolver(Solver):
 
     """
     This solver is an interface to most of the solvers and preconditioners
-    available through PyTrilinos. It should not be used; the various subclasses
-    of trilinosSolver, of the form "linearXSolver", should be used instead. 
+    available through PyTrilinos. It should not be used; the various
+    subclasses of trilinosSolver, of the form "linearXSolver", should be used
+    instead. 
     """
     
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, \

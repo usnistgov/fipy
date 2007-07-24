@@ -49,7 +49,7 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 class MultilevelSGSPreconditioner(Preconditioner):
     """
-    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing
+    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing.
     
     """
     def __init__(self, levels=10):

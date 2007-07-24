@@ -49,7 +49,7 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 class JacobiPreconditioner(Preconditioner):
     """
-    Jacobi Preconditioner for Trilinos solvers
+    Jacobi Preconditioner for Trilinos solvers.
     
     """
 

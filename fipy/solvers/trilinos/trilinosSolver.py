@@ -63,8 +63,12 @@ class TrilinosSolver(Solver):
     def _makeTrilinosMatrix(self, L):
         """ 
         Takes in a Pysparse matrix and returns an Epetra.CrsMatrix . 
-        Slow, but works. Scales linearly.
+        Slow, but works.
         """
+        # This should no longer ever be called, except for debugging!
+        import warnings
+        warnings.warn("Incorrect matrix type - got Pysparse matrix, expected Trilinos matrix! The conversion is extremely slow and should never be necessary!", UserWarning, stacklevel=2)
+        
         Comm = Epetra.PyComm() 
         if(Comm.NumProc() > 1):
             raise NotImplemented, "Cannot convert from Pysparse to Trilinos matrix in parallel."
@@ -117,11 +121,11 @@ class TrilinosSolver(Solver):
 
         LHS = _numpyToTrilinosVector(x, A.RowMap())
         RHS = _numpyToTrilinosVector(b, A.RowMap())
-
         
         self._applyTrilinosSolver(A, LHS, RHS)
 
         x[:] = _trilinosToNumpyVector(LHS)
+
 
     def _getMatrixClass(self):
         return _TrilinosMatrix

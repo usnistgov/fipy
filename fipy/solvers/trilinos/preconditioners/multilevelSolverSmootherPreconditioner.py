@@ -50,7 +50,7 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 class MultilevelSolverSmootherPreconditioner(Preconditioner):
     """
     Multilevel preconditioner for Trilinos solvers using Aztec solvers
-    as smoothers
+    as smoothers.
     
     """
     def __init__(self, levels=10):

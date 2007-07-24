@@ -46,8 +46,13 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
+from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
+from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
+
+from fipy.tools import numerix
 
 from PyTrilinos import Epetra
+from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
 
 class LinearLUSolver(TrilinosSolver):
@@ -56,7 +61,7 @@ class LinearLUSolver(TrilinosSolver):
     An interface to the Amesos KLU solver in Trilinos.
 
     """
-    def __init__(self, tolerance=0, iterations=0, steps=None, precon=None):
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None):
         """
         :Parameters:
         - `tolerance`: The required error tolerance.
@@ -66,10 +71,6 @@ class LinearLUSolver(TrilinosSolver):
         TrilinosSolver.__init__(self, tolerance=tolerance, 
                                 iterations=iterations, steps=steps, precon=None)
 
-        if  tolerance !=0 or iterations != 0:
-            import warnings
-            warnings.warn("Trilinos KLU solver currently does not accept tolerance and iteration specifications.", UserWarning, stacklevel=2)
-
         if precon is not None:
             import warnings
             warnings.warn("Trilinos KLU solver does not accept preconditioners.",
@@ -78,6 +79,22 @@ class LinearLUSolver(TrilinosSolver):
 
        
     def _applyTrilinosSolver(self, A, LHS, RHS):
-        Problem = Epetra.LinearProblem(A, LHS, RHS)
-        Solver = self.Factory.Create("Klu", Problem)
-        Solver.Solve()
+        for iteration in range(self.iterations):
+            # errorVector = L*x - b
+            errorVector = Epetra.Vector(A.RowMap())
+            A.Multiply(False, LHS, errorVector)
+            errorVector = errorVector - RHS
+
+            tol = max(numerix.absolute(_trilinosToNumpyVector(errorVector)))
+
+            if tol <= self.tolerance: 
+                break
+
+            xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(), 'd'), A.RowMap())
+                
+            Problem = Epetra.LinearProblem(A, xError, errorVector)
+            Solver = self.Factory.Create("Klu", Problem)
+            Solver.Solve()
+
+            LHS[:] = LHS - xError
+            

@@ -49,9 +49,7 @@ from PyTrilinos import EpetraExt
 from fipy.tools.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix
 
-# This matrix class now passes the tests. 
-
-# Current inadequacies:
+# Current inadequacies of the matrix class:
 
 # 1) Adding matrices - the matrix with fewer nonzeros gets added into the one
 # that has more; this works as long as it's nonzero entries are a subset of the
@@ -72,6 +70,13 @@ from fipy.tools import numerix
 # redistributed later. As of now, cannot be done better without putting in
 # extremely inefficient filters to filter out unnecessary elements per
 # processor.
+# 
+# To parallelize the matrix creation completely, would have to have each
+# processor know its starting row and ending row (not difficult, have it
+# generate it on initialization and then make the map based on that) and also
+# have the rest of FiPy take these as arguments when necessary and only
+# generate the relevant pieces of the matrix (difficult, would require changes
+# throughout FiPy, including the various mesh-accessing functions).
 
 class _TrilinosMatrix(_SparseMatrix):
     
@@ -89,7 +94,7 @@ class _TrilinosMatrix(_SparseMatrix):
         :Parameters:
           - `size`: The size N for an N by N matrix.
           - `bandwidth`: The proposed band width of the matrix.
-          - `matrix`: The starting `spmatrix` id there is one.
+          - `matrix`: The starting `Epetra.FECrsMatrix` if there is one.
 
         """
 
@@ -113,16 +118,20 @@ class _TrilinosMatrix(_SparseMatrix):
             self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
             # Leave extra bandwidth, to handle multiple insertions into the
             # same spot. It's memory-inefficient, but it'll get cleaned up when
-            # FillComplete is called, and according to the Trilinos devs the 
+            # FillComplete is called, and according to the Trilinos devs the
             # performance boost will be worth it.
 
     def _getMatrix(self):
         return self.matrix
     
-    # All operations that require getting data out of the matrix need to muddle
-    # around with FillComplete to make sure they work.  There will be no
-    # warnings when FillComplete is implicitly called; there will only be
-    # warnings when insertions fail.
+    # All operations that require getting data out of the matrix may need to
+    # call FillComplete to make sure they work.  There will be no warnings when
+    # FillComplete is implicitly called; there will only be warnings when
+    # insertions fail.
+    #
+    # These functions also do not know whether the matrix element they are
+    # looking for is on another processor, and will not behave properly if it
+    # is.
     def copy(self):
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
@@ -161,9 +170,8 @@ class _TrilinosMatrix(_SparseMatrix):
     # longer FillComplete()s the destination matrix) it is possible to make
     # this work in the general case by adding both matrices into an empty
     # matrix. This has not yet been implemented. It is not strictly necessary
-    # for FiPy currently, since all tests pass without it, but will be a good
-    # idea to have so that the matrix class can be used more generally without
-    # worrying so much about the underlying trilinos.
+    # for FiPy currently, since all tests pass without it, and it will, in some
+    # cases, incur a performance penalty.
 
     def __iadd__(self, other):
         if other != 0:
@@ -353,7 +361,7 @@ class _TrilinosMatrix(_SparseMatrix):
              2.500000      ---        ---    
         """
 
-        # All matrix building gets done on processor 0
+        # Currently, all matrix building gets done on processor 0
         if(self.comm.MyPID() > 0):
             return
 
@@ -454,7 +462,7 @@ class _TrilinosMatrix(_SparseMatrix):
              2.500000      ---     2.200000  
         """
 
-        # All matrix building gets done on processor 0
+        # Currently, all matrix building gets done on processor 0
         if(self.comm.MyPID() > 0):
             return
 
@@ -489,16 +497,13 @@ class _TrilinosMatrix(_SparseMatrix):
             self.addAt(vector, ids, ids)
 
 
-    # This function requires take. This is a problem. 
-    # However, this does not seem to ever be called.
-
     def getNumpyArray(self):
         raise NotImplemented
 
     def _getDistributedMatrix(self):
         """
-        Returns an equivalent Trilinos matrix, but redistributed in a more
-        efficient parallel map.
+        Returns an equivalent Trilinos matrix, but redistributed evenly over
+        all processors.
         """
         if self.comm.NumProc() == 1:
             return self.matrix 
@@ -544,17 +549,16 @@ def _trilinosToNumpyVector(v):
     in a numpy vector.
     """
 
-    if(v.Comm().NumProc() > 1):
+    if(v.Comm().NumProc() == 1):
+        return numerix.array(v)
+    else:
         PersonalMap = Epetra.Map(-1, range(0, v.GlobalLength()), 0, v.Comm())
         DistToPers = Epetra.Import(PersonalMap, v.Map())
 
         PersonalV = Epetra.Vector(PersonalMap)
-        PersonalV.Import(v, DistToPers, Epetra.Insert) #Maybe view? 
+        PersonalV.Import(v, DistToPers, Epetra.Insert) 
 
         return numerix.array(PersonalV)
-
-    else:
-        return numerix.array(v)
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """

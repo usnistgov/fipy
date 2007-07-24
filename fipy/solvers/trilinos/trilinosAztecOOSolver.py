@@ -53,7 +53,8 @@ from PyTrilinos import AztecOO
 class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
-    :Warning: This class is abstract, always create on of its subclasses.
+    :Warning: This class is abstract, always create on of its subclasses. It
+    provides the code to call all solvers from the Trilinos AztecOO package.
 
     """
       

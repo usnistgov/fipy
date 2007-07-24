@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 5/1/07 {2:09:02 PM} 
+ #                                last update: 7/16/07 {10:03:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1094,6 +1094,9 @@ class Variable(object):
         """
         
         return self._BinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline=False)
+
+    def __iter__(self):
+        return iter(self.getValue())
         
     def __len__(self):
         return len(self.getValue())

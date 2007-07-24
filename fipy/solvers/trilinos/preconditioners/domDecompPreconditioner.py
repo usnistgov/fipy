@@ -49,7 +49,7 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 class DomDecompPreconditioner(Preconditioner):
     """
-    Domain Decomposition preconditioner for Trilinos solvers
+    Domain Decomposition preconditioner for Trilinos solvers.
     
     """
 

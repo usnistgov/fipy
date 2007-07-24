@@ -49,7 +49,7 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 class ICPreconditioner(Preconditioner):
     """
-    Incomplete Cholesky Preconditioner from IFPACK for Trilinos Solvers
+    Incomplete Cholesky Preconditioner from IFPACK for Trilinos Solvers.
     
     """
 
