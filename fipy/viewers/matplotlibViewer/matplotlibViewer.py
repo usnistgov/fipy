@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/23/07 {4:43:00 PM}
+ #                                last update: 7/24/07 {8:54:40 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,8 +83,6 @@ class MatplotlibViewer(Viewer):
         fig = pylab.figure()
         self.id = fig.number
         
-        pylab.ioff()
-        
         pylab.title(self.title)
         
 ##    def _autoscale(self, vars, datamin=None, datamax=None):
@@ -117,8 +115,12 @@ class MatplotlibViewer(Viewer):
 
         pylab.figure(self.id)
 
+        pylab.ioff()
+        
         self._plot()
         pylab.draw()
+        
+        pylab.ion()
 
         if filename is not None:
             pylab.savefig(filename)
