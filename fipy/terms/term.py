@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/29/07 {12:27:49 PM} 
+ #                                last update: 7/25/07 {9:57:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,6 +41,8 @@
  ##
 
 __docformat__ = 'restructuredtext'
+
+import os
 
 from fipy.tools import numerix
 
@@ -92,7 +94,25 @@ class Term:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        return self._buildMatrix(var, boundaryConditions, dt)
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if not hasattr(self, "_viewer"):
+                from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
+                Term._viewer = MatplotlibSparseMatrixViewer()
+
+        matrix, RHSvector = self._buildMatrix(var, boundaryConditions, dt)
+        
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
+            self._viewer.plot(matrix=matrix)
+            raw_input()
+        
+        
+##         raw_input()
+##         print "x", var
+##         print "L", matrix
+##         print "b", RHSvector
+        
+        return matrix, RHSvector
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
         from fipy.solvers.linearPCGSolver import LinearPCGSolver
