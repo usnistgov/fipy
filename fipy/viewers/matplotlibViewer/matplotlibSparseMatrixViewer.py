@@ -4,7 +4,7 @@
  # 
  # FILE: "matplotlibSparseMatrixViewer.py"
  #                                     created: 7/24/07 {9:42:55 AM}
- #                                 last update: 7/24/07 {5:06:15 PM}
+ #                                 last update: 7/25/07 {10:29:55 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
@@ -34,7 +34,7 @@ import math
 import pylab
 from scipy.io import mmio
 
-from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where
+from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where, zeros
 
 class SignedLogFormatter(pylab.ticker.LogFormatter):
     """
@@ -205,6 +205,11 @@ class MatplotlibSparseMatrixViewer:
         x = c.col
         z = c.data
         
+        if len(z) == 0:
+            y = zeros((1,))
+            x = zeros((1,))
+            z = zeros((1,))
+
         if log == 'auto' and log10(max(z) - min(z)) > 2:
             log = True
         else:
@@ -239,6 +244,9 @@ class MatplotlibSparseMatrixViewer:
         
             fmt = None
             loc = None
+            
+        if zRange == 0:
+            zRange = nanmax(zPlus) + 1
 
         N = matrix._getShape()[0]
         saveSize = pylab.rcParams['figure.figsize']
