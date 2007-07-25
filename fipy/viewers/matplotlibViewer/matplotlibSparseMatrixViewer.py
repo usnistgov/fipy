@@ -1,1 +1,263 @@
-## -*-Pyth-*- # ############################################################################# # FiPy - a finite volume PDE solver in Python #  # FILE: "matplotlibSparseMatrixViewer.py" #                                     created: 7/24/07 {9:42:55 AM} #                                 last update: 7/24/07 {5:06:15 PM} # Author: Jonathan Guyer <guyer@nist.gov> #   mail: NIST #    www: <http://www.ctcms.nist.gov/fipy/> #   # ======================================================================== # This software was developed at the National Institute of Standards # and Technology by employees of the Federal Government in the course # of their official duties.  Pursuant to title 17 Section 105 of the # United States Code this software is not subject to copyright # protection and is in the public domain.  FiPy is an experimental # system.  NIST assumes no responsibility whatsoever for its use by # other parties, and makes no guarantees, expressed or implied, about # its quality, reliability, or any other characteristic.  We would # appreciate acknowledgement if the software is used. #  # This software can be redistributed and/or modified freely # provided that any derivative works bear some notice that they are  # derived from it, and any modified versions bear some notice that # they have been modified. # ======================================================================== #  # ############################################################################# ##import mathimport pylabfrom scipy.io import mmiofrom fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, whereclass SignedLogFormatter(pylab.ticker.LogFormatter):    """    Format values for log axis;    if attribute decadeOnly is True, only the decades will be labelled.    """    def __init__(self, base=10.0, labelOnlyBase=True, threshold=0.):        """        base is used to locate the decade tick,        which will be the only one to be labeled if labelOnlyBase        is False        """        self._base = base+0.0        self.labelOnlyBase=labelOnlyBase        self.threshold = threshold    def __call__(self, x, pos=None):        'Return the format for tick val x at position pos'        self.verify_intervals()        d = abs(self.viewInterval.span())        b=self._base        # only label the decades        sgn = sign(x)        x = abs(x)        x += self.threshold        isDecade = self.is_decade(x)        bx = b**x        sgnbx = sgn * bx        if not isDecade and self.labelOnlyBase: s = ''        elif x > 4: s= '%+1.0e' % sgnbx        elif x < 0: s =  '%+1.0e' % sgnbx        else        : s =  self.pprint_val(sgnbx, d)        return s    def pprint_val(self, x, d):        #if the number is not too big and it's an int, format it as an        #int        if abs(x)<1e4 and x==int(x): return '%+d' % x        d = 10**(d / 2.)                if d < 1e-2: fmt = '%+1.3e'        elif d < 1e-1: fmt = '%+1.3f'        elif d > 1e5: fmt = '%+1.1e'        elif d > 10 : fmt = '%+1.1f'        elif d > 1 : fmt = '%+1.2f'        else: fmt = '%+1.3f'        s =  fmt % x        #print d, x, fmt, s        tup = s.split('e')        if len(tup)==2:            mantissa = tup[0].rstrip('0').rstrip('.')            sgn = tup[1][0].replace('+', '')            exponent = tup[1][1:].lstrip('0')            s = '%se%s%s' %(mantissa, sgn, exponent)        else:            s = s.rstrip('0').rstrip('.')                    return s    class SignedLogLocator(pylab.ticker.LogLocator):    """    Determine the tick locations for "log" axes that express both positive and    negative values    """    def __init__(self, base=10.0, subs=[1.0], threshold=0.):        """        place ticks on the location= base**i*subs[j]        """        pylab.ticker.LogLocator.__init__(self, base, subs)        self.numticks = 7        self.threshold = threshold    def _set_numticks(self):        self.numticks = 7  # todo; be smart here; this is just for dev    def __call__(self):        'Return the locations of the ticks'        self.verify_intervals()        b=self._base        vmin, vmax = self.viewInterval.get_bounds()        if vmax<vmin:            vmin, vmax = vmax, vmin                    if vmax * vmin > 0:            raise ValueError("The interval must range from negative to positive values")                    ticklocs = []        for limit, sgn in zip([vmax, -vmin], [1, -1]):            numdec = math.floor(limit+self.threshold)-math.ceil(self.threshold)            if self._subs is None: # autosub                if numdec>10: subs = array([1.0])                elif numdec>6: subs = arange(2.0, b, 2.0)                else: subs = arange(2.0, b)                subs = log(subs) / log(b)            else:                subs = self._subs                if numdec == 0 and len(subs) == 1:                    subs = array(list(subs) + list(log(arange(2.0, b)) / log(b)))            stride = 1            while numdec/stride+1 > self.numticks:                stride += 1            for decadeStart in arange(math.floor(self.threshold), math.ceil(limit + self.threshold)+stride, stride):                ticks = subs + decadeStart - self.threshold                ticklocs.extend( sgn * ticks.compress(ticks > 0) )        return array(ticklocs)    def autoscale(self):        'Try to choose the view limits intelligently'        self.verify_intervals()        vmin, vmax = self.dataInterval.get_bounds()        if vmax<vmin:            vmin, vmax = vmax, vmin        if vmax * vmin > 0:            raise ValueError("The interval must range from negative to positive values")        if vmax == self.threshold:            vmax += 1        if vmin == -self.threshold:            vmin -= 1        exponent, remainder = divmod(math.log10(vmax - vmin), 1)        if remainder < 0.5:            exponent -= 1        scale = 10**(-exponent)        vmin = math.floor(scale*vmin)/scale        vmax = math.ceil(scale*vmax)/scale        return nonsingular(vmin, vmax)                         class MatplotlibSparseMatrixViewer:    def __init__(self, title="Sparsity"):        self.title = title                pylab.ion()                fig = pylab.figure(figsize=[pylab.rcParams['figure.figsize'][0] * 1.3, pylab.rcParams['figure.figsize'][1]])        self.id = fig.number                pylab.title(self.title)    def plot(self, matrix, log='auto'):        import tempfile        import os                (f, mtxName) = tempfile.mkstemp(suffix='.mtx')        matrix.matrix.export_mtx(mtxName)        mtx = mmio.mmread(mtxName)##         f.close()        os.remove(mtxName)                pylab.ion()                c = mtx.tocoo()        y = c.row        x = c.col        z = c.data                if log == 'auto' and log10(max(z) - min(z)) > 2:            log = True        else:            log = False                    if log:            zPlus = where(z > 0, log10(z), nan)            zMinus = where(z < 0, log10(-z), nan)            zMin = min(nanmin(zPlus), nanmin(zMinus))            zMax = max(nanmax(zPlus), nanmax(zMinus))##             zThreshold = 0.5 # (zMax - zMin) / 5.                        zMin -= 0.5                        numdec = math.floor(zMax)-math.ceil(zMin)            if numdec < 0:                zMax += 0.5                        zPlus -= zMin            zMinus -= zMin            zRange = zMax - zMin                        z = where(z > 0, zPlus, -zMinus)                        fmt = SignedLogFormatter(threshold=zMin)            loc = SignedLogLocator(threshold=zMin)                    else:            zPlus = where(z > 0, z, nan)            zMinus = where(z < 0, -z, nan)            zRange = max(nanmax(zPlus), nanmax(zMinus))                    fmt = None            loc = None        N = matrix._getShape()[0]        saveSize = pylab.rcParams['figure.figsize']        size = pylab.rcParams['figure.dpi'] **2 * saveSize[0] * saveSize[1] / N**2        pylab.ioff()                pylab.figure(self.id)        pylab.clf()        pylab.title(self.title)        scat = pylab.scatter(x, y, c=z,                              vmin=-zRange, vmax=zRange, faceted=False,                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)                            pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])                        pylab.colorbar(format=fmt, ticks=loc)        pylab.draw()
+## -*-Pyth-*-
+ # #############################################################################
+ # FiPy - a finite volume PDE solver in Python
+ # 
+ # FILE: "matplotlibSparseMatrixViewer.py"
+ #                                     created: 7/24/07 {9:42:55 AM}
+ #                                 last update: 7/24/07 {5:06:15 PM}
+ # Author: Jonathan Guyer <guyer@nist.gov>
+ #   mail: NIST
+ #    www: <http://www.ctcms.nist.gov/fipy/>
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are 
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ # 
+ # #############################################################################
+ ##
+
+import math
+
+import pylab
+from scipy.io import mmio
+
+from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where
+
+class SignedLogFormatter(pylab.ticker.LogFormatter):
+    """
+    Format values for log axis;
+
+    if attribute decadeOnly is True, only the decades will be labelled.
+    """
+    def __init__(self, base=10.0, labelOnlyBase=True, threshold=0.):
+        """
+        base is used to locate the decade tick,
+        which will be the only one to be labeled if labelOnlyBase
+        is False
+        """
+        self._base = base+0.0
+        self.labelOnlyBase=labelOnlyBase
+        self.threshold = threshold
+
+    def __call__(self, x, pos=None):
+        'Return the format for tick val x at position pos'
+        self.verify_intervals()
+        d = abs(self.viewInterval.span())
+        b=self._base
+        # only label the decades
+        sgn = sign(x)
+        x = abs(x)
+        x += self.threshold
+        isDecade = self.is_decade(x)
+        bx = b**x
+        sgnbx = sgn * bx
+        if not isDecade and self.labelOnlyBase: s = ''
+        elif x > 4: s= '%+1.0e' % sgnbx
+        elif x < 0: s =  '%+1.0e' % sgnbx
+        else        : s =  self.pprint_val(sgnbx, d)
+        return s
+
+    def pprint_val(self, x, d):
+        #if the number is not too big and it's an int, format it as an
+        #int
+        if abs(x)<1e4 and x==int(x): return '%+d' % x
+
+        d = 10**(d / 2.)
+        
+        if d < 1e-2: fmt = '%+1.3e'
+        elif d < 1e-1: fmt = '%+1.3f'
+        elif d > 1e5: fmt = '%+1.1e'
+        elif d > 10 : fmt = '%+1.1f'
+        elif d > 1 : fmt = '%+1.2f'
+        else: fmt = '%+1.3f'
+        s =  fmt % x
+        #print d, x, fmt, s
+        tup = s.split('e')
+        if len(tup)==2:
+            mantissa = tup[0].rstrip('0').rstrip('.')
+            sgn = tup[1][0].replace('+', '')
+            exponent = tup[1][1:].lstrip('0')
+            s = '%se%s%s' %(mantissa, sgn, exponent)
+        else:
+            s = s.rstrip('0').rstrip('.')
+            
+        return s
+    
+class SignedLogLocator(pylab.ticker.LogLocator):
+    """
+    Determine the tick locations for "log" axes that express both positive and
+    negative values
+    """
+
+    def __init__(self, base=10.0, subs=[1.0], threshold=0.):
+        """
+        place ticks on the location= base**i*subs[j]
+        """
+        pylab.ticker.LogLocator.__init__(self, base, subs)
+        self.numticks = 7
+        self.threshold = threshold
+
+    def _set_numticks(self):
+        self.numticks = 7  # todo; be smart here; this is just for dev
+
+    def __call__(self):
+        'Return the locations of the ticks'
+        self.verify_intervals()
+        b=self._base
+
+        vmin, vmax = self.viewInterval.get_bounds()
+
+        if vmax<vmin:
+            vmin, vmax = vmax, vmin
+            
+        if vmax * vmin > 0:
+            raise ValueError("The interval must range from negative to positive values")
+            
+        ticklocs = []
+
+        for limit, sgn in zip([vmax, -vmin], [1, -1]):
+            numdec = math.floor(limit+self.threshold)-math.ceil(self.threshold)
+
+            if self._subs is None: # autosub
+                if numdec>10: subs = array([1.0])
+                elif numdec>6: subs = arange(2.0, b, 2.0)
+                else: subs = arange(2.0, b)
+                subs = log(subs) / log(b)
+            else:
+                subs = self._subs
+                if numdec == 0 and len(subs) == 1:
+                    subs = array(list(subs) + list(log(arange(2.0, b)) / log(b)))
+
+            stride = 1
+            while numdec/stride+1 > self.numticks:
+                stride += 1
+
+            for decadeStart in arange(math.floor(self.threshold), math.ceil(limit + self.threshold)+stride, stride):
+                ticks = subs + decadeStart - self.threshold
+                ticklocs.extend( sgn * ticks.compress(ticks > 0) )
+
+        return array(ticklocs)
+
+    def autoscale(self):
+        'Try to choose the view limits intelligently'
+        self.verify_intervals()
+        vmin, vmax = self.dataInterval.get_bounds()
+
+        if vmax<vmin:
+            vmin, vmax = vmax, vmin
+
+        if vmax * vmin > 0:
+            raise ValueError("The interval must range from negative to positive values")
+
+        if vmax == self.threshold:
+            vmax += 1
+        if vmin == -self.threshold:
+            vmin -= 1
+
+        exponent, remainder = divmod(math.log10(vmax - vmin), 1)
+
+        if remainder < 0.5:
+            exponent -= 1
+        scale = 10**(-exponent)
+        vmin = math.floor(scale*vmin)/scale
+        vmax = math.ceil(scale*vmax)/scale
+
+        return nonsingular(vmin, vmax)
+                         
+class MatplotlibSparseMatrixViewer:
+    def __init__(self, title="Sparsity"):
+        self.title = title
+        
+        pylab.ion()
+        
+        fig = pylab.figure(figsize=[pylab.rcParams['figure.figsize'][0] * 1.3, pylab.rcParams['figure.figsize'][1]])
+        self.id = fig.number
+        
+        pylab.title(self.title)
+
+    def plot(self, matrix, log='auto'):
+        import tempfile
+        import os
+        
+        (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        matrix.matrix.export_mtx(mtxName)
+        mtx = mmio.mmread(mtxName)
+##         f.close()
+        os.remove(mtxName)
+        
+        pylab.ion()
+        
+        c = mtx.tocoo()
+        y = c.row
+        x = c.col
+        z = c.data
+        
+        if log == 'auto' and log10(max(z) - min(z)) > 2:
+            log = True
+        else:
+            log = False
+            
+        if log:
+            zPlus = where(z > 0, log10(z), nan)
+            zMinus = where(z < 0, log10(-z), nan)
+            zMin = min(nanmin(zPlus), nanmin(zMinus))
+            zMax = max(nanmax(zPlus), nanmax(zMinus))
+##             zThreshold = 0.5 # (zMax - zMin) / 5.
+            
+            zMin -= 0.5
+            
+            numdec = math.floor(zMax)-math.ceil(zMin)
+            if numdec < 0:
+                zMax += 0.5
+            
+            zPlus -= zMin
+            zMinus -= zMin
+            zRange = zMax - zMin
+            
+            z = where(z > 0, zPlus, -zMinus)
+            
+            fmt = SignedLogFormatter(threshold=zMin)
+            loc = SignedLogLocator(threshold=zMin)
+            
+        else:
+            zPlus = where(z > 0, z, nan)
+            zMinus = where(z < 0, -z, nan)
+            zRange = max(nanmax(zPlus), nanmax(zMinus))
+        
+            fmt = None
+            loc = None
+
+        N = matrix._getShape()[0]
+        saveSize = pylab.rcParams['figure.figsize']
+        size = pylab.rcParams['figure.dpi'] **2 * saveSize[0] * saveSize[1] / N**2
+
+        pylab.ioff()
+        
+        pylab.figure(self.id)
+        pylab.clf()
+
+        pylab.title(self.title)
+
+        scat = pylab.scatter(x, y, c=z, 
+                             vmin=-zRange, vmax=zRange, faceted=False, 
+                             cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
+                    
+        pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])
+
+                
+        pylab.colorbar(format=fmt, ticks=loc)
+
+        pylab.draw()
