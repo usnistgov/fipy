@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/29/07 {12:27:49 PM} 
+ #                                last update: 7/25/07 {9:57:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,6 +41,8 @@
  ##
 
 __docformat__ = 'restructuredtext'
+
+import os
 
 from fipy.tools import numerix
 
@@ -93,7 +95,25 @@ class Term:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        return self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if not hasattr(self, "_viewer"):
+                from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
+                Term._viewer = MatplotlibSparseMatrixViewer()
+
+        matrix, RHSvector = self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
+        
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
+            self._viewer.plot(matrix=matrix)
+            raw_input()
+        
+        
+##         raw_input()
+##         print "x", var
+##         print "L", matrix
+##         print "b", RHSvector
+        
+        return matrix, RHSvector
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
         array = var.getNumericValue()
@@ -103,6 +123,8 @@ class Term:
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         if solverSuite() == 'Trilinos':
             defaultSolver = LinearGMRESSolver()
+            # This makes the largest number of test cases pass without needing
+            # to special-case anything
         else:
             defaultSolver = LinearPCGSolver()
         solver = self._getDefaultSolver(solver) or solver or defaultSolver

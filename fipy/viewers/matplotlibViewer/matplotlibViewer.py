@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:02:32 PM}
+ #                                last update: 7/24/07 {8:54:40 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,8 +115,12 @@ class MatplotlibViewer(Viewer):
 
         pylab.figure(self.id)
 
+        pylab.ioff()
+        
         self._plot()
         pylab.draw()
+        
+        pylab.ion()
 
         if filename is not None:
             pylab.savefig(filename)
