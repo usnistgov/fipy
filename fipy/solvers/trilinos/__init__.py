@@ -21,5 +21,8 @@ from linearBicgstabSolver import LinearBicgstabSolver
 from trilinosMLTest import TrilinosMLTest
 
 def solverSuite():
+    """
+    Returns the identifier of the current solver suite - currently, 'Trilinos' or 'Pysparse'.
+    """
     return 'Trilinos'
 

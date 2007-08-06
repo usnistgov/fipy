@@ -280,6 +280,12 @@ class _PysparseMatrix(_SparseMatrix):
         This method is required for scipy solvers.
         """
         return self * x
+
+    def exportMmf(self, filename):
+        """
+        Exports the matrix to a Matrix Market file of the given filename.
+        """
+        self.matrix.export_mtx(filename)
     
 
 class _PysparseIdentityMatrix(_PysparseMatrix):

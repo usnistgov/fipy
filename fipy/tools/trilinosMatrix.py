@@ -491,7 +491,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def exportMmf(self, filename):
         """
-        Exports the matrix to Matrix Market format, into the given filename.
+        Exports the matrix to a Matrix Market file of the given filename.
         """
         self.matrix.GlobalAssemble()
         self.matrix.FillComplete()

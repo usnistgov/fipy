@@ -17,11 +17,11 @@ elif '--Scipy' in sys.argv[1:]:
 else:
     import os
     if os.environ.has_key('FIPY_SOLVERS'):
-        if os.environ['FIPY_SOLVERS'] == 'Pysparse':
+        if os.environ['FIPY_SOLVERS'].lower() == 'pysparse':
             from fipy.solvers.pysparse import *
-        elif os.environ['FIPY_SOLVERS'] == 'Trilinos':
+        elif os.environ['FIPY_SOLVERS'].lower() == 'trilinos':
             from fipy.solvers.trilinos import *
-        elif os.environ['FIPY_SOLVERS'] == 'Scipy':
+        elif os.environ['FIPY_SOLVERS'].lower() == 'scipy':
             from fipy.solvers.scipy import *
         else:
             raise ImportError, 'Unknown solver package %s' % os.environ['FIPY_SOLVERS']
@@ -53,14 +53,23 @@ else:
 
 if(solverSuite() != 'Trilinos'):
     def mainProcessor():
+        """
+        Returns true if and only if the current processor is processor 0.
+        """
         return True
 else:
     from PyTrilinos import Epetra
     if(Epetra.PyComm().MyPID() == 0):
         def mainProcessor():
+            """
+            Returns true if and only if the current processor is processor 0.
+            """
             return True
     else:
         def mainProcessor():
+            """
+            Returns true if and only if the current processor is processor 0.
+            """
             return False
 
 

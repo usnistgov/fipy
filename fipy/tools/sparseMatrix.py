@@ -159,6 +159,9 @@ class _SparseMatrix:
 
     def getNumpyArray(self):
         pass
+
+    def exportMmf(self, filename):
+        pass
         
 ##     def __array__(self):
 ##      shape = self._getShape()

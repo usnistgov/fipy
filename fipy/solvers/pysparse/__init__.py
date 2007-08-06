@@ -1,4 +1,7 @@
 def solverSuite():
+    """
+    Returns the identifier of the current solver suite - currently, 'Trilinos' or 'Pysparse'.
+    """
     return 'Pysparse'
 
 from linearCGSSolver import LinearCGSSolver
