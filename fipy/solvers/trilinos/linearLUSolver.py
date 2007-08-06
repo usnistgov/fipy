@@ -58,15 +58,16 @@ from PyTrilinos import Amesos
 class LinearLUSolver(TrilinosSolver):
 
     """
-    An interface to the Amesos KLU solver in Trilinos.
+    The `LinearLUSolver` is an interface to the Amesos KLU solver in Trilinos.
 
     """
     def __init__(self, tolerance=1e-10, iterations=5, steps=None, precon=None):
         """
         :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+
         """
         TrilinosSolver.__init__(self, tolerance=tolerance, 
                                 iterations=iterations, steps=steps, precon=None)

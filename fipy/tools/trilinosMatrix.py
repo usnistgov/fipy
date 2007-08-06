@@ -68,15 +68,8 @@ from fipy.tools import numerix
 #
 # 4) Parallelization - currently matrix builds everything on processor 0, to be
 # redistributed later. As of now, cannot be done better without putting in
-# extremely inefficient filters to filter out unnecessary elements per
+# extremely inefficient filters to filter out unnecessary elements on each
 # processor.
-# 
-# To parallelize the matrix creation completely, would have to have each
-# processor know its starting row and ending row (not difficult, have it
-# generate it on initialization and then make the map based on that) and also
-# have the rest of FiPy take these as arguments when necessary and only
-# generate the relevant pieces of the matrix (difficult, would require changes
-# throughout FiPy, including the various mesh-accessing functions).
 
 class _TrilinosMatrix(_SparseMatrix):
     
@@ -496,6 +489,13 @@ class _TrilinosMatrix(_SparseMatrix):
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
+    def exportMmf(self, filename):
+        """
+        Exports the matrix to Matrix Market format, into the given filename.
+        """
+        self.matrix.GlobalAssemble()
+        self.matrix.FillComplete()
+        EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):
         raise NotImplemented

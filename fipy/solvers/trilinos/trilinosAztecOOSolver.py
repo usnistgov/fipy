@@ -53,18 +53,18 @@ from PyTrilinos import AztecOO
 class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
-    :Warning: This class is abstract, always create on of its subclasses. It
-    provides the code to call all solvers from the Trilinos AztecOO package.
+    .. attention:: This class is abstract, always create on of its subclasses. It provides the code to call all solvers from the Trilinos AztecOO package.
 
     """
       
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
         """
         :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner object to use. 
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner object to use. 
+
         """
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                       iterations=iterations, steps=steps, precon=None)

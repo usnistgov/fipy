@@ -53,18 +53,19 @@ from PyTrilinos import AztecOO
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the gmres solver in Trilinos, using a multilevel
-    preconditioner.
+    The `LinearGMRESSolver` is an interface to the gmres solver in Trilinos,
+    using a the `MultilevelDDPreconditioner` by default.
 
     """
       
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
         """
         :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner to use.
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)

@@ -53,20 +53,24 @@ from PyTrilinos import AztecOO
 class LinearPCGSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the cg solver in Trilinos, using a multilevel
-    preconditioner by default.
+    The `LinearPCGSolver` is an interface to the cg solver in Trilinos, using
+    the `MultilevelSGSPreconditioner` by default.
 
     """
       
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelSGSPreconditioner()):
         """
         :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner to use.
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)
         self.solver = AztecOO.AZ_cg
 
+    def _canSolveAssymetric(self):
+        return False
+                

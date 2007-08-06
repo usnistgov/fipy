@@ -107,8 +107,7 @@ class Solver:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
           - `steps`: A deprecated name for `iterations`.
-          - `precon`: Preconditioner to use. This parameter is only available for
-                      Trilinos solvers. 
+          - `precon`: Preconditioner to use. This parameter is only available for Trilinos solvers. 
 
         """
         self.tolerance = tolerance

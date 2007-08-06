@@ -53,18 +53,19 @@ from PyTrilinos import AztecOO
 class LinearBicgstabSolver(TrilinosAztecOOSolver):
 
     """
-    This is an interface to the biconjugate gradient stabilized solver in Trilinos,
-    using a Jacobi preconditioner by default.
+    The `LinearBicgstabSolver` is an interface to the biconjugate gradient
+    stabilized solver in Trilinos, using the `JacobiPreconditioner` by default.
 
     """
       
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
         """
         :Parameters:
-        - `tolerance`: The required error tolerance.
-        - `iterations`: The maximum number of iterative steps to perform.
-        - `steps`: A deprecated name for `iterations`.
-        - `precon`: Preconditioner to use.
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)

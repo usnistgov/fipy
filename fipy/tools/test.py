@@ -46,7 +46,6 @@ import fipy.tests.testProgram
 def _suite():
     theSuite = _LateImportDocTestSuite(docTestModuleNames = (
             'pysparseMatrix',
-            'trilinosMatrix',
             'dimensions.physicalField',
             'numerix',
             'dump',
