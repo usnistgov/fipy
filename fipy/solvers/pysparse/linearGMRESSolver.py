@@ -42,8 +42,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from pysparse import precon
 from pysparse import itsolvers
 

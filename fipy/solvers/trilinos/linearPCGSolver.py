@@ -43,8 +43,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
 from fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner import MultilevelSGSPreconditioner
 

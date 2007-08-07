@@ -43,8 +43,6 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
@@ -71,9 +69,13 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.preconditioner = precon
 
     def _applyTrilinosSolver(self, A, LHS, RHS):
+        
         Solver = AztecOO.AztecOO(A, LHS, RHS)
+        
         Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+        
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=A)
+        
         Solver.Iterate(self.iterations, self.tolerance)

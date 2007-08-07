@@ -81,6 +81,7 @@ class LinearLUSolver(TrilinosSolver):
        
     def _applyTrilinosSolver(self, A, LHS, RHS):
         for iteration in range(self.iterations):
+
             # errorVector = L*x - b
             errorVector = Epetra.Vector(A.RowMap())
             A.Multiply(False, LHS, errorVector)
