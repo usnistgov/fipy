@@ -52,7 +52,7 @@ class _SparseMatrix:
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self):
+    def __init__(self, size=None, bandwidth=0, matrix=None, sizeHint=None):
         pass
 
     __array_priority__ = 100.0    
