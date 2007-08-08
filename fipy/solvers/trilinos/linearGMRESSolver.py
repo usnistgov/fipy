@@ -4,12 +4,13 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearLUSolver.py"
- #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:12:44 PM} 
+ #  FILE: "linearGMRESSolver.py"
+ #                                    created: 06/25/07 
+ #                                last update: 06/25/07 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,68 +37,34 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
+ #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
+from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
 
-from pysparse import precon
-from pysparse import itsolvers
-from pysparse import superlu
+from PyTrilinos import AztecOO
 
-from fipy.solvers.solver import Solver
-from fipy.tools.sparseMatrix import _SparseMatrix
-from fipy.tools import numerix
+class LinearGMRESSolver(TrilinosAztecOOSolver):
 
-class LinearLUSolver(Solver):
     """
-    
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation. This method solves systems with a general
-    non-symmetric coefficient matrix using partial pivoting.
+    The `LinearGMRESSolver` is an interface to the gmres solver in Trilinos,
+    using a the `MultilevelDDPreconditioner` by default.
 
-    The `LinearLUSolver` is a wrapper class for the the PySparse_
-    `superlu.factorize()` method.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
     """
-
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None):
+      
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
         """
-        Creates a `LinearLUSolver`.
-
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `iterations`: The number of LU decompositions to perform.
+          - `iterations`: The maximum number of iterative steps to perform.
           - `steps`: A deprecated name for `iterations`.
-            For large systems a number of steps is generally required.
+          - `precon`: Preconditioner to use.
 
         """
-        
-        Solver.__init__(self, tolerance = tolerance, steps = steps)
-
-    def _solve(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(diag)
-
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
-
-        tol = self.tolerance + 1.
-
-        LU = superlu.factorize(L._getMatrix().to_csr())
-
-        for iteration in range(self.iterations):
-            if tol <= self.tolerance:
-                break
-
-            errorVector = L * x - b
-            xError = numerix.zeros(len(b),'d')
-            LU.solve(errorVector, xError)
-            x[:] = x - xError
-            tol = max(numerix.absolute(xError))
-
+        TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
+                                       iterations=iterations, steps=steps, precon=precon)
+        self.solver = AztecOO.AZ_gmres

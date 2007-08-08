@@ -45,11 +45,12 @@
    ...          boundaryConditions = BCs,
    ...          solver = solver)
 
-   The answer is totally inaccurate. This is due to the 4th order term
-   having a high matrix condition number. Better solvers such as
-   multigrid solvers are required.
+   Using the Pysparse solvers, the answer is totally inaccurate. This is due to
+   the 4th order term having a high matrix condition number. In this particular
+   example, multigrid preconditioners such as those provided by Trilinos allow
+   a more accurate solution.
 
-   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10.)
+   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10)
    1
 
 """
@@ -72,7 +73,10 @@ BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
 
-solver = LinearLUSolver(iterations=10)
+if solverSuite() == 'Trilinos':
+    solver = LinearGMRESSolver(tolerance=1e-30, precon=MultilevelDDPreconditioner())
+else:
+    solver = LinearLUSolver(iterations=10)
 
 if __name__ == '__main__':
     eq.solve(var,
@@ -82,4 +86,5 @@ if __name__ == '__main__':
     viewer = viewers.make(var)
     viewer.plot()
 
+    print var.allclose(mesh.getCellCenters()[0], atol = 10)
     raw_input("finished")

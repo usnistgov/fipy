@@ -193,7 +193,7 @@ class MatplotlibSparseMatrixViewer:
         import os
         
         (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
-        matrix.matrix.export_mtx(mtxName)
+        matrix.exportMmf(mtxName)
         mtx = mmio.mmread(mtxName)
 ##         f.close()
         os.remove(mtxName)

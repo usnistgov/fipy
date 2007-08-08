@@ -55,7 +55,7 @@ This example is similar to the example found in::
     
 However, the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
 
-Here, one time step is execcuted to implicitly find the steady state
+Here, one time step is executed to implicitly find the steady state
 solution.
 
     >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
@@ -96,4 +96,8 @@ if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = viewers.make(vars = var)
     viewer.plot()
+    x = mesh.getCellCenters()[:,0]
+    Lx = nx * dx
+    analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+    print var.allclose(analyticalArray)
     raw_input("finished")

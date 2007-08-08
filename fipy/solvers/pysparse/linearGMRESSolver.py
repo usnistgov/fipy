@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:11:54 PM} 
+ #                                last update: 1/3/07 {3:12:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,45 +42,33 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from pysparse import precon
 from pysparse import itsolvers
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
-class LinearCGSSolver(Solver):
-
+class LinearGMRESSolver(PysparseSolver):
     """
+    
+    The `LinearGMRESSolver` solves a linear system of equations using the
+    generalised minimal residual method (GMRES) with Jacobi
+    preconditioning. GMRES solves systems with a general non-symmetric
+    coefficient matrix.
 
-    The `LinearCGSSolver` solves a linear system of equations using
-    the conjugate gradient squared method (CGS), a variant of the
-    biconjugate gradient method (BiCG). CGS solves linear systems with
-    a general non-symmetric coefficient matrix.
-
-    The `LinearCGSSolver` is a wrapper class for the the PySparse_
-    `itsolvers.cgs()` method.
+    The `LinearGMRESSolver` is a wrapper class for the the PySparse_
+    `itsolvers.gmres()` and `precon.jacobi()` methods.
 
     .. _PySparse: http://pysparse.sourceforge.net
-
     
     """
     
     def _solve(self, L, x, b):
 
-##      print "L: ", L
-##      print "b: ", b
-##      print "x: ", x
-        
         A = L._getMatrix().to_csr()
-
-        info, iter, relres = itsolvers.cgs(A, b, x, self.tolerance, self.iterations)
         
-##      print info, iter, relres
+        Assor=precon.jacobi(L._getMatrix())
         
-##      y = x.copy()
-##      L.matvec(x,y)
-##      print "L * x: ", y
+        info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
         
         self._raiseWarning(info, iter, relres)
 

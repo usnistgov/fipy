@@ -118,7 +118,10 @@ diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
 ##solver = LinearLUSolver(tolerance=1e-15, iterations=1000)
-solver = LinearPCGSolver(tolerance=1e-15, iterations=1000)
+if solverSuite() == 'Trilinos':
+    solver = LinearGMRESSolver()
+else:
+    solver = LinearPCGSolver(tolerance=1e-15, iterations=1000)
 
 BCs = (FixedFlux(mesh.getFacesRight(), 0),
        FixedFlux(mesh.getFacesLeft(), 0),

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearScipyGMRESSolver.py"
+ #  FILE: "linearGMRESSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
  #                                last update: 1/3/07 {3:14:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -44,17 +44,17 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 
-class LinearScipyGMRESSolver(Solver):
+class LinearGMRESSolver(ScipySolver):
     """
     
-    The `LinearScipyGMRESSolver` solves a linear system of equations
+    The `LinearGMRESSolver` solves a linear system of equations
     using the generalised minimal residual method (GMRES) with no
     GMRES solves systems with a general non-symmetric coefficient
     matrix.
 
-    The `LinearScipyGMRESSolver` is a wrapper class for the the
+    The `LinearGMRESSolver` is a wrapper class for the the
     Scipy_ `linalg.iterative.gmres()` method.
 
     .. warning::
@@ -81,15 +81,15 @@ class LinearScipyGMRESSolver(Solver):
            >>> a[:] = 2 / dx
            >>> a[0] = 3 / dx
            >>> a[-1] = 3 / dx
-           >>> from fipy.tools.sparseMatrix import _SparseMatrix
-           >>> A = _SparseMatrix(size = N)
+           >>> solver = LinearGMRESSolver()
+           >>> SparseMatrix = solver._getMatrixClass()
+           >>> A = SparseMatrix(size = N)
            >>> A.addAtDiagonal(a)
            >>> ids = numerix.arange(N - 1)
            >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids, ids + 1)
            >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids + 1, ids)
            >>> b = numerix.zeros(N, 'd')
            >>> b[-1] = 2 / dx
-           >>> solver = LinearScipyGMRESSolver()
            >>> x = numerix.zeros(N, 'd')
            >>> solver._solve(A, x, b)
            >>> numerix.allclose(x, numerix.arange(N) * dx + dx / 2.)

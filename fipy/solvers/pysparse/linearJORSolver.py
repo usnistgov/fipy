@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearScipyLUSolver.py"
+ #  FILE: "linearJORSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:13:29 PM} 
+ #                                last update: 5/15/06 {3:54:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,60 +42,53 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from fipy.tools.sparseMatrix import _SparseMatrix
 
-from fipy.solvers.solver import Solver
-
-class LinearScipyLUSolver(Solver):
+class LinearJORSolver(PysparseSolver):
     """
     
-    The `LinearScipyLUSolver` solves a linear system of equations
-    using LU-factorisation. This method solves systems of general
-    non-symmetric matrices with partial pivoting.
-
-    The `LinearScipyLUSolver` is a wrapper class for the the SciPy_
-    `scipy.linalg.lu_solve()` method.
-    
-    .. warning::
-
-        Currently the solvers that use Scipy_ are only useful for
-        small systems due to the whole sparse matrix having to be
-        turned into an array of size N * N.
-    
-    .. _SciPy: http://www.scipy.org
+    The `LinearJORSolver` solves a linear system of equations using
+    Jacobi over-relaxation. This method solves systems with a general
+    non-symmetric coefficient matrix.
 
     """
-    
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0, precon=None):
         """
-        Creates a `LinearScipyLUSolver`.
+        The `Solver` class should not be invoked directly.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
-          - `iterations`: The number of LU decompositions to perform.
-            For large systems a number of steps is generally required.
+          - `iterations`: The maximum number of iterative steps to perform.
           - `steps`: A deprecated name for `iterations`.
-
+          - `relaxation`: The relaxation.
+          
         """
-        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps)
-
+        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        self.relaxation = relaxation
+        
     def _solve(self, L, x, b):
-        from scipy.linalg import lu_factor, lu_solve
-    
-##        x[:] = scipy.linalg.solve(numerix.array(L), b)
-        LU = lu_factor(numerix.array(L))
-        x[:] = lu_solve(LU, b)
-        tol = self.tolerance + 1.
+
+        d = L.takeDiagonal()
+        D = _SparseMatrix(len(d))
+        D.putDiagonal(d)
+
+        LU = L - D
+        tol = 1e+10
+        xold = x.copy()
 
         for iteration in range(self.iterations):
             if tol <= self.tolerance:
                 break
+                
+            residual = L * x - b
 
-            errorVector = L * x - b
-            LU = lu_factor(numerix.array(L))
-            xError = lu_solve(LU, errorVector)
-            x[:] = x - xError
+            xold[:] = x
+            x[:] = (-(LU) * x + b) / d
 
-            tol = max(numerix.absolute(xError))
+            x[:] = xold + self.relaxation * (x - xold)  
+
+            tol = max(abs(residual))
+
+            print iteration,tol
             
-            print tol

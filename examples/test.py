@@ -48,9 +48,9 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportTestSuite(testModuleNames = (
+            'phase.test',
             'convection.test',
             'diffusion.test',
-            'phase.test',
             'elphf.test',
             'levelSet.test',
             'chemotaxis.test',  

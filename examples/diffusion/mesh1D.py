@@ -496,7 +496,7 @@ We re-initialize the solution variable
     
 and obtain the steady-state solution with one implicit solution step
 
-    >>> ImplicitDiffusionTerm(coeff = D).solve(var=phi,
+    >>> ImplicitDiffusionTerm(coeff = D).solve(var=phi, 
     ...                                        boundaryConditions = BCs)
 
 The analytical solution is simply

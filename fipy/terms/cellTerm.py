@@ -123,10 +123,10 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = _SparseMatrix(size=N)
+        L = SparseMatrix(size=N)
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?

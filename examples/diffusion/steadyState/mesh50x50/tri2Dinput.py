@@ -58,7 +58,7 @@ The result is again tested in the same way:
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> print var.allclose(analyticalArray, atol = 1e-8)
+    >>> print var.allclose(analyticalArray, atol = 1e-7)
     1
 
 """

@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearScipyCGSolver.py"
+ #  FILE: "linearLUSolver.py"
  #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:13:51 PM} 
+ #                                last update: 1/3/07 {3:13:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,72 +42,60 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from fipy.tools import numerix
 
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 
-class LinearScipyCGSolver(Solver):
+class LinearLUSolver(ScipySolver):
     """
     
-    The `LinearScipyCGSolver` solves a linear system of equations
-    using the conjugent gradient. It solves a system with a symmetric
-    coefficient matrix.
+    The `LinearLUSolver` solves a linear system of equations
+    using LU-factorisation. This method solves systems of general
+    non-symmetric matrices with partial pivoting.
 
-    The `LinearScipyCGSolver` is a wrapper class for the the Scipy_
-    `scipy.linalg.iterative.cg()` method.
-
+    The `LinearLUSolver` is a wrapper class for the the SciPy_
+    `scipy.linalg.lu_solve()` method.
+    
     .. warning::
 
         Currently the solvers that use Scipy_ are only useful for
         small systems due to the whole sparse matrix having to be
         turned into an array of size N * N.
-
-    .. _Scipy: http://www.scipy.org
-
     
+    .. _SciPy: http://www.scipy.org
+
     """
     
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None):
+        """
+        Creates a `LinearScipyLUSolver`.
+
+        :Parameters:
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The number of LU decompositions to perform.
+          - `steps`: A deprecated name for `iterations`.
+            For large systems a number of iterations is generally required.
+
+        """
+        ScipySolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+
     def _solve(self, L, x, b):
-        """
-
-        Tridiagonal test case,
-
-           >>> N = 10
-           >>> L = 1.
-           >>> dx = L / N
-           >>> from fipy.tools import numerix
-           >>> a = numerix.zeros(N, 'd')
-           >>> a[:] = 2 / dx
-           >>> a[0] = 3 / dx
-           >>> a[-1] = 3 / dx
-           >>> from fipy.tools.sparseMatrix import _SparseMatrix
-           >>> A = _SparseMatrix(size = N)
-           >>> A.addAtDiagonal(a)
-           >>> ids = numerix.arange(N - 1)
-           >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids, ids + 1)
-           >>> A.addAt(-numerix.ones(N - 1, 'd') / dx, ids + 1, ids)
-           >>> b = numerix.zeros(N, 'd')
-           >>> b[-1] = 2 / dx
-           >>> solver = LinearScipyCGSolver()
-           >>> x = numerix.zeros(N, 'd')
-           >>> solver._solve(A, x, b)
-           >>> numerix.allclose(x, numerix.arange(N) * dx + dx / 2.)
-           1
-           
-        """
-        from scipy.linalg.iterative import cg
-        x[:], info = cg(L,b, x0 = x.copy(), tol = self.tolerance, maxiter = self.iterations)
-
-        if (info != 0):
-            print >> sys.stderr, 'cg not converged'
-            
-    def _canSolveAssymetric(self):
-        return False
-
-
-def _test(): 
-    import doctest
-    return doctest.testmod()
+        from scipy.linalg import lu_factor, lu_solve
     
-if __name__ == "__main__": 
-    _test() 
+##        x[:] = scipy.linalg.solve(numerix.array(L), b)
+        LU = lu_factor(numerix.array(L))
+        x[:] = lu_solve(LU, b)
+        tol = self.tolerance + 1.
+
+        for iteration in range(self.iterations):
+            if tol <= self.tolerance:
+                break
+
+            errorVector = L * x - b
+            LU = lu_factor(numerix.array(L))
+            xError = lu_solve(LU, errorVector)
+            x[:] = x - xError
+
+            tol = max(numerix.absolute(xError))
+            
+            print tol

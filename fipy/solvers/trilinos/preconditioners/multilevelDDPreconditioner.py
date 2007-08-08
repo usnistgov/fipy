@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearGMRESSolver.py"
- #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:12:22 PM} 
+ #  FILE: "multilevelDDPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,41 +38,37 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
+ #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-from pysparse import precon
-from pysparse import itsolvers
-
-from fipy.solvers.solver import Solver
-
-class LinearGMRESSolver(Solver):
+class MultilevelDDPreconditioner(Preconditioner):
     """
-    
-    The `LinearGMRESSolver` solves a linear system of equations using the
-    generalised minimal residual method (GMRES) with Jacobi
-    preconditioning. GMRES solves systems with a general non-symmetric
-    coefficient matrix.
-
-    The `LinearGMRESSolver` is a wrapper class for the the PySparse_
-    `itsolvers.gmres()` and `precon.jacobi()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
+    Multilevel preconditioner for Trilinos solvers using Aztec precondtioners
+    (DomDecomp, ILU(fill=0)) as smoothers.
     
     """
-    
-    def _solve(self, L, x, b):
+    def __init__(self, levels=10):
+        """
+        Initialize the multilevel preconditioner
 
-        A = L._getMatrix().to_csr()
-        
-        Assor=precon.jacobi(L._getMatrix())
-        
-        info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
-        
-        self._raiseWarning(info, iter, relres)
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
 
+    def _applyToSolver(self, solver, matrix):
+        if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
+            return
+        
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec"})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        
+
+        

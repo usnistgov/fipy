@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearJORSolver.py"
- #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 5/15/06 {3:54:13 PM} 
+ #  FILE: "multilevelSolverSmootherPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,59 +38,37 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
+ #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.solver import Solver
-from fipy.tools.sparseMatrix import _SparseMatrix
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-class LinearJORSolver(Solver):
+class MultilevelSolverSmootherPreconditioner(Preconditioner):
     """
+    Multilevel preconditioner for Trilinos solvers using Aztec solvers
+    as smoothers.
     
-    The `LinearJORSolver` solves a linear system of equations using
-    Jacobi over-relaxation. This method solves systems with a general
-    non-symmetric coefficient matrix.
-
     """
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0):
+    def __init__(self, levels=10):
         """
-        The `Solver` class should not be invoked directly.
+        Initialize the multilevel preconditioner
 
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
-          - `relaxation`: The relaxation.
-          
+        - `levels`: Maximum number of levels
         """
-        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps)
-        self.relaxation = relaxation
+        self.levels = levels
+
+    def _applyToSolver(self, solver, matrix):
+        if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
+            return
         
-    def _solve(self, L, x, b):
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec", "smoother: Aztec as solver" : True})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        
 
-        d = L.takeDiagonal()
-        D = _SparseMatrix(len(d))
-        D.putDiagonal(d)
-
-        LU = L - D
-        tol = 1e+10
-        xold = x.copy()
-
-        for iteration in range(self.iterations):
-            if tol <= self.tolerance:
-                break
-                
-            residual = L * x - b
-
-            xold[:] = x
-            x[:] = (-(LU) * x + b) / d
-
-            x[:] = xold + self.relaxation * (x - xold)  
-
-            tol = max(abs(residual))
-
-            print iteration,tol
-            
+        

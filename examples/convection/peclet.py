@@ -75,7 +75,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...     eq = (TransientTerm(1e-4) 
     ...           == ImplicitDiffusionTerm(coeff=diffCoeff)
     ...           + PowerLawConvectionTerm(coeff=convCoeff))
-    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) ##, solver=GMRES())
+    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
     ...     x = mesh.getCellCenters()[0]
     ...     arg0 = -convCoeff * x / diffCoeff
     ...     arg0 = where(arg0 < -200, -200, arg0)

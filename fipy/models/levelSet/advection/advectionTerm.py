@@ -46,7 +46,6 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.terms.term import Term
-from fipy.tools.sparseMatrix import _SparseMatrix
 
 class _AdvectionTerm(Term):
     r"""
@@ -74,27 +73,29 @@ class _AdvectionTerm(Term):
     Here are some simple test cases for this problem:
 
         >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.solvers import *
+        >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
         >>> mesh = Grid1D(dx = 1., nx = 3) 
         >>> from fipy.variables.cellVariable import CellVariable
    
     Trivial test:
 
         >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
-        >>> L, b = _AdvectionTerm(0.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
         >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
         1
    
     Less trivial test:
 
         >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-        >>> L, b = _AdvectionTerm(1.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
         >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
         1
 
     Even less trivial
 
         >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-        >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
         >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
         1
 
@@ -103,7 +104,7 @@ class _AdvectionTerm(Term):
 
         >>> vel = numerix.array((-1, 2, -3))
         >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
-        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
         >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
         1
 
@@ -113,7 +114,7 @@ class _AdvectionTerm(Term):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
         >>> vel = numerix.array((3, -5, -6, -3))
         >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
-        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var)
+        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
         >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
         >>> numerix.allclose(b, answer, atol = 1e-10)
         1
@@ -123,7 +124,7 @@ class _AdvectionTerm(Term):
         Term.__init__(self)
         self.geomCoeff = coeff
         
-    def _buildMatrix(self, var, boundaryCondtions=(), dt=None, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryCondtions=(), dt=None, equation=None):
 
         oldArray = var.getOld()
 
@@ -150,7 +151,7 @@ class _AdvectionTerm(Term):
 
         coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
 
-        return (_SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
+        return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()

@@ -5,12 +5,13 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
- #                                    created: 11/14/03 {3:56:49 PM} 
- #                                last update: 1/3/07 {3:13:09 PM} 
+ #  FILE: "icPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -37,49 +38,25 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
+ #  2007-06-26 MLG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from PyTrilinos import IFPACK
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-from pysparse import precon
-from pysparse import itsolvers
-
-from fipy.solvers.solver import Solver
-
-class LinearPCGSolver(Solver):
+class ICPreconditioner(Preconditioner):
     """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning.  The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
+    Incomplete Cholesky Preconditioner from IFPACK for Trilinos Solvers.
     
     """
-     
-    def _solve(self, L, x, b):
-##      print 'L:',L
-##      print 'x:',x
-##      print 'b:',b
-##      raw_input('end output')
-    
-        A = L._getMatrix().to_sss()
 
-        Assor=precon.ssor(A)
-
-        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, self.iterations, Assor)
-##        print info, iter, relres
-
-        self._raiseWarning(info, iter, relres)
-            
-    def _canSolveAssymetric(self):
-        return False
-                
+    def _applyToSolver(self, solver, matrix):
+        Factory = IFPACK.Factory()
+        Prec = Factory.Create("IC", matrix)
+        Prec.Initialize()
+        Prec.Compute()
+        solver.SetPrecOperator(Prec)
+        
