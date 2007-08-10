@@ -436,7 +436,7 @@ For use with FiPy, Trilinos must be configured with the following packages enabl
 
     before running ``make`` and ``make install``. 
 
-    Depending on your platform, other options may be helpful or necessary; see ``../configure --help``, http://trilinos.sandia.gov, or http://trilinos.sandia.gov/packages/pytrilinos/faq.html for documentation. 
+    Depending on your platform, other options may be helpful or necessary; see ``../configure --help``, the Trilinos user guide available from http://trilinos.sandia.gov/documentation.html, or http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more in-depth documentation. 
 
 .. note::
     
