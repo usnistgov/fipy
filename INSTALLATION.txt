@@ -430,8 +430,12 @@ For use with FiPy, Trilinos must be configured with the following packages enabl
 
 .. attention:: 
 
-    As of Trilinos 7.0.9, Trilinos can be set up by running
+    As of Trilinos 7.0.9, Trilinos can be set up by creating a build directory in the base directory of the Trilinos source tree
 
+    ``cd trilinos-7.0.9/ ; mkdir BUILD_DIR ; cd BUILD_DIR``
+
+    and then running 
+    
     ``../configure --enable-epetra --enable-epetraext --enable-aztecoo --enable-pytrilinos  --enable-ml --enable-ifpack --enable-amesos --enable-galeri``
 
     before running ``make`` and ``make install``. 
