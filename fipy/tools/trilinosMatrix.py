@@ -75,7 +75,7 @@ from fipy.tools import numerix
 class _TrilinosMatrix(_SparseMatrix):
     
     """
-    _TrilinosMatrix class wrapper for a PyTrilinos Epetra.FECrsMatrix.
+    _TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     _TrilinosMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
@@ -88,7 +88,7 @@ class _TrilinosMatrix(_SparseMatrix):
         :Parameters:
           - `size`: The size N for an N by N matrix.
           - `bandwidth`: The proposed band width of the matrix.
-          - `matrix`: The starting `Epetra.FECrsMatrix` if there is one.
+          - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
 
         """
 
@@ -111,7 +111,8 @@ class _TrilinosMatrix(_SparseMatrix):
             else: 
                 self.map = Epetra.Map(size, [], 0, self.comm)
 
-            self.matrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
+            self.matrix = Epetra.CrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
+
             # Leave extra bandwidth, to handle multiple insertions into the
             # same spot. It's memory-inefficient, but it'll get cleaned up when
             # FillComplete is called, and according to the Trilinos devs the
@@ -128,7 +129,7 @@ class _TrilinosMatrix(_SparseMatrix):
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
 
-        return _TrilinosMatrix(matrix = Epetra.FECrsMatrix(self.matrix))
+        return _TrilinosMatrix(matrix = Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
@@ -168,7 +169,8 @@ class _TrilinosMatrix(_SparseMatrix):
                                             > self._getMatrix().NumGlobalNonzeros():
                 tempBandwidth = other._getMatrix().NumGlobalNonzeros() \
                                  /self._getMatrix().NumGlobalRows()+1
-                tempMatrix = Epetra.FECrsMatrix(Epetra.Copy, self.map, tempBandwidth)
+
+                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.map, tempBandwidth)
                 
                 if EpetraExt.Add(other._getMatrix(), False, 1, tempMatrix, 1) != 0:
                     import warnings
@@ -296,7 +298,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 if not other._getMatrix().Filled():
                     other._getMatrix().FillComplete()
 
-                result = Epetra.FECrsMatrix(Epetra.Copy, self.map, 0)
+                result = Epetra.CrsMatrix(Epetra.Copy, self.map, 0)
 
                 EpetraExt.Multiply(self._getMatrix(), False, other._getMatrix(), False, result)
                 return _TrilinosMatrix(matrix = result)
@@ -508,7 +510,7 @@ class _TrilinosMatrix(_SparseMatrix):
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
             RootToDist = Epetra.Import(DistributedMap, self.map)
 
-            DistMatrix = Epetra.FECrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
+            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
 
             DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
 

@@ -114,7 +114,7 @@ class TrilinosSolver(Solver):
             A = self._makeTrilinosMatrix(L)
         else:
             A = L._getDistributedMatrix()
-            A.GlobalAssemble()
+##            A.GlobalAssemble()
 
         A.FillComplete()
         A.OptimizeStorage()
