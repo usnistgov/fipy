@@ -337,7 +337,9 @@ class Mesh:
         faces = self._getFaces()
         
         if filter is not None:
-            return [face for face in faces if filter(face, **args)]
+            from fipy.meshes.meshIterator import FaceIterator            
+            return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
+##            return [face for face in faces if filter(face, **args)]
 
         return faces
 
