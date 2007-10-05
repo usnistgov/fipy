@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 7/5/07 {8:21:47 PM}
+ #                                last update: 10/5/07 {10:49:43 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -141,12 +141,12 @@ capable of displaying variables on this sort of irregular mesh)
     >>> viewer = None
     >>> if __name__ == '__main__':
     ...     try:
-    ...         viewer = Gist2DViewer(vars=phi,
+    ...         viewer = viewers.make(vars=phi,
     ...                               limits={'datamin': -1, 'datamax': 1.})
     ...         viewer.plotMesh()
     ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
     ...     except:
-    ...         print "Unable to create a Gist2DViewer"
+    ...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer or Matplotlib2DViewer)"
 
 .. image:: examples/diffusion/circleMesh.pdf
    :scale: 50
