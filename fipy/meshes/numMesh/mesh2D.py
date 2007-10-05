@@ -127,6 +127,88 @@ class Mesh2D(Mesh):
         cellTotalFaceAreas = numerix.add.reduce(cellFaceAreas, axis = 1)
         return (cellTotalWeightedValues / cellTotalFaceAreas)
 
+    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:,numerix.newaxis] , layers=1):
+        """
+        This function returns a new 3D mesh. The 2D mesh is extruded
+        using the extrudeFunc and the number of layers.
+
+        :Parameters:
+          - `extrudeFunc`: function that takes the vertex coordinates and returns the displaced values
+          - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
+
+           >>> from fipy.meshes.grid2D import Grid2D
+           >>> print Grid2D(nx=2,ny=2).extrude(layers=2).getCellCenters()
+           [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
+            [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
+            [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
+
+           >>> from fipy.meshes.tri2D import Tri2D
+           >>> print Tri2D().extrude(layers=2).getCellCenters()
+           [[ 0.83333333  0.5         0.16666667  0.5         0.83333333  0.5
+              0.16666667  0.5       ]
+            [ 0.5         0.83333333  0.5         0.16666667  0.5         0.83333333
+              0.5         0.16666667]
+            [ 0.5         0.5         0.5         0.5         1.5         1.5         1.5
+              1.5       ]]
+
+        """
+
+        return self._extrude(self, extrudeFunc, layers)
+
+    def _extrude(self, mesh, extrudeFunc, layers):
+
+        ## the following allows the 2D mesh to be in 3D space, this can be the case for a
+        ## GmshImporter2DIn3DSpace which would then be extruded.
+        oldVertices = mesh.getVertexCoords()
+        if oldVertices.shape[0] == 2:
+            oldVertices = numerix.resize(oldVertices, (3, len(oldVertices[0])))
+            oldVertices[2] = 0
+
+        NCells = mesh.getNumberOfCells()
+        NFac = mesh._getNumberOfFaces()
+        NFacPerCell =  mesh._getMaxFacesPerCell()
+
+        faces = numerix.MA.masked_values(-numerix.ones((max(NFacPerCell, 4), (1 + layers) * NCells + layers * NFac)), value = -1)
+        orderedVertices = mesh._getOrderedCellVertexIDs()
+        faces[:NFacPerCell, :NCells] = orderedVertices
+        vertices = oldVertices
+        vert0 = mesh._getFaceVertexIDs()
+        faceCount = NCells
+        
+        for layer in range(layers):
+
+            initialFaceCount = faceCount
+
+            newVertices = extrudeFunc(oldVertices)
+            vertices = numerix.concatenate((vertices, newVertices), axis=1)
+
+            faces[:NFacPerCell, faceCount: faceCount + NCells] = orderedVertices + len(oldVertices[0]) * (layer + 1)
+            faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
+
+            faceCount = faceCount + NCells
+
+            vert1 = (vert0 + len(oldVertices[0]))[::-1,:]
+
+            faces[:4, faceCount: faceCount + NFac] = numerix.concatenate((vert0, vert1), axis = 0)[::-1,:]
+
+            vert0 = vert0 + len(oldVertices[0])
+
+            NCells = mesh.getNumberOfCells()
+
+            if layer == 0:
+                c0 =  numerix.reshape(numerix.arange(NCells), (1, NCells))
+                cells = numerix.concatenate((c0, c0 + NCells, mesh._getCellFaceIDs() + 2 * NCells), axis = 0)
+            else:
+                newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh._getCellFaceIDs() + faceCount), axis=0)
+                newCells[0] = cells[1,-NCells:]
+                cells = numerix.concatenate((cells, newCells), axis=1)
+            
+            faceCount = faceCount + NFac
+
+            oldVertices = newVertices
+
+        return Mesh(vertices, faces, cells)
+
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
@@ -334,6 +416,9 @@ class Mesh2D(Mesh):
 
             >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1
+
+            
+
         """
 
 def _test():
