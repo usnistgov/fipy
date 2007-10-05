@@ -156,6 +156,7 @@ class Mesh2D(Mesh):
         return self._extrude(self, extrudeFunc, layers)
 
     def _extrude(self, mesh, extrudeFunc, layers):
+        ## should extrude cnahe self rather than creating a new mesh?
 
         ## the following allows the 2D mesh to be in 3D space, this can be the case for a
         ## GmshImporter2DIn3DSpace which would then be extruded.
@@ -168,6 +169,7 @@ class Mesh2D(Mesh):
         NFac = mesh._getNumberOfFaces()
         NFacPerCell =  mesh._getMaxFacesPerCell()
 
+        ## set up the initial data arrays
         faces = numerix.MA.masked_values(-numerix.ones((max(NFacPerCell, 4), (1 + layers) * NCells + layers * NFac)), value = -1)
         orderedVertices = mesh._getOrderedCellVertexIDs()
         faces[:NFacPerCell, :NCells] = orderedVertices
@@ -177,11 +179,14 @@ class Mesh2D(Mesh):
         
         for layer in range(layers):
 
+            ## need this later
             initialFaceCount = faceCount
 
+            ## build the vertices
             newVertices = extrudeFunc(oldVertices)
             vertices = numerix.concatenate((vertices, newVertices), axis=1)
 
+            ## build the faces along the layers
             faces[:NFacPerCell, faceCount: faceCount + NCells] = orderedVertices + len(oldVertices[0]) * (layer + 1)
             faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
 
@@ -189,12 +194,15 @@ class Mesh2D(Mesh):
 
             vert1 = (vert0 + len(oldVertices[0]))[::-1,:]
 
+            ## build the faces between the layers
             faces[:4, faceCount: faceCount + NFac] = numerix.concatenate((vert0, vert1), axis = 0)[::-1,:]
 
             vert0 = vert0 + len(oldVertices[0])
 
             NCells = mesh.getNumberOfCells()
 
+            
+            ## build the cells, the first layer has slightly different ordering
             if layer == 0:
                 c0 =  numerix.reshape(numerix.arange(NCells), (1, NCells))
                 cells = numerix.concatenate((c0, c0 + NCells, mesh._getCellFaceIDs() + 2 * NCells), axis = 0)
@@ -202,11 +210,12 @@ class Mesh2D(Mesh):
                 newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh._getCellFaceIDs() + faceCount), axis=0)
                 newCells[0] = cells[1,-NCells:]
                 cells = numerix.concatenate((cells, newCells), axis=1)
-            
-            faceCount = faceCount + NFac
 
+            ## keep a count of things for the next layer
+            faceCount = faceCount + NFac
             oldVertices = newVertices
 
+        ## return a new mesh, extrude could just as easily act on self
         return Mesh(vertices, faces, cells)
 
     def _test(self):
