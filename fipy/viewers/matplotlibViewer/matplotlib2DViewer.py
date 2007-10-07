@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/5/07 {10:52:13 AM} { 2:45:36 PM}
+ #                                last update: 10/6/07 {7:58:36 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -140,7 +140,8 @@ class Matplotlib2DViewer(MatplotlibViewer):
         from fipy.meshes.numMesh.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))]
+          if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))
+              and var.getRank() == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Mesh2D instance"
