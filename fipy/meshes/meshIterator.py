@@ -94,40 +94,10 @@ class FaceIterator(MeshIterator):
         return (sets.Set(other).issubset(sets.Set(self.getMesh().getFaces())))
         
     def getCenters(self):
-        return numerix.take(self.mesh.getFaceCenters(), self.getIDs())
+        return numerix.take(self.mesh.getFaceCenters(), self.getIDs(), axis=1)
         
     def getAreas(self):
         return numerix.take(self.mesh._getFaceAreas(), self.getIDs())
 
     def _getAdjacentCellIDs(self):
         return numerix.take(self.getMesh()._getAdjacentCellIDs()[0], self.getIDs())
-
-##     def __init__(self, mesh, ids = ()):
-##         self.mesh = mesh
-##         self.ids = numerix.array(ids)
-        
-##     def __add__(self, other):
-##         if isinstance(other, FaceIterator):
-##             assert(self.mesh == other.getMesh())
-##         return FaceIterator(mesh=self.mesh, 
-##                             ids=self.ids + other)
-                  
-##     def __add__(self, other):
-##         return FaceIterator(mesh=self.mesh, ids=list(self.ids) + list(other))
-
-##     def __mul__(self, other):
-##         return FaceIterator(mesh=self.mesh, ids=self.ids * other)
-        
-##     def __getitem__(self, index):
-##         return self.ids[index]
-        
-##     def append(self, other):
-##         ids = list(self.ids)
-##         if isinstance(other,FaceIterator):
-##             ids += list(other.ids)
-##         else:
-##             ids += list(other)
-##             
-##         return FaceIterator(mesh=self, ids=ids)
-        
-

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 10/25/05 {10:19:07 AM} 
+ #                                last update: 7/11/07 {2:47:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,9 +50,7 @@ from fipy.tools import numerix
  
 from fipy.viewers.viewer import Viewer
 from fipy.variables.cellVariable import CellVariable
-from fipy.variables.vectorCellVariable import VectorCellVariable
 from fipy.variables.faceVariable import FaceVariable
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
 
 class TSVViewer(Viewer):
     """
@@ -75,7 +73,7 @@ class TSVViewer(Viewer):
     
     All variables must have the same mesh.
         
-    It tries to do something reasonable with `VectorCellVariable` and `VectorFaceVariable` objects.
+    It tries to do something reasonable with rank-1 `CellVariable` and `FaceVariable` objects.
 
     """
     _axis = ["x", "y", "z"]
@@ -85,8 +83,8 @@ class TSVViewer(Viewer):
         Creates a `TSVViewer`.
         
         :Parameters:
-          - `vars`: A `tuple` ot `list` of `CellVariable`, `VectorCellVariable`,
-            `FaceVariable`, `VectorFaceVariable` objects.
+          - `vars`: A `tuple` ot `list` of `CellVariable`,
+            `FaceVariable`, objects.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
             A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer 
@@ -103,8 +101,8 @@ class TSVViewer(Viewer):
 
 
     def _plot(self, values, f, dim):
-        for index in range(values.shape[0]):
-            lineValues = values[index]
+        for index in range(values.shape[-1]):
+            lineValues = values[...,index]
             
             # omit any elements whose cell centers lie outside of the specified limits
             skip = False
@@ -141,21 +139,21 @@ class TSVViewer(Viewer):
         >>> m = Grid1D(nx = 3, dx = 0.4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, 5))
-        >>> TSVViewer(vars = (v, v.getGrad())).plot()
-        x	var	var_grad_x
-        0.2	0	2.5
-        0.6	2	6.25
-        1	5	3.75
+        >>> TSVViewer(vars = (v, v.getGrad())).plot() #doctest: +NORMALIZE_WHITESPACE
+        x       var     var_gauss_grad_x
+        0.2     0       2.5
+        0.6     2       6.25
+        1       5       3.75
         
         >>> from fipy.meshes.grid2D import Grid2D
         >>> m = Grid2D(nx = 2, dx = .1, ny = 2, dy = 0.3)
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, -2, 5))
-        >>> TSVViewer(vars = (v, v.getGrad())).plot()
-        x	y	var	var_grad_x	var_grad_y
-        0.05	0.15	0	10	-3.33333333333333
-        0.15	0.15	2	10	5
-        0.05	0.45	-2	35	-3.33333333333333
-        0.15	0.45	5	35	5
+        >>> TSVViewer(vars = (v, v.getGrad())).plot() #doctest: +NORMALIZE_WHITESPACE
+        x       y       var     var_gauss_grad_x        var_gauss_grad_y
+        0.05    0.15    0       10      -3.33333333333333
+        0.15    0.15    2       10      5
+        0.05    0.45    -2      35      -3.33333333333333
+        0.15    0.45    5       35      5
         """
         if filename is not None:
             import os
@@ -180,7 +178,7 @@ class TSVViewer(Viewer):
             
         for var in self.vars:
             name = var.getName()
-            if isinstance(var, VectorCellVariable) or isinstance(var, VectorFaceVariable):
+            if (isinstance(var, CellVariable) or isinstance(var, FaceVariable)) and var.getRank() == 1:
                 for index in range(dim):
                     headings.extend(["%s_%s" % (name, self._axis[index])])
             else:
@@ -189,30 +187,26 @@ class TSVViewer(Viewer):
         f.write("\t".join(headings))
         f.write("\n")
         
-        cellVars = [var for var in self.vars if isinstance(var, CellVariable) or isinstance(var, VectorCellVariable)]
-        faceVars = [var for var in self.vars if isinstance(var, FaceVariable) or isinstance(var, VectorFaceVariable)]
+        cellVars = [var for var in self.vars if isinstance(var, CellVariable)]
+        faceVars = [var for var in self.vars if isinstance(var, FaceVariable)]
         
         if len(cellVars) > 0:
             values = mesh.getCellCenters()
             for var in self.vars:
-                if isinstance(var, VectorCellVariable):
-                    values = numerix.concatenate((values, numerix.array(var)), 1)
+                if isinstance(var, CellVariable) and var.getRank() == 1:
+                    values = numerix.concatenate((values, numerix.array(var)))
                 else:
-    # 		this is brute force. Fix later
-    #                 values = numerix.concatenate((values, numerix.transpose(numerix.array((var,)))), 1)
-                    values = numerix.concatenate((values, numerix.transpose(numerix.array((numerix.array(var),)))), 1)
+                    values = numerix.concatenate((values, (numerix.array(var),)))
                     
             self._plot(values, f, dim)
 
         if len(faceVars) > 0:
             values = mesh.getFaceCenters()
             for var in self.vars:
-                if isinstance(var, VectorFaceVariable):
-                    values = numerix.concatenate((values, numerix.array(var)), 1)
+                if isinstance(var, FaceVariable) and var.getRank() == 1:
+                    values = numerix.concatenate((values, numerix.array(var)))
                 else:
-    # 		this is brute force. Fix later
-    #                 values = numerix.concatenate((values, numerix.transpose(numerix.array((var,)))), 1)
-                    values = numerix.concatenate((values, numerix.transpose(numerix.array((numerix.array(var),)))), 1)
+                    values = numerix.concatenate((values, (numerix.array(var),)))
                     
             self._plot(values, f, dim)
 

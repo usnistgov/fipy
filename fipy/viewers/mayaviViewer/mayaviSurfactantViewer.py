@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 1/12/06 {8:24:28 PM}
+ #                                last update: 7/5/07 {5:03:50 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,41 @@ class MayaviSurfactantViewer(Viewer):
         
     def __init__(self, distanceVar, surfactantVar=None, levelSetValue=0., limits=None, title=None, smooth=0, zoomFactor=1., animate=False):
         """
-        Create a `MayaviDistanceViewer`.
+        Create a `MayaviSurfactantViewer`.
+        
+            >>> from fipy import *
+            >>> dx = 1.
+            >>> dy = 1.
+            >>> nx = 11
+            >>> ny = 11
+            >>> Lx = ny * dy
+            >>> Ly = nx * dx
+            >>> mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+            >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+            >>> var = DistanceVariable(mesh = mesh, value = -1)
+        
+            >>> x, y = mesh.getCellCenters()
+
+            >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
+            >>> var.calcDistanceFunction()
+            >>> viewer = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> var = DistanceVariable(mesh = mesh, value = -1)
+
+            >>> var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
+            >>> var.calcDistanceFunction()
+            >>> viewer = MayaviSurfactantViewer(var)
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = MayaviSurfactantViewer(var, smooth = 2)
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
         
         :Parameters:
 
@@ -94,8 +128,8 @@ class MayaviSurfactantViewer(Viewer):
 
     def _getStructure(self):
 
-        ##maxX = numerix.max(self.distanceVar.getMesh().getFaceCenters()[:,0])
-        ##minX = numerix.min(self.distanceVar.getMesh().getFaceCenters()[:,0])
+        ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
+        ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
@@ -109,7 +143,7 @@ class MayaviSurfactantViewer(Viewer):
 
 
         from lines import _getOrderedLines
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = numerix.min(self.distanceVar.getMesh()._getCellDistances()) * 10)
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -117,7 +151,7 @@ class MayaviSurfactantViewer(Viewer):
 
         tmpIDs = numerix.nonzero(data > 0.0001)
         if len(tmpIDs) > 0:
-            val = numerix.min(numerix.take(data, tmpIDs))
+            val = numerix.take(data, tmpIDs).min()
         else:
             val = 0.0001
             
@@ -135,10 +169,10 @@ class MayaviSurfactantViewer(Viewer):
                         if len(arr.shape) > 1:
                             for i in range(len(arr[0])):                            
                                 arrI = arr[:,i].copy()
-                                numerix.put(arrI[:], line, tmp[:,i])
+                                numerix.put(arrI, line, tmp[:,i])
                                 arr[:,i] = arrI
                         else:
-                            numerix.put(arrI[:], line, tmp[:])
+                            numerix.put(arrI, line, tmp)
 
         name = self.title
         name = name.strip()
@@ -215,16 +249,16 @@ class MayaviSurfactantViewer(Viewer):
         
         xmax = self._getLimit('datamax')
         if xmax is None:
-            xmax = numerix.max(self.surfactantVar)
+            xmax = self.surfactantVar.max()
             
         xmin = self._getLimit('datamin')
         if xmin is None:
-            xmin = numerix.min(self.surfactantVar)
+            xmin = self.surfactantVar.min()
             
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((numerix.min(self.surfactantVar), numerix.max(self.surfactantVar)))
+        slh.v_range_var.set((self.surfactantVar.min(), self.surfactantVar.max()))
         slh.set_v_range_var()
         
         self._viewer.Render()
@@ -232,33 +266,7 @@ class MayaviSurfactantViewer(Viewer):
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
-if __name__ == '__main__':
-    dx = 1.
-    dy = 1.
-    nx = 11
-    ny = 11
-    Lx = ny * dy
-    Ly = nx * dx
-    from fipy.meshes.grid2D import Grid2D
-    mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
-    from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-    var = DistanceVariable(mesh = mesh, value = -1)
-    
-    x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
 
-    var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
-    var.calcDistanceFunction()
-    viewer = MayaviSurfactantViewer(var, smooth = 2)
-    viewer.plot()
-    raw_input("press key to continue")
-
-    var = DistanceVariable(mesh = mesh, value = -1)
-
-    var.setValue(1, where=(y > 2. * Ly / 3.) | ((x > Lx / 2.) & (y > Ly / 3.)) | ((y < Ly / 6.) & (x > Lx / 2)))
-    var.calcDistanceFunction()
-    viewer = MayaviSurfactantViewer(var)
-    viewer.plot()
-    raw_input("press key to continue")
-
-    viewer = MayaviSurfactantViewer(var, smooth = 2)
-    viewer.plot()

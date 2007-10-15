@@ -55,10 +55,11 @@ class _ModPhysicalField(PhysicalField):
         if isinstance(other, _ModPhysicalField):
             return self.__class__(value = self.mod(self.value - other.value), unit = self.unit)
         else:
-            return self._sum(other, sign2 = lambda b: -b)
+            return PhysicalField.__sub__(self, other)
     
     def __rsub__(self, other):
         if isinstance(other, _ModPhysicalField):
             return self.__class__(value = self.mod(argument = other.value - self.value), unit = self.unit)
         else:
-            return self._sum(other, sign1 = lambda a: -a)
+            return PhysicalField.__rsub__(self, other)
+

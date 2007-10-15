@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/21/07 {1:41:55 PM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {9:32:17 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,6 +72,27 @@ class Gnuplot2DViewer(GnuplotViewer):
         """
         Creates a `Gnuplot2DViewer`.
         
+            >>> from fipy import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = Gnuplot2DViewer(vars=var, 
+            ...                          limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                          title="Gnuplot2DViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = Gnuplot2DViewer(vars=var, 
+            ...                          limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                          title="Gnuplot2DViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -101,9 +122,13 @@ class Gnuplot2DViewer(GnuplotViewer):
             
         self.g('set dgrid3d %i, %i, 2' % (ny, nx))
 
+        x, y = mesh.getCellCenters()
         import Gnuplot
-        data = Gnuplot.Data(numerix.array(mesh.getCellCenters()[:,0]),
-                            numerix.array(mesh.getCellCenters()[:,1]),
-                            self.vars[0][:])
+        data = Gnuplot.Data(numerix.array(x), numerix.array(y),
+                            self.vars[0].getValue())
 
         self.g.splot(data)
+
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 2/21/07 {12:24:17 PM} 
+ #                                last update: 7/5/07 {9:43:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,6 +57,27 @@ class Gist2DViewer(GistViewer):
         """
         Creates a `Gist2DViewer`.
         
+        >>> from fipy import *
+        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> viewer = Gist2DViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="Gist2DViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
+        >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> viewer = Gist2DViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="Gist2DViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
             Only the first 2D `CellVariable` will be plotted.
@@ -120,18 +141,12 @@ class Gist2DViewer(GistViewer):
         if datamax == datamin:
             datamax = datamin + 1e-10
 
-        
-        vertexIDs = self.mesh._getOrderedCellVertexIDs().flat
+        vertexIDs = self.mesh._getOrderedCellVertexIDs()
 
-        import MA
-        
-        if type(vertexIDs) is type(MA.array(0)):
-            vertexIDs = vertexIDs.compressed()
-            
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[:,0], numerix.array(vertexIDs).flat)
-        yCoords = numerix.take(vertexCoords[:,1], numerix.array(vertexIDs).flat)
+        xCoords = numerix.take(vertexCoords[0], vertexIDs).flatten("FORTRAN")
+        yCoords = numerix.take(vertexCoords[1], vertexIDs).flatten("FORTRAN")
 
         import gist
 
@@ -153,10 +168,10 @@ class Gist2DViewer(GistViewer):
         faceVertexIDs = self.mesh._getFaceVertexIDs()
         vertexCoords = self.mesh.getVertexCoords()
         
-        x0 = numerix.take(vertexCoords[:,0], faceVertexIDs[:,0])
-        y0 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,0])
-        x1 = numerix.take(vertexCoords[:,0], faceVertexIDs[:,1])
-        y1 = numerix.take(vertexCoords[:,1], faceVertexIDs[:,1])
+        x0 = numerix.take(vertexCoords[0], faceVertexIDs[0])
+        y0 = numerix.take(vertexCoords[1], faceVertexIDs[0])
+        x1 = numerix.take(vertexCoords[0], faceVertexIDs[1])
+        y1 = numerix.take(vertexCoords[1], faceVertexIDs[1])
         
         import gist
         
@@ -174,3 +189,6 @@ class Gist2DViewer(GistViewer):
 
         gist.fma()
 
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

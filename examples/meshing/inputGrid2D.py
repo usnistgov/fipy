@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGrid2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 9/15/05 {7:05:59 PM} 
+ #                                last update: 7/5/07 {8:18:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,12 +56,12 @@ elements on the mesh. Firstly parse the command line argument for
     
 A `Grid2D` object is invoked in the following way,
 
-   >>> from fipy.tools import numerix
-   >>> nx = int(numerix.sqrt(numberOfElements))
+   >>> from fipy import *
+
+   >>> nx = int(sqrt(numberOfElements))
    >>> ny = nx
    >>> dx = 1.
    >>> dy = 1.
-   >>> from fipy.meshes.grid2D import Grid2D
    >>> mesh = Grid2D(nx = nx, ny = nx, dx = dx, dy = dy)
 
 Once the mesh has been built information about the mesh can be
@@ -69,13 +69,13 @@ obtained.  For example the mesh volumes can be obtained with the
 `getCellVolumes()` method.
 
    >>> vols = mesh.getCellVolumes()
-   >>> numerix.allclose(dx * dy * numerix.ones(nx * ny), vols)
+   >>> allclose(dx * dy * ones(nx * ny), vols)
    1
 
 Obtain the number of cells in the mesh
 
    >>> N = mesh.getNumberOfCells()
-   >>> numerix.allclose(N, numberOfElements)
+   >>> allclose(N, numberOfElements)
    1
 
 Obtain all the left exterior faces, this is equal to `ny`.
@@ -87,9 +87,7 @@ Obtain all the left exterior faces, this is equal to `ny`.
 One can view the mesh with the following code,
 
    >>> if __name__ == '__main__':
-   ...     from fipy.viewers import make
-   ...     from fipy.variables.cellVariable import CellVariable
-   ...     viewer = make(CellVariable(value = 0, mesh = mesh))
+   ...     viewer = viewers.make(CellVariable(value = 0, mesh = mesh))
    ...     viewer.plot()
    
 """

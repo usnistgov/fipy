@@ -60,9 +60,9 @@ class CellTerm(Term):
             coeff = _Constant(value=coeff)
 
         from fipy.variables.cellVariable import CellVariable
-        if not isinstance(coeff, CellVariable) \
-        and coeff.getShape() != ():
-            raise TypeError, "The coefficient must be a CellVariable or a scalar value."
+        if ((isinstance(coeff, CellVariable) and coeff.getRank() != 0)
+            or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
+                raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
         Term.__init__(self, coeff=coeff)
         self.coeffVectors = None
@@ -72,10 +72,14 @@ class CellTerm(Term):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
+        if hasattr(coeff, "getOld"):
+            old = coeff.getOld()
+        else:
+            old = coeff
 
         self.coeffVectors = {
             'diagonal': coeff * weight['diagonal'],
-            'old value': coeff.getOld() * weight['old value'],
+            'old value': old * weight['old value'],
             'b vector': coeff * weight['b vector'],
             'new value': coeff * weight['new value']
         }
@@ -102,10 +106,10 @@ class CellTerm(Term):
         updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""
-            b(i) += oldArray(i) * oldCoeff(i) / dt;
-            b(i) += bCoeff(i);
-            updatePyArray(i) += newCoeff(i) / dt;
-            updatePyArray(i) += diagCoeff(i);
+            b[i] += oldArray[i] * oldCoeff[i] / dt;
+            b[i] += bCoeff[i];
+            updatePyArray[i] += newCoeff[i] / dt;
+            updatePyArray[i] += diagCoeff[i];
         """,b=b,
             oldArray=oldArray.getNumericValue(),
 ##            oldArray=numerix.array(oldArray),
@@ -119,10 +123,10 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = _SparseMatrix(size=N)
+        L = SparseMatrix(size=N)
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?
@@ -146,13 +150,11 @@ class CellTerm(Term):
             >>> from fipy.meshes.grid1D import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
-            >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-            >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
             >>> m = Grid1D(nx=2)
             >>> cv = CellVariable(mesh=m)
             >>> fv = FaceVariable(mesh=m)
-            >>> vcv = VectorCellVariable(mesh=m)
-            >>> vfv = VectorFaceVariable(mesh=m)
+            >>> vcv = CellVariable(mesh=m, rank=1)
+            >>> vfv = FaceVariable(mesh=m, rank=1)
             >>> CellTerm(coeff=cv)
             CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> CellTerm(coeff=1)
@@ -160,19 +162,19 @@ class CellTerm(Term):
             >>> CellTerm(coeff=fv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
             >>> CellTerm(coeff=vcv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
             >>> CellTerm(coeff=vfv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
             >>> CellTerm(coeff=(1,))
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
 
         """
         pass

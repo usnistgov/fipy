@@ -58,8 +58,8 @@ description of the governing equations and feature geometry. It
 requires the user to import and execute a function at the python
 prompt.  The model parameters can be passed as arguments to this
 function. In future all superfill examples will be provided with this
-type of interface. Example |inputWriteScriptHowTo| has the same
-functionality as |inputSimpleTrench| but demonstrates how to
+type of interface. Example |howToWriteAScript| has the same
+functionality as |simpleTrenchSystem| but demonstrates how to
 write a new script in the case where the existing suite of scripts do
 not meet the required needs.
 
@@ -104,25 +104,25 @@ of high surfactant concentration have an increased deposition rate.
 
    <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://link.aps.org/abstract/PRL/v87/e016102">Josell et al</a>
 
-.. |latexInputSimpleTrench| raw:: latex
+.. |latexSimpleTrenchSystem| raw:: latex
 
-   \ref{inputSimpleTrench}
+   \ref{simpleTrenchSystem}
 
-.. |htmlInputSimpleTrench| raw:: html
+.. |htmlSimpleTrenchSystem| raw:: html
 
    <a href="download/fipy.pdf">1</a>
 
-.. |inputSimpleTrench| replace:: |htmlInputSimpleTrench| |latexInputSimpleTrench|
+.. |simpleTrench| replace:: |htmlSimpleTrenchSystem| |latexSimpleTrenchSystem|
 
-.. |latexInputWriteScriptHowTo| raw:: latex
+.. |latexHowToWriteAScript| raw:: latex
 
-   \ref{inputWriteScriptHowTo}
+   \ref{howToWriteAScript}
 
-.. |htmlInputWriteScriptHowTo| raw:: html
+.. |htmlHowToWriteAScript| raw:: html
 
    <a href="download/fipy.pdf">2</a>
 
-.. |inputWriteScriptHowTo| replace:: |htmlInputWriteScriptHowTo| |latexInputWriteScriptHowTo|
+.. |howToWriteAScript| replace:: |htmlHowToWriteAScript| |latexHowToWriteAScript|
 
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 

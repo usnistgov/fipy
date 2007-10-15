@@ -37,8 +37,45 @@ Refactoring complete, merge to trunk::
     $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ python setup.py test
-    $ svn ci -m "merged $BRANCH"
+    $ svn ci -m "merged ${BRANCH} changes r${IRN}:${LRN} to trunk"
 
+Merging changes from trunk to the branch
+----------------------------------------
+
+Find the initial (IRN) and latest (LRN) revision numbers::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ IRN=...
+    $ LRN=...
+
+Merge state of trunk to the branch::
+
+    $ cd $BRANCH
+    $ svn diff -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ python setup.py test
+    $ svn ci -m "merged trunk changes r${IRN}:${LRN} to ${BRANCH}"
+
+Find the initial (IRN) and latest (LRN) revision numbers from the last 
+merge from trunk::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    
+Look for "merged trunk changes r${IRN}:${LRN} to ${BRANCH}" and set `IRN` 
+to `${LRN}` from log message.
+
+    $ IRN=...
+    $ LRN=...
+
+Merge updated state of trunk to the branch::
+
+    $ cd $BRANCH
+    $ svn diff -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ python setup.py test
+    $ svn ci -m "merged trunk changes r${IRN}:${LRN} to ${BRANCH}"
+    
+    
 --------
 Versions
 --------

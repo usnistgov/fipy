@@ -55,15 +55,11 @@ class Grid1D(Mesh1D):
     
         >>> mesh = Grid1D(nx = 3)
         >>> print mesh.getCellCenters()
-        [[ 0.5]
-         [ 1.5]
-         [ 2.5]]
+        [[ 0.5  1.5  2.5]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
-        [[ 0.5]
-         [ 2. ]
-         [ 4.5]]
+        [[ 0.5  2.   4.5]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
@@ -94,10 +90,10 @@ class Grid1D(Mesh1D):
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         
-        return numerix.transpose(numerix.array((x,)))
+        return x[numerix.newaxis,...]
     
     def _createFaces(self):
-        return numerix.arange(self.numberOfVertices)
+        return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
 
     def _createCells(self):
         """
@@ -107,7 +103,7 @@ class Grid1D(Mesh1D):
         self.numberOfFaces = self.nx + 1
         f1 = numerix.arange(self.nx)
         f2 = f1 + 1
-        return numerix.transpose(numerix.array((f1, f2)))
+        return numerix.array((f1, f2))
 
     def getDim(self):
         return 1
@@ -134,7 +130,7 @@ class Grid1D(Mesh1D):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
     def _getMeshSpacing(self):
-        return numerix.array((self.dx,))
+        return numerix.array((self.dx,))[...,numerix.newaxis]
     
     def getShape(self):
         return (self.nx,)

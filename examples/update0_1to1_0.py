@@ -145,7 +145,7 @@ instantiator as follows:
 ..
 
    >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
-   >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+   >>> from fipy.solvers import *
    >>> from fipy.equations.stdyConvDiffScEquation import SteadyConvectionDiffusionScEquation
    Traceback (most recent call last):
    ...
@@ -329,7 +329,7 @@ suitable):
 
 ..
 
-    >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
+    >>> from fipy.solvers import *
     >>> eq.solve(var = var, 
     ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000), 
     ...          boundaryConditions = boundaryConditions)

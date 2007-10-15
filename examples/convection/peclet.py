@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 3/29/07 {11:44:59 AM} 
+ #                                last update: 7/5/07 {8:18:42 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,36 +48,26 @@ working with Peclet numbers over 1. LinearLUSOlver is now the default
 for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
 
+    >>> from fipy import *
+
     >>> L = 1.
     >>> nx = 1000
     >>> dx =  L / nx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx , nx=nx)
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
     ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = var)
-
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> from fipy.terms.transientTerm import TransientTerm
-
-    >>> ##from fipy.solvers.linearCGSSolver import LinearCGSSolver
-    >>> ##from fipy.solvers.linearScipyGMRESSolver import LinearScipyGMRESSolver as GMRES
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3
-    >>> from fipy.tools import numerix
     >>> allcloseList = []
     >>> while peclet < 1e4:
     ...     var[:] = valueLeft
@@ -85,14 +75,14 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...     eq = (TransientTerm(1e-4) 
     ...           == ImplicitDiffusionTerm(coeff=diffCoeff)
     ...           + PowerLawConvectionTerm(coeff=convCoeff))
-    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) ##, solver=GMRES())
-    ...     x = mesh.getCellCenters()[...,0]
+    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
+    ...     x = mesh.getCellCenters()[0]
     ...     arg0 = -convCoeff * x / diffCoeff
-    ...     arg0 = numerix.where(arg0 < -200, -200, arg0)
+    ...     arg0 = where(arg0 < -200, -200, arg0)
     ...     arg1 = -convCoeff * L / diffCoeff
     ...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
-    ...     CC = 1. - numerix.exp(arg0)
-    ...     DD = 1. - numerix.exp(arg1)
+    ...     CC = 1. - exp(arg0)
+    ...     DD = 1. - exp(arg1)
     ...     analyticalArray = CC / DD
     ...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
     ...     if __name__ == '__main__':

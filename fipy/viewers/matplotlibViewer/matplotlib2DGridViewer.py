@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/21/07 {12:15:05 PM} { 2:45:36 PM}
+ #                                last update: 7/4/07 {8:24:29 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,21 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         """
         Creates a `Matplotlib2DGridViewer`.
         
+            >>> from fipy import *
+            >>> from fipy.tools.numerix import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k")
+            >>> viewer = Matplotlib2DGridViewer(vars=sin(k * xyVar),
+            ...                             limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                             title="Matplotlib2DGridViewer test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -73,8 +88,8 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         self.image = pylab.imshow(self._getData(),
                                   extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                           self._getLimit('ymin'), self._getLimit('ymax')),
-                                  vmin=self._getLimit(keys=('datamin', 'zmin')),
-                                  vmax=self._getLimit(keys=('datamax', 'zmax')))
+                                  vmin=self._getLimit(key=('datamin', 'zmin')),
+                                  vmax=self._getLimit(key=('datamax', 'zmax')))
                                           
         pylab.title(self.vars[0].getName())
 
@@ -126,3 +141,6 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         self.image.set_data(self._getData())
 
         
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

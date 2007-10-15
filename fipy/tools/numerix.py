@@ -69,14 +69,6 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-## Numeric
-##import Numeric as NUMERIC
-##from Numeric import *
-##import umath
-##import MA
-## end Numeric
-
-## numpy
 import numpy as NUMERIX
 from numpy.core import umath
 from numpy.core import ma as MA
@@ -96,7 +88,6 @@ def ones(a, t='l'):
     return NUMERIX.ones(a, t)
 
     
-## end numpy
 
 def _isPhysical(arr):
     """
@@ -107,64 +98,6 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
-def take(a, indices, axis=0, fill_value=None):
-    """
-    Selects the elements of `a` corresponding to `indices`.
-    """
- 	   
-    if _isPhysical(a):
-        taken = a.take(indices, axis=axis)   
-    elif type(indices) is type(MA.array((0))):
-        ## Replaces `MA.take`. `MA.take` does not always work when
-        ## `indices` is a masked array.
-        ##
-        nomask = None
-        
-        taken = MA.take(a, MA.filled(indices, 0), axis=axis) 	
-        mask = MA.getmask(indices)
-
-        if mask is not nomask:
-            mask = MA.getmaskarray(indices)
-            if taken.shape != mask.shape:
-                mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
-                mask = MA.mask_or(MA.getmask(taken), mask)
-               
-        if mask is not nomask:
-            taken = MA.array(data=taken, mask=mask)
-        else:
-            if MA.getmask(taken) is nomask:
-                taken = taken.filled()
-
-    elif type(a) in (type(array((0))), type(()), type([])):
-        taken = NUMERIX.take(a, indices, axis=axis)
-    elif type(a) is type(MA.array((0))):
-        taken = MA.take(a, indices, axis=axis)
-    else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
-               
-    if fill_value is not None and type(taken) is type(MA.array((0))):
-        taken = taken.filled(fill_value=fill_value)
-        
-    return taken
-
-## def take(arr, ids, axis=0):
-##     """
-##     Selects the elements of `arr` corresponding to `ids`.
-##     """
-    
-##     if _isPhysical(arr):
-##      return arr.take(ids, axis=axis)    
-##     elif type(ids) is type(MA.array((0))):
-##         return take(arr, ids, axis=axis)
-##     elif type(arr) is type(array((0))):
-##      return NUMERIX.take(arr, ids, axis=axis)
-##     elif type(arr) is type(MA.array((0))):
-##      return MA.take(arr, ids, axis=axis)
-##     else:
-##      raise TypeError, 'cannot take from object ' + str(arr)
-
-## take = NUMERIX.take
-    
 def put(arr, ids, values):
     """
     The opposite of `take`.  The values of `arr` at the locations
@@ -179,9 +112,6 @@ def put(arr, ids, values):
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values) ## this should work 
-       Traceback (most recent call last):
-            ...
-       IndexError: index out of range for array
        >>> print arr
        [0 0 4]
 
@@ -196,38 +126,23 @@ def put(arr, ids, values):
        >>> ids = MA.masked_values((maskValue, 2), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## shoold be [-- 5 --] maybe??
+       >>> print arr ## should be [-- 5 --] maybe??
        [-- 5 999999]
     
     """
 
     if _isPhysical(arr):
-        return arr.put(ids, values)
-    elif type(arr) is type(array((0))):
-        return NUMERIX.put(arr, ids, values)
-    elif type(arr) is type(MA.array((0))):
+        arr.put(ids, values)
+    elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            return MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
         else:
-            return MA.put(arr, ids, values)
+            MA.put(arr, ids, values)
+    elif MA.isMaskedArray(ids):
+        NUMERIX.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
     else:
-        raise TypeError, 'cannot put in object ' + str(arr)
-
-## def put(arr, ids, values):
-##     """
-##     The opposite of `take`.  The values of `arr` at the locations specified by
-##     `ids` are set to the corresponding value of `values`.
-##     """
-##     if _isPhysical(arr):
-##      return arr.put(ids, values)
-    
-##     elif type(arr) is type(array((0))):
-##      return NUMERIX.put(arr, ids, values)
-##     elif type(arr) is type(MA.array((0))):
-##      return MA.put(arr, ids, values)
-##     else:
-##      raise TypeError, 'cannot put in object ' + str(arr)
-    
+        NUMERIX.put(arr, ids, values)
+        
 def reshape(arr, shape):
     """
     Change the shape of `arr` to `shape`, as long as the product of all the
@@ -261,33 +176,43 @@ def getShape(arr):
         >>> getShape(Variable("1 m"))
         ()
     """
-    if _isPhysical(arr):
-        return arr.getShape()
-    elif type(arr) in (type(array(0)), type(MA.array(0))):
+    if hasattr(arr, "shape"):
         return arr.shape
     elif type(arr) in (type(()), type([])):
         return (len(arr),)
     elif type(arr) in (type(1), type(1.)):
         return ()
     else:
-        return array(arr).shape
+        raise AttributeError, "No attribute 'shape'"
 
+def rank(a):
+    """
+    Get the rank of sequence a (the number of dimensions, not a matrix rank)
+    The rank of a scalar is zero.
+    
+    .. note::
+        
+       The rank of a `MeshVariable` is for any single element. E.g., A
+       `CellVariable` containing scalars at each cell, and defined on a 9
+       element `Grid1D`, has rank 0. If it is defined on a 3x3 `Grid2D`, it is
+       still rank 0.
+    """
+    if hasattr(a, "getRank"):
+        return a.getRank()
+    else:
+        return NUMERIX.rank(a)
+        
 def sum(arr, axis=0):
     """
     The sum of all the elements of `arr` along the specified axis.
     """
     if _isPhysical(arr):
         return arr.sum(axis)
-    elif type(arr) is type(array((0))):
-##        print
-##        print 'axis',axis
-##        print 'arr',arr
-        return NUMERIX.sum(arr, axis)
     elif type(arr) is type(MA.array((0))):
         return MA.sum(arr, axis)
-    else:        
-        raise TypeError, 'cannot sum object ' + str(arr)
-
+    else:  
+        return NUMERIX.sum(arr, axis)
+        
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, float)
@@ -449,7 +374,7 @@ def arccosh(arr):
         [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
         >>> arccosh(Variable(value=(1,2,3)))
-        numerix.arccosh(Variable(value=array([ 1.,  2.,  3.])))
+        numerix.arccosh(Variable(value=array([1, 2, 3])))
         >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
         [ 0.     1.317  1.763]
     """
@@ -520,7 +445,7 @@ def arcsinh(arr):
         [ 0.881  1.444  1.818]
         >>> from fipy.variables.variable import Variable
         >>> arcsinh(Variable(value=(1,2,3)))
-        numerix.arcsinh(Variable(value=array([ 1.,  2.,  3.])))
+        numerix.arcsinh(Variable(value=array([1, 2, 3])))
         >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
         [ 0.881  1.444  1.818]
     """
@@ -581,7 +506,7 @@ def arctan2(arr, other):
         [ 0.     0.464  0.785]
         >>> from fipy.variables.variable import Variable
         >>> arctan2(Variable(value=(0, 1, 2)), 2)
-        (numerix.arctan2(Variable(value=array([ 0.,  1.,  2.])), 2))
+        (numerix.arctan2(Variable(value=array([0, 1, 2])), 2))
         
     .. attention:: 
         
@@ -674,7 +599,7 @@ def cosh(arr):
         [ 1.     1.543  3.762]
         >>> from fipy.variables.variable import Variable
         >>> cosh(Variable(value=(0,1,2)))
-        numerix.cosh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.cosh(Variable(value=array([0, 1, 2])))
         >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
         [ 1.     1.543  3.762]
     """
@@ -728,7 +653,7 @@ def tanh(arr):
         [ 0.     0.762  0.964]
         >>> from fipy.variables.variable import Variable
         >>> tanh(Variable(value=(0,1,2)))
-        numerix.tanh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.tanh(Variable(value=array([0, 1, 2])))
         >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
         [ 0.     0.762  0.964]
     """
@@ -809,7 +734,7 @@ def sinh(arr):
         [ 0.     1.175  3.627]
         >>> from fipy.variables.variable import Variable
         >>> sinh(Variable(value=(0,1,2)))
-        numerix.sinh(Variable(value=array([ 0.,  1.,  2.])))
+        numerix.sinh(Variable(value=array([0, 1, 2])))
         >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
         [ 0.     1.175  3.627]
     """
@@ -836,7 +761,7 @@ def sqrt(arr):
         [ 1.     1.414  1.732]
         >>> from fipy.variables.variable import Variable
         >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
-        numerix.sqrt(Variable(value=PhysicalField(array([ 1.,  2.,  3.]),'m**2')))
+        numerix.sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
         >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
         [ 1.     1.414  1.732] m
 
@@ -950,50 +875,6 @@ def log(arr):
     else:
         return umath.log(arr)
 
-pythonmax = max
-def max(arr):
-    r"""
-    max function
-
-    >>> from fipy.tools.dimensions.physicalField import PhysicalField
-    >>> print max(PhysicalField(value=(0.1, -0.2, 0.3), unit='m'))
-    0.3 m
-    >>> print max(array((0.1, -0.2, 0.3)))
-    0.3
-    >>> from fipy.variables.variable import Variable
-    >>> print max(Variable(value=(0.1, -0.2, 0.3)))
-    0.3
-    
-    """
-
-    if type(arr) in (type(array(0)), type(MA.array(0)), type(()), type([])) or \
-           (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
-        return pythonmax(arr)
-    else:
-        return pythonmax(array(arr))
-
-pythonmin = min
-def min(arr):
-    r"""
-    min function
-
-    >>> from fipy.tools.dimensions.physicalField import PhysicalField
-    >>> print min(PhysicalField(value=(0.1, -0.2, 0.3), unit='m'))
-    -0.2 m
-    >>> print min(array((0.1, -0.2, 0.3)))
-    -0.2
-    >>> from fipy.variables.variable import Variable
-    >>> print min(Variable((0.1, -0.2, 0.3)))
-    -0.2
-    
-    """
-
-    if type(arr) in (type(array(0)), type(MA.array(0)), type(()), type([])) or \
-       (_isPhysical(arr) and (not arr.getUnit() is '1') and not arr.getUnit().isDimensionless()):
-        return pythonmin(arr)
-    else:
-        return pythonmin(array(arr))
-
 def conjugate(arr):
     r"""
     Complex conjugate of
@@ -1042,15 +923,14 @@ def crossProd(v1,v2):
     ..
 
     """
-    v1n = NUMERIX.reshape(v1, (-1, 3))
-    v2n = NUMERIX.reshape(v2, (-1, 3))
+    v1n = array(v1)
+    v2n = array(v2)
 
-    out = NUMERIX.transpose(array((v1n[:,1] * v2n[:,2] - v1n[:,2] * v2n[:,1],
-			    v1n[:,2] * v2n[:,0] - v1n[:,0] * v2n[:,2],
-			    v1n[:,0] * v2n[:,1] - v1n[:,1] * v2n[:,0])))
-    return NUMERIX.reshape(out, NUMERIX.shape(v1))
+    return array((v1n[1] * v2n[2] - v1n[2] * v2n[1],
+                  v1n[2] * v2n[0] - v1n[0] * v2n[2],
+                  v1n[0] * v2n[1] - v1n[1] * v2n[0]))
 
-def dot(a1, a2, axis=1):
+def dot(a1, a2, axis=0):
     """
     return array of vector dot-products of v1 and v2
     for arrays a1 and a2 of vectors v1 and v2
@@ -1061,23 +941,25 @@ def dot(a1, a2, axis=1):
 
        >>> from fipy.meshes.grid2D import Grid2D
        >>> mesh = Grid2D(nx=2, ny=1)
-       >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-       >>> v1 = VectorCellVariable(mesh=mesh, value=((0,1),(1,2)))
-       >>> v2 = array(((0,1),(1,2)))
+       >>> from fipy.variables.cellVariable import CellVariable
+       >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
+       >>> v2 = array(((0,1),(2, 3)))
        >>> dot(v1, v2)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> dot(v2, v1)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
+       >>> print rank(dot(v2, v1))
+       0
        >>> print dot(v1, v2)
-       [ 1.  5.]
+       [ 4 10]
        >>> dot(v1, v1)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> print dot(v1, v1)
-       [ 1.  5.]
+       [ 4 10]
        >>> type(dot(v2, v2))
        <type 'numpy.ndarray'>
        >>> print dot(v2, v2)
-       [1 5]
+       [ 4 10]
        
     
     """
@@ -1089,12 +971,6 @@ def dot(a1, a2, axis=1):
         return a2.dot(a1)
     else:
         return sum(a1*a2, axis)
-##     elif axis is not None:
-##         return sum(a1*a2, axis)
-##     elif (type(a1) is type(MA.array(0))) or (type(a2) is type(MA.array(0))):
-##         return MA.dot(a1, a2)
-##     else:
-##         return NUMERIX.dot(a1, a2)
 
 def sqrtDot(a1, a2):
     """Return array of square roots of vector dot-products
@@ -1137,22 +1013,19 @@ def _sqrtDotIn(a1, a2):
     if _isPhysical(a2):
         unit2 = a2.inBaseUnits().getUnit()
         a2 = a2.getNumericValue()
-    ni, nj = NUMERIX.shape(a1)
+    NJ, ni = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
 
     inline._runInline("""
-        int i;
-        for (i = 0; i < ni; i++)
+        int j;
+        result1[i] = 0.;
+        for (j = 0; j < NJ; j++)
         {
-            int j;
-            result1(i) = 0.;
-            for (j = 0; j < nj; j++)
-            {
-                result1(i) += a1(i,j) * a2(i,j);
-            }
-            result1(i) = sqrt(result1(i));
+            // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
+            result1[i] += a1[i + j * ni] * a2[i + j * ni];
         }
-    """,result1 = result1, a1 = a1, a2 = a2, ni = ni, nj = nj)
+        result1[i] = sqrt(result1[i]);        
+    """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
 
 
     ##result = inline._runInline("""
@@ -1178,10 +1051,8 @@ def allequal(first, second):
     """
     if _isPhysical(first):
         return first.allequal(second)
-##      return MA.alltrue(first == second)
     elif _isPhysical(second):
-        return first.allequal(first)
-##      return MA.alltrue(second == first)
+        return second.allequal(first)
     else:
         return MA.allequal(first, second)
             
@@ -1221,7 +1092,7 @@ def take(a, indices, axis=0, fill_value=None):
         if mask is not MA.nomask:
             mask = MA.getmaskarray(indices)
             if taken.shape != mask.shape:
-                mask = MA.repeat(mask[..., NewAxis], taken.shape[-1], len(taken.shape) - 1)
+                mask = MA.repeat(mask[NewAxis, ...], taken.shape[0], axis=0)
                 mask = MA.mask_or(MA.getmask(taken), mask)
 
         
@@ -1242,28 +1113,6 @@ def take(a, indices, axis=0, fill_value=None):
         taken = taken.filled(fill_value=fill_value)
         
     return taken
-
-## def MAtake(array, indices, fill=0, axis=0):
-##     """
-##     Replaces `MA.take`. `MA.take` does not always work when
-##     `indices` is a masked array.
-
-       
-##     """
-
-##     tmp = MA.take(array, MA.filled(indices, fill), axis=axis)
-
-##     if hasattr(indices, 'mask'):
-##         if indices.mask() is not None and tmp.shape != indices.mask().shape:
-##             mask = MA.repeat(indices.mask()[...,NUMERIX.NewAxis],tmp.shape[-1],len(tmp.shape)-1)
-##             if tmp.mask() is not None:
-##                 mask = NUMERIX.logical_or(tmp.mask(), mask)
-##         else:
-##             mask = indices.mask()
-##     else:
-##         mask = None
-        
-##     return MA.array(data=tmp, mask=mask)
 
 def indices(dimensions, typecode=None):
     """indices(dimensions,typecode=None) returns an array representing a grid
@@ -1317,12 +1166,16 @@ def getTypecode(arr):
         >>> getTypecode(Variable(1))
         'l'
         >>> getTypecode([0])
+        'l'
+        >>> getTypecode("a")
         Traceback (most recent call last):
               ...
         TypeError: No typecode for object
 
     """
-
+    if type(arr) in (type(()), type([])):
+        arr = array(arr)
+    
     if hasattr(arr, 'getTypecode'):
         return arr.getTypecode()
     elif hasattr(arr, 'dtype'): ## type(arr) is type(array(0)):
@@ -1340,26 +1193,26 @@ if not hasattr(NUMERIX, 'empty'):
         """
         `ones()` and `zeros()` are really slow ways to create arrays. NumPy
         provides a routine:
-            
+          
             empty((d1,...,dn),dtype=float,order='C') will return a new array of
             shape (d1,...,dn) and given type with all its entries
             uninitialized. This can be faster than zeros.
-            
+          
         We approximate this routine when unavailable, but note that `order` is
         ignored when using Numeric.
         """
         from fipy.tools.inline import inline
 
         return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
-    
+  
     def _emptyPy(shape, dtype):
         return NUMERIX.zeros(shape, dtype)
 
     def _emptyIn(shape, dtype):
         from scipy import weave
-        
+      
         local_dict = {'shape': shape, 'dtype': dtype}
-        
+      
         code = """
 PyObject *op;
 PyArrayObject *ret;
@@ -1453,6 +1306,249 @@ def LINFnorm(arr):
     """
     return max(abs(arr))
 
+def _compressIndexSubspaces(index, i, broadcastshape = ()):
+    """
+    Starting at element `i` in a selection tuple `index`, squeeze out all
+    sequential elements that can be broadcast to the same shape.
+    """
+    skip = 0
+    while i + skip < len(index):
+        element = index[i + skip]
+        if element is newaxis or isinstance(element, slice):
+            skip -= 1
+            break
+        else:
+            element = array(element, intp)
+
+            # numpy accepts tuples of lists of floats, but not arrays of
+            # floats. This test is more liberal than that, but has the
+            # benefit of not being insane. Unfortunately, NumPy will throw
+            # errors later, on evaluation, that should ideally be caught here.
+            #    raise IndexError "arrays used as indices must be of integer (or boolean) type"
+            
+            broadcastshape = _broadcastShape(broadcastshape, element.shape)
+            if broadcastshape is None:
+                raise ValueError, "shape mismatch: objects cannot be broadcast to a single shape"
+        skip += 1
+
+    return broadcastshape, skip
+
+def _indexShape(index, arrayShape):
+    """
+    Given a selection object `index` and an `arrayShape` for the the object to
+    be sliced into, return the shape of the result. Return `None` if the
+    indexing is not legal.
+    
+    "If the length of the selection tuple is larger than N(=`arrayShape.ndim`)
+    an error is raised"
+    
+        >>> _indexShape(index=(1, 2, 3, 4), 
+        ...             arrayShape=(10,20,30))
+        Traceback (most recent call last):
+            ...
+        IndexError: invalid index
+
+    "All sequences and scalars in the selection tuple are converted to intp
+    indexing arrays."
+    
+    "All selection tuple objects must be convertible to intp arrays, or slice
+    objects, or the Ellipsis (``...``) object"
+    
+        >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"], 
+        ...             arrayShape=(10,20,30,40,50))
+        Traceback (most recent call last):
+            ...
+        ValueError: setting an array element with a sequence.
+
+    .. note::
+        
+       The following test should throw::
+           
+           Traceback (most recent call last):
+               ...
+           IndexError: arrays used as indices must be of integer (or boolean) type
+
+       but it's not straightforward to achieve that. Moreover, NumPy is not even
+       consistent, accepting a `tuple` or `list` of `float`, but not a `float`
+       `array`. If it's absolutely crucial to obtain that result, see the
+       comment in `_compressIndexSubspaces()`.
+       
+    ..
+    
+        >>> ind = zeros((2,3,5), float)
+        >>> _indexShape(index=NUMERIX.index_exp[...,ind], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 20, 30, 40, 2, 3, 5)
+
+    "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
+    will be treated as full slice (':') objects. The Ellipsis object is replaced
+    with as many full slice (':') objects as needed to make the length of the
+    selection tuple N."
+
+        >>> _indexShape(index=NUMERIX.index_exp[...,2,...,4], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 20, 40)
+    
+    "If the selection tuple is smaller than N, then as many ':' objects as
+    needed are added to the end of the selection tuple so that the modified 
+    selection tuple has length N."
+
+        >>> _indexShape(index=NUMERIX.index_exp[:,2], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 30, 40, 50)
+
+    "The shape of all the integer indexing arrays must be broadcastable to the
+    same shape"
+    
+        >>> ind1 = zeros((2,3,4), intp)
+        >>> ind2 = zeros((2,3,5), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2], 
+        ...             arrayShape=(10,20,30,40,50))
+        Traceback (most recent call last):
+            ...
+        ValueError: shape mismatch: objects cannot be broadcast to a single shape
+
+    "In simple cases (i.e. one indexing array and N - 1 slice objects) it does
+    exactly what you would expect (concatenation of repeated application of
+    basic slicing)."
+    
+        >>> ind = zeros((2,3,4), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[...,ind,:], 
+        ...             arrayShape=(10,20,30))
+        (10, 2, 3, 4, 30)
+        
+    "If the index subspaces are right next to each other, then the broadcasted
+    indexing space directly replaces all of the indexed subspaces in X."
+       
+        >>> ind1 = zeros((2,3,4), intp)
+        >>> ind2 = zeros((2,3,4), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 2, 3, 4, 40, 50)
+        
+    "If the indexing subspaces are separated (by slice objects), then the
+    broadcasted indexing space is first, followed by the sliced subspace of X."
+    
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:], 
+        ...             arrayShape=(10,20,30,40,50))
+        (2, 3, 4, 10, 30, 50)
+        
+        
+    !!! What about Boolean selections ???
+    """
+    # "when the selection object is not a tuple, it will be referred to as if it
+    # had been promoted to a 1-tuple, which will be called the selection tuple"
+    if not isinstance(index, tuple):
+        if isinstance(index, list):
+            index = tuple(index)
+        else:
+            index = (index,)
+    
+    Nnewaxes = len([element for element in index if element is newaxis])
+    desiredRank = len(arrayShape) + Nnewaxes
+    
+    ellipsislen = 1 + desiredRank - len(index)
+    
+    # "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
+    # will be treated as full slice (':') objects. The Ellipsis object is replaced
+    # with as many full slice (':') objects as needed to make the length of the
+    # selection tuple N."
+    expanded = ()
+    for element in index:
+        if element is Ellipsis:
+            expanded += (slice(None, None, None),) * ellipsislen
+            ellipsislen = 1
+        else:
+            expanded += (element,)
+            
+    if len(expanded) > desiredRank:
+        # "If the lenth of the selection tuple is larger than N (=X.ndim) an error 
+        # is raised."
+        if len(arrayShape) == 0:
+            raise IndexError, "0-d arrays can't be indexed"
+        else:
+            raise IndexError, "invalid index"
+    else:
+        # "If the selection tuple is smaller than N, then as many ':' objects as
+        # needed are added to the end of the selection tuple so that the modified 
+        # selection tuple has length N."
+        expanded += (slice(None, None, None),) * (desiredRank - len(expanded))
+
+    # "The shape of all the integer indexing arrays must be broadcastable to the
+    # same shape"
+    broadcasted = ()
+    arrayIndices = ()
+    arrayindex = None
+    broadcastshape = None
+    i = 0
+    j = 0
+    while i < len(expanded):
+        element = expanded[i]
+        if element is newaxis or isinstance(element, slice):
+            broadcasted += (element,)
+            if isinstance(element, slice):
+                arrayIndices += (j,)
+        else:
+            if broadcastshape is None:
+                arrayindex = i
+                broadcastshape, skip = _compressIndexSubspaces(index=expanded, i=i)
+            else:
+                # we're only in this branch if indexing subspaces are separated
+                # by slice objects, so indexing subspace is broadcast first
+                arrayindex = 0
+                broadcastshape, skip = _compressIndexSubspaces(index=expanded, i=i, 
+                                                               broadcastshape=broadcastshape)
+            i += skip
+            j += skip
+                
+        i += 1
+        if element is not newaxis:
+            j += 1
+        
+    indexShape = ()
+    j = 0
+    for element in broadcasted:
+        if element is newaxis:
+            indexShape += (1,)
+        elif isinstance(element, slice):
+            start, stop, stride = element.indices(arrayShape[arrayIndices[j]])
+            indexShape += ((stop - start) / stride,)
+            j += 1
+        else:
+            raise IndexError, "invalid index"
+                
+    if arrayindex is not None:
+        indexShape = indexShape[:arrayindex] + broadcastshape + indexShape[arrayindex:]
+
+    return indexShape
+    
+def _broadcastShapes(shape1, shape2):
+    """
+    Determine if `shape1` and `shape2` can broadcast to each other, padding if
+    necessary, and return their (padded) shapes and the broadcast shape. If the
+    shapes cannot broadcast, return a broadcastshape of `None`.
+    """
+    if len(shape1) > len(shape2):
+        shape2 = (1,) * (len(shape1) - len(shape2)) + shape2
+    elif len(shape1) < len(shape2):
+        shape1 = (1,) * (len(shape2) - len(shape1)) + shape1
+    
+    if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
+        broadcastshape = tuple([max(s,o) for s,o in zip(shape1, shape2)])
+    else:
+        broadcastshape = None
+
+    return (shape1, shape2, broadcastshape)
+    
+def _broadcastShape(shape1, shape2):
+    """
+    Determine if `shape1` and `shape2` can broadcast to each other, padding if
+    necessary, and return the broadcast shape. If the shapes cannot broadcast,
+    return `None`.
+    """
+    
+    shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
+    return broadcastshape
     
 def _test(): 
     import doctest

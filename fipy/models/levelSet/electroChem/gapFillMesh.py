@@ -51,7 +51,7 @@ class GapFillMesh(Mesh2D):
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[:,1]
+        >>> centers = mesh.getCellCenters()[1].copy() ## the copy makes the array contigous for inlining
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
@@ -59,7 +59,6 @@ class GapFillMesh(Mesh2D):
         1
         >>> print globalError < 0.02
         1
-
     """
     
     def __init__(self, cellSize = None, desiredDomainWidth = None, desiredDomainHeight = None, desiredFineRegionHeight = None, transitionRegionHeight = None):
@@ -98,13 +97,13 @@ class GapFillMesh(Mesh2D):
         self.fineMesh = Grid2D(nx = nx, ny = ny, dx = cellSize, dy = cellSize)
 
         ## Build the transition mesh and displace.
-        transitionMesh = self.buildTransitionMesh(nx, transitionRegionHeight, cellSize) + (0, self.actualFineRegionHeight)
+        transitionMesh = self.buildTransitionMesh(nx, transitionRegionHeight, cellSize) + ((0,), (self.actualFineRegionHeight,))
 
         ## Build the boundary layer mesh.
         boundaryLayerMesh = Grid2D(dx = actualDomainWidth,
                                    dy = actualDomainWidth,
                                    nx = 1,
-                                   ny = numberOfBoundaryLayerCells) + (0, self.actualFineRegionHeight + transitionRegionHeight)
+                                   ny = numberOfBoundaryLayerCells) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,))
 
         ## Add the meshes together.
         mesh = self.fineMesh._concatenate(transitionMesh, self.epsilon)
@@ -181,16 +180,14 @@ class GapFillMesh(Mesh2D):
 
     def getTopFaces(self):
         faces = self.getFaces()
-        return faces.where(faces.getCenters()[...,1] > self.actualDomainHeight - self.epsilon)
-##         return self.getFaces(lambda face: face.getCenter()[1] > self.actualDomainHeight - self.epsilon)
+        return faces.where(faces.getCenters()[1] > self.actualDomainHeight - self.epsilon)
 
     def getBottomFaces(self):
         faces = self.getFaces()
-        return faces.where(faces.getCenters()[...,1] < self.epsilon)
-##         return self.getFaces(lambda face: face.getCenter()[1] < self.epsilon)
+        return faces.where(faces.getCenters()[1] < self.epsilon)
 
     def getCellIDsAboveFineRegion(self):
-        return numerix.nonzero(self.getCellCenters()[:,1] > self.actualFineRegionHeight - self.cellSize)
+        return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)
 
     def getFineMesh(self):
         return self.fineMesh
@@ -231,12 +228,13 @@ class TrenchMesh(GapFillMesh):
         >>> eq = DiffusionTerm()
         
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
+        
         >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
         ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[:,1]
+        >>> centers = mesh.getCellCenters()[1].copy() ## ensure contiguous array for inlining
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
@@ -244,7 +242,6 @@ class TrenchMesh(GapFillMesh):
         1
         >>> print globalError < 0.02
         1
-
     """
 
     def __init__(self,
@@ -309,8 +306,7 @@ class TrenchMesh(GapFillMesh):
                              transitionRegionHeight = transitionHeight)
 
     def getElectrolyteMask(self):
-        x = self.getCellCenters()[:,0]
-        y = self.getCellCenters()[:,1]
+        x, y = self.getCellCenters()
         
         Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
 

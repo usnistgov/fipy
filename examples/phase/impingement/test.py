@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:49:52 PM} 
+ #                                last update: 7/3/07 {4:53:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,8 +45,8 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'mesh40x1.input',
-            'mesh20x20.input',
+            'mesh40x1',
+            'mesh20x20',
         ), base = __name__)
     
 if __name__ == '__main__':

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/25/06 {4:15:28 PM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {9:30:57 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,49 +44,85 @@
 
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
-from fipy.variables.vectorCellVariable import VectorCellVariable
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
 
 from fipy.tools import numerix
 
 class GistVectorViewer(GistViewer):
     
-    def __init__(self, vars, title = ''):
-	GistViewer.__init__(self, vars=vars, title=title)
+    def __init__(self, vars, limits=None, title = ''):
+        """
+            >>> from fipy import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+            
+            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
+            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                           title="GistVectorViewer test")
+            >>> viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+        """
+	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
         
     def _getSuitableVars(self, vars):
         vars = [var for var in GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 \
-              and (isinstance(var, VectorFaceVariable) \
-                   or isinstance(var, VectorCellVariable)))]
+              and (isinstance(var, FaceVariable) \
+                   or isinstance(var, CellVariable)) and var.getRank() == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 2D vector data"
         # this viewer can only display one variable
         return [vars[0]]
-	
+        
     def plot(self, filename = None):
-	import gist
+        import gist
 
         gist.window(self.id, wait = 1)
-	gist.pltitle(self.title)
+        gist.pltitle(self.title)
         gist.animate(1)
-	
+        
         var = self.vars[0]
         
-        if isinstance(var, VectorFaceVariable):
-            centers = var.getMesh().getFaceCenters()
-        elif isinstance(var, VectorCellVariable):
-            centers = var.getMesh().getCellCenters()
-	
-	gist.plmesh(numerix.array([centers[...,1],centers[...,1]]), 
-                    numerix.array([centers[...,0],centers[...,0]]))
+        if isinstance(var, FaceVariable):
+            x, y = var.getMesh().getFaceCenters()
+        elif isinstance(var, CellVariable):
+            x, y = var.getMesh().getCellCenters()
+        
+        gist.plmesh(numerix.array([y, y]), numerix.array([x, y]))
 
-	vx = numerix.array(var[...,0])
-	vy = numerix.array(var[...,1])
-	
-        maxVec = numerix.max(var.getMag())
-        maxGrid = numerix.max(var.getMesh()._getCellDistances())
+        vx = numerix.array(var[0])
+        vy = numerix.array(var[1])
+        
+        maxVec = var.getMag().max().getValue()
+        maxGrid = var.getMesh()._getCellDistances().max()
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)
         
@@ -100,3 +136,6 @@ class GistVectorViewer(GistViewer):
     def getArray(self):
         pass
         
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

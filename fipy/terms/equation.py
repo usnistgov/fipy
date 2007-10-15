@@ -6,7 +6,7 @@
  # 
  #  FILE: "equation.py"
  #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 4/20/07 {11:33:09 AM} 
+ #                                last update: 7/25/07 {9:57:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,8 @@
  #  2004-11-09 JEG 1.0 original
  # ###################################################################
  ##
+
+import os
 
 from fipy.terms.term import Term
 from fipy.terms import TransientTerm, DiffusionTerm, \
@@ -76,20 +78,25 @@ class _Equation(Term):
         else:
             return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)
         
-    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
-        from fipy.tools.sparseMatrix import _SparseMatrix
 
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = _SparseMatrix(size=N)
+        self.matrix = SparseMatrix(size=N)
 
         for key in self.orderedPlusOtherKeys():
             term = self.terms[key]
             if term is not None:
-                termMatrix, termRHSvector = term._buildMatrix(var, 
+                termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
                                                               boundaryConditions, 
-                                                              dt=dt, equation=self)
+                                                              dt, self)
+
+                if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
+                    and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
+                    self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
+                    self._viewer.plot(matrix=termMatrix)
+                    raw_input()
 
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector

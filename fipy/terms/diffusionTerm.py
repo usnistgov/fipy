@@ -45,7 +45,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.terms.term import Term
-from fipy.tools.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix
 
 class DiffusionTerm(Term):
@@ -97,14 +96,8 @@ class DiffusionTerm(Term):
                 self.nthCoeff = Variable(value = self.nthCoeff)
 
             from fipy.variables.cellVariable import CellVariable
-            from fipy.variables.vectorCellVariable import VectorCellVariable
-            if isinstance(self.nthCoeff, VectorCellVariable) or isinstance(self.nthCoeff, CellVariable):
+            if isinstance(self.nthCoeff, CellVariable):
                 self.nthCoeff = self.nthCoeff.getArithmeticFaceValue()
-
-#           from fipy.variables.faceVariable import FaceVariable
-#           if not isinstance(self.nthCoeff, FaceVariable):             
-#               if self.nthCoeff.getShape() != ():
-#                   raise TypeError, "The coefficient must be a FaceVariable, CellVariable, VectorFaceVariable, VectorCellVariable, or a scalar value."
 
         else:
             self.nthCoeff = None
@@ -148,10 +141,10 @@ class DiffusionTerm(Term):
             coeff = self.nthCoeff
             shape = numerix.getShape(coeff)
 
-            from fipy.variables.vectorFaceVariable import VectorFaceVariable
-            if isinstance(coeff, VectorFaceVariable) \
-            or shape == (mesh.getDim(),):
-                coeff = VectorFaceVariable(mesh = mesh, value = mesh._getFaceNormals()**2).dot(coeff)
+            from fipy.variables.faceVariable import FaceVariable
+            if (isinstance(coeff, FaceVariable) and coeff.getRank() == 1) \
+            or shape == (mesh.getDim(),1):
+                coeff = FaceVariable(mesh=mesh, value=mesh._getFaceNormals()**2, rank=1).dot(coeff)
             tmpBop =  coeff * mesh._getFaceAreas() / mesh._getCellDistances()
             return  tmpBop
             
@@ -159,25 +152,25 @@ class DiffusionTerm(Term):
         else:
             return None
         
-    def _getCoefficientMatrix(self, mesh, coeff):
+    def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)
         
         numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
-        coefficientMatrix = _SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
-        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 1))
+        coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
         interiorFaces = mesh.getInteriorFaces()
         
-        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces)
+        interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 
-        interiorCoeff = -numerix.take(coeff, interiorFaces)
-        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,0], interiorFaceCellIDs[...,1])
-        interiorCoeff = -numerix.take(coeff, interiorFaces)
-        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[...,1], interiorFaceCellIDs[...,0])
+        interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
+        interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
         
         return coefficientMatrix
         
@@ -185,8 +178,8 @@ class DiffusionTerm(Term):
         coefficientMatrix += LLbb[0]
         boundaryB += LLbb[1]
         
-    def _doBCs(self, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
-        [self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(N, M, coeffs)) for boundaryCondition in higherOrderBCs]
+    def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
+        [self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)) for boundaryCondition in higherOrderBCs]
             
         return coefficientMatrix, boundaryB
 
@@ -208,7 +201,7 @@ class DiffusionTerm(Term):
         else:
             return Term.__add__(self, other)
 
-    def _buildMatrix(self, var, boundaryConditions = (), dt = 1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -218,14 +211,14 @@ class DiffusionTerm(Term):
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             
-            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, 
+            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
                                                                                  boundaryConditions = lowerOrderBCs, 
                                                                                  dt = dt,
                                                                                  equation=equation)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
-            volMatrix = _SparseMatrix(size = N, bandwidth = 1)
+            volMatrix = SparseMatrix(size = N, bandwidth = 1)
             
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
             lowerOrderL = volMatrix * lowerOrderL
@@ -250,8 +243,8 @@ class DiffusionTerm(Term):
                 self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
 
 
-            mm = self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag'])
-            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
+            mm = self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag'])
+            L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
                                mm, numerix.zeros(N,'d'))
                                
             del higherOrderBCs
@@ -287,14 +280,14 @@ class DiffusionTerm(Term):
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
             
-            L, b = self._doBCs(higherOrderBCs, N, M, self.coeffDict, 
-                               self._getCoefficientMatrix(mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
+            L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
+                               self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
                                
             del higherOrderBCs
 
         else:
             
-            L = _SparseMatrix(size = N)
+            L = SparseMatrix(size = N)
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
@@ -305,14 +298,15 @@ class DiffusionTerm(Term):
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
            >>> from fipy.meshes.grid1D import Grid1D
+           >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
            >>> mesh = Grid1D(dx = 1., nx = 2)
            >>> term = DiffusionTerm(coeff = (1,))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
            >>> from fipy.variables.cellVariable import CellVariable
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh))
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
            >>> print L
            -1.000000   1.000000  
             1.000000  -1.000000  
@@ -325,10 +319,10 @@ class DiffusionTerm(Term):
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> term = DiffusionTerm(coeff = FaceVariable(mesh = mesh, value = 1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh))
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
            >>> print L
            -1.000000   1.000000  
             1.000000  -1.000000  
@@ -337,10 +331,10 @@ class DiffusionTerm(Term):
 
            >>> term = DiffusionTerm(coeff = CellVariable(mesh = mesh, value = 1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh))
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
            >>> print L
            -1.000000   1.000000  
             1.000000  -1.000000  
@@ -350,10 +344,10 @@ class DiffusionTerm(Term):
            >>> from fipy.variables.variable import Variable
            >>> term = DiffusionTerm(coeff = Variable(value = 1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh))
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
            >>> print L
            -1.000000   1.000000  
             1.000000  -1.000000  
@@ -362,10 +356,8 @@ class DiffusionTerm(Term):
                       
            >>> term = DiffusionTerm(coeff = ((1,2),))
 
-           >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-           >>> term = DiffusionTerm(coeff = VectorFaceVariable(mesh = mesh, value = (1,)))
-           >>> from fipy.variables.vectorCellVariable import VectorCellVariable
-           >>> term = DiffusionTerm(coeff = VectorCellVariable(mesh = mesh, value = (1,)))
+           >>> term = DiffusionTerm(coeff = FaceVariable(mesh = mesh, value = (1,), rank=1))
+           >>> term = DiffusionTerm(coeff = CellVariable(mesh=mesh, value=(1,), rank=1))
 
         Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
 
@@ -375,10 +367,11 @@ class DiffusionTerm(Term):
            >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
            >>> term = DiffusionTerm(coeff = (1.,))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           ...                         SparseMatrix=SparseMatrix ,
            ...                         boundaryConditions = (bcLeft, bcRight))
            >>> print L
            -1.000000   1.000000  
@@ -397,10 +390,10 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
            >>> term = DiffusionTerm(coeff = (1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             1.000000  -1.000000  
            -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> print L
@@ -418,10 +411,11 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
            >>> term = DiffusionTerm(coeff = (-1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
            -1.000000   1.000000  
             1.000000  -1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh),
+           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           ...                         SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> print L
@@ -439,10 +433,11 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
            >>> term = DiffusionTerm(coeff = (1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             2.000000  -2.000000  
            -2.000000   2.000000  
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           ...                         SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> ans = numerix.array(((8e+01, -32),(-32, 16)))
@@ -460,10 +455,11 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
            >>> term = DiffusionTerm(coeff = (1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(mesh, coeff)
+           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff)
             4.000000  -4.000000  
            -4.000000   4.000000  
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           ...                         SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
            >>> ans = numerix.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
@@ -483,18 +479,22 @@ class DiffusionTerm(Term):
            >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
            >>> print term._getGeomCoeff(mesh)
            [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
-           >>> term = DiffusionTerm(VectorCellVariable(value = (0.5,1), mesh = mesh))
+           >>> term = DiffusionTerm(CellVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
-           >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+           >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> print term._getGeomCoeff(mesh)
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
            >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
-           >>> term = DiffusionTerm(VectorFaceVariable(value = (0.5, 1), mesh = mesh))
+           >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
            >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
            1
            >>> term = DiffusionTerm(((0.5, 1),))
+           >>> term = DiffusionTerm((((0.5,), (1,)),))
            >>> print numerix.allclose(term._getGeomCoeff(mesh), val)
            1
 

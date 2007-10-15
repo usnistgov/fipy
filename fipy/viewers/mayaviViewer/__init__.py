@@ -1,10 +1,9 @@
 __docformat__ = 'restructuredtext'
 
 from mayaviViewer import MayaviViewer
-from mayaviDistanceViewer import MayaviDistanceViewer
 from mayaviSurfactantViewer import MayaviSurfactantViewer
 
-__all__ = ["MayaviViewer", "MayaviDistanceViewer", "MayaviSurfactantViewer"]
+__all__ = ["MayaviViewer", "MayaviSurfactantViewer"]
 
 def make(vars, title = None, limits = None):
     r"""

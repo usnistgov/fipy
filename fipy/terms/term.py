@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 3/29/07 {12:27:49 PM} 
+ #                                last update: 7/25/07 {9:57:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,13 @@
 
 __docformat__ = 'restructuredtext'
 
+import os
+
 from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.solvers import *
 
 class Term:
     """
@@ -68,20 +71,20 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
-    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         pass
 
     def _calcResidualVector(self, var, matrix, RHSvector):
 
-        Lx = matrix * numerix.array(var[:])
+        Lx = matrix * numerix.array(var)
       
         return Lx - RHSvector
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        return numerix.max(abs(self._calcResidualVector(var, matrix, RHSvector)))
+        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
-    def __buildMatrix(self, var, boundaryConditions, dt):
+    def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
 
         self._verifyCoeffType(var)
         
@@ -92,15 +95,43 @@ class Term:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        return self._buildMatrix(var, boundaryConditions, dt)
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if not hasattr(self, "_viewer"):
+                from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
+                Term._viewer = MatplotlibSparseMatrixViewer()
+
+        matrix, RHSvector = self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
+        
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
+            self._viewer.plot(matrix=matrix)
+            raw_input()
+        
+        
+##         raw_input()
+##         print "x", var
+##         print "L", matrix
+##         print "b", RHSvector
+        
+        return matrix, RHSvector
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
-        from fipy.solvers.linearPCGSolver import LinearPCGSolver
-
-        solver = self._getDefaultSolver(solver) or solver or LinearPCGSolver()
         array = var.getNumericValue()
         solver._solve(matrix, array, RHSvector)
         var[:] = array
+
+    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
+        if solverSuite() == 'Trilinos':
+            defaultSolver = LinearGMRESSolver()
+            # This makes the largest number of test cases pass without needing
+            # to special-case anything
+        else:
+            defaultSolver = LinearPCGSolver()
+        solver = self._getDefaultSolver(solver) or solver or defaultSolver
+
+        matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
+        return (solver, matrix, RHSvector)
+
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
@@ -111,13 +142,14 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
         
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
     def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
@@ -129,14 +161,13 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
-        
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
@@ -168,7 +199,7 @@ class Term:
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
         """
-        matrix, RHSvector = self.__buildMatrix(var, boundaryConditions, dt)
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)

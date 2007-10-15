@@ -76,16 +76,16 @@ class Face:
     def getCellID(self, index = 0):
 	"""Return the `id` of the specified `Cell` on one side of this `Face`.
 	"""
-	return self.mesh.getFaceCellIDs()[self.id,index]
+	return self.mesh.getFaceCellIDs()[index, self.id]
 
     def getCenter(self):
  	"""Return the coordinates of the `Face` center.
  	"""
- 	return self.mesh.getFaceCenters()[self.id]
+ 	return self.mesh.getFaceCenters()[...,self.id]
 
      
     def getArea(self):
-	return self.mesh._getFaceAreas()[self.id]
+	return self.mesh._getFaceAreas()[...,self.id]
 ##     
 ##     def getNormal(self):
 ## 	"""Return the unit normal vector

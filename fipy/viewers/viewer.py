@@ -6,7 +6,7 @@
  # 
  #  FILE: "viewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 2/21/07 {1:54:03 PM} 
+ #                                last update: 7/17/07 {8:26:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,13 +133,32 @@ class Viewer:
         if datamin is None:
             datamin = 1e300
             for var in vars:
-                datamin = min(datamin, numerix.min(var))
+                datamin = min(datamin, min(var))
 
         if datamax is None:
             from fipy.tools import numerix
             datamax = -1e300
             for var in vars:
-                datamax = max(datamax, numerix.max(var))
+                datamax = max(datamax, max(var))
                 
         return datamin, datamax
+        
+    def _validFileExtensions(self):
+        return []
+        
+    def _promptForOpinion(self, prompt="Describe any problems with this figure or hit Return: "):
+        # This method is usually invoked from a test, which can have a weird
+        # state; In particular, it may have a special `raw_input` to allow user
+        # interaction during the test.
+        import inspect
+        raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
+        
+        opinion = raw_input(prompt)
+        if len(opinion.strip()) > 0:
+            extensions = ", ".join(self._validFileExtensions())
+            if len(extensions) > 0:
+                extensions = " (%s)" % extensions
+            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions)
+            self.plot(snapshot)
+            print opinion
 

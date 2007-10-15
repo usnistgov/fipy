@@ -104,5 +104,5 @@ class GistViewer(Viewer):
                 gist.hcp_finish(-1)
         gist.fma()
         
-        
-
+    def _validFileExtensions(self):
+        return [".cgm", ".eps", ".epsi"]

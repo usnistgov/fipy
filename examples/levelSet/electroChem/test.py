@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:51:34 PM} 
+ #                                last update: 7/3/07 {5:17:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,17 +43,12 @@
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
-import inputWriteScriptHowTo
-import inputSimpleTrenchSystem
-import inputGold
-import inputLeveler
-
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'inputWriteScriptHowTo',
-            'inputSimpleTrenchSystem',
-            'inputGold',
-            'inputLeveler'
+            'howToWriteAScript',
+            'simpleTrenchSystem',
+            'gold',
+            'leveler'
         ), base = __name__)
     
 if __name__ == '__main__':

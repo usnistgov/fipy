@@ -65,24 +65,23 @@ class UpwindConvectionTerm(ConvectionTerm):
             
         def _calcValuePy(self, P):
             alpha = numerix.where(P > 0., 1., 0.)
-
             return PhysicalField(value = alpha)
 
         def _calcValueIn(self, P):
             alpha = self._getArray().copy()
             inline._runInline("""
-                alpha(i) = 0.5;
+                alpha[i] = 0.5;
                 
-                if (P(i) > 0.) {
-                    alpha(i) = 1.;
+                if (P[i] > 0.) {
+                    alpha[i] = 1.;
                 } else {
-                    alpha(i) = 0.;
+                    alpha[i] = 0.;
                 }
             """,
             alpha = alpha, P = P,
             ni = len(self.mesh.getFaces())
             )
-     
+
             return self._makeValue(value = alpha)
 
         def _calcValue(self):
@@ -97,23 +96,14 @@ class UpwindConvectionTerm(ConvectionTerm):
             >>> mesh = Grid1D(nx=L, dx=1.)
             >>> var = CellVariable(mesh=mesh)
 
-            >>> convCoeff = VectorFaceVariable(mesh=mesh)
+            >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh)
-            >>> x = mesh.getFaceCenters()[...,0]
-            >>> convCoeff.setValue(-1e+6, where=x < 6)
+            >>> x = mesh.getFaceCenters()[0]
+            >>> convCoeff.setValue((-1e+6,), where=x < 6)
             >>> diffCoeff.setValue(1e+3, where=x > 6)
             >>> print convCoeff
-            [[-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [-1000000.]
-             [       0.]
-             [       0.]
-             [       0.]
-             [       0.]
-             [       0.]]
+            [[-1000000. -1000000. -1000000. -1000000. -1000000. -1000000.        0.
+                     0.        0.        0.        0.]]
             >>> print diffCoeff
             [    0.     0.     0.     0.     0.     0.     0.  1000.  1000.  1000.
               1000.]
@@ -122,31 +112,26 @@ class UpwindConvectionTerm(ConvectionTerm):
             ...        FixedValue(value=0., faces=mesh.getFacesLeft()))
             >>> dTerm = DiffusionTerm(1000)
 
-            >>> x = mesh.getCellCenters()[...,0]
+            >>> x = mesh.getCellCenters()[0]
             >>> boundary = 5.5
             >>> analytical = ((x - boundary) / (L - boundary)) * (x > boundary)
 
-            >>> eqn = UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=dTerm) == dTerm
+            >>> eqn = UpwindConvectionTerm(coeff=convCoeff) == dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=-dTerm) == dTerm
-            >>> eqn.solve(var, boundaryConditions=BCs)
-            >>> print var.allclose(analytical, atol=1e-3)
-            1
-
-            >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, dt = 1e+10, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1
 
-            >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff, diffusionTerm=dTerm) +  dTerm
+            >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff) +  dTerm
             >>> eqn.solve(var, boundaryConditions=BCs)
             >>> print var.allclose(analytical, atol=1e-3)
             1

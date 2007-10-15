@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplot1DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/21/07 {1:41:34 PM} { 2:45:36 PM}
+ #                                last update: 7/5/07 {9:32:26 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,6 +54,18 @@ class Gnuplot1DViewer(GnuplotViewer):
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
     wrapper available to download (Gnuplot.py_).
+    
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[0]
+        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
+        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
+        >>> viewer = Gnuplot1DViewer(vars=(var1, var2), 
+        ...                          limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                          title="Gnuplot1DViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
 
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
 
@@ -75,10 +87,13 @@ class Gnuplot1DViewer(GnuplotViewer):
 
         import Gnuplot
         for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[:,0]),
-                                                var[:],
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[0]),
+                                                var.getValue(),
                                                 title=var.getName(),
                                                 with='lines'),)
 
         apply(self.g.plot, tupleOfGnuplotData)
     
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

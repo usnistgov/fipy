@@ -77,13 +77,14 @@ class FixedFlux(BoundaryCondition):
         ##    self.contribution[i] = self.value * self.faces[i].getArea()
         self.contribution = self.value * self.faces.getAreas()
         
-    def _buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** unchanged and add gradient to **b**
         
         :Parameters:
-          - `Ncells`:   Size of **b**-vector
-          - `MaxFaces`: *unused*
-          - `coeff`:    *unused*
+          - `SparseMatrix`: *unused* (empty matrix)
+          - `Ncells`:       Size of **b**-vector
+          - `MaxFaces`:     *unused*
+          - `coeff`:        *unused*
         """
 
         bb = numerix.zeros((Ncells,),'d')

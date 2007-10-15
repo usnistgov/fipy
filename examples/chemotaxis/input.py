@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 3/7/05 {4:54:33 PM} { 5:14:21 PM}
+ #                                last update: 7/5/07 {9:07:26 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -52,29 +52,25 @@ Here are some test cases for the model.
     ...         var.updateOld()
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 0.1)
-    >>> from fipy.tools import numerix
     >>> accuracy = 1e-2
-    >>> print numerix.allclose(KMVar, params['KM'], atol = accuracy)
+    >>> print KMVar.allclose(params['KM'], atol = accuracy)
     1
-    >>> print numerix.allclose(TMVar, params['TM'], atol = accuracy)
+    >>> print TMVar.allclose(params['TM'], atol = accuracy)
     1
-    >>> print numerix.allclose(TCVar, params['TC'], atol = accuracy)
+    >>> print TCVar.allclose(params['TC'], atol = accuracy)
     1
-    >>> print numerix.allclose(P2Var, params['P2'], atol = accuracy)
+    >>> print P2Var.allclose(params['P2'], atol = accuracy)
     1
-    >>> print numerix.allclose(P3Var, params['P3'], atol = accuracy)
+    >>> print P3Var.allclose(params['P3'], atol = accuracy)
     1
-    >>> print numerix.allclose(KCVar, params['KC'], atol = accuracy)
+    >>> print KCVar.allclose(params['KC'], atol = accuracy)
     1
 
 """
 
 from parameters import parameters
-from fipy.meshes.grid1D import Grid1D
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+
+from fipy import *
 
 params = parameters['case 2']
 
@@ -126,8 +122,6 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    import fipy.viewers
-
     v1 = KMVar / KMVar.getCellVolumeAverage()
     v2 = PN / PN.getCellVolumeAverage()
     v3 = TMVar / TMVar.getCellVolumeAverage()
@@ -135,7 +129,7 @@ if __name__ == '__main__':
     v2.setName('PN')
     v3.setName('TM')
 
-    KMViewer = fipy.viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
+    KMViewer = viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
 
     KMViewer.plot()
 
@@ -145,8 +139,7 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    from fipy.tools import numerix
-    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * numerix.cos((2 * numerix.pi * mesh.getCellCenters()[:,0]) / L)
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * cos((2 * pi * mesh.getCellCenters()[0]) / L)
 
     for i in range(100):
         for var, eqn in eqs:

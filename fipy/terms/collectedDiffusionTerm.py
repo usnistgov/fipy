@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -68,17 +70,17 @@ class CollectedDiffusionTerm(DiffusionTerm):
         
         return dup
         
-    def _buildMatrix(self, var, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
         from fipy.tools.sparseMatrix import _SparseMatrix
         
         N = len(var)
         RHSvector = numerix.zeros((N,),'d')
-        matrix = _SparseMatrix(size=N)
+        matrix = SparseMatrix(size=N)
 
         for term in self.orders:
             if term is not None:
-                termMatrix, termRHSvector = term._buildMatrix(var, 
+                termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
                                                               boundaryConditions, 
                                                               dt=dt, equation=equation)
 
@@ -128,7 +130,7 @@ class CollectedDiffusionTerm(DiffusionTerm):
                 
         return dup
         
-    def _getGeomCoeff(mesh):
+    def _getGeomCoeff(self, mesh):
         # index is order / 2
         if self.orders[1] is not None:
             return self.orders[1]._getGeomCoeff(mesh)

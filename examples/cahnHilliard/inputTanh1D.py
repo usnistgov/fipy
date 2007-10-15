@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:15:13 PM}
+ #                                last update: 7/5/07 {8:21:50 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -78,10 +78,11 @@ We solve the problem on a 1D mesh
    
 ..
 
+    >>> from fipy import *
+
     >>> L = 40.
     >>> nx = 1000
     >>> dx = L / nx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 and create the solution variable
@@ -92,11 +93,10 @@ and create the solution variable
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(
     ...     name="phase field",
     ...     mesh=mesh,
-    ...     value=1)
+    ...     value=1.)
 
 The boundary conditions for this problem are
 
@@ -127,9 +127,6 @@ The boundary conditions for this problem are
       
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
-    >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
-    ...     import NthOrderBoundaryCondition
     >>> BCs = (
     ...     FixedValue(faces=mesh.getFacesRight(), value=1),
     ...     FixedValue(faces=mesh.getFacesLeft(), value=.5),
@@ -154,8 +151,6 @@ we create the Cahn-Hilliard equation:
    
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.transientTerm import TransientTerm
     >>> diffTerm2 = ImplicitDiffusionTerm(
     ...     coeff=diffusionCoeff * freeEnergyDoubleDerivative)
     >>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
@@ -167,7 +162,6 @@ we create the Cahn-Hilliard equation:
    
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 
 The solution to this 1D problem over an infinite domain is given by,
@@ -176,16 +170,13 @@ The solution to this 1D problem over an infinite domain is given by,
 
    $$ \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}} $$
    or
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
    \IndexFunction{exp}
       
 ..
 
-    >>> from fipy.tools import numerix
-    >>> a = numerix.sqrt(asq)
-    >>> answer = 1 / (1 + 
-    ...     numerix.exp(-a * (mesh.getCellCenters()[:,0]) / epsilon))
+    >>> a = sqrt(asq)
+    >>> answer = 1 / (1 + exp(-a * (mesh.getCellCenters()[0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 
@@ -196,9 +187,8 @@ If we are running interactively, we create a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=var,
-    ...                   limits={'datamin': 0., 'datamax': 1.0})
+    ...     viewer = viewers.make(vars=var,
+    ...                           limits={'datamin': 0., 'datamax': 1.0})
     ...     viewer.plot()
 
 We iterate the solution to equilibrium and, if we are running interactively, 
@@ -206,13 +196,13 @@ we update the display and output data about the progression of the solution
 
     >>> dexp=-5
     >>> for step in range(100):
-    ...     dt = numerix.exp(dexp)
+    ...     dt = exp(dexp)
     ...     dt = min(10, dt)
     ...     dexp += 0.5
     ...     eqch.solve(var=var, boundaryConditions=BCs, solver=solver, dt=dt)
     ...     if __name__ == '__main__':
-    ...         diff = abs(answer - numerix.array(var))
-    ...         maxarg = numerix.argmax(diff)
+    ...         diff = abs(answer - array(var))
+    ...         maxarg = argmax(diff)
     ...         print 'maximum error:',diff[maxarg]
     ...         print 'element id:',maxarg
     ...         print 'value at element ',maxarg,' is ',var[maxarg]

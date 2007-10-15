@@ -50,14 +50,14 @@ def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
                                        'steadyState.test',
                                        'explicit.test',
-                                       'variable.test',
                                        'nthOrder.test'
                                    ), 
                                    docTestModuleNames = (
                                        'mesh1D',
                                        'mesh20x20',
                                        'circle',
-                                       'electrostatics'
+                                       'electrostatics',
+                                       'variable'
                                    ), 
                                    base = __name__)
     
