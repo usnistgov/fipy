@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 3/6/06 {11:39:12 PM}
+ #                                last update: 10/17/07 {12:58:43 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -402,7 +402,7 @@ class DistanceVariable(CellVariable):
             v1 = self.value[..., adjIDs[index1]]
             
             crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
-            dotProd = d0 * d1 * numerix.dot(n0, n1, axis=0)
+            dotProd = d0 * d1 * numerix.dot(n0, n1)
             dsq = d0**2 + d1**2 - 2 * dotProd
             
             top = -v0 * (dotProd - d1**2) - v1 * (dotProd - d0**2)
@@ -483,7 +483,7 @@ class DistanceVariable(CellVariable):
         """        
         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
         areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), value=0))
-        return numerix.sum(abs(numerix.dot(normals, areas, axis=0)), axis=0)
+        return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
 
     def _getCellInterfaceNormals(self):
         """

@@ -7,7 +7,7 @@
  # 
  #  FILE: "convectionCoeff.py"
  #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 11/16/06 {2:01:26 PM} 
+ #                                last update: 10/17/07 {12:58:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -127,7 +127,7 @@ class _ConvectionCoeff(FaceVariable):
         cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), value = 0))
         norms = numerix.array(MA.filled(MA.array(self.mesh._getCellNormals()), value = 0))
         
-        alpha = numerix.dot(cellFaceNormalAreas, norms, axis=0)
+        alpha = numerix.dot(cellFaceNormalAreas, norms)
         alpha = numerix.where(alpha > 0, alpha, 0)
 
         alphasum = numerix.sum(alpha, axis=0)

@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 7/12/05 {1:33:51 PM} 
+ #                                last update: 10/17/07 {12:57:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -210,13 +210,13 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         
 ##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
         adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs(), axis=-1)
-        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), axis=0)
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals())
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
         cellIDs = numerix.repeat(numerix.arange(mesh.getNumberOfCells())[numerix.newaxis, ...], mesh._getMaxFacesPerCell(), axis=0)
         cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._getCellToCellIDs()))
         cellGradient = numerix.take(oldArray.getGrad(), cellIDs, axis=-1)
-        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), axis=0)
+        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals())
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
