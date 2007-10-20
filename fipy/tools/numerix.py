@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 4/30/07 {11:38:50 AM} 
+ #                                last update: 10/19/07 {9:37:05 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -967,9 +967,14 @@ def dot(a1, a2, axis=0):
     ## have to check MA since MA's have dot() method!!!
     if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
         return a1.dot(a2)
+    elif hasattr(a2, 'rdot') and not (type(a2) is type(MA.array(0))):
+        return a2.rdot(a1)
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
+        # dot() is not commutative with tensors, but if there's no
+        # rdot(), what else can we do? Just throw an error?
         return a2.dot(a1)
     else:
+##         return NUMERIX.dot(a1, a2)
         return sum(a1*a2, axis)
 
 def sqrtDot(a1, a2):
