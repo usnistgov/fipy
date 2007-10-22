@@ -42,30 +42,23 @@ Refactoring complete, merge to trunk::
 Merging changes from trunk to the branch
 ----------------------------------------
 
-Find the initial (IRN) and latest (LRN) revision numbers::
-
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-    $ IRN=...
-    $ LRN=...
-
-Merge state of trunk to the branch::
-
-    $ cd $BRANCH
-    $ svn diff -r${IRN}:${LRN} $FIPYROOT/trunk
-    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
-    $ python setup.py test
-    $ svn ci -m "merged trunk changes r${IRN}:${LRN} to ${BRANCH}"
-
 Find the initial (IRN) and latest (LRN) revision numbers from the last 
 merge from trunk::
+
+    $ cd ../trunk
+    $ svn update
+
+Set `$LRN` based on the updated revision of trunk
+
+    $ LRN=...
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     
 Look for "merged trunk changes r${IRN}:${LRN} to ${BRANCH}" and set `IRN` 
-to `${LRN}` from log message.
+to `${LRN}` from log message, otherwise to the revision at which the branch 
+was created.
 
     $ IRN=...
-    $ LRN=...
 
 Merge updated state of trunk to the branch::
 

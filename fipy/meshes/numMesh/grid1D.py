@@ -73,7 +73,7 @@ class Grid1D(Mesh1D):
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
-        self.nx = self._calcNumPts(d = self.dx, n = nx)
+        self.nx = self._calcNumPts(d=self.dx, n = nx)
         
         self.numberOfVertices = self.nx + 1
         
@@ -145,6 +145,19 @@ class Grid1D(Mesh1D):
         
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], nx = dict['nx'])
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. Fixed a bug where the following throws
+        an error on solve() when nx is a float.
+
+            >>> from fipy import *
+            >>> mesh = Grid1D(nx=3., dx=(1., 2., 3.))
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
+        """
 
 def _test():
     import doctest

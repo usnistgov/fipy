@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 5/4/07 {12:40:38 PM}
+ #                                 last update: 10/19/07 {10:06:14 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -141,14 +141,57 @@ class _MeshVariable(Variable):
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 
-    def dot(self, other):
+    def _dot(a, b, index):
+        rankA = len(a.shape) - 1
+        rankB = len(b.shape) - 1
+        if rankA <= 0 or rankB <= 0:
+            return a[index] * b
+        else:
+            return numerix.sum(a[index] * b, axis=rankA - 1)
+    _dot = staticmethod(_dot)
+
+    def __dot(A, B, operatorClass):
+        """
+        A . B
+        """
+        rankA = len(A.shape) - 1
+        rankB = len(B.shape) - 1
+        
+        index = (numerix.index_exp[...] + (numerix.newaxis,) * (rankB - 1) 
+                 + numerix.index_exp[:])
+        opShape = numerix._broadcastShape(A[index].shape, B.shape)
+        if rankA > 0:
+            opShape = opShape[:rankA-1] + opShape[rankA:]
+        
+        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index), 
+                                         B, 
+                                         opShape=opShape,
+                                         operatorClass=operatorClass,
+                                         canInline=False)
+    __dot = staticmethod(__dot)
+
+    def dot(self, other, opShape=None, operatorClass=None):
+        """
+        self . other
+        """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
-
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
-        return Variable.dot(self, other=other, opShape=opShape, operatorClass=self._OperatorVariableClass(baseClass), axis=-2)
         
+        return _MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
+
+    def rdot(self, other, opShape=None, operatorClass=None):
+        """
+        other . self
+        """
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value=other)
+        opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
+        
+        return self.__dot(other, self, self._OperatorVariableClass(baseClass))
+
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if
@@ -213,8 +256,9 @@ class _MeshVariable(Variable):
 
     def _axisClass(self, axis):
         """
-        if we operate along the mesh elements, then this is no longer a `_MeshVariable`,
-        otherwise we get back a `_MeshVariable` of the same class, but lower rank.
+        if we operate along the mesh elements, then this is no longer a
+        `_MeshVariable`, otherwise we get back a `_MeshVariable` of the same
+        class, but lower rank.
         """
         if axis is None or axis == len(self.shape) or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
@@ -243,3 +287,82 @@ class _MeshVariable(Variable):
         }
 
 
+def _testDot(self):
+    """
+        >>> from fipy import *
+        >>> mesh = Grid2D(nx=2, ny=3)
+
+        >>> s1 = CellVariable(mesh=mesh, value=2)
+        >>> s2 = CellVariable(mesh=mesh, value=3)
+
+        >>> v1 = CellVariable(mesh=mesh, rank=1, value=array([2,3])[..., newaxis])
+        >>> v2 = CellVariable(mesh=mesh, rank=1, value=array([3,4])[..., newaxis])
+        
+        >>> t21 = CellVariable(mesh=mesh, rank=2, value=array([[2, 3],
+        ...                                                    [4, 5]])[..., newaxis])
+        >>> t22 = CellVariable(mesh=mesh, rank=2, value=array([[3, 4],
+        ...                                                    [5, 6]])[..., newaxis])
+
+        >>> t31 = CellVariable(mesh=mesh, rank=3, value=array([[[3, 4],
+        ...                                                     [5, 6]],
+        ...                                                    [[5, 6],
+        ...                                                     [7, 8]]])[..., newaxis])
+        >>> t32 = CellVariable(mesh=mesh, rank=3, value=array([[[2, 3],
+        ...                                                     [4, 5]],
+        ...                                                    [[4, 5],
+        ...                                                     [6, 7]]])[..., newaxis])
+
+        >>> def P(a):
+        ...     print a[...,0], a.shape
+        
+        >>> P(v1.dot(v2))
+        18 (6,)
+        >>> P(v1.dot(t22))
+        [21 26] (2, 6)
+        >>> P(v1.dot(t31))
+        [[21 26]
+         [31 36]] (2, 2, 6)
+        
+        >>> P(t21.dot(v1))
+        [13 23] (2, 6)
+        >>> P(t21.dot(t22))
+        [[21 26]
+         [37 46]] (2, 2, 6)
+        >>> P(t21.dot(t31))
+        [[[21 26]
+          [31 36]]
+        <BLANKLINE>
+         [[37 46]
+          [55 64]]] (2, 2, 2, 6)
+          
+        >>> P(t31.dot(v1))
+        [[18 28]
+         [28 38]] (2, 2, 6)
+        >>> P(t31.dot(t21))
+        [[[22 29]
+          [34 45]]
+        <BLANKLINE>
+         [[34 45]
+          [46 61]]] (2, 2, 2, 6)
+        >>> P(t31.dot(t32))
+        [[[[22 29]
+           [36 43]]
+        <BLANKLINE>
+          [[34 45]
+           [56 67]]]
+        <BLANKLINE>
+        <BLANKLINE>
+         [[[34 45]
+           [56 67]]
+        <BLANKLINE>
+          [[46 61]
+           [76 91]]]] (2, 2, 2, 2, 6)
+    """
+    pass
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

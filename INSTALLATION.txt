@@ -419,61 +419,105 @@ Trilinos
     
 http://trilinos.sandia.gov
 
-Trilinos provides solvers and preconditioners, and can be used instead of PySparse. Trilinos preconditioning allows for iterative solutions to some difficult problems that Pysparse cannot solve. FiPy can only work with Trilinos version 7.0.9 or higher. 
+Trilinos_ provides solvers and preconditioners, and can be used instead of
+PySparse_. Trilinos_ preconditioning allows for iterative solutions to some
+difficult problems that PySparse_ cannot solve. |FiPy| can only work with
+Trilinos_ version 7.0.9 or higher.
 
 .. attention:: 
     
-    Trilinos is a large software suite with its own set of prerequisites, and can be difficult to set up. It is not necessary for most problems, and is NOT recommended in a basic install of FiPy. 
+    Trilinos_ is a large software suite with its own set of prerequisites, and
+    can be difficult to set up. It is not necessary for most problems, and is
+    NOT recommended in a basic install of |FiPy|.
 
 
-For use with FiPy, Trilinos must be configured with the following packages enabled: Epetra, EpetraExt, AztecOO, PyTrilinos, ML, Ifpack, Amesos. It may also be necessary to enable Galeri for Trilinos to compile properly. 
+For use with |FiPy|, Trilinos_ must be configured with the following packages
+enabled: Epetra, EpetraExt, AztecOO, PyTrilinos, ML, Ifpack, Amesos. It may
+also be necessary to enable Galeri for Trilinos_ to compile properly.
 
 .. attention:: 
 
-    As of Trilinos 7.0.9, Trilinos can be set up by creating a build directory in the base directory of the Trilinos source tree
+    As of Trilinos_ 7.0.9, Trilinos_ can be set up by creating a build
+    directory in the base directory of the Trilinos_ source tree::
 
-    ``cd trilinos-7.0.9/ ; mkdir BUILD_DIR ; cd BUILD_DIR``
+        cd trilinos-7.0.9/ ; mkdir BUILD_DIR ; cd BUILD_DIR
 
-    and then running 
+    and then running::
     
-    ``../configure --enable-epetra --enable-epetraext --enable-aztecoo --enable-pytrilinos  --enable-ml --enable-ifpack --enable-amesos --enable-galeri``
+        ../configure --enable-epetra --enable-epetraext --enable-aztecoo \
+          --enable-pytrilinos  --enable-ml --enable-ifpack --enable-amesos \
+          --enable-galeri
 
     before running ``make`` and ``make install``. 
 
-    Depending on your platform, other options may be helpful or necessary; see ``../configure --help``, the Trilinos user guide available from http://trilinos.sandia.gov/documentation.html, or http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more in-depth documentation. 
+    Depending on your platform, other options may be helpful or necessary;
+    see ``../configure --help``, the Trilinos_ user guide available from
+    http://trilinos.sandia.gov/documentation.html, or
+    http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more in-depth
+    documentation.
 
 .. note::
     
-    Trilinos documentation suggests, on 32-bit PC platforms with the GCC compilers, configuring with ``CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops -malign-double"`` for best performance. This gives significant benefits. Use of aggressive optimization settings on other platforms is also recommended. 
+    Trilinos_ documentation suggests, on 32-bit PC platforms with the GCC
+    compilers, configuring with ``CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5
+    -funroll-all-loops -malign-double"`` for best performance. This gives
+    significant benefits. Use of aggressive optimization settings on other
+    platforms is also recommended.
 
 .. note:: 
     
-    If Trilinos is installed in a nonstandard location, the path to the PyTrilinos site-packages directory should be added to the ``PYTHONPATH`` environment variable; this should be of the form ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path to the Trilinos lib directory should be added to the ``LD_LIBRARY_PATH`` (on Linux) or ``DYLD_LIBRARY_PATH`` (on Mac OS X) environment variable; this should be of the form ``$INSTALL_DIR/lib``. 
+    If Trilinos_ is installed in a nonstandard location, the path to the
+    PyTrilinos site-packages directory should be added to the ``PYTHONPATH``
+    environment variable; this should be of the form
+    ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path to
+    the Trilinos_ lib directory should be added to the ``LD_LIBRARY_PATH`` (on
+    Linux) or ``DYLD_LIBRARY_PATH`` (on Mac OS X) environment variable; this
+    should be of the form ``$INSTALL_DIR/lib``.
 
 
-Trilinos solvers can be replace PySparse solvers. If both PySparse and Trilinos are present, which one is used can be controlled by setting the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or ``Pysparse``, or by passing a ``--Trilinos`` or ``--Pysparse`` flag to the FiPy script, overriding the environment. In the absence of these indicators, FiPy will default to using PySparse if it is present. 
+Trilinos_ solvers can be replace PySparse_ solvers. If both PySparse_ and
+Trilinos_ are present, which one is used can be controlled by setting the
+``FIPY_SOLVERS`` environment variable to ``Trilinos`` or ``Pysparse``, or by
+passing a ``--Trilinos`` or ``--Pysparse`` flag to the |FiPy| script,
+overriding the environment. In the absence of these indicators, |FiPy| will
+default to using PySparse_ if it is present.
 
 .. warning:: 
 
-    Trilinos solvers frequently give intermediate output that FiPy cannot suppress. The most commonly encountered messages are: 
+    Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
+    suppress. The most commonly encountered messages are:
 
-    "``Gen_Prolongator warning : Max eigen <= 0.0``", which is not significant to FiPy; 
+    "``Gen_Prolongator warning : Max eigen <= 0.0``", which is not
+    significant to |FiPy|;
 
-    "``Aztec status AZ_loss: loss of precision``", which indicates that there was some difficulty in solving the problem to the requested tolerance due to precision limitations, but usually does not prevent the solver from finding an adequate solution; 
+    "``Aztec status AZ_loss: loss of precision``", which indicates that there
+    was some difficulty in solving the problem to the requested tolerance due
+    to precision limitations, but usually does not prevent the solver from
+    finding an adequate solution;
 
-    "``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``", which indicates that GMRES is having trouble with the problem, and may indicate that trying a different solver or preconditioner may give more accurate results if GMRES fails;
+    "``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``", which
+    indicates that GMRES is having trouble with the problem, and may indicate
+    that trying a different solver or preconditioner may give more accurate
+    results if GMRES fails;
 
-    "``Aztec status AZ_breakdown: numerical breakdown``", which usually indicates serious problems solving the equation which forced the solver to stop before reaching an adequate solution. Different solvers, different preconditioners, or a less restrictive tolerance may help.
+    "``Aztec status AZ_breakdown: numerical breakdown``", which usually
+    indicates serious problems solving the equation which forced the solver
+    to stop before reaching an adequate solution. Different solvers,
+    different preconditioners, or a less restrictive tolerance may help.
 
-Trilinos allows using a variety of preconditioners. An example of passing a Trilinos preconditioner to a solver can be seen in ``examples/diffusion/nthOrder/input4thOrder-line.py``.
+Trilinos_ allows using a variety of preconditioners. An example of passing a
+Trilinos_ preconditioner to a solver can be seen in
+``examples/diffusion/nthOrder/input4thOrder-line.py``.
+
+.. _Trilinos: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
 ----------------
 Obtaining |FiPy|
 ----------------
 
 |FiPy| is freely available for download via Subversion_ or as a `compressed
-archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion, issue the following
-command::
+archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion,
+issue the following command::
 
     $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
 

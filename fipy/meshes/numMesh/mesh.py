@@ -377,9 +377,9 @@ class Mesh(_CommonMesh):
         Used by the `Grid` meshes.
         """
         if type(d) in [type(1), type(1.)]:
-            n = n or 1
+            n = int(n or 1)
         else:
-            n = n or len(d)
+            n = int(n or len(d))
             if n != len(d) and len(d) != 1:
                 raise IndexError, "n%s != len(d%s)" % (axis, axis)
                 
