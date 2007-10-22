@@ -573,7 +573,7 @@ class Grid3D(Mesh):
             1
 
             The following test was for a bug when dx, dy or dz are arrays.
-            The _getFaceAreas() function was commented out to fix this.
+            The _calcFaceAreas() method was commented out to fix this.
 
             >>> Grid3D(nx=2., ny=2., nz=2., dx=(1., 2.), dy=(1., 2.), dz=(1., 2.))
             Grid3D(dx=array([ 1.,  2.]), dy=(1.0, 2.0), dz=(1.0, 2.0), nx=2, ny=2, nz=2)
