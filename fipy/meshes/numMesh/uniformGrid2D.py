@@ -66,7 +66,7 @@ class UniformGrid2D(Grid2D):
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
-        self.nx = nx
+        self.nx = int(nx)
         
         self.dy = PhysicalField(value = dy)
         if self.dy.getUnit().isDimensionless():
@@ -74,7 +74,7 @@ class UniformGrid2D(Grid2D):
         else:
             self.dy /= scale
             
-        self.ny = ny
+        self.ny = int(ny)
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
@@ -687,6 +687,14 @@ class UniformGrid2D(Grid2D):
             >>> print mesh.getFaceCellIDs()
             [[0 0 1 2 0 0 1 1 2 2]
              [-- 1 2 -- -- -- -- -- -- --]]
+
+        Following test added to change nx, ny argment to integer when its a float to prevent
+        warnings from the solver.
+
+            >>> from fipy import *
+            >>> mesh = UniformGrid2D(nx=3., ny=3., dx=1., dy=1.)
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
 
         """
 

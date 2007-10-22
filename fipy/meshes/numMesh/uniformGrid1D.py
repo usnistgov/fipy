@@ -71,7 +71,7 @@ class UniformGrid1D(Grid1D):
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
         
-        self.nx = nx
+        self.nx = int(nx)
         
         self.numberOfVertices = self.nx + 1
         self.numberOfFaces = self.nx + 1
@@ -253,6 +253,18 @@ class UniformGrid1D(Grid1D):
     
     def _calcScaledGeometry(self):
         pass
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. The following was broken, now fixed.
+
+            >>> from fipy import *
+            >>> mesh = Grid1D(nx=3., dx=1.)
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
+        """
 
 def _test():
     import doctest

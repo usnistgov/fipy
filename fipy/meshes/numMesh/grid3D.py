@@ -287,14 +287,17 @@ class Grid3D(Mesh):
         a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, numerix.size(array))).astype('l')
         return numerix.ravel(a)
 
-    def _calcFaceAreas(self):
-        XYFaceAreas = numerix.ones(self.numberOfXYFaces)
-        XYFaceAreas = XYFaceAreas * self.dx * self.dy
-        XZFaceAreas = numerix.ones(self.numberOfXZFaces)
-        XZFaceAreas = XZFaceAreas * self.dx * self.dz        
-        YZFaceAreas = numerix.ones(self.numberOfYZFaces)
-        YZFaceAreas = YZFaceAreas * self.dy * self.dz
-        self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
+## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
+## _calcFaceAreas rather than do the required type checking, resizing and outer product.
+##
+##     def _calcFaceAreas(self):
+##         XYFaceAreas = numerix.ones(self.numberOfXYFaces)
+##         XYFaceAreas = XYFaceAreas * self.dx * self.dy
+##         XZFaceAreas = numerix.ones(self.numberOfXZFaces)
+##         XZFaceAreas = XZFaceAreas * self.dx * self.dz        
+##         YZFaceAreas = numerix.ones(self.numberOfYZFaces)
+##         YZFaceAreas = YZFaceAreas * self.dy * self.dz
+##         self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
 
     def _calcFaceNormals(self):
         XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
@@ -568,6 +571,12 @@ class Grid3D(Mesh):
 
             >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1
+
+            The following test was for a bug when dx, dy or dz are arrays.
+            The _getFaceAreas() function was commented out to fix this.
+
+            >>> Grid3D(nx=2., ny=2., nz=2., dx=(1., 2.), dy=(1., 2.), dz=(1., 2.))
+            Grid3D(dx=array([ 1.,  2.]), dy=(1.0, 2.0), dz=(1.0, 2.0), nx=2, ny=2, nz=2)
         """
 
 def _test():
