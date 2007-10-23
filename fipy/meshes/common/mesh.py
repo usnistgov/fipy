@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/5/07 {9:59:22 AM} 
+ #                                last update: 10/23/07 {8:54:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -309,7 +309,7 @@ class Mesh:
         return self.numberOfCells
     
     def _getNumberOfVertices(self):
-        return len(self.vertexCoords[:,0])
+        return self.vertexCoords.shape[-1]
         
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs
