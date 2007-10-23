@@ -193,6 +193,8 @@ class Grid2D(Mesh2D):
             1
         """
         return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
+
+    getFacesUp = getFacesTop
         
     def getFacesBottom(self):
         """
@@ -203,7 +205,9 @@ class Grid2D(Mesh2D):
             1
         """
         return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
-        
+
+    getFacesDown = getFacesBottom
+    
     def getScale(self):
         return self.scale['length']
         

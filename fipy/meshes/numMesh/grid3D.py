@@ -206,6 +206,8 @@ class Grid3D(Mesh):
                             ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces, 
                                                                       self.numberOfXYFaces + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
+
+    self.getFacesDown = self.getFacesBottom
         
     def getFacesTop(self):
         """
@@ -219,7 +221,9 @@ class Grid3D(Mesh):
                             ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces + (self.nx * self.ny), 
                                                                       self.numberOfXYFaces + (self.nx * self.ny) + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
-        
+
+    self.getFacesUp = self.getFacesTop
+    
     def getFacesBack(self):
         """
         Return list of faces on back boundary of Grid3D.
