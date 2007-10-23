@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/16/07 {10:03:05 PM} 
+ #                                last update: 10/23/07 {11:25:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,7 +86,7 @@ class Variable(object):
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
     
-    def __init__(self, value=0., unit=None, array=None, name='', cached=1):
+    def __init__(self, value=0., unit=None, array=None, name='', cached=1, _bootstrap=False):
         """
         Create a `Variable`.
         
@@ -105,6 +105,9 @@ class Variable(object):
           - `array`: the storage array for the `Variable`
           - `name`: the user-readable name of the `Variable`
           - `cached`: whether to cache or always recalculate the value
+          - `_bootstrap`: if `True`, accept supplied value as given, without 
+            attempting validation. (only useful during unpickling and `Mesh` creation). 
+            Default: `False`
         """
             
         self.requiredVariables = []
@@ -118,7 +121,10 @@ class Variable(object):
             unit = None
             array = None
             
-        self._setValue(value=value, unit=unit, array=array)
+        if _bootstrap:
+            self.value = value
+        else:
+            self._setValue(value=value, unit=unit, array=array)
         
         self.name = name
                 
@@ -176,15 +182,14 @@ class Variable(object):
         Convert a list of 1 element Variables to an array
 
             >>> numerix.array([Variable(0), Variable(0)])
-            [[0,]
-             [0,]]
+            array([0, 0])
             >>> print Variable(0) + Variable(0)
             0
             >>> numerix.array([Variable(0) + Variable(0), Variable(0)])
+            array([0, 0])
 
             >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
-            [[0,]
-             [0,]]
+            array([0, 0])
              
         """
         return numerix.array(self.getValue(), t)
@@ -1100,7 +1105,10 @@ class Variable(object):
         
     def __len__(self):
         return len(self.getValue())
-        
+
+    def __int__(self):
+        return int(self.getValue())
+
     def __float__(self):
         return float(self.getValue())
 
@@ -1262,6 +1270,9 @@ class Variable(object):
     def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
 
+    def _takefrom(self, a, axis=0):
+        return numerix.take(a, self.getValue(), axis)
+
     def _take(self, ids, axis=0):
         """
         
@@ -1349,6 +1360,12 @@ class Variable(object):
             
         return self.mag
     
+    def getMask(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.MA.getmask(a), canInline=False)
+
+    def getMaskArray(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.MA.getmaskarray(a), canInline=False)
+
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the 
@@ -1370,8 +1387,8 @@ class Variable(object):
         
         import sys
         self._refcount = sys.getrefcount(self)
-
-        self.__init__(**dict)
+        
+        self.__init__(_bootstrap=True, **dict)
         
 
 def _test(): 

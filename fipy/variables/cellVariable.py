@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/3/07 {3:16:57 PM} 
+ #                                last update: 10/23/07 {9:58:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,9 +63,11 @@ class CellVariable(_MeshVariable):
         
     """
     
-    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
+    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, 
+                 unit=None, hasOld=0, _bootstrap=False):
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
-                               rank=rank, elementshape=elementshape, unit=unit)
+                               rank=rank, elementshape=elementshape, 
+                               unit=unit, _bootstrap=_bootstrap)
 
         if hasOld:
             self.old = self.copy()
@@ -436,7 +438,7 @@ class CellVariable(_MeshVariable):
         if dict['old'] is not None:
             hasOld = 1
 
-        self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld)
+        self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld, _bootstrap=True)
 ##         self.__init__(hasOld=hasOld, **dict)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())

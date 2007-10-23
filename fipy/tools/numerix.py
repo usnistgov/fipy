@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/19/07 {9:37:05 PM} 
+ #                                last update: 10/23/07 {11:24:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1086,6 +1086,8 @@ def take(a, indices, axis=0, fill_value=None):
            
     if _isPhysical(a):
         taken = a.take(indices, axis=axis)   
+    elif hasattr(indices, "_takefrom"):
+        taken = indices._takefrom(a, axis=axis)
     elif type(indices) is type(MA.array((0))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.

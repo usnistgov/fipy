@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 10/19/07 {10:06:14 PM}
+ #                                 last update: 10/23/07 {9:57:52 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ class _MeshVariable(Variable):
     Abstract base class for a `Variable` that is defined on a mesh
     """
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, 
-                 unit=None, cached=1):
+                 unit=None, cached=1, _bootstrap=False):
         """
         :Parameters:
           - `mesh`: the mesh that defines the geometry of this `Variable`
@@ -58,6 +58,10 @@ class _MeshVariable(Variable):
           - `elementshape`: the shape of each element of this variable
              Default: `rank * (mesh.getDim(),)`
           - `unit`: the physical units of the `Variable`
+          - `cached`: whether to cache or always recalculate the value
+          - `_bootstrap`: if `True`, accept supplied value as given, without 
+            attempting validation. (only useful during unpickling and `Mesh` creation). 
+            Default: `False`
         """
         if elementshape is None:
             if rank is not None:
@@ -71,6 +75,8 @@ class _MeshVariable(Variable):
         
         if value is None:
             array = None
+        elif _bootstrap:
+            array = value
         else:
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),

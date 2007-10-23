@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/15/07 {3:34:35 PM} 
+ #                                last update: 10/23/07 {11:12:12 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,9 +63,20 @@ class Mesh(_CommonMesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
 
-        self.vertexCoords = _VertexVariable(mesh=self, value=vertexCoords)
-        self.faceVertexIDs = _FaceVertexVariable(mesh=self, value=faceVertexIDs)
-        self.cellFaceIDs = _CellFaceVariable(mesh=self, value=cellFaceIDs)
+        from fipy.variables.vertexVariable import _VertexVariable
+        from fipy.variables.faceVariable import FaceVariable
+        from fipy.variables.cellVariable import CellVariable
+        
+        self.vertexCoords = _VertexVariable(mesh=self, value=vertexCoords, 
+                                            _bootstrap=True)
+        self.faceVertexIDs = FaceVariable(mesh=self, 
+                                          elementshape=faceVertexIDs.shape[:-1],
+                                          value=MA.masked_values(faceVertexIDs, -1), 
+                                          _bootstrap=True)
+        self.cellFaceIDs = CellVariable(mesh=self, 
+                                        elementshape=cellFaceIDs.shape[:-1], 
+                                        value=MA.masked_values(cellFaceIDs, -1), 
+                                        _bootstrap=True)
 
         _CommonMesh.__init__(self)
         
@@ -160,7 +171,7 @@ class Mesh(_CommonMesh):
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
-        faceCellIDs = MA.take(self.faceCellIDs[0], faces1)
+        faceCellIDs = numerix.take(self.faceCellIDs[0], faces1)
         ## get all the adjacent faces for those particular cells
         cellFaceIDs = numerix.take(self.cellFaceIDs, faceCellIDs, axis=1)
         for i in range(cellFaceIDs.shape[0]):
@@ -170,7 +181,7 @@ class Mesh(_CommonMesh):
                                       faces0,
                                       cellFaceIDs[i])
             ## add those faces back to the main self.cellFaceIDs
-            tmp = self.cellFaceIDs[i]
+            tmp = numerix.array(self.cellFaceIDs[i])
             numerix.put(tmp, faceCellIDs, cellFaceIDs[i])
             self.cellFaceIDs[i] = tmp
 
@@ -188,67 +199,61 @@ class Mesh(_CommonMesh):
         
     def _getAddedMeshValues(self, other, smallNumber):
         """
-        Returns a `dictionary` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
+        Returns a `dictionary` with 3 elements: the new mesh `vertexCoords`,
+        `faceVertexIDs`, and `cellFaceIDs`.
         """
 
         other = other._getConcatenableMesh()
 
-        selfNumFaces = self.faceVertexIDs.shape[-1]
-        selfNumVertices = self.vertexCoords.shape[-1]
-        otherNumFaces = other.faceVertexIDs.shape[-1]
-        otherNumVertices = other.vertexCoords.shape[-1]
         ## check dimensions
-        if(self.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
+        if self.getDim() != other.getDim():
             raise MeshAdditionError, "Dimensions do not match"
         ## compute vertex correlates
         vertexCorrelates = {}
-        for i in range(selfNumVertices):
-            for j in range(otherNumVertices):
-                diff = self.vertexCoords[...,i] - other.vertexCoords[...,j]
-                diff = numerix.array(diff)
-                if (sum(diff ** 2) < smallNumber):
+        for i in range(self._getNumberOfVertices()):
+            for j in range(other._getNumberOfVertices()):
+                diff = numerix.array(self.vertexCoords[...,i] - other.vertexCoords[...,j])
+                if numerix.dot(diff, diff) < smallNumber:
                     vertexCorrelates[j] = i
-        if (vertexCorrelates == {}):
+        if vertexCorrelates == {}:
             raise MeshAdditionError, "Vertices are not aligned"
 
         
          
         ## compute face correlates
         faceCorrelates = {}
-        for i in range(otherNumFaces):
-##          Seems to be overwriting other.faceVertexIDs with new numpy
-##            currFace = other.faceVertexIDs[i] 
-            currFace = other.faceVertexIDs[...,i].copy()
+        for i in range(other._getNumberOfFaces()):
+            currFace = numerix.array(other.faceVertexIDs[...,i])
             keepGoing = 1
             currIndex = 0 
             for item in currFace:
-                if(vertexCorrelates.has_key(item)):
+                if vertexCorrelates.has_key(item):
                     currFace[currIndex] = vertexCorrelates[item]
                     currIndex = currIndex + 1
                 else:
                     keepGoing = 0
-            if(keepGoing == 1):
-                for j in range(selfNumFaces):
-                    if (self._equalExceptOrder(currFace, self.faceVertexIDs[...,j])):
+            if keepGoing == 1:
+                for j in range(self._getNumberOfFaces()):
+                    if self._equalExceptOrder(currFace, self.faceVertexIDs[...,j]):
                         faceCorrelates[i] = j
-        if(faceCorrelates == {}):
+        if faceCorrelates == {}:
             raise MeshAdditionError, "Faces are not aligned"
         
         faceIndicesToAdd = ()
-        for i in range(otherNumFaces):
-            if(not faceCorrelates.has_key(i)):
+        for i in range(other._getNumberOfFaces()):
+            if not faceCorrelates.has_key(i):
                 faceIndicesToAdd = faceIndicesToAdd + (i,)
         vertexIndicesToAdd = ()
-        for i in range(otherNumVertices):
-            if(not vertexCorrelates.has_key(i)):
+        for i in range(other._getNumberOfVertices()):
+            if not vertexCorrelates.has_key(i):
                 vertexIndicesToAdd = vertexIndicesToAdd + (i,)
 
         ##compute the full face and vertex correlation list
-        a = selfNumFaces
+        a = self._getNumberOfFaces()
         for i in faceIndicesToAdd:
             faceCorrelates[i] = a
             a = a + 1
-        b = selfNumVertices
+        b = self._getNumberOfVertices()
         for i in vertexIndicesToAdd:
             vertexCorrelates[i] = b
             b = b + 1
@@ -259,7 +264,7 @@ class Mesh(_CommonMesh):
 
         for j in range(other.cellFaceIDs.shape[-1]):
             for i in range(other.cellFaceIDs.shape[0]):
-                cellsToAdd[i, j] = faceCorrelates[other.cellFaceIDs[i, j]]
+                cellsToAdd[i, j] = faceCorrelates[int(other.cellFaceIDs[i, j])]
 
         cellsToAdd = MA.masked_values(cellsToAdd, -1)
 
@@ -299,7 +304,9 @@ class Mesh(_CommonMesh):
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
-        newmesh = Mesh(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
+        newmesh = Mesh(vertexCoords=newCoords,
+                       faceVertexIDs=self.faceVertexIDs,
+                       cellFaceIDs=self.cellFaceIDs)
         return newmesh
 
     def _calcTopology(self):
@@ -315,7 +322,7 @@ class Mesh(_CommonMesh):
 
     def _calcFaceCellIDs(self):
         array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1], 
-                         mask=MA.getmask(self.cellFaceIDs))
+                         mask=self.cellFaceIDs.getMask())
         self.faceCellIDs = MA.zeros((2, self.numberOfFaces), 'l')
 
         ## Nasty bug: MA.put(arr, ids, values) fills its ids and
@@ -436,7 +443,7 @@ class Mesh(_CommonMesh):
         faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
                                     faceVertexIDs.shape[0], axis=0)
-        faceVertexIDs = numerix.where(MA.getmaskarray(self.faceVertexIDs), substitute, faceVertexIDs)
+        faceVertexIDs = numerix.where(self.faceVertexIDs.getMaskArray(), substitute, faceVertexIDs)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
@@ -452,10 +459,10 @@ class Mesh(_CommonMesh):
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
 
 
-        if MA.getmask(self.faceVertexIDs) is False:
+        if self.faceVertexIDs.getMask() is False:
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
-            faceVertexCoordsMask = numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...], self.dim, axis=0)
+            faceVertexCoordsMask = numerix.repeat(self.faceVertexIDs.getMaskArray()[numerix.newaxis,...], self.dim, axis=0)
 
             
         faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)

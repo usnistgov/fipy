@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:09:49 PM} 
+ #                                last update: 10/23/07 {10:50:08 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,9 +103,9 @@ class Mesh2D(Mesh):
     def _getOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take
         NFac = self._getMaxFacesPerCell()
-        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], self._getCellFaceIDs().flat)
-        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], self._getCellFaceIDs().flat)
-        cellVertexIDs = MA.where(self.cellToFaceOrientations.flat > 0,
+        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], numerix.ravel(self._getCellFaceIDs()))
+        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], numerix.ravel(self._getCellFaceIDs()))
+        cellVertexIDs = MA.where(numerix.ravel(self.cellToFaceOrientations) > 0,
                                  cellVertexIDs0,
                                  cellVertexIDs1)
 
