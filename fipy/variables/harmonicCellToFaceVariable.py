@@ -43,13 +43,15 @@ from fipy.tools.inline import inline
 
 class _HarmonicCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-        cell1 = numerix.take(self.var,id1)
-        cell2 = numerix.take(self.var,id2)
+        cell1 = numerix.take(self.var,id1, axis=-1)
+        cell2 = numerix.take(self.var,id2, axis=-1)
         value = ((cell2 - cell1) * alpha + cell1)
         eps = 1e-20
         value = numerix.where(value == 0., eps, value)
-        value = numerix.where(value > eps, cell1 * cell2 / value, 0.)
- 
+        cell1Xcell2 = cell1 * cell2
+        value = numerix.where((value > eps) | (value < -eps), cell1Xcell2 / value, 0.)
+        value = numerix.where(cell1Xcell2 < 0., 0., value)
+
         return value
         
     def _calcValueIn(self, alpha, id1, id2):
@@ -60,11 +62,12 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
             int ID2 = ITEM(id2, i, NULL);
             double cell1 = ITEM(var, ID1, vec);
             double cell2 = ITEM(var, ID2, vec);
+            double cell1Xcell2 = cell1 * cell2;
             double tmp = ((cell2 - cell1) * ITEM(alpha, i, NULL) + cell1);
-            if (tmp != 0) {
-                ITEM(val, i, vec) = cell1 * cell2 / tmp;
+            if (tmp != 0 && cell1Xcell2 > 0.) {
+                ITEM(val, i, vec) = cell1Xcell2 / tmp;
             } else {
-                ITEM(val, i, vec) = tmp;
+                ITEM(val, i, vec) = 0.;
             }
         """,
         var = self.var.getNumericValue(),
