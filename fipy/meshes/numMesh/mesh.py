@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/23/07 {11:12:12 AM} 
+ #                                last update: 10/23/07 {1:26:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -310,7 +310,7 @@ class Mesh(_CommonMesh):
         return newmesh
 
     def _calcTopology(self):
-        self.dim = len(self.vertexCoords[...,0])
+        self.dim = self.vertexCoords.shape[0]
         self.numberOfFaces = self.faceVertexIDs.shape[-1]
         self.numberOfCells = self.cellFaceIDs.shape[-1]
         self._calcFaceCellIDs()
@@ -440,7 +440,7 @@ class Mesh(_CommonMesh):
     """calc geometry methods"""
 
     def _calcFaceAreas(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
+        faceVertexIDs = self.faceVertexIDs.filled(-1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
                                     faceVertexIDs.shape[0], axis=0)
         faceVertexIDs = numerix.where(self.faceVertexIDs.getMaskArray(), substitute, faceVertexIDs)
@@ -454,7 +454,7 @@ class Mesh(_CommonMesh):
         self.faceAreas = numerix.sqrtDot(cross, cross) / 2.
 
     def _calcFaceCenters(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+        faceVertexIDs = self.faceVertexIDs.filled(0)
 
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
 
@@ -472,7 +472,7 @@ class Mesh(_CommonMesh):
         
 
     def _calcFaceNormals(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+        faceVertexIDs = self.faceVertexIDs.filled(0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
@@ -513,7 +513,7 @@ class Mesh(_CommonMesh):
         dAP = self._getCellDistances()
         dFP = self._getFaceToCellDistances()[0]
         
-        self.faceToCellDistanceRatio = MA.filled(dFP / dAP)
+        self.faceToCellDistanceRatio = (dFP / dAP).filled()
 
     def _calcAreaProjections(self):
         self.areaProjections = self._getFaceNormals() * self._getFaceAreas()
@@ -647,14 +647,13 @@ class Mesh(_CommonMesh):
 
     def __getstate__(self):
         dict = {
-            'vertexCoords' : self.vertexCoords,            
-            'faceVertexIDs' : self.faceVertexIDs,
-            'cellFaceIDs' : self.cellFaceIDs }
+            'vertexCoords' : self.vertexCoords.getValue(),            
+            'faceVertexIDs' : self.faceVertexIDs.getValue(),
+            'cellFaceIDs' : self.cellFaceIDs.getValue() }
         return dict
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
-##        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
+        Mesh.__init__(self, **dict)
      
     def _test(self):
         """

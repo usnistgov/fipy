@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/23/07 {11:24:59 AM} 
+ #                                last update: 10/23/07 {12:37:08 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,6 +133,8 @@ def put(arr, ids, values):
 
     if _isPhysical(arr):
         arr.put(ids, values)
+    elif hasattr(ids, "_putto"):
+        ids._putto(arr, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
             MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())

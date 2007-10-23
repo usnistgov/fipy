@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 10/23/07 {9:58:56 AM} 
+ #                                last update: 10/23/07 {1:20:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -438,7 +438,7 @@ class CellVariable(_MeshVariable):
         if dict['old'] is not None:
             hasOld = 1
 
-        self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld, _bootstrap=True)
+        self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld) 
 ##         self.__init__(hasOld=hasOld, **dict)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())

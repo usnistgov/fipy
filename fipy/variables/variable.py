@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/23/07 {11:25:21 AM} 
+ #                                last update: 10/23/07 {1:20:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -421,6 +421,9 @@ class Variable(object):
         self.value[index] = value
         self._markFresh()
         
+    def _putto(self, a, value):
+        return numerix.put(a, self.getValue(), value)
+            
     def put(self, indices, value):
         if self.value is None:
             self.getValue()
@@ -1366,6 +1369,9 @@ class Variable(object):
     def getMaskArray(self):
         return self._UnaryOperatorVariable(lambda a: numerix.MA.getmaskarray(a), canInline=False)
 
+    def filled(self, fill_value=None):
+        return self._UnaryOperatorVariable(lambda a: numerix.MA.filled(a, value=fill_value), canInline=False)
+    
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the 
@@ -1388,7 +1394,7 @@ class Variable(object):
         import sys
         self._refcount = sys.getrefcount(self)
         
-        self.__init__(_bootstrap=True, **dict)
+        self.__init__(**dict)
         
 
 def _test(): 
