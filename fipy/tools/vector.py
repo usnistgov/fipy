@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 5/15/06 {3:57:58 PM} 
+ #                                last update: 10/23/07 {10:02:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,22 +51,22 @@ def _putAddPy(vector, ids, additionVector, mask = False):
     if numerix.sometrue(mask):
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value, masked in zip(ids.flat, additionVector[j].flat, mask.flat):
+                for id, value, masked in zip(numerix.ravel(ids), numerix.ravel(additionVector[j]), numerix.ravel(mask)):
                     if not masked:
-                        vector[j].flat[id] += value
+                        numerix.ravel(vector[j])[id] += value
         else:
-            for id, value, masked in zip(ids.flat, additionVector.flat, mask.flat):
+            for id, value, masked in zip(numerix.ravel(ids), numerix.ravel(additionVector), numerix.ravel(mask)):
                 if not masked:
-                    vector.flat[id] += value
+                    numerix.ravel(vector)[id] += value
 
     else:
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value in zip(ids.flat, additionVector[j].flat):
-                    vector[j].flat[id] += value
+                for id, value in zip(numerix.ravel(ids), numerix.ravel(additionVector[j])):
+                    numerix.ravel(vector[j])[id] += value
         else:
-            for id, value in zip(ids.flat, additionVector.flat):
-                vector.flat[id] += value
+            for id, value in zip(numerix.ravel(ids), numerix.ravel(additionVector)):
+                numerix.ravel(vector)[id] += value
 
 ### !!! THIS NEEDS WORK !!! ###
 def _putAddIn(vector, ids, additionVector):

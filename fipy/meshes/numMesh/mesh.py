@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/23/07 {1:26:25 PM} 
+ #                                last update: 10/23/07 {9:13:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -210,11 +210,15 @@ class Mesh(_CommonMesh):
             raise MeshAdditionError, "Dimensions do not match"
         ## compute vertex correlates
         vertexCorrelates = {}
-        for i in range(self._getNumberOfVertices()):
-            for j in range(other._getNumberOfVertices()):
-                diff = numerix.array(self.vertexCoords[...,i] - other.vertexCoords[...,j])
-                if numerix.dot(diff, diff) < smallNumber:
-                    vertexCorrelates[j] = i
+        
+        for i in range(other._getNumberOfVertices()):
+            diff = self.vertexCoords() - other.vertexCoords()[...,i,numerix.newaxis]
+            j = numerix.array(numerix.dot(diff, diff) < smallNumber).nonzero()[0]
+            if len(j) == 1:
+                vertexCorrelates[i] = int(j)
+            elif len(j) > 1:
+                raise MeshAdditionError, "Vertices are indistinguishable"
+
         if vertexCorrelates == {}:
             raise MeshAdditionError, "Vertices are not aligned"
 
@@ -223,7 +227,7 @@ class Mesh(_CommonMesh):
         ## compute face correlates
         faceCorrelates = {}
         for i in range(other._getNumberOfFaces()):
-            currFace = numerix.array(other.faceVertexIDs[...,i])
+            currFace = numerix.array(other.faceVertexIDs()[...,i])
             keepGoing = 1
             currIndex = 0 
             for item in currFace:
@@ -234,7 +238,7 @@ class Mesh(_CommonMesh):
                     keepGoing = 0
             if keepGoing == 1:
                 for j in range(self._getNumberOfFaces()):
-                    if self._equalExceptOrder(currFace, self.faceVertexIDs[...,j]):
+                    if self._equalExceptOrder(currFace, self.faceVertexIDs()[...,j]):
                         faceCorrelates[i] = j
         if faceCorrelates == {}:
             raise MeshAdditionError, "Faces are not aligned"
@@ -282,7 +286,7 @@ class Mesh(_CommonMesh):
         return {
             'vertexCoords': numerix.concatenate((self.vertexCoords, verticesToAdd), axis=1), 
             'faceVertexIDs': numerix.concatenate((self.faceVertexIDs, facesToAdd), axis=1), 
-            'cellFaceIDs': MA.concatenate((self.cellFaceIDs, cellsToAdd), axis=1)
+            'cellFaceIDs': MA.concatenate((self.cellFaceIDs.getValue(), cellsToAdd), axis=1)
             }
 
     def _equalExceptOrder(self, first, second):
