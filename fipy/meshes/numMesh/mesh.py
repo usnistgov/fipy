@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/23/07 {9:13:19 PM} 
+ #                                last update: 10/24/07 {5:13:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -458,20 +458,11 @@ class Mesh(_CommonMesh):
         self.faceAreas = numerix.sqrtDot(cross, cross) / 2.
 
     def _calcFaceCenters(self):
-        faceVertexIDs = self.faceVertexIDs.filled(0)
-
-        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
-
-
-        if self.faceVertexIDs.getMask() is False:
-            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
-        else:
-            faceVertexCoordsMask = numerix.repeat(self.faceVertexIDs.getMaskArray()[numerix.newaxis,...], self.dim, axis=0)
-
-            
-        faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
 
         self.faceCenters = MA.filled(MA.average(faceVertexCoords, axis=1))
+        
+##         self.faceCenters = self.vertexCoords.take(self.faceVertexIDs, axis=1).mean(axis=1).filled()
 
         
 
