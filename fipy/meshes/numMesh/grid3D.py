@@ -207,7 +207,7 @@ class Grid3D(Mesh):
                                                                       self.numberOfXYFaces + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
 
-    self.getFacesDown = self.getFacesBottom
+    getFacesDown = getFacesBottom
         
     def getFacesTop(self):
         """
@@ -222,7 +222,7 @@ class Grid3D(Mesh):
                                                                       self.numberOfXYFaces + (self.nx * self.ny) + self.nx), 
                                                        self.nx * (self.ny + 1), self.nz))
 
-    self.getFacesUp = self.getFacesTop
+    getFacesUp = getFacesTop
     
     def getFacesBack(self):
         """
