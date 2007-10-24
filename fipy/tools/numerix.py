@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/23/07 {12:37:08 PM} 
+ #                                last update: 10/24/07 {5:15:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1086,10 +1086,11 @@ def take(a, indices, axis=0, fill_value=None):
     Selects the elements of `a` corresponding to `indices`.
     """
            
-    if _isPhysical(a):
-        taken = a.take(indices, axis=axis)   
-    elif hasattr(indices, "_takefrom"):
+
+    if hasattr(indices, "_takefrom"):
         taken = indices._takefrom(a, axis=axis)
+    elif _isPhysical(a):
+        taken = a.take(indices, axis=axis)   
     elif type(indices) is type(MA.array((0))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
@@ -1558,7 +1559,7 @@ def _broadcastShape(shape1, shape2):
     
     shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
     return broadcastshape
-    
+        
 def _test(): 
     import doctest
     return doctest.testmod()
