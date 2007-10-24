@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/23/07 {1:20:04 PM} 
+ #                                last update: 10/24/07 {5:11:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1264,16 +1264,38 @@ class Variable(object):
             IndexError: 0-d arrays can't be indexed
 
         """
-        return self._UnaryOperatorVariable(lambda a: a[index], 
-                                           operatorClass=self._getitemClass(index=index), 
-                                           opShape=numerix._indexShape(index=index, arrayShape=self.shape),
-                                           unit=self.getUnit(),
-                                           canInline=False)
+        
+        def _sel__(b):
+            """
+            `Variable` slice selections can get turned into `_Constant` objects, which
+            contain arrays, even when the selection should be a `tuple` of things like
+            `Ellipses`. This routine (attempts) to cast appropriately.
+            """
+            if b.shape == ():
+                return b.item()
+            else:
+                return tuple(b)
+
+##         b.dtype == object and b.tolist() or b
+        return self._BinaryOperatorVariable(lambda a, b: a[_sel__(b)], 
+                                            index,
+                                            operatorClass=self._getitemClass(index=index), 
+                                            opShape=numerix._indexShape(index=index, arrayShape=self.shape),
+                                            unit=self.getUnit(),
+                                            canInline=False)
+
+##         return self._UnaryOperatorVariable(lambda a: a[index], 
+##                                            operatorClass=self._getitemClass(index=index), 
+##                                            opShape=numerix._indexShape(index=index, arrayShape=self.shape),
+##                                            unit=self.getUnit(),
+##                                            canInline=False)
 
     def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
 
     def _takefrom(self, a, axis=0):
+##         return self._BinaryOperatorVariable(lambda A, B: numerix.take(B, A, axis=axis), a)
+    
         return numerix.take(a, self.getValue(), axis)
 
     def _take(self, ids, axis=0):
@@ -1313,6 +1335,8 @@ class Variable(object):
         ## Binary operator doesn't work because ids is turned into a _Constant Variable
         ## which contains floats and not integers. Numeric.take needs integers for ids.
         ## return self._BinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
+
+##         return self._BinaryOperatorVariable(lambda A, B: numerix.take(A, B, axis=axis), ids, canInline=False)
 
         if numerix.take(self.getValue(), ids, axis=axis).shape == self.shape:
             return self._UnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
