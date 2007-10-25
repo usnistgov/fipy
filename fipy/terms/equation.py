@@ -76,7 +76,7 @@ class _Equation(Term):
         if self.terms["DiffusionTerm"] is None:
             return None
         else:
-            return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)
+            return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)[0]
         
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
