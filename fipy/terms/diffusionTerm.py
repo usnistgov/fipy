@@ -150,6 +150,8 @@ class DiffusionTerm(Term):
     
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
+
+            print self.nthCoeff
           
             coeff = self.nthCoeff
             shape = numerix.getShape(coeff)
@@ -165,9 +167,8 @@ class DiffusionTerm(Term):
 
             if rank > 0:
                 shape = numerix.getShape(coeff)
-                for i in range(mesh.getDim()):
-                    if mesh.getDim() != shape[i]:
-                        raise IndexError, 'diffusion coefficent tensor index error'                
+                if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
+                    raise IndexError, 'diffusion coefficent tensor index error'                
 
             faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
             rotationTensor = self._getRotationTensor(mesh)
