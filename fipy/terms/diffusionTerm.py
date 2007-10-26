@@ -150,8 +150,6 @@ class DiffusionTerm(Term):
     
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-
-            print self.nthCoeff
           
             coeff = self.nthCoeff
             shape = numerix.getShape(coeff)
