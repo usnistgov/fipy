@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/3/07 {3:01:47 PM} 
+ #                                last update: 10/29/07 {1:50:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ class BoundaryCondition:
             Traceback (most recent call last):
                 ...
             IndexError: Face list has interior faces
-            >>> bc = BoundaryCondition(mesh.getFaces()[0] + mesh.getFaces()[0], 0)
+            >>> bc = BoundaryCondition(mesh.getFaces() + mesh.getFaces(), 0)
             Traceback (most recent call last):
                 ...
             IndexError: Face list has repeated entries
