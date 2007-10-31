@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 10/23/07 {9:57:52 AM}
+ #                                 last update: 10/30/07 {9:29:49 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -99,7 +99,7 @@ class _MeshVariable(Variable):
         
     def __repr__(self):
         s = Variable.__repr__(self)
-        if len(self.name) == 0:
+        if hasattr(self, "name") and len(self.name) == 0:
             s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
         return s
 
@@ -109,9 +109,12 @@ class _MeshVariable(Variable):
         """
         if isinstance(index, MeshIterator):
             assert index.getMesh() == self.getMesh()
-            return self.take(index)
-        else:
-            return Variable.__getitem__(self, index)
+##             return self.take(index)
+##             return self.take(index)
+##         else:
+##             return Variable.__getitem__(self, index)
+
+        return Variable.__getitem__(self, index)
 
     def __setitem__(self, index, value):
         if isinstance(index, MeshIterator):
@@ -272,7 +275,17 @@ class _MeshVariable(Variable):
             return self._OperatorVariableClass()
 
     def _getitemClass(self, index):
+        if not isinstance(index, tuple):
+            if isinstance(index, list):
+                index = tuple(index)
+            else:
+                index = (index,)
         indexshape = numerix._indexShape(index=index, arrayShape=self.shape)
+        
+        for item in index:
+            if isinstance(item, _MeshVariable):
+                return item._OperatorVariableClass()
+                
         if (len(indexshape) > 0
             and indexshape[-1] == self.shape[-1]):
             return self._OperatorVariableClass()
