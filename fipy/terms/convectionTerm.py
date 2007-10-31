@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:48 AM} 
+ #                                last update: 10/29/07 {2:19:18 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -93,12 +93,8 @@ class ConvectionTerm(FaceTerm):
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
             >>> vfv2 = FaceVariable(mesh=m2, rank=1)
-            >>> ConvectionTerm(coeff=vcv2)
-            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
-            >>> ConvectionTerm(coeff=vfv2)
-            ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> ct = ConvectionTerm(coeff=vcv2)
+            >>> ct = ConvectionTerm(coeff=vfv2)
             >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
             >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
 
