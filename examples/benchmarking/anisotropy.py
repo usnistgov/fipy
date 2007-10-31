@@ -65,7 +65,7 @@ if __name__ == "__main__":
     betaPsi = -N * 2 * Phi / (1 + PhiSq)
     A = alpha**2 * c * (1.+ c * beta) * betaPsi
     D = alpha**2 * (1.+ c * beta)**2
-    dxi = phase.getFaceGrad()._take((1, 0), axis = 1) * (-1, 1)
+    dxi = phase.getFaceGrad().dot(((0,-1),(1,0)))
     anisotropySource = (A * dxi).getDivergence()
     phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
         ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
