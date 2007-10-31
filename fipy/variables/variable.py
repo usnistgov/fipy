@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/24/07 {5:11:34 PM} 
+ #                                last update: 10/31/07 {11:33:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -329,7 +329,10 @@ class Variable(object):
         return str(self.getValue())
             
     def __repr__(self):
-        if len(self.name) > 0:
+        if not hasattr(self, "name"):
+            # early
+            return self.__class__.__name__ + '()'
+        elif len(self.name) > 0:
             return self.name
         else:
             s = self.__class__.__name__ + '('
@@ -496,8 +499,13 @@ class Variable(object):
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
         
-        if hasattr(value, 'iscontiguous') and not value.iscontiguous():
-            value = value.copy()
+## !!!!!!!!!!!!!!!!!!!!!
+## This wasn't really the correct fix for --inline contiguity, anyway, but
+## MaskedArray doesn't have a copy() method.
+## Needs better fix
+## !!!!!!!!!!!!!!!!!!!!!
+##         if hasattr(value, 'iscontiguous') and not value.iscontiguous():
+##             value = value.copy()
             
         PF = physicalField.PhysicalField
 
@@ -513,18 +521,13 @@ class Variable(object):
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)
                     
-            if unit is not None or type(value) in [type(''), type(()), type([])]:
+            if unit is not None or type(value) is type(''): # in [type(''), type(()), type([])]:
                 value = PF(value=value, unit=unit, array=array)
             elif array is not None:
                 array[:] = value
                 value = array
             elif type(value) not in (type(None), type(numerix.array(1)), type(numerix.MA.array(1))):
                 value = numerix.array(value)
-##                 # numerix does strange things with really large integers.
-##                 # Even though Python knows how to do arithmetic with them,
-##                 # Numeric converts them to 'O' objects that it then doesn't understand.
-##                 if value.typecode() == 'O':
-##                     value = numerix.array(float(value))
 
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
@@ -595,6 +598,9 @@ class Variable(object):
         else:
             return value
             
+    def _isMasked(self):
+        return numerix.MA.isMaskedArray(self.getValue())
+        
     def getShape(self):
         """
             >>> Variable(value=3).shape
@@ -1185,6 +1191,9 @@ class Variable(object):
 
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
+        
+    def __invert__(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.logical_not(a))
                 
     def dot(self, other, opShape=None, operatorClass=None, axis=0):
         if not isinstance(other, Variable):
@@ -1199,8 +1208,76 @@ class Variable(object):
                                             canInline=False)
         
     def reshape(self, shape):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
+        selfElements = numerix.multiply.reduce(self.shape)
+        specificShape = [i for i in shape if i != -1]
+        shapeElements = numerix.multiply.reduce(specificShape)
+        if len(specificShape) == len(shape):
+            if selfElements == shapeElements:
+                opShape = shape
+            else:
+                raise ValueError, "total size of new array must be unchanged"
+        elif len(specificShape) == len(shape) - 2:
+            raise ValueError, "can only specify one unknown dimension"
+        else:
+            opShape = ()
+            for i in shape:
+                if i == -1:
+                    opShape += (selfElements / shapeElements,)
+                else:
+                    opShape += (i,)
+            
+        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), 
+                                            shape, 
+                                            opShape=opShape, 
+                                            canInline=False)
         
+    def nonzero(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.nonzero(a), 
+                                           canInline=False)
+
+    def sorted(self, axis=-1, kind='quick', order=None, fill_value=None):
+        return self._UnaryOperatorVariable(lambda a: numerix.sort(a, axis=axis, kind=kind, order=order, fill_value=fill_value),
+                                           canInline=False)
+
+    def append(self, values, axis=None):
+        if isinstance(values, list) or isinstance(values, tuple):
+            values = numerix.array(values)
+        if axis is None:
+            shape = self.flatten().shape
+            appendedShape = values.flatten().shape
+            opShape = (shape[0] + appendedShape[0],)
+        else:
+            shape = self.shape
+            opShape = (shape[:axis] + (shape[axis] + values.shape[axis],) + shape[axis+1:])
+        return self._BinaryOperatorVariable(lambda a, b: numerix.append(a, b, axis=axis),
+                                            values,
+                                            operatorClass=self._axisClass(axis=axis),
+                                            opShape=opShape,
+                                            canInline=False)
+                                            
+    def masked(self, where):
+        return self._BinaryOperatorVariable(lambda a, b: numerix.MA.masked_where(b, a),
+                                            where,
+                                            canInline=False)
+
+    def delete(self, indices, axis=None):
+        if axis is None:
+            shape = self.flatten().shape
+            deletedShape = numerix._indexShape(indices, shape)
+            opShape = (shape[0] - deletedShape[0],)
+        else:
+            shape = self.shape
+            indxobj = [slice(None)]*len(shape)
+            indxobj[axis] = indices
+            deletedShape = numerix._indexShape(indxobj, shape)
+            opShape = (shape[:axis] + (shape[axis] - deletedShape[axis],) + shape[axis+1:])
+
+        return self._BinaryOperatorVariable(lambda a, b: numerix.delete(a, b, axis=axis),
+                                            indices,
+                                            operatorClass=self._axisClass(axis=axis),
+                                            opShape=opShape,
+                                            canInline=False)
+
     def transpose(self):
         """
         .. attention: This routine is deprecated. 
@@ -1245,8 +1322,66 @@ class Variable(object):
         return self._axisOperator(opname="minVar", 
                                   op=lambda a: a.min(axis=axis), 
                                   axis=axis)
+                                  
+    def mean(self, axis=None):
+        return self._axisOperator(opname="meanVar", 
+                                  op=lambda a: a.mean(axis=axis), 
+                                  axis=axis)
+                                  
     def _getitemClass(self, index):
         return self._OperatorVariableClass()
+
+    def _maskedSlice(a, idx):
+        def _filled(aa):
+            def __filled(x):
+                if isinstance(x, numerix.MA.MaskedArray):
+                    return x.filled(0)
+                else:
+                    return x
+                
+            if isinstance(aa, tuple):
+                return tuple([__filled(x) for x in aa])
+            else:
+                return __filled(aa)
+
+        def _indexmask(aa, shape):
+            (indexShape, 
+             broadcastshape, 
+             arrayindex) = numerix._indexShapeElements(idx, a.shape)
+             
+            if isinstance(aa, tuple):
+                mask = numerix.MA.nomask
+                for x in aa:
+                    mask = numerix.MA.mask_or(mask, numerix.MA.getmask(x))
+            else:
+                mask = numerix.MA.getmask(aa)
+
+            if arrayindex is not None and mask is not numerix.MA.nomask:
+                tmp = numerix.MA.make_mask_none(indexShape[:arrayindex] 
+                                                + broadcastshape
+                                                + indexShape[arrayindex:])
+                                                
+                tmp[:] = mask[((numerix.newaxis,) * len(indexShape[:arrayindex])
+                               + numerix.index_exp[:]
+                               + (numerix.newaxis,) * len(indexShape[arrayindex:]))]
+                               
+                mask = tmp
+            else:
+                mask = numerix.MA.nomask
+                
+            return mask
+            
+        sliced = a[_filled(idx)]
+        mask = _indexmask(idx, a.shape)
+        
+        if mask is not numerix.MA.nomask:
+            mask = numerix.MA.mask_or(numerix.MA.getmask(sliced), mask)
+            sliced = numerix.MA.array(data=sliced, mask=mask)
+        elif numerix.MA.getmask(sliced) is numerix.MA.nomask:
+            sliced = _filled(sliced)
+            
+        return sliced
+    _maskedSlice = staticmethod(_maskedSlice)
 
     def __getitem__(self, index):
         """    
@@ -1264,85 +1399,40 @@ class Variable(object):
             IndexError: 0-d arrays can't be indexed
 
         """
-        
-        def _sel__(b):
-            """
-            `Variable` slice selections can get turned into `_Constant` objects, which
-            contain arrays, even when the selection should be a `tuple` of things like
-            `Ellipses`. This routine (attempts) to cast appropriately.
-            """
-            if b.shape == ():
-                return b.item()
-            else:
-                return tuple(b)
+        from fipy.variables.indexVariable import _IndexVariable
+        index = _IndexVariable(index)
 
-##         b.dtype == object and b.tolist() or b
-        return self._BinaryOperatorVariable(lambda a, b: a[_sel__(b)], 
+        if index._isMasked():
+            op = lambda a, b: Variable._maskedSlice(a, b)
+        else:
+            op = lambda a, b: a[b]
+
+        return self._BinaryOperatorVariable(op, 
                                             index,
-                                            operatorClass=self._getitemClass(index=index), 
-                                            opShape=numerix._indexShape(index=index, arrayShape=self.shape),
+                                            operatorClass=self._getitemClass(index=index()), 
+                                            opShape=numerix._indexShape(index=index(), arrayShape=self.shape),
                                             unit=self.getUnit(),
                                             canInline=False)
-
-##         return self._UnaryOperatorVariable(lambda a: a[index], 
-##                                            operatorClass=self._getitemClass(index=index), 
-##                                            opShape=numerix._indexShape(index=index, arrayShape=self.shape),
-##                                            unit=self.getUnit(),
-##                                            canInline=False)
-
-    def take(self, ids, axis=0):
-        return numerix.take(self.getValue(), ids, axis)
-
-    def _takefrom(self, a, axis=0):
-##         return self._BinaryOperatorVariable(lambda A, B: numerix.take(B, A, axis=axis), a)
-    
-        return numerix.take(a, self.getValue(), axis)
-
-    def _take(self, ids, axis=0):
-        """
-        
-        Same as take() but returns a `Variable` subclass.  This function
-        has not yet been implemented as a binary operator but is a
-        unary operator.  As a unary operator it has to return the same
-        shape as the `Variable` it is acting on.  This is not a
-        particular useful implementation of take as it stands. It is
-        good for axis permutations.
-        
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx=1, ny=1)
-           >>> from fipy.variables.faceVariable import FaceVariable
-           >>> var = FaceVariable(value=((1, 2, 3, 4), (2, 3, 4, 5)), mesh=mesh, rank=1)
-           >>> v10 = var._take((1, 0), axis=0)
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 4]]
-           >>> var[0, 3] = 1
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 1]]
-           >>> isinstance(var, FaceVariable)
-           True
-           >>> print var.getRank()
-           1
-           >>> v0 = var._take((0,))
-           Traceback (most recent call last):
-              ...
-           IndexError: _take() must take ids that return a Variable of the same shape
-           
-        """
-
-        ## Binary operator doesn't work because ids is turned into a _Constant Variable
-        ## which contains floats and not integers. Numeric.take needs integers for ids.
-        ## return self._BinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
-
-##         return self._BinaryOperatorVariable(lambda A, B: numerix.take(A, B, axis=axis), ids, canInline=False)
-
-        if numerix.take(self.getValue(), ids, axis=axis).shape == self.shape:
-            return self._UnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
-        else:
-            raise IndexError, '_take() must take ids that return a Variable of the same shape'
+      
+    def _take(a, indices, axis=None):
+        if not isinstance(a, Variable):
+            from fipy.variables.constant import _Constant
+            a = _Constant(a)
             
+        if axis is None:
+            return a.flatten()[indices]
+        else:
+            indxobj = [slice(None)]*len(a.shape)
+            indxobj[axis] = indices
+            return a[tuple(indxobj)]
+    _take = staticmethod(_take)
+        
+    def take(self, indices, axis=None):
+        return self._take(a=self, indices=indices, axis=axis)
+        
+    def _takefrom(self, a, axis=None):
+        return self._take(a=a, indices=self, axis=axis)
+
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
            >>> var = Variable((1, 1))
@@ -1395,7 +1485,12 @@ class Variable(object):
 
     def filled(self, fill_value=None):
         return self._UnaryOperatorVariable(lambda a: numerix.MA.filled(a, value=fill_value), canInline=False)
-    
+
+    def flatten(self, order='C'):
+        return self._UnaryOperatorVariable(lambda a: a.flatten(order), 
+                                           operatorClass=Variable._OperatorVariableClass(self, baseClass=Variable),
+                                           canInline=False)
+
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the 

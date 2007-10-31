@@ -4,7 +4,7 @@
  # 
  # FILE: "meshIterator.py"
  #                                     created: 3/3/06 {9:00:00 PM}
- #                                 last update: 3/5/06 {6:34:06 PM}
+ #                                 last update: 10/27/07 {10:19:55 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,30 +41,20 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-class MeshIterator:
+class MeshIterator(list):
     def __init__(self, mesh, ids=(), checkIDs=False):
-        self.mesh = mesh
         if type(ids) is type(1) or numerix.shape(ids) is ():
             ids = (ids,)
-        ids = numerix.array(ids)
+        list.__init__(self, ids)
+        self.mesh = mesh
         if checkIDs and not self._canContain(ids):
             raise IndexError, 'Invalid IDs: %s' % str(other)
-        self.ids = ids
-            
-    def __iter__(self):
-        return iter(self.getIDs())
         
     def getMesh(self):
         return self.mesh
         
     def getIDs(self):
-        return self.ids
-        
-    def __len__(self):
-        return len(self.getIDs())
-        
-    def __array__(self, t = None):
-        return numerix.array(self.getIDs(), t)
+        return self[:]
         
     def __repr__(self):
         return "%s(mesh=%s, ids=%s)" % (self.__class__.__name__,`self.getMesh()`, `self.getIDs()`)
@@ -75,10 +65,10 @@ class MeshIterator:
     def where(self, condition):
         return self.__class__(mesh=self.mesh, 
                               ids=numerix.compress(condition, self.getIDs()))
-                              
-    def __getitem__(self, index):
-        return self.__class__(mesh=self.getMesh(), ids=self.getIDs()[index])
-        
+              
+                              ##     def __getitem__(self, index):
+                              ##         return self.__class__(mesh=self.getMesh(), ids=self.getIDs()[index])
+
     def __add__(self, other):
         if not isinstance(other, self.__class__):
             other = self.__class__(mesh=self.getMesh(), ids=other)

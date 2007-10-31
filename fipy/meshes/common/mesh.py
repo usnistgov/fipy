@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/23/07 {8:54:41 AM} 
+ #                                last update: 10/29/07 {10:10:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -268,9 +268,8 @@ class Mesh:
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
-        self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
-
+        mask = self._getCellToCellIDs().getMask()
+        self.cellToCellIDsFilled = mask * cellIDs  + ~mask * self._getCellToCellIDs().filled()
     
     """get topology methods"""
 

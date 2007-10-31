@@ -4,7 +4,7 @@
  # 
  # FILE: "operatorVariable.py"
  #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 5/6/07 {10:53:26 AM}
+ #                                 last update: 10/28/07 {9:58:43 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -203,6 +203,10 @@ def _OperatorVariableClass(baseClass=None):
                 return baseClass.getShape(self)
 ##             return baseClass.getShape(self) or self.opShape
 
+        def _isMasked(self):
+            from fipy.tools import numerix
+            return numerix.logical_or.reduce([var._isMasked() for var in self.var])
+            
     return _OperatorVariable
     
 def _testBinOp(self):

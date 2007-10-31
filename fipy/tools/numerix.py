@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/24/07 {5:15:49 PM} 
+ #                                last update: 10/31/07 {9:43:01 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -131,20 +131,36 @@ def put(arr, ids, values):
     
     """
 
-    if _isPhysical(arr):
-        arr.put(ids, values)
-    elif hasattr(ids, "_putto"):
+    if hasattr(ids, "_putto"):
         ids._putto(arr, values)
+    elif _isPhysical(arr):
+        arr.put(ids, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
             MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
         else:
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
-        NUMERIX.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+        arr.put(ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
     else:
-        NUMERIX.put(arr, ids, values)
-        
+        arr.put(ids, values)
+
+def sort(a, axis=-1, kind='quicksort', order=None, fill_value=None):
+    if _isPhysical(a):
+        return a.sorted(axis=axis, kind=kind, order=order, fill_value=fill_value)
+    elif MA.isMaskedArray(a):
+        return MA.sort(a, axis=axis, fill_value=fill_value)
+    else:
+        return NUMERIX.sort(a, axis=axis, kind=kind, order=order)
+         
+def append(arr, values, axis=None):
+    if _isPhysical(arr):
+        return arr.append(values=value, axis=axis)
+    elif MA.isMaskedArray(arr) or MA.isMaskedArray(values):
+        return MA.concatenate((arr, values), axis=axis)
+    else:
+        return NUMERIX.append(arr, values, axis=axis)
+           
 def reshape(arr, shape):
     """
     Change the shape of `arr` to `shape`, as long as the product of all the
@@ -1091,35 +1107,26 @@ def take(a, indices, axis=0, fill_value=None):
         taken = indices._takefrom(a, axis=axis)
     elif _isPhysical(a):
         taken = a.take(indices, axis=axis)   
-    elif type(indices) is type(MA.array((0))):
+    elif isinstance(indices, MA.array):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
-        ##
-        taken = MA.take(a, MA.filled(indices, 0), axis=axis)
+
+        taken = MA.take(a, indices.filled(0), axis=axis)
         
-        mask = MA.getmask(indices)
+        mask = indices.mask
         
         if mask is not MA.nomask:
             mask = MA.getmaskarray(indices)
             if taken.shape != mask.shape:
-                mask = MA.repeat(mask[NewAxis, ...], taken.shape[0], axis=0)
+                mask = MA.repeat(mask[newaxis, ...], taken.shape[0], axis=0)
                 mask = MA.mask_or(MA.getmask(taken), mask)
-
-        
-        if mask is not MA.nomask:
             taken = MA.array(data=taken, mask=mask)
-        else:
-            if MA.getmask(taken) is MA.nomask:
+        elif MA.getmask(taken) is MA.nomask:
                 taken = taken.filled()
-
-    elif type(a) in (type(array((0))), type(()), type([])):
-        taken = NUMERIX.take(a, indices, axis=axis)
-    elif type(a) is type(MA.array((0))):
-        taken = MA.take(a, indices, axis=axis)
     else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
+        taken = a.take(indices, axis=axis)
                
-    if fill_value is not None and type(taken) is type(MA.array((0))):
+    if fill_value is not None and isinstance(taken, MA.array):
         taken = taken.filled(fill_value=fill_value)
         
     return taken
@@ -1128,30 +1135,30 @@ def indices(dimensions, typecode=None):
     """indices(dimensions,typecode=None) returns an array representing a grid
     of indices with row-only, and column-only variation.
 
-       >>> NUMERIX.allclose(NUMERIX.array(indices((4, 6))), NUMERIX.indices((4,6)))
+       >>> allclose(array(indices((4, 6))), indices((4,6)))
        1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((4, 6, 2))), NUMERIX.indices((4, 6, 2)))
+       >>> allclose(array(indices((4, 6, 2))), indices((4, 6, 2)))
        1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((1,))), NUMERIX.indices((1,)))
+       >>> allclose(array(indices((1,))), indices((1,)))
        1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((5,))), NUMERIX.indices((5,)))
+       >>> allclose(array(indices((5,))), indices((5,)))
        1
-  
+
     """
 
     lst = []
 
     if len(dimensions) == 1:
-        lst.append(NUMERIX.arange(dimensions[0]))
+        lst.append(arange(dimensions[0]))
     elif len(dimensions) == 2:
         ## copy() methods are used to force contiguous arrays
-        lst = [NUMERIX.swapaxes(NUMERIX.resize(NUMERIX.arange(dimensions[0]), (dimensions[1], dimensions[0])), 0, 1).copy(),
-               NUMERIX.resize(NUMERIX.arange(dimensions[1]), dimensions).copy()]
+        lst = [swapaxes(resize(arange(dimensions[0]), (dimensions[1], dimensions[0])), 0, 1).copy(),
+               resize(arange(dimensions[1]), dimensions).copy()]
     else:
-        tmp = NUMERIX.ones(dimensions, typecode)
+        tmp = ones(dimensions, typecode)
         lst = []
         for i in range(len(dimensions)):
-            lst.append(NUMERIX.add.accumulate(tmp, i,) - 1)
+            lst.append(add.accumulate(tmp, i,) - 1)
 
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
@@ -1343,7 +1350,7 @@ def _compressIndexSubspaces(index, i, broadcastshape = ()):
 
     return broadcastshape, skip
 
-def _indexShape(index, arrayShape):
+def _indexShapeElements(index, arrayShape):
     """
     Given a selection object `index` and an `arrayShape` for the the object to
     be sliced into, return the shape of the result. Return `None` if the
@@ -1526,12 +1533,120 @@ def _indexShape(index, arrayShape):
             j += 1
         else:
             raise IndexError, "invalid index"
-                
+               
+    return indexShape, broadcastshape, arrayindex
+
+def _indexShape(index, arrayShape):
+    """
+    Given a selection object `index` and an `arrayShape` for the the object to
+    be sliced into, return the shape of the result. Return `None` if the
+    indexing is not legal.
+    
+    "If the length of the selection tuple is larger than N(=`arrayShape.ndim`)
+    an error is raised"
+    
+        >>> _indexShape(index=(1, 2, 3, 4), 
+        ...             arrayShape=(10,20,30))
+        Traceback (most recent call last):
+            ...
+        IndexError: invalid index
+
+    "All sequences and scalars in the selection tuple are converted to intp
+    indexing arrays."
+    
+    "All selection tuple objects must be convertible to intp arrays, or slice
+    objects, or the Ellipsis (``...``) object"
+    
+        >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"], 
+        ...             arrayShape=(10,20,30,40,50))
+        Traceback (most recent call last):
+            ...
+        ValueError: setting an array element with a sequence.
+
+    .. note::
+        
+       The following test should throw::
+           
+           Traceback (most recent call last):
+               ...
+           IndexError: arrays used as indices must be of integer (or boolean) type
+
+       but it's not straightforward to achieve that. Moreover, NumPy is not even
+       consistent, accepting a `tuple` or `list` of `float`, but not a `float`
+       `array`. If it's absolutely crucial to obtain that result, see the
+       comment in `_compressIndexSubspaces()`.
+       
+    ..
+    
+        >>> ind = zeros((2,3,5), float)
+        >>> _indexShape(index=NUMERIX.index_exp[...,ind], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 20, 30, 40, 2, 3, 5)
+
+    "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
+    will be treated as full slice (':') objects. The Ellipsis object is replaced
+    with as many full slice (':') objects as needed to make the length of the
+    selection tuple N."
+
+        >>> _indexShape(index=NUMERIX.index_exp[...,2,...,4], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 20, 40)
+    
+    "If the selection tuple is smaller than N, then as many ':' objects as
+    needed are added to the end of the selection tuple so that the modified 
+    selection tuple has length N."
+
+        >>> _indexShape(index=NUMERIX.index_exp[:,2], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 30, 40, 50)
+
+    "The shape of all the integer indexing arrays must be broadcastable to the
+    same shape"
+    
+        >>> ind1 = zeros((2,3,4), intp)
+        >>> ind2 = zeros((2,3,5), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2], 
+        ...             arrayShape=(10,20,30,40,50))
+        Traceback (most recent call last):
+            ...
+        ValueError: shape mismatch: objects cannot be broadcast to a single shape
+
+    "In simple cases (i.e. one indexing array and N - 1 slice objects) it does
+    exactly what you would expect (concatenation of repeated application of
+    basic slicing)."
+    
+        >>> ind = zeros((2,3,4), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[...,ind,:], 
+        ...             arrayShape=(10,20,30))
+        (10, 2, 3, 4, 30)
+        
+    "If the index subspaces are right next to each other, then the broadcasted
+    indexing space directly replaces all of the indexed subspaces in X."
+       
+        >>> ind1 = zeros((2,3,4), intp)
+        >>> ind2 = zeros((2,3,4), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2], 
+        ...             arrayShape=(10,20,30,40,50))
+        (10, 2, 3, 4, 40, 50)
+        
+    "If the indexing subspaces are separated (by slice objects), then the
+    broadcasted indexing space is first, followed by the sliced subspace of X."
+    
+        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:], 
+        ...             arrayShape=(10,20,30,40,50))
+        (2, 3, 4, 10, 30, 50)
+        
+        
+    !!! What about Boolean selections ???
+    """
+    
+    indexShape, broadcastshape, arrayindex = _indexShapeElements(index, arrayShape)
+    
     if arrayindex is not None:
         indexShape = indexShape[:arrayindex] + broadcastshape + indexShape[arrayindex:]
 
     return indexShape
-    
+
 def _broadcastShapes(shape1, shape2):
     """
     Determine if `shape1` and `shape2` can broadcast to each other, padding if
