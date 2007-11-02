@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/31/07 {9:43:01 AM} 
+ #                                last update: 11/2/07 {8:00:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1335,7 +1335,8 @@ def _compressIndexSubspaces(index, i, broadcastshape = ()):
             skip -= 1
             break
         else:
-            element = array(element, intp)
+            if not MA.isMaskedArray(element):
+                element = array(element, intp)
 
             # numpy accepts tuples of lists of floats, but not arrays of
             # floats. This test is more liberal than that, but has the
