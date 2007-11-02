@@ -4,7 +4,7 @@
  # 
  # FILE: "operatorVariable.py"
  #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 10/28/07 {9:58:43 AM}
+ #                                 last update: 11/2/07 {3:44:31 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -188,13 +188,6 @@ def _OperatorVariableClass(baseClass=None):
             if len(name) == 0:
                 name = self._getRepresentation(style="name")
             return name
-            
-        def copy(self):
-            return self.__class__(
-                op = self.op,
-                var = self.var,
-                opShape = self.opShape,
-                canInline = self.canInline)
  
         def getShape(self):
             if self.opShape is not None:
