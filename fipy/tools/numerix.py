@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 11/2/07 {8:00:56 AM} 
+ #                                last update: 11/2/07 {3:37:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -98,6 +98,21 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
+def _MAput(a, indices, values, mode='raise'):
+    """sets storage-indexed locations to corresponding values.
+
+    Values and indices are filled if necessary.
+
+    Just like `MA.put`, but doesn't unshare the mask.
+    """
+    d = a.raw_data()
+    ind = MA.filled(indices)
+    v = MA.filled(values)
+    MA.numeric.put (d, ind, v)
+    m = MA.getmask(a)
+    if m is not MA.nomask:
+        MA.numeric.put(a.raw_mask(), ind, 0)
+            
 def put(arr, ids, values):
     """
     The opposite of `take`.  The values of `arr` at the locations
@@ -137,9 +152,9 @@ def put(arr, ids, values):
         arr.put(ids, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            _MAput(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
         else:
-            MA.put(arr, ids, values)
+            _MAput(arr, ids, values)
     elif MA.isMaskedArray(ids):
         arr.put(ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
     else:
@@ -1676,6 +1691,19 @@ def _broadcastShape(shape1, shape2):
     shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
     return broadcastshape
         
+def obj2sctype(rep, default=None):
+    sctype = NUMERIX.obj2sctype(rep, default)
+    if sctype is None:
+        if _isPhysical(rep):
+            rep = rep.getValue()
+            
+        if MA.isMaskedArray(rep):
+            sctype = NUMERIX.obj2sctype(rep.raw_data(), default)
+        else:
+            sctype = NUMERIX.obj2sctype(NUMERIX.array(rep), default)
+            
+    return sctype
+
 def _test(): 
     import doctest
     return doctest.testmod()
