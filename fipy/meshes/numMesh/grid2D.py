@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 10/30/07 {5:57:20 PM} 
+ #                                last update: 11/1/07 {10:35:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -418,7 +418,7 @@ class Grid2D(Mesh2D):
             ...                                   (1, 2, 3, 5,  6,  7),
             ...                                   (0, 1, 2, 4,  5,  6)), -1000)
 
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
 
             >>> from fipy.tools import dump            

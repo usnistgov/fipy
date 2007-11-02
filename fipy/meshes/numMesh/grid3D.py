@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 10/30/07 {5:56:47 PM} 
+ #                                last update: 11/1/07 {10:36:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -576,7 +576,7 @@ class Grid3D(Mesh):
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
 
 
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
 
             >>> from fipy.tools import dump
