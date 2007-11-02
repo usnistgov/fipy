@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/1/07 {10:33:59 PM}
+ #                                 last update: 11/2/07 {3:38:15 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -80,7 +80,7 @@ class _MeshVariable(Variable):
         else:
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),
-                                  numerix.obj2sctype(numerix.array(value)))
+                                  numerix.obj2sctype(value))
             if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
                 if not isinstance(value, Variable):
                     value = _Constant(value)
@@ -93,7 +93,12 @@ class _MeshVariable(Variable):
 
         Variable.__init__(self, name=name, value=value, unit=unit, 
                           array=array, cached=cached)
-                  
+              
+    def copy(self):
+        return self._getVariableClass()(mesh=self.mesh, 
+                                        name=self.name, 
+                                        value=self)
+
     def getMesh(self):
         return self.mesh
         
@@ -109,10 +114,6 @@ class _MeshVariable(Variable):
         """
         if isinstance(index, MeshIterator):
             assert index.getMesh() == self.getMesh()
-##             return self.take(index)
-##             return self.take(index)
-##         else:
-##             return Variable.__getitem__(self, index)
 
         return Variable.__getitem__(self, index)
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 10/23/07 {1:20:32 PM} 
+ #                                last update: 11/2/07 {9:37:58 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -133,12 +133,10 @@ class CellVariable(_MeshVariable):
         return _CellOperatorVariable
         
     def copy(self):
-        
-        return self.__class__(
-            mesh = self.mesh, 
-            name = self.name + "_old", 
-            value = self.getValue(),
-            hasOld = 0)
+        return self._getVariableClass()(mesh=self.mesh, 
+                                        name=self.name + "_old", 
+                                        value=self,
+                                        hasOld=0)
             
     def __call__(self, point=None):
         if point is not None:
