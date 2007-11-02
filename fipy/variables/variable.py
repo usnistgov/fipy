@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/1/07 {5:49:29 PM} 
+ #                                last update: 11/1/07 {10:34:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1208,6 +1208,9 @@ class Variable(object):
                                             operatorClass=operatorClass,
                                             canInline=False)
         
+    def _reshapeClass(self, opShape):
+        return None
+        
     def reshape(self, shape):
         selfElements = numerix.multiply.reduce(self.shape)
         specificShape = [i for i in shape if i != -1]
@@ -1226,10 +1229,11 @@ class Variable(object):
                     opShape += (selfElements / shapeElements,)
                 else:
                     opShape += (i,)
-            
+                    
         return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), 
                                             shape, 
-                                            opShape=opShape, 
+                                            opShape=opShape,
+                                            operatorClass=self._reshapeClass(opShape),
                                             canInline=False)
         
     def nonzero(self):

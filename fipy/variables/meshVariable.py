@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 10/31/07 {9:47:20 PM}
+ #                                 last update: 11/1/07 {10:33:59 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -248,6 +248,10 @@ class _MeshVariable(Variable):
                 
         return _MeshOperatorVariable
                           
+    def _reshapeClass(self, opShape):
+        if opShape[-1] == self.shape[-1]:
+            return self._OperatorVariableClass()
+
     def getRank(self):
         return len(self.shape) - 1
         
