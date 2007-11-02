@@ -6,7 +6,7 @@
  # 
  #  FILE: "modularVariable.py"
  #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 1/3/07 {3:19:29 PM} 
+ #                                last update: 11/2/07 {5:08:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -86,6 +86,9 @@ class ModularVariable(CellVariable):
     # define pi 3.141592653589793
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
+    
+    def _getVariableClass(self):
+        return ModularVariable
 
     def _setValue(self, value, unit=None, array=None):
         """
