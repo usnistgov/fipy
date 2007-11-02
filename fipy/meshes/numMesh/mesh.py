@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/2/07 {8:16:48 AM} 
+ #                                last update: 11/2/07 {2:52:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -143,47 +143,52 @@ class Mesh(_CommonMesh):
                                == numerix.take(-self.areaProjections, faces1, axis=1))
 
         ## extract the adjacent cells for both sets of faces
-        faceCellIDs0 = self.faceCellIDs[0]
-        faceCellIDs1 = self.faceCellIDs[1]
+        self.faceCellIDs = self.faceCellIDs.copy()
         ## set the new adjacent cells for `faces0`
-        MA.put(faceCellIDs1, faces0, MA.take(faceCellIDs0, faces0))
-        MA.put(faceCellIDs0, faces0, MA.take(faceCellIDs0, faces1))
-        self.faceCellIDs[0] = faceCellIDs0
-        self.faceCellIDs[1] = faceCellIDs1
+        newFaces0 = self.faceCellIDs[0].take(faces0)
+        newFaces1 = self.faceCellIDs[0].take(faces1)
+        
+        self.faceCellIDs[1].put(faces0, newFaces0)
+        self.faceCellIDs[0].put(faces0, newFaces1)
         
         ## extract the face to cell distances for both sets of faces
-        faceToCellDistances0 = self.faceToCellDistances[0]
-        faceToCellDistances1 = self.faceToCellDistances[1]
+        self.faceToCellDistances = self.faceToCellDistances.copy()
         ## set the new faceToCellDistances for `faces0`
-        MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
-        MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
-        self.faceToCellDistances[0] = faceToCellDistances0
-        self.faceToCellDistances[1] = faceToCellDistances1
+        newDistances0 = self.faceToCellDistances[0].take(faces0)
+        newDistances1 = self.faceToCellDistances[0].take(faces1)
+        
+        self.faceToCellDistances[1].put(faces0, newDistances0)
+        self.faceToCellDistances[0].put(faces0, newDistances1)
 
         ## calculate new cell distances and add them to faces0
-        numerix.put(self.cellDistances, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
+        self.cellDistances = self.cellDistances.copy()
+        self.cellDistances.put(faces0, (self.faceToCellDistances[0] 
+                                        + self.faceToCellDistances[1]).take(faces0))
 
         ## change the direction of the face normals for faces0
+        self.faceNormals = self.faceNormals.copy()
         for dim in range(self.getDim()):
             faceNormals = self.faceNormals[dim].copy()
-            numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
+            numerix.put(faceNormals, faces0, faceNormals.take(faces1))
             self.faceNormals[dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
-        faceCellIDs = numerix.take(self.faceCellIDs[0], faces1)
+        faceCellIDs = self.faceCellIDs[0].take(faces1)
         ## get all the adjacent faces for those particular cells
-        cellFaceIDs = numerix.take(self.cellFaceIDs, faceCellIDs, axis=1)
+        self.cellFaceIDs = self.cellFaceIDs.copy()
+        cellFaceIDs = self.cellFaceIDs.take(faceCellIDs, axis=1).copy()
+        
+        faces0 = numerix.array(faces0)[..., numerix.newaxis]
+        faces1 = numerix.array(faces1)[..., numerix.newaxis]
         for i in range(cellFaceIDs.shape[0]):
             ## if the faces is a member of faces1 then change the face to point at
             ## faces0
-            cellFaceIDs[i] = MA.where(cellFaceIDs[i] == faces1,
-                                      faces0,
-                                      cellFaceIDs[i])
+            switch = (cellFaceIDs[i] == faces1)
+            cellFaceIDs[i] = (switch * faces0
+                              + ~switch * cellFaceIDs[i].filled())
             ## add those faces back to the main self.cellFaceIDs
-            tmp = numerix.array(self.cellFaceIDs[i])
-            numerix.put(tmp, faceCellIDs, cellFaceIDs[i])
-            self.cellFaceIDs[i] = tmp
+            self.cellFaceIDs[i].put(faceCellIDs, cellFaceIDs[i])
 
         ## calculate new topology
         _CommonMesh._calcTopology(self)
@@ -328,7 +333,7 @@ class Mesh(_CommonMesh):
         from fipy.variables.faceVariable import FaceVariable
         class _FaceCellIDsVariable(FaceVariable):
             def __init__(self, mesh):
-                FaceVariable.__init__(self, mesh=mesh, 
+                FaceVariable.__init__(self, mesh=mesh,
                                       elementshape=(2,))
                 self._requires(mesh.cellFaceIDs)
                 self._requires(mesh.numberOfFaces)
