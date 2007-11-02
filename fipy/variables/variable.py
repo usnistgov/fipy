@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 10/31/07 {11:33:17 AM} 
+ #                                last update: 11/1/07 {5:49:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -881,9 +881,10 @@ class Variable(object):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
 
-        opShape, baseClass, other = self._shapeClassAndOther(opShape, operatorClass, other)
+        if opShape is None or operatorClass is None:
+            opShape, baseClass, other = self._shapeClassAndOther(opShape, operatorClass, other)
         
-        if opShape is None or baseClass is None:
+        if opShape is None or (operatorClass is None and baseClass is None):
             return NotImplemented
     
         for v in [self, other]:
@@ -1328,61 +1329,6 @@ class Variable(object):
                                   op=lambda a: a.mean(axis=axis), 
                                   axis=axis)
                                   
-    def _getitemClass(self, index):
-        return self._OperatorVariableClass()
-
-    def _maskedSlice(a, idx):
-        def _filled(aa):
-            def __filled(x):
-                if isinstance(x, numerix.MA.MaskedArray):
-                    return x.filled(0)
-                else:
-                    return x
-                
-            if isinstance(aa, tuple):
-                return tuple([__filled(x) for x in aa])
-            else:
-                return __filled(aa)
-
-        def _indexmask(aa, shape):
-            (indexShape, 
-             broadcastshape, 
-             arrayindex) = numerix._indexShapeElements(idx, a.shape)
-             
-            if isinstance(aa, tuple):
-                mask = numerix.MA.nomask
-                for x in aa:
-                    mask = numerix.MA.mask_or(mask, numerix.MA.getmask(x))
-            else:
-                mask = numerix.MA.getmask(aa)
-
-            if arrayindex is not None and mask is not numerix.MA.nomask:
-                tmp = numerix.MA.make_mask_none(indexShape[:arrayindex] 
-                                                + broadcastshape
-                                                + indexShape[arrayindex:])
-                                                
-                tmp[:] = mask[((numerix.newaxis,) * len(indexShape[:arrayindex])
-                               + numerix.index_exp[:]
-                               + (numerix.newaxis,) * len(indexShape[arrayindex:]))]
-                               
-                mask = tmp
-            else:
-                mask = numerix.MA.nomask
-                
-            return mask
-            
-        sliced = a[_filled(idx)]
-        mask = _indexmask(idx, a.shape)
-        
-        if mask is not numerix.MA.nomask:
-            mask = numerix.MA.mask_or(numerix.MA.getmask(sliced), mask)
-            sliced = numerix.MA.array(data=sliced, mask=mask)
-        elif numerix.MA.getmask(sliced) is numerix.MA.nomask:
-            sliced = _filled(sliced)
-            
-        return sliced
-    _maskedSlice = staticmethod(_maskedSlice)
-
     def __getitem__(self, index):
         """    
         "Evaluate" the `Variable` and return the specified element
@@ -1400,19 +1346,7 @@ class Variable(object):
 
         """
         from fipy.variables.indexVariable import _IndexVariable
-        index = _IndexVariable(index)
-
-        if index._isMasked():
-            op = lambda a, b: Variable._maskedSlice(a, b)
-        else:
-            op = lambda a, b: a[b]
-
-        return self._BinaryOperatorVariable(op, 
-                                            index,
-                                            operatorClass=self._getitemClass(index=index()), 
-                                            opShape=numerix._indexShape(index=index(), arrayShape=self.shape),
-                                            unit=self.getUnit(),
-                                            canInline=False)
+        return _IndexVariable(index)._getitemfrom(self)
       
     def _take(a, indices, axis=None):
         if not isinstance(a, Variable):

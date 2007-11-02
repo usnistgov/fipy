@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 10/30/07 {9:29:49 AM}
+ #                                 last update: 10/31/07 {9:47:20 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -232,8 +232,6 @@ class _MeshVariable(Variable):
                     if shape is not None:
                         opShape = shape
                         break
-##                 opShape = reduce(lambda a, b: a or b, 
-##                                  [opShape] + [getattr(v, "opShape", None) for v in var])
                 if opShape is not None:
                     elementshape = opShape[:-1]
                 else:
@@ -274,24 +272,6 @@ class _MeshVariable(Variable):
         else:
             return self._OperatorVariableClass()
 
-    def _getitemClass(self, index):
-        if not isinstance(index, tuple):
-            if isinstance(index, list):
-                index = tuple(index)
-            else:
-                index = (index,)
-        indexshape = numerix._indexShape(index=index, arrayShape=self.shape)
-        
-        for item in index:
-            if isinstance(item, _MeshVariable):
-                return item._OperatorVariableClass()
-                
-        if (len(indexshape) > 0
-            and indexshape[-1] == self.shape[-1]):
-            return self._OperatorVariableClass()
-        else:
-            return Variable._OperatorVariableClass(self, baseClass=Variable)
-        
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the 
