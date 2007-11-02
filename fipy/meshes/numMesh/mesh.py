@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/31/07 {8:53:46 AM} 
+ #                                last update: 11/2/07 {8:16:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -274,7 +274,7 @@ class Mesh(_CommonMesh):
 
 
         ## compute what the faces are that we need to add
-        facesToAdd = numerix.take(other.faceVertexIDs, faceIndicesToAdd, axis=1)
+        facesToAdd = numerix.take(other.faceVertexIDs, faceIndicesToAdd, axis=1).getValue()
 
         for j in range(facesToAdd.shape[-1]):
             for i in range(facesToAdd.shape[0]):
@@ -892,7 +892,7 @@ class Mesh(_CommonMesh):
             >>> bigMesh = gridMesh + triMesh
             >>> volumes = numerix.ones(bigMesh.getNumberOfCells(), 'd')
             >>> volumes[20:] = 0.25
-            >>> numerix.allclose(bigMesh.getCellVolumes(), volumes)
+            >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
             1
             
         """
