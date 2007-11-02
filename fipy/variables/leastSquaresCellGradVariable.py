@@ -6,7 +6,7 @@
  # 
  #  FILE: "leastSquaresCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #                                last update: 11/2/07 {5:19:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,6 +70,9 @@ class _LeastSquaresCellGradVariable(CellVariable):
         mat = numerix.sum(mat, axis=2)
 
         vec = numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1)
+        from fipy.variables.variable import Variable
+        if isinstance(vec, Variable):
+            vec = vec.copy()
 
         if D == 1:
             vec[0] = vec[0] / mat[0, 0]
