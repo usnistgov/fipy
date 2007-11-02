@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/1/07 {10:34:45 PM} 
+ #                                last update: 11/2/07 {10:07:50 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -117,7 +117,12 @@ class Variable(object):
             name = value.name
             value = value.getValue()
             if hasattr(value, 'copy'):
-                value = value.copy()
+                # idiot MaskedArray has a `copy` method, but it just throws
+                # `NotImplemented`. What the #@%*! is the point of that?!?
+                if numerix.MA.isMaskedArray(value):
+                    value = numerix.MA.array(value)
+                else:
+                    value = value.copy()
             unit = None
             array = None
             
@@ -234,7 +239,7 @@ class Variable(object):
             Variable(value=array([0, 1, 2]))
             
         """
-        return Variable(value=self)
+        return self._getVariableClass()(value=self)
 
 
     def _getUnitAsOne(self):
@@ -428,9 +433,10 @@ class Variable(object):
         return numerix.put(a, self.getValue(), value)
             
     def put(self, indices, value):
-        if self.value is None:
-            self.getValue()
-        numerix.put(self.value, indices, value)
+        selfvalue = self.getValue()
+##         if self.value is None:
+##             self.getValue()
+        numerix.put(selfvalue, indices, value)
         self._markFresh()
         
     def __call__(self):
@@ -1358,7 +1364,7 @@ class Variable(object):
             a = _Constant(a)
             
         if axis is None:
-            return a.flatten()[indices]
+            return a.flatten()[(indices,)]
         else:
             indxobj = [slice(None)]*len(a.shape)
             indxobj[axis] = indices
@@ -1424,8 +1430,8 @@ class Variable(object):
     def filled(self, fill_value=None):
         return self._UnaryOperatorVariable(lambda a: numerix.MA.filled(a, value=fill_value), canInline=False)
 
-    def flatten(self, order='C'):
-        return self._UnaryOperatorVariable(lambda a: a.flatten(order), 
+    def flatten(self): #, order='C'):
+        return self._UnaryOperatorVariable(lambda a: a.flatten(), #order), 
                                            operatorClass=Variable._OperatorVariableClass(self, baseClass=Variable),
                                            canInline=False)
 
