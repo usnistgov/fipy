@@ -6,7 +6,7 @@
  #
  #  FILE: "periodicGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/8/06 {11:49:17 AM} 
+ #                                last update: 11/2/07 {2:52:17 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,7 @@ class PeriodicGrid2D(Grid2D):
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
         >>> print mesh.getExteriorFaces()
-        [ 4  5  8 11]
+        [4, 5, 8, 11]
 
         >>> print mesh.getFaceCellIDs()
         [[2 3 0 1 2 3 1 0 1 3 2 3]
@@ -81,7 +81,7 @@ class PeriodicGrid2D(Grid2D):
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
         >>> from fipy.tools import numerix
-        >>> numerix.allclose(mesh._getFaceNormals(), normals)
+        >>> print numerix.allclose(mesh._getFaceNormals(), normals)
         1
 
         >>> print mesh._getCellVertexIDs()
