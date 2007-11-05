@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/1/07 {9:07:36 PM}
+ #                                 last update: 11/4/07 {4:27:39 AM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -190,7 +190,24 @@ class __IndexVariable(Variable):
         opShape, baseClass, other = other._shapeClassAndOther(opShape, operatorClass, other)
         return (opShape, other._OperatorVariableClass(baseClass), other)
         
-
+    def _repr(self, index):
+        if isinstance(index, _SliceVariable):
+            s = index.start or ""
+            s += ":"
+            s += index.stop or ""
+            if index.step is not None:
+                s += ":" + index.step
+            return s
+        elif index is Ellipsis:
+            return "..."
+        elif index is None:
+            return "newaxis"
+        else:
+            return repr(index)
+        
+    def __repr__(self):
+        return self._repr(self.index)
+        
 class _ListIndexVariable(__IndexVariable):
     def _requireIndex(self, index):
         return [self._requires(self._checkIfSlice(i)) for i in index]
@@ -209,6 +226,10 @@ class _ListIndexVariable(__IndexVariable):
                 return item._OperatorVariableClass()
                 
         return None
+        
+    def __repr__(self):
+        return ",".join([self._repr(i) for i in self.index])
+
 
 
         
