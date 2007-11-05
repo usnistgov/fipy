@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/2/07 {10:07:50 AM} 
+ #                                last update: 11/5/07 {1:35:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1202,16 +1202,14 @@ class Variable(object):
     def __invert__(self):
         return self._UnaryOperatorVariable(lambda a: numerix.logical_not(a))
                 
-    def dot(self, other, opShape=None, operatorClass=None, axis=0):
+    def dot(self, other, axis=0, omit=()):
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
-        if opShape is None:
-            opShape = self._broadcastShape(other)
-        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b, axis=axis), 
+        opShape = self._broadcastShape(other)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b, axis=axis, omit=omit), 
                                             other, 
                                             opShape=opShape[:axis]+opShape[axis+1:],
-                                            operatorClass=operatorClass,
                                             canInline=False)
         
     def _reshapeClass(self, opShape):

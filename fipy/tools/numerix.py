@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 11/2/07 {3:37:33 PM} 
+ #                                last update: 11/5/07 {1:35:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -963,7 +963,7 @@ def crossProd(v1,v2):
                   v1n[2] * v2n[0] - v1n[0] * v2n[2],
                   v1n[0] * v2n[1] - v1n[1] * v2n[0]))
 
-def dot(a1, a2, axis=0):
+def dot(a1, a2, axis=0, omit=()):
     """
     return array of vector dot-products of v1 and v2
     for arrays a1 and a2 of vectors v1 and v2
@@ -999,13 +999,13 @@ def dot(a1, a2, axis=0):
 
     ## have to check MA since MA's have dot() method!!!
     if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
-        return a1.dot(a2)
+        return a1.dot(a2, omit=omit)
     elif hasattr(a2, 'rdot') and not (type(a2) is type(MA.array(0))):
-        return a2.rdot(a1)
+        return a2.rdot(a1, omit=omit)
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
         # dot() is not commutative with tensors, but if there's no
         # rdot(), what else can we do? Just throw an error?
-        return a2.dot(a1)
+        return a2.dot(a1, omit=omit)
     else:
 ##         return NUMERIX.dot(a1, a2)
         return sum(a1*a2, axis)

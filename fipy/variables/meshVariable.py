@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/2/07 {3:38:15 PM}
+ #                                 last update: 11/5/07 {1:34:29 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -151,36 +151,46 @@ class _MeshVariable(Variable):
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 
-    def _dot(a, b, index):
-        rankA = len(a.shape) - 1
-        rankB = len(b.shape) - 1
+    def _dot(a, b, index, omit=()):
+        Ashape = a.shape
+        Bshape = b.shape
+        for axis in omit:
+            Ashape = Ashape[:axis] + Ashape[axis+1:]
+            Bshape = Bshape[:axis] + Bshape[axis+1:]
+        rankA = len(Ashape) - 1
+        rankB = len(Bshape) - 1
         if rankA <= 0 or rankB <= 0:
             return a[index] * b
         else:
             return numerix.sum(a[index] * b, axis=rankA - 1)
     _dot = staticmethod(_dot)
 
-    def __dot(A, B, operatorClass):
+    def __dot(A, B, operatorClass, omit=()):
         """
         A . B
         """
-        rankA = len(A.shape) - 1
-        rankB = len(B.shape) - 1
+        Ashape = A.shape
+        Bshape = B.shape
+        for axis in omit:
+            Ashape = Ashape[:axis] + Ashape[axis+1:]
+            Bshape = Bshape[:axis] + Bshape[axis+1:]
+        rankA = len(Ashape) - 1
+        rankB = len(Bshape) - 1
         
         index = (numerix.index_exp[...] + (numerix.newaxis,) * (rankB - 1) 
                  + numerix.index_exp[:])
-        opShape = numerix._broadcastShape(A[index].shape, B.shape)
+        opShape = numerix._broadcastShape(A[index].shape, Bshape)
         if rankA > 0:
             opShape = opShape[:rankA-1] + opShape[rankA:]
         
-        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index), 
+        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index, omit=omit), 
                                          B, 
                                          opShape=opShape,
                                          operatorClass=operatorClass,
                                          canInline=False)
     __dot = staticmethod(__dot)
 
-    def dot(self, other, opShape=None, operatorClass=None):
+    def dot(self, other, omit=()):
         """
         self . other
         """
@@ -189,9 +199,9 @@ class _MeshVariable(Variable):
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
         
-        return _MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
+        return _MeshVariable.__dot(self, other, operatorClass=self._OperatorVariableClass(baseClass), omit=omit)
 
-    def rdot(self, other, opShape=None, operatorClass=None):
+    def rdot(self, other, omit=()):
         """
         other . self
         """
@@ -200,7 +210,7 @@ class _MeshVariable(Variable):
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
         
-        return self.__dot(other, self, self._OperatorVariableClass(baseClass))
+        return self.__dot(other, self, self._OperatorVariableClass(baseClass), omit=omit)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """

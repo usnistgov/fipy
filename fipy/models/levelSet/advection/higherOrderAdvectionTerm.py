@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 10/17/07 {12:57:59 PM} 
+ #                                last update: 11/5/07 {1:40:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -210,7 +210,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         
 ##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
         adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs(), axis=-1)
-        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals())
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), omit=(-2,))
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
         cellIDs = numerix.repeat(numerix.arange(mesh.getNumberOfCells())[numerix.newaxis, ...], mesh._getMaxFacesPerCell(), axis=0)
