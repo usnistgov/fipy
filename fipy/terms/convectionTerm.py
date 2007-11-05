@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 10/29/07 {2:19:18 PM} 
+ #                                last update: 11/4/07 {4:31:00 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,8 +76,8 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> ConvectionTerm(coeff = vcv)
-            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            >>> ConvectionTerm(coeff = vcv) #doctest: +ELLIPSIS
+            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(...))
             >>> ConvectionTerm(coeff = vfv)
             ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> ConvectionTerm(coeff = (1,))
