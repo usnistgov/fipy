@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/4/07 {4:27:39 AM}
+ #                                 last update: 11/6/07 {10:37:42 AM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -192,11 +192,15 @@ class __IndexVariable(Variable):
         
     def _repr(self, index):
         if isinstance(index, _SliceVariable):
-            s = index.start or ""
+            if index.start is None:
+                s = ""
+            else:
+                s = repr(index.start)
             s += ":"
-            s += index.stop or ""
+            if index.stop is not None:
+                s += repr(index.stop)
             if index.step is not None:
-                s += ":" + index.step
+                s += ":" + repr(index.step)
             return s
         elif index is Ellipsis:
             return "..."
