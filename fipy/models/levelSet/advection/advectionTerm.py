@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 3/29/07 {10:39:19 AM} 
+ #                                last update: 11/6/07 {10:13:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,21 +82,21 @@ class _AdvectionTerm(Term):
 
         >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
         >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
-        >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+        >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
         1
    
     Less trivial test:
 
         >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+        >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
         1
 
     Even less trivial
 
         >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
         >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+        >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
         1
 
     Another trivial test case (more trivial than a trivial test case
@@ -105,7 +105,7 @@ class _AdvectionTerm(Term):
         >>> vel = numerix.array((-1, 2, -3))
         >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
         >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
-        >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+        >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
         1
 
     Somewhat less trivial test case:
@@ -116,7 +116,7 @@ class _AdvectionTerm(Term):
         >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
         >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
         >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-        >>> numerix.allclose(b, answer, atol = 1e-10)
+        >>> print numerix.allclose(b, answer, atol = 1e-10)
         1
 
     """
@@ -137,15 +137,16 @@ class _AdvectionTerm(Term):
         cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
         cellToCellIDs = mesh._getCellToCellIDs()
 
-        cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
+        mask = cellToCellIDs.getMask()
+        cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs
 
         adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
         differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-        differences = MA.filled(differences, value = 0)
+        differences = differences.filled(0)
         
-        minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-        maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+        minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences.getValue(), numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+        maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences.getValue(), numerix.zeros((NCellFaces, NCells)))**2, axis=0))
 
         coeff = numerix.array(self._getGeomCoeff(mesh))
 
