@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 3/7/06 {5:02:19 PM} 
+ #                                last update: 11/6/07 {11:16:35 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,6 +51,10 @@ from fipy.meshes.numMesh.grid1D import Grid1D
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
+
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
 
 class UniformGrid1D(Grid1D):
     """
@@ -121,34 +125,37 @@ class UniformGrid1D(Grid1D):
 ##         from common/mesh
         
     def _getCellFaceIDs(self):
-        return MA.array(self._createCells())
-        
+        return CellVariable(mesh=self, 
+                            value=MA.array(self._createCells()), 
+                            elementshape=(2,))
+     
     def getInteriorFaces(self):
         return FaceIterator(mesh=self, 
                             ids=numerix.arange(self.numberOfFaces-2) + 1)
             
     def _getCellFaceOrientations(self):
-        orientations = numerix.ones((2, self.numberOfCells))
+        orientations = CellVariable(mesh=self, value=1., elementshape=(2,))
         orientations[0] *= -1
         orientations[0,0] = 1
         return orientations
-
+        
     def _getAdjacentCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = numerix.array((c1 - 1, c1))
         ids[0,0] = ids[1,0]
         ids[1,-1] = ids[0,-1]
-        return ids[0], ids[1]
+        return (FaceVariable(mesh=self, value=ids[0]), 
+                FaceVariable(mesh=self, value=ids[1]))
 
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
         ids = MA.array((c1 - 1, c1 + 1))
         ids[0,0] = MA.masked
         ids[1,-1] = MA.masked
-        return ids
-        
+        return CellVariable(mesh=self, value=ids)
+
     def _getCellToCellIDsFilled(self):
-        ids = self._getCellToCellIDs().filled()
+        ids = self._getCellToCellIDs().filled().copy()
         ids[0,0] = 0
         ids[1,-1] = self.numberOfCells - 1
         return ids
@@ -167,42 +174,44 @@ class UniformGrid1D(Grid1D):
         ids[0,0] = ids[1,0]
         ids[1,0] = MA.masked
         ids[1,-1] = MA.masked
-        return ids
+        return FaceVariable(mesh=self, value=ids, elementshape=(2,))
 
 ##     get geometry methods
         
 ##         from common/mesh
         
     def _getFaceAreas(self):
-        return numerix.ones(self.numberOfFaces,'d')
+        return FaceVariable(mesh=self, value=1.)
 
     def _getFaceNormals(self):
-        faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
+        faceNormals = FaceVariable(mesh=self, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         faceNormals[...,0] *= -1
         return faceNormals
-        
+
     def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx
+        return CellVariable(mesh=self, value=self.dx)
 
     def getCellCenters(self):
-        return ((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) * self.dx + self.origin) * self.scale['length']
+        return CellVariable(mesh=self,
+                            value=((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) 
+                                   * self.dx + self.origin) * self.scale['length'],
+                            rank=1)
 
     def _getCellDistances(self):
-        distances = numerix.zeros(self.numberOfFaces, 'd')
+        distances = FaceVariable(mesh=self, value=0.)
         distances[1:-1] = self.dx
         distances[0] = self.dx / 2.
         distances[-1] = self.dx / 2.
         return distances
 
     def _getFaceToCellDistanceRatio(self):
-        distances = numerix.ones(self.numberOfFaces, 'd')
-        distances *= 0.5
+        distances = FaceVariable(mesh=self, value=0.5)
         distances[0] = 1
         distances[-1] = 1
         return distances
-        
+
     def _getOrientedAreaProjections(self):
         return self._getAreaProjections()
 
@@ -213,11 +222,11 @@ class UniformGrid1D(Grid1D):
         return self._getFaceNormals()
 
     def _getFaceTangents1(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        return FaceVariable(mesh=self, value=0., rank=1)
 
     def _getFaceTangents2(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        
+        return FaceVariable(mesh=self, value=0., rank=1)
+     
     def _getFaceAspectRatios(self):
         return 1. / self._getCellDistances()
     
@@ -226,27 +235,31 @@ class UniformGrid1D(Grid1D):
         distances[:] = self.dx
         distances[0,0] = self.dx / 2.
         distances[1,-1] = self.dx / 2.
-        return distances
+        return CellVariable(mesh=self, value=distances, elementshape=(2,))
 
     def _getCellNormals(self):
-        normals = numerix.ones((1, 2, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self, value=1., elementshape=(1,2))
         normals[:,0] = -1
         return normals
-        
+
     def _getCellAreas(self):
-        return numerix.ones((2, self.numberOfCells), 'd')
+        return CellVariable(mesh=self, value=1, elementshape=(2,))
 
     def _getCellAreaProjections(self):
-        return MA.array(self._getCellNormals())
+        return CellVariable(mesh=self,
+                            value=MA.array(self._getCellNormals().getValue()),
+                            elementshape=(1,2))
 
 ##         from numMesh/mesh
 
     def getFaceCenters(self):
-        return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
+        return FaceVariable(mesh=self,
+                            value=numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin,
+                            rank=1)
 
     def _getCellVertexIDs(self):
         c1 = numerix.arange(self.numberOfCells)
-        return numerix.array((c1 + 1, c1))
+        return CellVariable(mesh=self, value=(c1 + 1, c1), elementshape=(2,))
 
 
 ##     scaling

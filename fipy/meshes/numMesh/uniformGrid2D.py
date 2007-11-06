@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 5/18/06 {8:35:35 PM} 
+ #                                last update: 11/6/07 {11:51:49 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,6 +53,10 @@ from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.inline import inline
+
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
 
 class UniformGrid2D(Grid2D):
     """
@@ -141,7 +145,7 @@ class UniformGrid2D(Grid2D):
                                                      numerix.reshape(Vids, ((self.nx - 1) * self.ny,)))))
 
     def _getCellFaceOrientations(self):
-        cellFaceOrientations = numerix.ones((4, self.numberOfCells))
+        cellFaceOrientations = CellVariable(mesh=self, value=1., elementshape=(4,))
         cellFaceOrientations[0, self.nx:] = -1
         cellFaceOrientations[3, :] = -1
         cellFaceOrientations[3, ::self.nx] = 1
@@ -188,7 +192,8 @@ class UniformGrid2D(Grid2D):
         ni=self.nx,
         nj=self.ny)
 
-        return (faceCellIDs0, faceCellIDs1)
+        return (FaceVariable(mesh=self, value=faceCellIDs0), 
+                FaceVariable(mesh=self, value=faceCellIDs1))
 
     def _getAdjacentCellIDsPy(self):
         Hids = numerix.zeros((self.ny + 1, self.nx, 2))
@@ -212,7 +217,8 @@ class UniformGrid2D(Grid2D):
         faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
                                             numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
-        return (faceCellIDs[:,0], faceCellIDs[:,1])
+        return (FaceVariable(mesh=self, value=faceCellIDs[:,0]), 
+                FaceVariable(mesh=self, value=faceCellIDs[:,1]))
 
 
     def _getCellToCellIDs(self):
@@ -228,14 +234,16 @@ class UniformGrid2D(Grid2D):
         ids[1,-1,...] = MA.masked
         ids[3, 0,...] = MA.masked
         
-        return MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells)))
         
     def _getCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+        cellToCellIDs = self._getCellToCellIDs().getValue()
+        return CellVariable(mesh=self, 
+                            value=MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs))
         
     def _getMaxFacesPerCell(self):
         return 4
@@ -288,7 +296,7 @@ class UniformGrid2D(Grid2D):
         ni=self.nx,
         nj=self.ny)
 
-        return MA.masked_where(mask, faceCellIDs)
+        return FaceVariable(mesh=self, value=MA.masked_where(mask, faceCellIDs))
 
     def _getFaceCellIDsPy(self):
 
@@ -308,17 +316,18 @@ class UniformGrid2D(Grid2D):
         Vids[1,0] = -1
         Vids[1,-1] = -1
         
-        return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                                     Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
+        return FaceVariable(mesh=self,
+                            value=MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
+                                                                        Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1))
     
     def _getFaceAreas(self):
-        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
+        faceAreas = FaceVariable(mesh=self, value=0.)
         faceAreas[:self.numberOfHorizontalFaces] = self.dx
         faceAreas[self.numberOfHorizontalFaces:] = self.dy
         return faceAreas
 
     def _getFaceNormals(self):
-        normals = numerix.zeros((2, self.numberOfFaces), 'd')
+        normals = FaceVariable(mesh=self, value=0., rank=1)
 
         normals[1, :self.numberOfHorizontalFaces] = 1
         normals[1, :self.nx] = -1
@@ -329,14 +338,16 @@ class UniformGrid2D(Grid2D):
         return normals
         
     def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
+        return CellVariable(mesh=self, value=self.dx * self.dy)
 
     def getCellCenters(self):
         centers = numerix.zeros((2, self.nx, self.ny), 'd')
         indices = numerix.indices((self.nx, self.ny))
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
-        return centers.reshape((2, self.numberOfCells), order="FORTRAN") + self.origin
+        return CellVariable(mesh=self,
+                            value=centers.reshape((2, self.numberOfCells), order="FORTRAN") + self.origin,
+                            rank=1)
 
     def _getCellDistances(self):
         Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
@@ -349,12 +360,12 @@ class UniformGrid2D(Grid2D):
         Vdis[0,...] = self.dx / 2.
         Vdis[-1,...] = self.dx / 2.
 
-        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
-                                    numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
+                                                       numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,)))))
 
     def _getFaceToCellDistanceRatio(self):
-        faceToCellDistanceRatios = numerix.zeros(self.numberOfFaces, 'd')
-        faceToCellDistanceRatios[:] = 0.5
+        faceToCellDistanceRatios = FaceVariable(mesh=self, value=0.5)
         faceToCellDistanceRatios[:self.nx] = 1.
         faceToCellDistanceRatios[self.numberOfHorizontalFaces - self.nx:self.numberOfHorizontalFaces] = 1.
         faceToCellDistanceRatios[self.numberOfHorizontalFaces::(self.nx + 1)] = 1.
@@ -362,7 +373,7 @@ class UniformGrid2D(Grid2D):
         return faceToCellDistanceRatios
 
     def _getFaceToCellDistances(self):
-        faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
+        faceToCellDistances = FaceVariable(mesh=self, value=0., rank=1)
         distances = self._getCellDistances()
         ratios = self._getFaceToCellDistanceRatio()
         faceToCellDistances[0] = distances * ratios
@@ -399,13 +410,13 @@ class UniformGrid2D(Grid2D):
         areaProjections = areaProjections,
         ni = self.numberOfFaces)
 
-        return areaProjections
+        return FaceVariable(mesh=self, value=areaProjections, rank=1)
 
     def _getOrientedFaceNormals(self):
         return self._getFaceNormals()
 
     def _getFaceTangents1(self):
-        tangents = numerix.zeros((2,self.numberOfFaces), 'd')
+        tangents = FaceVariable(mesh=self, value=0., rank=1)
 
         tangents[0, :self.numberOfHorizontalFaces] = -1
         tangents[0, :self.nx] = 1        
@@ -415,7 +426,7 @@ class UniformGrid2D(Grid2D):
         return tangents
         
     def _getFaceTangents2(self):
-        return numerix.zeros((2, self.numberOfFaces), 'd')
+        return FaceVariable(mesh=self, value=0., rank=1)
         
     def _getFaceAspectRatios(self):
         return self._getFaceAreas() / self._getCellDistances()
@@ -432,11 +443,13 @@ class UniformGrid2D(Grid2D):
         distances[3, 0,...] = self.dx / 2.
         distances[1,-1,...] = self.dx / 2.
         
-        return distances.reshape((4, self.numberOfCells), order="FORTRAN")
+        return CellVariable(mesh=self, 
+                            value=distances.reshape((4, self.numberOfCells), order="FORTRAN"),
+                            elementshape=(4,))
 
 
     def _getCellNormals(self):
-        normals = numerix.zeros((2, 4, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self, value=0., elementshape=(2,4))
         normals[:, 0] = [[ 0], [-1]]
         normals[:, 1] = [[ 1], [ 0]]
         normals[:, 2] = [[ 0], [ 1]]
@@ -445,7 +458,7 @@ class UniformGrid2D(Grid2D):
         return normals
         
     def _getCellAreas(self):
-        areas = numerix.ones((4, self.numberOfCells), 'd')
+        areas = CellVariable(mesh=self, value=0., elementshape=(4,))
         areas[0] = self.dx
         areas[1] = self.dy
         areas[2] = self.dx
@@ -468,8 +481,10 @@ class UniformGrid2D(Grid2D):
         Vcen[0,...] = indices[0] * self.dx
         Vcen[1,...] = (indices[1] + 0.5) * self.dy
         
-        return numerix.concatenate((Hcen.reshape((2, self.nx * (self.ny + 1)), order="FORTRAN"),
-                                    Vcen.reshape((2, (self.nx + 1) * self.ny), order="FORTRAN")), axis=1) + self.origin
+        return FaceVariable(mesh=self,
+                            value=numerix.concatenate((Hcen.reshape((2, self.nx * (self.ny + 1)), order="FORTRAN"),
+                                                       Vcen.reshape((2, (self.nx + 1) * self.ny), order="FORTRAN")), axis=1) + self.origin,
+                            rank=1)
                                     
     def _getCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -479,7 +494,9 @@ class UniformGrid2D(Grid2D):
         ids[3] = indices[0] + indices[1] * (self.nx + 1)
         ids[2] = ids[3] + 1
         
-        return numerix.reshape(ids, (4, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=numerix.reshape(ids, (4, self.numberOfCells)), 
+                            elementshape=(4,))
         
     def _getFaceVertexIDs(self):
         Hids = numerix.zeros((2, self.nx, self.ny + 1))
@@ -492,9 +509,11 @@ class UniformGrid2D(Grid2D):
         Vids[0] = indices[0] + indices[1] * (self.nx + 1)
         Vids[1] = Vids[0] + self.nx + 1
         
-        return numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                    Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
-                                   axis=1)
+        return FaceVariable(mesh=self,
+                            value=numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
+                                                       Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
+                                                      axis=1),
+                            elementshape=(2,))
                                     
     def _getOrderedCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -504,7 +523,9 @@ class UniformGrid2D(Grid2D):
         ids[3] = indices[0] + indices[1] * (self.nx + 1)
         ids[0] = ids[3] + 1
         
-        return ids.reshape((4, self.numberOfCells), order="FORTRAN")
+        return CellVariable(mesh=self, 
+                            value=ids.reshape((4, self.numberOfCells), order="FORTRAN"), 
+                            elementshape=(4,))
         
 ##     scaling
     
@@ -558,40 +579,46 @@ class UniformGrid2D(Grid2D):
             ...                                   5,  0,  0, 1,  2,  3,  3,  4,  5),
             ...                                 (-1, -1, -1, 3,  4,  5, -1, -1, 
             ...                                  -1, -1,  1, 2, -1, -1,  4,  5, -1)), -1)
-            >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> print numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
             1
             
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
-            >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceAreas, mesh._getFaceAreas(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceCenters, mesh.getFaceCenters(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., 
             ...                               -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 
             ...                               1., 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceNormals, mesh._getFaceNormals(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1), 
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1, -1, -1,  1, -1, -1)))
-            >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> print numerix.allequal(cellToFaceOrientations, 
+            ...                        mesh._getCellFaceOrientations())
             1
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellVolumes, mesh.getCellVolumes(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2.,    dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (dy/2.,    dy/2.,    dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -601,42 +628,50 @@ class UniformGrid2D(Grid2D):
             ...                                dx / 2.,
             ...                                dx / 2., dx, dx,
             ...                                dx / 2.))
-            >>> numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellDistances, mesh._getCellDistances(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (     -1,      -1,      -1, dy / 2., dy / 2., dy / 2.,      -1,      -1,      -1,      -1, dx / 2., dx / 2.,      -1,      -1, dx / 2., dx / 2.,      -1)), -1)
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceToCellDistanceRatios, 
+            ...                        mesh._getFaceToCellDistanceRatio(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(areaProjections, mesh._getAreaProjections(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., 
             ...                             -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, -1., 1., 
             ...                             1., 1., -1., 1., 1., 1.)))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents1, mesh._getFaceTangents1(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents2 = numerix.zeros((2, 17), 'd')
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents2, mesh._getFaceTangents2(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1,  0,  1,  2),
             ...                                   ( 1,  2, -1,  4,  5, -1),
             ...                                   ( 3,  4,  5, -1, -1, -1),
             ...                                   (-1,  0,  1, -1,  3,  4)), -1)
-            >>> numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
+            >>> print numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
             1
 
             >>> cellToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,      dy,      dy,      dy),
             ...                                         (     dx,      dx, dx / 2.,      dx,      dx, dx / 2.),
             ...                                         (     dy,      dy,      dy, dy / 2., dy / 2., dy / 2.),
             ...                                         (dx / 2.,      dx,      dx, dx / 2.,      dx,      dx)), -1)
-            >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellToCellDistances, 
+            ...                        mesh._getCellToCellDistances(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellNormals = numerix.array(((( 0,  0,  0,  0,  0,  0),
@@ -647,12 +682,15 @@ class UniformGrid2D(Grid2D):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               ( 1,  1,  1,  1,  1,  1),
             ...                               ( 0,  0,  0,  0,  0,  0))))
-            >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellNormals, mesh._getCellNormals(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellAreaProjections = numerix.array((((0,) * 6, (dy,) * 6, (0,) * 6, (-dy,) * 6),
             ...                                      ((-dx,) * 6, (0,) * 6, (dx,) * 6, (0,) * 6)))
-            >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellAreaProjections, 
+            ...                        mesh._getCellAreaProjections(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellVertexIDs = MA.masked_array(((5, 6, 7, 9, 10, 11),
@@ -660,14 +698,15 @@ class UniformGrid2D(Grid2D):
             ...                                  (1, 2, 3, 5, 6, 7),
             ...                                  (0, 1, 2, 4, 5, 6)), -1000)
 
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
 
             >>> from fipy.tools import dump            
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.getCellCenters(), 
+            ...                        unpickledMesh.getCellCenters())
             1
             
             >>> print mesh._getFaceVertexIDs()
@@ -675,15 +714,15 @@ class UniformGrid2D(Grid2D):
              [ 1  2  3  5  6  7  9 10 11  4  5  6  7  8  9 10 11]]
 
             >>> mesh = UniformGrid2D(nx=3)
-            >>> print mesh._getAdjacentCellIDs()
-            (array([0, 1, 2, 0, 1, 2, 0, 0, 1, 2]), array([0, 1, 2, 0, 1, 2, 0, 1, 2, 2]))
+            >>> print mesh._getAdjacentCellIDs()[0], mesh._getAdjacentCellIDs()[1]
+            [0 1 2 0 1 2 0 0 1 2] [0 1 2 0 1 2 0 1 2 2]
             >>> print mesh.getFaceCellIDs()
             [[0 1 2 0 1 2 0 0 1 2]
              [-- -- -- -- -- -- -- 1 2 --]]
 
             >>> mesh = UniformGrid2D(ny=3)
-            >>> print mesh._getAdjacentCellIDs()
-            (array([0, 0, 1, 2, 0, 0, 1, 1, 2, 2]), array([0, 1, 2, 2, 0, 0, 1, 1, 2, 2]))
+            >>> print mesh._getAdjacentCellIDs()[0], mesh._getAdjacentCellIDs()[1]
+            [0 0 1 2 0 0 1 1 2 2] [0 1 2 2 0 0 1 1 2 2]
             >>> print mesh.getFaceCellIDs()
             [[0 0 1 2 0 0 1 1 2 2]
              [-- 1 2 -- -- -- -- -- -- --]]
