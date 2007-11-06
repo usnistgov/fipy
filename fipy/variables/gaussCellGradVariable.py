@@ -6,7 +6,7 @@
  # 
  #  FILE: "gaussCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #                                last update: 11/5/07 {6:00:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,14 +40,13 @@ from fipy.tools.numerix import MA
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
-from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
 class _GaussCellGradVariable(CellVariable):
     def __init__(self, var, name=''):
         CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
         self.var = self._requires(var)
-        self.faceGradientContributions = _FaceGradContributions(self.var)
+        self.faceGradientContributions = self.mesh._getAreaProjections() * self.var.getArithmeticFaceValue()
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
