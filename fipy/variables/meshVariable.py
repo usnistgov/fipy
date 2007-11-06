@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/5/07 {1:34:29 PM}
+ #                                 last update: 11/6/07 {11:48:11 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -63,31 +63,76 @@ class _MeshVariable(Variable):
             attempting validation. (only useful during unpickling and `Mesh` creation). 
             Default: `False`
         """
-        if elementshape is None:
-            if rank is not None:
-                elementshape = rank * (mesh.getDim(),)
-            else:
-                elementshape = ()
-        else:
-            if rank is not None and len(elementshape) != rank:
-                raise DimensionError, 'len(elementshape) != rank'
-        self.elementshape = elementshape
-        
-        if value is None:
-            array = None
-        elif _bootstrap:
+        if _bootstrap:
             array = value
         else:
-            array = numerix.zeros(self.elementshape 
-                                  + self._getShapeFromMesh(mesh),
-                                  numerix.obj2sctype(value))
-            if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
-                if not isinstance(value, Variable):
-                    value = _Constant(value)
-                value = value[..., numerix.newaxis]
-                                  
-        if isinstance(value, _MeshVariable):
-            mesh = mesh or value.mesh
+            if value is None:
+                array = None
+    ##         else:
+    ##             array = numerix.zeros(self.elementshape 
+    ##                                   + self._getShapeFromMesh(mesh),
+    ##                                   numerix.obj2sctype(value))
+            elif isinstance(value, Variable):
+                name = name or value.name
+                unit = None
+                if isinstance(value, _MeshVariable):
+                    if not isinstance(value, self._getVariableClass()):
+                        raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._getVariableClass().__name__, 
+                                                                              self._getVariableClass().__name__)
+                    if mesh is None:
+                        mesh = value.mesh
+                    elif mesh != value.mesh:
+                        raise ValueError, "The new 'Variable' must use the same mesh as the supplied value"
+                        
+                    if elementshape is not None and elementshape != value.shape[:-1]:
+                        raise ValueError, "'elementshape' != shape of elements of 'value'"
+
+                    if rank is not None and rank != value.getRank():
+                        raise ValueError, "'rank' != rank of 'value'"
+
+                    elementshape = value.shape[:-1]
+                    array = None
+
+                value = value._copyValue()
+            elif isinstance(value, numerix.ndarray) or numerix.MA.isMaskedArray(value):
+                if value.shape[-1] == self._getShapeFromMesh(mesh)[-1]:
+                    array = value
+                    if elementshape is not None and elementshape != value.shape[:-1]:
+                        raise ValueError, "'elementshape' != shape of elements of 'value'"
+
+                    if rank is not None and rank != len(value.shape[:-1]):
+                        raise ValueError, "'rank' != rank of 'value'"
+                    elementshape = value.shape[:-1]
+                elif rank is None and elementshape is None:
+                    elementshape = value.shape
+
+            if rank is None:
+                if elementshape is None:
+                    elementshape = ()
+            elif elementshape is None:
+                elementshape = rank * (mesh.getDim(),)
+            elif len(elementshape) != rank:
+                raise ValueError, 'len(elementshape) != rank'
+                    
+            self.elementshape = elementshape
+            
+            if not locals().has_key("array"):
+                if numerix.MA.isMaskedArray(value):
+                    arrayMaker = numerix.MA.zeros
+                else:
+                    arrayMaker = numerix.zeros
+                    
+                array = arrayMaker(self.elementshape 
+                                   + self._getShapeFromMesh(mesh),
+                                   numerix.obj2sctype(value))
+                                   
+                if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
+                    if not isinstance(value, Variable):
+                        value = _Constant(value)
+                    value = value[..., numerix.newaxis]
+                                      
+    ##         if isinstance(value, _MeshVariable):
+    ##             mesh = mesh or value.mesh
             
         self.mesh = mesh
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/5/07 {1:35:14 PM} 
+ #                                last update: 11/6/07 {11:40:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -106,23 +106,16 @@ class Variable(object):
           - `name`: the user-readable name of the `Variable`
           - `cached`: whether to cache or always recalculate the value
           - `_bootstrap`: if `True`, accept supplied value as given, without 
-            attempting validation. (only useful during unpickling and `Mesh` creation). 
-            Default: `False`
+            attempting validation. (only useful during unpickling and `Mesh`
+            creation). Default: `False`
         """
             
         self.requiredVariables = []
         self.subscribedVariables = []
 
         if isinstance(value, Variable):
-            name = value.name
-            value = value.getValue()
-            if hasattr(value, 'copy'):
-                # idiot MaskedArray has a `copy` method, but it just throws
-                # `NotImplemented`. What the #@%*! is the point of that?!?
-                if numerix.MA.isMaskedArray(value):
-                    value = numerix.MA.array(value)
-                else:
-                    value = value.copy()
+            name = name or value.name
+            value = value._copyValue()
             unit = None
             array = None
             
@@ -241,7 +234,17 @@ class Variable(object):
         """
         return self._getVariableClass()(value=self)
 
-
+    def _copyValue(self):
+        value = self.getValue()
+        if hasattr(value, 'copy'):
+            # idiot MaskedArray has a `copy` method, but it just throws
+            # `NotImplemented`. What the #@%*! is the point of that?!?
+            if numerix.MA.isMaskedArray(value):
+                value = numerix.MA.array(value)
+            else:
+                value = value.copy()
+        return value
+        
     def _getUnitAsOne(self):
         if self.getUnit() is physicalField._unity:
             return 1.
@@ -751,7 +754,7 @@ class Variable(object):
                     dim = (nk,nj,ni)
                     argDict['nk'] = nk
                 else:
-                    raise DimensionError, 'Impossible Dimensions'
+                    raise IndexError, 'Impossible Dimensions'
 
         ## Following section makes sure that the result array has a
         ## valid typecode. If self.value is None then a typecode is
