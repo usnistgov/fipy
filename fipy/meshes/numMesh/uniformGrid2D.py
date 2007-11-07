@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 11/6/07 {5:57:01 PM} 
+ #                                last update: 11/7/07 {12:46:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -251,7 +251,8 @@ class UniformGrid2D(Grid2D):
 ##         from numMesh/mesh
 
     def getVertexCoords(self):
-        return self._createVertices() + self.origin
+        return _VertexVariable(mesh=self,
+                               value=self._createVertices() + self.origin)
 
     def getFaceCellIDs(self):
         return inline._optionalInline(self._getFaceCellIDsIn, self._getFaceCellIDsPy)

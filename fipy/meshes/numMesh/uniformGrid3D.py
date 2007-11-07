@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 3/7/06 {4:59:52 PM}
+ #                                 last update: 11/7/07 {12:51:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,6 +45,10 @@ from fipy.meshes.numMesh.grid3D import Grid3D
 from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
+
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
 
 class UniformGrid3D(Grid3D):
     """
@@ -134,7 +138,7 @@ class UniformGrid3D(Grid3D):
 ##         from common/mesh
         
     def _getCellFaceIDs(self):
-        return MA.array(self._createCells())
+        return CellVariable(mesh=self, value=self._createCells())
         
     def _getXYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces)
@@ -175,8 +179,10 @@ class UniformGrid3D(Grid3D):
 
     def _getAdjacentCellIDs(self):
         faceCellIDs = self.getFaceCellIDs()
-        return (MA.where(MA.getmaskarray(faceCellIDs[0]), faceCellIDs[1], faceCellIDs[0]).filled(),
-                MA.where(MA.getmaskarray(faceCellIDs[1]), faceCellIDs[0], faceCellIDs[1]).filled())
+        mask = faceCellIDs.getMask()
+        faceCellIDs = faceCellIDs.filled()
+        return ((mask[0] * faceCellIDs[1] + ~mask[0] * faceCellIDs[0]),
+                (mask[1] * faceCellIDs[0] + ~mask[1] * faceCellIDs[1]))
 
     def _getCellToCellIDs(self):
         ids = MA.zeros((6, self.nx, self.ny, self.nz), 'l')
@@ -195,14 +201,16 @@ class UniformGrid3D(Grid3D):
         ids[4,...,     0] = MA.masked
         ids[5,...,    -1] = MA.masked
 
-        return MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells)))
         
     def _getCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
-        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        cellIDs = CellVariable(mesh=self, value=numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0))
         cellToCellIDs = self._getCellToCellIDs()
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+        mask = cellToCellIDs.getMask()
+        return mask * cellIDs + ~mask * cellToCellIDs.filled()
         
     def _getMaxFacesPerCell(self):
         return 6
@@ -210,8 +218,9 @@ class UniformGrid3D(Grid3D):
 ##         from numMesh/mesh
 
     def getVertexCoords(self):
-        return self._createVertices() + self.origin
-
+        return _VertexVariable(mesh=self,
+                               value=self._createVertices() + self.origin)
+                               
     def getFaceCellIDs(self):
         XYids = MA.zeros((2, self.nx, self.ny, self.nz + 1), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz + 1))
@@ -237,18 +246,20 @@ class UniformGrid3D(Grid3D):
         YZids[1, 0] = MA.masked
         YZids[1,-1] = MA.masked
 
-        return MA.concatenate((XYids.swapaxes(1,3).reshape((2, self.numberOfXYFaces)), 
-                               XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)), 
-                               YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self,
+                            value=MA.concatenate((XYids.swapaxes(1,3).reshape((2, self.numberOfXYFaces)), 
+                                                  XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)), 
+                                                  YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1))
 
 ##     get geometry methods
         
 ##         from common/mesh
         
     def _getFaceAreas(self):
-        return numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
-                                    numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
-                                    numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
+                                                       numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
+                                                       numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces))))
 
     def _getFaceNormals(self):
         XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
@@ -263,12 +274,13 @@ class UniformGrid3D(Grid3D):
         YZnor[2,      ...] =  1
         YZnor[2, 0,   ...] = -1
         
-        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self,
+                            value=numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
         
     def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
+        return CellVariable(mesh=self, value=self.dx * self.dy * self.dz)
 
     def getCellCenters(self):
         centers = numerix.zeros((3, self.nx, self.ny, self.nz), 'd')
@@ -276,7 +288,8 @@ class UniformGrid3D(Grid3D):
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
         centers[2] = (indices[2] + 0.5) * self.dz
-        return numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin
+        return CellVariable(mesh=self,
+                            value=numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin)
 
     def _getCellDistances(self):
         XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx),'d')
@@ -294,9 +307,10 @@ class UniformGrid3D(Grid3D):
         YZdis[..., 0] = self.dx / 2.
         YZdis[...,-1] = self.dx / 2.
 
-        return numerix.concatenate((numerix.ravel(XYdis),
-                                    numerix.ravel(XZdis),
-                                    numerix.ravel(YZdis)))
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.ravel(XYdis),
+                                                       numerix.ravel(XZdis),
+                                                       numerix.ravel(YZdis))))
 
     def _getFaceToCellDistanceRatio(self):
         XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1),'d')
@@ -314,9 +328,10 @@ class UniformGrid3D(Grid3D):
         YZdis[ 0,...] = 1
         YZdis[-1,...] = 1
         
-        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
-                                    numerix.ravel(XZdis.swapaxes(0,2)),
-                                    numerix.ravel(YZdis.swapaxes(0,2))), axis=1)
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
+                                                       numerix.ravel(XZdis.swapaxes(0,2)),
+                                                       numerix.ravel(YZdis.swapaxes(0,2))), axis=1))
                                     
     def _getOrientedAreaProjections(self):
         return self._getAreaProjections()
@@ -337,9 +352,10 @@ class UniformGrid3D(Grid3D):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
         YZtan[1,      ...] =  1
         
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
         
     def _getFaceTangents2(self):
         XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
@@ -351,9 +367,10 @@ class UniformGrid3D(Grid3D):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
         YZtan[0,      ...] =  1
         
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self, 
+                            value=numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
         
     def _getFaceAspectRatios(self):
         return self._getFaceAreas() / self._getCellDistances()
@@ -374,10 +391,12 @@ class UniformGrid3D(Grid3D):
         distances[4,...,      0] = self.dz / 2.
         distances[5,...,     -1] = self.dz / 2.
 
-        return numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6))
+        return CellVariable(mesh=self, 
+                            value=numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6)),
+                            elementshape=(6,))
         
     def _getCellNormals(self):
-        normals = numerix.zeros((3, 6, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self, value=0., elementshape=(3,6))
         normals[...,0,...] = [[-1], [ 0], [ 0]]
         normals[...,1,...] = [[ 1], [ 0], [ 0]]
         normals[...,2,...] = [[ 0], [-1], [ 0]]
@@ -388,7 +407,7 @@ class UniformGrid3D(Grid3D):
         return normals
         
     def _getCellAreas(self):
-        areas = numerix.ones((6, self.numberOfCells), 'd')
+        areas = CellVariable(mesh=self, value=0., elementshape=(6,))
         areas[0] = self.dy * self.dz
         areas[1] = self.dy * self.dz
         areas[2] = self.dx * self.dz
@@ -421,9 +440,11 @@ class UniformGrid3D(Grid3D):
         YZcen[1] = (indices[1] + 0.5) * self.dy
         YZcen[2] = (indices[2] + 0.5) * self.dz
 
-        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self,
+                            value=numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
+                                                       numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1),
+                            rank=1)
                                     
     def _getCellVertexIDs(self):
         ids = numerix.zeros((8, self.nx, self.ny, self.nz))
@@ -437,10 +458,13 @@ class UniformGrid3D(Grid3D):
         ids[7] = indices[0] + (indices[1] + indices[2] * self.ny) * (self.nx + 1)
         ids[6] = ids[7] + 1
         
-        return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells)),
+                            elementshape=(8,))
         
     def _getFaceVertexIDs(self):
-        return self._createFaces()
+        return FaceVariable(mesh=self,
+                            value=self._createFaces())
                                     
     def _getOrderedCellVertexIDs(self):
         """Correct ordering for VTK_VOXEL"""
@@ -501,10 +525,10 @@ class UniformGrid3D(Grid3D):
              [[24]
               [28]]]
 
-            >>> print mesh._getAdjacentCellIDs()
-            (array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0,
-                   1, 2, 3, 3, 4, 5]), array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1,
-                   2, 2, 3, 4, 5, 5]))
+            >>> print mesh._getAdjacentCellIDs()[0]
+            [0 1 2 3 4 5 0 1 2 3 4 5 0 1 2 0 1 2 3 4 5 0 0 1 2 3 3 4 5]
+            >>> print mesh._getAdjacentCellIDs()[1]
+            [0 1 2 3 4 5 0 1 2 3 4 5 0 1 2 3 4 5 3 4 5 0 1 2 2 3 4 5 5]
 
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2., 0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.),
@@ -541,7 +565,7 @@ class UniformGrid3D(Grid3D):
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values((( 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5),
             ...                                 (-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 3, 4, 5,-1,-1,-1,-1, 1, 2,-1,-1, 4, 5,-1)), -1) 
-            >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> print numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
             1
             
             >>> xy = dx * dy
@@ -550,18 +574,21 @@ class UniformGrid3D(Grid3D):
             >>> faceAreas = numerix.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
             ...                            xz, xz, xz, xz, xz, xz, xz, xz, xz,
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
-            >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceAreas, mesh._getFaceAreas(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]) / 4.
-            >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceCenters, mesh.getFaceCenters(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> faceNormals = numerix.array((( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 1, 1, 1,-1, 1, 1, 1),
             ...                              ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                              (-1,-1,-1,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceNormals, mesh._getFaceNormals(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = numerix.array((( 1,-1,-1, 1,-1,-1),
@@ -570,45 +597,55 @@ class UniformGrid3D(Grid3D):
             ...                                         ( 1, 1, 1, 1, 1, 1),
             ...                                         ( 1, 1, 1, 1, 1, 1),
             ...                                         ( 1, 1, 1, 1, 1, 1)))
-            >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> print numerix.allequal(cellToFaceOrientations, 
+            ...                        mesh._getCellFaceOrientations())
             1
                                              
             >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
-            >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellVolumes, mesh.getCellVolumes(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellCenters = numerix.array(((   dx/2., 3.*dx/2., 5.*dx/2.,   dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (   dy/2.,    dy/2.,    dy/2.,3.*dy/2., 3.*dy/2., 3.*dy/2.),
             ...                              (   dz/2.,    dz/2.,    dz/2.,   dz/2.,    dz/2.,    dz/2.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> cellDistances = numerix.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
             ...                                dy/2, dy/2, dy/2, dy, dy, dy, dy/2, dy/2, dy/2,
             ...                                dx/2, dx, dx, dx/2, dx/2, dx, dx, dx/2))
-            >>> numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellDistances, mesh._getCellDistances(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceToCellDistances = MA.masked_values(((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2),
             ...                                         (  -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1, dy/2, dy/2, dy/2,   -1,   -1,   -1,   -1, dx/2, dx/2,   -1,   -1, dx/2, dx/2,   -1)), -1)
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceToCellDistanceRatios, 
+            ...                        mesh._getFaceToCellDistanceRatio(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(areaProjections, 
+            ...                        mesh._getAreaProjections(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents1 = numerix.array(((1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents1, mesh._getFaceTangents1(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents2 = numerix.array(((0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents2, mesh._getFaceTangents2(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> print mesh._getCellToCellIDs()
@@ -628,7 +665,9 @@ class UniformGrid3D(Grid3D):
              [0 1 2 3 4 5]]
               
             >>> cellToCellDistances = numerix.take(cellDistances, cells)
-            >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellToCellDistances, 
+            ...                        mesh._getCellToCellDistances(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellNormals = numerix.array((((-1, -1, -1, -1, -1, -1),
@@ -649,7 +688,8 @@ class UniformGrid3D(Grid3D):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               (-1, -1, -1, -1, -1, -1),
             ...                               ( 1,  1,  1,  1,  1,  1))))
-            >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellNormals, mesh._getCellNormals(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellAreaProjections = numerix.array((((-yz,-yz,-yz,-yz,-yz,-yz),
@@ -670,14 +710,16 @@ class UniformGrid3D(Grid3D):
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       (-xy,-xy,-xy,-xy,-xy,-xy),
             ...                                       ( xy, xy, xy, xy, xy, xy))))
-            >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellAreaProjections, 
+            ...                        mesh._getCellAreaProjections(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 4, cellVertexIDs + 5, cellVertexIDs + 6))
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
 
 
@@ -685,7 +727,8 @@ class UniformGrid3D(Grid3D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.getCellCenters(), 
+            ...                        unpickledMesh.getCellCenters())
             1
         """
 
