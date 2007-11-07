@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 11/6/07 {11:51:49 AM} 
+ #                                last update: 11/6/07 {5:57:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -122,7 +122,7 @@ class UniformGrid2D(Grid2D):
 ##         from common/mesh
         
     def _getCellFaceIDs(self):
-        return self._createCells()
+        return CellVariable(mesh=self, value=self._createCells())
         
     def getExteriorFaces(self):
         return FaceIterator(mesh=self,
