@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/30/07 {11:37:23 AM} 
+ #                                last update: 11/7/07 {11:28:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,7 +29,7 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2006 by Konrad Hinsen, except as noted below.
+ #  Copyright 1997-2007 by Konrad Hinsen, except as noted below.
  # 
  #  Permission to use, copy, modify, and distribute this software and its
  #  documentation for any purpose and without fee is hereby granted,
@@ -534,7 +534,7 @@ class PhysicalField(object):
             >>> print a[1,1]
             6.0 m
         """
-        return PhysicalField(self.value[index],self.unit)
+        return self.__class__(value=self.value[index], unit=self.unit)
         
     def __setitem__(self, index, value):
         """
