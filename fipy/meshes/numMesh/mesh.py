@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/2/07 {2:52:00 PM} 
+ #                                last update: 11/7/07 {9:22:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -179,14 +179,12 @@ class Mesh(_CommonMesh):
         self.cellFaceIDs = self.cellFaceIDs.copy()
         cellFaceIDs = self.cellFaceIDs.take(faceCellIDs, axis=1).copy()
         
-        faces0 = numerix.array(faces0)[..., numerix.newaxis]
-        faces1 = numerix.array(faces1)[..., numerix.newaxis]
         for i in range(cellFaceIDs.shape[0]):
             ## if the faces is a member of faces1 then change the face to point at
             ## faces0
-            switch = (cellFaceIDs[i] == faces1)
-            cellFaceIDs[i] = (switch * faces0
-                              + ~switch * cellFaceIDs[i].filled())
+            facesInFaces1 = (cellFaceIDs[i] == faces1)
+            cellFaceIDs[i] = (facesInFaces1 * faces0
+                              + ~facesInFaces1 * cellFaceIDs[i])
             ## add those faces back to the main self.cellFaceIDs
             self.cellFaceIDs[i].put(faceCellIDs, cellFaceIDs[i])
 
