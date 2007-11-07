@@ -6,7 +6,7 @@
  # 
  #  FILE: "metalIonDiffusionEquation.py"
  #                                    created: 8/18/04 {10:39:23 AM} 
- #                                last update: 2/23/06 {3:59:00 PM} 
+ #                                last update: 11/6/07 {5:50:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,14 +47,13 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
-from metalIonSourceVariable import _MetalIonSourceVariable
 
-def buildMetalIonDiffusionEquation(ionVar = None,
-                                   distanceVar = None,
-                                   depositionRate = 1,
-                                   transientCoeff = 1,
-                                   diffusionCoeff = 1,
-                                   metalIonMolarVolume = 1):
+def buildMetalIonDiffusionEquation(ionVar=None,
+                                   distanceVar=None,
+                                   depositionRate=1,
+                                   transientCoeff=1,
+                                   diffusionCoeff=1,
+                                   metalIonMolarVolume=1):
 
     r"""
 
@@ -99,29 +98,29 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        >>> from fipy.meshes.grid1D import Grid1D
        >>> nx = 11
        >>> dx = 1.
-       >>> mesh = Grid1D(nx = nx, dx = dx)
+       >>> mesh = Grid1D(nx=nx, dx=dx)
        >>> x, = mesh.getCellCenters()
        >>> from fipy.variables.cellVariable import CellVariable
-       >>> ionVar = CellVariable(mesh = mesh, value = 1.)
+       >>> ionVar = CellVariable(mesh=mesh, value=1.)
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
        ...     import DistanceVariable
-       >>> disVar = DistanceVariable(mesh = mesh, 
-       ...                           value = (x - 0.5) - 0.99,
-       ...                           hasOld = 1)
+       >>> disVar = DistanceVariable(mesh=mesh, 
+       ...                           value=(x - 0.5) - 0.99,
+       ...                           hasOld=1)
 
        >>> v = 1.
        >>> diffusion = 1.
        >>> omega = 1.
        >>> cinf = 1.
        >>> from fipy.boundaryConditions.fixedValue import FixedValue
-       >>> eqn = buildMetalIonDiffusionEquation(ionVar = ionVar,
-       ...                                      distanceVar = disVar,
-       ...                                      depositionRate = v * ionVar,
-       ...                                      diffusionCoeff = diffusion,
-       ...                                      metalIonMolarVolume = omega)
+       >>> eqn = buildMetalIonDiffusionEquation(ionVar=ionVar,
+       ...                                      distanceVar=disVar,
+       ...                                      depositionRate=v * ionVar,
+       ...                                      diffusionCoeff=diffusion,
+       ...                                      metalIonMolarVolume=omega)
        >>> bc = (FixedValue(mesh.getFacesRight(), cinf),)
        >>> for i in range(10):
-       ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
+       ...     eqn.solve(ionVar, dt=1000, boundaryConditions=bc)
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
        >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
@@ -139,15 +138,14 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     """
 
-    eq = _buildLevelSetDiffusionEquation(ionVar = ionVar,
-                                         distanceVar = distanceVar,
-                                         transientCoeff = transientCoeff,
-                                         diffusionCoeff = diffusionCoeff)
+    eq = _buildLevelSetDiffusionEquation(ionVar=ionVar,
+                                         distanceVar=distanceVar,
+                                         transientCoeff=transientCoeff,
+                                         diffusionCoeff=diffusionCoeff)
     
-    coeff = _MetalIonSourceVariable(ionVar = ionVar,
-                                    distanceVar = distanceVar,
-                                    depositionRate = depositionRate,
-                                    metalIonMolarVolume = metalIonMolarVolume)
+    coeff = (depositionRate * distanceVar.getCellInterfaceAreas() 
+             / (distanceVar.getMesh().getCellVolumes() * metalIonMolarVolume) 
+             / ((ionVar > 1e-20) * ionVar + (ionVar <= 1e-20) * 1e-20))
 
     return eq + ImplicitSourceTerm(coeff)
 
