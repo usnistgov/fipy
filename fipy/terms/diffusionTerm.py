@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:47 AM} 
+ #                                last update: 11/7/07 {9:31:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -217,7 +217,7 @@ class DiffusionTerm(Term):
                                                                                  equation=equation)
             del lowerOrderBCs
             
-            lowerOrderb = lowerOrderb / mesh.getCellVolumes()
+            lowerOrderb = numerix.array(lowerOrderb / mesh.getCellVolumes())
             volMatrix = SparseMatrix(size = N, bandwidth = 1)
             
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
@@ -291,7 +291,7 @@ class DiffusionTerm(Term):
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
-        return (L, b)
+        return (L, numerix.array(b))
         
     def _test(self):
         r"""

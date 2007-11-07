@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/6/07 {10:13:48 AM} 
+ #                                last update: 11/7/07 {9:27:28 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -152,7 +152,7 @@ class _AdvectionTerm(Term):
 
         coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
 
-        return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
+        return (SparseMatrix(size = NCells), numerix.array(-coeffXdiffereneces * mesh.getCellVolumes()))
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
