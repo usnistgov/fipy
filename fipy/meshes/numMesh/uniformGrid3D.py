@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 11/7/07 {12:51:48 PM}
+ #                                 last update: 11/7/07 {12:57:35 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -219,7 +219,8 @@ class UniformGrid3D(Grid3D):
 
     def getVertexCoords(self):
         return _VertexVariable(mesh=self,
-                               value=self._createVertices() + self.origin)
+                               value=self._createVertices() + self.origin,
+                               _bootstrap=True)
                                
     def getFaceCellIDs(self):
         XYids = MA.zeros((2, self.nx, self.ny, self.nz + 1), 'l')
