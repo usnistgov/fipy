@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/1/07 {9:03:25 PM} 
+ #                                last update: 11/7/07 {1:40:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,8 +71,12 @@ class Mesh2D(Mesh):
                                         self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         mag = t1.dot(t1).sqrt()
-        rot = numerix.array((( 0, 1),
-                             (-1, 0)))[...,numerix.newaxis]
+        dim = faceVertexCoords.getMesh().getDim()
+        rot = numerix.zeros((dim, dim))
+        rot[0,1,...] =  1
+        rot[1,0,...] = -1
+        for i in range(2,dim):
+            rot[i,i,...] = 1
         self.faceNormals = t1.dot(rot) / mag
 
     def _calcFaceTangents(self):
