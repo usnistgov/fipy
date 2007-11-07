@@ -6,7 +6,7 @@
  # 
  #  FILE: "modPhysicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/3/04 {10:35:55 PM} 
+ #                                last update: 11/7/07 {11:42:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,12 +44,12 @@
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-from fipy.tools import numerix
+from fipy.tools.numerix import pi, fmod
 
 class _ModPhysicalField(PhysicalField):
 
     def mod(self, argument):
-        return numerix.fmod(argument + 3. * numerix.pi, 2. * numerix.pi) - numerix.pi
+        return fmod(argument + 3. * pi, 2. * pi) - pi
 
     def __sub__(self, other):
         if isinstance(other, _ModPhysicalField):
