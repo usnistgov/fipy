@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/6/07 {10:38:18 AM} 
+ #                                last update: 11/7/07 {4:22:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -208,20 +208,19 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         
         dAP = mesh._getCellToCellDistances()
         
-##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
         adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs(), axis=-1)
-        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), omit=(-2,))
-        adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), omit=(0,))
+        adjacentUpValues = cellValues + (2 * dAP * adjacentNormalGradient).getValue()
 
         cellIDs = numerix.repeat(numerix.arange(mesh.getNumberOfCells())[numerix.newaxis, ...], mesh._getMaxFacesPerCell(), axis=0)
-        cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._getCellToCellIDs()))
+        cellIDs = MA.masked_array(cellIDs, mask=mesh._getCellToCellIDs().getMask())
         cellGradient = numerix.take(oldArray.getGrad(), cellIDs, axis=-1)
-        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals())
+        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), omit=(0,))
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
 
-        adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues) / dAP**2
+        adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues.getValue()) / dAP**2
         adjacentLaplacian = adjacentLaplacian.filled(0)
         cellLaplacian = cellLaplacian.filled(0)
 

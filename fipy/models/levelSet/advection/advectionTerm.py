@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/7/07 {9:27:28 AM} 
+ #                                last update: 11/7/07 {4:13:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -138,7 +138,7 @@ class _AdvectionTerm(Term):
         cellToCellIDs = mesh._getCellToCellIDs()
 
         mask = cellToCellIDs.getMask()
-        cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs
+        cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs.filled()
 
         adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
