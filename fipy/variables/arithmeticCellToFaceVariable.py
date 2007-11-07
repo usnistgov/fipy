@@ -6,7 +6,7 @@
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 1/3/07 {3:25:20 PM} 
+ #                                last update: 11/7/07 {11:38:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,9 +41,9 @@ from fipy.tools.inline import inline
 
 class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-        cell1 = numerix.take(self.var, id1, axis=-1)
-        cell2 = numerix.take(self.var, id2, axis=-1)
-        return (cell1 - cell2) * alpha + cell2
+        cell1 = numerix.take(self.var, id1, axis=-1).getValue()
+        cell2 = numerix.take(self.var, id2, axis=-1).getValue()
+        return (cell1 - cell2) * numerix.array(alpha) + cell2
         
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
