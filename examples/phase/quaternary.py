@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:35 PM} 
+ #                                last update: 11/8/07 {8:35:33 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -484,7 +484,7 @@ We can confirm that the far-field phases have remained separated
 ..
 
     >>> ends = take(phase, (0,-1))
-    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> print allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields have appropriately segregated into 
@@ -492,7 +492,7 @@ their equilibrium values in each phase
 
     >>> equilibrium = True
     >>> for Cj in interstitials + substitutionals:
-    ...     ends = take(Cj, (0,-1))
+    ...     ends = take(Cj, (0,-1)).getValue()
     ...     equilibrium &= allclose(ends, (Cj.S, Cj.L), rtol = 3e-3, atol = 3e-3)
     >>> print equilibrium
     1
@@ -503,18 +503,3 @@ if __name__ == "__main__":
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     raw_input("finished")
-
-## if __name__ == '__main__':
-##     ## from fipy.tools.profiler.profiler import Profiler
-##     ## from fipy.tools.profiler.profiler import calibrate_profiler
-## 
-##     # fudge = calibrate_profiler(10000)
-##     # profile = Profiler('profile', fudge=fudge)
-## 
-##     import fipy.tests.doctestPlus
-##     exec(fipy.tests.doctestPlus.getScript())
-## 
-##     # profile.stop()
-## 	    
-##     raw_input("finished")
-## 
