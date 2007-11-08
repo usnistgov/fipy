@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 11/7/07 {11:28:03 AM} 
+ #                                last update: 11/8/07 {8:21:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1199,6 +1199,9 @@ class PhysicalField(object):
         """
         return self.__class__(value = numerix.reshape(self.value, shape), unit = self.unit)
             
+    def flatten(self):
+        return self.__class__(value=self.value.flatten(), unit=self.unit)
+    
     def sum(self, index = 0):
         """
         Returns the sum of all of the elements in `self` along the 
