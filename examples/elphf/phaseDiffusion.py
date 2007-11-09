@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:37 PM} 
+ #                                last update: 11/9/07 {4:31:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -244,7 +244,7 @@ iterating to equilibrium
 we confirm that the far-field phases have remained separated
 
     >>> ends = take(phase, (0,-1))
-    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> print allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the solute concentration field has appropriately segregated into 
@@ -332,20 +332,20 @@ and again iterate to equilibrium
 We confirm that the far-field phases have remained separated
 
     >>> ends = take(phase, (0,-1))
-    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> print allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
     >>> ends = take(substitutionals[0], (0,-1))
-    >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
     >>> ends = take(substitutionals[1], (0,-1))
-    >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
     >>> ends = take(substitutionals[2], (0,-1))
-    >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 
 Finally, we can represent a system that contains both substitutional and 
@@ -439,20 +439,20 @@ and again iterate to equilibrium
 We once more confirm that the far-field phases have remained separated
 
     >>> ends = take(phase, (0,-1))
-    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+    >>> print allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
     >>> ends = take(interstitials[0], (0,-1))
-    >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
     >>> ends = take(substitutionals[0], (0,-1))
-    >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
     >>> ends = take(substitutionals[1], (0,-1))
-    >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+    >>> print allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
 __docformat__ = 'restructuredtext'
